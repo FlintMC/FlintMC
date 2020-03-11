@@ -1,7 +1,7 @@
-package net.labycore.structure.property;
+package net.labyfy.structure.property;
 
-import net.labycore.structure.annotation.LocatedIdentifiedAnnotation;
-import net.labycore.structure.annotation.Transitive;
+import net.labyfy.structure.annotation.LocatedIdentifiedAnnotation;
+import net.labyfy.structure.annotation.Transitive;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;

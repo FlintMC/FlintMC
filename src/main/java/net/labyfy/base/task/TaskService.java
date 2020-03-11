@@ -1,13 +1,13 @@
-package net.labycore.base.task;
+package net.labyfy.base.task;
 
 import com.google.inject.Injector;
-import net.labycore.base.task.property.TaskBody;
-import net.labycore.base.task.property.TaskBodyPriority;
-import net.labycore.structure.annotation.LocatedIdentifiedAnnotation;
-import net.labycore.structure.identifier.Identifier;
-import net.labycore.structure.property.Property;
-import net.labycore.structure.service.Service;
-import net.labycore.structure.service.ServiceHandler;
+import net.labyfy.base.task.property.TaskBody;
+import net.labyfy.base.task.property.TaskBodyPriority;
+import net.labyfy.structure.annotation.LocatedIdentifiedAnnotation;
+import net.labyfy.structure.identifier.Identifier;
+import net.labyfy.structure.property.Property;
+import net.labyfy.structure.service.Service;
+import net.labyfy.structure.service.ServiceHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

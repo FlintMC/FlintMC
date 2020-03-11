@@ -1,4 +1,4 @@
-package net.labycore.structure.service;
+package net.labyfy.structure.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,5 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Service {
-  Class<?> value();
-}
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Transitive {}

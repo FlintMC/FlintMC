@@ -1,11 +1,11 @@
-package net.labycore.structure.service;
+package net.labyfy.structure.service;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Injector;
-import net.labycore.structure.annotation.AnnotationCollector;
-import net.labycore.structure.identifier.Identifier;
-import net.labycore.structure.identifier.IdentifierParser;
+import net.labyfy.structure.annotation.AnnotationCollector;
+import net.labyfy.structure.identifier.Identifier;
+import net.labyfy.structure.identifier.IdentifierParser;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

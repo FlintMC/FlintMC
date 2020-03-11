@@ -1,7 +1,7 @@
-package net.labycore.structure.annotation;
+package net.labyfy.structure.annotation;
 
 import com.google.common.collect.Sets;
-import net.labycore.structure.annotation.Transitive;
+import net.labyfy.structure.annotation.Transitive;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

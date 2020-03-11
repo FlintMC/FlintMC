@@ -1,4 +1,4 @@
-package net.labycore.base.task;
+package net.labyfy.base.task;
 
 import com.google.common.collect.*;
 import com.google.inject.Injector;
