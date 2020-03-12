@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class LabyTweaker implements ITweaker {
+public class Tweaker implements ITweaker {
 
   private final Map<String, String> launchArguments = new HashMap<>();
 
@@ -36,7 +36,7 @@ public class LabyTweaker implements ITweaker {
               });
 
       this.prepareLaunchClassLoader();
-      launchClassLoader.registerTransformer(LabyTransformer.class.getName());
+      launchClassLoader.registerTransformer(Transformer.class.getName());
 
       Class<?> aClass = launchClassLoader.findClass("net.labyfy.component.transform.tweaker.LabyEntryPoint");
       System.out.println(aClass.getClassLoader());
