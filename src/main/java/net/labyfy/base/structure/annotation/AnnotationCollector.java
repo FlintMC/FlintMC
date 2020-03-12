@@ -1,15 +1,12 @@
-package net.labyfy.structure.annotation;
+package net.labyfy.base.structure.annotation;
 
 import com.google.common.collect.Sets;
-import net.labyfy.structure.annotation.Transitive;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 import java.util.Collection;
 
 @Singleton

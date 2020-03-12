@@ -1,10 +1,10 @@
-package net.labyfy.structure.identifier;
+package net.labyfy.base.structure.identifier;
 
 import com.google.common.collect.*;
-import net.labyfy.structure.annotation.AnnotationCollector;
-import net.labyfy.structure.annotation.LocatedIdentifiedAnnotation;
-import net.labyfy.structure.property.Property;
-import net.labyfy.structure.property.PropertyParser;
+import net.labyfy.base.structure.annotation.AnnotationCollector;
+import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
+import net.labyfy.base.structure.property.Property;
+import net.labyfy.base.structure.property.PropertyParser;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

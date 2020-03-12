@@ -1,6 +1,6 @@
-package net.labyfy.structure.annotation;
+package net.labyfy.base.structure.annotation;
 
-import net.labyfy.structure.identifier.Identifier;
+import net.labyfy.base.structure.identifier.Identifier;
 
 import java.lang.annotation.Annotation;
 import java.util.Objects;

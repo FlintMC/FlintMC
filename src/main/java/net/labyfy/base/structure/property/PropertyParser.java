@@ -1,21 +1,16 @@
-package net.labyfy.structure.property;
+package net.labyfy.base.structure.property;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import net.labyfy.structure.annotation.AnnotationCollector;
-import net.labyfy.structure.annotation.LocatedIdentifiedAnnotation;
-import net.labyfy.structure.identifier.Identifier;
+import net.labyfy.base.structure.annotation.AnnotationCollector;
+import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
+import net.labyfy.base.structure.identifier.Identifier;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Singleton
 public class PropertyParser {

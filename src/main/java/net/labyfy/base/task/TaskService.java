@@ -3,11 +3,11 @@ package net.labyfy.base.task;
 import com.google.inject.Injector;
 import net.labyfy.base.task.property.TaskBody;
 import net.labyfy.base.task.property.TaskBodyPriority;
-import net.labyfy.structure.annotation.LocatedIdentifiedAnnotation;
-import net.labyfy.structure.identifier.Identifier;
-import net.labyfy.structure.property.Property;
-import net.labyfy.structure.service.Service;
-import net.labyfy.structure.service.ServiceHandler;
+import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
+import net.labyfy.base.structure.identifier.Identifier;
+import net.labyfy.base.structure.property.Property;
+import net.labyfy.base.structure.service.Service;
+import net.labyfy.base.structure.service.ServiceHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,2 +1,6 @@
 rootProject.name = 'labyfy'
+include 'transform:tweaker'
+findProject(':transform:tweaker')?.name = 'tweaker'
+include 'versioned:labyfy-1.15.1'
+findProject(':versioned:labyfy-1.15.1')?.name = 'labyfy-1.15.1'
 
