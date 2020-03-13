@@ -11,7 +11,7 @@ public class VersionProvider {
   private final Map<String, String> launchArguments;
 
   @Inject
-  private VersionProvider(@Named("launchArguments") Map<String, String> launchArguments) {
+  private VersionProvider(@Named("launchArguments") Map launchArguments) {
     this.launchArguments = launchArguments;
   }
 
@@ -23,5 +23,4 @@ public class VersionProvider {
     Preconditions.checkNotNull(launchArguments);
     return new VersionProvider(launchArguments);
   }
-
 }

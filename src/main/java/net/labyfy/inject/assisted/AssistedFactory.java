@@ -1,4 +1,4 @@
-package net.labyfy.base.structure.service;
+package net.labyfy.inject.assisted;
 
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;
@@ -8,8 +8,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Service {
+@Retention(RetentionPolicy.RUNTIME)
+@Identifier
+@Transitive
+public @interface AssistedFactory {
   Class<?> value();
 }

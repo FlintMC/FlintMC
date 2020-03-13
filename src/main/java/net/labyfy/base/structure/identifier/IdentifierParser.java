@@ -1,6 +1,5 @@
 package net.labyfy.base.structure.identifier;
 
-import com.google.common.collect.*;
 import net.labyfy.base.structure.annotation.AnnotationCollector;
 import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
 import net.labyfy.base.structure.property.Property;
@@ -10,32 +9,28 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Singleton
 public class IdentifierParser {
 
-  private final AnnotationCollector annotationCollector;
   private final PropertyParser propertyParser;
 
   @Inject
-  private IdentifierParser(AnnotationCollector annotationCollector, PropertyParser propertyParser) {
-    this.annotationCollector = annotationCollector;
+  private IdentifierParser(PropertyParser propertyParser) {
     this.propertyParser = propertyParser;
   }
 
   public Collection<Identifier.Base> parse(Class<?> clazz) {
-    Collection<LocatedIdentifiedAnnotation> standaloneIdentifiers =
-        Streams.concat(
-                this.findStandaloneClassIdentifiers(clazz),
-                Arrays.stream(clazz.getDeclaredMethods())
-                    .flatMap(this::findStandaloneMethodIdentifiers))
-            .collect(Collectors.toSet());
+
+    Collection<LocatedIdentifiedAnnotation> standaloneIdentifiers = new HashSet<>(this.findStandaloneClassIdentifiers(clazz));
+
+    for (Method declaredMethod : clazz.getDeclaredMethods()) {
+      standaloneIdentifiers.addAll(this.findStandaloneMethodIdentifiers(declaredMethod));
+    }
 
     Collection<Identifier.Base> identifiers = new LinkedList<>();
 
@@ -47,63 +42,79 @@ public class IdentifierParser {
     return identifiers;
   }
 
-  private Stream<LocatedIdentifiedAnnotation> findStandaloneMethodIdentifiers(Method method) {
+  private Collection<LocatedIdentifiedAnnotation> findStandaloneMethodIdentifiers(Method method) {
+
     Predicate<Annotation> standalone =
         identifierCandidate ->
-            annotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
+            AnnotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
                 && ((Identifier) identifierCandidate).parents().length == 0;
 
-    return this.annotationCollector.getTransitiveAnnotations(method).stream()
-        .filter(
-            annotation ->
-                annotationCollector
-                    .getTransitiveAnnotations(
-                        annotationCollector.getRealAnnotationClass(annotation))
-                    .stream()
-                    .anyMatch(standalone))
-        .map(
-            annotation ->
-                new LocatedIdentifiedAnnotation(
-                    (Identifier)
-                        annotationCollector
-                            .getTransitiveAnnotations(
-                                annotationCollector.getRealAnnotationClass(annotation))
-                            .stream()
-                            .findAny()
-                            .orElse(null),
-                    annotation,
-                    method,
-                    LocatedIdentifiedAnnotation.Type.METHOD,
-                    LocatedIdentifiedAnnotation.Type.METHOD));
+    Collection<LocatedIdentifiedAnnotation> identifiedAnnotations = new HashSet<>();
+
+    for (Annotation transitiveAnnotation : AnnotationCollector.getTransitiveAnnotations(method)) {
+      boolean found = false;
+      for (Annotation annotation :
+          AnnotationCollector.getTransitiveAnnotations(
+              AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))) {
+        if (!standalone.test(annotation)) continue;
+        found = true;
+      }
+
+      if (found) {
+        Annotation annotation =
+            AnnotationCollector.getTransitiveAnnotations(
+                    AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
+                .stream()
+                .findAny()
+                .orElse(null);
+        identifiedAnnotations.add(
+            new LocatedIdentifiedAnnotation(
+                (Identifier) annotation,
+                transitiveAnnotation,
+                method,
+                LocatedIdentifiedAnnotation.Type.METHOD,
+                LocatedIdentifiedAnnotation.Type.METHOD));
+      }
+    }
+
+    return identifiedAnnotations;
   }
 
-  private Stream<LocatedIdentifiedAnnotation> findStandaloneClassIdentifiers(Class<?> clazz) {
+  private Collection<LocatedIdentifiedAnnotation> findStandaloneClassIdentifiers(Class<?> clazz) {
     Predicate<Annotation> standalone =
         identifierCandidate ->
-            annotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
+            AnnotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
                 && ((Identifier) identifierCandidate).parents().length == 0;
 
-    return this.annotationCollector.getTransitiveAnnotations(clazz).stream()
-        .filter(
-            annotation ->
-                annotationCollector
-                    .getTransitiveAnnotations(
-                        annotationCollector.getRealAnnotationClass(annotation))
-                    .stream()
-                    .anyMatch(standalone))
-        .map(
-            annotation ->
-                new LocatedIdentifiedAnnotation(
-                    (Identifier)
-                        annotationCollector
-                            .getTransitiveAnnotations(
-                                annotationCollector.getRealAnnotationClass(annotation))
-                            .stream()
-                            .findAny()
-                            .orElse(null),
-                    annotation,
-                    clazz,
-                    LocatedIdentifiedAnnotation.Type.CLASS,
-                    LocatedIdentifiedAnnotation.Type.CLASS));
+    Collection<LocatedIdentifiedAnnotation> identifiedAnnotations = new HashSet<>();
+
+    for (Annotation transitiveAnnotation : AnnotationCollector.getTransitiveAnnotations(clazz)) {
+      boolean found = false;
+      for (Annotation annotation :
+          AnnotationCollector.getTransitiveAnnotations(
+              AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))) {
+        if (!standalone.test(annotation)) continue;
+        found = true;
+      }
+      if (found) {
+
+        Annotation annotation =
+            AnnotationCollector.getTransitiveAnnotations(
+                    AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
+                .stream()
+                .findAny()
+                .orElse(null);
+
+        identifiedAnnotations.add(
+            new LocatedIdentifiedAnnotation(
+                (Identifier) annotation,
+                transitiveAnnotation,
+                clazz,
+                LocatedIdentifiedAnnotation.Type.CLASS,
+                LocatedIdentifiedAnnotation.Type.CLASS));
+      }
+    }
+
+    return identifiedAnnotations;
   }
 }

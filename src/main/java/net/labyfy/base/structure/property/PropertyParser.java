@@ -15,12 +15,8 @@ import java.lang.reflect.Method;
 @Singleton
 public class PropertyParser {
 
-  private final AnnotationCollector annotationCollector;
-
   @Inject
-  private PropertyParser(AnnotationCollector annotationCollector) {
-    this.annotationCollector = annotationCollector;
-  }
+  private PropertyParser() {}
 
   public Property.Base parse(LocatedIdentifiedAnnotation locatedIdentifiedAnnotation) {
     Multimap<Class<? extends Annotation>, LocatedIdentifiedAnnotation> identifiers =
@@ -28,16 +24,13 @@ public class PropertyParser {
 
     if (locatedIdentifiedAnnotation.getType() == LocatedIdentifiedAnnotation.Type.CLASS) {
       Class clazz = locatedIdentifiedAnnotation.getLocation();
-
-      this.annotationCollector
-          .getTransitiveAnnotations(clazz)
+      AnnotationCollector.getTransitiveAnnotations(clazz)
           .forEach(
               annotation ->
                   identifiers.put(
-                      this.annotationCollector.getRealAnnotationClass(annotation),
+                      AnnotationCollector.getRealAnnotationClass(annotation),
                       new LocatedIdentifiedAnnotation(
-                          this.annotationCollector
-                              .getRealAnnotationClass(annotation)
+                          AnnotationCollector.getRealAnnotationClass(annotation)
                               .getDeclaredAnnotation(Identifier.class),
                           annotation,
                           clazz,
@@ -45,15 +38,13 @@ public class PropertyParser {
                           LocatedIdentifiedAnnotation.Type.CLASS)));
 
       for (Method method : clazz.getDeclaredMethods()) {
-        this.annotationCollector
-            .getTransitiveAnnotations(method)
+        AnnotationCollector.getTransitiveAnnotations(method)
             .forEach(
                 annotation ->
                     identifiers.put(
-                        this.annotationCollector.getRealAnnotationClass(annotation),
+                        AnnotationCollector.getRealAnnotationClass(annotation),
                         new LocatedIdentifiedAnnotation(
-                            this.annotationCollector
-                                .getRealAnnotationClass(annotation)
+                            AnnotationCollector.getRealAnnotationClass(annotation)
                                 .getDeclaredAnnotation(Identifier.class),
                             annotation,
                             method,
@@ -64,30 +55,26 @@ public class PropertyParser {
     } else if (locatedIdentifiedAnnotation.getType() == LocatedIdentifiedAnnotation.Type.METHOD) {
       Method method = locatedIdentifiedAnnotation.getLocation();
 
-      this.annotationCollector
-          .getTransitiveAnnotations(method)
+      AnnotationCollector.getTransitiveAnnotations(method)
           .forEach(
               annotation ->
                   identifiers.put(
-                      this.annotationCollector.getRealAnnotationClass(annotation),
+                      AnnotationCollector.getRealAnnotationClass(annotation),
                       new LocatedIdentifiedAnnotation(
-                          this.annotationCollector
-                              .getRealAnnotationClass(annotation)
+                          AnnotationCollector.getRealAnnotationClass(annotation)
                               .getDeclaredAnnotation(Identifier.class),
                           annotation,
                           method,
                           LocatedIdentifiedAnnotation.Type.METHOD,
                           LocatedIdentifiedAnnotation.Type.METHOD)));
 
-      this.annotationCollector
-          .getTransitiveAnnotations(method.getDeclaringClass())
+      AnnotationCollector.getTransitiveAnnotations(method.getDeclaringClass())
           .forEach(
               annotation ->
                   identifiers.put(
-                      this.annotationCollector.getRealAnnotationClass(annotation),
+                      AnnotationCollector.getRealAnnotationClass(annotation),
                       new LocatedIdentifiedAnnotation(
-                          this.annotationCollector
-                              .getRealAnnotationClass(annotation)
+                          AnnotationCollector.getRealAnnotationClass(annotation)
                               .getDeclaredAnnotation(Identifier.class),
                           annotation,
                           method,

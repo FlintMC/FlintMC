@@ -1,22 +1,20 @@
-package net.labyfy.inject;
+package net.labyfy.component.initializer.inject;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Key;
+import com.google.common.base.Preconditions;
+import com.google.inject.*;
 import com.google.inject.name.Names;
-import net.labyfy.version.VersionProvider;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class BindInitializationModule extends AbstractModule {
+public class InitializationModule extends AbstractModule {
 
   private final Collection<String> searchingPackages;
   private final AtomicReference<Injector> injectorHolder;
   private final Map<String, String> launchArguments;
 
-  private BindInitializationModule(
+  private InitializationModule(
       Collection<String> searchingPackages,
       AtomicReference<Injector> injectorHolder,
       Map<String, String> launchArguments) {
@@ -28,10 +26,10 @@ public class BindInitializationModule extends AbstractModule {
   protected void configure() {
     this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(this.launchArguments);
     this.bind(Key.get(AtomicReference.class, Names.named("injectorReference")))
-            .toInstance(this.injectorHolder);
+        .toInstance(this.injectorHolder);
 
-    VersionProvider labyVersionProvider = VersionProvider.create(launchArguments);
-    System.out.println(this.searchingPackages);
+//    LabyVersionProvider labyVersionProvider = LabyVersionProvider.create(launchArguments);
+//    this.bind(LabyVersion.class).toProvider(labyVersionProvider::getMinecraftVersion);
 //    TypeSearcher typeSearcher = TypeSearcher.create(labyVersionProvider.getMinecraftVersion(), Launch.classLoader);
 //    typeSearcher.getSearchingPackages().addAll(this.searchingPackages);
 //
@@ -39,10 +37,13 @@ public class BindInitializationModule extends AbstractModule {
 //    this.bind(LabyVersionProvider.class).toInstance(labyVersionProvider);
   }
 
-  public static BindInitializationModule create(
+  public static InitializationModule create(
       Collection<String> searchingPackages,
       AtomicReference<Injector> injectorHolder,
       Map<String, String> launchArguments) {
-    return new BindInitializationModule(searchingPackages, injectorHolder, launchArguments);
+    Preconditions.checkNotNull(searchingPackages);
+    Preconditions.checkNotNull(injectorHolder);
+    Preconditions.checkNotNull(launchArguments);
+    return new InitializationModule(searchingPackages, injectorHolder, launchArguments);
   }
 }
