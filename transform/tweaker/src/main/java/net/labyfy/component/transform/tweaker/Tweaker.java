@@ -38,7 +38,7 @@ public class Tweaker implements ITweaker {
       this.prepareLaunchClassLoader();
       launchClassLoader.registerTransformer(Transformer.class.getName());
 
-      Class<?> aClass = launchClassLoader.findClass("net.labyfy.component.transform.tweaker.LabyEntryPoint");
+      Class<?> aClass = launchClassLoader.findClass("net.labyfy.component.transform.tweaker.EntryPoint");
       System.out.println(aClass.getClassLoader());
       aClass.getDeclaredMethod("launch", Map.class).invoke(null, this.launchArguments);
     } catch (Exception ex) {
