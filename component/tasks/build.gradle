@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'net.labyfy.versioned'
+group 'net.labyfy.component'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
@@ -13,6 +13,8 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:transform:tweaker')
+    compile project(':component:base')
+    compile 'com.google.inject:guice:4.0'
+    compile 'org.eclipse.collections:eclipse-collections:8.2.1'
     compile fileTree('libraries')
 }
