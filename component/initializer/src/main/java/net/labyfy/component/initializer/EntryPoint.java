@@ -5,6 +5,7 @@ import com.google.inject.*;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javafx.application.Platform;
 import net.labyfy.base.structure.service.ServiceRepository;
@@ -13,6 +14,7 @@ import net.labyfy.component.initializer.inject.LabyInjectionInitializer;
 
 public class EntryPoint {
 
+  private static final ReentrantLock lock = new ReentrantLock();
   private static Injector injector;
   private static Queue<Class> initialize = new LinkedBlockingQueue<>();
   private static Thread updateThread;
@@ -29,11 +31,11 @@ public class EntryPoint {
             () -> {
               while (true) {
                 try {
+                  while (!initialize.isEmpty()) {
+                    Class poll = initialize.poll();
+                    injector.getInstance(ServiceRepository.class).notifyClassLoaded(poll);
+                  }
                   synchronized (EntryPoint.class) {
-                    while (!initialize.isEmpty()) {
-                      Class poll = initialize.poll();
-                      injector.getInstance(ServiceRepository.class).notifyClassLoaded(poll);
-                    }
                     EntryPoint.class.wait();
                   }
                 } catch (InterruptedException e) {
@@ -46,10 +48,13 @@ public class EntryPoint {
   }
 
   public static void notifyService(Class clazz) {
-    if (updateThread == null) return;
-    synchronized (EntryPoint.class) {
-      initialize.add(clazz);
-      EntryPoint.class.notify();
+    initialize.add(clazz);
+    if (!(lock.isLocked() && !lock.isHeldByCurrentThread())) {
+      synchronized (EntryPoint.class) {
+        if (updateThread != null) {
+          EntryPoint.class.notify();
+        }
+      }
     }
   }
 }

@@ -41,9 +41,6 @@ public class LabyTransformer implements IClassTransformer {
   }
 
   public static void notifyService(Class clazz) {
-    if(clazz.getName().endsWith("Test")){
-      System.out.println(clazz);
-    }
     try {
       Launch.classLoader
           .loadClass("net.labyfy.component.initializer.EntryPoint")

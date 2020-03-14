@@ -1,8 +1,8 @@
 package net.labyfy.component.tasks;
 
 import com.google.inject.Injector;
-import net.labyfy.component.tasks.property.TaskBody;
-import net.labyfy.component.tasks.property.TaskBodyPriority;
+import net.labyfy.component.tasks.subproperty.TaskBody;
+import net.labyfy.component.tasks.subproperty.TaskBodyPriority;
 import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;

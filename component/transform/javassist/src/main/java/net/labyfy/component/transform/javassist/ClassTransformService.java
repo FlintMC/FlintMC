@@ -4,8 +4,12 @@ import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
 
+import javax.inject.Singleton;
+
+@Singleton
 @Service(ClassTransform.class)
 public class ClassTransformService implements ServiceHandler {
 
-  public void discover(Identifier.Base property) {}
+  public void discover(Identifier.Base property) {
+  }
 }

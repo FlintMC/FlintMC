@@ -3,7 +3,7 @@ package net.labyfy.component.tasks;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.property.Property;
-import net.labyfy.component.tasks.property.TaskBody;
+import net.labyfy.component.tasks.subproperty.TaskBody;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
