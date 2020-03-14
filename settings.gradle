@@ -7,4 +7,6 @@ include 'initializer'
 include 'tasks'
 include 'tasks:tasks-1.5.1'
 findProject(':tasks:tasks-1.5.1')?.name = 'tasks-1.5.1'
+include 'transform:javassist'
+findProject(':transform:javassist')?.name = 'javassist'
 
