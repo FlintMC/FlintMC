@@ -1,8 +1,8 @@
-package net.labyfy.base.task;
+package net.labyfy.component.tasks;
 
 import com.google.inject.Injector;
-import net.labyfy.base.task.property.TaskBody;
-import net.labyfy.base.task.property.TaskBodyPriority;
+import net.labyfy.component.tasks.property.TaskBody;
+import net.labyfy.component.tasks.property.TaskBodyPriority;
 import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;
@@ -37,7 +37,7 @@ public class TaskService implements ServiceHandler {
                   .findAny()
                   .orElse(null);
       taskExecutor.register(
-          task.value(),
+          task,
           taskPriority == null ? 0 : taskPriority.value(),
           taskBody.getLocatedIdentifiedAnnotation().getLocation());
     }

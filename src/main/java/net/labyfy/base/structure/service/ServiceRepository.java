@@ -35,22 +35,20 @@ public class ServiceRepository {
 
   public ServiceRepository notifyClassLoaded(Class<?> clazz) {
     Collection<Identifier.Base> identifier = this.identifierParser.parse(clazz);
-
     if (ServiceHandler.class.isAssignableFrom(clazz)) {
       if (clazz.isAnnotationPresent(Service.class)) {
         this.register(((Class<? extends ServiceHandler>) clazz));
       }
-    }
-
-    for (Identifier.Base base : identifier) {
-      for (ServiceHandler serviceHandler :
-          this.serviceHandlers.get(
-              AnnotationCollector.getRealAnnotationClass(
-                  base.getLocatedIdentifiedAnnotation().getAnnotation()))) {
-        serviceHandler.discover(base);
+    } else {
+      for (Identifier.Base base : identifier) {
+        for (ServiceHandler serviceHandler :
+            this.serviceHandlers.get(
+                AnnotationCollector.getRealAnnotationClass(
+                    base.getLocatedIdentifiedAnnotation().getAnnotation()))) {
+          serviceHandler.discover(base);
+        }
       }
     }
-
     return this;
   }
 }

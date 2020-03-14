@@ -8,10 +8,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Identifier
+@Target(ElementType.TYPE)
 @Transitive
+@Identifier
 public @interface AssistedFactory {
   Class<?> value();
 }

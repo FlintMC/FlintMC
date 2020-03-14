@@ -4,4 +4,7 @@ findProject(':transform:tweaker')?.name = 'tweaker'
 include 'versioned:labyfy-1.15.1'
 findProject(':versioned:labyfy-1.15.1')?.name = 'labyfy-1.15.1'
 include 'initializer'
+include 'tasks'
+include 'tasks:tasks-1.5.1'
+findProject(':tasks:tasks-1.5.1')?.name = 'tasks-1.5.1'
 

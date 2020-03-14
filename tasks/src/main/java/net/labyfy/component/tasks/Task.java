@@ -1,9 +1,9 @@
-package net.labyfy.base.task;
+package net.labyfy.component.tasks;
 
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.property.Property;
-import net.labyfy.base.task.property.TaskBody;
+import net.labyfy.component.tasks.property.TaskBody;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,4 +18,6 @@ public @interface Task {
   String value();
 
   Class<? extends TaskExecutor> executor() default TaskExecutor.class;
+
+  boolean async() default true;
 }
