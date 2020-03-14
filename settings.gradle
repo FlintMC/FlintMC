@@ -1,12 +1,25 @@
 rootProject.name = 'labyfy'
-include 'transform:tweaker'
-findProject(':transform:tweaker')?.name = 'tweaker'
+include 'component:transform:tweaker'
+findProject(':component:transform:tweaker')?.name = 'tweaker'
+
+include 'component:transform:javassist'
+findProject(':component:transform:javassist')?.name = "javassist"
+
 include 'versioned:labyfy-1.15.1'
 findProject(':versioned:labyfy-1.15.1')?.name = 'labyfy-1.15.1'
-include 'initializer'
-include 'tasks'
-include 'tasks:tasks-1.5.1'
-findProject(':tasks:tasks-1.5.1')?.name = 'tasks-1.5.1'
-include 'transform:javassist'
-findProject(':transform:javassist')?.name = 'javassist'
+
+include 'component:initializer'
+findProject(':component:initializer')?.name = 'initializer'
+
+include 'component:tasks'
+findProject(':component::tasks')?.name = 'tasks'
+
+include 'component:tasks:defaulttasks-1.5.1'
+findProject(':component:tasks:defaulttasks-1.5.1')?.name = 'defaulttasks-1.5.1'
+
+include 'component:base'
+findProject(':component:base')?.name = "base"
+
+include 'component:tasks:default:default-tasks-1.15.1'
+findProject(':component:tasks:default:default-tasks-1.15.1')?.name = 'default-tasks-1.15.1'
 

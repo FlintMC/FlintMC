@@ -1,7 +1,9 @@
 package net.labyfy.mod;
 
-import net.labyfy.base.task.Task;
-import net.labyfy.base.task.Tasks;
+
+import net.labyfy.component.tasks.Task;
+import net.labyfy.component.tasks.subproperty.TaskBody;
+import net.labyfy.component.tasks.Tasks;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -17,6 +19,11 @@ public class ModLoader {
   @Inject
   private ModLoader(@Named("modsFolder") File modsFolder) {
     this.modsFolder = modsFolder;
+  }
+
+  @TaskBody
+  private void load(){
+    System.out.println("Load mods...");
   }
 
 }

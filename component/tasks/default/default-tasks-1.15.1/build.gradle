@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'net.labyfy.versioned'
+group 'net.labyfy.component.tasks'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
@@ -13,6 +13,4 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:transform:tweaker')
-    compile fileTree('libraries')
 }
