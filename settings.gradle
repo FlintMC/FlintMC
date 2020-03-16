@@ -25,3 +25,6 @@ findProject(':component:tasks:default:default-tasks-1.15.1')?.name = 'default-ta
 include 'component:transform:minecraft'
 findProject(':component:transform:minecraft')?.name = 'minecraft'
 
+include 'component:assisted-inject'
+findProject(':component:assisted-inject')?.name = 'assisted-inject'
+
