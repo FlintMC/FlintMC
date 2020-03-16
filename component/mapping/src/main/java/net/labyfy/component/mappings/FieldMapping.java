@@ -1,4 +1,4 @@
-package net.labyfy.component.transform.tweaker.mapping;
+package net.labyfy.component.mappings;
 
 import java.lang.reflect.Field;
 
@@ -25,10 +25,9 @@ public class FieldMapping {
   }
 
   public static FieldMapping create(
-          ClassMapping labyClassMapping, String obfuscatedFieldName, String unObfuscatedFieldName) {
+      ClassMapping labyClassMapping, String obfuscatedFieldName, String unObfuscatedFieldName) {
     return new FieldMapping(labyClassMapping, obfuscatedFieldName, unObfuscatedFieldName);
   }
-
 
   public ClassMapping getClassMapping() {
     return this.labyClassMapping;

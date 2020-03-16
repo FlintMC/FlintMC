@@ -15,6 +15,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile project(':')
     compile project(':component:initializer')
+    compile project(':component:mapping')
     compile fileTree('libraries') //Will be replaced with artifactory
     compile 'org.ow2.asm:asm:7.2-beta'
     compile 'org.ow2.asm:asm-tree:7.2-beta'

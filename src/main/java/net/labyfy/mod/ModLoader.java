@@ -1,5 +1,6 @@
 package net.labyfy.mod;
 
+import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.subproperty.TaskBody;
 import net.labyfy.component.tasks.Tasks;
@@ -18,7 +19,8 @@ public class ModLoader {
   private final File modsFolder;
 
   @Inject
-  private ModLoader(@Named("modsFolder") File modsFolder) {
+  private ModLoader(
+          @Named("modsFolder") File modsFolder) {
     this.modsFolder = modsFolder;
   }
 

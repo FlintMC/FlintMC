@@ -1,8 +1,14 @@
-package net.labyfy.component.transform.tweaker.mapping;
+package net.labyfy.component.mappings;
 
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import net.labyfy.component.inject.InjectionHolder;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
-public class MethodMapping  {
+public class MethodMapping {
 
   private final ClassMapping classMapping;
   private final String obfuscatedMethodName;
@@ -29,6 +35,16 @@ public class MethodMapping  {
     this.unObfuscatedMethodName = unObfuscatedMethodName;
     this.unObfuscatedMethodIdentifier = unObfuscatedMethodIdentifier;
     this.unObfuscatedMethodDescription = unObfuscatedMethodDescription;
+  }
+
+  public String getName() {
+    if (InjectionHolder.getInstance()
+        .getInjector()
+        .getInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
+      return this.obfuscatedMethodName;
+    } else {
+      return this.unObfuscatedMethodName;
+    }
   }
 
   public String getObfuscatedMethodName() {
@@ -73,8 +89,64 @@ public class MethodMapping  {
         unObfuscatedMethodDescription);
   }
 
+  public <T> T invokeStatic(Object... parameters) {
+
+    return this.invoke(null, parameters);
+  }
+
+  public <T> T invoke(Object instance, Object... parameters) {
+    try {
+      return (T) this.getMethod().invoke(instance, parameters);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   public ClassMapping getClassMapping() {
     return this.classMapping;
+  }
+
+  public Method getMethod() {
+    if (this.cached == null) {
+      if (this.unObfuscatedMethodName.equals(this.obfuscatedMethodName)
+          && this.unObfuscatedMethodDescription.equals(this.obfuscatedMethodDescription)) {
+        for (Method declaredMethod : this.classMapping.get().getDeclaredMethods()) {
+          if (declaredMethod.getName().equals(this.obfuscatedMethodName)
+              && this.getMethodDescriptor(declaredMethod)
+                  .startsWith(this.obfuscatedMethodDescription)) {
+            declaredMethod.setAccessible(true);
+            this.cached = declaredMethod;
+            break;
+          }
+        }
+      }
+
+      if (InjectionHolder.getInstance()
+          .getInjector()
+          .getInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
+        for (Method declaredMethod : this.classMapping.get().getDeclaredMethods()) {
+          if (declaredMethod.getName().equals(this.obfuscatedMethodName)
+              && this.getMethodDescriptor(declaredMethod)
+                  .equals(this.obfuscatedMethodDescription)) {
+            declaredMethod.setAccessible(true);
+            this.cached = declaredMethod;
+            break;
+          }
+        }
+      } else {
+        for (Method declaredMethod : this.classMapping.get().getDeclaredMethods()) {
+          if (declaredMethod.getName().equals(this.unObfuscatedMethodName)
+              && this.getMethodDescriptor(declaredMethod)
+                  .equals(this.unObfuscatedMethodDescription)) {
+            declaredMethod.setAccessible(true);
+            this.cached = declaredMethod;
+            break;
+          }
+        }
+      }
+    }
+    return this.cached;
   }
 
   private String getDescriptorForClass(final Class c) {
@@ -103,6 +175,10 @@ public class MethodMapping  {
     this.unObfuscatedMethodIdentifier = unObfuscatedMethodIdentifier;
     this.classMapping.unObfuscatedMethodMappings.put(unObfuscatedMethodIdentifier, this);
     return this;
+  }
+
+  public boolean isDefault() {
+    return Objects.equals(this.obfuscatedMethodIdentifier, this.unObfuscatedMethodIdentifier);
   }
 
   private String getMethodDescriptor(Method m) {

@@ -1,7 +1,7 @@
 package net.labyfy.component.transform.tweaker;
 
 import com.google.common.base.Preconditions;
-import net.labyfy.component.transform.tweaker.mapping.ClassMappingProvider;
+import net.labyfy.component.mappings.ClassMappingProvider;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
