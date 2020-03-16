@@ -1,15 +1,12 @@
-package net.labyfy.component.assistedinject;
+package net.labyfy.component.inject.assisted;
 
-import com.google.inject.Module;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.google.inject.AbstractModule;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.inject.InjectionHolder;
 
 import javax.inject.Singleton;
-import java.lang.annotation.Annotation;
 
 @Singleton
 @Service(AssistedFactory.class)
