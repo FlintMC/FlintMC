@@ -38,6 +38,7 @@ public class MinecraftTransformerService implements ServiceHandler {
     this.classTransformers.add(
         this.injector.getInstance(
             property
+                .getProperty()
                 .getLocatedIdentifiedAnnotation()
                 .<Class<? extends IClassTransformer>>getLocation()));
   }

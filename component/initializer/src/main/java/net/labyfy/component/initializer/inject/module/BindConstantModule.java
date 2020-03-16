@@ -18,19 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
-    this.bindNamedFilePath("minotarUrl", "https://minotar.net/helm/%s/16.png");
-    this.bindNamedFilePath("labyModVersion", "4.0.0");
-
-    this.bindNamedFilePath("minecraftRoot", "./");
-
-    this.bindNamedFilePath("labyModRoot", "./LabyMod4");
-
-    this.bindNamedFilePath("labyModAddons", "./LabyMod4/addons");
-
-
-    this.bind(EventBus.class).toInstance(new EventBus("labymod"));
-    this.bind(ExecutorService.class).to(ScheduledExecutorService.class);
-    this.bind(ScheduledExecutorService.class).toInstance(Executors.newScheduledThreadPool(0));
+    this.bindNamedFilePath("modsFolder", "./Labyfy/mods");
   }
 
   private void bindNamedFilePath(String name, String path) {

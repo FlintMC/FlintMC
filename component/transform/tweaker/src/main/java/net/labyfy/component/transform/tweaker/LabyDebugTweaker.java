@@ -1,15 +1,23 @@
 package net.labyfy.component.transform.tweaker;
 
 import com.google.common.reflect.ClassPath;
+import com.google.inject.Injector;
 import net.labyfy.base.structure.service.Service;
+import net.labyfy.component.initializer.inject.InitializationModule;
+import net.labyfy.component.initializer.inject.module.BindConstantModule;
+import net.labyfy.component.initializer.inject.module.PostConstructModule;
+import net.labyfy.component.inject.InjectionHolder;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class LabyDebugTweaker implements ITweaker {
@@ -50,11 +58,13 @@ public class LabyDebugTweaker implements ITweaker {
       for (Class clazz : classes) {
         Class.forName(clazz.getName(), true, launchClassLoader);
       }
-    } catch (IOException
-        | ClassNotFoundException
-        | IllegalAccessException
-        | InstantiationException
-        | InvocationTargetException e) {
+
+      Class<?> injectionHolder = Launch.classLoader.loadClass(InjectionHolder.class.getName());
+      Method enableIngameState = injectionHolder.getDeclaredMethod("enableIngameState");
+      enableIngameState.invoke(null);
+      System.out.println(injectionHolder + " " +injectionHolder.getClassLoader());
+
+    } catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
       e.printStackTrace();
     }
   }

@@ -4,9 +4,6 @@ import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
-import net.labyfy.base.structure.service.ServiceRepository;
-import net.labyfy.component.initializer.inject.LabyInjectionInitializer;
-import net.labyfy.inject.InjectionHolder;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 

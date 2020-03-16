@@ -15,7 +15,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
 
   public void discover(Identifier.Base property) {
     System.out.println(
-        "Discovered class transformer " + property.getLocatedIdentifiedAnnotation().getLocation());
+        "Discovered class transformer " + property.getProperty().getLocatedIdentifiedAnnotation().getLocation());
   }
 
   public byte[] transform(String s, String s1, byte[] bytes) {

@@ -31,4 +31,6 @@ findProject(':component:assisted-inject')?.name = 'assisted-inject'
 
 include 'component:mapping'
 findProject(':component:mapping')?.name = 'mapping'
+include 'component:inject'
+findProject(':component:inject')?.name = 'inject'
 

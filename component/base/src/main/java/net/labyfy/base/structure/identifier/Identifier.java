@@ -19,11 +19,9 @@ public @interface Identifier {
   Property[] optionalProperties() default {};
 
   class Base {
-    private final LocatedIdentifiedAnnotation locatedIdentifiedAnnotation;
     private final Property.Base property;
 
-    public Base(LocatedIdentifiedAnnotation locatedIdentifiedAnnotation, Property.Base property) {
-      this.locatedIdentifiedAnnotation = locatedIdentifiedAnnotation;
+    public Base(Property.Base property) {
       this.property = property;
     }
 
@@ -31,8 +29,5 @@ public @interface Identifier {
       return this.property;
     }
 
-    public LocatedIdentifiedAnnotation getLocatedIdentifiedAnnotation() {
-      return this.locatedIdentifiedAnnotation;
-    }
   }
 }

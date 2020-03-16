@@ -43,7 +43,7 @@ public class ServiceRepository {
         for (ServiceHandler serviceHandler :
             this.serviceHandlers.get(
                 AnnotationCollector.getRealAnnotationClass(
-                    base.getLocatedIdentifiedAnnotation().getAnnotation()))) {
+                    base.getProperty().getLocatedIdentifiedAnnotation().getAnnotation()))) {
           serviceHandler.discover(base);
         }
       }

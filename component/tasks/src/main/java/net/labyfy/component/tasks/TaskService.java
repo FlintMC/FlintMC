@@ -1,13 +1,13 @@
 package net.labyfy.component.tasks;
 
 import com.google.inject.Injector;
-import net.labyfy.component.tasks.subproperty.TaskBody;
-import net.labyfy.component.tasks.subproperty.TaskBodyPriority;
 import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
+import net.labyfy.component.tasks.subproperty.TaskBody;
+import net.labyfy.component.tasks.subproperty.TaskBodyPriority;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,16 +17,15 @@ import java.util.Collection;
 @Singleton
 public class TaskService implements ServiceHandler {
 
-  private final Injector injector;
+  @Inject private Injector injector;
 
   @Inject
-  private TaskService(Injector injector) {
-    this.injector = injector;
-  }
+  private TaskService() {}
 
   public void discover(Identifier.Base property) {
-    Task task = (Task) property.getLocatedIdentifiedAnnotation().getAnnotation();
-    TaskExecutor taskExecutor = this.injector.getInstance(task.executor());
+    Task task = (Task) property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+    TaskExecutor taskExecutor =
+            injector.getInstance(task.executor());
     Collection<Property.Base> taskBodies = property.getProperty().getSubProperties(TaskBody.class);
     for (Property.Base taskBody : taskBodies) {
       TaskBodyPriority taskPriority =

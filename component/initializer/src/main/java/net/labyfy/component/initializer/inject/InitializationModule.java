@@ -10,15 +10,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class InitializationModule extends AbstractModule {
 
-  private final Collection<String> searchingPackages;
   private final AtomicReference<Injector> injectorHolder;
   private final Map<String, String> launchArguments;
 
   private InitializationModule(
-      Collection<String> searchingPackages,
-      AtomicReference<Injector> injectorHolder,
-      Map<String, String> launchArguments) {
-    this.searchingPackages = searchingPackages;
+          AtomicReference<Injector> injectorHolder,
+          Map<String, String> launchArguments) {
     this.injectorHolder = injectorHolder;
     this.launchArguments = launchArguments;
   }
@@ -37,13 +34,13 @@ public class InitializationModule extends AbstractModule {
 //    this.bind(LabyVersionProvider.class).toInstance(labyVersionProvider);
   }
 
+
+
   public static InitializationModule create(
-      Collection<String> searchingPackages,
-      AtomicReference<Injector> injectorHolder,
-      Map<String, String> launchArguments) {
-    Preconditions.checkNotNull(searchingPackages);
+          AtomicReference<Injector> injectorHolder,
+          Map<String, String> launchArguments) {
     Preconditions.checkNotNull(injectorHolder);
     Preconditions.checkNotNull(launchArguments);
-    return new InitializationModule(searchingPackages, injectorHolder, launchArguments);
+    return new InitializationModule(injectorHolder, launchArguments);
   }
 }

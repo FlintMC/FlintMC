@@ -36,7 +36,7 @@ public class IdentifierParser {
 
     for (LocatedIdentifiedAnnotation standaloneIdentifier : standaloneIdentifiers) {
       Property.Base parse = this.propertyParser.parse(standaloneIdentifier);
-      if (parse != null) identifiers.add(new Identifier.Base(standaloneIdentifier, parse));
+      if (parse != null) identifiers.add(new Identifier.Base(parse));
     }
 
     return identifiers;
