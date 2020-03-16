@@ -4,13 +4,9 @@ import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import net.labyfy.component.tasks.TaskExecutor;
-import net.labyfy.component.tasks.TaskService;
-import net.labyfy.component.tasks.Tasks;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class InjectionHolder {

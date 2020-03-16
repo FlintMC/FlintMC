@@ -7,5 +7,6 @@ import java.util.Map;
 @FunctionalInterface
 public interface MappingParser {
 
-  Collection<ClassMapping> parse(Map<String, InputStream> input);
+  Collection<ClassMapping> parse(
+      ClassMappingProvider classMappingProvider, Map<String, InputStream> input);
 }

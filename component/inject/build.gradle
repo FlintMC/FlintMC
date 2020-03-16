@@ -14,5 +14,4 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'com.google.inject:guice:4.0'
-    compile project(':component:tasks')
 }
