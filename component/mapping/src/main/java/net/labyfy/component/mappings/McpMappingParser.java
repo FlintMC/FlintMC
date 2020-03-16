@@ -3,17 +3,12 @@ package net.labyfy.component.mappings;
 import com.google.common.collect.Maps;
 
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class McpMappingParser implements MappingParser {
 
-  private final Map<String, ClassMapping> obfuscatedClassMappings = Maps.newConcurrentMap();
-  private final Map<String, ClassMapping> unObfuscatedClassMappings = Maps.newConcurrentMap();
   private ClassMappingProvider classMappingProvider;
 
   public Collection<ClassMapping> parse(
@@ -26,6 +21,7 @@ public class McpMappingParser implements MappingParser {
 
     Map<String, String> methodIdentifiers = this.parseIdentifiers(input.get("methods.csv"));
     Map<String, String> fieldIdentifiers = this.parseIdentifiers(input.get("fields.csv"));
+    Collection<ClassMapping> classMappings = new HashSet<>();
 
     Scanner scanner = new Scanner(input.get("joined.tsrg"));
     ClassMapping lastClassMapping = null;
@@ -35,7 +31,8 @@ public class McpMappingParser implements MappingParser {
       if (!line.startsWith("\t")) {
         line = line.replace('/', '.');
         String[] s = line.split(" ");
-        lastClassMapping = this.add(s[0], s[1]);
+        lastClassMapping = ClassMapping.create(classMappingProvider, s[0], s[1]);
+        classMappings.add(lastClassMapping);
       } else if (line.matches("(\\t)(.*)( )(.*)( )(.*)")) {
         String[] properties = line.replaceFirst("\t", "").split(" ");
         String unique = properties[2];
@@ -54,7 +51,7 @@ public class McpMappingParser implements MappingParser {
       }
     }
 
-    for (ClassMapping mapping : this.obfuscatedClassMappings.values()) {
+    for (ClassMapping mapping : classMappings) {
       for (MethodMapping methodMapping : mapping.getMethods()) {
         methodMapping.setUnObfuscatedMethodDescription(
             this.translateMethodDescription(methodMapping.getObfuscatedMethodDescription()));
@@ -72,7 +69,7 @@ public class McpMappingParser implements MappingParser {
       }
     }
 
-    return null;
+    return classMappings;
   }
 
   public String translateMethodDescription(String obfDesc) {
@@ -111,14 +108,6 @@ public class McpMappingParser implements MappingParser {
 
     unObfDesc.append(")").append(methodType);
     return unObfDesc.toString();
-  }
-
-  private ClassMapping add(String obfuscatedName, String unObfuscatedName) {
-    ClassMapping classMapping =
-        ClassMapping.create(classMappingProvider, obfuscatedName, unObfuscatedName);
-    this.unObfuscatedClassMappings.put(unObfuscatedName, classMapping);
-    this.obfuscatedClassMappings.put(obfuscatedName, classMapping);
-    return classMapping;
   }
 
   private Map<String, String> parseIdentifiers(InputStream input) {

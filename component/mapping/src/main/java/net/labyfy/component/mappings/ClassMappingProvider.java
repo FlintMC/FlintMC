@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,19 +20,21 @@ public class ClassMappingProvider {
   private final Map<String, ClassMapping> unObfuscatedClassMappings = Maps.newConcurrentMap();
 
   @Inject
-  private ClassMappingProvider() {
+  private ClassMappingProvider(@Named("launchArguments") Map launchArguments) {
     McpMappingParser mcpMappingParser = new McpMappingParser();
     try {
+      String version = (String) launchArguments.get("--version");
+
       Collection<ClassMapping> parse =
           mcpMappingParser.parse(
               this,
               ImmutableMap.of(
                   "methods.csv",
-                  new FileInputStream("./Labyfy/assets/methods.csv"),
+                  new FileInputStream("./Labyfy/assets/" + version + "/methods.csv"),
                   "fields.csv",
-                  new FileInputStream("./Labyfy/assets/fields.csv"),
+                  new FileInputStream("./Labyfy/assets/" + version + "/fields.csv"),
                   "joined.tsrg",
-                  new FileInputStream("./Labyfy/assets/joined.tsrg")));
+                  new FileInputStream("./Labyfy/assets/" + version + "/joined.tsrg")));
 
       for (ClassMapping classMapping : parse) {
         this.obfuscatedClassMappings.put(classMapping.getObfuscatedName(), classMapping);
