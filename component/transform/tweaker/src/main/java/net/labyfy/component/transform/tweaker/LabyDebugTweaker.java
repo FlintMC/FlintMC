@@ -33,20 +33,19 @@ public class LabyDebugTweaker implements ITweaker {
           .newInstance(this.launchArguments);
 
       Collection<Class> classes = new HashSet<>();
+      collect.forEach(
+          clazz -> {
+            try {
 
-      collect.stream()
-          .forEach(
-              clazz -> {
-                try {
-                  if (clazz.isAnnotationPresent(Service.class)) {
-                    Class.forName(clazz.getName(), true, launchClassLoader);
-                  } else {
-                    classes.add(clazz);
-                  }
-                } catch (Exception e) {
-                  e.printStackTrace();
-                }
-              });
+              if (clazz.isAnnotationPresent(Service.class)) {
+                Class.forName(clazz.getName(), true, launchClassLoader);
+              } else {
+                classes.add(clazz);
+              }
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          });
 
       for (Class clazz : classes) {
         Class.forName(clazz.getName(), true, launchClassLoader);
