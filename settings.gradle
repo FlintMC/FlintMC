@@ -22,9 +22,13 @@ findProject(':component:base')?.name = "base"
 
 include 'component:tasks:default:default-tasks-1.15.1'
 findProject(':component:tasks:default:default-tasks-1.15.1')?.name = 'default-tasks-1.15.1'
+
 include 'component:transform:minecraft'
 findProject(':component:transform:minecraft')?.name = 'minecraft'
 
 include 'component:assisted-inject'
 findProject(':component:assisted-inject')?.name = 'assisted-inject'
+
+include 'component:mapping'
+findProject(':component:mapping')?.name = 'mapping'
 
