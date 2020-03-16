@@ -1,4 +1,4 @@
-package net.labyfy.component.assistedinject;
+package net.labyfy.component.inject.assisted;
 
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;

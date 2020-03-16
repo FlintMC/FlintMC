@@ -26,6 +26,8 @@ public class TaskExecutor {
 
   @Inject
   protected TaskExecutor() {
+    InjectionHolder.getInstance()
+        .addInitializationListener(() -> execute(Tasks.PRE_MINECRAFT_INITIALIZE));
     this.methods =
         Multimaps.newListMultimap(
             new TreeMap<>((o1, o2) -> StringUtils.compare(o1.value(), o2.value())),

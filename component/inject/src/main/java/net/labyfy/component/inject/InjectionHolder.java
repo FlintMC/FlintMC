@@ -7,10 +7,13 @@ import com.google.inject.Module;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class InjectionHolder {
 
+  private final Collection<Runnable> initializationRunnables;
   private final Collection<Module> modules;
   private final AtomicReference<Injector> injectorReference;
 
@@ -19,6 +22,7 @@ public class InjectionHolder {
   }
 
   private InjectionHolder() {
+    this.initializationRunnables = new HashSet<>();
     this.modules = Sets.newConcurrentHashSet();
     this.injectorReference = new AtomicReference<>(null);
   }
@@ -47,12 +51,12 @@ public class InjectionHolder {
     return injectorReference;
   }
 
+  public void addInitializationListener(Runnable runnable){
+    this.initializationRunnables.add(runnable);
+  }
+
   public static void enableIngameState() {
-    System.out.println("Ingame state " + InjectionHolder.class.getClassLoader());
-    getInstance()
-        .getInjector()
-        .getInstance(TaskExecutor.class)
-        .execute(Tasks.PRE_MINECRAFT_INITIALIZE);
+    getInstance().initializationRunnables.forEach(Runnable::run);
   }
 
   public static InjectionHolder getInstance() {
