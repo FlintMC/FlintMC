@@ -33,8 +33,6 @@ public class ServiceRepository {
     this.identifierParser = identifierParser;
     this.serviceHandlers = HashMultimap.create();
     this.injectorReference = injectorReference;
-    Launch.classLoader.addTransformerExclusion("javassist");
-    Launch.classLoader.addTransformerExclusion("com.google.inject");
   }
 
   public ServiceRepository register(Class<? extends ServiceHandler> handler) {

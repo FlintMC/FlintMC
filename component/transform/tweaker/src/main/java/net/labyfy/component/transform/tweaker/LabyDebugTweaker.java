@@ -28,6 +28,8 @@ public class LabyDebugTweaker implements ITweaker {
 
   public void injectIntoClassLoader(LaunchClassLoader launchClassLoader) {
     try {
+      Launch.classLoader.addTransformerExclusion("javassist");
+      Launch.classLoader.addTransformerExclusion("com.google.inject");
 
       launchClassLoader.registerTransformer(
           "net.labyfy.component.transform.tweaker.LabyTransformer");
@@ -43,11 +45,11 @@ public class LabyDebugTweaker implements ITweaker {
       boot.invoke(null);
 
 
-      //      Class<?> injectionHolder =
-      // Launch.classLoader.loadClass(InjectionHolder.class.getName());
-      //      Method enableIngameState = injectionHolder.getDeclaredMethod("enableIngameState");
-      //      enableIngameState.invoke(null);
-      //      System.out.println(injectionHolder + " " + injectionHolder.getClassLoader());
+            Class<?> injectionHolder =
+       Launch.classLoader.loadClass(InjectionHolder.class.getName());
+            Method enableIngameState = injectionHolder.getDeclaredMethod("enableIngameState");
+            enableIngameState.invoke(null);
+            System.out.println(injectionHolder + " " + injectionHolder.getClassLoader());
 
     } catch (ClassNotFoundException
         | IllegalAccessException
