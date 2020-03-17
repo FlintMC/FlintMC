@@ -28,7 +28,6 @@ public class InjectionHolder {
   }
 
   public synchronized InjectionHolder addModules(Module... modules) {
-    System.out.println("Add");
     this.modules.addAll(Arrays.asList(modules));
     return this;
   }

@@ -30,8 +30,8 @@ public class LocatedIdentifiedAnnotation {
     return this.originalType;
   }
 
-  public Annotation getAnnotation() {
-    return this.annotation;
+  public <T extends Annotation> T getAnnotation() {
+    return (T) this.annotation;
   }
 
   public <T> T getLocation() {
@@ -64,9 +64,9 @@ public class LocatedIdentifiedAnnotation {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     LocatedIdentifiedAnnotation that = (LocatedIdentifiedAnnotation) o;
-    return Objects.equals(location, that.location) &&
-            type == that.type &&
-            originalType == that.originalType;
+    return Objects.equals(location, that.location)
+        && type == that.type
+        && originalType == that.originalType;
   }
 
   public int hashCode() {

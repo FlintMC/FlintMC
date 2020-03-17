@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
+import net.labyfy.component.inject.InjectionHolder;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -14,16 +15,13 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 
 @Singleton
-@Service(MinecraftTransformer.class)
+@Service(value = MinecraftTransformer.class, priority = -10)
 public class MinecraftTransformerService implements ServiceHandler {
 
-  private final Injector injector;
   private final Collection<IClassTransformer> classTransformers;
 
   @Inject
-  private MinecraftTransformerService(Injector injector)
-      throws NoSuchFieldException, IllegalAccessException {
-    this.injector = injector;
+  private MinecraftTransformerService() throws NoSuchFieldException, IllegalAccessException {
     this.classTransformers = this.getClassTransformers();
   }
 
@@ -36,10 +34,12 @@ public class MinecraftTransformerService implements ServiceHandler {
 
   public void discover(Identifier.Base property) {
     this.classTransformers.add(
-        this.injector.getInstance(
-            property
-                .getProperty()
-                .getLocatedIdentifiedAnnotation()
-                .<Class<? extends IClassTransformer>>getLocation()));
+        InjectionHolder.getInstance()
+            .getInjector()
+            .getInstance(
+                property
+                    .getProperty()
+                    .getLocatedIdentifiedAnnotation()
+                    .<Class<? extends IClassTransformer>>getLocation()));
   }
 }

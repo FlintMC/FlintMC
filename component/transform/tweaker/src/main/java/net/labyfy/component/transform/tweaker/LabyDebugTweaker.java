@@ -2,6 +2,8 @@ package net.labyfy.component.transform.tweaker;
 
 import com.google.common.reflect.ClassPath;
 import com.google.inject.Injector;
+import net.labyfy.base.structure.Initialize;
+import net.labyfy.base.structure.Initializer;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.component.initializer.inject.InitializationModule;
 import net.labyfy.component.initializer.inject.module.BindConstantModule;
@@ -26,11 +28,6 @@ public class LabyDebugTweaker implements ITweaker {
 
   public void injectIntoClassLoader(LaunchClassLoader launchClassLoader) {
     try {
-      Set<? extends Class<?>> collect =
-          ClassPath.from(ClassLoader.getSystemClassLoader()).getAllClasses().stream()
-              .filter(classInfo -> classInfo.getName().startsWith("net.labyfy"))
-              .map(ClassPath.ClassInfo::load)
-              .collect(Collectors.toSet());
 
       launchClassLoader.registerTransformer(
           "net.labyfy.component.transform.tweaker.LabyTransformer");
@@ -40,31 +37,23 @@ public class LabyDebugTweaker implements ITweaker {
           .getDeclaredConstructors()[0]
           .newInstance(this.launchArguments);
 
-      Collection<Class> classes = new HashSet<>();
-      collect.forEach(
-          clazz -> {
-            try {
 
-              if (clazz.isAnnotationPresent(Service.class)) {
-                Class.forName(clazz.getName(), true, launchClassLoader);
-              } else {
-                classes.add(clazz);
-              }
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          });
+      Class<?> initializerClass = Launch.classLoader.loadClass(Initializer.class.getName());
+      Method boot = initializerClass.getDeclaredMethod("boot");
+      boot.invoke(null);
 
-      for (Class clazz : classes) {
-        Class.forName(clazz.getName(), true, launchClassLoader);
-      }
 
-      Class<?> injectionHolder = Launch.classLoader.loadClass(InjectionHolder.class.getName());
-      Method enableIngameState = injectionHolder.getDeclaredMethod("enableIngameState");
-      enableIngameState.invoke(null);
-      System.out.println(injectionHolder + " " +injectionHolder.getClassLoader());
+      //      Class<?> injectionHolder =
+      // Launch.classLoader.loadClass(InjectionHolder.class.getName());
+      //      Method enableIngameState = injectionHolder.getDeclaredMethod("enableIngameState");
+      //      enableIngameState.invoke(null);
+      //      System.out.println(injectionHolder + " " + injectionHolder.getClassLoader());
 
-    } catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+    } catch (ClassNotFoundException
+        | IllegalAccessException
+        | InstantiationException
+        | InvocationTargetException
+        | NoSuchMethodException e) {
       e.printStackTrace();
     }
   }

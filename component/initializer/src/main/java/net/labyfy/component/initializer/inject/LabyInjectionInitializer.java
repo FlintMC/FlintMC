@@ -26,7 +26,6 @@ public class LabyInjectionInitializer {
   }
 
   private void init() {
-    System.out.println("init " + getClass().getClassLoader());
     this.createInjector();
   }
 
