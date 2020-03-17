@@ -33,4 +33,6 @@ include 'component:mapping'
 findProject(':component:mapping')?.name = 'mapping'
 include 'component:inject'
 findProject(':component:inject')?.name = 'inject'
+include 'component:transform:asm'
+findProject(':component:transform:asm')?.name = 'asm'
 
