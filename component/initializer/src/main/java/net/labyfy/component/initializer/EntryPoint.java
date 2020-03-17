@@ -18,7 +18,9 @@ public class EntryPoint {
 
   public EntryPoint(Map<String, String> launchArguments) {
     InjectionHolder.getInstance()
-        .addModules(InitializationModule.create(new AtomicReference<>(), launchArguments));
+        .addModules(
+            InitializationModule.create(
+                InjectionHolder.getInstance().getInjectorReference(), launchArguments));
 
     Injector injector = InjectionHolder.getInstance().getInjector();
 

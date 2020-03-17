@@ -32,8 +32,6 @@ public class TaskExecutor {
         Multimaps.newListMultimap(
             new TreeMap<>((o1, o2) -> StringUtils.compare(o1.value(), o2.value())),
             () -> SortedList_1x0.of(Lists.newArrayList(), Comparator.comparing(Pair::getKey)));
-
-    System.out.println("New task executor");
   }
 
   public final void register(Task task, double priority, Method method) {
