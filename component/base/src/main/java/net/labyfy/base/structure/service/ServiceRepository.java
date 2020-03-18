@@ -13,9 +13,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ServiceRepository {
@@ -60,6 +62,7 @@ public class ServiceRepository {
     if (ServiceHandler.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Service.class)) {
       this.register(((Class<? extends ServiceHandler>) clazz));
     }
+
     for (Identifier.Base base : identifier) {
       for (ServiceHandler serviceHandler :
           this.serviceHandlers.get(

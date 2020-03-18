@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Transitive
 public @interface Identifier {
 
-  Class<?>[] parents() default {};
+  boolean requireParent() default false;
 
   Property[] requiredProperties() default {};
 
@@ -28,6 +28,5 @@ public @interface Identifier {
     public Property.Base getProperty() {
       return this.property;
     }
-
   }
 }

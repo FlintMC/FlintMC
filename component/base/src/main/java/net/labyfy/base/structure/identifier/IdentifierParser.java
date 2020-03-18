@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -26,7 +27,8 @@ public class IdentifierParser {
 
   public Collection<Identifier.Base> parse(Class<?> clazz) {
 
-    Collection<LocatedIdentifiedAnnotation> standaloneIdentifiers = new HashSet<>(this.findStandaloneClassIdentifiers(clazz));
+    Collection<LocatedIdentifiedAnnotation> standaloneIdentifiers =
+        new ArrayList<>(this.findStandaloneClassIdentifiers(clazz));
 
     for (Method declaredMethod : clazz.getDeclaredMethods()) {
       standaloneIdentifiers.addAll(this.findStandaloneMethodIdentifiers(declaredMethod));
@@ -47,9 +49,9 @@ public class IdentifierParser {
     Predicate<Annotation> standalone =
         identifierCandidate ->
             AnnotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
-                && ((Identifier) identifierCandidate).parents().length == 0;
+                && !((Identifier) identifierCandidate).requireParent();
 
-    Collection<LocatedIdentifiedAnnotation> identifiedAnnotations = new HashSet<>();
+    Collection<LocatedIdentifiedAnnotation> identifiedAnnotations = new ArrayList<>();
 
     for (Annotation transitiveAnnotation : AnnotationCollector.getTransitiveAnnotations(method)) {
       boolean found = false;
@@ -61,19 +63,18 @@ public class IdentifierParser {
       }
 
       if (found) {
-        Annotation annotation =
-            AnnotationCollector.getTransitiveAnnotations(
-                    AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
-                .stream()
-                .findAny()
-                .orElse(null);
-        identifiedAnnotations.add(
-            new LocatedIdentifiedAnnotation(
-                (Identifier) annotation,
-                transitiveAnnotation,
-                method,
-                LocatedIdentifiedAnnotation.Type.METHOD,
-                LocatedIdentifiedAnnotation.Type.METHOD));
+        AnnotationCollector.getTransitiveAnnotations(
+                AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
+            .stream()
+            .map(
+                annotation ->
+                    new LocatedIdentifiedAnnotation(
+                        (Identifier) annotation,
+                        transitiveAnnotation,
+                        method,
+                        LocatedIdentifiedAnnotation.Type.METHOD,
+                        LocatedIdentifiedAnnotation.Type.METHOD))
+            .forEach(e -> identifiedAnnotations.add(e));
       }
     }
 
@@ -84,7 +85,7 @@ public class IdentifierParser {
     Predicate<Annotation> standalone =
         identifierCandidate ->
             AnnotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
-                && ((Identifier) identifierCandidate).parents().length == 0;
+                && !((Identifier) identifierCandidate).requireParent();
 
     Collection<LocatedIdentifiedAnnotation> identifiedAnnotations = new HashSet<>();
 
@@ -97,21 +98,18 @@ public class IdentifierParser {
         found = true;
       }
       if (found) {
-
-        Annotation annotation =
-            AnnotationCollector.getTransitiveAnnotations(
-                    AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
-                .stream()
-                .findAny()
-                .orElse(null);
-
-        identifiedAnnotations.add(
-            new LocatedIdentifiedAnnotation(
-                (Identifier) annotation,
-                transitiveAnnotation,
-                clazz,
-                LocatedIdentifiedAnnotation.Type.CLASS,
-                LocatedIdentifiedAnnotation.Type.CLASS));
+        AnnotationCollector.getTransitiveAnnotations(
+                AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
+            .stream()
+            .map(
+                annotation ->
+                    new LocatedIdentifiedAnnotation(
+                        (Identifier) annotation,
+                        transitiveAnnotation,
+                        clazz,
+                        LocatedIdentifiedAnnotation.Type.CLASS,
+                        LocatedIdentifiedAnnotation.Type.CLASS))
+            .forEach(identifiedAnnotations::add);
       }
     }
 

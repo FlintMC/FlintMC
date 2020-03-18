@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import net.minecraft.launchwrapper.Launch;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,16 @@ public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
     this.bindNamedFilePath("modsFolder", "./Labyfy/mods");
+    try {
+      this.bindNamed(
+              "obfuscated",
+              (ClassPath.from(Launch.classLoader)
+                      .getTopLevelClassesRecursive("net.minecraft.world")
+                      .size()
+                      == 0));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private void bindNamedFilePath(String name, String path) {

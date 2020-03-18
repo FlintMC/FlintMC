@@ -18,6 +18,8 @@ dependencies {
     compile project(':component:transform:javassist')
     compile project(':component:transform:asm')
     compile project(':component:transform:minecraft')
+    compile project(':component:gui')
+    compile project(':component:gui:gui-1.15.1')
     compile project(':component:tasks')
     compile project(':component:mapping')
     compile project(':component:inject')
