@@ -39,7 +39,6 @@ public class TaskExecutor {
   }
 
   public void execute(String name) {
-    System.out.println("execute " + methods);
     for (Map.Entry<Task, Pair<Double, Method>> entry : this.methods.entries()) {
       if (!entry.getKey().value().equals(name)) continue;
       Method value = entry.getValue().getValue();

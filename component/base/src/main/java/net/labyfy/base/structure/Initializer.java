@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class Initializer {
 
   public static void boot() throws IOException {
-    System.out.println("Boot");
     Collection<Method> initializationMethods = new HashSet<>();
 
     Set<? extends Class<?>> collect =
