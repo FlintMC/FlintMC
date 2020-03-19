@@ -29,6 +29,7 @@ public class ServiceInitializer {
           try {
 
             if (clazz.isAnnotationPresent(Service.class)) {
+
               services.add(clazz);
             } else {
               classes.add(clazz);
@@ -45,6 +46,7 @@ public class ServiceInitializer {
         .forEach(
             service -> {
               try {
+                System.out.println(service.getName());
                 Class.forName(service.getName(), true, ServiceInitializer.class.getClassLoader());
               } catch (ClassNotFoundException e) {
                 e.printStackTrace();

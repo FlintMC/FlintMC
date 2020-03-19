@@ -3,6 +3,7 @@ package net.labyfy.component.inject;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Module;
 
 import java.util.Arrays;
@@ -27,12 +28,12 @@ public class InjectionHolder {
     this.injectorReference = new AtomicReference<>(null);
   }
 
-  public synchronized InjectionHolder addModules(Module... modules) {
+  public InjectionHolder addModules(Module... modules) {
     this.modules.addAll(Arrays.asList(modules));
     return this;
   }
 
-  public synchronized Injector getInjector() {
+  public Injector getInjector() {
     if (this.injectorReference.get() == null) {
       Module[] modules = this.modules.toArray(new Module[] {});
       this.modules.clear();
@@ -50,12 +51,20 @@ public class InjectionHolder {
     return injectorReference;
   }
 
-  public void addInitializationListener(Runnable runnable){
+  public void addInitializationListener(Runnable runnable) {
     this.initializationRunnables.add(runnable);
   }
 
   public static void enableIngameState() {
     getInstance().initializationRunnables.forEach(Runnable::run);
+  }
+
+  public static synchronized <T> T getInjectedInstance(Key<T> key) {
+    return getInstance().getInjector().getInstance(key);
+  }
+
+  public static <T> T getInjectedInstance(Class<T> clazz) {
+    return getInjectedInstance(Key.get(clazz));
   }
 
   public static InjectionHolder getInstance() {

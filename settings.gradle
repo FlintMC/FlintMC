@@ -14,9 +14,6 @@ findProject(':component:initializer')?.name = 'initializer'
 include 'component:tasks'
 findProject(':component::tasks')?.name = 'tasks'
 
-include 'component:tasks:defaulttasks-1.5.1'
-findProject(':component:tasks:defaulttasks-1.5.1')?.name = 'defaulttasks-1.5.1'
-
 include 'component:base'
 findProject(':component:base')?.name = "base"
 
@@ -31,8 +28,15 @@ findProject(':component:assisted-inject')?.name = 'assisted-inject'
 
 include 'component:mapping'
 findProject(':component:mapping')?.name = 'mapping'
+
 include 'component:inject'
 findProject(':component:inject')?.name = 'inject'
+
 include 'component:transform:asm'
 findProject(':component:transform:asm')?.name = 'asm'
+
+include 'component:gui'
+findProject(':component:gui')?.name = 'gui'
+include 'component:gui:gui-1.15.1'
+findProject(':component:gui:gui-1.15.1')?.name = 'gui-1.15.1'
 

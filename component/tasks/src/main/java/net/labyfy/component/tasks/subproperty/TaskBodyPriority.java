@@ -9,12 +9,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Identifier(parents = Task.class)
+@Identifier(requireParent = true)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Transitive
 public @interface TaskBodyPriority {
 
   double value() default 0;
-
 }

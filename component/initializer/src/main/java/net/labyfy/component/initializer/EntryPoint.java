@@ -22,18 +22,15 @@ public class EntryPoint {
             InitializationModule.create(
                 InjectionHolder.getInstance().getInjectorReference(), launchArguments));
 
-    Injector injector = InjectionHolder.getInstance().getInjector();
 
-    injector.getInstance(LabyInjectionInitializer.class);
-    injector.getInstance(ServiceRepository.class);
+    InjectionHolder.getInjectedInstance(LabyInjectionInitializer.class);
+    InjectionHolder.getInjectedInstance((ServiceRepository.class));
     initialized = true;
   }
 
   public static void notifyService(Class clazz) {
     if (initialized)
-      InjectionHolder.getInstance()
-          .getInjector()
-          .getInstance(ServiceRepository.class)
+      InjectionHolder.getInjectedInstance(ServiceRepository.class)
           .notifyClassLoaded(clazz);
   }
 }

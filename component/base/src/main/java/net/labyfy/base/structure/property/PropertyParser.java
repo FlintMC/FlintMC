@@ -96,6 +96,18 @@ public class PropertyParser {
         subProperties.put(identifiedAnnotation, parse);
       }
     }
+
+    for (Property property : locatedIdentifiedAnnotation.getIdentifier().optionalProperties()) {
+      if (!identifiers.containsKey(property.value())) {
+        continue;
+      }
+
+      for (LocatedIdentifiedAnnotation identifiedAnnotation : identifiers.get(property.value())) {
+        Property.Base parse = this.parse(identifiedAnnotation);
+        subProperties.put(identifiedAnnotation, parse);
+      }
+    }
+
     return new Property.Base(locatedIdentifiedAnnotation, subProperties.values());
   }
 }

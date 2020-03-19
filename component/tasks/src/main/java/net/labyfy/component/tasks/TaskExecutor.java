@@ -39,12 +39,11 @@ public class TaskExecutor {
   }
 
   public void execute(String name) {
-    System.out.println("execute " + methods);
     for (Map.Entry<Task, Pair<Double, Method>> entry : this.methods.entries()) {
       if (!entry.getKey().value().equals(name)) continue;
       Method value = entry.getValue().getValue();
       this.call(
-          InjectionHolder.getInstance().getInjector().getInstance(value.getDeclaringClass()),
+          InjectionHolder.getInjectedInstance(value.getDeclaringClass()),
           value);
     }
   }
@@ -59,7 +58,7 @@ public class TaskExecutor {
             .collect(
                 Collectors.toMap(
                     type -> type,
-                    type -> InjectionHolder.getInstance().getInjector().getInstance(type)));
+                    type -> InjectionHolder.getInjectedInstance(type)));
 
     Object[] arguments = new Object[method.getParameterTypes().length];
     Class<?>[] parameterTypes = method.getParameterTypes();

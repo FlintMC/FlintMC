@@ -41,9 +41,7 @@ public class InjectionInitializer {
       Implement declaredAnnotation = clazz.getDeclaredAnnotation(Implement.class);
 
       if (!(declaredAnnotation.version().isEmpty()
-          || InjectionHolder.getInstance()
-              .getInjector()
-              .getInstance(Key.get(Map.class, Names.named("launchArguments")))
+          || InjectionHolder.getInjectedInstance(Key.get(Map.class, Names.named("launchArguments")))
               .get("--version")
               .equals(declaredAnnotation.version()))) continue;
 
@@ -65,9 +63,7 @@ public class InjectionInitializer {
         Class.forName(clazz.getName(), true, InjectionHolder.class.getClassLoader());
 
         Collection<Identifier.Base> parse =
-            InjectionHolder.getInstance()
-                .getInjector()
-                .getInstance(IdentifierParser.class)
+            InjectionHolder.getInjectedInstance(IdentifierParser.class)
                 .parse(clazz);
 
         for (Identifier.Base base : parse) {

@@ -7,13 +7,18 @@ import javassist.*;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.mappings.ClassMappingProvider;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ClassTransformContext {
 
   private final ClassMappingProvider labyClassMappingProvider;
+  private final Collection<Predicate<CtClass>> filters;
   private final ClassTransform classTransform;
   private final Method method;
   private final Class owner;
@@ -22,10 +27,12 @@ public class ClassTransformContext {
   @AssistedInject
   private ClassTransformContext(
       ClassMappingProvider labyClassMappingProvider,
+      @Assisted("filters") Collection<Predicate<CtClass>> filters,
       @Assisted ClassTransform classTransform,
       @Assisted Method method,
       @Assisted Class owner) {
     this.labyClassMappingProvider = labyClassMappingProvider;
+    this.filters = Collections.unmodifiableCollection(filters);
     this.classTransform = classTransform;
     this.method = method;
     this.owner = owner;
@@ -33,7 +40,11 @@ public class ClassTransformContext {
 
   @AssistedFactory(ClassTransformContext.class)
   public interface Factory {
-    ClassTransformContext create(ClassTransform classTransform, Method method, Class owner);
+    ClassTransformContext create(
+        @Assisted("filters") Collection<Predicate<CtClass>> filters,
+        ClassTransform classTransform,
+        Method method,
+        Class owner);
   }
 
   public CtField getField(String name) {
@@ -128,6 +139,10 @@ public class ClassTransformContext {
       e.printStackTrace();
     }
     return null;
+  }
+
+  public Collection<Predicate<CtClass>> getFilters() {
+    return this.filters;
   }
 
   public Method getOwnerMethod() {

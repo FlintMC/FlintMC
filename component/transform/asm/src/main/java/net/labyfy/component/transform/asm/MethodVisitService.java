@@ -107,7 +107,7 @@ public class MethodVisitService implements ServiceHandler, IClassTransformer {
     Method location = property.getProperty().getLocatedIdentifiedAnnotation().getLocation();
     try {
       location.invoke(
-          InjectionHolder.getInstance().getInjector().getInstance(location.getDeclaringClass()),
+          InjectionHolder.getInjectedInstance(location.getDeclaringClass()),
           methodVisitorContext);
     } catch (IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
