@@ -16,8 +16,6 @@ public @interface GuiRenderState {
 
   Type value();
 
-  int priority() default 0;
-
   enum Type {
     INIT,
     RENDER

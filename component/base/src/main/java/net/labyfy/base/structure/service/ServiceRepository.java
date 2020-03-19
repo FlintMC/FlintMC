@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class ServiceRepository {
   private ServiceRepository(
       IdentifierParser identifierParser,
       @Named("injectorReference") AtomicReference injectorReference) {
-    this.loadedClasses = new HashSet<>();
+    this.loadedClasses = ConcurrentHashMap.newKeySet();
     this.identifierParser = identifierParser;
     this.serviceHandlers = HashMultimap.create();
     this.injectorReference = injectorReference;

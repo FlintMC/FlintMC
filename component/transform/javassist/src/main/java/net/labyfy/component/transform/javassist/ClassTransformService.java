@@ -20,6 +20,7 @@ import javax.inject.Singleton;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Predicate;
@@ -32,6 +33,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
   private final ClassMappingProvider classMappingProvider;
   private final ClassTransformContext.Factory classTransformContextFactory;
   private final Collection<ClassTransformContext> classTransformContexts;
+  private final Collection<String> ignoredPackages = Arrays.asList("com.mojang.realmsclient", "net.minecraft.realms");
 
   @Inject
   private ClassTransformService(
@@ -61,9 +63,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
                   .value()
                   .test(
                       ctClass,
-                      InjectionHolder.getInstance()
-                          .getInjector()
-                          .getInstance(annotation.classNameResolver())
+                      InjectionHolder.getInjectedInstance(annotation.classNameResolver())
                           .resolve(annotation.className()));
             });
       }
@@ -83,6 +83,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
   public synchronized byte[] transform(
       String className, String transformedClassName, byte[] bytes) {
     try {
+
       ClassPool classPool = ClassPool.getDefault();
       CtClass ctClass =
           classPool.makeClass(
@@ -93,14 +94,18 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
       if (classMapping == null)
         classMapping = ClassMapping.create(classMappingProvider, className, transformedClassName);
 
+      for (String ignoredPackage : this.ignoredPackages) {
+        if (classMapping.getUnObfuscatedName().startsWith(ignoredPackage)) {
+          return bytes;
+        }
+      }
+
       for (ClassTransformContext classTransformContext : this.classTransformContexts) {
         for (String target : classTransformContext.getClassTransform().value()) {
           target =
-              InjectionHolder.getInstance()
-                  .getInjector()
-                  .getInstance(classTransformContext.getClassTransform().classNameResolver())
+              InjectionHolder.getInjectedInstance(
+                      classTransformContext.getClassTransform().classNameResolver())
                   .resolve(target);
-
 
           if (((target.isEmpty() || target.equals(classMapping.getUnObfuscatedName()))
                   || target.equals(classMapping.getObfuscatedName()))
@@ -111,9 +116,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
             classTransformContext
                 .getOwnerMethod()
                 .invoke(
-                    InjectionHolder.getInstance()
-                        .getInjector()
-                        .getInstance(classTransformContext.getOwner()),
+                    InjectionHolder.getInjectedInstance(classTransformContext.getOwner()),
                     classTransformContext);
           }
         }

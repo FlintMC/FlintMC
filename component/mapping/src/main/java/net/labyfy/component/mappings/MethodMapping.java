@@ -38,9 +38,7 @@ public class MethodMapping {
   }
 
   public String getName() {
-    if (InjectionHolder.getInstance()
-        .getInjector()
-        .getInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
+    if (InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
       return this.obfuscatedMethodName;
     } else {
       return this.unObfuscatedMethodName;
@@ -122,9 +120,7 @@ public class MethodMapping {
         }
       }
 
-      if (InjectionHolder.getInstance()
-          .getInjector()
-          .getInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
+      if (InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
         for (Method declaredMethod : this.classMapping.get().getDeclaredMethods()) {
           if (declaredMethod.getName().equals(this.obfuscatedMethodName)
               && this.getMethodDescriptor(declaredMethod)

@@ -34,9 +34,7 @@ public class MinecraftTransformerService implements ServiceHandler {
 
   public void discover(Identifier.Base property) {
     this.classTransformers.add(
-        InjectionHolder.getInstance()
-            .getInjector()
-            .getInstance(
+        InjectionHolder.getInjectedInstance(
                 property
                     .getProperty()
                     .getLocatedIdentifiedAnnotation()

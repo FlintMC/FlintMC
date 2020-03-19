@@ -73,9 +73,7 @@ public class ClassMapping {
   }
 
   public String getName() {
-    if (InjectionHolder.getInstance()
-        .getInjector()
-        .getInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
+    if (InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
       return this.obfuscatedName;
     } else {
       return this.unObfuscatedName;
