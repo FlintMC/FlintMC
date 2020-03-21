@@ -17,5 +17,5 @@ dependencies {
     compile project(':component:inject')
     compile 'com.google.inject:guice:4.0'
     compile 'org.eclipse.collections:eclipse-collections:8.2.1'
-    compile fileTree('libraries')
+    compile 'org.happy.library:happy-library:1.3'
 }

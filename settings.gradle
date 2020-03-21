@@ -37,6 +37,9 @@ findProject(':component:transform:asm')?.name = 'asm'
 
 include 'component:gui'
 findProject(':component:gui')?.name = 'gui'
+
 include 'component:gui:gui-1.15.1'
 findProject(':component:gui:gui-1.15.1')?.name = 'gui-1.15.1'
+
+include 'library-downloader'
 

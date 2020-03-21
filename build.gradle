@@ -2,13 +2,28 @@ plugins {
     id 'java'
 }
 
+
 group 'net.labyfy'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
-repositories {
-    mavenCentral()
+allprojects {
+    buildscript {
+        repositories {
+            maven {
+                url = "${artifactory_contextUrl}"
+            }
+            mavenCentral()
+        }
+    }
+
+    repositories {
+        maven {
+            url = "${artifactory_contextUrl}"
+        }
+        mavenCentral()
+    }
 }
 
 
