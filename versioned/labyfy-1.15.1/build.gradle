@@ -1,18 +1,29 @@
+buildscript {
+    dependencies {
+        classpath 'net.labyfy:library-downloader:1.0.1'
+    }
+}
+
 plugins {
     id 'java'
 }
+
+apply plugin: 'net.labyfy.library-downloader'
 
 group 'net.labyfy.versioned'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
+minecraft.version = "1.15.1"
+
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    compile fileTree('libraries')
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile project(':component:transform:tweaker')
-    compile fileTree('libraries')
+    compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
 }

@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -30,11 +31,14 @@ public class ClassMappingProvider {
               this,
               ImmutableMap.of(
                   "methods.csv",
-                  new FileInputStream("./Labyfy/assets/" + version + "/methods.csv"),
+                  new FileInputStream(
+                      new File("./Labyfy/assets/" + version + "/methods.csv").getAbsoluteFile()),
                   "fields.csv",
-                  new FileInputStream("./Labyfy/assets/" + version + "/fields.csv"),
+                  new FileInputStream(
+                      new File("./Labyfy/assets/" + version + "/fields.csv").getAbsoluteFile()),
                   "joined.tsrg",
-                  new FileInputStream("./Labyfy/assets/" + version + "/joined.tsrg")));
+                  new FileInputStream(
+                      new File("./Labyfy/assets/" + version + "/joined.tsrg").getAbsoluteFile())));
 
       for (ClassMapping classMapping : parse) {
         this.obfuscatedClassMappings.put(classMapping.getObfuscatedName(), classMapping);
