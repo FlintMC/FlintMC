@@ -1,8 +1,11 @@
 eval:
+  stage: build
   script: bash eval.sh
 
 get-mojang-libs:
+  stage: test
   script: sh gradlew Labyfy:versioned[download-libraris]
   
 build:
+  stage: deploy
   script: sh gradlew build
