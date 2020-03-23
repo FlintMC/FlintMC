@@ -1,2 +1,8 @@
-main:
-  script: bash eval.sh && sh gradlew
+eval:
+  script: bash eval.sh
+
+get-mojang-libs:
+  script: sh gradlew Labyfy:versioned[download-libraris]
+  
+build:
+  script: sh gradlew build
