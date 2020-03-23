@@ -1,2 +1,2 @@
 main:
-  script: bash eval.sh
+  script: bash eval.sh && sh gradlew
