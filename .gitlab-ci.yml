@@ -1,2 +1,2 @@
 main:
-  script: pwd && ls -la && cat build.gradle && sed -i "s/\\$\\{artifactory_contextUrl\\}/${artifactory_contextUrl}/g" build.gradle && cat build.gradle
+  script: bash eval.sh
