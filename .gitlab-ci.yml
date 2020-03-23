@@ -1,2 +1,2 @@
 main:
-  script: 'echo $artifactory_contextUrl && sh gradlew'
+  script: " sed -i \"s/\$\{artifactory_contextUrl\}/${artifactory_contextUrl}/g gradle.build && cat gradle.build"
