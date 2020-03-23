@@ -1,6 +1,6 @@
 eval:
   stage: build
-  script: bash eval.sh && sh gradlew download-libraries
+  script: bash eval.sh && mkdir run && cp -r run-template/1.15.1 run && sh gradlew download-libraries
   
 build:
   stage: deploy
