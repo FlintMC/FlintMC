@@ -1,2 +1,2 @@
 main:
-  script: 'sh gradlew'
+  script: 'echo $artifactory_contextUrl && sh gradlew'
