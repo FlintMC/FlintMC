@@ -1,6 +1,6 @@
 eval:
   stage: build
-  script: bash eval.sh && sh gradlew labyfy:versioned[download-libraris]
+  script: bash eval.sh && sh gradlew download-libraries
   
 build:
   stage: deploy
