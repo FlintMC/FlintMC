@@ -7,7 +7,6 @@ import net.labyfy.base.structure.property.Property;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.tasks.subproperty.TaskBody;
-import net.labyfy.component.tasks.subproperty.TaskBodyPriority;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,21 +22,13 @@ public class TaskService implements ServiceHandler {
   private TaskService() {}
 
   public void discover(Identifier.Base property) {
-    Task task = (Task) property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
-    TaskExecutor taskExecutor =
-            injector.getInstance(task.executor());
+    Task task = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+    TaskExecutor taskExecutor = injector.getInstance(task.executor());
     Collection<Property.Base> taskBodies = property.getProperty().getSubProperties(TaskBody.class);
     for (Property.Base taskBody : taskBodies) {
-      TaskBodyPriority taskPriority =
-          (TaskBodyPriority)
-              taskBody.getSubProperties(TaskBodyPriority.class).stream()
-                  .map(Property.Base::getLocatedIdentifiedAnnotation)
-                  .map(LocatedIdentifiedAnnotation::getAnnotation)
-                  .findAny()
-                  .orElse(null);
       taskExecutor.register(
           task,
-          taskPriority == null ? 0 : taskPriority.value(),
+          taskBody.getLocatedIdentifiedAnnotation().<TaskBody>getAnnotation().priority(),
           taskBody.getLocatedIdentifiedAnnotation().getLocation());
     }
   }

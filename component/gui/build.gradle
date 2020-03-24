@@ -16,4 +16,5 @@ dependencies {
     compile project(':component:base')
     compile project(':component:inject')
     compile project(':component:transform:javassist')
+    compile project(':component:transform:hook')
 }

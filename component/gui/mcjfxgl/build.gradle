@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'net.labyfy.component.gui'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile project(':component:inject')
+    compile project(':component:transform:javassist')
+    compile project(':component:tasks')
+    compile 'cuchaz:jfxgl:0.4'
+    compile 'cuchaz:jfxgl-jfxrt:0.4'
+}

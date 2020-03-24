@@ -10,8 +10,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Identifier(requireParent = true, requiredProperties = @Property(value = TaskBodyPriority.class))
+@Identifier(requireParent = true)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 @Transitive
-public @interface TaskBody {}
+public @interface TaskBody {
+  double priority() default 0;
+}

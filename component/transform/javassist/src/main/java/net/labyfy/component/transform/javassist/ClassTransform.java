@@ -20,4 +20,7 @@ public @interface ClassTransform {
   String[] value() default "";
 
   Class<? extends NameResolver> classNameResolver() default DefaultNameResolver.class;
+
+  String version() default "";
+
 }

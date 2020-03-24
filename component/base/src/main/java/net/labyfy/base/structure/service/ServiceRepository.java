@@ -60,6 +60,7 @@ public class ServiceRepository {
   public ServiceRepository notifyClassLoaded(Class<?> clazz) {
     this.loadedClasses.add(clazz);
     Collection<Identifier.Base> identifier = this.identifierParser.parse(clazz);
+
     if (ServiceHandler.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Service.class)) {
       this.register(((Class<? extends ServiceHandler>) clazz));
     }

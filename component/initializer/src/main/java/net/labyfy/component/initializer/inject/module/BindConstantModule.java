@@ -22,11 +22,12 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamedFilePath("modsFolder", "./Labyfy/mods");
     try {
       this.bindNamed(
-              "obfuscated",
-              (ClassPath.from(Launch.classLoader)
-                      .getTopLevelClassesRecursive("net.minecraft.world")
-                      .size()
-                      == 0));
+          "obfuscated",
+          (ClassPath.from(Launch.classLoader)
+                  .getTopLevelClassesRecursive("net.minecraft.world")
+                  .size()
+              == 0));
+      this.bindNamedFilePath("labyfyRoot", "./Labyfy");
     } catch (IOException e) {
       e.printStackTrace();
     }

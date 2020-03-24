@@ -24,12 +24,12 @@ public class ServiceInitializer {
 
     Collection<Class> classes = new HashSet<>();
     Collection<Class> services = new HashSet<>();
+
     collect.forEach(
         clazz -> {
           try {
-
+              System.out.println(clazz);
             if (clazz.isAnnotationPresent(Service.class)) {
-
               services.add(clazz);
             } else {
               classes.add(clazz);

@@ -42,4 +42,12 @@ include 'component:gui:gui-1.15.1'
 findProject(':component:gui:gui-1.15.1')?.name = 'gui-1.15.1'
 
 include 'library-downloader'
+include 'component:gui:mcjfxgl'
+findProject(':component:gui:mcjfxgl')?.name = 'mcjfxgl'
+include 'component:tasks:tasks-1.15.1'
+findProject(':component:tasks:tasks-1.15.1')?.name = 'tasks-1.15.1'
+include 'component:gui:mcjfxgl:mcjfxgl-1.15.1'
+findProject(':component:gui:mcjfxgl:mcjfxgl-1.15.1')?.name = 'mcjfxgl-1.15.1'
+include 'component:transform:hook'
+findProject(':component:transform:hook')?.name = 'hook'
 

@@ -1,6 +1,7 @@
 package net.labyfy.downloader
 
 import com.google.common.collect.*
+import com.google.common.io.Files
 import com.google.inject.AbstractModule
 import com.google.inject.Guice
 import com.google.inject.Injector
@@ -97,8 +98,14 @@ class LibraryDownloader implements Plugin<Project> {
                         this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(ImmutableMap.<String, String> of("--version", version))
                         this.bind(Key.get(File.class, Names.named("input"))).toInstance(new File(libraries, "client-" + extension.version + ".jar"))
                         this.bind(Key.get(File.class, Names.named("output"))).toInstance(new File(libraries, "client-" + extension.version + ".jar"))
+                        this.bind(Key.get(File.class, Names.named("labyfyRoot"))).toInstance(new File(project.projectDir, "Labyfy"))
                     }
                 });
+
+                println('downloading mappings:')
+                download("https://dl.labymod.net/mappings/1.15.1/methods.csv", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/methods.csv"))
+                download("https://dl.labymod.net/mappings/1.15.1/fields.csv", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/fields.csv"))
+                download("https://dl.labymod.net/mappings/1.15.1/joined.tsrg", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/joined.tsrg"))
 
                 println "deobfuscating client.jar:"
                 injector.getInstance(LabyDeobfuscator.class);
@@ -113,6 +120,19 @@ class LibraryDownloader implements Plugin<Project> {
         project.defaultTasks("download-libraries")
 
     }
+
+    private void download(String url, File file) {
+        HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
+        httpURLConnection.setRequestProperty("User-Agent", getUserAgent());
+        httpURLConnection.connect();
+        file.getParentFile().mkdirs()
+        Files.write(IOUtils.toByteArray(httpURLConnection), file)
+    }
+
+    private String getUserAgent() {
+        return "LabyMod v" + "4" + " on mc" + "1.15.1";
+    }
+
 
     private void downloadArtifact(String artifact, String version, File libraries, String url) {
         println " -> download " + artifact + "-" + version + ".jar"

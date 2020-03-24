@@ -1,5 +1,7 @@
 package net.labyfy.component.transform.javassist;
 
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.bytecode.ClassFile;
@@ -23,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.function.Predicate;
 
 @Singleton
@@ -33,7 +36,8 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
   private final ClassMappingProvider classMappingProvider;
   private final ClassTransformContext.Factory classTransformContextFactory;
   private final Collection<ClassTransformContext> classTransformContexts;
-  private final Collection<String> ignoredPackages = Arrays.asList("com.mojang.realmsclient", "net.minecraft.realms");
+  private final Collection<String> ignoredPackages =
+      Arrays.asList("com.mojang.realmsclient", "net.minecraft.realms");
 
   @Inject
   private ClassTransformService(
@@ -107,7 +111,15 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
                       classTransformContext.getClassTransform().classNameResolver())
                   .resolve(target);
 
-          if (((target.isEmpty() || target.equals(classMapping.getUnObfuscatedName()))
+          if ((classTransformContext.getClassTransform().version().isEmpty()
+                  || classTransformContext
+                      .getClassTransform()
+                      .version()
+                      .equals(
+                          InjectionHolder.getInjectedInstance(
+                                  Key.get(Map.class, Names.named("launchArguments")))
+                              .get("--version")))
+              && ((target.isEmpty() || target.equals(classMapping.getUnObfuscatedName()))
                   || target.equals(classMapping.getObfuscatedName()))
               && classTransformContext.getFilters().stream()
                   .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass))) {

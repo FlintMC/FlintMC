@@ -1,5 +1,6 @@
 package net.labyfy.component.inject.invoke;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
@@ -16,8 +17,13 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class InjectedInvocationHelper {
+  public void invokeMethod(Method method, Object instance)
+      throws InvocationTargetException, IllegalAccessException {
+    this.invokeMethod(method, instance, Maps.newHashMap());
+  }
 
-  public void invokeMethod(Method method, Object instance, Map<Key<?>, Object> availableArguments) throws InvocationTargetException, IllegalAccessException {
+  public void invokeMethod(Method method, Object instance, Map<Key<?>, ?> availableArguments)
+      throws InvocationTargetException, IllegalAccessException {
     List<Dependency<?>> dependencies =
         InjectionPoint.forMethod(method, TypeLiteral.get(method.getDeclaringClass()))
             .getDependencies();
@@ -29,8 +35,7 @@ public class InjectedInvocationHelper {
         invocationArguments.put(dependency.getKey(), availableArguments.get(dependency.getKey()));
       } else {
         invocationArguments.put(
-            dependency.getKey(),
-            InjectionHolder.getInjectedInstance(dependency.getKey()));
+            dependency.getKey(), InjectionHolder.getInjectedInstance(dependency.getKey()));
       }
     }
 

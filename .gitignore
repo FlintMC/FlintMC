@@ -122,3 +122,5 @@ gradle-app.setting
 .idea/modules/
 src/main/resources/
 src/test/
+
+versioned/*/Labyfy
