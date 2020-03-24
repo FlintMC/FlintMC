@@ -42,4 +42,5 @@ dependencies {
     compile 'com.google.guava:guava:27.1-jre'
     compile 'com.google.inject:guice:4.0'
     compile 'org.apache.commons:commons-lang3:3.9'
+    compile 'io.sentry:sentry:1.7.30'
 }
