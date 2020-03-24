@@ -6,3 +6,7 @@ eval:
 build:
   stage: deploy
   script: bash eval.sh && sh gradlew build
+  environment:
+    name: production
+  only:
+    - master
