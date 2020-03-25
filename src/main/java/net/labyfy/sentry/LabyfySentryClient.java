@@ -24,10 +24,11 @@ public class LabyfySentryClient {
 
          export SENTRY_DSN="http://a46d935613f74b87b6faaf7611e7c231@31.172.80.159:9000/1"
          */
-        Sentry.init();
+        //Sentry.init();
 
         // You can also manually provide the DSN to the ``init`` method.
-        // Sentry.init("http://a46d935613f74b87b6faaf7611e7c231@31.172.80.159:9000/1");
+        // #/1 internal #/2 labyfy
+        Sentry.init("http://b76311546ddf11ea8e7a0242ac120010@31.172.80.159:9000/2");
 
         /*
          It is possible to go around the static ``Sentry`` API, which means
@@ -38,7 +39,7 @@ public class LabyfySentryClient {
 
         LabyfySentryClient myClass = new LabyfySentryClient();
         myClass.logWithStaticAPI();
-        myClass.logWithInstanceAPI();
+        //myClass.logWithInstanceAPI();
     }
 
     /**
