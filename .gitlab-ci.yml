@@ -14,4 +14,4 @@ deploy:
     - master
   script: 
     - docker pull getsentry/sentry-cli
-    - docker run --rm -v $(pwd):/work getsentry/sentry-cli --auth-token ${SENTRY_AUTH_TOKEN} --url ${SENTRY_URL} releases -o sentry new --finalize -p labyfy $CI_PIPELINE_ID
+    - docker run --rm -v $(pwd):/work getsentry/sentry-cli --auth-token ${SENTRY_AUTH_TOKEN} --url ${SENTRY_URL} releases -o sentry new -p labyfy $CI_PIPELINE_ID
