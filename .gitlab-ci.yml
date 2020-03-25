@@ -10,4 +10,4 @@ deploy:
     - 21-send-errors-to-sentry
   script: 
     - docker pull getsentry/sentry-cli
-    - docker run --rm -v $(pwd):/work getsentry/sentry-cli --auth-token ${SENTRY_AUTH_TOKEN} --url ${SENTRY_URL} releases -o sentry new --finalize -p CI_PROJECT_ID $CI_PIPELINE_ID
+    - docker run --rm -v $(pwd):/work getsentry/sentry-cli --auth-token ${SENTRY_AUTH_TOKEN} --url ${SENTRY_URL} releases -o sentry new --finalize -p CI_PROJECT_NAME $CI_PIPELINE_ID
