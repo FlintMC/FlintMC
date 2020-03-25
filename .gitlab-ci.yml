@@ -1,4 +1,3 @@
-
 build:
   stage: build
   script: bash eval.sh && mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1 && sh gradlew build
@@ -11,4 +10,4 @@ deploy:
     - 21-send-errors-to-sentry
   script: 
     - docker pull getsentry/sentry-cli
-    - docker run --rm -v $(pwd):/work getsentry/sentry-cli release new $CI_PIPELINE_ID
+    - docker run --rm -v $(pwd):/work getsentry/sentry-cli --auth-token ${SENTRY_AUTH_TOKEN} --url ${SENTRY_URL} releases new $CI_PIPELINE_ID
