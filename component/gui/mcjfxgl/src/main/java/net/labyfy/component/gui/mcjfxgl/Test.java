@@ -31,13 +31,14 @@ public class Test {
             () -> {
               VBox vBox = new VBox();
               vBox.setBackground(Background.EMPTY);
-              Button hallo_welt = new Button("Hallo welt");
-              hallo_welt.setMinWidth(minecraftWindow.getWidth());
-              hallo_welt.setMaxWidth(minecraftWindow.getWidth());
+              vBox.setMinWidth(minecraftWindow.getWidth());
+              vBox.setMaxWidth(minecraftWindow.getWidth());
 
-              hallo_welt.setMinHeight(minecraftWindow.getHeight());
-              hallo_welt.setMaxHeight(minecraftWindow.getHeight());
-              vBox.getChildren().add(hallo_welt);
+              vBox.setMinHeight(minecraftWindow.getHeight());
+              vBox.setMaxHeight(minecraftWindow.getHeight());
+              vBox.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
+                      + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                      + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
               return vBox;
             }));
     guiAdapter.initComponents();

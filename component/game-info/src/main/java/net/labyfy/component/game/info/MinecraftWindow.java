@@ -16,4 +16,7 @@ public interface MinecraftWindow {
 
   float getHeight();
 
+  float getScaledWidth();
+
+  float getScaledHeight();
 }

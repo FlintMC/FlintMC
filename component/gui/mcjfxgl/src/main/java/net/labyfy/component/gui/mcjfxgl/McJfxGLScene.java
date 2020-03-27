@@ -49,21 +49,23 @@ public class McJfxGLScene implements GuiComponent {
   }
 
   public void render(GuiAdapter adapter) {
-    //    System.out.println(
-    //        this.minecraftWindow.getWidth() + " " + this.minecraftWindow.getScaledWidth());
-//        this.parent.resizeRelocate(
-//            0, 0, this.minecraftWindow.getWidth() * 4, this.minecraftWindow.getHeight() * 4);
-//        this.parent.setTranslateX(
-//                this.parent.getLayoutBounds().getWidth() * (minecraftWindow.getScaleFactor() - 4) * 0.125);
-//        this.parent.setTranslateY(
-//                this.parent.getLayoutBounds().getHeight() * (minecraftWindow.getScaleFactor() - 4) * 0.125);
+        System.out.println(
+            this.minecraftWindow.getWidth() + " " + this.minecraftWindow.getWidth());
+    //    this.parent.resizeRelocate(
+    //        0, 0, this.minecraftWindow.getWidth(), this.minecraftWindow.getHeight());
+    //    this.parent.setTranslateX(
+    //        this.parent.getLayoutBounds().getWidth() * (minecraftWindow.getScaleFactor() - 4) *
+    // 0.25);
+    //    this.parent.setTranslateY(
+    //        this.parent.getLayoutBounds().getHeight() * (minecraftWindow.getScaleFactor() - 4) *
+    // 0.25);
     //    GL11.glPushMatrix();
     //
-//        this.parent.setTranslateX(200);
-//        this.parent.setScaleX(minecraftWindow.getScaleFactor() * 0.25f);
-//        this.parent.setScaleY(minecraftWindow.getScaleFactor() * 0.25f);
-    //    if (initialized) this.labyJavaFxInjector.render(this);
-    //    GL11.glPopMatrix();
+    //    this.parent.setTranslateX(200);
+    //    this.parent.setScaleX(minecraftWindow.getScaleFactor() * 0.25f);
+    //    this.parent.setScaleY(minecraftWindow.getScaleFactor() * 0.25f);
+    //        if (initialized) this.labyJavaFxInjector.render(this);
     JFXGL.render();
+    //    GL11.glPopMatrix();
   }
 }

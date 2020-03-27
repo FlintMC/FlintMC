@@ -35,11 +35,11 @@ public class VersionedMinecraftWindow implements MinecraftWindow {
     return Minecraft.getInstance().getMainWindow().getHeight();
   }
 
-  public int getScaledWidth() {
+  public float getScaledWidth() {
     return Minecraft.getInstance().getMainWindow().getScaledWidth();
   }
 
-  public int getScaledHeight() {
+  public float getScaledHeight() {
     return Minecraft.getInstance().getMainWindow().getScaledHeight();
   }
 }
