@@ -2,6 +2,7 @@ package net.labyfy.component.gui;
 
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;
+import net.labyfy.component.transform.hook.Hook;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,6 +16,8 @@ import java.lang.annotation.Target;
 public @interface GuiRenderState {
 
   Type value();
+
+  Hook.ExecutionTime executionTime() default Hook.ExecutionTime.AFTER;
 
   enum Type {
     INIT,

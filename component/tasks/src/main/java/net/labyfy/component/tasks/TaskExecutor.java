@@ -48,12 +48,7 @@ public class TaskExecutor {
     for (Map.Entry<Task, Pair<Double, Method>> entry : this.methods.entries()) {
       if (!entry.getKey().value().equals(name)) continue;
       Method value = entry.getValue().getValue();
-      try {
-        this.injectedInvocationHelper.invokeMethod(
-            value, InjectionHolder.getInjectedInstance(value.getDeclaringClass()), arguments);
-      } catch (IllegalAccessException | InvocationTargetException e) {
-        e.printStackTrace();
-      }
+      this.injectedInvocationHelper.invokeMethod(value, arguments);
     }
   }
 

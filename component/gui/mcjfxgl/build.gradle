@@ -16,6 +16,8 @@ dependencies {
     compile project(':component:inject')
     compile project(':component:transform:javassist')
     compile project(':component:tasks')
+    compile project(':component:gui')
+    compile project(':component:game-info')
     compile 'cuchaz:jfxgl:0.4'
     compile 'cuchaz:jfxgl-jfxrt:0.4'
 }

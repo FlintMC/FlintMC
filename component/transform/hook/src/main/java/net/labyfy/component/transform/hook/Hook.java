@@ -28,6 +28,8 @@ public @interface Hook {
 
   Type[] parameters() default {};
 
+  String version() default "";
+
   ExecutionTime[] executionTime() default ExecutionTime.AFTER;
 
   Class<? extends NameResolver> classNameResolver() default DefaultNameResolver.class;

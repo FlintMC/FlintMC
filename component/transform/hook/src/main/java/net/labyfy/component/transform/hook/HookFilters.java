@@ -1,23 +1,20 @@
 package net.labyfy.component.transform.hook;
 
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import javassist.CtClass;
-import net.labyfy.base.structure.representation.Type;
-import net.labyfy.base.structure.representation.Types;
-import net.labyfy.component.transform.javassist.CtClassFilters;
-import net.minecraft.launchwrapper.Launch;
+import net.labyfy.component.inject.InjectionHolder;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 
 public enum HookFilters {
   SUBCLASS_OF {
-    public boolean test(CtClass source, String className) {
+    public boolean test(CtClass source, String value) {
       return HookFilters.collectSuperClassesRecursive(source).stream()
-          .anyMatch(clazz -> clazz.getName().equals(className));
+          .anyMatch(clazz -> clazz.getName().equals(value));
     }
   };
+
 
   private static Collection<CtClass> collectSuperClassesRecursive(CtClass ctClass) {
     try {
@@ -39,5 +36,5 @@ public enum HookFilters {
     return Collections.emptyList();
   }
 
-  public abstract boolean test(CtClass source, String className);
+  public abstract boolean test(CtClass source, String value);
 }

@@ -26,8 +26,7 @@ public class McJfxGLApplication extends Application {
   private boolean inizialized;
 
   @Inject
-  private McJfxGLApplication() {
-  }
+  private McJfxGLApplication() {}
 
   public void start(Stage stage) {
     this.stage = stage;
@@ -35,10 +34,10 @@ public class McJfxGLApplication extends Application {
     this.inizialized = true;
   }
 
-  private void setParent(Parent parent) {
+  protected void setParent(Parent parent) {
     Platform.runLater(
         () -> {
-          Scene scene = new Scene(parent, -1, -1, false, SceneAntialiasing.DISABLED);
+          Scene scene = new Scene(parent, 1, 1, false, SceneAntialiasing.DISABLED);
           // TODO force Antialiasing -.- it is not supported by this stupid library
           scene.setFill(null);
           stage.setScene(scene);
@@ -70,5 +69,4 @@ public class McJfxGLApplication extends Application {
     modifiers |= Modifier.PUBLIC;
     return modifiers;
   }
-
 }

@@ -1,13 +1,26 @@
 package net.labyfy.component.gui.mcjfxgl;
 
-import net.labyfy.component.tasks.Task;
-import net.labyfy.component.tasks.Tasks;
-import net.labyfy.component.tasks.subproperty.TaskBody;
+import cuchaz.jfxgl.JFXGL;
+import net.labyfy.component.game.info.MinecraftWindow;
 
-@FunctionalInterface
-public interface McJfxGLInitializer {
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-  @Task(Tasks.POST_MINECRAFT_INITIALIZE)
-  @TaskBody
-  void initialize(McJfxGLApplication mcJfxGLApplication);
+@Singleton
+public class McJfxGLInitializer {
+
+  private final MinecraftWindow minecraftWindow;
+  private boolean initialized;
+
+  @Inject
+  private McJfxGLInitializer(MinecraftWindow minecraftWindow) {
+    this.minecraftWindow = minecraftWindow;
+  }
+
+  public void initialize(McJfxGLApplication mcJfxGLApplication) {
+    if (initialized) return;
+    initialized = true;
+    System.out.println("Initialized javafx");
+    JFXGL.start(this.minecraftWindow.getHandle(), new String[] {}, mcJfxGLApplication);
+  }
 }

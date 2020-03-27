@@ -1,58 +1,92 @@
 package net.labyfy.component.gui;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.Key;
 import com.google.inject.Singleton;
-import javassist.CannotCompileException;
-import javassist.CtMethod;
+import com.google.inject.name.Names;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;
-import net.labyfy.base.structure.representation.Type;
-import net.labyfy.base.structure.resolve.AnnotationResolver;
+import net.labyfy.base.structure.resolve.NameResolver;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
+import net.labyfy.component.gui.adapter.GuiAdapter;
+import net.labyfy.component.gui.adapter.GuiAdapterProvider;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.transform.hook.Hook;
-import net.labyfy.component.transform.hook.HookFilter;
-import net.labyfy.component.transform.hook.HookFilters;
-import net.labyfy.component.transform.javassist.ClassTransform;
-import net.labyfy.component.transform.javassist.ClassTransformContext;
-import net.labyfy.component.transform.javassist.CtClassFilter;
-import net.labyfy.component.transform.javassist.CtClassFilters;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @Service(Gui.class)
 public class GuiService implements ServiceHandler {
 
+  private final GuiAdapterProvider guiAdapterProvider;
   private final InjectedInvocationHelper injectedInvocationHelper;
   private final ClassMappingProvider classMappingProvider;
   private final Collection<Identifier.Base> properties;
-  private final GuiNameResolver guiNameResolver;
-  private final Collection<String> modifiedGuis;
 
   @Inject
   private GuiService(
-          InjectedInvocationHelper injectedInvocationHelper,
-          ClassMappingProvider classMappingProvider,
-          GuiNameResolver guiNameResolver) {
+      GuiAdapterProvider guiAdapterProvider,
+      InjectedInvocationHelper injectedInvocationHelper,
+      ClassMappingProvider classMappingProvider) {
+    this.guiAdapterProvider = guiAdapterProvider;
     this.injectedInvocationHelper = injectedInvocationHelper;
     this.classMappingProvider = classMappingProvider;
-    this.guiNameResolver = guiNameResolver;
     this.properties = ConcurrentHashMap.newKeySet();
-    this.modifiedGuis = ConcurrentHashMap.newKeySet();
   }
 
   public void discover(Identifier.Base property) {
     this.properties.add(property);
   }
 
+  public void notify(
+      Hook.ExecutionTime executionTime,
+      GuiRenderState.Type targetGuiRenderState,
+      Object screen,
+      Map<String, Object> args) {
+    for (Identifier.Base property : this.properties) {
+      Gui gui = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+      NameResolver nameResolver = InjectionHolder.getInjectedInstance(gui.nameResolver());
+      String resolve = nameResolver.resolve(gui.value());
 
+      ClassMapping classMapping = classMappingProvider.get(screen.getClass().getName());
+
+      if (classMapping == null
+          || !(classMapping.getUnObfuscatedName().equals(resolve)
+              || classMapping.getObfuscatedName().equals(resolve))) continue;
+
+      for (Property.Base subProperty :
+          property.getProperty().getSubProperties(GuiRenderState.class)) {
+        GuiRenderState guiRenderState =
+            subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
+
+        if (!guiRenderState.value().equals(targetGuiRenderState)
+            || !guiRenderState.executionTime().equals(executionTime)) continue;
+        Map<Key<?>, Object> parameters = Maps.newHashMap();
+
+        GuiAdapter adapter = this.guiAdapterProvider.getAdapter(screen);
+
+        parameters.put(Key.get(Object.class, Names.named("screen")), screen);
+        parameters.put(Key.get(GuiRenderState.class), guiRenderState);
+        parameters.put(Key.get(GuiAdapter.class), adapter);
+
+        if (targetGuiRenderState == GuiRenderState.Type.RENDER) {
+          adapter.updateMousePosition((int) args.get("mouseX"), (int) args.get("mouseY"));
+          adapter.updatePartialTick((float) args.get("partialTick"));
+        }else{
+          adapter.reset();
+        }
+
+        this.injectedInvocationHelper.invokeMethod(
+            subProperty.getLocatedIdentifiedAnnotation().getLocation(), parameters);
+      }
+    }
+  }
 }
