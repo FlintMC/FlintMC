@@ -23,7 +23,6 @@ import javax.inject.Singleton;
 public class McJfxGLApplication extends Application {
 
   private Stage stage;
-  private boolean inizialized;
 
   @Inject
   private McJfxGLApplication() {}
@@ -31,7 +30,6 @@ public class McJfxGLApplication extends Application {
   public void start(Stage stage) {
     this.stage = stage;
     this.stage.initStyle(StageStyle.TRANSPARENT);
-    this.inizialized = true;
   }
 
   protected void setParent(Parent parent) {

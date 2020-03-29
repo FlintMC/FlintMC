@@ -49,7 +49,6 @@ public class LabyDebugTweaker implements ITweaker {
        Launch.classLoader.loadClass(InjectionHolder.class.getName());
             Method enableIngameState = injectionHolder.getDeclaredMethod("enableIngameState");
             enableIngameState.invoke(null);
-            System.out.println(injectionHolder + " " + injectionHolder.getClassLoader());
 
     } catch (ClassNotFoundException
         | IllegalAccessException
