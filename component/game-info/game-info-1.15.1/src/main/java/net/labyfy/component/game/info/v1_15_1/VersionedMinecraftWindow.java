@@ -2,14 +2,23 @@ package net.labyfy.component.game.info.v1_15_1;
 
 import net.labyfy.component.game.info.MinecraftWindow;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.vecmath.Vector2f;
 
 @Singleton
 @Implement(value = MinecraftWindow.class, version = "1.15.1")
 public class VersionedMinecraftWindow implements MinecraftWindow {
+
+  private final ClassMappingProvider classMappingProvider;
+
+  @Inject
+  private VersionedMinecraftWindow(ClassMappingProvider classMappingProvider) {
+    this.classMappingProvider = classMappingProvider;
+  }
 
   public long getHandle() {
     return Minecraft.getInstance().getMainWindow().getHandle();
@@ -41,5 +50,12 @@ public class VersionedMinecraftWindow implements MinecraftWindow {
 
   public float getScaledHeight() {
     return Minecraft.getInstance().getMainWindow().getScaledHeight();
+  }
+
+  public int getFPS() {
+    return this.classMappingProvider
+        .get("net.minecraft.client.Minecraft")
+        .getField("debugFPS")
+        .getValue(null);
   }
 }

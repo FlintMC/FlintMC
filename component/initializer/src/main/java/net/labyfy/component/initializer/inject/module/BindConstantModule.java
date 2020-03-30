@@ -1,9 +1,7 @@
 package net.labyfy.component.initializer.inject.module;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.reflect.ClassPath;
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -11,9 +9,6 @@ import net.minecraft.launchwrapper.Launch;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Singleton
 public class BindConstantModule extends AbstractModule {

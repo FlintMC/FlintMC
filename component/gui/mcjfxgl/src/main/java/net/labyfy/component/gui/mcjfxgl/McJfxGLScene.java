@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import cuchaz.jfxgl.JFXGL;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import net.labyfy.component.game.info.MinecraftWindow;
 import net.labyfy.component.gui.adapter.GuiAdapter;
@@ -43,6 +44,12 @@ public class McJfxGLScene implements GuiComponent {
         this.parent = this.parentCallable.call();
         this.mcJfxGLApplication.setParent(this.parent);
       }
+
+      for (Node node : this.parent.getChildrenUnmodifiable()) {
+        if (node instanceof GuiComponent) {
+          ((GuiComponent) node).init(adapter.getChild());
+        }
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -58,6 +65,12 @@ public class McJfxGLScene implements GuiComponent {
 
     this.parent.setScaleX(minecraftWindow.getScaleFactor() * 0.25f);
     this.parent.setScaleY(minecraftWindow.getScaleFactor() * 0.25f);
+
+    for (Node node : this.parent.getChildrenUnmodifiable()) {
+      if (node instanceof GuiComponent) {
+        ((GuiComponent) node).render(adapter.getChild());
+      }
+    }
 
     JFXGL.render();
   }
