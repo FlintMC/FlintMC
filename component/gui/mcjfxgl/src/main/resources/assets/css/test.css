@@ -1,0 +1,9 @@
+.test {
+    -fx-background-color: yellow;
+    -fx-translate-x: 100;
+    -fx-background-transition-duration: 0s;
+}
+
+.test:pressed {
+    -fx-background-color: blue;
+}

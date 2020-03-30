@@ -54,8 +54,11 @@ public class ServiceInitializer {
             });
 
     for (Class<?> clazz : classes) {
-
-      Class.forName(clazz.getName(), true, ServiceInitializer.class.getClassLoader());
+      try {
+        Class.forName(clazz.getName(), true, ServiceInitializer.class.getClassLoader());
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
     }
   }
 }

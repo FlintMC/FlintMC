@@ -19,4 +19,7 @@ public interface MinecraftWindow {
   float getScaledWidth();
 
   float getScaledHeight();
+
+  int getFPS();
+
 }

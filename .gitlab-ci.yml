@@ -1,7 +1,12 @@
 eval:
   stage: build
-  script: bash eval.sh && mkdir run && cp -r run-template/1.15.1 run && sh gradlew download-libraries
+  script: bash eval.sh && mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
+  #sh gradlew download-libraries
   
 build:
   stage: deploy
   script: bash eval.sh && sh gradlew build
+  environment:
+    name: production
+  only:
+    - master
