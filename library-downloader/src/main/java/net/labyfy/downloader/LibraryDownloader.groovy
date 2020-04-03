@@ -103,9 +103,9 @@ class LibraryDownloader implements Plugin<Project> {
                 });
 
                 println('downloading mappings:')
-                download("https://dl.labymod.net/mappings/1.15.1/methods.csv", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/methods.csv"))
-                download("https://dl.labymod.net/mappings/1.15.1/fields.csv", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/fields.csv"))
-                download("https://dl.labymod.net/mappings/1.15.1/joined.tsrg", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/joined.tsrg"))
+                download("https://dl.labymod.net/mappings/" + extension.version + "/methods.csv", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/methods.csv"))
+                download("https://dl.labymod.net/mappings/" + extension.version + "/fields.csv", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/fields.csv"))
+                download("https://dl.labymod.net/mappings/" + extension.version + "/joined.tsrg", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/joined.tsrg"))
 
                 println "deobfuscating client.jar:"
                 injector.getInstance(LabyDeobfuscator.class);

@@ -1,16 +1,13 @@
 package net.labyfy.component.gui.mcjfxgl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import cuchaz.jfxgl.JFXGL;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import net.labyfy.component.game.info.MinecraftWindow;
+import net.labyfy.component.gui.MinecraftWindow;
 import net.labyfy.component.gui.adapter.GuiAdapter;
 import net.labyfy.component.gui.component.GuiComponent;
-import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.util.concurrent.Callable;
@@ -40,7 +37,6 @@ public class McJfxGLScene implements GuiComponent {
   public void init(GuiAdapter adapter) {
     try {
       if (this.parent == null) {
-        JFXGL.start(this.minecraftWindow.getHandle(), new String[] {}, mcJfxGLApplication);
         this.parent = this.parentCallable.call();
         this.mcJfxGLApplication.setParent(this.parent);
       }

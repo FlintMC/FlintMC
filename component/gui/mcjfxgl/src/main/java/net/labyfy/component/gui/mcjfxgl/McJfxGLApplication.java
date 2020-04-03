@@ -1,5 +1,6 @@
 package net.labyfy.component.gui.mcjfxgl;
 
+import cuchaz.jfxgl.JFXGL;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -10,6 +11,7 @@ import javafx.stage.StageStyle;
 import javassist.CtBehavior;
 import javassist.CtField;
 import javassist.Modifier;
+import net.labyfy.component.gui.MinecraftWindow;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.tasks.subproperty.TaskBody;
@@ -22,10 +24,13 @@ import javax.inject.Singleton;
 @Singleton
 public class McJfxGLApplication extends Application {
 
+  private final MinecraftWindow minecraftWindow;
   private Stage stage;
 
   @Inject
-  private McJfxGLApplication() {}
+  private McJfxGLApplication(MinecraftWindow minecraftWindow) {
+    this.minecraftWindow = minecraftWindow;
+  }
 
   public void start(Stage stage) {
     this.stage = stage;
@@ -41,6 +46,12 @@ public class McJfxGLApplication extends Application {
           stage.setScene(scene);
           stage.show();
         });
+  }
+
+  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
+  @TaskBody
+  public void initialize() {
+    JFXGL.start(this.minecraftWindow.getHandle(), new String[] {}, this);
   }
 
   @ClassTransform({
