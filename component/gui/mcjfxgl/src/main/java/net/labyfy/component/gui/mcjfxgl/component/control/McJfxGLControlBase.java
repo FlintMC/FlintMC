@@ -194,7 +194,6 @@ public class McJfxGLControlBase<T extends McJfxGLControlBase<T>> extends Control
 
     if (this.getSkin() == null){
       Platform.runLater(() -> this.setSkin(themeRepository.getActive().getSkin(this)));
-      System.out.println("set skin");
     }
     for (PropertyAnimationTimer propertyAnimationTimer : this.propertyAnimationTimers) {
       if (propertyAnimationTimer.isRunning()) {
