@@ -1,5 +1,6 @@
 package net.labyfy.component.gui.mcjfxgl.component.theme;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.io.Files;
@@ -10,6 +11,7 @@ import net.labyfy.component.gui.mcjfxgl.component.theme.style.ThemeComponentStyl
 import net.labyfy.component.inject.event.Event;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
+import net.labyfy.component.resources.pack.ResourcePack;
 import net.labyfy.component.resources.pack.ResourcePackProvider;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import net.labyfy.component.tasks.Task;
@@ -23,6 +25,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -31,86 +34,61 @@ import java.util.zip.ZipFile;
 @Singleton
 public class ThemeRepository {
 
+  private final ResourcePackProvider resourcePackProvider;
   private final ResourceLocationProvider resourceLocationProvider;
   private final Collection<Theme> themes;
   private Theme activeTheme;
 
   @Inject
-  private ThemeRepository(ResourceLocationProvider resourceLocationProvider) {
+  private ThemeRepository(
+      ResourcePackProvider resourcePackProvider,
+      ResourceLocationProvider resourceLocationProvider) {
+    this.resourcePackProvider = resourcePackProvider;
     this.resourceLocationProvider = resourceLocationProvider;
     this.themes = new HashSet<>();
   }
 
   @Event(ResourcePackReloadEvent.class)
-  public void reloadThemes() {
+  public void reloadThemes() throws IOException {
     themes.clear();
-    System.out.println("reload");
-    for (ResourceLocation labyfy : this.resourceLocationProvider.getLoaded("", s -> true)) {
-      System.out.println(labyfy);
+    Map<String, byte[]> bytes = new HashMap<>();
+    for (ResourceLocation labyfy : this.resourceLocationProvider.getLoaded("labyfy")) {
+      bytes.put(
+          labyfy.getPath().replaceFirst("labyfy/themes/", ""),
+          IOUtils.toByteArray(labyfy.openInputStream()));
     }
-  }
 
-  @Task(Tasks.POST_MINECRAFT_INITIALIZE)
-  @TaskBody
-  private void init(@Named("labyfyThemesRoot") File labyfyThemesRoot) throws IOException {
+    if (!bytes.containsKey("theme.groovy")) return;
 
-    if (!labyfyThemesRoot.exists()) labyfyThemesRoot.mkdirs();
-    for (File file :
-        Objects.requireNonNull(
-            labyfyThemesRoot.listFiles(
-                pathname -> Files.getFileExtension(pathname.getName()).equals("zip")))) {
-      ZipFile zipFile = new ZipFile(file);
+    ThemeConfig themeConfig =
+        this.parseAndRun(bytes.get("theme.groovy"), ThemeConfig.Handle.class).toModel();
 
-      Map<String, byte[]> collect =
-          Collections.list(zipFile.entries()).stream()
-              .filter(entry -> !entry.isDirectory())
-              .distinct()
-              .collect(
-                  Collectors.toMap(
-                      ZipEntry::getName,
-                      entry -> {
-                        try {
-                          return IOUtils.toByteArray(zipFile.getInputStream(entry));
-                        } catch (IOException e) {
-                          e.printStackTrace();
-                        }
-                        return new byte[0];
-                      }));
+    Multimap<Class<? extends McJfxGLControlBase<?>>, ThemeComponentStyle> stylesMultimap =
+        HashMultimap.create();
 
-      if (!collect.containsKey("theme.groovy")) continue;
-
-      ThemeConfig themeConfig =
-          this.parseAndRun(collect.get("theme.groovy"), ThemeConfig.Handle.class).toModel();
-
-      Multimap<Class<? extends McJfxGLControlBase<?>>, ThemeComponentStyle> stylesMultimap =
-          HashMultimap.create();
-
-      for (Map.Entry<String, byte[]> entry : collect.entrySet()) {
-        if (!entry.getKey().endsWith(".groovy") || entry.getKey().equals("theme.groovy")) continue;
-        try {
-          String targetName = entry.getKey().replace("/", ".").replace(".groovy", "");
-          ThemeComponentStyle themeComponentStyle =
-              this.parseAndRun(entry.getValue(), ThemeComponentStyle.Handle.class)
-                  .toModel((Class<? extends McJfxGLControlBase<?>>) Class.forName(targetName));
-          stylesMultimap.put(themeComponentStyle.getTarget(), themeComponentStyle);
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+    for (Map.Entry<String, byte[]> entry : bytes.entrySet()) {
+      if (!entry.getKey().endsWith(".groovy") || entry.getKey().equals("theme.groovy")) continue;
+      try {
+        ThemeComponentStyle themeComponentStyle =
+            this.parseAndRun(entry.getValue(), ThemeComponentStyle.Handle.class).toModel();
+        stylesMultimap.put(themeComponentStyle.getTarget(), themeComponentStyle);
+      } catch (Exception ex) {
+        ex.printStackTrace();
       }
-
-      for (Class<? extends McJfxGLControlBase<?>> key : stylesMultimap.keys()) {
-        Collection<ThemeComponentStyle> themeComponentStyles = stylesMultimap.get(key);
-        if (themeComponentStyles.size() == 1) continue;
-        stylesMultimap.removeAll(key);
-        System.out.println("Remove invalid component style for " + key.getName());
-      }
-
-      Map<Class<? extends McJfxGLControlBase<?>>, ThemeComponentStyle> stylesMap =
-          stylesMultimap.entries().stream()
-              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-      this.themes.add(new Theme(themeConfig, stylesMap));
     }
+
+    for (Class<? extends McJfxGLControlBase<?>> key : stylesMultimap.keys()) {
+      Collection<ThemeComponentStyle> themeComponentStyles = stylesMultimap.get(key);
+      if (themeComponentStyles.size() == 1) continue;
+      stylesMultimap.removeAll(key);
+      System.out.println("Remove invalid component style for " + key.getName());
+    }
+
+    this.themes.add(
+        new Theme(
+            themeConfig,
+            stylesMultimap.entries().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
     this.setActive(this.get("default"));
   }
 

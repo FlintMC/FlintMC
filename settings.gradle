@@ -56,4 +56,6 @@ include 'component:resources'
 findProject(':component:resources')?.name = 'resources'
 include 'component:resources:resources-1.15.1'
 findProject(':component:resources:resources-1.15.1')?.name = 'resources-1.15.1'
+include 'component:gui:mcjfxgl:mcjfxgl-1.15.1'
+findProject(':component:gui:mcjfxgl:mcjfxgl-1.15.1')?.name = 'mcjfxgl-1.15.1'
 

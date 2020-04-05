@@ -34,12 +34,7 @@ public class ThemeComponentStyle {
   }
 
   public String toString() {
-    return "ThemeComponentStyle{"
-        + "target="
-        + target
-        + ", applyFunction="
-        + applyFunction
-        + '}';
+    return "ThemeComponentStyle{" + "target=" + target + ", applyFunction=" + applyFunction + '}';
   }
 
   public abstract static class Handle extends Script {
@@ -56,9 +51,9 @@ public class ThemeComponentStyle {
       this.applyFunction = closure::call;
     }
 
-    public ThemeComponentStyle toModel(Class<? extends McJfxGLControlBase<?>> target) {
+    public ThemeComponentStyle toModel() {
       return new ThemeComponentStyle(
-          target,
+          (Class<? extends McJfxGLControlBase<?>>) this.getBinding().getVariable("target"),
           applyFunction);
     }
   }

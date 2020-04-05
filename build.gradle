@@ -26,12 +26,15 @@ allprojects {
         }
     }
 
+    apply plugin: 'maven'
+
     repositories {
         maven {
             url = "${artifactory_contextUrl}"
         }
         mavenCentral()
     }
+
 }
 
 
@@ -44,6 +47,7 @@ dependencies {
     compile project(':component:transform:hook')
     compile project(':component:gui')
     compile project(':component:gui:mcjfxgl')
+    compile project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
     compile project(':component:gui:gui-1.15.1')
     compile project(':component:tasks')
     compile project(':component:tasks:tasks-1.15.1')

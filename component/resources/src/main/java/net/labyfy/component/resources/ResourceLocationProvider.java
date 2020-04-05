@@ -13,5 +13,7 @@ public interface ResourceLocationProvider {
 
   Collection<ResourceLocation> getRecursive(ResourceLocation resourceLocation);
 
+  Collection<ResourceLocation> getLoaded(String namespace);
+
   Collection<ResourceLocation> getLoaded(String namespace, Predicate<String> predicate);
 }

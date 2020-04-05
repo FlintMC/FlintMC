@@ -1,5 +1,6 @@
 package net.labyfy.component.resources.v1_15_1;
 
+import com.google.common.base.Predicates;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
@@ -45,6 +46,10 @@ public class LabyResourceLocationProvider implements ResourceLocationProvider {
       ex.printStackTrace();
     }
     return Collections.emptyList();
+  }
+
+  public Collection<ResourceLocation> getLoaded(String namespace) {
+    return this.getLoaded(namespace, Predicates.alwaysTrue());
   }
 
   public Collection<ResourceLocation> getLoaded(String namespace, Predicate<String> predicate) {

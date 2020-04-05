@@ -191,8 +191,11 @@ public class McJfxGLControlBase<T extends McJfxGLControlBase<T>> extends Control
   public void init(GuiAdapter adapter) {}
 
   public void render(GuiAdapter adapter) {
-    if (this.getSkin() == null)
+
+    if (this.getSkin() == null){
       Platform.runLater(() -> this.setSkin(themeRepository.getActive().getSkin(this)));
+      System.out.println("set skin");
+    }
     for (PropertyAnimationTimer propertyAnimationTimer : this.propertyAnimationTimers) {
       if (propertyAnimationTimer.isRunning()) {
         propertyAnimationTimer.handle(System.nanoTime());

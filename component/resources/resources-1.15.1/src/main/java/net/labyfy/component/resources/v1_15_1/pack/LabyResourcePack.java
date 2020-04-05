@@ -3,11 +3,14 @@ package net.labyfy.component.resources.v1_15_1.pack;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.component.resources.pack.ResourcePack;
 import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraft.resources.ResourcePackType;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 
 public class LabyResourcePack implements ResourcePack {
@@ -24,6 +27,16 @@ public class LabyResourcePack implements ResourcePack {
 
   public Collection<String> getNameSpaces() {
     return this.info.getResourcePack().getResourceNamespaces(ResourcePackType.CLIENT_RESOURCES);
+  }
+
+  public InputStream getStream(ResourceLocation resourceLocation) {
+    try {
+      return this.info
+          .getResourcePack()
+          .getResourceStream(ResourcePackType.CLIENT_RESOURCES, resourceLocation.getHandle());
+    } catch (IOException e) {
+    }
+    return null;
   }
 
   public String getName() {
