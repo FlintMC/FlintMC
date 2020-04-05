@@ -26,12 +26,15 @@ allprojects {
         }
     }
 
+    apply plugin: 'maven'
+
     repositories {
         maven {
             url = "${artifactory_contextUrl}"
         }
         mavenCentral()
     }
+
 }
 
 
@@ -44,14 +47,15 @@ dependencies {
     compile project(':component:transform:hook')
     compile project(':component:gui')
     compile project(':component:gui:mcjfxgl')
+    compile project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
     compile project(':component:gui:gui-1.15.1')
     compile project(':component:tasks')
     compile project(':component:tasks:tasks-1.15.1')
     compile project(':component:mapping')
     compile project(':component:inject')
-    compile project(':component:game-info')
-    compile project(':component:game-info:game-info-1.15.1')
     compile project(':component:transform:hook')
+    compile project(':component:resources')
+    compile project(':component:resources:resources-1.15.1')
     compile project(':versioned:labyfy-1.15.1')
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
     compile 'com.google.guava:guava:27.1-jre'

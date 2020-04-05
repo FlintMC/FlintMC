@@ -4,8 +4,11 @@ import com.sun.javafx.css.converters.SizeConverter;
 import javafx.beans.property.*;
 import javafx.css.*;
 import javafx.scene.control.Control;
+import javafx.scene.control.Skin;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
+import net.labyfy.component.gui.mcjfxgl.component.theme.ThemeRepository;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -13,6 +16,9 @@ import java.util.function.Function;
 @IgnoreInitialization
 public class McJfxGLControl<T extends McJfxGLControl<T>> extends McJfxGLControlBase<T> {
   private static final Map<String, CssMetaData> META_DATA = new HashMap<>();
+
+  protected McJfxGLControl() {
+  }
 
   public static DoubleProperty createDoubleProperty(
       Control control, String propertyName, double initialValue) {
@@ -81,5 +87,9 @@ public class McJfxGLControl<T extends McJfxGLControl<T>> extends McJfxGLControlB
       return META_DATA.get(property);
     }
     return META_DATA.get(property);
+  }
+
+  protected Skin<?> createDefaultSkin() {
+    return null;
   }
 }

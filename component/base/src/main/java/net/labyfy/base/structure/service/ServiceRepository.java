@@ -4,9 +4,11 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.reflect.ClassPath;
 import com.google.inject.Injector;
+import groovy.lang.Script;
 import net.labyfy.base.structure.annotation.AnnotationCollector;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.identifier.IdentifierParser;
+import net.labyfy.base.structure.identifier.IgnoreInitialization;
 import net.minecraft.launchwrapper.Launch;
 
 import javax.inject.Inject;
@@ -59,7 +61,7 @@ public class ServiceRepository {
 
   public ServiceRepository notifyClassLoaded(Class<?> clazz) {
     this.loadedClasses.add(clazz);
-    Collection<Identifier.Base> identifier = this.identifierParser.parse(clazz);
+      Collection<Identifier.Base> identifier = this.identifierParser.parse(clazz);
 
     if (ServiceHandler.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Service.class)) {
       this.register(((Class<? extends ServiceHandler>) clazz));

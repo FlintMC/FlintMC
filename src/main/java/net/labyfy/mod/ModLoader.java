@@ -13,12 +13,12 @@ import java.io.File;
 @Task(Tasks.PRE_MINECRAFT_INITIALIZE)
 public class ModLoader {
 
-  private final File modsFolder;
+  private final File labyfyModsRoot;
 
   @Inject
   private ModLoader(
-          @Named("modsFolder") File modsFolder) {
-    this.modsFolder = modsFolder;
+          @Named("labyfyModsRoot") File labyfyModsRoot) {
+    this.labyfyModsRoot = labyfyModsRoot;
   }
 
   @TaskBody

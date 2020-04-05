@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.sun.javafx.css.converters.DurationConverter;
 import com.sun.javafx.css.converters.StringConverter;
 import javafx.animation.Interpolator;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
@@ -20,7 +21,9 @@ import net.labyfy.component.gui.mcjfxgl.component.control.skin.McJfxGLControlBas
 import net.labyfy.component.gui.mcjfxgl.component.style.css.StyleableObjectPropertySelfProvidingCssMetaData;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.animate.PropertyAnimationTimer;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.interpolate.PropertyInterpolator;
+import net.labyfy.component.gui.mcjfxgl.component.theme.ThemeRepository;
 
+import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -44,9 +47,11 @@ public class McJfxGLControlBase<T extends McJfxGLControlBase<T>> extends Control
               .put("-fx-region-background", "-fx-background")
               .build());
 
+  @Inject private ThemeRepository themeRepository;
+
   private final Collection<PropertyAnimationTimer> propertyAnimationTimers = new HashSet<>();
 
-  public McJfxGLControlBase() {
+  protected McJfxGLControlBase() {
     modifiedMetaData.putIfAbsent(
         (Class<? extends McJfxGLControlBase<?>>) getClass(), new CopyOnWriteArraySet<>());
     cssMetaData.putIfAbsent(
@@ -186,6 +191,11 @@ public class McJfxGLControlBase<T extends McJfxGLControlBase<T>> extends Control
   public void init(GuiAdapter adapter) {}
 
   public void render(GuiAdapter adapter) {
+
+    if (this.getSkin() == null){
+      Platform.runLater(() -> this.setSkin(themeRepository.getActive().getSkin(this)));
+      System.out.println("set skin");
+    }
     for (PropertyAnimationTimer propertyAnimationTimer : this.propertyAnimationTimers) {
       if (propertyAnimationTimer.isRunning()) {
         propertyAnimationTimer.handle(System.nanoTime());

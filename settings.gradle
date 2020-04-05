@@ -52,9 +52,10 @@ findProject(':component:tasks:tasks-1.15.1')?.name = 'tasks-1.15.1'
 include 'component:transform:hook'
 findProject(':component:transform:hook')?.name = 'hook'
 
-include 'component:game-info'
-findProject(':component:game-info')?.name = 'game-info'
-
-include 'component:game-info:game-info-1.15.1'
-findProject(':component:game-info:game-info-1.15.1')?.name = 'game-info-1.15.1'
+include 'component:resources'
+findProject(':component:resources')?.name = 'resources'
+include 'component:resources:resources-1.15.1'
+findProject(':component:resources:resources-1.15.1')?.name = 'resources-1.15.1'
+include 'component:gui:mcjfxgl:mcjfxgl-1.15.1'
+findProject(':component:gui:mcjfxgl:mcjfxgl-1.15.1')?.name = 'mcjfxgl-1.15.1'
 

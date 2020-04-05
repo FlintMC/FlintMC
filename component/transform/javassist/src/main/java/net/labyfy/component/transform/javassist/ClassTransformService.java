@@ -84,7 +84,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
     }
   }
 
-  public synchronized byte[] transform(
+  public byte[] transform(
       String className, String transformedClassName, byte[] bytes) {
     try {
 

@@ -2,6 +2,7 @@ package net.labyfy.base.structure.service;
 
 import com.google.common.reflect.ClassPath;
 import com.google.inject.Singleton;
+import groovy.lang.Script;
 import net.labyfy.base.structure.Initialize;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
 
@@ -29,6 +30,9 @@ public class ServiceInitializer {
     collect.forEach(
         clazz -> {
           try {
+            if ((clazz.getSuperclass() != null
+                    && clazz.getSuperclass().getName().contains("groovy"))
+                || clazz.getName().contains("groovy")) return;
             if (clazz.isAnnotationPresent(IgnoreInitialization.class)) return;
             if (clazz.isAnnotationPresent(Service.class)) {
               services.add(clazz);

@@ -17,7 +17,8 @@ dependencies {
     compile project(':component:transform:javassist')
     compile project(':component:tasks')
     compile project(':component:gui')
-    compile project(':component:game-info')
+    compile project(':component:resources')
     compile 'cuchaz:jfxgl:0.4'
     compile 'cuchaz:jfxgl-jfxrt:0.4'
+    compile 'commons-io:commons-io:2.6'
 }

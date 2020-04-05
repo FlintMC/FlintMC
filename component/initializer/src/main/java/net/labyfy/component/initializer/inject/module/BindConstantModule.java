@@ -9,12 +9,17 @@ import net.minecraft.launchwrapper.Launch;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Singleton
 public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
-    this.bindNamedFilePath("modsFolder", "./Labyfy/mods");
+    this.bindNamedFilePath("labyfyRoot", "./Labyfy");
+    this.bindNamedFilePath("labyfyModsRoot", "./Labyfy/mods");
+    this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
+    this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     try {
       this.bindNamed(
           "obfuscated",
@@ -22,7 +27,6 @@ public class BindConstantModule extends AbstractModule {
                   .getTopLevelClassesRecursive("net.minecraft.world")
                   .size()
               == 0));
-      this.bindNamedFilePath("labyfyRoot", "./Labyfy");
     } catch (IOException e) {
       e.printStackTrace();
     }
