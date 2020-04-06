@@ -1,6 +1,8 @@
-package net.labyfy.component.gui.mcjfxgl.component.control;
+package net.labyfy.component.gui.mcjfxgl.component;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.sun.javafx.css.converters.DurationConverter;
 import com.sun.javafx.css.converters.StringConverter;
 import javafx.animation.Interpolator;
@@ -17,26 +19,29 @@ import javafx.util.Duration;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
 import net.labyfy.component.gui.adapter.GuiAdapter;
 import net.labyfy.component.gui.component.GuiComponent;
-import net.labyfy.component.gui.mcjfxgl.component.McJfxGLComponent;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.StyleableObjectPropertySelfProvidingCssMetaData;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.animate.PropertyAnimationTimer;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.interpolate.PropertyInterpolator;
+import net.labyfy.component.gui.mcjfxgl.component.theme.Theme;
 import net.labyfy.component.gui.mcjfxgl.component.theme.ThemeRepository;
+import net.labyfy.component.gui.mcjfxgl.component.theme.style.ThemeComponentStyle;
 import net.labyfy.component.inject.InjectionHolder;
+import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @IgnoreInitialization
-public class McJfxGLControlBase extends Control implements GuiComponent {
+public class McJfxGLControl extends Control implements GuiComponent {
 
   private static final Map<
-          Class<? extends McJfxGLControlBase>, Collection<CssMetaData<? extends Styleable, ?>>>
+          Class<? extends McJfxGLControl>, Collection<CssMetaData<? extends Styleable, ?>>>
           cssMetaData = new HashMap<>();
 
   private static final Map<
-          Class<? extends McJfxGLControlBase>, Collection<CssMetaData<? extends Styleable, ?>>>
+          Class<? extends McJfxGLControl>, Collection<CssMetaData<? extends Styleable, ?>>>
           modifiedMetaData = new HashMap<>();
 
   private static final Map<String, String> MODIFY_PROPERTIES =
@@ -47,14 +52,13 @@ public class McJfxGLControlBase extends Control implements GuiComponent {
                           .build());
 
   private final Collection<PropertyAnimationTimer> propertyAnimationTimers = new HashSet<>();
-  private final McJfxGLComponent component;
+  private final McJfxGLComponent<?> component;
   private Class<?> defaultSkinClass;
 
-  protected McJfxGLControlBase(McJfxGLComponent component) {
+  protected McJfxGLControl(McJfxGLComponent<?> component) {
     this.component = component;
     modifiedMetaData.putIfAbsent(getClass(), new CopyOnWriteArraySet<>());
     cssMetaData.putIfAbsent(getClass(), new CopyOnWriteArraySet<>());
-    cssMetaData.get(getClass()).addAll(getControlClassMetaData());
 
     for (CssMetaData<? extends Styleable, ?> metaData : cssMetaData.get(getClass())) {
       if (!MODIFY_PROPERTIES.containsKey(metaData.getProperty())) {
@@ -64,6 +68,14 @@ public class McJfxGLControlBase extends Control implements GuiComponent {
       addTransitionProperties(null, metaData, "transition-duration", "transition-interpolator");
       modifiedMetaData.get(getClass()).add(metaData);
     }
+
+    this.maxWidthProperty().bind(this.component.widthProperty());
+    this.minWidthProperty().bind(this.component.widthProperty());
+
+    this.maxHeightProperty().bind(this.component.heightProperty());
+    this.minHeightProperty().bind(this.component.heightProperty());
+
+    this.backgroundProperty().bind(this.component.backgroundProperty());
   }
 
   private static Collection<CssMetaData<? extends Styleable, ?>> getRecursiveMetaData(
@@ -162,7 +174,7 @@ public class McJfxGLControlBase extends Control implements GuiComponent {
             }
           };
 
-      McJfxGLControlBase.cssMetaData
+      McJfxGLControl.cssMetaData
           .get(getClass())
           .addAll(
               Arrays.asList(
@@ -179,27 +191,48 @@ public class McJfxGLControlBase extends Control implements GuiComponent {
   }
 
   public Collection<CssMetaData<? extends Styleable, ?>> getControlClassMetaData() {
-    return Control.getClassCssMetaData();
+    return Collections.emptyList();
   }
 
   public final List<CssMetaData<? extends Styleable, ?>> getControlCssMetaData() {
-    return Collections.unmodifiableList(new ArrayList<>(cssMetaData.get(getClass())));
+    return Collections.unmodifiableList(
+            Lists.newArrayList(
+                    Iterables.concat(cssMetaData.get(getClass()), getControlClassMetaData())));
   }
 
   public void init(GuiAdapter adapter) {}
 
   public void render(GuiAdapter adapter) {
     if (this.defaultSkinClass == null) {
-      this.defaultSkinClass = this.createDefaultSkin().getClass();
+      Platform.runLater(
+              () -> {
+                this.defaultSkinClass = this.createDefaultSkin().getClass();
+              });
     }
 
     if (this.getSkin().getClass().equals(this.defaultSkinClass)) {
       Platform.runLater(
-              () ->
-                      this.setSkin(
-                              InjectionHolder.getInjectedInstance(ThemeRepository.class)
-                                      .getActive()
-                                      .getSkin(this)));
+              () -> {
+                Theme active = InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive();
+                if (active == null) return;
+
+                ThemeComponentStyle themeComponentStyle =
+                        active.getStyleMap().get(this.getComponent().getClass());
+
+                if (themeComponentStyle == null) return;
+
+                this.getStylesheets().clear();
+                for (String styleSheet : themeComponentStyle.getStyleSheets()) {
+                  try {
+                    this.setStyle(IOUtils.toString(active.getContent().get(styleSheet), "utf-8"));
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                }
+                this.getStyleClass()
+                        .setAll(active.getStyleMap().get(this.getComponent().getClass()).getStyleClasses());
+                this.setSkin(active.getSkin(this));
+              });
     }
     for (PropertyAnimationTimer propertyAnimationTimer : this.propertyAnimationTimers) {
       if (propertyAnimationTimer.isRunning()) {

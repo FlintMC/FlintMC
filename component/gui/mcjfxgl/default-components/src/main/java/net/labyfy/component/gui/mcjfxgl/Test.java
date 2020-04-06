@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.mcjfxgl.components.button;
+package net.labyfy.component.gui.mcjfxgl;
 
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
@@ -6,7 +6,7 @@ import net.labyfy.component.gui.Gui;
 import net.labyfy.component.gui.GuiRenderState;
 import net.labyfy.component.gui.Guis;
 import net.labyfy.component.gui.adapter.GuiAdapter;
-import net.labyfy.component.gui.mcjfxgl.McJfxGLScene;
+import net.labyfy.component.gui.mcjfxgl.component.labeled.button.Button;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,7 +26,13 @@ public class Test {
                     () -> {
                       BorderPane borderPane = new BorderPane();
                       borderPane.setBackground(Background.EMPTY);
-                      borderPane.setCenter(this.factory.create().getControl());
+                      borderPane.setCenter(
+                              this.factory
+                                      .create()
+                                      .setText("Test123")
+                                      .setWidth(800)
+                                      .setHeight(80)
+                                      .getControl());
                       return borderPane;
                     });
   }

@@ -4,7 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
-import net.labyfy.component.gui.mcjfxgl.component.control.McJfxGLControlBase;
+import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
 import net.labyfy.component.gui.mcjfxgl.component.theme.style.ThemeComponentStyle;
 import net.labyfy.component.inject.event.Event;
 import net.labyfy.component.resources.ResourceLocation;
@@ -29,14 +29,17 @@ public class ThemeRepository {
   private final ResourcePackProvider resourcePackProvider;
   private final ResourceLocationProvider resourceLocationProvider;
   private final Collection<Theme> themes;
+  private final Theme.Factory themeFactory;
   private Theme activeTheme;
 
   @Inject
   private ThemeRepository(
-      ResourcePackProvider resourcePackProvider,
-      ResourceLocationProvider resourceLocationProvider) {
+          ResourcePackProvider resourcePackProvider,
+          ResourceLocationProvider resourceLocationProvider,
+          Theme.Factory themeFactory) {
     this.resourcePackProvider = resourcePackProvider;
     this.resourceLocationProvider = resourceLocationProvider;
+    this.themeFactory = themeFactory;
     this.themes = new HashSet<>();
   }
 
@@ -55,7 +58,7 @@ public class ThemeRepository {
     ThemeConfig themeConfig =
             this.parseAndRun(bytes.get("theme.groovy"), ThemeConfig.Handle.class).toModel();
 
-    Multimap<Class<? extends McJfxGLControlBase>, ThemeComponentStyle> stylesMultimap =
+    Multimap<Class<? extends McJfxGLControl>, ThemeComponentStyle> stylesMultimap =
             HashMultimap.create();
 
     for (Map.Entry<String, byte[]> entry : bytes.entrySet()) {
@@ -69,7 +72,7 @@ public class ThemeRepository {
       }
     }
 
-    for (Class<? extends McJfxGLControlBase> key : stylesMultimap.keys()) {
+    for (Class<? extends McJfxGLControl> key : stylesMultimap.keys()) {
       Collection<ThemeComponentStyle> themeComponentStyles = stylesMultimap.get(key);
       if (themeComponentStyles.size() == 1) continue;
       stylesMultimap.removeAll(key);
@@ -77,10 +80,11 @@ public class ThemeRepository {
     }
 
     this.themes.add(
-        new Theme(
-            themeConfig,
-            stylesMultimap.entries().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
+            this.themeFactory.create(
+                    bytes,
+                    themeConfig,
+                    stylesMultimap.entries().stream()
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
     this.setActive(this.get("default"));
   }
 
