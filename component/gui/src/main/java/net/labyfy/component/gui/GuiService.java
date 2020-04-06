@@ -51,6 +51,7 @@ public class GuiService implements ServiceHandler {
       GuiRenderState.Type targetGuiRenderState,
       Object screen,
       Map<String, Object> args) {
+
     for (Identifier.Base property : this.properties) {
       Gui gui = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
       NameResolver nameResolver = InjectionHolder.getInjectedInstance(gui.nameResolver());
@@ -73,14 +74,14 @@ public class GuiService implements ServiceHandler {
 
         GuiAdapter adapter = this.guiAdapterProvider.getAdapter(screen);
 
-        parameters.put(Key.get(Object.class, Names.named("screen")), screen);
+        parameters.put(Key.get(Object.class, Names.named("instance")), screen);
         parameters.put(Key.get(GuiRenderState.class), guiRenderState);
         parameters.put(Key.get(GuiAdapter.class), adapter);
 
         if (targetGuiRenderState == GuiRenderState.Type.RENDER) {
           adapter.updateMousePosition((int) args.get("mouseX"), (int) args.get("mouseY"));
           adapter.updatePartialTick((float) args.get("partialTick"));
-        }else{
+        } else if (executionTime == Hook.ExecutionTime.BEFORE) {
           adapter.reset();
         }
 

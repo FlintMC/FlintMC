@@ -20,8 +20,8 @@ public class LabyGuiInterceptor extends GuiInterceptor {
       methodName = "init",
       version = "1.15.1")
   @HookFilter(
-      value = HookFilters.SUBCLASS_OF,
-      type = @Type(typeName = "net.minecraft.client.gui.AbstractGui"))
+          value = HookFilters.SUBCLASS_OF,
+          type = @Type(typeName = "net.minecraft.client.gui.screen.Screen"))
   public void hookInit(Hook.ExecutionTime executionTime, @Named("instance") Object screen) {
     this.notifyGuis(executionTime, GuiRenderState.Type.INIT, screen, Collections.emptyMap());
   }
@@ -36,12 +36,13 @@ public class LabyGuiInterceptor extends GuiInterceptor {
       },
       version = "1.15.1")
   @HookFilter(
-      value = HookFilters.SUBCLASS_OF,
-      type = @Type(typeName = "net.minecraft.client.gui.AbstractGui"))
+          value = HookFilters.SUBCLASS_OF,
+          type = @Type(typeName = "net.minecraft.client.gui.screen.Screen"))
   public void hookRender(
       Hook.ExecutionTime executionTime,
       @Named("instance") Object screen,
       @Named("args") Object[] args) {
+
     this.notifyGuis(
         executionTime,
         GuiRenderState.Type.RENDER,

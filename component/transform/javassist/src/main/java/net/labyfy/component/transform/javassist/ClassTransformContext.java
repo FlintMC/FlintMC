@@ -1,13 +1,12 @@
 package net.labyfy.component.transform.javassist;
 
-import com.google.common.base.Preconditions;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import javassist.*;
+import net.labyfy.base.structure.resolve.NameResolver;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.mappings.ClassMappingProvider;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,32 +18,33 @@ public class ClassTransformContext {
 
   private final ClassMappingProvider labyClassMappingProvider;
   private final Collection<Predicate<CtClass>> filters;
+  private final NameResolver nameResolver;
   private final ClassTransform classTransform;
   private final Method method;
-  private final Class owner;
+  private final Class ownerClass;
+  private final Object owner;
   private CtClass ctClass;
 
   @AssistedInject
   private ClassTransformContext(
-      ClassMappingProvider labyClassMappingProvider,
-      @Assisted("filters") Collection<Predicate<CtClass>> filters,
-      @Assisted ClassTransform classTransform,
-      @Assisted Method method,
-      @Assisted Class owner) {
+          ClassMappingProvider labyClassMappingProvider,
+          @Assisted("filters") Collection<Predicate<CtClass>> filters,
+          @Assisted NameResolver nameResolver,
+          @Assisted ClassTransform classTransform,
+          @Assisted Method method,
+          @Assisted Class ownerClass,
+          @Assisted("owner") Object owner) {
     this.labyClassMappingProvider = labyClassMappingProvider;
     this.filters = Collections.unmodifiableCollection(filters);
+    this.nameResolver = nameResolver;
     this.classTransform = classTransform;
     this.method = method;
+    this.ownerClass = ownerClass;
     this.owner = owner;
   }
 
-  @AssistedFactory(ClassTransformContext.class)
-  public interface Factory {
-    ClassTransformContext create(
-        @Assisted("filters") Collection<Predicate<CtClass>> filters,
-        ClassTransform classTransform,
-        Method method,
-        Class owner);
+  public Class getOwnerClass() {
+    return ownerClass;
   }
 
   public CtField getField(String name) {
@@ -153,8 +153,12 @@ public class ClassTransformContext {
     return classTransform;
   }
 
-  public Class getOwner() {
+  public Object getOwner() {
     return owner;
+  }
+
+  public NameResolver getNameResolver() {
+    return nameResolver;
   }
 
   public CtClass getCtClass() {
@@ -163,5 +167,16 @@ public class ClassTransformContext {
 
   public void setCtClass(CtClass ctClass) {
     this.ctClass = ctClass;
+  }
+
+  @AssistedFactory(ClassTransformContext.class)
+  public interface Factory {
+    ClassTransformContext create(
+            @Assisted("filters") Collection<Predicate<CtClass>> filters,
+            NameResolver nameResolver,
+            ClassTransform classTransform,
+            Method method,
+            Class ownerClass,
+            @Assisted("owner") Object owner);
   }
 }

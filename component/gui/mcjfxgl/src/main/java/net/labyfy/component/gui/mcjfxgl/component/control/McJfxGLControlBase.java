@@ -17,45 +17,43 @@ import javafx.util.Duration;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
 import net.labyfy.component.gui.adapter.GuiAdapter;
 import net.labyfy.component.gui.component.GuiComponent;
-import net.labyfy.component.gui.mcjfxgl.component.control.skin.McJfxGLControlBaseSkin;
+import net.labyfy.component.gui.mcjfxgl.component.McJfxGLComponent;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.StyleableObjectPropertySelfProvidingCssMetaData;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.animate.PropertyAnimationTimer;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.interpolate.PropertyInterpolator;
 import net.labyfy.component.gui.mcjfxgl.component.theme.ThemeRepository;
+import net.labyfy.component.inject.InjectionHolder;
 
-import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @IgnoreInitialization
-public class McJfxGLControlBase<T extends McJfxGLControlBase<T>> extends Control
-    implements GuiComponent {
+public class McJfxGLControlBase extends Control implements GuiComponent {
 
   private static final Map<
-          Class<? extends McJfxGLControlBase<?>>, Collection<CssMetaData<? extends Styleable, ?>>>
-      cssMetaData = new HashMap<>();
+          Class<? extends McJfxGLControlBase>, Collection<CssMetaData<? extends Styleable, ?>>>
+          cssMetaData = new HashMap<>();
 
   private static final Map<
-          Class<? extends McJfxGLControlBase<?>>, Collection<CssMetaData<? extends Styleable, ?>>>
-      modifiedMetaData = new HashMap<>();
+          Class<? extends McJfxGLControlBase>, Collection<CssMetaData<? extends Styleable, ?>>>
+          modifiedMetaData = new HashMap<>();
 
   private static final Map<String, String> MODIFY_PROPERTIES =
-      new HashMap<>(
-          ImmutableMap.<String, String>builder()
-              .put("-fx-region-border", "-fx-border")
-              .put("-fx-region-background", "-fx-background")
-              .build());
-
-  @Inject private ThemeRepository themeRepository;
+          new HashMap<>(
+                  ImmutableMap.<String, String>builder()
+                          .put("-fx-region-border", "-fx-border")
+                          .put("-fx-region-background", "-fx-background")
+                          .build());
 
   private final Collection<PropertyAnimationTimer> propertyAnimationTimers = new HashSet<>();
+  private final McJfxGLComponent component;
+  private Class<?> defaultSkinClass;
 
-  protected McJfxGLControlBase() {
-    modifiedMetaData.putIfAbsent(
-        (Class<? extends McJfxGLControlBase<?>>) getClass(), new CopyOnWriteArraySet<>());
-    cssMetaData.putIfAbsent(
-        (Class<? extends McJfxGLControlBase<?>>) getClass(), new CopyOnWriteArraySet<>());
+  protected McJfxGLControlBase(McJfxGLComponent component) {
+    this.component = component;
+    modifiedMetaData.putIfAbsent(getClass(), new CopyOnWriteArraySet<>());
+    cssMetaData.putIfAbsent(getClass(), new CopyOnWriteArraySet<>());
     cssMetaData.get(getClass()).addAll(getControlClassMetaData());
 
     for (CssMetaData<? extends Styleable, ?> metaData : cssMetaData.get(getClass())) {
@@ -97,11 +95,11 @@ public class McJfxGLControlBase<T extends McJfxGLControlBase<T>> extends Control
               metaData.isInherits());
 
       CssMetaData transitionDuration =
-          new StyleableObjectPropertySelfProvidingCssMetaData<T, Duration>(
-              MODIFY_PROPERTIES.get(metaData.getProperty()) + "-transition-duration",
-              Duration.ZERO,
-              DurationConverter.getInstance(),
-              true);
+              new StyleableObjectPropertySelfProvidingCssMetaData<>(
+                      MODIFY_PROPERTIES.get(metaData.getProperty()) + "-transition-duration",
+                      Duration.ZERO,
+                      DurationConverter.getInstance(),
+                      true);
 
       SimpleObjectProperty<Interpolator> interpolator =
           new SimpleObjectProperty<>(Interpolator.SPLINE(0.25, 0.1, 0.25, 1));
@@ -177,7 +175,7 @@ public class McJfxGLControlBase<T extends McJfxGLControlBase<T>> extends Control
   }
 
   protected Skin<?> createDefaultSkin() {
-    return new McJfxGLControlBaseSkin<>(((T) this));
+    return null;
   }
 
   public Collection<CssMetaData<? extends Styleable, ?>> getControlClassMetaData() {
@@ -191,14 +189,26 @@ public class McJfxGLControlBase<T extends McJfxGLControlBase<T>> extends Control
   public void init(GuiAdapter adapter) {}
 
   public void render(GuiAdapter adapter) {
+    if (this.defaultSkinClass == null) {
+      this.defaultSkinClass = this.createDefaultSkin().getClass();
+    }
 
-    if (this.getSkin() == null){
-      Platform.runLater(() -> this.setSkin(themeRepository.getActive().getSkin(this)));
+    if (this.getSkin().getClass().equals(this.defaultSkinClass)) {
+      Platform.runLater(
+              () ->
+                      this.setSkin(
+                              InjectionHolder.getInjectedInstance(ThemeRepository.class)
+                                      .getActive()
+                                      .getSkin(this)));
     }
     for (PropertyAnimationTimer propertyAnimationTimer : this.propertyAnimationTimers) {
       if (propertyAnimationTimer.isRunning()) {
         propertyAnimationTimer.handle(System.nanoTime());
       }
     }
+  }
+
+  public McJfxGLComponent getComponent() {
+    return component;
   }
 }

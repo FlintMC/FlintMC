@@ -1,7 +1,5 @@
 package net.labyfy.component.transform.javassist;
 
-import com.google.inject.Key;
-import com.google.inject.name.Names;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.bytecode.ClassFile;
@@ -18,6 +16,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -33,6 +32,7 @@ import java.util.function.Predicate;
 @Service(ClassTransform.class)
 public class ClassTransformService implements ServiceHandler, IClassTransformer {
 
+  private final String version;
   private final ClassMappingProvider classMappingProvider;
   private final ClassTransformContext.Factory classTransformContextFactory;
   private final Collection<ClassTransformContext> classTransformContexts;
@@ -41,57 +41,61 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
 
   @Inject
   private ClassTransformService(
-      ClassMappingProvider classMappingProvider,
-      ClassTransformContext.Factory classTransformContextFactory) {
+          ClassMappingProvider classMappingProvider,
+          ClassTransformContext.Factory classTransformContextFactory,
+          @Named("launchArguments") Map launchArguments) {
     this.classMappingProvider = classMappingProvider;
     this.classTransformContextFactory = classTransformContextFactory;
     this.classTransformContexts = new HashSet<>();
+    this.version = (String) launchArguments.get("--version");
   }
 
-  public synchronized void discover(Identifier.Base property) {
+  public void discover(Identifier.Base property) {
     try {
       LocatedIdentifiedAnnotation locatedIdentifiedAnnotation =
-          property.getProperty().getLocatedIdentifiedAnnotation();
+              property.getProperty().getLocatedIdentifiedAnnotation();
       Launch.classLoader.addTransformerExclusion(
-          locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass().getName());
+              locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass().getName());
 
       Collection<Predicate<CtClass>> filters = new HashSet<>();
 
       for (Property.Base subProperty :
-          property.getProperty().getSubProperties(CtClassFilter.class)) {
+              property.getProperty().getSubProperties(CtClassFilter.class)) {
         filters.add(
-            ctClass -> {
-              CtClassFilter annotation =
-                  subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
-              return annotation
-                  .value()
-                  .test(
-                      ctClass,
-                      InjectionHolder.getInjectedInstance(annotation.classNameResolver())
-                          .resolve(annotation.className()));
+                ctClass -> {
+                  CtClassFilter annotation =
+                          subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
+                  return annotation
+                          .value()
+                          .test(
+                                  ctClass,
+                                  InjectionHolder.getInjectedInstance(annotation.classNameResolver())
+                                          .resolve(annotation.className()));
             });
       }
 
       this.classTransformContexts.add(
-          this.classTransformContextFactory.create(
-              filters,
-              locatedIdentifiedAnnotation.getAnnotation(),
-              locatedIdentifiedAnnotation.getLocation(),
-              locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass()));
-
+              this.classTransformContextFactory.create(
+                      filters,
+                      InjectionHolder.getInjectedInstance(
+                              locatedIdentifiedAnnotation.<ClassTransform>getAnnotation().classNameResolver()),
+                      locatedIdentifiedAnnotation.getAnnotation(),
+                      locatedIdentifiedAnnotation.getLocation(),
+                      locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass(),
+                      InjectionHolder.getInjectedInstance(
+                              locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass())));
     } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
 
-  public byte[] transform(
-      String className, String transformedClassName, byte[] bytes) {
+  public byte[] transform(String className, String transformedClassName, byte[] bytes) {
     try {
 
       ClassPool classPool = ClassPool.getDefault();
       CtClass ctClass =
-          classPool.makeClass(
-              new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), false);
+              classPool.makeClass(
+                      new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), false);
 
       ClassMapping classMapping = classMappingProvider.get(className);
 
@@ -106,19 +110,10 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
 
       for (ClassTransformContext classTransformContext : this.classTransformContexts) {
         for (String target : classTransformContext.getClassTransform().value()) {
-          target =
-              InjectionHolder.getInjectedInstance(
-                      classTransformContext.getClassTransform().classNameResolver())
-                  .resolve(target);
+          target = classTransformContext.getNameResolver().resolve(target);
 
           if ((classTransformContext.getClassTransform().version().isEmpty()
-                  || classTransformContext
-                      .getClassTransform()
-                      .version()
-                      .equals(
-                          InjectionHolder.getInjectedInstance(
-                                  Key.get(Map.class, Names.named("launchArguments")))
-                              .get("--version")))
+                  || classTransformContext.getClassTransform().version().equals(this.version))
               && ((target.isEmpty() || target.equals(classMapping.getUnObfuscatedName()))
                   || target.equals(classMapping.getObfuscatedName()))
               && classTransformContext.getFilters().stream()
@@ -126,10 +121,8 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
 
             classTransformContext.setCtClass(ctClass);
             classTransformContext
-                .getOwnerMethod()
-                .invoke(
-                    InjectionHolder.getInjectedInstance(classTransformContext.getOwner()),
-                    classTransformContext);
+                    .getOwnerMethod()
+                    .invoke(classTransformContext.getOwner(), classTransformContext);
           }
         }
       }

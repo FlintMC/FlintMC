@@ -10,6 +10,8 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;
+import net.labyfy.base.structure.representation.Type;
+import net.labyfy.base.structure.resolve.AnnotationResolver;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.inject.InjectionHolder;
@@ -20,9 +22,7 @@ import net.labyfy.component.transform.javassist.ClassTransformContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -32,83 +32,106 @@ public class HookService implements ServiceHandler {
 
   private final String version;
   private final InjectedInvocationHelper injectedInvocationHelper;
-  private final Collection<Identifier.Base> hooks;
+  private final Collection<HookEntry> hooks;
 
   @Inject
   private HookService(
-      InjectedInvocationHelper injectedInvocationHelper,
-      @Named("launchArguments") Map launchArguments) {
+          InjectedInvocationHelper injectedInvocationHelper,
+          @Named("launchArguments") Map launchArguments) {
     this.injectedInvocationHelper = injectedInvocationHelper;
-    this.hooks = Sets.newConcurrentHashSet();
+    this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--version");
   }
 
+  public static void notify(
+          Object instance,
+          Hook.ExecutionTime executionTime,
+          Class<?> clazz,
+          String method,
+          Class<?>[] parameters,
+          Object[] args) {
+    try {
+
+      Map<Key<?>, Object> availableParameters = Maps.newHashMap();
+      availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
+      availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
+      availableParameters.put(Key.get(instance.getClass()), instance);
+      availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
+
+      Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
+      InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
+              .invokeMethod(
+                      declaredMethod,
+                      InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
+                      availableParameters);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public void discover(Identifier.Base property) {
-    this.hooks.add(property);
+    Map<Property.Base, AnnotationResolver<Type, String>> subProperties = Maps.newHashMap();
+
+    for (Property.Base subProperty : property.getProperty().getSubProperties(HookFilter.class)) {
+      subProperties.put(
+              subProperty,
+              InjectionHolder.getInjectedInstance(
+                      subProperty
+                              .getLocatedIdentifiedAnnotation()
+                              .<HookFilter>getAnnotation()
+                              .type()
+                              .typeNameResolver()));
+    }
+
+    Hook annotation = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+
+    this.hooks.add(
+            new HookEntry(
+                    property,
+                    subProperties,
+                    InjectionHolder.getInjectedInstance(annotation.parameterTypeNameResolver()),
+                    InjectionHolder.getInjectedInstance(annotation.methodNameResolver())));
   }
 
   @ClassTransform
   public void transform(ClassTransformContext classTransformContext) {
     CtClass ctClass = classTransformContext.getCtClass();
-    for (Identifier.Base identifier : hooks) {
+
+    for (HookEntry entry : hooks) {
+      Identifier.Base identifier = entry.hook;
+
       Hook hook = identifier.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
-        String className =
-            InjectionHolder.getInjectedInstance(hook.classNameResolver()).resolve(hook.className());
+        String className = classTransformContext.getNameResolver().resolve(hook.className());
         if (className != null && className.equals(ctClass.getName())) {
           this.modify(
-              hook,
-              ctClass,
-              identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
+                  entry,
+                  hook,
+                  ctClass,
+                  identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
         }
       } else {
         boolean cancel = false;
-        for (Property.Base subProperty :
-            identifier.getProperty().getSubProperties(HookFilter.class)) {
-          HookFilter hookFilter = subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
+        for (Map.Entry<Property.Base, AnnotationResolver<Type, String>> subProperty :
+                entry.subProperties.entrySet()) {
+          HookFilter hookFilter =
+                  subProperty.getKey().getLocatedIdentifiedAnnotation().getAnnotation();
 
           if (!hookFilter
-              .value()
-              .test(
-                  ctClass,
-                  InjectionHolder.getInjectedInstance(hookFilter.type().typeNameResolver())
-                      .resolve(hookFilter.type()))) {
+                  .value()
+                  .test(ctClass, subProperty.getValue().resolve(hookFilter.type()))) {
             cancel = true;
           }
           if (!cancel) {
             this.modify(
-                hook,
-                ctClass,
-                identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
+                    entry,
+                    hook,
+                    ctClass,
+                    identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
           }
         }
       }
-    }
-  }
-
-  private void modify(Hook hook, CtClass ctClass, Method callback) {
-    try {
-      CtClass[] parameters = new CtClass[hook.parameters().length];
-
-      for (int i = 0; i < hook.parameters().length; i++) {
-        parameters[i] =
-            ClassPool.getDefault()
-                .get(
-                    InjectionHolder.getInjectedInstance(hook.parameterTypeNameResolver())
-                        .resolve(hook.parameters()[i]));
-      }
-
-      CtMethod declaredMethod =
-          ctClass.getDeclaredMethod(
-              InjectionHolder.getInjectedInstance(hook.methodNameResolver()).resolve(hook),
-              parameters);
-      if (declaredMethod != null) {
-        for (Hook.ExecutionTime executionTime : hook.executionTime()) {
-          this.insert(declaredMethod, executionTime, callback);
-        }
-      }
-    } catch (NotFoundException e) {
     }
   }
 
@@ -155,29 +178,43 @@ public class HookService implements ServiceHandler {
             + ", $args);");
   }
 
-  public static void notify(
-      Object instance,
-      Hook.ExecutionTime executionTime,
-      Class<?> clazz,
-      String method,
-      Class<?>[] parameters,
-      Object[] args) {
+  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, Method callback) {
     try {
+      CtClass[] parameters = new CtClass[hook.parameters().length];
 
-      Map<Key<?>, Object> availableParameters = Maps.newHashMap();
-      availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
-      availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
-      availableParameters.put(Key.get(instance.getClass()), instance);
-      availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
+      for (int i = 0; i < hook.parameters().length; i++) {
+        parameters[i] =
+                ClassPool.getDefault()
+                        .get(hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i]));
+      }
 
-      Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
-      InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
-          .invokeMethod(
-              declaredMethod,
-              InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
-              availableParameters);
-    } catch (Exception e) {
-      e.printStackTrace();
+      CtMethod declaredMethod =
+              ctClass.getDeclaredMethod(hookEntry.methodNameResolver.resolve(hook), parameters);
+      if (declaredMethod != null) {
+        for (Hook.ExecutionTime executionTime : hook.executionTime()) {
+          this.insert(declaredMethod, executionTime, callback);
+        }
+      }
+    } catch (NotFoundException e) {
+
+    }
+  }
+
+  private static class HookEntry {
+    private final Identifier.Base hook;
+    private final Map<Property.Base, AnnotationResolver<Type, String>> subProperties;
+    private final AnnotationResolver<Type, String> parameterTypeNameResolver;
+    private final AnnotationResolver<Hook, String> methodNameResolver;
+
+    private HookEntry(
+            Identifier.Base hook,
+            Map<Property.Base, AnnotationResolver<Type, String>> subProperties,
+            AnnotationResolver<Type, String> parameterTypeNameResolver,
+            AnnotationResolver<Hook, String> methodNameResolver) {
+      this.hook = hook;
+      this.subProperties = subProperties;
+      this.parameterTypeNameResolver = parameterTypeNameResolver;
+      this.methodNameResolver = methodNameResolver;
     }
   }
 }

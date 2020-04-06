@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.mcjfxgl;
+package net.labyfy.component.gui.mcjfxgl.components.button;
 
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
@@ -6,6 +6,7 @@ import net.labyfy.component.gui.Gui;
 import net.labyfy.component.gui.GuiRenderState;
 import net.labyfy.component.gui.Guis;
 import net.labyfy.component.gui.adapter.GuiAdapter;
+import net.labyfy.component.gui.mcjfxgl.McJfxGLScene;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -15,19 +16,19 @@ import javax.inject.Singleton;
 public class Test {
 
   private final McJfxGLScene scene;
-  private final TestComponent.Factory factory;
+  private final Button.Factory factory;
 
   @Inject
-  private Test(McJfxGLScene.Factory mcJfxGLSceneFactory, TestComponent.Factory factory) {
+  private Test(McJfxGLScene.Factory mcJfxGLSceneFactory, Button.Factory factory) {
     this.factory = factory;
     this.scene =
-        mcJfxGLSceneFactory.create(
-            () -> {
-              BorderPane borderPane = new BorderPane();
-              borderPane.setBackground(Background.EMPTY);
-              borderPane.setCenter(this.factory.create());
-              return borderPane;
-            });
+            mcJfxGLSceneFactory.create(
+                    () -> {
+                      BorderPane borderPane = new BorderPane();
+                      borderPane.setBackground(Background.EMPTY);
+                      borderPane.setCenter(this.factory.create().getControl());
+                      return borderPane;
+                    });
   }
 
   @GuiRenderState(GuiRenderState.Type.INIT)
@@ -38,7 +39,6 @@ public class Test {
 
   @GuiRenderState(GuiRenderState.Type.RENDER)
   public void render(GuiAdapter guiAdapter) {
-    //    System.out.println("Render");
     guiAdapter.drawComponents();
   }
 }

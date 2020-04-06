@@ -54,7 +54,6 @@ public class DefaultTasks {
   }
 
   public static void notify(String task) {
-    System.out.println("NOTIFY " + task);
     InjectionHolder.getInjectedInstance(TaskExecutor.class).execute(task);
   }
 }
