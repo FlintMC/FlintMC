@@ -15,11 +15,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * This class binds constants,
+ * so the can be used with @named
+ */
 @Singleton
 public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
-    this.bindNamedFilePath("modsFolder", "./Labyfy/mods");
+    this.bindNamedFilePath("packageFolder", "./Labyfy/packages");
     try {
       this.bindNamed(
               "obfuscated",

@@ -38,6 +38,7 @@ dependencies {
     compile project(':component:tasks')
     compile project(':component:mapping')
     compile project(':component:inject')
+    compile project(':component:packages')
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
     compile 'com.google.guava:guava:27.1-jre'
     compile 'com.google.inject:guice:4.0'
