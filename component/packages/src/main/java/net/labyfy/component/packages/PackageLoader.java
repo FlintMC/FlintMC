@@ -14,6 +14,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class is used to instantiate the package loader
@@ -25,22 +28,26 @@ import java.io.File;
 public class PackageLoader {
 
     private final File packageFolder;
+    private final Set<File> jars = new HashSet<>();
 
     @Inject
-    private PackageLoader(
-            @Named("packageFolder") File pakcageFolder) {
-        this.packageFolder = pakcageFolder;
+    private PackageLoader( @Named("packageFolder") File packageFolder ) {
+        this.packageFolder = packageFolder;
 
-        Guice.createInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                this.bind(Key.get(String.class, Names.named("blub"))).toInstance("Test123");
+        System.out.println("Reading packages in " + packageFolder.getAbsolutePath());
+        if(packageFolder.listFiles() != null) {
+            for (File labypackage : Objects.requireNonNull(packageFolder.listFiles())) {
+                if(labypackage.getName().endsWith(".jar"))
+                    jars.add(labypackage);
             }
-        }).getInstance(Key.get(String.class, Names.named("blub")));
+        }
     }
 
     @TaskBody
     private void load() {
-        System.out.println("Load packages...");
+        System.out.println("Loading packages from " + packageFolder.getAbsolutePath() + "...");
+        for(File file: jars){
+            System.out.println("-- now loading " + file.getName());
+        }
     }
 }
