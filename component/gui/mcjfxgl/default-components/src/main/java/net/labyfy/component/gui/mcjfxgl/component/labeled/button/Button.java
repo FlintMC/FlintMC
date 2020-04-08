@@ -12,6 +12,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.util.Collection;
 
+@IgnoreInitialization
 public final class Button extends Labeled<Button> {
 
   private final DefaultButtonSkin.Factory defaultSkinFactory;
@@ -37,7 +38,6 @@ public final class Button extends Labeled<Button> {
     protected Handle(Button component) {
       super(component);
       this.component = component;
-      System.out.println(this.getControlClassMetaData());
     }
 
     protected Skin<?> createDefaultSkin() {

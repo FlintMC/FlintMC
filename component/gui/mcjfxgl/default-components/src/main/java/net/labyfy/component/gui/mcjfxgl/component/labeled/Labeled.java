@@ -1,47 +1,63 @@
 package net.labyfy.component.gui.mcjfxgl.component.labeled;
 
 import com.google.common.collect.Sets;
+import com.sun.javafx.css.converters.FontConverter;
 import com.sun.javafx.css.converters.PaintConverter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.css.CssMetaData;
+import javafx.css.SimpleStyleableObjectProperty;
 import javafx.css.Styleable;
 import javafx.css.StyleableObjectProperty;
-import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLComponent;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
+import net.labyfy.component.gui.mcjfxgl.component.property.PropertyBuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class Labeled<T extends Labeled<T>> extends McJfxGLComponent<T> {
 
   private final StringProperty text = new SimpleStringProperty("");
 
-  private final StyleableObjectProperty<Paint> textFill =
-          createStyleableObjectProperty(
-                  Labeled.Handle.class,
-                  this,
-                  "textFill",
-                  "-fx-text-fill",
-                  PaintConverter.getInstance(),
-                  Color.BLACK,
-                  Labeled::textFillProperty);
+  public static CssMetaData<McJfxGLControl, Paint> TEXT_FILL_META;
 
-  private final StyleableObjectProperty<Font> textFont =
-          createStyleableObjectProperty(
-                  Labeled.Handle.class,
-                  this,
-                  "textFont",
-                  "-fx-text-font",
-                  PaintConverter.getInstance(),
-                  Font.getDefault(),
-                  Labeled::textFontProperty);
+  public static CssMetaData<McJfxGLControl, Font> TEXT_FONT_META;
+
+  private final StyleableObjectProperty<Font> textFont;
+
+  private final StyleableObjectProperty<Paint> textFill;
 
   protected Labeled() {
+    if (TEXT_FILL_META == null)
+      TEXT_FILL_META =
+              PropertyBuilder.<Labeled<?>, Paint>create()
+                      .setName("textFill")
+                      .setProperty("-fx-text-fill")
+                      .setParent(Labeled.Handle.class)
+                      .setStyleConverter(PaintConverter.getInstance())
+                      .setPropertySupplier(Labeled::textFillProperty)
+                      .setInitialValue(Color.BLACK)
+                      .buildMeta();
+
+    if (TEXT_FONT_META == null)
+      TEXT_FONT_META =
+              PropertyBuilder.<Labeled<?>, Font>create()
+                      .setName("textFont")
+                      .setProperty("-fx-text-font")
+                      .setParent(Labeled.Handle.class)
+                      .setStyleConverter(FontConverter.getInstance())
+                      .setPropertySupplier(Labeled::textFontProperty)
+                      .setInitialValue(Font.getDefault())
+                      .buildMeta();
+
+    this.textFont = new SimpleStyleableObjectProperty<>(TEXT_FONT_META);
+
+    this.textFill = new SimpleStyleableObjectProperty<>(TEXT_FILL_META);
   }
 
   public final StyleableObjectProperty<Font> textFontProperty() {
@@ -99,15 +115,7 @@ public class Labeled<T extends Labeled<T>> extends McJfxGLComponent<T> {
     public Collection<CssMetaData<? extends Styleable, ?>> getControlClassMetaData() {
       Collection<CssMetaData<? extends Styleable, ?>> cssMetaData =
               Sets.newHashSet(super.getControlClassMetaData());
-      cssMetaData.add(component.textFontProperty().getCssMetaData());
-      cssMetaData.add(component.textFillProperty().getCssMetaData());
-
-      for (CssMetaData<? extends Styleable, ?> classCssMetaDatum : Control.getClassCssMetaData()) {
-        if (cssMetaData.stream()
-                .noneMatch(target -> target.getProperty().equals(classCssMetaDatum.getProperty()))) {
-          System.out.println("Missing " + classCssMetaDatum);
-        }
-      }
+      cssMetaData.addAll(Arrays.asList(TEXT_FILL_META, TEXT_FONT_META));
 
       return cssMetaData;
     }

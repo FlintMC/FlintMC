@@ -1,136 +1,67 @@
 package net.labyfy.component.gui.mcjfxgl.component;
 
-import com.google.common.collect.Maps;
 import com.sun.javafx.css.converters.SizeConverter;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
-import javafx.css.*;
-import javafx.scene.control.Control;
+import javafx.css.CssMetaData;
+import javafx.css.SimpleStyleableDoubleProperty;
+import javafx.css.StyleableDoubleProperty;
 import javafx.scene.layout.Background;
+import net.labyfy.component.gui.mcjfxgl.component.property.PropertyBuilder;
+import net.labyfy.component.gui.mcjfxgl.component.property.SimpleStyleableBackgroundProperty;
 import net.labyfy.component.gui.mcjfxgl.component.property.convert.BackgroundConverter;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 
 public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
 
-  private static final Map<Class<? extends Control>, Map<String, CssMetaData<?, ?>>> META_DATA =
-          new HashMap<>();
   private McJfxGLControl control;
 
-  private final DoubleProperty width =
-          createStyleableDoubleMinPrefMaxProperty(
-                  McJfxGLControl.class,
-                  this,
-                  "maxWidth",
-                  "-fx-width",
-                  100,
-                  McJfxGLComponent::widthProperty);
+  public static final CssMetaData<McJfxGLControl, Number> WIDTH_META =
+          PropertyBuilder.<McJfxGLComponent<?>, Number>create()
+                  .setName("width")
+                  .setProperty("-fx-width")
+                  .setParent(McJfxGLControl.class)
+                  .setInitialValue(100d)
+                  .setStyleable(true)
+                  .setPropertySupplier(McJfxGLComponent::widthProperty)
+                  .setStyleablePropertyCreator(
+                          (propertyBuilder, metaData) -> new SimpleStyleableDoubleProperty(metaData))
+                  .setStyleConverter(SizeConverter.getInstance())
+                  .buildMeta();
 
-  private final DoubleProperty height =
-          createStyleableDoubleMinPrefMaxProperty(
-                  McJfxGLControl.class,
-                  this,
-                  "maxWidth",
-                  "-fx-height",
-                  30,
-                  McJfxGLComponent::heightProperty);
+  public static final CssMetaData<McJfxGLControl, Number> HEIGHT_META =
+          PropertyBuilder.<McJfxGLComponent<?>, Number>create()
+                  .setName("height")
+                  .setProperty("-fx-height")
+                  .setParent(McJfxGLControl.class)
+                  .setInitialValue(30d)
+                  .setStyleable(true)
+                  .setPropertySupplier(McJfxGLComponent::heightProperty)
+                  .setStyleablePropertyCreator(
+                          (propertyBuilder, metaData) -> new SimpleStyleableDoubleProperty(metaData))
+                  .setStyleConverter(SizeConverter.getInstance())
+                  .buildMeta();
 
-  private final ObjectProperty<Background> background =
-          createStyleableObjectProperty(
-                  McJfxGLControl.class,
-                  this,
-                  "background",
-                  "-fx-region-background",
-                  BackgroundConverter.getInstance(),
-                  null,
-                  McJfxGLComponent::backgroundProperty);
+  public static final CssMetaData<McJfxGLControl, Background> BACKGROUND_META =
+          PropertyBuilder.<McJfxGLComponent<?>, Background>create()
+                  .setName("background")
+                  .setProperty("-fx-region-background")
+                  .setParent(McJfxGLControl.class)
+                  .setInitialValue(null)
+                  .setStyleable(true)
+                  .setStyleConverter(BackgroundConverter.getInstance())
+                  .setPropertySupplier((McJfxGLComponent::backgroundProperty))
+                  .setStyleablePropertyCreator(
+                          (propertyBuilder, metaData) ->
+                                  new SimpleStyleableBackgroundProperty(McJfxGLComponent.BACKGROUND_META))
+                  .setSubProperties(SimpleStyleableBackgroundProperty.getMeta())
+                  .buildMeta();
 
-  public static <T extends McJfxGLComponent> DoubleProperty createStyleableDoubleMinPrefMaxProperty(
-          Class<? extends Control> parentClass,
-          T control,
-          String propertyName,
-          String property,
-          double initialValue,
-          Function<T, Property<? extends Number>> propertySupplier) {
-    CssMetaData<? extends Control, Number> metaData =
-            createOrGetMetaData(
-                    parentClass, property, SizeConverter.getInstance(), initialValue, propertySupplier);
+  private final StyleableDoubleProperty width = new SimpleStyleableDoubleProperty(WIDTH_META);
 
-    return new SimpleStyleableDoubleProperty(metaData, control, propertyName, initialValue) {
-      protected void invalidated() {
-        control.getControl().requestLayout();
-      }
-    };
-  }
+  private final StyleableDoubleProperty height = new SimpleStyleableDoubleProperty(HEIGHT_META);
 
-  public static <T extends McJfxGLComponent> StyleableDoubleProperty createStyleableDoubleProperty(
-          Class<? extends McJfxGLControl> parentClass,
-          T control,
-          String propertyName,
-          String property,
-          double initialValue,
-          Function<T, Property<? extends Number>> propertySupplier) {
+  private final SimpleStyleableBackgroundProperty background =
+          new SimpleStyleableBackgroundProperty(BACKGROUND_META);
 
-    CssMetaData<? extends Control, Number> metaData =
-            createOrGetMetaData(
-                    parentClass, property, SizeConverter.getInstance(), initialValue, propertySupplier);
-
-    return new SimpleStyleableDoubleProperty(metaData, control, propertyName, initialValue);
-  }
-
-  public static <T extends McJfxGLComponent, K>
-  StyleableObjectProperty<K> createStyleableObjectProperty(
-          Class<? extends McJfxGLControl> parentClass,
-          T control,
-          String propertyName,
-          String property,
-          StyleConverter<?, ?> converter,
-          K initialValue,
-          Function<T, Property<? extends K>> propertySupplier) {
-
-    CssMetaData<? extends McJfxGLControl, K> metaData =
-            createOrGetMetaData(parentClass, property, converter, initialValue, propertySupplier);
-
-    return new SimpleStyleableObjectProperty<>(metaData, control, propertyName, initialValue);
-  }
-
-  public static <T extends McJfxGLComponent, K>
-  CssMetaData<? extends McJfxGLControl, K> createOrGetMetaData(
-          Class<? extends Control> parentClass,
-          String property,
-          StyleConverter<?, ?> converter,
-          K initialValue,
-          Function<T, Property<? extends K>> propertySupplier) {
-
-    if (!META_DATA.containsKey(parentClass)) {
-      META_DATA.put(parentClass, Maps.newHashMap());
-    }
-    Map<String, CssMetaData<?, ?>> metaData = META_DATA.get(parentClass);
-
-    if (!metaData.containsKey(property)) {
-      metaData.put(
-              property,
-              new CssMetaData<McJfxGLControl, Object>(
-                      property, (StyleConverter<?, Object>) converter, initialValue, true) {
-                public boolean isSettable(McJfxGLControl styleable) {
-                  return !propertySupplier.apply((T) styleable.getComponent()).isBound();
-                }
-
-                public StyleableProperty<Object> getStyleableProperty(McJfxGLControl styleable) {
-                  return (StyleableProperty<Object>)
-                          propertySupplier.apply((T) styleable.getComponent());
-                }
-              });
-    } else {
-      return (CssMetaData<? extends McJfxGLControl, K>) metaData.get(property);
-    }
-    return (CssMetaData<? extends McJfxGLControl, K>) metaData.get(property);
-  }
-
-  public final ObjectProperty<Background> backgroundProperty() {
+  public final SimpleStyleableBackgroundProperty backgroundProperty() {
     return background;
   }
 
@@ -143,7 +74,7 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
     return (T) this;
   }
 
-  public final DoubleProperty heightProperty() {
+  public final StyleableDoubleProperty heightProperty() {
     return this.height;
   }
 
@@ -151,19 +82,12 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
     return height.getValue();
   }
 
-  public abstract McJfxGLControl createControl();
-
-  public final McJfxGLControl getControl() {
-    if (this.control == null) this.control = this.createControl();
-    return this.control;
-  }
-
   public final T setHeight(double height) {
     this.height.setValue(height);
     return (T) this;
   }
 
-  public final DoubleProperty widthProperty() {
+  public final StyleableDoubleProperty widthProperty() {
     return this.width;
   }
 
@@ -174,5 +98,12 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
   public final T setWidth(double width) {
     this.width.setValue(width);
     return (T) this;
+  }
+
+  public abstract McJfxGLControl createControl();
+
+  public McJfxGLControl getControl() {
+    if (this.control == null) this.control = this.createControl();
+    return control;
   }
 }

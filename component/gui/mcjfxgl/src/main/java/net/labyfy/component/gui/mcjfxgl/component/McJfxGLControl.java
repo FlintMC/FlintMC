@@ -191,7 +191,9 @@ public class McJfxGLControl extends Control implements GuiComponent {
   }
 
   public Collection<CssMetaData<? extends Styleable, ?>> getControlClassMetaData() {
-    return Collections.emptyList();
+    List<CssMetaData<?, ?>> meta = new ArrayList<>();
+    meta.add(this.component.backgroundProperty().getCssMetaData());
+    return meta;
   }
 
   public final List<CssMetaData<? extends Styleable, ?>> getControlCssMetaData() {
@@ -210,7 +212,7 @@ public class McJfxGLControl extends Control implements GuiComponent {
               });
     }
 
-    if (this.getSkin().getClass().equals(this.defaultSkinClass)) {
+    if (!this.getSkin().getClass().equals(this.defaultSkinClass)) {
       Platform.runLater(
               () -> {
                 Theme active = InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive();

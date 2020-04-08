@@ -21,9 +21,6 @@ public class DefaultButtonSkin extends SkinBase<Button.Handle> {
     text.fontProperty().bind(component.textFontProperty());
     text.fillProperty().bind(component.textFillProperty());
     this.getChildren().add(text);
-
-    this.getSkinnable()
-            .setStyle("-fx-background-color: white; -fx-max-width: 200px; -fx-max-height: 200px;");
   }
 
   @AssistedFactory(DefaultButtonSkin.class)
