@@ -5,6 +5,8 @@ import com.sun.javafx.css.converters.FontConverter;
 import com.sun.javafx.css.converters.PaintConverter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableObjectProperty;
 import javafx.css.Styleable;
@@ -58,6 +60,7 @@ public class Labeled<T extends Labeled<T>> extends McJfxGLComponent<T> {
     this.textFont = new SimpleStyleableObjectProperty<>(TEXT_FONT_META);
 
     this.textFill = new SimpleStyleableObjectProperty<>(TEXT_FILL_META);
+
   }
 
   public final StyleableObjectProperty<Font> textFontProperty() {

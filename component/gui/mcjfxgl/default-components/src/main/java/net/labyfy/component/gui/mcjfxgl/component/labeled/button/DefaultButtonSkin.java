@@ -3,6 +3,7 @@ package net.labyfy.component.gui.mcjfxgl.component.labeled.button;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import javafx.scene.control.SkinBase;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
 import net.labyfy.component.inject.assisted.AssistedFactory;

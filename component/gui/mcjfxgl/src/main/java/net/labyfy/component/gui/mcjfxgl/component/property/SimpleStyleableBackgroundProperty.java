@@ -29,7 +29,7 @@ public class SimpleStyleableBackgroundProperty extends SimpleStyleableObjectProp
                   .setProperty("-fx-background-color")
                   .setPropertySupplier(
                           mcJfxGLComponent -> mcJfxGLComponent.backgroundProperty().colorProperty())
-                  .setInitialValue(Color.WHITE)
+                  .setInitialValue(new Color(1, 1, 1, 0.5))
                   .setStyleConverter(PaintConverter.getInstance())
                   .buildMeta();
 

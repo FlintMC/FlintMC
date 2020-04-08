@@ -61,7 +61,11 @@ public class PropertyBuilder<M extends McJfxGLComponent<?>, T> {
                 }
 
                 public StyleableProperty<T> getStyleableProperty(McJfxGLControl styleable) {
-                  return (StyleableProperty<T>) propertySupplier.apply((M) styleable.getComponent());
+                  StyleableProperty<T> property = (StyleableProperty<T>) propertySupplier.apply((M) styleable.getComponent());
+//                  if(property.getValue() == null){
+//                    property.setValue(initialValue);
+//                  }
+                  return property;
                 }
               });
     }
