@@ -5,9 +5,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sun.javafx.css.converters.DurationConverter;
 import com.sun.javafx.css.converters.StringConverter;
+import com.sun.javafx.scene.DirtyBits;
 import javafx.animation.Interpolator;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
@@ -15,6 +17,7 @@ import javafx.css.StyleableObjectProperty;
 import javafx.css.StyleableProperty;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
+import javafx.scene.layout.Background;
 import javafx.util.Duration;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
 import net.labyfy.component.gui.adapter.GuiAdapter;
@@ -69,13 +72,16 @@ public class McJfxGLControl extends Control implements GuiComponent {
       modifiedMetaData.get(getClass()).add(metaData);
     }
 
-    this.maxWidthProperty().bind(this.component.widthProperty());
-    this.minWidthProperty().bind(this.component.widthProperty());
+    this.translateXProperty().bindBidirectional(this.component.translateXProperty());
+    this.translateYProperty().bindBidirectional(this.component.translateYProperty());
 
-    this.maxHeightProperty().bind(this.component.heightProperty());
-    this.minHeightProperty().bind(this.component.heightProperty());
+    this.maxWidthProperty().bindBidirectional(this.component.widthProperty());
+    this.minWidthProperty().bindBidirectional(this.component.widthProperty());
 
-    this.backgroundProperty().bind(this.component.backgroundProperty());
+    this.maxHeightProperty().bindBidirectional(this.component.heightProperty());
+    this.minHeightProperty().bindBidirectional(this.component.heightProperty());
+
+    this.backgroundProperty().bindBidirectional(this.component.backgroundProperty());
   }
 
   private static Collection<CssMetaData<? extends Styleable, ?>> getRecursiveMetaData(
@@ -184,6 +190,11 @@ public class McJfxGLControl extends Control implements GuiComponent {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
+  }
+
+  @Deprecated
+  public void impl_markDirty(DirtyBits dirtyBit) {
+    super.impl_markDirty(dirtyBit);
   }
 
   protected Skin<?> createDefaultSkin() {

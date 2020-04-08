@@ -61,11 +61,7 @@ public class PropertyBuilder<M extends McJfxGLComponent<?>, T> {
                 }
 
                 public StyleableProperty<T> getStyleableProperty(McJfxGLControl styleable) {
-                  StyleableProperty<T> property = (StyleableProperty<T>) propertySupplier.apply((M) styleable.getComponent());
-//                  if(property.getValue() == null){
-//                    property.setValue(initialValue);
-//                  }
-                  return property;
+                  return (StyleableProperty<T>) propertySupplier.apply((M) styleable.getComponent());
                 }
               });
     }
@@ -127,7 +123,7 @@ public class PropertyBuilder<M extends McJfxGLComponent<?>, T> {
   }
 
   public PropertyBuilder<M, T> setSubProperties(
-          List<CssMetaData<McJfxGLControl, ?>> subProperties) {
+          List<CssMetaData<?, ?>> subProperties) {
     this.subProperties = Lists.newArrayList(subProperties);
     return this;
   }

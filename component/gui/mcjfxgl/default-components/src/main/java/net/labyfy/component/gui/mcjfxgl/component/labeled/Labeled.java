@@ -34,6 +34,7 @@ public class Labeled<T extends Labeled<T>> extends McJfxGLComponent<T> {
 
   private final StyleableObjectProperty<Paint> textFill;
 
+
   protected Labeled() {
     if (TEXT_FILL_META == null)
       TEXT_FILL_META =

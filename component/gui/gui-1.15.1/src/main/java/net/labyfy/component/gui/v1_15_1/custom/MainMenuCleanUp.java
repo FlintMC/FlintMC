@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Collection;
+import java.util.List;
 
 @Singleton
 public class MainMenuCleanUp {
@@ -28,12 +29,15 @@ public class MainMenuCleanUp {
   public void modify(@Named("instance") Object mainMenuScreen) {
     ClassMapping classMapping = classMappingProvider.get("net.minecraft.client.gui.screen.Screen");
 
-    classMapping.getField("buttons").<Collection<Widget>>getValue(mainMenuScreen).clear();
+    List<Widget> buttons = classMapping.getField("buttons").getValue(mainMenuScreen);
+    buttons.remove(1);
 
-    classMapping
-            .getField("children")
-            .<Collection<IGuiEventListener>>getValue(mainMenuScreen)
-            .clear();
+//    classMapping
+//            .getField("children")
+//            .<Collection<IGuiEventListener>>getValue(mainMenuScreen)
+//            .clear();
+
+
   }
 
 

@@ -29,9 +29,10 @@ public class Test {
                       borderPane.setCenter(
                               this.factory
                                       .create()
-                                      .setText("Test123")
+                                      .setText("Multiplayer")
                                       .setWidth(800)
                                       .setHeight(80)
+                                      .setTranslateY(70)
                                       .getControl());
                       return borderPane;
                     });
