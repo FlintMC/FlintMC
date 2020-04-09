@@ -13,4 +13,4 @@ build:
     - build/libs
   only:
     - master
-    - 53-fix-jar-creation
+    - 35-fix-jar-creation
