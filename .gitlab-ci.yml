@@ -4,7 +4,7 @@ eval:
   
 build:
   stage: deploy
-  script: bash eval.sh && cd versioned/labyfy-1.15.1 && sh gradlew :versioned:labyfy-1.15.1:download-libraries && cd ../.. && sh gradlew jar
+  script: bash eval.sh && cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries && cd ../.. && sh gradlew jar
   environment:
     name: production
   artifacts:
