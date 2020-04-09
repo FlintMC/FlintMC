@@ -109,6 +109,7 @@ class LibraryDownloader implements Plugin<Project> {
                 download("https://dl.labymod.net/mappings/" + extension.version + "/joined.tsrg", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/joined.tsrg"))
 
                 println "deobfuscating client.jar:"
+                println "DEEEEEEEEBBBUUUUUUUUUUUUUGGG:"
                 injector.getInstance(LabyDeobfuscator.class);
                 println "finished"
 
