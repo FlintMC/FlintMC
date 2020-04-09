@@ -5,7 +5,7 @@ eval:
   
 build:
   stage: deploy
-  script: bash eval.sh && sh gradlew build
+  script: bash eval.sh && gradlew download-libraries && sh gradlew build
   environment:
     name: production
   only:
