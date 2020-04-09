@@ -1,7 +1,6 @@
 package net.labyfy.component.transform.minecraft;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
@@ -34,10 +33,10 @@ public class MinecraftTransformerService implements ServiceHandler {
 
   public void discover(Identifier.Base property) {
     this.classTransformers.add(
-        InjectionHolder.getInjectedInstance(
-                property
-                    .getProperty()
-                    .getLocatedIdentifiedAnnotation()
-                    .<Class<? extends IClassTransformer>>getLocation()));
+            InjectionHolder.getInjectedInstance(
+                    property
+                            .getProperty()
+                            .getLocatedIdentifiedAnnotation()
+                            .<Class<? extends IClassTransformer>>getLocation()));
   }
 }

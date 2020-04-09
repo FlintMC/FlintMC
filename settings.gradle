@@ -1,4 +1,5 @@
 rootProject.name = 'labyfy'
+
 include 'component:transform:tweaker'
 findProject(':component:transform:tweaker')?.name = 'tweaker'
 
@@ -42,4 +43,25 @@ include 'component:gui:gui-1.15.1'
 findProject(':component:gui:gui-1.15.1')?.name = 'gui-1.15.1'
 
 include 'library-downloader'
+
+include 'component:gui:mcjfxgl'
+findProject(':component:gui:mcjfxgl')?.name = 'mcjfxgl'
+
+include 'component:tasks:tasks-1.15.1'
+findProject(':component:tasks:tasks-1.15.1')?.name = 'tasks-1.15.1'
+
+include 'component:transform:hook'
+findProject(':component:transform:hook')?.name = 'hook'
+
+include 'component:resources'
+findProject(':component:resources')?.name = 'resources'
+
+include 'component:resources:resources-1.15.1'
+findProject(':component:resources:resources-1.15.1')?.name = 'resources-1.15.1'
+
+include 'component:gui:mcjfxgl:mcjfxgl-1.15.1'
+findProject(':component:gui:mcjfxgl:mcjfxgl-1.15.1')?.name = 'mcjfxgl-1.15.1'
+
+include 'component:gui:mcjfxgl:default-components'
+findProject(':component:gui:mcjfxgl:default-components')?.name = 'default-components'
 

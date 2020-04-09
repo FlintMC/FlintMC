@@ -1,9 +1,7 @@
 package net.labyfy.component.initializer.inject.module;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.reflect.ClassPath;
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -13,20 +11,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Singleton
 public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
-    this.bindNamedFilePath("modsFolder", "./Labyfy/mods");
+    this.bindNamedFilePath("labyfyRoot", "./Labyfy");
+    this.bindNamedFilePath("labyfyModsRoot", "./Labyfy/mods");
+    this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
+    this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     try {
       this.bindNamed(
-              "obfuscated",
-              (ClassPath.from(Launch.classLoader)
-                      .getTopLevelClassesRecursive("net.minecraft.world")
-                      .size()
-                      == 0));
+          "obfuscated",
+          (ClassPath.from(Launch.classLoader)
+                  .getTopLevelClassesRecursive("net.minecraft.world")
+                  .size()
+              == 0));
     } catch (IOException e) {
       e.printStackTrace();
     }

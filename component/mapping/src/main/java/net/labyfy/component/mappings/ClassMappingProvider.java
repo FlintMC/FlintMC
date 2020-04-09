@@ -21,7 +21,7 @@ public class ClassMappingProvider {
   private final Map<String, ClassMapping> unObfuscatedClassMappings = Maps.newConcurrentMap();
 
   @Inject
-  private ClassMappingProvider(@Named("launchArguments") Map launchArguments) {
+  private ClassMappingProvider(@Named("launchArguments") Map launchArguments, @Named("labyfyRoot") File labyfyRoot) {
     McpMappingParser mcpMappingParser = new McpMappingParser();
     try {
       String version = (String) launchArguments.get("--version");
@@ -32,13 +32,13 @@ public class ClassMappingProvider {
               ImmutableMap.of(
                   "methods.csv",
                   new FileInputStream(
-                      new File("./Labyfy/assets/" + version + "/methods.csv").getAbsoluteFile()),
+                      new File(labyfyRoot, "assets/" + version + "/methods.csv").getAbsoluteFile()),
                   "fields.csv",
                   new FileInputStream(
-                      new File("./Labyfy/assets/" + version + "/fields.csv").getAbsoluteFile()),
+                      new File(labyfyRoot, "assets/" + version + "/fields.csv").getAbsoluteFile()),
                   "joined.tsrg",
                   new FileInputStream(
-                      new File("./Labyfy/assets/" + version + "/joined.tsrg").getAbsoluteFile())));
+                      new File(labyfyRoot, "assets/" + version + "/joined.tsrg").getAbsoluteFile())));
 
       for (ClassMapping classMapping : parse) {
         this.obfuscatedClassMappings.put(classMapping.getObfuscatedName(), classMapping);

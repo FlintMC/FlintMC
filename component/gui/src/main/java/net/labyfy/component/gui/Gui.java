@@ -3,6 +3,7 @@ package net.labyfy.component.gui;
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;
+import net.labyfy.base.structure.resolve.NameResolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,4 +16,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Gui {
   String value();
+
+  Class<? extends NameResolver> nameResolver() default GuiNameResolver.class;
 }
