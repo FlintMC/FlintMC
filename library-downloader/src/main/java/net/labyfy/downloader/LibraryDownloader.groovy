@@ -48,7 +48,7 @@ class LibraryDownloader implements Plugin<Project> {
 
                 println "downloading client libraries:"
 
-                if (new File("libraries", "client.jar").exists()) {
+                if (new File("versioned/labyfy-1.15.1/libraries", "client.jar").exists()) {
                     println " -> skip client.jar"
                 } else {
                     this.downloadArtifact("client", extension.version, libraries, details.downloads.client.url)
