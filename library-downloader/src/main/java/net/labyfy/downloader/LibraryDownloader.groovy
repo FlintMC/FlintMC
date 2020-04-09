@@ -25,7 +25,7 @@ class LibraryDownloader implements Plugin<Project> {
             doLast {
                 if (extension.version == null) throw new IllegalArgumentException("minecraft.version must be set!")
                 VersionFetcher.VersionManifest.Entry entry = VersionFetcher.fetch(extension.version)
-                File libraries = new File(project.projectDir, "libraries");
+                File libraries = new File(project.projectDir, "versioned/labyfy-1.15.1/libraries");
                 if (!libraries.exists()) libraries.mkdirs()
 
 
