@@ -115,7 +115,7 @@ class LibraryDownloader implements Plugin<Project> {
 
         }
 
-        project.dependencies.compile(project.fileTree('libraries'))
+        project.dependencies.compile(project.fileTree('versioned/labyfy-1.15.1/libraries'))
 
         project.defaultTasks("download-libraries")
 
