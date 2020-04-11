@@ -23,7 +23,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
-    this.bindNamedFilePath("packageFolder", "./Labyfy/packages");
+    this.bindNamedFilePath("labyfyPackageFolder", "./Labyfy/packages");
     this.bindNamedFilePath("labyfyRoot", "./Labyfy");
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());

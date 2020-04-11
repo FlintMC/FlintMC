@@ -1,14 +1,8 @@
 package net.labyfy.component.packages;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Key;
-import com.google.inject.name.Names;
-import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.tasks.Task;
-import net.labyfy.component.tasks.subproperty.TaskBody;
 import net.labyfy.component.tasks.Tasks;
-import net.labyfy.component.tasks.subproperty.TaskBodyPriority;
+import net.labyfy.component.tasks.subproperty.TaskBody;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,14 +18,13 @@ import java.util.Set;
  */
 @Singleton
 @Task(Tasks.PRE_MINECRAFT_INITIALIZE)
-@TaskBodyPriority()
 public class PackageLoader {
 
     private final File packageFolder;
     private final Set<File> jars = new HashSet<>();
 
     @Inject
-    private PackageLoader( @Named("packageFolder") File packageFolder ) {
+    private PackageLoader( @Named("labyfyPackageFolder") File packageFolder ) {
         this.packageFolder = packageFolder;
 
         System.out.println("Reading packages in " + packageFolder.getAbsolutePath());
