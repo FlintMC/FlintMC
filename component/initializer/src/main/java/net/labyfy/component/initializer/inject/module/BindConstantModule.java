@@ -24,13 +24,16 @@ public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
     this.bindNamedFilePath("packageFolder", "./Labyfy/packages");
+    this.bindNamedFilePath("labyfyRoot", "./Labyfy");
+    this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
+    this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     try {
       this.bindNamed(
-              "obfuscated",
-              (ClassPath.from(Launch.classLoader)
-                      .getTopLevelClassesRecursive("net.minecraft.world")
-                      .size()
-                      == 0));
+          "obfuscated",
+          (ClassPath.from(Launch.classLoader)
+                  .getTopLevelClassesRecursive("net.minecraft.world")
+                  .size()
+              == 0));
     } catch (IOException e) {
       e.printStackTrace();
     }

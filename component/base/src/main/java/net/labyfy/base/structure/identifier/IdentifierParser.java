@@ -31,6 +31,7 @@ public class IdentifierParser {
         new ArrayList<>(this.findStandaloneClassIdentifiers(clazz));
 
     for (Method declaredMethod : clazz.getDeclaredMethods()) {
+      declaredMethod.setAccessible(true);
       standaloneIdentifiers.addAll(this.findStandaloneMethodIdentifiers(declaredMethod));
     }
 

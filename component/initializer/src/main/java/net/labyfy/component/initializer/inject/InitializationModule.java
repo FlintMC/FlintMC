@@ -24,14 +24,6 @@ public class InitializationModule extends AbstractModule {
     this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(this.launchArguments);
     this.bind(Key.get(AtomicReference.class, Names.named("injectorReference")))
         .toInstance(this.injectorHolder);
-
-//    LabyVersionProvider labyVersionProvider = LabyVersionProvider.create(launchArguments);
-//    this.bind(LabyVersion.class).toProvider(labyVersionProvider::getMinecraftVersion);
-//    TypeSearcher typeSearcher = TypeSearcher.create(labyVersionProvider.getMinecraftVersion(), Launch.classLoader);
-//    typeSearcher.getSearchingPackages().addAll(this.searchingPackages);
-//
-//    this.bind(TypeSearcher.class).toInstance(typeSearcher);
-//    this.bind(LabyVersionProvider.class).toInstance(labyVersionProvider);
   }
 
 

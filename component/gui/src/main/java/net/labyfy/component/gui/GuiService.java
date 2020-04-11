@@ -1,132 +1,93 @@
 package net.labyfy.component.gui;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.Key;
 import com.google.inject.Singleton;
-import javassist.CannotCompileException;
-import javassist.CtMethod;
+import com.google.inject.name.Names;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;
+import net.labyfy.base.structure.resolve.NameResolver;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
+import net.labyfy.component.gui.adapter.GuiAdapter;
+import net.labyfy.component.gui.adapter.GuiAdapterProvider;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.transform.javassist.ClassTransform;
-import net.labyfy.component.transform.javassist.ClassTransformContext;
-import net.labyfy.component.transform.javassist.CtClassFilter;
-import net.labyfy.component.transform.javassist.CtClassFilters;
+import net.labyfy.component.transform.hook.Hook;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @Service(Gui.class)
 public class GuiService implements ServiceHandler {
 
+  private final GuiAdapterProvider guiAdapterProvider;
   private final InjectedInvocationHelper injectedInvocationHelper;
   private final ClassMappingProvider classMappingProvider;
   private final Collection<Identifier.Base> properties;
-  private final GuiNameResolver guiNameResolver;
-  private final GuiMethodResolver guiMethodResolver;
-  private final Collection<String> modifiedGuis;
 
   @Inject
   private GuiService(
+      GuiAdapterProvider guiAdapterProvider,
       InjectedInvocationHelper injectedInvocationHelper,
-      ClassMappingProvider classMappingProvider,
-      GuiNameResolver guiNameResolver,
-      GuiMethodResolver guiMethodResolver) {
+      ClassMappingProvider classMappingProvider) {
+    this.guiAdapterProvider = guiAdapterProvider;
     this.injectedInvocationHelper = injectedInvocationHelper;
     this.classMappingProvider = classMappingProvider;
-    this.guiNameResolver = guiNameResolver;
-    this.guiMethodResolver = guiMethodResolver;
     this.properties = ConcurrentHashMap.newKeySet();
-    this.modifiedGuis = ConcurrentHashMap.newKeySet();
-  }
-
-  @ClassTransform
-  @CtClassFilter(
-      value = CtClassFilters.SUBCLASS_OF,
-      className = Guis.GUI_CLASS,
-      classNameResolver = GuiNameResolver.class)
-  public void transform(ClassTransformContext classTransformContext) throws CannotCompileException {
-    for (Identifier.Base property : this.properties) {
-      if (guiNameResolver
-          .resolve(
-              property.getProperty().getLocatedIdentifiedAnnotation().<Gui>getAnnotation().value())
-          .equals(classTransformContext.getCtClass().getName())) {
-        if (this.modifiedGuis.contains(classTransformContext.getCtClass().getName())) return;
-        this.modifiedGuis.add(classTransformContext.getCtClass().getName());
-
-        for (GuiRenderState.Type type : GuiRenderState.Type.values()) {
-          addHook(classTransformContext, type);
-        }
-      }
-    }
-  }
-
-  private void addHook(ClassTransformContext classTransformContext, GuiRenderState.Type renderState)
-      throws CannotCompileException {
-
-    CtMethod initMethod =
-        this.guiMethodResolver.resolve(classTransformContext.getCtClass(), renderState);
-
-    initMethod
-        .getDeclaringClass()
-        .getClassPool()
-        .importPackage(GuiService.class.getPackage().getName());
-    initMethod.insertAfter("GuiService.HookReceiver.notify(this, \"" + renderState.name() + "\");");
   }
 
   public void discover(Identifier.Base property) {
     this.properties.add(property);
   }
 
-  public void notify(Object gui, String state)
-      throws InvocationTargetException, IllegalAccessException {
+  public void notify(
+      Hook.ExecutionTime executionTime,
+      GuiRenderState.Type targetGuiRenderState,
+      Object screen,
+      Map<String, Object> args) {
 
     for (Identifier.Base property : this.properties) {
-      Gui annotation = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
-      ClassMapping classMapping =
-          this.classMappingProvider.get(guiNameResolver.resolve(annotation.value()));
-      if (classMapping.getUnObfuscatedName().equals(gui.getClass().getName())) {
-        for (Property.Base subProperty :
-            property.getProperty().getSubProperties(GuiRenderState.class)) {
+      Gui gui = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+      NameResolver nameResolver = InjectionHolder.getInjectedInstance(gui.nameResolver());
+      String resolve = nameResolver.resolve(gui.value());
 
-          if (subProperty
-              .getLocatedIdentifiedAnnotation()
-              .<GuiRenderState>getAnnotation()
-              .value()
-              .name()
-              .equals(state)) {
+      ClassMapping classMapping = classMappingProvider.get(screen.getClass().getName());
 
-            this.injectedInvocationHelper.invokeMethod(
-                subProperty.getLocatedIdentifiedAnnotation().getLocation(),
-                InjectionHolder.getInstance()
-                    .getInjector()
-                    .getInstance(
-                        subProperty
-                            .getLocatedIdentifiedAnnotation()
-                            .<Method>getLocation()
-                            .getDeclaringClass()),
-                ImmutableMap.of());
-          }
+      if (classMapping == null
+          || !(classMapping.getUnObfuscatedName().equals(resolve)
+              || classMapping.getObfuscatedName().equals(resolve))) continue;
+
+      for (Property.Base subProperty :
+          property.getProperty().getSubProperties(GuiRenderState.class)) {
+        GuiRenderState guiRenderState =
+            subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
+
+        if (!guiRenderState.value().equals(targetGuiRenderState)
+            || !guiRenderState.executionTime().equals(executionTime)) continue;
+        Map<Key<?>, Object> parameters = Maps.newHashMap();
+
+        GuiAdapter adapter = this.guiAdapterProvider.getAdapter(screen);
+
+        parameters.put(Key.get(Object.class, Names.named("instance")), screen);
+        parameters.put(Key.get(GuiRenderState.class), guiRenderState);
+        parameters.put(Key.get(GuiAdapter.class), adapter);
+
+        if (targetGuiRenderState == GuiRenderState.Type.RENDER) {
+          adapter.updateMousePosition((int) args.get("mouseX"), (int) args.get("mouseY"));
+          adapter.updatePartialTick((float) args.get("partialTick"));
+        } else if (executionTime == Hook.ExecutionTime.BEFORE) {
+          adapter.reset();
         }
+
+        this.injectedInvocationHelper.invokeMethod(
+            subProperty.getLocatedIdentifiedAnnotation().getLocation(), parameters);
       }
-    }
-  }
-
-  public static class HookReceiver {
-
-    private HookReceiver() {}
-
-    public static void notify(Object gui, String state)
-        throws InvocationTargetException, IllegalAccessException {
-      InjectionHolder.getInjectedInstance(GuiService.class).notify(gui, state);
     }
   }
 }
