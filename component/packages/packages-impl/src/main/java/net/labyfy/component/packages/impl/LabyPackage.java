@@ -52,10 +52,22 @@ public class LabyPackage implements Package {
   }
 
   @Override
+  public void setState(PackageState state) {
+    Preconditions.checkState(this.packageState.equals(PackageState.NOT_LOADED));
+    Preconditions.checkArgument(
+        !state.equals(PackageState.LOADED),
+        "The package state can't be explicitly set to LOADED. To get into the LOADED state, you must call the load() method.");
+
+    this.packageState = state;
+  }
+
+  @Override
   public PackageState load() {
     Preconditions.checkState(
         this.packageState.equals(PackageState.NOT_LOADED),
         "The package must be in NOT_LOADED state to be loaded.");
+
+        // TODO: find autoload classes and submit them for annotation parsing
 
     try {
       PackageClassLoader classLoader = this.classLoaderFactory.create(this.jarFile);

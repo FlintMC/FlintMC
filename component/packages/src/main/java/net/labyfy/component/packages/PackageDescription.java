@@ -14,5 +14,5 @@ public interface PackageDescription {
 
   List<DependencyDescription> getDependencies();
 
-  List<String> getTaskHolders();
+  List<String> getAutoloadClasses();
 }

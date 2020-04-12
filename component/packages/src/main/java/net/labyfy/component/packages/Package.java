@@ -14,7 +14,14 @@ public interface Package {
 
   /** @return the current state of this package */
   PackageState getState();
-  // dummy for packages
+
+  /**
+   * Sets the state of the package. The previous state must be NOT_LOADED and the state can't be
+   * explicitly set to LOADED.
+   *
+   * @param state the new state for the package
+   */
+  void setState(PackageState state);
 
   /**
    * Tries to load this package. Package must be in the UNLOADED state. This call should not throw
