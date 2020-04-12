@@ -1,18 +1,15 @@
 package net.labyfy.component.packages;
 
-import com.google.common.base.Preconditions;
+import net.labyfy.component.inject.assisted.AssistedFactory;
 
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.File;
 
-public class PackageClassLoader  extends URLClassLoader {
+public interface PackageClassLoader {
 
-    private PackageClassLoader(URL jarFile) {
-        super(new URL[] {jarFile});
-    }
+  Class<?> findClass(String name) throws ClassNotFoundException;
 
-    protected static PackageClassLoader create(URL jarFile) {
-        Preconditions.checkNotNull(jarFile);
-        return new PackageClassLoader(jarFile);
-    }
+  @AssistedFactory(PackageClassLoader.class)
+  interface Factory {
+    PackageClassLoader create(File file);
+  }
 }

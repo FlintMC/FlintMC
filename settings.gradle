@@ -42,9 +42,6 @@ findProject(':component:gui')?.name = 'gui'
 include 'component:gui:gui-1.15.1'
 findProject(':component:gui:gui-1.15.1')?.name = 'gui-1.15.1'
 
-include 'component:packages'
-findProject(':component:packages')?.name = 'packages'
-
 include 'library-downloader'
 
 include 'component:gui:mcjfxgl'
@@ -68,3 +65,8 @@ findProject(':component:gui:mcjfxgl:mcjfxgl-1.15.1')?.name = 'mcjfxgl-1.15.1'
 include 'component:gui:mcjfxgl:default-components'
 findProject(':component:gui:mcjfxgl:default-components')?.name = 'default-components'
 
+include 'component:packages'
+findProject(':component:packages')?.name = 'packages'
+
+include 'component:packages:packages-impl'
+findProject(':component:packages:packages-impl')?.name = 'packages-impl'

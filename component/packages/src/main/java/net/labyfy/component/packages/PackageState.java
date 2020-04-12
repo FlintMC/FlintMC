@@ -1,0 +1,11 @@
+package net.labyfy.component.packages;
+
+public enum PackageState {
+  LOADED,
+  NOT_LOADED,
+  LABYFY_NOT_COMPATIBLE,
+  MINECRAFT_NOT_COMPATIBLE,
+  UNSATISFIABLE_DEPENDENCIES,
+  CONFLICTING_PACKAGE_LOADED,
+  ERRORED
+}

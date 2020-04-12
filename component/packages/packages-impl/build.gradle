@@ -13,9 +13,5 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'com.google.guava:guava:27.1-jre'
-    compile project(':component:base')
-    compile project(':component:tasks')
-    compile project(':component:mapping')
-    compile project(':component:inject')
+    compile project(':component:packages')
 }
