@@ -3,11 +3,15 @@ package net.labyfy.component.packages;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.io.File;
+import java.util.jar.JarFile;
 
 public interface Package {
 
   /** @return the name of this package */
   String getName();
+
+  /** @return the name of this package as it should be displayed to the user */
+  String getDisplayName();
 
   /** @return the version of this package */
   String getVersion();
@@ -42,6 +46,6 @@ public interface Package {
 
   @AssistedFactory(Package.class)
   interface Factory {
-    Package create(File jarFile);
+    Package create(JarFile jarFile);
   }
 }

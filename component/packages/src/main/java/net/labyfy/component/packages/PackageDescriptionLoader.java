@@ -1,10 +1,11 @@
 package net.labyfy.component.packages;
 
-import java.io.File;
+import java.util.Optional;
+import java.util.jar.JarFile;
 
 public interface PackageDescriptionLoader {
 
-  boolean isDescriptionPresent(File file);
+  boolean isDescriptionPresent(JarFile file);
 
-  PackageDescription loadDescription(File file);
+  Optional<PackageDescription> loadDescription(JarFile file);
 }

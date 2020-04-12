@@ -3,6 +3,7 @@ package net.labyfy.component.packages;
 public enum PackageState {
   LOADED,
   NOT_LOADED,
+  INVALID_DESCRIPTION,
   LABYFY_NOT_COMPATIBLE,
   MINECRAFT_NOT_COMPATIBLE,
   UNSATISFIABLE_DEPENDENCIES,

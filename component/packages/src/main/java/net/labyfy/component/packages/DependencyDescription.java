@@ -7,4 +7,6 @@ public interface DependencyDescription {
   String getName();
 
   List<String> getVersions();
+
+  boolean matches(PackageDescription description);
 }

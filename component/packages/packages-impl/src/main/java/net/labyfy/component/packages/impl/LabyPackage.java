@@ -4,15 +4,16 @@ import com.google.common.base.Preconditions;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.packages.*;
 import net.labyfy.component.packages.Package;
+import net.labyfy.component.packages.*;
 
-import java.io.File;
+import java.util.Optional;
+import java.util.jar.JarFile;
 
 @Implement(Package.class)
 public class LabyPackage implements Package {
 
-  private File jarFile;
+  private JarFile jarFile;
   private PackageDescription packageDescription;
   private PackageClassLoader.Factory classLoaderFactory;
   private PackageState packageState;
@@ -22,7 +23,7 @@ public class LabyPackage implements Package {
   private LabyPackage(
       PackageDescriptionLoader descriptionLoader,
       PackageClassLoader.Factory classLoaderFactory,
-      @Assisted File jarFile) {
+      @Assisted JarFile jarFile) {
     Preconditions.checkNotNull(jarFile);
     Preconditions.checkArgument(
         descriptionLoader.isDescriptionPresent(jarFile),
@@ -30,20 +31,32 @@ public class LabyPackage implements Package {
         jarFile.getName());
 
     this.jarFile = jarFile;
-    this.packageDescription = descriptionLoader.loadDescription(jarFile);
-    this.classLoaderFactory = classLoaderFactory;
-    this.packageState = PackageState.NOT_LOADED;
+    Optional<PackageDescription> optionalDescription = descriptionLoader.loadDescription(jarFile);
+    if (optionalDescription.isPresent() && optionalDescription.get().isValid()) {
+      this.classLoaderFactory = classLoaderFactory;
+      this.packageState = PackageState.NOT_LOADED;
+    } else {
+      this.packageState = PackageState.INVALID_DESCRIPTION;
+    }
+    optionalDescription.ifPresent(description -> this.packageDescription = description);
     this.loadException = null;
   }
 
   @Override
   public String getName() {
-    return null;
+    return this.packageDescription != null ? this.packageDescription.getName() : jarFile.getName();
+  }
+
+  @Override
+  public String getDisplayName() {
+    return this.packageDescription != null
+        ? this.packageDescription.getDisplayName()
+        : jarFile.getName();
   }
 
   @Override
   public String getVersion() {
-    return null;
+    return this.packageDescription != null ? this.packageDescription.getVersion() : "unknown";
   }
 
   @Override
@@ -56,7 +69,8 @@ public class LabyPackage implements Package {
     Preconditions.checkState(this.packageState.equals(PackageState.NOT_LOADED));
     Preconditions.checkArgument(
         !state.equals(PackageState.LOADED),
-        "The package state can't be explicitly set to LOADED. To get into the LOADED state, you must call the load() method.");
+        "The package state can't be explicitly set to LOADED. "
+            + "To get into the LOADED state, you must call the load() method.");
 
     this.packageState = state;
   }
@@ -67,7 +81,7 @@ public class LabyPackage implements Package {
         this.packageState.equals(PackageState.NOT_LOADED),
         "The package must be in NOT_LOADED state to be loaded.");
 
-        // TODO: find autoload classes and submit them for annotation parsing
+    // TODO: find autoload classes and submit them for annotation parsing
 
     try {
       PackageClassLoader classLoader = this.classLoaderFactory.create(this.jarFile);

@@ -6,13 +6,18 @@ public interface PackageDescription {
 
   String getName();
 
-  String getVersions();
+  String getDisplayName();
+
+  String getVersion();
 
   List<String> getAuthors();
 
   String getDescription();
 
-  List<DependencyDescription> getDependencies();
+  List<? extends DependencyDescription> getDependencies();
 
   List<String> getAutoloadClasses();
+
+  boolean isValid();
+
 }
