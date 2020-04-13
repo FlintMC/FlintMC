@@ -45,6 +45,7 @@ public class ThemeRepository {
 
   @Event(ResourcePackReloadEvent.class)
   public void reloadThemes() throws IOException {
+    this.activeTheme = null;
     themes.clear();
     Map<String, byte[]> bytes = new HashMap<>();
     for (ResourceLocation labyfy : this.resourceLocationProvider.getLoaded("labyfy")) {

@@ -8,6 +8,7 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Shadow;
 import javafx.scene.image.*;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -26,9 +27,10 @@ public class DefaultButtonSkin extends SkinBase<Button.Handle> {
 
   @AssistedInject
   private DefaultButtonSkin(
-          @Assisted Button component, ResourceLocationProvider resourceLocationProvider, ResourcePackProvider resourcePackProvider) throws IOException {
+      @Assisted Button component, ResourceLocationProvider resourceLocationProvider, ResourcePackProvider resourcePackProvider) throws IOException {
     super((Button.Handle) component.getControl());
 
+    this.getChildren().clear();
     Text text = new Text();
     text.textProperty().bindBidirectional(component.textProperty());
     text.fontProperty().bindBidirectional(component.textFontProperty());
@@ -36,6 +38,7 @@ public class DefaultButtonSkin extends SkinBase<Button.Handle> {
 
     BufferedImage read = ImageIO.read(resourceLocationProvider.get("textures/gui/widgets.png").openInputStream());
     ImageView imageView = new ImageView(resample(SwingFXUtils.toFXImage(read.getSubimage(0, (int) (read.getHeight() * 66f / 256f), (int) (read.getWidth() * 200f / 256f), (int) (read.getHeight() * 20f / 256f)), null), (int) (256f / Math.min(read.getHeight(), read.getWidth()) * 4)));
+    imageView.setSmooth(false);
     text.setFont(Font.loadFont(getClass().getClassLoader().getResourceAsStream("assets/minecraft/fonts/Minecraftia-Regular.ttf"), 32));
     text.setTranslateY(5);
 
@@ -53,8 +56,8 @@ public class DefaultButtonSkin extends SkinBase<Button.Handle> {
   private Image resample(Image input, int scaleFactor) {
 
     WritableImage output = new WritableImage(
-            (int) input.getWidth() * scaleFactor,
-            (int) input.getHeight() * scaleFactor
+        (int) input.getWidth() * scaleFactor,
+        (int) input.getHeight() * scaleFactor
     );
 
     PixelReader reader = input.getPixelReader();

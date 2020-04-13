@@ -34,7 +34,9 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutionException;
 
 @IgnoreInitialization
 public class McJfxGLControl extends Control implements GuiComponent {
@@ -85,10 +87,10 @@ public class McJfxGLControl extends Control implements GuiComponent {
   }
 
   private static Collection<CssMetaData<? extends Styleable, ?>> getRecursiveMetaData(
-      CssMetaData<? extends Styleable, ?> metaData) {
+          CssMetaData<? extends Styleable, ?> metaData) {
     if (metaData.getSubProperties() == null) return Collections.singletonList(metaData);
     Collection<CssMetaData<? extends Styleable, ?>> children =
-        new HashSet<>(metaData.getSubProperties());
+            new HashSet<>(metaData.getSubProperties());
     for (CssMetaData<? extends Styleable, ?> child : new ArrayList<>(children)) {
       children.addAll(getRecursiveMetaData(child));
     }
@@ -97,7 +99,7 @@ public class McJfxGLControl extends Control implements GuiComponent {
   }
 
   private void addTransitionProperties(
-      CssMetaData parent, CssMetaData metaData, String translationName, String interpolationName) {
+          CssMetaData parent, CssMetaData metaData, String translationName, String interpolationName) {
     try {
 
       if (MODIFY_PROPERTIES.get(metaData.getProperty()).endsWith(translationName)) return;
@@ -106,11 +108,11 @@ public class McJfxGLControl extends Control implements GuiComponent {
       initialValue.setAccessible(true);
 
       CssMetaData transitionDummy =
-          new StyleableObjectPropertySelfProvidingCssMetaData<>(
-              MODIFY_PROPERTIES.get(metaData.getProperty()) + "-transition-duration",
-              initialValue.get(metaData),
-              metaData.getConverter(),
-              metaData.isInherits());
+              new StyleableObjectPropertySelfProvidingCssMetaData<>(
+                      MODIFY_PROPERTIES.get(metaData.getProperty()) + "-transition-duration",
+                      initialValue.get(metaData),
+                      metaData.getConverter(),
+                      metaData.isInherits());
 
       CssMetaData transitionDuration =
               new StyleableObjectPropertySelfProvidingCssMetaData<>(
@@ -120,72 +122,72 @@ public class McJfxGLControl extends Control implements GuiComponent {
                       true);
 
       SimpleObjectProperty<Interpolator> interpolator =
-          new SimpleObjectProperty<>(Interpolator.SPLINE(0.25, 0.1, 0.25, 1));
+              new SimpleObjectProperty<>(Interpolator.SPLINE(0.25, 0.1, 0.25, 1));
 
       CssMetaData transitionInterpolator =
-          new StyleableObjectPropertySelfProvidingCssMetaData(
-              MODIFY_PROPERTIES.get(metaData.getProperty()) + "-transition-interpolator",
-              Interpolator.SPLINE(0.25, 0.1, 0.25, 1),
-              StringConverter.getInstance(),
-              true) {
-            @Override
-            protected StyleableObjectProperty createProperty(Styleable styleable) {
-              StyleableObjectProperty<Object> interpolatorProxy = super.createProperty(styleable);
-              interpolatorProxy.addListener(
-                  (observable, oldValue, newValue) -> {
-                    if (newValue instanceof Number[] && ((Number[]) newValue).length == 4) {
-                      Number[] numbers = ((Number[]) newValue);
-                      interpolator.setValue(
-                          Interpolator.SPLINE(
-                              numbers[0].doubleValue(),
-                              numbers[1].doubleValue(),
-                              numbers[2].doubleValue(),
-                              numbers[3].doubleValue()));
-                    } else if (newValue instanceof String) {
-                      Interpolator newInterpolator = interpolator.get();
-                      switch (((String) newValue).toLowerCase()) {
-                        case "ease-in":
-                          newInterpolator = Interpolator.EASE_IN;
-                          break;
-                        case "ease-out":
-                          newInterpolator = Interpolator.EASE_OUT;
-                          break;
-                        case "ease-both":
-                          newInterpolator = Interpolator.EASE_BOTH;
-                          break;
-                        case "linear":
-                          newInterpolator = Interpolator.LINEAR;
-                          break;
-                        case "discrete":
-                          newInterpolator = Interpolator.DISCRETE;
-                          break;
-                      }
-                      interpolator.set(newInterpolator);
-                    }
-                  });
+              new StyleableObjectPropertySelfProvidingCssMetaData(
+                      MODIFY_PROPERTIES.get(metaData.getProperty()) + "-transition-interpolator",
+                      Interpolator.SPLINE(0.25, 0.1, 0.25, 1),
+                      StringConverter.getInstance(),
+                      true) {
+                @Override
+                protected StyleableObjectProperty createProperty(Styleable styleable) {
+                  StyleableObjectProperty<Object> interpolatorProxy = super.createProperty(styleable);
+                  interpolatorProxy.addListener(
+                          (observable, oldValue, newValue) -> {
+                            if (newValue instanceof Number[] && ((Number[]) newValue).length == 4) {
+                              Number[] numbers = ((Number[]) newValue);
+                              interpolator.setValue(
+                                      Interpolator.SPLINE(
+                                              numbers[0].doubleValue(),
+                                              numbers[1].doubleValue(),
+                                              numbers[2].doubleValue(),
+                                              numbers[3].doubleValue()));
+                            } else if (newValue instanceof String) {
+                              Interpolator newInterpolator = interpolator.get();
+                              switch (((String) newValue).toLowerCase()) {
+                                case "ease-in":
+                                  newInterpolator = Interpolator.EASE_IN;
+                                  break;
+                                case "ease-out":
+                                  newInterpolator = Interpolator.EASE_OUT;
+                                  break;
+                                case "ease-both":
+                                  newInterpolator = Interpolator.EASE_BOTH;
+                                  break;
+                                case "linear":
+                                  newInterpolator = Interpolator.LINEAR;
+                                  break;
+                                case "discrete":
+                                  newInterpolator = Interpolator.DISCRETE;
+                                  break;
+                              }
+                              interpolator.set(newInterpolator);
+                            }
+                          });
 
-              StyleableProperty originalProperty = metaData.getStyleableProperty(styleable);
-              if (originalProperty == null)
-                originalProperty = parent.getStyleableProperty(styleable);
+                  StyleableProperty originalProperty = metaData.getStyleableProperty(styleable);
+                  if (originalProperty == null)
+                    originalProperty = parent.getStyleableProperty(styleable);
 
-              PropertyInterpolator propertyInterpolator =
-                  new PropertyInterpolator<>(
-                      (ObservableValue) originalProperty,
-                      (StyleableObjectProperty) transitionDuration.getStyleableProperty(styleable),
-                      (StyleableObjectProperty) transitionDummy.getStyleableProperty(styleable),
-                      interpolator);
+                  PropertyInterpolator propertyInterpolator =
+                          new PropertyInterpolator<>(
+                                  (ObservableValue) originalProperty,
+                                  (StyleableObjectProperty) transitionDuration.getStyleableProperty(styleable),
+                                  (StyleableObjectProperty) transitionDummy.getStyleableProperty(styleable),
+                                  interpolator);
 
-              propertyAnimationTimers.add(propertyInterpolator.getAnimationTimer());
-              return interpolatorProxy;
-            }
-          };
+                  propertyAnimationTimers.add(propertyInterpolator.getAnimationTimer());
+                  return interpolatorProxy;
+                }
+              };
 
       McJfxGLControl.cssMetaData
-          .get(getClass())
-          .addAll(
-              Arrays.asList(
-                  (CssMetaData<? extends Styleable, ?>) transitionDuration,
-                  (CssMetaData<? extends Styleable, ?>) transitionInterpolator));
+              .get(getClass())
+              .addAll(
+                      Arrays.asList(
+                              (CssMetaData<? extends Styleable, ?>) transitionDuration,
+                              (CssMetaData<? extends Styleable, ?>) transitionInterpolator));
 
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -213,39 +215,54 @@ public class McJfxGLControl extends Control implements GuiComponent {
                     Iterables.concat(cssMetaData.get(getClass()), getControlClassMetaData())));
   }
 
-  public void init(GuiAdapter adapter) {}
+  public void init(GuiAdapter adapter) {
+  }
 
   public void render(GuiAdapter adapter) {
     if (this.defaultSkinClass == null) {
       Platform.runLater(
-              () -> {
-                this.defaultSkinClass = this.createDefaultSkin().getClass();
-              });
+              () -> this.defaultSkinClass = this.createDefaultSkin().getClass());
     }
 
-    if (!this.getSkin().getClass().equals(this.defaultSkinClass)) {
-      Platform.runLater(
-              () -> {
-                Theme active = InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive();
-                if (active == null) return;
+    if (this.getSkin() == null || this.getSkin().getClass().equals(this.defaultSkinClass) || InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive() == null) {
+      Platform.runLater(() -> {
 
-                ThemeComponentStyle themeComponentStyle =
-                        active.getStyleMap().get(this.getComponent().getClass());
+        Theme active = InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive();
+        if (active == null) {
+          if (this.getSkin() == null || !this.getSkin().getClass().equals(this.defaultSkinClass)) {
+            this.setSkin(this.createDefaultSkin());
+          }
+          return;
+        }
 
-                if (themeComponentStyle == null) return;
+        ThemeComponentStyle themeComponentStyle =
+                active.getStyleMap().get(this.getComponent().getClass());
 
-                this.getStylesheets().clear();
-                for (String styleSheet : themeComponentStyle.getStyleSheets()) {
-                  try {
-                    this.setStyle(IOUtils.toString(active.getContent().get(styleSheet), "utf-8"));
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                }
-                this.getStyleClass()
-                        .setAll(active.getStyleMap().get(this.getComponent().getClass()).getStyleClasses());
-                this.setSkin(active.getSkin(this));
-              });
+        if (themeComponentStyle == null) return;
+
+        this.getStylesheets().clear();
+        for (String styleSheet : themeComponentStyle.getStyleSheets()) {
+          try {
+            this.setStyle(IOUtils.toString(active.getContent().get(styleSheet), "utf-8"));
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+        this.getStyleClass()
+                .setAll(active.getStyleMap().get(this.getComponent().getClass()).getStyleClasses());
+        Skin<?> skin = active.getSkin(this);
+        if (skin == null) {
+          if (this.getSkin() == null) {
+            this.setSkin(this.createDefaultSkin());
+            System.out.println("set skin1");
+          }
+        } else {
+          if (!this.getSkin().getClass().equals(skin.getClass())) {
+            this.setSkin(skin);
+            System.out.println("set skin2");
+          }
+        }
+      });
     }
     for (PropertyAnimationTimer propertyAnimationTimer : this.propertyAnimationTimers) {
       if (propertyAnimationTimer.isRunning()) {

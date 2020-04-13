@@ -48,6 +48,10 @@ public class McJfxGLApplication extends Application {
         });
   }
 
+  public Stage getStage() {
+    return stage;
+  }
+
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
   @TaskBody
   public void initialize() {

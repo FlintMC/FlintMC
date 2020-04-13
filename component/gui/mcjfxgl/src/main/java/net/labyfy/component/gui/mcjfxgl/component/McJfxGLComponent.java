@@ -7,6 +7,8 @@ import javafx.css.SimpleStyleableObjectProperty;
 import javafx.css.StyleableDoubleProperty;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Paint;
+import net.labyfy.component.gui.adapter.GuiAdapter;
+import net.labyfy.component.gui.component.GuiComponent;
 import net.labyfy.component.gui.mcjfxgl.component.property.PropertyBuilder;
 import net.labyfy.component.gui.mcjfxgl.component.property.convert.BackgroundConverter;
 
@@ -162,4 +164,5 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
     if (this.control == null) this.control = this.createControl();
     return control;
   }
+
 }

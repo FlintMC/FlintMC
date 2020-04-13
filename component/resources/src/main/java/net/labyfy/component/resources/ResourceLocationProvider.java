@@ -1,7 +1,5 @@
 package net.labyfy.component.resources;
 
-import net.labyfy.component.inject.assisted.AssistedFactory;
-
 import java.util.Collection;
 import java.util.function.Predicate;
 
@@ -16,4 +14,7 @@ public interface ResourceLocationProvider {
   Collection<ResourceLocation> getLoaded(String namespace);
 
   Collection<ResourceLocation> getLoaded(String namespace, Predicate<String> predicate);
+
+  <T extends WrappedResourceLocation> T wrap(ResourceLocation resourceLocation, Class<T> clazz);
+
 }

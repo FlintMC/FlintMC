@@ -7,7 +7,9 @@ import java.io.InputStream;
 
 public interface ResourceLocation {
 
-  /** @return a nmc version of this {@link ResourceLocation}. */
+  /**
+   * @return a nmc version of this {@link ResourceLocation}.
+   */
   <T> T getHandle();
 
   String getPath();
@@ -15,6 +17,8 @@ public interface ResourceLocation {
   String getNamespace();
 
   InputStream openInputStream();
+
+  <T extends WrappedResourceLocation> T as(Class<T> clazz);
 
   @AssistedFactory(ResourceLocation.class)
   interface Factory {

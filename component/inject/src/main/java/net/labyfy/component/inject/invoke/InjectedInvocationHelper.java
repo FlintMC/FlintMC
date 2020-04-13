@@ -22,18 +22,18 @@ public class InjectedInvocationHelper {
     this.invokeMethod(method, Maps.newHashMap());
   }
 
-  public void invokeMethod(Method method, Map<Key<?>, ?> availableArguments) {
-    this.invokeMethod(
+  public <T> T invokeMethod(Method method, Map<Key<?>, ?> availableArguments) {
+    return this.invokeMethod(
         method,
         InjectionHolder.getInjectedInstance(method.getDeclaringClass()),
         availableArguments);
   }
 
-  public void invokeMethod(Method method, Object instance) {
-    this.invokeMethod(method, instance, Maps.newHashMap());
+  public <T> T invokeMethod(Method method, Object instance) {
+    return this.invokeMethod(method, instance, Maps.newHashMap());
   }
 
-  public void invokeMethod(Method method, Object instance, Map<Key<?>, ?> availableArguments) {
+  public <T> T invokeMethod(Method method, Object instance, Map<Key<?>, ?> availableArguments) {
     try {
 
       List<Dependency<?>> dependencies =
@@ -55,9 +55,10 @@ public class InjectedInvocationHelper {
       for (int i = 0; i < dependencies.size(); i++) {
         finalArguments[i] = invocationArguments.get(dependencies.get(i).getKey());
       }
-      method.invoke(instance, finalArguments);
+      return (T) method.invoke(instance, finalArguments);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
+    return null;
   }
 }

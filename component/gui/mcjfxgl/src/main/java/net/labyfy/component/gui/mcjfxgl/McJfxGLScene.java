@@ -70,4 +70,8 @@ public class McJfxGLScene implements GuiComponent {
 
     JFXGL.render();
   }
+
+  public Parent getParent() {
+    return parent;
+  }
 }

@@ -5,6 +5,8 @@ import net.labyfy.component.gui.GuiRenderState;
 import net.labyfy.component.gui.Guis;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.component.transform.asm.MethodVisit;
+import net.labyfy.component.transform.asm.MethodVisitorContext;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.Widget;
 
@@ -30,15 +32,12 @@ public class MainMenuCleanUp {
     ClassMapping classMapping = classMappingProvider.get("net.minecraft.client.gui.screen.Screen");
 
     List<Widget> buttons = classMapping.getField("buttons").getValue(mainMenuScreen);
-    buttons.remove(1);
+    buttons.clear();
 
-//    classMapping
-//            .getField("children")
-//            .<Collection<IGuiEventListener>>getValue(mainMenuScreen)
-//            .clear();
-
-
+    classMapping
+        .getField("children")
+        .<Collection<IGuiEventListener>>getValue(mainMenuScreen)
+        .clear();
   }
-
 
 }
