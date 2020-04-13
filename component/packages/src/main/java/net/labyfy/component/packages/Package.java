@@ -2,10 +2,12 @@ package net.labyfy.component.packages;
 
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
-import java.io.File;
 import java.util.jar.JarFile;
 
 public interface Package {
+
+  /** @return the package description for this package */
+  PackageDescription getPackageDescription();
 
   /** @return the name of this package */
   String getName();
@@ -35,6 +37,19 @@ public interface Package {
    * @return the state of the package after the load attempt
    */
   PackageState load();
+
+  /**
+   * Tries to enable this package by parsing annotations in autoload classes. If an exception occurs
+   * the package may stay loaded and become partially enabled.
+   */
+  void enable();
+
+  /**
+   * The package must be in LOADED or ENABLED state.
+   *
+   * @return the package class loader used for this package
+   */
+  PackageClassLoader getPackageClassLoader();
 
   /**
    * If an exception occurred during the load attempt, this getter will return that exception. The

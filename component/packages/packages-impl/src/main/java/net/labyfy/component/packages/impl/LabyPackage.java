@@ -13,10 +13,11 @@ import java.util.jar.JarFile;
 @Implement(Package.class)
 public class LabyPackage implements Package {
 
-  private JarFile jarFile;
+  private final JarFile jarFile;
   private PackageDescription packageDescription;
   private PackageClassLoader.Factory classLoaderFactory;
   private PackageState packageState;
+  private PackageClassLoader classLoader;
   private Exception loadException;
 
   @AssistedInject
@@ -40,6 +41,11 @@ public class LabyPackage implements Package {
     }
     optionalDescription.ifPresent(description -> this.packageDescription = description);
     this.loadException = null;
+  }
+
+  @Override
+  public PackageDescription getPackageDescription() {
+    return this.packageDescription;
   }
 
   @Override
@@ -78,13 +84,11 @@ public class LabyPackage implements Package {
   @Override
   public PackageState load() {
     Preconditions.checkState(
-        this.packageState.equals(PackageState.NOT_LOADED),
+        PackageState.NOT_LOADED.matches(this),
         "The package must be in NOT_LOADED state to be loaded.");
 
-    // TODO: find autoload classes and submit them for annotation parsing
-
     try {
-      PackageClassLoader classLoader = this.classLoaderFactory.create(this.jarFile);
+      this.classLoader = this.classLoaderFactory.create(this.jarFile);
 
       this.packageState = PackageState.LOADED;
     } catch (Exception e) {
@@ -92,6 +96,37 @@ public class LabyPackage implements Package {
       this.loadException = e;
     }
     return this.packageState;
+  }
+
+  @Override
+  public void enable() {
+    Preconditions.checkState(PackageState.LOADED.matches(this));
+
+    this.packageDescription
+        .getAutoloadClasses()
+        .forEach(
+            className -> {
+              try {
+                Class<?> clazz = this.classLoader.findClass(className);
+                // TODO: submit clazz for annotation parsing.
+              } catch (ClassNotFoundException e) {
+                System.out.println(
+                    String.format(
+                        "WARNING: Couldn't enable autoload class %s for package %s. Continuing anyway...",
+                        className, this.getName()));
+                e.printStackTrace();
+              }
+            });
+    this.packageState = PackageState.ENABLED;
+  }
+
+  @Override
+  public PackageClassLoader getPackageClassLoader() {
+    Preconditions.checkState(
+        PackageState.LOADED.matches(this)
+            || PackageState.ENABLED.matches(this));
+
+    return this.classLoader;
   }
 
   @Override

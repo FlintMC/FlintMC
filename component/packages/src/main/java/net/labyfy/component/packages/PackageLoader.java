@@ -1,6 +1,6 @@
 package net.labyfy.component.packages;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * This class is used to instantiate the package loader which is used to resolve and load the
@@ -8,7 +8,7 @@ import java.util.List;
  */
 public interface PackageLoader {
 
-  List<Package> getAllPackages();
+  Set<Package> getAllPackages();
 
-  List<Package> getLoadedPackages();
+  Set<Package> getLoadedPackages();
 }
