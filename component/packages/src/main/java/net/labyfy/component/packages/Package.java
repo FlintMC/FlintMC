@@ -2,6 +2,7 @@ package net.labyfy.component.packages;
 
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
+import java.io.File;
 import java.util.jar.JarFile;
 
 public interface Package {
@@ -61,6 +62,6 @@ public interface Package {
 
   @AssistedFactory(Package.class)
   interface Factory {
-    Package create(JarFile jarFile);
+    Package create(File jarFile, JarFile jar);
   }
 }

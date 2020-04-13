@@ -2,9 +2,9 @@ package net.labyfy.component.packages.impl;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import com.google.inject.name.Named;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.packages.PackageClassLoader;
+import net.minecraft.launchwrapper.Launch;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -15,15 +15,12 @@ import java.net.URLClassLoader;
 public class LabyPackageClassLoader extends URLClassLoader implements PackageClassLoader {
 
   @AssistedInject
-  public LabyPackageClassLoader(
-      @Named("delegationClassLoader") ClassLoader delegationLoader, @Assisted File jarFile)
-      throws MalformedURLException {
-    super(new URL[] {jarFile.toURI().toURL()}, delegationLoader);
+  public LabyPackageClassLoader(@Assisted File jarFile) throws MalformedURLException {
+    super(new URL[] {jarFile.toURI().toURL()}, Launch.classLoader);
   }
 
   @Override
   public Class<?> findClass(String name) throws ClassNotFoundException {
     return super.findClass(name);
   }
-
 }

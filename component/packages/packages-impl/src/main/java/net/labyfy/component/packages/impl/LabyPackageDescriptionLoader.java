@@ -57,6 +57,7 @@ public class LabyPackageDescriptionLoader implements PackageDescriptionLoader {
     }
   }
 
+  @SuppressWarnings({"unused", "FieldMayBeFinal"})
   private static class LabyPackageDescription implements PackageDescription, Serializable {
 
     private String name;
@@ -114,6 +115,7 @@ public class LabyPackageDescriptionLoader implements PackageDescriptionLoader {
     }
   }
 
+  @SuppressWarnings({"unused", "FieldMayBeFinal"})
   private static class LabyDependencyDescription implements DependencyDescription, Serializable {
 
     private String name;

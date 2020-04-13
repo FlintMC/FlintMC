@@ -26,7 +26,7 @@ public class LabyPackageLoader implements PackageLoader {
 
   private final File packageFolder;
   private final Package.Factory packageFactory;
-  private final Set<JarFile> jars;
+  private final Set<JarTuple> jars;
 
   private Set<Package> allPackages;
 
@@ -39,44 +39,58 @@ public class LabyPackageLoader implements PackageLoader {
     this.packageFolder = packageFolder;
     this.packageFactory = packageFactory;
 
-    this.jars =
-        Stream.of(Objects.requireNonNull(packageFolder.listFiles()))
-            // Filter for JAR files
-            .filter(file -> file.getName().toLowerCase().endsWith(".jar"))
-            // Filter for readable files
-            .filter(file -> file.isFile() && file.canRead())
-            // Map to JarFile references
-            .map(
-                file -> {
-                  try {
-                    return new JarFile(file);
-                  } catch (IOException e) {
-                    return null;
-                  }
-                })
-            // filter nulls produced by previous step
-            .filter(Objects::nonNull)
-            // Filter JARs that contain a package manifest
-            .filter(
-                jarFile -> {
-                  if (descriptionLoader.isDescriptionPresent(jarFile)) return true;
-                  else {
-                    System.out.println(
-                        String.format(
-                            "%s is in the package directory, but doesn not contain a package manifest. Ignoring it.",
-                            jarFile.getName()));
-                    return false;
-                  }
-                })
-            // Collect to Set
-            .collect(Collectors.toSet());
+    boolean exists = true;
+    if (!this.packageFolder.exists() || !this.packageFolder.isDirectory()) {
+      if (!this.packageFolder.mkdirs()) exists = false;
+    }
+
+    if (exists) {
+      this.jars =
+          Stream.of(Objects.requireNonNull(packageFolder.listFiles()))
+              // Filter for JAR files
+              .filter(file -> file.getName().toLowerCase().endsWith(".jar"))
+              // Filter for readable files
+              .filter(file -> file.isFile() && file.canRead())
+              // Map to JarFile references
+              .map(
+                  file -> {
+                    try {
+                      return new JarTuple(file, new JarFile(file));
+                    } catch (IOException e) {
+                      return null;
+                    }
+                  })
+              // filter nulls produced by previous step
+              .filter(Objects::nonNull)
+              // Filter JARs that contain a package manifest
+              .filter(
+                  jarTuple -> {
+                    if (descriptionLoader.isDescriptionPresent(jarTuple.getJar())) return true;
+                    else {
+                      System.out.println(
+                          String.format(
+                              "%s is in the package directory, but doesn not contain a package manifest. Ignoring it.",
+                              jarTuple.getJarFile().getName()));
+                      return false;
+                    }
+                  })
+              // Collect to Set
+              .collect(Collectors.toSet());
+    } else {
+      jars = new HashSet<>();
+      System.out.println(
+          "ERROR: Cant load packages as package directory does not exist and is not creatable.");
+    }
   }
 
   @TaskBody
   private void load() {
     System.out.println("Loading packages from " + packageFolder.getAbsolutePath() + "...");
 
-    this.allPackages = jars.stream().map(packageFactory::create).collect(Collectors.toSet());
+    this.allPackages =
+        jars.stream()
+            .map(jarTuple -> packageFactory.create(jarTuple.getJarFile(), jarTuple.getJar()))
+            .collect(Collectors.toSet());
 
     Set<Package> loadablePackages =
         this.allPackages.stream()
@@ -174,5 +188,24 @@ public class LabyPackageLoader implements PackageLoader {
         this.allPackages.stream()
             .filter(pack -> PackageState.LOADED.matches(pack) || PackageState.ENABLED.matches(pack))
             .collect(Collectors.toSet()));
+  }
+
+  private static class JarTuple {
+
+    private final File jarFile;
+    private final JarFile jar;
+
+    public JarTuple(File jarFile, JarFile jar) {
+      this.jarFile = jarFile;
+      this.jar = jar;
+    }
+
+    public File getJarFile() {
+      return jarFile;
+    }
+
+    public JarFile getJar() {
+      return jar;
+    }
   }
 }

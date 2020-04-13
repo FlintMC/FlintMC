@@ -26,7 +26,7 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamedFilePath("labyfyPackageFolder", "./Labyfy/packages");
     this.bindNamedFilePath("labyfyRoot", "./Labyfy");
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
-    this.bindNamed("delegationClassLoader", this.getClass().getClassLoader());
+    this.bindNamed("delegationClassLoader", Launch.classLoader);
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     try {
       this.bindNamed(

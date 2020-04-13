@@ -7,13 +7,14 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.*;
 
+import java.io.File;
 import java.util.Optional;
 import java.util.jar.JarFile;
 
 @Implement(Package.class)
 public class LabyPackage implements Package {
 
-  private final JarFile jarFile;
+  private final File jarFile;
   private PackageDescription packageDescription;
   private PackageClassLoader.Factory classLoaderFactory;
   private PackageState packageState;
@@ -24,15 +25,16 @@ public class LabyPackage implements Package {
   private LabyPackage(
       PackageDescriptionLoader descriptionLoader,
       PackageClassLoader.Factory classLoaderFactory,
-      @Assisted JarFile jarFile) {
+      @Assisted File jarFile,
+      @Assisted JarFile jar) {
     Preconditions.checkNotNull(jarFile);
     Preconditions.checkArgument(
-        descriptionLoader.isDescriptionPresent(jarFile),
+        descriptionLoader.isDescriptionPresent(jar),
         "The given JAR File (%s) does not contain a valid package description.",
         jarFile.getName());
 
     this.jarFile = jarFile;
-    Optional<PackageDescription> optionalDescription = descriptionLoader.loadDescription(jarFile);
+    Optional<PackageDescription> optionalDescription = descriptionLoader.loadDescription(jar);
     if (optionalDescription.isPresent() && optionalDescription.get().isValid()) {
       this.classLoaderFactory = classLoaderFactory;
       this.packageState = PackageState.NOT_LOADED;

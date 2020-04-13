@@ -2,7 +2,7 @@ package net.labyfy.component.packages;
 
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
-import java.util.jar.JarFile;
+import java.io.File;
 
 public interface PackageClassLoader {
 
@@ -10,6 +10,6 @@ public interface PackageClassLoader {
 
   @AssistedFactory(PackageClassLoader.class)
   interface Factory {
-    PackageClassLoader create(JarFile file);
+    PackageClassLoader create(File file);
   }
 }
