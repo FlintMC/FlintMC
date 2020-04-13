@@ -58,6 +58,8 @@ dependencies {
     compile project(':component:resources')
     compile project(':component:resources:resources-1.15.1')
     compile project(':versioned:labyfy-1.15.1')
+    compile project(':component:packages')
+    compile project(':component:packages:packages-impl')
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
     compile 'com.google.guava:guava:27.1-jre'
     compile 'org.apache.commons:commons-lang3:3.9'
