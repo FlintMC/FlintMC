@@ -8,6 +8,8 @@ public interface PackageClassLoader {
 
   Class<?> findClass(String name) throws ClassNotFoundException;
 
+  ClassLoader asClassLoader();
+
   @AssistedFactory(PackageClassLoader.class)
   interface Factory {
     PackageClassLoader create(File file);

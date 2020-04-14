@@ -109,8 +109,9 @@ public class LabyPackage implements Package {
         .forEach(
             className -> {
               try {
-                Class<?> clazz = this.classLoader.findClass(className);
+                Class<?> clazz = Class.forName(className, false, classLoader.asClassLoader());
                 // TODO: submit clazz for annotation parsing.
+                System.out.println(clazz.getName());
               } catch (ClassNotFoundException e) {
                 System.out.println(
                     String.format(

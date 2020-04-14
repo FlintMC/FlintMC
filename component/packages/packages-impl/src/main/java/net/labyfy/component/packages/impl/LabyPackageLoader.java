@@ -62,6 +62,7 @@ public class LabyPackageLoader implements PackageLoader {
                   })
               // filter nulls produced by previous step
               .filter(Objects::nonNull)
+              .filter(jarTuple -> jarTuple.getJar() != null)
               // Filter JARs that contain a package manifest
               .filter(
                   jarTuple -> {
@@ -158,6 +159,7 @@ public class LabyPackageLoader implements PackageLoader {
       int previousSize = resolvedPackages.size();
 
       loadablePackages.stream()
+          .filter(pack -> !resolvedPackages.contains(pack))
           .filter(
               pack ->
                   pack.getPackageDescription().getDependencies().stream()

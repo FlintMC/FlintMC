@@ -23,4 +23,9 @@ public class LabyPackageClassLoader extends URLClassLoader implements PackageCla
   public Class<?> findClass(String name) throws ClassNotFoundException {
     return super.findClass(name);
   }
+
+  @Override
+  public ClassLoader asClassLoader() {
+    return this;
+  }
 }
