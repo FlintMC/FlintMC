@@ -3,6 +3,7 @@ package net.labyfy.component.packages.impl;
 import com.google.common.base.Preconditions;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.base.structure.service.ServiceRepository;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.*;
@@ -20,13 +21,16 @@ public class LabyPackage implements Package {
   private PackageState packageState;
   private PackageClassLoader classLoader;
   private Exception loadException;
+  private ServiceRepository serviceRepository;
 
   @AssistedInject
   private LabyPackage(
       PackageDescriptionLoader descriptionLoader,
       PackageClassLoader.Factory classLoaderFactory,
+      ServiceRepository serviceRepository,
       @Assisted File jarFile,
       @Assisted JarFile jar) {
+    this.serviceRepository = serviceRepository;
     Preconditions.checkNotNull(jarFile);
     Preconditions.checkArgument(
         descriptionLoader.isDescriptionPresent(jar),
@@ -110,8 +114,7 @@ public class LabyPackage implements Package {
             className -> {
               try {
                 Class<?> clazz = Class.forName(className, false, classLoader.asClassLoader());
-                // TODO: submit clazz for annotation parsing.
-                System.out.println(clazz.getName());
+                this.serviceRepository.notifyClassLoaded(clazz);
               } catch (ClassNotFoundException e) {
                 System.out.println(
                     String.format(
