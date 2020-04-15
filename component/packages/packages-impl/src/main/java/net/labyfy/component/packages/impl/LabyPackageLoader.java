@@ -203,11 +203,11 @@ public class LabyPackageLoader implements PackageLoader {
     }
 
     public File getJarFile() {
-      return jarFile;
+      return this.jarFile;
     }
 
     public JarFile getJar() {
-      return jar;
+      return this.jar;
     }
   }
 }

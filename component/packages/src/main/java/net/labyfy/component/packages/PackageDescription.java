@@ -1,6 +1,6 @@
 package net.labyfy.component.packages;
 
-import java.util.List;
+import java.util.Set;
 
 public interface PackageDescription {
 
@@ -10,14 +10,15 @@ public interface PackageDescription {
 
   String getVersion();
 
-  List<String> getAuthors();
+  Set<String> getAuthors();
 
   String getDescription();
 
-  List<? extends DependencyDescription> getDependencies();
+  Set<? extends DependencyDescription> getDependencies();
 
-  List<String> getAutoloadClasses();
+  Set<String> getAutoloadClasses();
+
+  Set<String> getAutoloadExcludedClasses();
 
   boolean isValid();
-
 }

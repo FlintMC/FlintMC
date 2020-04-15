@@ -9,6 +9,7 @@ import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.*;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.jar.JarFile;
 
@@ -21,16 +22,21 @@ public class LabyPackage implements Package {
   private PackageState packageState;
   private PackageClassLoader classLoader;
   private Exception loadException;
-  private ServiceRepository serviceRepository;
+  private final ServiceRepository serviceRepository;
+  private final JarResolver jarResolver;
+  private final JarFile jar;
 
   @AssistedInject
   private LabyPackage(
       PackageDescriptionLoader descriptionLoader,
       PackageClassLoader.Factory classLoaderFactory,
       ServiceRepository serviceRepository,
+      JarResolver jarResolver,
       @Assisted File jarFile,
       @Assisted JarFile jar) {
     this.serviceRepository = serviceRepository;
+    this.jarResolver = jarResolver;
+    this.jar = jar;
     Preconditions.checkNotNull(jarFile);
     Preconditions.checkArgument(
         descriptionLoader.isDescriptionPresent(jar),
@@ -108,12 +114,16 @@ public class LabyPackage implements Package {
   public void enable() {
     Preconditions.checkState(PackageState.LOADED.matches(this));
 
-    this.packageDescription
-        .getAutoloadClasses()
+    this.jarResolver
+        .resolveMatchingClasses(
+            this.jar,
+            this.getPackageDescription().getAutoloadClasses(),
+            this.getPackageDescription().getAutoloadExcludedClasses())
         .forEach(
             className -> {
               try {
                 Class<?> clazz = Class.forName(className, false, classLoader.asClassLoader());
+                System.out.println(clazz.getName());
                 this.serviceRepository.notifyClassLoaded(clazz);
               } catch (ClassNotFoundException e) {
                 System.out.println(
@@ -123,14 +133,14 @@ public class LabyPackage implements Package {
                 e.printStackTrace();
               }
             });
+
     this.packageState = PackageState.ENABLED;
   }
 
   @Override
   public PackageClassLoader getPackageClassLoader() {
     Preconditions.checkState(
-        PackageState.LOADED.matches(this)
-            || PackageState.ENABLED.matches(this));
+        PackageState.LOADED.matches(this) || PackageState.ENABLED.matches(this));
 
     return this.classLoader;
   }
