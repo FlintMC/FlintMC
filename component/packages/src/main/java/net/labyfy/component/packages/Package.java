@@ -5,6 +5,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 import java.io.File;
 import java.util.jar.JarFile;
 
+/** Represents a package at runtime. */
 public interface Package {
 
   /** @return the package description for this package */
@@ -62,6 +63,13 @@ public interface Package {
 
   @AssistedFactory(Package.class)
   interface Factory {
+    /**
+     * Instantiates the currently used implementation for this interface.
+     *
+     * @param jarFile the jar file that contains the package to create.
+     * @param jar a JarFile reference of the same File.
+     * @return a new Package.
+     */
     Package create(File jarFile, JarFile jar);
   }
 }
