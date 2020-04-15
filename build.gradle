@@ -22,7 +22,7 @@ allprojects {
     buildscript {
         repositories {
             maven {
-                url = "${artifactory_contextUrl}general/"
+                url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
             }
             mavenCentral()
             jcenter()
@@ -34,19 +34,19 @@ allprojects {
 
     repositories {
         maven {
-            url = "${artifactory_contextUrl}general/"
+            url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
         }
         mavenCentral()
     }
 
 }
 artifactory {
-    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")   //The base Artifactory URL if not overridden by the publisher/resolver
     publish {
         repository {
             repoKey = 'labymedia'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
+            username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+            password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
             maven = true
 
         }
@@ -54,8 +54,8 @@ artifactory {
     resolve {
         repository {
             repoKey = 'general'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
+            username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+            password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
             maven = true
 
         }

@@ -74,10 +74,10 @@ buildCache {
         enabled = false
     }
     remote(HttpBuildCache) {
-        url = "${artifactory_contextUrl}"
+        url = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")
         credentials {
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
+            username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+            password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
         }
         push = isPush
     }
