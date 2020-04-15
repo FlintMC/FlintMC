@@ -31,6 +31,7 @@ allprojects {
 
     apply plugin: 'maven'
     apply plugin: "com.jfrog.artifactory"
+    apply plugin: 'maven-publish'
 
     repositories {
         maven {
@@ -49,6 +50,9 @@ artifactory {
             password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
             maven = true
 
+        }
+        defaults {
+            publications ('mavenJava')
         }
     }
     resolve {
@@ -86,3 +90,12 @@ dependencies {
     compile 'com.google.guava:guava:27.1-jre'
     compile 'org.apache.commons:commons-lang3:3.9'
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
