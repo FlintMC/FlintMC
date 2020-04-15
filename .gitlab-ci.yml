@@ -2,23 +2,12 @@ image: maven:latest
 
 before_script:
   - bash eval.sh
-
-build:
-  stage: build
-  script:
   - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
   - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries && cd ../..
-  - sh gradlew jar
-  artifacts:
-    name: "${CI_BUILD_NAME}:${CI_BUILD_REF_NAME}"
-    paths:
-    - build/libs
 
 test:
   stage: test
   script:
-  - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-  - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries && cd ../..
   - sh gradlew test
 
 deploy:
