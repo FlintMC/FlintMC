@@ -67,7 +67,7 @@ findProject(':component:gui:mcjfxgl:default-components')?.name = 'default-compon
 
 include "shared", "api", "services:webservice"
 
-ext.isPush = getProperty('gradle.cache.push')
+ext.isPush = true
 
 buildCache {
     local {

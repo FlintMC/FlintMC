@@ -22,7 +22,7 @@ allprojects {
     buildscript {
         repositories {
             maven {
-                url = "${artifactory_contextUrl}/general/"
+                url = "${artifactory_contextUrl}general/"
             }
             mavenCentral()
             jcenter()
@@ -34,7 +34,7 @@ allprojects {
 
     repositories {
         maven {
-            url = "${artifactory_contextUrl}/general/"
+            url = "${artifactory_contextUrl}general/"
         }
         mavenCentral()
     }
