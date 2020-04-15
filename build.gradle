@@ -47,7 +47,7 @@ artifactory {
         repository {
             repoKey = 'labymedia'
             username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
-            password = System.getenv("${artifactory_password}")
+            password = "${artifactory_password}"
             maven = true
 
         }
@@ -59,7 +59,7 @@ artifactory {
         repository {
             repoKey = 'general'
             username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
-            password = System.getenv("${artifactory_password}")
+            password = "${artifactory_password}"
             maven = true
 
         }
