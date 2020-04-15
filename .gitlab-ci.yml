@@ -21,7 +21,7 @@ test:
 deploy:
   stage: deploy
   script:
-  - sh gradlew artifactoryDeploy
+  - sh gradlew artifactoryPublish
   environment:
     name: production
   only:
