@@ -12,6 +12,7 @@ import net.labyfy.component.gui.Guis;
 import net.labyfy.component.gui.MinecraftWindow;
 import net.labyfy.component.gui.adapter.GuiAdapter;
 import net.labyfy.component.gui.mcjfxgl.component.labeled.button.Button;
+import net.labyfy.component.gui.mcjfxgl.labymod.MainMenu;
 import net.labyfy.component.resources.ResourceLocationProvider;
 
 import javax.inject.Inject;
@@ -22,26 +23,36 @@ import javax.inject.Singleton;
 public class Test {
 
   private final McJfxGLSceneRepository sceneRepository;
-  private final Button.Factory buttonFactory;
-  private final ResourceLocationProvider resourceLocationProvider;
-  private Button multiPlayerButton;
-  private ImageView background;
 
   @Inject
-  private Test(McJfxGLSceneRepository sceneRepository, Button.Factory buttonFactory, ResourceLocationProvider resourceLocationProvider) {
+  private Test(McJfxGLSceneRepository sceneRepository) {
     this.sceneRepository = sceneRepository;
-    this.buttonFactory = buttonFactory;
-    this.resourceLocationProvider = resourceLocationProvider;
   }
 
   private boolean skipped;
 
   @GuiRenderState(GuiRenderState.Type.INIT)
-  public void init(GuiAdapter guiAdapter) {
+  public void init(GuiAdapter guiAdapter, MainMenu.Factory mainMenuFactory) {
     if (!skipped) {
       skipped = true;
       return;
     }
+
+    guiAdapter.addComponent(
+        this.sceneRepository.createOrGet(
+            "main_menu",
+            factory ->
+                factory.create(
+                    () -> {
+                      StackPane stackPane = new StackPane();
+                      stackPane.setBackground(Background.EMPTY);
+                      stackPane.setAlignment(Pos.CENTER);
+                      stackPane.getChildren().add(mainMenuFactory.create().getControl());
+                      return stackPane;
+                    })));
+
+    /*
+
     guiAdapter.addComponent(
         sceneRepository.createOrGet("main_menu", factory -> factory.create(
             () -> {
@@ -62,14 +73,15 @@ public class Test {
               this.background.setOpacity(0.18f);
               stackPane.getChildren().addAll(borderPane, this.background, this.multiPlayerButton.getControl());
               return stackPane;
-            })));
+            })));*/
 
     guiAdapter.initComponents();
   }
 
   @GuiRenderState(GuiRenderState.Type.RENDER)
-  public void render(GuiAdapter guiAdapter, MinecraftWindow minecraftWindow, McJfxGLApplication application) {
-    this.background.setPreserveRatio(true);
+  public void render(
+      GuiAdapter guiAdapter, MinecraftWindow minecraftWindow, McJfxGLApplication application) {
+    /*this.background.setPreserveRatio(true);
     this.multiPlayerButton.setTranslateY((minecraftWindow.getScaledHeight() / 4 + (48 + 23)) * 4);
 
     if (this.background.getImage().getHeight() / minecraftWindow.getScaledHeight() < this.background.getImage().getWidth() / minecraftWindow.getScaledWidth()) {
@@ -78,8 +90,7 @@ public class Test {
     } else {
       this.background.setFitHeight(0);
       this.background.setFitWidth(minecraftWindow.getScaledWidth() * 4);
-    }
-
+    }*/
     guiAdapter.drawComponents();
   }
 }

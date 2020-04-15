@@ -6,6 +6,7 @@ import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.scene.control.Skin;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
+import net.labyfy.component.gui.adapter.GuiAdapter;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
 import net.labyfy.component.gui.mcjfxgl.component.labeled.Labeled;
 import net.labyfy.component.inject.assisted.AssistedFactory;
@@ -15,10 +16,10 @@ import java.util.Collection;
 @IgnoreInitialization
 public final class Button extends Labeled<Button> {
 
-  private final DefaultButtonSkin.Factory defaultSkinFactory;
+  private final MinecraftButtonSkin.Factory defaultSkinFactory;
 
   @AssistedInject
-  private Button(DefaultButtonSkin.Factory defaultSkinFactory) {
+  private Button(MinecraftButtonSkin.Factory defaultSkinFactory) {
     this.defaultSkinFactory = defaultSkinFactory;
   }
 
@@ -44,9 +45,17 @@ public final class Button extends Labeled<Button> {
       return this.component.defaultSkinFactory.create(this.component);
     }
 
+    protected Class<? extends Skin<? extends McJfxGLControl>> getDefaultSkinClass() {
+      return MinecraftButtonSkin.class;
+    }
+
+    public void render(GuiAdapter adapter) {
+      super.render(adapter);
+    }
+
     public Collection<CssMetaData<? extends Styleable, ?>> getControlClassMetaData() {
       Collection<CssMetaData<? extends Styleable, ?>> cssMetaData =
-              Sets.newHashSet(super.getControlClassMetaData());
+          Sets.newHashSet(super.getControlClassMetaData());
       cssMetaData.add(component.textFontProperty().getCssMetaData());
       cssMetaData.add(component.textFillProperty().getCssMetaData());
       return cssMetaData;

@@ -20,6 +20,7 @@ import net.labyfy.component.transform.javassist.ClassTransformContext;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.concurrent.CountDownLatch;
 
 @Singleton
 public class McJfxGLApplication extends Application {
@@ -81,5 +82,33 @@ public class McJfxGLApplication extends Application {
     modifiers &= ~Modifier.FINAL;
     modifiers |= Modifier.PUBLIC;
     return modifiers;
+  }
+
+  public static void runAndWait(Runnable action) {
+    if (action == null) throw new NullPointerException("action");
+
+    // run synchronously on JavaFX thread
+    if (Platform.isFxApplicationThread()) {
+      action.run();
+      return;
+    }
+
+    // queue on JavaFX thread and wait for completion
+    final CountDownLatch doneLatch = new CountDownLatch(1);
+    Platform.runLater(
+        () -> {
+          try {
+            action.run();
+          } finally {
+            doneLatch.countDown();
+          }
+        });
+
+    JFXGL.render();
+    try {
+      doneLatch.await();
+    } catch (InterruptedException e) {
+      // ignore exception
+    }
   }
 }
