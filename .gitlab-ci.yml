@@ -13,17 +13,32 @@ build:
     name: "${CI_BUILD_NAME}:${CI_BUILD_REF_NAME}"
     paths:
     - build/libs
+  when: on_success
 
 test:
   stage: test
   script:
   - sh gradlew test
+  when: on_success
 
-deploy:
+dev_deploy:
   stage: deploy
   script:
+  - sed -i "s/^version.*/version \"${CI_BUILD_REF_NAME}\"/1" build.gradle
+  - sh gradlew artifactoryDeploy
+  environment:
+    name: development
+  only:
+  - master
+  when: on_success
+
+live_deploy:
+  stage: deploy
+  script:
+  - sed -i "s/^version.*/version \"${CI_TAG_NAME}\"/1" build.gradle
   - sh gradlew artifactoryPublish
   environment:
     name: production
   only:
-  - master
+  - tags
+  when: manual
