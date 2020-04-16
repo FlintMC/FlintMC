@@ -7,7 +7,3 @@ sed -i "s|\${artifactory_password}|${artifactory_password}|g" build.gradle
 sed -i "s|\${artifactory_contextUrl}|${artifactory_contextUrl}|g" settings.gradle
 sed -i "s|\${artifactory_user}|${artifactory_user}|g" settings.gradle
 sed -i "s|\${artifactory_password}|${artifactory_password}|g" settings.gradle
-
-cat build.gradle
-echo SETTINGS
-cat settings.gradle
