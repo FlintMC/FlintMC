@@ -1,7 +1,9 @@
 package net.labyfy.component.initializer.inject.module;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.reflect.ClassPath;
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -11,14 +13,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * This class binds constants,
+ * so the can be used with @named
+ */
 @Singleton
 public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
+    this.bindNamedFilePath("labyfyPackageFolder", "./Labyfy/packages");
     this.bindNamedFilePath("labyfyRoot", "./Labyfy");
-    this.bindNamedFilePath("labyfyModsRoot", "./Labyfy/mods");
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
+    this.bindNamed("delegationClassLoader", Launch.classLoader);
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     try {
       this.bindNamed(
