@@ -27,4 +27,3 @@ deploy:
     name: production
   only:
   - master
-  - 35-fix-jar-creation
