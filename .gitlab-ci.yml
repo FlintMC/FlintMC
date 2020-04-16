@@ -35,7 +35,7 @@ dev_deploy:
 live_deploy:
   stage: deploy
   script:
-  - sed -i "s/^version.*/version \"${CI_TAG_NAME}\"/1" build.gradle
+  - sed -i "s/^version.*/version \"${CI_COMMIT_TAG}\"/1" build.gradle
   - sh gradlew artifactoryPublish
   environment:
     name: production
