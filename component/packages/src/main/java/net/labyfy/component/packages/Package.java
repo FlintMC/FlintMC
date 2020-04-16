@@ -23,6 +23,9 @@ public interface Package {
   /** @return the current state of this package */
   PackageState getState();
 
+  /** @return the file this package is loaded from */
+  File getFile();
+
   /**
    * Sets the state of the package. The previous state must be NOT_LOADED and the state can't be
    * explicitly set to LOADED.
