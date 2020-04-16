@@ -5,8 +5,11 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.base.structure.service.ServiceRepository;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.Collections;
@@ -16,6 +19,7 @@ import java.util.jar.JarFile;
 @Implement(Package.class)
 public class LabyPackage implements Package {
 
+  @InjectLogger private Logger logger;
   private final File jarFile;
   private PackageDescription packageDescription;
   private PackageClassLoader.Factory classLoaderFactory;
@@ -123,14 +127,13 @@ public class LabyPackage implements Package {
             className -> {
               try {
                 Class<?> clazz = Class.forName(className, false, classLoader.asClassLoader());
-                System.out.println(clazz.getName());
                 this.serviceRepository.notifyClassLoaded(clazz);
               } catch (ClassNotFoundException e) {
-                System.out.println(
-                    String.format(
-                        "WARNING: Couldn't enable autoload class %s for package %s. Continuing anyway...",
-                        className, this.getName()));
-                e.printStackTrace();
+                this.logger.warn(
+                    "Couldn't enable autoload class {} for package {}. Continuing anyway...",
+                    className,
+                    this.getName());
+                this.logger.throwing(Level.WARN, e);
               }
             });
 
