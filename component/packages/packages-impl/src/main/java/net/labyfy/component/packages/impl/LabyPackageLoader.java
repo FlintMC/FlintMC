@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageDescriptionLoader;
 import net.labyfy.component.packages.PackageLoader;
@@ -11,6 +12,8 @@ import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.tasks.subproperty.TaskBody;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.util.stream.Stream;
 @Implement(PackageLoader.class)
 public class LabyPackageLoader implements PackageLoader {
 
+  @InjectLogger private Logger logger;
   private final File packageFolder;
   private final Package.Factory packageFactory;
   private final Set<JarTuple> jars;
@@ -68,10 +72,9 @@ public class LabyPackageLoader implements PackageLoader {
                   jarTuple -> {
                     if (descriptionLoader.isDescriptionPresent(jarTuple.getJar())) return true;
                     else {
-                      System.out.println(
-                          String.format(
-                              "%s is in the package directory, but doesn not contain a package manifest. Ignoring it.",
-                              jarTuple.getJarFile().getName()));
+                      this.logger.warn(
+                          "{} is in the package directory, but doesn not contain a package manifest. Ignoring it.",
+                          jarTuple.getJarFile().getName());
                       return false;
                     }
                   })
@@ -79,14 +82,15 @@ public class LabyPackageLoader implements PackageLoader {
               .collect(Collectors.toSet());
     } else {
       jars = new HashSet<>();
-      System.out.println(
-          "ERROR: Cant load packages as package directory does not exist and is not creatable.");
+      this.logger.error(
+          "Cant load packages as package directory does not exist and is not creatable.");
     }
   }
 
   @TaskBody
   private void load() {
-    System.out.println("Loading packages from " + packageFolder.getAbsolutePath() + "...");
+    if (this.jars.isEmpty()) return;
+    this.logger.info("Loading packages from {}...", packageFolder.getAbsolutePath());
 
     this.allPackages =
         jars.stream()
@@ -99,10 +103,9 @@ public class LabyPackageLoader implements PackageLoader {
                 pack -> {
                   if (PackageState.NOT_LOADED.matches(pack)) return true;
                   else {
-                    System.out.println(
-                        String.format(
-                            "WARNING: The package %s does not contain a valid package manifest and will not be loaded.",
-                            pack.getName()));
+                    this.logger.warn(
+                        "The package {} does not contain a valid package manifest and will not be loaded.",
+                        pack.getName());
                     return false;
                   }
                 })
@@ -116,17 +119,15 @@ public class LabyPackageLoader implements PackageLoader {
               dependency ->
                   loadedPackages.stream()
                       .anyMatch(loaded -> dependency.matches(loaded.getPackageDescription())))) {
-        System.out.println(String.format("Loading package %s...", toLoad.getName()));
+        this.logger.info("Loading package {}...", toLoad.getName());
         if (toLoad.load().equals(PackageState.ERRORED)) {
-          System.out.println(String.format("ERROR: Failed to load package %s.", toLoad.getName()));
-          toLoad.getLoadException().printStackTrace();
+          this.logger.error("Failed to load package {}.", toLoad.getName());
+          this.logger.throwing(Level.ERROR, toLoad.getLoadException());
         } else loadedPackages.add(toLoad);
 
       } else {
-        System.out.println(
-            String.format(
-                "WARNING: Can't load %s due to dependencies that failed to load.",
-                toLoad.getName()));
+        this.logger.warn(
+            "Can't load {} due to dependencies that failed to load.", toLoad.getName());
       }
     }
 
@@ -134,10 +135,8 @@ public class LabyPackageLoader implements PackageLoader {
         .filter(PackageState.NOT_LOADED::matches)
         .forEach(
             pack -> {
-              System.out.println(
-                  String.format(
-                      "WARNING: Can't load %s because at least one dependency is not present.",
-                      pack.getName()));
+              this.logger.warn(
+                  "Can't load {} because at least one dependency is not present.", pack.getName());
               pack.setState(PackageState.UNSATISFIABLE_DEPENDENCIES);
             });
 
@@ -145,7 +144,7 @@ public class LabyPackageLoader implements PackageLoader {
         .filter(PackageState.LOADED::matches)
         .forEach(
             pack -> {
-              System.out.println(String.format("Enabling package %s...", pack.getName()));
+              this.logger.info("Enabling package {}...", pack.getName());
               pack.enable();
             });
   }
