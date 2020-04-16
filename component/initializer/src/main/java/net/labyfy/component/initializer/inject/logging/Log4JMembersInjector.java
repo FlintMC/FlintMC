@@ -8,21 +8,21 @@ import java.lang.reflect.Field;
 
 public class Log4JMembersInjector<T> implements MembersInjector<T> {
 
-    private final Field field;
-    private final Logger logger;
+  private final Field field;
+  private final Logger logger;
 
-    Log4JMembersInjector(Field field, LoggingProvider provider) {
-        this.field = field;
-        this.logger = provider.getLogger(field.getDeclaringClass());
-    }
+  Log4JMembersInjector(Field field, LoggingProvider provider) {
+    this.field = field;
+    this.logger = provider.getLogger(field.getDeclaringClass());
+  }
 
-    @Override
-    public void injectMembers(T instance) {
-        try {
-            field.setAccessible(true);
-            field.set(instance, logger);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+  @Override
+  public void injectMembers(T instance) {
+    try {
+      field.setAccessible(true);
+      field.set(instance, logger);
+    } catch (IllegalAccessException e) {
+      throw new RuntimeException(e);
     }
+  }
 }

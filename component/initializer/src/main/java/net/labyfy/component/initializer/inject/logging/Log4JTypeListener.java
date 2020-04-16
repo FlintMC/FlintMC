@@ -26,7 +26,9 @@ public class Log4JTypeListener implements TypeListener {
       for (Field field : clazz.getDeclaredFields()) {
         if (field.getType() == Logger.class && field.isAnnotationPresent(InjectLogger.class)) {
           InjectLogger injectLogger = field.getAnnotation(InjectLogger.class);
-          typeEncounter.register(new Log4JMembersInjector<>(field, atomicInjectorReference.get().getInstance(injectLogger.provider())));
+          typeEncounter.register(
+              new Log4JMembersInjector<>(
+                  field, atomicInjectorReference.get().getInstance(injectLogger.provider())));
         }
       }
       clazz = clazz.getSuperclass();
