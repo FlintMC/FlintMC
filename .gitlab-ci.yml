@@ -1,12 +1,16 @@
 eval:
   stage: build
   script: bash eval.sh && mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-  #sh gradlew download-libraries
   
 build:
   stage: deploy
-  script: bash eval.sh && sh gradlew :versioned:labyfy-1.15.1:download-libraries && sh gradlew build
+  script: bash eval.sh && cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries && cd ../.. && sh gradlew jar
   environment:
     name: production
+  artifacts:
+    name: "${CI_BUILD_NAME}:${CI_BUILD_REF_NAME}"
+    paths:
+    - build/libs
   only:
     - master
+    - 35-fix-jar-creation

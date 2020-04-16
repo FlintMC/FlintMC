@@ -25,7 +25,7 @@ class LibraryDownloader implements Plugin<Project> {
             doLast {
                 if (extension.version == null) throw new IllegalArgumentException("minecraft.version must be set!")
                 VersionFetcher.VersionManifest.Entry entry = VersionFetcher.fetch(extension.version)
-                File libraries = new File(project.projectDir, "libraries");
+                File libraries = new File(project.projectDir, "versioned/labyfy-1.15.1/libraries");
                 if (!libraries.exists()) libraries.mkdirs()
 
 
@@ -48,9 +48,10 @@ class LibraryDownloader implements Plugin<Project> {
 
                 println "downloading client libraries:"
 
-                if (new File("libraries", "client.jar").exists()) {
+                if (new File("versioned/labyfy-1.15.1/libraries", "client.jar").exists()) {
                     println " -> skip client.jar"
                 } else {
+                    println "debug: WWWWWWWWWWWWWWWWWWWWWTTTTTTTTTTTTTTTTTTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFff"
                     this.downloadArtifact("client", extension.version, libraries, details.downloads.client.url)
                 }
 
@@ -108,6 +109,7 @@ class LibraryDownloader implements Plugin<Project> {
                 download("https://dl.labymod.net/mappings/" + extension.version + "/joined.tsrg", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/joined.tsrg"))
 
                 println "deobfuscating client.jar:"
+                println "DEEEEEEEEBBBUUUUUUUUUUUUUGGG:"
                 injector.getInstance(LabyDeobfuscator.class);
                 println "finished"
 
@@ -115,7 +117,7 @@ class LibraryDownloader implements Plugin<Project> {
 
         }
 
-        project.dependencies.compile(project.fileTree('libraries'))
+        project.dependencies.compile(project.fileTree('versioned/labyfy-1.15.1/libraries'))
 
         project.defaultTasks("download-libraries")
 
@@ -135,7 +137,7 @@ class LibraryDownloader implements Plugin<Project> {
 
 
     private void downloadArtifact(String artifact, String version, File libraries, String url) {
-        println " -> download " + artifact + "-" + version + ".jar"
+        println " -> download " + artifact + "-" + version + ".jar to " + libraries.getAbsolutePath() + " url " + url
         FileOutputStream fileOutputStream = new FileOutputStream(new File(libraries, artifact + "-" + version + ".jar"));
         IOUtils.write(IOUtils.toByteArray(new URL(url)), fileOutputStream)
         fileOutputStream.flush()

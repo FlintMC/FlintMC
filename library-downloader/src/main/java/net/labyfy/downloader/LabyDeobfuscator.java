@@ -61,9 +61,10 @@ public class LabyDeobfuscator {
   private void applyClassMappings()
       throws NoSuchMethodException, MalformedURLException, IllegalAccessException,
           InvocationTargetException {
+    System.out.println("DEBUG: WTF where are you from?");
     Remapper mapper =
         SimpleSimpleRemapper.create(
-            this.mappings, new ReflectionSuperClassProvider(input, "libraries"));
+            this.mappings, new ReflectionSuperClassProvider(input, "versioned/labyfy-1.15.1/libraries"));
 
     this.classes.forEach(
         (name, classNode) -> {

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import java.lang.annotation.Annotation;
 import java.util.Map;
 
 public class VersionProvider {
