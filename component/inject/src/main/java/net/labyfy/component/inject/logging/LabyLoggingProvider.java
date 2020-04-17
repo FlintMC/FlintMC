@@ -44,7 +44,7 @@ public class LabyLoggingProvider implements LoggingProvider {
           return new ParameterizedMessage("[" + LABYFY_PREFIX + " ]: {}", message);
         }
 
-        return new ParameterizedMessage("[" + LABYFY_PREFIX + "]: {}", message);
+        return new ParameterizedMessage("[" + prefix + "]: {}", message);
       }
 
       @Override
