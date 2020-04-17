@@ -27,13 +27,7 @@ public class LabyLoggingProvider implements LoggingProvider {
 
   @Override
   public Logger getLogger(Class<?> clazz) {
-    if (loggerCache.containsKey(clazz)) {
-      return loggerCache.get(clazz);
-    }
-
-    Logger logger = createLogger(clazz);
-    loggerCache.put(clazz, logger);
-    return logger;
+    return loggerCache.computeIfAbsent(clazz, this::createLogger);
   }
 
   @Override
