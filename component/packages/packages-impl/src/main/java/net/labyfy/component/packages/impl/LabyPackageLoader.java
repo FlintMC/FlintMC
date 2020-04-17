@@ -5,10 +5,9 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
+import net.labyfy.component.inject.logging.LoggingProvider;
+import net.labyfy.component.packages.*;
 import net.labyfy.component.packages.Package;
-import net.labyfy.component.packages.PackageDescriptionLoader;
-import net.labyfy.component.packages.PackageLoader;
-import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.tasks.subproperty.TaskBody;
@@ -36,9 +35,12 @@ public class LabyPackageLoader implements PackageLoader {
 
   @Inject
   private LabyPackageLoader(
+      LoggingProvider loggingProvider,
       @Named("labyfyPackageFolder") File packageFolder,
       PackageDescriptionLoader descriptionLoader,
       Package.Factory packageFactory) {
+
+    loggingProvider.setPrefixProvider(this::getLogPrefix);
 
     this.packageFolder = packageFolder;
     this.packageFactory = packageFactory;
@@ -189,6 +191,15 @@ public class LabyPackageLoader implements PackageLoader {
         this.allPackages.stream()
             .filter(pack -> PackageState.LOADED.matches(pack) || PackageState.ENABLED.matches(pack))
             .collect(Collectors.toSet()));
+  }
+
+  private String getLogPrefix(Class<?> clazz) {
+    ClassLoader loader = clazz.getClassLoader();
+    if(loader instanceof PackageClassLoader) {
+      return ((PackageClassLoader) loader).getOwner().getName();
+    } else {
+      return null;
+    }
   }
 
   private static class JarTuple {

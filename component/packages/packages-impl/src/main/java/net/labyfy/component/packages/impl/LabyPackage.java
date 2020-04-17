@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.jar.JarFile;
 
