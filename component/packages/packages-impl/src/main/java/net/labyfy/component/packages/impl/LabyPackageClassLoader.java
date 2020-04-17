@@ -3,6 +3,7 @@ package net.labyfy.component.packages.impl;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.minecraft.launchwrapper.Launch;
 
@@ -13,10 +14,12 @@ import java.net.URLClassLoader;
 
 @Implement(PackageClassLoader.class)
 public class LabyPackageClassLoader extends URLClassLoader implements PackageClassLoader {
+  private final Package owner;
 
   @AssistedInject
-  public LabyPackageClassLoader(@Assisted File jarFile) throws MalformedURLException {
-    super(new URL[] {jarFile.toURI().toURL()}, Launch.classLoader);
+  public LabyPackageClassLoader(@Assisted Package owner) throws MalformedURLException {
+    super(new URL[] {owner.getFile().toURI().toURL()}, Launch.classLoader);
+    this.owner = owner;
   }
 
   @Override
@@ -27,5 +30,10 @@ public class LabyPackageClassLoader extends URLClassLoader implements PackageCla
   @Override
   public ClassLoader asClassLoader() {
     return this;
+  }
+
+  @Override
+  public Package getOwner() {
+    return owner;
   }
 }

@@ -23,14 +23,21 @@ public interface PackageClassLoader {
    */
   ClassLoader asClassLoader();
 
+  /**
+   * Retrieves the package owning this classloader.
+   *
+   * @return the package
+   */
+  Package getOwner();
+
   @AssistedFactory(PackageClassLoader.class)
   interface Factory {
     /**
      * Instantiates the currently used implementation for this interface.
      *
-     * @param file the jar file to load classes from.
+     * @param owner the package this classloader should be created for.
      * @return a new PackageClassLoader.
      */
-    PackageClassLoader create(File file);
+    PackageClassLoader create(Package owner);
   }
 }

@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.jar.JarFile;
 
@@ -87,6 +86,11 @@ public class LabyPackage implements Package {
   }
 
   @Override
+  public File getFile() {
+    return this.jarFile;
+  }
+
+  @Override
   public void setState(PackageState state) {
     Preconditions.checkState(this.packageState.equals(PackageState.NOT_LOADED));
     Preconditions.checkArgument(
@@ -104,7 +108,7 @@ public class LabyPackage implements Package {
         "The package must be in NOT_LOADED state to be loaded.");
 
     try {
-      this.classLoader = this.classLoaderFactory.create(this.jarFile);
+      this.classLoader = this.classLoaderFactory.create(this);
 
       this.packageState = PackageState.LOADED;
     } catch (Exception e) {
