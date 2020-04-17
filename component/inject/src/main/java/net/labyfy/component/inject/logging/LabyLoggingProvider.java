@@ -15,6 +15,8 @@ import java.util.function.Function;
 @Singleton
 @Implement(LoggingProvider.class)
 public class LabyLoggingProvider implements LoggingProvider {
+  private static final String LABYFY_PREFIX = "Labyfy";
+
   private Function<Class<?>, String> prefixProvider = (clazz) -> null;
 
   private final Map<Class<?>, Logger> loggerCache;
@@ -25,7 +27,7 @@ public class LabyLoggingProvider implements LoggingProvider {
 
   @Override
   public Logger getLogger(Class<?> clazz) {
-    if(loggerCache.containsKey(clazz)) {
+    if (loggerCache.containsKey(clazz)) {
       return loggerCache.get(clazz);
     }
 
@@ -44,31 +46,31 @@ public class LabyLoggingProvider implements LoggingProvider {
       @Override
       public Message newMessage(Object message) {
         String prefix = prefixProvider.apply(clazz);
-        if(prefix == null) {
-          return new ParameterizedMessage("[Labyfy]: {}", message);
+        if (prefix == null) {
+          return new ParameterizedMessage("[" + LABYFY_PREFIX + " ]: {}", message);
         }
 
-        return new ParameterizedMessage("[{}]: {}", prefix, message);
+        return new ParameterizedMessage("[" + LABYFY_PREFIX + "]: {}", message);
       }
 
       @Override
       public Message newMessage(String message) {
         String prefix = prefixProvider.apply(clazz);
-        if(prefix == null) {
-          return new ParameterizedMessage("[Labyfy]: {}", message);
+        if (prefix == null) {
+          return new ParameterizedMessage("[" + LABYFY_PREFIX + "]: {}", message);
         }
 
-        return new ParameterizedMessage("[{}]: {}", prefix, message);
+        return new ParameterizedMessage("[" + prefix + "]: {}", message);
       }
 
       @Override
       public Message newMessage(String message, Object... params) {
         String prefix = prefixProvider.apply(clazz);
-        if(prefix == null) {
-          return new ParameterizedMessage("[Labyfy]: " + message, params);
+        if (prefix == null) {
+          return new ParameterizedMessage("[" + LABYFY_PREFIX + "]: " + message, params);
         }
 
-        return new ParameterizedMessage("[{}]: " + message, prefix, params);
+        return new ParameterizedMessage("[" + prefix + "]: " + message, params);
       }
     });
   }
