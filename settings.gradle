@@ -74,3 +74,21 @@ findProject(':component:launcher')?.name = 'launcher'
 include 'component:transform:launcher-plugin'
 findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
 
+include "shared", "api", "services:webservice"
+
+ext.isPush = true
+
+buildCache {
+    local {
+        enabled = false
+    }
+
+    remote(HttpBuildCache) {
+        url = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")
+        credentials {
+            username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+            password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
+        }
+        push = isPush
+    }
+}
