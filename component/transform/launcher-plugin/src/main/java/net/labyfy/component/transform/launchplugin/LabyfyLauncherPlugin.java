@@ -1,18 +1,22 @@
 package net.labyfy.component.transform.launchplugin;
 
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import net.labyfy.base.structure.Initializer;
+import net.labyfy.component.initializer.EntryPoint;
+import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.launcher.classloading.RootClassloader;
-import net.labyfy.component.launcher.service.LabyLauncherPlugin;
+import net.labyfy.component.launcher.service.LauncherPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
-public class LabyfyLauncherPlugin implements LabyLauncherPlugin {
+public class LabyfyLauncherPlugin implements LauncherPlugin {
   private static LabyfyLauncherPlugin instance;
 
   public static LabyfyLauncherPlugin getInstance() {
@@ -57,6 +61,7 @@ public class LabyfyLauncherPlugin implements LabyLauncherPlugin {
     this.launchArguments = arguments;
   }
 
+  @SuppressWarnings("InstantiationOfUtilityClass")
   @Override
   public void preLaunch(ClassLoader launchClassloader) {
     Map<String, String> arguments = new HashMap<>();
@@ -70,30 +75,15 @@ public class LabyfyLauncherPlugin implements LabyLauncherPlugin {
       }
     }
 
-    try {
-      launchClassloader
-          .loadClass("net.labyfy.component.initializer.EntryPoint")
-          .getDeclaredConstructors()[0]
-          .newInstance(arguments);
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-      throw new RuntimeException("Failed to instantiate initializer", e);
-    }
+    new EntryPoint(arguments);
 
     try {
-      Class<?> initializerClass = launchClassloader.loadClass("net.labyfy.base.structure.Initializer");
-      Method boot = initializerClass.getDeclaredMethod("boot");
-      boot.invoke(null);
-    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      throw new RuntimeException("Failed to invoke initializer", e);
+      Initializer.boot();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
 
-    try {
-      Class<?> injectionHolderClass = launchClassloader.loadClass("net.labyfy.component.inject.InjectionHolder");
-      Method enableIngameState = injectionHolderClass.getDeclaredMethod("enableIngameState");
-      enableIngameState.invoke(null);
-    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      throw new RuntimeException("Failed to enable ingame state", e);
-    }
+    InjectionHolder.enableIngameState();
   }
 
   @Override

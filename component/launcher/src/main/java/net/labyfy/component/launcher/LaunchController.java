@@ -2,7 +2,7 @@ package net.labyfy.component.launcher;
 
 import com.beust.jcommander.JCommander;
 import net.labyfy.component.launcher.classloading.RootClassloader;
-import net.labyfy.component.launcher.service.LabyLauncherPlugin;
+import net.labyfy.component.launcher.service.LauncherPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,15 +38,15 @@ public class LaunchController {
     logger.info("JVM vendor: {}", System.getProperty("java.vendor"));
 
     logger.trace("About to load plugins");
-    ServiceLoader<LabyLauncherPlugin> serviceLoader = ServiceLoader.load(LabyLauncherPlugin.class, rootLoader);
+    ServiceLoader<LauncherPlugin> serviceLoader = ServiceLoader.load(LauncherPlugin.class, rootLoader);
 
-    List<LabyLauncherPlugin> plugins = new ArrayList<>();
+    List<LauncherPlugin> plugins = new ArrayList<>();
     serviceLoader.forEach(plugins::add);
     logger.info("Loaded {} initial {}.", plugins.size(), plugins.size() != 1 ? "plugins" : "plugin");
     rootLoader.addPlugins(plugins);
 
     int loadingPass = 0;
-    List<LabyLauncherPlugin> extraPlugins = new ArrayList<>();
+    List<LauncherPlugin> extraPlugins = new ArrayList<>();
 
     Set<Object> commandlineArguments = new HashSet<>();
     commandlineArguments.add(launchArguments);
@@ -88,7 +88,7 @@ public class LaunchController {
     );
 
     logger.trace("Loaded plugins: {}",
-        plugins.stream().map(LabyLauncherPlugin::name).collect(Collectors.joining(", ")));
+        plugins.stream().map(LauncherPlugin::name).collect(Collectors.joining(", ")));
 
     logger.info("Handing over to launch target {}", launchArguments.getLaunchTarget());
     rootLoader.prepare();

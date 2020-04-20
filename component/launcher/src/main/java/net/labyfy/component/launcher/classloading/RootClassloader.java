@@ -1,6 +1,6 @@
 package net.labyfy.component.launcher.classloading;
 
-import net.labyfy.component.launcher.service.LabyLauncherPlugin;
+import net.labyfy.component.launcher.service.LauncherPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ import java.util.jar.Manifest;
 
 public class RootClassloader extends URLClassLoader {
   private final Set<String> currentlyLoading;
-  private final Set<LabyLauncherPlugin> plugins;
+  private final Set<LauncherPlugin> plugins;
   private final List<String> modificationExclusions;
   private final Map<String, Class<?>> classCache;
   private final Logger logger;
@@ -39,12 +39,12 @@ public class RootClassloader extends URLClassLoader {
     this.transformEnabled = false;
 
     excludeFromModification("java.");
-    excludeFromModification("java.");
+    excludeFromModification("javax.");
     excludeFromModification("com.sun.");
     excludeFromModification("net.labyfy.component.launcher.");
   }
 
-  public void addPlugins(Collection<LabyLauncherPlugin> plugins) {
+  public void addPlugins(Collection<LauncherPlugin> plugins) {
     this.plugins.addAll(plugins);
   }
 
@@ -69,8 +69,8 @@ public class RootClassloader extends URLClassLoader {
 
     if(name.equals(RootClassloader.class.getName())) {
       return RootClassloader.class;
-    } else if(name.equals(LabyLauncherPlugin.class.getName())) {
-      return LabyLauncherPlugin.class;
+    } else if(name.equals(LauncherPlugin.class.getName())) {
+      return LauncherPlugin.class;
     }
 
     if (classCache.containsKey(name)) {
@@ -116,7 +116,7 @@ public class RootClassloader extends URLClassLoader {
         signers = null;
       }
 
-      for (LabyLauncherPlugin plugin : plugins) {
+      for (LauncherPlugin plugin : plugins) {
         byte[] newData = plugin.modifyClass(name, classData);
         if (newData != null) {
           classData = newData;
@@ -140,7 +140,7 @@ public class RootClassloader extends URLClassLoader {
   private URL findResource(String name, boolean allowRedirect) {
     if (allowRedirect) {
       URL suggested = super.findResource(name);
-      for (LabyLauncherPlugin plugin : plugins) {
+      for (LauncherPlugin plugin : plugins) {
         URL newSuggestion = plugin.adjustResourceURL(name, suggested);
         if (newSuggestion != null) {
           suggested = newSuggestion;

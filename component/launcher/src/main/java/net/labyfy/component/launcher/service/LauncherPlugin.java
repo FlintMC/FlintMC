@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public interface LabyLauncherPlugin {
+public interface LauncherPlugin {
   /**
    * The name of the plugin, should be a short, but meaningful
    * identifier, such as `LabyMod`, `Forge` or `Fabric`.
@@ -30,7 +30,7 @@ public interface LabyLauncherPlugin {
    *
    * @return other plugins to load
    */
-  default List<LabyLauncherPlugin> extraPlugins() {
+  default List<LauncherPlugin> extraPlugins() {
     return Collections.emptyList();
   }
 

@@ -17,3 +17,13 @@ dependencies {
     compile 'org.ow2.asm:asm-commons:7.2-beta'
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
 }
+
+processResources {
+    doLast {
+        def resourcesDir = new File(sourceSets.main.output.resourcesDir, "META-INF/services")
+        resourcesDir.mkdirs()
+
+        def content = "net.labyfy.component.transform.launchplugin.LabyfyLauncherPlugin"
+        new File(resourcesDir, "net.labyfy.component.launcher.service.LauncherPlugin").text = content
+    }
+}
