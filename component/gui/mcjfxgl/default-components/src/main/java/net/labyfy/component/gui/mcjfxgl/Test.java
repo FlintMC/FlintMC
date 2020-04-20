@@ -38,6 +38,7 @@ public class Test {
       return;
     }
 
+
     guiAdapter.addComponent(
         this.sceneRepository.createOrGet(
             "main_menu",

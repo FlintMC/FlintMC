@@ -34,7 +34,7 @@ public class ThemeRepository {
   private final ResourceLocationProvider resourceLocationProvider;
   private final Theme.Factory themeFactory;
   private Theme activeTheme;
-  private boolean active = true;
+  private boolean active = false;
 
   @Inject
   private ThemeRepository(
@@ -74,7 +74,6 @@ public class ThemeRepository {
                 e.printStackTrace();
               }
             });
-    System.out.println(bytes);
 
     if (!bytes.containsKey("theme.groovy")) return;
 

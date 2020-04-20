@@ -1,5 +1,6 @@
 package net.labyfy.component.gui.mcjfxgl.labymod;
 
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 import javafx.scene.control.Skin;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
