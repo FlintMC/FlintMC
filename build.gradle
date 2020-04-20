@@ -1,4 +1,4 @@
-import org.apache.commons.io.FileUtils
+
 
 buildscript {
     dependencies {
@@ -42,30 +42,31 @@ allprojects {
         mavenLocal()
     }
 
-}
-artifactory {
-    contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")   //The base Artifactory URL if not overridden by the publisher/resolver
-    publish {
-        repository {
-            repoKey = 'labymedia'
-            username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
-            password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
-            maven = true
+    artifactory {
+        contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")   //The base Artifactory URL if not overridden by the publisher/resolver
+        publish {
+            repository {
+                repoKey = 'labymedia'
+                username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+                password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
+                maven = true
 
+            }
+            defaults {
+                publications ('mavenJava')
+            }
         }
-        defaults {
-            publications ('mavenJava')
+        resolve {
+            repository {
+                repoKey = 'general'
+                username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+                password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
+                maven = true
+
+            }
         }
     }
-    resolve {
-        repository {
-            repoKey = 'general'
-            username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
-            password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
-            maven = true
-
-        }
-    }
+    
 }
 
 dependencies {
@@ -99,7 +100,25 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
         }
     }
 }
 
+subprojects {
+    apply plugin: 'java'
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+}
