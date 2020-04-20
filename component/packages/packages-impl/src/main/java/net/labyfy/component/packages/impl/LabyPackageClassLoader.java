@@ -3,11 +3,10 @@ package net.labyfy.component.packages.impl;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
-import net.minecraft.launchwrapper.Launch;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -18,7 +17,7 @@ public class LabyPackageClassLoader extends URLClassLoader implements PackageCla
 
   @AssistedInject
   public LabyPackageClassLoader(@Assisted Package owner) throws MalformedURLException {
-    super(new URL[] {owner.getFile().toURI().toURL()}, Launch.classLoader);
+    super(new URL[] {owner.getFile().toURI().toURL()}, LaunchController.getInstance().getRootLoader());
     this.owner = owner;
   }
 

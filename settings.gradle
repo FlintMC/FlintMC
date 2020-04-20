@@ -1,8 +1,5 @@
 rootProject.name = 'labyfy'
 
-include 'component:transform:tweaker'
-findProject(':component:transform:tweaker')?.name = 'tweaker'
-
 include 'component:transform:javassist'
 findProject(':component:transform:javassist')?.name = "javassist"
 

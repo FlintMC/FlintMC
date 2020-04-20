@@ -20,23 +20,41 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 public class RootClassloader extends URLClassLoader {
-  private final Logger logger;
-  private final List<LabyLauncherPlugin> plugins;
+  private final Set<String> currentlyLoading;
+  private final Set<LabyLauncherPlugin> plugins;
   private final List<String> modificationExclusions;
   private final Map<String, Class<?>> classCache;
+  private final Logger logger;
 
-  public RootClassloader(URL[] urls, List<LabyLauncherPlugin> plugins) {
+  private boolean transformEnabled;
+
+  public RootClassloader(URL[] urls) {
     super(urls, null);
-    this.logger = LogManager.getLogger(RootClassloader.class);
-    this.plugins = plugins;
+    this.currentlyLoading = new HashSet<>();
+    this.plugins = new HashSet<>();
     this.modificationExclusions = new ArrayList<>();
     this.classCache = new WeakHashMap<>();
+    this.logger = LogManager.getLogger(RootClassloader.class);
 
+    this.transformEnabled = false;
+
+    excludeFromModification("java.");
+    excludeFromModification("java.");
+    excludeFromModification("com.sun.");
     excludeFromModification("net.labyfy.component.launcher.");
+  }
+
+  public void addPlugins(Collection<LabyLauncherPlugin> plugins) {
+    this.plugins.addAll(plugins);
+  }
+
+  public void addURLs(Collection<URL> targets) {
+    targets.forEach(this::addURL);
   }
 
   public void prepare() {
     plugins.forEach(plugin -> plugin.configureRootLoader(this));
+    transformEnabled = true;
   }
 
   public void excludeFromModification(String... names) {
@@ -45,59 +63,73 @@ public class RootClassloader extends URLClassLoader {
 
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
+    if(currentlyLoading.contains(name)) {
+      throw new IllegalStateException("Circular load detected: " + name);
+    }
+
+    if(name.equals(RootClassloader.class.getName())) {
+      return RootClassloader.class;
+    } else if(name.equals(LabyLauncherPlugin.class.getName())) {
+      return LabyLauncherPlugin.class;
+    }
+
     if (classCache.containsKey(name)) {
       return classCache.get(name);
-    } else if (modificationExclusions.stream().anyMatch(name::startsWith)) {
+    } else if (!transformEnabled || modificationExclusions.stream().anyMatch(name::startsWith)) {
       Class<?> clazz = super.findClass(name);
       classCache.put(name, clazz);
       return clazz;
     }
 
-    URL classUrl = findResource(name.replace('.', '/').concat(".class"), false);
-    if (classUrl == null) {
-      throw new ClassNotFoundException("Class with the name " + name + " not found in classpath");
-    }
-
-    URLConnection connection;
-    try {
-      connection = classUrl.openConnection();
-    } catch (IOException e) {
-      throw new ClassNotFoundException("Failed to load class due to IOException while opening connection", e);
-    }
-
-    byte[] classData;
+    currentlyLoading.add(name);
 
     try {
-      classData = readClass(connection);
-    } catch (IOException e) {
-      throw new ClassNotFoundException("Failed to load class due to IOException while reading data", e);
-    }
+      URL classUrl = findResource(name.replace('.', '/').concat(".class"), false);
+      if (classUrl == null) {
+        throw new ClassNotFoundException("Class with the name " + name + " not found in classpath");
+      }
 
-    int lastDotIndex = name.lastIndexOf('.');
-    CodeSigner[] signers;
-    if (lastDotIndex != -1) {
+      URLConnection connection;
       try {
-        signers = handleClassConnection(name.substring(0, lastDotIndex), connection);
+        connection = classUrl.openConnection();
       } catch (IOException e) {
-        throw new ClassNotFoundException("Failed to load class due to IOException while handling connection", e);
+        throw new ClassNotFoundException("Failed to load class due to IOException while opening connection", e);
       }
-    } else {
-      signers = null;
-    }
 
-    for (LabyLauncherPlugin plugin : plugins) {
-      byte[] newData = plugin.modifyClass(classData);
-      if (newData != null) {
-        classData = newData;
+      byte[] classData;
+
+      try {
+        classData = readClass(connection);
+      } catch (IOException e) {
+        throw new ClassNotFoundException("Failed to load class due to IOException while reading data", e);
       }
+
+      int lastDotIndex = name.lastIndexOf('.');
+      CodeSigner[] signers;
+      if (lastDotIndex != -1) {
+        try {
+          signers = handleClassConnection(name.substring(0, lastDotIndex), connection);
+        } catch (IOException e) {
+          throw new ClassNotFoundException("Failed to load class due to IOException while handling connection", e);
+        }
+      } else {
+        signers = null;
+      }
+
+      for (LabyLauncherPlugin plugin : plugins) {
+        byte[] newData = plugin.modifyClass(name, classData);
+        if (newData != null) {
+          classData = newData;
+        }
+      }
+
+      CodeSource codeSource = new CodeSource(classUrl, signers);
+      Class<?> clazz = defineClass(name, classData, 0, classData.length, codeSource);
+      classCache.put(name, clazz);
+      return clazz;
+    } finally {
+      currentlyLoading.remove(name);
     }
-
-
-    CodeSource codeSource = new CodeSource(classUrl, signers);
-    Class<?> clazz = defineClass(name, classData, 0, classData.length, codeSource);
-    classCache.put(name, clazz);
-    return clazz;
-
   }
 
   @Override
@@ -189,5 +221,9 @@ public class RootClassloader extends URLClassLoader {
     }
 
     return sealedData != null && Boolean.parseBoolean(sealedData.toLowerCase());
+  }
+
+  static {
+    ClassLoader.registerAsParallelCapable();
   }
 }

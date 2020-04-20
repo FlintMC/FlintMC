@@ -1,6 +1,5 @@
 package net.labyfy.component.launcher.service;
 
-import net.labyfy.component.launcher.LaunchArguments;
 import net.labyfy.component.launcher.classloading.RootClassloader;
 
 import java.net.URL;
@@ -44,15 +43,6 @@ public interface LabyLauncherPlugin {
   default void modifyCommandlineArguments(List<String> arguments) {}
 
   /**
-   * Allows the plugin to modify the classpath before launching is performed.
-   * Modifying this classpath does not impact the classpath available to
-   * plugins!
-   *
-   * @param classpath the classpath to modify
-   */
-  default void adjustClasspath(List<URL> classpath) {}
-
-  /**
    * Allows the plugin to modify the behavior of the root classloader.
    *
    * @param classloader the root classloader used for classloading from now on
@@ -70,10 +60,11 @@ public interface LabyLauncherPlugin {
   /**
    * Allows the plugin to modify classes before they are loaded.
    *
+   * @param className the name of the class to modify
    * @param classData the class to modify
    * @return the modified data or null, if no modification was made
    */
-  default byte[] modifyClass(byte[] classData) {
+  default byte[] modifyClass(String className, byte[] classData) {
     return null;
   }
 
