@@ -2,11 +2,10 @@ buildscript {
     dependencies {
         classpath 'net.labyfy:library-downloader:1.0.2'
     }
-
 }
 
 plugins {
-    id 'java'
+    id 'application'
 }
 
 apply plugin: 'net.labyfy.library-downloader'
@@ -25,6 +24,37 @@ repositories {
 dependencies {
     compile fileTree('libraries')
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile project(':component:launcher')
     compile project(':component:transform:tweaker')
     compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
+}
+
+application {
+    mainClassName "net.labyfy.component.launcher.LabyLauncher"
+}
+
+def runDir = new File(rootProject.projectDir, "run")
+def runDirTemplate = new File(rootProject.projectDir, "run-template")
+if(!runDir.exists()) {
+    if(!runDir.mkdirs()) {
+        throw new GradleException("Failed to create run directory: ${runDir.absolutePath}")
+    } else {
+        copy {
+            from new File(runDirTemplate, "1.15.1")
+            into runDir
+        }
+    }
+}
+
+run {
+    workingDir runDir
+    args "--uuid", "113da2d6-3c68-43c4-bee0-6f53fe8906e6",
+         "--username", "DevTastisch",
+         "--accessToken", "0",
+         "--version", "1.15.1",
+         "--assetsDir", "assets",
+         "--assetIndex", "1.15",
+         "--userProperties", "{}",
+         "--gameDir", ".",
+         "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
 }

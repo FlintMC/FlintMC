@@ -70,3 +70,10 @@ findProject(':component:packages')?.name = 'packages'
 
 include 'component:packages:packages-impl'
 findProject(':component:packages:packages-impl')?.name = 'packages-impl'
+
+include 'component:launcher'
+findProject(':component:launcher')?.name = 'launcher'
+
+include 'component:transform:launcher-plugin'
+findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
+

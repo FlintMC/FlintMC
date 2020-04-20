@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 import net.labyfy.component.inject.InjectionHolder;
-import net.minecraft.launchwrapper.Launch;
+import net.labyfy.component.launcher.LabyLauncher;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -60,7 +60,7 @@ public class ClassMapping {
   }
 
   public Class get() {
-    return get(Launch.classLoader);
+    return get(LabyLauncher.getInstance().getRootLoader());
   }
 
   public Class get(ClassLoader classLoader) {

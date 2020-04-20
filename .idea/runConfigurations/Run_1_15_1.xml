@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run 1.15.1" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+  <configuration default="false" name="Run 1.15.1" type="Application" factoryName="Application" show_console_on_std_err="true" show_console_on_std_out="true">
+    <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
+    <option name="MAIN_CLASS_NAME" value="net.labyfy.component.launcher.LabyLauncher" />
     <module name="labyfy.main" />
     <option name="PROGRAM_PARAMETERS" value="--uuid 113da2d6-3c68-43c4-bee0-6f53fe8906e6 --username DevTastisch --accessToken 0 --version 1.15.1 --assetsDir assets --assetIndex 1.15 --userProperties {} --gameDir . --tweakClass net.labyfy.component.transform.tweaker.LabyDebugTweaker" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/1.15.1" />
