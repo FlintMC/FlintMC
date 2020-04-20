@@ -30,6 +30,7 @@ dev_deploy:
     name: development
   only:
   - master
+  - 35-fix-jar-creation
   when: on_success
 
 live_deploy:
