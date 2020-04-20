@@ -1,4 +1,4 @@
- #Labyfy
+ # Labyfy
  ###### Open Source modding framework provided by LabyMedia GmbH
 
 to build labyfy, you need to perform the `before` steps from the .gitlab-ci.yml. (create folder and stuff)
