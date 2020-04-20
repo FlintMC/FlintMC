@@ -1,16 +1,58 @@
-eval:
+image: maven:latest
+
+before_script:
+  - bash eval.sh
+  - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
+  - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries && cd ../..
+
+dev_build:
   stage: build
-  script: bash eval.sh && mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-  
-build:
-  stage: deploy
-  script: bash eval.sh && cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries && cd ../.. && sh gradlew jar
-  environment:
-    name: production
+  script:
+  - sed -i "s/^version.*/version \"${CI_BUILD_REF_NAME}\"/1" build.gradle
+  - sh gradlew jar
+  artifacts:
+    name: "${CI_BUILD_NAME}:${CI_BUILD_REF_NAME}"
+    paths:
+    - build/libs
+  when: on_success
+
+live_build:
+  stage: build
+  script:
+  - sed -i "s/^version.*/version \"${CI_COMMIT_TAG}\"/1" build.gradle
+  - sh gradlew jar
   artifacts:
     name: "${CI_BUILD_NAME}:${CI_BUILD_REF_NAME}"
     paths:
     - build/libs
   only:
-    - master
-    - 35-fix-jar-creation
+  - master
+  - 35-fix-jar-creation
+  when: on_success
+
+test:
+  stage: test
+  script:
+  - sh gradlew test
+  when: on_success
+
+dev_deploy:
+  stage: deploy
+  script:
+  - sh gradlew artifactoryDeploy
+  environment:
+    name: development
+  only:
+  - master
+  - 35-fix-jar-creation
+  when: on_success
+
+live_deploy:
+  stage: deploy
+  script:
+  - sh gradlew artifactoryPublish
+  environment:
+    name: production
+  only:
+  - tags
+  when: manual

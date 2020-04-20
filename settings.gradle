@@ -70,3 +70,21 @@ findProject(':component:packages')?.name = 'packages'
 
 include 'component:packages:packages-impl'
 findProject(':component:packages:packages-impl')?.name = 'packages-impl'
+
+include "shared", "api", "services:webservice"
+
+ext.isPush = true
+
+buildCache {
+    local {
+        enabled = false
+    }
+    remote(HttpBuildCache) {
+        url = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")
+        credentials {
+            username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+            password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
+        }
+        push = isPush
+    }
+}
