@@ -44,7 +44,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/component/transform/javassist/javassist.iml" filepath="$PROJECT_DIR$/.idea/modules/component/transform/javassist/javassist.iml" group="component/transform/javassist" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/component/transform/javassist/javassist_main.iml" filepath="$PROJECT_DIR$/.idea/modules/component/transform/javassist/javassist_main.iml" group="component/transform/javassist" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/component/transform/javassist/javassist_test.iml" filepath="$PROJECT_DIR$/.idea/modules/component/transform/javassist/javassist_test.iml" group="component/transform/javassist" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/labyfy.iml" filepath="$PROJECT_DIR$/.idea/modules/labyfy.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/versioned/labyfy-1.15.1/labyfy-1.15.1.iml" filepath="$PROJECT_DIR$/.idea/modules/versioned/labyfy-1.15.1/labyfy-1.15.1.iml" group="versioned/labyfy-1.15.1" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/versioned/labyfy-1.15.1/labyfy-1.15.1_main.iml" filepath="$PROJECT_DIR$/.idea/modules/versioned/labyfy-1.15.1/labyfy-1.15.1_main.iml" group="versioned/labyfy-1.15.1" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/versioned/labyfy-1.15.1/labyfy-1.15.1_test.iml" filepath="$PROJECT_DIR$/.idea/modules/versioned/labyfy-1.15.1/labyfy-1.15.1_test.iml" group="versioned/labyfy-1.15.1" />
