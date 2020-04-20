@@ -51,7 +51,6 @@ class LibraryDownloader implements Plugin<Project> {
                 if (new File("versioned/labyfy-1.15.1/libraries", "client.jar").exists()) {
                     println " -> skip client.jar"
                 } else {
-                    println "debug: WWWWWWWWWWWWWWWWWWWWWTTTTTTTTTTTTTTTTTTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFff"
                     this.downloadArtifact("client", extension.version, libraries, details.downloads.client.url)
                 }
 
@@ -109,7 +108,6 @@ class LibraryDownloader implements Plugin<Project> {
                 download("https://dl.labymod.net/mappings/" + extension.version + "/joined.tsrg", new File(project.projectDir, "Labyfy/assets/" + extension.version + "/joined.tsrg"))
 
                 println "deobfuscating client.jar:"
-                println "DEEEEEEEEBBBUUUUUUUUUUUUUGGG:"
                 injector.getInstance(LabyDeobfuscator.class);
                 println "finished"
 
