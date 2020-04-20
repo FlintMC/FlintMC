@@ -96,6 +96,11 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.9'
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
