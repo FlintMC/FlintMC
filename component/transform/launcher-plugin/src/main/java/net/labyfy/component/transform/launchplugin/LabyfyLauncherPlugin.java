@@ -7,7 +7,7 @@ import javassist.CtConstructor;
 import net.labyfy.base.structure.Initializer;
 import net.labyfy.component.initializer.EntryPoint;
 import net.labyfy.component.inject.InjectionHolder;
-import net.labyfy.component.launcher.classloading.RootClassloader;
+import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,10 +49,10 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
   }
 
   @Override
-  public void configureRootLoader(RootClassloader classloader) {
+  public void configureRootLoader(RootClassLoader classloader) {
     classloader.excludeFromModification(
         "javassist.",
-        "com.google.inject."
+        "com.google."
     );
   }
 

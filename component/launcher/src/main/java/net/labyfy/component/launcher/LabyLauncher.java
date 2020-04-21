@@ -1,6 +1,6 @@
 package net.labyfy.component.launcher;
 
-import net.labyfy.component.launcher.classloading.RootClassloader;
+import net.labyfy.component.launcher.classloading.RootClassLoader;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class LabyLauncher {
   public static void main(String[] args) throws Exception {
-    RootClassloader rootClassloader = new RootClassloader(getClasspath().toArray(new URL[0]));
+    RootClassLoader rootClassloader = new RootClassLoader(getClasspath().toArray(new URL[0]));
     Thread.currentThread().setContextClassLoader(rootClassloader);
 
     Class<?> launchControllerClass = rootClassloader.loadClass("net.labyfy.component.launcher.LaunchController");

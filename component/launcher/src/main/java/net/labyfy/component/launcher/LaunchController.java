@@ -1,7 +1,7 @@
 package net.labyfy.component.launcher;
 
 import com.beust.jcommander.JCommander;
-import net.labyfy.component.launcher.classloading.RootClassloader;
+import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,11 +19,11 @@ public class LaunchController {
   }
 
   private final Logger logger;
-  private final RootClassloader rootLoader;
+  private final RootClassLoader rootLoader;
   private final List<String> commandLine;
   private final LaunchArguments launchArguments;
 
-  public LaunchController(RootClassloader rootLoader, String[] commandLine) {
+  public LaunchController(RootClassLoader rootLoader, String[] commandLine) {
     instance = this;
     this.rootLoader = rootLoader;
     this.logger = LogManager.getLogger(LaunchController.class);
@@ -114,7 +114,7 @@ public class LaunchController {
     }
   }
 
-  public RootClassloader getRootLoader() {
+  public RootClassLoader getRootLoader() {
     return rootLoader;
   }
 }

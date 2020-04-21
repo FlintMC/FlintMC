@@ -87,7 +87,7 @@ public interface CommonClassLoader {
 
   /**
    * Retrieves a short, descriptive name for this ClassLoader, for example
-   * `RootLoader`, or `PackageLoader[TestPackage]`
+   * `RootLoader`, or `PackageLoader{TestPackage}`
    *
    * @return the name of this classloader
    */

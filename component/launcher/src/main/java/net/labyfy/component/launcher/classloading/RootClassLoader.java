@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
-public class RootClassloader extends URLClassLoader implements CommonClassLoader {
+public class RootClassLoader extends URLClassLoader implements CommonClassLoader {
   private final Set<String> currentlyLoading;
   private final Set<LauncherPlugin> plugins;
   private final List<ChildClassLoader> children;
@@ -25,14 +25,14 @@ public class RootClassloader extends URLClassLoader implements CommonClassLoader
 
   private boolean transformEnabled;
 
-  public RootClassloader(URL[] urls) {
+  public RootClassLoader(URL[] urls) {
     super(urls, null);
     this.currentlyLoading = new HashSet<>();
     this.plugins = new HashSet<>();
     this.children = new ArrayList<>();
     this.modificationExclusions = new ArrayList<>();
     this.classCache = new WeakHashMap<>();
-    this.logger = LogManager.getLogger(RootClassloader.class);
+    this.logger = LogManager.getLogger(RootClassLoader.class);
 
     this.transformEnabled = false;
 
@@ -60,15 +60,21 @@ public class RootClassloader extends URLClassLoader implements CommonClassLoader
   }
 
   @Override
-  protected Class<?> findClass(String name) throws ClassNotFoundException {
+  public Class<?> findClass(String name) throws ClassNotFoundException {
+    return findClass(name, null);
+  }
+
+  public Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException {
     if(currentlyLoading.contains(name)) {
       throw new IllegalStateException("Circular load detected: " + name);
     }
 
-    if(name.equals(RootClassloader.class.getName())) {
-      return RootClassloader.class;
+    if(name.equals(RootClassLoader.class.getName())) {
+      return RootClassLoader.class;
     } else if(name.equals(LauncherPlugin.class.getName())) {
       return LauncherPlugin.class;
+    } else if(name.startsWith("net.labyfy.component.launcher.classloading.")) {
+      return Class.forName(name, false, RootClassLoader.class.getClassLoader());
     }
 
     if (classCache.containsKey(name)) {
@@ -82,8 +88,13 @@ public class RootClassloader extends URLClassLoader implements CommonClassLoader
     currentlyLoading.add(name);
 
     try {
-      CommonClassLoader loader = null;
+      CommonClassLoader loader = preferredLoader;
       ClassInformation information = null;
+
+      if(loader != null) {
+        information = CommonClassLoaderHelper.retrieveClass(loader, name);
+      }
+
       for (Iterator<ChildClassLoader> it = children.iterator(); information == null && it.hasNext();) {
         loader = it.next();
         information = CommonClassLoaderHelper.retrieveClass(loader, name);

@@ -1,6 +1,6 @@
 package net.labyfy.component.launcher.service;
 
-import net.labyfy.component.launcher.classloading.RootClassloader;
+import net.labyfy.component.launcher.classloading.RootClassLoader;
 
 import java.net.URL;
 import java.util.Collections;
@@ -47,7 +47,7 @@ public interface LauncherPlugin {
    *
    * @param classloader the root classloader used for classloading from now on
    */
-  default void configureRootLoader(RootClassloader classloader) {}
+  default void configureRootLoader(RootClassLoader classloader) {}
 
   /**
    * Gives the plugin a chance to execute code in the launch environment
