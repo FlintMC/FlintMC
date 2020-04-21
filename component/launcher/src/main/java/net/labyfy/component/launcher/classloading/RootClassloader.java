@@ -1,27 +1,24 @@
 package net.labyfy.component.launcher.classloading;
 
+import net.labyfy.component.launcher.classloading.common.ClassInformation;
+import net.labyfy.component.launcher.classloading.common.CommonClassLoader;
+import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
 import net.labyfy.component.launcher.service.LauncherPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLConnection;
-import java.security.CodeSigner;
 import java.security.CodeSource;
 import java.util.*;
-import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 
-public class RootClassloader extends URLClassLoader {
+public class RootClassloader extends URLClassLoader implements CommonClassLoader {
   private final Set<String> currentlyLoading;
   private final Set<LauncherPlugin> plugins;
+  private final List<ChildClassLoader> children;
   private final List<String> modificationExclusions;
   private final Map<String, Class<?>> classCache;
   private final Logger logger;
@@ -32,6 +29,7 @@ public class RootClassloader extends URLClassLoader {
     super(urls, null);
     this.currentlyLoading = new HashSet<>();
     this.plugins = new HashSet<>();
+    this.children = new ArrayList<>();
     this.modificationExclusions = new ArrayList<>();
     this.classCache = new WeakHashMap<>();
     this.logger = LogManager.getLogger(RootClassloader.class);
@@ -84,49 +82,43 @@ public class RootClassloader extends URLClassLoader {
     currentlyLoading.add(name);
 
     try {
-      URL classUrl = findResource(name.replace('.', '/').concat(".class"), false);
-      if (classUrl == null) {
-        throw new ClassNotFoundException("Class with the name " + name + " not found in classpath");
+      CommonClassLoader loader = null;
+      ClassInformation information = null;
+      for (Iterator<ChildClassLoader> it = children.iterator(); information == null && it.hasNext();) {
+        loader = it.next();
+        information = CommonClassLoaderHelper.retrieveClass(loader, name);
       }
 
-      URLConnection connection;
-      try {
-        connection = classUrl.openConnection();
-      } catch (IOException e) {
-        throw new ClassNotFoundException("Failed to load class due to IOException while opening connection", e);
-      }
+      if(information == null) {
+        loader = this;
+        information = CommonClassLoaderHelper.retrieveClass(loader, name);
 
-      byte[] classData;
-
-      try {
-        classData = readClass(connection);
-      } catch (IOException e) {
-        throw new ClassNotFoundException("Failed to load class due to IOException while reading data", e);
-      }
-
-      int lastDotIndex = name.lastIndexOf('.');
-      CodeSigner[] signers;
-      if (lastDotIndex != -1) {
-        try {
-          signers = handleClassConnection(name.substring(0, lastDotIndex), connection);
-        } catch (IOException e) {
-          throw new ClassNotFoundException("Failed to load class due to IOException while handling connection", e);
+        if(information == null) {
+          logger.trace("Failed to find class {} after searching root and the following children: [{}]",
+              () -> name,
+              () -> children.stream()
+                  .map(CommonClassLoader::getClassloaderName)
+                  .collect(Collectors.joining(", ")));
+          throw new ClassNotFoundException("Class " + name + " not found on classpath (searched root and "
+              + children.size() + " child loaders)");
         }
-      } else {
-        signers = null;
       }
+
+      byte[] classBytes = information.getClassBytes();
 
       for (LauncherPlugin plugin : plugins) {
-        byte[] newData = plugin.modifyClass(name, classData);
-        if (newData != null) {
-          classData = newData;
+        byte[] newBytes = plugin.modifyClass(name, classBytes);
+        if (newBytes != null) {
+          classBytes = newBytes;
         }
       }
 
-      CodeSource codeSource = new CodeSource(classUrl, signers);
-      Class<?> clazz = defineClass(name, classData, 0, classData.length, codeSource);
+      CodeSource codeSource = new CodeSource(information.getResourceURL(), information.getSigners());
+      Class<?> clazz = loader.commonDefineClass(name, classBytes, 0, classBytes.length, codeSource);
       classCache.put(name, clazz);
       return clazz;
+    } catch (IOException e) {
+      throw new ClassNotFoundException("Failed to find class " + name + " due to IOException");
     } finally {
       currentlyLoading.remove(name);
     }
@@ -137,7 +129,7 @@ public class RootClassloader extends URLClassLoader {
     return findResource(name, true);
   }
 
-  private URL findResource(String name, boolean allowRedirect) {
+  public URL findResource(String name, boolean allowRedirect) {
     if (allowRedirect) {
       URL suggested = super.findResource(name);
       for (LauncherPlugin plugin : plugins) {
@@ -153,77 +145,56 @@ public class RootClassloader extends URLClassLoader {
     return super.findResource(name);
   }
 
-  private byte[] readClass(URLConnection connection) throws IOException {
-    try (InputStream stream = connection.getInputStream()) {
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-      byte[] buffer = new byte[8192];
-      int read;
-      while ((read = stream.read(buffer)) != -1) {
-        outputStream.write(buffer, 0, read);
-      }
-
-      return outputStream.toByteArray();
-    }
-  }
-
-  private CodeSigner[] handleClassConnection(String packageName, URLConnection connection) throws IOException {
-    if (connection instanceof JarURLConnection) {
-      JarURLConnection jarConnection = (JarURLConnection) connection;
-      JarFile jar = jarConnection.getJarFile();
-
-      if (jar != null && jar.getManifest() != null) {
-        Manifest manifest = jar.getManifest();
-        JarEntry entry = jarConnection.getJarEntry();
-
-        Package pkg = getPackage(packageName);
-        CodeSigner[] signers = entry.getCodeSigners();
-
-        if (pkg == null) {
-          definePackage(packageName, manifest, jarConnection.getJarFileURL());
-        } else {
-          if (pkg.isSealed() && !pkg.isSealed(jarConnection.getJarFileURL())) {
-            logger.warn("Jar {} defines a seal for the already sealed package {}", jar.getName(), packageName);
-          } else if (sealedSet(packageName, manifest)) {
-            logger.warn("Jar {} has a security seal for {}, but the package is already defined without a seal", jar.getName(), packageName);
-          }
-        }
-
-        return signers;
-      }
-    } else {
-      Package pkg = getPackage(packageName);
-
-      if (pkg == null) {
-        definePackage(packageName, null, null, null, null, null, null, null);
-      } else if (pkg.isSealed()) {
-        logger.warn("The url {} is defining a package for the sealed path {}", connection.getURL(), packageName);
-      }
+  public void registerChild(ChildClassLoader childClassloader) {
+    if(!transformEnabled) {
+      throw new IllegalStateException("ChildClassLoader's can only be registered after transformation has been enabled");
+    } else if(children.contains(childClassloader)) {
+      return;
     }
 
-    return null;
-  }
-
-  private boolean sealedSet(String path, Manifest manifest) {
-    Attributes attributes = manifest.getAttributes(path);
-    String sealedData = null;
-
-    if (attributes != null) {
-      sealedData = attributes.getValue(Attributes.Name.SEALED);
-    }
-
-    if (sealedData == null) {
-      attributes = manifest.getMainAttributes();
-
-      if (attributes != null) {
-        sealedData = attributes.getValue(Attributes.Name.SEALED);
-      }
-    }
-
-    return sealedData != null && Boolean.parseBoolean(sealedData.toLowerCase());
+    children.add(childClassloader);
   }
 
   static {
     ClassLoader.registerAsParallelCapable();
+  }
+
+  @Override
+  public Package commonDefinePackage(
+      String name,
+      String specTitle,
+      String specVersion,
+      String specVendor,
+      String implTitle,
+      String implVersion,
+      String implVendor,
+      URL sealBase
+  ) {
+    return definePackage(name, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
+  }
+
+  @Override
+  public Package commonDefinePackage(String name, Manifest man, URL url) {
+    return definePackage(name, man, url);
+  }
+
+  @Override
+  public Class<?> commonDefineClass(String name, byte[] b, int off, int len, CodeSource cs) {
+    return defineClass(name, b, off, len, cs);
+  }
+
+  @Override
+  public URL commonFindResource(String name, boolean forClassLoad) {
+    return findResource(name, !forClassLoad);
+  }
+
+  @Override
+  public Package commonGetPackage(String name) {
+    return getPackage(name);
+  }
+
+  @Override
+  public String getClassloaderName() {
+    return "RootLoader";
   }
 }
