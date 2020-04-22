@@ -74,8 +74,6 @@ findProject(':component:launcher')?.name = 'launcher'
 include 'component:transform:launcher-plugin'
 findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
 
-include "shared", "api", "services:webservice"
-
 ext.isPush = true
 
 buildCache {
