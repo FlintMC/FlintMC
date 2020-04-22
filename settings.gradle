@@ -71,8 +71,6 @@ findProject(':component:packages')?.name = 'packages'
 include 'component:packages:packages-impl'
 findProject(':component:packages:packages-impl')?.name = 'packages-impl'
 
-include "shared", "api", "services:webservice"
-
 ext.isPush = true
 
 buildCache {
