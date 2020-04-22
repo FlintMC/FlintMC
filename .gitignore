@@ -65,7 +65,7 @@ run/**
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
-# .idea/modules.xml
+.idea/modules.xml
 # .idea/*.iml
 # .idea/modules
 # *.iml
