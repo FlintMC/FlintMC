@@ -27,20 +27,13 @@ public class FileSource implements PackageSource {
   @Override
   public URL findResource(String path) {
     JarEntry entry = jar.getJarEntry(path);
-    if(entry == null) {
+    if (entry == null) {
       return null;
     }
 
     try {
-      URI uri = new URI(
-          "jar:file",
-          file.getAbsolutePath() + "!",
-          "/" + path,
-          null
-      );
-
-      return uri.toURL();
-    } catch (URISyntaxException | MalformedURLException e) {
+      return new URL("jar:file:" + file.getAbsolutePath().replace('\\', '/') + "!/" + path);
+    } catch (MalformedURLException e) {
       throw new IllegalArgumentException("Path is invalid", e);
     }
   }
