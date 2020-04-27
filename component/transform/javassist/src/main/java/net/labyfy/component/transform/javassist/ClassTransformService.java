@@ -9,11 +9,11 @@ import net.labyfy.base.structure.property.Property;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 import net.labyfy.component.transform.minecraft.MinecraftTransformer;
-import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.Launch;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 @Singleton
 @MinecraftTransformer
 @Service(ClassTransform.class)
-public class ClassTransformService implements ServiceHandler, IClassTransformer {
+public class ClassTransformService implements ServiceHandler, LateInjectedTransformer {
 
   private final String version;
   private final ClassMappingProvider classMappingProvider;
@@ -54,7 +54,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
     try {
       LocatedIdentifiedAnnotation locatedIdentifiedAnnotation =
               property.getProperty().getLocatedIdentifiedAnnotation();
-      Launch.classLoader.addTransformerExclusion(
+      LaunchController.getInstance().getRootLoader().excludeFromModification(
               locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass().getName());
 
       Collection<Predicate<CtClass>> filters = new HashSet<>();
@@ -89,7 +89,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
     }
   }
 
-  public byte[] transform(String className, String transformedClassName, byte[] bytes) {
+  public byte[] transform(String className, byte[] bytes) {
     try {
 
       ClassPool classPool = ClassPool.getDefault();
@@ -100,7 +100,7 @@ public class ClassTransformService implements ServiceHandler, IClassTransformer 
       ClassMapping classMapping = classMappingProvider.get(className);
 
       if (classMapping == null)
-        classMapping = ClassMapping.create(classMappingProvider, className, transformedClassName);
+        classMapping = ClassMapping.create(classMappingProvider, className, className);
 
       for (String ignoredPackage : this.ignoredPackages) {
         if (classMapping.getUnObfuscatedName().startsWith(ignoredPackage)) {

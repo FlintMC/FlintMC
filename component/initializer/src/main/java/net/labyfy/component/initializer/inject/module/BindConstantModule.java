@@ -5,25 +5,30 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import net.minecraft.launchwrapper.Launch;
+import net.labyfy.component.launcher.LaunchController;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * This class binds constants,
+ * so the can be used with @named
+ */
 @Singleton
 public class BindConstantModule extends AbstractModule {
 
   protected void configure() {
+    this.bindNamedFilePath("labyfyPackageFolder", "./Labyfy/packages");
     this.bindNamedFilePath("labyfyRoot", "./Labyfy");
-    this.bindNamedFilePath("labyfyModsRoot", "./Labyfy/mods");
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
+    this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     try {
       this.bindNamed(
           "obfuscated",
-          (ClassPath.from(Launch.classLoader)
+          (ClassPath.from(LaunchController.getInstance().getRootLoader())
                   .getTopLevelClassesRecursive("net.minecraft.world")
                   .size()
               == 0));

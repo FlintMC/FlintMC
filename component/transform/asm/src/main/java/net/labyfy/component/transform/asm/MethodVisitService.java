@@ -10,8 +10,8 @@ import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
+import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 import net.labyfy.component.transform.minecraft.MinecraftTransformer;
-import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,8 +21,7 @@ import java.util.Collection;
 @Singleton
 @MinecraftTransformer
 @Service(MethodVisit.class)
-public class MethodVisitService implements ServiceHandler, IClassTransformer {
-
+public class MethodVisitService implements ServiceHandler, LateInjectedTransformer {
   private final Collection<MethodVisitorContext> methodVisitorContexts;
   private final ClassMappingProvider classMappingProvider;
 
@@ -32,7 +31,8 @@ public class MethodVisitService implements ServiceHandler, IClassTransformer {
     this.methodVisitorContexts = Sets.newConcurrentHashSet();
   }
 
-  public byte[] transform(String s, String s1, byte[] bytes) {
+  @Override
+  public byte[] transform(String s, byte[] bytes) {
     ClassMapping classMapping = classMappingProvider.get(s);
     for (MethodVisitorContext methodVisitorContext : this.methodVisitorContexts) {
       MethodVisit methodVisit = methodVisitorContext.getMethodVisit();

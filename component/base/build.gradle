@@ -15,6 +15,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'com.google.inject:guice:4.0'
     compile 'org.apache.commons:commons-lang3:3.9'
-    compile 'net.minecraft:launchwrapper:1.12'
+    compile project(':component:launcher')
     compile 'org.codehaus.groovy:groovy-all:3.0.2'
 }

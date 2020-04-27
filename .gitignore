@@ -34,6 +34,7 @@ hs_err_pid*
 .idea/**/dictionaries
 .idea/**/shelf
 .idea/**/misc.xml
+.idea/codeStyles/
 
 # Generated files
 .idea/**/contentModel.xml
@@ -64,7 +65,7 @@ run/**
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
-# .idea/modules.xml
+.idea/modules.xml
 # .idea/*.iml
 # .idea/modules
 # *.iml
@@ -124,3 +125,4 @@ src/main/resources/
 src/test/
 
 versioned/*/Labyfy
+.idea/intellij-javadocs-4.0.1.xml

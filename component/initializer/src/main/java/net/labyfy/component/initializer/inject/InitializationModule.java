@@ -2,7 +2,9 @@ package net.labyfy.component.initializer.inject;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.*;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
+import net.labyfy.component.initializer.inject.logging.Log4JTypeListener;
 
 import java.util.Collection;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class InitializationModule extends AbstractModule {
     this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(this.launchArguments);
     this.bind(Key.get(AtomicReference.class, Names.named("injectorReference")))
         .toInstance(this.injectorHolder);
+    this.bindListener(Matchers.any(), new Log4JTypeListener(this.injectorHolder));
   }
 
 
