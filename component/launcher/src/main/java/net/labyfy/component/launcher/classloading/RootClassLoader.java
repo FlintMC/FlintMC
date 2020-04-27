@@ -129,7 +129,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       classCache.put(name, clazz);
       return clazz;
     } catch (IOException e) {
-      throw new ClassNotFoundException("Failed to find class " + name + " due to IOException");
+      throw new ClassNotFoundException("Failed to find class " + name + " due to IOException", e);
     } finally {
       currentlyLoading.remove(name);
     }
