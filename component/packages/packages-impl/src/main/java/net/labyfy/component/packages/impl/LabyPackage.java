@@ -130,8 +130,7 @@ public class LabyPackage implements Package {
         .forEach(
             className -> {
               try {
-                Class<?> clazz = Class.forName(className, false, classLoader.asClassLoader());
-                this.serviceRepository.notifyClassLoaded(clazz);
+                Class.forName(className, true, classLoader.asClassLoader());
               } catch (ClassNotFoundException e) {
                 this.logger.warn(
                     "Couldn't enable autoload class {} for package {}. Continuing anyway...",

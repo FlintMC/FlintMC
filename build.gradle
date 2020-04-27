@@ -1,5 +1,3 @@
-
-
 buildscript {
     dependencies {
         classpath 'commons-io:commons-io:2.6'
@@ -17,7 +15,6 @@ sourceCompatibility = 1.8
 allprojects {
     group 'net.labyfy'
     version '1.1-SNAPSHOT'
-    
     
     buildscript {
         repositories {
@@ -118,11 +115,12 @@ publishing {
 }
 
 subprojects {
-    apply plugin: 'java'
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
+    plugins.withType(JavaPlugin) {
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                }
             }
         }
     }

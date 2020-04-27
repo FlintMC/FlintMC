@@ -1,7 +1,6 @@
 package net.labyfy.base.structure.representation;
 
 import net.labyfy.base.structure.resolve.AnnotationResolver;
-import net.minecraft.launchwrapper.Launch;
 
 import javax.inject.Singleton;
 

@@ -1,19 +1,16 @@
 package net.labyfy.component.initializer.inject.module;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.reflect.ClassPath;
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import net.minecraft.launchwrapper.Launch;
+import net.labyfy.component.launcher.LaunchController;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * This class binds constants,
@@ -26,12 +23,12 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamedFilePath("labyfyPackageFolder", "./Labyfy/packages");
     this.bindNamedFilePath("labyfyRoot", "./Labyfy");
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
-    this.bindNamed("delegationClassLoader", Launch.classLoader);
+    this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     try {
       this.bindNamed(
           "obfuscated",
-          (ClassPath.from(Launch.classLoader)
+          (ClassPath.from(LaunchController.getInstance().getRootLoader())
                   .getTopLevelClassesRecursive("net.minecraft.world")
                   .size()
               == 0));

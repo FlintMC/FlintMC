@@ -23,7 +23,10 @@ public interface Package {
   /** @return the current state of this package */
   PackageState getState();
 
-  /** @return the file this package is loaded from */
+  /**
+   * @return the file this package is loaded from, may be null,
+   *         if the package has been loaded from the classpath
+   */
   File getFile();
 
   /**
@@ -74,5 +77,7 @@ public interface Package {
      * @return a new Package.
      */
     Package create(File jarFile, JarFile jar);
+
+    // TODO: Add method for loading from classpath? (Issue #43)
   }
 }
