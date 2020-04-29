@@ -12,8 +12,8 @@ import net.labyfy.component.gui.component.GuiComponent
 import net.labyfy.component.gui.mcjfxgl.McJfxGLApplication
 import net.labyfy.component.gui.mcjfxgl.component.labeled.button.Button
 import net.labyfy.component.inject.InjectionHolder
+import net.labyfy.component.launcher.classloading.RootClassLoader
 import net.labyfy.component.resources.ResourceLocationProvider
-import net.minecraft.launchwrapper.Launch
 
 target = Button.class
 
@@ -28,7 +28,7 @@ class DefaultButtonSkin extends SkinBase<Button.Handle> implements GuiComponent 
         Button button = (Button) control.getComponent()
 
         this.getSkinnable().getStyleClass().setAll("button-primary");
-        this.getSkinnable().getStylesheets().setAll(Launch.classLoader.getResource("assets/minecraft/labyfy/themes/component/button/button_default.css").toExternalForm())
+        this.getSkinnable().getStylesheets().setAll(RootClassLoader.getSystemResource("assets/minecraft/labyfy/themes/component/button/button_default.css").toExternalForm())
 
         Text text = new Text();
 
