@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'net.labyfy:library-downloader:1.0-SNAPSHOT'
+        classpath 'net.labyfy:library-downloader:1.1-SNAPSHOT'
     }
 }
 
