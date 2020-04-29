@@ -1,11 +1,11 @@
 package net.labyfy.component.resources.v1_15_1;
 
-import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.ResourceLocation;
+import net.labyfy.component.resources.ResourceLocationProvider;
+import net.labyfy.component.resources.WrappedResourceLocation;
 import net.minecraft.client.Minecraft;
 
 import java.io.IOException;
@@ -15,15 +15,19 @@ import java.io.InputStream;
 public class LabyResourceLocation extends net.minecraft.util.ResourceLocation
     implements ResourceLocation {
 
+  private final ResourceLocationProvider resourceLocationProvider;
+
   @AssistedInject
-  private LabyResourceLocation(@Assisted("nameSpace") String nameSpace) {
+  private LabyResourceLocation(@Assisted("nameSpace") String nameSpace, ResourceLocationProvider resourceLocationProvider) {
     super(nameSpace);
+    this.resourceLocationProvider = resourceLocationProvider;
   }
 
   @AssistedInject
   private LabyResourceLocation(
-      @Assisted("nameSpace") String nameSpace, @Assisted("path") String path) {
+      @Assisted("nameSpace") String nameSpace, @Assisted("path") String path, ResourceLocationProvider resourceLocationProvider) {
     super(nameSpace, path);
+    this.resourceLocationProvider = resourceLocationProvider;
   }
 
   /**
@@ -42,5 +46,9 @@ public class LabyResourceLocation extends net.minecraft.util.ResourceLocation
       e.printStackTrace();
     }
     return null;
+  }
+
+  public <T extends WrappedResourceLocation> T as(Class<T> clazz) {
+    return this.resourceLocationProvider.wrap(this, clazz);
   }
 }

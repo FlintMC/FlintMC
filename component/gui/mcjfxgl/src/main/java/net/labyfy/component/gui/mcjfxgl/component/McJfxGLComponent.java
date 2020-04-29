@@ -7,6 +7,8 @@ import javafx.css.SimpleStyleableObjectProperty;
 import javafx.css.StyleableDoubleProperty;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Paint;
+import net.labyfy.component.gui.adapter.GuiAdapter;
+import net.labyfy.component.gui.component.GuiComponent;
 import net.labyfy.component.gui.mcjfxgl.component.property.PropertyBuilder;
 import net.labyfy.component.gui.mcjfxgl.component.property.convert.BackgroundConverter;
 
@@ -107,14 +109,14 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
     return translateY.getValue();
   }
 
-  public final McJfxGLComponent<T> setTranslateY(double translateY) {
+  public final T setTranslateY(double translateY) {
     this.translateY.set(translateY);
-    return this;
+    return (T) this;
   }
 
-  public final McJfxGLComponent<T> setTranslateX(double translateX) {
+  public final T setTranslateX(double translateX) {
     this.translateX.set(translateX);
-    return this;
+    return (T) this;
   }
 
   public final SimpleStyleableObjectProperty<Background> backgroundProperty() {
@@ -125,9 +127,9 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
     return this.background.getValue();
   }
 
-  public final McJfxGLComponent<T> setBackground(Background background) {
+  public final T setBackground(Background background) {
     this.background.setValue(background);
-    return this;
+    return (T) this;
   }
 
   public final StyleableDoubleProperty heightProperty() {
@@ -138,9 +140,9 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
     return height.getValue();
   }
 
-  public final McJfxGLComponent<T> setHeight(double height) {
+  public final T setHeight(double height) {
     this.height.setValue(height);
-    return this;
+    return (T) this;
   }
 
   public final StyleableDoubleProperty widthProperty() {
@@ -151,9 +153,9 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
     return this.width.getValue();
   }
 
-  public final McJfxGLComponent<T> setWidth(double width) {
+  public final T setWidth(double width) {
     this.width.setValue(width);
-    return this;
+    return (T) this;
   }
 
   public abstract McJfxGLControl createControl();
@@ -162,4 +164,5 @@ public abstract class McJfxGLComponent<T extends McJfxGLComponent<T>> {
     if (this.control == null) this.control = this.createControl();
     return control;
   }
+
 }

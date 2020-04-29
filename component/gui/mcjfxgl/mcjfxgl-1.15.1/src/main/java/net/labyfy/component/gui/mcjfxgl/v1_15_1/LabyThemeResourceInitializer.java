@@ -23,6 +23,11 @@ public class LabyThemeResourceInitializer implements ThemeResourceInitializer {
 
   private final ClassMappingProvider classMappingProvider;
 
+  static {
+    System.setProperty( "org.lwjgl.opengl.Window.undecorated", "true" );
+
+  }
+
   @Inject
   private LabyThemeResourceInitializer(ClassMappingProvider classMappingProvider) {
     this.classMappingProvider = classMappingProvider;

@@ -9,7 +9,6 @@ import com.sun.javafx.scene.DirtyBits;
 import javafx.animation.Interpolator;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
@@ -17,11 +16,11 @@ import javafx.css.StyleableObjectProperty;
 import javafx.css.StyleableProperty;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
-import javafx.scene.layout.Background;
 import javafx.util.Duration;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
 import net.labyfy.component.gui.adapter.GuiAdapter;
 import net.labyfy.component.gui.component.GuiComponent;
+import net.labyfy.component.gui.mcjfxgl.McJfxGLApplication;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.StyleableObjectPropertySelfProvidingCssMetaData;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.animate.PropertyAnimationTimer;
 import net.labyfy.component.gui.mcjfxgl.component.style.css.interpolate.PropertyInterpolator;
@@ -34,31 +33,34 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutionException;
 
 @IgnoreInitialization
-public class McJfxGLControl extends Control implements GuiComponent {
+public abstract class McJfxGLControl extends Control implements GuiComponent {
 
   private static final Map<
           Class<? extends McJfxGLControl>, Collection<CssMetaData<? extends Styleable, ?>>>
-          cssMetaData = new HashMap<>();
+      cssMetaData = new HashMap<>();
 
   private static final Map<
           Class<? extends McJfxGLControl>, Collection<CssMetaData<? extends Styleable, ?>>>
-          modifiedMetaData = new HashMap<>();
+      modifiedMetaData = new HashMap<>();
 
   private static final Map<String, String> MODIFY_PROPERTIES =
-          new HashMap<>(
-                  ImmutableMap.<String, String>builder()
-                          .put("-fx-region-border", "-fx-border")
-                          .put("-fx-region-background", "-fx-background")
-                          .build());
+      new HashMap<>(
+          ImmutableMap.<String, String>builder()
+              .put("-fx-region-border", "-fx-border")
+              .put("-fx-region-background", "-fx-background")
+              .build());
 
   private final Collection<PropertyAnimationTimer> propertyAnimationTimers = new HashSet<>();
   private final McJfxGLComponent<?> component;
   private Class<?> defaultSkinClass;
 
   protected McJfxGLControl(McJfxGLComponent<?> component) {
+    System.out.println(this.getClass());
     this.component = component;
     modifiedMetaData.putIfAbsent(getClass(), new CopyOnWriteArraySet<>());
     cssMetaData.putIfAbsent(getClass(), new CopyOnWriteArraySet<>());
@@ -82,6 +84,11 @@ public class McJfxGLControl extends Control implements GuiComponent {
     this.minHeightProperty().bindBidirectional(this.component.heightProperty());
 
     this.backgroundProperty().bindBidirectional(this.component.backgroundProperty());
+
+    Theme active = InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive();
+    if(active != null){
+      this.setSkin(active.getSkin(this));
+    }
   }
 
   private static Collection<CssMetaData<? extends Styleable, ?>> getRecursiveMetaData(
@@ -113,11 +120,11 @@ public class McJfxGLControl extends Control implements GuiComponent {
               metaData.isInherits());
 
       CssMetaData transitionDuration =
-              new StyleableObjectPropertySelfProvidingCssMetaData<>(
-                      MODIFY_PROPERTIES.get(metaData.getProperty()) + "-transition-duration",
-                      Duration.ZERO,
-                      DurationConverter.getInstance(),
-                      true);
+          new StyleableObjectPropertySelfProvidingCssMetaData<>(
+              MODIFY_PROPERTIES.get(metaData.getProperty()) + "-transition-duration",
+              Duration.ZERO,
+              DurationConverter.getInstance(),
+              true);
 
       SimpleObjectProperty<Interpolator> interpolator =
           new SimpleObjectProperty<>(Interpolator.SPLINE(0.25, 0.1, 0.25, 1));
@@ -209,50 +216,71 @@ public class McJfxGLControl extends Control implements GuiComponent {
 
   public final List<CssMetaData<? extends Styleable, ?>> getControlCssMetaData() {
     return Collections.unmodifiableList(
-            Lists.newArrayList(
-                    Iterables.concat(cssMetaData.get(getClass()), getControlClassMetaData())));
+        Lists.newArrayList(
+            Iterables.concat(cssMetaData.get(getClass()), getControlClassMetaData())));
   }
 
-  public void init(GuiAdapter adapter) {}
+  public void init(GuiAdapter adapter) {
+  }
 
   public void render(GuiAdapter adapter) {
     if (this.defaultSkinClass == null) {
-      Platform.runLater(
-              () -> {
-                this.defaultSkinClass = this.createDefaultSkin().getClass();
-              });
+      this.defaultSkinClass = this.getDefaultSkinClass();
     }
 
-    if (!this.getSkin().getClass().equals(this.defaultSkinClass)) {
-      Platform.runLater(
-              () -> {
-                Theme active = InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive();
-                if (active == null) return;
+    if (this.getSkin() == null
+        || (this.getSkin().getClass().equals(this.defaultSkinClass)
+        && InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive() != null)) {
 
-                ThemeComponentStyle themeComponentStyle =
-                        active.getStyleMap().get(this.getComponent().getClass());
+      McJfxGLApplication.runAndWait(
+          () -> {
+            Theme active = InjectionHolder.getInjectedInstance(ThemeRepository.class).getActive();
+            if (active == null) {
+              if (this.getSkin() == null
+                  || !this.getSkin().getClass().equals(this.defaultSkinClass)) {
+                this.setSkin(this.createDefaultSkin());
+              }
+              return;
+            }
 
-                if (themeComponentStyle == null) return;
+            ThemeComponentStyle themeComponentStyle =
+                active.getStyleMap().get(this.getComponent().getClass());
 
-                this.getStylesheets().clear();
-                for (String styleSheet : themeComponentStyle.getStyleSheets()) {
-                  try {
-                    this.setStyle(IOUtils.toString(active.getContent().get(styleSheet), "utf-8"));
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                }
-                this.getStyleClass()
-                        .setAll(active.getStyleMap().get(this.getComponent().getClass()).getStyleClasses());
-                this.setSkin(active.getSkin(this));
-              });
+            if (themeComponentStyle == null) return;
+
+            this.getStylesheets().clear();
+            for (String styleSheet : themeComponentStyle.getStyleSheets()) {
+              try {
+                this.setStyle(IOUtils.toString(active.getContent().get(styleSheet), "utf-8"));
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
+            }
+            this.getStyleClass()
+                .setAll(active.getStyleMap().get(this.getComponent().getClass()).getStyleClasses());
+            Skin<?> skin = active.getSkin(this);
+            if (skin == null) {
+              if (this.getSkin() == null) {
+                this.setSkin(this.createDefaultSkin());
+                System.out.println("set skin1");
+              }
+            } else {
+              if (!this.getSkin().getClass().equals(skin.getClass())) {
+                this.setSkin(skin);
+              }
+            }
+          });
+
     }
+
     for (PropertyAnimationTimer propertyAnimationTimer : this.propertyAnimationTimers) {
       if (propertyAnimationTimer.isRunning()) {
         propertyAnimationTimer.handle(System.nanoTime());
       }
     }
   }
+
+  protected abstract Class<? extends Skin<? extends McJfxGLControl>> getDefaultSkinClass();
 
   public McJfxGLComponent getComponent() {
     return component;

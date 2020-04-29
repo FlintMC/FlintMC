@@ -22,7 +22,7 @@ import net.labyfy.component.gui.mcjfxgl.component.property.PropertyBuilder;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class Labeled<T extends Labeled<T>> extends McJfxGLComponent<T> {
+public abstract class Labeled<T extends Labeled<T>> extends McJfxGLComponent<T> {
 
   private final StringProperty text = new SimpleStringProperty("");
 
@@ -103,18 +103,15 @@ public class Labeled<T extends Labeled<T>> extends McJfxGLComponent<T> {
     return (T) this;
   }
 
-  public McJfxGLControl createControl() {
-    return new Handle(this);
-  }
-
   @IgnoreInitialization
-  public static class Handle extends McJfxGLControl {
+  public abstract static class Handle extends McJfxGLControl {
     private final Labeled<?> component;
 
     protected Handle(Labeled<?> component) {
       super(component);
       this.component = component;
     }
+
 
     public Collection<CssMetaData<? extends Styleable, ?>> getControlClassMetaData() {
       Collection<CssMetaData<? extends Styleable, ?>> cssMetaData =
