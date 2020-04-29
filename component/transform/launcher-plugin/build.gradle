@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'net.labyfy.component.transform'
-version '1.0-SNAPSHOT'
+version ''
 
 repositories {
     mavenCentral()

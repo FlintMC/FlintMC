@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'net.labyfy.component'
-version '1.0-SNAPSHOT'
+version ''
 
 sourceCompatibility = 1.8
 
