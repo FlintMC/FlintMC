@@ -63,7 +63,7 @@ public class LabyDeobfuscator {
           InvocationTargetException {
     Remapper mapper =
         SimpleSimpleRemapper.create(
-            this.mappings, new ReflectionSuperClassProvider(input, "versioned/labyfy-1.15.1/libraries"));
+            this.mappings, new ReflectionSuperClassProvider(input, "libraries"));
 
     this.classes.forEach(
         (name, classNode) -> {
