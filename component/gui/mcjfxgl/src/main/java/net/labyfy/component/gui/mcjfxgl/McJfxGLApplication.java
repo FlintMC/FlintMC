@@ -17,6 +17,7 @@ import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.tasks.subproperty.TaskBody;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
+import org.lwjgl.system.Configuration;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -51,6 +52,15 @@ public class McJfxGLApplication extends Application {
 
   public Stage getStage() {
     return stage;
+  }
+
+  // TODO: Find a way to remove this!
+  // it does not sound correct to disable all checks
+  // this is a fix for https://git.labymod.net/client/labymod4/Labyfy/-/issues/51
+  @Task(Tasks.PRE_MINECRAFT_INITIALIZE)
+  @TaskBody
+  public void preInit(){
+    Configuration.DISABLE_CHECKS.set(true);
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
