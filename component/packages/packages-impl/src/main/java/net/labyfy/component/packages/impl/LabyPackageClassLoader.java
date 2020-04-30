@@ -53,6 +53,11 @@ public class LabyPackageClassLoader extends ClassLoader implements PackageClassL
   }
 
   @Override
+  public Enumeration<URL> commonFindAllResources() throws IOException {
+    return source.findAllResources();
+  }
+
+  @Override
   protected URL findResource(String name) {
     return source.findResource(name);
   }

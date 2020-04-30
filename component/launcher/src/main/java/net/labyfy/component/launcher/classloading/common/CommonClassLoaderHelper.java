@@ -4,16 +4,26 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.CodeSigner;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class CommonClassLoaderHelper {
   private static final Logger LOGGER = LogManager.getLogger(CommonClassLoaderHelper.class);
@@ -107,5 +117,87 @@ public class CommonClassLoaderHelper {
     }
 
     return sealedData != null && Boolean.parseBoolean(sealedData.toLowerCase());
+  }
+
+  public static List<URL> scanResources(URL base) throws IOException {
+    switch (base.getProtocol()) {
+      case "file": {
+        Path path;
+
+        try {
+          path = Paths.get(base.toURI());
+        } catch (URISyntaxException e) {
+          throw new IOException("Failed to convert " + base.toExternalForm() + " to a path", e);
+        }
+
+        if(!Files.exists(path)) {
+          return Collections.emptyList();
+        }
+
+        if(Files.isDirectory(path)) {
+          List<URL> resources = new ArrayList<>();
+          for(Path resource : scanDirectory(path)) {
+            resources.add(resource.toUri().toURL());
+          }
+
+          return resources;
+        } else if(Files.isRegularFile(path)) {
+          if(path.toString().endsWith(".zip") || path.toString().endsWith(".jar")) {
+            return scanZip(path);
+          } else {
+            return Collections.singletonList(path.toUri().toURL());
+          }
+        } else {
+          throw new UnsupportedOperationException("Unsupported path " + path);
+        }
+      }
+
+      case "jar:file": {
+        Path path;
+
+        try {
+          path = Paths.get(base.toURI());
+        } catch (URISyntaxException e) {
+          throw new IOException("Failed to convert " + base.toExternalForm() + " to a path", e);
+        }
+
+        return scanZip(path);
+      }
+
+      default: return Collections.singletonList(base);
+    }
+  }
+
+  private static List<Path> scanDirectory(Path directory) throws IOException {
+    List<Path> children = Files.list(directory).collect(Collectors.toList());
+
+    List<Path> files = new ArrayList<>();
+
+    for(Path child : children) {
+      if(Files.isDirectory(child)) {
+        files.addAll(scanDirectory(child));
+      } else {
+        files.add(child);
+      }
+    }
+
+    return files;
+  }
+
+  private static List<URL> scanZip(Path zipFile) throws IOException {
+    try(ZipFile file = new ZipFile(zipFile.toFile())) {
+      List<URL> collected = new ArrayList<>();
+
+      for(Enumeration<? extends ZipEntry> it = file.entries(); it.hasMoreElements();) {
+        ZipEntry entry = it.nextElement();
+        if(entry.isDirectory()) {
+          continue;
+        }
+
+        collected.add(new URL("jar:file:" + zipFile.toString().replace('\\', '/') + "!/" + entry.getName()));
+      }
+
+      return collected;
+    }
   }
 }

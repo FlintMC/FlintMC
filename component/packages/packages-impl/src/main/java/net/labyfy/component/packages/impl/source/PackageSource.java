@@ -14,6 +14,8 @@ public interface PackageSource extends AutoCloseable {
 
   Enumeration<URL> findResources(String name) throws IOException;
 
+  Enumeration<URL> findAllResources() throws IOException;
+
   static PackageSource of(Package pkg) {
     if(pkg.getFile() == null) {
       return new ClasspathSource();

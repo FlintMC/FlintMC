@@ -16,4 +16,10 @@ public class ClasspathSource implements PackageSource {
     // TODO: implement
     throw new UnsupportedOperationException("Not supported yet, tracked by issue #43");
   }
+
+  @Override
+  public Enumeration<URL> findAllResources() throws IOException {
+    // TODO: implement
+    throw new UnsupportedOperationException("Not supported yet, tracked by issue #43");
+  }
 }

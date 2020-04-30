@@ -91,6 +91,14 @@ public interface CommonClassLoader {
   Enumeration<URL> commonFindResources(String name) throws IOException;
 
   /**
+   * Collects all available resources from this classloader (including class files).
+   *
+   * @return all available resources
+   * @throws IOException If an I/O error occurs while searching the resources
+   */
+  Enumeration<URL> commonFindAllResources() throws IOException;
+
+  /**
    * Method bridge for the protected `getPackage` method in {@link ClassLoader}
    */
   Package commonGetPackage(String name);

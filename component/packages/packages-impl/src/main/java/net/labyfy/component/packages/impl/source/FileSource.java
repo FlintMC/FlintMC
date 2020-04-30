@@ -1,5 +1,7 @@
 package net.labyfy.component.packages.impl.source;
 
+import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
@@ -48,5 +50,10 @@ public class FileSource implements PackageSource {
     } else {
       return Collections.emptyEnumeration();
     }
+  }
+
+  @Override
+  public Enumeration<URL> findAllResources() throws IOException {
+    return Collections.enumeration(CommonClassLoaderHelper.scanResources(file.toURI().toURL()));
   }
 }

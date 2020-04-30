@@ -219,6 +219,20 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     }
   }
 
+  public Enumeration<URL> findAllResources() throws IOException {
+    List<URL> collected = new ArrayList<>();
+
+    for(URL url : getURLs()) {
+      collected.addAll(CommonClassLoaderHelper.scanResources(url));
+    }
+
+    for(ChildClassLoader child : children) {
+      collected.addAll(Collections.list(child.commonFindAllResources()));
+    }
+
+    return Collections.enumeration(collected);
+  }
+
   public void registerChild(ChildClassLoader childClassloader) {
     if (!transformEnabled) {
       throw new IllegalStateException("ChildClassLoader's can only be registered after transformation has been enabled");
@@ -265,6 +279,11 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   @Override
   public Enumeration<URL> commonFindResources(String name) throws IOException {
     return findResources(name);
+  }
+
+  @Override
+  public Enumeration<URL> commonFindAllResources() throws IOException {
+    return findAllResources();
   }
 
   @Override
