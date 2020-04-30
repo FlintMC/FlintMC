@@ -25,7 +25,7 @@ public class CommonClassLoaderHelper {
     }
 
     URLConnection connection = resourceURL.openConnection();
-    byte[] classBytes = readClass(connection);
+    byte[] classBytes = readResource(connection);
 
     CodeSigner[] signers = null;
     int lastDotIndex = name.lastIndexOf('.');
@@ -37,7 +37,7 @@ public class CommonClassLoaderHelper {
     return new ClassInformation(resourceURL, classBytes, signers);
   }
 
-  private static byte[] readClass(URLConnection connection) throws IOException {
+  public static byte[] readResource(URLConnection connection) throws IOException {
     try (InputStream stream = connection.getInputStream()) {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 

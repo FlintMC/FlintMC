@@ -21,6 +21,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   private final List<ChildClassLoader> children;
   private final List<String> modificationExclusions;
   private final Map<String, Class<?>> classCache;
+  private final Map<URL, byte[]> resourceDataCache;
   private final Logger logger;
 
   private boolean transformEnabled;
@@ -32,6 +33,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     this.children = new ArrayList<>();
     this.modificationExclusions = new ArrayList<>();
     this.classCache = new WeakHashMap<>();
+    this.resourceDataCache = new HashMap<>();
     this.logger = LogManager.getLogger(RootClassLoader.class);
 
     this.transformEnabled = false;
@@ -65,15 +67,15 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   }
 
   public Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException {
-    if(currentlyLoading.contains(name)) {
+    if (currentlyLoading.contains(name)) {
       throw new IllegalStateException("Circular load detected: " + name);
     }
 
-    if(name.equals(RootClassLoader.class.getName())) {
+    if (name.equals(RootClassLoader.class.getName())) {
       return RootClassLoader.class;
-    } else if(name.equals(LauncherPlugin.class.getName())) {
+    } else if (name.equals(LauncherPlugin.class.getName())) {
       return LauncherPlugin.class;
-    } else if(name.startsWith("net.labyfy.component.launcher.classloading.")) {
+    } else if (name.startsWith("net.labyfy.component.launcher.classloading.")) {
       return Class.forName(name, false, RootClassLoader.class.getClassLoader());
     }
 
@@ -91,20 +93,20 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       CommonClassLoader loader = preferredLoader;
       ClassInformation information = null;
 
-      if(loader != null) {
+      if (loader != null) {
         information = CommonClassLoaderHelper.retrieveClass(loader, name);
       }
 
-      for (Iterator<ChildClassLoader> it = children.iterator(); information == null && it.hasNext();) {
+      for (Iterator<ChildClassLoader> it = children.iterator(); information == null && it.hasNext(); ) {
         loader = it.next();
         information = CommonClassLoaderHelper.retrieveClass(loader, name);
       }
 
-      if(information == null) {
+      if (information == null) {
         loader = this;
         information = CommonClassLoaderHelper.retrieveClass(loader, name);
 
-        if(information == null) {
+        if (information == null) {
           logger.trace("Failed to find class {} after searching root and the following children: [{}]",
               () -> name,
               () -> children.stream()
@@ -141,25 +143,86 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   }
 
   public URL findResource(String name, boolean allowRedirect) {
-    if (allowRedirect) {
-      URL suggested = super.findResource(name);
-      for (LauncherPlugin plugin : plugins) {
-        URL newSuggestion = plugin.adjustResourceURL(name, suggested);
-        if (newSuggestion != null) {
-          suggested = newSuggestion;
+    try {
+      Enumeration<URL> allWithName = findResources(name, allowRedirect);
+      if(!allWithName.hasMoreElements()) {
+        return null;
+      }
+
+      URL first = allWithName.nextElement();
+      if(allWithName.hasMoreElements()) {
+        byte[] firstData;
+        if(resourceDataCache.containsKey(first)) {
+          firstData = resourceDataCache.get(first);
+        } else {
+          firstData = CommonClassLoaderHelper.readResource(first.openConnection());
+          resourceDataCache.put(first, firstData);
+        }
+
+        while (allWithName.hasMoreElements()) {
+          URL next = allWithName.nextElement();
+          byte[] nextData;
+
+          if(resourceDataCache.containsKey(next)) {
+            nextData = resourceDataCache.get(next);
+          } else {
+            nextData = CommonClassLoaderHelper.readResource(next.openConnection());
+            resourceDataCache.put(next, nextData);
+          }
+
+          if(!Arrays.equals(firstData, nextData)) {
+            // TODO: Currently, we have classpath conflicts, so this needs to be fixed first,
+            //       then re-enable the throw!
+            logger.warn("Resources with same name but different content found: ");
+            logger.warn("\t{}", first.toExternalForm());
+            logger.warn("\t{}", next.toExternalForm());
+            // throw new UnsupportedOperationException("Resources with same name but different content found:\n" +
+            //     "\t" + first.toExternalForm() +"\n\t" + next.toExternalForm());
+          }
         }
       }
 
-      return suggested;
+      return first;
+    } catch (IOException e) {
+      logger.warn("IOException while trying to retrieve resource " + name, e);
+      return null;
+    }
+  }
+
+  @Override
+  public Enumeration<URL> findResources(String name) throws IOException {
+    return findResources(name, true);
+  }
+
+  public Enumeration<URL> findResources(String name, boolean allowRedirect) throws IOException {
+    List<URL> resources = Collections.list(super.findResources(name));
+    for (ChildClassLoader childClassLoader : children) {
+      resources.addAll(Collections.list(childClassLoader.commonFindResources(name)));
     }
 
-    return super.findResource(name);
+    if(allowRedirect) {
+      List<URL> adjustedResources = new ArrayList<>();
+      for (URL suggested : resources) {
+        for (LauncherPlugin plugin : plugins) {
+          URL newSuggestion = plugin.adjustResourceURL(name, suggested);
+          if (newSuggestion != null) {
+            suggested = newSuggestion;
+          }
+        }
+
+        adjustedResources.add(suggested);
+      }
+
+      return Collections.enumeration(adjustedResources);
+    } else {
+      return Collections.enumeration(resources);
+    }
   }
 
   public void registerChild(ChildClassLoader childClassloader) {
-    if(!transformEnabled) {
+    if (!transformEnabled) {
       throw new IllegalStateException("ChildClassLoader's can only be registered after transformation has been enabled");
-    } else if(children.contains(childClassloader)) {
+    } else if (children.contains(childClassloader)) {
       return;
     }
 
@@ -197,6 +260,11 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   @Override
   public URL commonFindResource(String name, boolean forClassLoad) {
     return findResource(name, !forClassLoad);
+  }
+
+  @Override
+  public Enumeration<URL> commonFindResources(String name) throws IOException {
+    return findResources(name);
   }
 
   @Override

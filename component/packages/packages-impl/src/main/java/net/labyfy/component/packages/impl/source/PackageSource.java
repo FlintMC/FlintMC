@@ -4,12 +4,15 @@ import net.labyfy.component.packages.Package;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 
 public interface PackageSource extends AutoCloseable {
   @Override
   default void close() throws IOException {}
 
   URL findResource(String path);
+
+  Enumeration<URL> findResources(String name) throws IOException;
 
   static PackageSource of(Package pkg) {
     if(pkg.getFile() == null) {
