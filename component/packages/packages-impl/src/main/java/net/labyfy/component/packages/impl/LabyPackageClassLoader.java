@@ -9,8 +9,10 @@ import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.impl.source.PackageSource;
 
+import java.io.IOException;
 import java.net.URL;
 import java.security.CodeSource;
+import java.util.Enumeration;
 
 @Implement(PackageClassLoader.class)
 public class LabyPackageClassLoader extends ClassLoader implements PackageClassLoader, ChildClassLoader {
@@ -43,6 +45,16 @@ public class LabyPackageClassLoader extends ClassLoader implements PackageClassL
   @Override
   public URL childFindResource(String name, boolean forClassLoad) {
     return findResource(name);
+  }
+
+  @Override
+  public Enumeration<URL> commonFindResources(String name) throws IOException {
+    return source.findResources(name);
+  }
+
+  @Override
+  public Enumeration<URL> commonFindAllResources() throws IOException {
+    return source.findAllResources();
   }
 
   @Override

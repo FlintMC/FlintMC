@@ -1,8 +1,10 @@
 package net.labyfy.component.launcher.classloading.common;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
+import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -79,6 +81,22 @@ public interface CommonClassLoader {
    *                     Usually, this will be true, when name ends with `".class"`
    */
   URL commonFindResource(String name, boolean forClassLoad);
+
+  /**
+   * Searches this classloader for resources and returns all matching ones.
+   *
+   * @param name the name of the resources to find
+   * @return all resources matching this name
+   */
+  Enumeration<URL> commonFindResources(String name) throws IOException;
+
+  /**
+   * Collects all available resources from this classloader (including class files).
+   *
+   * @return all available resources
+   * @throws IOException If an I/O error occurs while searching the resources
+   */
+  Enumeration<URL> commonFindAllResources() throws IOException;
 
   /**
    * Method bridge for the protected `getPackage` method in {@link ClassLoader}

@@ -1,8 +1,12 @@
 package net.labyfy.component.packages.impl.source;
 
+import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -36,5 +40,20 @@ public class FileSource implements PackageSource {
     } catch (MalformedURLException e) {
       throw new IllegalArgumentException("Path is invalid", e);
     }
+  }
+
+  @Override
+  public Enumeration<URL> findResources(String name) {
+    URL resource = findResource(name);
+    if(resource != null) {
+      return Collections.enumeration(Collections.singleton(resource));
+    } else {
+      return Collections.emptyEnumeration();
+    }
+  }
+
+  @Override
+  public Enumeration<URL> findAllResources() throws IOException {
+    return Collections.enumeration(CommonClassLoaderHelper.scanResources(file.toURI().toURL()));
   }
 }
