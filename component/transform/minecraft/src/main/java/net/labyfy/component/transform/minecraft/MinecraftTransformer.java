@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Identifier
 @Transitive
-public @interface MinecraftTransformer {}
+public @interface MinecraftTransformer {
+  int priority() default 0;
+}

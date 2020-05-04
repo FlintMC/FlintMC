@@ -17,12 +17,17 @@ public class MinecraftTransformerService implements ServiceHandler {
   private MinecraftTransformerService() {}
 
   public void discover(Identifier.Base property) {
-    LabyfyLauncherPlugin.getInstance().registerTransformer(
-        InjectionHolder.getInjectedInstance(
+    LabyfyLauncherPlugin.getInstance()
+        .registerTransformer(
             property
                 .getProperty()
-                .getLocatedIdentifiedAnnotation().<Class<? extends LateInjectedTransformer>>getLocation()
-        )
-    );
+                .getLocatedIdentifiedAnnotation()
+                .<MinecraftTransformer>getAnnotation()
+                .priority(),
+            InjectionHolder.getInjectedInstance(
+                property
+                    .getProperty()
+                    .getLocatedIdentifiedAnnotation()
+                    .<Class<? extends LateInjectedTransformer>>getLocation()));
   }
 }

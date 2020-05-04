@@ -1,5 +1,6 @@
 package net.labyfy.component.transform.launchplugin;
 
+import com.google.common.collect.TreeMultimap;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -20,7 +21,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
   private static LabyfyLauncherPlugin instance;
 
   public static LabyfyLauncherPlugin getInstance() {
-    if(instance == null) {
+    if (instance == null) {
       throw new IllegalStateException("LabyfyLauncherPlugin has not been instantiated yet");
     }
 
@@ -28,19 +29,19 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
   }
 
   private final Logger logger;
-  private final List<LateInjectedTransformer> injectedTransformers;
+  private final TreeMultimap<Integer, LateInjectedTransformer> injectedTransformers;
 
   private List<String> launchArguments;
 
   public LabyfyLauncherPlugin() {
-    if(instance != null) {
+    if (instance != null) {
       throw new IllegalStateException("LabyfyLauncherPlugin instantiated already");
     }
 
     instance = this;
 
     this.logger = LogManager.getLogger(LabyfyLauncherPlugin.class);
-    this.injectedTransformers = new ArrayList<>();
+    this.injectedTransformers = TreeMultimap.create(Integer::compareTo, (o1, o2) -> 0);
   }
 
   @Override
@@ -50,10 +51,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
-    classloader.excludeFromModification(
-        "javassist.",
-        "com.google."
-    );
+    classloader.excludeFromModification("javassist.", "com.google.");
   }
 
   @Override
@@ -66,9 +64,9 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
   public void preLaunch(ClassLoader launchClassloader) {
     Map<String, String> arguments = new HashMap<>();
 
-    for(Iterator<String> it = launchArguments.iterator(); it.hasNext();) {
+    for (Iterator<String> it = launchArguments.iterator(); it.hasNext(); ) {
       String key = it.next();
-      if(it.hasNext()) {
+      if (it.hasNext()) {
         arguments.put(key, it.next());
       } else {
         arguments.put(key, null);
@@ -88,27 +86,27 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
   @Override
   public byte[] modifyClass(String className, byte[] classData) {
-    for(LateInjectedTransformer transformer : injectedTransformers) {
+    for (LateInjectedTransformer transformer : injectedTransformers.values()) {
       byte[] newData = transformer.transform(className, classData);
-      if(newData != null) {
+      if (newData != null) {
         classData = newData;
       }
     }
 
-
     try {
-      CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(classData), false);
+      CtClass ctClass =
+          ClassPool.getDefault().makeClass(new ByteArrayInputStream(classData), false);
 
       CtConstructor initializer = ctClass.getClassInitializer();
-      if(initializer == null) {
+      if (initializer == null) {
         initializer = ctClass.makeClassInitializer();
       }
 
       initializer.insertAfter(
-          "net.labyfy.component.transform.launchplugin.NotifyJumpad.notifyService(" +
-              ctClass.getName() + ".class" +
-          ");"
-      );
+          "net.labyfy.component.transform.launchplugin.NotifyJumpad.notifyService("
+              + ctClass.getName()
+              + ".class"
+              + ");");
 
       return ctClass.toBytecode();
     } catch (IOException e) {
@@ -119,7 +117,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     }
   }
 
-  public void registerTransformer(LateInjectedTransformer transformer) {
-    injectedTransformers.add(transformer);
+  public void registerTransformer(int priority, LateInjectedTransformer transformer) {
+    injectedTransformers.put(priority, transformer);
   }
 }
