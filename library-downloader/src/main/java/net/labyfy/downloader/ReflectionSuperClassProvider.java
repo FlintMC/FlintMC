@@ -18,14 +18,14 @@ public class ReflectionSuperClassProvider implements ISuperClassProvider {
   private URLClassLoader classLoader = null;
   private Method addURLMethod = null;
 
-  public ReflectionSuperClassProvider(File jarFile, String libPath)
+  public ReflectionSuperClassProvider(File jarFile, File libraries)
       throws NoSuchMethodException, MalformedURLException, InvocationTargetException,
-          IllegalAccessException {
+      IllegalAccessException {
     this.classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
     this.addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
     this.addURLMethod.setAccessible(true);
     this.addURL(jarFile.toURI().toURL());
-    try (Stream<Path> paths = Files.walk(new File(libPath).getAbsoluteFile().toPath())) {
+    try (Stream<Path> paths = Files.walk(libraries.getAbsoluteFile().toPath())) {
       paths
           .filter(path -> (path.toFile().isFile() && path.toFile().getName().endsWith(".jar")))
           .forEach(
