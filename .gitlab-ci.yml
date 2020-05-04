@@ -9,7 +9,7 @@ dev_build:
   stage: build
   script:
   - sed -i "s/^version.*/version \"${CI_BUILD_REF_NAME}\"/1" build.gradle
-  - sh gradlew jar
+  - sh gradlew build --refresh-dependencies
   artifacts:
     name: "${CI_BUILD_NAME}:${CI_BUILD_REF_NAME}"
     paths:
@@ -20,7 +20,7 @@ live_build:
   stage: build
   script:
   - sed -i "s/^version.*/version \"${CI_COMMIT_TAG}\"/1" build.gradle
-  - sh gradlew jar
+  - sh gradlew build --refresh-dependencies
   artifacts:
     name: "${CI_BUILD_NAME}:${CI_BUILD_REF_NAME}"
     paths:
