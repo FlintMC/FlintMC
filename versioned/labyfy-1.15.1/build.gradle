@@ -53,7 +53,7 @@ application {
     mainClassName "net.labyfy.component.launcher.LabyLauncher"
 }
 
-def runDir = new File(rootProject.projectDir, "run")
+def runDir = new File(rootProject.projectDir, "run/1.15.1")
 def runDirTemplate = new File(rootProject.projectDir, "run-template")
 if(!runDir.exists()) {
     if(!runDir.mkdirs()) {
@@ -67,7 +67,7 @@ if(!runDir.exists()) {
 }
 
 run {
-    workingDir new File(runDir, "1.15.1")
+    workingDir runDir
     args "--uuid", "113da2d6-3c68-43c4-bee0-6f53fe8906e6",
          "--username", "DevTastisch",
          "--accessToken", "0",
