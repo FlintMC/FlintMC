@@ -116,8 +116,6 @@ class LibraryDownloader implements Plugin<Project> {
 
         }
 
-        project.dependencies.compile(project.fileTree('libraries'))
-
         project.defaultTasks("download-libraries")
 
     }
