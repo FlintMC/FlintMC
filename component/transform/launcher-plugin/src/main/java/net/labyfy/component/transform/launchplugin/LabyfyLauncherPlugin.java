@@ -1,6 +1,6 @@
 package net.labyfy.component.transform.launchplugin;
 
-import com.google.common.collect.TreeMultimap;
+import com.google.common.collect.*;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -29,7 +29,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
   }
 
   private final Logger logger;
-  private final TreeMultimap<Integer, LateInjectedTransformer> injectedTransformers;
+  private final Multimap<Integer, LateInjectedTransformer> injectedTransformers;
 
   private List<String> launchArguments;
 
@@ -41,7 +41,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     instance = this;
 
     this.logger = LogManager.getLogger(LabyfyLauncherPlugin.class);
-    this.injectedTransformers = TreeMultimap.create(Integer::compareTo, (o1, o2) -> 0);
+    this.injectedTransformers = MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build();
   }
 
   @Override
