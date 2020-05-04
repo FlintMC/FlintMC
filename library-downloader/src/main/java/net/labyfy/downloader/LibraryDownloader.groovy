@@ -141,7 +141,7 @@ class LibraryDownloader implements Plugin<Project> {
             return
         };
         println " -> download " + artifact + "-" + version + ".jar to " + libraries.getAbsolutePath() + " url " + url
-        FileOutputStream fileOutputStream = new FileOutputStream();
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
         IOUtils.write(IOUtils.toByteArray(new URL(url)), fileOutputStream)
         fileOutputStream.flush()
         fileOutputStream.close()
