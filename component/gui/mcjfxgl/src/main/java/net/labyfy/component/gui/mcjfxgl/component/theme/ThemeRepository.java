@@ -2,17 +2,20 @@ package net.labyfy.component.gui.mcjfxgl.component.theme;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Streams;
 import com.google.common.reflect.ClassPath;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
 import net.labyfy.component.gui.mcjfxgl.component.theme.style.ThemeComponentStyle;
 import net.labyfy.component.inject.event.Event;
+import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.component.resources.pack.ResourcePackProvider;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 import javax.inject.Inject;
@@ -34,7 +37,7 @@ public class ThemeRepository {
   private final ResourceLocationProvider resourceLocationProvider;
   private final Theme.Factory themeFactory;
   private Theme activeTheme;
-  private boolean active = false;
+  private boolean active = true;
 
   @Inject
   private ThemeRepository(
@@ -57,19 +60,21 @@ public class ThemeRepository {
           IOUtils.toByteArray(labyfy.openInputStream()));
     }
 
-    ClassPath.from(ClassLoader.getSystemClassLoader()).getResources().stream()
-        .filter(
-            resourceInfo ->
-                resourceInfo.getResourceName().startsWith("assets/minecraft/labyfy/themes"))
-        .map(ClassPath.ResourceInfo::getResourceName)
-        .map(resource -> resource.replaceFirst("assets/minecraft/", ""))
+    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    assert contextClassLoader instanceof RootClassLoader;
+    RootClassLoader rootClassLoader = (RootClassLoader) contextClassLoader;
+
+    Collections.list(rootClassLoader.commonFindAllResources()).stream()
+        .filter(url -> !url.getPath().endsWith(".class"))
+        .filter(url -> StringUtils.countMatches(url.getPath(), "assets/minecraft/labyfy/themes") == 1)
+        .map(url -> url.getPath().substring(url.getPath().indexOf("assets/minecraft/labyfy/themes") + "assets/minecraft/".length()))
         .forEach(
-            resourceInfo -> {
+            path -> {
               try {
                 bytes.put(
-                    resourceInfo.replaceFirst("labyfy/themes/", ""),
+                    path.replaceFirst("labyfy/themes/", ""),
                     IOUtils.toByteArray(
-                        this.resourceLocationProvider.get(resourceInfo).openInputStream()));
+                        this.resourceLocationProvider.get(path).openInputStream()));
               } catch (IOException e) {
                 e.printStackTrace();
               }

@@ -60,7 +60,6 @@ public abstract class McJfxGLControl extends Control implements GuiComponent {
   private Class<?> defaultSkinClass;
 
   protected McJfxGLControl(McJfxGLComponent<?> component) {
-    System.out.println(this.getClass());
     this.component = component;
     modifiedMetaData.putIfAbsent(getClass(), new CopyOnWriteArraySet<>());
     cssMetaData.putIfAbsent(getClass(), new CopyOnWriteArraySet<>());

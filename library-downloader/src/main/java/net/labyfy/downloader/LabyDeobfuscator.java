@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class LabyDeobfuscator {
 
+  private final File libraries;
   private final ClassMappingProvider classMappingProvider;
   private final File input;
   private final File output;
@@ -36,8 +37,10 @@ public class LabyDeobfuscator {
   private LabyDeobfuscator(
       @Named("input") File input,
       @Named("output") File output,
+      @Named("libraries") File libraries,
       ClassMappingProvider classMappingProvider)
       throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    this.libraries = libraries;
     this.classMappingProvider = classMappingProvider;
     this.input = input;
     this.output = output;
@@ -60,10 +63,10 @@ public class LabyDeobfuscator {
 
   private void applyClassMappings()
       throws NoSuchMethodException, MalformedURLException, IllegalAccessException,
-          InvocationTargetException {
+      InvocationTargetException {
     Remapper mapper =
         SimpleSimpleRemapper.create(
-            this.mappings, new ReflectionSuperClassProvider(input, "libraries"));
+            this.mappings, new ReflectionSuperClassProvider(input, libraries));
 
     this.classes.forEach(
         (name, classNode) -> {
@@ -81,8 +84,8 @@ public class LabyDeobfuscator {
 
           this.bytes.put(
               (this.mappings.containsKey(classNode.name)
-                      ? this.mappings.get(classNode.name)
-                      : classNode.name)
+                  ? this.mappings.get(classNode.name)
+                  : classNode.name)
                   + ".class",
               classWriter.toByteArray());
         });

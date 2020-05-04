@@ -95,6 +95,7 @@ class LibraryDownloader implements Plugin<Project> {
 
                 Injector injector = Guice.createInjector(new AbstractModule() {
                     protected void configure() {
+                        this.bind(Key.get(File.class, Names.named("libraries"))).toInstance(libraries)
                         this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(ImmutableMap.<String, String> of("--version", version))
                         this.bind(Key.get(File.class, Names.named("input"))).toInstance(new File(libraries, "client-" + extension.version + ".jar"))
                         this.bind(Key.get(File.class, Names.named("output"))).toInstance(new File(libraries, "client-" + extension.version + ".jar"))
@@ -122,6 +123,7 @@ class LibraryDownloader implements Plugin<Project> {
     }
 
     private void download(String url, File file) {
+        if (file.exists()) return;
         HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
         httpURLConnection.setRequestProperty("User-Agent", getUserAgent());
         httpURLConnection.connect();
@@ -135,8 +137,13 @@ class LibraryDownloader implements Plugin<Project> {
 
 
     private void downloadArtifact(String artifact, String version, File libraries, String url) {
+        File file = new File(libraries, artifact + "-" + version + ".jar");
+        if (file.exists()) {
+            println " -> skip " + artifact + "-" + version + ".jar to " + libraries.getAbsolutePath() + " url " + url
+            return
+        };
         println " -> download " + artifact + "-" + version + ".jar to " + libraries.getAbsolutePath() + " url " + url
-        FileOutputStream fileOutputStream = new FileOutputStream(new File(libraries, artifact + "-" + version + ".jar"));
+        FileOutputStream fileOutputStream = new FileOutputStream();
         IOUtils.write(IOUtils.toByteArray(new URL(url)), fileOutputStream)
         fileOutputStream.flush()
         fileOutputStream.close()
