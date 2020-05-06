@@ -31,6 +31,7 @@ dependencies {
     runtimeOnly project(':component:transform:javassist')
     runtimeOnly project(':component:transform:asm')
     runtimeOnly project(':component:transform:minecraft')
+    runtimeOnly project(':component:transform:minecraft-obfuscator')
     runtimeOnly project(':component:transform:hook')
     runtimeOnly project(':component:gui')
     runtimeOnly project(':component:gui:mcjfxgl')

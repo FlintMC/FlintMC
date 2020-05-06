@@ -74,6 +74,9 @@ findProject(':component:launcher')?.name = 'launcher'
 include 'component:transform:launcher-plugin'
 findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
 
+include 'component:transform:minecraft-obfuscator'
+findProject(':component:transform:minecraft-obfuscator')?.name = 'minecraft-obfuscator'
+
 ext.isPush = true
 
 buildCache {

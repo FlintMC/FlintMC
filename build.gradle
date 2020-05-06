@@ -69,6 +69,7 @@ dependencies {
     compile project(':component:transform:javassist')
     compile project(':component:transform:asm')
     compile project(':component:transform:minecraft')
+    compile project(':component:transform:minecraft-obfuscator')
     compile project(':component:transform:hook')
     compile project(':component:gui')
     compile project(':component:gui:mcjfxgl')
