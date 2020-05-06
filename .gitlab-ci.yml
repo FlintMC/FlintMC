@@ -16,7 +16,7 @@ before_script:
   - git clone -q --depth 1 "$SCRIPTS_REPO" "$SCRIPTS_DIR"
   - sh $SCRIPTS_DIR/eval.sh
   - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-  - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
+  - cd versioned/labyfy-1.15.1
   - bash $SCRIPTS_DIR/genSemVer build ${CI_BUILD_NAME}.${CI_BUILD_REF_NAME} > version
   - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
 
