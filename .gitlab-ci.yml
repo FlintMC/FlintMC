@@ -27,7 +27,7 @@ version:
     - export TAG=$(cat version)
     - git config --global user.email "gitlab-ci@gitlab.labymod.net"
     - git config --global user.name "gitlab-ci"
-    - git remote set-url --push origin "git@git.labymod.net:client/labymod4/packages/custom-menues.git"
+    - git remote set-url --push origin "git@git.labymod.net:client/labymod4/Labyfy.git"
     - git tag -a ${TAG} -m "${CI_COMMIT_MESSAGE}"
     - git push origin ${TAG}
   artifacts:
