@@ -41,12 +41,13 @@ public class ThemeRepository {
       ResourcePackProvider resourcePackProvider,
       ResourceLocationProvider resourceLocationProvider,
       Theme.Factory themeFactory,
-      LabyfySecurityManager securityManager) {
+      LabyfySecurityManager securityManager,
+      ThemePermissionChecker permissionChecker) {
     this.resourcePackProvider = resourcePackProvider;
     this.resourceLocationProvider = resourceLocationProvider;
     this.themeFactory = themeFactory;
     this.themeScriptCount = new AtomicInteger(0);
-    securityManager.installChecker(new ThemePermissionChecker());
+    securityManager.installChecker(permissionChecker);
   }
 
   @Event(ResourcePackReloadEvent.class)
