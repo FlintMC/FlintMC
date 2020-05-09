@@ -6,6 +6,7 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
 import net.labyfy.component.gui.mcjfxgl.component.theme.source.ThemeGroovyCodeSourceShim;
+import net.labyfy.component.gui.mcjfxgl.component.theme.source.ThemePermissionChecker;
 import net.labyfy.component.gui.mcjfxgl.component.theme.style.ThemeComponentStyle;
 import net.labyfy.component.inject.event.Event;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
@@ -13,6 +14,7 @@ import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.component.resources.pack.ResourcePackProvider;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
+import net.labyfy.component.security.LabyfySecurityManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -38,11 +40,13 @@ public class ThemeRepository {
   private ThemeRepository(
       ResourcePackProvider resourcePackProvider,
       ResourceLocationProvider resourceLocationProvider,
-      Theme.Factory themeFactory) {
+      Theme.Factory themeFactory,
+      LabyfySecurityManager securityManager) {
     this.resourcePackProvider = resourcePackProvider;
     this.resourceLocationProvider = resourceLocationProvider;
     this.themeFactory = themeFactory;
     this.themeScriptCount = new AtomicInteger(0);
+    securityManager.installChecker(new ThemePermissionChecker());
   }
 
   @Event(ResourcePackReloadEvent.class)

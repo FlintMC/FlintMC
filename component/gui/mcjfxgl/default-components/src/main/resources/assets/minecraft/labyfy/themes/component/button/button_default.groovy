@@ -1,7 +1,5 @@
 package assets.minecraft.labyfy.themes.component.button
 
-import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
 import javafx.scene.control.SkinBase
 import javafx.scene.effect.BlurType
 import javafx.scene.effect.DropShadow
@@ -9,7 +7,6 @@ import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.Text
 import net.labyfy.component.gui.component.GuiComponent
-import net.labyfy.component.gui.mcjfxgl.McJfxGLApplication
 import net.labyfy.component.gui.mcjfxgl.component.labeled.button.Button
 import net.labyfy.component.inject.InjectionHolder
 import net.labyfy.component.launcher.classloading.RootClassLoader
@@ -49,8 +46,6 @@ class DefaultButtonSkin extends SkinBase<Button.Handle> implements GuiComponent 
 
         this.getChildren().add(text)
     }
-
-
 }
 
-apply (Button.Handle control) -> new DefaultButtonSkin(control);
+apply (Button.Handle control) -> new DefaultButtonSkin(control)

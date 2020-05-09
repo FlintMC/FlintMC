@@ -9,7 +9,7 @@ public class ThemeGroovyCodeSourceShim extends GroovyCodeSource {
 
   public ThemeGroovyCodeSourceShim(String script, String name) {
     super(script, name, "/groovy/theme-shell");
-    this.codeSource = new ThemeCodeSource(getCodeSource().getLocation(), getCodeSource().getCertificates());
+    this.codeSource = new ThemeCodeSource(super.getCodeSource().getLocation(), super.getCodeSource().getCertificates());
   }
 
   @Override
