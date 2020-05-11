@@ -70,6 +70,32 @@ allprojects {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    minecraft project(':component:base')
+    minecraft project(':component:transform:javassist')
+    minecraft project(':component:transform:asm')
+    minecraft project(':component:transform:minecraft')
+    minecraft project(':component:transform:minecraft-obfuscator')
+    minecraft project(':component:transform:hook')
+    minecraft project(':component:gui')
+    minecraft project(':component:gui:mcjfxgl')
+    minecraft project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
+    minecraft project(':component:gui:mcjfxgl:default-components')
+    minecraft project(':component:gui:gui-1.15.1')
+    minecraft project(':component:tasks')
+    minecraft project(':component:tasks:tasks-1.15.1')
+    minecraft project(':component:mapping')
+    minecraft project(':component:inject')
+    minecraft project(':component:transform:hook')
+    minecraft project(':component:resources')
+    minecraft project(':component:resources:resources-1.15.1')
+    minecraft project(':versioned:labyfy-1.15.1')
+    minecraft project(':component:packages')
+    minecraft project(':component:packages:packages-impl')
+    minecraft group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+    minecraft 'com.google.guava:guava:27.1-jre'
+    minecraft 'org.apache.commons:commons-lang3:3.9'
+
     compile project(':component:base')
     compile project(':component:transform:javassist')
     compile project(':component:transform:asm')
