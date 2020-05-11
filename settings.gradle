@@ -39,8 +39,6 @@ findProject(':component:gui')?.name = 'gui'
 include 'component:gui:gui-1.15.1'
 findProject(':component:gui:gui-1.15.1')?.name = 'gui-1.15.1'
 
-include 'library-downloader'
-
 include 'component:gui:mcjfxgl'
 findProject(':component:gui:mcjfxgl')?.name = 'mcjfxgl'
 
@@ -78,6 +76,8 @@ include 'component:transform:minecraft-obfuscator'
 findProject(':component:transform:minecraft-obfuscator')?.name = 'minecraft-obfuscator'
 
 ext.isPush = true
+
+includeBuild 'library-downloader'
 
 buildCache {
     local {

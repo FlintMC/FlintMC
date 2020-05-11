@@ -1,7 +1,9 @@
 package net.labyfy.downloader
 
+
 import com.google.common.collect.*
 import com.google.common.io.Files
+import com.google.gson.GsonBuilder
 import com.google.inject.AbstractModule
 import com.google.inject.Guice
 import com.google.inject.Injector
@@ -10,7 +12,10 @@ import com.google.inject.name.Names
 import org.apache.commons.io.IOUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.repositories.ArtifactRepository
 import org.happy.collections.lists.decorators.SortedList_1x0
+
+import java.security.MessageDigest
 
 class LibraryDownloadExtension {
     String version;
@@ -76,10 +81,10 @@ class LibraryDownloader implements Plugin<Project> {
                                     version = path[path.length - 2]
                                     this.downloadArtifact(artifact + "-natives-linux", version, libraries, downloads.classifiers.nativesLinux.url)
                                 }
-                                if (downloads.classifiers.nativesMacOS != null) {
-                                    path = downloads.classifiers.nativesMacOS.path.split('/')
+                                if (downloads.classifiers.nativesOSX != null) {
+                                    path = downloads.classifiers.nativesOSX.path.split('/')
                                     version = path[path.length - 2]
-                                    this.downloadArtifact(artifact + "-natives-macos", version, libraries, downloads.classifiers.nativesMacOS.url)
+                                    this.downloadArtifact(artifact + "-natives-macos", version, libraries, downloads.classifiers.nativesOSX.url)
                                 }
                                 if (downloads.classifiers.nativesWindows != null) {
                                     path = downloads.classifiers.nativesWindows.path.split('/')
@@ -115,6 +120,67 @@ class LibraryDownloader implements Plugin<Project> {
             }
 
         }
+
+        project.task('generate-json') {
+            doLast {
+                VersionFetcher.Version version = VersionFetcher.fetch(extension.version).getDetails();
+
+                Collection<VersionFetcher.Version.Library> libraries = new LinkedList<>();
+
+                Collection<Project> projects = new ArrayList<>(project.childProjects.values());
+                projects.add(project)
+
+                projects.each { childProject ->
+                    childProject.configurations.getByName("minecraft").dependencies.each { dependency ->
+                        if (dependency.version == null || dependency.group == null || dependency.version == null) return
+                        for (ArtifactRepository repository : childProject.repositories.asList()) {
+
+
+                            def url = repository.properties.get('url')
+                            def jarUrl = String.format("%s%s/%s/%s/%s-%s.jar", url.toString(),
+                                    dependency.group.replace('.', '/'), dependency.name, dependency.version,
+                                    dependency.name, dependency.version)
+                            try {
+                                HttpURLConnection huc = (HttpURLConnection) new URL(jarUrl).openConnection();
+                                huc.setRequestProperty("User-Agent",
+                                        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.0.13) Gecko/2009073021 Firefox/3.0.13");
+                                huc.setRequestMethod("GET");
+                                huc.connect();
+
+                                if (huc.getResponseCode() == 200) {
+
+                                    Formatter formatter = new Formatter();
+                                    byte[] data = IOUtils.toByteArray(huc);
+                                    for (byte b : MessageDigest.getInstance("SHA-1").digest(data)) {
+                                        formatter.format("%02x", b);
+                                    }
+                                    def sha1sum = formatter.toString()
+
+                                    libraries.add(
+                                            new VersionFetcher.Version.Library(
+                                                    new VersionFetcher.Version.Library.Downloads(
+                                                            new VersionFetcher.Version.Library.Downloads.Artifact(
+                                                                    jarUrl,
+                                                                    sha1sum,
+                                                                    data.length,
+                                                                    jarUrl
+                                                            )), null, null, dependency.group + ":" + dependency.name + ":" + dependency.version, null))
+                                    huc.disconnect()
+                                    return
+                                }
+                                huc.disconnect()
+                            } catch (Exception ignored) {
+                            }
+                        }
+                    }
+                }
+                version.id = "LabyMod-4-" + version.id
+                libraries.addAll(Arrays.asList(version.libraries))
+                version.libraries = libraries.<VersionFetcher.Version.Library> toArray([] as VersionFetcher.Version.Library)
+                println new GsonBuilder().disableHtmlEscaping().create().toJson(version)
+
+            }
+        }.mustRunAfter("build")
 
         project.defaultTasks("download-libraries")
 

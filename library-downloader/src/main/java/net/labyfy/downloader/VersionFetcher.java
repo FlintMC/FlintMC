@@ -10,29 +10,30 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 public class VersionFetcher {
 
   private static final String VERSION_MANIFEST =
-          "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+      "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 
   public static VersionManifest.Entry fetch(String version) {
     return fetchAll().stream()
-            .filter(entry -> entry.getId().equals(version))
-            .findAny()
-            .orElse(null);
+        .filter(entry -> entry.getId().equals(version))
+        .findAny()
+        .orElse(null);
   }
 
   public static Collection<VersionManifest.Entry> fetchAll() {
     try {
       VersionManifest versionManifest =
-              new Gson()
-                      .fromJson(
-                              new JsonReader(
-                                      new InputStreamReader(
-                                              new URL(VERSION_MANIFEST).openStream(), Charset.defaultCharset())),
-                              VersionManifest.class);
+          new Gson()
+              .fromJson(
+                  new JsonReader(
+                      new InputStreamReader(
+                          new URL(VERSION_MANIFEST).openStream(), Charset.defaultCharset())),
+                  VersionManifest.class);
       return Arrays.asList(versionManifest.getVersions());
 
     } catch (IOException e) {
@@ -45,11 +46,11 @@ public class VersionFetcher {
 
     try {
       return new Gson()
-              .fromJson(
-                      new JsonReader(
-                              new InputStreamReader(
-                                      new URL(entry.getUrl()).openStream(), Charset.defaultCharset())),
-                      Version.class);
+          .fromJson(
+              new JsonReader(
+                  new InputStreamReader(
+                      new URL(entry.getUrl()).openStream(), Charset.defaultCharset())),
+              Version.class);
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -60,37 +61,204 @@ public class VersionFetcher {
 
   public static class Version {
 
+    private Object arguments;
+    private Object assetIndex;
+    private String assets;
     private Version.Downloads downloads;
+    private String id;
     private Library[] libraries;
+    private Object logging;
+    private String mainClass;
+    private int minimumLauncherVersion;
+    private String releaseTime;
+    private String time;
+    private String type;
 
     public Downloads getDownloads() {
       return this.downloads;
+    }
+
+    public Object getLogging() {
+      return logging;
+    }
+
+    public String getMainClass() {
+      return mainClass;
+    }
+
+    public int getMinimumLauncherVersion() {
+      return minimumLauncherVersion;
+    }
+
+    public String getReleaseTime() {
+      return releaseTime;
+    }
+
+    public String getTime() {
+      return time;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public Object getAssetIndex() {
+      return assetIndex;
+    }
+
+    public String getAssets() {
+      return assets;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public Object getArguments() {
+      return arguments;
     }
 
     public Library[] getLibraries() {
       return this.libraries;
     }
 
+    public Version setArguments(Object arguments) {
+      this.arguments = arguments;
+      return this;
+    }
+
+    public Version setAssetIndex(Object assetIndex) {
+      this.assetIndex = assetIndex;
+      return this;
+    }
+
+    public Version setAssets(String assets) {
+      this.assets = assets;
+      return this;
+    }
+
+    public Version setDownloads(Downloads downloads) {
+      this.downloads = downloads;
+      return this;
+    }
+
+    public Version setId(String id) {
+      this.id = id;
+      return this;
+    }
+
+    public Version setLibraries(Library[] libraries) {
+      this.libraries = libraries;
+      return this;
+    }
+
+    public Version setLogging(Object logging) {
+      this.logging = logging;
+      return this;
+    }
+
+    public Version setMainClass(String mainClass) {
+      this.mainClass = mainClass;
+      return this;
+    }
+
+    public Version setMinimumLauncherVersion(int minimumLauncherVersion) {
+      this.minimumLauncherVersion = minimumLauncherVersion;
+      return this;
+    }
+
+    public Version setReleaseTime(String releaseTime) {
+      this.releaseTime = releaseTime;
+      return this;
+    }
+
+    public Version setTime(String time) {
+      this.time = time;
+      return this;
+    }
+
+    public Version setType(String type) {
+      this.type = type;
+      return this;
+    }
+
     public String toString() {
-      return "Version{" +
-              "downloads=" + downloads +
-              ", libraries=" + Arrays.toString(libraries) +
-              '}';
+      return "Version{"
+          + "arguments="
+          + arguments
+          + ", assetIndex="
+          + assetIndex
+          + ", assets='"
+          + assets
+          + '\''
+          + ", downloads="
+          + downloads
+          + ", id='"
+          + id
+          + '\''
+          + ", libraries="
+          + Arrays.toString(libraries)
+          + ", logging="
+          + logging
+          + ", mainClass='"
+          + mainClass
+          + '\''
+          + ", minimumLauncherVersion="
+          + minimumLauncherVersion
+          + ", releaseTime='"
+          + releaseTime
+          + '\''
+          + ", time='"
+          + time
+          + '\''
+          + ", type='"
+          + type
+          + '\''
+          + '}';
     }
 
     public static class Downloads {
 
-      private Client client;
+      private Download client;
 
-      public Client getClient() {
+      @SerializedName("client_mappings")
+      private Download clientMappings;
+
+      private Download server;
+
+      @SerializedName("server_mappings")
+      private Download serverMappings;
+
+      public Download getClient() {
         return this.client;
       }
 
-      public String toString() {
-        return "Downloads{" + "client=" + client + '}';
+      public Download getClientMappings() {
+        return clientMappings;
       }
 
-      public static class Client {
+      public Download getServer() {
+        return server;
+      }
+
+      public Download getServerMappings() {
+        return serverMappings;
+      }
+
+      public String toString() {
+        return "Downloads{"
+            + "client="
+            + client
+            + ", clientMappings="
+            + clientMappings
+            + ", server="
+            + server
+            + ", serverMappings="
+            + serverMappings
+            + '}';
+      }
+
+      public static class Download {
         private String sha1;
         private int size;
         private String url;
@@ -109,7 +277,7 @@ public class VersionFetcher {
 
         public String toString() {
           return "Client{" + "sha1='" + sha1 + '\'' + ", size=" + size + ", url='" + url + '\''
-                  + '}';
+              + '}';
         }
       }
     }
@@ -117,9 +285,48 @@ public class VersionFetcher {
     public static class Library {
 
       private Library.Downloads downloads;
+      private Object extract;
+      private String name;
+      private Map<String, String> natives;
+      private Object rules;
+
+      public Library(
+          Downloads downloads, Object extract, Object rules, String name, Map<String, String> natives) {
+        this.downloads = downloads;
+        this.extract = extract;
+        this.rules = rules;
+        this.name = name;
+        this.natives = natives;
+      }
+
+      public Library() {
+      }
+
+
+      public Map<String, String> getNatives() {
+        return natives;
+      }
+
+      public Object getRules() {
+        return rules;
+      }
+
+      public Object getExtract() {
+        return extract;
+      }
+
+      public String getName() {
+        return name;
+      }
 
       public String toString() {
-        return "Library{" + "downloads=" + downloads + '}';
+        return "Library{" +
+            "downloads=" + downloads +
+            ", extract=" + extract +
+            ", rules=" + rules +
+            ", name='" + name + '\'' +
+            ", natives=" + natives +
+            '}';
       }
 
       public Library.Downloads getDownloads() {
@@ -129,67 +336,30 @@ public class VersionFetcher {
       public static class Downloads {
 
         private Artifact artifact;
-        private Classifiers classifiers;
+        private Map<String, Artifact> classifiers;
 
+        public Downloads() {
+        }
+
+        public Downloads(Artifact artifact) {
+          this.artifact = artifact;
+        }
+
+        public Downloads(Artifact artifact, Map<String, Artifact> classifiers) {
+          this.artifact = artifact;
+          this.classifiers = classifiers;
+        }
 
         public Artifact getArtifact() {
           return this.artifact;
         }
 
-        public Classifiers getClassifiers() {
+        public Map<String, Artifact> getClassifiers() {
           return classifiers;
         }
 
         public String toString() {
-          return "Downloads{" +
-                  "artifact=" + artifact +
-                  ", classifiers=" + classifiers +
-                  '}';
-        }
-
-        public static class Classifiers {
-          private Artifact javadoc;
-
-          @SerializedName("natives-linux")
-          private Artifact nativesLinux;
-
-          @SerializedName("natives-windows")
-          private Artifact nativesWindows;
-
-          @SerializedName("natives-macos")
-          private Artifact nativesMacOS;
-
-          private Artifact sources;
-
-          public Artifact getJavadoc() {
-            return javadoc;
-          }
-
-          public Artifact getNativesLinux() {
-            return nativesLinux;
-          }
-
-          public Artifact getNativesWindows() {
-            return nativesWindows;
-          }
-
-          public Artifact getNativesMacOS() {
-            return nativesMacOS;
-          }
-
-          public Artifact getSources() {
-            return sources;
-          }
-
-          public String toString() {
-            return "Classifiers{" +
-                    "javadoc=" + javadoc +
-                    ", nativesLinux=" + nativesLinux +
-                    ", nativesWindows=" + nativesWindows +
-                    ", nativesMaxOS=" + nativesMacOS +
-                    ", sources=" + sources +
-                    '}';
-          }
+          return "Downloads{" + "artifact=" + artifact + ", classifiers=" + classifiers + '}';
         }
 
         public static class Artifact {
@@ -197,6 +367,16 @@ public class VersionFetcher {
           private String sha1;
           private int size;
           private String url;
+
+          public Artifact() {
+          }
+
+          public Artifact(String path, String sha1, int size, String url) {
+            this.path = path;
+            this.sha1 = sha1;
+            this.size = size;
+            this.url = url;
+          }
 
           public String getPath() {
             return this.path;
@@ -216,18 +396,18 @@ public class VersionFetcher {
 
           public String toString() {
             return "Artifact{"
-                    + "path='"
-                    + path
-                    + '\''
-                    + ", sha1='"
-                    + sha1
-                    + '\''
-                    + ", size="
-                    + size
-                    + ", url='"
-                    + url
-                    + '\''
-                    + '}';
+                + "path='"
+                + path
+                + '\''
+                + ", sha1='"
+                + sha1
+                + '\''
+                + ", size="
+                + size
+                + ", url='"
+                + url
+                + '\''
+                + '}';
           }
 
           public boolean equals(Object o) {
@@ -235,9 +415,9 @@ public class VersionFetcher {
             if (o == null || getClass() != o.getClass()) return false;
             Artifact artifact = (Artifact) o;
             return size == artifact.size
-                    && Objects.equals(path, artifact.path)
-                    && Objects.equals(sha1, artifact.sha1)
-                    && Objects.equals(url, artifact.url);
+                && Objects.equals(path, artifact.path)
+                && Objects.equals(sha1, artifact.sha1)
+                && Objects.equals(url, artifact.url);
           }
 
           public int hashCode() {
@@ -285,22 +465,22 @@ public class VersionFetcher {
 
       public String toString() {
         return "Version{"
-                + "id='"
-                + id
-                + '\''
-                + ", type='"
-                + type
-                + '\''
-                + ", url='"
-                + url
-                + '\''
-                + ", time='"
-                + time
-                + '\''
-                + ", releaseTime='"
-                + releaseTime
-                + '\''
-                + '}';
+            + "id='"
+            + id
+            + '\''
+            + ", type='"
+            + type
+            + '\''
+            + ", url='"
+            + url
+            + '\''
+            + ", time='"
+            + time
+            + '\''
+            + ", releaseTime='"
+            + releaseTime
+            + '\''
+            + '}';
       }
 
       public Version getDetails() {
