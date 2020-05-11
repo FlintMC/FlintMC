@@ -39,8 +39,6 @@ findProject(':component:gui')?.name = 'gui'
 include 'component:gui:gui-1.15.1'
 findProject(':component:gui:gui-1.15.1')?.name = 'gui-1.15.1'
 
-include 'library-downloader'
-
 include 'component:gui:mcjfxgl'
 findProject(':component:gui:mcjfxgl')?.name = 'mcjfxgl'
 
@@ -75,6 +73,8 @@ include 'component:transform:launcher-plugin'
 findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
 
 ext.isPush = true
+
+includeBuild 'library-downloader'
 
 buildCache {
     local {

@@ -37,6 +37,11 @@ allprojects {
         mavenLocal()
     }
 
+    configurations{
+        minecraft
+        minecraft.transitive(true)
+    }
+
     artifactory {
         contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")   //The base Artifactory URL if not overridden by the publisher/resolver
         publish {
