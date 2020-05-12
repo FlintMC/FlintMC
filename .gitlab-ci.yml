@@ -24,7 +24,7 @@ before_script:
 version:
   stage: version
   script:
-    - bash $SCRIPTS_DIR/genSemVer patch > version
+    - bash $SCRIPTS_DIR/genSemVer.sh patch > version
     - export TAG=$(cat version)
     - git config --global user.email "gitlab-ci@gitlab.labymod.net"
     - git config --global user.name "gitlab-ci"
