@@ -59,6 +59,7 @@ public class ThemePermissionChecker implements PermissionChecker {
           } else if (!(permission instanceof LoggingPermission)) {
             fail(permission);
           }
+          return;
         }
       }
     } catch (SecurityException e) {
