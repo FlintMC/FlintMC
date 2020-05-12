@@ -72,6 +72,9 @@ findProject(':component:launcher')?.name = 'launcher'
 include 'component:transform:launcher-plugin'
 findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
 
+include 'component:annotation-processing'
+findProject(':component:annotation-processing')?.name = 'annotation-processing'
+
 ext.isPush = true
 
 includeBuild 'library-downloader'
