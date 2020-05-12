@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Initializer {
@@ -17,11 +14,15 @@ public class Initializer {
   public static void boot() throws IOException {
     Collection<Method> initializationMethods = new HashSet<>();
 
-    Set<? extends Class<?>> collect =
+    ServiceLoader<AutoLoadProvider> autoLoadProviders = ServiceLoader.load(AutoLoadProvider.class);
+
+    Set<Class<?>> collect =
         ClassPath.from(Initializer.class.getClassLoader()).getAllClasses().stream()
             .filter(classInfo -> classInfo.getName().startsWith("net.labyfy"))
             .map(ClassPath.ClassInfo::load)
             .collect(Collectors.toSet());
+
+    autoLoadProviders.iterator().forEachRemaining((provider) -> provider.registerAutoLoad(collect));
 
     for (Class<?> aClass : collect) {
       for (Method declaredMethod : aClass.getDeclaredMethods()) {

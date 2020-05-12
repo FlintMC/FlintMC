@@ -54,25 +54,38 @@ public class ProcessorState {
   public void finish() {
     Filer filer = processingEnvironment.getFiler();
 
-    ClassName listClass = ClassName.get("java.util", "List");
+    ClassName setClass = ClassName.get("java.util", "Set");
     ClassName classClass = ClassName.get("java.lang", "Class");
-    TypeName listOfClasses = ParameterizedTypeName.get(listClass, classClass);
+    TypeName wildCardClassClass = ParameterizedTypeName.get(classClass, WildcardTypeName.subtypeOf(Object.class));
+    TypeName setOfClasses = ParameterizedTypeName.get(setClass, wildCardClassClass);
 
     ClassName autoLoadProviderClass =
-        ClassName.get("net.labyfy.component.initializer", "AutoLoadProvider");
+        ClassName.get("net.labyfy.base.structure", "AutoLoadProvider");
+
+    MethodSpec constructor = MethodSpec.methodBuilder("<init>")
+        .addModifiers(Modifier.PUBLIC)
+        .build();
 
     MethodSpec.Builder registerAutoLoadMethodBuilder = MethodSpec.methodBuilder("registerAutoLoad")
         .addAnnotation(Override.class)
-        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-        .addParameter(listOfClasses, "autoLoadClasses")
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(setOfClasses, "autoLoadClasses")
         .returns(void.class);
+
+    autoLoadProcessor.finish(registerAutoLoadMethodBuilder);
 
     MethodSpec registerAutoLoadMethod = registerAutoLoadMethodBuilder.build();
 
+    AnnotationSpec generatedAnnotation = AnnotationSpec.builder(Generated.class)
+        .addMember("value", "$S", LabyfyAnnotationProcessor.class.getName())
+        .build();
+
     String generatedClassName = "AutoLoadProvider" + System.currentTimeMillis();
     TypeSpec generatedType = TypeSpec.classBuilder(generatedClassName)
-        .addAnnotation(Generated.class)
+        .addAnnotation(generatedAnnotation)
+        .addModifiers(Modifier.PUBLIC)
         .addSuperinterface(autoLoadProviderClass)
+        .addMethod(constructor)
         .addMethod(registerAutoLoadMethod)
         .build();
 
@@ -94,7 +107,7 @@ public class ProcessorState {
     services.add("net.labyfy.autogen." + generatedClassName);
 
     try(OutputStream stream =
-            filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openOutputStream()) {
+            filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openOutputStream()) {
       ServiceFile.write(services, stream);
     } catch (IOException e) {
       throw new ProcessingException("Failed to update " + resourceFile, e);
