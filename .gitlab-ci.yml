@@ -61,7 +61,7 @@ deploy:
   environment:
     name: development
   only:
-    - master
+    - develop
   when: on_success
 
 publish:
