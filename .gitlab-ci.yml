@@ -3,6 +3,7 @@ stages:
   - build
   - test
   - deploy
+  - publish
 
 variables:
   SCRIPTS_REPO: "git@git.labymod.net:client/labymod4/common-scripts.git"
@@ -24,7 +25,9 @@ before_script:
 version:
   stage: version
   script:
-    - bash $SCRIPTS_DIR/genSemVer.sh patch > version
+    - bash $SCRIPTS_DIR/versionPreCheck.sh "${COMMIT_MESSAGE}"
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > version
     - export TAG=$(cat version)
     - git config --global user.email "gitlab-ci@gitlab.labymod.net"
     - git config --global user.name "gitlab-ci"
@@ -57,6 +60,7 @@ test:
 deploy:
   stage: deploy
   script:
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - sh gradlew artifactoryDeploy
   environment:
     name: development
@@ -65,8 +69,9 @@ deploy:
   when: on_success
 
 publish:
-  stage: deploy
+  stage: publish
   script:
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - sh gradlew artifactoryPublish
   environment:
     name: production
