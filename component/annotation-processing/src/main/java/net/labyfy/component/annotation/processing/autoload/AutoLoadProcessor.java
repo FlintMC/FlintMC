@@ -8,6 +8,8 @@ import net.labyfy.component.annotation.processing.util.AnnotationMirrorUtil;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.*;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.util.*;
 

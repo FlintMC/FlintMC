@@ -2,7 +2,6 @@ package net.labyfy.component.annotation.processing;
 
 import com.squareup.javapoet.*;
 import net.labyfy.component.annotation.processing.autoload.AutoLoad2Processor;
-import net.labyfy.component.annotation.processing.autoload.AutoLoadProcessor;
 import net.labyfy.component.annotation.processing.util.ServiceFile;
 
 import javax.annotation.Generated;
@@ -20,12 +19,14 @@ import java.util.Set;
 
 public class ProcessorState {
   private final AutoLoad2Processor autoLoadProcessor2;
+  private static ProcessorState instance;
 
   private ProcessingEnvironment processingEnvironment;
   private RoundEnvironment currentRoundEnvironment;
 
   public ProcessorState() {
     this.autoLoadProcessor2 = new AutoLoad2Processor(this);
+    instance = this;
   }
 
   public void init(ProcessingEnvironment processingEnvironment) {
@@ -118,5 +119,9 @@ public class ProcessorState {
     } catch (IOException e) {
       throw new ProcessingException("Failed to update " + resourceFile, e);
     }
+  }
+
+  public static ProcessorState getInstance() {
+    return instance;
   }
 }
