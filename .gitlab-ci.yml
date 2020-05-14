@@ -50,12 +50,13 @@ build:
       - build/libs
   only:
     - branches
+  retry: 2
 
 deploy_to_artifactory:
   stage: deploy
   script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh prerel > version || exit 1
+    - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > version || exit 1
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew artifactoryPublish
@@ -64,12 +65,16 @@ deploy_to_artifactory:
   only:
     - develop
   when: on_success
+  retry: 2
 
-publish_to_lm-distributor:
+publish_version:
   stage: publish
   script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - sh gradlew build
+    - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > version || exit 1
+    - cat version
+    - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
+    - sh gradlew artifactoryPublish
     - echo "CURL TO LM_DISTRIBUTOR \n for $(cat version) with changelog $(cat CHANGELOG)"
   environment:
     name: production
