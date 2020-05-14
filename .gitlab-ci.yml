@@ -61,7 +61,8 @@ deploy_to_artifactory:
   stage: deploy
   script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh snapshot > version
+    - bash $SCRIPTS_DIR/genSemVer.sh prerel > version || exit 1
+    - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew artifactoryPublish
   environment:
