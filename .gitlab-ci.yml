@@ -65,7 +65,7 @@ deploy_to_artifactory:
   environment:
     name: development
   only:
-    - tags
+    - develop
   when: on_success
 
 publish_to_lm-distributor:
