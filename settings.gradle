@@ -93,3 +93,5 @@ buildCache {
         push = isPush
     }
 }
+include 'test-module'
+

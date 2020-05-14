@@ -47,6 +47,8 @@ dependencies {
     runtimeOnly project(':versioned:labyfy-1.15.1')
     runtimeOnly project(':component:packages')
     runtimeOnly project(':component:packages:packages-impl')
+    runtimeOnly project(':test-module')
+
 }
 
 application {

@@ -6,7 +6,6 @@ import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.inject.InjectionServiceShare;
 
 import javax.inject.Singleton;
-import java.lang.annotation.Annotation;
 
 @Singleton
 @Service(AssistedFactory.class)

@@ -3,7 +3,7 @@ package net.labyfy.component.packages.impl;
 import com.google.common.base.Preconditions;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.base.structure.service.ServiceRepository;
+import net.labyfy.component.inject.ServiceRepository;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.packages.Package;

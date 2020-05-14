@@ -2,18 +2,14 @@ package net.labyfy.component.initializer;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.TreeMultimap;
-import com.google.common.reflect.ClassPath;
-import javafx.collections.transformation.SortedList;
 import net.labyfy.base.structure.AutoLoadProvider;
+import net.labyfy.component.inject.ServiceRepository;
+import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.InjectionServiceShare;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Initializer {
 
@@ -44,8 +40,10 @@ public class Initializer {
               }
             });
 
+    InjectionServiceShare.flush();
+    InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
 
-    //    for (Class<?> aClass : collect) {
+    //    for (Class<?> aClass : collect) {Gu
     //      for (Method declaredMethod : aClass.getDeclaredMethods()) {
     //        for (Annotation declaredAnnotation : declaredMethod.getDeclaredAnnotations()) {
     //          if (Initialize.class.isAssignableFrom(declaredAnnotation.getClass())) {

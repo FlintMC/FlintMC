@@ -1,7 +1,7 @@
 package net.labyfy.component.annotation.processing;
 
 import com.squareup.javapoet.*;
-import net.labyfy.component.annotation.processing.autoload.AutoLoad2Processor;
+import net.labyfy.component.annotation.processing.autoload.AutoLoadProcessor;
 import net.labyfy.component.annotation.processing.util.ServiceFile;
 
 import javax.annotation.Generated;
@@ -18,14 +18,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProcessorState {
-  private final AutoLoad2Processor autoLoadProcessor2;
+  private final AutoLoadProcessor autoLoadProcessor;
   private static ProcessorState instance;
 
   private ProcessingEnvironment processingEnvironment;
   private RoundEnvironment currentRoundEnvironment;
 
   public ProcessorState() {
-    this.autoLoadProcessor2 = new AutoLoad2Processor(this);
+    this.autoLoadProcessor = new AutoLoadProcessor(this);
     instance = this;
   }
 
@@ -42,7 +42,7 @@ public class ProcessorState {
   }
 
   public void processAutoLoad(TypeElement autoLoadAnnotation) {
-    autoLoadProcessor2.accept(autoLoadAnnotation);
+    autoLoadProcessor.accept(autoLoadAnnotation);
   }
 
   public ProcessingEnvironment getProcessingEnvironment() {
@@ -76,7 +76,7 @@ public class ProcessorState {
             .addParameter(setOfClasses, "autoLoadClasses")
             .returns(void.class);
 
-    autoLoadProcessor2.finish(registerAutoLoadMethodBuilder);
+    autoLoadProcessor.finish(registerAutoLoadMethodBuilder);
 
     MethodSpec registerAutoLoadMethod = registerAutoLoadMethodBuilder.build();
 
