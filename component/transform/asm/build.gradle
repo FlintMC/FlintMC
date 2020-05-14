@@ -20,4 +20,6 @@ dependencies {
     compile 'org.ow2.asm:asm-commons:7.2-beta'
     compile 'com.google.guava:guava:27.1-jre'
     compile 'com.google.inject:guice:4.0'
+
+    annotationProcessor project(':component:annotation-processing')
 }

@@ -23,4 +23,5 @@ dependencies {
     compile 'cuchaz:jfxgl-jfxrt:0.4'
     compile 'commons-io:commons-io:2.6'
     compile 'org.jooq:joor-java-8:0.9.12'
+    annotationProcessor project(':component:annotation-processing')
 }

@@ -1,61 +1,53 @@
 package net.labyfy.component.annotation.processing.autoload;
 
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 import net.labyfy.component.annotation.processing.ProcessingConstants;
 import net.labyfy.component.annotation.processing.ProcessingException;
 import net.labyfy.component.annotation.processing.ProcessorState;
 import net.labyfy.component.annotation.processing.util.AnnotationMirrorUtil;
 
-import javax.annotation.processing.Messager;
 import javax.lang.model.element.*;
-import javax.tools.Diagnostic;
 import java.util.*;
 
-public class AutoLoadProcessor {
+public class AutoLoad2Processor {
+
   private final ProcessorState state;
   private final Map<String, Integer> autoLoadClasses;
 
-  public AutoLoadProcessor(ProcessorState state) {
+  public AutoLoad2Processor(ProcessorState state) {
     this.state = state;
     this.autoLoadClasses = new HashMap<>();
   }
 
-  public void accept(TypeElement autoLoadAnnotation) {
-    Messager messager = state.getProcessingEnvironment().getMessager();
+  public void accept(TypeElement typeElement) {
 
-    state.getCurrentRoundEnvironment().getElementsAnnotatedWith(autoLoadAnnotation).stream()
+    if (AnnotationMirrorUtil.collectTransitiveAnnotations(typeElement).stream()
+            .noneMatch(
+                annotationMirror ->
+                    ((TypeElement) annotationMirror.getAnnotationType().asElement())
+                        .getQualifiedName()
+                        .toString()
+                        .equals("net.labyfy.base.structure.annotation.AutoLoad"))
+        && !typeElement
+            .getQualifiedName()
+            .toString()
+            .equals("net.labyfy.base.structure.annotation.AutoLoad")) return;
+
+    state.getCurrentRoundEnvironment().getElementsAnnotatedWith(typeElement).stream()
         .map(
             (element) -> {
-              if (!(element instanceof TypeElement)) {
-                throw new ProcessingException(
-                    "Constraint violated: Found @AutoLoad annotation on something else than a type",
-                    element);
-              }
-
+              if (!(element instanceof TypeElement)) return null;
               return (TypeElement) element;
             })
-        .filter(
-            (element) -> {
-              if (element.getKind() != ElementKind.CLASS) {
-                messager.printMessage(
-                    Diagnostic.Kind.ERROR, "Only classes can be annotated with @AutoLoad", element);
-                return false;
-              } else {
-                return true;
-              }
-            })
+        .filter(Objects::nonNull)
+        .filter((element) -> element.getKind() == ElementKind.CLASS)
         .filter(
             (element) -> {
               String name = element.getQualifiedName().toString();
-              if (name == null || name.isEmpty()) {
-                messager.printMessage(
-                    Diagnostic.Kind.ERROR,
-                    "Anonymous classes can not be annotated with @AutoLoad",
-                    element);
-                return false;
-              } else {
-                return true;
-              }
+              return name != null && !name.isEmpty();
             })
         .forEach(
             element ->

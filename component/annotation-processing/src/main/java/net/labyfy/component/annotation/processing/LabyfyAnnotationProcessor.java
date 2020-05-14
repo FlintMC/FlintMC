@@ -7,6 +7,7 @@ import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,19 +32,23 @@ public class LabyfyAnnotationProcessor extends AbstractProcessor {
 
     try {
       for (TypeElement element : annotations) {
-        if (element.getQualifiedName().contentEquals(ProcessingConstants.AUTO_LOAD_ANNOTATION_NAME)) {
-          state.processAutoLoad(element);
-        }
+        //        if
+        // (element.getQualifiedName().contentEquals(ProcessingConstants.AUTO_LOAD_ANNOTATION_NAME))
+        // {
+        state.processAutoLoad(element);
+        //        }
       }
     } catch (ProcessingException e) {
-      processingEnv.getMessager().printMessage(
-          Diagnostic.Kind.ERROR,
-          "Exception thrown while processing annotations: " + e.getMessage(),
-          e.getSourceElement());
+      processingEnv
+          .getMessager()
+          .printMessage(
+              Diagnostic.Kind.ERROR,
+              "Exception thrown while processing annotations: " + e.getMessage(),
+              e.getSourceElement());
       throw e;
     }
 
-    if(roundEnv.processingOver()) {
+    if (roundEnv.processingOver()) {
       state.finish();
     }
 
@@ -57,6 +62,6 @@ public class LabyfyAnnotationProcessor extends AbstractProcessor {
 
   @Override
   public Set<String> getSupportedAnnotationTypes() {
-    return new HashSet<>(Collections.singletonList(ProcessingConstants.AUTO_LOAD_ANNOTATION_NAME));
+    return new HashSet<>(Arrays.asList("*"));
   }
 }

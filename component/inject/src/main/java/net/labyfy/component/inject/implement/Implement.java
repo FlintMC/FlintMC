@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Identifier
 public @interface Implement {
   Class<?> value();
 

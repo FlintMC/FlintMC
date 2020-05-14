@@ -2,6 +2,7 @@ package net.labyfy.component.tasks.v1_15_1;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.tasks.TaskExecutor;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
+@AutoLoad
 public class DefaultTasks {
 
   private final ClassMappingProvider classMappingProvider;

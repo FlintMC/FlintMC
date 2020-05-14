@@ -1,6 +1,7 @@
 package net.labyfy.component.annotation.processing;
 
 import com.squareup.javapoet.*;
+import net.labyfy.component.annotation.processing.autoload.AutoLoad2Processor;
 import net.labyfy.component.annotation.processing.autoload.AutoLoadProcessor;
 import net.labyfy.component.annotation.processing.util.ServiceFile;
 
@@ -18,17 +19,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProcessorState {
-  private final AutoLoadProcessor autoLoadProcessor;
+  private final AutoLoad2Processor autoLoadProcessor2;
 
   private ProcessingEnvironment processingEnvironment;
   private RoundEnvironment currentRoundEnvironment;
 
   public ProcessorState() {
-    this.autoLoadProcessor = new AutoLoadProcessor(this);
+    this.autoLoadProcessor2 = new AutoLoad2Processor(this);
   }
 
   public void init(ProcessingEnvironment processingEnvironment) {
-    if(this.processingEnvironment != null) {
+    if (this.processingEnvironment != null) {
       throw new IllegalStateException("ProcessorState initialized already");
     }
 
@@ -40,7 +41,7 @@ public class ProcessorState {
   }
 
   public void processAutoLoad(TypeElement autoLoadAnnotation) {
-    autoLoadProcessor.accept(autoLoadAnnotation);
+    autoLoadProcessor2.accept(autoLoadAnnotation);
   }
 
   public ProcessingEnvironment getProcessingEnvironment() {
@@ -54,40 +55,44 @@ public class ProcessorState {
   public void finish() {
     Filer filer = processingEnvironment.getFiler();
 
-    ClassName setClass = ClassName.get("java.util", "Set");
+    ClassName setClass = ClassName.get("com.google.common.collect", "Multimap");
     ClassName classClass = ClassName.get("java.lang", "Class");
-    TypeName wildCardClassClass = ParameterizedTypeName.get(classClass, WildcardTypeName.subtypeOf(Object.class));
-    TypeName setOfClasses = ParameterizedTypeName.get(setClass, wildCardClassClass);
+    TypeName wildCardClassClass =
+        ParameterizedTypeName.get(classClass, WildcardTypeName.subtypeOf(Object.class));
+    TypeName setOfClasses =
+        ParameterizedTypeName.get(setClass, ClassName.get(Integer.class), wildCardClassClass);
 
     ClassName autoLoadProviderClass =
         ClassName.get("net.labyfy.base.structure", "AutoLoadProvider");
 
-    MethodSpec constructor = MethodSpec.methodBuilder("<init>")
-        .addModifiers(Modifier.PUBLIC)
-        .build();
+    MethodSpec constructor =
+        MethodSpec.methodBuilder("<init>").addModifiers(Modifier.PUBLIC).build();
 
-    MethodSpec.Builder registerAutoLoadMethodBuilder = MethodSpec.methodBuilder("registerAutoLoad")
-        .addAnnotation(Override.class)
-        .addModifiers(Modifier.PUBLIC)
-        .addParameter(setOfClasses, "autoLoadClasses")
-        .returns(void.class);
+    MethodSpec.Builder registerAutoLoadMethodBuilder =
+        MethodSpec.methodBuilder("registerAutoLoad")
+            .addAnnotation(Override.class)
+            .addModifiers(Modifier.PUBLIC)
+            .addParameter(setOfClasses, "autoLoadClasses")
+            .returns(void.class);
 
-    autoLoadProcessor.finish(registerAutoLoadMethodBuilder);
+    autoLoadProcessor2.finish(registerAutoLoadMethodBuilder);
 
     MethodSpec registerAutoLoadMethod = registerAutoLoadMethodBuilder.build();
 
-    AnnotationSpec generatedAnnotation = AnnotationSpec.builder(Generated.class)
-        .addMember("value", "$S", LabyfyAnnotationProcessor.class.getName())
-        .build();
+    AnnotationSpec generatedAnnotation =
+        AnnotationSpec.builder(Generated.class)
+            .addMember("value", "$S", LabyfyAnnotationProcessor.class.getName())
+            .build();
 
     String generatedClassName = "AutoLoadProvider" + System.currentTimeMillis();
-    TypeSpec generatedType = TypeSpec.classBuilder(generatedClassName)
-        .addAnnotation(generatedAnnotation)
-        .addModifiers(Modifier.PUBLIC)
-        .addSuperinterface(autoLoadProviderClass)
-        .addMethod(constructor)
-        .addMethod(registerAutoLoadMethod)
-        .build();
+    TypeSpec generatedType =
+        TypeSpec.classBuilder(generatedClassName)
+            .addAnnotation(generatedAnnotation)
+            .addModifiers(Modifier.PUBLIC)
+            .addSuperinterface(autoLoadProviderClass)
+            .addMethod(constructor)
+            .addMethod(registerAutoLoadMethod)
+            .build();
 
     JavaFile finishedFile = JavaFile.builder("net.labyfy.autogen", generatedType).build();
     try {
@@ -99,15 +104,16 @@ public class ProcessorState {
     String resourceFile = "META-INF/services/" + autoLoadProviderClass.reflectionName();
 
     Set<String> services = new HashSet<>();
-    try(InputStream stream =
-            filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openInputStream()) {
+    try (InputStream stream =
+        filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openInputStream()) {
       services.addAll(ServiceFile.read(stream));
-    } catch (IOException ignored) {}
+    } catch (IOException ignored) {
+    }
 
     services.add("net.labyfy.autogen." + generatedClassName);
 
-    try(OutputStream stream =
-            filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openOutputStream()) {
+    try (OutputStream stream =
+        filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openOutputStream()) {
       ServiceFile.write(services, stream);
     } catch (IOException e) {
       throw new ProcessingException("Failed to update " + resourceFile, e);

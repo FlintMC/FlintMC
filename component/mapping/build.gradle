@@ -17,4 +17,6 @@ dependencies {
     compile 'com.google.inject:guice:4.0'
     compile project(':component:inject')
     compile fileTree('libraries')
+
+    annotationProcessor project(':component:annotation-processing')
 }

@@ -1,0 +1,70 @@
+package net.labyfy.component.initializer;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.TreeMultimap;
+import com.google.common.reflect.ClassPath;
+import javafx.collections.transformation.SortedList;
+import net.labyfy.base.structure.AutoLoadProvider;
+import net.labyfy.component.inject.InjectionServiceShare;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Initializer {
+
+  public static void boot() throws IOException {
+    Collection<Method> initializationMethods = new HashSet<>();
+
+    ServiceLoader<AutoLoadProvider> autoLoadProviders = ServiceLoader.load(AutoLoadProvider.class);
+
+    //    Set<Class<?>> collect =
+    //        ClassPath.from(Initializer.class.getClassLoader()).getAllClasses().stream()
+    //            .filter(classInfo -> classInfo.getName().startsWith("net.labyfy"))
+    //            .map(ClassPath.ClassInfo::load)
+    //            .collect(Collectors.toSet());
+
+    Multimap<Integer, Class<?>> classes =
+        MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build();
+
+    autoLoadProviders.iterator().forEachRemaining((provider) -> provider.registerAutoLoad(classes));
+
+    classes
+        .values()
+        .forEach(
+            clazz -> {
+              try {
+                Class.forName(clazz.getName(), true, clazz.getClassLoader());
+              } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+              }
+            });
+
+
+    //    for (Class<?> aClass : collect) {
+    //      for (Method declaredMethod : aClass.getDeclaredMethods()) {
+    //        for (Annotation declaredAnnotation : declaredMethod.getDeclaredAnnotations()) {
+    //          if (Initialize.class.isAssignableFrom(declaredAnnotation.getClass())) {
+    //            initializationMethods.add(declaredMethod);
+    //          }
+    //        }
+    //      }
+    //    }
+    //
+    //    initializationMethods.stream()
+    //        .sorted(Comparator.comparingInt(o ->
+    // o.getDeclaredAnnotation(Initialize.class).priority()))
+    //        .forEach(
+    //            method -> {
+    //              try {
+    //                method.invoke(null);
+    //              } catch (IllegalAccessException | InvocationTargetException e) {
+    //                e.printStackTrace();
+    //              }
+    //            });
+  }
+}

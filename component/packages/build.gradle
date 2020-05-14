@@ -18,4 +18,6 @@ dependencies {
     compile project(':component:tasks')
     compile project(':component:mapping')
     compile project(':component:inject')
+
+    annotationProcessor project(':component:annotation-processing')
 }

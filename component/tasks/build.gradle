@@ -17,4 +17,6 @@ dependencies {
     compile project(':component:inject')
     compile 'org.eclipse.collections:eclipse-collections:8.2.1'
     compile 'org.happy.library:happy-library:1.3'
+
+    annotationProcessor project(':component:annotation-processing')
 }

@@ -1,6 +1,7 @@
 package net.labyfy.component.gui.v1_15_1;
 
 import com.google.common.collect.ImmutableMap;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.representation.Type;
 import net.labyfy.component.gui.GuiInterceptor;
 import net.labyfy.component.gui.GuiRenderState;
@@ -13,6 +14,7 @@ import javax.inject.Singleton;
 import java.util.Collections;
 
 @Singleton
+@AutoLoad
 public class LabyGuiInterceptor extends GuiInterceptor {
 
   @Hook(
