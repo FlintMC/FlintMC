@@ -13,6 +13,7 @@ plugins {
 sourceCompatibility = 1.8
 
 allprojects {
+    version '0.0.5'
 
     buildscript {
         repositories {
