@@ -51,12 +51,6 @@ build:
   only:
     - branches
 
-test:
-  stage: test
-  script:
-    - sh gradlew test
-  when: on_success
-
 deploy_to_artifactory:
   stage: deploy
   script:
