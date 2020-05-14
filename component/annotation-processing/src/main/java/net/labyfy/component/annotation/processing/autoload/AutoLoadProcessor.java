@@ -5,7 +5,6 @@ import net.labyfy.component.annotation.processing.ProcessingException;
 import net.labyfy.component.annotation.processing.ProcessorState;
 
 import javax.annotation.processing.Messager;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;

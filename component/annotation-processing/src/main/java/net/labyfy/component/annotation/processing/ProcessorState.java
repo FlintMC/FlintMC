@@ -18,12 +18,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProcessorState {
+  private static ProcessorState instance;
+
   private final AutoLoadProcessor autoLoadProcessor;
 
   private ProcessingEnvironment processingEnvironment;
   private RoundEnvironment currentRoundEnvironment;
 
   public ProcessorState() {
+    instance = this;
     this.autoLoadProcessor = new AutoLoadProcessor(this);
   }
 
@@ -112,5 +115,9 @@ public class ProcessorState {
     } catch (IOException e) {
       throw new ProcessingException("Failed to update " + resourceFile, e);
     }
+  }
+
+  public static ProcessorState getInstance() {
+    return instance;
   }
 }
