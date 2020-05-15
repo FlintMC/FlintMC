@@ -74,6 +74,6 @@ public class AutoLoadProcessor {
   public void finish(MethodSpec.Builder targetMethod) {
     autoLoadClasses.forEach(
         (className, priority) ->
-            targetMethod.addStatement("autoLoadClasses.put($L, $L.class);", priority, className));
+            targetMethod.addStatement("autoLoadClasses.put($L, $L.class)", priority, className));
   }
 }

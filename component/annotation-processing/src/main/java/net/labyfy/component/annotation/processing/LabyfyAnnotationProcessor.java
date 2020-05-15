@@ -62,6 +62,6 @@ public class LabyfyAnnotationProcessor extends AbstractProcessor {
 
   @Override
   public Set<String> getSupportedAnnotationTypes() {
-    return new HashSet<>(Arrays.asList("*"));
+    return new HashSet<>(Collections.singletonList("*"));
   }
 }
