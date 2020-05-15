@@ -103,6 +103,7 @@ java {
 
 
 allprojects {
+    version '0.0.5'
     plugins.withType(JavaPlugin) {
         publishing {
             publications {
