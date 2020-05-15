@@ -6,6 +6,8 @@ import net.labyfy.base.structure.AutoLoadProvider;
 import net.labyfy.component.inject.ServiceRepository;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.InjectionServiceShare;
+import net.labyfy.component.launcher.LaunchController;
+import net.labyfy.component.service.LabyfyServiceLoader;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -16,7 +18,8 @@ public class Initializer {
   public static void boot() throws IOException {
     Collection<Method> initializationMethods = new HashSet<>();
 
-    ServiceLoader<AutoLoadProvider> autoLoadProviders = ServiceLoader.load(AutoLoadProvider.class);
+    Set<AutoLoadProvider> autoLoadProviders =
+        LabyfyServiceLoader.get(AutoLoadProvider.class).discover(LaunchController.getInstance().getRootLoader());
 
     //    Set<Class<?>> collect =
     //        ClassPath.from(Initializer.class.getClassLoader()).getAllClasses().stream()
