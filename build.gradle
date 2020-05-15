@@ -102,7 +102,7 @@ java {
 
 
 allprojects {
-    version '0.0.1-SNAPSHOT-x'
+    version '0.0.6-DELME'
     plugins.withType(JavaPlugin) {
         publishing{
             publications {
