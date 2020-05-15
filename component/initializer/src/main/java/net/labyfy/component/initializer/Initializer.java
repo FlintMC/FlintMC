@@ -39,7 +39,7 @@ public class Initializer {
               try {
                 Class.forName(clazz.getName(), true, clazz.getClassLoader());
               } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                throw new RuntimeException("Unreachable condition hit: Already loaded class not found");
               }
             });
 
