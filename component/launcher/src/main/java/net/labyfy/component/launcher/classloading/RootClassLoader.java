@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     this.plugins = new HashSet<>();
     this.children = new ArrayList<>();
     this.modificationExclusions = new ArrayList<>();
-    this.classCache = new WeakHashMap<>();
-    this.resourceDataCache = new HashMap<>();
+    this.classCache = new ConcurrentHashMap<>();
+    this.resourceDataCache = new ConcurrentHashMap<>();
     this.logger = LogManager.getLogger(RootClassLoader.class);
 
     this.transformEnabled = false;
