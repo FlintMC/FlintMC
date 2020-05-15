@@ -22,9 +22,9 @@ public class LabyPackageClassLoader extends ClassLoader implements PackageClassL
   @AssistedInject
   public LabyPackageClassLoader(@Assisted Package owner) {
     super(LaunchController.getInstance().getRootLoader());
-    LaunchController.getInstance().getRootLoader().registerChild(this);
     this.owner = owner;
     this.source = PackageSource.of(owner);
+    LaunchController.getInstance().getRootLoader().registerChild(this);
   }
 
   @Override
