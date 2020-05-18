@@ -16,6 +16,7 @@ import org.gradle.api.artifacts.repositories.ArtifactRepository
 import org.happy.collections.lists.decorators.SortedList_1x0
 
 import java.security.MessageDigest
+import java.util.function.BiConsumer
 
 class LibraryDownloadExtension {
     String version;
@@ -76,21 +77,13 @@ class LibraryDownloader implements Plugin<Project> {
                         if (targetVersion == version) {
                             downloadArtifact(artifact, version, libraries, downloads.artifact.url)
                             if (downloads.classifiers != null) {
-                                if (downloads.classifiers.nativesLinux != null) {
-                                    path = downloads.classifiers.nativesLinux.path.split('/')
-                                    version = path[path.length - 2]
-                                    this.downloadArtifact(artifact + "-natives-linux", version, libraries, downloads.classifiers.nativesLinux.url)
-                                }
-                                if (downloads.classifiers.nativesOSX != null) {
-                                    path = downloads.classifiers.nativesOSX.path.split('/')
-                                    version = path[path.length - 2]
-                                    this.downloadArtifact(artifact + "-natives-macos", version, libraries, downloads.classifiers.nativesOSX.url)
-                                }
-                                if (downloads.classifiers.nativesWindows != null) {
-                                    path = downloads.classifiers.nativesWindows.path.split('/')
-                                    version = path[path.length - 2]
-                                    this.downloadArtifact(artifact + "-natives-windows", version, libraries, downloads.classifiers.nativesWindows.url)
-                                }
+                                downloads.classifiers.forEach(new BiConsumer<String, VersionFetcher.Version.Library.Downloads.Artifact>() {
+                                    void accept(String name, VersionFetcher.Version.Library.Downloads.Artifact classifier) {
+                                        path = classifier.path.split('/')
+                                        version = path[path.length - 2]
+                                        downloadArtifact(artifact + "-" + name, version, libraries, classifier.url)
+                                    }
+                                })
                             }
                         }
                     }
