@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'net.labyfy.component'
-version '1.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -16,6 +15,8 @@ dependencies {
     compile 'com.google.inject.extensions:guice-assistedinject:4.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
     compile project(':component:base')
+
+    annotationProcessor project(':component:annotation-processing')
 
     minecraft 'com.google.inject.extensions:guice-assistedinject:4.0'
 

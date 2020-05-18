@@ -6,6 +6,7 @@ import com.google.common.collect.Streams;
 import com.google.common.reflect.ClassPath;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
 import net.labyfy.component.gui.mcjfxgl.component.theme.style.ThemeComponentStyle;
 import net.labyfy.component.inject.event.Event;
@@ -31,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 @Singleton
+@AutoLoad
 public class ThemeRepository {
 
   private final ResourcePackProvider resourcePackProvider;

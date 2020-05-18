@@ -5,7 +5,7 @@ import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
-import net.labyfy.base.structure.Initializer;
+import net.labyfy.component.initializer.Initializer;
 import net.labyfy.component.initializer.EntryPoint;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.launcher.classloading.RootClassLoader;

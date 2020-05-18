@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'net.labyfy'
-version '1.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -17,4 +16,6 @@ dependencies {
     compile project(':component:tasks')
     compile project(':component:mapping')
     compile project(':component:inject')
+
+    annotationProcessor project(':component:annotation-processing')
 }

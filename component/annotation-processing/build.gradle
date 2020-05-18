@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'net.labyfy.component'
+version '1.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+    compileOnly group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+
+    implementation group: 'com.squareup', name: 'javapoet', version: '1.12.1'
+}

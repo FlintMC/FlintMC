@@ -3,6 +3,7 @@ stages:
   - build
   - test
   - deploy
+  - publish
 
 variables:
   SCRIPTS_REPO: "git@git.labymod.net:client/labymod4/common-scripts.git"
@@ -18,13 +19,15 @@ before_script:
   - sh $SCRIPTS_DIR/eval.sh "./library-downloader/"
   - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
   - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
-  - bash $SCRIPTS_DIR/genSemVer build ${CI_BUILD_NAME}.${CI_BUILD_REF_NAME} > version
+  - bash $SCRIPTS_DIR/genSemVer.sh build ${CI_JOB_ID} > version
   - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
 
 version:
   stage: version
   script:
-    - bash $SCRIPTS_DIR/genSemVer patch > version
+    - bash $SCRIPTS_DIR/versionPreCheck.sh "${COMMIT_MESSAGE}"
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > version
     - export TAG=$(cat version)
     - git config --global user.email "gitlab-ci@gitlab.labymod.net"
     - git config --global user.name "gitlab-ci"
@@ -47,27 +50,32 @@ build:
       - build/libs
   only:
     - branches
+  retry: 2
 
-test:
-  stage: test
-  script:
-    - sh gradlew test
-  when: on_success
-
-deploy:
+deploy_to_artifactory:
   stage: deploy
   script:
-    - sh gradlew artifactoryDeploy
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > version || exit 1
+    - cat version
+    - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
+    - sh gradlew artifactoryPublish
   environment:
     name: development
   only:
-    - master
+    - develop
   when: on_success
+  retry: 2
 
-publish:
-  stage: deploy
+publish_version:
+  stage: publish
   script:
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > version || exit 1
+    - cat version
+    - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew artifactoryPublish
+    - echo "CURL TO LM_DISTRIBUTOR \n for $(cat version) with changelog $(cat CHANGELOG)"
   environment:
     name: production
   only:

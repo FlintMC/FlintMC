@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'net.labyfy.component.gui.mcjfxgl'
-version '1.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -14,4 +13,5 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile project(':component:gui:mcjfxgl')
+    annotationProcessor project(':component:annotation-processing')
 }

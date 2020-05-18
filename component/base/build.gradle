@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'net.labyfy'
-version '1.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -22,4 +21,5 @@ dependencies {
     minecraft 'com.google.inject:guice:4.0'
     minecraft 'aopalliance:aopalliance:1.0'
     minecraft 'javax.inject:javax.inject:1'
+    annotationProcessor project(':component:annotation-processing')
 }

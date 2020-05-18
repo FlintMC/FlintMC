@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'net.labyfy'
-version '1.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -16,4 +15,5 @@ dependencies {
     compile project(':component:gui')
     compile project(':component:transform:asm')
     compile project(':versioned:labyfy-1.15.1')
+    annotationProcessor project(':component:annotation-processing')
 }

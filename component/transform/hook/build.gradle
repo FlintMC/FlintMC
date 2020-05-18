@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'net.labyfy.component.transform'
-version '1.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -15,4 +14,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile project(':component:base')
     compile project(':component:transform:javassist')
+
+    annotationProcessor project(':component:annotation-processing')
 }

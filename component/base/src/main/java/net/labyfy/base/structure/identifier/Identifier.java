@@ -1,5 +1,6 @@
 package net.labyfy.base.structure.identifier;
 
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.property.Property;
@@ -10,6 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 @Transitive
+@AutoLoad
 public @interface Identifier {
 
   boolean requireParent() default false;

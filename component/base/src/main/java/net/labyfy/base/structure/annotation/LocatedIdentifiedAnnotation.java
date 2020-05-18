@@ -59,17 +59,4 @@ public class LocatedIdentifiedAnnotation {
         + type
         + '}';
   }
-
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    LocatedIdentifiedAnnotation that = (LocatedIdentifiedAnnotation) o;
-    return Objects.equals(location, that.location)
-        && type == that.type
-        && originalType == that.originalType;
-  }
-
-  public int hashCode() {
-    return Objects.hash(location, type, originalType);
-  }
 }

@@ -1,5 +1,6 @@
 package net.labyfy.component.resources.v1_15_1.pack;
 
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.inject.event.EventService;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import net.labyfy.component.resources.pack.ResourcePackReloadEventBroadcaster;
@@ -20,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
 @Singleton
+@AutoLoad
 public class LabyResourcePackReloadEventBroadCaster implements ResourcePackReloadEventBroadcaster {
 
   private final ResourcePackReloadEvent.Factory resourcePackReloadEventFactory;

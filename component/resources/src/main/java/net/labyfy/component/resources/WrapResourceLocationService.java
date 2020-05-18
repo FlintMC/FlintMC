@@ -3,6 +3,7 @@ package net.labyfy.component.resources;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Key;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
