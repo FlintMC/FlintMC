@@ -51,6 +51,8 @@ build:
   only:
     - branches
   retry: 2
+  except:
+    - master
 
 deploy_to_artifactory:
   stage: deploy
@@ -79,7 +81,7 @@ publish_version:
     - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
     - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > version || exit 1
+    - bash $SCRIPTS_DIR/genSemVer.sh release > version || exit 1
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew artifactoryPublish
