@@ -4,6 +4,7 @@ stages:
   - test
   - deploy
   - publish
+  - replay
 
 variables:
   SCRIPTS_REPO: "git@git.labymod.net:client/labymod4/common-scripts.git"
@@ -15,10 +16,6 @@ before_script:
   - ssh-add <(echo "$SSH_PRIVATE_KEY")
   - export SCRIPTS_DIR=$(mktemp -d)
   - git clone -q --depth 1 "$SCRIPTS_REPO" "$SCRIPTS_DIR"
-  - sh $SCRIPTS_DIR/eval.sh
-  - sh $SCRIPTS_DIR/eval.sh "./library-downloader/"
-  - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-  - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
   - bash $SCRIPTS_DIR/genSemVer.sh build ${CI_JOB_ID} > version
   - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
 
@@ -43,6 +40,10 @@ version:
 build:
   stage: build
   script:
+    - sh $SCRIPTS_DIR/eval.sh
+    - sh $SCRIPTS_DIR/eval.sh "./library-downloader/"
+    - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
+    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
     - sh gradlew build --refresh-dependencies
   artifacts:
     name: $(cat version)
@@ -55,6 +56,10 @@ build:
 deploy_to_artifactory:
   stage: deploy
   script:
+    - sh $SCRIPTS_DIR/eval.sh
+    - sh $SCRIPTS_DIR/eval.sh "./library-downloader/"
+    - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
+    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > version || exit 1
     - cat version
@@ -70,6 +75,10 @@ deploy_to_artifactory:
 publish_version:
   stage: publish
   script:
+    - sh $SCRIPTS_DIR/eval.sh
+    - sh $SCRIPTS_DIR/eval.sh "./library-downloader/"
+    - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
+    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > version || exit 1
     - cat version
@@ -78,6 +87,23 @@ publish_version:
     - echo "CURL TO LM_DISTRIBUTOR \n for $(cat version) with changelog $(cat CHANGELOG)"
   environment:
     name: production
+  only:
+    - tags
+  when: on_success
+
+update_develop_version:
+  stage: replay
+  script:
+    - git checkout origin/develop
+    - git pull origin master
+    - bash $SCRIPTS_DIR/genSemVer.sh release > version || exit 1
+    - export VERSION=$(cat version)
+    - sed -i "s/version .*/version '${VERSION}'/1" build.gradle
+    - rm -r semver-tool
+    - rm version
+    - git commit -a -m "${VERSION}"
+    - git config --global push.default simple
+    - git push origin HEAD:develop
   only:
     - tags
   when: on_success
