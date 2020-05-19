@@ -1,31 +1,71 @@
+buildscript {
+    dependencies {
+        classpath 'commons-io:commons-io:2.6'
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+    }
+}
+
 plugins {
     id 'java'
 }
 
-
-group 'net.labyfy'
-version '1.0-SNAPSHOT'
-
 sourceCompatibility = 1.8
 
 allprojects {
+
     buildscript {
         repositories {
             maven {
-                url = "${artifactory_contextUrl}"
+                url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
             }
             mavenCentral()
+            jcenter()
+            mavenLocal()
         }
     }
+
+    apply plugin: 'maven'
+    apply plugin: "com.jfrog.artifactory"
+    apply plugin: 'maven-publish'
 
     repositories {
         maven {
-            url = "${artifactory_contextUrl}"
+            url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
         }
         mavenCentral()
+        mavenLocal()
+    }
+
+    configurations{
+        minecraft
+        minecraft.transitive(true)
+    }
+
+    artifactory {
+        contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")   //The base Artifactory URL if not overridden by the publisher/resolver
+        publish {
+            repository {
+                repoKey = 'labymedia'
+                username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+                password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
+                maven = true
+
+            }
+            defaults {
+                publications ('mavenJava')
+            }
+        }
+        resolve {
+            repository {
+                repoKey = 'general'
+                username = System.getenv().getOrDefault("artifactory_user", "${artifactory_user}")
+                password = System.getenv().getOrDefault("artifactory_password", "${artifactory_password}")
+                maven = true
+
+            }
+        }
     }
 }
-
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -33,14 +73,43 @@ dependencies {
     compile project(':component:transform:javassist')
     compile project(':component:transform:asm')
     compile project(':component:transform:minecraft')
+    compile project(':component:transform:hook')
     compile project(':component:gui')
+    compile project(':component:gui:mcjfxgl')
+    compile project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
+    compile project(':component:gui:mcjfxgl:default-components')
     compile project(':component:gui:gui-1.15.1')
     compile project(':component:tasks')
+    compile project(':component:tasks:tasks-1.15.1')
     compile project(':component:mapping')
     compile project(':component:inject')
+    compile project(':component:transform:hook')
+    compile project(':component:resources')
+    compile project(':component:resources:resources-1.15.1')
+    compile project(':versioned:labyfy-1.15.1')
+    compile project(':component:packages')
+    compile project(':component:packages:packages-impl')
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
     compile 'com.google.guava:guava:27.1-jre'
-    compile 'com.google.inject:guice:4.0'
     compile 'org.apache.commons:commons-lang3:3.9'
     compile 'io.sentry:sentry:1.7.30'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+
+allprojects {
+    version '0.0.7'
+    plugins.withType(JavaPlugin) {
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                }
+            }
+        }
+    }
 }

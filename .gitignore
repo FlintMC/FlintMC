@@ -34,6 +34,7 @@ hs_err_pid*
 .idea/**/dictionaries
 .idea/**/shelf
 .idea/**/misc.xml
+.idea/codeStyles/
 
 # Generated files
 .idea/**/contentModel.xml
@@ -62,13 +63,13 @@ run/**
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
- .idea/artifacts
- .idea/compiler.xml
- .idea/modules.xml
- .idea/*.iml
- .idea/modules
- *.iml
- *.ipr
+# .idea/artifacts
+# .idea/compiler.xml
+.idea/modules.xml
+# .idea/*.iml
+# .idea/modules
+# *.iml
+# *.ipr
 
 # CMake
 cmake-build-*/
@@ -122,3 +123,6 @@ gradle-app.setting
 .idea/modules/
 src/main/resources/
 src/test/
+
+versioned/*/Labyfy
+.idea/intellij-javadocs-4.0.1.xml

@@ -2,7 +2,9 @@ package net.labyfy.base.structure.service;
 
 import com.google.common.reflect.ClassPath;
 import com.google.inject.Singleton;
+import groovy.lang.Script;
 import net.labyfy.base.structure.Initialize;
+import net.labyfy.base.structure.identifier.IgnoreInitialization;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -24,12 +26,15 @@ public class ServiceInitializer {
 
     Collection<Class> classes = new HashSet<>();
     Collection<Class> services = new HashSet<>();
+
     collect.forEach(
         clazz -> {
           try {
-
+            if ((clazz.getSuperclass() != null
+                    && clazz.getSuperclass().getName().contains("groovy"))
+                || clazz.getName().contains("groovy")) return;
+            if (clazz.isAnnotationPresent(IgnoreInitialization.class)) return;
             if (clazz.isAnnotationPresent(Service.class)) {
-
               services.add(clazz);
             } else {
               classes.add(clazz);
@@ -46,7 +51,6 @@ public class ServiceInitializer {
         .forEach(
             service -> {
               try {
-                System.out.println(service.getName());
                 Class.forName(service.getName(), true, ServiceInitializer.class.getClassLoader());
               } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -54,7 +58,11 @@ public class ServiceInitializer {
             });
 
     for (Class<?> clazz : classes) {
-      Class.forName(clazz.getName(), true, ServiceInitializer.class.getClassLoader());
+      try {
+        Class.forName(clazz.getName(), true, ServiceInitializer.class.getClassLoader());
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
     }
   }
 }

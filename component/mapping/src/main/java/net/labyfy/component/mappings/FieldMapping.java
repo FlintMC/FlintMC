@@ -1,5 +1,9 @@
 package net.labyfy.component.mappings;
 
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import net.labyfy.component.inject.InjectionHolder;
+
 import java.lang.reflect.Field;
 
 public class FieldMapping {
@@ -31,5 +35,51 @@ public class FieldMapping {
 
   public ClassMapping getClassMapping() {
     return this.labyClassMapping;
+  }
+
+  public <T> T getStaticValue() {
+    return this.getValue(null);
+  }
+
+  public String getName() {
+    if (InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
+      return this.obfuscatedFieldName;
+    } else {
+      return this.unObfuscatedFieldName;
+    }
+  }
+
+  public Field getField() {
+    if (this.cached == null) {
+      try {
+        Field declaredField = this.labyClassMapping.get().getDeclaredField(this.getName());
+        declaredField.setAccessible(true);
+        this.cached = declaredField;
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    return this.cached;
+  }
+
+  public <T> T getValue(Object instance) {
+    try {
+      return (T) this.getField().get(instance);
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public void setStaticValue(Object value) {
+    this.setValue(null, value);
+  }
+
+  public void setValue(Object instance, Object value) {
+    try {
+      this.getField().set(instance, value);
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    }
   }
 }

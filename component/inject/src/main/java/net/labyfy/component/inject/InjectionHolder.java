@@ -9,7 +9,6 @@ import com.google.inject.Module;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class InjectionHolder {
@@ -59,7 +58,7 @@ public class InjectionHolder {
     getInstance().initializationRunnables.forEach(Runnable::run);
   }
 
-  public static synchronized <T> T getInjectedInstance(Key<T> key) {
+  public static <T> T getInjectedInstance(Key<T> key) {
     return getInstance().getInjector().getInstance(key);
   }
 
