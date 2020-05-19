@@ -56,12 +56,12 @@ public class ProcessorState {
   public void finish() {
     Filer filer = processingEnvironment.getFiler();
 
-    ClassName setClass = ClassName.get("com.google.common.collect", "Multimap");
-    ClassName classClass = ClassName.get("java.lang", "Class");
-    TypeName wildCardClassClass =
-        ParameterizedTypeName.get(classClass, WildcardTypeName.subtypeOf(Object.class));
-    TypeName setOfClasses =
-        ParameterizedTypeName.get(setClass, ClassName.get(Integer.class), wildCardClassClass);
+    ClassName triConsumerClass = ClassName.get("net.labyfy.base.structure.util", "TriConsumer");
+    ClassName integerClass = ClassName.get(Integer.class);
+    ClassName stringClass = ClassName.get(String.class);
+
+    TypeName parameterizedTriConsumerClassType =
+        ParameterizedTypeName.get(triConsumerClass, integerClass, integerClass, stringClass);
 
     ClassName autoLoadProviderClass =
         ClassName.get("net.labyfy.base.structure", "AutoLoadProvider");
@@ -73,7 +73,7 @@ public class ProcessorState {
         MethodSpec.methodBuilder("registerAutoLoad")
             .addAnnotation(Override.class)
             .addModifiers(Modifier.PUBLIC)
-            .addParameter(setOfClasses, "autoLoadClasses")
+            .addParameter(parameterizedTriConsumerClassType, "autoLoadClasses")
             .returns(void.class);
 
     autoLoadProcessor.finish(registerAutoLoadMethodBuilder);
@@ -106,7 +106,7 @@ public class ProcessorState {
 
     Set<String> services = new HashSet<>();
     try (InputStream stream =
-        filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openInputStream()) {
+             filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openInputStream()) {
       services.addAll(ServiceFile.read(stream));
     } catch (IOException ignored) {
     }
@@ -114,7 +114,7 @@ public class ProcessorState {
     services.add("net.labyfy.autogen." + generatedClassName);
 
     try (OutputStream stream =
-        filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openOutputStream()) {
+             filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openOutputStream()) {
       ServiceFile.write(services, stream);
     } catch (IOException e) {
       throw new ProcessingException("Failed to update " + resourceFile, e);

@@ -1,10 +1,12 @@
 package net.labyfy.component.inject.implement;
 
 import com.google.inject.Singleton;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.inject.InjectionServiceShare;
+import net.labyfy.component.inject.ServiceRepository;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 @Singleton
 @Service(Implement.class)
+@AutoLoad(priority = -1000, round = -4)
 public class ImplementService extends InjectionServiceShare implements ServiceHandler {
 
   private final Map<String, String> launchArguments;
@@ -33,5 +36,12 @@ public class ImplementService extends InjectionServiceShare implements ServiceHa
 
     implementations.put(annotation.value(), location);
 
+  }
+
+  @AutoLoad(priority = -1000)
+  public static class Registrar{
+    static {
+      ServiceRepository.addPriorityService("net.labyfy.component.inject.implement.ImplementService");
+    }
   }
 }

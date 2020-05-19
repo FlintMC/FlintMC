@@ -102,12 +102,6 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
         initializer = ctClass.makeClassInitializer();
       }
 
-      initializer.insertAfter(
-          "net.labyfy.component.transform.launchplugin.NotifyJumpad.notifyService("
-              + ctClass.getName()
-              + ".class"
-              + ");");
-
       return ctClass.toBytecode();
     } catch (IOException e) {
       throw new RuntimeException("Failed to modify class due to IOException", e);
@@ -120,4 +114,5 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
   public void registerTransformer(int priority, LateInjectedTransformer transformer) {
     injectedTransformers.put(priority, transformer);
   }
+
 }

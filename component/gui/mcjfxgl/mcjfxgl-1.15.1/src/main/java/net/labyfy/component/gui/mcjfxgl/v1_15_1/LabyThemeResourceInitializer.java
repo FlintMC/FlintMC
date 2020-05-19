@@ -27,7 +27,6 @@ public class LabyThemeResourceInitializer implements ThemeResourceInitializer {
 
   static {
     System.setProperty( "org.lwjgl.opengl.Window.undecorated", "true" );
-
   }
 
   @Inject

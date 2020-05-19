@@ -82,4 +82,8 @@ public class FieldMapping {
       e.printStackTrace();
     }
   }
+
+  public boolean isDefault() {
+    return this.unObfuscatedFieldName.equals(obfuscatedFieldName);
+  }
 }

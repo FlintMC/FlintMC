@@ -1,5 +1,6 @@
 package net.labyfy.component.transform.minecraft;
 
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;
 

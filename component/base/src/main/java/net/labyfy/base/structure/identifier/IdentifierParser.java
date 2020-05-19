@@ -15,37 +15,33 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.function.Predicate;
 
-@Singleton
 public class IdentifierParser {
 
-  private final PropertyParser propertyParser;
 
-  @Inject
-  private IdentifierParser(PropertyParser propertyParser) {
-    this.propertyParser = propertyParser;
+  private IdentifierParser() {
   }
 
-  public Collection<Identifier.Base> parse(Class<?> clazz) {
+  public static Collection<Identifier.Base> parse(Class<?> clazz) {
 
     Collection<LocatedIdentifiedAnnotation> standaloneIdentifiers =
-        new ArrayList<>(this.findStandaloneClassIdentifiers(clazz));
+        new ArrayList<>(findStandaloneClassIdentifiers(clazz));
 
     for (Method declaredMethod : clazz.getDeclaredMethods()) {
       declaredMethod.setAccessible(true);
-      standaloneIdentifiers.addAll(this.findStandaloneMethodIdentifiers(declaredMethod));
+      standaloneIdentifiers.addAll(findStandaloneMethodIdentifiers(declaredMethod));
     }
 
     Collection<Identifier.Base> identifiers = new LinkedList<>();
 
     for (LocatedIdentifiedAnnotation standaloneIdentifier : standaloneIdentifiers) {
-      Property.Base parse = this.propertyParser.parse(standaloneIdentifier);
+      Property.Base parse = PropertyParser.parse(standaloneIdentifier);
       if (parse != null) identifiers.add(new Identifier.Base(parse));
     }
 
     return identifiers;
   }
 
-  private Collection<LocatedIdentifiedAnnotation> findStandaloneMethodIdentifiers(Method method) {
+  private static Collection<LocatedIdentifiedAnnotation> findStandaloneMethodIdentifiers(Method method) {
 
     Predicate<Annotation> standalone =
         identifierCandidate ->
@@ -65,7 +61,7 @@ public class IdentifierParser {
 
       if (found) {
         AnnotationCollector.getTransitiveAnnotations(
-                AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
+            AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
             .stream()
             .map(
                 annotation ->
@@ -82,7 +78,7 @@ public class IdentifierParser {
     return identifiedAnnotations;
   }
 
-  private Collection<LocatedIdentifiedAnnotation> findStandaloneClassIdentifiers(Class<?> clazz) {
+  private static Collection<LocatedIdentifiedAnnotation> findStandaloneClassIdentifiers(Class<?> clazz) {
     Predicate<Annotation> standalone =
         identifierCandidate ->
             AnnotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
@@ -100,7 +96,7 @@ public class IdentifierParser {
       }
       if (found) {
         AnnotationCollector.getTransitiveAnnotations(
-                AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
+            AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
             .stream()
             .map(
                 annotation ->

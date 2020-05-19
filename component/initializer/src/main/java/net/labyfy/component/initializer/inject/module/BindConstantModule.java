@@ -25,16 +25,17 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
     this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
+    boolean obfuscated;
     try {
-      this.bindNamed(
-          "obfuscated",
-          (ClassPath.from(LaunchController.getInstance().getRootLoader())
-                  .getTopLevelClassesRecursive("net.minecraft.world")
-                  .size()
-              == 0));
-    } catch (IOException e) {
-      e.printStackTrace();
+      Class.forName("net.minecraft.client.Minecraft");
+      obfuscated = false;
+    } catch (Exception ex) {
+      obfuscated = true;
     }
+
+    this.bindNamed(
+        "obfuscated",
+        obfuscated);
   }
 
   private void bindNamedFilePath(String name, String path) {

@@ -12,6 +12,10 @@ import java.util.Map;
 
 public class InjectionServiceShare {
 
+  private static final Collection<Class> implementationsFlushed = new HashSet<>();
+  private static final Collection<Class> assistedFlushed = new HashSet<>();
+  private static final Collection<Class> ignoreFlushed = new HashSet<>();
+
   protected static final Map<Class, Class> implementations = Maps.newHashMap();
   protected static final Map<Class, AssistedFactory> assisted = new HashMap<>();
   protected static final Collection<Class> ignore = new HashSet<>();
@@ -30,25 +34,33 @@ public class InjectionServiceShare {
   }
 
   public static void flush() {
-    if (flushed) return;
-    flushed = true;
 
+    System.out.println("FLUSH MODULES YES");
     InjectionHolder.getInstance()
         .addModules(
             new AbstractModule() {
               protected void configure() {
+                System.out.println(implementations);
                 implementations.forEach(
                     (superClass, implementation) -> {
-                      if (!ignore.contains(superClass) && !ignore.contains(implementation)) {
+                      if (!ignore.contains(superClass) && !ignore.contains(implementation) && !implementationsFlushed.contains(implementation)) {
                         this.bind(superClass).to(implementation);
+                        implementationsFlushed.add(implementation);
                       }
                     });
 
+
+                System.out.println("-----");
+                System.out.println(assisted);
                 assisted.forEach(
                     (clazz, factory) -> {
-                      FactoryModuleBuilder factoryModuleBuilder = new FactoryModuleBuilder();
-                      implementations.forEach(factoryModuleBuilder::implement);
-                      install(factoryModuleBuilder.build(clazz));
+                      if (!assistedFlushed.contains(clazz)) {
+                        FactoryModuleBuilder factoryModuleBuilder = new FactoryModuleBuilder();
+                        implementations.forEach(factoryModuleBuilder::implement);
+                        install(factoryModuleBuilder.build(clazz));
+                        System.out.println("INSTALLED " + clazz);
+                        assistedFlushed.add(clazz);
+                      }
                     });
               }
             });

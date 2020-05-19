@@ -8,17 +8,11 @@ import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.tasks.subproperty.TaskBody;
 import net.minecraft.client.Minecraft;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.resources.SimpleReloadableResourceManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 @Singleton
 @AutoLoad

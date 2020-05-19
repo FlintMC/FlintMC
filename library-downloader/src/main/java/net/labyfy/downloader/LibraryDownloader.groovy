@@ -166,7 +166,7 @@ class LibraryDownloader implements Plugin<Project> {
                         }
                     }
                 }
-                version.id = "LabyMod-4-" + version.id
+                version.id = "Labyfy-" + version.id
                 libraries.addAll(Arrays.asList(version.libraries))
                 version.mainClass = "net.labyfy.component.launcher.LabyLauncher"
 

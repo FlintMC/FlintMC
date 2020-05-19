@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@AutoLoad(priority = -100)
+@AutoLoad(priority = -100, round = 0)
 public @interface Service {
-  Class<?> value();
+  Class<?>[] value();
 
   int priority() default 0;
 }

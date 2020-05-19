@@ -22,7 +22,7 @@ import java.util.Map;
 //@AutoLoad(priority = -1000)
 public class InjectionInitializer {
 
-  static {
+ /* static {
     try {
       Collection<Class<?>> classes = new HashSet<>();
 
@@ -58,10 +58,9 @@ public class InjectionInitializer {
       }
 
       Injector injector = Guice.createInjector();
-      IdentifierParser instance = injector.getInstance(IdentifierParser.class);
 
       for (Class<?> clazz : classes) {
-        Collection<Identifier.Base> parse = instance.parse(clazz);
+        Collection<Identifier.Base> parse = IdentifierParser.parse(clazz);
         for (Identifier.Base base : parse) {
           Annotation annotation =
               base.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
@@ -94,5 +93,5 @@ public class InjectionInitializer {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
-  }
+  }*/
 }

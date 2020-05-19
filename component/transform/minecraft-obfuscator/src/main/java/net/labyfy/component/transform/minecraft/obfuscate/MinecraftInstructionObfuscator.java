@@ -2,6 +2,7 @@ package net.labyfy.component.transform.minecraft.obfuscate;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
@@ -19,6 +20,7 @@ import java.io.IOException;
 
 @Singleton
 @MinecraftTransformer(priority = Integer.MAX_VALUE)
+@AutoLoad(priority = -1000, round = -3)
 public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
 
   private final MinecraftClassRemapper minecraftClassRemapper;
@@ -47,6 +49,9 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
       ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
       ClassVisitor classRemapper = new ClassRemapper(classWriter, minecraftClassRemapper);
       classNode.accept(classRemapper);
+
+      System.out.println("Remap " + className + " to " + classNode.name);
+
       return classWriter.toByteArray();
     } catch (IOException e) {
       e.printStackTrace();
@@ -68,5 +73,10 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
     }
     cr = null;
     return cn;
+  }
+
+  public String transform(String className) {
+    System.out.println(className);
+    return className;
   }
 }

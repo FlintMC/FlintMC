@@ -21,5 +21,7 @@ dependencies {
     minecraft 'com.google.inject:guice:4.0'
     minecraft 'aopalliance:aopalliance:1.0'
     minecraft 'javax.inject:javax.inject:1'
+    minecraft 'org.codehaus.groovy:groovy:3.0.2'
+
     annotationProcessor project(':component:annotation-processing')
 }

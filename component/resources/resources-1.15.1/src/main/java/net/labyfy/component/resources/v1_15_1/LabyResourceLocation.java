@@ -17,6 +17,10 @@ public class LabyResourceLocation extends net.minecraft.util.ResourceLocation
 
   private final ResourceLocationProvider resourceLocationProvider;
 
+  static{
+    System.out.println("INIT TEST123");
+  }
+
   @AssistedInject
   private LabyResourceLocation(@Assisted("nameSpace") String nameSpace, ResourceLocationProvider resourceLocationProvider) {
     super(nameSpace);

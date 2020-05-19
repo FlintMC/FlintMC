@@ -1,5 +1,6 @@
 package net.labyfy.component.inject.implement;
 
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;
 
@@ -12,6 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Identifier
 @Transitive
+@AutoLoad(priority = -15, round = -1)
 public @interface Implement {
   Class<?> value();
 

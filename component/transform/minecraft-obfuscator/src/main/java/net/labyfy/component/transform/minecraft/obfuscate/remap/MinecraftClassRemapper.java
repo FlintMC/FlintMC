@@ -1,5 +1,7 @@
 package net.labyfy.component.transform.minecraft.obfuscate.remap;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.ClassPool;
@@ -10,14 +12,14 @@ import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.component.mappings.MethodMapping;
 import net.labyfy.component.transform.asm.ASMUtils;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -29,13 +31,62 @@ public class MinecraftClassRemapper extends SimpleRemapper {
   @Inject
   private MinecraftClassRemapper(ClassMappingProvider classMappingProvider) {
     super(
-        classMappingProvider.getUnObfuscatedClassMappings().values().stream()
-            .collect(
-                Collectors.toMap(
-                    ClassMapping::getUnObfuscatedName, ClassMapping::getObfuscatedName)));
+        collectMappings(classMappingProvider));
     this.classMappingProvider = classMappingProvider;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
+  }
+
+  private static Map<String, String> collectMappings(ClassMappingProvider classMappingProvider) {
+    Map<String, String> mappings = new HashMap<>();
+    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
+        .filter(classMapping -> !classMapping.isDefault())
+        .collect(
+            Collectors.toMap(
+                classMapping -> classMapping.getUnObfuscatedName().replace('.', '/'),
+                classMapping -> classMapping.getObfuscatedName().replace('.', '/')))
+    );
+
+    final Set<String> setToReturn = new HashSet<>();
+    final Set<String> set1 = new HashSet<>();
+
+    for (MethodMapping yourInt : classMappingProvider.getUnObfuscatedClassMappings().values().stream()
+        .map(ClassMapping::getMethods)
+        .flatMap(Collection::stream)
+        .filter(methodMapping -> !methodMapping.isDefault()).collect(Collectors.toList())) {
+      if (!set1.add(yourInt.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + yourInt.getUnObfuscatedMethodIdentifier())) {
+        setToReturn.add(yourInt.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + yourInt.getUnObfuscatedMethodIdentifier());
+      }
+    }
+
+
+    Multimap<String, MethodMapping> mappingMultimap = HashMultimap.create();
+    classMappingProvider.getObfuscatedClassMappings().values().stream().map(ClassMapping::getMethods).flatMap(Collection::stream).forEach(methodMapping -> {
+      if(setToReturn.contains(methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier())){
+        mappingMultimap.put(methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier(), methodMapping);
+      }
+    });
+
+    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
+        .map(ClassMapping::getMethods)
+        .flatMap(Collection::stream)
+        .filter(methodMapping -> !methodMapping.isDefault())
+        .collect(
+            Collectors.toMap(
+                methodMapping -> methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier(),
+                methodMapping -> methodMapping.getClassMapping().getObfuscatedName().replace('.', '/') + "." + methodMapping.getObfuscatedMethodIdentifier()))
+    );
+
+    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
+        .map(ClassMapping::getFields)
+        .flatMap(Collection::stream)
+        .filter(fieldMapping -> !fieldMapping.isDefault())
+        .collect(
+            Collectors.toMap(
+                fieldMapping -> fieldMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + fieldMapping.getUnObfuscatedFieldName(),
+                fieldMapping -> fieldMapping.getClassMapping().getObfuscatedName().replace('.', '/') + "." + fieldMapping.getObfuscatedFieldName()))
+    );
+    return mappings;
   }
 
   public List<String> getSuperClass(String clazz) {
