@@ -23,7 +23,6 @@ version:
   stage: version
   script:
     - bash $SCRIPTS_DIR/versionPreCheck.sh "${CI_COMMIT_MESSAGE}"
-    - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > version
     - export TAG=$(cat version)
     - git config --global user.email "gitlab-ci@gitlab.labymod.net"
