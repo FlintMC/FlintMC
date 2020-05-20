@@ -7,6 +7,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.base.structure.AutoLoadProvider;
 import net.labyfy.base.structure.util.TriConsumer;
+import net.labyfy.component.initializer.EntryPoint;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.InjectionServiceShare;
 import net.labyfy.component.inject.ServiceRepository;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
 
@@ -122,39 +124,28 @@ public class LabyPackage implements Package {
     Set<AutoLoadProvider> autoLoadProviders =
         LabyfyServiceLoader.get(AutoLoadProvider.class).discover(classLoader.asClassLoader());
 
-    Map<Integer, Multimap<Integer, String>> sortedClasses = new ConcurrentHashMap<>();
+    Map<Integer, Multimap<Integer, String>> sortedClasses = new TreeMap<>(Integer::compare);
 
     TriConsumer<Integer, Integer, String> classAcceptor = (round, priority, name) -> {
       sortedClasses.putIfAbsent(round, MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build());
       sortedClasses.get(round).put(priority, name);
     };
 
-    autoLoadProviders.forEach((provider) -> provider.registerAutoLoad(classAcceptor));
+    autoLoadProviders.iterator().forEachRemaining((provider) -> provider.registerAutoLoad(classAcceptor));
 
     sortedClasses.forEach((round, classes) -> {
       classes.forEach((priority, className) -> {
         try {
-          Class.forName(className, true, LabyPackage.class.getClassLoader());
+          EntryPoint.notifyService(Class.forName(className, true, LabyPackage.class.getClassLoader()));
+
           // LaunchController.getInstance().getRootLoader().loadClass(clazz);
         } catch (ClassNotFoundException e) {
           throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className);
         }
       });
+      InjectionServiceShare.flush();
+      InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
     });
-//    classes
-//        .values()
-//        .stream().flatMap(integerStringMultimap -> integerStringMultimap.values().stream())
-//        .forEach(
-//            clazz -> {
-//              try {
-//                Class.forName(clazz, true, LabyPackage.class.getClassLoader());
-//              } catch (ClassNotFoundException e) {
-//                throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + clazz);
-//              }
-//            });
-
-    InjectionServiceShare.flush();
-    InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
 
     this.packageState = PackageState.ENABLED;
   }

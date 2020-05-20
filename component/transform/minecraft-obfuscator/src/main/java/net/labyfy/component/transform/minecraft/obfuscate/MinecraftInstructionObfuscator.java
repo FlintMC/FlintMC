@@ -16,22 +16,25 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
+import javax.inject.Named;
 import java.io.IOException;
 
 @Singleton
-@MinecraftTransformer(priority = Integer.MAX_VALUE)
+@MinecraftTransformer(priority = Integer.MIN_VALUE)
 @AutoLoad(priority = -1000, round = -3)
 public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
 
   private final MinecraftClassRemapper minecraftClassRemapper;
   private final RootClassLoader rootClassLoader;
   private final ClassMappingProvider classMappingProvider;
+  private final boolean obfuscated;
 
   @Inject
   private MinecraftInstructionObfuscator(
-      MinecraftClassRemapper minecraftClassRemapper, ClassMappingProvider classMappingProvider) {
+      MinecraftClassRemapper minecraftClassRemapper, ClassMappingProvider classMappingProvider, @Named("obfuscated") boolean obfuscated) {
     this.minecraftClassRemapper = minecraftClassRemapper;
     this.classMappingProvider = classMappingProvider;
+    this.obfuscated = obfuscated;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
   }
@@ -39,6 +42,7 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
   public byte[] transform(String className, byte[] classData) {
     try {
 
+      if (!obfuscated) return classData;
       if (!className.startsWith("net.labyfy")) return classData;
 
       ClassInformation classInformation =

@@ -1,6 +1,9 @@
 package net.labyfy.component.mappings;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 
 import java.io.InputStream;
 import java.util.*;
@@ -25,6 +28,7 @@ public class McpMappingParser implements MappingParser {
 
     Scanner scanner = new Scanner(input.get("joined.tsrg"));
     ClassMapping lastClassMapping = null;
+
     while (scanner.hasNext()) {
 
       String line = scanner.nextLine();
@@ -54,25 +58,46 @@ public class McpMappingParser implements MappingParser {
     for (ClassMapping mapping : classMappings) {
       for (MethodMapping methodMapping : mapping.getMethods()) {
         methodMapping.setUnObfuscatedMethodDescription(
-            this.translateMethodDescription(methodMapping.getObfuscatedMethodDescription()));
+            this.translateMethodDescription(methodMapping.getObfuscatedMethodDescription(), classMappings));
         Pattern compile = Pattern.compile("\\(.*\\)(.+)");
         Matcher matcher = compile.matcher(methodMapping.getUnObfuscatedMethodDescription());
         if (matcher.matches()) {
           String unobfIdentifier =
               methodMapping.getUnObfuscatedMethodName()
                   + methodMapping
-                      .getUnObfuscatedMethodDescription()
-                      .substring(
-                          0, methodMapping.getUnObfuscatedMethodDescription().lastIndexOf(")") + 1);
+                  .getUnObfuscatedMethodDescription()
+                  .substring(
+                      0, methodMapping.getUnObfuscatedMethodDescription().lastIndexOf(")") + 1);
           methodMapping.setUnObfuscatedMethodIdentifier(unobfIdentifier);
         }
+      }
+    }
+
+    for (ClassMapping classMapping : classMappings) {
+      Multimap<String, MethodMapping> methodDuplicates = MultimapBuilder.linkedHashKeys().linkedListValues().build();
+
+      for (MethodMapping method : classMapping.getMethods()) {
+        if (method.isDefault()) continue;
+        methodDuplicates.put(method.getClassMapping().getUnObfuscatedName() + "." + method.getUnObfuscatedMethodIdentifier(), method);
+      }
+
+      Collection<MethodMapping> finalMethodMappings = new HashSet<>();
+
+      for (String key : methodDuplicates.keySet()) {
+        List<MethodMapping> methodMappings = new LinkedList<>(methodDuplicates.get(key));
+        finalMethodMappings.add(methodMappings.get(0));
+      }
+
+      classMapping.setMethods(finalMethodMappings);
+      if (classMapping.getUnObfuscatedName().endsWith("ShortNBT")) {
+        System.out.println();
       }
     }
 
     return classMappings;
   }
 
-  public String translateMethodDescription(String obfDesc) {
+  public String translateMethodDescription(String obfDesc, Collection<ClassMapping> classMappings) {
     String tempObfDesc = obfDesc.substring(1, obfDesc.lastIndexOf(')'));
     StringBuilder unObfDesc = new StringBuilder("(");
     int currentIndex = 0;
@@ -83,7 +108,7 @@ public class McpMappingParser implements MappingParser {
       } else {
         int maxIndex = tempObfDesc.substring(currentIndex + 1).indexOf(';') + currentIndex + 1;
         String obfClassName = tempObfDesc.substring(currentIndex + 1, maxIndex);
-        ClassMapping descClassMapping = classMappingProvider.get(obfClassName);
+        ClassMapping descClassMapping = classMappings.stream().filter(classMapping -> classMapping.getObfuscatedName().equals(obfClassName)).findAny().orElse(null);
         unObfDesc
             .append("L")
             .append(
@@ -98,9 +123,9 @@ public class McpMappingParser implements MappingParser {
     String methodType = obfDesc.substring(obfDesc.lastIndexOf(')') + 1);
 
     if (methodType.charAt(0) == 'L') {
+      String finalMethodType = methodType;
       ClassMapping typeClassMapping =
-          classMappingProvider.get(methodType.substring(1, methodType.length() - 1));
-
+          classMappings.stream().filter(classMapping -> classMapping.getObfuscatedName().equals(finalMethodType.substring(1, finalMethodType.length() - 1))).findAny().orElse(null);
       if (typeClassMapping != null) {
         methodType = "L" + typeClassMapping.getUnObfuscatedName().replace('.', '/') + ";";
       }

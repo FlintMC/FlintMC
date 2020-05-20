@@ -44,7 +44,6 @@ public class LabyGuiInterceptor extends GuiInterceptor {
       Hook.ExecutionTime executionTime,
       @Named("instance") Object screen,
       @Named("args") Object[] args) {
-
     this.notifyGuis(
         executionTime,
         GuiRenderState.Type.RENDER,

@@ -12,6 +12,7 @@ import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.component.mappings.FieldMapping;
 import net.labyfy.component.mappings.MethodMapping;
 import net.labyfy.component.transform.asm.ASMUtils;
 import org.objectweb.asm.commons.SimpleRemapper;
@@ -47,35 +48,30 @@ public class MinecraftClassRemapper extends SimpleRemapper {
                 classMapping -> classMapping.getObfuscatedName().replace('.', '/')))
     );
 
-    final Set<String> setToReturn = new HashSet<>();
-    final Set<String> set1 = new HashSet<>();
 
-    for (MethodMapping yourInt : classMappingProvider.getUnObfuscatedClassMappings().values().stream()
-        .map(ClassMapping::getMethods)
-        .flatMap(Collection::stream)
-        .filter(methodMapping -> !methodMapping.isDefault()).collect(Collectors.toList())) {
-      if (!set1.add(yourInt.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + yourInt.getUnObfuscatedMethodIdentifier())) {
-        setToReturn.add(yourInt.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + yourInt.getUnObfuscatedMethodIdentifier());
+    List<MethodMapping> methodMappings = new ArrayList<>();
+
+    for (ClassMapping classMapping : classMappingProvider.getUnObfuscatedClassMappings().values()) {
+      for (MethodMapping method : classMapping.getMethods()) {
+        if (mappings.containsKey(method.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + method.getUnObfuscatedMethodIdentifier())) {
+          methodMappings.add(method);
+        } else {
+          mappings.put(method.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + method.getUnObfuscatedMethodIdentifier(), method.getObfuscatedMethodName());
+        }
       }
     }
 
 
-    Multimap<String, MethodMapping> mappingMultimap = HashMultimap.create();
-    classMappingProvider.getObfuscatedClassMappings().values().stream().map(ClassMapping::getMethods).flatMap(Collection::stream).forEach(methodMapping -> {
-      if(setToReturn.contains(methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier())){
-        mappingMultimap.put(methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier(), methodMapping);
-      }
-    });
-
-    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
-        .map(ClassMapping::getMethods)
-        .flatMap(Collection::stream)
-        .filter(methodMapping -> !methodMapping.isDefault())
-        .collect(
-            Collectors.toMap(
-                methodMapping -> methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier(),
-                methodMapping -> methodMapping.getClassMapping().getObfuscatedName().replace('.', '/') + "." + methodMapping.getObfuscatedMethodIdentifier()))
-    );
+//    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
+//        .map(ClassMapping::getMethods)
+//        .flatMap(Collection::stream)
+//        .filter(methodMapping -> !methodMapping.isDefault())
+////        .distinct()
+//        .collect(
+//            Collectors.toMap(
+//                methodMapping -> methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier(),
+//                MethodMapping::getObfuscatedMethodName))
+//    );
 
     mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
         .map(ClassMapping::getFields)
@@ -84,8 +80,8 @@ public class MinecraftClassRemapper extends SimpleRemapper {
         .collect(
             Collectors.toMap(
                 fieldMapping -> fieldMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + fieldMapping.getUnObfuscatedFieldName(),
-                fieldMapping -> fieldMapping.getClassMapping().getObfuscatedName().replace('.', '/') + "." + fieldMapping.getObfuscatedFieldName()))
-    );
+                FieldMapping::getObfuscatedFieldName)
+        ));
     return mappings;
   }
 
@@ -115,7 +111,7 @@ public class MinecraftClassRemapper extends SimpleRemapper {
       return classes;
     } catch (Exception e) {
       // Not found, can be ignored
-      return null;
+      return new ArrayList<>();
     }
   }
 

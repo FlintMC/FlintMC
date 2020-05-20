@@ -24,12 +24,6 @@ public class Initializer {
     Set<AutoLoadProvider> autoLoadProviders =
         LabyfyServiceLoader.get(AutoLoadProvider.class).discover(LaunchController.getInstance().getRootLoader());
 
-    //    Set<Class<?>> collect =
-    //        ClassPath.from(Initializer.class.getClassLoader()).getAllClasses().stream()
-    //            .filter(classInfo -> classInfo.getName().startsWith("net.labyfy"))
-    //            .map(ClassPath.ClassInfo::load)
-    //            .collect(Collectors.toSet());
-
     Map<Integer, Multimap<Integer, String>> sortedClasses = new TreeMap<>(Integer::compare);
 
     TriConsumer<Integer, Integer, String> classAcceptor = (round, priority, name) -> {
@@ -53,33 +47,5 @@ public class Initializer {
       InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
     });
 
-    try {
-      System.out.println(Class.forName("net.labyfy.component.resources.v1_15_1.LabyResourceLocationProvider"));
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
-
-
-    //    for (Class<?> aClass : collect) {Gu
-    //      for (Method declaredMethod : aClass.getDeclaredMethods()) {
-    //        for (Annotation declaredAnnotation : declaredMethod.getDeclaredAnnotations()) {
-    //          if (Initialize.class.isAssignableFrom(declaredAnnotation.getClass())) {
-    //            initializationMethods.add(declaredMethod);
-    //          }
-    //        }
-    //      }
-    //    }
-    //
-    //    initializationMethods.stream()
-    //        .sorted(Comparator.comparingInt(o ->
-    // o.getDeclaredAnnotation(Initialize.class).priority()))
-    //        .forEach(
-    //            method -> {
-    //              try {
-    //                method.invoke(null);
-    //              } catch (IllegalAccessException | InvocationTargetException e) {
-    //                e.printStackTrace();
-    //              }
-    //            });
   }
 }

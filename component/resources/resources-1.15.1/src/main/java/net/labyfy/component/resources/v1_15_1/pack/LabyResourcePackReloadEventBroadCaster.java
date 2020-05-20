@@ -8,6 +8,7 @@ import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.tasks.subproperty.TaskBody;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.resources.SimpleReloadableResourceManager;
 
@@ -33,8 +34,10 @@ public class LabyResourcePackReloadEventBroadCaster implements ResourcePackReloa
   public void broadcast() {
     ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager())
         .addReloadListener(
-            (IResourceManagerReloadListener)
-                iResourceManager ->
-                    this.eventService.broadcast(this.resourcePackReloadEventFactory.create()));
+            new IResourceManagerReloadListener() {
+              public void onResourceManagerReload(IResourceManager iResourceManager) {
+                eventService.broadcast(resourcePackReloadEventFactory.create());
+              }
+            });
   }
 }
