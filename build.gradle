@@ -103,10 +103,18 @@ java {
 allprojects {
     version '0.0.7'
     plugins.withType(JavaPlugin) {
-        publishing {
+        publishing{
             publications {
                 mavenJava(MavenPublication) {
                     from components.java
+                    versionMapping {
+                        usage('java-api') {
+                            fromResolutionOf('runtimeClasspath')
+                        }
+                        usage('java-runtime') {
+                            fromResolutionResult()
+                        }
+                    }
                 }
             }
         }
