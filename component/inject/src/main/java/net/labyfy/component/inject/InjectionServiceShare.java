@@ -34,13 +34,10 @@ public class InjectionServiceShare {
   }
 
   public static void flush() {
-
-    System.out.println("FLUSH MODULES YES");
     InjectionHolder.getInstance()
         .addModules(
             new AbstractModule() {
               protected void configure() {
-                System.out.println(implementations);
                 implementations.forEach(
                     (superClass, implementation) -> {
                       if (!ignore.contains(superClass) && !ignore.contains(implementation) && !implementationsFlushed.contains(implementation)) {
@@ -50,15 +47,12 @@ public class InjectionServiceShare {
                     });
 
 
-                System.out.println("-----");
-                System.out.println(assisted);
                 assisted.forEach(
                     (clazz, factory) -> {
                       if (!assistedFlushed.contains(clazz)) {
                         FactoryModuleBuilder factoryModuleBuilder = new FactoryModuleBuilder();
                         implementations.forEach(factoryModuleBuilder::implement);
                         install(factoryModuleBuilder.build(clazz));
-                        System.out.println("INSTALLED " + clazz);
                         assistedFlushed.add(clazz);
                       }
                     });

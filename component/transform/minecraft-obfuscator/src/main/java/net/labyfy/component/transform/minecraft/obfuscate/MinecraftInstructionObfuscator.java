@@ -53,9 +53,6 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
       ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
       ClassVisitor classRemapper = new ClassRemapper(classWriter, minecraftClassRemapper);
       classNode.accept(classRemapper);
-
-      System.out.println("Remap " + className + " to " + classNode.name);
-
       return classWriter.toByteArray();
     } catch (IOException e) {
       e.printStackTrace();
@@ -79,8 +76,4 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
     return cn;
   }
 
-  public String transform(String className) {
-    System.out.println(className);
-    return className;
-  }
 }

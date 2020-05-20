@@ -89,9 +89,6 @@ public class McpMappingParser implements MappingParser {
       }
 
       classMapping.setMethods(finalMethodMappings);
-      if (classMapping.getUnObfuscatedName().endsWith("ShortNBT")) {
-        System.out.println();
-      }
     }
 
     return classMappings;
