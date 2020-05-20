@@ -90,3 +90,6 @@ buildCache {
         push = isPush
     }
 }
+include 'component:security'
+findProject(':component:security')?.name = 'security'
+
