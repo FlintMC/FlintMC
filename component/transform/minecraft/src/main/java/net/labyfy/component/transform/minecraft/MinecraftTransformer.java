@@ -1,5 +1,6 @@
 package net.labyfy.component.transform.minecraft;
 
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;
 
@@ -12,4 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Identifier
 @Transitive
-public @interface MinecraftTransformer {}
+public @interface MinecraftTransformer {
+  int priority() default 0;
+}

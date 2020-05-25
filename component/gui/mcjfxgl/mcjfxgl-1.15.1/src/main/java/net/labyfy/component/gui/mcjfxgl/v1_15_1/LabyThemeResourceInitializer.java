@@ -2,6 +2,7 @@ package net.labyfy.component.gui.mcjfxgl.v1_15_1;
 
 import javassist.CannotCompileException;
 import javassist.CtMethod;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.gui.mcjfxgl.component.theme.ThemeResourceInitializer;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.mappings.ClassMappingProvider;
@@ -19,13 +20,13 @@ import java.util.function.Predicate;
 
 @Singleton
 @Implement(value = ThemeResourceInitializer.class, version = "1.15.1")
+@AutoLoad
 public class LabyThemeResourceInitializer implements ThemeResourceInitializer {
 
   private final ClassMappingProvider classMappingProvider;
 
   static {
     System.setProperty( "org.lwjgl.opengl.Window.undecorated", "true" );
-
   }
 
   @Inject

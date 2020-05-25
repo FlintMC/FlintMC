@@ -72,6 +72,12 @@ findProject(':component:launcher')?.name = 'launcher'
 include 'component:transform:launcher-plugin'
 findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
 
+include 'component:annotation-processing'
+findProject(':component:annotation-processing')?.name = 'annotation-processing'
+
+include 'component:transform:minecraft-obfuscator'
+findProject(':component:transform:minecraft-obfuscator')?.name = 'minecraft-obfuscator'
+
 ext.isPush = true
 
 includeBuild 'library-downloader'
@@ -90,6 +96,6 @@ buildCache {
         push = isPush
     }
 }
-include 'component:security'
-findProject(':component:security')?.name = 'security'
+include 'component:service'
+findProject(':component:service')?.name = 'service'
 

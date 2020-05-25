@@ -112,7 +112,7 @@ public class MethodMapping {
         for (Method declaredMethod : this.classMapping.get().getDeclaredMethods()) {
           if (declaredMethod.getName().equals(this.obfuscatedMethodName)
               && this.getMethodDescriptor(declaredMethod)
-                  .startsWith(this.obfuscatedMethodDescription)) {
+              .startsWith(this.obfuscatedMethodDescription)) {
             declaredMethod.setAccessible(true);
             this.cached = declaredMethod;
             break;
@@ -124,7 +124,7 @@ public class MethodMapping {
         for (Method declaredMethod : this.classMapping.get().getDeclaredMethods()) {
           if (declaredMethod.getName().equals(this.obfuscatedMethodName)
               && this.getMethodDescriptor(declaredMethod)
-                  .equals(this.obfuscatedMethodDescription)) {
+              .equals(this.obfuscatedMethodDescription)) {
             declaredMethod.setAccessible(true);
             this.cached = declaredMethod;
             break;
@@ -134,7 +134,7 @@ public class MethodMapping {
         for (Method declaredMethod : this.classMapping.get().getDeclaredMethods()) {
           if (declaredMethod.getName().equals(this.unObfuscatedMethodName)
               && this.getMethodDescriptor(declaredMethod)
-                  .equals(this.unObfuscatedMethodDescription)) {
+              .equals(this.unObfuscatedMethodDescription)) {
             declaredMethod.setAccessible(true);
             this.cached = declaredMethod;
             break;
@@ -174,7 +174,7 @@ public class MethodMapping {
   }
 
   public boolean isDefault() {
-    return Objects.equals(this.obfuscatedMethodIdentifier, this.unObfuscatedMethodIdentifier);
+    return Objects.equals(this.obfuscatedMethodName, this.unObfuscatedMethodName) && Objects.equals(this.obfuscatedMethodIdentifier, this.unObfuscatedMethodIdentifier);
   }
 
   private String getMethodDescriptor(Method m) {

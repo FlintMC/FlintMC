@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
 import net.labyfy.component.gui.mcjfxgl.component.theme.source.ThemeGroovyCodeSourceShim;
 import net.labyfy.component.gui.mcjfxgl.component.theme.source.ThemePermissionChecker;
@@ -27,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Singleton
+@AutoLoad
 public class ThemeRepository {
 
   private final ResourcePackProvider resourcePackProvider;

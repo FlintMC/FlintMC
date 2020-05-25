@@ -1,7 +1,7 @@
 package net.labyfy.component.initializer;
 
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
-import net.labyfy.base.structure.service.ServiceRepository;
+import net.labyfy.component.inject.ServiceRepository;
 import net.labyfy.component.initializer.inject.InitializationModule;
 import net.labyfy.component.initializer.inject.LabyInjectionInitializer;
 import net.labyfy.component.inject.InjectionHolder;

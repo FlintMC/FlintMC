@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     this.plugins = new HashSet<>();
     this.children = new ArrayList<>();
     this.modificationExclusions = new ArrayList<>();
-    this.classCache = new WeakHashMap<>();
-    this.resourceDataCache = new HashMap<>();
+    this.classCache = new ConcurrentHashMap<>();
+    this.resourceDataCache = new ConcurrentHashMap<>();
     this.logger = LogManager.getLogger(RootClassLoader.class);
 
     this.transformEnabled = false;
@@ -107,8 +108,9 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
         information = CommonClassLoaderHelper.retrieveClass(loader, name);
 
         if (information == null) {
+          String finalName = name;
           logger.trace("Failed to find class {} after searching root and the following children: [{}]",
-              () -> name,
+              () -> finalName,
               () -> children.stream()
                   .map(CommonClassLoader::getClassloaderName)
                   .collect(Collectors.joining(", ")));
@@ -145,14 +147,14 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   public URL findResource(String name, boolean allowRedirect) {
     try {
       Enumeration<URL> allWithName = findResources(name, allowRedirect);
-      if(!allWithName.hasMoreElements()) {
+      if (!allWithName.hasMoreElements()) {
         return null;
       }
 
       URL first = allWithName.nextElement();
-      if(allWithName.hasMoreElements()) {
+      if (allWithName.hasMoreElements()) {
         byte[] firstData;
-        if(resourceDataCache.containsKey(first)) {
+        if (resourceDataCache.containsKey(first)) {
           firstData = resourceDataCache.get(first);
         } else {
           firstData = CommonClassLoaderHelper.readResource(first.openConnection());
@@ -163,14 +165,14 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
           URL next = allWithName.nextElement();
           byte[] nextData;
 
-          if(resourceDataCache.containsKey(next)) {
+          if (resourceDataCache.containsKey(next)) {
             nextData = resourceDataCache.get(next);
           } else {
             nextData = CommonClassLoaderHelper.readResource(next.openConnection());
             resourceDataCache.put(next, nextData);
           }
 
-          if(!Arrays.equals(firstData, nextData)) {
+          if (!Arrays.equals(firstData, nextData)) {
             // TODO: Currently, we have classpath conflicts, so this needs to be fixed first,
             //       then re-enable the throw!
             logger.warn("Resources with same name but different content found: ");
@@ -200,7 +202,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       resources.addAll(Collections.list(childClassLoader.commonFindResources(name)));
     }
 
-    if(allowRedirect) {
+    if (allowRedirect) {
       List<URL> adjustedResources = new ArrayList<>();
       for (URL suggested : resources) {
         for (LauncherPlugin plugin : plugins) {
@@ -222,11 +224,11 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   public Enumeration<URL> findAllResources() throws IOException {
     List<URL> collected = new ArrayList<>();
 
-    for(URL url : getURLs()) {
+    for (URL url : getURLs()) {
       collected.addAll(CommonClassLoaderHelper.scanResources(url));
     }
 
-    for(ChildClassLoader child : children) {
+    for (ChildClassLoader child : children) {
       collected.addAll(Collections.list(child.commonFindAllResources()));
     }
 

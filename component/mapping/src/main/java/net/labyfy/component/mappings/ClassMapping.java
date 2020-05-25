@@ -3,6 +3,7 @@ package net.labyfy.component.mappings;
 import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import javassist.CtClass;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 
@@ -80,9 +81,29 @@ public class ClassMapping {
     }
   }
 
+  public MethodMapping getMethod(String name) {
+    return this.getMethod(name, new Class[]{});
+  }
+
   public MethodMapping getMethod(String name, Class... parameters) {
     StringBuilder stringBuilder = new StringBuilder();
     for (Class clazz : parameters) {
+      stringBuilder.append(this.getDescriptorForClass(clazz));
+    }
+
+    MethodMapping method =
+        this.getMethodExplicit(
+            name + this.translateMethodDescription("(" + stringBuilder.toString() + ")"));
+    if (method != null) return method;
+
+    String methodIdenfitier = this.getMethodIdenfitier(parameters);
+    return MethodMapping.create(
+        this, name, methodIdenfitier, methodIdenfitier, name, methodIdenfitier, methodIdenfitier);
+  }
+
+  public MethodMapping getMethod(String name, CtClass... parameters) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (CtClass clazz : parameters) {
       stringBuilder.append(this.getDescriptorForClass(clazz));
     }
 
@@ -121,6 +142,15 @@ public class ClassMapping {
 
     unObfDesc.append(")");
     return unObfDesc.toString();
+  }
+
+  private String getMethodIdenfitier(CtClass... classes) {
+    StringBuilder s = new StringBuilder("(");
+    for (final CtClass c : classes) {
+      s.append(getDescriptorForClass(c));
+    }
+    s.append(')');
+    return s.toString();
   }
 
   private String getMethodIdenfitier(Class... classes) {
@@ -177,6 +207,23 @@ public class ClassMapping {
     return ('L' + c.getName() + ';').replace('.', '/');
   }
 
+  private String getDescriptorForClass(final CtClass c) {
+    if (c.isPrimitive()) {
+      if (c == CtClass.byteType) return "B";
+      if (c == CtClass.charType) return "C";
+      if (c == CtClass.doubleType) return "D";
+      if (c == CtClass.floatType) return "F";
+      if (c == CtClass.intType) return "I";
+      if (c == CtClass.longType) return "J";
+      if (c == CtClass.shortType) return "S";
+      if (c == CtClass.booleanType) return "Z";
+      if (c == CtClass.voidType) return "V";
+      throw new RuntimeException("Unrecognized primitive " + c);
+    }
+    if (c.isArray()) return c.getName().replace('.', '/');
+    return ('L' + c.getName() + ';').replace('.', '/');
+  }
+
   public String getObfuscatedName() {
     return obfuscatedName;
   }
@@ -192,5 +239,15 @@ public class ClassMapping {
   public static ClassMapping create(
       ClassMappingProvider classMappingProvider, String obfuscatedName, String unObfuscatedName) {
     return new ClassMapping(classMappingProvider, obfuscatedName, unObfuscatedName);
+  }
+
+  protected void setMethods(Collection<MethodMapping> methods) {
+    this.obfuscatedMethodMappings.clear();
+    this.unObfuscatedMethodMappings.clear();
+
+    for (MethodMapping entry : methods) {
+      this.obfuscatedMethodMappings.put(entry.getObfuscatedMethodIdentifier(), entry);
+      this.unObfuscatedMethodMappings.put(entry.getUnObfuscatedMethodIdentifier(), entry);
+    }
   }
 }

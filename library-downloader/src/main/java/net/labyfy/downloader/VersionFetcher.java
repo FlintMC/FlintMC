@@ -61,7 +61,7 @@ public class VersionFetcher {
 
   public static class Version {
 
-    private Object arguments;
+    private Arguments arguments;
     private Object assetIndex;
     private String assets;
     private Version.Downloads downloads;
@@ -114,7 +114,7 @@ public class VersionFetcher {
       return id;
     }
 
-    public Object getArguments() {
+    public Arguments getArguments() {
       return arguments;
     }
 
@@ -122,7 +122,7 @@ public class VersionFetcher {
       return this.libraries;
     }
 
-    public Version setArguments(Object arguments) {
+    public Version setArguments(Arguments arguments) {
       this.arguments = arguments;
       return this;
     }
@@ -291,7 +291,11 @@ public class VersionFetcher {
       private Object rules;
 
       public Library(
-          Downloads downloads, Object extract, Object rules, String name, Map<String, String> natives) {
+          Downloads downloads,
+          Object extract,
+          Object rules,
+          String name,
+          Map<String, String> natives) {
         this.downloads = downloads;
         this.extract = extract;
         this.rules = rules;
@@ -299,9 +303,7 @@ public class VersionFetcher {
         this.natives = natives;
       }
 
-      public Library() {
-      }
-
+      public Library() {}
 
       public Map<String, String> getNatives() {
         return natives;
@@ -320,13 +322,34 @@ public class VersionFetcher {
       }
 
       public String toString() {
-        return "Library{" +
-            "downloads=" + downloads +
-            ", extract=" + extract +
-            ", rules=" + rules +
-            ", name='" + name + '\'' +
-            ", natives=" + natives +
-            '}';
+        return "Library{"
+            + "downloads="
+            + downloads
+            + ", extract="
+            + extract
+            + ", rules="
+            + rules
+            + ", name='"
+            + name
+            + '\''
+            + ", natives="
+            + natives
+            + '}';
+      }
+
+      public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Library library = (Library) o;
+        return Objects.equals(downloads, library.downloads) &&
+            Objects.equals(extract, library.extract) &&
+            Objects.equals(name, library.name) &&
+            Objects.equals(natives, library.natives) &&
+            Objects.equals(rules, library.rules);
+      }
+
+      public int hashCode() {
+        return Objects.hash(downloads, extract, name, natives, rules);
       }
 
       public Library.Downloads getDownloads() {
@@ -338,8 +361,7 @@ public class VersionFetcher {
         private Artifact artifact;
         private Map<String, Artifact> classifiers;
 
-        public Downloads() {
-        }
+        public Downloads() {}
 
         public Downloads(Artifact artifact) {
           this.artifact = artifact;
@@ -362,14 +384,25 @@ public class VersionFetcher {
           return "Downloads{" + "artifact=" + artifact + ", classifiers=" + classifiers + '}';
         }
 
+        public boolean equals(Object o) {
+          if (this == o) return true;
+          if (o == null || getClass() != o.getClass()) return false;
+          Downloads downloads = (Downloads) o;
+          return Objects.equals(artifact, downloads.artifact) &&
+              Objects.equals(classifiers, downloads.classifiers);
+        }
+
+        public int hashCode() {
+          return Objects.hash(artifact, classifiers);
+        }
+
         public static class Artifact {
           private String path;
           private String sha1;
           private int size;
           private String url;
 
-          public Artifact() {
-          }
+          public Artifact() {}
 
           public Artifact(String path, String sha1, int size, String url) {
             this.path = path;
@@ -410,20 +443,56 @@ public class VersionFetcher {
                 + '}';
           }
 
+
           public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Artifact artifact = (Artifact) o;
-            return size == artifact.size
-                && Objects.equals(path, artifact.path)
-                && Objects.equals(sha1, artifact.sha1)
-                && Objects.equals(url, artifact.url);
+            return size == artifact.size &&
+                Objects.equals(path, artifact.path) &&
+                Objects.equals(sha1, artifact.sha1) &&
+                Objects.equals(url, artifact.url);
           }
 
           public int hashCode() {
             return Objects.hash(path, sha1, size, url);
           }
         }
+      }
+    }
+
+    public static class Arguments {
+
+      private Object[] game;
+      private Object[] jvm;
+
+      private Arguments() {}
+
+      public Object[] getGame() {
+        return game;
+      }
+
+      public Arguments setGame(Object[] game) {
+        this.game = game;
+        return this;
+      }
+
+      public Object[] getJvm() {
+        return jvm;
+      }
+
+      public Arguments setJvm(Object[] jvm) {
+        this.jvm = jvm;
+        return this;
+      }
+
+      public String toString() {
+        return "Arguments{"
+            + "game="
+            + Arrays.toString(game)
+            + ", jvm="
+            + Arrays.toString(jvm)
+            + '}';
       }
     }
   }

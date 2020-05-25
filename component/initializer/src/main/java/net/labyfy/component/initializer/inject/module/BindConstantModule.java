@@ -6,6 +6,7 @@ import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import net.labyfy.component.launcher.LaunchController;
+import net.labyfy.component.launcher.classloading.RootClassLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,16 +26,11 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
     this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
-    try {
-      this.bindNamed(
-          "obfuscated",
-          (ClassPath.from(LaunchController.getInstance().getRootLoader())
-                  .getTopLevelClassesRecursive("net.minecraft.world")
-                  .size()
-              == 0));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    boolean obfuscated = ((RootClassLoader) getClass().getClassLoader()).findResource("net/minecraft/client/Minecraft.class") == null;
+
+    this.bindNamed(
+        "obfuscated",
+        obfuscated);
   }
 
   private void bindNamedFilePath(String name, String path) {

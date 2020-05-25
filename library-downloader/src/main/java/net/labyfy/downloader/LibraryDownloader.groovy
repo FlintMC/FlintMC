@@ -16,6 +16,7 @@ import org.gradle.api.artifacts.repositories.ArtifactRepository
 import org.happy.collections.lists.decorators.SortedList_1x0
 
 import java.security.MessageDigest
+import java.util.function.BiConsumer
 
 class LibraryDownloadExtension {
     String version;
@@ -76,21 +77,13 @@ class LibraryDownloader implements Plugin<Project> {
                         if (targetVersion == version) {
                             downloadArtifact(artifact, version, libraries, downloads.artifact.url)
                             if (downloads.classifiers != null) {
-                                if (downloads.classifiers.nativesLinux != null) {
-                                    path = downloads.classifiers.nativesLinux.path.split('/')
-                                    version = path[path.length - 2]
-                                    this.downloadArtifact(artifact + "-natives-linux", version, libraries, downloads.classifiers.nativesLinux.url)
-                                }
-                                if (downloads.classifiers.nativesOSX != null) {
-                                    path = downloads.classifiers.nativesOSX.path.split('/')
-                                    version = path[path.length - 2]
-                                    this.downloadArtifact(artifact + "-natives-macos", version, libraries, downloads.classifiers.nativesOSX.url)
-                                }
-                                if (downloads.classifiers.nativesWindows != null) {
-                                    path = downloads.classifiers.nativesWindows.path.split('/')
-                                    version = path[path.length - 2]
-                                    this.downloadArtifact(artifact + "-natives-windows", version, libraries, downloads.classifiers.nativesWindows.url)
-                                }
+                                downloads.classifiers.forEach(new BiConsumer<String, VersionFetcher.Version.Library.Downloads.Artifact>() {
+                                    void accept(String name, VersionFetcher.Version.Library.Downloads.Artifact classifier) {
+                                        path = classifier.path.split('/')
+                                        version = path[path.length - 2]
+                                        downloadArtifact(artifact + "-" + name, version, libraries, classifier.url)
+                                    }
+                                })
                             }
                         }
                     }
@@ -125,13 +118,12 @@ class LibraryDownloader implements Plugin<Project> {
             doLast {
                 VersionFetcher.Version version = VersionFetcher.fetch(extension.version).getDetails();
 
-                Collection<VersionFetcher.Version.Library> libraries = new LinkedList<>();
 
-                Collection<Project> projects = new ArrayList<>(project.childProjects.values());
-                projects.add(project)
+                Collection<VersionFetcher.Version.Library> libraries = new LinkedHashSet<>()
 
-                projects.each { childProject ->
+                getChildren(getHighestProject(project)).each { childProject ->
                     childProject.configurations.getByName("minecraft").dependencies.each { dependency ->
+
                         if (dependency.version == null || dependency.group == null || dependency.version == null) return
                         for (ArtifactRepository repository : childProject.repositories.asList()) {
 
@@ -160,7 +152,7 @@ class LibraryDownloader implements Plugin<Project> {
                                             new VersionFetcher.Version.Library(
                                                     new VersionFetcher.Version.Library.Downloads(
                                                             new VersionFetcher.Version.Library.Downloads.Artifact(
-                                                                    jarUrl,
+                                                                    (dependency.group + "." + dependency.name + "." + dependency.version).replace('.', '/'),
                                                                     sha1sum,
                                                                     data.length,
                                                                     jarUrl
@@ -174,8 +166,16 @@ class LibraryDownloader implements Plugin<Project> {
                         }
                     }
                 }
-                version.id = "LabyMod-4-" + version.id
+                version.id = "Labyfy-" + version.id
                 libraries.addAll(Arrays.asList(version.libraries))
+                version.mainClass = "net.labyfy.component.launcher.LabyLauncher"
+
+                Object[] gameArguments = new Object[version.getArguments().getGame().length + 2];
+                System.arraycopy(version.arguments.game, 0, gameArguments, 0, version.arguments.game.length);
+                gameArguments[gameArguments.length - 2] = "--tweakClass"
+                gameArguments[gameArguments.length - 1] = "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
+
+                version.arguments.game = gameArguments
                 version.libraries = libraries.<VersionFetcher.Version.Library> toArray([] as VersionFetcher.Version.Library)
                 println new GsonBuilder().disableHtmlEscaping().create().toJson(version)
 
@@ -184,6 +184,27 @@ class LibraryDownloader implements Plugin<Project> {
 
         project.defaultTasks("download-libraries")
 
+    }
+
+    private Project getHighestProject(Project project) {
+        if (project.parent == null) {
+            return project;
+        }
+
+        if (project.parent.parent == null) {
+            return project.parent;
+        }
+
+        return getHighestProject(project.parent);
+    }
+
+    private Collection<Project> getChildren(Project project) {
+        Collection<Project> projects = new HashSet<>();
+        projects.add(project)
+        project.childProjects.values().each { child ->
+            projects.addAll(getChildren(child))
+        }
+        return projects
     }
 
     private void download(String url, File file) {
