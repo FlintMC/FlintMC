@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;
 import net.labyfy.base.structure.resolve.NameResolver;

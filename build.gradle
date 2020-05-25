@@ -41,6 +41,7 @@ allprojects {
         minecraft.transitive(true)
     }
 
+
     artifactory {
         contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")   //The base Artifactory URL if not overridden by the publisher/resolver
         publish {
@@ -69,10 +70,12 @@ allprojects {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
     compile project(':component:base')
     compile project(':component:transform:javassist')
     compile project(':component:transform:asm')
     compile project(':component:transform:minecraft')
+    compile project(':component:transform:minecraft-obfuscator')
     compile project(':component:transform:hook')
     compile project(':component:gui')
     compile project(':component:gui:mcjfxgl')
@@ -90,7 +93,6 @@ dependencies {
     compile project(':component:packages')
     compile project(':component:packages:packages-impl')
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
-    compile 'com.google.guava:guava:27.1-jre'
     compile 'org.apache.commons:commons-lang3:3.9'
 }
 

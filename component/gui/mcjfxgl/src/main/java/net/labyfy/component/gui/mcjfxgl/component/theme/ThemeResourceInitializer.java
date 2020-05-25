@@ -1,10 +1,12 @@
 package net.labyfy.component.gui.mcjfxgl.component.theme;
 
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.tasks.subproperty.TaskBody;
 
 @FunctionalInterface
+@AutoLoad
 public interface ThemeResourceInitializer {
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)

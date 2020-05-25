@@ -12,13 +12,11 @@ import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-@Singleton
 public class PropertyParser {
 
-  @Inject
   private PropertyParser() {}
 
-  public Property.Base parse(LocatedIdentifiedAnnotation locatedIdentifiedAnnotation) {
+  public static Property.Base parse(LocatedIdentifiedAnnotation locatedIdentifiedAnnotation) {
     Multimap<Class<? extends Annotation>, LocatedIdentifiedAnnotation> identifiers =
         HashMultimap.create();
 
@@ -92,7 +90,7 @@ public class PropertyParser {
       }
 
       for (LocatedIdentifiedAnnotation identifiedAnnotation : identifiers.get(property.value())) {
-        Property.Base parse = this.parse(identifiedAnnotation);
+        Property.Base parse = parse(identifiedAnnotation);
         subProperties.put(identifiedAnnotation, parse);
       }
     }
@@ -103,7 +101,7 @@ public class PropertyParser {
       }
 
       for (LocatedIdentifiedAnnotation identifiedAnnotation : identifiers.get(property.value())) {
-        Property.Base parse = this.parse(identifiedAnnotation);
+        Property.Base parse = parse(identifiedAnnotation);
         subProperties.put(identifiedAnnotation, parse);
       }
     }

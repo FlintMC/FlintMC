@@ -1,4 +1,4 @@
-package net.labyfy.base.structure;
+package net.labyfy.base.structure.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,8 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Initialize {
+@Target(ElementType.TYPE)
+public @interface AutoLoad {
+  int round() default 1;
 
   int priority() default 0;
 }

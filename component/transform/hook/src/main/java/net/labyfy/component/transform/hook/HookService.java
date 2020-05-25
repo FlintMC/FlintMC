@@ -16,6 +16,7 @@ import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
+import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
@@ -30,26 +31,28 @@ import java.util.Map;
 @Service(Hook.class)
 public class HookService implements ServiceHandler {
 
+  private final ClassMappingProvider classMappingProvider;
   private final String version;
   private final InjectedInvocationHelper injectedInvocationHelper;
   private final Collection<HookEntry> hooks;
 
   @Inject
   private HookService(
-          InjectedInvocationHelper injectedInvocationHelper,
-          @Named("launchArguments") Map launchArguments) {
+      ClassMappingProvider classMappingProvider, InjectedInvocationHelper injectedInvocationHelper,
+      @Named("launchArguments") Map launchArguments) {
+    this.classMappingProvider = classMappingProvider;
     this.injectedInvocationHelper = injectedInvocationHelper;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--version");
   }
 
   public static void notify(
-          Object instance,
-          Hook.ExecutionTime executionTime,
-          Class<?> clazz,
-          String method,
-          Class<?>[] parameters,
-          Object[] args) {
+      Object instance,
+      Hook.ExecutionTime executionTime,
+      Class<?> clazz,
+      String method,
+      Class<?>[] parameters,
+      Object[] args) {
     try {
 
       Map<Key<?>, Object> availableParameters = Maps.newHashMap();
@@ -60,10 +63,10 @@ public class HookService implements ServiceHandler {
 
       Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
       InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
-              .invokeMethod(
-                      declaredMethod,
-                      InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
-                      availableParameters);
+          .invokeMethod(
+              declaredMethod,
+              InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
+              availableParameters);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -74,23 +77,23 @@ public class HookService implements ServiceHandler {
 
     for (Property.Base subProperty : property.getProperty().getSubProperties(HookFilter.class)) {
       subProperties.put(
-              subProperty,
-              InjectionHolder.getInjectedInstance(
-                      subProperty
-                              .getLocatedIdentifiedAnnotation()
-                              .<HookFilter>getAnnotation()
-                              .type()
-                              .typeNameResolver()));
+          subProperty,
+          InjectionHolder.getInjectedInstance(
+              subProperty
+                  .getLocatedIdentifiedAnnotation()
+                  .<HookFilter>getAnnotation()
+                  .type()
+                  .typeNameResolver()));
     }
 
     Hook annotation = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
 
     this.hooks.add(
-            new HookEntry(
-                    property,
-                    subProperties,
-                    InjectionHolder.getInjectedInstance(annotation.parameterTypeNameResolver()),
-                    InjectionHolder.getInjectedInstance(annotation.methodNameResolver())));
+        new HookEntry(
+            property,
+            subProperties,
+            InjectionHolder.getInjectedInstance(annotation.parameterTypeNameResolver()),
+            InjectionHolder.getInjectedInstance(annotation.methodNameResolver())));
   }
 
   @ClassTransform
@@ -103,32 +106,32 @@ public class HookService implements ServiceHandler {
       Hook hook = identifier.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
-        String className = classTransformContext.getNameResolver().resolve(hook.className());
+        String className = classMappingProvider.get(classTransformContext.getNameResolver().resolve(hook.className())).getName();
         if (className != null && className.equals(ctClass.getName())) {
           this.modify(
-                  entry,
-                  hook,
-                  ctClass,
-                  identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
+              entry,
+              hook,
+              ctClass,
+              identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
         }
       } else {
         boolean cancel = false;
         for (Map.Entry<Property.Base, AnnotationResolver<Type, String>> subProperty :
-                entry.subProperties.entrySet()) {
+            entry.subProperties.entrySet()) {
           HookFilter hookFilter =
-                  subProperty.getKey().getLocatedIdentifiedAnnotation().getAnnotation();
+              subProperty.getKey().getLocatedIdentifiedAnnotation().getAnnotation();
 
           if (!hookFilter
-                  .value()
-                  .test(ctClass, subProperty.getValue().resolve(hookFilter.type()))) {
+              .value()
+              .test(ctClass, classMappingProvider.get(subProperty.getValue().resolve(hookFilter.type())).getName())) {
             cancel = true;
           }
           if (!cancel) {
             this.modify(
-                    entry,
-                    hook,
-                    ctClass,
-                    identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
+                entry,
+                hook,
+                ctClass,
+                identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
           }
         }
       }
@@ -173,8 +176,8 @@ public class HookService implements ServiceHandler {
             + hook.getName()
             + "\", "
             + (stringBuilder.toString().isEmpty()
-                ? "new Class[0]"
-                : "new Class[]{" + stringBuilder.toString() + "}")
+            ? "new Class[0]"
+            : "new Class[]{" + stringBuilder.toString() + "}")
             + ", $args);");
   }
 
@@ -184,12 +187,12 @@ public class HookService implements ServiceHandler {
 
       for (int i = 0; i < hook.parameters().length; i++) {
         parameters[i] =
-                ClassPool.getDefault()
-                        .get(hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i]));
+            ClassPool.getDefault()
+                .get(classMappingProvider.get(hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i])).getName());
       }
 
       CtMethod declaredMethod =
-              ctClass.getDeclaredMethod(hookEntry.methodNameResolver.resolve(hook), parameters);
+          ctClass.getDeclaredMethod(classMappingProvider.get(ctClass.getName()).getMethod(hookEntry.methodNameResolver.resolve(hook), parameters).getName(), parameters);
       if (declaredMethod != null) {
         for (Hook.ExecutionTime executionTime : hook.executionTime()) {
           this.insert(declaredMethod, executionTime, callback);
@@ -207,10 +210,10 @@ public class HookService implements ServiceHandler {
     private final AnnotationResolver<Hook, String> methodNameResolver;
 
     private HookEntry(
-            Identifier.Base hook,
-            Map<Property.Base, AnnotationResolver<Type, String>> subProperties,
-            AnnotationResolver<Type, String> parameterTypeNameResolver,
-            AnnotationResolver<Hook, String> methodNameResolver) {
+        Identifier.Base hook,
+        Map<Property.Base, AnnotationResolver<Type, String>> subProperties,
+        AnnotationResolver<Type, String> parameterTypeNameResolver,
+        AnnotationResolver<Hook, String> methodNameResolver) {
       this.hook = hook;
       this.subProperties = subProperties;
       this.parameterTypeNameResolver = parameterTypeNameResolver;
