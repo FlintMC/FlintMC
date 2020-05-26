@@ -2,12 +2,12 @@ package net.labyfy.component.gui.mcjfxgl.component.theme;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Streams;
-import com.google.common.reflect.ClassPath;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
+import net.labyfy.component.gui.mcjfxgl.component.theme.source.ThemeGroovyCodeSourceShim;
+import net.labyfy.component.gui.mcjfxgl.component.theme.source.ThemePermissionChecker;
 import net.labyfy.component.gui.mcjfxgl.component.theme.style.ThemeComponentStyle;
 import net.labyfy.component.inject.event.Event;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
@@ -15,20 +15,16 @@ import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.component.resources.pack.ResourcePackProvider;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
+import net.labyfy.component.security.LabyfySecurityManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -38,6 +34,7 @@ public class ThemeRepository {
   private final ResourcePackProvider resourcePackProvider;
   private final ResourceLocationProvider resourceLocationProvider;
   private final Theme.Factory themeFactory;
+  private final AtomicInteger themeScriptCount;
   private Theme activeTheme;
   private boolean active = true;
 
@@ -45,10 +42,14 @@ public class ThemeRepository {
   private ThemeRepository(
       ResourcePackProvider resourcePackProvider,
       ResourceLocationProvider resourceLocationProvider,
-      Theme.Factory themeFactory) {
+      Theme.Factory themeFactory,
+      LabyfySecurityManager securityManager,
+      ThemePermissionChecker permissionChecker) {
     this.resourcePackProvider = resourcePackProvider;
     this.resourceLocationProvider = resourceLocationProvider;
     this.themeFactory = themeFactory;
+    this.themeScriptCount = new AtomicInteger(0);
+    securityManager.installChecker(permissionChecker);
   }
 
   @Event(ResourcePackReloadEvent.class)
@@ -130,7 +131,10 @@ public class ThemeRepository {
     CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
 
     compilerConfiguration.setScriptBaseClass(baseClass.getName());
-    T handle = (T) new GroovyShell(compilerConfiguration).parse(source);
+
+    String className = "ThemeGroovyScript" + themeScriptCount.incrementAndGet() + ".groovy";
+    ThemeGroovyCodeSourceShim codeSource = new ThemeGroovyCodeSourceShim(source, className);
+    T handle = (T) new GroovyShell(compilerConfiguration).parse(codeSource);
 
     handle.run();
     return handle;

@@ -99,3 +99,6 @@ buildCache {
 include 'component:service'
 findProject(':component:service')?.name = 'service'
 
+include 'component:security'
+findProject('component:security')?.name = 'security'
+
