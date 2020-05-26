@@ -85,6 +85,10 @@ publish_version:
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew artifactoryPublish
+    - export MD5SUM=$(md5sum build/libs/Labyfy-$(cat version).jar | cut -f1 -d' ')
+    - sed -i "s/\"md5\".*/\"md5\":\ \"${MD5SUM})\"/1" manifest.json
+    - sed -i "s/VERSION/$(cat version)/g" manifest.json
+    - cat manifest.json
     - echo "CURL TO LM_DISTRIBUTOR \n for $(cat version) with changelog $(cat CHANGELOG)"
   environment:
     name: production
