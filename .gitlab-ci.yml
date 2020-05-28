@@ -91,8 +91,8 @@ publish_version:
     - cat manifest.json
     - export FILE="Labyfy-$(cat version).jar"
     - mv build/libs/$FILE .
-    - curl -H "Authorization: Bearer ${DISTRIBUTOR_TOKEN}" -F "file=@$FILE" http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
-    - curl -H "Authorization: Bearer ${DISTRIBUTOR_TOKEN}" -F 'file=@manifest.json' http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
+    - curl -H "Authorization:Bearer ${DISTRIBUTOR_TOKEN}" -F "file=@$FILE" http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
+    - curl -H "Authorization:Bearer ${DISTRIBUTOR_TOKEN}" -F 'file=@manifest.json' http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
   environment:
     name: production
   only:
