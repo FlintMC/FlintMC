@@ -85,7 +85,9 @@ publish_version:
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew artifactoryPublish
-    - echo "CURL TO LM_DISTRIBUTOR \n for $(cat version) with changelog $(cat CHANGELOG)"
+    - export FILE="build/libs/Labyfy-$(cat version).jar"
+    - curl -H "Authorization: Bearer ${DISTRIBUTOR_TOKEN}" -Fe "file=@$FILE" http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
+    - curl -H "Authorization: Bearer ${DISTRIBUTOR_TOKEN}" -F 'file=@manifest.json' http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
   environment:
     name: production
   only:
