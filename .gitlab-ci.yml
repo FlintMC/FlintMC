@@ -89,7 +89,10 @@ publish_version:
     - sed -i "s/\"md5\".*/\"md5\":\ \"${MD5SUM})\"/1" manifest.json
     - sed -i "s/VERSION/$(cat version)/g" manifest.json
     - cat manifest.json
-    - echo "CURL TO LM_DISTRIBUTOR \n for $(cat version) with changelog $(cat CHANGELOG)"
+    - export FILE="labyfy-$(cat version).jar"
+    - mv build/libs/$FILE .
+    - curl -H "Authorization:Bearer ${DISTRIBUTOR_TOKEN}" -F "file=@$FILE" http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
+    - curl -H "Authorization:Bearer ${DISTRIBUTOR_TOKEN}" -F 'file=@manifest.json' http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
   environment:
     name: production
   only:
