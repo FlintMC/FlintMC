@@ -85,8 +85,13 @@ publish_version:
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew artifactoryPublish
-    - export FILE="build/libs/Labyfy-$(cat version).jar"
-    - curl -H "Authorization: Bearer ${DISTRIBUTOR_TOKEN}" -Fe "file=@$FILE" http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
+    - export MD5SUM=$(md5sum build/libs/Labyfy-$(cat version).jar | cut -f1 -d' ')
+    - sed -i "s/\"md5\".*/\"md5\":\ \"${MD5SUM})\"/1" manifest.json
+    - sed -i "s/VERSION/$(cat version)/g" manifest.json
+    - cat manifest.json
+    - export FILE="Labyfy-$(cat version).jar"
+    - mv build/libs/$FILE .
+    - curl -H "Authorization: Bearer ${DISTRIBUTOR_TOKEN}" -F "file=@$FILE" http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
     - curl -H "Authorization: Bearer ${DISTRIBUTOR_TOKEN}" -F 'file=@manifest.json' http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
   environment:
     name: production
