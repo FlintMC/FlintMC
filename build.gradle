@@ -101,6 +101,14 @@ java {
     withSourcesJar()
 }
 
+jar {
+    // dirty dependsOn
+    // nobody knows why the launcher is bitchy
+    dependsOn 'component:launcher:build'
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 
 allprojects {
     version '0.1.1'
