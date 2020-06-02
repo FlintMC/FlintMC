@@ -80,7 +80,7 @@ findProject(':component:transform:minecraft-obfuscator')?.name = 'minecraft-obfu
 
 ext.isPush = true
 
-includeBuild 'library-downloader'
+includeBuild 'labyfy-gradle-plugin'
 
 buildCache {
     local {
