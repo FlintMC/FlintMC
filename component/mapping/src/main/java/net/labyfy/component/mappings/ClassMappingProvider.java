@@ -21,10 +21,10 @@ public class ClassMappingProvider {
   private final Map<String, ClassMapping> unObfuscatedClassMappings = Maps.newConcurrentMap();
 
   @Inject
-  private ClassMappingProvider(@Named("launchArguments") Map<String, String> launchArguments, @Named("labyfyRoot") File labyfyRoot) {
+  private ClassMappingProvider(@Named("launchArguments") Map launchArguments, @Named("labyfyRoot") File labyfyRoot) {
     McpMappingParser mcpMappingParser = new McpMappingParser();
     try {
-      String version = launchArguments.get("--version");
+      String version = (String) launchArguments.get("--version");
 
       Collection<ClassMapping> parse =
           mcpMappingParser.parse(

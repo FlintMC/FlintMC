@@ -21,7 +21,7 @@ public class ImplementService extends InjectionServiceShare implements ServiceHa
 
 
   @Inject
-  private ImplementService(@Named("launchArguments") Map<String, String> launchArguments) {
+  private ImplementService(@Named("launchArguments") Map launchArguments) {
     this.launchArguments = launchArguments;
   }
 
