@@ -1,4 +1,4 @@
-package net.labyfy.downloader;
+package net.labyfy.gradle.library;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;

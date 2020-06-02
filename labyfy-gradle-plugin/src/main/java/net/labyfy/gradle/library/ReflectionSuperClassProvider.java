@@ -1,5 +1,6 @@
-package net.labyfy.downloader; // Created by leo on 25.09.19
+package net.labyfy.gradle.library; // Created by leo on 25.09.19
 
+import javax.inject.Singleton;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -8,17 +9,16 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ReflectionSuperClassProvider implements ISuperClassProvider {
+public class ReflectionSuperClassProvider implements SuperClassProvider {
 
   private URLClassLoader classLoader = null;
   private Method addURLMethod = null;
 
-  public ReflectionSuperClassProvider(File jarFile, File libraries)
+  protected ReflectionSuperClassProvider(File jarFile, File libraries)
       throws NoSuchMethodException, MalformedURLException, InvocationTargetException,
       IllegalAccessException {
     this.classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -48,7 +48,6 @@ public class ReflectionSuperClassProvider implements ISuperClassProvider {
     this.addURLMethod.invoke(classLoader, url);
   }
 
-  @Override
   public List<String> getSuperClass(String clazz) {
     try {
       Class theClazz = Class.forName(clazz, false, classLoader);

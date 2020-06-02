@@ -39,7 +39,7 @@ public class HookService implements ServiceHandler {
   @Inject
   private HookService(
       ClassMappingProvider classMappingProvider, InjectedInvocationHelper injectedInvocationHelper,
-      @Named("launchArguments") Map launchArguments) {
+      @Named("launchArguments") Map<String, String> launchArguments) {
     this.classMappingProvider = classMappingProvider;
     this.injectedInvocationHelper = injectedInvocationHelper;
     this.hooks = Sets.newHashSet();

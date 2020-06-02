@@ -1,17 +1,15 @@
-package net.labyfy.downloader;
+package net.labyfy.gradle.library;
 
-import com.google.common.base.Preconditions;
 import org.objectweb.asm.commons.SimpleRemapper;
 
 import java.util.List;
-import java.util.Map;
 
-public class SimpleSimpleRemapper extends SimpleRemapper {
+public class LibraryRemapNameProvider extends SimpleRemapper {
 
-  private ISuperClassProvider superClassProvider;
+  private final SuperClassProvider superClassProvider;
 
-  private SimpleSimpleRemapper(Map mapping, ISuperClassProvider superClassProvider) {
-    super(mapping);
+  protected LibraryRemapNameProvider(LibraryRemapper remapper, SuperClassProvider superClassProvider) {
+    super(remapper.getMappings());
     this.superClassProvider = superClassProvider;
   }
 
@@ -50,9 +48,5 @@ public class SimpleSimpleRemapper extends SimpleRemapper {
     return super.map(key);
   }
 
-  public static SimpleSimpleRemapper create(Map mapping, ISuperClassProvider superClassProvider) {
-    Preconditions.checkNotNull(mapping);
-    Preconditions.checkNotNull(superClassProvider);
-    return new SimpleSimpleRemapper(mapping, superClassProvider);
-  }
+
 }

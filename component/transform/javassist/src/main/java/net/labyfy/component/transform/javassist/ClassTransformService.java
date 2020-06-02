@@ -44,7 +44,7 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
   private ClassTransformService(
           ClassMappingProvider classMappingProvider,
           ClassTransformContext.Factory classTransformContextFactory,
-          @Named("launchArguments") Map launchArguments) {
+          @Named("launchArguments") Map<String, String> launchArguments) {
     this.classMappingProvider = classMappingProvider;
     this.classTransformContextFactory = classTransformContextFactory;
     this.classTransformContexts = new HashSet<>();

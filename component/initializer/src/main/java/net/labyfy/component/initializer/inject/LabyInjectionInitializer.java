@@ -19,7 +19,7 @@ public class LabyInjectionInitializer {
 
   @Inject
   private LabyInjectionInitializer(
-      Injector injector, @Named("launchArguments") Map launchArguments) {
+      Injector injector, @Named("launchArguments") Map<String, String> launchArguments) {
     this.injector = injector;
     this.launchArguments = launchArguments;
     this.init();

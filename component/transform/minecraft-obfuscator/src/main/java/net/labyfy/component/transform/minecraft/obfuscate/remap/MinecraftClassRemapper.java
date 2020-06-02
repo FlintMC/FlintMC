@@ -1,12 +1,7 @@
 package net.labyfy.component.transform.minecraft.obfuscate.remap;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.NotFoundException;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
@@ -18,8 +13,6 @@ import net.labyfy.component.transform.asm.ASMUtils;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 

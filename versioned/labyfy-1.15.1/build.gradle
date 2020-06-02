@@ -8,7 +8,7 @@ plugins {
     id 'application'
 }
 
-apply plugin: 'net.labyfy.library-downloader'
+apply plugin: 'net.labyfy.labyfy-gradle-plugin'
 
 group 'net.labyfy.versioned'
 
