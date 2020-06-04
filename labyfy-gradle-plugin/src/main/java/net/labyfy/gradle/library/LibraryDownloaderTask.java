@@ -81,6 +81,7 @@ public class LibraryDownloaderTask implements Action<Task> {
     ImmutableSortedSet.copyOfSorted((SortedSet<String>) versions.keySet()).forEach(artifact -> {
       String[] path = Iterables.getLast(versions.get(artifact)).getArtifact().getPath().split("/");
       String targetVersion = path[path.length - 2];
+
       for (VersionFetcher.Version.Library.Downloads downloads : versions.get(artifact)) {
         path = downloads.getArtifact().getPath().split("/");
         String version = path[path.length - 2];

@@ -68,10 +68,9 @@ dependencies {
     minecraft project(':component:packages')
     minecraft project(':component:packages:packages-impl')
     minecraft project(':component:transform:launcher-plugin')
-
-    minecraft fileTree('libraries')
     minecraft project(':component:launcher')
-    minecraft group: 'com.google.guava', name: 'guava', version: '21.0'
+    minecraft project(':component:service')
+    minecraft project(':component:security')
 }
 
 application {
@@ -80,8 +79,8 @@ application {
 
 def runDir = new File(rootProject.projectDir, "run/1.15.1")
 def runDirTemplate = new File(rootProject.projectDir, "run-template")
-if(!runDir.exists()) {
-    if(!runDir.mkdirs()) {
+if (!runDir.exists()) {
+    if (!runDir.mkdirs()) {
         throw new GradleException("Failed to create run directory: ${runDir.absolutePath}")
     } else {
         copy {
@@ -94,12 +93,12 @@ if(!runDir.exists()) {
 run {
     workingDir runDir
     args "--uuid", "113da2d6-3c68-43c4-bee0-6f53fe8906e6",
-         "--username", "DevTastisch",
-         "--accessToken", "0",
-         "--version", "1.15.1",
-         "--assetsDir", "assets",
-         "--assetIndex", "1.15",
-         "--userProperties", "{}",
-         "--gameDir", ".",
-         "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
+            "--username", "DevTastisch",
+            "--accessToken", "0",
+            "--version", "1.15.1",
+            "--assetsDir", "assets",
+            "--assetIndex", "1.15",
+            "--userProperties", "{}",
+            "--gameDir", ".",
+            "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
 }
