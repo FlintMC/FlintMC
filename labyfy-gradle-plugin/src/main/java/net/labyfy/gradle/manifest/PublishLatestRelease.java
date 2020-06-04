@@ -140,9 +140,6 @@ public class PublishLatestRelease implements Action<Task> {
           .setInstallInstructions(installInstructions.toArray(new InstallInstruction[]{}))
           .setAuthors("DevTastisch"));
 
-      for (VersionFetcher.Version.Library artifact : artifacts) {
-        System.out.println(artifact.getName());
-      }
       publish(versionString.getBytes(StandardCharsets.UTF_8), "Labyfy-" + extension.getVersion() + "-latest.json", "Labyfy-" + extension.getVersion(), "latest");
       publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + extension.getVersion(), "latest");
     });
