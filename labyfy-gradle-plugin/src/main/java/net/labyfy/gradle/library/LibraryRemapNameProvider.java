@@ -15,7 +15,7 @@ public class LibraryRemapNameProvider extends SimpleRemapper {
 
   public String mapMethodName(String owner, String name, String desc) {
 
-    String map = this.map(owner + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+    String map = this.map(owner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
     if (map == null) {
 
       List<String> possibleOwners = superClassProvider.getSuperClass(owner.replace('/', '.'));

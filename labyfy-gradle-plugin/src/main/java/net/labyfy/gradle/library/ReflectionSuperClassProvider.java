@@ -64,7 +64,7 @@ public class ReflectionSuperClassProvider implements SuperClassProvider {
       classes.forEach(c -> transitiveSuperClasses.addAll(getSuperClass(c)));
       classes.addAll(transitiveSuperClasses);
       return classes;
-    } catch (ClassNotFoundException e) {
+    } catch (Exception ignored) {
       //Not found, can be ignored
       return null;
     }

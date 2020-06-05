@@ -44,24 +44,27 @@ public class LibraryRemapperContext {
   private void applyClassMappings() {
     this.classes.forEach(
         (name, classNode) -> {
-          if (this.remapper.getMappings().containsKey(classNode.name)
-              && !this.remapper.getMappings().get(classNode.name).equals(classNode.name)) {
-            System.out.println(
-                " -> rewrite "
-                    + classNode.name
-                    + " to "
-                    + this.remapper.getMappings().get(classNode.name).replace('/', '.'));
-          }
-          ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-          ClassVisitor classRemapper = new ClassRemapper(classWriter, this.libraryRemapNameProvider);
-          classNode.accept(classRemapper);
+          try {
+            if (this.remapper.getMappings().containsKey(classNode.name)) {
+              System.out.println(
+                  " -> rewrite "
+                      + classNode.name
+                      + " to "
+                      + this.remapper.getMappings().get(classNode.name).replace('/', '.'));
+            }
+            ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+            ClassVisitor classRemapper = new ClassRemapper(classWriter, this.libraryRemapNameProvider);
+            classNode.accept(classRemapper);
 
-          this.bytes.put(
-              (this.remapper.getMappings().containsKey(classNode.name)
-                  ? this.remapper.getMappings().get(classNode.name)
-                  : classNode.name)
-                  + ".class",
-              classWriter.toByteArray());
+            this.bytes.put(
+                (this.remapper.getMappings().containsKey(classNode.name)
+                    ? this.remapper.getMappings().get(classNode.name)
+                    : classNode.name)
+                    + ".class",
+                classWriter.toByteArray());
+          } catch (Throwable ignored) {
+            System.out.println(" -> cannot rewrite " + classNode.name);
+          }
         });
   }
 

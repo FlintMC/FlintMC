@@ -44,12 +44,18 @@ public class LibraryDownloaderTask implements Action<Task> {
 
       this.downloadVersionLibraries(libraryFolder);
       File client = this.downloadClient(libraryFolder);
+      File server = this.downloadServer(libraryFolder);
 
-      if (client != null) {
+      if (client != null || server != null) {
         download("https://dl.labymod.net/mappings/" + extension.getVersion() + "/methods.csv", new File(project.getProjectDir(), "Labyfy/assets/" + extension.getVersion() + "/methods.csv"));
         download("https://dl.labymod.net/mappings/" + extension.getVersion() + "/fields.csv", new File(project.getProjectDir(), "Labyfy/assets/" + extension.getVersion() + "/fields.csv"));
         download("https://dl.labymod.net/mappings/" + extension.getVersion() + "/joined.tsrg", new File(project.getProjectDir(), "Labyfy/assets/" + extension.getVersion() + "/joined.tsrg"));
-        this.deobfuscateClient(client, libraryFolder);
+      }
+      if (client != null) {
+        this.deobfuscate(client, libraryFolder);
+      }
+      if (server != null) {
+        this.deobfuscate(server, libraryFolder);
       }
     });
   }
@@ -71,8 +77,8 @@ public class LibraryDownloaderTask implements Action<Task> {
     return "LabyMod v" + "4" + " on mc" + "1.15.1";
   }
 
-  private void deobfuscateClient(File client, File libraryFolder) {
-    this.libraryRemapper.remap(client, libraryFolder);
+  private void deobfuscate(File file, File libraryFolder) {
+    this.libraryRemapper.remap(file, libraryFolder);
   }
 
   private void downloadVersionLibraries(File libraryFolder) {
@@ -104,6 +110,10 @@ public class LibraryDownloaderTask implements Action<Task> {
 
   private File downloadClient(File libraryFolder) {
     return this.downloadArtifact("client", extension.getVersion(), libraryFolder, versionDetails.getDownloads().getClient().getUrl());
+  }
+
+  private File downloadServer(File libraryFolder) {
+    return this.downloadArtifact("server", extension.getVersion(), libraryFolder, versionDetails.getDownloads().getServer().getUrl());
   }
 
   private File downloadArtifact(String artifact, String version, File libraries, String url) {
