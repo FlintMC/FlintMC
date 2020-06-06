@@ -90,6 +90,7 @@ dependencies {
     compile project(':component:transform:hook')
     compile project(':component:gui')
     compile project(':component:gui:juklearmc')
+    compile project(':component:gui:juklearmc:juklearmc-1.15.1')
     // compile project(':component:gui:mcjfxgl')
     // compile project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
     // compile project(':component:gui:mcjfxgl:default-components')
