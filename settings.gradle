@@ -33,6 +33,9 @@ findProject(':component:gui')?.name = 'gui'
 include 'component:gui:gui-1.15.2'
 findProject(':component:gui:gui-1.15.2')?.name = 'gui-1.15.2'
 
+include 'component:gui:juklearmc'
+findProject(':component:gui:juklearmc')?.name = 'juklearmc'
+
 // include 'component:gui:mcjfxgl'
 // findProject(':component:gui:mcjfxgl')?.name = 'mcjfxgl'
 
@@ -95,4 +98,3 @@ findProject(':component:service')?.name = 'service'
 
 include 'component:security'
 findProject('component:security')?.name = 'security'
-
