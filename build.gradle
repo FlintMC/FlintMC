@@ -79,6 +79,43 @@ allprojects {
     }
 }
 
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    compile project(':component:base')
+    compile project(':component:transform:javassist')
+    compile project(':component:transform:asm')
+    compile project(':component:transform:minecraft')
+    compile project(':component:transform:minecraft-obfuscator')
+    compile project(':component:transform:hook')
+    compile project(':component:gui')
+    // compile project(':component:gui:mcjfxgl')
+    // compile project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
+    // compile project(':component:gui:mcjfxgl:default-components')
+    compile project(':component:gui:gui-1.15.1')
+    compile project(':component:tasks')
+    compile project(':component:tasks:tasks-1.15.1')
+    compile project(':component:mapping')
+    compile project(':component:inject')
+    compile project(':component:transform:hook')
+    compile project(':component:resources')
+    compile project(':component:resources:resources-1.15.1')
+    compile project(':versioned:labyfy-1.15.1')
+    compile project(':component:packages')
+    compile project(':component:packages:packages-impl')
+    compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+    compile 'org.apache.commons:commons-lang3:3.9'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+jar {
+   enabled = false
+}
+
 allprojects {
     version fixedVersion
     plugins.withType(JavaPlugin) {
