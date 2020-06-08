@@ -1,9 +1,10 @@
-package net.labyfy.gradle;
+package net.labyfy.old;
 
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.Module;
 import groovy.lang.Closure;
-import net.labyfy.gradle.library.VersionFetcher;
+import net.labyfy.gradle.LabyfyGradleModule;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.util.Configurable;
@@ -13,23 +14,23 @@ import javax.annotation.Nonnull;
 
 public class LabyfyGradlePlugin implements Plugin<Project> {
 
+  private static Injector injector;
+
   public void apply(@Nonnull Project project) {
-    this.createInjector(project);
+    injector = this.createInjector(project);
+    injector.getInstance(LabyfyGradle.class).apply();
   }
 
-  private void createInjector(Project project) {
-    Guice.createInjector(this.createModules(project)).getInstance(LabyfyGradle.class).apply();
+  private Injector createInjector(Project project) {
+    return Guice.createInjector(this.createModules(project));
   }
 
   private Module[] createModules(Project project) {
-    return new Module[]{LabyfyGradleModule.create(project, this.createExtension(project))};
+    return new Module[]{};
   }
 
-  private Extension createExtension(Project project) {
-    return project.getExtensions().create("minecraft", Extension.class);
-  }
 
-  public static class Extension implements Configurable<LabyfyGradlePlugin.Extension> {
+  public static class Extension implements Configurable<Extension> {
     private String version;
 
     public String getVersion() {
@@ -43,11 +44,8 @@ public class LabyfyGradlePlugin implements Plugin<Project> {
     public Extension configure(@Nonnull Closure closure) {
       System.out.println("Debug123");
       Extension extension = ConfigureUtil.configureSelf(closure, this);
+//      injector.getInstance(LibraryApplier.class).apply();
       return extension;
-    }
-
-    public VersionFetcher.Version getDetails() {
-      return VersionFetcher.fetch(this.version).getDetails();
     }
   }
 }

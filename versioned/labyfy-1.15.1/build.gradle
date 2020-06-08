@@ -8,12 +8,15 @@ plugins {
     id 'application'
 }
 
-apply plugin: 'net.labyfy.labyfy-gradle-plugin'
+//apply plugin: 'net.labyfy.labyfy-gradle-plugin'
 
 group 'net.labyfy.versioned'
 
 sourceCompatibility = 1.8
-minecraft.version = "1.15.1"
+
+//minecraft {
+//    version "1.15.1"
+//}
 
 
 repositories {
@@ -22,8 +25,10 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile fileTree('libraries')
+//    compile fileTree('libraries')
     compile project(':component:launcher')
+
+//    compile group: "net.minecraft", name: "client", version: "8b11614bea9293592a947ea8f4fd72981ea66677"
 
     runtimeOnly project(':component:base')
     runtimeOnly project(':component:transform:javassist')
