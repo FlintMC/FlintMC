@@ -101,10 +101,6 @@ java {
     withSourcesJar()
 }
 
-jar {
-   enabled = false
-}
-
 allprojects {
     version '0.1.1'
     plugins.withType(JavaPlugin) {
