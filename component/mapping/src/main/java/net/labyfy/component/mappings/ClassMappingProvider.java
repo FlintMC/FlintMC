@@ -21,32 +21,13 @@ public class ClassMappingProvider {
   private final Map<String, ClassMapping> unObfuscatedClassMappings = Maps.newConcurrentMap();
 
   @Inject
-  private ClassMappingProvider(@Named("launchArguments") Map launchArguments, @Named("labyfyRoot") File labyfyRoot) {
+  private ClassMappingProvider(MappingFileProvider mappingFileProvider, @Named("launchArguments") Map launchArguments) {
     McpMappingParser mcpMappingParser = new McpMappingParser();
-    try {
-      String version = (String) launchArguments.get("--version");
+    Collection<ClassMapping> parse = mcpMappingParser.parse(this, mappingFileProvider.getMappings(launchArguments.get("--version").toString()));
 
-      Collection<ClassMapping> parse =
-          mcpMappingParser.parse(
-              this,
-              ImmutableMap.of(
-                  "methods.csv",
-                  new FileInputStream(
-                      new File(labyfyRoot, "assets/" + version + "/methods.csv").getAbsoluteFile()),
-                  "fields.csv",
-                  new FileInputStream(
-                      new File(labyfyRoot, "assets/" + version + "/fields.csv").getAbsoluteFile()),
-                  "joined.tsrg",
-                  new FileInputStream(
-                      new File(labyfyRoot, "assets/" + version + "/joined.tsrg").getAbsoluteFile())));
-
-      for (ClassMapping classMapping : parse) {
-        this.obfuscatedClassMappings.put(classMapping.getObfuscatedName(), classMapping);
-        this.unObfuscatedClassMappings.put(classMapping.getUnObfuscatedName(), classMapping);
-      }
-
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
+    for (ClassMapping classMapping : parse) {
+      this.obfuscatedClassMappings.put(classMapping.getObfuscatedName(), classMapping);
+      this.unObfuscatedClassMappings.put(classMapping.getUnObfuscatedName(), classMapping);
     }
   }
 
