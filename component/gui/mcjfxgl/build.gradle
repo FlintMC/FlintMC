@@ -25,9 +25,9 @@ dependencies {
     compile 'org.jooq:joor-java-8:0.9.12'
     annotationProcessor project(':component:annotation-processing')
 
-    minecraft 'cuchaz:jfxgl:0.4'
-    minecraft 'cuchaz:jfxgl-jfxrt:0.4'
-    minecraft 'commons-io:commons-io:2.6'
-    minecraft 'org.jooq:joor-java-8:0.9.12'
-    minecraft 'jfxrt:jfxrt:1'
+    labyManifest 'cuchaz:jfxgl:0.4'
+    labyManifest 'cuchaz:jfxgl-jfxrt:0.4'
+    labyManifest 'commons-io:commons-io:2.6'
+    labyManifest 'org.jooq:joor-java-8:0.9.12'
+    labyManifest 'jfxrt:jfxrt:1'
 }

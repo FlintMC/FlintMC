@@ -29,7 +29,12 @@ public class LibraryRemapperContext {
     this.loadJar();
     this.applyClassMappings();
     this.clearManifest();
+    this.addMarkerFile();
     this.saveJar();
+  }
+
+  private void addMarkerFile() {
+    this.bytes.put(".deobfuscated", new byte[]{});
   }
 
   private void loadJar() throws IOException {
@@ -63,6 +68,9 @@ public class LibraryRemapperContext {
                     + ".class",
                 classWriter.toByteArray());
           } catch (Throwable ignored) {
+            if(classNode.name.equals("dbl")){
+              ignored.printStackTrace();
+            }
             System.out.println(" -> cannot rewrite " + classNode.name);
           }
         });

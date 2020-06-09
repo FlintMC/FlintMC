@@ -1,22 +1,14 @@
-buildscript {
-    dependencies {
-        classpath 'net.labyfy:labyfy-gradle-plugin'
-    }
-}
-
 plugins {
     id 'application'
 }
-
-//apply plugin: 'net.labyfy.labyfy-gradle-plugin'
 
 group 'net.labyfy.versioned'
 
 sourceCompatibility = 1.8
 
-//minecraft {
-//    version "1.15.1"
-//}
+minecraft {
+    version "1.15.1"
+}
 
 
 repositories {
@@ -27,8 +19,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 //    compile fileTree('libraries')
     compile project(':component:launcher')
-
-//    compile group: "net.minecraft", name: "client", version: "8b11614bea9293592a947ea8f4fd72981ea66677"
+//    compile 'net.minecraft:client:1.15.1'
 
     runtimeOnly project(':component:base')
     runtimeOnly project(':component:transform:javassist')
@@ -52,35 +43,40 @@ dependencies {
     runtimeOnly project(':component:packages')
     runtimeOnly project(':component:packages:packages-impl')
 
-    minecraft project(':component:base')
-    minecraft project(':component:transform:javassist')
-    minecraft project(':component:transform:asm')
-    minecraft project(':component:transform:minecraft')
-    minecraft project(':component:transform:minecraft-obfuscator')
-    minecraft project(':component:transform:hook')
-    minecraft project(':component:gui')
-    minecraft project(':component:gui:mcjfxgl')
-    minecraft project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
-    minecraft project(':component:gui:mcjfxgl:default-components')
-    minecraft project(':component:gui:gui-1.15.1')
-    minecraft project(':component:tasks')
-    minecraft project(':component:tasks:tasks-1.15.1')
-    minecraft project(':component:mapping')
-    minecraft project(':component:inject')
-    minecraft project(':component:transform:hook')
-    minecraft project(':component:resources')
-    minecraft project(':component:resources:resources-1.15.1')
-    minecraft project(':component:packages')
-    minecraft project(':component:packages:packages-impl')
-    minecraft project(':component:transform:launcher-plugin')
-    minecraft project(':component:launcher')
-    minecraft project(':component:service')
-    minecraft project(':component:security')
+    labyManifest project(':component:base')
+    labyManifest project(':component:transform:javassist')
+    labyManifest project(':component:transform:asm')
+    labyManifest project(':component:transform:minecraft')
+    labyManifest project(':component:transform:minecraft-obfuscator')
+    labyManifest project(':component:transform:hook')
+    labyManifest project(':component:gui')
+    labyManifest project(':component:gui:mcjfxgl')
+    labyManifest project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
+    labyManifest project(':component:gui:mcjfxgl:default-components')
+    labyManifest project(':component:gui:gui-1.15.1')
+    labyManifest project(':component:tasks')
+    labyManifest project(':component:tasks:tasks-1.15.1')
+    labyManifest project(':component:mapping')
+    labyManifest project(':component:inject')
+    labyManifest project(':component:transform:hook')
+    labyManifest project(':component:resources')
+    labyManifest project(':component:resources:resources-1.15.1')
+    labyManifest project(':component:packages')
+    labyManifest project(':component:packages:packages-impl')
+    labyManifest project(':component:transform:launcher-plugin')
+    labyManifest project(':component:launcher')
+    labyManifest project(':component:service')
+    labyManifest project(':component:security')
 }
 
 application {
     mainClassName "net.labyfy.component.launcher.LabyLauncher"
 }
+
+distTar.enabled = false
+distZip.enabled = false
+installDist.enabled = false;
+startScripts.enabled = false
 
 def runDir = new File(rootProject.projectDir, "run/1.15.1")
 def runDirTemplate = new File(rootProject.projectDir, "run-template")

@@ -10,38 +10,37 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class ReflectionSuperClassProvider implements SuperClassProvider {
 
-  private URLClassLoader classLoader = null;
-  private Method addURLMethod = null;
+  private URLClassLoader classLoader;
+  private Method addURLMethod;
 
-  protected ReflectionSuperClassProvider(File jarFile, File libraries)
+  protected ReflectionSuperClassProvider(File jarFile, Collection<File> libraries)
       throws NoSuchMethodException, MalformedURLException, InvocationTargetException,
       IllegalAccessException {
-    this.classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+    this.classLoader = new URLClassLoader(new URL[]{});
     this.addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
     this.addURLMethod.setAccessible(true);
     this.addURL(jarFile.toURI().toURL());
-    try (Stream<Path> paths = Files.walk(libraries.getAbsoluteFile().toPath())) {
-      paths
-          .filter(path -> (path.toFile().isFile() && path.toFile().getName().endsWith(".jar")))
-          .forEach(
-              path -> {
-                File file = path.toFile();
-                try {
-                  addURL(file.toURI().toURL());
-                } catch (InvocationTargetException
-                    | IllegalAccessException
-                    | MalformedURLException e) {
-                  e.printStackTrace();
-                }
-              });
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    libraries.stream()
+        .map(File::toPath)
+        .filter(path -> (path.toFile().isFile() && path.toFile().getName().endsWith(".jar")))
+        .forEach(
+            path -> {
+              File file = path.toFile();
+              try {
+                addURL(file.toURI().toURL());
+              } catch (InvocationTargetException
+                  | IllegalAccessException
+                  | MalformedURLException e) {
+                e.printStackTrace();
+              }
+            });
   }
 
   private void addURL(URL url) throws InvocationTargetException, IllegalAccessException {
@@ -50,7 +49,7 @@ public class ReflectionSuperClassProvider implements SuperClassProvider {
 
   public List<String> getSuperClass(String clazz) {
     try {
-      Class theClazz = Class.forName(clazz, false, classLoader);
+      Class theClazz = this.classLoader.loadClass(clazz);
       Class superClazz = theClazz.getSuperclass();
       ArrayList<String> classes = new ArrayList<>();
       if (superClazz != null) classes.add(superClazz.getName());
@@ -64,7 +63,7 @@ public class ReflectionSuperClassProvider implements SuperClassProvider {
       classes.forEach(c -> transitiveSuperClasses.addAll(getSuperClass(c)));
       classes.addAll(transitiveSuperClasses);
       return classes;
-    } catch (Exception ignored) {
+    } catch (Throwable ignored) {
       //Not found, can be ignored
       return null;
     }

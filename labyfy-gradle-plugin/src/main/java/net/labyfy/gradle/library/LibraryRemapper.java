@@ -11,6 +11,7 @@ import net.labyfy.component.mappings.MethodMapping;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class LibraryRemapper {
     this.injector = injector;
   }
 
-  public void remap(File file, File libraries) {
+  public void remap(File file, Collection<File> libraries) {
     try {
       this.classMappingProvider = this.injector.getInstance(ClassMappingProvider.class);
       this.loadMappings();
