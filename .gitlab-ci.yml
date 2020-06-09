@@ -41,8 +41,8 @@ build:
   script:
     - sh $SCRIPTS_DIR/eval.sh
     - sh $SCRIPTS_DIR/eval.sh "./library-downloader/"
-    - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
+    - mkdir run && cp -r run-template/1.15.2 run && cp -r run-template/1.15.2/Labyfy versioned/labyfy-1.15.2 && ls -la versioned/labyfy-1.15.2
+    - cd versioned/labyfy-1.15.2 && sh ../../gradlew :versioned:labyfy-1.15.2:download-libraries --refresh-dependencies && cd ../..
     - sh gradlew build --refresh-dependencies
   artifacts:
     name: $(cat version)
@@ -59,8 +59,8 @@ deploy_to_artifactory:
   script:
     - sh $SCRIPTS_DIR/eval.sh
     - sh $SCRIPTS_DIR/eval.sh "./library-downloader/"
-    - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
+    - mkdir run && cp -r run-template/1.15.2 run && cp -r run-template/1.15.2/Labyfy versioned/labyfy-1.15.2 && ls -la versioned/labyfy-1.15.2
+    - cd versioned/labyfy-1.15.2 && sh ../../gradlew :versioned:labyfy-1.15.2:download-libraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > version || exit 1
     - cat version
@@ -78,8 +78,8 @@ publish_version:
   script:
     - sh $SCRIPTS_DIR/eval.sh
     - sh $SCRIPTS_DIR/eval.sh "./library-downloader/"
-    - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
+    - mkdir run && cp -r run-template/1.15.2 run && cp -r run-template/1.15.2/Labyfy versioned/labyfy-1.15.2 && ls -la versioned/labyfy-1.15.2
+    - cd versioned/labyfy-1.15.2 && sh ../../gradlew :versioned:labyfy-1.15.2:download-libraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh release > version || exit 1
     - cat version

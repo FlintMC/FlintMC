@@ -217,7 +217,7 @@ class LibraryDownloader implements Plugin<Project> {
     }
 
     private String getUserAgent() {
-        return "LabyMod v" + "4" + " on mc" + "1.15.1";
+        return "LabyMod v" + "4" + " on mc" + "1.15.2";
     }
 
 
