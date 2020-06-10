@@ -10,7 +10,7 @@ repositories {
     mavenCentral()
 }
 
-minecraft{
+labyfy{
     version '1.15.1'
 }
 

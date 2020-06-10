@@ -1,5 +1,11 @@
 package net.labyfy.gradle.library; // Created by leo on 25.09.19
 
+import net.labyfy.component.launcher.classloading.RootClassLoader;
+import net.labyfy.component.launcher.classloading.common.ClassInformation;
+import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
+import net.labyfy.gradle.util.ASMUtils;
+import org.objectweb.asm.tree.ClassNode;
+
 import javax.inject.Singleton;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -9,24 +15,18 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ReflectionSuperClassProvider implements SuperClassProvider {
 
-  private URLClassLoader classLoader;
-  private Method addURLMethod;
+  private RootClassLoader classLoader;
 
   protected ReflectionSuperClassProvider(File jarFile, Collection<File> libraries)
       throws NoSuchMethodException, MalformedURLException, InvocationTargetException,
       IllegalAccessException {
-    this.classLoader = new URLClassLoader(new URL[]{});
-    this.addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-    this.addURLMethod.setAccessible(true);
-    this.addURL(jarFile.toURI().toURL());
+    this.classLoader = new RootClassLoader(new URL[]{});
+    this.classLoader.addURLs(Collections.singleton(jarFile.toURI().toURL()));
     libraries.stream()
         .map(File::toPath)
         .filter(path -> (path.toFile().isFile() && path.toFile().getName().endsWith(".jar")))
@@ -34,38 +34,40 @@ public class ReflectionSuperClassProvider implements SuperClassProvider {
             path -> {
               File file = path.toFile();
               try {
-                addURL(file.toURI().toURL());
-              } catch (InvocationTargetException
-                  | IllegalAccessException
-                  | MalformedURLException e) {
+                this.classLoader.addURLs(Collections.singleton(file.toURI().toURL()));
+              } catch (MalformedURLException e) {
                 e.printStackTrace();
               }
             });
   }
 
-  private void addURL(URL url) throws InvocationTargetException, IllegalAccessException {
-    this.addURLMethod.invoke(classLoader, url);
-  }
-
   public List<String> getSuperClass(String clazz) {
     try {
-      Class theClazz = this.classLoader.loadClass(clazz);
-      Class superClazz = theClazz.getSuperclass();
+      ClassNode theClazz =
+          ASMUtils.getNode(
+              CommonClassLoaderHelper.retrieveClass(this.classLoader, clazz).getClassBytes());
+
+      ClassInformation superClassInformation =
+          CommonClassLoaderHelper.retrieveClass(this.classLoader, theClazz.superName);
+
+      ClassNode superClass =
+          superClassInformation == null
+              ? null
+              : ASMUtils.getNode(superClassInformation.getClassBytes());
+
       ArrayList<String> classes = new ArrayList<>();
-      if (superClazz != null) classes.add(superClazz.getName());
-      if (theClazz.getInterfaces() != null) {
-        for (Class iface : theClazz.getInterfaces()) {
-          classes.add(iface.getName());
-        }
+      if (superClass != null) classes.add(superClass.name);
+      if (theClazz.interfaces != null) {
+        classes.addAll(theClazz.interfaces);
       }
 
       ArrayList<String> transitiveSuperClasses = new ArrayList<>();
       classes.forEach(c -> transitiveSuperClasses.addAll(getSuperClass(c)));
       classes.addAll(transitiveSuperClasses);
       return classes;
-    } catch (Throwable ignored) {
-      //Not found, can be ignored
-      return null;
+    } catch (Exception e) {
+      // Not found, can be ignored
+      return new ArrayList<>();
     }
   }
 }

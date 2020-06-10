@@ -54,18 +54,6 @@ public class MinecraftClassRemapper extends SimpleRemapper {
       }
     }
 
-
-//    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
-//        .map(ClassMapping::getMethods)
-//        .flatMap(Collection::stream)
-//        .filter(methodMapping -> !methodMapping.isDefault())
-////        .distinct()
-//        .collect(
-//            Collectors.toMap(
-//                methodMapping -> methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier(),
-//                MethodMapping::getObfuscatedMethodName))
-//    );
-
     mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
         .map(ClassMapping::getFields)
         .flatMap(Collection::stream)

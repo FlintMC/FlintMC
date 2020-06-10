@@ -46,14 +46,6 @@ public class LibraryApplier {
       project.getRepositories().maven(mavenArtifactRepository -> {
         mavenArtifactRepository.setUrl(System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl") + "general/"));
       });
-
-      project.getExtensions().create("minecraft", LabyfyGradlePlugin.Extension.class).configured(extension -> {
-        try {
-          LibraryApplier.this.configured(extension, project);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      });
     });
     this.registerMinecraftRepository();
   }

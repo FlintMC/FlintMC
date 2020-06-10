@@ -2,7 +2,6 @@ package net.labyfy.gradle.manifest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.labyfy.gradle.LabyfyGradlePlugin;
 import net.labyfy.gradle.library.VersionFetcher;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
@@ -11,39 +10,35 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.artifacts.*;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.DependencySet;
+import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.internal.impldep.org.apache.commons.codec.digest.DigestUtils;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-@Singleton
 public class PublishLatestRelease implements Action<Task> {
 
   private final Project project;
-  private final LabyfyGradlePlugin.Extension extension;
+  private final String version;
+  private final String publishToken;
 
-  @Inject
-  private PublishLatestRelease(Project project, LabyfyGradlePlugin.Extension extension) {
+  public PublishLatestRelease(Project project, String version, String publishToken) {
     this.project = project;
-    this.extension = extension;
+    this.version = version;
+    this.publishToken = publishToken;
   }
 
   public void execute(@Nonnull Task task) {
@@ -51,16 +46,15 @@ public class PublishLatestRelease implements Action<Task> {
     task.dependsOn("jar");
     task.doLast(task1 -> {
 
-      this.validateVersion();
-      VersionFetcher.Version version = VersionFetcher.fetch(extension.getVersion()).getDetails();
+      VersionFetcher.Version version = VersionFetcher.fetch(this.version).getDetails();
       for (int i = 0; i < version.getArguments().getGame().length; i++) {
         if (version.getArguments().getGame()[i].toString().equals("--version")) {
-          version.getArguments().getGame()[i + 1] = extension.getVersion();
+          version.getArguments().getGame()[i + 1] = this.version;
           break;
         }
       }
       version.setMainClass("net.labyfy.component.launcher.LabyLauncher");
-      version.setId("Labyfy-" + extension.getVersion());
+      version.setId("Labyfy-" + this.version);
 
       Collection<MavenArtifactRepository> mavenArtifactRepositories = collectTransitiveRepositories(project);
       Collection<InstallInstruction> installInstructions = new HashSet<>();
@@ -125,9 +119,9 @@ public class PublishLatestRelease implements Action<Task> {
       installInstructions.add(
           new ManifestDownload()
               .setData(new ManifestDownload.Data()
-                  .setPath("versions/Labyfy-" + extension.getVersion() + "/Labyfy-" + extension.getVersion() + ".json")
+                  .setPath("versions/Labyfy-" + this.version + "/Labyfy-" + this.version + ".json")
                   .setMd5(DigestUtils.md5Hex(versionString))
-                  .setUrl("http://dist.laby.tech:8080/package/Labyfy-" + extension.getVersion() + "/latest/Labyfy-" + extension.getVersion() + "-latest.json")
+                  .setUrl("http://dist.laby.tech:8080/package/Labyfy-" + this.version + "/latest/Labyfy-" + this.version + "-latest.json")
               ));
 
 
@@ -140,13 +134,9 @@ public class PublishLatestRelease implements Action<Task> {
           .setInstallInstructions(installInstructions.toArray(new InstallInstruction[]{}))
           .setAuthors("DevTastisch"));
 
-      publish(versionString.getBytes(StandardCharsets.UTF_8), "Labyfy-" + extension.getVersion() + "-latest.json", "Labyfy-" + extension.getVersion(), "latest");
-      publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + extension.getVersion(), "latest");
+      publish(versionString.getBytes(StandardCharsets.UTF_8), "Labyfy-" + this.version + "-latest.json", "Labyfy-" + this.version, "latest");
+      publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + this.version, "latest");
     });
-  }
-
-  private void validateVersion() {
-    assert extension.getVersion() == null : new IllegalArgumentException("minecraft.version must be set1");
   }
 
   private VersionFetcher.Version.Library createLibrary(Dependency dependency, String version) {
@@ -178,7 +168,7 @@ public class PublishLatestRelease implements Action<Task> {
   private Collection<Dependency> collectTransitiveDependencies(Project project) {
 
     DependencySet projectDependencies = project.getConfigurations()
-        .getByName("minecraft")
+        .getByName("labyManifest")
         .getIncoming()
         .getDependencies();
 
@@ -202,7 +192,7 @@ public class PublishLatestRelease implements Action<Task> {
 
   private Collection<MavenArtifactRepository> collectTransitiveRepositories(Project project) {
     DependencySet projectDependencies = project.getConfigurations()
-        .getByName("minecraft")
+        .getByName("labyManifest")
         .getIncoming()
         .getDependencies();
 
@@ -254,7 +244,7 @@ public class PublishLatestRelease implements Action<Task> {
 
       HttpPost request = new HttpPost(new URL("http://dist.laby.tech:8080/publish/" + deployName + "/" + deployVersion).toURI());
       request.setEntity(entity);
-      request.addHeader("Authorization", "Bearer NzQzMjZkYTljMmU3NzlmMDU2NDQ3NTkz");
+      request.addHeader("Authorization", "Bearer " + this.publishToken);
 
       HttpClient client = HttpClientBuilder.create().build();
       HttpResponse response = client.execute(request);

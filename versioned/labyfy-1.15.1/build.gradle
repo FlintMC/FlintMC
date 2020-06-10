@@ -1,3 +1,5 @@
+import org.apache.commons.io.FileUtils
+
 plugins {
     id 'application'
 }
@@ -6,8 +8,10 @@ group 'net.labyfy.versioned'
 
 sourceCompatibility = 1.8
 
-minecraft {
+labyfy{
     version "1.15.1"
+    provideMappings true
+    publishToken "${publish_token}"
 }
 
 
@@ -17,9 +21,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-//    compile fileTree('libraries')
     compile project(':component:launcher')
-//    compile 'net.minecraft:client:1.15.1'
 
     runtimeOnly project(':component:base')
     runtimeOnly project(':component:transform:javassist')
@@ -102,4 +104,15 @@ run {
             "--userProperties", "{}",
             "--gameDir", ".",
             "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
+    dependsOn 'copyMappings'
+}
+
+task copyMappings() {
+    doLast {
+        def extracted = new File(project.buildDir, "labyfy/mappings/1.15.1/extracted");
+        FileUtils.copyFile(new File(extracted, "fields.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/fields.csv") )
+        FileUtils.copyFile(new File(extracted, "methods.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/methods.csv") )
+        FileUtils.copyFile(new File(extracted, "params.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/params.csv") )
+        FileUtils.copyFile(new File(extracted, "joined.tsrg"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/joined.tsrg") )
+    }
 }
