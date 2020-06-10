@@ -42,7 +42,7 @@ public class LibraryApplier {
     this.rootProject = rootProject;
     this.libraryRemapper = libraryRemapper;
     this.launchArguments = launchArguments;
-    this.rootProject.getSubprojects().forEach(project -> {
+    this.rootProject.subprojects((project) -> {
       project.getRepositories().maven(mavenArtifactRepository -> {
         mavenArtifactRepository.setUrl(System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl") + "general/"));
       });

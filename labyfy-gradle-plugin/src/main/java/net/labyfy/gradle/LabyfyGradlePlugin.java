@@ -28,7 +28,7 @@ public class LabyfyGradlePlugin implements Plugin<Project> {
   public void apply(@Nonnull Project rootProject) {
     this.createInjector(rootProject);
 
-    rootProject.getSubprojects().forEach(project -> {
+    rootProject.subprojects(project -> {
       project.getExtensions().create("labyfy", LabyfyGradlePlugin.Extension.class).configured(extension -> {
         if (extension.getPublishToken() != null && extension.getVersion() != null && !extension.getVersion().isEmpty()) {
           project.task("publishLatestRelease", new PublishLatestRelease(project, extension.getVersion(), extension.getPublishToken()));
