@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 public class ReflectionSuperClassProvider implements SuperClassProvider {
 
+  private final Map<String, Collection<String>> superClasses = new HashMap<>();
   private RootClassLoader classLoader;
 
   protected ReflectionSuperClassProvider(File jarFile, Collection<File> libraries)
@@ -42,6 +43,9 @@ public class ReflectionSuperClassProvider implements SuperClassProvider {
   }
 
   public List<String> getSuperClass(String clazz) {
+    if (this.superClasses.containsKey(clazz)) {
+      return new ArrayList<>(this.superClasses.get(clazz));
+    }
     try {
       ClassNode theClazz =
           ASMUtils.getNode(
@@ -64,9 +68,11 @@ public class ReflectionSuperClassProvider implements SuperClassProvider {
       ArrayList<String> transitiveSuperClasses = new ArrayList<>();
       classes.forEach(c -> transitiveSuperClasses.addAll(getSuperClass(c)));
       classes.addAll(transitiveSuperClasses);
+      this.superClasses.put(clazz, classes);
       return classes;
     } catch (Exception e) {
       // Not found, can be ignored
+      this.superClasses.put(clazz, new ArrayList<>());
       return new ArrayList<>();
     }
   }

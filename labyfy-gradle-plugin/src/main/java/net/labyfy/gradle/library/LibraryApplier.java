@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.jar.JarFile;
@@ -43,7 +44,7 @@ public class LibraryApplier {
     this.libraryRemapper = libraryRemapper;
     this.launchArguments = launchArguments;
     this.rootProject.subprojects((project) -> {
-      project.afterEvaluate((project1)->{
+      project.afterEvaluate((project1) -> {
         project.getRepositories().maven(mavenArtifactRepository -> {
           mavenArtifactRepository.setUrl(System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl") + "general/"));
         });
@@ -60,8 +61,8 @@ public class LibraryApplier {
     File repo = new File(project.getGradle().getGradleUserHomeDir(), "caches/labyfy-gradle/repo");
     repo.mkdirs();
 
-    this.generateClient(repo, version, details);
-    this.generateServer(repo, version, details);
+    File server = this.generateServer(repo, version, details);
+    this.generateClient(repo, version, details, server);
 
     project.getRepositories().maven(mavenArtifactRepository -> {
       mavenArtifactRepository.setUrl(repo.toURI());
@@ -73,12 +74,12 @@ public class LibraryApplier {
     return this.createArtifact(repo, new URL(details.getDownloads().getServer().getUrl()), "net.minecraft", "server", version);
   }
 
-  private File generateClient(File repo, String version, VersionFetcher.Version details) throws
+  private File generateClient(File repo, String version, VersionFetcher.Version details, File server) throws
       IOException, TransformerException, ParserConfigurationException {
-    return this.createArtifact(repo, new URL(details.getDownloads().getClient().getUrl()), "net.minecraft", "client", version);
+    return this.createArtifact(repo, new URL(details.getDownloads().getClient().getUrl()), "net.minecraft", "client", version, server);
   }
 
-  private File createArtifact(File repo, URL url, String group, String name, String version) throws
+  private File createArtifact(File repo, URL url, String group, String name, String version, File... externalLibraries) throws
       IOException, ParserConfigurationException, TransformerException {
 
     String format = String.format("%s/%s/%s/%s-%s", group.replace('.', '/'), name, version, name, version);
@@ -205,6 +206,7 @@ public class LibraryApplier {
         }
       }
     }
+    files.addAll(Arrays.asList(externalLibraries));
 
     try (JarFile jarFile = new JarFile(jar)) {
       if (jarFile.getJarEntry(".deobfuscated") == null) {

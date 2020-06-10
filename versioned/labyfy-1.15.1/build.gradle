@@ -21,6 +21,9 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'net.minecraft:client:1.15.1'
+    compile 'net.minecraft:server:1.15.1'
+
     compile project(':component:launcher')
 
     runtimeOnly project(':component:base')
