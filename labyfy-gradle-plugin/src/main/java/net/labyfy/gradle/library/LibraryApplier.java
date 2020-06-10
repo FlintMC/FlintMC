@@ -43,8 +43,10 @@ public class LibraryApplier {
     this.libraryRemapper = libraryRemapper;
     this.launchArguments = launchArguments;
     this.rootProject.subprojects((project) -> {
-      project.getRepositories().maven(mavenArtifactRepository -> {
-        mavenArtifactRepository.setUrl(System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl") + "general/"));
+      project.afterEvaluate((project1)->{
+        project.getRepositories().maven(mavenArtifactRepository -> {
+          mavenArtifactRepository.setUrl(System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl") + "general/"));
+        });
       });
     });
     this.registerMinecraftRepository();
