@@ -16,15 +16,14 @@ before_script:
   - ssh-add <(echo "$SSH_PRIVATE_KEY")
   - export SCRIPTS_DIR=$(mktemp -d)
   - git clone -q --depth 1 "$SCRIPTS_REPO" "$SCRIPTS_DIR"
-  - bash $SCRIPTS_DIR/genSemVer.sh build ${CI_JOB_ID} > version
-  - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
+  - bash $SCRIPTS_DIR/genSemVer.sh build ${CI_JOB_ID} > .dev-version
 
 version:
   stage: version
   script:
     - bash $SCRIPTS_DIR/versionPreCheck.sh "${CI_COMMIT_MESSAGE}"
-    - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > version
-    - export TAG=$(cat version)
+    - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > .dev-version
+    - export TAG=$(cat .dev-version)
     - git config --global user.email "gitlab-ci@gitlab.labymod.net"
     - git config --global user.name "gitlab-ci"
     - git remote set-url --push origin "git@git.labymod.net:client/labymod4/Labyfy.git"
@@ -32,7 +31,7 @@ version:
     - git push origin ${TAG}
   artifacts:
     paths:
-      - version
+      - .dev-version
   only:
     - master
 
@@ -45,7 +44,7 @@ build:
     - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
     - sh gradlew build --refresh-dependencies
   artifacts:
-    name: $(cat version)
+    name: $(cat .dev-version)
     paths:
       - build/libs
   only:
@@ -62,9 +61,8 @@ deploy_to_artifactory:
     - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
     - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > version || exit 1
-    - cat version
-    - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
+    - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
+    - cat .dev-version
     - sh gradlew artifactoryPublish
   environment:
     name: development
@@ -81,9 +79,8 @@ publish_version:
     - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
     - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:download-libraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh release > version || exit 1
+    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
     - cat version
-    - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew artifactoryPublish
     - export MD5SUM=$(md5sum build/libs/Labyfy-$(cat version).jar | cut -f1 -d' ')
     - sed -i "s/\"md5\".*/\"md5\":\ \"${MD5SUM})\"/1" manifest.json
@@ -104,9 +101,8 @@ update_develop_version:
   script:
     - git checkout origin/develop
     - git pull origin master
-    - bash $SCRIPTS_DIR/genSemVer.sh release > version || exit 1
-    - export VERSION=$(cat version)
-    - sed -i "s/version .*/version '${VERSION}'/1" build.gradle
+    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
+    - export VERSION=$(cat .dev-version)
     - rm -r semver-tool
     - rm version
     - git commit -a -m "${VERSION}"

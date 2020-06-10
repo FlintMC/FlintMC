@@ -1,3 +1,5 @@
+import org.gradle.api.GradleScriptException
+
 buildscript {
     dependencies {
         classpath 'commons-io:commons-io:2.6'
@@ -10,6 +12,14 @@ plugins {
 }
 
 sourceCompatibility = 1.8
+
+def versionFile = file(".dev-version")
+def fixedVersion = null
+if(versionFile.exists()) {
+    fixedVersion = versionFile.text.replace("\n","")
+} else {
+    throw new GradleScriptException("VERSIONFILE COULD NOT BE FOUND!", new Throwable("Please check the CI!"))
+}
 
 allprojects {
 
@@ -102,7 +112,7 @@ java {
 }
 
 allprojects {
-    version '0.1.1'
+    version fixedVersion
     plugins.withType(JavaPlugin) {
         publishing{
             publications {
