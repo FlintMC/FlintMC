@@ -42,8 +42,8 @@ build:
     - sh $SCRIPTS_DIR/eval.sh
     - sh $SCRIPTS_DIR/eval.sh "./labyfy-gradle-plugin/"
     - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:downloadLibraries --refresh-dependencies && cd ../..
-    - sh gradlew build --refresh-dependencies
+    - cd versioned/labyfy-1.15.1 && sh ../../gradlew -Ppublish_token=$PUBLISH_TOKEN :versioned:labyfy-1.15.1:downloadLibraries --refresh-dependencies && cd ../..
+    - sh gradlew -Ppublish_token=$PUBLISH_TOKEN build --refresh-dependencies
   artifacts:
     name: $(cat version)
     paths:
@@ -60,12 +60,12 @@ deploy_to_artifactory:
     - sh $SCRIPTS_DIR/eval.sh
     - sh $SCRIPTS_DIR/eval.sh "./labyfy-gradle-plugin/"
     - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:downloadLibraries --refresh-dependencies && cd ../..
+    - cd versioned/labyfy-1.15.1 && sh ../../gradlew -Ppublish_token=$PUBLISH_TOKEN :versioned:labyfy-1.15.1:downloadLibraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > version || exit 1
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
-    - sh gradlew artifactoryPublish
+    - sh gradlew -Ppublish_token=$PUBLISH_TOKEN artifactoryPublish
   environment:
     name: development
   only:
@@ -79,12 +79,12 @@ publish_version:
     - sh $SCRIPTS_DIR/eval.sh
     - sh $SCRIPTS_DIR/eval.sh "./labyfy-gradle-plugin/"
     - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-    - cd versioned/labyfy-1.15.1 && sh ../../gradlew :versioned:labyfy-1.15.1:downloadLibraries --refresh-dependencies && cd ../..
+    - cd versioned/labyfy-1.15.1 && sh ../../gradlew -Ppublish_token=$PUBLISH_TOKEN :versioned:labyfy-1.15.1:downloadLibraries --refresh-dependencies && cd ../..
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh release > version || exit 1
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
-    - sh gradlew artifactoryPublish
+    - sh gradlew -Ppublish_token=$PUBLISH_TOKEN artifactoryPublish
     - export MD5SUM=$(md5sum build/libs/Labyfy-$(cat version).jar | cut -f1 -d' ')
     - sed -i "s/\"md5\".*/\"md5\":\ \"${MD5SUM})\"/1" manifest.json
     - sed -i "s/VERSION/$(cat version)/g" manifest.json
