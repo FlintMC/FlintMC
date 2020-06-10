@@ -21,7 +21,7 @@ public class LibraryRemapNameProvider extends SimpleRemapper {
       List<String> possibleOwners = superClassProvider.getSuperClass(owner.replace('/', '.'));
       if (possibleOwners != null) {
         for (String possibleOwner : possibleOwners) {
-          map = this.map(possibleOwner + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+          map = this.map(possibleOwner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
           if (map != null) return map;
         }
       }

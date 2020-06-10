@@ -101,12 +101,14 @@ public class MinecraftClassRemapper extends SimpleRemapper {
   }
 
   public String mapMethodName(String owner, String name, String desc) {
-    String map = this.map(owner + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+
+    String map = this.map(owner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
     if (map == null) {
+
       List<String> possibleOwners = this.getSuperClass(owner.replace('/', '.'));
       if (possibleOwners != null) {
         for (String possibleOwner : possibleOwners) {
-          map = this.map(possibleOwner + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+          map = this.map(possibleOwner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
           if (map != null) return map;
         }
       }

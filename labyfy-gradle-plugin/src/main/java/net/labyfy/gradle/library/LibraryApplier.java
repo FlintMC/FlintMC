@@ -1,5 +1,6 @@
 package net.labyfy.gradle.library;
 
+import com.google.common.io.Files;
 import net.labyfy.gradle.LabyfyGradlePlugin;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -26,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.jar.JarFile;
@@ -60,32 +60,63 @@ public class LibraryApplier {
 
     File repo = new File(project.getGradle().getGradleUserHomeDir(), "caches/labyfy-gradle/repo");
     repo.mkdirs();
+    VersionFetcher.Version fetch = VersionFetcher.fetch(version).getDetails();
+
+    Collection<File> dependencies = this.collectAndDownloadLibraries(fetch, repo);
 
     File server = this.generateServer(repo, version, details);
-    this.generateClient(repo, version, details, server);
+    File client = this.generateClient(repo, version, details);
+
+    File deobfuscatedServer = new File(server.getParent(), "server-" + version + ".jar");
+    File deobfuscatedClient = new File(client.getParent(), "client-" + version + ".jar");
+
+    if(!deobfuscatedServer.exists()){
+      Files.copy(server, deobfuscatedServer);
+    }
+
+    if(!deobfuscatedClient.exists()){
+      Files.copy(client, deobfuscatedClient);
+    }
+
+
+    dependencies.add(server);
+    this.deobfuscate(deobfuscatedClient, dependencies, version);
+
+    dependencies.remove(server);
+    this.deobfuscate(deobfuscatedServer, dependencies, version);
 
     project.getRepositories().maven(mavenArtifactRepository -> {
       mavenArtifactRepository.setUrl(repo.toURI());
     });
   }
 
+  private void deobfuscate(File file, Collection<File> dependencies, String version) {
+    try (JarFile jarFile = new JarFile(file)) {
+      if (jarFile.getJarEntry(".deobfuscated") == null) {
+        this.launchArguments.put("--version", version);
+        this.libraryRemapper.remap(file, dependencies);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   private File generateServer(File repo, String version, VersionFetcher.Version details) throws
       IOException, TransformerException, ParserConfigurationException {
-    return this.createArtifact(repo, new URL(details.getDownloads().getServer().getUrl()), "net.minecraft", "server", version);
+    return this.createArtifact(repo, new URL(details.getDownloads().getServer().getUrl()), "net.minecraft", "server", version, details, "server-" + version + "-obfuscated.jar");
   }
 
-  private File generateClient(File repo, String version, VersionFetcher.Version details, File server) throws
+  private File generateClient(File repo, String version, VersionFetcher.Version details) throws
       IOException, TransformerException, ParserConfigurationException {
-    return this.createArtifact(repo, new URL(details.getDownloads().getClient().getUrl()), "net.minecraft", "client", version, server);
+    return this.createArtifact(repo, new URL(details.getDownloads().getClient().getUrl()), "net.minecraft", "client", version, details, "client-" + version + "-obfuscated.jar");
   }
 
-  private File createArtifact(File repo, URL url, String group, String name, String version, File... externalLibraries) throws
+  private File createArtifact(File repo, URL url, String group, String name, String version, VersionFetcher.Version details, String nameOverride) throws
       IOException, ParserConfigurationException, TransformerException {
 
     String format = String.format("%s/%s/%s/%s-%s", group.replace('.', '/'), name, version, name, version);
-    VersionFetcher.Version fetch = VersionFetcher.fetch(version).getDetails();
 
-    File jar = new File(repo, format + ".jar");
+    File jar = new File(new File(repo, format + ".jar").getParentFile(), nameOverride);
     File pom = new File(repo, format + ".pom");
 
     if (!jar.exists())
@@ -121,7 +152,7 @@ public class LibraryApplier {
 
 
       Element dependencies = document.createElement("dependencies");
-      for (VersionFetcher.Version.Library library : fetch.getLibraries()) {
+      for (VersionFetcher.Version.Library library : details.getLibraries()) {
         Element dependency = document.createElement("dependency");
         Element groupIdDependencyElement = document.createElement("groupId");
         Element artifactIdDependencyElement = document.createElement("artifactId");
@@ -173,6 +204,7 @@ public class LibraryApplier {
 
       }
       root.appendChild(dependencies);
+      pom.getParentFile().mkdirs();
 
       try (FileOutputStream fileOutputStream = new FileOutputStream(pom)) {
         DOMSource domSource = new DOMSource(document);
@@ -183,16 +215,19 @@ public class LibraryApplier {
         transformer.transform(domSource, streamResult);
         fileOutputStream.flush();
       }
-
     }
 
+    return jar;
+  }
+
+  private Collection<File> collectAndDownloadLibraries(VersionFetcher.Version version, File repo) throws IOException {
     Collection<File> files = new ArrayList<>();
-    for (VersionFetcher.Version.Library library : fetch.getLibraries()) {
+    for (VersionFetcher.Version.Library library : version.getLibraries()) {
       String[] split = library.getName().split(":");
       File libraryFile = new File(repo, String.format("%s/%s/%s/%s-%s.jar", split[0].replace('.', '/'), split[1], split[2], split[1], split[2]));
       if (!libraryFile.exists()) {
         System.out.println("download " + libraryFile);
-        FileUtils.writeByteArrayToFile(libraryFile, IOUtils.toByteArray(url));
+        FileUtils.writeByteArrayToFile(libraryFile, IOUtils.toByteArray(new URL(library.getDownloads().getArtifact().getUrl())));
       }
       files.add(libraryFile);
 
@@ -206,15 +241,7 @@ public class LibraryApplier {
         }
       }
     }
-    files.addAll(Arrays.asList(externalLibraries));
-
-    try (JarFile jarFile = new JarFile(jar)) {
-      if (jarFile.getJarEntry(".deobfuscated") == null) {
-        this.launchArguments.put("--version", version);
-        this.libraryRemapper.remap(jar, files);
-      }
-    }
-    return jar;
+    return files;
   }
 
   private void registerMinecraftRepository() {

@@ -34,11 +34,10 @@ public class LibraryRemapper {
       this.classMappingProvider = this.injector.getInstance(ClassMappingProvider.class);
       this.loadMappings();
       new LibraryRemapperContext(new LibraryRemapNameProvider(this, new ReflectionSuperClassProvider(file, libraries)), this, file);
-    } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
-
 
   private Map<String, String> loadMappings() {
     this.loadClassMappings();

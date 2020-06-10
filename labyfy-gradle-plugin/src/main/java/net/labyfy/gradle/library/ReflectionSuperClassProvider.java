@@ -24,10 +24,8 @@ public class ReflectionSuperClassProvider implements SuperClassProvider {
   private RootClassLoader classLoader;
 
   protected ReflectionSuperClassProvider(File jarFile, Collection<File> libraries)
-      throws NoSuchMethodException, MalformedURLException, InvocationTargetException,
-      IllegalAccessException {
+      throws MalformedURLException {
     this.classLoader = new RootClassLoader(new URL[]{});
-    this.classLoader.addURLs(Collections.singleton(jarFile.toURI().toURL()));
     libraries.stream()
         .map(File::toPath)
         .filter(path -> (path.toFile().isFile() && path.toFile().getName().endsWith(".jar")))
@@ -40,6 +38,7 @@ public class ReflectionSuperClassProvider implements SuperClassProvider {
                 e.printStackTrace();
               }
             });
+    this.classLoader.addURLs(Collections.singleton(jarFile.toURI().toURL()));
   }
 
   public List<String> getSuperClass(String clazz) {

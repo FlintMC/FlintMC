@@ -51,6 +51,7 @@ public class LibraryRemapperContext {
         (name, classNode) -> {
           try {
             if (this.remapper.getMappings().containsKey(classNode.name)) {
+
               System.out.println(
                   " -> rewrite "
                       + classNode.name
