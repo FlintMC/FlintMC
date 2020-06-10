@@ -1,12 +1,10 @@
 package net.labyfy.gradle.library;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.GsonBuilder;
 import net.labyfy.gradle.LabyfyGradlePlugin;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -27,9 +25,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.jar.JarFile;
@@ -65,32 +61,30 @@ public class LibraryApplier {
   public void configured(LabyfyGradlePlugin.Extension extension, Project project) throws IOException, ParserConfigurationException, TransformerException {
     String version = extension.getVersion();
     if (version == null) return;
-    System.out.println("Version " + version + " in project " + project.getName());
     VersionFetcher.Version details = extension.getDetails();
 
     File repo = new File(project.getGradle().getGradleUserHomeDir(), "caches/labyfy-gradle/repo");
     repo.mkdirs();
 
-    this.generateClient(repo, version, details, project);
-    this.generateServer(repo, version, details, project);
+    this.generateClient(repo, version, details);
+    this.generateServer(repo, version, details);
 
     project.getRepositories().maven(mavenArtifactRepository -> {
       mavenArtifactRepository.setUrl(repo.toURI());
-      mavenArtifactRepository.metadataSources(MavenArtifactRepository.MetadataSources::gradleMetadata);
     });
   }
 
-  private File generateServer(File repo, String version, VersionFetcher.Version details, Project project) throws
+  private File generateServer(File repo, String version, VersionFetcher.Version details) throws
       IOException, TransformerException, ParserConfigurationException {
-    return this.createArtifact(repo, project, new URL(details.getDownloads().getServer().getUrl()), "net.minecraft", "server", version);
+    return this.createArtifact(repo, new URL(details.getDownloads().getServer().getUrl()), "net.minecraft", "server", version);
   }
 
-  private File generateClient(File repo, String version, VersionFetcher.Version details, Project project) throws
+  private File generateClient(File repo, String version, VersionFetcher.Version details) throws
       IOException, TransformerException, ParserConfigurationException {
-    return this.createArtifact(repo, project, new URL(details.getDownloads().getClient().getUrl()), "net.minecraft", "client", version);
+    return this.createArtifact(repo, new URL(details.getDownloads().getClient().getUrl()), "net.minecraft", "client", version);
   }
 
-  private File createArtifact(File repo, Project project, URL url, String group, String name, String version) throws
+  private File createArtifact(File repo, URL url, String group, String name, String version) throws
       IOException, ParserConfigurationException, TransformerException {
 
     String format = String.format("%s/%s/%s/%s-%s", group.replace('.', '/'), name, version, name, version);
@@ -98,43 +92,9 @@ public class LibraryApplier {
 
     File jar = new File(repo, format + ".jar");
     File pom = new File(repo, format + ".pom");
-    File gradleMeta = new File(repo, format + ".module");
 
     if (!jar.exists())
       FileUtils.writeByteArrayToFile(jar, IOUtils.toByteArray(url));
-
-    if (!gradleMeta.exists()) {
-      GradleModuleMetaData gradleModuleMetaData = new GradleModuleMetaData()
-          .setComponent(new GradleModuleMetaData.Component()
-              .setGroup(group)
-              .setModule(name)
-              .setVersion(version))
-          .setVariants(new GradleModuleMetaData.Variant[]{
-              new GradleModuleMetaData.Variant()
-                  .setName("default")
-                  .setAttributes(ImmutableMap.
-                      <String, Object>builder()
-                      .put("org.gradle.usage", "java-runtime")
-                      .put("org.gradle.category", "library")
-                      .put("org.gradle.libraryelements", "jar")
-                      .put("net.labyfy.requiredeobfuscation", true)
-                      .build()
-                  ).setFiles(new GradleModuleMetaData.Variant.File[]{
-                  new GradleModuleMetaData.Variant.File()
-                      .setName(jar.getName())
-                      .setUrl(name + "-" + version + ".jar")})
-                  .setDependencies(Arrays.stream(fetch.getLibraries())
-                  .map(library -> library.getName().split(":"))
-                  .map(parameters -> new GradleModuleMetaData.Variant.Dependency()
-                      .setGroup(parameters[0])
-                      .setModule(parameters[1])
-                      .setVersion(ImmutableMap.<String, String>builder()
-                          .put("prefers", parameters[2])
-                          .build()))
-                  .toArray(GradleModuleMetaData.Variant.Dependency[]::new))});
-
-      FileUtils.write(gradleMeta, new GsonBuilder().setPrettyPrinting().create().toJson(gradleModuleMetaData), StandardCharsets.UTF_8);
-    }
 
     if (!pom.exists()) {
 
@@ -187,6 +147,35 @@ public class LibraryApplier {
         dependency.appendChild(scopeDependencyElement);
 
         dependencies.appendChild(dependency);
+
+        if (library.getDownloads().getClassifiers() != null) {
+          for (Map.Entry<String, VersionFetcher.Version.Library.Downloads.Artifact> entry : library.getDownloads().getClassifiers().entrySet()) {
+            Element classifierDependency = document.createElement("dependency");
+            Element groupIdClassifierDependencyElement = document.createElement("groupId");
+            Element artifactIdClassifierDependencyElement = document.createElement("artifactId");
+            Element versionClassifierDependencyElement = document.createElement("version");
+            Element scopeClassifierDependencyElement = document.createElement("scope");
+            Element classifierDependencyElement = document.createElement("classifier");
+
+            //TODO possibly parse identifier
+            String[] splitClassifier = library.getName().split(":");
+
+            groupIdClassifierDependencyElement.appendChild(document.createTextNode(splitClassifier[0]));
+            artifactIdClassifierDependencyElement.appendChild(document.createTextNode(splitClassifier[1]));
+            versionClassifierDependencyElement.appendChild(document.createTextNode(splitClassifier[2]));
+            scopeClassifierDependencyElement.appendChild(document.createTextNode("compile"));
+            classifierDependencyElement.appendChild(document.createTextNode(entry.getKey()));
+
+            classifierDependency.appendChild(groupIdClassifierDependencyElement);
+            classifierDependency.appendChild(artifactIdClassifierDependencyElement);
+            classifierDependency.appendChild(versionClassifierDependencyElement);
+            classifierDependency.appendChild(scopeClassifierDependencyElement);
+            classifierDependency.appendChild(classifierDependencyElement);
+
+            dependencies.appendChild(classifierDependency);
+          }
+        }
+
       }
       root.appendChild(dependencies);
 
@@ -211,6 +200,16 @@ public class LibraryApplier {
         FileUtils.writeByteArrayToFile(libraryFile, IOUtils.toByteArray(url));
       }
       files.add(libraryFile);
+
+      if (library.getDownloads().getClassifiers() != null) {
+        for (Map.Entry<String, VersionFetcher.Version.Library.Downloads.Artifact> entry : library.getDownloads().getClassifiers().entrySet()) {
+          File classifierFile = new File(libraryFile.getParent(), FilenameUtils.removeExtension(libraryFile.getName()) + "-" + entry.getKey() + ".jar");
+          if (!classifierFile.exists()) {
+            FileUtils.writeByteArrayToFile(classifierFile, IOUtils.toByteArray(new URL(entry.getValue().getUrl())));
+          }
+          files.add(classifierFile);
+        }
+      }
     }
 
     try (JarFile jarFile = new JarFile(jar)) {
