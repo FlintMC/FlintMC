@@ -152,7 +152,7 @@ public class LibraryApplier {
 
 
       Element dependencies = document.createElement("dependencies");
-      for (VersionFetcher.Version.Library library : details.getLibraries()) {
+      for (VersionFetcher.Version.Library library : details.getSortedLibraries()) {
         Element dependency = document.createElement("dependency");
         Element groupIdDependencyElement = document.createElement("groupId");
         Element artifactIdDependencyElement = document.createElement("artifactId");
@@ -222,7 +222,7 @@ public class LibraryApplier {
 
   private Collection<File> collectAndDownloadLibraries(VersionFetcher.Version version, File repo) throws IOException {
     Collection<File> files = new ArrayList<>();
-    for (VersionFetcher.Version.Library library : version.getLibraries()) {
+    for (VersionFetcher.Version.Library library : version.getSortedLibraries()) {
       String[] split = library.getName().split(":");
       File libraryFile = new File(repo, String.format("%s/%s/%s/%s-%s.jar", split[0].replace('.', '/'), split[1], split[2], split[1], split[2]));
       if (!libraryFile.exists()) {
