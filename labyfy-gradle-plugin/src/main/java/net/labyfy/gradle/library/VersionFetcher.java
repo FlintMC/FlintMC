@@ -1,18 +1,17 @@
 package net.labyfy.gradle.library;
 
+import com.google.common.collect.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
+import org.happy.collections.lists.decorators.SortedList_1x0;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class VersionFetcher {
 
@@ -117,6 +116,33 @@ public class VersionFetcher {
 
     public Arguments getArguments() {
       return arguments;
+    }
+
+    public Library[] getSortedLibraries() {
+
+      Multimap<String, Library> versions = Multimaps.newListMultimap(
+          new TreeMap<>(String::compareTo), () -> SortedList_1x0.of(Lists.newArrayList(), Comparator.comparing(o -> o.getDownloads().getArtifact().getPath())));
+
+      for (Library library : this.libraries) {
+        String[] path = library.downloads.artifact.path.split("/");
+        String artifact = path[path.length - 3];
+        versions.put(artifact, library);
+      }
+      Collection<Library> returnLibraries = new HashSet<>();
+
+      ImmutableSortedSet.copyOfSorted((SortedSet<String>) versions.keySet()).forEach(artifact -> {
+        String[] path = Iterables.getLast(versions.get(artifact)).getDownloads().getArtifact().getPath().split("/");
+        String targetVersion = path[path.length - 2];
+        for (VersionFetcher.Version.Library library : versions.get(artifact)) {
+          path = library.getDownloads().getArtifact().getPath().split("/");
+          String version = path[path.length - 2];
+          if (targetVersion.equals(version)) {
+            returnLibraries.add(library);
+          }
+        }
+      });
+
+      return returnLibraries.toArray(new Library[]{});
     }
 
     public Library[] getLibraries() {
