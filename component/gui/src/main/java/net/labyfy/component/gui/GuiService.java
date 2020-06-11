@@ -78,6 +78,7 @@ public class GuiService implements ServiceHandler {
         parameters.put(Key.get(Object.class, Names.named("instance")), screen);
         parameters.put(Key.get(GuiRenderState.class), guiRenderState);
         parameters.put(Key.get(GuiAdapter.class), adapter);
+        parameters.put(Key.get(GuiRenderCancellation.class), args.getOrDefault("cancellation", null));
 
         if (targetGuiRenderState == GuiRenderState.Type.RENDER) {
           adapter.updateMousePosition((int) args.get("mouseX"), (int) args.get("mouseY"));

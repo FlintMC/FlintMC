@@ -3,10 +3,7 @@ package net.labyfy.component.gui.juklearmc.menues;
 import net.janrupf.juklear.JuklearContext;
 import net.janrupf.juklear.layout.JuklearPanelFlags;
 import net.janrupf.juklear.layout.component.JuklearWindow;
-import net.labyfy.component.gui.Gui;
-import net.labyfy.component.gui.GuiRenderState;
-import net.labyfy.component.gui.Guis;
-import net.labyfy.component.gui.MinecraftWindow;
+import net.labyfy.component.gui.*;
 import net.labyfy.component.gui.juklearmc.JuklearMC;
 import net.labyfy.component.transform.hook.Hook;
 
@@ -26,14 +23,18 @@ public class JuklearMainMenu {
     this.juklearMC = juklearMC;
     JuklearContext context = juklearMC.getContext();
 
-    this.window = new JuklearWindow("Hello, here is Juklear in Minecraft!", 0, 0, 600, 400);
-    this.window.addFlag(JuklearPanelFlags.TITLE);
-    this.window.addFlag(JuklearPanelFlags.BORDER);
+    this.window = new JuklearWindow("", 0, 0, minecraftWindow.getWidth(), minecraftWindow.getHeight());
+    this.window.addOwnStyle(context.getStyle().getWindow().getFixedBackground().preparePush(0, 0, 0, 0));
     context.addTopLevel(window);
   }
 
-  @GuiRenderState(value = GuiRenderState.Type.RENDER, executionTime = Hook.ExecutionTime.AFTER)
-  public void render() {
+  @GuiRenderState(value = GuiRenderState.Type.RENDER, executionTime = Hook.ExecutionTime.BEFORE)
+  public void render(GuiRenderCancellation cancellation) {
+    window.setBounds(0, 0, minecraftWindow.getWidth(), minecraftWindow.getHeight());
     juklearMC.draw((int) minecraftWindow.getWidth(), (int) minecraftWindow.getHeight());
+
+    if(cancellation != null) {
+      cancellation.cancel();
+    }
   }
 }
