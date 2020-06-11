@@ -1,6 +1,7 @@
-package net.labyfy.downloader;
+package net.labyfy.gradle.library;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 
@@ -183,38 +184,7 @@ public class VersionFetcher {
     }
 
     public String toString() {
-      return "Version{"
-          + "arguments="
-          + arguments
-          + ", assetIndex="
-          + assetIndex
-          + ", assets='"
-          + assets
-          + '\''
-          + ", downloads="
-          + downloads
-          + ", id='"
-          + id
-          + '\''
-          + ", libraries="
-          + Arrays.toString(libraries)
-          + ", logging="
-          + logging
-          + ", mainClass='"
-          + mainClass
-          + '\''
-          + ", minimumLauncherVersion="
-          + minimumLauncherVersion
-          + ", releaseTime='"
-          + releaseTime
-          + '\''
-          + ", time='"
-          + time
-          + '\''
-          + ", type='"
-          + type
-          + '\''
-          + '}';
+      return new GsonBuilder().setPrettyPrinting().create().toJson(this);
     }
 
     public static class Downloads {
@@ -245,19 +215,6 @@ public class VersionFetcher {
         return serverMappings;
       }
 
-      public String toString() {
-        return "Downloads{"
-            + "client="
-            + client
-            + ", clientMappings="
-            + clientMappings
-            + ", server="
-            + server
-            + ", serverMappings="
-            + serverMappings
-            + '}';
-      }
-
       public static class Download {
         private String sha1;
         private int size;
@@ -275,10 +232,6 @@ public class VersionFetcher {
           return this.url;
         }
 
-        public String toString() {
-          return "Client{" + "sha1='" + sha1 + '\'' + ", size=" + size + ", url='" + url + '\''
-              + '}';
-        }
       }
     }
 
@@ -303,7 +256,8 @@ public class VersionFetcher {
         this.natives = natives;
       }
 
-      public Library() {}
+      public Library() {
+      }
 
       public Map<String, String> getNatives() {
         return natives;
@@ -319,22 +273,6 @@ public class VersionFetcher {
 
       public String getName() {
         return name;
-      }
-
-      public String toString() {
-        return "Library{"
-            + "downloads="
-            + downloads
-            + ", extract="
-            + extract
-            + ", rules="
-            + rules
-            + ", name='"
-            + name
-            + '\''
-            + ", natives="
-            + natives
-            + '}';
       }
 
       public boolean equals(Object o) {
@@ -361,7 +299,8 @@ public class VersionFetcher {
         private Artifact artifact;
         private Map<String, Artifact> classifiers;
 
-        public Downloads() {}
+        public Downloads() {
+        }
 
         public Downloads(Artifact artifact) {
           this.artifact = artifact;
@@ -378,10 +317,6 @@ public class VersionFetcher {
 
         public Map<String, Artifact> getClassifiers() {
           return classifiers;
-        }
-
-        public String toString() {
-          return "Downloads{" + "artifact=" + artifact + ", classifiers=" + classifiers + '}';
         }
 
         public boolean equals(Object o) {
@@ -402,7 +337,8 @@ public class VersionFetcher {
           private int size;
           private String url;
 
-          public Artifact() {}
+          public Artifact() {
+          }
 
           public Artifact(String path, String sha1, int size, String url) {
             this.path = path;
@@ -427,23 +363,6 @@ public class VersionFetcher {
             return this.url;
           }
 
-          public String toString() {
-            return "Artifact{"
-                + "path='"
-                + path
-                + '\''
-                + ", sha1='"
-                + sha1
-                + '\''
-                + ", size="
-                + size
-                + ", url='"
-                + url
-                + '\''
-                + '}';
-          }
-
-
           public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
@@ -466,7 +385,8 @@ public class VersionFetcher {
       private Object[] game;
       private Object[] jvm;
 
-      private Arguments() {}
+      private Arguments() {
+      }
 
       public Object[] getGame() {
         return game;
@@ -486,14 +406,6 @@ public class VersionFetcher {
         return this;
       }
 
-      public String toString() {
-        return "Arguments{"
-            + "game="
-            + Arrays.toString(game)
-            + ", jvm="
-            + Arrays.toString(jvm)
-            + '}';
-      }
     }
   }
 
@@ -532,33 +444,9 @@ public class VersionFetcher {
         return this.releaseTime;
       }
 
-      public String toString() {
-        return "Version{"
-            + "id='"
-            + id
-            + '\''
-            + ", type='"
-            + type
-            + '\''
-            + ", url='"
-            + url
-            + '\''
-            + ", time='"
-            + time
-            + '\''
-            + ", releaseTime='"
-            + releaseTime
-            + '\''
-            + '}';
-      }
-
       public Version getDetails() {
         return fetchDetails(this);
       }
-    }
-
-    public String toString() {
-      return "VersionManifest{" + "versions=" + Arrays.toString(versions) + '}';
     }
   }
 }

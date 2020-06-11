@@ -1,12 +1,7 @@
 package net.labyfy.component.transform.minecraft.obfuscate.remap;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.NotFoundException;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
@@ -18,8 +13,6 @@ import net.labyfy.component.transform.asm.ASMUtils;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,18 +53,6 @@ public class MinecraftClassRemapper extends SimpleRemapper {
         }
       }
     }
-
-
-//    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
-//        .map(ClassMapping::getMethods)
-//        .flatMap(Collection::stream)
-//        .filter(methodMapping -> !methodMapping.isDefault())
-////        .distinct()
-//        .collect(
-//            Collectors.toMap(
-//                methodMapping -> methodMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + methodMapping.getUnObfuscatedMethodIdentifier(),
-//                MethodMapping::getObfuscatedMethodName))
-//    );
 
     mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
         .map(ClassMapping::getFields)
@@ -120,12 +101,14 @@ public class MinecraftClassRemapper extends SimpleRemapper {
   }
 
   public String mapMethodName(String owner, String name, String desc) {
-    String map = this.map(owner + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+
+    String map = this.map(owner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
     if (map == null) {
+
       List<String> possibleOwners = this.getSuperClass(owner.replace('/', '.'));
       if (possibleOwners != null) {
         for (String possibleOwner : possibleOwners) {
-          map = this.map(possibleOwner + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+          map = this.map(possibleOwner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
           if (map != null) return map;
         }
       }

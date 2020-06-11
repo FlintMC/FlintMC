@@ -1,4 +1,4 @@
-package net.labyfy.downloader;
+package net.labyfy.gradle.util;
 
 
 import org.objectweb.asm.ClassReader;
