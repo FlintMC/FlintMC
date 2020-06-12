@@ -11,7 +11,8 @@ sourceCompatibility = 1.8
 labyfy{
     version "1.15.1"
     provideMappings true
-    publishToken "${publish_token}"
+    publishToken "${labyfy_publish_token}"
+    publishUrl "${labyfy_publish_url}"
 }
 
 
