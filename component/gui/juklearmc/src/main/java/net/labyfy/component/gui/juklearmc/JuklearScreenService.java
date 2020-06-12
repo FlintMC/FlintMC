@@ -29,7 +29,7 @@ public class JuklearScreenService implements ServiceHandler {
     JuklearScreen data = annotation.getAnnotation();
     ScreenName overwrittenName = ScreenName.typed(data.type(), data.value());
 
-    JuklearMCScreen instance = InjectionHolder.getInjectedInstance(clazz);
-    juklearMC.overwriteScreen(overwrittenName, instance);
+    juklearMC.onInitialize(
+        () -> juklearMC.overwriteScreen(overwrittenName,  InjectionHolder.getInjectedInstance(clazz)));
   }
 }

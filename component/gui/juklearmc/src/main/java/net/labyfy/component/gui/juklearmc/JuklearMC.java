@@ -19,6 +19,7 @@ import net.labyfy.component.gui.event.UnicodeTyped;
 import net.labyfy.component.gui.event.GuiInputEvent;
 import net.labyfy.component.gui.event.GuiInputEventProcessor;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
+import net.labyfy.component.gui.juklearmc.style.DefaultLabyModStyle;
 import net.labyfy.component.gui.name.ScreenName;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.tasks.Task;
@@ -41,6 +42,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   private final GuiController controller;
   private final Map<ScreenName, JuklearMCScreen> overwrittenScreens;
   private final List<JuklearTopLevelComponent> currentScreenTopLevels;
+  private final List<Runnable> initializeTasks;
 
   private JuklearMCScreen currentJuklearScreen;
 
@@ -58,6 +60,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     this.controller = controller;
     this.overwrittenScreens = new HashMap<>();
     this.currentScreenTopLevels = new ArrayList<>();
+    this.initializeTasks = new ArrayList<>();
   }
 
   @TaskBody
@@ -70,13 +73,20 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     editor.end();
 
     context = juklear.defaultContext(defaultFont);
+    DefaultLabyModStyle.apply(context);
     controller.registerInputProcessor(this);
     controller.registerComponent(this);
     minecraftWindow = InjectionHolder.getInjectedInstance(MinecraftWindow.class);
+
+    initializeTasks.forEach(Runnable::run);
   }
 
   public void overwriteScreen(ScreenName screen, JuklearMCScreen overwrite) {
     this.overwrittenScreens.put(screen, overwrite);
+  }
+
+  public void onInitialize(Runnable task) {
+    this.initializeTasks.add(task);
   }
 
   public JuklearContext getContext() {
@@ -147,7 +157,8 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
         minecraftWindow.getFramebufferWidth(),
         minecraftWindow.getFramebufferHeight(),
         new JuklearVec2(juklear, 1, 1),
-        JuklearAntialiasing.ON);
+        // Leave it off! OpenGL does Antialiasing for us, it creates weird artifacts if juklear does too!
+        JuklearAntialiasing.OFF);
 
     if(currentJuklearScreen != null) {
       currentJuklearScreen.postNuklearRender();
