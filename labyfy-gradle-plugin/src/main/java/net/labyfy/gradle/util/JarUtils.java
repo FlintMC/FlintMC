@@ -23,7 +23,6 @@ public class JarUtils {
    * @param jarFile
    * @return
    * @throws IOException
-   * @author Konloch (Bytecode Viewer)
    */
   public static Map<String, ClassNode> loadClasses(File jarFile) throws IOException {
     Map<String, ClassNode> classes = new HashMap<String, ClassNode>();
