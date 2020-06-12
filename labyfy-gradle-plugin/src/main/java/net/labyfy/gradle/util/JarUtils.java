@@ -1,5 +1,6 @@
-package net.labyfy.downloader;
+package net.labyfy.gradle.util;
 
+import net.labyfy.gradle.util.ASMUtils;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -20,9 +21,9 @@ public class JarUtils {
    * Creates a map of <String(Class name), ClassNode> for a given jar file
    *
    * @param jarFile
-   * @author Konloch (Bytecode Viewer)
    * @return
    * @throws IOException
+   * @author Konloch (Bytecode Viewer)
    */
   public static Map<String, ClassNode> loadClasses(File jarFile) throws IOException {
     Map<String, ClassNode> classes = new HashMap<String, ClassNode>();
@@ -129,6 +130,10 @@ public class JarUtils {
    */
   public static void saveAsJar(Map<String, byte[]> outBytes, File file) {
     try {
+      if (file.exists()) {
+        file.delete();
+      }
+
       JarOutputStream out = new JarOutputStream(new FileOutputStream(file));
       for (String entry : outBytes.keySet()) {
         out.putNextEntry(new ZipEntry(entry));
@@ -137,6 +142,7 @@ public class JarUtils {
         }
         out.closeEntry();
       }
+
 
       /* FileWriter fileWriter = new FileWriter("./MANIFEST.MF");
 
