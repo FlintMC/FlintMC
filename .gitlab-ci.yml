@@ -29,7 +29,6 @@ version:
     - git remote set-url --push origin "git@git.labymod.net:client/labymod4/Labyfy.git"
     - git tag -a ${TAG} -m "${CI_COMMIT_MESSAGE}"
     - git push origin ${TAG}
-    - bash $SCRIPTS_DIR/releaseVersionToGit.sh ${CI_PROJECT_ID} ${CI_JOB_TOKEN} ${TAG} ${TAG} ${CI_COMMIT_MESSAGE}
   artifacts:
     paths:
       - .dev-version
@@ -88,6 +87,7 @@ publish_version:
     - mv build/libs/$FILE .
     - curl -H "Authorization:Bearer ${DISTRIBUTOR_TOKEN}" -F "file=@$FILE" http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
     - curl -H "Authorization:Bearer ${DISTRIBUTOR_TOKEN}" -F 'file=@manifest.json' http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
+    - bash $SCRIPTS_DIR/releaseVersionToGit.sh ${CI_PROJECT_ID} ${CI_JOB_TOKEN} $(cat version) $(cat version) ${CI_COMMIT_MESSAGE}
   environment:
     name: production
   only:
