@@ -29,6 +29,7 @@ version:
     - git remote set-url --push origin "git@git.labymod.net:client/labymod4/Labyfy.git"
     - git tag -a ${TAG} -m "${CI_COMMIT_MESSAGE}"
     - git push origin ${TAG}
+    - bash $SCRIPTS_DIR/releaseVersionToGit.sh ${CI_PROJECT_ID} ${CI_JOB_TOKEN} ${TAG} ${TAG} ${CI_COMMIT_MESSAGE}
   artifacts:
     paths:
       - .dev-version
