@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
-import net.labyfy.component.gui.component.GuiComponent;
+import net.labyfy.component.gui.old.component.GuiComponent;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.component.resources.pack.ResourcePackProvider;

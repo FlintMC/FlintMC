@@ -1,102 +1,125 @@
 package net.labyfy.component.gui.v1_15_2;
 
-import com.google.common.collect.ImmutableMap;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.representation.Type;
-import net.labyfy.component.gui.GuiInterceptor;
-import net.labyfy.component.gui.GuiRenderCancellation;
-import net.labyfy.component.gui.GuiRenderState;
+import net.labyfy.component.gui.GuiController;
+import net.labyfy.component.gui.RenderExecution;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
 import net.labyfy.component.transform.hook.Hook;
-import net.labyfy.component.transform.hook.HookFilter;
-import net.labyfy.component.transform.hook.HookFilters;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.component.transform.javassist.CtClassFilter;
 import net.labyfy.component.transform.javassist.CtClassFilters;
+import net.minecraft.client.Minecraft;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Collections;
 
 @Singleton
 @AutoLoad
-public class LabyGuiInterceptor extends GuiInterceptor {
+public class LabyGuiInterceptor {
   private final ClassMappingProvider mappingProvider;
+  private final GuiController controller;
 
   @Inject
-  private LabyGuiInterceptor(ClassMappingProvider mappingProvider) {
+  private LabyGuiInterceptor(ClassMappingProvider mappingProvider, GuiController controller) {
     this.mappingProvider = mappingProvider;
-  }
-
-  @Hook(
-      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
-      methodName = "init",
-      version = "1.15.2")
-  @HookFilter(
-          value = HookFilters.SUBCLASS_OF,
-          type = @Type(typeName = "net.minecraft.client.gui.screen.Screen"))
-  public void hookInit(Hook.ExecutionTime executionTime, @Named("instance") Object screen) {
-    this.notifyGuis(executionTime, GuiRenderState.Type.INIT, screen, Collections.emptyMap());
-  }
-
-  @Hook(
-      executionTime = Hook.ExecutionTime.AFTER,
-      methodName = "render",
-      parameters = {
-        @Type(reference = int.class),
-        @Type(reference = int.class),
-        @Type(reference = float.class)
-      },
-      version = "1.15.2")
-  @HookFilter(
-          value = HookFilters.SUBCLASS_OF,
-          type = @Type(typeName = "net.minecraft.client.gui.screen.Screen"))
-  public void postRenderHookCallback(
-      Hook.ExecutionTime executionTime,
-      @Named("instance") Object screen,
-      @Named("args") Object[] args) {
-    this.notifyGuis(
-        executionTime,
-        GuiRenderState.Type.RENDER,
-        screen,
-        ImmutableMap.of("mouseX", args[0], "mouseY", args[1], "partialTick", args[2]));
-  }
-
-  public static boolean preRenderHookCallback(int mouseX, int mouseY, float partialTick, Object screen) {
-    GuiRenderCancellation cancellation = new GuiRenderCancellation();
-    InjectionHolder.getInjectedInstance(LabyGuiInterceptor.class).notifyGuis(
-        Hook.ExecutionTime.BEFORE,
-        GuiRenderState.Type.RENDER,
-        screen,
-        ImmutableMap.of(
-            "mouseX", mouseX,
-            "mouseY", mouseY,
-            "partialTick", partialTick,
-            "cancellation", cancellation
-        )
-    );
-
-    return cancellation.shouldCancel();
+    this.controller = controller;
   }
 
   @ClassTransform
-  @CtClassFilter(value = CtClassFilters.SUBCLASS_OF, className = "net.minecraft.client.gui.screen.Screen")
-  public void hookPreRender(ClassTransformContext context) throws NotFoundException, CannotCompileException {
-    CtClass screenClass = context.getCtClass();
+  @CtClassFilter(className = "net.minecraft.client.gui.screen.Screen", value = CtClassFilters.SUBCLASS_OF)
+  private void hookScreenRender(ClassTransformContext context) throws NotFoundException, CannotCompileException {
     MethodMapping renderMapping = mappingProvider
         .get("net.minecraft.client.gui.screen.Screen")
         .getMethod("render", int.class, int.class, float.class);
 
-    CtMethod renderMethod = screenClass.getMethod(renderMapping.getName(), "(IIF)V");
-    renderMethod.insertBefore(
-        "if(net.labyfy.component.gui.v1_15_1.LabyGuiInterceptor.preRenderHookCallback($$, $0)) { return; }");
+    CtClass screenClass = context.getCtClass();
+    for(CtMethod method : screenClass.getDeclaredMethods()) {
+      if(!method.getName().equals(renderMapping.getName())) {
+        continue;
+      }
+
+      method.insertBefore(
+          "if(net.labyfy.component.gui.v1_15_1.LabyGuiInterceptor.preScreenRenderCallback($$)) {" +
+              "   net.labyfy.component.gui.v1_15_1.LabyGuiInterceptor.postScreenRenderCallback(true, $$);" +
+              "   return;" +
+              "}"
+      );
+
+      method.insertAfter(
+          "net.labyfy.component.gui.v1_15_1.LabyGuiInterceptor.postScreenRenderCallback(false, $$);");
+
+      break;
+    }
+  }
+
+  public static boolean preScreenRenderCallback(int mouseX, int mouseY, float partialTick) {
+    GuiController controller = InjectionHolder.getInjectedInstance(LabyGuiInterceptor.class).controller;
+
+    RenderExecution execution = new RenderExecution(
+        mouseX,
+        mouseY,
+        partialTick
+    );
+
+    controller.screenRenderCalled(
+        Hook.ExecutionTime.BEFORE,
+        execution
+    );
+
+    return execution.getCancellation().isCancelled();
+  }
+
+  public static void postScreenRenderCallback(boolean isCancelled, int mouseX, int mouseY, float partialTick) {
+    GuiController controller = InjectionHolder.getInjectedInstance(LabyGuiInterceptor.class).controller;
+
+    RenderExecution execution = new RenderExecution(
+        isCancelled,
+        mouseX,
+        mouseY,
+        partialTick
+    );
+
+    controller.screenRenderCalled(
+        Hook.ExecutionTime.AFTER,
+        execution
+    );
+  }
+
+  @Hook(
+      className = "net.minecraft.client.Minecraft",
+      methodName = "displayGuiScreen",
+      parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
+      executionTime = Hook.ExecutionTime.AFTER,
+      version = "1.15.1"
+  )
+  public void hookScreenChanged() {
+    controller.screenChanged(Minecraft.getInstance().currentScreen);
+  }
+
+  @Hook(
+      className = "net.minecraft.client.renderer.GameRenderer",
+      methodName = "updateCameraAndRender",
+      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
+      parameters = {
+          @Type(reference = float.class),
+          @Type(reference = long.class),
+          @Type(reference = boolean.class)
+      },
+      version = "1.15.1"
+  )
+  public void hookRender(Hook.ExecutionTime executionTime) {
+    if(executionTime == Hook.ExecutionTime.BEFORE) {
+      controller.beginFrame();
+    } else {
+      controller.endFrame();
+    }
   }
 }

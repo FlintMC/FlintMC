@@ -7,8 +7,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import net.labyfy.component.gui.MinecraftWindow;
-import net.labyfy.component.gui.adapter.GuiAdapter;
-import net.labyfy.component.gui.component.GuiComponent;
+import net.labyfy.component.gui.old.adapter.GuiAdapter;
+import net.labyfy.component.gui.old.component.GuiComponent;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.util.concurrent.Callable;

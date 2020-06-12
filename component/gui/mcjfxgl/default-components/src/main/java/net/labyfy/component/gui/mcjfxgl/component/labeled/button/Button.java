@@ -6,7 +6,7 @@ import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.scene.control.Skin;
 import net.labyfy.base.structure.identifier.IgnoreInitialization;
-import net.labyfy.component.gui.adapter.GuiAdapter;
+import net.labyfy.component.gui.old.adapter.GuiAdapter;
 import net.labyfy.component.gui.mcjfxgl.component.McJfxGLControl;
 import net.labyfy.component.gui.mcjfxgl.component.labeled.Labeled;
 import net.labyfy.component.inject.assisted.AssistedFactory;

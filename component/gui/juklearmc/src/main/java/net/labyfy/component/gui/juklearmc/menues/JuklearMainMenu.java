@@ -1,40 +1,34 @@
 package net.labyfy.component.gui.juklearmc.menues;
 
-import net.janrupf.juklear.JuklearContext;
-import net.janrupf.juklear.layout.JuklearPanelFlags;
 import net.janrupf.juklear.layout.component.JuklearWindow;
-import net.labyfy.component.gui.*;
-import net.labyfy.component.gui.juklearmc.JuklearMC;
-import net.labyfy.component.transform.hook.Hook;
+import net.janrupf.juklear.layout.component.base.JuklearTopLevelComponent;
+import net.labyfy.component.gui.juklearmc.JuklearScreen;
+import net.labyfy.component.gui.name.ScreenName;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Collection;
+import java.util.Collections;
 
 @Singleton
-@Gui(Guis.GUI_MAIN_MENU)
-public class JuklearMainMenu {
-  private final MinecraftWindow minecraftWindow;
-  private final JuklearMC juklearMC;
-  private final JuklearWindow window;
+@JuklearScreen(ScreenName.MAIN_MENU)
+public class JuklearMainMenu implements JuklearMCScreen {
+  private final JuklearWindow mainWindow;
 
   @Inject
-  private JuklearMainMenu(MinecraftWindow minecraftWindow, JuklearMC juklearMC) {
-    this.minecraftWindow = minecraftWindow;
-    this.juklearMC = juklearMC;
-    JuklearContext context = juklearMC.getContext();
-
-    this.window = new JuklearWindow("", 0, 0, minecraftWindow.getWidth(), minecraftWindow.getHeight());
-    this.window.addOwnStyle(context.getStyle().getWindow().getFixedBackground().preparePush(0, 0, 0, 0));
-    context.addTopLevel(window);
+  private JuklearMainMenu() {
+    this.mainWindow = new JuklearWindow("Test");
   }
 
-  @GuiRenderState(value = GuiRenderState.Type.RENDER, executionTime = Hook.ExecutionTime.BEFORE)
-  public void render(GuiRenderCancellation cancellation) {
-    window.setBounds(0, 0, minecraftWindow.getWidth(), minecraftWindow.getHeight());
-    juklearMC.draw((int) minecraftWindow.getWidth(), (int) minecraftWindow.getHeight());
+  @Override
+  public Collection<JuklearTopLevelComponent> topLevelComponents() {
+    return Collections.singleton(mainWindow);
+  }
 
-    if(cancellation != null) {
-      cancellation.cancel();
-    }
+  @Override
+  public void updateSize(int width, int height) {
+    // OpenGL and width/height in Minecraft is a bit weird,
+    // so overstretch the window by 1 pixel on each side to avoid visual artifacts
+    this.mainWindow.setBounds(-1, -1, width + 2, height + 2);
   }
 }
