@@ -82,12 +82,6 @@ publish_version:
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
     - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
-    - export MD5SUM=$(md5sum build/libs/Labyfy-$(cat version).jar | cut -f1 -d' ')
-    - sed -i "s/\"md5\".*/\"md5\":\ \"${MD5SUM})\"/1" manifest.json
-    - sed -i "s/VERSION/$(cat version)/g" manifest.json
-    - cat manifest.json
-    - export FILE="labyfy-$(cat version).jar"
-    - mv build/libs/$FILE .
     - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN :versioned:labyfy-1.15.1:publishLatestRelease
   environment:
     name: production

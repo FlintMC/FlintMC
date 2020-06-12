@@ -31,7 +31,8 @@ public class LabyfyGradlePlugin implements Plugin<Project> {
     rootProject.subprojects(project -> {
       project.getExtensions().create("labyfy", LabyfyGradlePlugin.Extension.class).configured(extension -> {
         if (extension.getPublishToken() != null && extension.getVersion() != null && !extension.getVersion().isEmpty() && extension.getPublishUrl() != null) {
-          project.task("publishLatestRelease", new PublishLatestRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl()));
+          project.task("publishLatestRelease", new PublishLatestRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl(), project.getVersion().toString(), true));
+          project.task("publishVersionedRelease", new PublishLatestRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl(), project.getVersion().toString(), false));
         }
         try {
           LabyfyGradlePlugin.this.configured(extension, project);
