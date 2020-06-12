@@ -1,6 +1,7 @@
 package net.labyfy.component.tasks;
 
 import com.google.inject.Injector;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.property.Property;

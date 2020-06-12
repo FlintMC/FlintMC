@@ -15,14 +15,8 @@ findProject(':component::tasks')?.name = 'tasks'
 include 'component:base'
 findProject(':component:base')?.name = "base"
 
-include 'component:tasks:default:default-tasks-1.15.1'
-findProject(':component:tasks:default:default-tasks-1.15.1')?.name = 'default-tasks-1.15.1'
-
 include 'component:transform:minecraft'
 findProject(':component:transform:minecraft')?.name = 'minecraft'
-
-include 'component:assisted-inject'
-findProject(':component:assisted-inject')?.name = 'assisted-inject'
 
 include 'component:mapping'
 findProject(':component:mapping')?.name = 'mapping'
@@ -72,9 +66,15 @@ findProject(':component:launcher')?.name = 'launcher'
 include 'component:transform:launcher-plugin'
 findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
 
+include 'component:annotation-processing'
+findProject(':component:annotation-processing')?.name = 'annotation-processing'
+
+include 'component:transform:minecraft-obfuscator'
+findProject(':component:transform:minecraft-obfuscator')?.name = 'minecraft-obfuscator'
+
 ext.isPush = true
 
-includeBuild 'library-downloader'
+includeBuild 'labyfy-gradle-plugin'
 
 buildCache {
     local {
@@ -90,3 +90,9 @@ buildCache {
         push = isPush
     }
 }
+include 'component:service'
+findProject(':component:service')?.name = 'service'
+
+include 'component:security'
+findProject('component:security')?.name = 'security'
+

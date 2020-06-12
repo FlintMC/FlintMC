@@ -1,45 +1,44 @@
 package net.labyfy.component.packages.impl;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.base.structure.service.ServiceRepository;
+import net.labyfy.base.structure.AutoLoadProvider;
+import net.labyfy.base.structure.util.TriConsumer;
+import net.labyfy.component.initializer.EntryPoint;
+import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.InjectionServiceShare;
+import net.labyfy.component.inject.ServiceRepository;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.*;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
+import net.labyfy.component.service.LabyfyServiceLoader;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
 
 @Implement(Package.class)
 public class LabyPackage implements Package {
-
-  @InjectLogger private Logger logger;
   private final File jarFile;
   private PackageDescription packageDescription;
   private PackageClassLoader.Factory classLoaderFactory;
   private PackageState packageState;
   private PackageClassLoader classLoader;
   private Exception loadException;
-  private final ServiceRepository serviceRepository;
-  private final JarResolver jarResolver;
-  private final JarFile jar;
 
   @AssistedInject
   private LabyPackage(
       PackageDescriptionLoader descriptionLoader,
       PackageClassLoader.Factory classLoaderFactory,
-      ServiceRepository serviceRepository,
-      JarResolver jarResolver,
       @Assisted File jarFile,
       @Assisted JarFile jar) {
-    this.serviceRepository = serviceRepository;
-    this.jarResolver = jarResolver;
-    this.jar = jar;
     Preconditions.checkNotNull(jarFile);
     Preconditions.checkArgument(
         descriptionLoader.isDescriptionPresent(jar),
@@ -122,23 +121,31 @@ public class LabyPackage implements Package {
   public void enable() {
     Preconditions.checkState(PackageState.LOADED.matches(this));
 
-    this.jarResolver
-        .resolveMatchingClasses(
-            this.jar,
-            this.getPackageDescription().getAutoloadClasses(),
-            this.getPackageDescription().getAutoloadExcludedClasses())
-        .forEach(
-            className -> {
-              try {
-                Class.forName(className, true, classLoader.asClassLoader());
-              } catch (ClassNotFoundException e) {
-                this.logger.warn(
-                    "Couldn't enable autoload class {} for package {}. Continuing anyway...",
-                    className,
-                    this.getName());
-                this.logger.throwing(Level.WARN, e);
-              }
-            });
+    Set<AutoLoadProvider> autoLoadProviders =
+        LabyfyServiceLoader.get(AutoLoadProvider.class).discover(classLoader.asClassLoader());
+
+    Map<Integer, Multimap<Integer, String>> sortedClasses = new TreeMap<>(Integer::compare);
+
+    TriConsumer<Integer, Integer, String> classAcceptor = (round, priority, name) -> {
+      sortedClasses.putIfAbsent(round, MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build());
+      sortedClasses.get(round).put(priority, name);
+    };
+
+    autoLoadProviders.iterator().forEachRemaining((provider) -> provider.registerAutoLoad(classAcceptor));
+
+    sortedClasses.forEach((round, classes) -> {
+      classes.forEach((priority, className) -> {
+        try {
+          EntryPoint.notifyService(Class.forName(className, true, LabyPackage.class.getClassLoader()));
+
+          // LaunchController.getInstance().getRootLoader().loadClass(clazz);
+        } catch (ClassNotFoundException e) {
+          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className);
+        }
+      });
+      InjectionServiceShare.flush();
+      InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
+    });
 
     this.packageState = PackageState.ENABLED;
   }

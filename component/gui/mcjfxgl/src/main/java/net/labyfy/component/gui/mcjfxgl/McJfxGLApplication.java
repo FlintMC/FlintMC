@@ -11,6 +11,7 @@ import javafx.stage.StageStyle;
 import javassist.CtBehavior;
 import javassist.CtField;
 import javassist.Modifier;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.gui.MinecraftWindow;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
@@ -24,6 +25,7 @@ import javax.inject.Singleton;
 import java.util.concurrent.CountDownLatch;
 
 @Singleton
+@AutoLoad
 public class McJfxGLApplication extends Application {
 
   private final MinecraftWindow minecraftWindow;

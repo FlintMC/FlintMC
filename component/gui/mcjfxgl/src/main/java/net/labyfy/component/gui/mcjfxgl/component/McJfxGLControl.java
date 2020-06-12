@@ -261,7 +261,6 @@ public abstract class McJfxGLControl extends Control implements GuiComponent {
             if (skin == null) {
               if (this.getSkin() == null) {
                 this.setSkin(this.createDefaultSkin());
-                System.out.println("set skin1");
               }
             } else {
               if (!this.getSkin().getClass().equals(skin.getClass())) {

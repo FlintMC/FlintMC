@@ -1,19 +1,19 @@
-buildscript {
-    dependencies {
-        classpath 'net.labyfy:library-downloader:1.1-SNAPSHOT'
-    }
-}
+import org.apache.commons.io.FileUtils
 
 plugins {
     id 'application'
 }
 
-apply plugin: 'net.labyfy.library-downloader'
-
 group 'net.labyfy.versioned'
 
 sourceCompatibility = 1.8
-minecraft.version = "1.15.1"
+
+labyfy{
+    version "1.15.1"
+    provideMappings true
+    publishToken "${labyfy_publish_token}"
+    publishUrl "${labyfy_publish_url}"
+}
 
 
 repositories {
@@ -21,15 +21,17 @@ repositories {
 }
 
 dependencies {
-    compile fileTree('libraries')
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'net.minecraft:client:1.15.1'
+    compile 'net.minecraft:server:1.15.1'
+
     compile project(':component:launcher')
-    compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
 
     runtimeOnly project(':component:base')
     runtimeOnly project(':component:transform:javassist')
     runtimeOnly project(':component:transform:asm')
     runtimeOnly project(':component:transform:minecraft')
+    runtimeOnly project(':component:transform:minecraft-obfuscator')
     runtimeOnly project(':component:transform:hook')
     runtimeOnly project(':component:gui')
     runtimeOnly project(':component:gui:mcjfxgl')
@@ -46,16 +48,46 @@ dependencies {
     runtimeOnly project(':versioned:labyfy-1.15.1')
     runtimeOnly project(':component:packages')
     runtimeOnly project(':component:packages:packages-impl')
+
+    labyManifest project(':component:base')
+    labyManifest project(':component:transform:javassist')
+    labyManifest project(':component:transform:asm')
+    labyManifest project(':component:transform:minecraft')
+    labyManifest project(':component:transform:minecraft-obfuscator')
+    labyManifest project(':component:transform:hook')
+    labyManifest project(':component:gui')
+    labyManifest project(':component:gui:mcjfxgl')
+    labyManifest project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
+    labyManifest project(':component:gui:mcjfxgl:default-components')
+    labyManifest project(':component:gui:gui-1.15.1')
+    labyManifest project(':component:tasks')
+    labyManifest project(':component:tasks:tasks-1.15.1')
+    labyManifest project(':component:mapping')
+    labyManifest project(':component:inject')
+    labyManifest project(':component:transform:hook')
+    labyManifest project(':component:resources')
+    labyManifest project(':component:resources:resources-1.15.1')
+    labyManifest project(':component:packages')
+    labyManifest project(':component:packages:packages-impl')
+    labyManifest project(':component:transform:launcher-plugin')
+    labyManifest project(':component:launcher')
+    labyManifest project(':component:service')
+    labyManifest project(':component:security')
 }
 
 application {
     mainClassName "net.labyfy.component.launcher.LabyLauncher"
 }
 
+distTar.enabled = false
+distZip.enabled = false
+installDist.enabled = false;
+startScripts.enabled = false
+
 def runDir = new File(rootProject.projectDir, "run/1.15.1")
 def runDirTemplate = new File(rootProject.projectDir, "run-template")
-if(!runDir.exists()) {
-    if(!runDir.mkdirs()) {
+if (!runDir.exists()) {
+    if (!runDir.mkdirs()) {
         throw new GradleException("Failed to create run directory: ${runDir.absolutePath}")
     } else {
         copy {
@@ -68,12 +100,23 @@ if(!runDir.exists()) {
 run {
     workingDir runDir
     args "--uuid", "113da2d6-3c68-43c4-bee0-6f53fe8906e6",
-         "--username", "DevTastisch",
-         "--accessToken", "0",
-         "--version", "1.15.1",
-         "--assetsDir", "assets",
-         "--assetIndex", "1.15",
-         "--userProperties", "{}",
-         "--gameDir", ".",
-         "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
+            "--username", "DevTastisch",
+            "--accessToken", "0",
+            "--version", "1.15.1",
+            "--assetsDir", "assets",
+            "--assetIndex", "1.15",
+            "--userProperties", "{}",
+            "--gameDir", ".",
+            "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
+    dependsOn 'copyMappings'
+}
+
+task copyMappings() {
+    doLast {
+        def extracted = new File(project.buildDir, "labyfy/mappings/1.15.1/extracted");
+        FileUtils.copyFile(new File(extracted, "fields.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/fields.csv") )
+        FileUtils.copyFile(new File(extracted, "methods.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/methods.csv") )
+        FileUtils.copyFile(new File(extracted, "params.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/params.csv") )
+        FileUtils.copyFile(new File(extracted, "joined.tsrg"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/joined.tsrg") )
+    }
 }

@@ -15,6 +15,11 @@ dependencies {
     compile 'org.ow2.asm:asm-tree:7.2-beta'
     compile 'org.ow2.asm:asm-commons:7.2-beta'
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+
+    labyManifest project(':component:initializer')
+
+
+    annotationProcessor project(':component:annotation-processing')
 }
 
 processResources {

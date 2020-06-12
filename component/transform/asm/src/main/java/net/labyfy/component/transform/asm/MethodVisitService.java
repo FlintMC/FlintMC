@@ -3,6 +3,7 @@ package net.labyfy.component.transform.asm;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;

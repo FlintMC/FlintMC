@@ -51,6 +51,7 @@ public class McJfxGLScene implements GuiComponent {
   }
 
   public void render(GuiAdapter adapter) {
+    if (this.parent == null) return;
     this.parent.resizeRelocate(
         0, 0, minecraftWindow.getScaledWidth() * 4, minecraftWindow.getScaledHeight() * 4);
     this.parent.setTranslateX(
@@ -65,7 +66,7 @@ public class McJfxGLScene implements GuiComponent {
     JFXGL.render();
   }
 
-  private void init(GuiAdapter adapter, Parent parent){
+  private void init(GuiAdapter adapter, Parent parent) {
     for (Node node : parent.getChildrenUnmodifiable()) {
       if (node instanceof Control) {
         if (((Control) node).getSkin() instanceof GuiComponent) {
@@ -96,9 +97,7 @@ public class McJfxGLScene implements GuiComponent {
         this.render(adapter.getChild(), (Parent) node);
       }
     }
-
   }
-
 
   public Parent getParent() {
     return parent;

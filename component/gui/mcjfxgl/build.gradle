@@ -18,8 +18,16 @@ dependencies {
     compile project(':component:tasks')
     compile project(':component:gui')
     compile project(':component:resources')
+    compile project(':component:security')
     compile 'cuchaz:jfxgl:0.4'
     compile 'cuchaz:jfxgl-jfxrt:0.4'
     compile 'commons-io:commons-io:2.6'
     compile 'org.jooq:joor-java-8:0.9.12'
+    annotationProcessor project(':component:annotation-processing')
+
+    labyManifest 'cuchaz:jfxgl:0.4'
+    labyManifest 'cuchaz:jfxgl-jfxrt:0.4'
+    labyManifest 'commons-io:commons-io:2.6'
+    labyManifest 'org.jooq:joor-java-8:0.9.12'
+    labyManifest 'jfxrt:jfxrt:1'
 }
