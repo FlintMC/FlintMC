@@ -34,11 +34,13 @@ public class PublishLatestRelease implements Action<Task> {
   private final Project project;
   private final String version;
   private final String publishToken;
+  private final String publishUrl;
 
-  public PublishLatestRelease(Project project, String version, String publishToken) {
+  public PublishLatestRelease(Project project, String version, String publishToken, String publishUrl) {
     this.project = project;
     this.version = version;
     this.publishToken = publishToken;
+    this.publishUrl = publishUrl;
   }
 
   public void execute(@Nonnull Task task) {
@@ -71,7 +73,8 @@ public class PublishLatestRelease implements Action<Task> {
           File file = archives.toArray(new File[]{})[0];
           assert file.exists();
 
-          String jarUrl = "http://dist.laby.tech:8080/package/%s/%s/%s";
+
+          String jarUrl = this.publishUrl + "/package/%s/%s/%s";
           try {
             installInstructions.add(this.createManifestDownloadInstruction(dependency,
                 String.format(
@@ -121,7 +124,7 @@ public class PublishLatestRelease implements Action<Task> {
               .setData(new ManifestDownload.Data()
                   .setPath("versions/Labyfy-" + this.version + "/Labyfy-" + this.version + ".json")
                   .setMd5(DigestUtils.md5Hex(versionString))
-                  .setUrl("http://dist.laby.tech:8080/package/Labyfy-" + this.version + "/latest/Labyfy-" + this.version + "-latest.json")
+                  .setUrl(this.publishUrl + "/package/Labyfy-" + this.version + "/latest/Labyfy-" + this.version + "-latest.json")
               ));
 
 
@@ -242,7 +245,7 @@ public class PublishLatestRelease implements Action<Task> {
           .addPart("file", new ByteArrayBody(content, fileName))
           .build();
 
-      HttpPost request = new HttpPost(new URL("http://dist.laby.tech:8080/publish/" + deployName + "/" + deployVersion).toURI());
+      HttpPost request = new HttpPost(new URL(this.publishUrl + "/publish/" + deployName + "/" + deployVersion).toURI());
       request.setEntity(entity);
       request.addHeader("Authorization", "Bearer " + this.publishToken);
 

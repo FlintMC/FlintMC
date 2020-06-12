@@ -42,7 +42,7 @@ build:
     - sh $SCRIPTS_DIR/eval.sh
     - sh $SCRIPTS_DIR/eval.sh "./labyfy-gradle-plugin/"
     - mkdir run && cp -r run-template/1.15.1 run && cp -r run-template/1.15.1/Labyfy versioned/labyfy-1.15.1 && ls -la versioned/labyfy-1.15.1
-    - sh gradlew -Ppublish_token=$PUBLISH_TOKEN build --stacktrace --refresh-dependencies
+    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN build --stacktrace --refresh-dependencies
   artifacts:
     name: $(cat version)
     paths:
@@ -63,7 +63,7 @@ deploy_to_artifactory:
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > version || exit 1
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
-    - sh gradlew -Ppublish_token=$PUBLISH_TOKEN artifactoryPublish --stacktrace
+    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
   environment:
     name: development
   only:
@@ -81,15 +81,14 @@ publish_version:
     - bash $SCRIPTS_DIR/genSemVer.sh release > version || exit 1
     - cat version
     - sed -i "s/version .*/version '$(cat version)'/1" build.gradle
-    - sh gradlew -Ppublish_token=$PUBLISH_TOKEN artifactoryPublish --stacktrace
+    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
     - export MD5SUM=$(md5sum build/libs/Labyfy-$(cat version).jar | cut -f1 -d' ')
     - sed -i "s/\"md5\".*/\"md5\":\ \"${MD5SUM})\"/1" manifest.json
     - sed -i "s/VERSION/$(cat version)/g" manifest.json
     - cat manifest.json
     - export FILE="labyfy-$(cat version).jar"
     - mv build/libs/$FILE .
-    - curl -H "Authorization:Bearer ${DISTRIBUTOR_TOKEN}" -F "file=@$FILE" http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
-    - curl -H "Authorization:Bearer ${DISTRIBUTOR_TOKEN}" -F 'file=@manifest.json' http://dist.laby.tech:8080/publish/Labyfy/$(cat version)
+    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN :versioned:labyfy-1.15.1:publishLatestRelease
   environment:
     name: production
   only:

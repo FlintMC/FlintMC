@@ -30,8 +30,8 @@ public class LabyfyGradlePlugin implements Plugin<Project> {
 
     rootProject.subprojects(project -> {
       project.getExtensions().create("labyfy", LabyfyGradlePlugin.Extension.class).configured(extension -> {
-        if (extension.getPublishToken() != null && extension.getVersion() != null && !extension.getVersion().isEmpty()) {
-          project.task("publishLatestRelease", new PublishLatestRelease(project, extension.getVersion(), extension.getPublishToken()));
+        if (extension.getPublishToken() != null && extension.getVersion() != null && !extension.getVersion().isEmpty() && extension.getPublishUrl() != null) {
+          project.task("publishLatestRelease", new PublishLatestRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl()));
         }
         try {
           LabyfyGradlePlugin.this.configured(extension, project);
@@ -65,6 +65,15 @@ public class LabyfyGradlePlugin implements Plugin<Project> {
     private String version;
     private boolean provideMappings;
     private String publishToken;
+    private String publishUrl;
+
+    public String getPublishUrl() {
+      return publishUrl;
+    }
+
+    public void publishUrl(String publishUrl) {
+      this.publishUrl = publishUrl;
+    }
 
     public Collection<Consumer<Extension>> getConfigured() {
       return configured;
