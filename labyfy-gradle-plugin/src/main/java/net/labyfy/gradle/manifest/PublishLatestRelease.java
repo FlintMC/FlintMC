@@ -19,6 +19,7 @@ import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.internal.impldep.org.apache.commons.codec.digest.DigestUtils;
+import org.junit.Assert;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -32,13 +33,24 @@ import java.util.*;
 public class PublishLatestRelease implements Action<Task> {
 
   private final Project project;
-  private final String version;
+  private final String minecraftVersion;
   private final String publishToken;
+  private final String publishUrl;
+  private final String publishVersion;
+  private final boolean publishLatest;
 
-  public PublishLatestRelease(Project project, String version, String publishToken) {
+  public PublishLatestRelease(Project project,
+                              String minecraftVersion,
+                              String publishToken,
+                              String publishUrl,
+                              String publishVersion,
+                              boolean publishLatest) {
     this.project = project;
-    this.version = version;
+    this.minecraftVersion = minecraftVersion;
     this.publishToken = publishToken;
+    this.publishUrl = publishUrl;
+    this.publishVersion = publishVersion;
+    this.publishLatest = publishLatest;
   }
 
   public void execute(@Nonnull Task task) {
@@ -46,15 +58,15 @@ public class PublishLatestRelease implements Action<Task> {
     task.dependsOn("jar");
     task.doLast(task1 -> {
 
-      VersionFetcher.Version version = VersionFetcher.fetch(this.version).getDetails();
+      VersionFetcher.Version version = VersionFetcher.fetch(this.minecraftVersion).getDetails();
       for (int i = 0; i < version.getArguments().getGame().length; i++) {
-        if (version.getArguments().getGame()[i].toString().equals("--version")) {
-          version.getArguments().getGame()[i + 1] = this.version;
+        if (version.getArguments().getGame()[i].toString().equals("--minecraftVersion")) {
+          version.getArguments().getGame()[i + 1] = this.minecraftVersion;
           break;
         }
       }
       version.setMainClass("net.labyfy.component.launcher.LabyLauncher");
-      version.setId("Labyfy-" + this.version);
+      version.setId("Labyfy-" + this.minecraftVersion);
 
       Collection<MavenArtifactRepository> mavenArtifactRepositories = collectTransitiveRepositories(project);
       Collection<InstallInstruction> installInstructions = new HashSet<>();
@@ -63,31 +75,28 @@ public class PublishLatestRelease implements Action<Task> {
       for (Dependency dependency : this.collectTransitiveDependencies()) {
 
         if (dependency instanceof ProjectDependency) {
-
-          System.out.println("Dependency " + dependency.getName());
-
           Set<File> archives = ((ProjectDependency) dependency).getDependencyProject().getConfigurations().getByName("archives").getOutgoing().getArtifacts().getFiles().getFiles();
           assert archives.size() == 1 : "archive size must be 1";
           File file = archives.toArray(new File[]{})[0];
           assert file.exists();
 
-          String jarUrl = "http://dist.laby.tech:8080/package/%s/%s/%s";
+          String jarUrl = this.publishUrl + "/package/%s/%s/%s";
           try {
             installInstructions.add(this.createManifestDownloadInstruction(dependency,
                 String.format(
                     jarUrl,
                     dependency.getName(),
-                    "latest",
-                    dependency.getName() + "-latest.jar"
+                    publishVersion,
+                    dependency.getName() + "-" + publishVersion + ".jar"
                 ),
                 DigestUtils.md5Hex(FileUtils.readFileToByteArray(file)),
-                "latest"));
+                publishVersion));
           } catch (IOException e) {
             e.printStackTrace();
           }
-          artifacts.add(this.createLibrary(dependency, "latest"));
+          artifacts.add(this.createLibrary(dependency, publishVersion));
 
-          publishFile(file, dependency.getName() + "-" + "latest" + ".jar", dependency.getName(), "latest");
+          publishFile(file, dependency.getName() + "-" + publishVersion + ".jar", dependency.getName(), publishVersion);
 
         } else {
           for (MavenArtifactRepository repository : mavenArtifactRepositories) {
@@ -119,9 +128,9 @@ public class PublishLatestRelease implements Action<Task> {
       installInstructions.add(
           new ManifestDownload()
               .setData(new ManifestDownload.Data()
-                  .setPath("versions/Labyfy-" + this.version + "/Labyfy-" + this.version + ".json")
+                  .setPath("versions/Labyfy-" + this.minecraftVersion + "/Labyfy-" + this.minecraftVersion + ".json")
                   .setMd5(DigestUtils.md5Hex(versionString))
-                  .setUrl("http://dist.laby.tech:8080/package/Labyfy-" + this.version + "/latest/Labyfy-" + this.version + "-latest.json")
+                  .setUrl(this.publishUrl + "/package/Labyfy-" + this.minecraftVersion + "/" + publishVersion + "/Labyfy-" + this.minecraftVersion + "-" + publishVersion + ".json")
               ));
 
 
@@ -132,10 +141,15 @@ public class PublishLatestRelease implements Action<Task> {
           .setName("Labyfy")
           .setVersion(project.getVersion().toString())
           .setInstallInstructions(installInstructions.toArray(new InstallInstruction[]{}))
-          .setAuthors("DevTastisch"));
+          .setAuthors("LabyMedia"));
 
-      publish(versionString.getBytes(StandardCharsets.UTF_8), "Labyfy-" + this.version + "-latest.json", "Labyfy-" + this.version, "latest");
-      publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + this.version, "latest");
+      publish(versionString.getBytes(StandardCharsets.UTF_8), "Labyfy-" + this.minecraftVersion + "-" + publishVersion + ".json", "Labyfy-" + this.minecraftVersion, publishVersion);
+      publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + this.minecraftVersion, publishVersion);
+      if(publishLatest){
+        publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + this.minecraftVersion, "latest");
+      }
+
+
     });
   }
 
@@ -154,7 +168,7 @@ public class PublishLatestRelease implements Action<Task> {
                     "libraries/%s/%s/%s/%s",
                     dependency.getGroup().replace('.', '/'),
                     dependency.getName(),
-                    "latest",
+                    version,
                     String.format("%s-%s.jar",
                         dependency.getName(),
                         version
@@ -242,14 +256,14 @@ public class PublishLatestRelease implements Action<Task> {
           .addPart("file", new ByteArrayBody(content, fileName))
           .build();
 
-      HttpPost request = new HttpPost(new URL("http://dist.laby.tech:8080/publish/" + deployName + "/" + deployVersion).toURI());
+      HttpPost request = new HttpPost(new URL(this.publishUrl + "/publish/" + deployName + "/" + deployVersion).toURI());
       request.setEntity(entity);
       request.addHeader("Authorization", "Bearer " + this.publishToken);
 
       HttpClient client = HttpClientBuilder.create().build();
       HttpResponse response = client.execute(request);
-      assert response.getStatusLine().getStatusCode() == 200;
-      System.out.println("published " + fileName);
+      Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+      System.out.println("published " + fileName + " to " + this.publishUrl + "/publish/" + deployName + "/" + deployVersion);
 
     } catch (Exception ex) {
       ex.printStackTrace();
