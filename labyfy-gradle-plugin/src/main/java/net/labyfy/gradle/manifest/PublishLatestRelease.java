@@ -135,7 +135,7 @@ public class PublishLatestRelease implements Action<Task> {
           .setName("Labyfy")
           .setVersion(project.getVersion().toString())
           .setInstallInstructions(installInstructions.toArray(new InstallInstruction[]{}))
-          .setAuthors("DevTastisch"));
+          .setAuthors("LabyMedia"));
 
       publish(versionString.getBytes(StandardCharsets.UTF_8), "Labyfy-" + this.version + "-latest.json", "Labyfy-" + this.version, "latest");
       publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + this.version, "latest");
