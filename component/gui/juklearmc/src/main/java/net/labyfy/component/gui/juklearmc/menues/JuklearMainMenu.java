@@ -1,10 +1,18 @@
 package net.labyfy.component.gui.juklearmc.menues;
 
+import net.janrupf.juklear.JuklearContext;
 import net.janrupf.juklear.image.JuklearImageConvert;
+import net.janrupf.juklear.image.JuklearImageException;
+import net.janrupf.juklear.image.JuklearJavaImage;
+import net.janrupf.juklear.layout.JuklearPanelFlags;
 import net.janrupf.juklear.layout.component.JuklearButton;
+import net.janrupf.juklear.layout.component.JuklearImageDisplay;
+import net.janrupf.juklear.layout.component.JuklearSpacing;
 import net.janrupf.juklear.layout.component.JuklearWindow;
 import net.janrupf.juklear.layout.component.base.JuklearTopLevelComponent;
 import net.janrupf.juklear.layout.component.row.JuklearDynamicRow;
+import net.janrupf.juklear.layout.component.row.JuklearStaticRow;
+import net.janrupf.juklear.layout.component.row.template.JuklearTemplatedRow;
 import net.janrupf.juklear.style.JuklearStyle;
 import net.labyfy.component.gui.juklearmc.JuklearMC;
 import net.labyfy.component.gui.juklearmc.JuklearScreen;
@@ -26,7 +34,7 @@ import static org.lwjgl.opengl.GL20.*;
 @JuklearScreen(ScreenName.MAIN_MENU)
 public class JuklearMainMenu implements JuklearMCScreen {
   private static final int WINDOW_WIDTH = 530;
-  private static final int WINDOW_HEIGHT = 200;
+  private static final int WINDOW_HEIGHT = 490;
 
   private final JuklearWindow mainWindow;
 
@@ -40,24 +48,51 @@ public class JuklearMainMenu implements JuklearMCScreen {
   @Inject
   private JuklearMainMenu(JuklearMC juklearMC) {
     this.mainWindow = new JuklearWindow("Test");
+    createBackground();
 
-    JuklearDynamicRow singlePlayerRow = new JuklearDynamicRow(60);
+    JuklearContext context = juklearMC.getContext();
+
+    try {
+      JuklearJavaImage logo = JuklearImageConvert.fromBufferedImage(
+          juklearMC.getContext().getJuklear(),
+          ImageIO.read(getClass().getResource("/assets/labymod/textures/gui/logo.png"))
+      );
+      JuklearImageDisplay logoDisplay = new JuklearImageDisplay(logo);
+
+      JuklearTemplatedRow logoRow = new JuklearTemplatedRow(logo.getHeight() - 5);
+      logoRow.addDynamic(new JuklearSpacing(1));
+      logoRow.addStatic(logo.getWidth(), logoDisplay);
+      logoRow.addDynamic(new JuklearSpacing(0));
+
+      mainWindow.addChild(logoRow);
+      mainWindow.addChild(new JuklearStaticRow(0, 75));
+    } catch (IOException | JuklearImageException e) {
+      e.printStackTrace();
+    }
+
+    JuklearDynamicRow singlePlayerRow = new JuklearDynamicRow(50);
     singlePlayerRow.addChild(new JuklearButton("Singleplayer"));
     mainWindow.addChild(singlePlayerRow);
 
-    JuklearDynamicRow multiplayerRow = new JuklearDynamicRow(60);
+    mainWindow.addChild(new JuklearDynamicRow(1));
+
+    JuklearDynamicRow multiplayerRow = new JuklearDynamicRow(50);
     multiplayerRow.addChild(new JuklearButton("Multiplayer"));
     mainWindow.addChild(multiplayerRow);
 
-    JuklearDynamicRow settingsRow = new JuklearDynamicRow(60);
-    settingsRow.addChild(new JuklearButton("Options"));
-    settingsRow.addChild(new JuklearButton("LabyMod Settings"));
+    mainWindow.addChild(new JuklearDynamicRow(12f));
+
+    JuklearTemplatedRow settingsRow = new JuklearTemplatedRow(50);
+    settingsRow.addChildStyle(context.getStyle().getButton().getRounding().preparePush(6f));
+    settingsRow.addChildStyle(context.getStyle().getButton().getNormal().preparePush(6, 16, 23, 56));
+    settingsRow.addDynamic(new JuklearButton("Options"));
+    settingsRow.addStatic(7, new JuklearSpacing(1));
+    settingsRow.addDynamic(new JuklearButton("LabyMod Settings"));
     mainWindow.addChild(settingsRow);
 
     JuklearStyle style = juklearMC.getContext().getStyle();
     mainWindow.addOwnStyle(style.getWindow().getFixedBackground().preparePush(0, 0, 0, 0));
-
-    this.backgroundTexture = -1;
+    mainWindow.addFlag(JuklearPanelFlags.NO_SCROLLBAR);
   }
 
   @Override
@@ -68,67 +103,68 @@ public class JuklearMainMenu implements JuklearMCScreen {
   @Override
   public void updateSize(int width, int height) {
     int left = (width / 2) - (WINDOW_WIDTH / 2);
-    int top = (height / 2) - (WINDOW_HEIGHT / 2);
+    int top = ((height / 2) - (WINDOW_HEIGHT / 2)) - 50;
 
-    mainWindow.setPosition(left, top);
+    mainWindow.setBounds(left, top, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     this.width = width;
     this.height = height;
   }
 
+  private void createBackground() {
+    glEnable(GL_TEXTURE_2D);
+    backgroundTexture = glGenTextures();
+
+    BufferedImage backgroundImage;
+    try {
+      backgroundImage = ImageIO.read(getClass().getResource("/assets/labymod/textures/gui/background.png"));
+    } catch (IOException e) {
+      glDeleteTextures(backgroundTexture);
+      backgroundTexture = -2;
+      e.printStackTrace();
+      return;
+    }
+
+    backgroundWidth = backgroundImage.getWidth();
+    backgroundHeight = backgroundImage.getHeight();
+
+    int[] pixels = new int[backgroundWidth * backgroundHeight];
+    backgroundImage.getRGB(
+        0,
+        0,
+        backgroundWidth,
+        backgroundHeight,
+        pixels,
+        0,
+        backgroundWidth
+    );
+
+    ByteBuffer data = ByteBuffer.allocateDirect(pixels.length * Integer.BYTES);
+    JuklearImageConvert.convertARGBtoRGBA(IntBuffer.wrap(pixels), data.asIntBuffer());
+
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA8,
+        backgroundWidth,
+        backgroundHeight,
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        data
+    );
+    glDisable(GL_TEXTURE_2D);
+  }
+
   @Override
   public void preNuklearRender() {
     glEnable(GL_TEXTURE_2D);
-
-    if(backgroundTexture == -1) {
-      backgroundTexture = glGenTextures();
-
-      BufferedImage backgroundImage;
-      try {
-        backgroundImage = ImageIO.read(getClass().getResource("/assets/labymod/textures/gui/background.png"));
-      } catch (IOException e) {
-        glDeleteTextures(backgroundTexture);
-        backgroundTexture = -2;
-        e.printStackTrace();
-        return;
-      }
-
-      backgroundWidth = backgroundImage.getWidth();
-      backgroundHeight = backgroundImage.getHeight();
-
-      int[] pixels = new int[backgroundWidth * backgroundHeight];
-      backgroundImage.getRGB(
-          0,
-          0,
-          backgroundWidth,
-          backgroundHeight,
-          pixels,
-          0,
-          backgroundWidth
-      );
-
-      ByteBuffer data = ByteBuffer.allocateDirect(pixels.length * Integer.BYTES);
-      JuklearImageConvert.convertARGBtoRGBA(IntBuffer.wrap(pixels), data.asIntBuffer());
-
-      glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexImage2D(
-          GL_TEXTURE_2D,
-          0,
-          GL_RGBA8,
-          backgroundWidth,
-          backgroundHeight,
-          0,
-          GL_RGBA,
-          GL_UNSIGNED_BYTE,
-          data
-      );
-    } else {
-      glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-    }
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
 
     glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_TRANSFORM_BIT);
     glMatrixMode(GL_PROJECTION);
@@ -173,11 +209,5 @@ public class JuklearMainMenu implements JuklearMCScreen {
 
     glDisable(GL_TEXTURE_2D);
     glPopAttrib();
-  }
-
-  @Override
-  public void close() {
-    glDeleteTextures(backgroundTexture);
-    backgroundTexture = -1;
   }
 }

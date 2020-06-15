@@ -19,9 +19,12 @@ public class DefaultLabyModStyle {
     JuklearStyle style = context.getStyle();
     Juklear juklear = context.getJuklear();
     style.getWindow().getFixedBackground().setAsColor(juklear, rgb(juklear, DARK_BLUE));
-    style.getButton().getNormal().setAsColor(juklear, rgba(juklear, LIGHT_OVERLAY));
-    style.getButton().getHover().setAsColor(juklear, rgba(juklear, DARK_OVERLAY));
-    style.getButton().getBorderColor().setRGBA(WHITE);
+    style.getButton().getNormal().setAsColor(juklear, rgba(juklear, 100, 100, 100, 102));
+    style.getButton().getHover().setAsColor(juklear, rgba(juklear, 120, 120, 120, 153));
+    style.getButton().getBorder().set(2.0f);
+    style.getButton().getRounding().set(0f);
+    style.getButton().getBorderColor().setRGBA(rgba(180, 180, 180, 102));
+    style.getButton().getTextNormal().setRGBA(WHITE);
   }
 
   public static JuklearColor rgb(Juklear juklear, int rgb) {
@@ -33,6 +36,10 @@ public class DefaultLabyModStyle {
     );
   }
 
+  public static JuklearColor rgb(Juklear juklear, int r, int g, int b) {
+    return new JuklearColor(juklear, r, g, b);
+  }
+
   public static JuklearColor rgba(Juklear juklear, int rgba) {
     return new JuklearColor(
         juklear,
@@ -41,5 +48,13 @@ public class DefaultLabyModStyle {
         (rgba >>> 8) & 0xFF,
         rgba & 0xFF
     );
+  }
+
+  public static JuklearColor rgba(Juklear juklear, int r, int g, int b, int a) {
+    return new JuklearColor(juklear, r, g, b, a);
+  }
+
+  public static int rgba(int r, int g, int b, int a) {
+    return (r << 24) | (g << 16) | (b << 8) | a;
   }
 }

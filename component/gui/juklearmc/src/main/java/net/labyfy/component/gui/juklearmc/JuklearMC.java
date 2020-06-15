@@ -64,12 +64,12 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   }
 
   @TaskBody
-  public void initialize() throws JuklearInitializationException {
+  public void initialize() throws JuklearInitializationException, IOException {
     juklear.init();
 
     JuklearFontAtlas fontAtlas = juklear.defaultFontAtlas();
     JuklearFontAtlasEditor editor = fontAtlas.begin();
-    defaultFont = editor.addDefault(13);
+    defaultFont = editor.addFromURL(getClass().getResource("/assets/labymod/fonts/minecraft.ttf"), 16);
     editor.end();
 
     context = juklear.defaultContext(defaultFont);
@@ -98,7 +98,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     int drawWidth = minecraftWindow.getFramebufferWidth();
     int drawHeight = minecraftWindow.getFramebufferHeight();
 
-    if(currentJuklearScreen != null) {
+    if (currentJuklearScreen != null) {
       currentJuklearScreen.updateSize(drawWidth, drawHeight);
     }
 
@@ -107,7 +107,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
 
   @Override
   public void process(GuiInputEvent<?> event) {
-    if(event instanceof UnicodeTyped) {
+    if (event instanceof UnicodeTyped) {
       input.unicode(((UnicodeTyped) event).value());
     }
   }
@@ -120,26 +120,31 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
 
   @Override
   public void screenChanged(ScreenName newScreen) {
-    if(!currentScreenTopLevels.isEmpty()) {
+    if (!currentScreenTopLevels.isEmpty()) {
       currentScreenTopLevels.forEach(context::removeTopLevel);
       currentScreenTopLevels.clear();
     }
 
-    if(currentJuklearScreen != null) {
+    if (currentJuklearScreen != null) {
       currentJuklearScreen.close();
     }
 
-    if(newScreen != null) {
+    if (newScreen != null) {
       currentJuklearScreen = overwrittenScreens.get(newScreen);
-      currentJuklearScreen.topLevelComponents().forEach(context::addTopLevel);
-    } else {
-      currentJuklearScreen = null;
+    }
+
+    if (currentJuklearScreen != null) {
+      currentJuklearScreen.open();
+      currentJuklearScreen.topLevelComponents().forEach((c) -> {
+        context.addTopLevel(c);
+        currentScreenTopLevels.add(c);
+      });
     }
   }
 
   @Override
   public boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution) {
-    if(currentJuklearScreen != null && executionTime == Hook.ExecutionTime.BEFORE) {
+    if (currentJuklearScreen != null && executionTime == Hook.ExecutionTime.BEFORE) {
       execution.getCancellation().cancel();
       return !hasRenderedThisFrame;
     }
@@ -149,7 +154,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
 
   @Override
   public void render(RenderExecution execution) {
-    if(currentJuklearScreen != null) {
+    if (currentJuklearScreen != null) {
       currentJuklearScreen.preNuklearRender();
     }
 
@@ -160,7 +165,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
         // Leave it off! OpenGL does Antialiasing for us, it creates weird artifacts if juklear does too!
         JuklearAntialiasing.OFF);
 
-    if(currentJuklearScreen != null) {
+    if (currentJuklearScreen != null) {
       currentJuklearScreen.postNuklearRender();
     }
 

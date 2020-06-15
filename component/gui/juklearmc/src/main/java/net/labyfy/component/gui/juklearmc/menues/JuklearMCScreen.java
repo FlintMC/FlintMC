@@ -11,6 +11,8 @@ public interface JuklearMCScreen extends Closeable {
   default void preNuklearRender() {}
   default void postNuklearRender() {}
 
+  default void open() {}
+
   @Override
   default void close() {}
 }
