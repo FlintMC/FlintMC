@@ -9,7 +9,7 @@ group 'net.labyfy.versioned'
 sourceCompatibility = 1.8
 
 labyfy{
-    version "1.15.1"
+    version "1.15.2"
     provideMappings true
     publishToken "${labyfy_publish_token}"
     publishUrl "${labyfy_publish_url}"
@@ -22,8 +22,8 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'net.minecraft:client:1.15.1'
-    compile 'net.minecraft:server:1.15.1'
+    compile 'net.minecraft:client:1.15.2'
+    compile 'net.minecraft:server:1.15.2'
 
     compile project(':component:launcher')
 
@@ -35,17 +35,17 @@ dependencies {
     runtimeOnly project(':component:transform:hook')
     runtimeOnly project(':component:gui')
     runtimeOnly project(':component:gui:mcjfxgl')
-    runtimeOnly project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
+    runtimeOnly project(':component:gui:mcjfxgl:mcjfxgl-1.15.2')
     runtimeOnly project(':component:gui:mcjfxgl:default-components')
-    runtimeOnly project(':component:gui:gui-1.15.1')
+    runtimeOnly project(':component:gui:gui-1.15.2')
     runtimeOnly project(':component:tasks')
-    runtimeOnly project(':component:tasks:tasks-1.15.1')
+    runtimeOnly project(':component:tasks:tasks-1.15.2')
     runtimeOnly project(':component:mapping')
     runtimeOnly project(':component:inject')
     runtimeOnly project(':component:transform:hook')
     runtimeOnly project(':component:resources')
-    runtimeOnly project(':component:resources:resources-1.15.1')
-    runtimeOnly project(':versioned:labyfy-1.15.1')
+    runtimeOnly project(':component:resources:resources-1.15.2')
+    runtimeOnly project(':versioned:labyfy-1.15.2')
     runtimeOnly project(':component:packages')
     runtimeOnly project(':component:packages:packages-impl')
 
@@ -57,16 +57,16 @@ dependencies {
     labyManifest project(':component:transform:hook')
     labyManifest project(':component:gui')
     labyManifest project(':component:gui:mcjfxgl')
-    labyManifest project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
+    labyManifest project(':component:gui:mcjfxgl:mcjfxgl-1.15.2')
     labyManifest project(':component:gui:mcjfxgl:default-components')
-    labyManifest project(':component:gui:gui-1.15.1')
+    labyManifest project(':component:gui:gui-1.15.2')
     labyManifest project(':component:tasks')
-    labyManifest project(':component:tasks:tasks-1.15.1')
+    labyManifest project(':component:tasks:tasks-1.15.2')
     labyManifest project(':component:mapping')
     labyManifest project(':component:inject')
     labyManifest project(':component:transform:hook')
     labyManifest project(':component:resources')
-    labyManifest project(':component:resources:resources-1.15.1')
+    labyManifest project(':component:resources:resources-1.15.2')
     labyManifest project(':component:packages')
     labyManifest project(':component:packages:packages-impl')
     labyManifest project(':component:transform:launcher-plugin')
@@ -84,14 +84,14 @@ distZip.enabled = false
 installDist.enabled = false;
 startScripts.enabled = false
 
-def runDir = new File(rootProject.projectDir, "run/1.15.1")
+def runDir = new File(rootProject.projectDir, "run/1.15.2")
 def runDirTemplate = new File(rootProject.projectDir, "run-template")
 if (!runDir.exists()) {
     if (!runDir.mkdirs()) {
         throw new GradleException("Failed to create run directory: ${runDir.absolutePath}")
     } else {
         copy {
-            from new File(runDirTemplate, "1.15.1")
+            from new File(runDirTemplate, "1.15.2")
             into runDir
         }
     }
@@ -102,7 +102,7 @@ run {
     args "--uuid", "113da2d6-3c68-43c4-bee0-6f53fe8906e6",
             "--username", "DevTastisch",
             "--accessToken", "0",
-            "--version", "1.15.1",
+            "--version", "1.15.2",
             "--assetsDir", "assets",
             "--assetIndex", "1.15",
             "--userProperties", "{}",
@@ -113,10 +113,10 @@ run {
 
 task copyMappings() {
     doLast {
-        def extracted = new File(project.buildDir, "labyfy/mappings/1.15.1/extracted");
-        FileUtils.copyFile(new File(extracted, "fields.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/fields.csv") )
-        FileUtils.copyFile(new File(extracted, "methods.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/methods.csv") )
-        FileUtils.copyFile(new File(extracted, "params.csv"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/params.csv") )
-        FileUtils.copyFile(new File(extracted, "joined.tsrg"), new File(project.parent.parent.projectDir, "run/1.15.1/Labyfy/assets/1.15.1/joined.tsrg") )
+        def extracted = new File(project.buildDir, "labyfy/mappings/1.15.2/extracted");
+        FileUtils.copyFile(new File(extracted, "fields.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/fields.csv") )
+        FileUtils.copyFile(new File(extracted, "methods.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/methods.csv") )
+        FileUtils.copyFile(new File(extracted, "params.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/params.csv") )
+        FileUtils.copyFile(new File(extracted, "joined.tsrg"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/joined.tsrg") )
     }
 }
