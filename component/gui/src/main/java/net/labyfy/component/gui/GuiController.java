@@ -3,17 +3,15 @@ package net.labyfy.component.gui;
 import net.labyfy.component.gui.component.GuiComponent;
 import net.labyfy.component.gui.event.GuiInputEvent;
 import net.labyfy.component.gui.event.GuiInputEventProcessor;
-import net.labyfy.component.gui.name.ScreenName;
-import net.labyfy.component.gui.name.ScreenNameMapper;
+import net.labyfy.component.gui.screen.ScreenName;
+import net.labyfy.component.gui.screen.ScreenNameMapper;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.transform.hook.Hook;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 @Singleton
 public class GuiController {

@@ -1,10 +1,12 @@
-package net.labyfy.component.gui.name;
+package net.labyfy.component.gui.screen;
 
 import java.util.Objects;
 
 public final class ScreenName {
   public static final String MAIN_MENU = "main_menu";
   public static final String RESOURCE_LOAD = "resource_load";
+  public static final String OPTIONS = "options";
+  public static final String MULTIPLAYER = "multiplayer";
 
   private final Type type;
   private final String identifier;

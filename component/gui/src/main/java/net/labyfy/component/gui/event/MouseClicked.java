@@ -1,9 +1,9 @@
 package net.labyfy.component.gui.event;
 
 public class MouseClicked implements GuiInputEvent {
-  public static final int LEFT = 1;
-  public static final int RIGHT = 2;
-  public static final int MIDDLE = 3;
+  public static final int LEFT = 0;
+  public static final int RIGHT = 1;
+  public static final int MIDDLE = 2;
 
   private final int value;
 

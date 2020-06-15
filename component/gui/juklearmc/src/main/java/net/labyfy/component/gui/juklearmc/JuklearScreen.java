@@ -2,7 +2,7 @@ package net.labyfy.component.gui.juklearmc;
 
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.component.gui.name.ScreenName;
+import net.labyfy.component.gui.screen.ScreenName;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

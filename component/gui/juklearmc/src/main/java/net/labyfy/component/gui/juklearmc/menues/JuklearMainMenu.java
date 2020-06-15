@@ -16,7 +16,8 @@ import net.janrupf.juklear.layout.component.row.template.JuklearTemplatedRow;
 import net.janrupf.juklear.style.JuklearStyle;
 import net.labyfy.component.gui.juklearmc.JuklearMC;
 import net.labyfy.component.gui.juklearmc.JuklearScreen;
-import net.labyfy.component.gui.name.ScreenName;
+import net.labyfy.component.gui.screen.BuiltinScreenDisplayer;
+import net.labyfy.component.gui.screen.ScreenName;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -46,7 +47,7 @@ public class JuklearMainMenu implements JuklearMCScreen {
   private int backgroundTexture;
 
   @Inject
-  private JuklearMainMenu(JuklearMC juklearMC) {
+  private JuklearMainMenu(JuklearMC juklearMC, BuiltinScreenDisplayer displayer) {
     this.mainWindow = new JuklearWindow("Test");
     createBackground();
 
@@ -77,7 +78,10 @@ public class JuklearMainMenu implements JuklearMCScreen {
     mainWindow.addChild(new JuklearDynamicRow(1));
 
     JuklearDynamicRow multiplayerRow = new JuklearDynamicRow(50);
-    multiplayerRow.addChild(new JuklearButton("Multiplayer"));
+
+    JuklearButton multiplayerButton = new JuklearButton("Multiplayer");
+    multiplayerButton.addListener(context, (e) -> displayer.display(ScreenName.minecraft(ScreenName.MULTIPLAYER)));
+    multiplayerRow.addChild(multiplayerButton);
     mainWindow.addChild(multiplayerRow);
 
     mainWindow.addChild(new JuklearDynamicRow(12f));
@@ -85,7 +89,9 @@ public class JuklearMainMenu implements JuklearMCScreen {
     JuklearTemplatedRow settingsRow = new JuklearTemplatedRow(50);
     settingsRow.addChildStyle(context.getStyle().getButton().getRounding().preparePush(6f));
     settingsRow.addChildStyle(context.getStyle().getButton().getNormal().preparePush(6, 16, 23, 56));
-    settingsRow.addDynamic(new JuklearButton("Options"));
+    JuklearButton optionsButton = new JuklearButton("Options");
+    optionsButton.addListener(context, (e) -> displayer.display(ScreenName.minecraft(ScreenName.OPTIONS)));
+    settingsRow.addDynamic(optionsButton);
     settingsRow.addStatic(7, new JuklearSpacing(1));
     settingsRow.addDynamic(new JuklearButton("LabyMod Settings"));
     mainWindow.addChild(settingsRow);

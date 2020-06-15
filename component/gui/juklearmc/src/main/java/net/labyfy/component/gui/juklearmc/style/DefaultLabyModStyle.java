@@ -25,6 +25,8 @@ public class DefaultLabyModStyle {
     style.getButton().getRounding().set(0f);
     style.getButton().getBorderColor().setRGBA(rgba(180, 180, 180, 102));
     style.getButton().getTextNormal().setRGBA(WHITE);
+    style.getButton().getTextHover().setRGBA(WHITE);
+    style.getButton().getTextActive().setRGBA(WHITE);
   }
 
   public static JuklearColor rgb(Juklear juklear, int rgb) {

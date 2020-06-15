@@ -1,7 +1,7 @@
 package net.labyfy.component.gui.component;
 
 import net.labyfy.component.gui.RenderExecution;
-import net.labyfy.component.gui.name.ScreenName;
+import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.transform.hook.Hook;
 
 public interface GuiComponent {

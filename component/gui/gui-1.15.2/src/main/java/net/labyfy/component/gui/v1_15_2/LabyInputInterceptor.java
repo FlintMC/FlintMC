@@ -27,7 +27,8 @@ public class LabyInputInterceptor {
   private static double lastDrawTime = Double.MIN_VALUE;
 
   @Inject
-  private LabyInputInterceptor() {}
+  private LabyInputInterceptor() {
+  }
 
   @ClassTransform(version = "1.15.1", value = "net.minecraft.client.util.InputMappings")
   public void transformInputMappings(ClassTransformContext context) throws CannotCompileException {
@@ -56,7 +57,7 @@ public class LabyInputInterceptor {
 
     overrideCallback(GLFW::glfwSetKeyCallback, windowHandle, keyCallback);
     overrideCallback(GLFW::glfwSetCharModsCallback, windowHandle, (window, codepoint, mods) -> {
-      if(!guiController.doInput(new UnicodeTyped(codepoint))) {
+      if (!guiController.doInput(new UnicodeTyped(codepoint))) {
         charModsCallback.invoke(window, codepoint, mods);
       }
     });
@@ -71,19 +72,21 @@ public class LabyInputInterceptor {
     GuiController guiController = InjectionHolder.getInjectedInstance(GuiController.class);
 
     overrideCallback(GLFW::glfwSetCursorPosCallback, windowHandle, (window, xpos, ypos) -> {
-      if(!guiController.doInput(new CursorPosChanged(xpos, ypos))) {
+      if (!guiController.doInput(new CursorPosChanged(xpos, ypos))) {
         cursorPosCallback.invoke(window, xpos, ypos);
       }
     });
 
     overrideCallback(GLFW::glfwSetMouseButtonCallback, windowHandle, (window, button, action, mods) -> {
-      if(!guiController.doInput(new MouseClicked(button))) {
-        mouseButtonCallback.invoke(window, button, action, mods);
+      if (action == GLFW.GLFW_PRESS && guiController.doInput(new MouseClicked(button))) {
+        return;
       }
+
+      mouseButtonCallback.invoke(window, button, action, mods);
     });
 
     overrideCallback(GLFW::glfwSetScrollCallback, windowHandle, (window, xoffset, yoffset) -> {
-      if(!guiController.doInput(new MouseScrolled(xoffset, yoffset))) {
+      if (!guiController.doInput(new MouseScrolled(xoffset, yoffset))) {
         scrollCallback.invoke(window, xoffset, yoffset);
       }
     });
@@ -92,7 +95,7 @@ public class LabyInputInterceptor {
   private static <T extends Callback, C extends CallbackI> void overrideCallback(
       BiFunction<Long, C, T> setter, long windowHandle, C value) {
     T old = setter.apply(windowHandle, value);
-    if(old != null) {
+    if (old != null) {
       old.free();
     }
   }
@@ -129,7 +132,7 @@ public class LabyInputInterceptor {
     double maxTime = lastDrawTime + 1.0d / (double) elapsedTicks;
 
     guiController.beginInput();
-    for(double currentTime = GLFW.glfwGetTime(); currentTime < maxTime; currentTime = GLFW.glfwGetTime()) {
+    for (double currentTime = GLFW.glfwGetTime(); currentTime < maxTime; currentTime = GLFW.glfwGetTime()) {
       GLFW.glfwWaitEventsTimeout(maxTime - currentTime);
     }
     guiController.endInput();

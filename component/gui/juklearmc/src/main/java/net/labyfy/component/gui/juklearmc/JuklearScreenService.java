@@ -5,7 +5,7 @@ import net.labyfy.base.structure.identifier.Identifier;
 import net.labyfy.base.structure.service.Service;
 import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
-import net.labyfy.component.gui.name.ScreenName;
+import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.InjectionHolder;
 
 import javax.inject.Inject;

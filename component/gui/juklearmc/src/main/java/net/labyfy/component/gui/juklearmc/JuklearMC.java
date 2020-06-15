@@ -19,7 +19,7 @@ import net.labyfy.component.gui.component.GuiComponent;
 import net.labyfy.component.gui.event.*;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
 import net.labyfy.component.gui.juklearmc.style.DefaultLabyModStyle;
-import net.labyfy.component.gui.name.ScreenName;
+import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
@@ -150,14 +150,20 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   public void endInput() {
     if(!leftMouseClicked) {
       input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, false);
+    } else {
+      leftMouseClicked = false;
     }
 
     if(!rightMouseClicked) {
       input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, false);
+    } else {
+      leftMouseClicked = false;
     }
 
     if(!middleMouseClicked) {
       input.button(JuklearMouseButton.MIDDLE, (int) mouseX, (int) mouseY, false);
+    } else {
+      leftMouseClicked = false;
     }
 
     this.input.end();
@@ -221,5 +227,6 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   @Override
   public void frameDone() {
     hasRenderedThisFrame = false;
+    context.processEvents();
   }
 }
