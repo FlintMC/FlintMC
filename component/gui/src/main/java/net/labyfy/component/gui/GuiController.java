@@ -19,17 +19,16 @@ import java.util.Queue;
 public class GuiController {
   private final ScreenNameMapper nameMapper;
   private final ClassMappingProvider classMappingProvider;
-  private final Queue<GuiInputEvent<?>> enqueuedEvents;
   private final List<GuiInputEventProcessor> inputEventProcessors;
   private final List<GuiComponent> components;
 
   private ScreenName currentScreen;
+  private boolean inputActive;
 
   @Inject
   private GuiController(ScreenNameMapper nameMapper, ClassMappingProvider classMappingProvider) {
     this.nameMapper = nameMapper;
     this.classMappingProvider = classMappingProvider;
-    this.enqueuedEvents = new LinkedList<>();
     this.inputEventProcessors = new ArrayList<>();
     this.components = new ArrayList<>();
   }
@@ -42,8 +41,19 @@ public class GuiController {
     }
   }
 
-  public void enqueInput(GuiInputEvent<?> event) {
-    this.enqueuedEvents.offer(event);
+  public boolean doInput(GuiInputEvent event) {
+    if(!inputActive) {
+      throw new IllegalStateException("Input is not active");
+    }
+
+    boolean capture = false;
+    for(GuiInputEventProcessor processor : inputEventProcessors) {
+      if(processor.process(event)) {
+        capture = true;
+      }
+    }
+
+    return capture;
   }
 
   public void registerInputProcessor(GuiInputEventProcessor processor) {
@@ -63,18 +73,22 @@ public class GuiController {
     return this.components.remove(component);
   }
 
-  public void beginFrame() {
-    inputEventProcessors.forEach(GuiInputEventProcessor::beginInput);
-
-    for(GuiInputEvent<?> event : enqueuedEvents) {
-      for(GuiInputEventProcessor processor : inputEventProcessors) {
-        processor.process(event);
-      }
+  public void beginInput() {
+    if(inputActive) {
+      throw new IllegalStateException("Input is active already");
     }
 
-    inputEventProcessors.forEach(GuiInputEventProcessor::endInput);
+    inputActive = true;
+    this.inputEventProcessors.forEach(GuiInputEventProcessor::beginInput);
+  }
 
-    enqueuedEvents.clear();
+  public void endInput() {
+    if(!inputActive) {
+      throw new IllegalStateException("Input is not active");
+    }
+
+    inputActive = false;
+    this.inputEventProcessors.forEach(GuiInputEventProcessor::endInput);
   }
 
   public void endFrame() {

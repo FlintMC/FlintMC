@@ -107,7 +107,7 @@ public class LabyGuiInterceptor {
   @Hook(
       className = "net.minecraft.client.renderer.GameRenderer",
       methodName = "updateCameraAndRender",
-      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
+      executionTime = Hook.ExecutionTime.AFTER,
       parameters = {
           @Type(reference = float.class),
           @Type(reference = long.class),
@@ -115,11 +115,7 @@ public class LabyGuiInterceptor {
       },
       version = "1.15.1"
   )
-  public void hookRender(Hook.ExecutionTime executionTime) {
-    if(executionTime == Hook.ExecutionTime.BEFORE) {
-      controller.beginFrame();
-    } else {
-      controller.endFrame();
-    }
+  public void hookRender() {
+    controller.endFrame();
   }
 }

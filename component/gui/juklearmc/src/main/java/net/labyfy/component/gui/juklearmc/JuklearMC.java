@@ -8,6 +8,7 @@ import net.janrupf.juklear.font.JuklearFont;
 import net.janrupf.juklear.font.JuklearFontAtlas;
 import net.janrupf.juklear.font.JuklearFontAtlasEditor;
 import net.janrupf.juklear.input.JuklearInput;
+import net.janrupf.juklear.input.JuklearMouseButton;
 import net.janrupf.juklear.layout.component.base.JuklearTopLevelComponent;
 import net.janrupf.juklear.math.JuklearVec2;
 import net.janrupf.juklear.util.JuklearNatives;
@@ -15,9 +16,7 @@ import net.labyfy.component.gui.GuiController;
 import net.labyfy.component.gui.MinecraftWindow;
 import net.labyfy.component.gui.RenderExecution;
 import net.labyfy.component.gui.component.GuiComponent;
-import net.labyfy.component.gui.event.UnicodeTyped;
-import net.labyfy.component.gui.event.GuiInputEvent;
-import net.labyfy.component.gui.event.GuiInputEventProcessor;
+import net.labyfy.component.gui.event.*;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
 import net.labyfy.component.gui.juklearmc.style.DefaultLabyModStyle;
 import net.labyfy.component.gui.name.ScreenName;
@@ -52,6 +51,12 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   private MinecraftWindow minecraftWindow;
 
   private boolean hasRenderedThisFrame;
+
+  private double mouseX;
+  private double mouseY;
+  private boolean leftMouseClicked;
+  private boolean middleMouseClicked;
+  private boolean rightMouseClicked;
 
   @Inject
   private JuklearMC(JuklearMCVersionedProvider versionedProvider, GuiController controller) throws IOException {
@@ -106,14 +111,55 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   }
 
   @Override
-  public void process(GuiInputEvent<?> event) {
-    if (event instanceof UnicodeTyped) {
-      input.unicode(((UnicodeTyped) event).value());
+  public boolean process(GuiInputEvent event) {
+    if(currentJuklearScreen == null) {
+      return false;
     }
+
+    if (event instanceof CursorPosChanged) {
+      mouseX = ((CursorPosChanged) event).getX();
+      mouseY = ((CursorPosChanged) event).getY();
+      input.motion((int) mouseX, (int) mouseY);
+    } else if (event instanceof MouseClicked) {
+      int button = ((MouseClicked) event).getValue();
+      switch (button) {
+        case MouseClicked.LEFT:
+          leftMouseClicked = true;
+          input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, true);
+          break;
+
+        case MouseClicked.RIGHT:
+          rightMouseClicked = true;
+          input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, true);
+          break;
+
+        case MouseClicked.MIDDLE:
+          middleMouseClicked = true;
+          input.button(JuklearMouseButton.MIDDLE, (int) mouseY, (int) mouseY, true);
+          break;
+      }
+    } else if (event instanceof MouseScrolled) {
+      input.scroll((float) ((MouseScrolled) event).getXOffset(), (float) ((MouseScrolled) event).getYOffset());
+    } else if (event instanceof UnicodeTyped) {
+      input.unicode(((UnicodeTyped) event).getValue());
+    }
+    return true;
   }
 
   @Override
   public void endInput() {
+    if(!leftMouseClicked) {
+      input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, false);
+    }
+
+    if(!rightMouseClicked) {
+      input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, false);
+    }
+
+    if(!middleMouseClicked) {
+      input.button(JuklearMouseButton.MIDDLE, (int) mouseX, (int) mouseY, false);
+    }
+
     this.input.end();
     this.input = null;
   }

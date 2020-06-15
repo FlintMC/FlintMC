@@ -1,14 +1,13 @@
 package net.labyfy.component.gui.event;
 
-public class UnicodeTyped implements GuiInputEvent<Character> {
-  private final char value;
+public class UnicodeTyped implements GuiInputEvent {
+  private final int value;
 
-  public UnicodeTyped(char value) {
+  public UnicodeTyped(int value) {
     this.value = value;
   }
 
-  @Override
-  public Character value() {
+  public Integer getValue() {
     return value;
   }
 }
