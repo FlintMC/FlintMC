@@ -1,29 +1,27 @@
-package net.labyfy.downloader;
+package net.labyfy.gradle.library;
 
-import com.google.common.base.Preconditions;
 import org.objectweb.asm.commons.SimpleRemapper;
 
 import java.util.List;
-import java.util.Map;
 
-public class SimpleSimpleRemapper extends SimpleRemapper {
+public class LibraryRemapNameProvider extends SimpleRemapper {
 
-  private ISuperClassProvider superClassProvider;
+  private final SuperClassProvider superClassProvider;
 
-  private SimpleSimpleRemapper(Map mapping, ISuperClassProvider superClassProvider) {
-    super(mapping);
+  protected LibraryRemapNameProvider(LibraryRemapper remapper, SuperClassProvider superClassProvider) {
+    super(remapper.getMappings());
     this.superClassProvider = superClassProvider;
   }
 
   public String mapMethodName(String owner, String name, String desc) {
 
-    String map = this.map(owner + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+    String map = this.map(owner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
     if (map == null) {
 
       List<String> possibleOwners = superClassProvider.getSuperClass(owner.replace('/', '.'));
       if (possibleOwners != null) {
         for (String possibleOwner : possibleOwners) {
-          map = this.map(possibleOwner + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+          map = this.map(possibleOwner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
           if (map != null) return map;
         }
       }
@@ -50,9 +48,5 @@ public class SimpleSimpleRemapper extends SimpleRemapper {
     return super.map(key);
   }
 
-  public static SimpleSimpleRemapper create(Map mapping, ISuperClassProvider superClassProvider) {
-    Preconditions.checkNotNull(mapping);
-    Preconditions.checkNotNull(superClassProvider);
-    return new SimpleSimpleRemapper(mapping, superClassProvider);
-  }
+
 }

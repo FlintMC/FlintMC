@@ -16,7 +16,7 @@ dependencies {
     compile project(':component:transform:minecraft')
     compile project(':component:mapping')
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
-    minecraft group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+    labyManifest group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
 
     annotationProcessor project(':component:annotation-processing')
 }

@@ -18,6 +18,6 @@ dependencies {
 
     annotationProcessor project(':component:annotation-processing')
 
-    minecraft 'com.google.inject.extensions:guice-assistedinject:4.0'
+    labyManifest 'com.google.inject.extensions:guice-assistedinject:4.0'
 
 }

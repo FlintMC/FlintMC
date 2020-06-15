@@ -1,15 +1,35 @@
+import org.gradle.api.GradleScriptException
+
 buildscript {
     dependencies {
         classpath 'commons-io:commons-io:2.6'
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+        classpath 'net.labyfy:labyfy-gradle-plugin'
+    }
+    repositories {
+        maven {
+            url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
+        }
+        mavenCentral()
+        jcenter()
+        mavenLocal()
     }
 }
 
-plugins {
-    id 'java'
+apply plugin: 'net.labyfy.labyfy-gradle-plugin'
+
+repositories{
+    mavenCentral()
+    mavenLocal()
 }
 
-sourceCompatibility = 1.8
+def versionFile = file(".dev-version")
+def fixedVersion = null
+if(versionFile.exists()) {
+    fixedVersion = versionFile.text.replace("\n","")
+} else {
+    throw new GradleScriptException("VERSIONFILE COULD NOT BE FOUND!", new Throwable("Please check the CI!"))
+}
 
 allprojects {
 
@@ -28,22 +48,13 @@ allprojects {
     apply plugin: "com.jfrog.artifactory"
     apply plugin: 'maven-publish'
 
-    repositories {
-        maven {
-            url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
-        }
-        mavenCentral()
-        mavenLocal()
+    configurations {
+        labyManifest
     }
-
-    configurations{
-        minecraft
-        minecraft.transitive(true)
-    }
-
 
     artifactory {
-        contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")   //The base Artifactory URL if not overridden by the publisher/resolver
+        contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")
+        //The base Artifactory URL if not overridden by the publisher/resolver
         publish {
             repository {
                 repoKey = 'labymedia'
@@ -53,7 +64,7 @@ allprojects {
 
             }
             defaults {
-                publications ('mavenJava')
+                publications('mavenJava')
             }
         }
         resolve {
@@ -68,43 +79,10 @@ allprojects {
     }
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-
-    compile project(':component:base')
-    compile project(':component:transform:javassist')
-    compile project(':component:transform:asm')
-    compile project(':component:transform:minecraft')
-    compile project(':component:transform:minecraft-obfuscator')
-    compile project(':component:transform:hook')
-    compile project(':component:gui')
-    compile project(':component:gui:mcjfxgl')
-    compile project(':component:gui:mcjfxgl:mcjfxgl-1.15.1')
-    compile project(':component:gui:mcjfxgl:default-components')
-    compile project(':component:gui:gui-1.15.1')
-    compile project(':component:tasks')
-    compile project(':component:tasks:tasks-1.15.1')
-    compile project(':component:mapping')
-    compile project(':component:inject')
-    compile project(':component:transform:hook')
-    compile project(':component:resources')
-    compile project(':component:resources:resources-1.15.1')
-    compile project(':versioned:labyfy-1.15.1')
-    compile project(':component:packages')
-    compile project(':component:packages:packages-impl')
-    compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
-    compile 'org.apache.commons:commons-lang3:3.9'
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
 allprojects {
-    version '0.1.1'
+    version fixedVersion
     plugins.withType(JavaPlugin) {
-        publishing{
+        publishing {
             publications {
                 mavenJava(MavenPublication) {
                     from components.java

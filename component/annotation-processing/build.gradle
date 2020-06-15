@@ -15,6 +15,6 @@ dependencies {
 
     implementation group: 'com.squareup', name: 'javapoet', version: '1.12.1'
 
-    minecraft group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    labyManifest group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
 }
