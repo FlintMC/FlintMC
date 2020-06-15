@@ -10,10 +10,14 @@ repositories {
     mavenCentral()
 }
 
+labyfy{
+    version '1.15.1'
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile project(':component:gui')
     compile project(':component:transform:asm')
-    compile project(':versioned:labyfy-1.15.2')
+    compile 'net.minecraft:client:1.15.1'
     annotationProcessor project(':component:annotation-processing')
 }
