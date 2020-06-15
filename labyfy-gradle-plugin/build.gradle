@@ -27,6 +27,8 @@ repositories {
     mavenCentral()
 }
 
+
+
 dependencies {
     implementation gradleApi()
     compile group: 'net.labyfy.component', name: 'mapping', version: '0.1.2-SNAPSHOT'

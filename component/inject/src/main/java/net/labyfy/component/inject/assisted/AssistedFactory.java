@@ -9,11 +9,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Transitive
 @Identifier
-@AutoLoad(priority = -10, round = -1)
+@AutoLoad(priority = ASSISTED_FACTORY_PRIORITY, round = ASSISTED_FACTORY_ROUND)
 public @interface AssistedFactory {
   Class<?> value();
 }

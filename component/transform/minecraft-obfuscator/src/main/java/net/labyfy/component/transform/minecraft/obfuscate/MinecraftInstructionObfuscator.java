@@ -19,9 +19,11 @@ import org.objectweb.asm.tree.ClassNode;
 import javax.inject.Named;
 import java.io.IOException;
 
+import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+
 @Singleton
 @MinecraftTransformer(priority = Integer.MIN_VALUE)
-@AutoLoad(priority = -1000, round = -3)
+@AutoLoad(priority = MINECRAFT_INSTRUCTION_OBFUSCATOR_PRIORITY, round = MINECRAFT_INSTRUCTION_OBFUSCATOR_ROUND)
 public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
 
   private final MinecraftClassRemapper minecraftClassRemapper;
