@@ -139,7 +139,8 @@ public class LabyPackage implements Package {
           EntryPoint.notifyService(Class.forName(className, true, LabyPackage.class.getClassLoader()));
 
           // LaunchController.getInstance().getRootLoader().loadClass(clazz);
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
+          e.printStackTrace();
           throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className);
         }
       });

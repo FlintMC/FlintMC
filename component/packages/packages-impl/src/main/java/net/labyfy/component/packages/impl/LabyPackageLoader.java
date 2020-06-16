@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 @Implement(PackageLoader.class)
 public class LabyPackageLoader implements PackageLoader {
 
-  @InjectLogger private Logger logger;
+  private final Logger logger;
   private final File packageFolder;
   private final Package.Factory packageFactory;
   private final Set<JarTuple> jars;
@@ -35,11 +35,13 @@ public class LabyPackageLoader implements PackageLoader {
 
   @Inject
   private LabyPackageLoader(
+      @InjectLogger Logger logger,
       LoggingProvider loggingProvider,
       @Named("labyfyPackageFolder") File packageFolder,
       PackageDescriptionLoader descriptionLoader,
       Package.Factory packageFactory) {
 
+    this.logger = logger;
     loggingProvider.setPrefixProvider(this::getLogPrefix);
 
     this.packageFolder = packageFolder;
@@ -80,6 +82,7 @@ public class LabyPackageLoader implements PackageLoader {
                       return false;
                     }
                   })
+              .filter(Objects::nonNull)
               // Collect to Set
               .collect(Collectors.toSet());
     } else {
@@ -195,7 +198,7 @@ public class LabyPackageLoader implements PackageLoader {
 
   private String getLogPrefix(Class<?> clazz) {
     ClassLoader loader = clazz.getClassLoader();
-    if(loader instanceof PackageClassLoader) {
+    if (loader instanceof PackageClassLoader) {
       return ((PackageClassLoader) loader).getOwner().getName();
     } else {
       return null;

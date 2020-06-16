@@ -60,7 +60,7 @@ public class PublishLatestRelease implements Action<Task> {
 
       VersionFetcher.Version version = VersionFetcher.fetch(this.minecraftVersion).getDetails();
       for (int i = 0; i < version.getArguments().getGame().length; i++) {
-        if (version.getArguments().getGame()[i].toString().equals("--minecraftVersion")) {
+        if (version.getArguments().getGame()[i].toString().equals("--version")) {
           version.getArguments().getGame()[i + 1] = this.minecraftVersion;
           break;
         }

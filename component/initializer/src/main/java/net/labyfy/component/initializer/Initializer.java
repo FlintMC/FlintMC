@@ -19,8 +19,6 @@ public class Initializer {
 
   public static void boot() throws IOException {
 
-    Collection<Method> initializationMethods = new HashSet<>();
-
     Set<AutoLoadProvider> autoLoadProviders =
         LabyfyServiceLoader.get(AutoLoadProvider.class).discover(LaunchController.getInstance().getRootLoader());
 
@@ -36,7 +34,7 @@ public class Initializer {
     sortedClasses.forEach((round, classes) -> {
       classes.forEach((priority, className) -> {
         try {
-          EntryPoint.notifyService(Class.forName(className, true, Initializer.class.getClassLoader()));
+          EntryPoint.notifyService(Class.forName(className, false, Initializer.class.getClassLoader()));
 
           // LaunchController.getInstance().getRootLoader().loadClass(clazz);
         } catch (ClassNotFoundException e) {
