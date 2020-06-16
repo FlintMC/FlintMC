@@ -6,7 +6,7 @@ import javassist.CtMethod;
 import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.gui.GuiController;
 import net.labyfy.component.gui.event.CursorPosChanged;
-import net.labyfy.component.gui.event.MouseClicked;
+import net.labyfy.component.gui.event.MouseButton;
 import net.labyfy.component.gui.event.MouseScrolled;
 import net.labyfy.component.gui.event.UnicodeTyped;
 import net.labyfy.component.inject.InjectionHolder;
@@ -78,7 +78,27 @@ public class LabyInputInterceptor {
     });
 
     overrideCallback(GLFW::glfwSetMouseButtonCallback, windowHandle, (window, button, action, mods) -> {
-      if (action == GLFW.GLFW_PRESS && guiController.doInput(new MouseClicked(button))) {
+      MouseButton event;
+
+      switch (action) {
+        case GLFW.GLFW_PRESS:
+          event = new MouseButton(MouseButton.State.PRESS, button);
+          break;
+
+        case GLFW.GLFW_RELEASE:
+          event = new MouseButton(MouseButton.State.RELEASE, button);
+          break;
+
+        case GLFW.GLFW_REPEAT:
+          event = new MouseButton(MouseButton.State.REPEAT, button);
+          break;
+
+        default:
+          event = null;
+          break;
+      }
+
+      if (event != null && guiController.doInput(event)) {
         return;
       }
 
@@ -125,16 +145,18 @@ public class LabyInputInterceptor {
     guiController.beginInput();
     GLFW.glfwPollEvents();
     guiController.endInput();
+    guiController.inputOnlyIterationDone();
   }
 
   public static void limitDisplayFPS(int elapsedTicks) {
     GuiController guiController = InjectionHolder.getInjectedInstance(GuiController.class);
     double maxTime = lastDrawTime + 1.0d / (double) elapsedTicks;
 
-    guiController.beginInput();
     for (double currentTime = GLFW.glfwGetTime(); currentTime < maxTime; currentTime = GLFW.glfwGetTime()) {
+      guiController.beginInput();
       GLFW.glfwWaitEventsTimeout(maxTime - currentTime);
+      guiController.endInput();
+      guiController.inputOnlyIterationDone();
     }
-    guiController.endInput();
   }
 }

@@ -106,4 +106,8 @@ public class GuiController {
       component.screenChanged(currentScreen);
     }
   }
+
+  public void inputOnlyIterationDone() {
+    this.inputEventProcessors.forEach(GuiInputEventProcessor::inputOnlyIterationDone);
+  }
 }

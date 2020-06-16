@@ -54,9 +54,6 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
 
   private double mouseX;
   private double mouseY;
-  private boolean leftMouseClicked;
-  private boolean middleMouseClicked;
-  private boolean rightMouseClicked;
 
   @Inject
   private JuklearMC(JuklearMCVersionedProvider versionedProvider, GuiController controller) throws IOException {
@@ -120,22 +117,21 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
       mouseX = ((CursorPosChanged) event).getX();
       mouseY = ((CursorPosChanged) event).getY();
       input.motion((int) mouseX, (int) mouseY);
-    } else if (event instanceof MouseClicked) {
-      int button = ((MouseClicked) event).getValue();
+    } else if (event instanceof MouseButton) {
+      int button = ((MouseButton) event).getValue();
+      boolean isPressed = ((MouseButton) event).getState() != MouseButton.State.RELEASE;
+
       switch (button) {
-        case MouseClicked.LEFT:
-          leftMouseClicked = true;
-          input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, true);
+        case MouseButton.LEFT:
+          input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, isPressed);
           break;
 
-        case MouseClicked.RIGHT:
-          rightMouseClicked = true;
-          input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, true);
+        case MouseButton.RIGHT:
+          input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, isPressed);
           break;
 
-        case MouseClicked.MIDDLE:
-          middleMouseClicked = true;
-          input.button(JuklearMouseButton.MIDDLE, (int) mouseY, (int) mouseY, true);
+        case MouseButton.MIDDLE:
+          input.button(JuklearMouseButton.MIDDLE, (int) mouseY, (int) mouseY, isPressed);
           break;
       }
     } else if (event instanceof MouseScrolled) {
@@ -148,24 +144,6 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
 
   @Override
   public void endInput() {
-    if(!leftMouseClicked) {
-      input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, false);
-    } else {
-      leftMouseClicked = false;
-    }
-
-    if(!rightMouseClicked) {
-      input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, false);
-    } else {
-      leftMouseClicked = false;
-    }
-
-    if(!middleMouseClicked) {
-      input.button(JuklearMouseButton.MIDDLE, (int) mouseX, (int) mouseY, false);
-    } else {
-      leftMouseClicked = false;
-    }
-
     this.input.end();
     this.input = null;
   }
@@ -202,6 +180,11 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     }
 
     return currentJuklearScreen == null && !hasRenderedThisFrame;
+  }
+
+  @Override
+  public void inputOnlyIterationDone() {
+    context.noopDraw();
   }
 
   @Override
