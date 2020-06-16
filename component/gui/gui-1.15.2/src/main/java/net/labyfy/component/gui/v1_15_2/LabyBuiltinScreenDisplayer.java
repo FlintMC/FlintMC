@@ -1,9 +1,9 @@
-package net.labyfy.component.gui.v1_15_1;
+package net.labyfy.component.gui.v1_15_2;
 
 import net.labyfy.component.gui.screen.BuiltinScreenDisplayer;
 import net.labyfy.component.gui.screen.ScreenName;
-import net.labyfy.component.gui.v1_15_1.lazy.LazyBuiltinScreenDisplayInit;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.gui.v1_15_2.lazy.LazyBuiltinScreenDisplayInit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,7 +25,7 @@ public class LabyBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
 
   @Override
   public boolean supports(ScreenName screenName) {
-    if(!initialized) {
+    if (!initialized) {
       LazyBuiltinScreenDisplayInit.init(supportedScreens);
       initialized = true;
     }
@@ -35,7 +35,7 @@ public class LabyBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
 
   @Override
   public void display(ScreenName screenName, Object... args) {
-    if(!supports(screenName)) {
+    if (!supports(screenName)) {
       throw new UnsupportedOperationException("This displayer does not support the screen" + screenName);
     }
 

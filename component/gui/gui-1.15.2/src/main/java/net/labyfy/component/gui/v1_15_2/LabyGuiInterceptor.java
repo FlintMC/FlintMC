@@ -47,14 +47,14 @@ public class LabyGuiInterceptor {
       }
 
       method.insertBefore(
-          "if(net.labyfy.component.gui.v1_15_1.LabyGuiInterceptor.preScreenRenderCallback($$)) {" +
-              "   net.labyfy.component.gui.v1_15_1.LabyGuiInterceptor.postScreenRenderCallback(true, $$);" +
+          "if(net.labyfy.component.gui.v1_15_2.LabyGuiInterceptor.preScreenRenderCallback($$)) {" +
+              "   net.labyfy.component.gui.v1_15_2.LabyGuiInterceptor.postScreenRenderCallback(true, $$);" +
               "   return;" +
               "}"
       );
 
       method.insertAfter(
-          "net.labyfy.component.gui.v1_15_1.LabyGuiInterceptor.postScreenRenderCallback(false, $$);");
+          "net.labyfy.component.gui.v1_15_2.LabyGuiInterceptor.postScreenRenderCallback(false, $$);");
 
       break;
     }
@@ -98,7 +98,7 @@ public class LabyGuiInterceptor {
       methodName = "displayGuiScreen",
       parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
       executionTime = Hook.ExecutionTime.AFTER,
-      version = "1.15.1"
+      version = "1.15.2"
   )
   public void hookScreenChanged() {
     controller.screenChanged(Minecraft.getInstance().currentScreen);
@@ -113,7 +113,7 @@ public class LabyGuiInterceptor {
           @Type(reference = long.class),
           @Type(reference = boolean.class)
       },
-      version = "1.15.1"
+      version = "1.15.2"
   )
   public void hookRender() {
     controller.endFrame();

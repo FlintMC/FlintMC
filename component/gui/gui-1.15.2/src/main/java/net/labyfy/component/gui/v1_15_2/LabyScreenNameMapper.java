@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.v1_15_1;
+package net.labyfy.component.gui.v1_15_2;
 
 import com.google.common.collect.ImmutableMap;
 import net.labyfy.component.gui.screen.ScreenName;

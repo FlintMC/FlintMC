@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.v1_15_1;
+package net.labyfy.component.gui.v1_15_2;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import javassist.CannotCompileException;
@@ -36,12 +36,12 @@ public class LabyInputInterceptor implements InputInterceptor {
   private LabyInputInterceptor() {
   }
 
-  @ClassTransform(version = "1.15.1", value = "net.minecraft.client.util.InputMappings")
+  @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
   public void transformInputMappings(ClassTransformContext context) throws CannotCompileException {
     CtMethod setKeyCallbacksMethod = context.getDeclaredMethod(
         "setKeyCallbacks", long.class, GLFWKeyCallbackI.class, GLFWCharModsCallbackI.class);
     setKeyCallbacksMethod.setBody(
-        "net.labyfy.component.gui.v1_15_1.LabyInputInterceptor.interceptKeyboardCallbacks($$);");
+        "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.interceptKeyboardCallbacks($$);");
 
     CtMethod setMouseCallbacksMethod = context.getDeclaredMethod(
         "setMouseCallbacks",
@@ -51,7 +51,7 @@ public class LabyInputInterceptor implements InputInterceptor {
         GLFWScrollCallbackI.class
     );
     setMouseCallbacksMethod.setBody(
-        "net.labyfy.component.gui.v1_15_1.LabyInputInterceptor.interceptMouseCallbacks($$);");
+        "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.interceptMouseCallbacks($$);");
   }
 
   public static void interceptKeyboardCallbacks(
@@ -129,15 +129,15 @@ public class LabyInputInterceptor implements InputInterceptor {
     }
   }
 
-  @ClassTransform(version = "1.15.1", value = "com.mojang.blaze3d.systems.RenderSystem")
+  @ClassTransform(version = "1.15.2", value = "com.mojang.blaze3d.systems.RenderSystem")
   public void transformRenderSystem(ClassTransformContext context) throws CannotCompileException {
     CtMethod flipFrameMethod = context.getDeclaredMethod("flipFrame", long.class);
     flipFrameMethod.setBody(
-        "net.labyfy.component.gui.v1_15_1.LabyInputInterceptor.flipFrame($1);");
+        "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.flipFrame($1);");
 
     CtMethod limitDisplayFPSMethod = context.getDeclaredMethod("limitDisplayFPS", int.class);
     limitDisplayFPSMethod.setBody(
-        "net.labyfy.component.gui.v1_15_1.LabyInputInterceptor.limitDisplayFPS($1);");
+        "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.limitDisplayFPS($1);");
   }
 
   public static void flipFrame(long windowHandle) {

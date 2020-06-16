@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.juklearmc.v1_15_1;
+package net.labyfy.component.gui.juklearmc.v1_15_2;
 
 import net.janrupf.juklear.backend.JuklearBackend;
 import net.janrupf.juklear.lwjgl.opengl.JuklearOpenGL;
