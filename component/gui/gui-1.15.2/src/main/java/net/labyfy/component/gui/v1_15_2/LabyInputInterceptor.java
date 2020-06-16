@@ -3,28 +3,34 @@ package net.labyfy.component.gui.v1_15_1;
 import com.mojang.blaze3d.systems.RenderSystem;
 import javassist.CannotCompileException;
 import javassist.CtMethod;
-import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.gui.GuiController;
+import net.labyfy.component.gui.InputInterceptor;
 import net.labyfy.component.gui.event.CursorPosChanged;
 import net.labyfy.component.gui.event.MouseButton;
 import net.labyfy.component.gui.event.MouseScrolled;
 import net.labyfy.component.gui.event.UnicodeTyped;
 import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
+import net.minecraft.client.MainWindow;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.CallbackI;
+import org.lwjgl.system.MemoryStack;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.nio.DoubleBuffer;
 import java.util.function.BiFunction;
 
-@AutoLoad
 @Singleton
-public class LabyInputInterceptor {
+@Implement(InputInterceptor.class)
+public class LabyInputInterceptor implements InputInterceptor {
   private static double lastDrawTime = Double.MIN_VALUE;
+  private GLFWCursorPosCallbackI cursorPosCallback;
 
   @Inject
   private LabyInputInterceptor() {
@@ -70,12 +76,15 @@ public class LabyInputInterceptor {
       GLFWScrollCallbackI scrollCallback
   ) {
     GuiController guiController = InjectionHolder.getInjectedInstance(GuiController.class);
+    LabyInputInterceptor inputInterceptor = InjectionHolder.getInjectedInstance(LabyInputInterceptor.class);
 
-    overrideCallback(GLFW::glfwSetCursorPosCallback, windowHandle, (window, xpos, ypos) -> {
+    inputInterceptor.cursorPosCallback = (window, xpos, ypos) -> {
       if (!guiController.doInput(new CursorPosChanged(xpos, ypos))) {
         cursorPosCallback.invoke(window, xpos, ypos);
       }
-    });
+    };
+
+    overrideCallback(GLFW::glfwSetCursorPosCallback, windowHandle, inputInterceptor.cursorPosCallback);
 
     overrideCallback(GLFW::glfwSetMouseButtonCallback, windowHandle, (window, button, action, mods) -> {
       MouseButton event;
@@ -152,11 +161,35 @@ public class LabyInputInterceptor {
     GuiController guiController = InjectionHolder.getInjectedInstance(GuiController.class);
     double maxTime = lastDrawTime + 1.0d / (double) elapsedTicks;
 
-    for (double currentTime = GLFW.glfwGetTime(); currentTime < maxTime; currentTime = GLFW.glfwGetTime()) {
+    double currentTime;
+    for (currentTime = GLFW.glfwGetTime(); currentTime < maxTime; currentTime = GLFW.glfwGetTime()) {
       guiController.beginInput();
+      guiController.updateMousePosition();
       GLFW.glfwWaitEventsTimeout(maxTime - currentTime);
       guiController.endInput();
       guiController.inputOnlyIterationDone();
     }
+
+    lastDrawTime = currentTime;
+  }
+
+  @Override
+  public void signalCurrentMousePosition() {
+    MainWindow window = Minecraft.getInstance().getMainWindow();
+
+    double cursorX;
+    double cursorY;
+
+    try(MemoryStack stack = MemoryStack.stackPush()) {
+      DoubleBuffer cursorXPointer = stack.callocDouble(1);
+      DoubleBuffer cursorYPointer = stack.callocDouble(1);
+
+      GLFW.glfwGetCursorPos(window.getHandle(), cursorXPointer, cursorYPointer);
+
+      cursorX = cursorXPointer.get(0);
+      cursorY = cursorYPointer.get(0);
+    }
+
+    cursorPosCallback.invoke(window.getHandle(), cursorX, cursorY);
   }
 }

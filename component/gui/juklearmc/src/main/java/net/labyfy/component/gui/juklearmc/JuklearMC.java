@@ -68,6 +68,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   @TaskBody
   public void initialize() throws JuklearInitializationException, IOException {
     juklear.init();
+    minecraftWindow = InjectionHolder.getInjectedInstance(MinecraftWindow.class);
 
     JuklearFontAtlas fontAtlas = juklear.defaultFontAtlas();
     JuklearFontAtlasEditor editor = fontAtlas.begin();
@@ -76,9 +77,8 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
 
     context = juklear.defaultContext(defaultFont);
     DefaultLabyModStyle.apply(context);
-    controller.registerInputProcessor(this);
     controller.registerComponent(this);
-    minecraftWindow = InjectionHolder.getInjectedInstance(MinecraftWindow.class);
+    controller.registerInputProcessor(this);
 
     initializeTasks.forEach(Runnable::run);
   }
@@ -156,6 +156,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     }
 
     if (currentJuklearScreen != null) {
+      context.noopDraw();
       currentJuklearScreen.close();
     }
 
@@ -169,6 +170,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
         context.addTopLevel(c);
         currentScreenTopLevels.add(c);
       });
+      context.noopDraw();
     }
   }
 
@@ -185,6 +187,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   @Override
   public void inputOnlyIterationDone() {
     context.noopDraw();
+    context.processEvents();
   }
 
   @Override

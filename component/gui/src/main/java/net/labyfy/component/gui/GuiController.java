@@ -17,6 +17,7 @@ import java.util.List;
 public class GuiController {
   private final ScreenNameMapper nameMapper;
   private final ClassMappingProvider classMappingProvider;
+  private final InputInterceptor inputInterceptor;
   private final List<GuiInputEventProcessor> inputEventProcessors;
   private final List<GuiComponent> components;
 
@@ -24,9 +25,11 @@ public class GuiController {
   private boolean inputActive;
 
   @Inject
-  private GuiController(ScreenNameMapper nameMapper, ClassMappingProvider classMappingProvider) {
+  private GuiController(
+      ScreenNameMapper nameMapper, ClassMappingProvider classMappingProvider, InputInterceptor inputInterceptor) {
     this.nameMapper = nameMapper;
     this.classMappingProvider = classMappingProvider;
+    this.inputInterceptor = inputInterceptor;
     this.inputEventProcessors = new ArrayList<>();
     this.components = new ArrayList<>();
   }
@@ -105,9 +108,25 @@ public class GuiController {
     for(GuiComponent component : components) {
       component.screenChanged(currentScreen);
     }
+
+    updateMousePosition();
   }
 
   public void inputOnlyIterationDone() {
     this.inputEventProcessors.forEach(GuiInputEventProcessor::inputOnlyIterationDone);
+  }
+
+  public void updateMousePosition() {
+    boolean shouldControlInput = !inputActive;
+
+    if(shouldControlInput) {
+      beginInput();
+    }
+
+    inputInterceptor.signalCurrentMousePosition();
+
+    if(shouldControlInput) {
+      endInput();
+    }
   }
 }
