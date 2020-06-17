@@ -27,7 +27,15 @@ repositories {
     mavenCentral()
 }
 
+def versionFile = file("../.dev-version")
+def fixedVersion = null
+if(versionFile.exists()) {
+    fixedVersion = versionFile.text.replace("\n","")
+} else {
+    throw new GradleScriptException("VERSIONFILE COULD NOT BE FOUND!", new Throwable("Please check the CI!"))
+}
 
+version fixedVersion
 
 dependencies {
     implementation gradleApi()
@@ -91,5 +99,21 @@ sourceSets {
 jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+        }
     }
 }

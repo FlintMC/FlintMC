@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.labyfy.component.gui'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api group: "net.janrupf", name: "juklear-base", version: "0.1.0"
+    api project(':component:base')
+    api project(':component:inject')
+    api project(':component:tasks')
+    api project(':component:gui')
+
+    annotationProcessor project(':component:annotation-processing')
+}
