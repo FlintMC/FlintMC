@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component.gui'
@@ -9,11 +9,11 @@ repositories {
 }
 
 dependencies {
-    implementation group: "net.janrupf", name: "juklear-base", version: "0.1.0"
-    implementation project(':component:base')
-    implementation project(':component:inject')
-    implementation project(':component:tasks')
-    implementation project(':component:gui')
+    api group: "net.janrupf", name: "juklear-base", version: "0.1.0"
+    api project(':component:base')
+    api project(':component:inject')
+    api project(':component:tasks')
+    api project(':component:gui')
 
     annotationProcessor project(':component:annotation-processing')
 }
