@@ -92,19 +92,3 @@ findProject(':component:service')?.name = 'service'
 
 include 'component:security'
 findProject('component:security')?.name = 'security'
-
-String juklearGradleDir = System.getenv("JUKLEAR_GRADLE_DIR")
-if(juklearGradleDir == null) {
-    juklearGradleDir = getProperty("juklearGradleDir")
-}
-
-if(juklearGradleDir != null) {
-    includeBuild juklearGradleDir
-} else {
-    throw new UnsupportedOperationException(
-            """Could not find juklear, currently this branch requires building juklear from source. Do the following"
-A. Set the environment variable JUKLEAR_GRADLE_DIR="/path/to/juklear"
-OR
-B. Put juklearGradleDir=/path/to/juklear into your ~/.gradle/gradle.properties
-            """)
-}

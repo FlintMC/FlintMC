@@ -10,8 +10,6 @@ repositories {
 
 dependencies {
     implementation group: "net.janrupf", name: "juklear-lwjgl3-opengl", version: "0.1.0"
-    // TODO: remove the following once we use prebuilt juklear
-    implementation group: "net.janrupf", name: "juklear-base", version: "0.1.0"
     implementation project(':component:base')
     implementation project(':component:inject')
     implementation project(':component:gui:juklearmc')
