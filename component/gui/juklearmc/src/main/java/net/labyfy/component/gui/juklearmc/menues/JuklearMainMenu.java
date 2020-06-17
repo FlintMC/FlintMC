@@ -72,7 +72,9 @@ public class JuklearMainMenu implements JuklearMCScreen {
     }
 
     JuklearDynamicRow singlePlayerRow = new JuklearDynamicRow(50);
-    singlePlayerRow.addChild(new JuklearButton("Singleplayer"));
+    JuklearButton singleplayerButton = new JuklearButton("Singleplayer");
+    singleplayerButton.addListener(context, (e) -> displayer.display(ScreenName.minecraft(ScreenName.SINGLEPLAYER)));
+    singlePlayerRow.addChild(singleplayerButton);
     mainWindow.addChild(singlePlayerRow);
 
     mainWindow.addChild(new JuklearDynamicRow(1));

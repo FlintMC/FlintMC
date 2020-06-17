@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.MultiplayerScreen;
 import net.minecraft.client.gui.screen.OptionsScreen;
+import net.minecraft.client.gui.screen.WorldSelectionScreen;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -21,5 +22,8 @@ public class LazyBuiltinScreenDisplayInit {
     screens.put(ScreenName.minecraft(ScreenName.MULTIPLAYER),
         (args) ->
             Minecraft.getInstance().displayGuiScreen(new MultiplayerScreen(Minecraft.getInstance().currentScreen)));
+    screens.put(ScreenName.minecraft(ScreenName.SINGLEPLAYER),
+        (args) ->
+            Minecraft.getInstance().displayGuiScreen(new WorldSelectionScreen(Minecraft.getInstance().currentScreen)));
   }
 }

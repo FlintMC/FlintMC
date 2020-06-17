@@ -15,7 +15,8 @@ public class LabyScreenNameMapper implements ScreenNameMapper {
       "net.minecraft.client.gui.screen.MainMenuScreen", ScreenName.minecraft(ScreenName.MAIN_MENU),
       "net.minecraft.client.gui.ResourceLoadProgressGui", ScreenName.minecraft(ScreenName.RESOURCE_LOAD),
       "net.minecraft.client.gui.screen", ScreenName.minecraft(ScreenName.OPTIONS),
-      "net.minecraft.client.gui.screen.MultiplayerScreen", ScreenName.minecraft(ScreenName.MULTIPLAYER)
+      "net.minecraft.client.gui.screen.MultiplayerScreen", ScreenName.minecraft(ScreenName.MULTIPLAYER),
+      "net.minecraft.client.gui.screen.WorldSelectionScreen", ScreenName.minecraft(ScreenName.SINGLEPLAYER)
   );
 
   @Override

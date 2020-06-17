@@ -7,6 +7,7 @@ public final class ScreenName {
   public static final String RESOURCE_LOAD = "resource_load";
   public static final String OPTIONS = "options";
   public static final String MULTIPLAYER = "multiplayer";
+  public static final String SINGLEPLAYER = "singleplayer";
 
   private final Type type;
   private final String identifier;
