@@ -1,6 +1,7 @@
 package net.labyfy.component.resources;
 
 import com.google.inject.assistedinject.Assisted;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.io.InputStream;
@@ -20,6 +21,7 @@ public interface ResourceLocation {
 
   <T extends WrappedResourceLocation> T as(Class<T> clazz);
 
+  @AutoLoad(priority = -20, round = -15)
   @AssistedFactory(ResourceLocation.class)
   interface Factory {
     ResourceLocation create(@Assisted("nameSpace") String nameSpace);

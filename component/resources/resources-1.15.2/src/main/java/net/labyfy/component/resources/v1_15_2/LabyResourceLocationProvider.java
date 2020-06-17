@@ -1,6 +1,7 @@
 package net.labyfy.component.resources.v1_15_2;
 
 import com.google.common.base.Predicates;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@AutoLoad(priority = -1000, round = -100)
 @Singleton
 @Implement(value = ResourceLocationProvider.class, version = "1.15.2")
 public class LabyResourceLocationProvider implements ResourceLocationProvider {
