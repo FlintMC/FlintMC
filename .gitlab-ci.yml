@@ -75,7 +75,7 @@ publish_version:
     - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
     - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
     - cd ./labyfy-gradle-plugin/ && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
-    - cd .. && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
+    - cd .. && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
   environment:
     name: production
   only:
@@ -90,7 +90,6 @@ update_develop_version:
     - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
     - export VERSION=$(cat .dev-version)
     - rm -r semver-tool
-    - rm version
     - git commit -a -m "${VERSION}"
     - git config --global push.default simple
     - git push origin HEAD:develop
