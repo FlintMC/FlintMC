@@ -19,7 +19,7 @@ public class AssistedFactoryService extends InjectionServiceShare implements Ser
 
 
   public void discover(Identifier.Base property) {
-    AssistedFactory annotation =
+     AssistedFactory annotation =
         property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
     Class<?> location = property.getProperty().getLocatedIdentifiedAnnotation().getLocation();
 

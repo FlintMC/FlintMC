@@ -1,5 +1,6 @@
 package net.labyfy.component.packages;
 
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.io.File;
@@ -67,17 +68,4 @@ public interface Package {
    */
   Exception getLoadException();
 
-  @AssistedFactory(Package.class)
-  interface Factory {
-    /**
-     * Instantiates the currently used implementation for this interface.
-     *
-     * @param jarFile the jar file that contains the package to create.
-     * @param jar a JarFile reference of the same File.
-     * @return a new Package.
-     */
-    Package create(File jarFile, JarFile jar);
-
-    // TODO: Add method for loading from classpath? (Issue #43)
-  }
 }

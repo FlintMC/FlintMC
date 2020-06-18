@@ -26,7 +26,7 @@ public class LabyThemeResourceInitializer implements ThemeResourceInitializer {
   private final ClassMappingProvider classMappingProvider;
 
   static {
-    System.setProperty( "org.lwjgl.opengl.Window.undecorated", "true" );
+    System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
   }
 
   @Inject
@@ -49,20 +49,29 @@ public class LabyThemeResourceInitializer implements ThemeResourceInitializer {
       value = "net.minecraft.client.resources.LegacyResourcePackWrapper",
       version = "1.15.2")
   public void transform(ClassTransformContext classTransformContext) throws CannotCompileException {
+    String name =
+        this.classMappingProvider
+            .get("net.minecraft.resources.IResourcePack")
+            .getMethod(
+                "getAllResourceLocations",
+                ResourcePackType.class,
+                String.class,
+                String.class,
+                int.class,
+                Predicate.class)
+            .getName();
+
     CtMethod method =
         classTransformContext.getDeclaredMethod(
-            "getAllResourceLocations",
-            ResourcePackType.class,
-            String.class,
-            String.class,
-            int.class,
-            Predicate.class);
+            name, ResourcePackType.class, String.class, String.class, int.class, Predicate.class);
     method.setBody(
         "return this."
             + this.classMappingProvider
                 .get("net.minecraft.client.resources.LegacyResourcePackWrapper")
                 .getField("locationMap")
                 .getName()
-            + ".getAllResourceLocations($1, $2, $3, $4, $5);");
+            + "."
+            + name
+            + "($1, $2, $3, $4, $5);");
   }
 }

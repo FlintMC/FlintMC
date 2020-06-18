@@ -2,6 +2,7 @@ package net.labyfy.gradle.manifest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.labyfy.gradle.PublishUtils;
 import net.labyfy.gradle.library.VersionFetcher;
 import net.labyfy.gradle.mapping.MappingDownloader;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -34,7 +35,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class PublishLatestRelease implements Action<Task> {
+public class PublishLabyfyRelease implements Action<Task> {
 
   private final Project project;
   private final String minecraftVersion;
@@ -43,7 +44,7 @@ public class PublishLatestRelease implements Action<Task> {
   private final String publishVersion;
   private final boolean publishLatest;
 
-  public PublishLatestRelease(
+  public PublishLabyfyRelease(
       Project project,
       String minecraftVersion,
       String publishToken,
@@ -74,11 +75,11 @@ public class PublishLatestRelease implements Action<Task> {
           version.setId("Labyfy-" + this.minecraftVersion);
 
           Collection<MavenArtifactRepository> mavenArtifactRepositories =
-              collectTransitiveRepositories(project);
+              PublishUtils.collectTransitiveRepositories(project);
           Collection<InstallInstruction> installInstructions = new HashSet<>();
           Collection<VersionFetcher.Version.Library> artifacts = new HashSet<>();
 
-          for (Dependency dependency : this.collectTransitiveDependencies()) {
+          for (Dependency dependency : PublishUtils.collectTransitiveDependencies(project)) {
 
             if (dependency instanceof ProjectDependency) {
               Set<File> archives =
@@ -97,7 +98,7 @@ public class PublishLatestRelease implements Action<Task> {
               String jarUrl = this.publishUrl + "/package/%s/%s/%s";
               try {
                 installInstructions.add(
-                    this.createManifestDownloadInstruction(
+                    PublishUtils.createManifestDownloadInstruction(
                         dependency,
                         String.format(
                             jarUrl,
@@ -109,13 +110,15 @@ public class PublishLatestRelease implements Action<Task> {
               } catch (IOException e) {
                 e.printStackTrace();
               }
-              artifacts.add(this.createLibrary(dependency, publishVersion));
+              artifacts.add(PublishUtils.createLibrary(dependency, publishVersion));
 
-              publishFile(
+              PublishUtils.publishFile(
                   file,
                   dependency.getName() + "-" + publishVersion + ".jar",
                   dependency.getName(),
-                  publishVersion);
+                  publishVersion,
+                  publishUrl,
+                  publishToken);
 
             } else {
               for (MavenArtifactRepository repository : mavenArtifactRepositories) {
@@ -137,12 +140,12 @@ public class PublishLatestRelease implements Action<Task> {
                   InputStream inStream = jarfile.openStream();
                   if (inStream != null) {
                     installInstructions.add(
-                        this.createManifestDownloadInstruction(
+                        PublishUtils.createManifestDownloadInstruction(
                             dependency,
                             jarUrl,
                             DigestUtils.md5Hex(inStream),
                             dependency.getVersion()));
-                    artifacts.add(this.createLibrary(dependency, dependency.getVersion()));
+                    artifacts.add(PublishUtils.createLibrary(dependency, dependency.getVersion()));
                   }
                 } catch (Exception ignored) {
                 }
@@ -180,7 +183,13 @@ public class PublishLatestRelease implements Action<Task> {
           try {
             HttpGet httpGet = new HttpGet(MappingDownloader.INDEX_URL);
             httpGet.addHeader("User-Agent", "labyfy-gradle-plugin");
-            MappingDownloader.Index index = new Gson().fromJson(IOUtils.toString(HttpClients.createDefault().execute(httpGet).getEntity().getContent(), StandardCharsets.UTF_8), MappingDownloader.Index.class);
+            MappingDownloader.Index index =
+                new Gson()
+                    .fromJson(
+                        IOUtils.toString(
+                            HttpClients.createDefault().execute(httpGet).getEntity().getContent(),
+                            StandardCharsets.UTF_8),
+                        MappingDownloader.Index.class);
 
             MappingDownloader.Index.Mapping mapping = index.getMappings().get(minecraftVersion);
             String mcpBot = mapping.getMcpBot();
@@ -247,155 +256,29 @@ public class PublishLatestRelease implements Action<Task> {
 
           System.out.println(manifest);
 
-          publish(versionString.getBytes(StandardCharsets.UTF_8), "Labyfy-" + this.minecraftVersion + "-" + publishVersion + ".json", "Labyfy-" + this.minecraftVersion, publishVersion);
-          publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + this.minecraftVersion, publishVersion);
-          if(publishLatest){
-            publish(manifest.getBytes(StandardCharsets.UTF_8), "manifest.json", "Labyfy-" + this.minecraftVersion, "latest");
+          PublishUtils.publish(
+              versionString.getBytes(StandardCharsets.UTF_8),
+              "Labyfy-" + this.minecraftVersion + "-" + publishVersion + ".json",
+              "Labyfy-" + this.minecraftVersion,
+              publishVersion,
+              publishUrl,
+              publishToken);
+          PublishUtils.publish(
+              manifest.getBytes(StandardCharsets.UTF_8),
+              "manifest.json",
+              "Labyfy-" + this.minecraftVersion,
+              publishVersion,
+              publishUrl,
+              publishToken);
+          if (publishLatest) {
+            PublishUtils.publish(
+                manifest.getBytes(StandardCharsets.UTF_8),
+                "manifest.json",
+                "Labyfy-" + this.minecraftVersion,
+                "latest",
+                publishUrl,
+                publishToken);
           }
-
         });
-  }
-
-  private VersionFetcher.Version.Library createLibrary(Dependency dependency, String version) {
-    return new VersionFetcher.Version.Library(
-        null,
-        null,
-        null,
-        String.format("%s:%s:%s", dependency.getGroup(), dependency.getName(), version),
-        null);
-  }
-
-  private InstallInstruction createManifestDownloadInstruction(
-      Dependency dependency, String jarUrl, String md5, String version) {
-    return new ManifestDownload()
-        .setData(
-            new ManifestDownload.Data()
-                .setUrl(jarUrl)
-                .setMd5(md5)
-                .setPath(
-                    String.format(
-                        "libraries/%s/%s/%s/%s",
-                        dependency.getGroup().replace('.', '/'),
-                        dependency.getName(),
-                        version,
-                        String.format("%s-%s.jar", dependency.getName(), version))));
-  }
-
-  private Collection<Dependency> collectTransitiveDependencies() {
-    return this.collectTransitiveDependencies(this.project);
-  }
-
-  private Collection<Dependency> collectTransitiveDependencies(Project project) {
-
-    DependencySet projectDependencies =
-        project.getConfigurations().getByName("labyManifest").getIncoming().getDependencies();
-
-    Set<Dependency> selectedDependencies = new HashSet<>();
-
-    projectDependencies.stream()
-        .filter(ProjectDependency.class::isInstance)
-        .map(ProjectDependency.class::cast)
-        .map(ProjectDependency::getDependencyProject)
-        .distinct()
-        .map(this::collectTransitiveDependencies)
-        .flatMap(Collection::stream)
-        .distinct()
-        .filter(Objects::nonNull)
-        .forEach(selectedDependencies::add);
-
-    selectedDependencies.addAll(projectDependencies);
-
-    return selectedDependencies;
-  }
-
-  private Collection<MavenArtifactRepository> collectTransitiveRepositories(Project project) {
-    DependencySet projectDependencies =
-        project.getConfigurations().getByName("labyManifest").getIncoming().getDependencies();
-
-    Map<URI, MavenArtifactRepository> repositories = new HashMap<>();
-
-    projectDependencies.stream()
-        .filter(ProjectDependency.class::isInstance)
-        .map(ProjectDependency.class::cast)
-        .map(projectDependency -> projectDependency.getDependencyProject())
-        .distinct()
-        .map(this::collectTransitiveRepositories)
-        .flatMap(Collection::stream)
-        .distinct()
-        .filter(Objects::nonNull)
-        .forEach(
-            mavenArtifactRepository ->
-                repositories.put(mavenArtifactRepository.getUrl(), mavenArtifactRepository));
-
-    projectDependencies.stream()
-        .filter(ProjectDependency.class::isInstance)
-        .map(ProjectDependency.class::cast)
-        .map(ProjectDependency::getDependencyProject)
-        .map(Project::getRepositories)
-        .flatMap(Collection::stream)
-        .filter(MavenArtifactRepository.class::isInstance)
-        .map(MavenArtifactRepository.class::cast)
-        .distinct()
-        .forEach(
-            mavenArtifactRepository ->
-                repositories.put(mavenArtifactRepository.getUrl(), mavenArtifactRepository));
-
-    return repositories.values();
-  }
-
-  private void publishVersionedFile(Project project, File file, String version) {
-    publishFile(
-        file,
-        replaceLast(file.getName(), (String) project.getVersion(), version),
-        project.getName(),
-        version);
-  }
-
-  private void publishFile(File file, String fileName, String deployName, String deployVersion) {
-    try {
-      publish(FileUtils.readFileToByteArray(file), fileName, deployName, deployVersion);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void publish(byte[] content, String fileName, String deployName, String deployVersion) {
-    try {
-      HttpEntity entity =
-          MultipartEntityBuilder.create()
-              .addPart("file", new ByteArrayBody(content, fileName))
-              .build();
-
-      HttpPost request =
-          new HttpPost(
-              new URL(this.publishUrl + "/publish/" + deployName + "/" + deployVersion).toURI());
-      request.setEntity(entity);
-      request.addHeader("Authorization", "Bearer " + this.publishToken);
-
-      HttpClient client = HttpClientBuilder.create().build();
-      HttpResponse response = client.execute(request);
-      Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-      System.out.println(
-          "published "
-              + fileName
-              + " to "
-              + this.publishUrl
-              + "/publish/"
-              + deployName
-              + "/"
-              + deployVersion);
-
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  private String replaceLast(String string, String toReplace, String replacement) {
-    int pos = string.lastIndexOf(toReplace);
-    if (pos > -1) {
-      return string.substring(0, pos) + replacement + string.substring(pos + toReplace.length());
-    } else {
-      return string;
-    }
   }
 }
