@@ -107,7 +107,8 @@ run {
             "--assetIndex", "1.15",
             "--userProperties", "{}",
             "--gameDir", ".",
-            "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
+            "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker",
+            "--develop", true
     dependsOn 'copyMappings'
 }
 

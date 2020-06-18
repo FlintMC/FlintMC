@@ -1,6 +1,7 @@
 package net.labyfy.component.transform.launchplugin;
 
 import com.google.common.collect.*;
+import io.sentry.Sentry;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -15,7 +16,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class LabyfyLauncherPlugin implements LauncherPlugin {
   private static LabyfyLauncherPlugin instance;
@@ -75,6 +79,12 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
     new EntryPoint(arguments);
 
+    if(logger!=null && !arguments.containsKey("--debug")){
+      logger.info("Initializing Sentry");
+      // manifest entries are set in the main build.grade file
+      Sentry.init("https://" + findManifestEntry("Sentry-dsn") + "@sentry.labymod.net/2?release=" + findManifestEntry("Implementation-Version"));
+    }
+
     try {
       Initializer.boot();
     } catch (IOException e) {
@@ -113,6 +123,25 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
   public void registerTransformer(int priority, LateInjectedTransformer transformer) {
     injectedTransformers.put(priority, transformer);
+  }
+
+  private String findManifestEntry(String name) {
+    try {
+      Enumeration<URL> resources = Thread.currentThread().getContextClassLoader()
+              .getResources("META-INF/MANIFEST.MF");
+      while (resources.hasMoreElements()) {
+        URL manifestUrl = resources.nextElement();
+        Manifest manifest = new Manifest(manifestUrl.openStream());
+        Attributes mainAttributes = manifest.getMainAttributes();
+        String implementationTitle = mainAttributes.getValue("Implementation-Title");
+        if (implementationTitle != null && implementationTitle.equals("labyfy")) {
+          return mainAttributes.getValue(name);
+        }
+      }
+    } catch (Exception e){
+      logger.error(e);
+    }
+    return "unknown";
   }
 
 }
