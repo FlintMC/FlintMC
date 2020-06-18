@@ -178,6 +178,10 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     String dsn = findManifestEntry("Sentry-dsn");
     String version = findManifestEntry("Implementation-Version");
     String environment = "PRODUCTION";
+    String mcversion = "unknown";
+
+    if(arguments.containsKey("--version"))
+      mcversion = arguments.get("--version");
 
     if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")){
       environment = "DEVELOPMENT";
@@ -189,6 +193,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
                     "release=" + version + "&" +
                     "environment=" + environment
     );
+    Sentry.getContext().addExtra("mcversion", mcversion);
 
     if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")){
       Sentry.getContext().recordBreadcrumb(
