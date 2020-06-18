@@ -90,7 +90,6 @@ update_develop_version:
     - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
     - export VERSION=$(cat .dev-version)
     - rm -r semver-tool
-    - rm version
     - git commit -a -m "${VERSION}"
     - git config --global push.default simple
     - git push origin HEAD:develop
