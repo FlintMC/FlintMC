@@ -9,7 +9,7 @@ buildscript {
 
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
-        classpath "net.labyfy:labyfy-gradle-plugin:${fixedVersion}"
+        classpath "net.labyfy:labyfy-gradle-plugin:1.0.0"
     }
 
     repositories {

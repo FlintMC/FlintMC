@@ -57,6 +57,7 @@ deploy_to_artifactory:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
     - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
+    - cd ./labyfy-gradle-plugin/ && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
   environment:
     name: development
   only:
@@ -73,10 +74,11 @@ publish_version:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
     - cat version
-    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
-    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
     - bash $SCRIPTS_DIR/releaseVersionToGit.sh ${CI_PROJECT_ID} ${CI_JOB_TOKEN} $(cat version) $(cat version) ${CI_COMMIT_MESSAGE}
     - bash $SCRIPTS_DIR/releseVersionToSentry.sh ${CI_PROJECT_NAME} $(cat version) ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
+    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
+    - cd ./labyfy-gradle-plugin/ && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN artifactoryPublish --stacktrace
+    - cd .. && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
   environment:
     name: production
   only:
