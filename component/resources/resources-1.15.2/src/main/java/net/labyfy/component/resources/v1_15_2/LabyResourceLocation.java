@@ -2,6 +2,7 @@ package net.labyfy.component.resources.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
@@ -11,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import java.io.IOException;
 import java.io.InputStream;
 
+@AutoLoad(priority = -1000, round = -14)
 @Implement(value = ResourceLocation.class, version = "1.15.2")
 public class LabyResourceLocation extends net.minecraft.util.ResourceLocation
     implements ResourceLocation {

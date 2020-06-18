@@ -96,3 +96,12 @@ update_develop_version:
   only:
     - tags
   when: on_success
+
+check_against_develop:
+  stage: replay
+  script:
+    - git pull origin HEAD:develop
+  only:
+    - branches
+  except:
+    - develop

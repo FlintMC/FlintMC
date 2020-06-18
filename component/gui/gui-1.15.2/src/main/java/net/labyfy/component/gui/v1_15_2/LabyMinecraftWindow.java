@@ -52,6 +52,16 @@ public class LabyMinecraftWindow implements MinecraftWindow {
     return Minecraft.getInstance().getMainWindow().getScaledHeight();
   }
 
+  @Override
+  public int getFramebufferWidth() {
+    return Minecraft.getInstance().getFramebuffer().framebufferWidth;
+  }
+
+  @Override
+  public int getFramebufferHeight() {
+    return Minecraft.getInstance().getFramebuffer().framebufferHeight;
+  }
+
   public int getFPS() {
     return this.classMappingProvider
         .get("net.minecraft.client.Minecraft")

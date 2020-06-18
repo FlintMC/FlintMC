@@ -96,7 +96,7 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
       ClassPool classPool = ClassPool.getDefault();
       CtClass ctClass =
               classPool.makeClass(
-                      new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), false);
+                      new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), true);
 
       ClassMapping classMapping = classMappingProvider.get(className);
 
