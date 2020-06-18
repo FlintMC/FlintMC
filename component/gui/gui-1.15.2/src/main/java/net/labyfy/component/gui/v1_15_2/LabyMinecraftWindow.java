@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.vecmath.Vector2f;
 
 @Singleton
 @Implement(value = MinecraftWindow.class, version = "1.15.2")
@@ -20,34 +19,32 @@ public class LabyMinecraftWindow implements MinecraftWindow {
     this.classMappingProvider = classMappingProvider;
   }
 
+  @Override
   public long getHandle() {
     return Minecraft.getInstance().getMainWindow().getHandle();
   }
 
-  public Vector2f getDimensions() {
-    return new Vector2f(this.getWidth(), this.getHeight());
-  }
-
-  public Vector2f getScaledDimensions() {
-    return new Vector2f(this.getScaledWidth(), this.getScaledHeight());
-  }
-
+  @Override
   public int getScaleFactor() {
     return (int) Minecraft.getInstance().getMainWindow().getGuiScaleFactor();
   }
 
+  @Override
   public float getWidth() {
     return Minecraft.getInstance().getMainWindow().getWidth();
   }
 
+  @Override
   public float getHeight() {
     return Minecraft.getInstance().getMainWindow().getHeight();
   }
 
+  @Override
   public float getScaledWidth() {
     return Minecraft.getInstance().getMainWindow().getScaledWidth();
   }
 
+  @Override
   public float getScaledHeight() {
     return Minecraft.getInstance().getMainWindow().getScaledHeight();
   }
@@ -62,6 +59,7 @@ public class LabyMinecraftWindow implements MinecraftWindow {
     return Minecraft.getInstance().getFramebuffer().framebufferHeight;
   }
 
+  @Override
   public int getFPS() {
     return this.classMappingProvider
         .get("net.minecraft.client.Minecraft")
