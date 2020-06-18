@@ -1,20 +1,14 @@
 package net.labyfy.component.launcher;
 
 import com.beust.jcommander.JCommander;
-import io.sentry.Sentry;
-import io.sentry.SentryOptions;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.*;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 public class LaunchController {
@@ -42,9 +36,6 @@ public class LaunchController {
     logger.info("Java version: {}", System.getProperty("java.version"));
     logger.info("Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
     logger.info("JVM vendor: {}", System.getProperty("java.vendor"));
-
-    logger.info("Initializing Sentry");
-    Sentry.init("https://413b8f3fc06b407f9e8b1f5bd41258eb@sentry.labymod.net/2?release=" + findVersionInfo());
 
     logger.trace("About to load plugins");
     ServiceLoader<LauncherPlugin> serviceLoader = ServiceLoader.load(LauncherPlugin.class, rootLoader);
@@ -125,24 +116,5 @@ public class LaunchController {
 
   public RootClassLoader getRootLoader() {
     return rootLoader;
-  }
-
-  private String findVersionInfo() {
-    try {
-      Enumeration<URL> resources = Thread.currentThread().getContextClassLoader()
-              .getResources("META-INF/MANIFEST.MF");
-      while (resources.hasMoreElements()) {
-        URL manifestUrl = resources.nextElement();
-        Manifest manifest = new Manifest(manifestUrl.openStream());
-        Attributes mainAttributes = manifest.getMainAttributes();
-        String implementationTitle = mainAttributes.getValue("Implementation-Title");
-        if (implementationTitle != null && implementationTitle.equals("labyfy")) {
-          return mainAttributes.getValue("Implementation-Version");
-        }
-      }
-    } catch (Exception e){
-      logger.error(e);
-    }
-    return "unknown";
   }
 }
