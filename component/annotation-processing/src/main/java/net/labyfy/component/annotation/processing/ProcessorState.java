@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class ProcessorState {
   private final AutoLoadProcessor autoLoadProcessor;
@@ -85,7 +86,7 @@ public class ProcessorState {
             .addMember("value", "$S", LabyfyAnnotationProcessor.class.getName())
             .build();
 
-    String generatedClassName = "AutoLoadProvider" + System.currentTimeMillis();
+    String generatedClassName = "AutoLoadProvider" + System.nanoTime() +"_"+ UUID.randomUUID().toString().replace("-","");
     TypeSpec generatedType =
         TypeSpec.classBuilder(generatedClassName)
             .addAnnotation(generatedAnnotation)

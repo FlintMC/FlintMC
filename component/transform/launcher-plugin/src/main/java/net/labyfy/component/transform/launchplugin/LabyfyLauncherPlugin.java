@@ -1,13 +1,11 @@
 package net.labyfy.component.transform.launchplugin;
 
 import com.google.common.collect.*;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
+import javassist.*;
 import net.labyfy.component.initializer.Initializer;
 import net.labyfy.component.initializer.EntryPoint;
 import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 public class LabyfyLauncherPlugin implements LauncherPlugin {
@@ -24,7 +24,6 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     if (instance == null) {
       throw new IllegalStateException("LabyfyLauncherPlugin has not been instantiated yet");
     }
-
     return instance;
   }
 
@@ -37,6 +36,26 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     if (instance != null) {
       throw new IllegalStateException("LabyfyLauncherPlugin instantiated already");
     }
+    RootClassLoader rootLoader = LaunchController.getInstance().getRootLoader();
+
+    ClassPool.getDefault().appendClassPath(new ClassPath() {
+      public InputStream openClassfile(String classname) throws NotFoundException {
+        URL result = find(classname);
+        if (result == null) {
+          throw new NotFoundException("Class " + classname + " not found");
+        }
+
+        try {
+          return result.openStream();
+        } catch (IOException e) {
+          throw new NotFoundException("Failed to open class " + classname, e);
+        }
+      }
+
+      public URL find(String classname) {
+        return rootLoader.getResource(classname.replace('.', '/') + ".class");
+      }
+    });
 
     instance = this;
 
@@ -96,6 +115,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     try {
       CtClass ctClass =
           ClassPool.getDefault().makeClass(new ByteArrayInputStream(classData), false);
+
 
       CtConstructor initializer = ctClass.getClassInitializer();
       if (initializer == null) {

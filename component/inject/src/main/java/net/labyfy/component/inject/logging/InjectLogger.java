@@ -1,13 +1,16 @@
 package net.labyfy.component.inject.logging;
 
+import com.google.inject.BindingAnnotation;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /** Marks where an appropriate Log4J Logger should be injected. */
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
+@BindingAnnotation
 public @interface InjectLogger {
 
   /**

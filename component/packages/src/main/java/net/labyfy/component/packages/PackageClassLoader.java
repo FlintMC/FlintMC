@@ -30,14 +30,4 @@ public interface PackageClassLoader {
    */
   Package getOwner();
 
-  @AssistedFactory(PackageClassLoader.class)
-  interface Factory {
-    /**
-     * Instantiates the currently used implementation for this interface.
-     *
-     * @param owner the package this classloader should be created for.
-     * @return a new PackageClassLoader.
-     */
-    PackageClassLoader create(Package owner);
-  }
 }

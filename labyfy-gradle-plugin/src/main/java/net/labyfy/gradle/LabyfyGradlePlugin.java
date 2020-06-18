@@ -6,7 +6,8 @@ import com.google.inject.Module;
 import groovy.lang.Closure;
 import net.labyfy.gradle.library.LibraryApplier;
 import net.labyfy.gradle.library.VersionFetcher;
-import net.labyfy.gradle.manifest.PublishLatestRelease;
+import net.labyfy.gradle.manifest.PublishLabyfyRelease;
+import net.labyfy.gradle.manifest.PublishPackageRelease;
 import net.labyfy.gradle.mapping.MappingDownloader;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -31,8 +32,10 @@ public class LabyfyGradlePlugin implements Plugin<Project> {
     rootProject.subprojects(project -> {
       project.getExtensions().create("labyfy", LabyfyGradlePlugin.Extension.class).configured(extension -> {
         if (extension.getPublishToken() != null && extension.getVersion() != null && !extension.getVersion().isEmpty() && extension.getPublishUrl() != null) {
-          project.task("publishLatestRelease", new PublishLatestRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl(), project.getVersion().toString(), true));
-          project.task("publishVersionedRelease", new PublishLatestRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl(), project.getVersion().toString(), false));
+          project.task("publishLabyfyLatestRelease", new PublishLabyfyRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl(), project.getVersion().toString(), true));
+          project.task("publishLabyfyVersionedRelease", new PublishLabyfyRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl(), project.getVersion().toString(), false));
+          project.task("publishPackageLatestRelease", new PublishPackageRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl(), project.getVersion().toString(), true));
+          project.task("publishPackageVersionedRelease", new PublishPackageRelease(project, extension.getVersion(), extension.getPublishToken(), extension.getPublishUrl(), project.getVersion().toString(), false));
         }
         try {
           LabyfyGradlePlugin.this.configured(extension, project);

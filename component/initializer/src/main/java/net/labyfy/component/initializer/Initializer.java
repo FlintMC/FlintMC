@@ -19,8 +19,6 @@ public class Initializer {
 
   public static void boot() throws IOException {
 
-    Collection<Method> initializationMethods = new HashSet<>();
-
     Set<AutoLoadProvider> autoLoadProviders =
         LabyfyServiceLoader.get(AutoLoadProvider.class).discover(LaunchController.getInstance().getRootLoader());
 
