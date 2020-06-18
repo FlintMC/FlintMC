@@ -108,7 +108,7 @@ run {
             "--userProperties", "{}",
             "--gameDir", ".",
             "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker",
-            "--sentry", "false"
+            "--sentry", "true"
     dependsOn 'copyMappings'
 }
 

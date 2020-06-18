@@ -191,15 +191,14 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     Sentry.init(
             "https://" + dsn + "@sentry.labymod.net/2?" +
                     "release=" + version + "&" +
-                    "server_name=" + "client&" +
                     "environment=" + environment
     );
-    Sentry.getContext().addExtra("mc_version", mcversion);
-    Sentry.getContext().addExtra("java_version", System.getProperty("java.version"));
-    Sentry.getContext().addExtra("java_vendor", System.getProperty("java.vendor"));
-    Sentry.getContext().addExtra("os_arch", System.getProperty("os.arch"));
-    Sentry.getContext().addExtra("os.name", System.getProperty("os.name"));
-    Sentry.getContext().addExtra("os.bitrate", getOSBitRate());
+    Sentry.getContext().addTag("mc_version", mcversion);
+    Sentry.getContext().addTag("java_version", System.getProperty("java.version"));
+    Sentry.getContext().addTag("java_vendor", System.getProperty("java.vendor"));
+    Sentry.getContext().addTag("os_arch", System.getProperty("os.arch"));
+    Sentry.getContext().addTag("os.name", System.getProperty("os.name"));
+    Sentry.getContext().addTag("os.bitrate", getOSBitRate());
 
     if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")){
       Sentry.getContext().recordBreadcrumb(
