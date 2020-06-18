@@ -46,7 +46,7 @@ public class LibraryApplier {
     this.rootProject.subprojects((project) -> {
       project.afterEvaluate((project1) -> {
         project.getRepositories().maven(mavenArtifactRepository -> {
-          mavenArtifactRepository.setUrl(System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl") + "general/"));
+          mavenArtifactRepository.setUrl(System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl").toString()) + "general/");
         });
       });
     });
