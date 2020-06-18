@@ -27,15 +27,7 @@ repositories {
     mavenCentral()
 }
 
-def versionFile = file("../.dev-version")
-def fixedVersion = null
-if(versionFile.exists()) {
-    fixedVersion = versionFile.text.replace("\n","")
-} else {
-    throw new GradleScriptException("VERSIONFILE COULD NOT BE FOUND!", new Throwable("Please check the CI!"))
-}
-
-version fixedVersion
+version '1.0.0'
 
 dependencies {
     implementation gradleApi()
