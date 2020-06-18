@@ -4,6 +4,7 @@
         <Console name="SysOut" target="SYSTEM_OUT">
             <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
         </Console>
+        <Sentry name="Sentry" />
         <Queue name="ServerGuiConsole">
             <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n" />
         </Queue>
@@ -19,6 +20,7 @@
         <Root level="trace">
             <AppenderRef ref="SysOut"/>
             <AppenderRef ref="File"/>
+            <appender-ref ref="Sentry" level="WARN" />
         </Root>
     </Loggers>
 </Configuration>
