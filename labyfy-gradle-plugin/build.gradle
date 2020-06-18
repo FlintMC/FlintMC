@@ -6,7 +6,7 @@ buildscript {
     }
     repositories {
         maven {
-            url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
+            url = System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl").toString()) + "general/"
         }
         mavenCentral()
         jcenter()
@@ -45,7 +45,7 @@ dependencies {
 
 repositories {
     maven {
-        url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
+        url = System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl").toString()) + "general/"
     }
     mavenCentral()
     mavenLocal()
