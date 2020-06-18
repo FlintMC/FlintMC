@@ -15,5 +15,6 @@ dependencies {
     api project(':component:tasks')
     api project(':component:gui')
 
+    labyManifest group: "net.janrupf", name: "juklear-base", version: "0.1.0"
     annotationProcessor project(':component:annotation-processing')
 }

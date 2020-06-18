@@ -21,7 +21,6 @@ public interface ResourceLocation {
 
   <T extends WrappedResourceLocation> T as(Class<T> clazz);
 
-  @AutoLoad(priority = -20, round = -15)
   @AssistedFactory(ResourceLocation.class)
   interface Factory {
     ResourceLocation create(@Assisted("nameSpace") String nameSpace);
