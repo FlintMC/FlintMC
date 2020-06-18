@@ -1,11 +1,17 @@
-import org.gradle.api.GradleScriptException
-
 buildscript {
-    dependencies {
-        classpath 'commons-io:commons-io:2.6'
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
-        classpath 'net.labyfy:labyfy-gradle-plugin'
+    def versionFile = file(".dev-version")
+    def fixedVersion = null
+    if(versionFile.exists()) {
+        fixedVersion = versionFile.text.replace("\n","")
+    } else {
+        throw new GradleScriptException("VERSIONFILE COULD NOT BE FOUND!", new Throwable("Please check the CI!"))
     }
+
+    dependencies {
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+        classpath "net.labyfy:labyfy-gradle-plugin:${fixedVersion}"
+    }
+
     repositories {
         maven {
             url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")

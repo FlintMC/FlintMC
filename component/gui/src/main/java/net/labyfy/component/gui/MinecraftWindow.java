@@ -20,6 +20,10 @@ public interface MinecraftWindow {
 
   float getScaledHeight();
 
+  int getFramebufferWidth();
+
+  int getFramebufferHeight();
+
   int getFPS();
 
 }

@@ -13,8 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
 
+import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+
 @Singleton
-@AutoLoad(round = -1000, priority = -1000)
+@AutoLoad(round = DEFAULT_MAPPING_FILE_PROVIDER_PRIORITY, priority = DEFAULT_MAPPING_FILE_PROVIDER_ROUND)
 @Implement(MappingFileProvider.class)
 public class DefaultMappingFileProvider implements MappingFileProvider {
 

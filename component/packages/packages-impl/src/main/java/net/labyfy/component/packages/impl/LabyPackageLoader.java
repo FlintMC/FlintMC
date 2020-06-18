@@ -3,14 +3,13 @@ package net.labyfy.component.packages.impl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import net.labyfy.base.structure.annotation.AutoLoad;
+import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
-import net.labyfy.component.inject.logging.LoggingProvider;
+import net.labyfy.component.inject.logging.LabyLoggingProvider;
 import net.labyfy.component.packages.*;
 import net.labyfy.component.packages.Package;
-import net.labyfy.component.tasks.Task;
-import net.labyfy.component.tasks.Tasks;
-import net.labyfy.component.tasks.subproperty.TaskBody;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -22,28 +21,34 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Singleton
-@Task(Tasks.PRE_MINECRAFT_INITIALIZE)
 @Implement(PackageLoader.class)
+@AutoLoad(round = -4, priority = -900)
 public class LabyPackageLoader implements PackageLoader {
 
-  @InjectLogger private Logger logger;
+  private final LabyPackageDescriptionLoader labyPackageDescriptionLoader;
+  private final Logger logger;
   private final File packageFolder;
-  private final Package.Factory packageFactory;
   private final Set<JarTuple> jars;
 
   private Set<Package> allPackages;
 
+  static {
+    InjectionHolder.getInjectedInstance(LabyPackageLoader.class);
+  }
+
   @Inject
   private LabyPackageLoader(
-      LoggingProvider loggingProvider,
+      @InjectLogger Logger logger,
+      LabyLoggingProvider loggingProvider,
       @Named("labyfyPackageFolder") File packageFolder,
-      PackageDescriptionLoader descriptionLoader,
-      Package.Factory packageFactory) {
+      LabyPackageDescriptionLoader descriptionLoader,
+      LabyPackageDescriptionLoader labyPackageDescriptionLoader) {
 
+    this.logger = logger;
+    this.labyPackageDescriptionLoader = labyPackageDescriptionLoader;
     loggingProvider.setPrefixProvider(this::getLogPrefix);
 
     this.packageFolder = packageFolder;
-    this.packageFactory = packageFactory;
 
     boolean exists = true;
     if (!this.packageFolder.exists() || !this.packageFolder.isDirectory()) {
@@ -80,6 +85,7 @@ public class LabyPackageLoader implements PackageLoader {
                       return false;
                     }
                   })
+              .filter(Objects::nonNull)
               // Collect to Set
               .collect(Collectors.toSet());
     } else {
@@ -87,16 +93,17 @@ public class LabyPackageLoader implements PackageLoader {
       this.logger.error(
           "Cant load packages as package directory does not exist and is not creatable.");
     }
+
+    this.load();
   }
 
-  @TaskBody
   private void load() {
     if (this.jars.isEmpty()) return;
     this.logger.info("Loading packages from {}...", packageFolder.getAbsolutePath());
 
     this.allPackages =
         jars.stream()
-            .map(jarTuple -> packageFactory.create(jarTuple.getJarFile(), jarTuple.getJar()))
+            .map(jarTuple -> new LabyPackage(this.labyPackageDescriptionLoader, jarTuple.getJarFile(), jarTuple.getJar()))
             .collect(Collectors.toSet());
 
     Set<Package> loadablePackages =
@@ -195,7 +202,7 @@ public class LabyPackageLoader implements PackageLoader {
 
   private String getLogPrefix(Class<?> clazz) {
     ClassLoader loader = clazz.getClassLoader();
-    if(loader instanceof PackageClassLoader) {
+    if (loader instanceof PackageClassLoader) {
       return ((PackageClassLoader) loader).getOwner().getName();
     } else {
       return null;

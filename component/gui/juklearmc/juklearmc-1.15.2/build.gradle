@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+group 'net.labyfy.component.gui'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: "net.janrupf", name: "juklear-lwjgl3-opengl", version: "0.1.0"
+    implementation project(':component:base')
+    implementation project(':component:inject')
+    implementation project(':component:gui:juklearmc')
+
+    labyManifest group: "net.janrupf", name: "juklear-lwjgl3-opengl", version: "0.1.0"
+
+    annotationProcessor project(':component:annotation-processing')
+}
