@@ -169,7 +169,6 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     }
 
     if (currentJuklearScreen != null) {
-      context.noopDraw();
       currentJuklearScreen.close();
     }
 
@@ -183,7 +182,6 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
         context.addTopLevel(c);
         currentScreenTopLevels.add(c);
       });
-      context.noopDraw();
     }
   }
 
