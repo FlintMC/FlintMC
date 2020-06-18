@@ -92,3 +92,6 @@ findProject(':component:service')?.name = 'service'
 
 include 'component:security'
 findProject('component:security')?.name = 'security'
+
+include 'component:i18n'
+findProject('component:secui18nrity')?.name = 'i18n'
