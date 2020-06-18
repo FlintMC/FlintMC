@@ -12,9 +12,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Map;
 
+import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+
 @Singleton
 @Service(Implement.class)
-@AutoLoad(priority = -1000, round = -4)
+@AutoLoad(priority = IMPLEMENT_SERVICE_PRIORITY, round = IMPLEMENT_SERVICE_ROUND)
 public class ImplementService extends InjectionServiceShare implements ServiceHandler {
 
   private final Map<String, String> launchArguments;
@@ -38,7 +40,7 @@ public class ImplementService extends InjectionServiceShare implements ServiceHa
 
   }
 
-  @AutoLoad(priority = -1000)
+  @AutoLoad(priority = IMPLEMENT_SERVICE_REGISTRAR_PRIORITY)
   public static class Registrar{
     static {
       ServiceRepository.addPriorityService("net.labyfy.component.inject.implement.ImplementService");

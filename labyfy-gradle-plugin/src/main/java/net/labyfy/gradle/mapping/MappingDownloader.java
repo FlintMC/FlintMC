@@ -24,7 +24,7 @@ import java.util.zip.ZipFile;
 @Singleton
 public class MappingDownloader {
 
-  private final static String INDEX_URL = "https://dl.labymod.net/mappings/index.json";
+  public final static String INDEX_URL = "https://dl.labymod.net/mappings/index.json";
   private final Project rootProject;
 
   @Inject

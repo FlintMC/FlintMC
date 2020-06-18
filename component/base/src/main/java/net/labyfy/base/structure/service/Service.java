@@ -9,9 +9,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@AutoLoad(priority = -100, round = 0)
+@AutoLoad(priority = SERVICE_PRIORITY, round = SERVICE_ROUND)
 public @interface Service {
   Class<?>[] value();
 
