@@ -37,7 +37,7 @@ public class LabyGuiInterceptor {
   @CtClassFilter(className = "net.minecraft.client.gui.screen.Screen", value = CtClassFilters.SUBCLASS_OF)
   private void hookScreenRender(ClassTransformContext context) throws CannotCompileException {
     MethodMapping renderMapping = mappingProvider
-        .get("net.minecraft.client.gui.screen.Screen")
+        .get("net.minecraft.client.gui.IRenderable")
         .getMethod("render", int.class, int.class, float.class);
 
     CtClass screenClass = context.getCtClass();

@@ -98,7 +98,7 @@ public class GuiController {
 
   public void screenChanged(Object newScreen) {
     if(newScreen != null) {
-      String mappedName = classMappingProvider.get(newScreen.getClass().getName()).getName();
+      String mappedName = classMappingProvider.get(newScreen.getClass().getName()).getUnObfuscatedName();
       currentScreen = nameMapper.fromClass(mappedName);
       if (currentScreen == null) {
         currentScreen = ScreenName.unknown(newScreen.getClass().getName());

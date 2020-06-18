@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import java.io.IOException;
 import java.io.InputStream;
 
-@AutoLoad(priority = -1000, round = -14)
 @Implement(value = ResourceLocation.class, version = "1.15.2")
 public class LabyResourceLocation extends net.minecraft.util.ResourceLocation
     implements ResourceLocation {

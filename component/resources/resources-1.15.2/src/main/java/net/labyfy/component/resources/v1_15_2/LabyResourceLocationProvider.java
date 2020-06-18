@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@AutoLoad(priority = -1000, round = -100)
 @Singleton
 @Implement(value = ResourceLocationProvider.class, version = "1.15.2")
 public class LabyResourceLocationProvider implements ResourceLocationProvider {
