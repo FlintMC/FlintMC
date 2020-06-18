@@ -105,7 +105,7 @@ version_hooks:
     - bash $SCRIPTS_DIR/releseVersionToSentry.sh labyfy $(cat .dev-version) ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
   only:
     - tags
-    when: on_success
+  when: on_success
 
 check_against_develop:
   stage: replay
