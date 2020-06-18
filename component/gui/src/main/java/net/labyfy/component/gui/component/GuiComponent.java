@@ -1,13 +1,12 @@
 package net.labyfy.component.gui.component;
 
-import net.labyfy.component.gui.adapter.GuiAdapter;
+import net.labyfy.component.gui.RenderExecution;
+import net.labyfy.component.gui.screen.ScreenName;
+import net.labyfy.component.transform.hook.Hook;
 
 public interface GuiComponent {
-
-  default void init(GuiAdapter adapter) {
-  }
-
-  default void render(GuiAdapter adapter) {
-  }
-
+  void screenChanged(ScreenName newScreen);
+  boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution);
+  void render(RenderExecution execution);
+  void frameDone();
 }

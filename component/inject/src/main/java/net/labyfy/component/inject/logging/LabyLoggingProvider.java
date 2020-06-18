@@ -1,6 +1,7 @@
 package net.labyfy.component.inject.logging;
 
 import com.google.inject.Singleton;
+import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.component.inject.implement.Implement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +15,7 @@ import java.util.function.Function;
 
 @Singleton
 @Implement(LoggingProvider.class)
+@AutoLoad(round = Integer.MIN_VALUE)
 public class LabyLoggingProvider implements LoggingProvider {
   private static final String LABYFY_PREFIX = "Labyfy";
 

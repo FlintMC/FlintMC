@@ -2,6 +2,7 @@ package net.labyfy.component.transform.javassist;
 
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.Loader;
 import javassist.bytecode.ClassFile;
 import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
@@ -92,11 +93,10 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
 
   public byte[] transform(String className, byte[] bytes) {
     try {
-
       ClassPool classPool = ClassPool.getDefault();
       CtClass ctClass =
               classPool.makeClass(
-                      new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), false);
+                      new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), true);
 
       ClassMapping classMapping = classMappingProvider.get(className);
 

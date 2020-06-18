@@ -12,9 +12,11 @@ import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 
 import javax.inject.Singleton;
 
+import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+
 @Singleton
 @Service(value = MinecraftTransformer.class, priority = -10)
-@AutoLoad(priority = -1000, round = -3)
+@AutoLoad(priority = MINECRAFT_TRANSFORMER_SERVICE_PRIORITY, round = MINECRAFT_TRANSFORMER_SERVICE_ROUND)
 public class MinecraftTransformerService implements ServiceHandler {
 
 
@@ -40,7 +42,7 @@ public class MinecraftTransformerService implements ServiceHandler {
 
   }
 
-  @AutoLoad(priority = -200)
+  @AutoLoad(priority = MINECRAFT_TRANSFORMER_SERVICE_REGISTRAR_PRIORITY)
   public static class Registrar {
     static {
       ServiceRepository.addPriorityService("net.labyfy.component.transform.minecraft.MinecraftTransformerService");

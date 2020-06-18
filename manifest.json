@@ -1,0 +1,18 @@
+{
+  "name": "Labyfy",
+  "description": "Minecraft Framework",
+  "version": "VERSION",
+  "authors": [
+    "LabyMedia <info@labymod.de>"
+  ],
+  "installInstructions": [
+    {
+      "type": "DOWNLOAD_FILE",
+      "data": {
+        "url": "http://lm-distributor.labymod.net:8080/package/Labyfy/VERSION/labyfy-VERSION.jar",
+        "path": "versions/Labyfy-1.15.2/labyfy-VERSION.jar",
+        "md5": "c755623580e661ec98377598bf5d3d62"
+      }
+    }
+  ]
+}

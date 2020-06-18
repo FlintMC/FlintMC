@@ -8,7 +8,7 @@ import net.labyfy.base.structure.property.Property;
 import net.labyfy.base.structure.representation.DefaultTypeNameResolver;
 import net.labyfy.base.structure.representation.Type;
 import net.labyfy.base.structure.resolve.AnnotationResolver;
-import net.labyfy.base.structure.resolve.DefaultNameResolver;
+import net.labyfy.component.mappings.DefaultNameResolver;
 import net.labyfy.base.structure.resolve.NameResolver;
 
 import java.lang.annotation.ElementType;

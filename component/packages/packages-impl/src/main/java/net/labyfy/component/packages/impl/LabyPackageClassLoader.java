@@ -2,6 +2,8 @@ package net.labyfy.component.packages.impl;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.base.structure.annotation.AutoLoad;
+import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.ChildClassLoader;
@@ -14,13 +16,11 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.util.Enumeration;
 
-@Implement(PackageClassLoader.class)
 public class LabyPackageClassLoader extends ClassLoader implements PackageClassLoader, ChildClassLoader {
   private final Package owner;
   private final PackageSource source;
 
-  @AssistedInject
-  public LabyPackageClassLoader(@Assisted Package owner) {
+  public LabyPackageClassLoader( Package owner) {
     super(LaunchController.getInstance().getRootLoader());
     this.owner = owner;
     this.source = PackageSource.of(owner);

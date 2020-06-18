@@ -2,7 +2,7 @@ package net.labyfy.component.transform.javassist;
 
 import net.labyfy.base.structure.annotation.Transitive;
 import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.base.structure.resolve.DefaultNameResolver;
+import net.labyfy.component.mappings.DefaultNameResolver;
 import net.labyfy.base.structure.resolve.NameResolver;
 
 import java.lang.annotation.ElementType;
