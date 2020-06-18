@@ -191,16 +191,30 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     Sentry.init(
             "https://" + dsn + "@sentry.labymod.net/2?" +
                     "release=" + version + "&" +
+                    "server_name=" + "client&" +
                     "environment=" + environment
     );
-    Sentry.getContext().addExtra("mcversion", mcversion);
+    Sentry.getContext().addExtra("mc_version", mcversion);
+    Sentry.getContext().addExtra("java_version", System.getProperty("java.version"));
+    Sentry.getContext().addExtra("java_vendor", System.getProperty("java.vendor"));
+    Sentry.getContext().addExtra("os_arch", System.getProperty("os.arch"));
+    Sentry.getContext().addExtra("os.name", System.getProperty("os.name"));
+    Sentry.getContext().addExtra("os.bitrate", getOSBitRate());
 
     if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")){
       Sentry.getContext().recordBreadcrumb(
               new BreadcrumbBuilder().setMessage("User started with development enviroment").build()
       );
     }
-
   }
 
+  private String getOSBitRate(){
+    boolean is64bit;
+    if (System.getProperty("os.name").contains("Windows")) {
+      is64bit = (System.getenv("ProgramFiles(x86)") != null);
+    } else {
+      is64bit = (System.getProperty("os.arch").contains("64"));
+    }
+    return is64bit ? "x64" : "x86";
+  }
 }
