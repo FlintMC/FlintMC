@@ -55,6 +55,8 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   private double mouseX;
   private double mouseY;
 
+  private float scale;
+
   @Inject
   private JuklearMC(JuklearMCVersionedProvider versionedProvider, GuiController controller) throws IOException {
     JuklearNatives.setupWithTemporaryFolder();
@@ -72,7 +74,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
 
     JuklearFontAtlas fontAtlas = juklear.defaultFontAtlas();
     JuklearFontAtlasEditor editor = fontAtlas.begin();
-    defaultFont = editor.addFromURL(getClass().getResource("/assets/labymod/fonts/minecraft.ttf"), 16);
+    defaultFont = editor.addFromURL(getClass().getResource("/assets/labymod/fonts/minecraft.ttf"), 20);
     editor.end();
 
     context = juklear.defaultContext(defaultFont);
@@ -97,6 +99,8 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
 
   @Override
   public void beginInput() {
+    scale = (minecraftWindow.getScaleFactor() /4f) + 0.3f;
+
     int drawWidth = minecraftWindow.getFramebufferWidth();
     int drawHeight = minecraftWindow.getFramebufferHeight();
 
@@ -114,8 +118,17 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     }
 
     if (event instanceof CursorPosChanged) {
-      mouseX = ((CursorPosChanged) event).getX();
-      mouseY = ((CursorPosChanged) event).getY();
+      float width = minecraftWindow.getWidth();
+      float height = minecraftWindow.getHeight();
+
+      double realMouseX = ((CursorPosChanged) event).getX();
+      double realMouseY = ((CursorPosChanged) event).getY();
+
+      float deadXOffset = (width - (width * scale)) / 2;
+      float deadYOffset = (height - (height * scale)) / 2;
+
+      mouseX = (realMouseX - deadXOffset) / scale;
+      mouseY = (realMouseY - deadYOffset) / scale;
       input.motion((int) mouseX, (int) mouseY);
     } else if (event instanceof MouseButton) {
       int button = ((MouseButton) event).getValue();
@@ -199,7 +212,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     context.draw(
         minecraftWindow.getFramebufferWidth(),
         minecraftWindow.getFramebufferHeight(),
-        new JuklearVec2(juklear, 1, 1),
+        new JuklearVec2(juklear, scale, scale),
         // Leave it off! OpenGL does Antialiasing for us, it creates weird artifacts if juklear does too!
         JuklearAntialiasing.OFF);
 
