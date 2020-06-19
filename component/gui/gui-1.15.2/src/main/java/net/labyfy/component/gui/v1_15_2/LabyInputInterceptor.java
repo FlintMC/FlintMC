@@ -63,6 +63,7 @@ public class LabyInputInterceptor implements InputInterceptor {
 
     overrideCallback(GLFW::glfwSetKeyCallback, windowHandle, keyCallback);
     overrideCallback(GLFW::glfwSetCharModsCallback, windowHandle, (window, codepoint, mods) -> {
+      guiController.safeBeginInput();
       if (!guiController.doInput(new UnicodeTyped(codepoint))) {
         charModsCallback.invoke(window, codepoint, mods);
       }
