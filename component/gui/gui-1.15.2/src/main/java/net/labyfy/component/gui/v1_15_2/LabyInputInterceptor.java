@@ -79,6 +79,7 @@ public class LabyInputInterceptor implements InputInterceptor {
     LabyInputInterceptor inputInterceptor = InjectionHolder.getInjectedInstance(LabyInputInterceptor.class);
 
     inputInterceptor.cursorPosCallback = (window, xpos, ypos) -> {
+      guiController.safeBeginInput();
       if (!guiController.doInput(new CursorPosChanged(xpos, ypos))) {
         cursorPosCallback.invoke(window, xpos, ypos);
       }
@@ -107,8 +108,12 @@ public class LabyInputInterceptor implements InputInterceptor {
           break;
       }
 
-      if (event != null && guiController.doInput(event)) {
-        return;
+      if (event != null) {
+        guiController.safeBeginInput();
+
+        if (guiController.doInput(event)) {
+          return;
+        }
       }
 
       mouseButtonCallback.invoke(window, button, action, mods);
@@ -145,7 +150,7 @@ public class LabyInputInterceptor implements InputInterceptor {
 
     guiController.beginInput();
     GLFW.glfwPollEvents();
-    guiController.endInput();
+    guiController.safeEndInput();
 
     RenderSystem.replayQueue();
     Tessellator.getInstance().getBuffer().reset();
@@ -153,7 +158,7 @@ public class LabyInputInterceptor implements InputInterceptor {
 
     guiController.beginInput();
     GLFW.glfwPollEvents();
-    guiController.endInput();
+    guiController.safeEndInput();
     guiController.inputOnlyIterationDone();
   }
 
@@ -166,7 +171,7 @@ public class LabyInputInterceptor implements InputInterceptor {
       guiController.beginInput();
       guiController.updateMousePosition();
       GLFW.glfwWaitEventsTimeout(maxTime - currentTime);
-      guiController.endInput();
+      guiController.safeEndInput();
       guiController.inputOnlyIterationDone();
     }
 

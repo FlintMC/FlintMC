@@ -3,7 +3,6 @@ package net.labyfy.component.gui.v1_15_2;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
-import javassist.NotFoundException;
 import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.representation.Type;
 import net.labyfy.component.gui.GuiController;
@@ -101,6 +100,7 @@ public class LabyGuiInterceptor {
       version = "1.15.2"
   )
   public void hookScreenChanged() {
+    controller.safeEndInput();
     controller.screenChanged(Minecraft.getInstance().currentScreen);
   }
 
