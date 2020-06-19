@@ -44,7 +44,6 @@ build:
     - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user build --stacktrace --refresh-dependencies
   only:
     - branches
-  retry: 2
   except:
     - master
 
@@ -63,9 +62,8 @@ deploy_to_artifactory:
   only:
     - develop
   when: on_success
-  retry: 2
 
-publish_version:
+lm_distributor_release:
   stage: publish
   script:
     - sh $SCRIPTS_DIR/eval.sh
@@ -97,11 +95,24 @@ update_develop_version:
     - tags
   when: on_success
 
-version_hooks:
+gitlab_release:
   stage: replay
+  image: registry.gitlab.com/gitlab-org/release-cli
+  tags:
+    - docker
   script:
-    - bash $SCRIPTS_DIR/releaseVersionToGit.sh ${CI_PROJECT_ID} ${CI_JOB_TOKEN} "v$(cat .dev-version)" $(cat .dev-version) wip
-    - bash $SCRIPTS_DIR/releseVersionToSentry.sh labyfy $(cat .dev-version) ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
+    - release-cli create --name "v$(cat .dev-version)" --description $CI_COMMIT_DESCRIPTION --tag-name $(cat .dev-version) --ref $CI_COMMIT_SHA
+  only:
+    - tags
+  when: on_success
+
+sentry_release:
+  stage: replay
+  image: registry.gitlab.com/gitlab-org/release-cli
+  tags:
+    - docker
+  script:
+    - bash $SCRIPTS_DIR/releseVersionToSentry.sh labyfy "v$(cat .dev-version)" ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
   only:
     - tags
   when: on_success
