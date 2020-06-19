@@ -2,8 +2,8 @@ stages:
   - version
   - build
   - test
-  - deploy
   - publish
+  - release
   - replay
 
 variables:
@@ -52,7 +52,7 @@ build:
     - master
 
 publish_labyfy_prerel_snapshot:
-  stage: deploy
+  stage: publish
   script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
@@ -70,7 +70,7 @@ publish_labyfy_prerel_snapshot:
   when: on_success
 
 publish_gradleplugin_prerel_snapshot:
-  stage: deploy
+  stage: publish
   script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
@@ -86,24 +86,6 @@ publish_gradleplugin_prerel_snapshot:
     name: development
   only:
     - develop
-  when: on_success
-
-lm_distributor_release:
-  stage: publish
-  script:
-    - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
-    - sh gradlew
-      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
-      -Partifactory_contextUrl=$artifactory_contextUrl
-      -Partifactory_password=$artifactory_password
-      -Partifactory_user=$artifactory_user
-      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
-      :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
-  environment:
-    name: production
-  only:
-    - tags
   when: on_success
 
 publish_labyfy_release:
@@ -143,17 +125,20 @@ publish_gradleplugin_release:
     - tags
   when: on_success
 
-update_develop_version:
-  stage: replay
+lm_distributor_release:
+  stage: release
   script:
-    - git checkout origin/develop
-    - git pull origin master
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
-    - export VERSION=$(cat .dev-version)
-    - rm -r semver-tool
-    - git commit -a -m "${VERSION}"
-    - git config --global push.default simple
-    - git push origin HEAD:develop
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
+  environment:
+    name: production
   only:
     - tags
   when: on_success
@@ -176,6 +161,21 @@ sentry_release:
     - docker
   script:
     - bash $SCRIPTS_DIR/releseVersionToSentry.sh labyfy "v$(cat .dev-version)" ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
+  only:
+    - tags
+  when: on_success
+
+update_develop_version:
+  stage: replay
+  script:
+    - git checkout origin/develop
+    - git pull origin master
+    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
+    - export VERSION=$(cat .dev-version)
+    - rm -r semver-tool
+    - git commit -a -m "${VERSION}"
+    - git config --global push.default simple
+    - git push origin HEAD:develop
   only:
     - tags
   when: on_success
