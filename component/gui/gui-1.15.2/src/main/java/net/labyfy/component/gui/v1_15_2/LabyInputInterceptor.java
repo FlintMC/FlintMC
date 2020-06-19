@@ -120,6 +120,7 @@ public class LabyInputInterceptor implements InputInterceptor {
     });
 
     overrideCallback(GLFW::glfwSetScrollCallback, windowHandle, (window, xoffset, yoffset) -> {
+      guiController.safeBeginInput();
       if (!guiController.doInput(new MouseScrolled(xoffset, yoffset))) {
         scrollCallback.invoke(window, xoffset, yoffset);
       }
