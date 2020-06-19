@@ -51,7 +51,7 @@ build:
   except:
     - master
 
-publish_prerel_snapshot:
+publish_labyfy_prerel_snapshot:
   stage: deploy
   script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
@@ -63,6 +63,17 @@ publish_prerel_snapshot:
       -Partifactory_password=$artifactory_password
       -Partifactory_user=$artifactory_user
       artifactoryPublish --stacktrace
+  environment:
+    name: development
+  only:
+    - develop
+  when: on_success
+
+publish_gradleplugin_prerel_snapshot:
+  stage: deploy
+  script:
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
     - cd ./labyfy-gradle-plugin/
     - sh gradlew
       -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
@@ -84,11 +95,40 @@ lm_distributor_release:
     - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
     - sh gradlew
       -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
+  environment:
+    name: production
+  only:
+    - tags
+  when: on_success
+
+publish_labyfy_release:
+  stage: publish
+  script:
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
       -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
       -Partifactory_contextUrl=$artifactory_contextUrl
       -Partifactory_password=$artifactory_password
       -Partifactory_user=$artifactory_user
       artifactoryPublish --stacktrace
+  environment:
+    name: production
+  only:
+    - tags
+  when: on_success
+
+publish_gradleplugin_release:
+  stage: publish
+  script:
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
     - cd ./labyfy-gradle-plugin/
     - sh gradlew
       -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
@@ -97,14 +137,6 @@ lm_distributor_release:
       -Partifactory_password=$artifactory_password
       -Partifactory_user=$artifactory_user
       artifactoryPublish --stacktrace
-    - cd ..
-    - sh gradlew
-      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
-      -Partifactory_contextUrl=$artifactory_contextUrl
-      -Partifactory_password=$artifactory_password
-      -Partifactory_user=$artifactory_user
-      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
-      :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
   environment:
     name: production
   only:
