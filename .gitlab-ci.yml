@@ -93,7 +93,7 @@ gitlab_release:
   tags:
     - docker
   script:
-    - release-cli create --name "v$(cat .dev-version)" --description $CI_COMMIT_DESCRIPTION --tag-name $(cat .dev-version) --ref $CI_COMMIT_SHA
+    - release-cli create --name "v$(cat .dev-version)" --description "$CI_COMMIT_MESSAGE" --tag-name $(cat .dev-version) --ref $CI_COMMIT_SHA
   only:
     - tags
   when: on_success
