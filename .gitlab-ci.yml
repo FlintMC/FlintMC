@@ -45,7 +45,7 @@ build:
   except:
     - master
 
-deploy_to_artifactory:
+publish_prerel_snapshot:
   stage: deploy
   script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
