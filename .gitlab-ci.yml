@@ -20,12 +20,13 @@ before_script:
   # version this build
   - bash $SCRIPTS_DIR/genSemVer.sh build ${CI_JOB_ID} > .dev-version
   # set global gradle properties
-  - echo "
-    labyfy_publish_url=$LABYFY_PUBLISH_URL
-    labyfy_publish_token=$LABYFY_PUBLISH_TOKEN
-    artifactory_contextUrl=$artifactory_contextUrl
-    artifactory_password=$artifactory_password
+  - echo -e "
+    labyfy_publish_url=$LABYFY_PUBLISH_URL\n
+    labyfy_publish_token=$LABYFY_PUBLISH_TOKEN\n
+    artifactory_contextUrl=$artifactory_contextUrl\n
+    artifactory_password=$artifactory_password\n
     artifactory_user=$artifactory_user" > $HOME/gradle.properties
+  - cat $HOME/gradle.properties
 
 ### VERSION
 version:
