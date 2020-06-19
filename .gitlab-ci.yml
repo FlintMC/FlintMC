@@ -39,7 +39,13 @@ version:
 build:
   stage: build
   script:
-    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user build --stacktrace --refresh-dependencies
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      build --stacktrace --refresh-dependencies
   only:
     - branches
   except:
@@ -50,7 +56,13 @@ publish_prerel_snapshot:
   script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
-    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user artifactoryPublish --stacktrace
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      artifactoryPublish --stacktrace
     - cd ./labyfy-gradle-plugin/ && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user artifactoryPublish --stacktrace
   environment:
     name: development
