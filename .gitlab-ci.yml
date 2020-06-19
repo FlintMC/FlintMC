@@ -154,7 +154,9 @@ gitlab_release:
 
 sentry_release:
   stage: replay
-  image: registry.gitlab.com/gitlab-org/release-cli
+  image: https://hub.docker.com/r/getsentry/sentry-cli
+  tags:
+    - docker
   script:
     - bash $SCRIPTS_DIR/releseVersionToSentry.sh labyfy "$(cat .dev-version)" ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
   only:
