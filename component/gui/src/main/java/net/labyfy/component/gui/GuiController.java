@@ -83,6 +83,12 @@ public class GuiController {
     this.inputEventProcessors.forEach(GuiInputEventProcessor::beginInput);
   }
 
+  public void safeBeginInput() {
+    if (!inputActive) {
+      beginInput();
+    }
+  }
+
   public void endInput() {
     if(!inputActive) {
       throw new IllegalStateException("Input is not active");
@@ -90,6 +96,12 @@ public class GuiController {
 
     inputActive = false;
     this.inputEventProcessors.forEach(GuiInputEventProcessor::endInput);
+  }
+
+  public void safeEndInput() {
+    if (inputActive) {
+      endInput();
+    }
   }
 
   public void endFrame() {
