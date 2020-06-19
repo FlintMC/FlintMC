@@ -26,12 +26,7 @@ version:
   script:
     - bash $SCRIPTS_DIR/versionPreCheck.sh "${CI_COMMIT_MESSAGE}"
     - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > .dev-version
-    - export TAG=$(cat .dev-version)
-    - git config --global user.email "gitlab-ci@gitlab.labymod.net"
-    - git config --global user.name "gitlab-ci"
-    - git remote set-url --push origin "git@git.labymod.net:client/labymod4/Labyfy.git"
-    - git tag -a ${TAG} -m "${CI_COMMIT_MESSAGE}"
-    - git push origin ${TAG}
+    - bash $SCRIPTS_DIR/pushTag.sh
   artifacts:
     paths:
       - .dev-version
