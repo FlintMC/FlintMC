@@ -22,11 +22,9 @@ before_script:
   # set global gradle properties
   - echo -e "
     labyfy_publish_url=$LABYFY_PUBLISH_URL\n
-    labyfy_publish_token=$LABYFY_PUBLISH_TOKEN\n
     artifactory_contextUrl=$artifactory_contextUrl\n
     artifactory_password=$artifactory_password\n
     artifactory_user=$artifactory_user" > $HOME/gradle.properties
-  - cat $HOME/gradle.properties
 
 ### VERSION
 version:
@@ -51,7 +49,7 @@ version:
 build:
   stage: build
   script:
-    - sh gradlew build --stacktrace --refresh-dependencies
+    - sh gradlew -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN build --stacktrace --refresh-dependencies
   only:
     - branches
   except:
