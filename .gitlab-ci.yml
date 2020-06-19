@@ -154,7 +154,7 @@ gitlab_release:
 
 sentry_release:
   stage: replay
-  image: https://hub.docker.com/r/getsentry/sentry-cli
+  image: hub.docker.com/r/getsentry/sentry-cli
   tags:
     - docker
   script:
