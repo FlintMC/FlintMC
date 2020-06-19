@@ -77,7 +77,6 @@ publish_labyfy_prerel_snapshot:
 publish_gradleplugin_prerel_snapshot:
   stage: publish
   script:
-    - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
     - cd ./labyfy-gradle-plugin/
     - sh gradlew
@@ -114,7 +113,6 @@ publish_labyfy_release:
 publish_gradleplugin_release:
   stage: publish
   script:
-    - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
     - cd ./labyfy-gradle-plugin/
     - sh gradlew
