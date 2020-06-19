@@ -10,14 +10,17 @@ variables:
   SCRIPTS_REPO: "git@git.labymod.net:client/labymod4/common-scripts.git"
 
 before_script:
+  # cloning scripts repo
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   - ssh-keyscan git.labymod.net >> ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
   - eval $(ssh-agent -s)
   - ssh-add <(echo "$SSH_PRIVATE_KEY")
   - export SCRIPTS_DIR=$(mktemp -d)
   - git clone -q --depth 1 "$SCRIPTS_REPO" "$SCRIPTS_DIR"
+  # version this build
   - bash $SCRIPTS_DIR/genSemVer.sh build ${CI_JOB_ID} > .dev-version
 
+### VERSION
 version:
   stage: version
   script:
@@ -36,6 +39,7 @@ version:
     - master
   when: manual
 
+### BUILD
 build:
   stage: build
   script:
@@ -51,6 +55,7 @@ build:
   except:
     - master
 
+### PUBLISH
 publish_labyfy_prerel_snapshot:
   stage: publish
   script:
@@ -88,6 +93,8 @@ publish_gradleplugin_prerel_snapshot:
     - develop
   when: on_success
 
+## only tags
+# publish to artifactory before release to distibutor
 publish_labyfy_release:
   stage: publish
   script:
@@ -125,6 +132,7 @@ publish_gradleplugin_release:
     - tags
   when: on_success
 
+### RELEASE
 lm_distributor_release:
   stage: release
   script:
@@ -143,6 +151,7 @@ lm_distributor_release:
     - tags
   when: on_success
 
+### REPLAY
 gitlab_release:
   stage: replay
   image: registry.gitlab.com/gitlab-org/release-cli
@@ -179,6 +188,7 @@ update_develop_version:
   only:
     - tags
   when: on_success
+## only tags
 
 check_against_develop:
   stage: replay
