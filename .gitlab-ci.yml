@@ -2,22 +2,25 @@ stages:
   - version
   - build
   - test
-  - deploy
   - publish
+  - release
   - replay
 
 variables:
   SCRIPTS_REPO: "git@git.labymod.net:client/labymod4/common-scripts.git"
 
 before_script:
+  # cloning scripts repo
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   - ssh-keyscan git.labymod.net >> ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
   - eval $(ssh-agent -s)
   - ssh-add <(echo "$SSH_PRIVATE_KEY")
   - export SCRIPTS_DIR=$(mktemp -d)
   - git clone -q --depth 1 "$SCRIPTS_REPO" "$SCRIPTS_DIR"
+  # version this build
   - bash $SCRIPTS_DIR/genSemVer.sh build ${CI_JOB_ID} > .dev-version
 
+### VERSION
 version:
   stage: version
   script:
@@ -34,50 +37,139 @@ version:
       - .dev-version
   only:
     - master
+  when: manual
 
+### BUILD
 build:
   stage: build
   script:
-    - sh $SCRIPTS_DIR/eval.sh
-    - sh $SCRIPTS_DIR/eval.sh "./labyfy-gradle-plugin/"
-    - mkdir run && cp -r run-template/1.15.2 run && cp -r run-template/1.15.2/Labyfy versioned/labyfy-1.15.2 && ls -la versioned/labyfy-1.15.2
-    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user build --stacktrace --refresh-dependencies
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      build --stacktrace --refresh-dependencies
   only:
     - branches
-  retry: 2
   except:
     - master
 
-deploy_to_artifactory:
-  stage: deploy
+### PUBLISH
+publish_labyfy_prerel_snapshot:
+  stage: publish
   script:
-    - sh $SCRIPTS_DIR/eval.sh
-    - sh $SCRIPTS_DIR/eval.sh "./labyfy-gradle-plugin/"
-    - mkdir run && cp -r run-template/1.15.2 run && cp -r run-template/1.15.2/Labyfy versioned/labyfy-1.15.2 && ls -la versioned/labyfy-1.15.2
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
-    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user artifactoryPublish --stacktrace
-    - cd ./labyfy-gradle-plugin/ && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user artifactoryPublish --stacktrace
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      artifactoryPublish --stacktrace
   environment:
     name: development
   only:
     - develop
   when: on_success
-  retry: 2
 
-publish_version:
+publish_gradleplugin_prerel_snapshot:
   stage: publish
   script:
-    - sh $SCRIPTS_DIR/eval.sh
-    - sh $SCRIPTS_DIR/eval.sh "./labyfy-gradle-plugin/"
-    - mkdir run && cp -r run-template/1.15.2 run && cp -r run-template/1.15.2/Labyfy versioned/labyfy-1.15.2 && ls -la versioned/labyfy-1.15.2
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
+    - cd ./labyfy-gradle-plugin/
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      artifactoryPublish --stacktrace
+  environment:
+    name: development
+  only:
+    - develop
+  when: on_success
+
+## only tags
+# publish to artifactory before release to distibutor
+publish_labyfy_release:
+  stage: publish
+  script:
     - bash $SCRIPTS_DIR/branchingPreCheck.sh
     - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
-    - sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user artifactoryPublish --stacktrace
-    - cd ./labyfy-gradle-plugin/ && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user artifactoryPublish --stacktrace
-    - cd .. && sh gradlew -Plabyfy_publish_url=$LABYFY_PUBLISH_URL -Partifactory_contextUrl=$artifactory_contextUrl -Partifactory_password=$artifactory_password -Partifactory_user=$artifactory_user -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      artifactoryPublish --stacktrace
   environment:
     name: production
+  only:
+    - tags
+  when: on_success
+
+publish_gradleplugin_release:
+  stage: publish
+  script:
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
+    - cd ./labyfy-gradle-plugin/
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      artifactoryPublish --stacktrace
+  environment:
+    name: production
+  only:
+    - tags
+  when: on_success
+
+### RELEASE
+lm_distributor_release:
+  stage: release
+  script:
+    - bash $SCRIPTS_DIR/branchingPreCheck.sh
+    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
+    - sh gradlew
+      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
+      -Partifactory_contextUrl=$artifactory_contextUrl
+      -Partifactory_password=$artifactory_password
+      -Partifactory_user=$artifactory_user
+      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
+      :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
+  environment:
+    name: production
+  only:
+    - tags
+  when: on_success
+
+### REPLAY
+gitlab_release:
+  stage: replay
+  image: registry.gitlab.com/gitlab-org/release-cli
+  tags:
+    - docker
+  script:
+    - release-cli create --name "v$(cat .dev-version)" --description "$CI_COMMIT_MESSAGE" --tag-name $(cat .dev-version) --ref $CI_COMMIT_SHA
+  only:
+    - tags
+  when: on_success
+
+sentry_release:
+  stage: replay
+  image: registry.gitlab.com/gitlab-org/release-cli
+  tags:
+    - docker
+  script:
+    - bash $SCRIPTS_DIR/releseVersionToSentry.sh labyfy "v$(cat .dev-version)" ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
   only:
     - tags
   when: on_success
@@ -96,15 +188,7 @@ update_develop_version:
   only:
     - tags
   when: on_success
-
-version_hooks:
-  stage: replay
-  script:
-    - bash $SCRIPTS_DIR/releaseVersionToGit.sh ${CI_PROJECT_ID} ${CI_JOB_TOKEN} "v$(cat .dev-version)" $(cat .dev-version) wip
-    - bash $SCRIPTS_DIR/releseVersionToSentry.sh labyfy $(cat .dev-version) ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
-  only:
-    - tags
-  when: on_success
+## only tags
 
 check_against_develop:
   stage: replay
