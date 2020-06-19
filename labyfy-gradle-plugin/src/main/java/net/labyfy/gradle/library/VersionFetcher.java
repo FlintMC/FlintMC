@@ -210,7 +210,7 @@ public class VersionFetcher {
     }
 
     public String toString() {
-      return new GsonBuilder().setPrettyPrinting().create().toJson(this);
+      return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(this);
     }
 
     public static class Downloads {

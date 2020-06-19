@@ -153,7 +153,7 @@ public class PublishLabyfyRelease implements Action<Task> {
             }
           }
 
-          artifacts.addAll(Arrays.asList(version.getSortedLibraries()));
+          artifacts.addAll(Arrays.asList(version.getLibraries()));
           version.setLibraries(artifacts.toArray(new VersionFetcher.Version.Library[] {}));
 
           String versionString = version.toString();
