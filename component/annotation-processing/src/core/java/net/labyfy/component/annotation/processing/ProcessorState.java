@@ -19,15 +19,18 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ProcessorState {
-  private final AutoLoadProcessor autoLoadProcessor;
   private static ProcessorState instance;
-
+  private final AutoLoadProcessor autoLoadProcessor;
   private ProcessingEnvironment processingEnvironment;
   private RoundEnvironment currentRoundEnvironment;
 
   public ProcessorState() {
     this.autoLoadProcessor = new AutoLoadProcessor(this);
     instance = this;
+  }
+
+  public static ProcessorState getInstance() {
+    return instance;
   }
 
   public void init(ProcessingEnvironment processingEnvironment) {
@@ -86,7 +89,7 @@ public class ProcessorState {
             .addMember("value", "$S", LabyfyAnnotationProcessor.class.getName())
             .build();
 
-    String generatedClassName = "AutoLoadProvider" + System.nanoTime() +"_"+ UUID.randomUUID().toString().replace("-","");
+    String generatedClassName = "AutoLoadProvider" + System.nanoTime() + "_" + UUID.randomUUID().toString().replace("-", "");
     TypeSpec generatedType =
         TypeSpec.classBuilder(generatedClassName)
             .addAnnotation(generatedAnnotation)
@@ -120,9 +123,5 @@ public class ProcessorState {
     } catch (IOException e) {
       throw new ProcessingException("Failed to update " + resourceFile, e);
     }
-  }
-
-  public static ProcessorState getInstance() {
-    return instance;
   }
 }

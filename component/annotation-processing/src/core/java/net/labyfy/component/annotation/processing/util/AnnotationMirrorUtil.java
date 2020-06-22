@@ -7,7 +7,6 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AnnotationMirrorUtil {
 

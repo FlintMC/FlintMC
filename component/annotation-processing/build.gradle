@@ -4,16 +4,40 @@ plugins {
 
 group 'net.labyfy.component'
 
+sourceSets {
+    core {
+        java {
+            srcDir 'src/core/java'
+        }
+        resources {
+            srcDir 'src/core/resources'
+        }
+
+        compileClasspath += configurations.coreImplementation
+    }
+
+    main {
+        compileClasspath += core.output
+        runtimeClasspath += core.output
+    }
+}
+
+configurations {
+    coreImplementation {
+        canBeResolved true
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
     annotationProcessor group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
-    compileOnly group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
-    implementation group: 'com.squareup', name: 'javapoet', version: '1.12.1'
+    coreImplementation group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+    coreImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    coreImplementation group: 'com.squareup', name: 'javapoet', version: '1.12.1'
 
     labyManifest group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 

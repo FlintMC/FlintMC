@@ -18,11 +18,11 @@ public class AnnotationMirrorCreator {
   public static AnnotationMirrorCreator of(TypeElement element) {
     Map<String, Collection<AnnotationMirror>> mirrors = new HashMap<>();
 
-    for(AnnotationMirror mirror : element.getAnnotationMirrors()) {
+    for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
       String name = mirror.getAnnotationType().toString();
 
       Collection<AnnotationMirror> namedMirrors;
-      if(mirrors.containsKey(name)) {
+      if (mirrors.containsKey(name)) {
         namedMirrors = mirrors.get(name);
       } else {
         namedMirrors = new HashSet<>();
@@ -44,7 +44,7 @@ public class AnnotationMirrorCreator {
   }
 
   public MirroredAnnotation get(String annotationClass) {
-    if(count(annotationClass) != 1) {
+    if (count(annotationClass) != 1) {
       throw new IllegalStateException("`get` requires exactly one of the requested annotations to be present");
     }
 
