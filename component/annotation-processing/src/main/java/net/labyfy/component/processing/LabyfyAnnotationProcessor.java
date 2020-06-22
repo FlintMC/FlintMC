@@ -34,11 +34,7 @@ public class LabyfyAnnotationProcessor extends AbstractProcessor {
 
     try {
       for (TypeElement element : annotations) {
-        //        if
-        // (element.getQualifiedName().contentEquals(ProcessingConstants.AUTO_LOAD_ANNOTATION_NAME))
-        // {
         state.processAutoLoad(element);
-        //        }
       }
     } catch (ProcessingException e) {
       processingEnv
