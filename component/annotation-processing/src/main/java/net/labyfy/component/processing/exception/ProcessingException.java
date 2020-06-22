@@ -1,4 +1,4 @@
-package net.labyfy.component.annotation.processing;
+package net.labyfy.component.processing.exception;
 
 import javax.lang.model.element.Element;
 

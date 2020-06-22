@@ -16,7 +16,7 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
     compile project(':component:base')
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 
     labyManifest 'com.google.inject.extensions:guice-assistedinject:4.0'
 

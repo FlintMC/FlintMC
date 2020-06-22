@@ -1,4 +1,4 @@
-package net.labyfy.component.annotation.processing.mirror;
+package net.labyfy.component.processing.mirror;
 
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;

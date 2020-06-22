@@ -25,5 +25,5 @@ dependencies {
     labyManifest 'org.ow2.asm:asm-commons:7.2-beta'
 
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

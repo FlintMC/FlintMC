@@ -16,5 +16,5 @@ dependencies {
     compile project(':component:tasks')
     compile project(':component:transform:launcher-plugin')
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

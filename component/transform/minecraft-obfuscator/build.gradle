@@ -19,6 +19,6 @@ dependencies {
     compile project(':component:transform:launcher-plugin')
     compile project(':component:transform:minecraft')
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 
 }

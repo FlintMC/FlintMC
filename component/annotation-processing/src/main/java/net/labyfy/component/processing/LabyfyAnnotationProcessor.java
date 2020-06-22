@@ -1,6 +1,7 @@
-package net.labyfy.component.annotation.processing;
+package net.labyfy.component.processing;
 
 import com.google.auto.service.AutoService;
+import net.labyfy.component.processing.exception.ProcessingException;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;

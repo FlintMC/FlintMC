@@ -16,5 +16,5 @@ dependencies {
 
     labyManifest group: "net.janrupf", name: "juklear-lwjgl3-opengl", version: "0.1.0"
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

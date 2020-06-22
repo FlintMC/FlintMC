@@ -1,7 +1,7 @@
-package net.labyfy.component.annotation.processing.mirror;
+package net.labyfy.component.processing.mirror;
 
-import net.labyfy.component.annotation.processing.ProcessorState;
-import net.labyfy.component.annotation.processing.util.ClassUtils;
+import net.labyfy.component.commons.type.ClassUtil;
+import net.labyfy.component.processing.ProcessorState;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -209,8 +209,8 @@ public class MirroredAnnotation {
 
     ExecutableElement key = value.getKey();
 
-    Class<?> augmented = ClassUtils.toPrimitiveIfPossible(targetType);
-    Class<?> real = ClassUtils.classFor(key.asType());
+    Class<?> augmented = ClassUtil.toPrimitiveIfPossible(targetType);
+    Class<?> real = ClassUtil.classFor(key.asType());
     if (!augmented.isAssignableFrom(real)) {
       throw new ClassCastException(
           "Can not cast " + real.getName() + " to " + targetType.getName() + " (" + augmented.getName() + ")");
@@ -242,7 +242,7 @@ public class MirroredAnnotation {
         }
       }
 
-      return (T) ClassUtils.toWrapperIfPossible(targetType).cast(value);
+      return (T) ClassUtil.toWrapperIfPossible(targetType).cast(value);
     }
   }
 }

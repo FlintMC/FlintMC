@@ -23,5 +23,5 @@ dependencies {
     labyManifest 'javax.inject:javax.inject:1'
     labyManifest 'org.codehaus.groovy:groovy:3.0.2'
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }
