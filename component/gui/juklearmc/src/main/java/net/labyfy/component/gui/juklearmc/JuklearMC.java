@@ -117,12 +117,12 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
       return false;
     }
 
-    if (event instanceof CursorPosChanged) {
+    if (event instanceof CursorPosChangedEvent) {
       float width = minecraftWindow.getWidth();
       float height = minecraftWindow.getHeight();
 
-      double realMouseX = ((CursorPosChanged) event).getX();
-      double realMouseY = ((CursorPosChanged) event).getY();
+      double realMouseX = ((CursorPosChangedEvent) event).getX();
+      double realMouseY = ((CursorPosChangedEvent) event).getY();
 
       float deadXOffset = (width - (width * scale)) / 2;
       float deadYOffset = (height - (height * scale)) / 2;
@@ -130,27 +130,27 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
       mouseX = (realMouseX - deadXOffset) / scale;
       mouseY = (realMouseY - deadYOffset) / scale;
       input.motion((int) mouseX, (int) mouseY);
-    } else if (event instanceof MouseButton) {
-      int button = ((MouseButton) event).getValue();
-      boolean isPressed = ((MouseButton) event).getState() != MouseButton.State.RELEASE;
+    } else if (event instanceof MouseButtonEvent) {
+      int button = ((MouseButtonEvent) event).getValue();
+      boolean isPressed = ((MouseButtonEvent) event).getState() != MouseButtonEvent.State.RELEASE;
 
       switch (button) {
-        case MouseButton.LEFT:
+        case MouseButtonEvent.LEFT:
           input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, isPressed);
           break;
 
-        case MouseButton.RIGHT:
+        case MouseButtonEvent.RIGHT:
           input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, isPressed);
           break;
 
-        case MouseButton.MIDDLE:
+        case MouseButtonEvent.MIDDLE:
           input.button(JuklearMouseButton.MIDDLE, (int) mouseY, (int) mouseY, isPressed);
           break;
       }
-    } else if (event instanceof MouseScrolled) {
-      input.scroll((float) ((MouseScrolled) event).getXOffset(), (float) ((MouseScrolled) event).getYOffset());
-    } else if (event instanceof UnicodeTyped) {
-      input.unicode(((UnicodeTyped) event).getValue());
+    } else if (event instanceof MouseScrolledEvent) {
+      input.scroll((float) ((MouseScrolledEvent) event).getXOffset(), (float) ((MouseScrolledEvent) event).getYOffset());
+    } else if (event instanceof UnicodeTypedEvent) {
+      input.unicode(((UnicodeTypedEvent) event).getValue());
     }
     return true;
   }
@@ -193,12 +193,6 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     }
 
     return currentJuklearScreen == null && !hasRenderedThisFrame;
-  }
-
-  @Override
-  public void inputOnlyIterationDone() {
-    context.noopDraw();
-    context.processEvents();
   }
 
   @Override

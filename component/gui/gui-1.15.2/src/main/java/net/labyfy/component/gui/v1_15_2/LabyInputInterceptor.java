@@ -5,10 +5,10 @@ import javassist.CannotCompileException;
 import javassist.CtMethod;
 import net.labyfy.component.gui.GuiController;
 import net.labyfy.component.gui.InputInterceptor;
-import net.labyfy.component.gui.event.CursorPosChanged;
-import net.labyfy.component.gui.event.MouseButton;
-import net.labyfy.component.gui.event.MouseScrolled;
-import net.labyfy.component.gui.event.UnicodeTyped;
+import net.labyfy.component.gui.event.CursorPosChangedEvent;
+import net.labyfy.component.gui.event.MouseButtonEvent;
+import net.labyfy.component.gui.event.MouseScrolledEvent;
+import net.labyfy.component.gui.event.UnicodeTypedEvent;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.transform.javassist.ClassTransform;
@@ -64,7 +64,7 @@ public class LabyInputInterceptor implements InputInterceptor {
     overrideCallback(GLFW::glfwSetKeyCallback, windowHandle, keyCallback);
     overrideCallback(GLFW::glfwSetCharModsCallback, windowHandle, (window, codepoint, mods) -> {
       guiController.safeBeginInput();
-      if (!guiController.doInput(new UnicodeTyped(codepoint))) {
+      if (!guiController.doInput(new UnicodeTypedEvent(codepoint))) {
         charModsCallback.invoke(window, codepoint, mods);
       }
     });
@@ -81,7 +81,7 @@ public class LabyInputInterceptor implements InputInterceptor {
 
     inputInterceptor.cursorPosCallback = (window, xpos, ypos) -> {
       guiController.safeBeginInput();
-      if (!guiController.doInput(new CursorPosChanged(xpos, ypos))) {
+      if (!guiController.doInput(new CursorPosChangedEvent(xpos, ypos))) {
         cursorPosCallback.invoke(window, xpos, ypos);
       }
     };
@@ -89,19 +89,19 @@ public class LabyInputInterceptor implements InputInterceptor {
     overrideCallback(GLFW::glfwSetCursorPosCallback, windowHandle, inputInterceptor.cursorPosCallback);
 
     overrideCallback(GLFW::glfwSetMouseButtonCallback, windowHandle, (window, button, action, mods) -> {
-      MouseButton event;
+      MouseButtonEvent event;
 
       switch (action) {
         case GLFW.GLFW_PRESS:
-          event = new MouseButton(MouseButton.State.PRESS, button);
+          event = new MouseButtonEvent(MouseButtonEvent.State.PRESS, button);
           break;
 
         case GLFW.GLFW_RELEASE:
-          event = new MouseButton(MouseButton.State.RELEASE, button);
+          event = new MouseButtonEvent(MouseButtonEvent.State.RELEASE, button);
           break;
 
         case GLFW.GLFW_REPEAT:
-          event = new MouseButton(MouseButton.State.REPEAT, button);
+          event = new MouseButtonEvent(MouseButtonEvent.State.REPEAT, button);
           break;
 
         default:
@@ -122,7 +122,7 @@ public class LabyInputInterceptor implements InputInterceptor {
 
     overrideCallback(GLFW::glfwSetScrollCallback, windowHandle, (window, xoffset, yoffset) -> {
       guiController.safeBeginInput();
-      if (!guiController.doInput(new MouseScrolled(xoffset, yoffset))) {
+      if (!guiController.doInput(new MouseScrolledEvent(xoffset, yoffset))) {
         scrollCallback.invoke(window, xoffset, yoffset);
       }
     });
