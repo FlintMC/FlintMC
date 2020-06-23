@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.v1_15_2;
+package net.labyfy.internal.component.gui.v1_15_2;
 
 import javassist.CannotCompileException;
 import javassist.CtClass;

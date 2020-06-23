@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.v1_15_2;
+package net.labyfy.internal.component.gui.v1_15_2;
 
 import net.labyfy.component.gui.MinecraftWindow;
 import net.labyfy.component.inject.implement.Implement;

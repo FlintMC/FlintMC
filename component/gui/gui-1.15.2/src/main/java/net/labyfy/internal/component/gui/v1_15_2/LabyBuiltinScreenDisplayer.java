@@ -1,9 +1,9 @@
-package net.labyfy.component.gui.v1_15_2;
+package net.labyfy.internal.component.gui.v1_15_2;
 
 import net.labyfy.component.gui.screen.BuiltinScreenDisplayer;
 import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.gui.v1_15_2.lazy.LazyBuiltinScreenDisplayInit;
+import net.labyfy.internal.component.gui.v1_15_2.lazy.LazyBuiltinScreenDisplayInit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

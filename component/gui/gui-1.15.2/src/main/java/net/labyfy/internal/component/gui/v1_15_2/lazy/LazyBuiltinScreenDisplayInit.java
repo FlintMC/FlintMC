@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.v1_15_2.lazy;
+package net.labyfy.internal.component.gui.v1_15_2.lazy;
 
 import net.labyfy.component.gui.screen.ScreenName;
 import net.minecraft.client.Minecraft;
