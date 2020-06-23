@@ -2,7 +2,7 @@ package net.labyfy.component.mappings;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.base.structure.resolve.NameResolver;
+import net.labyfy.component.commons.resolve.NameResolver;
 
 @Singleton
 public class DefaultNameResolver implements NameResolver {

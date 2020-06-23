@@ -2,18 +2,16 @@ package net.labyfy.component.initializer;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import net.labyfy.base.structure.AutoLoadProvider;
-import net.labyfy.base.structure.util.TriConsumer;
-import net.labyfy.component.inject.ServiceRepository;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.processing.autoload.AutoLoadProvider;
+import net.labyfy.component.commons.consumer.TriConsumer;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.inject.InjectionServiceShare;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.service.LabyfyServiceLoader;
+import net.labyfy.impl.component.stereotype.service.ServiceRepository;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Initializer {
 

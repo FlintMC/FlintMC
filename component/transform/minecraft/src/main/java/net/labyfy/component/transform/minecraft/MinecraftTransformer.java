@@ -1,8 +1,7 @@
 package net.labyfy.component.transform.minecraft;
 
-import net.labyfy.base.structure.annotation.AutoLoad;
-import net.labyfy.base.structure.annotation.Transitive;
-import net.labyfy.base.structure.identifier.Identifier;
+import net.labyfy.component.stereotype.annotation.Transitive;
+import net.labyfy.component.stereotype.identifier.Identifier;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

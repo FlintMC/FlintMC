@@ -2,8 +2,8 @@ package net.labyfy.component.tasks.v1_15_2;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
-import net.labyfy.base.structure.annotation.AutoLoad;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.processing.autoload.AutoLoad;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.tasks.TaskExecutor;
 import net.labyfy.component.tasks.Tasks;

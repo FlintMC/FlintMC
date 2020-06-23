@@ -1,8 +1,8 @@
 package net.labyfy.component.tasks;
 
-import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.base.structure.annotation.Transitive;
-import net.labyfy.base.structure.property.Property;
+import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.stereotype.annotation.Transitive;
+import net.labyfy.component.stereotype.property.Property;
 import net.labyfy.component.tasks.subproperty.TaskBody;
 
 import java.lang.annotation.ElementType;

@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import net.labyfy.component.commons.consumer.TriConsumer;
 import net.labyfy.component.processing.Processor;
 import net.labyfy.component.commons.annotation.AnnotationMirrorUtil;
 import net.labyfy.component.processing.ProcessorState;
@@ -19,9 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @AutoService(Processor.class)
 public class AutoLoadProcessor implements Processor {
 
-  public static final String AUTO_LOAD_ANNOTATION_NAME =
-      "net.labyfy.base.structure.annotation.AutoLoad";
-
   private final Map<Integer, Map<String, Integer>> autoLoadClasses;
 
   public AutoLoadProcessor() {
@@ -29,7 +27,7 @@ public class AutoLoadProcessor implements Processor {
   }
 
   public MethodSpec.Builder createMethod() {
-    ClassName triConsumerClass = ClassName.get("net.labyfy.base.structure.util", "TriConsumer");
+    ClassName triConsumerClass = ClassName.get(TriConsumer.class);
     ClassName integerClass = ClassName.get(Integer.class);
     ClassName stringClass = ClassName.get(String.class);
 
@@ -43,7 +41,7 @@ public class AutoLoadProcessor implements Processor {
   }
 
   public ClassName getGeneratedClassSuperClass() {
-    return ClassName.get("net.labyfy.base.structure", "AutoLoadProvider");
+    return ClassName.get(AutoLoadProvider.class);
   }
 
   public void accept(TypeElement typeElement) {
@@ -54,13 +52,11 @@ public class AutoLoadProcessor implements Processor {
                     ((TypeElement) annotationMirror.getAnnotationType().asElement())
                         .getQualifiedName()
                         .toString()
-                        .equals("net.labyfy.base.structure.annotation.AutoLoad"))
-        && !typeElement
-            .getQualifiedName()
-            .toString()
-            .equals("net.labyfy.base.structure.annotation.AutoLoad")) return;
+                        .equals(AutoLoad.class.getName()))
+        && !typeElement.getQualifiedName().toString().equals(AutoLoad.class.getName())) return;
 
-    ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(typeElement).stream()
+    ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(typeElement)
+        .stream()
         .map(
             (element) -> {
               if (!(element instanceof TypeElement)) return null;
@@ -82,7 +78,7 @@ public class AutoLoadProcessor implements Processor {
                   (Integer)
                       AnnotationMirrorUtil.getAnnotationValue(
                               AnnotationMirrorUtil.getTransitiveAnnotationMirror(
-                                  element, AUTO_LOAD_ANNOTATION_NAME),
+                                  element, AutoLoad.class.getName()),
                               "priority",
                               new AnnotationValue() {
                                 public Integer getValue() {
@@ -100,7 +96,7 @@ public class AutoLoadProcessor implements Processor {
                   (Integer)
                       AnnotationMirrorUtil.getAnnotationValue(
                               AnnotationMirrorUtil.getTransitiveAnnotationMirror(
-                                  element, AUTO_LOAD_ANNOTATION_NAME),
+                                  element, AutoLoad.class.getName()),
                               "round",
                               new AnnotationValue() {
                                 public Integer getValue() {

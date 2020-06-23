@@ -1,22 +1,6 @@
 package net.labyfy.component.inject;
 
-import com.google.common.collect.Maps;
-import com.google.common.reflect.ClassPath;
 import com.google.inject.*;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.google.inject.name.Names;
-import net.labyfy.base.structure.annotation.AutoLoad;
-import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.base.structure.identifier.IdentifierParser;
-import net.labyfy.base.structure.identifier.IgnoreInitialization;
-import net.labyfy.component.inject.assisted.AssistedFactory;
-import net.labyfy.component.inject.implement.Implement;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 @Singleton
 //@AutoLoad(priority = -1000)

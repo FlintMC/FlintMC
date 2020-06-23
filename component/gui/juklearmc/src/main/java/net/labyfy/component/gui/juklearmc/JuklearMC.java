@@ -20,7 +20,7 @@ import net.labyfy.component.gui.event.*;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
 import net.labyfy.component.gui.juklearmc.style.DefaultLabyModStyle;
 import net.labyfy.component.gui.screen.ScreenName;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.tasks.subproperty.TaskBody;

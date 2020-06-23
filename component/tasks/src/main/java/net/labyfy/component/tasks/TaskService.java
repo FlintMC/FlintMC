@@ -1,12 +1,10 @@
 package net.labyfy.component.tasks;
 
 import com.google.inject.Injector;
-import net.labyfy.base.structure.annotation.AutoLoad;
-import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
-import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.base.structure.property.Property;
-import net.labyfy.base.structure.service.Service;
-import net.labyfy.base.structure.service.ServiceHandler;
+import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.stereotype.property.Property;
+import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.tasks.subproperty.TaskBody;
 
 import javax.inject.Inject;

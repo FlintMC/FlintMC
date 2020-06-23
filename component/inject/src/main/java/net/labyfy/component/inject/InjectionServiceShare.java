@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 
 import java.util.Collection;
 import java.util.HashMap;

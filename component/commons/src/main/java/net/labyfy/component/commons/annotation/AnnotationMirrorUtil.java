@@ -1,12 +1,11 @@
 package net.labyfy.component.commons.annotation;
 
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import java.util.*;
 
 public class AnnotationMirrorUtil {
+
+  private AnnotationMirrorUtil() {}
 
   public static AnnotationMirror getTransitiveAnnotationMirror(
       TypeElement typeElement, String className) {

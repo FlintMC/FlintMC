@@ -9,7 +9,7 @@ import net.labyfy.component.gui.event.CursorPosChanged;
 import net.labyfy.component.gui.event.MouseButton;
 import net.labyfy.component.gui.event.MouseScrolled;
 import net.labyfy.component.gui.event.UnicodeTyped;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
