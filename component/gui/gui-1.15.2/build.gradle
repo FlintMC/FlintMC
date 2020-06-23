@@ -19,5 +19,5 @@ dependencies {
     compile project(':component:gui')
     compile project(':component:transform:asm')
     compile 'net.minecraft:client:1.15.2'
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

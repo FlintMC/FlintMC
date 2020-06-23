@@ -1,6 +1,4 @@
-package net.labyfy.component.annotation.processing.util;
-
-import net.labyfy.component.annotation.processing.ProcessingException;
+package net.labyfy.component.commons.type;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -9,7 +7,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import java.lang.reflect.Array;
 
-public class ClassUtils {
+public class ClassUtil {
   public static Class<?> toPrimitiveIfPossible(Class<?> wrapper) {
     if (wrapper.isPrimitive()) {
       return wrapper;
@@ -93,7 +91,7 @@ public class ClassUtils {
         try {
           clazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
-          throw new ProcessingException(
+          throw new RuntimeException(
               "Tried to load class " + className + " which is not available on the annotation processor classpath", e);
         }
 
@@ -103,7 +101,7 @@ public class ClassUtils {
       case EXECUTABLE:
         return classFor(((ExecutableType) mirror).getReturnType());
       default:
-        throw new ProcessingException(
+        throw new RuntimeException(
             "Tried to get class for non class mirror of kind " + mirror.getKind().name());
     }
   }

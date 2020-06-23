@@ -17,5 +17,5 @@ dependencies {
     compile project(':component:mapping')
     compile project(':component:inject')
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

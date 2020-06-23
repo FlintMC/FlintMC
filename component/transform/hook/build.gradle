@@ -15,5 +15,5 @@ dependencies {
     compile project(':component:base')
     compile project(':component:transform:javassist')
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

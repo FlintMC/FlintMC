@@ -18,5 +18,5 @@ dependencies {
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
     labyManifest group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

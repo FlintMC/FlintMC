@@ -1,13 +1,10 @@
-package net.labyfy.component.annotation.processing.util;
-
-import net.labyfy.component.annotation.processing.ProcessingException;
+package net.labyfy.component.commons.annotation;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AnnotationMirrorUtil {
 
@@ -18,7 +15,7 @@ public class AnnotationMirrorUtil {
         return m;
       }
     }
-    throw new ProcessingException("Type not annotated with requested annotation", typeElement);
+    throw new RuntimeException("Type not annotated with requested annotation");
   }
 
   public static boolean hasAnnotationMirror(TypeElement typeElement, String className) {

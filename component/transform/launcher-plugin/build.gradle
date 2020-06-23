@@ -19,7 +19,7 @@ dependencies {
     labyManifest project(':component:initializer')
 
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }
 
 processResources {
