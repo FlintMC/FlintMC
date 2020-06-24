@@ -11,11 +11,16 @@ import java.util.List;
 
 public class LabyLauncher {
   public static void main(String[] args) throws Exception {
+    // Root entry point
+    // Switch to the RootClassLoader as soon as possible
     RootClassLoader rootClassloader = new RootClassLoader(getClasspath().toArray(new URL[0]));
     Thread.currentThread().setContextClassLoader(rootClassloader);
 
+    // We now are running in the RootClassLoader's context, load our LaunchController
     Class<?> launchControllerClass = rootClassloader.loadClass("net.labyfy.component.launcher.LaunchController");
     Object launchController = launchControllerClass.getDeclaredConstructors()[0].newInstance(rootClassloader, args);
+
+    // Hand over to the LaunchController
     launchControllerClass.getMethod("run").invoke(launchController);
   }
 
@@ -33,6 +38,8 @@ public class LabyLauncher {
       try {
         classPathUrls.add(Paths.get(classPathEntry).toUri().toURL());
       } catch (MalformedURLException e) {
+        // This is fine... Nothing we can really do here except logging the
+        // exception and hoping for the best
         e.printStackTrace();
       }
     }

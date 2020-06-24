@@ -7,8 +7,8 @@ import java.net.URL;
 import java.util.Enumeration;
 
 /**
- * Interface allowing other classloader implementations
- * to act as a child of the root classloader.
+ * Interface allowing other classloader implementations to act as a child of the root classloader.
+ * This grants the ability to load transformed classes using a {@link RootClassLoader}.
  */
 public interface ChildClassLoader extends CommonClassLoader {
   @Override
@@ -22,7 +22,7 @@ public interface ChildClassLoader extends CommonClassLoader {
    *
    * @param name         the name of the resource to find
    * @param forClassLoad true, if the searched resource will be used as for classloading.
-   *                     Usually, this will be true, when name ends with `".class"`
+   *                     Usually this will be true when name ends with {@code ".class"}
    * @return the found url to the resource, or null if none was found
    */
   URL childFindResource(String name, boolean forClassLoad);
