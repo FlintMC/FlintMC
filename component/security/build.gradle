@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component'
@@ -9,7 +9,25 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    internal {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+}
+
+configurations {
+    internal
+    internal.extendsFrom internalImplementation, implementation
+}
+
 dependencies {
-    compile project(':component:stereotype')
-    compile project(':component:tasks')
+    internalImplementation project(':component:stereotype')
+    internalImplementation project(':component:tasks')
+
+    internal sourceSets.internal.output
+    internal sourceSets.main.output
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
 }
