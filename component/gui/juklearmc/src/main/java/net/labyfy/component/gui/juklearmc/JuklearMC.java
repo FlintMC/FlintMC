@@ -21,9 +21,9 @@ import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
 import net.labyfy.component.gui.juklearmc.style.DefaultLabyModStyle;
 import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
-import net.labyfy.component.tasks.subproperty.TaskBody;
 import net.labyfy.component.transform.hook.Hook;
 
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 @Singleton
-@Task(value = Tasks.POST_OPEN_GL_INITIALIZE, async = false)
+@AutoLoad
 public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
   private final Juklear juklear;
   private final GuiController controller;
@@ -67,7 +67,7 @@ public class JuklearMC implements GuiInputEventProcessor, GuiComponent {
     this.initializeTasks = new ArrayList<>();
   }
 
-  @TaskBody
+  @Task(value = Tasks.POST_OPEN_GL_INITIALIZE)
   public void initialize() throws JuklearInitializationException, IOException {
     juklear.init();
     minecraftWindow = InjectionHolder.getInjectedInstance(MinecraftWindow.class);

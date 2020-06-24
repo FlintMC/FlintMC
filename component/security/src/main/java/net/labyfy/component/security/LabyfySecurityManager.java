@@ -2,15 +2,17 @@ package net.labyfy.component.security;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
-import net.labyfy.component.tasks.subproperty.TaskBody;
 
 import java.security.Permission;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Singleton
-@Task(Tasks.PRE_MINECRAFT_INITIALIZE)
+@AutoLoad
 public class LabyfySecurityManager extends SecurityManager {
   private final List<PermissionChecker> checkers;
   private final ThreadLocal<Boolean> inPermissionCheck;
@@ -21,7 +23,7 @@ public class LabyfySecurityManager extends SecurityManager {
     this.inPermissionCheck = new ThreadLocal<>();
   }
 
-  @TaskBody
+  @Task(Tasks.PRE_MINECRAFT_INITIALIZE)
   public void install() {
     System.setSecurityManager(this);
   }
