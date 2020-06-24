@@ -1,13 +1,13 @@
 package net.labyfy.internal.component.gui.juklearmc;
 
-import net.labyfy.base.structure.annotation.LocatedIdentifiedAnnotation;
-import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.base.structure.service.Service;
-import net.labyfy.base.structure.service.ServiceHandler;
 import net.labyfy.component.gui.juklearmc.JuklearScreen;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
 import net.labyfy.component.gui.screen.ScreenName;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
+import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.stereotype.service.ServiceHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -4,10 +4,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import net.labyfy.base.structure.annotation.AutoLoad;
-import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.base.structure.service.Service;
-import net.labyfy.base.structure.service.ServiceHandler;
+import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
 import org.apache.groovy.util.Maps;
 

@@ -2,7 +2,7 @@ package net.labyfy.component.mappings;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.name.Named;
-import net.labyfy.base.structure.annotation.AutoLoad;
+import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.inject.implement.Implement;
 
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
 
-import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.*;
 
 @Singleton
 @AutoLoad(round = DEFAULT_MAPPING_FILE_PROVIDER_PRIORITY, priority = DEFAULT_MAPPING_FILE_PROVIDER_ROUND)

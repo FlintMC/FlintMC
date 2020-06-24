@@ -1,8 +1,8 @@
 package net.labyfy.component.transform.hook;
 
-import net.labyfy.base.structure.annotation.Transitive;
-import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.base.structure.representation.Type;
+import net.labyfy.component.stereotype.annotation.Transitive;
+import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.stereotype.type.Type;
 
 import java.lang.annotation.*;
 

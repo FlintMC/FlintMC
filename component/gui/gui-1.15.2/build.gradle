@@ -18,5 +18,5 @@ dependencies {
     implementation project(path: ':component:gui', configuration: 'internal')
     implementation project(':component:transform:asm')
     compileOnly 'net.minecraft:client:1.15.2'
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

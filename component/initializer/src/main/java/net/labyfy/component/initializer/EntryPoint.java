@@ -1,10 +1,9 @@
 package net.labyfy.component.initializer;
 
-import net.labyfy.base.structure.identifier.IgnoreInitialization;
-import net.labyfy.component.inject.ServiceRepository;
 import net.labyfy.component.initializer.inject.InitializationModule;
 import net.labyfy.component.initializer.inject.LabyInjectionInitializer;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.util.Map;
 
@@ -26,7 +25,6 @@ public class EntryPoint {
   public static void notifyService(Class clazz) {
     if ((clazz.getSuperclass() != null && clazz.getSuperclass().getName().contains("groovy"))
         || clazz.getName().contains("groovy")) return;
-    if (clazz.isAnnotationPresent(IgnoreInitialization.class)) return;
 
     if (initialized)
       InjectionHolder.getInjectedInstance(ServiceRepository.class).notifyClassLoaded(clazz);

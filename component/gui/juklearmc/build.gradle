@@ -24,14 +24,14 @@ configurations {
 
 dependencies {
     api group: "net.janrupf", name: "juklear-base", version: "0.1.0"
-    api project(':component:base')
+    api project(':component:stereotype')
     api project(':component:inject')
     api project(':component:tasks')
     api project(':component:gui')
 
     internal sourceSets.internal.output
     internal sourceSets.main.output
-    internalAnnotationProcessor project(':component:annotation-processing')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
 
     labyManifest group: "net.janrupf", name: "juklear-base", version: "0.1.0"
 }

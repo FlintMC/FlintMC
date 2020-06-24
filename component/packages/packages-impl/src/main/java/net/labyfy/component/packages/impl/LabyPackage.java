@@ -3,27 +3,23 @@ package net.labyfy.component.packages.impl;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.base.structure.AutoLoadProvider;
-import net.labyfy.base.structure.annotation.AutoLoad;
-import net.labyfy.base.structure.util.TriConsumer;
+import net.labyfy.component.commons.consumer.TriConsumer;
 import net.labyfy.component.initializer.EntryPoint;
-import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.InjectionServiceShare;
-import net.labyfy.component.inject.ServiceRepository;
-import net.labyfy.component.inject.assisted.AssistedFactory;
-import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
-import net.labyfy.component.packages.*;
+import net.labyfy.component.packages.PackageClassLoader;
+import net.labyfy.component.packages.PackageDescription;
+import net.labyfy.component.packages.PackageState;
+import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.LabyfyServiceLoader;
+import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
 
 public class LabyPackage implements Package {
@@ -134,8 +130,6 @@ public class LabyPackage implements Package {
       classes.forEach((priority, className) -> {
         try {
           EntryPoint.notifyService(Class.forName(className, true, LabyPackage.class.getClassLoader()));
-
-          // LaunchController.getInstance().getRootLoader().loadClass(clazz);
         } catch (Exception e) {
           e.printStackTrace();
           throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className);

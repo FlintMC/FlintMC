@@ -2,7 +2,7 @@ package net.labyfy.component.tasks;
 
 import com.google.common.collect.*;
 import com.google.inject.Key;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
 import org.apache.commons.lang3.tuple.Pair;
 

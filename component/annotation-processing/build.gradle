@@ -1,8 +1,9 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component'
+
 
 repositories {
     mavenCentral()
@@ -10,10 +11,12 @@ repositories {
 
 dependencies {
     annotationProcessor group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
-    compileOnly group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
+    implementation group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+    implementation project(':component:commons')
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     implementation group: 'com.squareup', name: 'javapoet', version: '1.12.1'
+    implementation 'commons-io:commons-io:2.6'
 
     labyManifest group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 

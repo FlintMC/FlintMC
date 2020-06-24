@@ -1,10 +1,8 @@
 package net.labyfy.component.packages;
 
-import net.labyfy.base.structure.annotation.AutoLoad;
-import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.processing.autoload.AutoLoad;
 
 import java.io.File;
-import java.util.jar.JarFile;
 
 /** Represents a package at runtime. */
 public interface Package {

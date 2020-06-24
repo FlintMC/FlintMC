@@ -6,7 +6,7 @@ import io.sentry.event.BreadcrumbBuilder;
 import javassist.*;
 import net.labyfy.component.initializer.Initializer;
 import net.labyfy.component.initializer.EntryPoint;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;

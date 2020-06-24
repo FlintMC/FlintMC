@@ -2,7 +2,7 @@ package net.labyfy.component.mappings;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

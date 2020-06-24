@@ -1,7 +1,7 @@
 package net.labyfy.component.resources;
 
 import com.google.inject.assistedinject.Assisted;
-import net.labyfy.base.structure.annotation.AutoLoad;
+import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.io.InputStream;

@@ -12,10 +12,10 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:base')
+    compile project(':component:stereotype')
     compile project(':component:tasks')
     compile project(':component:mapping')
     compile project(':component:inject')
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }

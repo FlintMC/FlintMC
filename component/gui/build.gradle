@@ -25,7 +25,7 @@ configurations {
 }
 
 dependencies {
-    api project(':component:base')
+    api project(':component:stereotype')
     api project(':component:inject')
     api project(':component:resources')
     api project(':component:transform:javassist')
@@ -35,8 +35,7 @@ dependencies {
 
     internal sourceSets.internal.output
     internal sourceSets.main.output
-    internalAnnotationProcessor project(':component:annotation-processing')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
 
     labyManifest 'javax.vecmath:vecmath:1.5.2'
-
 }

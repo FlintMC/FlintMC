@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component'
@@ -14,9 +14,10 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'com.google.inject.extensions:guice-assistedinject:4.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
-    compile project(':component:base')
+    compile project(':component:stereotype')
+    api project(':component:inject-primitive')
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 
     labyManifest 'com.google.inject.extensions:guice-assistedinject:4.0'
 

@@ -8,7 +8,7 @@ group 'net.labyfy.versioned'
 
 sourceCompatibility = 1.8
 
-labyfy{
+labyfy {
     version "1.15.2"
     provideMappings true
     publishToken "${labyfy_publish_token}"
@@ -27,7 +27,8 @@ dependencies {
 
     compile project(':component:launcher')
 
-    runtimeOnly project(':component:base')
+    runtimeOnly project(path: ':component:stereotype', configuration: 'internal')
+    runtimeOnly project(':component:stereotype')
     runtimeOnly project(':component:transform:javassist')
     runtimeOnly project(':component:transform:asm')
     runtimeOnly project(':component:transform:minecraft')
@@ -48,7 +49,7 @@ dependencies {
     runtimeOnly project(':component:packages')
     runtimeOnly project(':component:packages:packages-impl')
 
-    labyManifest project(':component:base')
+    labyManifest project(':component:stereotype')
     labyManifest project(':component:transform:javassist')
     labyManifest project(':component:transform:asm')
     labyManifest project(':component:transform:minecraft')
@@ -114,9 +115,9 @@ run {
 task copyMappings() {
     doLast {
         def extracted = new File(project.buildDir, "labyfy/mappings/1.15.2/extracted");
-        FileUtils.copyFile(new File(extracted, "fields.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/fields.csv") )
-        FileUtils.copyFile(new File(extracted, "methods.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/methods.csv") )
-        FileUtils.copyFile(new File(extracted, "params.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/params.csv") )
-        FileUtils.copyFile(new File(extracted, "joined.tsrg"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/joined.tsrg") )
+        FileUtils.copyFile(new File(extracted, "fields.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/fields.csv"))
+        FileUtils.copyFile(new File(extracted, "methods.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/methods.csv"))
+        FileUtils.copyFile(new File(extracted, "params.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/params.csv"))
+        FileUtils.copyFile(new File(extracted, "joined.tsrg"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/joined.tsrg"))
     }
 }

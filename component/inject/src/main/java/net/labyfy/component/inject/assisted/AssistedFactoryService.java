@@ -1,15 +1,15 @@
 package net.labyfy.component.inject.assisted;
 
-import net.labyfy.base.structure.annotation.AutoLoad;
-import net.labyfy.base.structure.identifier.Identifier;
-import net.labyfy.base.structure.service.Service;
-import net.labyfy.base.structure.service.ServiceHandler;
+import net.labyfy.component.processing.autoload.AutoLoad;
+import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.inject.InjectionServiceShare;
-import net.labyfy.component.inject.ServiceRepository;
+
 
 import javax.inject.Singleton;
 
-import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.*;
 
 @Singleton
 @Service(AssistedFactory.class)
@@ -28,10 +28,4 @@ public class AssistedFactoryService extends InjectionServiceShare implements Ser
     ignore.add(((AssistedFactory) annotation).value());
   }
 
-  @AutoLoad(priority = ASSISTED_FACTORY_SERVICE_REGISTRAR_PRIORITY)
-  public static class Registrar{
-    static {
-      ServiceRepository.addPriorityService("net.labyfy.component.inject.assisted.AssistedFactoryService");
-    }
-  }
 }

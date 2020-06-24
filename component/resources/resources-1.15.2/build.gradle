@@ -19,5 +19,5 @@ dependencies {
     compile project(':component:resources')
     compile project(':component:transform:hook')
     compile 'net.minecraft:client:1.15.2'
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }
