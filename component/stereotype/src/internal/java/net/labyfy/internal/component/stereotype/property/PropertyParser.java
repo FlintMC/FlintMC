@@ -1,4 +1,4 @@
-package net.labyfy.impl.component.stereotype.property;
+package net.labyfy.internal.component.stereotype.property;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedListMultimap;
@@ -6,8 +6,8 @@ import com.google.common.collect.Multimap;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 import net.labyfy.component.stereotype.property.Property;
-import net.labyfy.impl.component.stereotype.annotation.AnnotationCollector;
-import net.labyfy.impl.component.stereotype.identifier.DefaultLocatedIdentifiedAnnotation;
+import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
+import net.labyfy.internal.component.stereotype.identifier.DefaultLocatedIdentifiedAnnotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

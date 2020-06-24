@@ -3,7 +3,7 @@ package net.labyfy.component.initializer;
 import net.labyfy.component.initializer.inject.InitializationModule;
 import net.labyfy.component.initializer.inject.LabyInjectionInitializer;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.impl.component.stereotype.service.ServiceRepository;
+import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package net.labyfy.impl.component.stereotype.service;
+package net.labyfy.internal.component.stereotype.service;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -7,13 +7,14 @@ import com.google.inject.Injector;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
-import net.labyfy.impl.component.stereotype.annotation.AnnotationCollector;
-import net.labyfy.impl.component.stereotype.identifier.IdentifierParser;
+import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
+import net.labyfy.internal.component.stereotype.identifier.IdentifierParser;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 

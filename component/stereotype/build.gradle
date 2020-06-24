@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component'
@@ -11,7 +11,7 @@ repositories {
 }
 
 sourceSets {
-    core {
+    internal {
         runtimeClasspath += sourceSets.main.output
         compileClasspath += sourceSets.main.output
         runtimeClasspath += sourceSets.main.runtimeClasspath
@@ -21,11 +21,10 @@ sourceSets {
 
 configurations {
     internal
-    internal.extendsFrom coreImplementation, implementation
+    internal.extendsFrom internalImplementation, implementation
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     compile project(':component:launcher')
     compile project(':component:commons')
     compile project(':component:annotation-processing:autoload')
@@ -40,9 +39,9 @@ dependencies {
     labyManifest 'javax.inject:javax.inject:1'
     labyManifest 'org.codehaus.groovy:groovy:3.0.2'
 
-    internal sourceSets.core.output
+    internal sourceSets.internal.output
     internal sourceSets.main.output
 
     annotationProcessor project(':component:annotation-processing:autoload')
-    coreAnnotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
 }

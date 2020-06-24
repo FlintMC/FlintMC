@@ -1,4 +1,4 @@
-package net.labyfy.impl.component.stereotype.identifier;
+package net.labyfy.internal.component.stereotype.identifier;
 
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;

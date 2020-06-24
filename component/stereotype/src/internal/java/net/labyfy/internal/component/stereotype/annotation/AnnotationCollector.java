@@ -1,4 +1,4 @@
-package net.labyfy.impl.component.stereotype.annotation;
+package net.labyfy.internal.component.stereotype.annotation;
 
 import com.google.common.collect.Sets;
 import net.labyfy.component.stereotype.annotation.Transitive;

@@ -1,9 +1,9 @@
-package net.labyfy.impl.component.stereotype.identifier;
+package net.labyfy.internal.component.stereotype.identifier;
 
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.property.Property;
-import net.labyfy.impl.component.stereotype.property.PropertyParser;
-import net.labyfy.impl.component.stereotype.annotation.AnnotationCollector;
+import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
+import net.labyfy.internal.component.stereotype.property.PropertyParser;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
