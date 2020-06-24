@@ -20,6 +20,7 @@ import net.labyfy.component.gui.event.*;
 import net.labyfy.component.gui.juklearmc.JuklearMC;
 import net.labyfy.component.gui.juklearmc.JuklearMCBackendProvider;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.internal.component.gui.juklearmc.style.DefaultLabyModStyle;
 import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.InjectionHolder;
@@ -40,6 +41,7 @@ import java.util.Map;
  * Default implementation of the JuklearMC management system.
  */
 @Singleton
+@Implement(JuklearMC.class)
 @Task(value = Tasks.POST_OPEN_GL_INITIALIZE, async = false)
 public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, JuklearMC {
   // GUI interaction instances
