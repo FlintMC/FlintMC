@@ -60,14 +60,14 @@ public class VersionedGuiInterceptor {
        */
 
       method.insertBefore(
-          "if(net.labyfy.component.gui.v1_15_2.LabyGuiInterceptor.preScreenRenderCallback($$)) {" +
-              "   net.labyfy.component.gui.v1_15_2.LabyGuiInterceptor.postScreenRenderCallback(true, $$);" +
+          "if(net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.preScreenRenderCallback($$)) {" +
+              "   net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback(true, $$);" +
               "   return;" +
               "}"
       );
 
       method.insertAfter(
-          "net.labyfy.component.gui.v1_15_2.LabyGuiInterceptor.postScreenRenderCallback(false, $$);");
+          "net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback(false, $$);");
 
       break;
     }

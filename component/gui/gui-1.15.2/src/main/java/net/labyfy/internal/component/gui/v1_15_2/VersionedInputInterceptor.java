@@ -45,7 +45,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
     CtMethod setKeyCallbacksMethod = context.getDeclaredMethod(
         "setKeyCallbacks", long.class, GLFWKeyCallbackI.class, GLFWCharModsCallbackI.class);
     setKeyCallbacksMethod.setBody(
-        "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.interceptKeyboardCallbacks($$);");
+        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptKeyboardCallbacks($$);");
 
     CtMethod setMouseCallbacksMethod = context.getDeclaredMethod(
         "setMouseCallbacks",
@@ -55,7 +55,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
         GLFWScrollCallbackI.class
     );
     setMouseCallbacksMethod.setBody(
-        "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.interceptMouseCallbacks($$);");
+        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptMouseCallbacks($$);");
   }
 
   /**
@@ -165,11 +165,11 @@ public class VersionedInputInterceptor implements InputInterceptor {
     // Overwrite the original methods with our slightly modified ones, see the next 2 functions below
     CtMethod flipFrameMethod = context.getDeclaredMethod("flipFrame", long.class);
     flipFrameMethod.setBody(
-        "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.flipFrame($1);");
+        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.flipFrame($1);");
 
     CtMethod limitDisplayFPSMethod = context.getDeclaredMethod("limitDisplayFPS", int.class);
     limitDisplayFPSMethod.setBody(
-        "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.limitDisplayFPS($1);");
+        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.limitDisplayFPS($1);");
   }
 
   public static void flipFrame(long windowHandle) {
