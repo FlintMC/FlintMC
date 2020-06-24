@@ -39,6 +39,7 @@ dependencies {
     runtimeOnly project(':component:gui:juklearmc')
     runtimeOnly project(':component:gui:juklearmc:juklearmc-1.15.2')
     runtimeOnly project(':component:gui:gui-1.15.2')
+    runtimeOnly project(path: ':component:tasks', configuration: 'internal')
     runtimeOnly project(':component:tasks')
     runtimeOnly project(':component:tasks:tasks-1.15.2')
     runtimeOnly project(':component:mapping')

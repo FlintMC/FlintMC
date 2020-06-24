@@ -1,10 +1,12 @@
-package net.labyfy.component.tasks;
+package net.labyfy.internal.component.tasks;
 
-import com.google.inject.Injector;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.property.Property;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.tasks.Task;
+import net.labyfy.component.tasks.TaskExecutor;
 import net.labyfy.component.tasks.subproperty.TaskBody;
 
 import javax.inject.Inject;
@@ -15,14 +17,12 @@ import java.util.Collection;
 @Singleton
 public class TaskService implements ServiceHandler {
 
-  @Inject private Injector injector;
-
   @Inject
   private TaskService() {}
 
   public void discover(Identifier.Base property) {
     Task task = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
-    TaskExecutor taskExecutor = injector.getInstance(task.executor());
+    TaskExecutor taskExecutor = InjectionHolder.getInjectedInstance(task.executor());
     Collection<Property.Base> taskBodies = property.getProperty().getSubProperties(TaskBody.class);
     for (Property.Base taskBody : taskBodies) {
       taskExecutor.register(
