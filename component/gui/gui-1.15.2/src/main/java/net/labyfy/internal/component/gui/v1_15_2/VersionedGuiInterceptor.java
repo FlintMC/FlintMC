@@ -5,7 +5,6 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import net.labyfy.base.structure.annotation.AutoLoad;
 import net.labyfy.base.structure.representation.Type;
-import net.labyfy.component.gui.GuiController;
 import net.labyfy.component.gui.RenderExecution;
 import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
@@ -15,19 +14,23 @@ import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.component.transform.javassist.CtClassFilter;
 import net.labyfy.component.transform.javassist.CtClassFilters;
+import net.labyfy.internal.component.gui.DefaultGuiController;
 import net.minecraft.client.Minecraft;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * 1.15.2 Implementation of the gui interceptor
+ */
 @Singleton
 @AutoLoad
-public class LabyGuiInterceptor {
+public class VersionedGuiInterceptor {
   private final ClassMappingProvider mappingProvider;
-  private final GuiController controller;
+  private final DefaultGuiController controller;
 
   @Inject
-  private LabyGuiInterceptor(ClassMappingProvider mappingProvider, GuiController controller) {
+  private VersionedGuiInterceptor(ClassMappingProvider mappingProvider, DefaultGuiController controller) {
     this.mappingProvider = mappingProvider;
     this.controller = controller;
   }
@@ -40,10 +43,21 @@ public class LabyGuiInterceptor {
         .getMethod("render", int.class, int.class, float.class);
 
     CtClass screenClass = context.getCtClass();
-    for(CtMethod method : screenClass.getDeclaredMethods()) {
-      if(!method.getName().equals(renderMapping.getName())) {
+    for (CtMethod method : screenClass.getDeclaredMethods()) {
+      if (!method.getName().equals(renderMapping.getName())) {
         continue;
       }
+
+      /*
+       * Adjustment of the render method:
+       *
+       * if(preRenderCallback(mouseX, mouseY, partialTicks) {
+       *   postRenderCallback(true, mouseX, mouseY, partialTicks);
+       *   return;
+       * }
+       * [... original method ...]
+       * postRenderCallback(false, mouseX, mouseY, partialTicks);
+       */
 
       method.insertBefore(
           "if(net.labyfy.component.gui.v1_15_2.LabyGuiInterceptor.preScreenRenderCallback($$)) {" +
@@ -59,8 +73,9 @@ public class LabyGuiInterceptor {
     }
   }
 
+  // Called from injected code, see above
   public static boolean preScreenRenderCallback(int mouseX, int mouseY, float partialTick) {
-    GuiController controller = InjectionHolder.getInjectedInstance(LabyGuiInterceptor.class).controller;
+    DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
 
     RenderExecution execution = new RenderExecution(
         mouseX,
@@ -76,8 +91,9 @@ public class LabyGuiInterceptor {
     return execution.getCancellation().isCancelled();
   }
 
+  // Called from injected code, see above
   public static void postScreenRenderCallback(boolean isCancelled, int mouseX, int mouseY, float partialTick) {
-    GuiController controller = InjectionHolder.getInjectedInstance(LabyGuiInterceptor.class).controller;
+    DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
 
     RenderExecution execution = new RenderExecution(
         isCancelled,
@@ -100,6 +116,7 @@ public class LabyGuiInterceptor {
       version = "1.15.2"
   )
   public void hookScreenChanged() {
+    // Make sure to end input on screen change
     controller.safeEndInput();
     controller.screenChanged(Minecraft.getInstance().currentScreen);
   }
@@ -115,7 +132,8 @@ public class LabyGuiInterceptor {
       },
       version = "1.15.2"
   )
-  public void hookRender() {
+  public void hookAfterRender() {
+    // Let the frame end here
     controller.endFrame();
   }
 }

@@ -13,6 +13,7 @@ import net.labyfy.component.inject.InjectionHolder;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
+import net.labyfy.internal.component.gui.DefaultGuiController;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -26,14 +27,17 @@ import javax.inject.Singleton;
 import java.nio.DoubleBuffer;
 import java.util.function.BiFunction;
 
+/**
+ * 1.15.2 implementation of the input interceptor
+ */
 @Singleton
 @Implement(InputInterceptor.class)
-public class LabyInputInterceptor implements InputInterceptor {
+public class VersionedInputInterceptor implements InputInterceptor {
   private static double lastDrawTime = Double.MIN_VALUE;
   private GLFWCursorPosCallbackI cursorPosCallback;
 
   @Inject
-  private LabyInputInterceptor() {
+  private VersionedInputInterceptor() {
   }
 
   @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
@@ -54,34 +58,43 @@ public class LabyInputInterceptor implements InputInterceptor {
         "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.interceptMouseCallbacks($$);");
   }
 
+  /**
+   * Called from injected code, see above. The parameters match the hooked function
+   */
   public static void interceptKeyboardCallbacks(
       long windowHandle,
       GLFWKeyCallbackI keyCallback,
       GLFWCharModsCallbackI charModsCallback
   ) {
-    GuiController guiController = InjectionHolder.getInjectedInstance(GuiController.class);
+    DefaultGuiController guiController = InjectionHolder.getInjectedInstance(DefaultGuiController.class);
 
+    // We don't hook the key callback yet, possible that this will be necessary
     overrideCallback(GLFW::glfwSetKeyCallback, windowHandle, keyCallback);
     overrideCallback(GLFW::glfwSetCharModsCallback, windowHandle, (window, codepoint, mods) -> {
       guiController.safeBeginInput();
       if (!guiController.doInput(new UnicodeTypedEvent(codepoint))) {
+        // The GUI controller has not handled the event, pass it on to the original callback
         charModsCallback.invoke(window, codepoint, mods);
       }
     });
   }
 
+  /**
+   * Called from injected code, see above. The parameters match the hooked function.
+   */
   public static void interceptMouseCallbacks(
       long windowHandle,
       GLFWCursorPosCallbackI cursorPosCallback,
       GLFWMouseButtonCallbackI mouseButtonCallback,
       GLFWScrollCallbackI scrollCallback
   ) {
-    GuiController guiController = InjectionHolder.getInjectedInstance(GuiController.class);
-    LabyInputInterceptor inputInterceptor = InjectionHolder.getInjectedInstance(LabyInputInterceptor.class);
+    DefaultGuiController guiController = InjectionHolder.getInjectedInstance(DefaultGuiController.class);
+    VersionedInputInterceptor inputInterceptor = InjectionHolder.getInjectedInstance(VersionedInputInterceptor.class);
 
     inputInterceptor.cursorPosCallback = (window, xpos, ypos) -> {
       guiController.safeBeginInput();
       if (!guiController.doInput(new CursorPosChangedEvent(xpos, ypos))) {
+        // The GUI controller has not handled the event, pass it on to the original callback
         cursorPosCallback.invoke(window, xpos, ypos);
       }
     };
@@ -113,6 +126,7 @@ public class LabyInputInterceptor implements InputInterceptor {
         guiController.safeBeginInput();
 
         if (guiController.doInput(event)) {
+          // The GUI controller has handled the event, don't pass it on
           return;
         }
       }
@@ -123,11 +137,21 @@ public class LabyInputInterceptor implements InputInterceptor {
     overrideCallback(GLFW::glfwSetScrollCallback, windowHandle, (window, xoffset, yoffset) -> {
       guiController.safeBeginInput();
       if (!guiController.doInput(new MouseScrolledEvent(xoffset, yoffset))) {
+        // The GUI controller has not handled the event, pass it on to the original callback
         scrollCallback.invoke(window, xoffset, yoffset);
       }
     });
   }
 
+  /**
+   * Utility function to set a GLFW callback while also taking care of freeing it.
+   *
+   * @param setter       The function to call setting the callback
+   * @param windowHandle The window handle to operator on
+   * @param value        The new callback function
+   * @param <T>          The old callback type
+   * @param <C>          The new callback type
+   */
   private static <T extends Callback, C extends CallbackI> void overrideCallback(
       BiFunction<Long, C, T> setter, long windowHandle, C value) {
     T old = setter.apply(windowHandle, value);
@@ -138,6 +162,7 @@ public class LabyInputInterceptor implements InputInterceptor {
 
   @ClassTransform(version = "1.15.2", value = "com.mojang.blaze3d.systems.RenderSystem")
   public void transformRenderSystem(ClassTransformContext context) throws CannotCompileException {
+    // Overwrite the original methods with our slightly modified ones, see the next 2 functions below
     CtMethod flipFrameMethod = context.getDeclaredMethod("flipFrame", long.class);
     flipFrameMethod.setBody(
         "net.labyfy.component.gui.v1_15_2.LabyInputInterceptor.flipFrame($1);");
@@ -148,38 +173,43 @@ public class LabyInputInterceptor implements InputInterceptor {
   }
 
   public static void flipFrame(long windowHandle) {
-    GuiController guiController = InjectionHolder.getInjectedInstance(GuiController.class);
+    // This is a copy of the original flipFrame method, just that the glfwPollEvents() calls
+    // are guarded by input event state toggles
+    DefaultGuiController guiController = InjectionHolder.getInjectedInstance(DefaultGuiController.class);
 
-    guiController.beginInput();
+    guiController.beginInput(); // Injected
     GLFW.glfwPollEvents();
-    guiController.safeEndInput();
+    guiController.safeEndInput(); // Injected
 
     RenderSystem.replayQueue();
     Tessellator.getInstance().getBuffer().reset();
     GLFW.glfwSwapBuffers(windowHandle);
 
-    guiController.beginInput();
+    guiController.beginInput(); // Injected
     GLFW.glfwPollEvents();
-    guiController.safeEndInput();
-    guiController.inputOnlyIterationDone();
+    guiController.safeEndInput(); // Injected
   }
 
   public static void limitDisplayFPS(int elapsedTicks) {
-    GuiController guiController = InjectionHolder.getInjectedInstance(GuiController.class);
+    // This is a copy of the original limitDisplayFPS method, just that the glfwWaitEventsTimeout(double) call
+    // is guarded by input event state toggles
+    DefaultGuiController guiController = InjectionHolder.getInjectedInstance(DefaultGuiController.class);
     double maxTime = lastDrawTime + 1.0d / (double) elapsedTicks;
 
     double currentTime;
     for (currentTime = GLFW.glfwGetTime(); currentTime < maxTime; currentTime = GLFW.glfwGetTime()) {
-      guiController.beginInput();
-      guiController.updateMousePosition();
+      guiController.beginInput(); // Injected
+      guiController.updateMousePosition(); // Injected
       GLFW.glfwWaitEventsTimeout(maxTime - currentTime);
-      guiController.safeEndInput();
-      guiController.inputOnlyIterationDone();
+      guiController.safeEndInput(); // Injected
     }
 
     lastDrawTime = currentTime;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void signalCurrentMousePosition() {
     MainWindow window = Minecraft.getInstance().getMainWindow();
@@ -187,7 +217,7 @@ public class LabyInputInterceptor implements InputInterceptor {
     double cursorX;
     double cursorY;
 
-    try(MemoryStack stack = MemoryStack.stackPush()) {
+    try (MemoryStack stack = MemoryStack.stackPush()) {
       DoubleBuffer cursorXPointer = stack.callocDouble(1);
       DoubleBuffer cursorYPointer = stack.callocDouble(1);
 

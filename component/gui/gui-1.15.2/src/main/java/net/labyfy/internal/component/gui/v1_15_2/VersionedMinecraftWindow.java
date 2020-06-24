@@ -10,55 +10,82 @@ import javax.inject.Singleton;
 
 @Singleton
 @Implement(value = MinecraftWindow.class, version = "1.15.2")
-public class LabyMinecraftWindow implements MinecraftWindow {
+public class VersionedMinecraftWindow implements MinecraftWindow {
 
   private final ClassMappingProvider classMappingProvider;
 
   @Inject
-  private LabyMinecraftWindow(ClassMappingProvider classMappingProvider) {
+  private VersionedMinecraftWindow(ClassMappingProvider classMappingProvider) {
     this.classMappingProvider = classMappingProvider;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getHandle() {
     return Minecraft.getInstance().getMainWindow().getHandle();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getScaleFactor() {
     return (int) Minecraft.getInstance().getMainWindow().getGuiScaleFactor();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getWidth() {
     return Minecraft.getInstance().getMainWindow().getWidth();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getHeight() {
     return Minecraft.getInstance().getMainWindow().getHeight();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getScaledWidth() {
     return Minecraft.getInstance().getMainWindow().getScaledWidth();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getScaledHeight() {
     return Minecraft.getInstance().getMainWindow().getScaledHeight();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFramebufferWidth() {
     return Minecraft.getInstance().getFramebuffer().framebufferWidth;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFramebufferHeight() {
     return Minecraft.getInstance().getFramebuffer().framebufferHeight;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFPS() {
     return this.classMappingProvider

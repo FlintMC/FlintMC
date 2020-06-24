@@ -3,7 +3,7 @@ package net.labyfy.internal.component.gui.v1_15_2;
 import net.labyfy.component.gui.screen.BuiltinScreenDisplayer;
 import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.internal.component.gui.v1_15_2.lazy.LazyBuiltinScreenDisplayInit;
+import net.labyfy.internal.component.gui.v1_15_2.lazy.VersionedBuiltinScreenDisplayInit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -11,28 +11,37 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * 1.15.2 Implementation of the {@link BuiltinScreenDisplayer}
+ */
 @Singleton
 @Implement(BuiltinScreenDisplayer.class)
-public class LabyBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
+public class VersionedBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
   private final Map<ScreenName, Consumer<Object[]>> supportedScreens;
 
   private boolean initialized;
 
   @Inject
-  private LabyBuiltinScreenDisplayer() {
+  private VersionedBuiltinScreenDisplayer() {
     this.supportedScreens = new HashMap<>();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean supports(ScreenName screenName) {
     if (!initialized) {
-      LazyBuiltinScreenDisplayInit.init(supportedScreens);
+      VersionedBuiltinScreenDisplayInit.init(supportedScreens);
       initialized = true;
     }
 
     return supportedScreens.containsKey(screenName);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void display(ScreenName screenName, Object... args) {
     if (!supports(screenName)) {
