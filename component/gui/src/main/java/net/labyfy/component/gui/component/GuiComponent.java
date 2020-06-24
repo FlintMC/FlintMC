@@ -40,6 +40,4 @@ public interface GuiComponent {
    */
   default void frameDone() {
   }
-
-  ;
 }
