@@ -2,7 +2,7 @@ package net.labyfy.component.transform.minecraft.obfuscate;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.base.structure.annotation.AutoLoad;
+import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
@@ -19,7 +19,7 @@ import org.objectweb.asm.tree.ClassNode;
 import javax.inject.Named;
 import java.io.IOException;
 
-import static net.labyfy.base.structure.AutoLoadPriorityConstants.*;
+import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.*;
 
 @Singleton
 @MinecraftTransformer(priority = Integer.MIN_VALUE)

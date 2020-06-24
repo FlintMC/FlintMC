@@ -10,6 +10,6 @@ repositories {
 }
 
 dependencies {
-    compile project(':component:base')
+    compile project(':component:stereotype')
     compile project(':component:tasks')
 }

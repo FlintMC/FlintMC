@@ -12,8 +12,8 @@ findProject(':component:initializer')?.name = 'initializer'
 include 'component:tasks'
 findProject(':component::tasks')?.name = 'tasks'
 
-include 'component:base'
-findProject(':component:base')?.name = "base"
+include 'component:stereotype'
+findProject(':component:stereotype')?.name = "stereotype"
 
 include 'component:transform:minecraft'
 findProject(':component:transform:minecraft')?.name = 'minecraft'
@@ -97,4 +97,5 @@ include 'component:security'
 findProject('component:security')?.name = 'security'
 include 'component:commons'
 findProject(':component:commons')?.name = 'commons'
-
+include ':component:inject-primitive'
+findProject(':component:inject-primitive')?.name = 'inject-primitive'

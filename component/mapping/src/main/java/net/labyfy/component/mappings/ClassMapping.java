@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 import javassist.CtClass;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 
 import java.util.Collection;

@@ -4,7 +4,7 @@ import com.google.inject.*;
 import com.google.inject.name.Named;
 import net.labyfy.component.initializer.inject.module.BindConstantModule;
 import net.labyfy.component.initializer.inject.module.PostConstructModule;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -1,0 +1,13 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.labyfy.component'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api 'com.google.inject:guice:4.0'
+}

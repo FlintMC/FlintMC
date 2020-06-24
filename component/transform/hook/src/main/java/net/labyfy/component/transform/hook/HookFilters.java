@@ -1,9 +1,6 @@
 package net.labyfy.component.transform.hook;
 
-import com.google.inject.Key;
-import com.google.inject.name.Names;
 import javassist.CtClass;
-import net.labyfy.component.inject.InjectionHolder;
 
 import java.util.*;
 

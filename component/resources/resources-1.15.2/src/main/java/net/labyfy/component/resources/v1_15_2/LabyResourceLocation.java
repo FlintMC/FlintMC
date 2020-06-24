@@ -2,7 +2,7 @@ package net.labyfy.component.resources.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.base.structure.annotation.AutoLoad;
+import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;

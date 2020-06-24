@@ -14,6 +14,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile project(':component:inject')
     compile project(':component:service')
+    compile project(path: ':component:stereotype', configuration: 'internal')
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
     compile 'com.google.inject:guice:4.0'
 

@@ -3,7 +3,7 @@ package net.labyfy.component.transform.javassist;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import javassist.*;
-import net.labyfy.base.structure.resolve.NameResolver;
+import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.mappings.ClassMappingProvider;
 

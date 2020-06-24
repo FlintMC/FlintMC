@@ -1,6 +1,6 @@
 package net.labyfy.component.resources.v1_15_2.pack;
 
-import net.labyfy.base.structure.annotation.AutoLoad;
+import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.inject.event.EventService;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import net.labyfy.component.resources.pack.ResourcePackReloadEventBroadcaster;

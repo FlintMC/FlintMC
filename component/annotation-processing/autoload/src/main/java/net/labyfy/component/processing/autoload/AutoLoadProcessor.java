@@ -4,11 +4,10 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
+import net.labyfy.component.commons.consumer.TriConsumer;
 import net.labyfy.component.processing.Processor;
 import net.labyfy.component.commons.annotation.AnnotationMirrorUtil;
 import net.labyfy.component.processing.ProcessorState;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.*;
 import java.util.HashMap;
@@ -23,8 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @AutoService(Processor.class)
 public class AutoLoadProcessor implements Processor {
-  public static final String AUTO_LOAD_ANNOTATION_NAME =
-      "net.labyfy.base.structure.annotation.AutoLoad";
 
   private final Map<Integer, Map<String, Integer>> autoLoadClasses;
 
@@ -39,7 +36,7 @@ public class AutoLoadProcessor implements Processor {
    * {@inheritDoc}
    */
   public MethodSpec.Builder createMethod() {
-    ClassName triConsumerClass = ClassName.get("net.labyfy.base.structure.util", "TriConsumer");
+    ClassName triConsumerClass = ClassName.get(TriConsumer.class);
     ClassName integerClass = ClassName.get(Integer.class);
     ClassName stringClass = ClassName.get(String.class);
 
@@ -58,7 +55,7 @@ public class AutoLoadProcessor implements Processor {
    * {@inheritDoc}
    */
   public ClassName getGeneratedClassSuperClass() {
-    return ClassName.get("net.labyfy.base.structure", "AutoLoadProvider");
+    return ClassName.get(AutoLoadProvider.class);
   }
 
   /**
@@ -67,19 +64,17 @@ public class AutoLoadProcessor implements Processor {
   public void accept(TypeElement typeElement) {
     // Determine if the annotation defined by `typeElement` is also marked with @AutoLoad
     if (AnnotationMirrorUtil.collectTransitiveAnnotations(typeElement).stream()
-        .noneMatch(
-            annotationMirror ->
-                ((TypeElement) annotationMirror.getAnnotationType().asElement())
-                    .getQualifiedName()
-                    .toString()
-                    .equals("net.labyfy.base.structure.annotation.AutoLoad"))
-        && !typeElement
-        .getQualifiedName()
-        .toString()
-        .equals("net.labyfy.base.structure.annotation.AutoLoad")) return;
+            .noneMatch(
+                annotationMirror ->
+                    ((TypeElement) annotationMirror.getAnnotationType().asElement())
+                        .getQualifiedName()
+                        .toString()
+                        .equals(AutoLoad.class.getName()))
+        && !typeElement.getQualifiedName().toString().equals(AutoLoad.class.getName())) return;
 
     // Find all elements annotated with this annotation and process them
-    ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(typeElement).stream()
+    ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(typeElement)
+        .stream()
         .map(
             (element) -> {
               // Only classes can be marked as auto load, so skip
@@ -104,38 +99,38 @@ public class AutoLoadProcessor implements Processor {
               Integer priority =
                   (Integer)
                       AnnotationMirrorUtil.getAnnotationValue(
-                          AnnotationMirrorUtil.getTransitiveAnnotationMirror(
-                              element, AUTO_LOAD_ANNOTATION_NAME),
-                          "priority",
-                          new AnnotationValue() {
-                            public Integer getValue() {
-                              return 0;
-                            }
+                              AnnotationMirrorUtil.getTransitiveAnnotationMirror(
+                                  element, AutoLoad.class.getName()),
+                              "priority",
+                              new AnnotationValue() {
+                                public Integer getValue() {
+                                  return 0;
+                                }
 
-                            public <R, P> R accept(
-                                AnnotationValueVisitor<R, P> visitor, P parameter) {
-                              return visitor.visitInt(getValue(), parameter);
-                            }
-                          })
+                                public <R, P> R accept(
+                                    AnnotationValueVisitor<R, P> visitor, P parameter) {
+                                  return visitor.visitInt(getValue(), parameter);
+                                }
+                              })
                           .getValue();
 
               // Calculate the round with a default value of 1
               Integer round =
                   (Integer)
                       AnnotationMirrorUtil.getAnnotationValue(
-                          AnnotationMirrorUtil.getTransitiveAnnotationMirror(
-                              element, AUTO_LOAD_ANNOTATION_NAME),
-                          "round",
-                          new AnnotationValue() {
-                            public Integer getValue() {
-                              return 1;
-                            }
+                              AnnotationMirrorUtil.getTransitiveAnnotationMirror(
+                                  element, AutoLoad.class.getName()),
+                              "round",
+                              new AnnotationValue() {
+                                public Integer getValue() {
+                                  return 1;
+                                }
 
-                            public <R, P> R accept(
-                                AnnotationValueVisitor<R, P> visitor, P parameter) {
-                              return visitor.visitInt(getValue(), parameter);
-                            }
-                          })
+                                public <R, P> R accept(
+                                    AnnotationValueVisitor<R, P> visitor, P parameter) {
+                                  return visitor.visitInt(getValue(), parameter);
+                                }
+                              })
                           .getValue();
 
               // Make sure to get a name which can be used with reflection
