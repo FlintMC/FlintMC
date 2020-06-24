@@ -23,10 +23,16 @@ public class MethodVisitorContext extends MethodVisitor {
   private VisitFieldInsn visitFieldInsn;
   private VisitLocalVariable visitLocalVariable;
   private VisitVarInsn visitVarInsn;
+  private VisitIntInsn visitIntInsn;
 
   public MethodVisitorContext(MethodVisit methodVisit) {
     super(Opcodes.ASM5);
     this.methodVisit = methodVisit;
+  }
+
+  public MethodVisitorContext onVisitIntInsn(VisitIntInsn visitIntInsn) {
+    this.visitIntInsn = visitIntInsn;
+    return this;
   }
 
   public MethodVisitorContext onVisitFieldInsn(VisitFieldInsn visitFieldInsn) {
@@ -137,6 +143,18 @@ public class MethodVisitorContext extends MethodVisitor {
     }
   }
 
+  public void svisitIntInsn(int opcode, int operand) {
+    super.visitIntInsn(opcode, operand);
+  }
+
+  public void visitIntInsn(int opcode, int operand) {
+    if (this.visitIntInsn != null) {
+      this.visitIntInsn.visitIntInsn(VisitIntInsn.Context.of(this, opcode, operand));
+    } else {
+      super.visitIntInsn(opcode, operand);
+    }
+  }
+
   public void svisitInsn(int opcode) {
     super.visitInsn(opcode);
   }
@@ -152,6 +170,7 @@ public class MethodVisitorContext extends MethodVisitor {
   public void svisitCode() {
     super.visitCode();
   }
+
 
   public MethodVisit getMethodVisit() {
     return methodVisit;
