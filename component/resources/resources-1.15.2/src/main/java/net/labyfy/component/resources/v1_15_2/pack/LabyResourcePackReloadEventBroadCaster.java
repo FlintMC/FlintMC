@@ -1,12 +1,11 @@
 package net.labyfy.component.resources.v1_15_2.pack;
 
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.inject.event.EventService;
+import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import net.labyfy.component.resources.pack.ResourcePackReloadEventBroadcaster;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
-import net.labyfy.component.tasks.subproperty.TaskBody;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
@@ -30,7 +29,6 @@ public class LabyResourcePackReloadEventBroadCaster implements ResourcePackReloa
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  @TaskBody
   public void broadcast() {
     ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager())
         .addReloadListener(

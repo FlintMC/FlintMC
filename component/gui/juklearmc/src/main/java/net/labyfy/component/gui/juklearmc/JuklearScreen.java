@@ -1,8 +1,8 @@
 package net.labyfy.component.gui.juklearmc;
 
+import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.stereotype.annotation.Transitive;
 import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.gui.screen.ScreenName;
 
 import java.lang.annotation.*;
 

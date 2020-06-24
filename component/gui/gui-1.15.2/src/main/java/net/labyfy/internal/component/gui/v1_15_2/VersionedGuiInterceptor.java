@@ -35,6 +35,41 @@ public class VersionedGuiInterceptor {
     this.controller = controller;
   }
 
+  // Called from injected code, see above
+  public static boolean preScreenRenderCallback(int mouseX, int mouseY, float partialTick) {
+    DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
+
+    RenderExecution execution = new RenderExecution(
+        mouseX,
+        mouseY,
+        partialTick
+    );
+
+    controller.screenRenderCalled(
+        Hook.ExecutionTime.BEFORE,
+        execution
+    );
+
+    return execution.getCancellation().isCancelled();
+  }
+
+  // Called from injected code, see above
+  public static void postScreenRenderCallback(boolean isCancelled, int mouseX, int mouseY, float partialTick) {
+    DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
+
+    RenderExecution execution = new RenderExecution(
+        isCancelled,
+        mouseX,
+        mouseY,
+        partialTick
+    );
+
+    controller.screenRenderCalled(
+        Hook.ExecutionTime.AFTER,
+        execution
+    );
+  }
+
   @ClassTransform
   @CtClassFilter(className = "net.minecraft.client.gui.screen.Screen", value = CtClassFilters.SUBCLASS_OF)
   private void hookScreenRender(ClassTransformContext context) throws CannotCompileException {
@@ -71,41 +106,6 @@ public class VersionedGuiInterceptor {
 
       break;
     }
-  }
-
-  // Called from injected code, see above
-  public static boolean preScreenRenderCallback(int mouseX, int mouseY, float partialTick) {
-    DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
-
-    RenderExecution execution = new RenderExecution(
-        mouseX,
-        mouseY,
-        partialTick
-    );
-
-    controller.screenRenderCalled(
-        Hook.ExecutionTime.BEFORE,
-        execution
-    );
-
-    return execution.getCancellation().isCancelled();
-  }
-
-  // Called from injected code, see above
-  public static void postScreenRenderCallback(boolean isCancelled, int mouseX, int mouseY, float partialTick) {
-    DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
-
-    RenderExecution execution = new RenderExecution(
-        isCancelled,
-        mouseX,
-        mouseY,
-        partialTick
-    );
-
-    controller.screenRenderCalled(
-        Hook.ExecutionTime.AFTER,
-        execution
-    );
   }
 
   @Hook(

@@ -39,24 +39,6 @@ public class VersionedInputInterceptor implements InputInterceptor {
   private VersionedInputInterceptor() {
   }
 
-  @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
-  public void transformInputMappings(ClassTransformContext context) throws CannotCompileException {
-    CtMethod setKeyCallbacksMethod = context.getDeclaredMethod(
-        "setKeyCallbacks", long.class, GLFWKeyCallbackI.class, GLFWCharModsCallbackI.class);
-    setKeyCallbacksMethod.setBody(
-        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptKeyboardCallbacks($$);");
-
-    CtMethod setMouseCallbacksMethod = context.getDeclaredMethod(
-        "setMouseCallbacks",
-        long.class,
-        GLFWCursorPosCallbackI.class,
-        GLFWMouseButtonCallbackI.class,
-        GLFWScrollCallbackI.class
-    );
-    setMouseCallbacksMethod.setBody(
-        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptMouseCallbacks($$);");
-  }
-
   /**
    * Called from injected code, see above. The parameters match the hooked function
    */
@@ -159,18 +141,6 @@ public class VersionedInputInterceptor implements InputInterceptor {
     }
   }
 
-  @ClassTransform(version = "1.15.2", value = "com.mojang.blaze3d.systems.RenderSystem")
-  public void transformRenderSystem(ClassTransformContext context) throws CannotCompileException {
-    // Overwrite the original methods with our slightly modified ones, see the next 2 functions below
-    CtMethod flipFrameMethod = context.getDeclaredMethod("flipFrame", long.class);
-    flipFrameMethod.setBody(
-        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.flipFrame($1);");
-
-    CtMethod limitDisplayFPSMethod = context.getDeclaredMethod("limitDisplayFPS", int.class);
-    limitDisplayFPSMethod.setBody(
-        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.limitDisplayFPS($1);");
-  }
-
   public static void flipFrame(long windowHandle) {
     // This is a copy of the original flipFrame method, just that the glfwPollEvents() calls
     // are guarded by input event state toggles
@@ -204,6 +174,36 @@ public class VersionedInputInterceptor implements InputInterceptor {
     }
 
     lastDrawTime = currentTime;
+  }
+
+  @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
+  public void transformInputMappings(ClassTransformContext context) throws CannotCompileException {
+    CtMethod setKeyCallbacksMethod = context.getDeclaredMethod(
+        "setKeyCallbacks", long.class, GLFWKeyCallbackI.class, GLFWCharModsCallbackI.class);
+    setKeyCallbacksMethod.setBody(
+        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptKeyboardCallbacks($$);");
+
+    CtMethod setMouseCallbacksMethod = context.getDeclaredMethod(
+        "setMouseCallbacks",
+        long.class,
+        GLFWCursorPosCallbackI.class,
+        GLFWMouseButtonCallbackI.class,
+        GLFWScrollCallbackI.class
+    );
+    setMouseCallbacksMethod.setBody(
+        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptMouseCallbacks($$);");
+  }
+
+  @ClassTransform(version = "1.15.2", value = "com.mojang.blaze3d.systems.RenderSystem")
+  public void transformRenderSystem(ClassTransformContext context) throws CannotCompileException {
+    // Overwrite the original methods with our slightly modified ones, see the next 2 functions below
+    CtMethod flipFrameMethod = context.getDeclaredMethod("flipFrame", long.class);
+    flipFrameMethod.setBody(
+        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.flipFrame($1);");
+
+    CtMethod limitDisplayFPSMethod = context.getDeclaredMethod("limitDisplayFPS", int.class);
+    limitDisplayFPSMethod.setBody(
+        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.limitDisplayFPS($1);");
   }
 
   /**

@@ -20,14 +20,13 @@ import net.labyfy.component.gui.event.*;
 import net.labyfy.component.gui.juklearmc.JuklearMC;
 import net.labyfy.component.gui.juklearmc.JuklearMCBackendProvider;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
+import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.internal.component.gui.juklearmc.style.DefaultLabyModStyle;
-import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
-import net.labyfy.component.tasks.subproperty.TaskBody;
 import net.labyfy.component.transform.hook.Hook;
+import net.labyfy.internal.component.gui.juklearmc.style.DefaultLabyModStyle;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,7 +41,6 @@ import java.util.Map;
  */
 @Singleton
 @Implement(JuklearMC.class)
-@Task(value = Tasks.POST_OPEN_GL_INITIALIZE, async = false)
 public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, JuklearMC {
   // GUI interaction instances
   private final Juklear juklear;
@@ -88,7 +86,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
    * @throws JuklearInitializationException If Juklear and/or its backend fails to initialize
    * @throws IOException                    If an I/O error occurs reading one of the required resources
    */
-  @TaskBody
+  @Task(value = Tasks.POST_OPEN_GL_INITIALIZE)
   public void initialize() throws JuklearInitializationException, IOException {
     juklear.init();
     minecraftWindow = InjectionHolder.getInjectedInstance(MinecraftWindow.class);
@@ -263,7 +261,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
   }
 
   /**
-   *  {@inheritDoc}
+   * {@inheritDoc}
    */
   @Override
   public void render(RenderExecution execution) {
@@ -286,7 +284,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
   }
 
   /**
-   *  {@inheritDoc}
+   * {@inheritDoc}
    */
   @Override
   public void frameDone() {

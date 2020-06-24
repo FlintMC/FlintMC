@@ -17,10 +17,9 @@ public interface BuiltinScreenDisplayer {
    * with a screen supported. To test for support, use the {@link #supports(ScreenName)} method.
    *
    * @param screenName The name of the screen to display
-   * @param args Parameters to pass to the screen
-   *
+   * @param args       Parameters to pass to the screen
    * @throws UnsupportedOperationException If the screen given is not supported by this displayer
-   * @throws IllegalArgumentException If the arguments given are not acceptable for the given screen
+   * @throws IllegalArgumentException      If the arguments given are not acceptable for the given screen
    */
-  void display(ScreenName screenName, Object ...args);
+  void display(ScreenName screenName, Object... args);
 }

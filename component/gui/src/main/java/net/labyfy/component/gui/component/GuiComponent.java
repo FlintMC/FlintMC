@@ -21,7 +21,7 @@ public interface GuiComponent {
    * {@link #render(RenderExecution)} method should be called.
    *
    * @param executionTime The time the hook is being executed
-   * @param execution The current execution, may be used for cancellation and such
+   * @param execution     The current execution, may be used for cancellation and such
    * @return {@code true} when the {@link #render(RenderExecution)} method should be called, {@code false} otherwise
    */
   boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution);
@@ -38,5 +38,6 @@ public interface GuiComponent {
    * Called by the {@link net.labyfy.component.gui.GuiController} to signal that a frame has completed.
    * Can be used for state reset and similar tasks.
    */
-  default void frameDone() {};
+  default void frameDone() {
+  }
 }

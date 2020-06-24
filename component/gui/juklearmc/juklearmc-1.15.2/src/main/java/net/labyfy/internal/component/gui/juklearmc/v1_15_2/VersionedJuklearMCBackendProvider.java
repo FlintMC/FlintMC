@@ -21,7 +21,7 @@ public class VersionedJuklearMCBackendProvider implements JuklearMCBackendProvid
    */
   @Override
   public JuklearBackend backend() {
-    if(backend == null) {
+    if (backend == null) {
       backend = new JuklearOpenGL();
     }
 

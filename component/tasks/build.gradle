@@ -1,10 +1,24 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component'
 
 sourceCompatibility = 1.8
+
+sourceSets {
+    internal {
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += sourceSets.main.compileClasspath
+    }
+}
+
+configurations {
+    internal
+    internal.extendsFrom internalImplementation, implementation
+}
 
 repositories {
     mavenCentral()
@@ -12,10 +26,14 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:stereotype')
-    compile project(':component:inject')
-    compile 'org.eclipse.collections:eclipse-collections:8.2.1'
-    compile 'org.happy.library:happy-library:1.3'
+    api project(':component:stereotype')
+    api project(':component:inject')
+    api 'org.eclipse.collections:eclipse-collections:8.2.1'
+    api 'org.happy.library:happy-library:1.3'
+
+    internal sourceSets.internal.output
+    internal sourceSets.main.output
 
     annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
 }
