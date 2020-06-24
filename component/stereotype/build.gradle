@@ -25,14 +25,14 @@ configurations {
 }
 
 dependencies {
-    compile project(':component:launcher')
-    compile project(':component:commons')
-    compile project(':component:annotation-processing:autoload')
-    compile project(':component:inject-primitive')
-    compile group: 'com.google.guava', name: 'guava', version: '21.0'
-    compile 'com.google.inject:guice:4.0'
-    compile 'org.apache.commons:commons-lang3:3.9'
-    compile 'org.codehaus.groovy:groovy-all:3.0.2'
+    api project(':component:launcher')
+    api project(':component:commons')
+    api project(':component:annotation-processing:autoload')
+    api project(':component:inject-primitive')
+    api group: 'com.google.guava', name: 'guava', version: '21.0'
+    api 'com.google.inject:guice:4.0'
+    api 'org.apache.commons:commons-lang3:3.9'
+    api 'org.codehaus.groovy:groovy-all:3.0.2'
 
     labyManifest 'com.google.inject:guice:4.0'
     labyManifest 'aopalliance:aopalliance:1.0'
