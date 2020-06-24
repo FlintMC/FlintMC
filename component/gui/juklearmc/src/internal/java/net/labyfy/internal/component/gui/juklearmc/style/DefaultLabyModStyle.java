@@ -1,10 +1,15 @@
-package net.labyfy.component.gui.juklearmc.style;
+package net.labyfy.internal.component.gui.juklearmc.style;
 
 import net.janrupf.juklear.Juklear;
 import net.janrupf.juklear.JuklearContext;
 import net.janrupf.juklear.style.JuklearColor;
 import net.janrupf.juklear.style.JuklearStyle;
 
+/**
+ * This class holds the defaults for the Juklear style. It will probably go away once
+ * a style system is in place.
+ */
+// TODO: Remove when style system is in place
 public class DefaultLabyModStyle {
   public static final int BRIGHT_BLUE = 0x3BB4FF;
   public static final int DARK_BLUE = 0x041027;

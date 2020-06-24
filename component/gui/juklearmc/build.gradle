@@ -8,6 +8,20 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    internal {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+}
+
+configurations {
+    internal
+    internal.extendsFrom internalImplementation, implementation
+}
+
 dependencies {
     api group: "net.janrupf", name: "juklear-base", version: "0.1.0"
     api project(':component:base')
@@ -15,6 +29,9 @@ dependencies {
     api project(':component:tasks')
     api project(':component:gui')
 
+    internal sourceSets.internal.output
+    internal sourceSets.main.output
+    internalAnnotationProcessor project(':component:annotation-processing')
+
     labyManifest group: "net.janrupf", name: "juklear-base", version: "0.1.0"
-    annotationProcessor project(':component:annotation-processing')
 }
