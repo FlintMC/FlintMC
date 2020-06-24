@@ -4,6 +4,9 @@ import net.labyfy.component.commons.resolve.AnnotationResolver;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Util class to instantiate {@link Type} easily.
+ */
 public class Types {
 
   private Types() {}

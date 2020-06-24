@@ -3,13 +3,14 @@ package net.labyfy.component.stereotype.property;
 import net.labyfy.component.stereotype.annotation.Transitive;
 import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Properties can be used to add optional or required variables to an {@link net.labyfy.component.stereotype.identifier.Identifier}.
+ */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({})
 @Transitive

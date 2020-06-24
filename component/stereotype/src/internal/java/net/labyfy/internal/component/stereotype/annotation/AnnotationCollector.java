@@ -20,8 +20,8 @@ public class AnnotationCollector {
    * That means, every annotation that is annotated to the annotation on the input class
    * will be recursively collected, as long as they have a {@link Transitive} annotation in the recursive order.
    *
-   * @param clazz the input class
-   * @return all transitive annotations
+   * @param clazz The class to collect annotations transitively from
+   * @return All transitive annotations
    */
   public static Collection<Annotation> getTransitiveAnnotations(Class<?> clazz) {
     Collection<Annotation> annotations = Sets.newHashSet();
@@ -37,8 +37,8 @@ public class AnnotationCollector {
    * That means, every annotation that is annotated to the annotation on the input class
    * will be recursively collected, as long as they have a {@link Transitive} annotation in the recursive order.
    *
-   * @param clazz the input class
-   * @return all transitive annotations
+   * @param method The method to collect annotations transitively from
+   * @return All transitive annotations
    */
   public static Collection<Annotation> getTransitiveAnnotations(Method method) {
     Collection<Annotation> annotations = Sets.newHashSet();
@@ -51,10 +51,10 @@ public class AnnotationCollector {
 
   /**
    * Finds the real annotation type of an annotation.
-   * Ff getClass() is called on a proxied annotation, the result will be {@link Proxy} and not the real type.
+   * if getClass() is called on a proxied annotation, the result will be {@link Proxy} and not the real type.
    *
-   * @param annotation input annotation
-   * @return the real annotation type
+   * @param annotation Annotation to get real annotation type from
+   * @return The real annotation type
    */
   public static Class<? extends Annotation> getRealAnnotationClass(Annotation annotation) {
     Class<? extends Annotation> annotationClass;

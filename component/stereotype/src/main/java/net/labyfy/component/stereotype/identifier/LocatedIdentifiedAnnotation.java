@@ -9,27 +9,30 @@ import java.lang.annotation.Annotation;
 public interface LocatedIdentifiedAnnotation {
 
   /**
-   * {@inheritDoc}
+   * @return the {@link Identifier} that created this {@link LocatedIdentifiedAnnotation}
    */
   Identifier getIdentifier();
 
   /**
-   * {@inheritDoc}
+   * @return Real class location of this identifier.
    */
   Type getOriginalType();
 
   /**
-   * {@inheritDoc}
+   * @return The annotation that represents this identifier.
    */
   <T extends Annotation> T getAnnotation();
 
   /**
-   * {@inheritDoc}
+   * @param <T> either {@link Class} or {@link java.lang.reflect.Method}
+   * @return the location of getAnnotation()
    */
   <T> T getLocation();
 
   /**
-   * {@inheritDoc}
+   * Might differ from getOriginalType when child identifiers are used.
+   *
+   * @return semantic class location of this identifier.
    */
   Type getType();
 

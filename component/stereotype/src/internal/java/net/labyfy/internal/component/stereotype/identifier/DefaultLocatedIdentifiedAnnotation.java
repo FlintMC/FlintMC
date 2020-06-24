@@ -23,38 +23,35 @@ public class DefaultLocatedIdentifiedAnnotation implements LocatedIdentifiedAnno
   }
 
   /**
-   * @return the {@link Identifier} that created this {@link LocatedIdentifiedAnnotation}
+   * {@inheritDoc}
    */
   public Identifier getIdentifier() {
     return this.identifier;
   }
 
   /**
-   * @return Real class location of this identifier.
+   * {@inheritDoc}
    */
   public Type getOriginalType() {
     return this.originalType;
   }
 
   /**
-   * @return the annotation that represents this identifier.
+   * {@inheritDoc}
    */
   public <T extends Annotation> T getAnnotation() {
     return (T) this.annotation;
   }
 
   /**
-   *
-   * @param <T> either {@link Class} or {@link java.lang.reflect.Method}
-   * @return the location of getAnnotation()
+   * {@inheritDoc}
    */
   public <T> T getLocation() {
     return (T) this.location;
   }
 
   /**
-   * Might differ from getOriginalType when child identifiers are used.
-   * @return semantic class location of this identifier.
+   * {@inheritDoc}
    */
   public Type getType() {
     return this.type;
