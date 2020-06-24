@@ -1,4 +1,4 @@
-package net.labyfy.component.gui.v1_15_2.lazy;
+package net.labyfy.internal.component.gui.v1_15_2.lazy;
 
 import net.labyfy.component.gui.screen.ScreenName;
 import net.minecraft.client.Minecraft;
@@ -10,7 +10,17 @@ import net.minecraft.client.gui.screen.WorldSelectionScreen;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class LazyBuiltinScreenDisplayInit {
+/**
+ * Helper classes used for deferred to loading to prevent class transform issues
+ * due to early loading.
+ */
+public class VersionedBuiltinScreenDisplayInit {
+
+  /**
+   * Initializes the given map with the given screen instantiators.
+   *
+   * @param screens The map to fill with the instantiators
+   */
   public static void init(Map<ScreenName, Consumer<Object[]>> screens) {
     screens.put(ScreenName.minecraft(ScreenName.MAIN_MENU),
         (args) -> Minecraft.getInstance().displayGuiScreen(new MainMenuScreen()));
