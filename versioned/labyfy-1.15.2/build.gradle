@@ -39,7 +39,6 @@ dependencies {
     runtimeOnly project(':component:gui:juklearmc:juklearmc-1.15.2')
     runtimeOnly project(':component:gui:gui-1.15.2')
     runtimeOnly project(path: ':component:tasks', configuration: 'internal')
-    runtimeOnly project(':component:tasks')
     runtimeOnly project(':component:tasks:tasks-1.15.2')
     runtimeOnly project(':component:mapping')
     runtimeOnly project(':component:inject')
@@ -49,6 +48,7 @@ dependencies {
     runtimeOnly project(':versioned:labyfy-1.15.2')
     runtimeOnly project(':component:packages')
     runtimeOnly project(':component:packages:packages-impl')
+    runtimeOnly project(path: ':component:security', configuration: 'internal')
 
     labyManifest project(':component:stereotype')
     labyManifest project(':component:transform:javassist')
