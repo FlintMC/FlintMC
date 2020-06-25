@@ -1,17 +1,14 @@
-package net.labyfy.component.packages.impl;
+package net.labyfy.internal.component.packages;
 
-import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.packages.DependencyDescription;
-import net.labyfy.component.packages.PackageDescription;
-import net.labyfy.component.packages.PackageDescriptionLoader;
+import net.labyfy.component.packages.PackageManifest;
+import net.labyfy.component.packages.PackageManifestLoader;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.*;
@@ -19,35 +16,37 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 @Singleton
-@Implement(PackageDescriptionLoader.class)
-public class LabyPackageDescriptionLoader implements PackageDescriptionLoader {
-
+@Implement(PackageManifestLoader.class)
+public class DefaultPackageManifestLoader implements PackageManifestLoader {
   public static final String MANIFEST_NAME = "package.json";
 
   private final Gson gson;
 
   @Inject
-  private LabyPackageDescriptionLoader() {
+  private DefaultPackageManifestLoader() {
     this.gson = new GsonBuilder().create();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public boolean isDescriptionPresent(JarFile file) {
-    Preconditions.checkArgument(
-        file.getName().toLowerCase().endsWith(".jar"), "File doesn't seem to be a JAR.");
-
+  public boolean isManifestPresent(JarFile file) {
+    // Search the jar file for entry with the name of the manifest file
     return Collections.list(file.entries()).stream()
         .anyMatch(entry -> entry.getName().equals(MANIFEST_NAME));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public Optional<PackageDescription> loadDescription(JarFile file) {
-    Preconditions.checkArgument(isDescriptionPresent(file));
+  public Optional<PackageManifest> loadManifest(JarFile file) {
     ZipEntry manifest = file.getEntry(MANIFEST_NAME);
     try {
-      PackageDescription description =
+      PackageManifest description =
           this.gson.fromJson(
-              new InputStreamReader(file.getInputStream(manifest)), LabyPackageDescription.class);
+              new InputStreamReader(file.getInputStream(manifest)), DefaultPackageManifest.class);
       return Optional.of(description);
     } catch (Exception e) {
       e.printStackTrace();
@@ -55,9 +54,11 @@ public class LabyPackageDescriptionLoader implements PackageDescriptionLoader {
     }
   }
 
+  /**
+   * Default implementation of a {@link PackageManifest}.
+   */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
-  private static class LabyPackageDescription implements PackageDescription, Serializable {
-
+  private static class DefaultPackageManifest implements PackageManifest, Serializable {
     private String name;
     private String displayName;
     private String version;
@@ -65,32 +66,41 @@ public class LabyPackageDescriptionLoader implements PackageDescriptionLoader {
     private String description;
     private Set<LabyDependencyDescription> dependencies = new HashSet<>();
 
-    @SerializedName("autoload")
-    private Set<String> autoloadClasses = new HashSet<>();
-
-    @SerializedName("exclude")
-    private Set<String> autoloadExcludedClasses = new HashSet<>();
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
       return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayName() {
       return this.displayName != null ? this.displayName : this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getVersion() {
       return this.version;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<String> getAuthors() {
       return this.authors;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDescription() {
       // TODO: Internationalization.
@@ -99,21 +109,17 @@ public class LabyPackageDescriptionLoader implements PackageDescriptionLoader {
           : "i18n:labyfy:packages.generic.description";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<? extends DependencyDescription> getDependencies() {
       return this.dependencies;
     }
 
-    @Override
-    public Set<String> getAutoloadClasses() {
-      return this.autoloadClasses;
-    }
-
-    @Override
-    public Set<String> getAutoloadExcludedClasses() {
-      return this.autoloadExcludedClasses;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid() {
       return this.name != null
@@ -123,26 +129,37 @@ public class LabyPackageDescriptionLoader implements PackageDescriptionLoader {
     }
   }
 
+  /**
+   * Default implementation of a {@link DependencyDescription}.
+   */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
   private static class LabyDependencyDescription implements DependencyDescription, Serializable {
-
     private String name;
     private List<String> versions = new ArrayList<>();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
       return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getVersions() {
       return this.versions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean matches(PackageDescription description) {
-      return this.name.equals(description.getName())
-          && this.versions.stream().anyMatch(description.getVersion()::equals);
+    public boolean matches(PackageManifest manifest) {
+      return this.name.equals(manifest.getName())
+          && this.versions.stream().anyMatch(manifest.getVersion()::equals);
     }
   }
 }

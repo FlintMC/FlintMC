@@ -1,47 +1,75 @@
 package net.labyfy.component.packages;
 
-import net.labyfy.component.processing.autoload.AutoLoad;
-
 import java.io.File;
 
-/** Represents a package at runtime. */
+/**
+ * Represents a package which has been identified and possibly loaded.
+ */
 public interface Package {
+  /**
+   * Retrieves the manifest of this package.
+   *
+   * @return The package manifest of this package, or null, if no manifest is present
+   */
+  PackageManifest getPackageManifest();
 
-  /** @return the package description for this package */
-  PackageDescription getPackageDescription();
-
-  /** @return the name of this package */
+  /**
+   * Retrieves the name of this package. This method differs from {@link PackageManifest#getName()}
+   * as in that it falls back to the name of the file if no manifest is present.
+   *
+   * @return The raw name of this package
+   */
   String getName();
 
-  /** @return the name of this package as it should be displayed to the user */
+  /**
+   * Retrieves the display name of this package. This method differs from {@link PackageManifest#getDisplayName()}
+   * as in that it falls back to the name of the file if no manifest is present.
+   *
+   * @return The name of this package as it should be displayed to the user
+   */
   String getDisplayName();
 
-  /** @return the version of this package */
+  /**
+   * Retrieves the version of this package. This method differs from {@link PackageManifest#getVersion()} as in
+   * that it falls back to {@code "unknown"} if no manifest is present.
+   *
+   * @return The version of this package, or {@code "unknown"}
+   */
   String getVersion();
 
-  /** @return the current state of this package */
+  /**
+   * Retrieves the state of this package indicating if the package has been loaded successfully.
+   *
+   * @return The current state of this package
+   */
   PackageState getState();
 
   /**
-   * @return the file this package is loaded from, may be null,
-   *         if the package has been loaded from the classpath
+   * Retrieves the file of the package if it has been loaded from one.
+   *
+   * @return The file this package is loaded from, or null,
+   * if the package has been loaded from the classpath
    */
   File getFile();
 
   /**
-   * Sets the state of the package. The previous state must be NOT_LOADED and the state can't be
-   * explicitly set to LOADED.
+   * Sets the state of the package. The previous state must be {@link PackageState#NOT_LOADED} and the state can't be
+   * explicitly set to {@link PackageState#LOADED}.To set the state to {@link PackageState#LOADED}
+   * call {@link #load()}.
    *
-   * @param state the new state for the package
+   * @param state The new state of the package
+   * @throws IllegalArgumentException If the package state is not {@link PackageState#NOT_LOADED} or if
+   *                                  the new state is {@link PackageState#LOADED}
    */
   void setState(PackageState state);
 
   /**
-   * Tries to load this package. Package must be in the UNLOADED state. This call should not throw
+   * Tries to load this package. Package must be {@link PackageState#NOT_LOADED}. This call should not throw
    * exceptions caused by a failed load attempt but only exceptions caused by unmet preconditions
    * (e.g. wrong state).
    *
-   * @return the state of the package after the load attempt
+   * @return The state of the package after the load attempt
+   * @throws IllegalStateException If the package state is not {@link PackageState#NOT_LOADED}
    */
   PackageState load();
 
@@ -52,18 +80,21 @@ public interface Package {
   void enable();
 
   /**
-   * The package must be in LOADED or ENABLED state.
+   * Retrieves the class loader the package has been loaded with. In order to call this method
+   * the package has to be in {@link PackageState#LOADED} or {@link PackageState#ENABLED} state.
    *
-   * @return the package class loader used for this package
+   * @return The class loader used for loading this package
+   * @throws IllegalStateException If the package is not in the {@link PackageState#LOADED} or
+   *                               {@link PackageState#ENABLED} state
    */
   PackageClassLoader getPackageClassLoader();
 
   /**
-   * If an exception occurred during the load attempt, this getter will return that exception. The
-   * package state must be ERRORED.
+   * Retrieves the exception which occurred while loading the package. In order to call this method
+   * the package has to be in the {@link PackageState#ERRORED} state.
    *
-   * @return the exception that occurred
+   * @return The exception that caused loading of this package to error
+   * @throws IllegalStateException If the pakcage is not in the {@link PackageState#ERRORED} state
    */
   Exception getLoadException();
-
 }

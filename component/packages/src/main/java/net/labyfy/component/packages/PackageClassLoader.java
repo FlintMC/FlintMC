@@ -1,32 +1,31 @@
 package net.labyfy.component.packages;
 
-import net.labyfy.component.inject.assisted.AssistedFactory;
-
-import java.io.File;
-
-/** Responsible for making classes from a package available as a Class reference. */
+/**
+ * Represents a {@link ClassLoader} used for loading a package. Note that you should never cast
+ * instances of this interface to {@link ClassLoader}, but rather use the {@link #asClassLoader()} method.
+ */
 public interface PackageClassLoader {
-
   /**
-   * Tries to resolve a Class by it's name from the package.
+   * Tries to find a class present in the package.
    *
-   * @param name the name of the class.
-   * @return a Class<?> reference.
-   * @throws ClassNotFoundException if the class could not be resolved.
+   * @param name The name of the class to find
+   * @return The found class instance
+   * @throws ClassNotFoundException If the class could not be found in the package
    */
   Class<?> findClass(String name) throws ClassNotFoundException;
 
   /**
-   * Unwraps the plain Java ClassLoader reference that is used for defining those classes.
+   * Unwraps the plain Java ClassLoader reference that is used for defining classes within the package
+   * owning this class loader.
    *
-   * @return a plain Java ClassLoader.
+   * @return The {@link ClassLoader} representation of this {@link PackageClassLoader}
    */
   ClassLoader asClassLoader();
 
   /**
-   * Retrieves the package owning this classloader.
+   * Retrieves the package owning this class loader.
    *
-   * @return the package
+   * @return The package owning this class loader
    */
   Package getOwner();
 

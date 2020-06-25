@@ -54,9 +54,6 @@ findProject(':component:resources:resources-1.15.2')?.name = 'resources-1.15.2'
 include 'component:packages'
 findProject(':component:packages')?.name = 'packages'
 
-include 'component:packages:packages-impl'
-findProject(':component:packages:packages-impl')?.name = 'packages-impl'
-
 include 'component:launcher'
 findProject(':component:launcher')?.name = 'launcher'
 
