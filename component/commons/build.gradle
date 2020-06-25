@@ -3,11 +3,3 @@ plugins {
 }
 
 group 'net.labyfy.component'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    api 'com.google.guava:guava:21.0'
-}
