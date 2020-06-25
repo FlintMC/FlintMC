@@ -1,4 +1,4 @@
-package net.labyfy.component.resources.v1_15_2.pack;
+package net.labyfy.internal.component.resources.v1_15_2.pack;
 
 import net.labyfy.component.inject.event.EventService;
 import net.labyfy.component.inject.implement.Implement;
@@ -24,12 +24,12 @@ import javax.inject.Singleton;
 @AutoLoad
 @Deprecated
 @Implement(value = ResourceLocation.class, version = "1.15.2")
-public class LabyResourcePackReloadEventBroadCaster implements ResourcePackReloadEventBroadcaster {
+public class DefaultResourcePackReloadEventBroadCaster implements ResourcePackReloadEventBroadcaster {
 
   private final EventService eventService;
 
   @Inject
-  private LabyResourcePackReloadEventBroadCaster(EventService eventService) {
+  private DefaultResourcePackReloadEventBroadCaster(EventService eventService) {
     this.eventService = eventService;
   }
 

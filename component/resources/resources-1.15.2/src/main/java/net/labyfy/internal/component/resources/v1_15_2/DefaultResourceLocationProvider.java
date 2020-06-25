@@ -1,4 +1,4 @@
-package net.labyfy.component.resources.v1_15_2;
+package net.labyfy.internal.component.resources.v1_15_2;
 
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.ResourceLocation;
@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
  */
 @Singleton
 @Implement(value = ResourceLocationProvider.class, version = "1.15.2")
-public class LabyResourceLocationProvider implements ResourceLocationProvider {
+public class DefaultResourceLocationProvider implements ResourceLocationProvider {
 
-  private final LabyResourceLocation.Factory resourceLocationFactory;
+  private final DefaultResourceLocation.Factory resourceLocationFactory;
 
   @Inject
-  private LabyResourceLocationProvider(ResourceLocation.Factory resourceLocationFactory) {
+  private DefaultResourceLocationProvider(ResourceLocation.Factory resourceLocationFactory) {
     this.resourceLocationFactory = resourceLocationFactory;
   }
 

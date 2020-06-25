@@ -1,4 +1,4 @@
-package net.labyfy.component.resources.v1_15_2;
+package net.labyfy.internal.component.resources.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
@@ -13,14 +13,14 @@ import java.io.InputStream;
  * 1.15.2 implementation of a minecraft resource location.
  */
 @Implement(value = ResourceLocation.class, version = "1.15.2")
-public class LabyResourceLocation extends net.minecraft.util.ResourceLocation implements ResourceLocation {
+public class DefaultResourceLocation extends net.minecraft.util.ResourceLocation implements ResourceLocation {
   @AssistedInject
-  private LabyResourceLocation(@Assisted("fullPath") String fullPath) {
+  private DefaultResourceLocation(@Assisted("fullPath") String fullPath) {
     super(fullPath);
   }
 
   @AssistedInject
-  private LabyResourceLocation(
+  private DefaultResourceLocation(
       @Assisted("nameSpace") String nameSpace, @Assisted("path") String path) {
     super(nameSpace, path);
   }

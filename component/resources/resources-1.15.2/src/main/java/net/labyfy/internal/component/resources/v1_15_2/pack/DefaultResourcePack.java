@@ -1,4 +1,4 @@
-package net.labyfy.component.resources.v1_15_2.pack;
+package net.labyfy.internal.component.resources.v1_15_2.pack;
 
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.ResourceLocation;
