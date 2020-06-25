@@ -12,7 +12,7 @@ public interface VisitLocalVariable {
 
   class Context implements AbstractContext {
 
-    private MethodVisitorContext methodVisitorContext;
+    private final MethodVisitorContext methodVisitorContext;
     private String name;
     private String desc;
     private String signature;
@@ -97,14 +97,14 @@ public interface VisitLocalVariable {
       return this;
     }
 
-    public static Context create(
-        MethodVisitorContext methodVisitorContext,
-        String name,
-        String desc,
-        String signature,
-        Label start,
-        Label end,
-        int index) {
+    public static Context of(
+            MethodVisitorContext methodVisitorContext,
+            String name,
+            String desc,
+            String signature,
+            Label start,
+            Label end,
+            int index) {
       Preconditions.checkNotNull(methodVisitorContext);
       Preconditions.checkNotNull(name);
       Preconditions.checkNotNull(desc);

@@ -52,9 +52,9 @@ public interface VisitVarInsn {
       return this;
     }
 
-    public static Context create(MethodVisitorContext methodVisitorContext, int opcode, int var) {
-      Preconditions.checkNotNull(methodVisitorContext);
-      return new Context(methodVisitorContext, opcode, var);
+    public static Context of(MethodVisitorContext methodVisitorContext, int opcode, int var) {
+        Preconditions.checkNotNull(methodVisitorContext);
+        return new Context(methodVisitorContext, opcode, var);
     }
   }
 }

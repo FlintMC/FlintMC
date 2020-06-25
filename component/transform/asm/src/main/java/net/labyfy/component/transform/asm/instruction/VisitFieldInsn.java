@@ -74,12 +74,12 @@ public interface VisitFieldInsn {
       return this;
     }
 
-    public static Context create(
-        MethodVisitorContext methodVisitorContext,
-        int opcode,
-        String owner,
-        String name,
-        String desc) {
+    public static Context of(
+            MethodVisitorContext methodVisitorContext,
+            int opcode,
+            String owner,
+            String name,
+            String desc) {
       Preconditions.checkNotNull(methodVisitorContext);
       Preconditions.checkNotNull(owner);
       Preconditions.checkNotNull(name);

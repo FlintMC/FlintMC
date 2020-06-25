@@ -93,13 +93,13 @@ public interface VisitMethodInsn {
       return this;
     }
 
-    public static Context create(
-        MethodVisitorContext methodVisitorContext,
-        int opcode,
-        String owner,
-        String name,
-        String desc,
-        boolean itf) {
+    public static Context of(
+            MethodVisitorContext methodVisitorContext,
+            int opcode,
+            String owner,
+            String name,
+            String desc,
+            boolean itf) {
       Preconditions.checkNotNull(methodVisitorContext);
       Preconditions.checkNotNull(owner);
       Preconditions.checkNotNull(name);

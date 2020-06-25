@@ -41,7 +41,7 @@ public interface VisitInsn {
       return this;
     }
 
-    public static Context create(MethodVisitorContext methodVisitorContext, int opcode) {
+    public static Context of(MethodVisitorContext methodVisitorContext, int opcode) {
       Preconditions.checkNotNull(methodVisitorContext);
       return new Context(methodVisitorContext, opcode);
     }

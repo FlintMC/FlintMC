@@ -41,7 +41,7 @@ public interface VisitLdcInsn {
       return this;
     }
 
-    public static Context create(
+    public static Context of(
             MethodVisitorContext methodVisitorContext, Object cst) {
       Preconditions.checkNotNull(methodVisitorContext);
       return new Context(methodVisitorContext, cst);
