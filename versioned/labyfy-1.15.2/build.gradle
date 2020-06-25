@@ -46,8 +46,7 @@ dependencies {
     runtimeOnly project(':component:resources')
     runtimeOnly project(':component:resources:resources-1.15.2')
     runtimeOnly project(':versioned:labyfy-1.15.2')
-    runtimeOnly project(':component:packages')
-    runtimeOnly project(':component:packages:packages-impl')
+    runtimeOnly project(path: ':component:packages', configuration: 'internal')
     runtimeOnly project(path: ':component:security', configuration: 'internal')
 
     labyManifest project(':component:stereotype')
@@ -69,7 +68,6 @@ dependencies {
     labyManifest project(':component:resources')
     labyManifest project(':component:resources:resources-1.15.2')
     labyManifest project(':component:packages')
-    labyManifest project(':component:packages:packages-impl')
     labyManifest project(':component:transform:launcher-plugin')
     labyManifest project(':component:launcher')
     labyManifest project(':component:service')

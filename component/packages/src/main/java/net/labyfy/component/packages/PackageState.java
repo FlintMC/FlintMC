@@ -1,32 +1,67 @@
 package net.labyfy.component.packages;
 
-/** Represents the state of a package. */
+/**
+ * Represents the possible states of a package.
+ */
 public enum PackageState {
-
-  /** The classes of the package are available through the package class loader. */
+  /**
+   * The packages classes are available for use through the loader of the package,
+   * but the package has not been enabled yet.
+   */
   LOADED,
-  /** The packages autoload classes have been submitted to the ServiceRepository. */
+
+  /**
+   * The packages initializers have run and its services have been registered.
+   */
   ENABLED,
-  /** The packages classes are not available through a classloader yet, but it can be loaded. */
+
+  /**
+   * The package has not been loaded yet and may not be interacted with. This is the initial state.
+   */
   NOT_LOADED,
-  /** The packages package.json manifest is present, but not valid. */
-  INVALID_DESCRIPTION,
-  /** The current version of Labyfy is not compatible with this package. */
+
+  /**
+   * The manifest file (package.json) was invalid and caused the package to not load.
+   * Packages in this state may not be interacted with.
+   */
+  INVALID_MANIFEST,
+
+  /**
+   * The Labyfy environment hosting the package loader is incompatible, possibly due to a version
+   * conflict or side problem. Packages in this state may not be interacted with.
+   */
   LABYFY_NOT_COMPATIBLE,
-  /** The package is not compatible with the current Minecraft version. */
+
+  /**
+   * The Minecraft environment hosting Labyfy is incompatible, possibly due to a version conflict
+   * or a side problem. Packages in this state may not be interacted with.
+   */
   MINECRAFT_NOT_COMPATIBLE,
-  /** The package has dependencies that are not satisfiable in the current configuration. */
+
+  /**
+   * The currently running environment is not able to provide the required package dependencies,
+   * possibly due to a version conflict or dependencies failing to load.
+   */
   UNSATISFIABLE_DEPENDENCIES,
-  /** There is already another package loaded that is conflicting with this package. */
+
+  /**
+   * The currently running environment has loaded another package which is conflicting with this package.
+   * This could mean that the same package has been attempted to be loaded twice or just that another
+   * package has been declared to be incompatible.
+   */
   CONFLICTING_PACKAGE_LOADED,
-  /** An error occurred while trying to load this package. */
+
+  /**
+   * An {@link Exception} occurred while loading the package. The {@link Package#getLoadException()} method
+   * can be used to retrieve the exception causing the package to fail loading.
+   */
   ERRORED;
 
   /**
-   * Checks if the given package's state matches this state.
+   * Checks if the given package is in this state.
    *
-   * @param pack the package to check.
-   * @return true, if package's state equals this.
+   * @param pack The package to check.
+   * @return {@code true}, if the packages state matches this state, {@code false} otherwise
    */
   public boolean matches(Package pack) {
     return this.equals(pack.getState());
