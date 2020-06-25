@@ -1,15 +1,11 @@
 package net.labyfy.component.resources.pack;
 
-import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.inject.assisted.AssistedFactory;
-
+/**
+ * Marker class used in the event system to signal the resource packs have been reloaded.
+ *
+ * @deprecated The event system will change and this class will be removed
+ */
+@Deprecated
 public class ResourcePackReloadEvent {
-
-  @AssistedInject
-  private ResourcePackReloadEvent() {}
-
-  @AssistedFactory(ResourcePackReloadEvent.class)
-  public interface Factory {
-    ResourcePackReloadEvent create();
-  }
+  public ResourcePackReloadEvent() {}
 }
