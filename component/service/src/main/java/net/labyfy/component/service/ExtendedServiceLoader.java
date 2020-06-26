@@ -7,28 +7,67 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class LabyfyServiceLoader<T> {
-  private static final Map<Class<?>, LabyfyServiceLoader<?>> loaders = new ConcurrentHashMap<>();
+/**
+ * Extends the functionality of the default java {@link ServiceLoader}.
+ * The difference to the java {@link ServiceLoader} is the reload and multi classloader capability.
+ * <p>
+ * example:
+ * package com.example;
+ * <p>
+ * interface Service{
+ * void doSomething();
+ * }
+ * <p>
+ * class ServiceImpl implements Service{
+ *
+ * @param <T> Type of service to load
+ * @Override public void doSomething(){
+ * ...
+ * }
+ * }
+ * <p>
+ * Content of "META-INF/services/com.example.Service":
+ * <p>
+ * To find all implementations:
+ * Set<Service> services = ExtendedServiceLoader.get(Service.class).discover(classLoader);
+ * @see ServiceLoader
+ */
+public class ExtendedServiceLoader<T> {
+  private static final Map<Class<?>, ExtendedServiceLoader<?>> loaders = new ConcurrentHashMap<>();
 
-  @SuppressWarnings("unchecked")
-  public static <T> LabyfyServiceLoader<T> get(Class<T> targetClass) {
-    if(loaders.containsKey(targetClass)) {
-      return (LabyfyServiceLoader<T>) loaders.get(targetClass);
-    }
-
-    LabyfyServiceLoader<T> loader = new LabyfyServiceLoader<>(targetClass);
-    loaders.put(targetClass, loader);
-    return loader;
+  private ExtendedServiceLoader(Class<T> targetClass) {
+    this.targetClass = targetClass;
+    this.alreadyDiscovered = new ArrayList<>();
   }
 
   private final Class<T> targetClass;
   private final List<String> alreadyDiscovered;
 
-  private LabyfyServiceLoader(Class<T> targetClass) {
-    this.targetClass = targetClass;
-    this.alreadyDiscovered = new ArrayList<>();
+  /**
+   *
+   * Reads the content of all resources with the name of "META-INF/services/targetClass#getName()" (can be multiple files),
+   * and collects all service implementations of those files.
+   *
+   * @param targetClass service class to load
+   * @param <T> type of service to load
+   * @return ExtendedServiceLoader configured to find services of type T
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> ExtendedServiceLoader<T> get(Class<T> targetClass) {
+    if (loaders.containsKey(targetClass)) {
+      return (ExtendedServiceLoader<T>) loaders.get(targetClass);
+    }
+
+    ExtendedServiceLoader<T> loader = new ExtendedServiceLoader<>(targetClass);
+    loaders.put(targetClass, loader);
+    return loader;
   }
 
+  /**
+   * Finds all service files, interpretes them and instantiates the found classes
+   * @param loader
+   * @return
+   */
   public Set<T> discover(ClassLoader loader) {
     Enumeration<URL> serviceFiles;
     try {

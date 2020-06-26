@@ -7,7 +7,7 @@ import net.labyfy.component.inject.InjectionServiceShare;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
-import net.labyfy.component.service.LabyfyServiceLoader;
+import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class Initializer {
   public static void boot() throws IOException {
 
     Set<AutoLoadProvider> autoLoadProviders =
-        LabyfyServiceLoader.get(AutoLoadProvider.class).discover(LaunchController.getInstance().getRootLoader());
+        ExtendedServiceLoader.get(AutoLoadProvider.class).discover(LaunchController.getInstance().getRootLoader());
 
     Map<Integer, Multimap<Integer, String>> sortedClasses = new TreeMap<>(Integer::compare);
 
