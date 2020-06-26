@@ -22,6 +22,11 @@ public class EntryPoint {
     initialized = true;
   }
 
+  /**
+   * Notifis all services that a new class is loaded.
+   *
+   * @param clazz The loaded class to notify
+   */
   public static void notifyService(Class clazz) {
     if ((clazz.getSuperclass() != null && clazz.getSuperclass().getName().contains("groovy"))
         || clazz.getName().contains("groovy")) return;
