@@ -27,9 +27,9 @@ configurations {
 dependencies {
     api project(':component:commons')
     api project(':component:stereotype')
-    internalImplementation project(':component:inject')
     internalImplementation project(':component:service')
     internalImplementation project(':component:initializer')
+    internalImplementation project(path: ':component:inject', configuration: 'internal')
     internalImplementation project(path: ':component:stereotype', configuration: 'internal')
     internalImplementation 'com.google.code.gson:gson:2.8.6'
 

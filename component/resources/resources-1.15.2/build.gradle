@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component'
@@ -15,9 +15,9 @@ labyfy{
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:resources')
-    compile project(':component:transform:hook')
-    compile 'net.minecraft:client:1.15.2'
+    api project(':component:resources')
+    api project(':component:transform:hook')
+    api project(path: ':component:inject', configuration: 'internal')
+    api 'net.minecraft:client:1.15.2'
     annotationProcessor project(':component:annotation-processing:autoload')
 }

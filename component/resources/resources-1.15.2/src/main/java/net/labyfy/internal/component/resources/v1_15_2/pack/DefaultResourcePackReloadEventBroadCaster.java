@@ -1,6 +1,5 @@
 package net.labyfy.internal.component.resources.v1_15_2.pack;
 
-import net.labyfy.component.inject.event.EventService;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.resources.ResourceLocation;
@@ -8,6 +7,7 @@ import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import net.labyfy.component.resources.pack.ResourcePackReloadEventBroadcaster;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
+import net.labyfy.internal.component.inject.EventService;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.resources.SimpleReloadableResourceManager;

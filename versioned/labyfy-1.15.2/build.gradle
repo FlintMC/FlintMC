@@ -44,7 +44,7 @@ dependencies {
     runtimeOnly project(path: ':component:tasks', configuration: 'internal')
     runtimeOnly project(':component:tasks:tasks-1.15.2')
     runtimeOnly project(':component:mapping')
-    runtimeOnly project(':component:inject')
+    runtimeOnly project(path: ':component:inject', configuration: 'internal')
     runtimeOnly project(':component:transform:hook')
     runtimeOnly project(':component:resources')
     runtimeOnly project(':component:resources:resources-1.15.2')

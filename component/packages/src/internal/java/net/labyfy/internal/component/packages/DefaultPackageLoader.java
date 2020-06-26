@@ -7,7 +7,7 @@ import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
-import net.labyfy.component.inject.logging.LabyLoggingProvider;
+import net.labyfy.internal.component.inject.DefaultLoggingProvider;
 import net.labyfy.component.packages.*;
 import net.labyfy.component.packages.Package;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +40,7 @@ public class DefaultPackageLoader implements PackageLoader {
   @Inject
   private DefaultPackageLoader(
       @InjectLogger Logger logger,
-      LabyLoggingProvider loggingProvider,
+      DefaultLoggingProvider loggingProvider,
       @Named("labyfyPackageFolder") File packageFolder,
       DefaultPackageManifestLoader descriptionLoader,
       DefaultPackageManifestLoader labyPackageDescriptionLoader

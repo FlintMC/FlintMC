@@ -3,8 +3,8 @@ package net.labyfy.internal.component.tasks;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Key;
+import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.TaskExecutor;

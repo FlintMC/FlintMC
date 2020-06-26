@@ -4,7 +4,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.labyfy.component.commons.consumer.TriConsumer;
 import net.labyfy.component.initializer.EntryPoint;
-import net.labyfy.component.inject.InjectionServiceShare;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
@@ -12,6 +11,7 @@ import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
+import net.labyfy.internal.component.inject.InjectionServiceShare;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.io.File;
