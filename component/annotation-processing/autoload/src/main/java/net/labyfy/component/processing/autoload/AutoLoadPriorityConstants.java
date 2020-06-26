@@ -19,7 +19,7 @@ public class AutoLoadPriorityConstants {
     public static final int ASSISTED_FACTORY_SERVICE_REGISTRAR_PRIORITY = -1000;
 
     public static final int IMPLEMENT_SERVICE_PRIORITY = -1000;
-    public static final int IMPLEMENT_SERVICE_ROUND = -4;
+    public static final int IMPLEMENT_SERVICE_ROUND = -5;
     public static final int IMPLEMENT_SERVICE_REGISTRAR_PRIORITY = -1000;
 
     // Round -3

@@ -9,7 +9,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.commons.resolve.AnnotationResolver;
-import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
+import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.stereotype.identifier.Identifier;
