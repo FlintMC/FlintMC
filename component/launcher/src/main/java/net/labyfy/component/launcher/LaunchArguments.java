@@ -15,11 +15,11 @@ public class LaunchArguments {
             names = {"--launch-target", "-t"},
             description = "Main class to launch, defaults to net.minecraft.client.Main"
     )
-    private final String launchTarget = "net.minecraft.client.main.Main";
+    private String launchTarget = "net.minecraft.client.main.Main";
 
   // Collect all other arguments so we can pass them on to minecraft
     @Parameter
-    private final List<String> otherArguments = new ArrayList<>();
+    private List<String> otherArguments = new ArrayList<>();
 
     /**
      * Retrieves the launch target which control should be handed over to after plugins
