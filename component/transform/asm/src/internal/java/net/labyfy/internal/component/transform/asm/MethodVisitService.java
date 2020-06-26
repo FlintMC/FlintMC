@@ -67,24 +67,25 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
               if (methodMapping != null) {
                 for (InternalMethodVisitorContext methodVisitorContext : methodVisitorContexts) {
                   if (methodVisitorContext.getMethodVisit().desc().isEmpty()
-                          || methodMapping
-                          .getObfuscatedMethodDescription()
-                          .equals(methodVisitorContext.getMethodVisit().desc())
-                          || methodMapping
-                          .getUnObfuscatedMethodDescription()
-                          .equals(methodVisitorContext.getMethodVisit().desc())) {
+                      || methodMapping
+                      .getObfuscatedMethodDescription()
+                      .equals(methodVisitorContext.getMethodVisit().desc())
+                      || methodMapping
+                      .getUnObfuscatedMethodDescription()
+                      .equals(methodVisitorContext.getMethodVisit().desc())) {
 
                     if (methodVisitorContext.getMethodVisit().methodName().isEmpty()
-                            || methodMapping
-                            .getObfuscatedMethodName()
-                            .equals(methodVisitorContext.getMethodVisit().methodName())
                         || methodMapping
-                            .getUnObfuscatedMethodName()
-                            .equals(methodVisitorContext.getMethodVisit().methodName())) {
+                        .getObfuscatedMethodName()
+                        .equals(methodVisitorContext.getMethodVisit().methodName())
+                        || methodMapping
+                        .getUnObfuscatedMethodName()
+                        .equals(methodVisitorContext.getMethodVisit().methodName())) {
                       methodVisitorContext.setMethodVisitor(
                           new MethodVisitor(
                               Opcodes.ASM5,
-                              super.visitMethod(access, name, desc, signature, exceptions)) {});
+                              super.visitMethod(access, name, desc, signature, exceptions)) {
+                          });
                       return methodVisitorContext;
                     }
                   }
@@ -104,7 +105,7 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
 
   public void discover(Identifier.Base property) {
     MethodVisit methodVisit =
-            property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+        property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
     InternalMethodVisitorContext methodVisitorContext = new InternalMethodVisitorContext(methodVisit);
     Method location = property.getProperty().getLocatedIdentifiedAnnotation().getLocation();
     try {

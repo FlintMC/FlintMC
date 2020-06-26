@@ -5,99 +5,99 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 
 public interface MethodVisitorContext {
-    MethodVisitorContext onVisitInvokeDynamicInsn(VisitInvokeDynamicInsn visitInvokeDynamicInsn);
+  MethodVisitorContext onVisitInvokeDynamicInsn(VisitInvokeDynamicInsn visitInvokeDynamicInsn);
 
-    MethodVisitorContext onVisitTypeInsn(VisitTypeInsn visitTypeInsn);
+  MethodVisitorContext onVisitTypeInsn(VisitTypeInsn visitTypeInsn);
 
-    MethodVisitorContext onVisitJumpInsn(VisitJumpInsn visitJumpInsn);
+  MethodVisitorContext onVisitJumpInsn(VisitJumpInsn visitJumpInsn);
 
-    MethodVisitorContext onVisitTableSwitchInsn(VisitTableSwitchInsn visitTableSwitchInsn);
+  MethodVisitorContext onVisitTableSwitchInsn(VisitTableSwitchInsn visitTableSwitchInsn);
 
-    MethodVisitorContext onVisitLookupSwitchInsn(VisitLookupSwitchInsn visitLookupSwitchInsn);
+  MethodVisitorContext onVisitLookupSwitchInsn(VisitLookupSwitchInsn visitLookupSwitchInsn);
 
-    MethodVisitorContext onVisitMultiANewArrayInsn(VisitMultiANewArrayInsn visitMultiANewArrayInsn);
+  MethodVisitorContext onVisitMultiANewArrayInsn(VisitMultiANewArrayInsn visitMultiANewArrayInsn);
 
-    MethodVisitorContext onVisitIincInsn(VisitIincInsn visitIincInsn);
+  MethodVisitorContext onVisitIincInsn(VisitIincInsn visitIincInsn);
 
-    MethodVisitorContext onVisitIntInsn(VisitIntInsn visitIntInsn);
+  MethodVisitorContext onVisitIntInsn(VisitIntInsn visitIntInsn);
 
-    MethodVisitorContext onVisitFieldInsn(VisitFieldInsn visitFieldInsn);
+  MethodVisitorContext onVisitFieldInsn(VisitFieldInsn visitFieldInsn);
 
-    MethodVisitorContext onVisitMethodInsn(VisitMethodInsn visitMethodInsn);
+  MethodVisitorContext onVisitMethodInsn(VisitMethodInsn visitMethodInsn);
 
-    MethodVisitorContext onVisitInsn(VisitInsn visitInsn);
+  MethodVisitorContext onVisitInsn(VisitInsn visitInsn);
 
-    MethodVisitorContext onVisitCode(VisitCode visitCode);
+  MethodVisitorContext onVisitCode(VisitCode visitCode);
 
-    MethodVisitorContext onVisitLdcInsn(VisitLdcInsn visitLdcInsn);
+  MethodVisitorContext onVisitLdcInsn(VisitLdcInsn visitLdcInsn);
 
-    MethodVisitorContext onVisitLocalVariable(VisitLocalVariable visitLocalVariable);
+  MethodVisitorContext onVisitLocalVariable(VisitLocalVariable visitLocalVariable);
 
-    MethodVisitorContext onVisitVarInsn(VisitVarInsn visitVarInsn);
+  MethodVisitorContext onVisitVarInsn(VisitVarInsn visitVarInsn);
 
-    void svisitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments);
+  void svisitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments);
 
-    void svisitTypeInsn(int opcode, String type);
+  void svisitTypeInsn(int opcode, String type);
 
-    void svisitJumpInsn(int opcode, Label label);
+  void svisitJumpInsn(int opcode, Label label);
 
-    void svisitTableSwitchInsn(int min, int max, Label dflt, Label... labels);
+  void svisitTableSwitchInsn(int min, int max, Label dflt, Label... labels);
 
-    void svisitLookupSwitchInsn(Label dflt, int[] keys, Label... labels);
+  void svisitLookupSwitchInsn(Label dflt, int[] keys, Label... labels);
 
-    void svisitMultiANewArrayInsn(String descriptor, int numDimensions);
+  void svisitMultiANewArrayInsn(String descriptor, int numDimensions);
 
-    void svisitIincInsn(int var, int increment);
+  void svisitIincInsn(int var, int increment);
 
-    void visitVarInsn(int opcode, int var);
+  void visitVarInsn(int opcode, int var);
 
-    void svisitVarInsn(int opcode, int var);
+  void svisitVarInsn(int opcode, int var);
 
-    void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index);
+  void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index);
 
-    void svisitLocalVariable(String name, String desc, String signature, Label start, Label end, int index);
+  void svisitLocalVariable(String name, String desc, String signature, Label start, Label end, int index);
 
-    void visitFieldInsn(int opcode, String owner, String name, String desc);
+  void visitFieldInsn(int opcode, String owner, String name, String desc);
 
-    void svisitFieldInsn(int opcode, String owner, String name, String desc);
+  void svisitFieldInsn(int opcode, String owner, String name, String desc);
 
-    void visitLdcInsn(Object cst);
+  void visitLdcInsn(Object cst);
 
-    void svisitLdcInsn(Object cst);
+  void svisitLdcInsn(Object cst);
 
-    void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf);
+  void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf);
 
-    void svisitMethodInsn(int opcode, String owner, String name, String dest, boolean itf);
+  void svisitMethodInsn(int opcode, String owner, String name, String dest, boolean itf);
 
-    void visitInsn(int opcode);
+  void visitInsn(int opcode);
 
-    void svisitIntInsn(int opcode, int operand);
+  void svisitIntInsn(int opcode, int operand);
 
-    void visitIntInsn(int opcode, int operand);
+  void visitIntInsn(int opcode, int operand);
 
-    void svisitInsn(int opcode);
+  void svisitInsn(int opcode);
 
-    void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments);
+  void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments);
 
-    void visitTypeInsn(int opcode, String type);
+  void visitTypeInsn(int opcode, String type);
 
-    void visitJumpInsn(int opcode, Label label);
+  void visitJumpInsn(int opcode, Label label);
 
-    void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels);
+  void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels);
 
-    void visitLookupSwitchInsn(Label dflt, int[] keys, Label... labels);
+  void visitLookupSwitchInsn(Label dflt, int[] keys, Label... labels);
 
-    void visitMultiANewArrayInsn(String descriptor, int numDimensions);
+  void visitMultiANewArrayInsn(String descriptor, int numDimensions);
 
-    void visitIincInsn(int var, int increment);
+  void visitIincInsn(int var, int increment);
 
-    void visitCode();
+  void visitCode();
 
-    void svisitCode();
+  void svisitCode();
 
-    MethodVisit getMethodVisit();
+  MethodVisit getMethodVisit();
 
-    MethodVisitorContext storeAsset(String key, Object value);
+  MethodVisitorContext storeAsset(String key, Object value);
 
-    <T> T getAsset(String key);
+  <T> T getAsset(String key);
 }

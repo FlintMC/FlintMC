@@ -37,6 +37,23 @@ public interface VisitLocalVariable {
       this.index = index;
     }
 
+    public static Context of(
+        MethodVisitorContext methodVisitorContext,
+        String name,
+        String desc,
+        String signature,
+        Label start,
+        Label end,
+        int index) {
+      Preconditions.checkNotNull(methodVisitorContext);
+      Preconditions.checkNotNull(name);
+      Preconditions.checkNotNull(desc);
+      Preconditions.checkNotNull(signature);
+      Preconditions.checkNotNull(start);
+      Preconditions.checkNotNull(end);
+      return new Context(methodVisitorContext, name, desc, signature, start, end, index);
+    }
+
     public String getName() {
       return name;
     }
@@ -95,23 +112,6 @@ public interface VisitLocalVariable {
       this.methodVisitorContext.svisitLocalVariable(
           this.name, this.desc, this.signature, this.start, this.end, this.index);
       return this;
-    }
-
-    public static Context of(
-            MethodVisitorContext methodVisitorContext,
-            String name,
-            String desc,
-            String signature,
-            Label start,
-            Label end,
-            int index) {
-      Preconditions.checkNotNull(methodVisitorContext);
-      Preconditions.checkNotNull(name);
-      Preconditions.checkNotNull(desc);
-      Preconditions.checkNotNull(signature);
-      Preconditions.checkNotNull(start);
-      Preconditions.checkNotNull(end);
-      return new Context(methodVisitorContext, name, desc, signature, start, end, index);
     }
   }
 }

@@ -16,16 +16,6 @@ import java.util.stream.Collectors;
  */
 public class LaunchController {
   private static LaunchController instance;
-
-  /**
-   * Retrieves the instance of the launcher the program has been launched with.
-   *
-   * @return Instance of the launcher or null if the program has not been launched with this launcher
-   */
-  public static LaunchController getInstance() {
-    return instance;
-  }
-
   private final Logger logger;
   private final RootClassLoader rootLoader;
   private final List<String> commandLine;
@@ -40,25 +30,34 @@ public class LaunchController {
    */
   public LaunchController(RootClassLoader rootLoader, String[] commandLine) {
     if (instance != null) {
-      throw new IllegalStateException("The launcher cannot be instantiated twice in the same environment");
+        throw new IllegalStateException("The launcher cannot be instantiated twice in the same environment");
     }
 
-    instance = this;
-    this.rootLoader = rootLoader;
-    this.logger = LogManager.getLogger(LaunchController.class);
-    this.commandLine = new ArrayList<>(Arrays.asList(commandLine));
-    this.launchArguments = new LaunchArguments();
+      instance = this;
+      this.rootLoader = rootLoader;
+      this.logger = LogManager.getLogger(LaunchController.class);
+      this.commandLine = new ArrayList<>(Arrays.asList(commandLine));
+      this.launchArguments = new LaunchArguments();
   }
 
-  /**
-   * Executes the launch. This is effectively the new `main` method.
-   *
-   * @implNote Called by the {@link LabyLauncher} using reflection
-   */
-  public void run() {
-    logger.info("Initializing LaunchController");
-    logger.info("Java version: {}", System.getProperty("java.version"));
-    logger.info("Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
+    /**
+     * Retrieves the instance of the launcher the program has been launched with.
+     *
+     * @return Instance of the launcher or null if the program has not been launched with this launcher
+     */
+    public static LaunchController getInstance() {
+        return instance;
+    }
+
+    /**
+     * Executes the launch. This is effectively the new `main` method.
+     *
+     * @implNote Called by the {@link LabyLauncher} using reflection
+     */
+    public void run() {
+        logger.info("Initializing LaunchController");
+        logger.info("Java version: {}", System.getProperty("java.version"));
+        logger.info("Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
     logger.info("JVM vendor: {}", System.getProperty("java.vendor"));
 
     // Find the first set of plugins by searching the classpath

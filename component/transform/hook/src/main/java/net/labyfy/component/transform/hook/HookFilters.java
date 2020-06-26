@@ -2,8 +2,12 @@ package net.labyfy.component.transform.hook;
 
 import javassist.CtClass;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
+@Deprecated
 public enum HookFilters {
   SUBCLASS_OF {
     public boolean test(CtClass source, String value) {

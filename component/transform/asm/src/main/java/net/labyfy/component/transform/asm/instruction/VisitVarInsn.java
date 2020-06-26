@@ -21,6 +21,11 @@ public interface VisitVarInsn {
       this.var = var;
     }
 
+    public static Context of(MethodVisitorContext methodVisitorContext, int opcode, int var) {
+      Preconditions.checkNotNull(methodVisitorContext);
+      return new Context(methodVisitorContext, opcode, var);
+    }
+
     public MethodVisitorContext getMethodVisitorContext() {
       return methodVisitorContext;
     }
@@ -50,11 +55,6 @@ public interface VisitVarInsn {
     public Context write() {
       this.methodVisitorContext.svisitVarInsn(this.opcode, this.var);
       return this;
-    }
-
-    public static Context of(MethodVisitorContext methodVisitorContext, int opcode, int var) {
-        Preconditions.checkNotNull(methodVisitorContext);
-        return new Context(methodVisitorContext, opcode, var);
     }
   }
 }

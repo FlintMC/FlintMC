@@ -1,19 +1,24 @@
-package net.labyfy.component.transform.hook;
+package net.labyfy.internal.component.transform.hook;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import javassist.*;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+import net.labyfy.component.commons.resolve.AnnotationResolver;
+import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
+import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.property.Property;
-import net.labyfy.component.stereotype.type.Type;
-import net.labyfy.component.commons.resolve.AnnotationResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
-import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.inject.invoke.InjectedInvocationHelper;
-import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.component.stereotype.type.Type;
+import net.labyfy.component.transform.hook.Hook;
+import net.labyfy.component.transform.hook.HookFilter;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
@@ -26,6 +31,7 @@ import java.util.Map;
 
 @Singleton
 @Service(Hook.class)
+@Deprecated
 public class HookService implements ServiceHandler {
 
   private final ClassMappingProvider classMappingProvider;
@@ -163,7 +169,7 @@ public class HookService implements ServiceHandler {
 
     executionTime.insert(
         target,
-        "net.labyfy.component.transform.hook.HookService.notify("
+        "net.labyfy.internal.component.transform.hook.HookService.notify("
             + "this,"
             + "net.labyfy.component.transform.hook.Hook.ExecutionTime."
             + executionTime

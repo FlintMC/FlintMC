@@ -1,17 +1,19 @@
-package net.labyfy.component.transform.minecraft;
+package net.labyfy.internal.component.transform.minecraft;
 
 import com.google.inject.Inject;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
-import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.transform.launchplugin.LabyfyLauncherPlugin;
 import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
+import net.labyfy.component.transform.minecraft.MinecraftTransformer;
 
 import javax.inject.Singleton;
 
-import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.*;
+import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.MINECRAFT_TRANSFORMER_SERVICE_PRIORITY;
+import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.MINECRAFT_TRANSFORMER_SERVICE_ROUND;
 
 @Singleton
 @Service(value = MinecraftTransformer.class, priority = -10)

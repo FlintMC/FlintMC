@@ -19,7 +19,7 @@ public interface VisitMultiANewArrayInsn {
     }
 
     public static Context of(
-            MethodVisitorContext methodVisitorContext, String descriptor, int numDimensions) {
+        MethodVisitorContext methodVisitorContext, String descriptor, int numDimensions) {
       return new Context(methodVisitorContext, descriptor, numDimensions);
     }
 

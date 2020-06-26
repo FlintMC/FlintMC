@@ -41,7 +41,7 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   }
 
   public MethodVisitorContext onVisitInvokeDynamicInsn(
-          VisitInvokeDynamicInsn visitInvokeDynamicInsn) {
+      VisitInvokeDynamicInsn visitInvokeDynamicInsn) {
     this.visitInvokeDynamicInsn = visitInvokeDynamicInsn;
     return this;
   }
@@ -67,7 +67,7 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   }
 
   public MethodVisitorContext onVisitMultiANewArrayInsn(
-          VisitMultiANewArrayInsn visitMultiANewArrayInsn) {
+      VisitMultiANewArrayInsn visitMultiANewArrayInsn) {
     this.visitMultiANewArrayInsn = visitMultiANewArrayInsn;
     return this;
   }
@@ -118,7 +118,7 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   }
 
   public void svisitInvokeDynamicInsn(
-          String name, String descriptor, Handle bootstrapMethodHandle, Object[] bootstrapMethodArguments) {
+      String name, String descriptor, Handle bootstrapMethodHandle, Object[] bootstrapMethodArguments) {
     super.visitInvokeDynamicInsn(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
   }
 
@@ -131,12 +131,12 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   }
 
   public void svisitTableSwitchInsn(
-          int min, int max, Label dflt, Label[] labels) {
+      int min, int max, Label dflt, Label[] labels) {
     super.visitTableSwitchInsn(min, max, dflt, labels);
   }
 
   public void svisitLookupSwitchInsn(
-          Label dflt, int[] keys, Label[] labels) {
+      Label dflt, int[] keys, Label[] labels) {
     super.visitLookupSwitchInsn(dflt, keys, labels);
   }
 
@@ -161,24 +161,24 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   }
 
   public void visitLocalVariable(
-          String name, String desc, String signature, Label start, Label end, int index) {
+      String name, String desc, String signature, Label start, Label end, int index) {
     if (this.visitLocalVariable != null) {
       this.visitLocalVariable.visitLocalVariable(
-              VisitLocalVariable.Context.of(this, name, desc, signature, start, end, index));
+          VisitLocalVariable.Context.of(this, name, desc, signature, start, end, index));
     } else {
       super.visitLocalVariable(name, desc, signature, start, end, index);
     }
   }
 
   public void svisitLocalVariable(
-          String name, String desc, String signature, Label start, Label end, int index) {
+      String name, String desc, String signature, Label start, Label end, int index) {
     super.visitLocalVariable(name, desc, signature, start, end, index);
   }
 
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
     if (this.visitFieldInsn != null) {
       this.visitFieldInsn.visitFieldInsn(
-              VisitFieldInsn.Context.of(this, opcode, owner, name, desc));
+          VisitFieldInsn.Context.of(this, opcode, owner, name, desc));
     } else {
       super.visitFieldInsn(opcode, owner, name, desc);
     }
@@ -203,7 +203,7 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
     if (this.visitMethodInsn != null) {
       this.visitMethodInsn.visitMethodInsn(
-              VisitMethodInsn.Context.of(this, opcode, owner, name, desc, itf));
+          VisitMethodInsn.Context.of(this, opcode, owner, name, desc, itf));
     } else {
       super.visitMethodInsn(opcode, owner, name, desc, itf);
     }
@@ -238,10 +238,10 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   }
 
   public void visitInvokeDynamicInsn(
-          String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
+      String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
     if (this.visitInvokeDynamicInsn != null) {
       this.visitInvokeDynamicInsn.visitInvokeDynamicInsn(
-              VisitInvokeDynamicInsn.Context.of(this, name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments));
+          VisitInvokeDynamicInsn.Context.of(this, name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments));
     } else {
       super.visitInvokeDynamicInsn(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
     }
@@ -264,20 +264,20 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   }
 
   public void visitTableSwitchInsn(
-          int min, int max, Label dflt, Label[] labels) {
+      int min, int max, Label dflt, Label[] labels) {
     if (this.visitTableSwitchInsn != null) {
       this.visitTableSwitchInsn.visitTableSwitchInsn(
-              VisitTableSwitchInsn.Context.of(this, min, max, dflt, labels));
+          VisitTableSwitchInsn.Context.of(this, min, max, dflt, labels));
     } else {
       super.visitTableSwitchInsn(min, max, dflt, labels);
     }
   }
 
   public void visitLookupSwitchInsn(
-          Label dflt, int[] keys, Label[] labels) {
+      Label dflt, int[] keys, Label[] labels) {
     if (this.visitLookupSwitchInsn != null) {
       this.visitLookupSwitchInsn.visitLookupSwitchInsn(
-              VisitLookupSwitchInsn.Context.of(this, dflt, keys, labels));
+          VisitLookupSwitchInsn.Context.of(this, dflt, keys, labels));
     } else {
       super.visitLookupSwitchInsn(dflt, keys, labels);
     }
@@ -286,7 +286,7 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
   public void visitMultiANewArrayInsn(String descriptor, int numDimensions) {
     if (this.visitMultiANewArrayInsn != null) {
       this.visitMultiANewArrayInsn.visitMultiANewArrayInsn(
-              VisitMultiANewArrayInsn.Context.of(this, descriptor, numDimensions));
+          VisitMultiANewArrayInsn.Context.of(this, descriptor, numDimensions));
     } else {
       super.visitMultiANewArrayInsn(descriptor, numDimensions);
     }
@@ -307,6 +307,7 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
       super.visitCode();
     }
   }
+
 
   public void svisitCode() {
     super.visitCode();

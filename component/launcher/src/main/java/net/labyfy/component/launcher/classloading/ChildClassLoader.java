@@ -2,9 +2,7 @@ package net.labyfy.component.launcher.classloading;
 
 import net.labyfy.component.launcher.classloading.common.CommonClassLoader;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.Enumeration;
 
 /**
  * Interface allowing other classloader implementations to act as a child of the root classloader.

@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component.transform'
@@ -12,12 +12,12 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:stereotype')
-    compile project(':component:tasks')
-    compile project(':component:mapping')
-    compile project(':component:transform:asm')
-    compile project(':component:transform:launcher-plugin')
-    compile project(':component:transform:minecraft')
+    api project(':component:stereotype')
+    api project(':component:tasks')
+    api project(':component:mapping')
+    api project(':component:transform:asm')
+    api project(':component:transform:launcher-plugin')
+    api project(':component:transform:minecraft')
 
     annotationProcessor project(':component:annotation-processing:autoload')
 
