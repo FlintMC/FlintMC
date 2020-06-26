@@ -1,15 +1,17 @@
-package net.labyfy.component.transform.asm;
+package net.labyfy.internal.component.transform.asm;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.stereotype.service.Service;
-import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
+import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.transform.asm.MethodVisit;
+import net.labyfy.component.transform.asm.MethodVisitorContext;
 import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 import net.labyfy.component.transform.minecraft.MinecraftTransformer;
 import org.objectweb.asm.*;
@@ -22,7 +24,7 @@ import java.util.Collection;
 @MinecraftTransformer
 @Service(MethodVisit.class)
 public class MethodVisitService implements ServiceHandler, LateInjectedTransformer {
-  private final Collection<MethodVisitorContext> methodVisitorContexts;
+  private final Collection<InternalMethodVisitorContext> methodVisitorContexts;
   private final ClassMappingProvider classMappingProvider;
 
   @Inject
@@ -63,17 +65,17 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
               }
 
               if (methodMapping != null) {
-                for (MethodVisitorContext methodVisitorContext : methodVisitorContexts) {
+                for (InternalMethodVisitorContext methodVisitorContext : methodVisitorContexts) {
                   if (methodVisitorContext.getMethodVisit().desc().isEmpty()
-                      || methodMapping
+                          || methodMapping
                           .getObfuscatedMethodDescription()
                           .equals(methodVisitorContext.getMethodVisit().desc())
-                      || methodMapping
+                          || methodMapping
                           .getUnObfuscatedMethodDescription()
                           .equals(methodVisitorContext.getMethodVisit().desc())) {
 
                     if (methodVisitorContext.getMethodVisit().methodName().isEmpty()
-                        || methodMapping
+                            || methodMapping
                             .getObfuscatedMethodName()
                             .equals(methodVisitorContext.getMethodVisit().methodName())
                         || methodMapping
@@ -102,8 +104,8 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
 
   public void discover(Identifier.Base property) {
     MethodVisit methodVisit =
-        property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
-    MethodVisitorContext methodVisitorContext = new MethodVisitorContext(methodVisit);
+            property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+    InternalMethodVisitorContext methodVisitorContext = new InternalMethodVisitorContext(methodVisit);
     Method location = property.getProperty().getLocatedIdentifiedAnnotation().getLocation();
     try {
       location.invoke(

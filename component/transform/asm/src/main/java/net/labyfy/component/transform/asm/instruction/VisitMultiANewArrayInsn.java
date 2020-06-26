@@ -9,40 +9,40 @@ public interface VisitMultiANewArrayInsn {
 
   class Context implements AbstractContext {
     private final MethodVisitorContext methodVisitorContext;
-    private java.lang.String arg0;
-    private int arg1;
+    private String descriptor;
+    private int numDimensions;
 
-    private Context(MethodVisitorContext methodVisitorContext, java.lang.String arg0, int arg1) {
+    private Context(MethodVisitorContext methodVisitorContext, String descriptor, int numDimensions) {
       this.methodVisitorContext = methodVisitorContext;
-      this.arg0 = arg0;
-      this.arg1 = arg1;
+      this.descriptor = descriptor;
+      this.numDimensions = numDimensions;
     }
 
     public static Context of(
-            MethodVisitorContext methodVisitorContext, java.lang.String arg0, int arg1) {
-      return new Context(methodVisitorContext, arg0, arg1);
+            MethodVisitorContext methodVisitorContext, String descriptor, int numDimensions) {
+      return new Context(methodVisitorContext, descriptor, numDimensions);
     }
 
-    public java.lang.String getArg0() {
-      return this.arg0;
+    public String getDescriptor() {
+      return this.descriptor;
     }
 
-    public Context setArg0(java.lang.String arg0) {
-      this.arg0 = arg0;
+    public Context setDescriptor(String descriptor) {
+      this.descriptor = descriptor;
       return this;
     }
 
-    public int getArg1() {
-      return this.arg1;
+    public int getNumDimensions() {
+      return this.numDimensions;
     }
 
-    public Context setArg1(int arg1) {
-      this.arg1 = arg1;
+    public Context setNumDimensions(int numDimensions) {
+      this.numDimensions = numDimensions;
       return this;
     }
 
     public Context write() {
-      this.methodVisitorContext.svisitMultiANewArrayInsn(this.arg0, this.arg1);
+      this.methodVisitorContext.svisitMultiANewArrayInsn(this.descriptor, this.numDimensions);
       return this;
     }
   }

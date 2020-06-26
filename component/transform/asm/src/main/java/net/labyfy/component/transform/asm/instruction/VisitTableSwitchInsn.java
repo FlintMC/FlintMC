@@ -2,6 +2,7 @@ package net.labyfy.component.transform.asm.instruction;
 
 import net.labyfy.component.transform.asm.AbstractContext;
 import net.labyfy.component.transform.asm.MethodVisitorContext;
+import org.objectweb.asm.Label;
 
 @FunctionalInterface
 public interface VisitTableSwitchInsn {
@@ -9,71 +10,71 @@ public interface VisitTableSwitchInsn {
 
   class Context implements AbstractContext {
     private final MethodVisitorContext methodVisitorContext;
-    private int arg0;
-    private int arg1;
-    private org.objectweb.asm.Label arg2;
-    private org.objectweb.asm.Label[] arg3;
+    private int min;
+    private int max;
+    private Label dflt;
+    private Label[] labels;
 
     private Context(
             MethodVisitorContext methodVisitorContext,
-            int arg0,
-            int arg1,
-            org.objectweb.asm.Label arg2,
-            org.objectweb.asm.Label[] arg3) {
+            int min,
+            int max,
+            Label dflt,
+            Label... labels) {
       this.methodVisitorContext = methodVisitorContext;
-      this.arg0 = arg0;
-      this.arg1 = arg1;
-      this.arg2 = arg2;
-      this.arg3 = arg3;
+      this.min = min;
+      this.max = max;
+      this.dflt = dflt;
+      this.labels = labels;
     }
 
     public static Context of(
             MethodVisitorContext methodVisitorContext,
-            int arg0,
-            int arg1,
-            org.objectweb.asm.Label arg2,
-            org.objectweb.asm.Label[] arg3) {
-      return new Context(methodVisitorContext, arg0, arg1, arg2, arg3);
+            int min,
+            int max,
+            Label dflt,
+            Label... labels) {
+      return new Context(methodVisitorContext, min, max, dflt, labels);
     }
 
-    public int getArg0() {
-      return this.arg0;
+    public int getMin() {
+      return this.min;
     }
 
-    public Context setArg0(int arg0) {
-      this.arg0 = arg0;
+    public Context setMin(int min) {
+      this.min = min;
       return this;
     }
 
-    public int getArg1() {
-      return this.arg1;
+    public int getMax() {
+      return this.max;
     }
 
-    public Context setArg1(int arg1) {
-      this.arg1 = arg1;
+    public Context setMax(int max) {
+      this.max = max;
       return this;
     }
 
-    public org.objectweb.asm.Label getArg2() {
-      return this.arg2;
+    public Label getDflt() {
+      return this.dflt;
     }
 
-    public Context setArg2(org.objectweb.asm.Label arg2) {
-      this.arg2 = arg2;
+    public Context setDflt(Label dflt) {
+      this.dflt = dflt;
       return this;
     }
 
-    public org.objectweb.asm.Label[] getArg3() {
-      return this.arg3;
+    public Label[] getLabels() {
+      return this.labels;
     }
 
-    public Context setArg3(org.objectweb.asm.Label[] arg3) {
-      this.arg3 = arg3;
+    public Context setLabels(Label[] labels) {
+      this.labels = labels;
       return this;
     }
 
     public Context write() {
-      this.methodVisitorContext.svisitTableSwitchInsn(this.arg0, this.arg1, this.arg2, this.arg3);
+      this.methodVisitorContext.svisitTableSwitchInsn(this.min, this.max, this.dflt, this.labels);
       return this;
     }
   }

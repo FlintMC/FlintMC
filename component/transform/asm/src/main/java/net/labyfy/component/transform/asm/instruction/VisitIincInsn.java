@@ -8,41 +8,41 @@ public interface VisitIincInsn {
   void visitIincInsn(Context context);
 
   class Context implements AbstractContext {
-    private final MethodVisitorContext methodVisitorContext;
-    private int arg0;
-    private int arg1;
+      private final MethodVisitorContext methodVisitorContext;
+      private int var;
+      private int increment;
 
-    private Context(MethodVisitorContext methodVisitorContext, int arg0, int arg1) {
-      this.methodVisitorContext = methodVisitorContext;
-      this.arg0 = arg0;
-      this.arg1 = arg1;
-    }
+      private Context(MethodVisitorContext methodVisitorContext, int var, int increment) {
+          this.methodVisitorContext = methodVisitorContext;
+          this.var = var;
+          this.increment = increment;
+      }
 
-    public static Context of(MethodVisitorContext methodVisitorContext, int arg0, int arg1) {
-      return new Context(methodVisitorContext, arg0, arg1);
-    }
+      public static Context of(MethodVisitorContext methodVisitorContext, int var, int increment) {
+          return new Context(methodVisitorContext, var, increment);
+      }
 
-    public int getArg0() {
-      return this.arg0;
-    }
+      public int getVar() {
+          return this.var;
+      }
 
-    public Context setArg0(int arg0) {
-      this.arg0 = arg0;
-      return this;
-    }
+      public Context setVar(int var) {
+          this.var = var;
+          return this;
+      }
 
-    public int getArg1() {
-      return this.arg1;
-    }
+      public int getIncrement() {
+          return this.increment;
+      }
 
-    public Context setArg1(int arg1) {
-      this.arg1 = arg1;
-      return this;
-    }
+      public Context setIncrement(int increment) {
+          this.increment = increment;
+          return this;
+      }
 
-    public Context write() {
-      this.methodVisitorContext.svisitIincInsn(this.arg0, this.arg1);
-      return this;
-    }
+      public Context write() {
+          this.methodVisitorContext.svisitIincInsn(this.var, this.increment);
+          return this;
+      }
   }
 }
