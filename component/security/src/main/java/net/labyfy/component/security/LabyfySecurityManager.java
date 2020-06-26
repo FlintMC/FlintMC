@@ -1,55 +1,29 @@
 package net.labyfy.component.security;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import net.labyfy.component.processing.autoload.AutoLoad;
-import net.labyfy.component.tasks.Task;
-import net.labyfy.component.tasks.Tasks;
-
 import java.security.Permission;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-@Singleton
-@AutoLoad
-public class LabyfySecurityManager extends SecurityManager {
-  private final List<PermissionChecker> checkers;
-  private final ThreadLocal<Boolean> inPermissionCheck;
+/**
+ * Interface to a very basic, yet complete security component restricting the
+ * permissions of code with an unknown origin.
+ *
+ * Normal packages wont be restricted on their actions by default, the security manager
+ * is in fact intended to be used by packages which load extern content.
+ */
+public interface LabyfySecurityManager {
+  /**
+   * Checks if the currently execution code has the given permission.
+   *
+   * @param permission The permission to check for
+   * @throws SecurityException If the currently executing code does not have the supplied permission
+   */
+  void checkPermission(Permission permission) throws SecurityException;
 
-  @Inject
-  private LabyfySecurityManager() {
-    this.checkers = new ArrayList<>();
-    this.inPermissionCheck = new ThreadLocal<>();
-  }
-
-  @Task(Tasks.PRE_MINECRAFT_INITIALIZE)
-  public void install() {
-    System.setSecurityManager(this);
-  }
-
-  @Override
-  public void checkPermission(Permission perm) {
-    if (perm.getName() != null && perm.getName().equals("setSecurityManager")) {
-      throw new SecurityException("Replacing the Labyfy security manager is not allowed");
-    }
-
-    if (inPermissionCheck.get() != null && inPermissionCheck.get()) {
-      return;
-    }
-
-    inPermissionCheck.set(true);
-    try {
-      @SuppressWarnings("unchecked")
-      List<Class<?>> callStack = (List<Class<?>>) (List<?>) Arrays.asList(getClassContext());
-      checkers.forEach(checker -> checker.check(callStack, perm));
-    } finally {
-      inPermissionCheck.set(false);
-    }
-  }
-
-  public void installChecker(PermissionChecker checker) {
-    checkPermission(new AddPermissionCheckerPermission());
-    checkers.add(checker);
-  }
+  /**
+   * Adds a new security checker which will be used for testing if code
+   * has the required permissions.
+   *
+   * @param checker The checker to install
+   * @throws SecurityException If the currently executing code is not allowed to install new checkers
+   */
+  void installChecker(PermissionChecker checker);
 }

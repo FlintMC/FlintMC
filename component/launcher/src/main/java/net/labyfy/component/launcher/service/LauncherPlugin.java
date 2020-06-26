@@ -7,10 +7,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Service interface for plugins powering frameworks running on top of
+ * applications launched by the {@link net.labyfy.component.launcher.LaunchController}.
+ *
+ * Instances are loaded using a {@link java.util.ServiceLoader} or injected by other plugins.
+ */
 public interface LauncherPlugin {
   /**
    * The name of the plugin, should be a short, but meaningful
-   * identifier, such as `LabyMod`, `Forge` or `Fabric`.
+   * identifier, such as `Labyfy`, `Forge` or `Fabric`.
    *
    * @return the name of the plugin
    */
