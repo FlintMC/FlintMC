@@ -11,11 +11,14 @@ import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
-import net.labyfy.component.service.LabyfyServiceLoader;
+import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.io.File;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.jar.JarFile;
 
 /**
@@ -165,7 +168,7 @@ public class DefaultPackage implements Package {
 
     // Find all autoload providers within the package
     Set<AutoLoadProvider> autoLoadProviders =
-        LabyfyServiceLoader.get(AutoLoadProvider.class).discover(classLoader.asClassLoader());
+        ExtendedServiceLoader.get(AutoLoadProvider.class).discover(classLoader.asClassLoader());
 
     Map<Integer, Multimap<Integer, String>> sortedClasses = new TreeMap<>(Integer::compare);
 
