@@ -18,6 +18,11 @@ public interface VisitInsn {
       this.opcode = opcode;
     }
 
+    public static Context of(MethodVisitorContext methodVisitorContext, int opcode) {
+      Preconditions.checkNotNull(methodVisitorContext);
+      return new Context(methodVisitorContext, opcode);
+    }
+
     public int getOpcode() {
       return opcode;
     }
@@ -39,11 +44,6 @@ public interface VisitInsn {
     public Context write() {
       this.methodVisitorContext.svisitInsn(this.opcode);
       return this;
-    }
-
-    public static Context create(MethodVisitorContext methodVisitorContext, int opcode) {
-      Preconditions.checkNotNull(methodVisitorContext);
-      return new Context(methodVisitorContext, opcode);
     }
   }
 }

@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component.transform'
@@ -10,11 +10,29 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    internal {
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += sourceSets.main.compileClasspath
+    }
+}
+
+configurations {
+    internal
+    internal.extendsFrom internalImplementation, implementation
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:stereotype')
-    compile project(':component:tasks')
-    compile project(':component:transform:launcher-plugin')
+    api project(':component:stereotype')
+    api project(':component:tasks')
+    api project(':component:transform:launcher-plugin')
+
+    internal sourceSets.internal.output
+    internal sourceSets.main.output
 
     annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
 }

@@ -34,7 +34,7 @@ public class LabyLauncher {
 
     List<URL> classPathUrls = new ArrayList<>();
 
-    for(String classPathEntry : System.getProperty("java.class.path").split(pathSeparator)) {
+    for (String classPathEntry : System.getProperty("java.class.path").split(pathSeparator)) {
       try {
         classPathUrls.add(Paths.get(classPathEntry).toUri().toURL());
       } catch (MalformedURLException e) {

@@ -6,7 +6,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.JarURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -223,10 +226,10 @@ public class CommonClassLoaderHelper {
           return resources;
         } else if (Files.isRegularFile(path)) {
           if (
-              path.toString().endsWith(".zip") ||
-              path.toString().endsWith(".jar") ||
-              path.toString().endsWith(".war") ||
-              path.toString().endsWith(".ear")
+                  path.toString().endsWith(".zip") ||
+                          path.toString().endsWith(".jar") ||
+                          path.toString().endsWith(".war") ||
+                          path.toString().endsWith(".ear")
           ) {
             // The file is in a zip format, scan it as an archive
             return scanZip(path);

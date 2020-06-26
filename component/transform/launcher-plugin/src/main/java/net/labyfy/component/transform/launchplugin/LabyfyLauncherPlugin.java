@@ -1,11 +1,12 @@
 package net.labyfy.component.transform.launchplugin;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import io.sentry.Sentry;
 import io.sentry.event.BreadcrumbBuilder;
 import javassist.*;
-import net.labyfy.component.initializer.Initializer;
 import net.labyfy.component.initializer.EntryPoint;
+import net.labyfy.component.initializer.Initializer;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
@@ -23,17 +24,8 @@ import java.util.jar.Manifest;
 
 public class LabyfyLauncherPlugin implements LauncherPlugin {
   private static LabyfyLauncherPlugin instance;
-
-  public static LabyfyLauncherPlugin getInstance() {
-    if (instance == null) {
-      throw new IllegalStateException("LabyfyLauncherPlugin has not been instantiated yet");
-    }
-    return instance;
-  }
-
   private final Logger logger;
   private final Multimap<Integer, LateInjectedTransformer> injectedTransformers;
-
   private List<String> launchArguments;
 
   public LabyfyLauncherPlugin() {
@@ -65,6 +57,13 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
     this.logger = LogManager.getLogger(LabyfyLauncherPlugin.class);
     this.injectedTransformers = MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build();
+  }
+
+  public static LabyfyLauncherPlugin getInstance() {
+    if (instance == null) {
+      throw new IllegalStateException("LabyfyLauncherPlugin has not been instantiated yet");
+    }
+    return instance;
   }
 
   @Override
@@ -99,7 +98,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     new EntryPoint(arguments);
 
     // init sentry
-    if(logger!=null && (arguments.containsKey("--sentry") && !arguments.get("--sentry").equals("false"))){
+    if (logger != null && (arguments.containsKey("--sentry") && !arguments.get("--sentry").equals("false"))) {
       initSentry(arguments);
     }
 
@@ -146,13 +145,14 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
   /**
    * Search for manifest.mf entries for labyfy
+   *
    * @param name Name of the requested entry
    * @return Value for requested entry
    */
   private String findManifestEntry(String name) {
     try {
       Enumeration<URL> resources = Thread.currentThread().getContextClassLoader()
-              .getResources("META-INF/MANIFEST.MF");
+          .getResources("META-INF/MANIFEST.MF");
       while (resources.hasMoreElements()) {
         URL manifestUrl = resources.nextElement();
         Manifest manifest = new Manifest(manifestUrl.openStream());
@@ -162,7 +162,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
           return mainAttributes.getValue(name);
         }
       }
-    } catch (Exception e){
+    } catch (Exception e) {
       logger.error(e);
     }
     return "unknown";
@@ -170,6 +170,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
   /**
    * Client sending errors to sentry
+   *
    * @param arguments the launchArguments map
    */
   private void initSentry(Map<String, String> arguments) {
@@ -180,18 +181,18 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     String environment = "PRODUCTION";
     String mcversion = "unknown";
 
-    if(arguments.containsKey("--version"))
+    if (arguments.containsKey("--version"))
       mcversion = arguments.get("--version");
 
-    if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")){
+    if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")) {
       environment = "DEVELOPMENT";
     }
 
     // sentry project id 2
     Sentry.init(
-            "https://" + dsn + "@sentry.labymod.net/2?" +
-                    "release=" + version + "&" +
-                    "environment=" + environment
+        "https://" + dsn + "@sentry.labymod.net/2?" +
+            "release=" + version + "&" +
+            "environment=" + environment
     );
     Sentry.getContext().addTag("mc_version", mcversion);
     Sentry.getContext().addTag("java_version", System.getProperty("java.version"));
@@ -200,14 +201,14 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     Sentry.getContext().addTag("os.name", System.getProperty("os.name"));
     Sentry.getContext().addTag("os.bitrate", getOSBitRate());
 
-    if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")){
+    if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")) {
       Sentry.getContext().recordBreadcrumb(
-              new BreadcrumbBuilder().setMessage("User started with development enviroment").build()
+          new BreadcrumbBuilder().setMessage("User started with development enviroment").build()
       );
     }
   }
 
-  private String getOSBitRate(){
+  private String getOSBitRate() {
     boolean is64bit;
     if (System.getProperty("os.name").contains("Windows")) {
       is64bit = (System.getenv("ProgramFiles(x86)") != null);
