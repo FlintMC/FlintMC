@@ -1,19 +1,18 @@
 package net.labyfy.component.mappings;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Provides all fields, methods and class name obfuscation provided by the chosen {@link MappingParser}.
+ * At the moment only the mcp mappings are used. This will probably change in the future.
+ */
 @Singleton
 public class ClassMappingProvider {
 
@@ -38,22 +37,50 @@ public class ClassMappingProvider {
     return classMapping;
   }
 
+  /**
+   * @return all known class mappings, mapped to this format.
+   * Key: {@link ClassMapping#getObfuscatedName()} ()}
+   * Value: {@link ClassMapping}
+   */
   public Map<String, ClassMapping> getObfuscatedClassMappings() {
     return Collections.unmodifiableMap(this.obfuscatedClassMappings);
   }
 
+  /**
+   * @return all known class mappings, mapped to this format.
+   * Key: {@link ClassMapping#getUnObfuscatedName()}
+   * Value: {@link ClassMapping}
+   */
   public Map<String, ClassMapping> getUnObfuscatedClassMappings() {
     return Collections.unmodifiableMap(this.unObfuscatedClassMappings);
   }
 
+  /**
+   * Find {@link ClassMapping} by the obfuscated class name. ({@link ClassMapping#getObfuscatedName()})
+   *
+   * @param key obfuscated class name
+   * @return classMapping found by obfuscated class name. If no mapping was found, a default {@link ClassMapping} with same obfuscated and unobfuscated name will be created. ({@link ClassMapping#isDefault()} will be true)
+   */
   public ClassMapping getByObfuscatedName(String key) {
     return this.obfuscatedClassMappings.get(key);
   }
 
+  /**
+   * Find {@link ClassMapping} by the unobfuscated class name. ({@link ClassMapping#getUnObfuscatedName()} ()})
+   *
+   * @param key unobfuscated class name
+   * @return classMapping found by unobfuscated class name. If no mapping was found, a default {@link ClassMapping} with same obfuscated and unobfuscated name will be created. ({@link ClassMapping#isDefault()} will be true)
+   */
   public ClassMapping getByUnObfuscatedName(String key) {
     return this.unObfuscatedClassMappings.get(key);
   }
 
+  /**
+   * Find {@link ClassMapping} by the obfuscated or the unobfuscated class name. ({@link ClassMapping#getObfuscatedName()} || {@link ClassMapping#getUnObfuscatedName()})
+   *
+   * @param key obfuscated or unobfuscated class name
+   * @return classMapping found by obfuscated or unobfuscated class name. If no mapping was found, a default {@link ClassMapping} with same obfuscated and unobfuscated name will be created. ({@link ClassMapping#isDefault()} will be true)
+   */
   public ClassMapping get(String key) {
     ClassMapping mapping = this.getByObfuscatedName(key);
     if (mapping == null) mapping = this.getByUnObfuscatedName(key);
