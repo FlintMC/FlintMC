@@ -16,7 +16,8 @@ public class LaunchArguments {
             description = "Main class to launch, defaults to net.minecraft.client.Main"
     )
     private final String launchTarget = "net.minecraft.client.main.Main";
-    // Collect all other arguments so we can pass them on to minecraft
+
+  // Collect all other arguments so we can pass them on to minecraft
     @Parameter
     private final List<String> otherArguments = new ArrayList<>();
 
