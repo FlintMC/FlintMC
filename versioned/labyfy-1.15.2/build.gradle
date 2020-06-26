@@ -1,4 +1,5 @@
 import org.apache.commons.io.FileUtils
+import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id 'application'
@@ -112,7 +113,10 @@ run {
             "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker",
             "--sentry", "false"
     dependsOn 'copyMappings'
-    jvmArgs '-XstartOnFirstThread'
+
+    if(Os.isFamily(Os.FAMILY_MAC)) {
+        jvmArgs '-XstartOnFirstThread'
+    }
 }
 
 task copyMappings() {
