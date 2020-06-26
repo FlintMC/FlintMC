@@ -14,6 +14,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+/**
+ * Enables the {@link PostConstruct} annotation.
+ * Whenever an object is constructed via Dependency Injection, all methods in this object, annotated with {@link PostConstruct}
+ * will be called.
+ */
 @Singleton
 public class PostConstructModule extends AbstractModule {
 
