@@ -12,24 +12,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * The difference to the java {@link ServiceLoader} is the reload and multi classloader capability.
  * <p>
  * example:
+ * <pre>
+ * {@code
  * package com.example;
- * <p>
  * interface Service{
+ *
  * void doSomething();
  * }
- * <p>
+ *
  * class ServiceImpl implements Service{
  *
- * @param <T> Type of service to load
- * @Override public void doSomething(){
- * ...
+ * @Override
+ * public void doSomething(){
  * }
  * }
+ * }
+ * </pre>
  * <p>
  * Content of "META-INF/services/com.example.Service":
  * <p>
  * To find all implementations:
  * Set<Service> services = ExtendedServiceLoader.get(Service.class).discover(classLoader);
+ *
  * @see ServiceLoader
  */
 public class ExtendedServiceLoader<T> {
@@ -44,12 +48,11 @@ public class ExtendedServiceLoader<T> {
   private final List<String> alreadyDiscovered;
 
   /**
-   *
    * Reads the content of all resources with the name of "META-INF/services/targetClass#getName()" (can be multiple files),
    * and collects all service implementations of those files.
    *
    * @param targetClass service class to load
-   * @param <T> type of service to load
+   * @param <T>         type of service to load
    * @return ExtendedServiceLoader configured to find services of type T
    */
   @SuppressWarnings("unchecked")
@@ -65,6 +68,7 @@ public class ExtendedServiceLoader<T> {
 
   /**
    * Finds all service files, interpretes them and instantiates the found classes
+   *
    * @param loader
    * @return
    */
@@ -78,7 +82,7 @@ public class ExtendedServiceLoader<T> {
 
     Set<Class<? extends T>> collectedServiceClasses = new HashSet<>();
 
-    while(serviceFiles.hasMoreElements()) {
+    while (serviceFiles.hasMoreElements()) {
       URL serviceFile = serviceFiles.nextElement();
       collectedServiceClasses.addAll(parseAndLoadServiceFile(serviceFile, loader));
     }
@@ -101,18 +105,18 @@ public class ExtendedServiceLoader<T> {
   private Set<Class<? extends T>> parseAndLoadServiceFile(URL file, ClassLoader loader) {
     Set<Class<? extends T>> classes = new HashSet<>();
 
-    try(BufferedReader reader = new BufferedReader(new InputStreamReader(file.openStream()))) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.openStream()))) {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
-        if(line.startsWith("#") || line.isEmpty() || alreadyDiscovered.contains(line)) {
+        if (line.startsWith("#") || line.isEmpty() || alreadyDiscovered.contains(line)) {
           continue;
         }
 
         alreadyDiscovered.add(line);
 
         Class<?> loaded = loader.loadClass(line);
-        if(!targetClass.isAssignableFrom(loaded)) {
+        if (!targetClass.isAssignableFrom(loaded)) {
           throw new ServiceLoadException("Service file " + file.toExternalForm() + " mentioned class " +
               loaded.getName() + ", but it is not assignable to " + targetClass.getName());
         }
