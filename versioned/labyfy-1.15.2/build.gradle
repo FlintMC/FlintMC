@@ -3,7 +3,6 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id 'application'
-    id 'java-library'
 }
 
 group 'net.labyfy.versioned'
@@ -22,10 +21,10 @@ repositories {
 }
 
 dependencies {
-    api 'net.minecraft:client:1.15.2'
-    api 'net.minecraft:server:1.15.2'
+    implementation 'net.minecraft:client:1.15.2'
+    implementation 'net.minecraft:server:1.15.2'
 
-    api project(':component:launcher')
+    implementation project(':component:launcher')
 
     runtimeOnly project(path: ':component:stereotype', configuration: 'internal')
     runtimeOnly project(':component:stereotype')
