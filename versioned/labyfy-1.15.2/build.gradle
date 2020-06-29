@@ -3,6 +3,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id 'application'
+    id 'java-library'
 }
 
 group 'net.labyfy.versioned'
@@ -16,17 +17,15 @@ labyfy {
     publishUrl "${labyfy_publish_url}"
 }
 
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'net.minecraft:client:1.15.2'
-    compile 'net.minecraft:server:1.15.2'
+    api 'net.minecraft:client:1.15.2'
+    api 'net.minecraft:server:1.15.2'
 
-    compile project(':component:launcher')
+    api project(':component:launcher')
 
     runtimeOnly project(path: ':component:stereotype', configuration: 'internal')
     runtimeOnly project(':component:stereotype')
