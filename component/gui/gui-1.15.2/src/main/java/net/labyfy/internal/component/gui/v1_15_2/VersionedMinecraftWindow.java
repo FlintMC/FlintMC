@@ -93,4 +93,8 @@ public class VersionedMinecraftWindow implements MinecraftWindow {
         .getField("debugFPS")
         .getValue(null);
   }
+
+  public boolean isIngame() {
+    return Minecraft.getInstance().world != null;
+  }
 }

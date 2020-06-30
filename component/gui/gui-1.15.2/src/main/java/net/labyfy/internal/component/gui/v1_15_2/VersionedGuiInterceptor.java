@@ -18,6 +18,7 @@ import net.labyfy.internal.component.gui.DefaultGuiController;
 import net.minecraft.client.Minecraft;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -36,12 +37,10 @@ public class VersionedGuiInterceptor {
   }
 
   // Called from injected code, see above
-  public static boolean preScreenRenderCallback(int mouseX, int mouseY, float partialTick) {
+  public static boolean preScreenRenderCallback(float partialTick) {
     DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
 
     RenderExecution execution = new RenderExecution(
-        mouseX,
-        mouseY,
         partialTick
     );
 
@@ -54,13 +53,11 @@ public class VersionedGuiInterceptor {
   }
 
   // Called from injected code, see above
-  public static void postScreenRenderCallback(boolean isCancelled, int mouseX, int mouseY, float partialTick) {
+  public static void postScreenRenderCallback(boolean isCancelled, float partialTick) {
     DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
 
     RenderExecution execution = new RenderExecution(
         isCancelled,
-        mouseX,
-        mouseY,
         partialTick
     );
 
@@ -68,6 +65,21 @@ public class VersionedGuiInterceptor {
         Hook.ExecutionTime.AFTER,
         execution
     );
+  }
+
+  @Hook(
+      executionTime = {Hook.ExecutionTime.AFTER, Hook.ExecutionTime.BEFORE},
+      className = "net.minecraft.client.gui.IngameGui",
+      methodName = "renderGameOverlay",
+      parameters = @Type(reference = float.class)
+  )
+  public void hookIngameRender(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
+    if (executionTime == Hook.ExecutionTime.BEFORE) {
+      preScreenRenderCallback((float) args[0]);
+    }
+    if (executionTime == Hook.ExecutionTime.AFTER) {
+      postScreenRenderCallback(false, (float) args[0]);
+    }
   }
 
   @ClassTransform
@@ -95,14 +107,14 @@ public class VersionedGuiInterceptor {
        */
 
       method.insertBefore(
-          "if(net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.preScreenRenderCallback($$)) {" +
-              "   net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback(true, $$);" +
+          "if(net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.preScreenRenderCallback($3)) {" +
+              "   net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback(true, $3);" +
               "   return;" +
               "}"
       );
 
       method.insertAfter(
-          "net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback(false, $$);");
+          "net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback(false, $3);");
 
       break;
     }

@@ -19,6 +19,7 @@ import net.labyfy.component.gui.component.GuiComponent;
 import net.labyfy.component.gui.event.*;
 import net.labyfy.component.gui.juklearmc.JuklearMC;
 import net.labyfy.component.gui.juklearmc.JuklearMCBackendProvider;
+import net.labyfy.component.gui.juklearmc.menues.JuklearMCComponent;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
 import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.implement.Implement;
@@ -49,6 +50,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
   // Management of toplevel components
   private final Map<ScreenName, JuklearMCScreen> overwrittenScreens;
   private final List<JuklearTopLevelComponent> currentScreenTopLevels;
+  private final List<JuklearMCComponent> standaloneJuklearComponents;
 
   // Tasks to run after Juklear is initialized
   private final List<Runnable> initializeTasks;
@@ -77,6 +79,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
     this.controller = controller;
     this.overwrittenScreens = new HashMap<>();
     this.currentScreenTopLevels = new ArrayList<>();
+    this.standaloneJuklearComponents = new ArrayList<>();
     this.initializeTasks = new ArrayList<>();
   }
 
@@ -117,6 +120,10 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
    */
   public void overwriteScreen(ScreenName screen, JuklearMCScreen overwrite) {
     this.overwrittenScreens.put(screen, overwrite);
+  }
+
+  public void registerStandaloneComponent(JuklearMCComponent juklearMCComponent) {
+    this.standaloneJuklearComponents.add(juklearMCComponent);
   }
 
   /**
@@ -257,7 +264,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
 
     // If we don't have an overwritten screen, but have no rendered yet, do so now
     // TODO: This should probably happen post Minecraft render
-    return currentJuklearScreen == null && !hasRenderedThisFrame;
+    return currentJuklearScreen == null && !hasRenderedThisFrame && !standaloneJuklearComponents.isEmpty();
   }
 
   /**
@@ -267,6 +274,16 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
   public void render(RenderExecution execution) {
     if (currentJuklearScreen != null) {
       currentJuklearScreen.preNuklearRender();
+    }
+
+    for (JuklearMCComponent standaloneJuklearComponent : this.standaloneJuklearComponents) {
+      JuklearTopLevelComponent juklearTopLevelComponent = standaloneJuklearComponent.topLevelComponent();
+
+      if (!standaloneJuklearComponent.shouldRender()) {
+        this.context.removeTopLevel(juklearTopLevelComponent);
+      } else if (!this.context.getTopLevelComponents().contains(juklearTopLevelComponent)) {
+        this.context.addTopLevel(juklearTopLevelComponent);
+      }
     }
 
     context.draw(
