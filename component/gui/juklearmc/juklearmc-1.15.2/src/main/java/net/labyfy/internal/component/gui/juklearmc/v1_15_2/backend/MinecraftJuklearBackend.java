@@ -9,7 +9,6 @@ import net.janrupf.juklear.ffi.CAccessibleObject;
 import net.janrupf.juklear.font.JuklearFontAtlasFormat;
 import net.janrupf.juklear.image.JuklearImageFormat;
 import net.janrupf.juklear.image.JuklearJavaImage;
-import net.janrupf.juklear.lwjgl.opengl.JuklearOpenGLImage;
 import net.janrupf.juklear.math.JuklearVec2;
 
 import java.nio.ByteBuffer;
@@ -47,6 +46,6 @@ public class MinecraftJuklearBackend implements JuklearBackend {
 
   @Override
   public CAccessibleObject<?> createImage(JuklearImageFormat format, ByteBuffer data, int width, int height) {
-    return new JuklearOpenGLImage(device.getPreFrameTasks(), device.uploadTexture(format, data, width, height));
+    return new MinecraftJuklearOpenGLImage(device.getPreFrameTasks(), device.uploadTexture(format, data, width, height));
   }
 }

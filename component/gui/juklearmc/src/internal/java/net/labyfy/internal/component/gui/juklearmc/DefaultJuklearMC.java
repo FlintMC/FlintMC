@@ -171,8 +171,8 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
 
     // Translate the events
     if (event instanceof CursorPosChangedEvent) {
-      mouseX = ((CursorPosChangedEvent) event).getX() * scale;
-      mouseY = ((CursorPosChangedEvent) event).getY() * scale;
+      mouseX = ((CursorPosChangedEvent) event).getX() * scale * minecraftWindow.getFramebufferWidth() / minecraftWindow.getWidth();
+      mouseY = ((CursorPosChangedEvent) event).getY() * scale * minecraftWindow.getFramebufferHeight() / minecraftWindow.getHeight();
       input.motion((int) mouseX, (int) mouseY);
     } else if (event instanceof MouseButtonEvent) {
       int button = ((MouseButtonEvent) event).getValue();

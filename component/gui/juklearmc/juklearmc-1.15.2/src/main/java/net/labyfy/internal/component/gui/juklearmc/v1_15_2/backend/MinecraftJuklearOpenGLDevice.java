@@ -7,19 +7,18 @@ import net.janrupf.juklear.ffi.CAccessibleObject;
 import net.janrupf.juklear.ffi.CAllocatedObject;
 import net.janrupf.juklear.image.JuklearImageFormat;
 import net.janrupf.juklear.image.JuklearJavaImage;
-import net.janrupf.juklear.lwjgl.opengl.JuklearOpenGLVertex;
-import net.janrupf.juklear.lwjgl.opengl.exception.JuklearOpenGLFatalException;
 import net.janrupf.juklear.math.JuklearVec2;
 import net.janrupf.juklear.util.JuklearBuffer;
 import net.janrupf.juklear.util.JuklearConstants;
 import net.janrupf.juklear.util.JuklearConvertResult;
+import net.labyfy.internal.component.gui.juklearmc.v1_15_2.exception.MinecraftJuklearOpenGLFatalException;
 import org.lwjgl.system.MemoryUtil;
-
-import static org.lwjgl.opengl.GL20.*;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import static org.lwjgl.opengl.GL20.*;
 
 public class MinecraftJuklearOpenGLDevice {
   private final Juklear juklear;
@@ -75,19 +74,19 @@ public class MinecraftJuklearOpenGLDevice {
         .addVertexLayout(juklear.drawVertexLayoutElement()
             .attribute(JuklearDrawVertexLayoutAttribute.POSITION)
             .format(JuklearDrawVertexLayoutFormat.FLOAT)
-            .offset(JuklearOpenGLVertex.positionOffset())
+            .offset(MinecraftJuklearOpenGLVertex.positionOffset())
             .build())
         .addVertexLayout(juklear.drawVertexLayoutElement()
             .attribute(JuklearDrawVertexLayoutAttribute.TEXCOORD)
             .format(JuklearDrawVertexLayoutFormat.FLOAT)
-            .offset(JuklearOpenGLVertex.uvOffset())
+            .offset(MinecraftJuklearOpenGLVertex.uvOffset())
             .build())
         .addVertexLayout(juklear.drawVertexLayoutElement()
             .attribute(JuklearDrawVertexLayoutAttribute.COLOR)
             .format(JuklearDrawVertexLayoutFormat.R8G8B8A8)
-            .offset(JuklearOpenGLVertex.colorOffset())
+            .offset(MinecraftJuklearOpenGLVertex.colorOffset())
             .build())
-        .vertexSize(JuklearOpenGLVertex.byteSize())
+        .vertexSize(MinecraftJuklearOpenGLVertex.byteSize())
         .nullTexture(nullTexture)
         .circleSegmentCount(1000)
         .curveSegmentCount(1000)
@@ -101,21 +100,21 @@ public class MinecraftJuklearOpenGLDevice {
     JuklearBuffer elementBuffer = juklear.defaultBuffer();
 
     JuklearConvertResult result = context.convert(commandBuffer, vertexBuffer, elementBuffer, convertConfig);
-    if(result != JuklearConvertResult.SUCCESS) {
-      throw new JuklearOpenGLFatalException("Failed to convert draw data to OpenGL: " + result.name());
+    if (result != JuklearConvertResult.SUCCESS) {
+      throw new MinecraftJuklearOpenGLFatalException("Failed to convert draw data to OpenGL: " + result.name());
     }
 
     ByteBuffer constVertexBuffer = vertexBuffer.constMemory();
-    glVertexPointer(2, GL_FLOAT, JuklearOpenGLVertex.byteSize(),
-        (ByteBuffer) constVertexBuffer.slice().position(JuklearOpenGLVertex.positionOffset()));
-    glTexCoordPointer(2, GL_FLOAT, JuklearOpenGLVertex.byteSize(),
-        (ByteBuffer) constVertexBuffer.slice().position(JuklearOpenGLVertex.uvOffset()));
-    glColorPointer(4, GL_UNSIGNED_BYTE, JuklearOpenGLVertex.byteSize(),
-        (ByteBuffer) constVertexBuffer.slice().position(JuklearOpenGLVertex.colorOffset()));
+    glVertexPointer(2, GL_FLOAT, MinecraftJuklearOpenGLVertex.byteSize(),
+        (ByteBuffer) constVertexBuffer.slice().position(MinecraftJuklearOpenGLVertex.positionOffset()));
+    glTexCoordPointer(2, GL_FLOAT, MinecraftJuklearOpenGLVertex.byteSize(),
+        (ByteBuffer) constVertexBuffer.slice().position(MinecraftJuklearOpenGLVertex.uvOffset()));
+    glColorPointer(4, GL_UNSIGNED_BYTE, MinecraftJuklearOpenGLVertex.byteSize(),
+        (ByteBuffer) constVertexBuffer.slice().position(MinecraftJuklearOpenGLVertex.colorOffset()));
 
     ByteBuffer constElementBuffer = elementBuffer.constMemory();
     context.drawForEach(commandBuffer, (drawCommand) -> {
-      if(drawCommand.getElementCount() < 1) {
+      if (drawCommand.getElementCount() < 1) {
         return;
       }
 
@@ -134,7 +133,7 @@ public class MinecraftJuklearOpenGLDevice {
             ); */
 
       long memAddr = MemoryUtil.memAddress(constElementBuffer);
-      if(memAddr == 0) {
+      if (memAddr == 0) {
         throw new IllegalStateException();
       }
 
