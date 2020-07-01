@@ -98,7 +98,10 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     new EntryPoint(arguments);
 
     // init sentry
-    if (logger != null && (arguments.containsKey("--sentry") && !arguments.get("--sentry").equals("false"))) {
+    if (logger != null){
+      if (arguments.containsKey("--sentry") && arguments.get("--sentry").equals("false")){
+        return;
+      }
       initSentry(arguments);
     }
 
