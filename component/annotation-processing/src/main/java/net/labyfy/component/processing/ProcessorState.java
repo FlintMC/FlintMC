@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * <p>
@@ -62,7 +61,6 @@ public class ProcessorState {
    * called once.
    *
    * @param processingEnvironment The processing environment used for the entire duration of processing
-   *
    * @throws IllegalStateException If the processing environment has been set already
    */
   public void init(ProcessingEnvironment processingEnvironment) {

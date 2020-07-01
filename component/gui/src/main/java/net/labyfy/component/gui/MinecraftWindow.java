@@ -71,4 +71,6 @@ public interface MinecraftWindow {
    * @return The current FPS of the minecraft window
    */
   int getFPS();
+
+  boolean isIngame();
 }

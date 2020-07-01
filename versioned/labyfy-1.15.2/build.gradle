@@ -33,6 +33,7 @@ dependencies {
     runtimeOnly project(':component:transform:asm')
     runtimeOnly project(path: ':component:transform:asm', configuration: 'internal')
     runtimeOnly project(':component:transform:minecraft')
+    runtimeOnly project(path: ':component:transform:minecraft', configuration: 'internal')
     runtimeOnly project(':component:transform:minecraft-obfuscator')
     runtimeOnly project(':component:transform:hook')
     runtimeOnly project(path: ':component:transform:hook', configuration: 'internal')

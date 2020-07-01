@@ -19,6 +19,7 @@ import net.labyfy.component.gui.component.GuiComponent;
 import net.labyfy.component.gui.event.*;
 import net.labyfy.component.gui.juklearmc.JuklearMC;
 import net.labyfy.component.gui.juklearmc.JuklearMCBackendProvider;
+import net.labyfy.component.gui.juklearmc.menues.JuklearMCComponent;
 import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
 import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.inject.implement.Implement;
@@ -49,6 +50,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
   // Management of toplevel components
   private final Map<ScreenName, JuklearMCScreen> overwrittenScreens;
   private final List<JuklearTopLevelComponent> currentScreenTopLevels;
+  private final List<JuklearMCComponent> standaloneJuklearComponents;
 
   // Tasks to run after Juklear is initialized
   private final List<Runnable> initializeTasks;
@@ -77,6 +79,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
     this.controller = controller;
     this.overwrittenScreens = new HashMap<>();
     this.currentScreenTopLevels = new ArrayList<>();
+    this.standaloneJuklearComponents = new ArrayList<>();
     this.initializeTasks = new ArrayList<>();
   }
 
@@ -119,6 +122,10 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
     this.overwrittenScreens.put(screen, overwrite);
   }
 
+  public void registerStandaloneComponent(JuklearMCComponent juklearMCComponent) {
+    this.standaloneJuklearComponents.add(juklearMCComponent);
+  }
+
   /**
    * Adds a {@link Runnable} which should be executed after Juklear has been booted
    *
@@ -140,10 +147,10 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
    */
   @Override
   public void beginInput() {
-    scale = (minecraftWindow.getScaleFactor() / 4f) + 0.3f;
+    scale = 1f / minecraftWindow.getScaleFactor() * 3;
 
-    int drawWidth = minecraftWindow.getFramebufferWidth();
-    int drawHeight = minecraftWindow.getFramebufferHeight();
+    int drawWidth = (int) (minecraftWindow.getFramebufferWidth() * scale);
+    int drawHeight = (int) (minecraftWindow.getFramebufferHeight() * scale);
 
     if (currentJuklearScreen != null) {
       currentJuklearScreen.updateSize(drawWidth, drawHeight);
@@ -164,18 +171,8 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
 
     // Translate the events
     if (event instanceof CursorPosChangedEvent) {
-      float width = minecraftWindow.getWidth();
-      float height = minecraftWindow.getHeight();
-
-      double realMouseX = ((CursorPosChangedEvent) event).getX();
-      double realMouseY = ((CursorPosChangedEvent) event).getY();
-
-      // Match the mouse coordinate to the rendering of Juklear
-      float deadXOffset = (width - (width * scale)) / 2;
-      float deadYOffset = (height - (height * scale)) / 2;
-
-      mouseX = (realMouseX - deadXOffset) / scale;
-      mouseY = (realMouseY - deadYOffset) / scale;
+      mouseX = ((CursorPosChangedEvent) event).getX() * scale * minecraftWindow.getFramebufferWidth() / minecraftWindow.getWidth();
+      mouseY = ((CursorPosChangedEvent) event).getY() * scale * minecraftWindow.getFramebufferHeight() / minecraftWindow.getHeight();
       input.motion((int) mouseX, (int) mouseY);
     } else if (event instanceof MouseButtonEvent) {
       int button = ((MouseButtonEvent) event).getValue();
@@ -257,7 +254,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
 
     // If we don't have an overwritten screen, but have no rendered yet, do so now
     // TODO: This should probably happen post Minecraft render
-    return currentJuklearScreen == null && !hasRenderedThisFrame;
+    return currentJuklearScreen == null && !hasRenderedThisFrame && !standaloneJuklearComponents.isEmpty();
   }
 
   /**
@@ -267,6 +264,16 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
   public void render(RenderExecution execution) {
     if (currentJuklearScreen != null) {
       currentJuklearScreen.preNuklearRender();
+    }
+
+    for (JuklearMCComponent standaloneJuklearComponent : this.standaloneJuklearComponents) {
+      JuklearTopLevelComponent juklearTopLevelComponent = standaloneJuklearComponent.topLevelComponent();
+
+      if (!standaloneJuklearComponent.shouldRender()) {
+        this.context.removeTopLevel(juklearTopLevelComponent);
+      } else if (!this.context.getTopLevelComponents().contains(juklearTopLevelComponent)) {
+        this.context.addTopLevel(juklearTopLevelComponent);
+      }
     }
 
     context.draw(

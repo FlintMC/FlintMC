@@ -9,12 +9,11 @@ repositories {
 }
 
 dependencies {
-    implementation group: "net.janrupf", name: "juklear-lwjgl3-opengl", version: "0.1.0"
     implementation project(':component:stereotype')
     implementation project(':component:inject')
     implementation project(':component:gui:juklearmc')
 
-    labyManifest group: "net.janrupf", name: "juklear-lwjgl3-opengl", version: "0.1.0"
+    implementation 'org.lwjgl:lwjgl-opengl:3.2.1'
 
     annotationProcessor project(':component:annotation-processing:autoload')
 }
