@@ -99,10 +99,10 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
     // init sentry
     if (logger != null){
-      if (arguments.containsKey("--sentry") && arguments.get("--sentry").equals("false")){
-        return;
-      }
-      initSentry(arguments);
+      if (arguments.containsKey("--sentry")){
+        if(arguments.get("--sentry").equals("true"))
+          initSentry(arguments);
+      } else initSentry(arguments);
     }
 
     try {
