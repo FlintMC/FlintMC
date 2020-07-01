@@ -147,7 +147,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
    */
   @Override
   public void beginInput() {
-    scale = (5 - minecraftWindow.getScaleFactor());
+    scale = 1f / minecraftWindow.getScaleFactor() * 3;
 
     int drawWidth = (int) (minecraftWindow.getFramebufferWidth() * scale);
     int drawHeight = (int) (minecraftWindow.getFramebufferHeight() * scale);
