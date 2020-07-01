@@ -147,10 +147,10 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
    */
   @Override
   public void beginInput() {
-    scale = (minecraftWindow.getScaleFactor() / 4f) + 0.3f;
+    scale = (5 - minecraftWindow.getScaleFactor());
 
-    int drawWidth = minecraftWindow.getFramebufferWidth();
-    int drawHeight = minecraftWindow.getFramebufferHeight();
+    int drawWidth = (int) (minecraftWindow.getFramebufferWidth() * scale);
+    int drawHeight = (int) (minecraftWindow.getFramebufferHeight() * scale);
 
     if (currentJuklearScreen != null) {
       currentJuklearScreen.updateSize(drawWidth, drawHeight);
@@ -171,18 +171,8 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
 
     // Translate the events
     if (event instanceof CursorPosChangedEvent) {
-      float width = minecraftWindow.getWidth();
-      float height = minecraftWindow.getHeight();
-
-      double realMouseX = ((CursorPosChangedEvent) event).getX();
-      double realMouseY = ((CursorPosChangedEvent) event).getY();
-
-      // Match the mouse coordinate to the rendering of Juklear
-      float deadXOffset = (width - (width * scale)) / 2;
-      float deadYOffset = (height - (height * scale)) / 2;
-
-      mouseX = (realMouseX - deadXOffset) / scale;
-      mouseY = (realMouseY - deadYOffset) / scale;
+      mouseX = ((CursorPosChangedEvent) event).getX() * scale;
+      mouseY = ((CursorPosChangedEvent) event).getY() * scale;
       input.motion((int) mouseX, (int) mouseY);
     } else if (event instanceof MouseButtonEvent) {
       int button = ((MouseButtonEvent) event).getValue();

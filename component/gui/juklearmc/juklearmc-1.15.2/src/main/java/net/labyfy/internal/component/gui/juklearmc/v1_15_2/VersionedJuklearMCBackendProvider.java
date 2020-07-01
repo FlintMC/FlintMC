@@ -1,9 +1,9 @@
 package net.labyfy.internal.component.gui.juklearmc.v1_15_2;
 
 import net.janrupf.juklear.backend.JuklearBackend;
-import net.janrupf.juklear.lwjgl.opengl.JuklearOpenGL;
 import net.labyfy.component.gui.juklearmc.JuklearMCBackendProvider;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.internal.component.gui.juklearmc.v1_15_2.backend.MinecraftJuklearBackend;
 
 import javax.inject.Singleton;
 
@@ -14,7 +14,7 @@ import javax.inject.Singleton;
 @Singleton
 @Implement(JuklearMCBackendProvider.class)
 public class VersionedJuklearMCBackendProvider implements JuklearMCBackendProvider {
-  private JuklearOpenGL backend;
+  private JuklearBackend backend;
 
   /**
    * {@inheritDoc}
@@ -22,7 +22,7 @@ public class VersionedJuklearMCBackendProvider implements JuklearMCBackendProvid
   @Override
   public JuklearBackend backend() {
     if (backend == null) {
-      backend = new JuklearOpenGL();
+      backend = new MinecraftJuklearBackend();
     }
 
     return backend;
