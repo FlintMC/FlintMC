@@ -3,6 +3,8 @@ package net.labyfy.component.initializer.inject.module;
 import com.google.inject.*;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.*;
+import net.labyfy.component.inject.logging.InjectLogger;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -22,13 +24,19 @@ import java.util.stream.Collectors;
 @Singleton
 public class PostConstructModule extends AbstractModule {
 
+  private final Logger logger;
   private final AtomicReference<Injector> injectorReference;
 
   @Inject
-  private PostConstructModule(@Named("injectorReference") AtomicReference injectorReference) {
+  private PostConstructModule(
+      @InjectLogger Logger logger,
+      @Named("injectorReference") AtomicReference injectorReference
+  ) {
+    this.logger = logger;
     this.injectorReference = injectorReference;
   }
 
+  @Override
   protected void configure() {
     this.bindListener(
         Matchers.any(),
@@ -60,8 +68,9 @@ public class PostConstructModule extends AbstractModule {
             method.setAccessible(true);
             try {
               method.invoke(object, arguments);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-              e.printStackTrace();
+            } catch (IllegalAccessException | InvocationTargetException exception) {
+              logger.error("unable to invoke method: {}#{}", object.getClass().getName(), method.getName());
+              logger.error(exception);
             }
           }
 

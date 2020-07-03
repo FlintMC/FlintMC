@@ -5,6 +5,7 @@ import com.google.inject.name.Names;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 public class FieldMapping {
 
@@ -79,17 +80,17 @@ public class FieldMapping {
   /**
    * @return The {@link Field} that this {@link FieldMapping} represents.
    */
-  public Field getField() {
+  public Optional<Field> getField() {
     if (this.cached == null) {
       try {
         Field declaredField = this.labyClassMapping.get().getDeclaredField(this.getName());
         declaredField.setAccessible(true);
         this.cached = declaredField;
-      } catch (Exception ex) {
-        ex.printStackTrace();
+      } catch (Exception ignore) {
+        return Optional.empty();
       }
     }
-    return this.cached;
+    return Optional.of(this.cached);
   }
 
   /**
@@ -99,13 +100,12 @@ public class FieldMapping {
    * @param <T>      Implicit type to cast result to
    * @return Resolved field value
    */
-  public <T> T getValue(Object instance) {
+  public <T> Optional<T> getValue(Object instance) {
     try {
-      return (T) this.getField().get(instance);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      return Optional.ofNullable((T) this.getField().get(instance));
+    } catch (IllegalAccessException ignore) {
+      return Optional.empty();
     }
-    return null;
   }
 
   /**
@@ -113,13 +113,15 @@ public class FieldMapping {
    *
    * @param instance Object instance to set value to
    * @param value    New value to set
+   * @throws IllegalAccessException  if we do not have access to the field
+   * @return  whether or not it successfully set the field
    */
-  public void setValue(Object instance, Object value) {
-    try {
-      this.getField().set(instance, value);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
+  public boolean setValue(Object instance, Object value) throws IllegalAccessException {
+    if (this.getField().isPresent()) {
+      this.getField().get().set(instance, value);
+      return true;
     }
+    return false;
   }
 
 

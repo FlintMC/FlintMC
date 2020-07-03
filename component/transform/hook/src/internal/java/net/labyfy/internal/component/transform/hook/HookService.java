@@ -4,10 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import net.labyfy.component.commons.resolve.AnnotationResolver;
 import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
@@ -55,24 +52,19 @@ public class HookService implements ServiceHandler {
       Class<?> clazz,
       String method,
       Class<?>[] parameters,
-      Object[] args) {
-    try {
+      Object[] args) throws NoSuchMethodException {
+    Map<Key<?>, Object> availableParameters = Maps.newHashMap();
+    availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
+    availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
+    availableParameters.put(Key.get(instance.getClass()), instance);
+    availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
 
-      Map<Key<?>, Object> availableParameters = Maps.newHashMap();
-      availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
-      availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
-      availableParameters.put(Key.get(instance.getClass()), instance);
-      availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
-
-      Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
-      InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
-          .invokeMethod(
-              declaredMethod,
-              InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
-              availableParameters);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
+    InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
+        .invokeMethod(
+            declaredMethod,
+            InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
+            availableParameters);
   }
 
   public void discover(Identifier.Base property) {
@@ -100,7 +92,7 @@ public class HookService implements ServiceHandler {
   }
 
   @ClassTransform
-  public void transform(ClassTransformContext classTransformContext) {
+  public void transform(ClassTransformContext classTransformContext) throws NotFoundException {
     CtClass ctClass = classTransformContext.getCtClass();
 
     for (HookEntry entry : hooks) {
@@ -149,7 +141,7 @@ public class HookService implements ServiceHandler {
     }
   }
 
-  private void insert(CtMethod target, Hook.ExecutionTime executionTime, Method hook) {
+  private void insert(CtMethod target, Hook.ExecutionTime executionTime, Method hook) throws CannotCompileException {
     StringBuilder stringBuilder = new StringBuilder();
     for (Class<?> parameterType : hook.getParameterTypes()) {
       String className =

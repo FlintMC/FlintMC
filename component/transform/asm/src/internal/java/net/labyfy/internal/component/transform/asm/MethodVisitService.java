@@ -7,6 +7,7 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
+import net.labyfy.component.stereotype.exceptions.ServiceNotFoundException;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
@@ -103,18 +104,21 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
     return bytes;
   }
 
-  public void discover(Identifier.Base property) {
+  @Override
+  public void discover(Identifier.Base property) throws ServiceNotFoundException {
     MethodVisit methodVisit =
         property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
     InternalMethodVisitorContext methodVisitorContext = new InternalMethodVisitorContext(methodVisit);
     Method location = property.getProperty().getLocatedIdentifiedAnnotation().getLocation();
+
     try {
       location.invoke(
           InjectionHolder.getInjectedInstance(location.getDeclaringClass()),
           methodVisitorContext);
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
+    } catch (IllegalAccessException | InvocationTargetException exception) {
+      throw new ServiceNotFoundException("unable to load service", exception);
     }
+
     this.methodVisitorContexts.add(methodVisitorContext);
   }
 }
