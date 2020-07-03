@@ -43,265 +43,259 @@ import java.util.Map;
 @Singleton
 @Implement(JuklearMC.class)
 public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, JuklearMC {
-    // GUI interaction instances
-    private final Juklear juklear;
-    private final GuiController controller;
+  // GUI interaction instances
+  private final Juklear juklear;
+  private final GuiController controller;
 
-    // Management of toplevel components
-    private final Map<ScreenName, JuklearMCScreen> overwrittenScreens;
-    private final List<JuklearTopLevelComponent> currentScreenTopLevels;
-    private final List<JuklearMCComponent> standaloneJuklearComponents;
+  // Management of toplevel components
+  private final Map<ScreenName, JuklearMCScreen> overwrittenScreens;
+  private final List<JuklearTopLevelComponent> currentScreenTopLevels;
+  private final List<JuklearMCComponent> standaloneJuklearComponents;
 
-    // Tasks to run after Juklear is initialized
-    private final List<Runnable> initializeTasks;
+  // Tasks to run after Juklear is initialized
+  private final List<Runnable> initializeTasks;
 
-    private JuklearMCScreen currentJuklearScreen;
+  private JuklearMCScreen currentJuklearScreen;
 
-    // Juklear state
-    private JuklearContext context;
-    private JuklearFont defaultFont;
-    private JuklearInput input;
+  // Juklear state
+  private JuklearContext context;
+  private JuklearFont defaultFont;
+  private JuklearInput input;
 
-    private JuklearFontAtlas fontAtlas;
+  private MinecraftWindow minecraftWindow;
 
-    private MinecraftWindow minecraftWindow;
+  private boolean hasRenderedThisFrame;
 
-    private boolean hasRenderedThisFrame;
+  // Cache of GUI state
+  private double mouseX;
+  private double mouseY;
+  private float scale;
 
-    // Cache of GUI state
-    private double mouseX;
-    private double mouseY;
-    private float scale;
+  @Inject
+  private DefaultJuklearMC(JuklearMCBackendProvider versionedProvider, GuiController controller) throws IOException {
+    // TODO: This should be updated once Juklear has a better system
+    JuklearNatives.setupWithTemporaryFolder();
+    juklear = Juklear.usingInternalGarbageCollection(versionedProvider.backend());
+    this.controller = controller;
+    this.overwrittenScreens = new HashMap<>();
+    this.currentScreenTopLevels = new ArrayList<>();
+    this.standaloneJuklearComponents = new ArrayList<>();
+    this.initializeTasks = new ArrayList<>();
+  }
 
-    @Inject
-    private DefaultJuklearMC(JuklearMCBackendProvider versionedProvider, GuiController controller) throws IOException {
-        // TODO: This should be updated once Juklear has a better system
-        JuklearNatives.setupWithTemporaryFolder();
-        juklear = Juklear.usingInternalGarbageCollection(versionedProvider.backend());
-        this.controller = controller;
-        this.overwrittenScreens = new HashMap<>();
-        this.currentScreenTopLevels = new ArrayList<>();
-        this.standaloneJuklearComponents = new ArrayList<>();
-        this.initializeTasks = new ArrayList<>();
+  /**
+   * Run as a task once OpenGL has been initialized
+   *
+   * @throws JuklearInitializationException If Juklear and/or its backend fails to initialize
+   * @throws IOException                    If an I/O error occurs reading one of the required resources
+   */
+  @Task(value = Tasks.POST_OPEN_GL_INITIALIZE)
+  public void initialize() throws JuklearInitializationException, IOException {
+    juklear.init();
+    minecraftWindow = InjectionHolder.getInjectedInstance(MinecraftWindow.class);
+
+    // Load our default font, 20 seems to pretty much match the Minecraft scaling
+    JuklearFontAtlas fontAtlas = juklear.defaultFontAtlas();
+    JuklearFontAtlasEditor editor = fontAtlas.begin();
+    defaultFont = editor.addFromURL(getClass().getResource("/assets/labymod/fonts/minecraft.ttf"), 20);
+    editor.end();
+
+    // Set up the context and apply the default style
+    context = juklear.defaultContext(defaultFont);
+    DefaultLabyModStyle.apply(context);
+
+    // Make sure to notify the GUI controller that we exist
+    controller.registerComponent(this);
+    controller.registerInputProcessor(this);
+
+    // After everything else has been done, run the init tasks
+    initializeTasks.forEach(Runnable::run);
+  }
+
+  /**
+   * Marks a vanilla screen as overwritten with a Juklear screen replacement
+   *
+   * @param screen    The name of the screen to overwrite
+   * @param overwrite The screen to use as an overwrite
+   */
+  public void overwriteScreen(ScreenName screen, JuklearMCScreen overwrite) {
+    this.overwrittenScreens.put(screen, overwrite);
+  }
+
+  public void registerStandaloneComponent(JuklearMCComponent juklearMCComponent) {
+    this.standaloneJuklearComponents.add(juklearMCComponent);
+  }
+
+  /**
+   * Adds a {@link Runnable} which should be executed after Juklear has been booted
+   *
+   * @param task The task to run
+   */
+  public void onInitialize(Runnable task) {
+    this.initializeTasks.add(task);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public JuklearContext getContext() {
+    return context;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void beginInput() {
+    scale = 1f / minecraftWindow.getScaleFactor() * 3;
+
+    int drawWidth = (int) (minecraftWindow.getFramebufferWidth() * scale);
+    int drawHeight = (int) (minecraftWindow.getFramebufferHeight() * scale);
+
+    if (currentJuklearScreen != null) {
+      currentJuklearScreen.updateSize(drawWidth, drawHeight);
     }
 
-    /**
-     * Run as a task once OpenGL has been initialized
-     *
-     * @throws JuklearInitializationException If Juklear and/or its backend fails to initialize
-     * @throws IOException                    If an I/O error occurs reading one of the required resources
-     */
-    @Task(value = Tasks.POST_OPEN_GL_INITIALIZE)
-    public void initialize() throws JuklearInitializationException, IOException {
-        juklear.init();
-        minecraftWindow = InjectionHolder.getInjectedInstance(MinecraftWindow.class);
+    this.input = context.beginInput();
+  }
 
-        // Load our default font, 20 seems to pretty much match the Minecraft scaling
-        this.fontAtlas = juklear.defaultFontAtlas();
-        JuklearFontAtlasEditor editor = fontAtlas.begin();
-        defaultFont = editor.addFromURL(getClass().getResource("/assets/labymod/fonts/minecraft.ttf"), 20);
-        editor.end();
-
-        // Set up the context and apply the default style
-        context = juklear.defaultContext(defaultFont);
-        DefaultLabyModStyle.apply(context);
-
-        // Make sure to notify the GUI controller that we exist
-        controller.registerComponent(this);
-        controller.registerInputProcessor(this);
-
-        // After everything else has been done, run the init tasks
-        initializeTasks.forEach(Runnable::run);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean process(GuiInputEvent event) {
+    if (currentJuklearScreen == null) {
+      // If there is no active screen we don't consume the events
+      return false;
     }
 
-    /**
-     * Marks a vanilla screen as overwritten with a Juklear screen replacement
-     *
-     * @param screen    The name of the screen to overwrite
-     * @param overwrite The screen to use as an overwrite
-     */
-    public void overwriteScreen(ScreenName screen, JuklearMCScreen overwrite) {
-        this.overwrittenScreens.put(screen, overwrite);
+    // Translate the events
+    if (event instanceof CursorPosChangedEvent) {
+      mouseX = ((CursorPosChangedEvent) event).getX() * scale * minecraftWindow.getFramebufferWidth() / minecraftWindow.getWidth();
+      mouseY = ((CursorPosChangedEvent) event).getY() * scale * minecraftWindow.getFramebufferHeight() / minecraftWindow.getHeight();
+      input.motion((int) mouseX, (int) mouseY);
+    } else if (event instanceof MouseButtonEvent) {
+      int button = ((MouseButtonEvent) event).getValue();
+      boolean isPressed = ((MouseButtonEvent) event).getState() != MouseButtonEvent.State.RELEASE;
+
+      switch (button) {
+        case MouseButtonEvent.LEFT:
+          input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, isPressed);
+          break;
+
+        case MouseButtonEvent.RIGHT:
+          input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, isPressed);
+          break;
+
+        case MouseButtonEvent.MIDDLE:
+          input.button(JuklearMouseButton.MIDDLE, (int) mouseY, (int) mouseY, isPressed);
+          break;
+      }
+    } else if (event instanceof MouseScrolledEvent) {
+      input.scroll((float) ((MouseScrolledEvent) event).getXOffset(), (float) ((MouseScrolledEvent) event).getYOffset());
+    } else if (event instanceof UnicodeTypedEvent) {
+      input.unicode(((UnicodeTypedEvent) event).getValue());
+    }
+    return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endInput() {
+    this.input.end();
+    this.input = null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void screenChanged(ScreenName newScreen) {
+    if (!currentScreenTopLevels.isEmpty()) {
+      // Clean up everything which has been added by the previous screen
+      currentScreenTopLevels.forEach(context::removeTopLevel);
+      currentScreenTopLevels.clear();
     }
 
-    public void registerStandaloneComponent(JuklearMCComponent juklearMCComponent) {
-        this.standaloneJuklearComponents.add(juklearMCComponent);
+    if (currentJuklearScreen != null) {
+      // Make sure we notify the screen that it is being closed
+      currentJuklearScreen.close();
     }
 
-    /**
-     * Adds a {@link Runnable} which should be executed after Juklear has been booted
-     *
-     * @param task The task to run
-     */
-    public void onInitialize(Runnable task) {
-        this.initializeTasks.add(task);
+    if (newScreen != null) {
+      // If we have a new screen, try to match it against a Juklear replacement
+      currentJuklearScreen = overwrittenScreens.get(newScreen);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public JuklearContext getContext() {
-        return context;
+    if (currentJuklearScreen != null) {
+      // Found a replacement, notify the screen that it is being opened and
+      // add all top level components the screen is exposing
+      currentJuklearScreen.open();
+      currentJuklearScreen.topLevelComponents().forEach((c) -> {
+        context.addTopLevel(c);
+        currentScreenTopLevels.add(c);
+      });
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution) {
+    if (currentJuklearScreen != null && executionTime == Hook.ExecutionTime.BEFORE) {
+      // If we have an overwritten screen, cancel the vanilla rendering and
+      // render only if we have not rendered already
+      execution.getCancellation().cancel();
+      return !hasRenderedThisFrame;
     }
 
-    public JuklearFontAtlas getFontAtlas() {
-        return this.fontAtlas;
+    // If we don't have an overwritten screen, but have no rendered yet, do so now
+    // TODO: This should probably happen post Minecraft render
+    return currentJuklearScreen == null && !hasRenderedThisFrame && !standaloneJuklearComponents.isEmpty();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void render(RenderExecution execution) {
+    if (currentJuklearScreen != null) {
+      currentJuklearScreen.preNuklearRender();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void beginInput() {
-        scale = 1f / minecraftWindow.getScaleFactor() * 3;
+    for (JuklearMCComponent standaloneJuklearComponent : this.standaloneJuklearComponents) {
+      JuklearTopLevelComponent juklearTopLevelComponent = standaloneJuklearComponent.topLevelComponent();
 
-        int drawWidth = (int) (minecraftWindow.getFramebufferWidth() * scale);
-        int drawHeight = (int) (minecraftWindow.getFramebufferHeight() * scale);
-
-        if (currentJuklearScreen != null) {
-            currentJuklearScreen.updateSize(drawWidth, drawHeight);
-        }
-
-        this.input = context.beginInput();
+      if (!standaloneJuklearComponent.shouldRender()) {
+        this.context.removeTopLevel(juklearTopLevelComponent);
+      } else if (!this.context.getTopLevelComponents().contains(juklearTopLevelComponent)) {
+        this.context.addTopLevel(juklearTopLevelComponent);
+      }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean process(GuiInputEvent event) {
-        if (currentJuklearScreen == null) {
-            // If there is no active screen we don't consume the events
-            return false;
-        }
+    context.draw(
+        minecraftWindow.getFramebufferWidth(),
+        minecraftWindow.getFramebufferHeight(),
+        new JuklearVec2(juklear, scale, scale),
+        // Leave it off! OpenGL does Antialiasing for us, it creates weird artifacts if juklear does too!
+        JuklearAntialiasing.OFF);
 
-        // Translate the events
-        if (event instanceof CursorPosChangedEvent) {
-            mouseX = ((CursorPosChangedEvent) event).getX() * scale * minecraftWindow.getFramebufferWidth() / minecraftWindow.getWidth();
-            mouseY = ((CursorPosChangedEvent) event).getY() * scale * minecraftWindow.getFramebufferHeight() / minecraftWindow.getHeight();
-            input.motion((int) mouseX, (int) mouseY);
-        } else if (event instanceof MouseButtonEvent) {
-            int button = ((MouseButtonEvent) event).getValue();
-            boolean isPressed = ((MouseButtonEvent) event).getState() != MouseButtonEvent.State.RELEASE;
-
-            switch (button) {
-                case MouseButtonEvent.LEFT:
-                    input.button(JuklearMouseButton.LEFT, (int) mouseX, (int) mouseY, isPressed);
-                    break;
-
-                case MouseButtonEvent.RIGHT:
-                    input.button(JuklearMouseButton.RIGHT, (int) mouseX, (int) mouseY, isPressed);
-                    break;
-
-                case MouseButtonEvent.MIDDLE:
-                    input.button(JuklearMouseButton.MIDDLE, (int) mouseY, (int) mouseY, isPressed);
-                    break;
-            }
-        } else if (event instanceof MouseScrolledEvent) {
-            input.scroll((float) ((MouseScrolledEvent) event).getXOffset(), (float) ((MouseScrolledEvent) event).getYOffset());
-        } else if (event instanceof UnicodeTypedEvent) {
-            input.unicode(((UnicodeTypedEvent) event).getValue());
-        }
-        return true;
+    if (currentJuklearScreen != null) {
+      currentJuklearScreen.postNuklearRender();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void endInput() {
-        this.input.end();
-        this.input = null;
-    }
+    hasRenderedThisFrame = true;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void screenChanged(ScreenName newScreen) {
-        if (!currentScreenTopLevels.isEmpty()) {
-            // Clean up everything which has been added by the previous screen
-            currentScreenTopLevels.forEach(context::removeTopLevel);
-            currentScreenTopLevels.clear();
-        }
-
-        if (currentJuklearScreen != null) {
-            // Make sure we notify the screen that it is being closed
-            currentJuklearScreen.close();
-        }
-
-        if (newScreen != null) {
-            // If we have a new screen, try to match it against a Juklear replacement
-            currentJuklearScreen = overwrittenScreens.get(newScreen);
-        }
-
-        if (currentJuklearScreen != null) {
-            // Found a replacement, notify the screen that it is being opened and
-            // add all top level components the screen is exposing
-            currentJuklearScreen.open();
-            currentJuklearScreen.topLevelComponents().forEach((c) -> {
-                context.addTopLevel(c);
-                currentScreenTopLevels.add(c);
-            });
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution) {
-        if (currentJuklearScreen != null && executionTime == Hook.ExecutionTime.BEFORE) {
-            // If we have an overwritten screen, cancel the vanilla rendering and
-            // render only if we have not rendered already
-            execution.getCancellation().cancel();
-            return !hasRenderedThisFrame;
-        }
-
-        // If we don't have an overwritten screen, but have no rendered yet, do so now
-        // TODO: This should probably happen post Minecraft render
-        return currentJuklearScreen == null && !hasRenderedThisFrame && !standaloneJuklearComponents.isEmpty();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void render(RenderExecution execution) {
-        if (currentJuklearScreen != null) {
-            currentJuklearScreen.preNuklearRender();
-        }
-
-        for (JuklearMCComponent standaloneJuklearComponent : this.standaloneJuklearComponents) {
-            JuklearTopLevelComponent juklearTopLevelComponent = standaloneJuklearComponent.topLevelComponent();
-
-            if (!standaloneJuklearComponent.shouldRender()) {
-                this.context.removeTopLevel(juklearTopLevelComponent);
-            } else if (!this.context.getTopLevelComponents().contains(juklearTopLevelComponent)) {
-                this.context.addTopLevel(juklearTopLevelComponent);
-            }
-        }
-
-        context.draw(
-                minecraftWindow.getFramebufferWidth(),
-                minecraftWindow.getFramebufferHeight(),
-                new JuklearVec2(juklear, scale, scale),
-                // Leave it off! OpenGL does Antialiasing for us, it creates weird artifacts if juklear does too!
-                JuklearAntialiasing.OFF);
-
-        if (currentJuklearScreen != null) {
-            currentJuklearScreen.postNuklearRender();
-        }
-
-        hasRenderedThisFrame = true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void frameDone() {
-        hasRenderedThisFrame = false;
-        context.processEvents();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void frameDone() {
+    hasRenderedThisFrame = false;
+    context.processEvents();
+  }
 }
