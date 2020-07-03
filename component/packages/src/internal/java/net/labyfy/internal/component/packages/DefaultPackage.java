@@ -2,8 +2,10 @@ package net.labyfy.internal.component.packages;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.inject.Inject;
 import net.labyfy.component.commons.consumer.TriConsumer;
 import net.labyfy.component.initializer.EntryPoint;
+import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
@@ -13,8 +15,10 @@ import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.internal.component.inject.InjectionServiceShare;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -25,6 +29,7 @@ import java.util.jar.JarFile;
  * Default implementation of the {@link Package}.
  */
 public class DefaultPackage implements Package {
+  private final Logger logger;
   private final File jarFile;
   private PackageManifest packageManifest;
   private PackageState packageState;
@@ -40,10 +45,13 @@ public class DefaultPackage implements Package {
    * @param jar            The java IO jar file this package should be loaded from, must point to the same file as
    *                       the `file` parameter, or must be null if the package has been loaded from the classpath
    */
+  @Inject
   protected DefaultPackage(
+      @InjectLogger Logger logger,
       DefaultPackageManifestLoader manifestLoader,
       File jarFile,
       JarFile jar) {
+    this.logger = logger;
     this.jarFile = jarFile;
 
     if (jar != null) {
@@ -53,18 +61,24 @@ public class DefaultPackage implements Package {
             " does not contain a package manifest");
       }
 
-      // Try to load the manifest
-      Optional<PackageManifest> optionalManifest = manifestLoader.loadManifest(jar);
-      if (optionalManifest.isPresent() && optionalManifest.get().isValid()) {
-        // Manifest has been loaded, set the package state to not loaded to mark it as ready for load
-        this.packageState = PackageState.NOT_LOADED;
-      } else {
-        // Loading the package manifest failed
+      try {
+        // Try to load the manifest
+        PackageManifest manifest = manifestLoader.loadManifest(jar);
+
+        if (manifest.isValid()) {
+          // Manifest has been loaded, set the package state to not loaded to mark it as ready for load
+          this.packageState = PackageState.NOT_LOADED;
+          this.packageManifest = manifest;
+        } else {
+          // Loading the package manifest failed
+          this.packageState = PackageState.INVALID_MANIFEST;
+        }
+      } catch (IOException ignore) {
+        // It might seem weird that I use INVALID_MANIFEST instead of NOT_LOADED. The answer is that the previous code
+        // checked whether or not the manifest is present (the previous API utilized Java optionals). If the manifest
+        // is NOT present, it resulted in INVALID_MANIFEST.
         this.packageState = PackageState.INVALID_MANIFEST;
       }
-
-      // If we have a manifest, save it
-      optionalManifest.ifPresent(manifest -> this.packageManifest = manifest);
     } else {
       // The package should not be loaded from a file, thus we don't have a manifest and mark  the package
       // as ready for load
@@ -185,9 +199,9 @@ public class DefaultPackage implements Package {
       classes.forEach((priority, className) -> {
         try {
           EntryPoint.notifyService(Class.forName(className, true, DefaultPackage.class.getClassLoader()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className);
+        } catch (ClassNotFoundException exception) {
+          logger.error("unreachable condition: loaded class could not be found: {}", className);
+          logger.error(exception);
         }
       });
       InjectionServiceShare.flush();

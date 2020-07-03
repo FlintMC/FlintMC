@@ -4,6 +4,7 @@ import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoader;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
 import net.labyfy.component.launcher.service.LauncherPlugin;
+import net.labyfy.component.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -126,7 +127,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * @throws ClassNotFoundException If the class can't be found or an exception occurs finding the class
    * @throws IllegalStateException  If the class is being searched already
    */
-  public Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException {
+  public Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException, ClassTransformException {
     if (currentlyLoading.contains(name)) {
       throw new IllegalStateException("Circular load detected: " + name);
     }
@@ -206,8 +207,10 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       Class<?> clazz = loader.commonDefineClass(name, classBytes, 0, classBytes.length, codeSource);
       classCache.put(name, clazz);
       return clazz;
-    } catch (IOException e) {
-      throw new ClassNotFoundException("Failed to find class " + name + " due to IOException", e);
+    } catch (IOException exception) {
+      throw new ClassNotFoundException("unable to find class: " + name, exception);
+    } catch (ClassTransformException exception) {
+      throw new ClassTransformException("unable to transform class: " + name, exception);
     } finally {
       // Make sure we remove the loading flag from the class
       currentlyLoading.remove(name);
