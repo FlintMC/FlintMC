@@ -162,11 +162,10 @@ public class MethodMapping {
    *
    * @param parameters The method parameters to call the target method
    * @param <T>        Implicit casted result type
-   * @throws InvocationTargetException  if invoked method throws an exception
-   * @throws IllegalAccessException     if we do not have access to the method
    * @return The return value of the invoked method
    */
-  public <T> T invokeStatic(Object... parameters) throws InvocationTargetException, IllegalAccessException {
+  public <T> T invokeStatic(Object... parameters) {
+
     return this.invoke(null, parameters);
   }
 
@@ -176,12 +175,15 @@ public class MethodMapping {
    * @param parameters The method parameters to call the target method
    * @param instance   The instance to invoke the method on
    * @param <T>        Implicit casted result type
-   * @throws InvocationTargetException  if invoked method throws an exception
-   * @throws IllegalAccessException     if we do not have access to the method
    * @return The return value of the invoked method
    */
-  public <T> T invoke(Object instance, Object... parameters) throws InvocationTargetException, IllegalAccessException {
-    return (T) this.getMethod().invoke(instance, parameters);
+  public <T> T invoke(Object instance, Object... parameters) {
+    try {
+      return (T) this.getMethod().invoke(instance, parameters);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   private String getDescriptorForClass(final Class c) {

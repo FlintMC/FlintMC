@@ -11,7 +11,6 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
-import net.labyfy.component.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -116,7 +115,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
   }
 
   @Override
-  public byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
+  public byte[] modifyClass(String className, byte[] classData) {
     for (LateInjectedTransformer transformer : injectedTransformers.values()) {
       byte[] newData = transformer.transform(className, classData);
       if (newData != null) {

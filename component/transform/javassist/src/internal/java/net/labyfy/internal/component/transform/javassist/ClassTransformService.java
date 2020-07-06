@@ -2,9 +2,7 @@ package net.labyfy.internal.component.transform.javassist;
 
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.NotFoundException;
 import javassist.bytecode.ClassFile;
-import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.mappings.ClassMapping;
@@ -14,13 +12,11 @@ import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 import net.labyfy.component.stereotype.property.Property;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
-import net.labyfy.component.transform.exceptions.ClassTransformException;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.component.transform.javassist.CtClassFilter;
 import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 import net.labyfy.component.transform.minecraft.MinecraftTransformer;
-import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,7 +36,6 @@ import java.util.function.Predicate;
 @Deprecated
 public class ClassTransformService implements ServiceHandler, LateInjectedTransformer {
 
-  private final Logger logger;
   private final String version;
   private final ClassMappingProvider classMappingProvider;
   private final InternalClassTransformContext.Factory classTransformContextFactory;
@@ -50,61 +45,55 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
 
   @Inject
   private ClassTransformService(
-      @InjectLogger Logger logger,
       ClassMappingProvider classMappingProvider,
       InternalClassTransformContext.Factory classTransformContextFactory,
       @Named("launchArguments") Map launchArguments) {
-    this.logger = logger;
     this.classMappingProvider = classMappingProvider;
     this.classTransformContextFactory = classTransformContextFactory;
     this.classTransformContexts = new HashSet<>();
     this.version = (String) launchArguments.get("--version");
   }
 
-  @Override
   public void discover(Identifier.Base property) {
-    LocatedIdentifiedAnnotation locatedIdentifiedAnnotation =
-        property.getProperty().getLocatedIdentifiedAnnotation();
-    LaunchController.getInstance().getRootLoader().excludeFromModification(
-        locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass().getName());
+    try {
+      LocatedIdentifiedAnnotation locatedIdentifiedAnnotation =
+          property.getProperty().getLocatedIdentifiedAnnotation();
+      LaunchController.getInstance().getRootLoader().excludeFromModification(
+          locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass().getName());
 
-    Collection<Predicate<CtClass>> filters = new HashSet<>();
+      Collection<Predicate<CtClass>> filters = new HashSet<>();
 
-    for (Property.Base subProperty :
-        property.getProperty().getSubProperties(CtClassFilter.class)) {
-      filters.add(
-          ctClass -> {
-            CtClassFilter annotation =
-                subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
-            try {
+      for (Property.Base subProperty :
+          property.getProperty().getSubProperties(CtClassFilter.class)) {
+        filters.add(
+            ctClass -> {
+              CtClassFilter annotation =
+                  subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
               return annotation
                   .value()
                   .test(
                       ctClass,
                       InjectionHolder.getInjectedInstance(annotation.classNameResolver())
                           .resolve(annotation.className()));
-            } catch (NotFoundException exception) {
-              logger.error("unable to test class: {}", ctClass.getName());
-              logger.error(exception);
-              return false;
-            }
-          });
-    }
+            });
+      }
 
-    this.classTransformContexts.add(
-        this.classTransformContextFactory.create(
-            filters,
-            InjectionHolder.getInjectedInstance(
-                locatedIdentifiedAnnotation.<ClassTransform>getAnnotation().classNameResolver()),
-            locatedIdentifiedAnnotation.getAnnotation(),
-            locatedIdentifiedAnnotation.getLocation(),
-            locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass(),
-            InjectionHolder.getInjectedInstance(
-                locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass())));
+      this.classTransformContexts.add(
+          this.classTransformContextFactory.create(
+              filters,
+              InjectionHolder.getInjectedInstance(
+                  locatedIdentifiedAnnotation.<ClassTransform>getAnnotation().classNameResolver()),
+              locatedIdentifiedAnnotation.getAnnotation(),
+              locatedIdentifiedAnnotation.getLocation(),
+              locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass(),
+              InjectionHolder.getInjectedInstance(
+                  locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass())));
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
-  @Override
-  public byte[] transform(String className, byte[] bytes) throws ClassTransformException {
+  public byte[] transform(String className, byte[] bytes) {
     try {
       ClassPool classPool = ClassPool.getDefault();
       CtClass ctClass =
@@ -142,8 +131,10 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
       }
 
       return ctClass.toBytecode();
-    } catch (Exception exception) {
-      throw new ClassTransformException("unable to transform class: " + className, exception);
+
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
+    return bytes;
   }
 }
