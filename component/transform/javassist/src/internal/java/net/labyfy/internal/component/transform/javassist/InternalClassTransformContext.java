@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -52,80 +51,98 @@ public class InternalClassTransformContext implements ClassTransformContext {
     return ownerClass;
   }
 
-  public Optional<CtField> getField(String name) {
+  public CtField getField(String name) {
     try {
-      return Optional.of(this.ctClass.getField(name));
-    } catch (NotFoundException ignore) {
-      return Optional.empty();
+      return this.ctClass.getField(name);
+    } catch (NotFoundException e) {
+      return null;
     }
   }
 
-  public CtMethod addMethod(String returnType, String name, String body, Modifier... modifiers) throws CannotCompileException {
+  public CtMethod addMethod(String returnType, String name, String body, Modifier... modifiers) {
     String javaModifier =
         Arrays.stream(modifiers).map(Modifier::toString).collect(Collectors.joining(" "));
 
-    CtMethod ctMethod =
-        CtMethod.make(
-            String.format("%s %s %s {%s}", javaModifier, returnType, name, body), this.ctClass);
-    this.ctClass.addMethod(ctMethod);
-    return ctMethod;
-  }
-
-  public CtMethod addMethod(String src) throws CannotCompileException {
-    CtMethod make = CtMethod.make(src, this.ctClass);
-    this.ctClass.addMethod(make);
-    return make;
-  }
-
-  public Optional<CtMethod> getOwnerMethod(String name, String desc) {
     try {
-      return Optional.of(this.ctClass.getMethod(name, desc));
-    } catch (NotFoundException ignore) {
-      return Optional.empty();
+      CtMethod ctMethod =
+          CtMethod.make(
+              String.format("%s %s %s {%s}", javaModifier, returnType, name, body), this.ctClass);
+      this.ctClass.addMethod(ctMethod);
+      return ctMethod;
+    } catch (CannotCompileException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public CtMethod addMethod(String src) {
+    try {
+      CtMethod make = CtMethod.make(src, this.ctClass);
+      this.ctClass.addMethod(make);
+      return make;
+    } catch (CannotCompileException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public CtMethod getOwnerMethod(String name, String desc) {
+    try {
+      return this.ctClass.getMethod(name, desc);
+    } catch (NotFoundException e) {
+      return null;
     }
   }
 
-  public CtField addField(Class type, String name, Modifier... modifiers) throws CannotCompileException {
+  public CtField addField(Class type, String name, Modifier... modifiers) {
     return this.addField(type.getName(), name, modifiers);
   }
 
-  public CtField addField(String type, String name, Modifier... modifiers) throws CannotCompileException {
+  public CtField addField(String type, String name, Modifier... modifiers) {
     return this.addField(type, name, "null", modifiers);
   }
 
-  public CtField addField(Class type, String name, String value, Modifier... modifiers) throws CannotCompileException {
+  public CtField addField(Class type, String name, String value, Modifier... modifiers) {
     return this.addField(type.getName(), name, value, modifiers);
   }
 
-  public CtField addField(String type, String name, String value, Modifier... modifiers) throws CannotCompileException {
+  public CtField addField(String type, String name, String value, Modifier... modifiers) {
     String javaModifier =
         Arrays.stream(modifiers).map(Modifier::toString).collect(Collectors.joining(" "));
 
-    CtField make =
-        CtField.make(
-            String.format("%s %s %s = %s;", javaModifier, type, name, value), this.ctClass);
-    this.ctClass.addField(make);
-    return make;
+    try {
+      CtField make =
+          CtField.make(
+              String.format("%s %s %s = %s;", javaModifier, type, name, value), this.ctClass);
+      this.ctClass.addField(make);
+      return make;
+    } catch (CannotCompileException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
-  public Optional<CtMethod> getDeclaredMethod(String name, Class... classes) {
-    try {
-      CtClass[] ctClasses = new CtClass[classes.length];
-
-      for (int i = 0; i < classes.length; i++) {
+  public CtMethod getDeclaredMethod(String name, Class... classes) {
+    CtClass[] ctClasses = new CtClass[classes.length];
+    for (int i = 0; i < classes.length; i++) {
+      try {
         ctClasses[i] = this.ctClass.getClassPool().get(classes[i].getName());
+      } catch (NotFoundException e) {
+        e.printStackTrace();
       }
-
-      return Optional.of(this.getCtClass()
+    }
+    try {
+      return this.getCtClass()
           .getDeclaredMethod(
               this.labyClassMappingProvider
                   .get(this.ctClass.getName())
                   .getMethod(name, classes)
                   .getName(),
-              ctClasses));
-    } catch (NotFoundException ignore) {
-      return Optional.empty();
+              ctClasses);
+    } catch (NotFoundException e) {
+      e.printStackTrace();
     }
+    return null;
   }
 
   public Collection<Predicate<CtClass>> getFilters() {

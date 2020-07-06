@@ -37,18 +37,22 @@ public class DefaultTasks {
 
   @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.15.2")
   public void transformOpenGlInitialize(ClassTransformContext classTransformContext)
-      throws CannotCompileException, NotFoundException {
-    classTransformContext
-        .getCtClass()
-        .getDeclaredMethod(
-            classMappingProvider
-                .get("net.minecraft.client.MainWindow")
-                .getMethod("setLogOnGlError")
-                .getName())
-        .insertAfter(
-            "net.labyfy.component.tasks.v1_15_2.DefaultTasks.notify(\""
-                + Tasks.POST_OPEN_GL_INITIALIZE
-                + "\");");
+      throws CannotCompileException {
+    try {
+      classTransformContext
+          .getCtClass()
+          .getDeclaredMethod(
+              classMappingProvider
+                  .get("net.minecraft.client.MainWindow")
+                  .getMethod("setLogOnGlError")
+                  .getName())
+          .insertAfter(
+              "net.labyfy.component.tasks.v1_15_2.DefaultTasks.notify(\""
+                  + Tasks.POST_OPEN_GL_INITIALIZE
+                  + "\");");
+    } catch (NotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
   public static void notify(String task) {

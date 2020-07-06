@@ -4,14 +4,11 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.inject.Injector;
-import net.labyfy.component.stereotype.exceptions.ServiceNotFoundException;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
 import net.labyfy.internal.component.stereotype.identifier.IdentifierParser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,7 +21,6 @@ import java.util.concurrent.atomic.AtomicReference;
 @Singleton
 public class ServiceRepository {
 
-  private final Logger logger;
   private final Collection<Class<? extends ServiceHandler>> pendingServices;
   private final Set<Class<?>> loadedClasses;
   private final Multimap<Class<?>, ServiceHandler> serviceHandlers;
@@ -34,7 +30,6 @@ public class ServiceRepository {
   @Inject
   private ServiceRepository(
       @Named("injectorReference") AtomicReference injectorReference) {
-    this.logger = LogManager.getLogger(ServiceRepository.class);
     this.pendingServices = ConcurrentHashMap.newKeySet();
     this.loadedClasses = ConcurrentHashMap.newKeySet();
     this.serviceHandlers = HashMultimap.create();
@@ -59,7 +54,7 @@ public class ServiceRepository {
     return this;
   }
 
-  private void flushService(Class<? extends ServiceHandler> handler) throws ServiceNotFoundException {
+  private void flushService(Class<? extends ServiceHandler> handler) {
     ServiceHandler serviceHandler = injectorReference.get().getInstance(handler);
 
     for (Class<?> target : handler.getDeclaredAnnotation(Service.class).value()) {
@@ -77,7 +72,7 @@ public class ServiceRepository {
           if (target.isAssignableFrom(
               base.getProperty().getLocatedIdentifiedAnnotation().getAnnotation().getClass())) {
             serviceHandler.discover(base);
-            logger.trace("Servicehandler {} discovered {}", serviceHandler.getClass().getName(), base.getProperty().getLocatedIdentifiedAnnotation().getLocation());
+            System.out.println("Servicehandler " + serviceHandler.getClass().getName() + " discovered " + base.getProperty().getLocatedIdentifiedAnnotation().<Object>getLocation());
           }
         }
       }
@@ -85,7 +80,7 @@ public class ServiceRepository {
     this.pendingServices.remove(handler);
   }
 
-  public ServiceRepository notifyClassLoaded(Class<?> clazz) throws ServiceNotFoundException {
+  public ServiceRepository notifyClassLoaded(Class<?> clazz) {
     this.loadedClasses.add(clazz);
     Collection<Identifier.Base> identifier = IdentifierParser.parse(clazz);
 

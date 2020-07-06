@@ -7,7 +7,10 @@ import javassist.CtClass;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Provides method and field mappings for the represented class.
@@ -65,7 +68,7 @@ public class ClassMapping {
    *
    * @return The retrieved class
    */
-  public Optional<Class<?>> get() {
+  public Class get() {
     return get(LaunchController.getInstance().getRootLoader());
   }
 
@@ -75,12 +78,13 @@ public class ClassMapping {
    * @param classLoader The class loader to retrieve the class from
    * @return The retrieved class
    */
-  public Optional<Class<?>> get(ClassLoader classLoader) {
+  public Class get(ClassLoader classLoader) {
     try {
-      return Optional.of(Class.forName(this.getName(), false, classLoader));
-    } catch (ClassNotFoundException ignore) {
-      return Optional.empty();
+      return Class.forName(this.getName(), false, classLoader);
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
     }
+    return null;
   }
 
   /**

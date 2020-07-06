@@ -9,7 +9,6 @@ import net.labyfy.component.packages.DependencyDescription;
 import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageManifestLoader;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.*;
@@ -42,9 +41,17 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
    * {@inheritDoc}
    */
   @Override
-  public PackageManifest loadManifest(JarFile file) throws IOException {
+  public Optional<PackageManifest> loadManifest(JarFile file) {
     ZipEntry manifest = file.getEntry(MANIFEST_NAME);
-    return this.gson.fromJson(new InputStreamReader(file.getInputStream(manifest)), DefaultPackageManifest.class);
+    try {
+      PackageManifest description =
+          this.gson.fromJson(
+              new InputStreamReader(file.getInputStream(manifest)), DefaultPackageManifest.class);
+      return Optional.of(description);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return Optional.empty();
+    }
   }
 
   /**

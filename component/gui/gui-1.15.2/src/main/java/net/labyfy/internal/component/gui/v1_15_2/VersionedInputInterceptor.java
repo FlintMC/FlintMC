@@ -3,7 +3,6 @@ package net.labyfy.internal.component.gui.v1_15_2;
 import com.mojang.blaze3d.systems.RenderSystem;
 import javassist.CannotCompileException;
 import javassist.CtMethod;
-import javassist.NotFoundException;
 import net.labyfy.component.gui.InputInterceptor;
 import net.labyfy.component.gui.event.CursorPosChangedEvent;
 import net.labyfy.component.gui.event.MouseButtonEvent;
@@ -25,7 +24,6 @@ import org.lwjgl.system.MemoryStack;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.DoubleBuffer;
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 /**
@@ -179,44 +177,32 @@ public class VersionedInputInterceptor implements InputInterceptor {
   }
 
   @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
-  public void transformInputMappings(ClassTransformContext context) throws CannotCompileException, NotFoundException {
-    Optional<CtMethod> setKeyCallbacksMethod = context.getDeclaredMethod(
+  public void transformInputMappings(ClassTransformContext context) throws CannotCompileException {
+    CtMethod setKeyCallbacksMethod = context.getDeclaredMethod(
         "setKeyCallbacks", long.class, GLFWKeyCallbackI.class, GLFWCharModsCallbackI.class);
-
-    if (!setKeyCallbacksMethod.isPresent()) throw new NotFoundException("unable to get method: setKeyCallbacks");
-
-    setKeyCallbacksMethod.get().setBody(
+    setKeyCallbacksMethod.setBody(
         "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptKeyboardCallbacks($$);");
 
-    Optional<CtMethod> setMouseCallbacksMethod = context.getDeclaredMethod(
+    CtMethod setMouseCallbacksMethod = context.getDeclaredMethod(
         "setMouseCallbacks",
         long.class,
         GLFWCursorPosCallbackI.class,
         GLFWMouseButtonCallbackI.class,
         GLFWScrollCallbackI.class
     );
-
-    if (!setMouseCallbacksMethod.isPresent()) throw new NotFoundException("unable to get method: setMouseCallbacks");
-
-    setMouseCallbacksMethod.get().setBody(
+    setMouseCallbacksMethod.setBody(
         "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptMouseCallbacks($$);");
   }
 
   @ClassTransform(version = "1.15.2", value = "com.mojang.blaze3d.systems.RenderSystem")
-  public void transformRenderSystem(ClassTransformContext context) throws CannotCompileException, NotFoundException {
+  public void transformRenderSystem(ClassTransformContext context) throws CannotCompileException {
     // Overwrite the original methods with our slightly modified ones, see the next 2 functions below
-    Optional<CtMethod> flipFrameMethod = context.getDeclaredMethod("flipFrame", long.class);
-
-    if (!flipFrameMethod.isPresent()) throw new NotFoundException("unable to find method: flipFrame");
-
-    flipFrameMethod.get().setBody(
+    CtMethod flipFrameMethod = context.getDeclaredMethod("flipFrame", long.class);
+    flipFrameMethod.setBody(
         "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.flipFrame($1);");
 
-    Optional<CtMethod> limitDisplayFPSMethod = context.getDeclaredMethod("limitDisplayFPS", int.class);
-
-    if (!limitDisplayFPSMethod.isPresent()) throw new NotFoundException("unable to find method: limitDisplayFPS");
-
-    limitDisplayFPSMethod.get().setBody(
+    CtMethod limitDisplayFPSMethod = context.getDeclaredMethod("limitDisplayFPS", int.class);
+    limitDisplayFPSMethod.setBody(
         "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.limitDisplayFPS($1);");
   }
 
