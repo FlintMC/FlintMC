@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component.transform'
@@ -10,20 +10,39 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    internal {
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += sourceSets.main.compileClasspath
+    }
+}
+
+configurations {
+    internal
+    internal.extendsFrom internalImplementation, implementation
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:transform:minecraft')
-    compile project(':component:mapping')
-    compile 'org.ow2.asm:asm:7.2-beta'
-    compile 'org.ow2.asm:asm-tree:7.2-beta'
-    compile 'org.ow2.asm:asm-commons:7.2-beta'
-    compile 'com.google.guava:guava:27.1-jre'
-    compile 'com.google.inject:guice:4.0'
+    api project(':component:transform:minecraft')
+    api project(':component:mapping')
+    api 'org.ow2.asm:asm:7.2-beta'
+    api 'org.ow2.asm:asm-tree:7.2-beta'
+    api 'org.ow2.asm:asm-commons:7.2-beta'
+    api 'com.google.guava:guava:27.1-jre'
+    api 'com.google.inject:guice:4.0'
 
     labyManifest 'org.ow2.asm:asm:7.2-beta'
     labyManifest 'org.ow2.asm:asm-tree:7.2-beta'
     labyManifest 'org.ow2.asm:asm-commons:7.2-beta'
 
+    internal sourceSets.internal.output
+    internal sourceSets.main.output
 
-    annotationProcessor project(':component:annotation-processing')
+
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+
 }

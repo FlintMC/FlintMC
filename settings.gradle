@@ -12,8 +12,8 @@ findProject(':component:initializer')?.name = 'initializer'
 include 'component:tasks'
 findProject(':component::tasks')?.name = 'tasks'
 
-include 'component:base'
-findProject(':component:base')?.name = "base"
+include 'component:stereotype'
+findProject(':component:stereotype')?.name = "stereotype"
 
 include 'component:transform:minecraft'
 findProject(':component:transform:minecraft')?.name = 'minecraft'
@@ -54,9 +54,6 @@ findProject(':component:resources:resources-1.15.2')?.name = 'resources-1.15.2'
 include 'component:packages'
 findProject(':component:packages')?.name = 'packages'
 
-include 'component:packages:packages-impl'
-findProject(':component:packages:packages-impl')?.name = 'packages-impl'
-
 include 'component:launcher'
 findProject(':component:launcher')?.name = 'launcher'
 
@@ -68,6 +65,9 @@ findProject(':component:annotation-processing')?.name = 'annotation-processing'
 
 include 'component:transform:minecraft-obfuscator'
 findProject(':component:transform:minecraft-obfuscator')?.name = 'minecraft-obfuscator'
+
+include ':component:annotation-processing:autoload'
+findProject(':component:annotation-processing:autoload')?.name = 'autoload'
 
 ext.isPush = true
 
@@ -92,6 +92,10 @@ findProject(':component:service')?.name = 'service'
 
 include 'component:security'
 findProject('component:security')?.name = 'security'
+include 'component:commons'
+findProject(':component:commons')?.name = 'commons'
+include ':component:inject-primitive'
+findProject(':component:inject-primitive')?.name = 'inject-primitive'
 
 include 'component:i18n'
-findProject('component:secui18nrity')?.name = 'i18n'
+findProject('component:i18n')?.name = 'i18n'

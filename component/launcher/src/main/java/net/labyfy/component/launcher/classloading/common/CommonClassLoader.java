@@ -26,7 +26,7 @@ public interface CommonClassLoader {
    * {@link URLClassLoader}, else it may be left as is.
    */
   default Package commonDefinePackage(String name, Manifest man, URL url) {
-    if(this instanceof URLClassLoader) {
+    if (this instanceof URLClassLoader) {
       throw new AssertionError("Expected commonDefinePackage(String name, Manifest man, URL url) to" +
           " be overwritten, since the instance implementing this interface is an URLClassLoader");
     }
@@ -42,7 +42,7 @@ public interface CommonClassLoader {
     boolean sealed = false;
 
     Attributes attr = man.getMainAttributes();
-    if(attr != null) {
+    if (attr != null) {
       specificationTitle = attr.getValue(Attributes.Name.SPECIFICATION_TITLE);
       specificationVersion = attr.getValue(Attributes.Name.SPECIFICATION_VERSION);
       specificationVendor = attr.getValue(Attributes.Name.SPECIFICATION_VENDOR);
@@ -52,7 +52,7 @@ public interface CommonClassLoader {
       sealed = "true".equalsIgnoreCase(attr.getValue(Attributes.Name.SEALED));
     }
 
-    if(sealed) {
+    if (sealed) {
       sealBase = url;
     }
 

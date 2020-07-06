@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component.transform'
@@ -10,10 +10,29 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:base')
-    compile project(':component:transform:javassist')
+sourceSets {
+    internal {
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += sourceSets.main.compileClasspath
+    }
+}
 
-    annotationProcessor project(':component:annotation-processing')
+configurations {
+    internal
+    internal.extendsFrom internalImplementation, implementation
+}
+
+
+dependencies {
+    api project(':component:stereotype')
+    api project(':component:transform:javassist')
+
+    internal sourceSets.internal.output
+    internal sourceSets.main.output
+
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+
 }

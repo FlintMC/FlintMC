@@ -2,20 +2,30 @@ package net.labyfy.component.packages;
 
 import java.util.List;
 
-/** Represents a dependency a package may have. */
+/**
+ * Represents a dependency a package may have.
+ */
 public interface DependencyDescription {
 
-  /** @return the name of the package it depends on. */
+  /**
+   * Retrieves the name of the package this dependency refers to.
+   *
+   * @return The name of the package this dependency refers to
+   */
   String getName();
 
-  /** @return a list of versions that are acceptable to satisfy the dependency. */
+  /**
+   * Retrieves the list of versions satisfying the dependency constraint.
+   *
+   * @return The list of versions satisfying the dependency constraint
+   */
   List<String> getVersions();
 
   /**
-   * Checks if a package can satisfy this dependency.
+   * Checks if a package satisfies this dependency.
    *
-   * @param description the PackageDescription of the package to check.
-   * @return true, if the package satisfies this dependency.
+   * @param manifest The {@link PackageManifest} of the package to check
+   * @return {@code true}, if the package satisfies this dependency, {@code false} otherwise
    */
-  boolean matches(PackageDescription description);
+  boolean matches(PackageManifest manifest);
 }

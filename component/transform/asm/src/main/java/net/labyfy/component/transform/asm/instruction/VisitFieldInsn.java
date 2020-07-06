@@ -29,6 +29,19 @@ public interface VisitFieldInsn {
       this.desc = desc;
     }
 
+    public static Context of(
+        MethodVisitorContext methodVisitorContext,
+        int opcode,
+        String owner,
+        String name,
+        String desc) {
+      Preconditions.checkNotNull(methodVisitorContext);
+      Preconditions.checkNotNull(owner);
+      Preconditions.checkNotNull(name);
+      Preconditions.checkNotNull(desc);
+      return new Context(methodVisitorContext, opcode, owner, name, desc);
+    }
+
     public Context write() {
       this.methodVisitorContext.svisitFieldInsn(this.opcode, this.owner, this.name, this.desc);
       return this;
@@ -72,19 +85,6 @@ public interface VisitFieldInsn {
     public Context setDesc(String desc) {
       this.desc = desc;
       return this;
-    }
-
-    public static Context create(
-        MethodVisitorContext methodVisitorContext,
-        int opcode,
-        String owner,
-        String name,
-        String desc) {
-      Preconditions.checkNotNull(methodVisitorContext);
-      Preconditions.checkNotNull(owner);
-      Preconditions.checkNotNull(name);
-      Preconditions.checkNotNull(desc);
-      return new Context(methodVisitorContext, opcode, owner, name, desc);
     }
   }
 }

@@ -8,7 +8,7 @@ import net.labyfy.component.transform.asm.MethodVisitorContext;
 public interface VisitLdcInsn {
   void visitLdcInsn(Context context);
 
-  class Context implements AbstractContext{
+  class Context implements AbstractContext {
     private MethodVisitorContext methodVisitorContext;
     private Object cst;
 
@@ -17,12 +17,18 @@ public interface VisitLdcInsn {
       this.cst = cst;
     }
 
+    public static Context of(
+        MethodVisitorContext methodVisitorContext, Object cst) {
+      Preconditions.checkNotNull(methodVisitorContext);
+      return new Context(methodVisitorContext, cst);
+    }
+
     public MethodVisitorContext getMethodVisitorContext() {
       return methodVisitorContext;
     }
 
     public Context setMethodVisitorContext(
-            MethodVisitorContext methodVisitorContext) {
+        MethodVisitorContext methodVisitorContext) {
       this.methodVisitorContext = methodVisitorContext;
       return this;
     }
@@ -39,12 +45,6 @@ public interface VisitLdcInsn {
     public Context write() {
       this.methodVisitorContext.svisitLdcInsn(this.cst);
       return this;
-    }
-
-    public static Context create(
-            MethodVisitorContext methodVisitorContext, Object cst) {
-      Preconditions.checkNotNull(methodVisitorContext);
-      return new Context(methodVisitorContext, cst);
     }
   }
 

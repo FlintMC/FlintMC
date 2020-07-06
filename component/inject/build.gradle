@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component'
@@ -10,14 +10,31 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'com.google.inject.extensions:guice-assistedinject:4.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
-    compile project(':component:base')
+sourceSets {
+    internal {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+}
 
-    annotationProcessor project(':component:annotation-processing')
+configurations {
+    internal
+    internal.extendsFrom internalImplementation, implementation
+}
+
+dependencies {
+    api 'com.google.inject.extensions:guice-assistedinject:4.0'
+    api group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
+    api project(':component:stereotype')
+    api project(':component:inject-primitive')
+
+    internal sourceSets.internal.output
+    internal sourceSets.main.output
+
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+    annotationProcessor project(':component:annotation-processing:autoload')
 
     labyManifest 'com.google.inject.extensions:guice-assistedinject:4.0'
-
 }

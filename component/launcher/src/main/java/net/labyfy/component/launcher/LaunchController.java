@@ -11,32 +11,56 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Main API system for the Launcher
+ */
 public class LaunchController {
   private static LaunchController instance;
-
-  public static LaunchController getInstance() {
-    return instance;
-  }
-
   private final Logger logger;
   private final RootClassLoader rootLoader;
   private final List<String> commandLine;
   private final LaunchArguments launchArguments;
 
+  /**
+   * Constructs a new {@link LaunchController} instance and sets it as the active one.
+   *
+   * @param rootLoader  Class loader to use for loading
+   * @param commandLine Commandline arguments to pass in
+   * @throws IllegalStateException If a {@link LaunchController} instance has been created already
+   */
   public LaunchController(RootClassLoader rootLoader, String[] commandLine) {
-    instance = this;
-    this.rootLoader = rootLoader;
-    this.logger = LogManager.getLogger(LaunchController.class);
-    this.commandLine = new ArrayList<>(Arrays.asList(commandLine));
-    this.launchArguments = new LaunchArguments();
+    if (instance != null) {
+        throw new IllegalStateException("The launcher cannot be instantiated twice in the same environment");
+    }
+
+      instance = this;
+      this.rootLoader = rootLoader;
+      this.logger = LogManager.getLogger(LaunchController.class);
+      this.commandLine = new ArrayList<>(Arrays.asList(commandLine));
+      this.launchArguments = new LaunchArguments();
   }
 
-  public void run() {
-    logger.info("Initializing LaunchController");
-    logger.info("Java version: {}", System.getProperty("java.version"));
-    logger.info("Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
+    /**
+     * Retrieves the instance of the launcher the program has been launched with.
+     *
+     * @return Instance of the launcher or null if the program has not been launched with this launcher
+     */
+    public static LaunchController getInstance() {
+        return instance;
+    }
+
+    /**
+     * Executes the launch. This is effectively the new `main` method.
+     *
+     * @implNote Called by the {@link LabyLauncher} using reflection
+     */
+    public void run() {
+        logger.info("Initializing LaunchController");
+        logger.info("Java version: {}", System.getProperty("java.version"));
+        logger.info("Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
     logger.info("JVM vendor: {}", System.getProperty("java.vendor"));
 
+    // Find the first set of plugins by searching the classpath
     logger.trace("About to load plugins");
     ServiceLoader<LauncherPlugin> serviceLoader = ServiceLoader.load(LauncherPlugin.class, rootLoader);
 
@@ -57,28 +81,36 @@ public class LaunchController {
     // 3. Parse the commandline
     // -- From now on, the plugins may have been configured via the commandline
     // 4. Let plugins modify the current commandline for the second time
-    // 5. Let plugins modify the classpath
-    // 6. Let plugins add extra plugins
-    // 7. Copy extra plugins to main plugins if they are not in the main list already
+    // 5. Let plugins add extra plugins
+    // 6. Copy extra plugins to main plugins if they are not in the main list already
     do {
       loadingPass++;
       extraPlugins.clear();
       logger.debug("Executing loading pass {}", loadingPass);
 
+      // 1.
       plugins.forEach(plugin -> plugin.adjustLoadCommandlineArguments(commandlineArguments));
+
+      // 2.
       plugins.forEach(plugin -> plugin.modifyCommandlineArguments(commandLine));
 
+      // 3.
       JCommander commandlineParser = new JCommander();
       commandlineParser.addObject(commandlineArguments);
-
       commandlineParser.parse(commandLine.toArray(new String[0]));
+
+      // 4.
       plugins.forEach(plugin -> plugin.modifyCommandlineArguments(commandLine));
+
+      // 5.
       plugins.forEach(plugin -> extraPlugins.addAll(plugin.extraPlugins()));
 
+      // 6.
       rootLoader.addPlugins(extraPlugins);
       logger.debug("Found {} extra {}", extraPlugins.size(), extraPlugins.size() != 1 ? "plugins" : "plugin");
     } while (extraPlugins.size() > 0);
 
+    // Registering and calling all plugins is done, continue with launch
     logger.info(
         "Took {} loading {} to initialize system, loaded {} {}",
         loadingPass,
@@ -90,10 +122,12 @@ public class LaunchController {
     logger.trace("Loaded plugins: {}",
         plugins.stream().map(LauncherPlugin::name).collect(Collectors.joining(", ")));
 
+    // Prepare to hand control over to the launch target
     logger.info("Handing over to launch target {}", launchArguments.getLaunchTarget());
     rootLoader.prepare();
 
     try {
+      // Run final plugin operation within the new launch environment
       plugins.forEach(plugin -> plugin.preLaunch(rootLoader));
       Class<?> launchTarget = rootLoader.loadClass(launchArguments.getLaunchTarget());
 
@@ -114,6 +148,11 @@ public class LaunchController {
     }
   }
 
+  /**
+   * Retrieves the class loader used by this launch controller for loading application classes
+   *
+   * @return Class loader used by this launch controller
+   */
   public RootClassLoader getRootLoader() {
     return rootLoader;
   }

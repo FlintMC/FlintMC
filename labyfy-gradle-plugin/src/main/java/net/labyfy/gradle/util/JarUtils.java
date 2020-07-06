@@ -1,6 +1,5 @@
 package net.labyfy.gradle.util;
 
-import net.labyfy.gradle.util.ASMUtils;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -34,7 +33,6 @@ public class JarUtils {
     // ...
     // Whatever. It works now!
     str.forEach(z -> readJar(jar, z, classes, null));
-    str.close();
     jar.close();
     return classes;
   }
@@ -46,7 +44,6 @@ public class JarUtils {
     // TODO: Make ignoring these packages optional
     str.forEach(
         z -> readJar(jar, z, classes, Arrays.asList("com/sun/", "com/oracle/", "jdk/", "sun/")));
-    str.close();
     jar.close();
     return classes;
   }
@@ -84,7 +81,6 @@ public class JarUtils {
             e.printStackTrace();
           }
         }
-        jis.close();
       } catch (Exception e) {
         e.printStackTrace();
       }

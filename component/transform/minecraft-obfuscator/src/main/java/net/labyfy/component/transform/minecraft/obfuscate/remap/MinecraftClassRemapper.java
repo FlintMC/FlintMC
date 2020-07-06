@@ -16,6 +16,10 @@ import org.objectweb.asm.tree.ClassNode;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Loads and provides mappings for a {@link org.objectweb.asm.commons.ClassRemapper},
+ * or in this case {@link net.labyfy.component.transform.minecraft.obfuscate.MinecraftInstructionObfuscator}.
+ */
 @Singleton
 public class MinecraftClassRemapper extends SimpleRemapper {
 
@@ -102,13 +106,13 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   public String mapMethodName(String owner, String name, String desc) {
 
-    String map = this.map(owner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+    String map = this.map(owner.replace('.', '/') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
     if (map == null) {
 
-      List<String> possibleOwners = this.getSuperClass(owner.replace('/', '.'));
+      List<String> possibleOwners = this.getSuperClass(owner.replace('.', '/'));
       if (possibleOwners != null) {
         for (String possibleOwner : possibleOwners) {
-          map = this.map(possibleOwner.replace('/', '.') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+          map = this.map(possibleOwner.replace('.', '/') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
           if (map != null) return map;
         }
       }

@@ -12,6 +12,10 @@ public interface VisitMethodInsn {
   class Context implements AbstractContext {
     private MethodVisitorContext methodVisitorContext;
     private int opcode;
+    private String owner;
+    private String name;
+    private String desc;
+    private boolean itf;
 
     private Context(
         MethodVisitorContext methodVisitorContext,
@@ -28,10 +32,19 @@ public interface VisitMethodInsn {
       this.itf = itf;
     }
 
-    private String owner;
-    private String name;
-    private String desc;
-    private boolean itf;
+    public static Context of(
+        MethodVisitorContext methodVisitorContext,
+        int opcode,
+        String owner,
+        String name,
+        String desc,
+        boolean itf) {
+      Preconditions.checkNotNull(methodVisitorContext);
+      Preconditions.checkNotNull(owner);
+      Preconditions.checkNotNull(name);
+      Preconditions.checkNotNull(desc);
+      return new Context(methodVisitorContext, opcode, owner, name, desc, itf);
+    }
 
     public int getOpcode() {
       return opcode;
@@ -46,12 +59,17 @@ public interface VisitMethodInsn {
       return owner;
     }
 
+    public Context setOwner(String owner) {
+      this.owner = owner;
+      return this;
+    }
+
     public MethodVisitorContext getMethodVisitorContext() {
       return methodVisitorContext;
     }
 
-    public Context setOwner(String owner) {
-      this.owner = owner;
+    public Context setMethodVisitorContext(MethodVisitorContext methodVisitorContext) {
+      this.methodVisitorContext = methodVisitorContext;
       return this;
     }
 
@@ -73,11 +91,6 @@ public interface VisitMethodInsn {
       return this;
     }
 
-    public Context setMethodVisitorContext(MethodVisitorContext methodVisitorContext) {
-      this.methodVisitorContext = methodVisitorContext;
-      return this;
-    }
-
     public boolean isItf() {
       return itf;
     }
@@ -91,20 +104,6 @@ public interface VisitMethodInsn {
       this.methodVisitorContext.svisitMethodInsn(
           this.opcode, this.owner, this.name, this.desc, this.itf);
       return this;
-    }
-
-    public static Context create(
-        MethodVisitorContext methodVisitorContext,
-        int opcode,
-        String owner,
-        String name,
-        String desc,
-        boolean itf) {
-      Preconditions.checkNotNull(methodVisitorContext);
-      Preconditions.checkNotNull(owner);
-      Preconditions.checkNotNull(name);
-      Preconditions.checkNotNull(desc);
-      return new Context(methodVisitorContext, opcode, owner, name, desc, itf);
     }
   }
 }

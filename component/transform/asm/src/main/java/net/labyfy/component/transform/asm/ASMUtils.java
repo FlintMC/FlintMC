@@ -55,16 +55,12 @@ public class ASMUtils {
   /**
    * Generates a getter method for the specified field
    *
-   * @author Xerces
-   * @param fieldName
-   *          the name of the field
-   * @param className
-   *          the internal class name
-   * @param fieldDesc
-   *          the field descriptor
-   * @param methodName
-   *          the name of the method to create
+   * @param fieldName  the name of the field
+   * @param className  the internal class name
+   * @param fieldDesc  the field descriptor
+   * @param methodName the name of the method to create
    * @return the method as a {@link org.objectweb.asm.tree.MethodNode}
+   * @author Xerces
    */
   public static MethodNode generateGetter(String methodName, String fieldName, String className, String fieldDesc) {
     MethodNode methodNode = new MethodNode(ACC_PUBLIC, methodName, "()" + fieldDesc, null, null);
@@ -77,16 +73,12 @@ public class ASMUtils {
   /**
    * Generates a setter method for the specified field
    *
-   * @author Xerces
-   * @param fieldName
-   *          the name of the field
-   * @param className
-   *          the internal class name
-   * @param fieldDesc
-   *          the field descriptor
-   * @param methodName
-   *          the name of the method to create
+   * @param fieldName  the name of the field
+   * @param className  the internal class name
+   * @param fieldDesc  the field descriptor
+   * @param methodName the name of the method to create
    * @return the method as a {@link org.objectweb.asm.tree.MethodNode}
+   * @author Xerces
    */
   public static MethodNode generateSetter(String methodName, String fieldName, String className, String fieldDesc) {
     MethodNode methodNode = new MethodNode(ACC_PUBLIC, methodName, "(" + fieldDesc + ")V", null, null);
@@ -100,12 +92,10 @@ public class ASMUtils {
   /**
    * Adds interfaces to a class
    *
+   * @param classNode  the {@link org.objectweb.asm.tree.ClassNode} to add the interfaces
+   *                   too
+   * @param interfaces a {@link Class} array of the interfaces to add
    * @author Xerces
-   * @param classNode
-   *          the {@link org.objectweb.asm.tree.ClassNode} to add the interfaces
-   *          too
-   * @param interfaces
-   *          a {@link Class} array of the interfaces to add
    */
   public static void addInterfaces(ClassNode classNode, Class<?>[] interfaces) {
     for (Class<?> interfaceClass : interfaces) {

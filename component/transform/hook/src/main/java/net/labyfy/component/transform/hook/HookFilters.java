@@ -1,12 +1,13 @@
 package net.labyfy.component.transform.hook;
 
-import com.google.inject.Key;
-import com.google.inject.name.Names;
 import javassist.CtClass;
-import net.labyfy.component.inject.InjectionHolder;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
+@Deprecated
 public enum HookFilters {
   SUBCLASS_OF {
     public boolean test(CtClass source, String value) {

@@ -1,4 +1,5 @@
 import org.apache.commons.io.FileUtils
+import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id 'application'
@@ -8,48 +9,50 @@ group 'net.labyfy.versioned'
 
 sourceCompatibility = 1.8
 
-labyfy{
+labyfy {
     version "1.15.2"
     provideMappings true
     publishToken "${labyfy_publish_token}"
     publishUrl "${labyfy_publish_url}"
 }
 
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'net.minecraft:client:1.15.2'
-    compile 'net.minecraft:server:1.15.2'
+    implementation 'net.minecraft:client:1.15.2'
+    implementation 'net.minecraft:server:1.15.2'
 
-    compile project(':component:launcher')
+    implementation project(':component:launcher')
 
-    runtimeOnly project(':component:base')
+    runtimeOnly project(path: ':component:stereotype', configuration: 'internal')
+    runtimeOnly project(':component:stereotype')
     runtimeOnly project(':component:transform:javassist')
+    runtimeOnly project(path: ':component:transform:javassist', configuration: 'internal')
     runtimeOnly project(':component:transform:asm')
+    runtimeOnly project(path: ':component:transform:asm', configuration: 'internal')
     runtimeOnly project(':component:transform:minecraft')
+    runtimeOnly project(path: ':component:transform:minecraft', configuration: 'internal')
     runtimeOnly project(':component:transform:minecraft-obfuscator')
     runtimeOnly project(':component:transform:hook')
-    runtimeOnly project(':component:gui')
-    runtimeOnly project(':component:gui')
-    runtimeOnly project(':component:gui:juklearmc')
+    runtimeOnly project(path: ':component:transform:hook', configuration: 'internal')
+    runtimeOnly project(path: ':component:gui', configuration: 'internal')
+    runtimeOnly project(path: ':component:gui:juklearmc', configuration: 'internal')
     runtimeOnly project(':component:gui:juklearmc:juklearmc-1.15.2')
     runtimeOnly project(':component:gui:gui-1.15.2')
-    runtimeOnly project(':component:tasks')
+    runtimeOnly project(path: ':component:tasks', configuration: 'internal')
     runtimeOnly project(':component:tasks:tasks-1.15.2')
     runtimeOnly project(':component:mapping')
-    runtimeOnly project(':component:inject')
+    runtimeOnly project(path: ':component:inject', configuration: 'internal')
     runtimeOnly project(':component:transform:hook')
     runtimeOnly project(':component:resources')
     runtimeOnly project(':component:resources:resources-1.15.2')
     runtimeOnly project(':versioned:labyfy-1.15.2')
-    runtimeOnly project(':component:packages')
-    runtimeOnly project(':component:packages:packages-impl')
+    runtimeOnly project(path: ':component:packages', configuration: 'internal')
+    runtimeOnly project(path: ':component:security', configuration: 'internal')
 
-    labyManifest project(':component:base')
+    labyManifest project(':component:stereotype')
     labyManifest project(':component:transform:javassist')
     labyManifest project(':component:transform:asm')
     labyManifest project(':component:transform:minecraft')
@@ -68,7 +71,6 @@ dependencies {
     labyManifest project(':component:resources')
     labyManifest project(':component:resources:resources-1.15.2')
     labyManifest project(':component:packages')
-    labyManifest project(':component:packages:packages-impl')
     labyManifest project(':component:transform:launcher-plugin')
     labyManifest project(':component:launcher')
     labyManifest project(':component:service')
@@ -81,7 +83,7 @@ application {
 
 distTar.enabled = false
 distZip.enabled = false
-installDist.enabled = false;
+installDist.enabled = false
 startScripts.enabled = false
 
 def runDir = new File(rootProject.projectDir, "run/1.15.2")
@@ -107,16 +109,21 @@ run {
             "--assetIndex", "1.15",
             "--userProperties", "{}",
             "--gameDir", ".",
-            "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker"
+            "--tweakClass", "net.labyfy.component.transform.tweaker.LabyDebugTweaker",
+            "--sentry", "false"
     dependsOn 'copyMappings'
+
+    if(Os.isFamily(Os.FAMILY_MAC)) {
+        jvmArgs '-XstartOnFirstThread'
+    }
 }
 
 task copyMappings() {
     doLast {
-        def extracted = new File(project.buildDir, "labyfy/mappings/1.15.2/extracted");
-        FileUtils.copyFile(new File(extracted, "fields.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/fields.csv") )
-        FileUtils.copyFile(new File(extracted, "methods.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/methods.csv") )
-        FileUtils.copyFile(new File(extracted, "params.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/params.csv") )
-        FileUtils.copyFile(new File(extracted, "joined.tsrg"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/joined.tsrg") )
+        def extracted = new File(project.buildDir, "labyfy/mappings/1.15.2/extracted")
+        FileUtils.copyFile(new File(extracted, "fields.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/fields.csv"))
+        FileUtils.copyFile(new File(extracted, "methods.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/methods.csv"))
+        FileUtils.copyFile(new File(extracted, "params.csv"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/params.csv"))
+        FileUtils.copyFile(new File(extracted, "joined.tsrg"), new File(project.parent.parent.projectDir, "run/1.15.2/Labyfy/assets/1.15.2/joined.tsrg"))
     }
 }

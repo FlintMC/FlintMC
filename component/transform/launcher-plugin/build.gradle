@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component.transform'
@@ -9,17 +9,17 @@ repositories {
 }
 
 dependencies {
-    compile project(':component:initializer')
-    compile project(':component:mapping')
-    compile 'org.ow2.asm:asm:7.2-beta'
-    compile 'org.ow2.asm:asm-tree:7.2-beta'
-    compile 'org.ow2.asm:asm-commons:7.2-beta'
-    compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+    api project(':component:initializer')
+    api project(':component:mapping')
+    api 'org.ow2.asm:asm:7.2-beta'
+    api 'org.ow2.asm:asm-tree:7.2-beta'
+    api 'org.ow2.asm:asm-commons:7.2-beta'
+    api group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
 
     labyManifest project(':component:initializer')
 
 
-    annotationProcessor project(':component:annotation-processing')
+    annotationProcessor project(':component:annotation-processing:autoload')
 }
 
 processResources {

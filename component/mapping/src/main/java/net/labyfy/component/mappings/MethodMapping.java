@@ -2,7 +2,7 @@ package net.labyfy.component.mappings;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import net.labyfy.component.inject.InjectionHolder;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,6 +37,9 @@ public class MethodMapping {
     this.unObfuscatedMethodDescription = unObfuscatedMethodDescription;
   }
 
+  /**
+   * @return Either {@link MethodMapping#getUnObfuscatedMethodName()} or {@link MethodMapping#getObfuscatedMethodName()} depending on if the current minecraft environment is obfuscated or not.
+   */
   public String getName() {
     if (InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
       return this.obfuscatedMethodName;
@@ -45,28 +48,72 @@ public class MethodMapping {
     }
   }
 
+  /**
+   * @return return the obfuscated method name this {@link MethodMapping} is representing.
+   */
   public String getObfuscatedMethodName() {
     return obfuscatedMethodName;
   }
 
+  /**
+   * Format example:
+   * {@code
+   * public void test(String args){
+   * }
+   * }
+   * <p>
+   * will result in test(Ljava/lang/String;)V
+   *
+   * @return return the obfuscated method identifier this {@link MethodMapping} is representing.
+   */
   public String getObfuscatedMethodIdentifier() {
     return obfuscatedMethodIdentifier;
   }
 
+  /**
+   * Format example:
+   * {@code
+   * public void test(String args){
+   * }
+   * }
+   * <p>
+   * will result in (Ljava/lang/String;)V
+   *
+   * @return return the obfuscated method description this {@link MethodMapping} is representing.
+   */
   public String getObfuscatedMethodDescription() {
     return obfuscatedMethodDescription;
   }
 
+  /**
+   * @return return the unobfuscated method name this {@link MethodMapping} is representing.
+   */
   public String getUnObfuscatedMethodName() {
     return unObfuscatedMethodName;
   }
 
+  /**
+   * Format example:
+   * {@code
+   * public void test(String args){
+   * }
+   * }
+   * <p>
+   * will result in test(Ljava/lang/String;)V
+   *
+   * @return return the unobfuscated method identifier this {@link MethodMapping} is representing.
+   */
   public String getUnObfuscatedMethodIdentifier() {
     return unObfuscatedMethodIdentifier;
   }
 
-  public String getUnObfuscatedMethodDescription() {
-    return unObfuscatedMethodDescription;
+  /**
+   * internal use
+   */
+  public MethodMapping setUnObfuscatedMethodIdentifier(String unObfuscatedMethodIdentifier) {
+    this.unObfuscatedMethodIdentifier = unObfuscatedMethodIdentifier;
+    this.classMapping.unObfuscatedMethodMappings.put(unObfuscatedMethodIdentifier, this);
+    return this;
   }
 
   public static MethodMapping create(
@@ -87,11 +134,49 @@ public class MethodMapping {
         unObfuscatedMethodDescription);
   }
 
+  /**
+   * Format example:
+   * {@code
+   * public void test(String args){
+   * }
+   * }
+   * <p>
+   * will result in test(Ljava/lang/String;)V
+   *
+   * @return return the unobfuscated method identifier this {@link MethodMapping} is representing.
+   */
+  public String getUnObfuscatedMethodDescription() {
+    return unObfuscatedMethodDescription;
+  }
+
+  /**
+   * internal use
+   */
+  public MethodMapping setUnObfuscatedMethodDescription(String unObfuscatedMethodDescription) {
+    this.unObfuscatedMethodDescription = unObfuscatedMethodDescription;
+    return this;
+  }
+
+  /**
+   * Invoke the method that is represented by this {@link MethodMapping} in a static context.
+   *
+   * @param parameters The method parameters to call the target method
+   * @param <T>        Implicit casted result type
+   * @return The return value of the invoked method
+   */
   public <T> T invokeStatic(Object... parameters) {
 
     return this.invoke(null, parameters);
   }
 
+  /**
+   * Invoke the method that is represented by this {@link MethodMapping} in a non static context.
+   *
+   * @param parameters The method parameters to call the target method
+   * @param instance   The instance to invoke the method on
+   * @param <T>        Implicit casted result type
+   * @return The return value of the invoked method
+   */
   public <T> T invoke(Object instance, Object... parameters) {
     try {
       return (T) this.getMethod().invoke(instance, parameters);
@@ -101,10 +186,33 @@ public class MethodMapping {
     return null;
   }
 
+  private String getDescriptorForClass(final Class c) {
+    if (c.isPrimitive()) {
+      if (c == byte.class) return "B";
+      if (c == char.class) return "C";
+      if (c == double.class) return "D";
+      if (c == float.class) return "F";
+      if (c == int.class) return "I";
+      if (c == long.class) return "J";
+      if (c == short.class) return "S";
+      if (c == boolean.class) return "Z";
+      if (c == void.class) return "V";
+      throw new RuntimeException("Unrecognized primitive " + c);
+    }
+    if (c.isArray()) return c.getName().replace('.', '/');
+    return ('L' + c.getName() + ';').replace('.', '/');
+  }
+
+  /**
+   * @return the parent class mapping
+   */
   public ClassMapping getClassMapping() {
     return this.classMapping;
   }
 
+  /**
+   * @return The java reflect {@link Method} this {@link MethodMapping} represents.
+   */
   public Method getMethod() {
     if (this.cached == null) {
       if (this.unObfuscatedMethodName.equals(this.obfuscatedMethodName)
@@ -145,34 +253,11 @@ public class MethodMapping {
     return this.cached;
   }
 
-  private String getDescriptorForClass(final Class c) {
-    if (c.isPrimitive()) {
-      if (c == byte.class) return "B";
-      if (c == char.class) return "C";
-      if (c == double.class) return "D";
-      if (c == float.class) return "F";
-      if (c == int.class) return "I";
-      if (c == long.class) return "J";
-      if (c == short.class) return "S";
-      if (c == boolean.class) return "Z";
-      if (c == void.class) return "V";
-      throw new RuntimeException("Unrecognized primitive " + c);
-    }
-    if (c.isArray()) return c.getName().replace('.', '/');
-    return ('L' + c.getName() + ';').replace('.', '/');
-  }
-
-  public MethodMapping setUnObfuscatedMethodDescription(String unObfuscatedMethodDescription) {
-    this.unObfuscatedMethodDescription = unObfuscatedMethodDescription;
-    return this;
-  }
-
-  public MethodMapping setUnObfuscatedMethodIdentifier(String unObfuscatedMethodIdentifier) {
-    this.unObfuscatedMethodIdentifier = unObfuscatedMethodIdentifier;
-    this.classMapping.unObfuscatedMethodMappings.put(unObfuscatedMethodIdentifier, this);
-    return this;
-  }
-
+  /**
+   * Returns true if obfuscatedName and unObfuscatedName are equals.
+   *
+   * @return if this class mapping is "default"
+   */
   public boolean isDefault() {
     return Objects.equals(this.obfuscatedMethodName, this.unObfuscatedMethodName) && Objects.equals(this.obfuscatedMethodIdentifier, this.unObfuscatedMethodIdentifier);
   }

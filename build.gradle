@@ -1,3 +1,6 @@
+import org.gradle.api.GradleScriptException
+import java.text.SimpleDateFormat
+
 buildscript {
     def versionFile = file(".dev-version")
     def fixedVersion = null
@@ -9,12 +12,12 @@ buildscript {
 
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
-        classpath "net.labyfy:labyfy-gradle-plugin:${fixedVersion}"
+        classpath "net.labyfy:labyfy-gradle-plugin:1.0.0"
     }
 
     repositories {
         maven {
-            url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
+            url = System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl").toString()) + "general/"
         }
         mavenCentral()
         jcenter()
@@ -38,11 +41,11 @@ if(versionFile.exists()) {
 }
 
 allprojects {
-
+    version fixedVersion
     buildscript {
         repositories {
             maven {
-                url = System.getenv().getOrDefault('artifactory_contextUrl' + "general/", "${artifactory_contextUrl}general/")
+                url = System.getenv().getOrDefault("artifactory_contextUrl", project.getProperties().get("artifactory_contextUrl").toString()) + "general/"
             }
             mavenCentral()
             jcenter()
@@ -83,11 +86,21 @@ allprojects {
             }
         }
     }
-}
 
-allprojects {
-    version fixedVersion
     plugins.withType(JavaPlugin) {
+        jar {
+            manifest {
+                attributes(
+                        'Implementation-Title' : 'labyfy',
+                        'Implementation-Version' : fixedVersion,
+                        'Implementation-Vendor' : 'labymedia',
+                        'Build-Timestamp' : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                        'Build-Jdk' : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                        'Build-OS' : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
+                        'Sentry-dsn': "413b8f3fc06b407f9e8b1f5bd41258eb"
+                )
+            }
+        }
         publishing {
             publications {
                 mavenJava(MavenPublication) {

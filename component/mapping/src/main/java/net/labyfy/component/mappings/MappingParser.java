@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * Parses all class mappings.
+ */
 @FunctionalInterface
 public interface MappingParser {
 

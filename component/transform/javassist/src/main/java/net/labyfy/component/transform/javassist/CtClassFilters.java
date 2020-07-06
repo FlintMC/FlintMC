@@ -7,9 +7,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
+@Deprecated
 public enum CtClassFilters {
   SUBCLASS_OF {
-    protected boolean test(CtClass source, String className) {
+    public boolean test(CtClass source, String className) {
       return CtClassFilters.collectSuperClassesRecursive(source).stream()
           .anyMatch(ctClass -> ctClass.getName().equals(className));
     }
@@ -35,5 +36,5 @@ public enum CtClassFilters {
     return Collections.emptyList();
   }
 
-  protected abstract boolean test(CtClass source, String className);
+  public abstract boolean test(CtClass source, String className);
 }

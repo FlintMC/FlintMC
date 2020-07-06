@@ -1,37 +1,49 @@
 package net.labyfy.component.gui;
 
+/**
+ * Represents an execution of a rendering cycle.
+ */
 public class RenderExecution {
-  private final int mouseX;
-  private final int mouseY;
   private final float partialTicks;
   private final VanillaRenderCancellation cancellation;
 
-  public RenderExecution(int mouseX, int mouseY, float partialTicks) {
-    this.mouseX = mouseX;
-    this.mouseY = mouseY;
+  /**
+   * Constructs a new {@link RenderExecution} with the given mouse x and y coordinates,
+   * the current partial ticks value and an internal cancellation.
+   *
+   * @param partialTicks The current partial tick counter
+   */
+  public RenderExecution(float partialTicks) {
     this.partialTicks = partialTicks;
     this.cancellation = new VanillaRenderCancellation();
   }
 
-  public RenderExecution(boolean isCancelled, int mouseX, int mouseY, float partialTicks) {
-    this.mouseX = mouseX;
-    this.mouseY = mouseY;
+  /**
+   * Constructs a new {@link RenderExecution} with a boolean determining the the cancellation is canceled already,
+   * the given mouse x and y coordinate and the current partial ticks value.
+   *
+   * @param isCancelled  Wether the execution has been cancelled already
+   * @param partialTicks The current partial tick counter
+   */
+  public RenderExecution(boolean isCancelled, float partialTicks) {
     this.partialTicks = partialTicks;
     this.cancellation = new VanillaRenderCancellation(isCancelled);
   }
 
-  public int getMouseX() {
-    return mouseX;
-  }
-
-  public int getMouseY() {
-    return mouseY;
-  }
-
+  /**
+   * Retrieves the value of partial ticks at the start of the execution
+   *
+   * @return The partial ticks counter value
+   */
   public float getPartialTicks() {
     return partialTicks;
   }
 
+  /**
+   * Retrieves the cancellation bound to this execution
+   *
+   * @return The cancellation bound to this execution
+   */
   public VanillaRenderCancellation getCancellation() {
     return cancellation;
   }
