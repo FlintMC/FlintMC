@@ -58,7 +58,7 @@ public class GenericResourceBundle {
     /**
      * Retrieves the text for a language key
      * @param key Key to get
-     * @return String with text
+     * @return The translated String if available, {@code null} otherwise
      */
     public String getString(String key) {
         if (key == null || key.isEmpty()) {

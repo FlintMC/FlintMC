@@ -14,7 +14,7 @@ public interface Localizer {
 
     /**
      * Reloads the labyfy lang config
-     * @return true if successful
+     * @return {@code true}
      */
     boolean reload();
 }
