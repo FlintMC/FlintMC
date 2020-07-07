@@ -29,7 +29,7 @@ public class LocalizerReloadListener {
             parameters = @Type(reference = Language.class)
     )
     public void reload() {
-        logger.info("laby language reload " + (dsp.reload() ? "success": "failed"));
+        logger.info("Laby language reload was" + (dsp.reload() ? "successful!": "unsuccessful :("));
     }
 
 }
