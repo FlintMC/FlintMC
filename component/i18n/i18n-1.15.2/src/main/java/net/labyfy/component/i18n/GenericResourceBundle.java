@@ -56,7 +56,7 @@ public class GenericResourceBundle {
     }
 
     /**
-     * Get the text for a language key
+     * Retrieves the text for a language key
      * @param key Key to get
      * @return String with text
      */
