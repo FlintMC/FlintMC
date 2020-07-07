@@ -1,9 +1,7 @@
 package net.labyfy.component.i18n;
 
 /**
- * Localizer dispatches
- * localization keys to the
- * representing language text
+ * Localizer dispatches localization keys to the representing language text
  */
 public interface Localizer {
 
