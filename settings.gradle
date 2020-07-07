@@ -96,3 +96,10 @@ include 'component:commons'
 findProject(':component:commons')?.name = 'commons'
 include ':component:inject-primitive'
 findProject(':component:inject-primitive')?.name = 'inject-primitive'
+
+include 'component:i18n'
+findProject('component:i18n')?.name = 'i18n'
+
+include 'component:i18n:i18n-1.15.2'
+findProject('component:i18n:i18n-1.15.2')?.name = 'i18n-1.15.2'
+
