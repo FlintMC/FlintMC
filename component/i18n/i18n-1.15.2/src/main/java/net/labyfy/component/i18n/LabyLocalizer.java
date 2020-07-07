@@ -15,7 +15,7 @@ import net.labyfy.component.inject.implement.Implement;
  */
 @Singleton
 @Implement(value = Localizer.class , version = "1.15.2")
-public class LabyLocalizer implements Localizer{
+public class LabyLocalizer implements Localizer {
 
     private final Logger logger;
     private final GenericResourceBundle currValues;
