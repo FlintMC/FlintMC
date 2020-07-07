@@ -51,6 +51,8 @@ dependencies {
     runtimeOnly project(':versioned:labyfy-1.15.2')
     runtimeOnly project(path: ':component:packages', configuration: 'internal')
     runtimeOnly project(path: ':component:security', configuration: 'internal')
+    runtimeOnly project(":component:i18n")
+    runtimeOnly project(":component:i18n:i18n-1.15.2")
 
     labyManifest project(':component:stereotype')
     labyManifest project(':component:transform:javassist')

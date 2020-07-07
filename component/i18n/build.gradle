@@ -1,7 +1,9 @@
 plugins {
     id 'java'
 }
+
 group 'net.labyfy.component'
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -10,5 +12,5 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:base')
+    compile project(':component:inject')
 }

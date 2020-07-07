@@ -1,58 +1,22 @@
 package net.labyfy.component.i18n;
 
-import com.google.inject.Singleton;
-import net.labyfy.base.structure.annotation.AutoLoad;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+/**
+ * Localizer dispatches
+ * localization keys to the
+ * representing language text
+ */
+public interface Localizer {
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+    /**
+     * Get the current String for key
+     * @param key language key
+     * @return String if available
+     */
+    String dsp(String key);
 
-@Singleton
-@AutoLoad
-public class Localizer {
-
-    private final Localizer instance;
-    private final Logger logger;
-    private ResourceBundle messages;
-
-
-    public Localizer(){
-        this.logger = LogManager.getLogger(Localizer.class);
-        try {
-            this.messages = ResourceBundle.getBundle("messages");
-        } catch (Exception e){
-            this.logger.warn(e);
-        }
-
-        this.instance = this;
-    }
-
-    public boolean setLanguage(String language, String country){
-
-        if (language == null || country == null)
-            return false;
-
-        try {
-            Locale locale = new Locale(language,country);
-            this.messages = ResourceBundle.getBundle("messages",locale);
-        } catch (Exception e){
-            this.logger.warn(e);
-        }
-
-        return true;
-    }
-
-    public String dsp(String key){
-        if (this.messages.containsKey(key))
-            return this.messages.getString(key);
-        else {
-            logger.warn("Dispatcher key not found" + key);
-            return key;
-        }
-    }
-
-    public Localizer getInstance() {
-        return instance;
-    }
+    /**
+     * Reloading the labyfy lang config
+     * @return true if successful
+     */
+    boolean reload();
 }
