@@ -13,7 +13,7 @@ public interface Localizer {
     String dsp(String key);
 
     /**
-     * Reloading the labyfy lang config
+     * Reloads the labyfy lang config
      * @return true if successful
      */
     boolean reload();
