@@ -14,11 +14,10 @@ import java.util.ResourceBundle;
  * to guarantee utf-8
  */
 public class UTF8Control extends ResourceBundle.Control {
+
     public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-            throws IllegalAccessException, InstantiationException, IOException
+            throws IllegalAccessException, InstantiationException, IOException {
 
-
-    {
         // The below is a copy of the default implementation.
         String bundleName = toBundleName(baseName, locale);
         String resourceName = toResourceName(bundleName, "properties");
