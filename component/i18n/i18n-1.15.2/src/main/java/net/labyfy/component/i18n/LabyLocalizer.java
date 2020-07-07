@@ -36,8 +36,9 @@ public class LabyLocalizer implements Localizer {
 
         // then get the lang and update the keys for the lang
         // leaving the non-specific set to eng
-        if (!getLang().getLanguage().equals(Locale.ENGLISH.getLanguage()) && localeAvailable(getLang()))
+        if (!getLang().getLanguage().equals(Locale.ENGLISH.getLanguage()) && localeAvailable(getLang())) {
             currValues.overrideAll(ResourceBundle.getBundle("messages", getLang(), new UTF8Control()));
+        }
     }
 
     /**
