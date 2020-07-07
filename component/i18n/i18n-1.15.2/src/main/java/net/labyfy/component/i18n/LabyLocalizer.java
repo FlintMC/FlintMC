@@ -63,8 +63,9 @@ public class LabyLocalizer implements Localizer {
      * {@inheritDoc}
      */
     public boolean reload(){
-        if(!localeAvailable(getLang()))
+        if(!localeAvailable(getLang())) {
             return false;
+        }
         // First add all keys in eng
         // then get the lang and update the keys for the lang
         // leaving the non-specific set to eng
@@ -78,9 +79,9 @@ public class LabyLocalizer implements Localizer {
      * {@inheritDoc}
      */
     public String dsp(String key){
-        if (!currValues.getString(key).isEmpty())
+        if (!currValues.getString(key).isEmpty()) {
             return currValues.getString(key);
-        else {
+        } else {
             logger.warn("Dispatcher key not found" + key);
             return key;
         }
