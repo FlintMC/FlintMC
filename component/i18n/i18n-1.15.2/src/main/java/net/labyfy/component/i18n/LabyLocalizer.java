@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 import net.labyfy.component.inject.implement.Implement;
 
 /**
- * Labys implementation of Localizer.class
+ * Labys implementation of {@link Localizer}
  */
 @Singleton
 @Implement(value = Localizer.class , version = "1.15.2")
