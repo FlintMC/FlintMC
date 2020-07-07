@@ -11,15 +11,15 @@ labyfy{
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 
     api group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
-    runtime group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.1'
-    compile group: 'com.google.guava', name: 'guava', version: '21.0'
+    runtimeOnly group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.1'
+    implementation  group: 'com.google.guava', name: 'guava', version: '21.0'
 
-    compile project(':component:i18n')
-    compile project(':component:transform:hook')
-    compile 'net.minecraft:client:1.15.2'
+    implementation project(':component:i18n')
+    implementation project(':component:transform:hook')
+    implementation 'net.minecraft:client:1.15.2'
 
     annotationProcessor project(':component:annotation-processing:autoload')
 }
