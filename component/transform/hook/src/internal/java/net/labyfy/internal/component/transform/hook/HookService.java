@@ -36,15 +36,14 @@ public class HookService implements ServiceHandler {
 
   private final ClassMappingProvider classMappingProvider;
   private final String version;
-  private final InjectedInvocationHelper injectedInvocationHelper;
   private final Collection<HookEntry> hooks;
 
   @Inject
   private HookService(
-      ClassMappingProvider classMappingProvider, InjectedInvocationHelper injectedInvocationHelper,
-      @Named("launchArguments") Map launchArguments) {
+      ClassMappingProvider classMappingProvider,
+      @Named("launchArguments") Map launchArguments
+  ) {
     this.classMappingProvider = classMappingProvider;
-    this.injectedInvocationHelper = injectedInvocationHelper;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--version");
   }
@@ -55,26 +54,22 @@ public class HookService implements ServiceHandler {
       Class<?> clazz,
       String method,
       Class<?>[] parameters,
-      Object[] args) {
-    try {
+      Object[] args) throws NoSuchMethodException {
+    Map<Key<?>, Object> availableParameters = Maps.newHashMap();
+    availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
+    availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
+    availableParameters.put(Key.get(instance.getClass()), instance);
+    availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
 
-      Map<Key<?>, Object> availableParameters = Maps.newHashMap();
-      availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
-      availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
-      availableParameters.put(Key.get(instance.getClass()), instance);
-      availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
-
-      Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
-      InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
-          .invokeMethod(
-              declaredMethod,
-              InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
-              availableParameters);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
+    InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
+        .invokeMethod(
+            declaredMethod,
+            InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
+            availableParameters);
   }
 
+  @Override
   public void discover(Identifier.Base property) {
     Map<Property.Base, AnnotationResolver<Type, String>> subProperties = Maps.newHashMap();
 
@@ -100,7 +95,7 @@ public class HookService implements ServiceHandler {
   }
 
   @ClassTransform
-  public void transform(ClassTransformContext classTransformContext) {
+  public void transform(ClassTransformContext classTransformContext) throws NotFoundException {
     CtClass ctClass = classTransformContext.getCtClass();
 
     for (HookEntry entry : hooks) {
@@ -184,25 +179,21 @@ public class HookService implements ServiceHandler {
             + ", $args);");
   }
 
-  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, Method callback) {
-    try {
-      CtClass[] parameters = new CtClass[hook.parameters().length];
+  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, Method callback) throws NotFoundException {
+    CtClass[] parameters = new CtClass[hook.parameters().length];
 
-      for (int i = 0; i < hook.parameters().length; i++) {
-        parameters[i] =
-            ClassPool.getDefault()
-                .get(classMappingProvider.get(hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i])).getName());
+    for (int i = 0; i < hook.parameters().length; i++) {
+      parameters[i] =
+          ClassPool.getDefault()
+              .get(classMappingProvider.get(hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i])).getName());
+    }
+
+    CtMethod declaredMethod =
+        ctClass.getDeclaredMethod(classMappingProvider.get(ctClass.getName()).getMethod(hookEntry.methodNameResolver.resolve(hook), parameters).getName(), parameters);
+    if (declaredMethod != null) {
+      for (Hook.ExecutionTime executionTime : hook.executionTime()) {
+        this.insert(declaredMethod, executionTime, callback);
       }
-
-      CtMethod declaredMethod =
-          ctClass.getDeclaredMethod(classMappingProvider.get(ctClass.getName()).getMethod(hookEntry.methodNameResolver.resolve(hook), parameters).getName(), parameters);
-      if (declaredMethod != null) {
-        for (Hook.ExecutionTime executionTime : hook.executionTime()) {
-          this.insert(declaredMethod, executionTime, callback);
-        }
-      }
-    } catch (NotFoundException e) {
-
     }
   }
 
