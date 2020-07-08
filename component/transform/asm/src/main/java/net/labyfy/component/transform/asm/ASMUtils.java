@@ -31,24 +31,21 @@ public class ASMUtils {
   }
 
   /**
-   * Gets a ClassNode based on given bytes
+   * Parse class node.
    *
-   * @param bytez
-   * @return
+   * @param bytes raw class data.
+   * @return a class node.
    */
-  public static ClassNode getNode(final byte[] bytez) {
-    ClassReader cr = new ClassReader(bytez);
+  public static ClassNode getNode(final byte[] bytes) {
+    ClassReader cr = new ClassReader(bytes);
     ClassNode cn = new ClassNode();
+
     try {
       cr.accept(cn, ClassReader.EXPAND_FRAMES);
-    } catch (Exception e) {
-      try {
-        cr.accept(cn, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
-      } catch (Exception e2) {
-        // e2.printStackTrace();
-      }
+    } catch (Exception exception) {
+      cr.accept(cn, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
     }
-    cr = null;
+
     return cn;
   }
 
