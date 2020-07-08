@@ -16,6 +16,7 @@ import net.labyfy.internal.component.inject.InjectionServiceShare;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -55,17 +56,19 @@ public class DefaultPackage implements Package {
       }
 
       // Try to load the manifest
-      Optional<PackageManifest> optionalManifest = manifestLoader.loadManifest(jar);
-      if (optionalManifest.isPresent() && optionalManifest.get().isValid()) {
-        // Manifest has been loaded, set the package state to not loaded to mark it as ready for load
-        this.packageState = PackageState.NOT_LOADED;
-      } else {
-        // Loading the package manifest failed
-        this.packageState = PackageState.INVALID_MANIFEST;
-      }
+      this.packageState = PackageState.INVALID_MANIFEST;
+      PackageManifest manifest;
 
-      // If we have a manifest, save it
-      optionalManifest.ifPresent(manifest -> this.packageManifest = manifest);
+      try {
+        manifest = manifestLoader.loadManifest(jar);
+
+        if (manifest.isValid()) {
+          this.packageState = PackageState.NOT_LOADED;
+        }
+
+        this.packageManifest = manifest;
+      } catch (IOException ignore) {
+      }
     } else {
       // The package should not be loaded from a file, thus we don't have a manifest and mark  the package
       // as ready for load

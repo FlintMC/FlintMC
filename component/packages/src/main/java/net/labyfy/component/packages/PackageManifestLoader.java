@@ -1,5 +1,6 @@
 package net.labyfy.component.packages;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.jar.JarFile;
 
@@ -22,7 +23,8 @@ public interface PackageManifestLoader {
    * content is valid, use the {@link PackageManifest#isValid()} method for that.
    *
    * @param file the JarFile in which the manifest can be found.
-   * @return The package manifest if a package manifest was parsed, {@link Optional#empty()} otherwise.
+   * @return a package manifest.
+   * @throws IOException if the file could not be read.
    */
-  Optional<PackageManifest> loadManifest(JarFile file);
+  PackageManifest loadManifest(JarFile file) throws IOException;
 }
