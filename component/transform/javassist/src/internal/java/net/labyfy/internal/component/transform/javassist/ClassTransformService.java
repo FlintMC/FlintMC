@@ -3,7 +3,9 @@ package net.labyfy.internal.component.transform.javassist;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.NotFoundException;
 import javassist.bytecode.ClassFile;
+import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.mappings.ClassMapping;
@@ -13,12 +15,13 @@ import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 import net.labyfy.component.stereotype.property.Property;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.transform.exceptions.ClassTransformException;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.component.transform.javassist.CtClassFilter;
-import net.labyfy.component.transform.launchplugin.ClassTransformException;
 import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 import net.labyfy.component.transform.minecraft.MinecraftTransformer;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,6 +43,7 @@ import java.util.function.Predicate;
 @Deprecated
 public class ClassTransformService implements ServiceHandler, LateInjectedTransformer {
 
+  private final Logger logger;
   private final String version;
   private final ClassMappingProvider classMappingProvider;
   private final InternalClassTransformContext.Factory classTransformContextFactory;
@@ -49,9 +53,11 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
 
   @Inject
   private ClassTransformService(
+      @InjectLogger Logger logger,
       ClassMappingProvider classMappingProvider,
       InternalClassTransformContext.Factory classTransformContextFactory,
       @Named("launchArguments") Map launchArguments) {
+    this.logger = logger;
     this.classMappingProvider = classMappingProvider;
     this.classTransformContextFactory = classTransformContextFactory;
     this.classTransformContexts = new HashSet<>();
@@ -73,12 +79,19 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
           ctClass -> {
             CtClassFilter annotation =
                 subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
-            return annotation
-                .value()
-                .test(
-                    ctClass,
-                    InjectionHolder.getInjectedInstance(annotation.classNameResolver())
-                        .resolve(annotation.className()));
+
+            try {
+              return annotation
+                  .value()
+                  .test(
+                      ctClass,
+                      InjectionHolder.getInjectedInstance(annotation.classNameResolver())
+                          .resolve(annotation.className()));
+            } catch (NotFoundException exception) {
+              logger.error("Exception while discovering service: {}", annotation.className(), exception);
+            }
+
+            return false;
           });
     }
 

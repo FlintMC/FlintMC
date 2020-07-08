@@ -11,6 +11,7 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
+import net.labyfy.component.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

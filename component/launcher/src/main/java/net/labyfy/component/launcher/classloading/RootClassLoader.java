@@ -4,7 +4,7 @@ import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoader;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
 import net.labyfy.component.launcher.service.LauncherPlugin;
-import net.labyfy.component.transform.launchplugin.ClassTransformException;
+import net.labyfy.component.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

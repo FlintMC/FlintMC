@@ -1,7 +1,7 @@
 package net.labyfy.component.launcher.service;
 
 import net.labyfy.component.launcher.classloading.RootClassLoader;
-import net.labyfy.component.transform.launchplugin.ClassTransformException;
+import net.labyfy.component.transform.exceptions.ClassTransformException;
 
 import java.net.URL;
 import java.util.Collections;

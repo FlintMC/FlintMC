@@ -1,6 +1,6 @@
 package net.labyfy.component.transform.launchplugin;
 
-import net.labyfy.component.transform.launchplugin.ClassTransformException;
+import net.labyfy.component.transform.exceptions.ClassTransformException;
 
 @FunctionalInterface
 public interface LateInjectedTransformer {

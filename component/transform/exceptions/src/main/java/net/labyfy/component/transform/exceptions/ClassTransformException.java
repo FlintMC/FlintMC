@@ -1,4 +1,4 @@
-package net.labyfy.component.transform.launchplugin;
+package net.labyfy.component.transform.exceptions;
 
 public class ClassTransformException extends Exception {
 
