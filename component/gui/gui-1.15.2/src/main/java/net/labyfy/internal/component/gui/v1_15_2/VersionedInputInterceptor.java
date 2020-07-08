@@ -3,6 +3,7 @@ package net.labyfy.internal.component.gui.v1_15_2;
 import com.mojang.blaze3d.systems.RenderSystem;
 import javassist.CannotCompileException;
 import javassist.CtMethod;
+import javassist.NotFoundException;
 import net.labyfy.component.gui.InputInterceptor;
 import net.labyfy.component.gui.event.CursorPosChangedEvent;
 import net.labyfy.component.gui.event.MouseButtonEvent;
@@ -177,7 +178,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
   }
 
   @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
-  public void transformInputMappings(ClassTransformContext context) throws CannotCompileException {
+  public void transformInputMappings(ClassTransformContext context) throws CannotCompileException, NotFoundException {
     CtMethod setKeyCallbacksMethod = context.getDeclaredMethod(
         "setKeyCallbacks", long.class, GLFWKeyCallbackI.class, GLFWCharModsCallbackI.class);
     setKeyCallbacksMethod.setBody(
@@ -195,7 +196,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
   }
 
   @ClassTransform(version = "1.15.2", value = "com.mojang.blaze3d.systems.RenderSystem")
-  public void transformRenderSystem(ClassTransformContext context) throws CannotCompileException {
+  public void transformRenderSystem(ClassTransformContext context) throws CannotCompileException, NotFoundException {
     // Overwrite the original methods with our slightly modified ones, see the next 2 functions below
     CtMethod flipFrameMethod = context.getDeclaredMethod("flipFrame", long.class);
     flipFrameMethod.setBody(

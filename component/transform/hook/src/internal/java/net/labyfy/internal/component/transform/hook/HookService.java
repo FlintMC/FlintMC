@@ -4,10 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import net.labyfy.component.commons.resolve.AnnotationResolver;
 import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
@@ -25,6 +22,7 @@ import net.labyfy.component.transform.javassist.ClassTransformContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
@@ -36,15 +34,14 @@ public class HookService implements ServiceHandler {
 
   private final ClassMappingProvider classMappingProvider;
   private final String version;
-  private final InjectedInvocationHelper injectedInvocationHelper;
   private final Collection<HookEntry> hooks;
 
   @Inject
   private HookService(
-      ClassMappingProvider classMappingProvider, InjectedInvocationHelper injectedInvocationHelper,
-      @Named("launchArguments") Map launchArguments) {
+      ClassMappingProvider classMappingProvider,
+      @Named("launchArguments") Map launchArguments
+  ) {
     this.classMappingProvider = classMappingProvider;
-    this.injectedInvocationHelper = injectedInvocationHelper;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--version");
   }
@@ -55,26 +52,22 @@ public class HookService implements ServiceHandler {
       Class<?> clazz,
       String method,
       Class<?>[] parameters,
-      Object[] args) {
-    try {
+      Object[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    Map<Key<?>, Object> availableParameters = Maps.newHashMap();
+    availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
+    availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
+    availableParameters.put(Key.get(instance.getClass()), instance);
+    availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
 
-      Map<Key<?>, Object> availableParameters = Maps.newHashMap();
-      availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
-      availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
-      availableParameters.put(Key.get(instance.getClass()), instance);
-      availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
-
-      Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
-      InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
-          .invokeMethod(
-              declaredMethod,
-              InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
-              availableParameters);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
+    InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
+        .invokeMethod(
+            declaredMethod,
+            InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
+            availableParameters);
   }
 
+  @Override
   public void discover(Identifier.Base property) {
     Map<Property.Base, AnnotationResolver<Type, String>> subProperties = Maps.newHashMap();
 
@@ -100,7 +93,7 @@ public class HookService implements ServiceHandler {
   }
 
   @ClassTransform
-  public void transform(ClassTransformContext classTransformContext) {
+  public void transform(ClassTransformContext classTransformContext) throws NotFoundException, CannotCompileException {
     CtClass ctClass = classTransformContext.getCtClass();
 
     for (HookEntry entry : hooks) {
@@ -149,7 +142,7 @@ public class HookService implements ServiceHandler {
     }
   }
 
-  private void insert(CtMethod target, Hook.ExecutionTime executionTime, Method hook) {
+  private void insert(CtMethod target, Hook.ExecutionTime executionTime, Method hook) throws CannotCompileException {
     StringBuilder stringBuilder = new StringBuilder();
     for (Class<?> parameterType : hook.getParameterTypes()) {
       String className =
@@ -184,25 +177,21 @@ public class HookService implements ServiceHandler {
             + ", $args);");
   }
 
-  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, Method callback) {
-    try {
-      CtClass[] parameters = new CtClass[hook.parameters().length];
+  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, Method callback) throws NotFoundException, CannotCompileException {
+    CtClass[] parameters = new CtClass[hook.parameters().length];
 
-      for (int i = 0; i < hook.parameters().length; i++) {
-        parameters[i] =
-            ClassPool.getDefault()
-                .get(classMappingProvider.get(hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i])).getName());
+    for (int i = 0; i < hook.parameters().length; i++) {
+      parameters[i] =
+          ClassPool.getDefault()
+              .get(classMappingProvider.get(hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i])).getName());
+    }
+
+    CtMethod declaredMethod =
+        ctClass.getDeclaredMethod(classMappingProvider.get(ctClass.getName()).getMethod(hookEntry.methodNameResolver.resolve(hook), parameters).getName(), parameters);
+    if (declaredMethod != null) {
+      for (Hook.ExecutionTime executionTime : hook.executionTime()) {
+        this.insert(declaredMethod, executionTime, callback);
       }
-
-      CtMethod declaredMethod =
-          ctClass.getDeclaredMethod(classMappingProvider.get(ctClass.getName()).getMethod(hookEntry.methodNameResolver.resolve(hook), parameters).getName(), parameters);
-      if (declaredMethod != null) {
-        for (Hook.ExecutionTime executionTime : hook.executionTime()) {
-          this.insert(declaredMethod, executionTime, callback);
-        }
-      }
-    } catch (NotFoundException e) {
-
     }
   }
 

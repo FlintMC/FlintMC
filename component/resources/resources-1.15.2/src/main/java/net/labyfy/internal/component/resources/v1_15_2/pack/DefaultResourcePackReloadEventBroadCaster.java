@@ -14,6 +14,7 @@ import net.minecraft.resources.SimpleReloadableResourceManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * 1.15.2 implementation of the {@link ResourcePackReloadEventBroadcaster}.
@@ -39,6 +40,12 @@ public class DefaultResourcePackReloadEventBroadCaster implements ResourcePackRe
     ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager())
         .addReloadListener(
             (IResourceManagerReloadListener) iResourceManager ->
-                eventService.broadcast(new ResourcePackReloadEvent()));
+            {
+              try {
+                eventService.broadcast(new ResourcePackReloadEvent());
+              } catch (InvocationTargetException | IllegalAccessException exception) {
+                throw new RuntimeException("unable to broadcast ResourcePackReloadEvent", exception);
+              }
+            });
   }
 }

@@ -1,10 +1,7 @@
 package net.labyfy.component.transform.javassist;
 
 import com.google.inject.assistedinject.Assisted;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.Modifier;
+import javassist.*;
 import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
@@ -14,38 +11,156 @@ import java.util.function.Predicate;
 
 @Deprecated
 public interface ClassTransformContext {
-    Class getOwnerClass();
+    /**
+     * Retrieves the owner class.
+     *
+     * @return The owner class.
+     */
+    Class<?> getOwnerClass();
 
-    CtField getField(String name);
+    /**
+     * Retrieves a field by name.
+     *
+     * @param name A field name.
+     * @return A field.
+     * @throws NotFoundException If the field could not be found.
+     */
+    CtField getField(String name) throws NotFoundException;
 
-    CtMethod addMethod(String returnType, String name, String body, Modifier... modifiers);
+    /**
+     * Adds a method to the class.
+     *
+     * @param returnType  A return type.
+     * @param name        A method name.
+     * @param body        Method source code.
+     * @param modifiers   Method access modifiers.
+     * @return A method.
+     * @throws CannotCompileException If the class transformation failed.
+     */
+    CtMethod addMethod(String returnType, String name, String body, Modifier... modifiers) throws CannotCompileException;
 
-    CtMethod addMethod(String src);
+    /**
+     * Adds a method to the class.
+     *
+     * @param src  Method source code.
+     * @return A method.
+     * @throws CannotCompileException If the class transformation failed.
+     */
+    CtMethod addMethod(String src) throws CannotCompileException;
 
-    CtMethod getOwnerMethod(String name, String desc);
+    /**
+     * Retrieves an owner method by name.
+     *
+     * @param name  A method name.
+     * @param desc  A method descriptor.
+     * @return A method.
+     * @throws NotFoundException If the method could not be found.
+     */
+    CtMethod getOwnerMethod(String name, String desc) throws NotFoundException;
 
-    CtField addField(Class type, String name, Modifier... modifiers);
+    /**
+     * Adds a field to the class.
+     *
+     * @param type       Field type.
+     * @param name       Field name.
+     * @param modifiers  Field access modifiers.
+     * @return A field.
+     * @throws CannotCompileException If the class transformation failed.
+     */
+    CtField addField(Class<?> type, String name, Modifier... modifiers) throws CannotCompileException;
 
-    CtField addField(String type, String name, Modifier... modifiers);
+    /**
+     * Adds a field to the class.
+     *
+     * @param type       Field type.
+     * @param name       Field name.
+     * @param modifiers  Field access modifiers.
+     * @return A field.
+     * @throws CannotCompileException If the class transformation failed.
+     */
+    CtField addField(String type, String name, Modifier... modifiers) throws CannotCompileException;
 
-    CtField addField(Class type, String name, String value, Modifier... modifiers);
+    /**
+     * Adds a field to the class.
+     *
+     * @param type       Field type.
+     * @param name       Field name.
+     * @param value      Initial field value.
+     * @param modifiers  Field access modifiers.
+     * @return A field.
+     * @throws CannotCompileException If the class transformation failed.
+     */
+    CtField addField(Class<?> type, String name, String value, Modifier... modifiers) throws CannotCompileException;
 
-    CtField addField(String type, String name, String value, Modifier... modifiers);
+    /**
+     * Adds a field to the class.
+     *
+     * @param type       Field type.
+     * @param name       Field name.
+     * @param value      Initial field value.
+     * @param modifiers  Field access modifiers.
+     * @return A field.
+     * @throws CannotCompileException If the class transformation failed.
+     */
+    CtField addField(String type, String name, String value, Modifier... modifiers) throws CannotCompileException;
 
-    CtMethod getDeclaredMethod(String name, Class... classes);
+    /**
+     * Retrieves a method by name and descriptor.
+     *
+     * @param name     Method name.
+     * @param classes  Method parameters.
+     * @return A method.
+     * @throws NotFoundException If the method could not be found.
+     */
+    CtMethod getDeclaredMethod(String name, Class<?>... classes) throws NotFoundException;
 
+    /**
+     * Retrieves filters.
+     *
+     * @return Filters.
+     */
     Collection<Predicate<CtClass>> getFilters();
 
+    /**
+     * Retrieves the owner method.
+     *
+     * @return An owner method.
+     */
     Method getOwnerMethod();
 
+    /**
+     * Retrieves the class transformer.
+     *
+     * @return A class transformer.
+     */
     ClassTransform getClassTransform();
 
+    /**
+     * Retrieves the owner.
+     *
+     * @return An owner.
+     */
     Object getOwner();
 
+    /**
+     * Retrieves the name resolver.
+     *
+     * @return A name resolver.
+     */
     NameResolver getNameResolver();
 
+    /**
+     * Retrieves the class.
+     *
+     * @return A class.
+     */
     CtClass getCtClass();
 
+    /**
+     * Set the class.
+     *
+     * @param ctClass A class.
+     */
     void setCtClass(CtClass ctClass);
 
     @AssistedFactory(ClassTransformContext.class)
@@ -55,7 +170,7 @@ public interface ClassTransformContext {
                 NameResolver nameResolver,
                 ClassTransform classTransform,
                 Method method,
-                Class ownerClass,
+                Class<?> ownerClass,
                 @Assisted("owner") Object owner);
     }
 }

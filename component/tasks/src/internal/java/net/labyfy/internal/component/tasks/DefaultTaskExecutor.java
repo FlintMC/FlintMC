@@ -7,12 +7,14 @@ import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.tasks.Task;
+import net.labyfy.component.tasks.TaskExecutionException;
 import net.labyfy.component.tasks.TaskExecutor;
 import net.labyfy.component.tasks.Tasks;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,19 +52,27 @@ public class DefaultTaskExecutor implements TaskExecutor {
   /**
    * {@inheritDoc}
    */
-  public void execute(String name) {
+  public void execute(String name) throws TaskExecutionException {
     this.execute(name, Maps.newConcurrentMap());
   }
 
   /**
    * {@inheritDoc}
    */
-  public void execute(String name, Map<Key<?>, ?> arguments) {
+  public void execute(String name, Map<Key<?>, ?> arguments) throws TaskExecutionException {
     for (Map.Entry<Task, List<Pair<Double, Method>>> entry : this.methods.entrySet()) {
       if (!entry.getKey().value().equals(name)) continue;
       for (int i = 0; i < entry.getValue().size(); i++) {
         Method value = entry.getValue().get(i).getValue();
-        this.injectedInvocationHelper.invokeMethod(value, arguments);
+
+        try {
+          this.injectedInvocationHelper.invokeMethod(value, arguments);
+        } catch (InvocationTargetException exception) {
+          throw new TaskExecutionException(value.getDeclaringClass().getName() + "#" + value.getName() + " threw an exception", exception);
+        } catch (IllegalAccessException exception) {
+          throw new TaskExecutionException("unable to access method definition: " + value.getDeclaringClass().getName() + "#" + value.getName(), exception);
+        }
+
         while (i < entry.getValue().size() && !value.equals(entry.getValue().get(i).getValue()))
           i++;
       }

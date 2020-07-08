@@ -11,12 +11,13 @@ import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.inject.InjectionServiceShare;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.jar.JarFile;
@@ -54,17 +55,19 @@ public class DefaultPackage implements Package {
       }
 
       // Try to load the manifest
-      Optional<PackageManifest> optionalManifest = manifestLoader.loadManifest(jar);
-      if (optionalManifest.isPresent() && optionalManifest.get().isValid()) {
-        // Manifest has been loaded, set the package state to not loaded to mark it as ready for load
-        this.packageState = PackageState.NOT_LOADED;
-      } else {
-        // Loading the package manifest failed
-        this.packageState = PackageState.INVALID_MANIFEST;
-      }
+      this.packageState = PackageState.INVALID_MANIFEST;
+      PackageManifest manifest;
 
-      // If we have a manifest, save it
-      optionalManifest.ifPresent(manifest -> this.packageManifest = manifest);
+      try {
+        manifest = manifestLoader.loadManifest(jar);
+
+        if (manifest.isValid()) {
+          this.packageState = PackageState.NOT_LOADED;
+        }
+
+        this.packageManifest = manifest;
+      } catch (IOException ignored) {
+      }
     } else {
       // The package should not be loaded from a file, thus we don't have a manifest and mark  the package
       // as ready for load
@@ -149,10 +152,10 @@ public class DefaultPackage implements Package {
     try {
       this.classLoader = new DefaultPackageClassLoader(this);
       this.packageState = PackageState.LOADED;
-    } catch (Exception e) {
+    } catch (Exception exception) {
       // The package failed to load, save the error and mark the package itself as errored
       this.packageState = PackageState.ERRORED;
-      this.loadException = e;
+      this.loadException = exception;
     }
     return this.packageState;
   }
@@ -185,13 +188,18 @@ public class DefaultPackage implements Package {
       classes.forEach((priority, className) -> {
         try {
           EntryPoint.notifyService(Class.forName(className, true, DefaultPackage.class.getClassLoader()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className);
+        } catch (Exception exception) {
+          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className, exception);
         }
       });
+
       InjectionServiceShare.flush();
-      InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
+
+      try {
+        InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
+      } catch (ServiceNotFoundException exception) {
+        throw new RuntimeException("Unable to discover service during flushAll: " + ServiceRepository.class.getName(), exception);
+      }
     });
 
     // The package is now enabled

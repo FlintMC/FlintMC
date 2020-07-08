@@ -5,6 +5,7 @@ import javassist.NotFoundException;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.component.tasks.TaskExecutionException;
 import net.labyfy.component.tasks.TaskExecutor;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.transform.javassist.ClassTransform;
@@ -37,25 +38,21 @@ public class DefaultTasks {
 
   @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.15.2")
   public void transformOpenGlInitialize(ClassTransformContext classTransformContext)
-      throws CannotCompileException {
-    try {
-      classTransformContext
-          .getCtClass()
-          .getDeclaredMethod(
-              classMappingProvider
-                  .get("net.minecraft.client.MainWindow")
-                  .getMethod("setLogOnGlError")
-                  .getName())
-          .insertAfter(
-              "net.labyfy.component.tasks.v1_15_2.DefaultTasks.notify(\""
-                  + Tasks.POST_OPEN_GL_INITIALIZE
-                  + "\");");
-    } catch (NotFoundException e) {
-      e.printStackTrace();
-    }
+      throws CannotCompileException, NotFoundException {
+    classTransformContext
+        .getCtClass()
+        .getDeclaredMethod(
+            classMappingProvider
+                .get("net.minecraft.client.MainWindow")
+                .getMethod("setLogOnGlError")
+                .getName())
+        .insertAfter(
+            "net.labyfy.component.tasks.v1_15_2.DefaultTasks.notify(\""
+                + Tasks.POST_OPEN_GL_INITIALIZE
+                + "\");");
   }
 
-  public static void notify(String task) {
+  public static void notify(String task) throws TaskExecutionException {
     InjectionHolder.getInjectedInstance(TaskExecutor.class).execute(task);
   }
 }

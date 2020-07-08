@@ -69,8 +69,11 @@ public interface MinecraftWindow {
    * Retrieves the FPS counter of the minecraft window.
    *
    * @return The current FPS of the minecraft window
+   * @throws IllegalAccessException If the field definition could not be accessed.
+   * @throws NoSuchFieldException   If the field could not be found.
+   * @throws ClassNotFoundException If the class could not be found.
    */
-  int getFPS();
+  int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
 
   boolean isIngame();
 }

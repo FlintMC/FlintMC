@@ -3,6 +3,7 @@ package net.labyfy.component.initializer;
 import net.labyfy.component.initializer.inject.InitializationModule;
 import net.labyfy.component.initializer.inject.LabyInjectionInitializer;
 import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
 import java.util.Map;
@@ -26,8 +27,9 @@ public class EntryPoint {
    * Notifis all services that a new class is loaded.
    *
    * @param clazz The loaded class to notify
+   * @throws ServiceNotFoundException If the service could not be discovered.
    */
-  public static void notifyService(Class clazz) {
+  public static void notifyService(Class clazz) throws ServiceNotFoundException {
     if ((clazz.getSuperclass() != null && clazz.getSuperclass().getName().contains("groovy"))
         || clazz.getName().contains("groovy")) return;
 

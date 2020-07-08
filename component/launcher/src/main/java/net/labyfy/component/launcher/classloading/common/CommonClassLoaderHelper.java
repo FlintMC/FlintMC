@@ -196,19 +196,13 @@ public class CommonClassLoaderHelper {
    * @throws IOException                   If an I/O error occurs while scanning the resources
    * @throws UnsupportedOperationException If the given URL has the {@code "file"} protocol but
    *                                       is not a file nor a directory
+   * @throws URISyntaxException            If the URI syntax is invalid.
    */
-  public static List<URL> scanResources(URL base) throws IOException {
+  public static List<URL> scanResources(URL base) throws IOException, URISyntaxException {
     switch (base.getProtocol()) {
       case "file": {
         // File URL, should point to either a file or a directory
-        Path path;
-
-        try {
-          // Convert to a NIO path for easier access
-          path = Paths.get(base.toURI());
-        } catch (URISyntaxException e) {
-          throw new IOException("Failed to convert " + base.toExternalForm() + " to a path", e);
-        }
+        Path path = Paths.get(base.toURI());
 
         if (!Files.exists(path)) {
           // Looks like the URL points to a nonexistent file, which is valid in case of
@@ -244,14 +238,7 @@ public class CommonClassLoaderHelper {
 
       case "jar:file": {
         // File is explicitly specified as a jar
-        Path path;
-
-        try {
-          // Convert the URL to a path
-          path = Paths.get(base.toURI());
-        } catch (URISyntaxException e) {
-          throw new IOException("Failed to convert " + base.toExternalForm() + " to a path", e);
-        }
+        Path path = Paths.get(base.toURI());
 
         // Scan the path as archive
         return scanZip(path);

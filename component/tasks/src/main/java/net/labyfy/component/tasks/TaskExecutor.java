@@ -8,7 +8,7 @@ import java.util.Map;
 public interface TaskExecutor {
   void register(Task task, Method method);
 
-  void execute(String name);
+  void execute(String name) throws TaskExecutionException;
 
-  void execute(String name, Map<Key<?>, ?> arguments);
+  void execute(String name, Map<Key<?>, ?> arguments) throws TaskExecutionException;
 }

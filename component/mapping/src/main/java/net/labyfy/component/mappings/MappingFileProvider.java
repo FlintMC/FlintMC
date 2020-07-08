@@ -1,5 +1,6 @@
 package net.labyfy.component.mappings;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -9,5 +10,5 @@ import java.util.Map;
  */
 @FunctionalInterface
 public interface MappingFileProvider {
-  Map<String, InputStream> getMappings(String version);
+  Map<String, InputStream> getMappings(String version) throws IOException;
 }

@@ -50,7 +50,7 @@ public class LabyfyAnnotationProcessor extends AbstractProcessor {
       for (TypeElement element : annotations) {
         state.process(element);
       }
-    } catch (ProcessingException e) {
+    } catch (ProcessingException exception) {
       // Catch and rethrow, adding an error to the environment
       // This allows the IDE to visually mark the failing element before the compiler crashes
       // due to our exception
@@ -58,9 +58,9 @@ public class LabyfyAnnotationProcessor extends AbstractProcessor {
           .getMessager()
           .printMessage(
               Diagnostic.Kind.ERROR,
-              "Exception thrown while processing annotations: " + e.getMessage(),
-              e.getSourceElement());
-      throw e;
+              "Exception thrown while processing annotations: " + exception.getMessage(),
+              exception.getSourceElement());
+      throw exception;
     }
 
     if (roundEnv.processingOver()) {

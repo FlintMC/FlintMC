@@ -7,6 +7,7 @@ import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.Enumeration;
@@ -23,8 +24,9 @@ public class DefaultPackageClassLoader extends ClassLoader implements PackageCla
    * {@link net.labyfy.component.launcher.classloading.RootClassLoader} of the {@link LaunchController}.
    *
    * @param owner The package owning this class loader
+   * @throws IOException If the jar file could not be read.
    */
-  DefaultPackageClassLoader(Package owner) {
+  DefaultPackageClassLoader(Package owner) throws IOException {
     super(LaunchController.getInstance().getRootLoader());
     this.owner = owner;
     this.source = PackageSource.of(owner);
@@ -75,7 +77,7 @@ public class DefaultPackageClassLoader extends ClassLoader implements PackageCla
    * {@inheritDoc}
    */
   @Override
-  public Enumeration<URL> commonFindAllResources() throws IOException {
+  public Enumeration<URL> commonFindAllResources() throws IOException, URISyntaxException {
     return source.findAllResources();
   }
 

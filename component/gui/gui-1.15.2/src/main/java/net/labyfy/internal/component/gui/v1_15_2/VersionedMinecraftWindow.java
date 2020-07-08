@@ -87,7 +87,7 @@ public class VersionedMinecraftWindow implements MinecraftWindow {
    * {@inheritDoc}
    */
   @Override
-  public int getFPS() {
+  public int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
     return this.classMappingProvider
         .get("net.minecraft.client.Minecraft")
         .getField("debugFPS")

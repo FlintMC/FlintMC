@@ -3,6 +3,7 @@ package net.labyfy.internal.component.packages.source;
 import net.labyfy.component.packages.Package;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 
@@ -40,16 +41,18 @@ public interface PackageSource extends AutoCloseable {
    *
    * @return An enumeration of all resources accessible with this source
    * @throws IOException If an I/O error occurred while locating the resources
+   * @throws URISyntaxException If an URISyntaxException occurred while locating the resource.
    */
-  Enumeration<URL> findAllResources() throws IOException;
+  Enumeration<URL> findAllResources() throws IOException, URISyntaxException;
 
   /**
    * Creates a package source matching the given package.
    *
    * @param pkg The package to create the source for
    * @return The created source which can be used to access resources of the package
+   * @throws IOException If the jar file could not be read.
    */
-  static PackageSource of(Package pkg) {
+  static PackageSource of(Package pkg) throws IOException {
     if (pkg.getFile() == null) {
       return new ClasspathSource();
     } else {

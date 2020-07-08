@@ -1,6 +1,7 @@
 package net.labyfy.component.launcher.classloading.common;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
@@ -95,8 +96,9 @@ public interface CommonClassLoader {
    *
    * @return all available resources
    * @throws IOException If an I/O error occurs while searching the resources
+   * @throws URISyntaxException If an URISyntaxException occurs while searching the resources
    */
-  Enumeration<URL> commonFindAllResources() throws IOException;
+  Enumeration<URL> commonFindAllResources() throws IOException, URISyntaxException;
 
   /**
    * Method bridge for the protected `getPackage` method in {@link ClassLoader}

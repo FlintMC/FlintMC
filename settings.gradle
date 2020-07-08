@@ -1,5 +1,8 @@
 rootProject.name = 'labyfy'
 
+include 'component:transform:exceptions'
+findProject(':component:transform:exceptions')?.name = "exceptions"
+
 include 'component:transform:javassist'
 findProject(':component:transform:javassist')?.name = "javassist"
 

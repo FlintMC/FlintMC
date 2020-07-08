@@ -1,6 +1,7 @@
 package net.labyfy.component.launcher.service;
 
 import net.labyfy.component.launcher.classloading.RootClassLoader;
+import net.labyfy.component.transform.exceptions.ClassTransformException;
 
 import java.net.URL;
 import java.util.Collections;
@@ -63,8 +64,9 @@ public interface LauncherPlugin {
      * before the launch is performed.
      *
      * @param launchClassloader The classloader used in the launch environment
+     * @throws PreLaunchException If the pre-launch failed.
      */
-    default void preLaunch(ClassLoader launchClassloader) {
+    default void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {
     }
 
   /**
@@ -74,7 +76,7 @@ public interface LauncherPlugin {
    * @param classData the class to modify
    * @return the modified data or null, if no modification was made
    */
-  default byte[] modifyClass(String className, byte[] classData) {
+  default byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
     return null;
   }
 

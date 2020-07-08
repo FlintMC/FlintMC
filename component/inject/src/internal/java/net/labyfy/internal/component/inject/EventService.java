@@ -13,7 +13,9 @@ import org.apache.groovy.util.Maps;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +40,7 @@ public class EventService implements ServiceHandler {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void discover(Identifier.Base property) {
     this.methods.put(
         property.getProperty().getLocatedIdentifiedAnnotation().<Event>getAnnotation().value(),
@@ -48,8 +51,10 @@ public class EventService implements ServiceHandler {
    * Sends an event to all receivers which have subscribed the given event.
    *
    * @param event The event to send
+   * @throws InvocationTargetException If the invoked method threw an exception.
+   * @throws IllegalAccessException    If the method definition could not be accessed.
    */
-  public void broadcast(Object event) {
+  public void broadcast(Object event) throws InvocationTargetException, IllegalAccessException {
     this.broadcast(event, Collections.emptyMap());
   }
 
@@ -58,8 +63,10 @@ public class EventService implements ServiceHandler {
    *
    * @param event The event to send
    * @param customParameters The parameter bindings to make available to the event receivers
+   * @throws InvocationTargetException If the invoked method threw an exception.
+   * @throws IllegalAccessException    If the method definition could not be accessed.
    */
-  public void broadcast(Object event, Map<Key<?>, Object> customParameters) {
+  public void broadcast(Object event, Map<Key<?>, Object> customParameters) throws InvocationTargetException, IllegalAccessException {
     Map<Key<?>, Object> parameters =
         new HashMap<>(
             Maps.of(
@@ -68,8 +75,9 @@ public class EventService implements ServiceHandler {
                 Key.get(Object.class, Names.named("event")),
                 event));
     parameters.putAll(customParameters);
-    this.methods
-        .get(event.getClass())
-        .forEach(method -> injectedInvocationHelper.invokeMethod(method, parameters));
+
+    for (Method method : methods.get(event.getClass())) {
+      injectedInvocationHelper.invokeMethod(method, parameters);
+    }
   }
 }

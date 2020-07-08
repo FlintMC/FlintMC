@@ -43,24 +43,16 @@ public @interface Hook {
 
   enum ExecutionTime {
     BEFORE {
-      public void insert(CtMethod ctMethod, String source) {
-        try {
-          ctMethod.insertBefore(source);
-        } catch (CannotCompileException e) {
-          e.printStackTrace();
-        }
+      public void insert(CtMethod ctMethod, String source) throws CannotCompileException {
+        ctMethod.insertBefore(source);
       }
     },
     AFTER {
-      public void insert(CtMethod ctMethod, String source) {
-        try {
-          ctMethod.insertAfter(source);
-        } catch (CannotCompileException e) {
-          e.printStackTrace();
-        }
+      public void insert(CtMethod ctMethod, String source) throws CannotCompileException {
+        ctMethod.insertAfter(source);
       }
     };
 
-    public abstract void insert(CtMethod ctMethod, String source);
+    public abstract void insert(CtMethod ctMethod, String source) throws CannotCompileException;
   }
 }

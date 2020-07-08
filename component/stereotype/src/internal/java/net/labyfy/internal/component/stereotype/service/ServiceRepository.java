@@ -7,8 +7,11 @@ import com.google.inject.Injector;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
 import net.labyfy.internal.component.stereotype.identifier.IdentifierParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Singleton
 public class ServiceRepository {
 
+  private final Logger logger;
   private final Collection<Class<? extends ServiceHandler>> pendingServices;
   private final Set<Class<?>> loadedClasses;
   private final Multimap<Class<?>, ServiceHandler> serviceHandlers;
@@ -30,13 +34,14 @@ public class ServiceRepository {
   @Inject
   private ServiceRepository(
       @Named("injectorReference") AtomicReference injectorReference) {
+    this.logger = LogManager.getLogger(ServiceRepository.class);
     this.pendingServices = ConcurrentHashMap.newKeySet();
     this.loadedClasses = ConcurrentHashMap.newKeySet();
     this.serviceHandlers = HashMultimap.create();
     this.injectorReference = injectorReference;
   }
 
-  private synchronized ServiceRepository register(Class<? extends ServiceHandler> handler) {
+  private synchronized ServiceRepository register(Class<? extends ServiceHandler> handler) throws ServiceNotFoundException {
     this.pendingServices.add(handler);
 
     if (initialized) {
@@ -46,7 +51,7 @@ public class ServiceRepository {
     return this;
   }
 
-  public synchronized ServiceRepository flushAll() {
+  public synchronized ServiceRepository flushAll() throws ServiceNotFoundException {
     initialized = true;
     for (Class<? extends ServiceHandler> handler : this.pendingServices) {
       flushService(handler);
@@ -54,7 +59,7 @@ public class ServiceRepository {
     return this;
   }
 
-  private void flushService(Class<? extends ServiceHandler> handler) {
+  private void flushService(Class<? extends ServiceHandler> handler) throws ServiceNotFoundException {
     ServiceHandler serviceHandler = injectorReference.get().getInstance(handler);
 
     for (Class<?> target : handler.getDeclaredAnnotation(Service.class).value()) {
@@ -72,7 +77,7 @@ public class ServiceRepository {
           if (target.isAssignableFrom(
               base.getProperty().getLocatedIdentifiedAnnotation().getAnnotation().getClass())) {
             serviceHandler.discover(base);
-            System.out.println("Servicehandler " + serviceHandler.getClass().getName() + " discovered " + base.getProperty().getLocatedIdentifiedAnnotation().<Object>getLocation());
+            logger.trace("Servicehandler {} discovered {}", serviceHandler.getClass().getName(), base.getProperty().getLocatedIdentifiedAnnotation().getLocation());
           }
         }
       }
@@ -80,7 +85,7 @@ public class ServiceRepository {
     this.pendingServices.remove(handler);
   }
 
-  public ServiceRepository notifyClassLoaded(Class<?> clazz) {
+  public ServiceRepository notifyClassLoaded(Class<?> clazz) throws ServiceNotFoundException {
     this.loadedClasses.add(clazz);
     Collection<Identifier.Base> identifier = IdentifierParser.parse(clazz);
 

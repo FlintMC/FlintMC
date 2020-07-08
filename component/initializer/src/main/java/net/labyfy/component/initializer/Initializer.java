@@ -7,18 +7,16 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.inject.InjectionServiceShare;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 public class Initializer {
-
-  public static void boot() throws IOException {
-
+  public static void boot() throws ClassNotFoundException, ServiceNotFoundException {
     Set<AutoLoadProvider> autoLoadProviders =
         ExtendedServiceLoader.get(AutoLoadProvider.class).discover(LaunchController.getInstance().getRootLoader());
 
@@ -31,19 +29,13 @@ public class Initializer {
 
     autoLoadProviders.iterator().forEachRemaining((provider) -> provider.registerAutoLoad(classAcceptor));
 
-    sortedClasses.forEach((round, classes) -> {
-      classes.forEach((priority, className) -> {
-        try {
-          EntryPoint.notifyService(Class.forName(className, true, Initializer.class.getClassLoader()));
+    for (Multimap<Integer, String> classes : sortedClasses.values()) {
+      for (String className : classes.values()) {
+        EntryPoint.notifyService(Class.forName(className, true, Initializer.class.getClassLoader()));
+      }
 
-          // LaunchController.getInstance().getRootLoader().loadClass(clazz);
-        } catch (ClassNotFoundException e) {
-          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className);
-        }
-      });
       InjectionServiceShare.flush();
       InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
-    });
-
+    }
   }
 }

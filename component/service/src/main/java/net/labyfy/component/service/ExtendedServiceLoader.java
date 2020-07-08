@@ -76,8 +76,8 @@ public class ExtendedServiceLoader<T> {
     Enumeration<URL> serviceFiles;
     try {
       serviceFiles = loader.getResources("META-INF/services/" + targetClass.getName());
-    } catch (IOException e) {
-      throw new ServiceLoadException("Failed to discover services due to IOException while querying ClassLoader", e);
+    } catch (IOException exception) {
+      throw new ServiceLoadException("Failed to discover services due to IOException while querying ClassLoader", exception);
     }
 
     Set<Class<? extends T>> collectedServiceClasses = new HashSet<>();
@@ -91,10 +91,10 @@ public class ExtendedServiceLoader<T> {
     collectedServiceClasses.forEach((clazz) -> {
       try {
         instances.add(clazz.newInstance());
-      } catch (InstantiationException e) {
-        throw new ServiceLoadException("Failed to instantiate " + clazz.getName());
-      } catch (IllegalAccessException e) {
-        throw new ServiceLoadException("Failed to instantiate " + clazz.getName() + " due to missing access rights");
+      } catch (InstantiationException exception) {
+        throw new ServiceLoadException("Failed to instantiate " + clazz.getName(), exception);
+      } catch (IllegalAccessException exception) {
+        throw new ServiceLoadException("Failed to instantiate " + clazz.getName() + " due to missing access rights", exception);
       }
     });
 
@@ -123,10 +123,10 @@ public class ExtendedServiceLoader<T> {
 
         classes.add((Class<? extends T>) loaded);
       }
-    } catch (IOException e) {
-      throw new ServiceLoadException("Failed to read service file " + file.toExternalForm() + " due to IOException", e);
-    } catch (ClassNotFoundException e) {
-      throw new ServiceLoadException("Service file " + file.toExternalForm() + " mentioned a nonexistent class");
+    } catch (IOException exception) {
+      throw new ServiceLoadException("Failed to read service file " + file.toExternalForm() + " due to IOException", exception);
+    } catch (ClassNotFoundException exception) {
+      throw new ServiceLoadException("Service file " + file.toExternalForm() + " mentioned a nonexistent class", exception);
     }
 
     return classes;

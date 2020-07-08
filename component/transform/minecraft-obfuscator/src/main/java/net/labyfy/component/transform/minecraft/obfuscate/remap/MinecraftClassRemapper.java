@@ -94,7 +94,7 @@ public class MinecraftClassRemapper extends SimpleRemapper {
       classes.forEach(c -> transitiveSuperClasses.addAll(getSuperClass(c)));
       classes.addAll(transitiveSuperClasses);
       return classes;
-    } catch (Exception e) {
+    } catch (Exception ignored) {
       // Not found, can be ignored
       return new ArrayList<>();
     }
