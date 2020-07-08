@@ -23,14 +23,11 @@ public class FileSource implements PackageSource {
    * Constructs a new {@link FileSource} with the given file interpreted as a jar file.
    *
    * @param file The jar file of this source
+   * @throws IOException If the file could not be read.
    */
-  FileSource(File file) {
-    try {
-      this.file = file;
-      this.jar = new JarFile(file);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+  FileSource(File file) throws IOException {
+    this.file = file;
+    this.jar = new JarFile(file);
   }
 
   /**
@@ -117,7 +114,7 @@ public class FileSource implements PackageSource {
    * {@inheritDoc}
    */
   @Override
-  public Enumeration<URL> findAllResources() throws IOException {
+  public Enumeration<URL> findAllResources() throws IOException, URISyntaxException {
     // Use the CommonClassLoaderHelper to simply scan this jar file
     return Collections.enumeration(CommonClassLoaderHelper.scanResources(file.toURI().toURL()));
   }

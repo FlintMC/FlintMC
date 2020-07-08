@@ -66,7 +66,7 @@ public class DefaultPackage implements Package {
         }
 
         this.packageManifest = manifest;
-      } catch (IOException ignore) {
+      } catch (IOException ignored) {
       }
     } else {
       // The package should not be loaded from a file, thus we don't have a manifest and mark  the package
@@ -152,10 +152,10 @@ public class DefaultPackage implements Package {
     try {
       this.classLoader = new DefaultPackageClassLoader(this);
       this.packageState = PackageState.LOADED;
-    } catch (Exception e) {
+    } catch (Exception exception) {
       // The package failed to load, save the error and mark the package itself as errored
       this.packageState = PackageState.ERRORED;
-      this.loadException = e;
+      this.loadException = exception;
     }
     return this.packageState;
   }

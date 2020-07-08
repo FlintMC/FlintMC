@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
@@ -283,8 +284,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       }
 
       return first;
-    } catch (IOException e) {
-      logger.warn("IOException while trying to retrieve resource " + name, e);
+    } catch (IOException exception) {
+      logger.warn("IOException while trying to retrieve resource " + name, exception);
       return null;
     }
   }
@@ -341,9 +342,10 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * Searches for all available resources and collects them. Resources include class files.
    *
    * @return An enumeration of all available resources
-   * @throws IOException If an I/O error occurs while finding the resources
+   * @throws IOException        If an I/O error occurs while finding the resources
+   * @throws URISyntaxException If an URISyntaxException occurs while finding the resources
    */
-  public Enumeration<URL> findAllResources() throws IOException {
+  public Enumeration<URL> findAllResources() throws IOException, URISyntaxException {
     List<URL> collected = new ArrayList<>();
 
     for (URL url : getURLs()) {
@@ -428,7 +430,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * {@inheritDoc}
    */
   @Override
-  public Enumeration<URL> commonFindAllResources() throws IOException {
+  public Enumeration<URL> commonFindAllResources() throws IOException, URISyntaxException {
     return findAllResources();
   }
 

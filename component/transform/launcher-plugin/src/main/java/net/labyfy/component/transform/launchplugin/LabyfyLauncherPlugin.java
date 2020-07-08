@@ -46,8 +46,8 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
         try {
           return result.openStream();
-        } catch (IOException e) {
-          throw new NotFoundException("Failed to open class " + classname, e);
+        } catch (IOException exception) {
+          throw new NotFoundException("Failed to open class " + classname, exception);
         }
       }
 
@@ -102,10 +102,14 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
     // init sentry
     if (logger != null){
-      if (arguments.containsKey("--sentry")){
-        if(arguments.get("--sentry").equals("true"))
-          initSentry(arguments);
-      } else initSentry(arguments);
+      try {
+        if (arguments.containsKey("--sentry")){
+          if(arguments.get("--sentry").equals("true"))
+            initSentry(arguments);
+        } else initSentry(arguments);
+      } catch (IOException exception) {
+        throw new PreLaunchException("unable to read manifest", exception);
+      }
     }
 
     try {
@@ -141,10 +145,10 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
       }
 
       return ctClass.toBytecode();
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to modify class due to IOException", e);
-    } catch (CannotCompileException e) {
-      logger.warn("Failed to modify class due to compilation error", e);
+    } catch (IOException exception) {
+      throw new RuntimeException("Failed to modify class due to IOException", exception);
+    } catch (CannotCompileException exception) {
+      logger.warn("Failed to modify class due to compilation error", exception);
       return null;
     }
   }
@@ -159,23 +163,19 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
    * @param name Name of the requested entry
    * @return Value for requested entry
    */
-  private String findManifestEntry(String name) {
-    try {
-      Enumeration<URL> resources = Thread.currentThread().getContextClassLoader()
-          .getResources("META-INF/MANIFEST.MF");
-      while (resources.hasMoreElements()) {
-        URL manifestUrl = resources.nextElement();
-        Manifest manifest = new Manifest(manifestUrl.openStream());
-        Attributes mainAttributes = manifest.getMainAttributes();
-        String implementationTitle = mainAttributes.getValue("Implementation-Title");
-        if (implementationTitle != null && implementationTitle.equals("labyfy")) {
-          return mainAttributes.getValue(name);
-        }
+  private String findManifestEntry(String name) throws IOException {
+    Enumeration<URL> resources = Thread.currentThread().getContextClassLoader()
+        .getResources("META-INF/MANIFEST.MF");
+    while (resources.hasMoreElements()) {
+      URL manifestUrl = resources.nextElement();
+      Manifest manifest = new Manifest(manifestUrl.openStream());
+      Attributes mainAttributes = manifest.getMainAttributes();
+      String implementationTitle = mainAttributes.getValue("Implementation-Title");
+      if (implementationTitle != null && implementationTitle.equals("labyfy")) {
+        return mainAttributes.getValue(name);
       }
-    } catch (Exception e) {
-      logger.error(e);
     }
-    return "unknown";
+    return null;
   }
 
   /**
@@ -183,7 +183,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
    *
    * @param arguments the launchArguments map
    */
-  private void initSentry(Map<String, String> arguments) {
+  private void initSentry(Map<String, String> arguments) throws IOException {
     logger.info("Initializing Sentry");
     // manifest entries are set in the main build.grade file
     String dsn = findManifestEntry("Sentry-dsn");

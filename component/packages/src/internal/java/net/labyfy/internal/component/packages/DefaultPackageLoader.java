@@ -58,9 +58,9 @@ public class DefaultPackageLoader implements PackageLoader {
     if (Files.isDirectory(packageFolderPath)) {
       try {
         Files.createDirectories(packageFolderPath);
-      } catch (IOException e) {
+      } catch (IOException exception) {
         exists = false;
-        logger.error("Failed to create package folder {}", packageFolderPath.toString(), e);
+        logger.error("Failed to create package folder {}", packageFolderPath.toString(), exception);
       }
     }
 
@@ -74,8 +74,8 @@ public class DefaultPackageLoader implements PackageLoader {
                   file -> {
                     try {
                       return new JarTuple(file, new JarFile(file));
-                    } catch (IOException e) {
-                      logger.error("Failed to open {} as a jar", file.getAbsolutePath(), e);
+                    } catch (IOException exception) {
+                      logger.error("Failed to open {} as a jar", file.getAbsolutePath(), exception);
                       return null;
                     }
                   })

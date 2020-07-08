@@ -159,8 +159,8 @@ public class ProcessorState {
       JavaFile finishedFile = JavaFile.builder("net.labyfy.autogen", generatedType).build();
       try {
         finishedFile.writeTo(filer);
-      } catch (IOException e) {
-        throw new ProcessingException("Failed to write to final file due to IOException", e);
+      } catch (IOException exception) {
+        throw new ProcessingException("Failed to write to final file due to IOException", exception);
       }
 
       // We also need to generate the service file for auto loading
@@ -184,8 +184,8 @@ public class ProcessorState {
                    .createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile)
                    .openOutputStream()) {
         IOUtils.writeLines(services, System.lineSeparator(), stream, StandardCharsets.UTF_8);
-      } catch (IOException e) {
-        throw new ProcessingException("Failed to update " + resourceFile, e);
+      } catch (IOException exception) {
+        throw new ProcessingException("Failed to update " + resourceFile, exception);
       }
     }
   }
