@@ -29,6 +29,7 @@ public class PostConstructModule extends AbstractModule {
     this.injectorReference = injectorReference;
   }
 
+  @Override
   protected void configure() {
     this.bindListener(
         Matchers.any(),
@@ -38,10 +39,18 @@ public class PostConstructModule extends AbstractModule {
                 (InjectionListener<I>)
                     injectee ->
                         this.getPostConstructMethods(injectee.getClass())
-                            .forEach(method -> this.call(injectee, method)));
+                            .forEach(method -> {
+                              try {
+                                this.call(injectee, method);
+                              } catch (InvocationTargetException exception) {
+                                throw new RuntimeException(method.getDeclaringClass().getName() + "#" + method.getName() + " threw an exception", exception);
+                              } catch (IllegalAccessException exception) {
+                                throw new RuntimeException("unable to access method definition: " + method.getDeclaringClass().getName() + "#" + method.getName() + " threw an exception", exception);
+                              }
+                            }));
           }
 
-          private void call(Object object, Method method) {
+          private void call(Object object, Method method) throws InvocationTargetException, IllegalAccessException {
             Map<? extends Class<?>, ?> dependencies =
                 InjectionPoint.forMethod(method, TypeLiteral.get(method.getDeclaringClass()))
                     .getDependencies().stream()
@@ -58,11 +67,7 @@ public class PostConstructModule extends AbstractModule {
               arguments[i] = dependencies.get(parameterTypes[i]);
             }
             method.setAccessible(true);
-            try {
-              method.invoke(object, arguments);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-              e.printStackTrace();
-            }
+            method.invoke(object, arguments);
           }
 
           private Collection<Method> getPostConstructMethods(Class<?> clazz) {
