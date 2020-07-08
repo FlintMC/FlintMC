@@ -4,6 +4,7 @@ import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoader;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
 import net.labyfy.component.launcher.service.LauncherPlugin;
+import net.labyfy.component.transform.launchplugin.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -206,8 +207,10 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       Class<?> clazz = loader.commonDefineClass(name, classBytes, 0, classBytes.length, codeSource);
       classCache.put(name, clazz);
       return clazz;
-    } catch (IOException e) {
-      throw new ClassNotFoundException("Failed to find class " + name + " due to IOException", e);
+    } catch (IOException exception) {
+      throw new ClassNotFoundException("Failed to find class " + name + " due to IOException", exception);
+    } catch (ClassTransformException exception) {
+      throw new ClassNotFoundException("Unable to find class " + name + " due to ClassTransformException", exception);
     } finally {
       // Make sure we remove the loading flag from the class
       currentlyLoading.remove(name);

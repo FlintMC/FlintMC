@@ -2,5 +2,13 @@ package net.labyfy.component.transform.launchplugin;
 
 @FunctionalInterface
 public interface LateInjectedTransformer {
-  byte[] transform(String className, byte[] classData);
+  /**
+   * Transform a class.
+   *
+   * @param className a class name.
+   * @param classData a byte array reassembling a class.
+   * @return a derivative of class data.
+   * @throws ClassTransformException if the class transformation failed.
+   */
+  byte[] transform(String className, byte[] classData) throws ClassTransformException;
 }

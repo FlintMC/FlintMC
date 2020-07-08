@@ -115,7 +115,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
   }
 
   @Override
-  public byte[] modifyClass(String className, byte[] classData) {
+  public byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
     for (LateInjectedTransformer transformer : injectedTransformers.values()) {
       byte[] newData = transformer.transform(className, classData);
       if (newData != null) {
