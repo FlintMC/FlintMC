@@ -54,43 +54,40 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
     this.version = (String) launchArguments.get("--version");
   }
 
+  @Override
   public void discover(Identifier.Base property) {
-    try {
-      LocatedIdentifiedAnnotation locatedIdentifiedAnnotation =
-          property.getProperty().getLocatedIdentifiedAnnotation();
-      LaunchController.getInstance().getRootLoader().excludeFromModification(
-          locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass().getName());
+    LocatedIdentifiedAnnotation locatedIdentifiedAnnotation =
+        property.getProperty().getLocatedIdentifiedAnnotation();
+    LaunchController.getInstance().getRootLoader().excludeFromModification(
+        locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass().getName());
 
-      Collection<Predicate<CtClass>> filters = new HashSet<>();
+    Collection<Predicate<CtClass>> filters = new HashSet<>();
 
-      for (Property.Base subProperty :
-          property.getProperty().getSubProperties(CtClassFilter.class)) {
-        filters.add(
-            ctClass -> {
-              CtClassFilter annotation =
-                  subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
-              return annotation
-                  .value()
-                  .test(
-                      ctClass,
-                      InjectionHolder.getInjectedInstance(annotation.classNameResolver())
-                          .resolve(annotation.className()));
-            });
-      }
-
-      this.classTransformContexts.add(
-          this.classTransformContextFactory.create(
-              filters,
-              InjectionHolder.getInjectedInstance(
-                  locatedIdentifiedAnnotation.<ClassTransform>getAnnotation().classNameResolver()),
-              locatedIdentifiedAnnotation.getAnnotation(),
-              locatedIdentifiedAnnotation.getLocation(),
-              locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass(),
-              InjectionHolder.getInjectedInstance(
-                  locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass())));
-    } catch (Exception ex) {
-      ex.printStackTrace();
+    for (Property.Base subProperty :
+        property.getProperty().getSubProperties(CtClassFilter.class)) {
+      filters.add(
+          ctClass -> {
+            CtClassFilter annotation =
+                subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
+            return annotation
+                .value()
+                .test(
+                    ctClass,
+                    InjectionHolder.getInjectedInstance(annotation.classNameResolver())
+                        .resolve(annotation.className()));
+          });
     }
+
+    this.classTransformContexts.add(
+        this.classTransformContextFactory.create(
+            filters,
+            InjectionHolder.getInjectedInstance(
+                locatedIdentifiedAnnotation.<ClassTransform>getAnnotation().classNameResolver()),
+            locatedIdentifiedAnnotation.getAnnotation(),
+            locatedIdentifiedAnnotation.getLocation(),
+            locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass(),
+            InjectionHolder.getInjectedInstance(
+                locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass())));
   }
 
   public byte[] transform(String className, byte[] bytes) {
