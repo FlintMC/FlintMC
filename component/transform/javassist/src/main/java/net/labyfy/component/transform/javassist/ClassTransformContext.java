@@ -170,7 +170,7 @@ public interface ClassTransformContext {
                 NameResolver nameResolver,
                 ClassTransform classTransform,
                 Method method,
-                Class ownerClass,
+                Class<?> ownerClass,
                 @Assisted("owner") Object owner);
     }
 }
