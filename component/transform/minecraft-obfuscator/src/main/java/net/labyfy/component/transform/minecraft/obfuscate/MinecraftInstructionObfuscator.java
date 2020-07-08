@@ -8,6 +8,7 @@ import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.transform.asm.ASMUtils;
+import net.labyfy.component.transform.exceptions.ClassTransformException;
 import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 import net.labyfy.component.transform.minecraft.MinecraftTransformer;
 import net.labyfy.component.transform.minecraft.obfuscate.remap.MinecraftClassRemapper;
@@ -45,25 +46,25 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
   }
 
-  public byte[] transform(String className, byte[] classData) {
+  @Override
+  public byte[] transform(String className, byte[] classData) throws ClassTransformException {
+    if (!obfuscated) return classData;
+    if (!className.startsWith("net.labyfy")) return classData;
+
+    ClassInformation classInformation;
+
     try {
-
-      if (!obfuscated) return classData;
-      if (!className.startsWith("net.labyfy")) return classData;
-
-      ClassInformation classInformation =
-          CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, className);
-      if (classInformation == null) return classData;
-
-      ClassNode classNode = ASMUtils.getNode(classInformation.getClassBytes());
-      ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-      ClassVisitor classRemapper = new ClassRemapper(classWriter, minecraftClassRemapper);
-      classNode.accept(classRemapper);
-      return classWriter.toByteArray();
-    } catch (IOException e) {
-      e.printStackTrace();
+      classInformation = CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, className);
+    } catch (IOException exception) {
+      throw new ClassTransformException("unable to retrieve class metadata.", exception);
     }
-    return classData;
-  }
 
+    if (classInformation == null) return classData;
+
+    ClassNode classNode = ASMUtils.getNode(classInformation.getClassBytes());
+    ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+    ClassVisitor classRemapper = new ClassRemapper(classWriter, minecraftClassRemapper);
+    classNode.accept(classRemapper);
+    return classWriter.toByteArray();
+  }
 }
