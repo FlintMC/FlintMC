@@ -114,7 +114,11 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
       throw new PreLaunchException("unable to boot initializer", exception);
     }
 
-    InjectionHolder.enableIngameState();
+    try {
+      InjectionHolder.enableIngameState();
+    } catch (Exception exception) {
+      throw new PreLaunchException("unable to run initialization runnables", exception);
+    }
   }
 
   @Override

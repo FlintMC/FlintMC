@@ -10,6 +10,7 @@ import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public class DefaultInjectedInvocationHelper implements InjectedInvocationHelper
    * {@inheritDoc}
    */
   @Override
-  public <T> T invokeMethod(Method method) {
+  public <T> T invokeMethod(Method method) throws InvocationTargetException, IllegalAccessException {
     return this.invokeMethod(method, Maps.newHashMap());
   }
 
@@ -34,7 +35,7 @@ public class DefaultInjectedInvocationHelper implements InjectedInvocationHelper
    * {@inheritDoc}
    */
   @Override
-  public <T> T invokeMethod(Method method, Map<Key<?>, ?> availableArguments) {
+  public <T> T invokeMethod(Method method, Map<Key<?>, ?> availableArguments) throws InvocationTargetException, IllegalAccessException {
     return this.invokeMethod(
         method,
         InjectionHolder.getInjectedInstance(method.getDeclaringClass()),
@@ -45,7 +46,7 @@ public class DefaultInjectedInvocationHelper implements InjectedInvocationHelper
    * {@inheritDoc}
    */
   @Override
-  public <T> T invokeMethod(Method method, Object instance) {
+  public <T> T invokeMethod(Method method, Object instance) throws InvocationTargetException, IllegalAccessException {
     return this.invokeMethod(method, instance, Maps.newHashMap());
   }
 
@@ -54,37 +55,32 @@ public class DefaultInjectedInvocationHelper implements InjectedInvocationHelper
    */
   @SuppressWarnings("unchecked")
   @Override
-  public <T> T invokeMethod(Method method, Object instance, Map<Key<?>, ?> availableArguments) {
-    try {
-      // Retrieves all dependencies required for injecting
-      List<Dependency<?>> dependencies =
-          InjectionPoint.forMethod(method, TypeLiteral.get(method.getDeclaringClass()))
-              .getDependencies();
+  public <T> T invokeMethod(Method method, Object instance, Map<Key<?>, ?> availableArguments) throws InvocationTargetException, IllegalAccessException {
+    // Retrieves all dependencies required for injecting
+    List<Dependency<?>> dependencies =
+        InjectionPoint.forMethod(method, TypeLiteral.get(method.getDeclaringClass()))
+            .getDependencies();
 
-      Map<Key<?>, Object> invocationArguments = new HashMap<>();
+    Map<Key<?>, Object> invocationArguments = new HashMap<>();
 
-      for (Dependency<?> dependency : dependencies) {
-        if (availableArguments.containsKey(dependency.getKey())) {
-          // If the arguments already contain an available injection, use it
-          invocationArguments.put(dependency.getKey(), availableArguments.get(dependency.getKey()));
-        } else {
-          // Else retrieve an instance from Guice
-          invocationArguments.put(
-              dependency.getKey(), InjectionHolder.getInjectedInstance(dependency.getKey()));
-        }
+    for (Dependency<?> dependency : dependencies) {
+      if (availableArguments.containsKey(dependency.getKey())) {
+        // If the arguments already contain an available injection, use it
+        invocationArguments.put(dependency.getKey(), availableArguments.get(dependency.getKey()));
+      } else {
+        // Else retrieve an instance from Guice
+        invocationArguments.put(
+            dependency.getKey(), InjectionHolder.getInjectedInstance(dependency.getKey()));
       }
-
-      // Convert the arguments so they can be used with reflection
-      Object[] finalArguments = new Object[dependencies.size()];
-      for (int i = 0; i < dependencies.size(); i++) {
-        finalArguments[i] = invocationArguments.get(dependencies.get(i).getKey());
-      }
-
-      // Invoke the method
-      return (T) method.invoke(instance, finalArguments);
-    } catch (Exception ex) {
-      ex.printStackTrace();
     }
-    return null;
+
+    // Convert the arguments so they can be used with reflection
+    Object[] finalArguments = new Object[dependencies.size()];
+    for (int i = 0; i < dependencies.size(); i++) {
+      finalArguments[i] = invocationArguments.get(dependencies.get(i).getKey());
+    }
+
+    // Invoke the method
+    return (T) method.invoke(instance, finalArguments);
   }
 }

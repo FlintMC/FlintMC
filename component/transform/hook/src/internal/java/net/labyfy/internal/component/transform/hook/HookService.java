@@ -22,6 +22,7 @@ import net.labyfy.component.transform.javassist.ClassTransformContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class HookService implements ServiceHandler {
       Class<?> clazz,
       String method,
       Class<?>[] parameters,
-      Object[] args) throws NoSuchMethodException {
+      Object[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
     Map<Key<?>, Object> availableParameters = Maps.newHashMap();
     availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
     availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);

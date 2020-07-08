@@ -18,7 +18,6 @@ import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.jar.JarFile;

@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class InjectionHolder {
 
-  private final Collection<Runnable> initializationRunnables;
+  private final Collection<ExceptionTolerantRunnable> initializationRunnables;
   private final Collection<Module> modules;
   private final AtomicReference<Injector> injectorReference;
 
@@ -50,12 +50,14 @@ public class InjectionHolder {
     return injectorReference;
   }
 
-  public void addInitializationListener(Runnable runnable) {
+  public void addInitializationListener(ExceptionTolerantRunnable runnable) {
     this.initializationRunnables.add(runnable);
   }
 
-  public static void enableIngameState() {
-    getInstance().initializationRunnables.forEach(Runnable::run);
+  public static void enableIngameState() throws Exception {
+    for (ExceptionTolerantRunnable runnable : getInstance().initializationRunnables) {
+      runnable.run();
+    }
   }
 
   public static <T> T getInjectedInstance(Key<T> key) {
