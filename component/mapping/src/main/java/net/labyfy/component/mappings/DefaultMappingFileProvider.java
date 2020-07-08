@@ -7,10 +7,7 @@ import net.labyfy.component.inject.implement.Implement;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Map;
 
 import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.*;
@@ -27,22 +24,18 @@ public class DefaultMappingFileProvider implements MappingFileProvider {
     this.labyfyRoot = labyfyRoot;
   }
 
-  public Map<String, InputStream> getMappings(String version) {
-    try {
-      return
-          ImmutableMap.of(
-              "methods.csv",
-              new FileInputStream(
-                  new File(labyfyRoot, "assets/" + version + "/methods.csv").getAbsoluteFile()),
-              "fields.csv",
-              new FileInputStream(
-                  new File(labyfyRoot, "assets/" + version + "/fields.csv").getAbsoluteFile()),
-              "joined.tsrg",
-              new FileInputStream(
-                  new File(labyfyRoot, "assets/" + version + "/joined.tsrg").getAbsoluteFile()));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-    return null;
+  @Override
+  public Map<String, InputStream> getMappings(String version) throws IOException {
+    return
+        ImmutableMap.of(
+            "methods.csv",
+            new FileInputStream(
+                new File(labyfyRoot, "assets/" + version + "/methods.csv").getAbsoluteFile()),
+            "fields.csv",
+            new FileInputStream(
+                new File(labyfyRoot, "assets/" + version + "/fields.csv").getAbsoluteFile()),
+            "joined.tsrg",
+            new FileInputStream(
+                new File(labyfyRoot, "assets/" + version + "/joined.tsrg").getAbsoluteFile()));
   }
 }

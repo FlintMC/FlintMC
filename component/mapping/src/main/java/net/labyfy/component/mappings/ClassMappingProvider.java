@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class ClassMappingProvider {
   private final Map<String, ClassMapping> unObfuscatedClassMappings = Maps.newConcurrentMap();
 
   @Inject
-  private ClassMappingProvider(MappingFileProvider mappingFileProvider, @Named("launchArguments") Map launchArguments) {
+  private ClassMappingProvider(MappingFileProvider mappingFileProvider, @Named("launchArguments") Map launchArguments) throws IOException {
     McpMappingParser mcpMappingParser = new McpMappingParser();
     Collection<ClassMapping> parse = mcpMappingParser.parse(this, mappingFileProvider.getMappings(launchArguments.get("--version").toString()));
 
