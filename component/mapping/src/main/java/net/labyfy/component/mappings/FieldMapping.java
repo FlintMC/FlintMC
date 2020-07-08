@@ -51,8 +51,11 @@ public class FieldMapping {
    *
    * @param <T> Implicit type to cast to
    * @return The static fields value
+   * @throws IllegalAccessException if the field definition could not be accessed.
+   * @throws NoSuchFieldException   if the field could not be found.
+   * @throws ClassNotFoundException if the class could not be found.
    */
-  public <T> T getStaticValue() {
+  public <T> T getStaticValue() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
     return this.getValue(null);
   }
 
@@ -60,8 +63,11 @@ public class FieldMapping {
    * Asserts that the represented field is static and sets it static value.
    *
    * @param value New value to set
+   * @throws IllegalAccessException if the field definition could not be accessed.
+   * @throws NoSuchFieldException   if the field could not be found.
+   * @throws ClassNotFoundException if the class could not be found.
    */
-  public void setStaticValue(Object value) {
+  public void setStaticValue(Object value) throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
     this.setValue(null, value);
   }
 
@@ -78,16 +84,14 @@ public class FieldMapping {
 
   /**
    * @return The {@link Field} that this {@link FieldMapping} represents.
+   * @throws ClassNotFoundException if the class could not be found.
+   * @throws NoSuchFieldException   if the field could not be found.
    */
-  public Field getField() {
+  public Field getField() throws ClassNotFoundException, NoSuchFieldException {
     if (this.cached == null) {
-      try {
-        Field declaredField = this.labyClassMapping.get().getDeclaredField(this.getName());
-        declaredField.setAccessible(true);
-        this.cached = declaredField;
-      } catch (Exception ex) {
-        ex.printStackTrace();
-      }
+      Field declaredField = this.labyClassMapping.get().getDeclaredField(this.getName());
+      declaredField.setAccessible(true);
+      this.cached = declaredField;
     }
     return this.cached;
   }
@@ -98,14 +102,12 @@ public class FieldMapping {
    * @param instance Object instance to get value from
    * @param <T>      Implicit type to cast result to
    * @return Resolved field value
+   * @throws NoSuchFieldException   if the field could not be found.
+   * @throws ClassNotFoundException if the class could not be found.
+   * @throws IllegalAccessException if the field definition could not be accessed.
    */
-  public <T> T getValue(Object instance) {
-    try {
-      return (T) this.getField().get(instance);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
-    return null;
+  public <T> T getValue(Object instance) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException {
+    return (T) this.getField().get(instance);
   }
 
   /**
@@ -113,15 +115,13 @@ public class FieldMapping {
    *
    * @param instance Object instance to set value to
    * @param value    New value to set
+   * @throws NoSuchFieldException   if the field could not be found.
+   * @throws ClassNotFoundException if the class could not be found.
+   * @throws IllegalAccessException if the field definition could not be accessed.
    */
-  public void setValue(Object instance, Object value) {
-    try {
-      this.getField().set(instance, value);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+  public void setValue(Object instance, Object value) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException {
+    this.getField().set(instance, value);
   }
-
 
   /**
    * Returns true if obfuscatedName and unObfuscatedName are equals.
