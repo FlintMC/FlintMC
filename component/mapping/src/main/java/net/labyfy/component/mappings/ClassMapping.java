@@ -67,7 +67,7 @@ public class ClassMapping {
    * Get the java reflect {@link Class} this {@link ClassMapping} is representing from the default {@link net.labyfy.component.launcher.classloading.RootClassLoader}, which Labyfy is using by default.
    *
    * @return The retrieved class
-   * @throws ClassNotFoundException if the class could not be found.
+   * @throws ClassNotFoundException If the class could not be found.
    */
   public Class<?> get() throws ClassNotFoundException {
     return get(LaunchController.getInstance().getRootLoader());
@@ -78,7 +78,7 @@ public class ClassMapping {
    *
    * @param classLoader The class loader to retrieve the class from
    * @return The retrieved class
-   * @throws ClassNotFoundException if the class could not be found.
+   * @throws ClassNotFoundException If the class could not be found.
    */
   public Class<?> get(ClassLoader classLoader) throws ClassNotFoundException {
     return Class.forName(this.getName(), false, classLoader);

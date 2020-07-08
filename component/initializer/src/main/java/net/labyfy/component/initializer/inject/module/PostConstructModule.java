@@ -45,7 +45,7 @@ public class PostConstructModule extends AbstractModule {
                               } catch (InvocationTargetException exception) {
                                 throw new RuntimeException(method.getDeclaringClass().getName() + "#" + method.getName() + " threw an exception", exception);
                               } catch (IllegalAccessException exception) {
-                                throw new RuntimeException("unable to access method definition: " + method.getDeclaringClass().getName() + "#" + method.getName() + " threw an exception", exception);
+                                throw new RuntimeException("Unable to access method definition: " + method.getDeclaringClass().getName() + "#" + method.getName() + " threw an exception", exception);
                               }
                             }));
           }

@@ -7,8 +7,8 @@ public interface ServiceHandler {
   /**
    * Discover a service.
    *
-   * @param property a property.
-   * @throws ServiceNotFoundException if the service could not be discovered.
+   * @param property The property where the service was discovered.
+   * @throws ServiceNotFoundException If the service could not be discovered.
    */
   void discover(Identifier.Base property) throws ServiceNotFoundException;
 }

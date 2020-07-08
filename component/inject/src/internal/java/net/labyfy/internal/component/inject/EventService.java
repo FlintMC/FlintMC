@@ -51,8 +51,8 @@ public class EventService implements ServiceHandler {
    * Sends an event to all receivers which have subscribed the given event.
    *
    * @param event The event to send
-   * @throws InvocationTargetException if the invoked method threw an exception.
-   * @throws IllegalAccessException    if the method definition could not be accessed.
+   * @throws InvocationTargetException If the invoked method threw an exception.
+   * @throws IllegalAccessException    If the method definition could not be accessed.
    */
   public void broadcast(Object event) throws InvocationTargetException, IllegalAccessException {
     this.broadcast(event, Collections.emptyMap());
@@ -63,8 +63,8 @@ public class EventService implements ServiceHandler {
    *
    * @param event The event to send
    * @param customParameters The parameter bindings to make available to the event receivers
-   * @throws InvocationTargetException if the invoked method threw an exception.
-   * @throws IllegalAccessException    if the method definition could not be accessed.
+   * @throws InvocationTargetException If the invoked method threw an exception.
+   * @throws IllegalAccessException    If the method definition could not be accessed.
    */
   public void broadcast(Object event, Map<Key<?>, Object> customParameters) throws InvocationTargetException, IllegalAccessException {
     Map<Key<?>, Object> parameters =

@@ -64,7 +64,7 @@ public interface LauncherPlugin {
      * before the launch is performed.
      *
      * @param launchClassloader The classloader used in the launch environment
-     * @throws PreLaunchException if the pre-launch failed.
+     * @throws PreLaunchException If the pre-launch failed.
      */
     default void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {
     }

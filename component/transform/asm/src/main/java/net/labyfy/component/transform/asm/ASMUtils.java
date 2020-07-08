@@ -33,8 +33,8 @@ public class ASMUtils {
   /**
    * Parse class node.
    *
-   * @param bytes raw class data.
-   * @return a class node.
+   * @param bytes Raw class data.
+   * @return The class node constructed from the raw bytes.
    */
   public static ClassNode getNode(final byte[] bytes) {
     ClassReader cr = new ClassReader(bytes);

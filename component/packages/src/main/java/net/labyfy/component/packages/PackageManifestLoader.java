@@ -22,9 +22,9 @@ public interface PackageManifestLoader {
    * fail, if the manifest is not present or readable. This method does not check if the manifests
    * content is valid, use the {@link PackageManifest#isValid()} method for that.
    *
-   * @param file the JarFile in which the manifest can be found.
-   * @return a package manifest.
-   * @throws IOException if the file could not be read.
+   * @param file The JarFile in which the manifest can be found.
+   * @return A loaded package manifest.
+   * @throws IOException If the file could not be read.
    */
   PackageManifest loadManifest(JarFile file) throws IOException;
 }

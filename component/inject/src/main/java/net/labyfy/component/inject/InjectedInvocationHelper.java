@@ -16,8 +16,8 @@ public interface InjectedInvocationHelper {
    * @param method The method to invoke
    * @param <T>    The return type
    * @return The return value of the invoked method
-   * @throws InvocationTargetException if the invoked method threw an exception.
-   * @throws IllegalAccessException    if the method definition could not be accessed.
+   * @throws InvocationTargetException If the invoked method threw an exception.
+   * @throws IllegalAccessException    If the method definition could not be accessed.
    */
   <T> T invokeMethod(Method method) throws InvocationTargetException, IllegalAccessException;
 
@@ -29,8 +29,8 @@ public interface InjectedInvocationHelper {
    * @param availableArguments Parameter bindings which should be used for invocation
    * @param <T>                The return type
    * @return The return value of the invoked method
-   * @throws InvocationTargetException if the invoked method threw an exception.
-   * @throws IllegalAccessException    if the method definition could not be accessed.
+   * @throws InvocationTargetException If the invoked method threw an exception.
+   * @throws IllegalAccessException    If the method definition could not be accessed.
    */
   <T> T invokeMethod(Method method, Map<Key<?>, ?> availableArguments) throws InvocationTargetException, IllegalAccessException;
 
@@ -41,8 +41,8 @@ public interface InjectedInvocationHelper {
    * @param instance The instance to invoke the method on
    * @param <T>      The return type
    * @return The return value of the invoked method
-   * @throws InvocationTargetException if the invoked method threw an exception.
-   * @throws IllegalAccessException    if the method definition could not be accessed.
+   * @throws InvocationTargetException If the invoked method threw an exception.
+   * @throws IllegalAccessException    If the method definition could not be accessed.
    */
   <T> T invokeMethod(Method method, Object instance) throws InvocationTargetException, IllegalAccessException;
 
@@ -55,8 +55,8 @@ public interface InjectedInvocationHelper {
    * @param availableArguments Parameter bindings which should be used for invocation
    * @param <T>                The return type
    * @return The return value of the invoked method
-   * @throws InvocationTargetException if the invoked method threw an exception.
-   * @throws IllegalAccessException    if the method definition could not be accessed.
+   * @throws InvocationTargetException If the invoked method threw an exception.
+   * @throws IllegalAccessException    If the method definition could not be accessed.
    */
   <T> T invokeMethod(Method method, Object instance, Map<Key<?>, ?> availableArguments) throws InvocationTargetException, IllegalAccessException;
 }

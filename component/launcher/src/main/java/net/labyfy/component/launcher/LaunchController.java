@@ -153,7 +153,7 @@ public class LaunchController {
       logger.fatal("Unable to invoke main method due to missing access", exception);
       System.exit(1);
     } catch (PreLaunchException exception) {
-      logger.fatal("Unable to launch plugin: {}", exceptionContext, exception);
+      logger.fatal("Exception while invoking pre-launch callback: {}", exceptionContext, exception);
       System.exit(1);
     }
   }

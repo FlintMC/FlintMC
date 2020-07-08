@@ -56,7 +56,7 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
     try {
       classInformation = CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, className);
     } catch (IOException exception) {
-      throw new ClassTransformException("unable to retrieve class metadata: " + className, exception);
+      throw new ClassTransformException("Unable to retrieve class metadata: " + className, exception);
     }
 
     if (classInformation == null) return classData;

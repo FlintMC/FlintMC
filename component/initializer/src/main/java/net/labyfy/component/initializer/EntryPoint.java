@@ -27,7 +27,7 @@ public class EntryPoint {
    * Notifis all services that a new class is loaded.
    *
    * @param clazz The loaded class to notify
-   * @throws ServiceNotFoundException if the service could not be discovered.
+   * @throws ServiceNotFoundException If the service could not be discovered.
    */
   public static void notifyService(Class clazz) throws ServiceNotFoundException {
     if ((clazz.getSuperclass() != null && clazz.getSuperclass().getName().contains("groovy"))

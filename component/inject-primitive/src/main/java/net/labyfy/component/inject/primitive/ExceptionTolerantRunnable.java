@@ -37,7 +37,7 @@ public interface ExceptionTolerantRunnable {
    * The general contract of the method <code>run</code> is that it may
    * take any action whatsoever.
    *
-   * @throws Exception exception during runnable execution.
+   * @throws Exception If an exception occurs while executing the runnable.
    * @see java.lang.Thread#run()
    */
   void run() throws Exception;

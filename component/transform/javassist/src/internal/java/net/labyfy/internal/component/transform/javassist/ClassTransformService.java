@@ -147,7 +147,7 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
           try {
             method.invoke(classTransformContext.getOwner(), classTransformContext);
           } catch (IllegalAccessException exception) {
-            throw new ClassTransformException("unable to access method: " + method.getName(), exception);
+            throw new ClassTransformException("Unable to access method: " + method.getName(), exception);
           } catch (InvocationTargetException exception) {
             throw new ClassTransformException(method.getName() + " threw an exception", exception);
           }
@@ -159,9 +159,9 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
       return ctClass.toBytecode();
     } catch (IOException exception) {
       // Basically unreachable.
-      throw new ClassTransformException("unable to write class bytecode to byte array: " + className, exception);
+      throw new ClassTransformException("Unable to write class bytecode to byte array: " + className, exception);
     } catch (CannotCompileException exception) {
-      throw new ClassTransformException("unable to transform class: " + className, exception);
+      throw new ClassTransformException("Unable to transform class: " + className, exception);
     }
   }
 }

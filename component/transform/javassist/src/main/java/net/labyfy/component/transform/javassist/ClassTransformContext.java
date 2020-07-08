@@ -12,154 +12,154 @@ import java.util.function.Predicate;
 @Deprecated
 public interface ClassTransformContext {
     /**
-     * Get owner class.
+     * Retrieves the owner class.
      *
-     * @return the owner class.
+     * @return The owner class.
      */
     Class<?> getOwnerClass();
 
     /**
-     * Get a field by name.
+     * Retrieves a field by name.
      *
-     * @param name  a field name.
-     * @return a field.
-     * @throws NotFoundException if the field could not be found.
+     * @param name A field name.
+     * @return A field.
+     * @throws NotFoundException If the field could not be found.
      */
     CtField getField(String name) throws NotFoundException;
 
     /**
-     * Add method to the class.
+     * Adds a method to the class.
      *
-     * @param returnType  a return type.
-     * @param name        a method name.
-     * @param body        method source code.
-     * @param modifiers   method access modifiers.
-     * @return a method.
-     * @throws CannotCompileException if the class transformation failed.
+     * @param returnType  A return type.
+     * @param name        A method name.
+     * @param body        Method source code.
+     * @param modifiers   Method access modifiers.
+     * @return A method.
+     * @throws CannotCompileException If the class transformation failed.
      */
     CtMethod addMethod(String returnType, String name, String body, Modifier... modifiers) throws CannotCompileException;
 
     /**
-     * Add a method to the class.
+     * Adds a method to the class.
      *
-     * @param src  method source code.
-     * @return a method.
-     * @throws CannotCompileException if the class transformation failed.
+     * @param src  Method source code.
+     * @return A method.
+     * @throws CannotCompileException If the class transformation failed.
      */
     CtMethod addMethod(String src) throws CannotCompileException;
 
     /**
-     * Get an owner method by name.
+     * Retrieves an owner method by name.
      *
-     * @param name  a method name.
-     * @param desc  a method descriptor.
-     * @return a method.
-     * @throws NotFoundException if the method could not be found.
+     * @param name  A method name.
+     * @param desc  A method descriptor.
+     * @return A method.
+     * @throws NotFoundException If the method could not be found.
      */
     CtMethod getOwnerMethod(String name, String desc) throws NotFoundException;
 
     /**
-     * Add a field to the class.
+     * Adds a field to the class.
      *
-     * @param type       field type.
-     * @param name       field name.
-     * @param modifiers  field access modifiers.
-     * @return a field.
-     * @throws CannotCompileException if the class transformation failed.
+     * @param type       Field type.
+     * @param name       Field name.
+     * @param modifiers  Field access modifiers.
+     * @return A field.
+     * @throws CannotCompileException If the class transformation failed.
      */
     CtField addField(Class<?> type, String name, Modifier... modifiers) throws CannotCompileException;
 
     /**
-     * Add a field to the class.
+     * Adds a field to the class.
      *
-     * @param type       field type.
-     * @param name       field name.
-     * @param modifiers  field access modifiers.
-     * @return a field.
-     * @throws CannotCompileException if the class transformation failed.
+     * @param type       Field type.
+     * @param name       Field name.
+     * @param modifiers  Field access modifiers.
+     * @return A field.
+     * @throws CannotCompileException If the class transformation failed.
      */
     CtField addField(String type, String name, Modifier... modifiers) throws CannotCompileException;
 
     /**
-     * Add a field to the class.
+     * Adds a field to the class.
      *
-     * @param type       field type.
-     * @param name       field name.
-     * @param value      initial field value.
-     * @param modifiers  field access modifiers.
-     * @return a field.
-     * @throws CannotCompileException if the class transformation failed.
+     * @param type       Field type.
+     * @param name       Field name.
+     * @param value      Initial field value.
+     * @param modifiers  Field access modifiers.
+     * @return A field.
+     * @throws CannotCompileException If the class transformation failed.
      */
     CtField addField(Class<?> type, String name, String value, Modifier... modifiers) throws CannotCompileException;
 
     /**
-     * Add a field to the class.
+     * Adds a field to the class.
      *
-     * @param type       field type.
-     * @param name       field name.
-     * @param value      initial field value.
-     * @param modifiers  field access modifiers.
-     * @return a field.
-     * @throws CannotCompileException if the class transformation failed.
+     * @param type       Field type.
+     * @param name       Field name.
+     * @param value      Initial field value.
+     * @param modifiers  Field access modifiers.
+     * @return A field.
+     * @throws CannotCompileException If the class transformation failed.
      */
     CtField addField(String type, String name, String value, Modifier... modifiers) throws CannotCompileException;
 
     /**
-     * Get method by name and descriptor.
+     * Retrieves a method by name and descriptor.
      *
-     * @param name     method name.
-     * @param classes  method parameters.
-     * @return a method.
-     * @throws NotFoundException if the method could not be found.
+     * @param name     Method name.
+     * @param classes  Method parameters.
+     * @return A method.
+     * @throws NotFoundException If the method could not be found.
      */
     CtMethod getDeclaredMethod(String name, Class<?>... classes) throws NotFoundException;
 
     /**
-     * Get filters.
+     * Retrieves filters.
      *
-     * @return filters.
+     * @return Filters.
      */
     Collection<Predicate<CtClass>> getFilters();
 
     /**
-     * Get the owner method.
+     * Retrieves the owner method.
      *
-     * @return an owner method.
+     * @return An owner method.
      */
     Method getOwnerMethod();
 
     /**
-     * Get the class transformer.
+     * Retrieves the class transformer.
      *
-     * @return a class transformer.
+     * @return A class transformer.
      */
     ClassTransform getClassTransform();
 
     /**
-     * Get the owner.
+     * Retrieves the owner.
      *
-     * @return an owner.
+     * @return An owner.
      */
     Object getOwner();
 
     /**
-     * Get the name resolver.
+     * Retrieves the name resolver.
      *
-     * @return a name resolver.
+     * @return A name resolver.
      */
     NameResolver getNameResolver();
 
     /**
-     * Get the class.
+     * Retrieves the class.
      *
-     * @return a class.
+     * @return A class.
      */
     CtClass getCtClass();
 
     /**
      * Set the class.
      *
-     * @param ctClass a class.
+     * @param ctClass A class.
      */
     void setCtClass(CtClass ctClass);
 

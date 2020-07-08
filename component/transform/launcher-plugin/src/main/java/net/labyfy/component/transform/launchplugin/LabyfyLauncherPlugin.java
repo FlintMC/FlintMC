@@ -108,20 +108,20 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
             initSentry(arguments);
         } else initSentry(arguments);
       } catch (IOException exception) {
-        throw new PreLaunchException("unable to read manifest", exception);
+        throw new PreLaunchException("Unable to read manifest", exception);
       }
     }
 
     try {
       Initializer.boot();
     } catch (ClassNotFoundException | ServiceNotFoundException exception) {
-      throw new PreLaunchException("unable to boot initializer", exception);
+      throw new PreLaunchException("Unable to boot initializer", exception);
     }
 
     try {
       InjectionHolder.enableIngameState();
     } catch (Exception exception) {
-      throw new PreLaunchException("unable to run initialization runnables", exception);
+      throw new PreLaunchException("Unable to run initialization runnables", exception);
     }
   }
 
