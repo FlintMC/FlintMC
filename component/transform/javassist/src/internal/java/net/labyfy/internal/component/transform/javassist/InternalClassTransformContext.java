@@ -25,7 +25,7 @@ public class InternalClassTransformContext implements ClassTransformContext {
   private final NameResolver nameResolver;
   private final ClassTransform classTransform;
   private final Method method;
-  private final Class ownerClass;
+  private final Class<?> ownerClass;
   private final Object owner;
   private CtClass ctClass;
 
@@ -36,7 +36,7 @@ public class InternalClassTransformContext implements ClassTransformContext {
       @Assisted NameResolver nameResolver,
       @Assisted ClassTransform classTransform,
       @Assisted Method method,
-      @Assisted Class ownerClass,
+      @Assisted Class<?> ownerClass,
       @Assisted("owner") Object owner) {
     this.labyClassMappingProvider = labyClassMappingProvider;
     this.filters = Collections.unmodifiableCollection(filters);
@@ -47,128 +47,115 @@ public class InternalClassTransformContext implements ClassTransformContext {
     this.owner = owner;
   }
 
-  public Class getOwnerClass() {
+  @Override
+  public Class<?> getOwnerClass() {
     return ownerClass;
   }
 
-  public CtField getField(String name) {
-    try {
-      return this.ctClass.getField(name);
-    } catch (NotFoundException e) {
-      return null;
-    }
+  @Override
+  public CtField getField(String name) throws NotFoundException {
+    return this.ctClass.getField(name);
   }
 
-  public CtMethod addMethod(String returnType, String name, String body, Modifier... modifiers) {
+  @Override
+  public CtMethod addMethod(String returnType, String name, String body, Modifier... modifiers) throws CannotCompileException {
     String javaModifier =
         Arrays.stream(modifiers).map(Modifier::toString).collect(Collectors.joining(" "));
 
-    try {
-      CtMethod ctMethod =
-          CtMethod.make(
-              String.format("%s %s %s {%s}", javaModifier, returnType, name, body), this.ctClass);
-      this.ctClass.addMethod(ctMethod);
-      return ctMethod;
-    } catch (CannotCompileException e) {
-      e.printStackTrace();
-    }
-    return null;
+    CtMethod ctMethod =
+        CtMethod.make(
+            String.format("%s %s %s {%s}", javaModifier, returnType, name, body), this.ctClass);
+    this.ctClass.addMethod(ctMethod);
+    return ctMethod;
   }
 
-  public CtMethod addMethod(String src) {
-    try {
-      CtMethod make = CtMethod.make(src, this.ctClass);
-      this.ctClass.addMethod(make);
-      return make;
-    } catch (CannotCompileException e) {
-      e.printStackTrace();
-    }
-    return null;
+  @Override
+  public CtMethod addMethod(String src) throws CannotCompileException {
+    CtMethod make = CtMethod.make(src, this.ctClass);
+    this.ctClass.addMethod(make);
+    return make;
   }
 
-  public CtMethod getOwnerMethod(String name, String desc) {
-    try {
-      return this.ctClass.getMethod(name, desc);
-    } catch (NotFoundException e) {
-      return null;
-    }
+  @Override
+  public CtMethod getOwnerMethod(String name, String desc) throws NotFoundException {
+    return this.ctClass.getMethod(name, desc);
   }
 
-  public CtField addField(Class type, String name, Modifier... modifiers) {
+  @Override
+  public CtField addField(Class<?> type, String name, Modifier... modifiers) throws CannotCompileException {
     return this.addField(type.getName(), name, modifiers);
   }
 
-  public CtField addField(String type, String name, Modifier... modifiers) {
+  @Override
+  public CtField addField(String type, String name, Modifier... modifiers) throws CannotCompileException {
     return this.addField(type, name, "null", modifiers);
   }
 
-  public CtField addField(Class type, String name, String value, Modifier... modifiers) {
+  @Override
+  public CtField addField(Class<?> type, String name, String value, Modifier... modifiers) throws CannotCompileException {
     return this.addField(type.getName(), name, value, modifiers);
   }
 
-  public CtField addField(String type, String name, String value, Modifier... modifiers) {
+  @Override
+  public CtField addField(String type, String name, String value, Modifier... modifiers) throws CannotCompileException {
     String javaModifier =
         Arrays.stream(modifiers).map(Modifier::toString).collect(Collectors.joining(" "));
 
-    try {
-      CtField make =
-          CtField.make(
-              String.format("%s %s %s = %s;", javaModifier, type, name, value), this.ctClass);
-      this.ctClass.addField(make);
-      return make;
-    } catch (CannotCompileException e) {
-      e.printStackTrace();
-    }
-    return null;
+    CtField make =
+        CtField.make(
+            String.format("%s %s %s = %s;", javaModifier, type, name, value), this.ctClass);
+    this.ctClass.addField(make);
+    return make;
   }
 
-  public CtMethod getDeclaredMethod(String name, Class... classes) {
+  @Override
+  public CtMethod getDeclaredMethod(String name, Class<?>... classes) throws NotFoundException {
     CtClass[] ctClasses = new CtClass[classes.length];
+
     for (int i = 0; i < classes.length; i++) {
-      try {
-        ctClasses[i] = this.ctClass.getClassPool().get(classes[i].getName());
-      } catch (NotFoundException e) {
-        e.printStackTrace();
-      }
+      ctClasses[i] = this.ctClass.getClassPool().get(classes[i].getName());
     }
-    try {
-      return this.getCtClass()
-          .getDeclaredMethod(
-              this.labyClassMappingProvider
-                  .get(this.ctClass.getName())
-                  .getMethod(name, classes)
-                  .getName(),
-              ctClasses);
-    } catch (NotFoundException e) {
-      e.printStackTrace();
-    }
-    return null;
+
+    return this.getCtClass()
+        .getDeclaredMethod(
+            this.labyClassMappingProvider
+                .get(this.ctClass.getName())
+                .getMethod(name, classes)
+                .getName(),
+            ctClasses);
   }
 
+  @Override
   public Collection<Predicate<CtClass>> getFilters() {
     return this.filters;
   }
 
+  @Override
   public Method getOwnerMethod() {
     return method;
   }
 
+  @Override
   public ClassTransform getClassTransform() {
     return classTransform;
   }
 
+  @Override
   public Object getOwner() {
     return owner;
   }
 
+  @Override
   public NameResolver getNameResolver() {
     return nameResolver;
   }
 
+  @Override
   public CtClass getCtClass() {
     return ctClass;
   }
 
+  @Override
   public void setCtClass(CtClass ctClass) {
     this.ctClass = ctClass;
   }
