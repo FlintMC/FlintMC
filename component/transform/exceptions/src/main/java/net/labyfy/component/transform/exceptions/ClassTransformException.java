@@ -1,5 +1,9 @@
 package net.labyfy.component.transform.exceptions;
 
+/**
+ * The <code>ClassTransformException</code> will be thrown if one or more
+ * class transformations failed.
+ */
 public class ClassTransformException extends Exception {
 
   /**

@@ -1,5 +1,9 @@
 package net.labyfy.component.stereotype.service;
 
+/**
+ * The <code>ServiceNotFoundException</code> will be thrown if the
+ * service could not be found or discovered.
+ */
 public class ServiceNotFoundException extends Exception {
 
   /**

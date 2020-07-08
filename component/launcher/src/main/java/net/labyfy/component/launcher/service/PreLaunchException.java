@@ -1,5 +1,9 @@
 package net.labyfy.component.launcher.service;
 
+/**
+ * The <code>PreLaunchException</code> will be thrown if the pre-launch
+ * of a plugin failed.
+ */
 public class PreLaunchException extends Exception {
 
   /**

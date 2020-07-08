@@ -1,5 +1,11 @@
 package net.labyfy.component.tasks;
 
+/**
+ * The <code>TaskExecutionException</code> will be thrown if a task throws
+ * an exception. It acts as a wrapper for exceptions.
+ *
+ * @see java.lang.reflect.InvocationTargetException
+ */
 public class TaskExecutionException extends Exception {
 
   /**
