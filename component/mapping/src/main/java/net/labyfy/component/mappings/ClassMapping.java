@@ -67,8 +67,9 @@ public class ClassMapping {
    * Get the java reflect {@link Class} this {@link ClassMapping} is representing from the default {@link net.labyfy.component.launcher.classloading.RootClassLoader}, which Labyfy is using by default.
    *
    * @return The retrieved class
+   * @throws ClassNotFoundException if the class could not be found.
    */
-  public Class get() {
+  public Class<?> get() throws ClassNotFoundException {
     return get(LaunchController.getInstance().getRootLoader());
   }
 
@@ -77,14 +78,10 @@ public class ClassMapping {
    *
    * @param classLoader The class loader to retrieve the class from
    * @return The retrieved class
+   * @throws ClassNotFoundException if the class could not be found.
    */
-  public Class get(ClassLoader classLoader) {
-    try {
-      return Class.forName(this.getName(), false, classLoader);
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
-    return null;
+  public Class<?> get(ClassLoader classLoader) throws ClassNotFoundException {
+    return Class.forName(this.getName(), false, classLoader);
   }
 
   /**
@@ -115,9 +112,9 @@ public class ClassMapping {
    * @param parameters the given method parameter types
    * @return MethodMapping found in the represented class
    */
-  public MethodMapping getMethod(String name, Class... parameters) {
+  public MethodMapping getMethod(String name, Class<?>... parameters) {
     StringBuilder stringBuilder = new StringBuilder();
-    for (Class clazz : parameters) {
+    for (Class<?> clazz : parameters) {
       stringBuilder.append(this.getDescriptorForClass(clazz));
     }
 
@@ -191,9 +188,9 @@ public class ClassMapping {
     return s.toString();
   }
 
-  private String getMethodIdenfitier(Class... classes) {
+  private String getMethodIdenfitier(Class<?>... classes) {
     StringBuilder s = new StringBuilder("(");
-    for (final Class c : classes) {
+    for (final Class<?> c : classes) {
       s.append(getDescriptorForClass(c));
     }
     s.append(')');
@@ -256,7 +253,7 @@ public class ClassMapping {
     return Collections.unmodifiableCollection(this.obfuscatedFieldMappings.values());
   }
 
-  private String getDescriptorForClass(final Class c) {
+  private String getDescriptorForClass(final Class<?> c) {
     if (c.isPrimitive()) {
       if (c == byte.class) return "B";
       if (c == char.class) return "C";

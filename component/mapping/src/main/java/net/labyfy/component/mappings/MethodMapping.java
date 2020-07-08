@@ -163,9 +163,11 @@ public class MethodMapping {
    * @param parameters The method parameters to call the target method
    * @param <T>        Implicit casted result type
    * @return The return value of the invoked method
+   * @throws ClassNotFoundException    if the class could not be found.
+   * @throws InvocationTargetException if the method threw an exception.
+   * @throws IllegalAccessException    if the method definition could not be accessed.
    */
-  public <T> T invokeStatic(Object... parameters) {
-
+  public <T> T invokeStatic(Object... parameters) throws IllegalAccessException, InvocationTargetException, ClassNotFoundException {
     return this.invoke(null, parameters);
   }
 
@@ -176,14 +178,12 @@ public class MethodMapping {
    * @param instance   The instance to invoke the method on
    * @param <T>        Implicit casted result type
    * @return The return value of the invoked method
+   * @throws ClassNotFoundException    if the class could not be found.
+   * @throws InvocationTargetException if the method threw an exception.
+   * @throws IllegalAccessException    if the method definition could not be accessed.
    */
-  public <T> T invoke(Object instance, Object... parameters) {
-    try {
-      return (T) this.getMethod().invoke(instance, parameters);
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
-    }
-    return null;
+  public <T> T invoke(Object instance, Object... parameters) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException {
+    return (T) this.getMethod().invoke(instance, parameters);
   }
 
   private String getDescriptorForClass(final Class c) {
@@ -212,8 +212,9 @@ public class MethodMapping {
 
   /**
    * @return The java reflect {@link Method} this {@link MethodMapping} represents.
+   * @throws ClassNotFoundException if the class could not be found.
    */
-  public Method getMethod() {
+  public Method getMethod() throws ClassNotFoundException {
     if (this.cached == null) {
       if (this.unObfuscatedMethodName.equals(this.obfuscatedMethodName)
           && this.unObfuscatedMethodDescription.equals(this.obfuscatedMethodDescription)) {
