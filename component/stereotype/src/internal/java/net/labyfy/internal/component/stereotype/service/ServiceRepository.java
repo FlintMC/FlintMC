@@ -9,6 +9,8 @@ import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
 import net.labyfy.internal.component.stereotype.identifier.IdentifierParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Singleton
 public class ServiceRepository {
 
+  private final Logger logger;
   private final Collection<Class<? extends ServiceHandler>> pendingServices;
   private final Set<Class<?>> loadedClasses;
   private final Multimap<Class<?>, ServiceHandler> serviceHandlers;
@@ -30,6 +33,7 @@ public class ServiceRepository {
   @Inject
   private ServiceRepository(
       @Named("injectorReference") AtomicReference injectorReference) {
+    this.logger = LogManager.getLogger(ServiceRepository.class);
     this.pendingServices = ConcurrentHashMap.newKeySet();
     this.loadedClasses = ConcurrentHashMap.newKeySet();
     this.serviceHandlers = HashMultimap.create();
@@ -72,7 +76,7 @@ public class ServiceRepository {
           if (target.isAssignableFrom(
               base.getProperty().getLocatedIdentifiedAnnotation().getAnnotation().getClass())) {
             serviceHandler.discover(base);
-            System.out.println("Servicehandler " + serviceHandler.getClass().getName() + " discovered " + base.getProperty().getLocatedIdentifiedAnnotation().<Object>getLocation());
+            logger.trace("Servicehandler {} discovered {}", serviceHandler.getClass().getName(), base.getProperty().getLocatedIdentifiedAnnotation().getLocation());
           }
         }
       }
