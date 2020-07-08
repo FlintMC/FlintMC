@@ -11,6 +11,8 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
+import net.labyfy.component.launcher.service.PreLaunchException;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.component.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,7 +86,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
   @SuppressWarnings("InstantiationOfUtilityClass")
   @Override
-  public void preLaunch(ClassLoader launchClassloader) {
+  public void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {
     Map<String, String> arguments = new HashMap<>();
 
     for (Iterator<String> it = launchArguments.iterator(); it.hasNext(); ) {
@@ -108,8 +110,8 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
     try {
       Initializer.boot();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    } catch (ClassNotFoundException | ServiceNotFoundException exception) {
+      throw new PreLaunchException("unable to boot initializer", exception);
     }
 
     InjectionHolder.enableIngameState();

@@ -11,6 +11,7 @@ import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.inject.InjectionServiceShare;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
@@ -185,13 +186,18 @@ public class DefaultPackage implements Package {
       classes.forEach((priority, className) -> {
         try {
           EntryPoint.notifyService(Class.forName(className, true, DefaultPackage.class.getClassLoader()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className);
+        } catch (Exception exception) {
+          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className, exception);
         }
       });
+
       InjectionServiceShare.flush();
-      InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
+
+      try {
+        InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
+      } catch (ServiceNotFoundException exception) {
+        throw new RuntimeException("Unable to discover service during flushAll: " + ServiceRepository.class.getName(), exception);
+      }
     });
 
     // The package is now enabled

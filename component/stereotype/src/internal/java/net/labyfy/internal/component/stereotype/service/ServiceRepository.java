@@ -7,6 +7,7 @@ import com.google.inject.Injector;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
 import net.labyfy.internal.component.stereotype.identifier.IdentifierParser;
 import org.apache.logging.log4j.LogManager;
@@ -40,7 +41,7 @@ public class ServiceRepository {
     this.injectorReference = injectorReference;
   }
 
-  private synchronized ServiceRepository register(Class<? extends ServiceHandler> handler) {
+  private synchronized ServiceRepository register(Class<? extends ServiceHandler> handler) throws ServiceNotFoundException {
     this.pendingServices.add(handler);
 
     if (initialized) {
@@ -50,7 +51,7 @@ public class ServiceRepository {
     return this;
   }
 
-  public synchronized ServiceRepository flushAll() {
+  public synchronized ServiceRepository flushAll() throws ServiceNotFoundException {
     initialized = true;
     for (Class<? extends ServiceHandler> handler : this.pendingServices) {
       flushService(handler);
@@ -58,7 +59,7 @@ public class ServiceRepository {
     return this;
   }
 
-  private void flushService(Class<? extends ServiceHandler> handler) {
+  private void flushService(Class<? extends ServiceHandler> handler) throws ServiceNotFoundException {
     ServiceHandler serviceHandler = injectorReference.get().getInstance(handler);
 
     for (Class<?> target : handler.getDeclaredAnnotation(Service.class).value()) {
@@ -84,7 +85,7 @@ public class ServiceRepository {
     this.pendingServices.remove(handler);
   }
 
-  public ServiceRepository notifyClassLoaded(Class<?> clazz) {
+  public ServiceRepository notifyClassLoaded(Class<?> clazz) throws ServiceNotFoundException {
     this.loadedClasses.add(clazz);
     Collection<Identifier.Base> identifier = IdentifierParser.parse(clazz);
 

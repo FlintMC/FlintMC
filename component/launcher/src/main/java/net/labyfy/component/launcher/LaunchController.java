@@ -3,6 +3,7 @@ package net.labyfy.component.launcher;
 import com.beust.jcommander.JCommander;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
+import net.labyfy.component.launcher.service.PreLaunchException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -126,24 +127,33 @@ public class LaunchController {
     logger.info("Handing over to launch target {}", launchArguments.getLaunchTarget());
     rootLoader.prepare();
 
+    LauncherPlugin exceptionContext = null;
+
     try {
       // Run final plugin operation within the new launch environment
-      plugins.forEach(plugin -> plugin.preLaunch(rootLoader));
+      for (LauncherPlugin plugin : plugins) {
+        exceptionContext = plugin;
+        plugin.preLaunch(rootLoader);
+      }
+
       Class<?> launchTarget = rootLoader.loadClass(launchArguments.getLaunchTarget());
 
       Method mainMethod = launchTarget.getMethod("main", String[].class);
       mainMethod.invoke(null, (Object) launchArguments.getOtherArguments().toArray(new String[0]));
-    } catch (ClassNotFoundException e) {
-      logger.fatal("Failed to find launch target class", e);
+    } catch (ClassNotFoundException exception) {
+      logger.fatal("Failed to find launch target class", exception);
       System.exit(1);
-    } catch (NoSuchMethodException e) {
-      logger.fatal("Launch target has no main method", e);
+    } catch (NoSuchMethodException exception) {
+      logger.fatal("Launch target has no main method", exception);
       System.exit(1);
-    } catch (InvocationTargetException e) {
-      logger.fatal("Invoking main method threw an error", e);
+    } catch (InvocationTargetException exception) {
+      logger.fatal("Invoking main method threw an error", exception);
       System.exit(1);
-    } catch (IllegalAccessException e) {
-      logger.fatal("Unable to invoke main method due to missing access", e);
+    } catch (IllegalAccessException exception) {
+      logger.fatal("Unable to invoke main method due to missing access", exception);
+      System.exit(1);
+    } catch (PreLaunchException exception) {
+      logger.fatal("Unable to launch plugin: {}", exceptionContext, exception);
       System.exit(1);
     }
   }

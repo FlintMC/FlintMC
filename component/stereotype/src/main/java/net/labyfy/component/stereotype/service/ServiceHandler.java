@@ -4,5 +4,11 @@ import net.labyfy.component.stereotype.identifier.Identifier;
 
 @FunctionalInterface
 public interface ServiceHandler {
-  void discover(Identifier.Base property);
+  /**
+   * Discover a service.
+   *
+   * @param property a property.
+   * @throws ServiceNotFoundException if the service could not be discovered.
+   */
+  void discover(Identifier.Base property) throws ServiceNotFoundException;
 }
