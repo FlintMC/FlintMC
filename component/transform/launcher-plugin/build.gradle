@@ -8,7 +8,12 @@ repositories {
     mavenCentral()
 }
 
+labyfy{
+}
+
 dependencies {
+    annotationProcessor project(':component:annotation-processing:autoload')
+
     api project(':component:initializer')
     api project(':component:mapping')
     api project(':component:transform:exceptions')
@@ -17,10 +22,13 @@ dependencies {
     api 'org.ow2.asm:asm-commons:7.2-beta'
     api group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
 
-    labyManifest project(':component:initializer')
-
-
-    annotationProcessor project(':component:annotation-processing:autoload')
+    labyfy project(':component:initializer')
+    labyfy project(':component:mapping')
+    labyfy project(':component:transform:exceptions')
+    labyfy 'org.ow2.asm:asm:7.2-beta'
+    labyfy 'org.ow2.asm:asm-tree:7.2-beta'
+    labyfy 'org.ow2.asm:asm-commons:7.2-beta'
+    labyfy group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
 }
 
 processResources {

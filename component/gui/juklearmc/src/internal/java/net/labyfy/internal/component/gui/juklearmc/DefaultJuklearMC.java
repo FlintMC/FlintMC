@@ -44,6 +44,7 @@ import java.util.Map;
 @Implement(JuklearMC.class)
 public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, JuklearMC {
   // GUI interaction instances
+  private JuklearFontAtlas fontAtlas;
   private final Juklear juklear;
   private final GuiController controller;
 
@@ -95,7 +96,7 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
     minecraftWindow = InjectionHolder.getInjectedInstance(MinecraftWindow.class);
 
     // Load our default font, 20 seems to pretty much match the Minecraft scaling
-    JuklearFontAtlas fontAtlas = juklear.defaultFontAtlas();
+    fontAtlas = juklear.defaultFontAtlas();
     JuklearFontAtlasEditor editor = fontAtlas.begin();
     defaultFont = editor.addFromURL(getClass().getResource("/assets/labymod/fonts/minecraft.ttf"), 20);
     editor.end();
@@ -140,6 +141,10 @@ public class DefaultJuklearMC implements GuiInputEventProcessor, GuiComponent, J
    */
   public JuklearContext getContext() {
     return context;
+  }
+
+  public JuklearFontAtlas getFontAtlas() {
+    return this.fontAtlas;
   }
 
   /**

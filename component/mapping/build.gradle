@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component'
@@ -10,14 +10,23 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile project(':component:inject')
-    compile fileTree('libraries')
-    compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
-    compile 'org.ow2.asm:asm:7.2-beta'
-    compile 'org.ow2.asm:asm-tree:7.2-beta'
-    compile 'org.ow2.asm:asm-commons:7.2-beta'
+labyfy{
+}
 
+dependencies {
     annotationProcessor project(':component:annotation-processing:autoload')
+
+    api project(':component:inject')
+    api fileTree('libraries')
+    api group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+    api 'org.ow2.asm:asm:7.2-beta'
+    api 'org.ow2.asm:asm-tree:7.2-beta'
+    api 'org.ow2.asm:asm-commons:7.2-beta'
+
+    labyfy project(':component:inject')
+    labyfy fileTree('libraries')
+    labyfy group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+    labyfy 'org.ow2.asm:asm:7.2-beta'
+    labyfy 'org.ow2.asm:asm-tree:7.2-beta'
+    labyfy 'org.ow2.asm:asm-commons:7.2-beta'
 }

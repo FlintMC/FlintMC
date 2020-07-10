@@ -10,29 +10,16 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    internal {
-        runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.runtimeClasspath
-        compileClasspath += sourceSets.main.compileClasspath
-    }
+labyfy{
 }
-
-configurations {
-    internal
-    internal.extendsFrom internalImplementation, implementation
-}
-
 
 dependencies {
-    api project(':component:stereotype')
-    api project(':component:transform:javassist')
-
-    internal sourceSets.internal.output
-    internal sourceSets.main.output
-
     annotationProcessor project(':component:annotation-processing:autoload')
     internalAnnotationProcessor project(':component:annotation-processing:autoload')
 
+    api project(':component:stereotype')
+    api project(':component:transform:javassist')
+
+    labyfy project(':component:stereotype')
+    labyfy project(':component:transform:javassist')
 }

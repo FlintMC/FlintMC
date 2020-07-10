@@ -12,7 +12,7 @@ buildscript {
 
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
-        classpath "net.labyfy:labyfy-gradle-plugin:1.0.0"
+        classpath "net.labyfy:labyfy-gradle-plugin"
     }
 
     repositories {
@@ -25,8 +25,18 @@ buildscript {
     }
 }
 
-apply plugin: 'net.labyfy.labyfy-gradle-plugin'
+apply plugin: 'labyfy-gradle'
 
+labyfy{
+    projectFilter { true }
+    publishToken 'NzQzMjZkYTljMmU3NzlmMDU2NDQ3NTkz'
+    runs{
+        overrideMainClass 'net.labyfy.component.launcher.LabyLauncher'
+    }
+}
+subprojects {
+    task allDeps(type: DependencyReportTask) {}
+}
 repositories{
     mavenCentral()
     mavenLocal()
@@ -56,10 +66,6 @@ allprojects {
     apply plugin: 'maven'
     apply plugin: "com.jfrog.artifactory"
     apply plugin: 'maven-publish'
-
-    configurations {
-        labyManifest
-    }
 
     artifactory {
         contextUrl = System.getenv().getOrDefault('artifactory_contextUrl', "${artifactory_contextUrl}")

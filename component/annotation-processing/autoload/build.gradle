@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.labyfy.component.processing'
@@ -8,12 +8,22 @@ repositories {
     mavenCentral()
 }
 
+labyfy{
+}
+
 dependencies {
     annotationProcessor group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
 
-    compile project(':component:annotation-processing')
-    implementation project(':component:commons')
-    implementation group: 'com.squareup', name: 'javapoet', version: '1.12.1'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
-    implementation group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+    api project(':component:annotation-processing')
+    api project(':component:commons')
+    api group: 'com.squareup', name: 'javapoet', version: '1.12.1'
+    api group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    api group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+
+    labyfy project(':component:annotation-processing')
+    labyfy project(':component:commons')
+    labyfy group: 'com.squareup', name: 'javapoet', version: '1.12.1'
+    labyfy group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    labyfy group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+
 }

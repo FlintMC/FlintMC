@@ -8,6 +8,12 @@ repositories {
     mavenCentral()
 }
 
+labyfy{
+}
+
 dependencies {
-    api 'com.google.inject:guice:4.0'
+    api 'com.google.inject:guice:4.2.0'
+
+    labyfy 'com.google.inject:guice:4.2.0'
+
 }

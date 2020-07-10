@@ -8,8 +8,13 @@ repositories {
     mavenCentral()
 }
 
+labyfy{
+}
+
 dependencies {
+    annotationProcessor project(':component:annotation-processing:autoload')
+
     api project(':component:inject')
 
-    annotationProcessor project(':component:annotation-processing:autoload')
+    labyfy project(':component:inject')
 }

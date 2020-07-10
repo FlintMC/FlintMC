@@ -6,18 +6,8 @@ group 'net.labyfy.component'
 
 sourceCompatibility = 1.8
 
-sourceSets {
-    internal {
-        runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.runtimeClasspath
-        compileClasspath += sourceSets.main.compileClasspath
-    }
-}
-
-configurations {
-    internal
-    internal.extendsFrom internalImplementation, implementation
+labyfy{
+    minecraftVersions '1.15.2'
 }
 
 repositories {
@@ -25,15 +15,18 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+
     api project(':component:stereotype')
     api project(':component:inject')
     api 'org.eclipse.collections:eclipse-collections:8.2.1'
     api 'org.happy.library:happy-library:1.3'
+    v1_15_2Implementation project(':component:transform:javassist')
 
-    internal sourceSets.internal.output
-    internal sourceSets.main.output
-
-    annotationProcessor project(':component:annotation-processing:autoload')
-    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+    labyfy project(':component:stereotype')
+    labyfy project(':component:inject')
+    labyfy 'org.eclipse.collections:eclipse-collections:8.2.1'
+    labyfy 'org.happy.library:happy-library:1.3'
+    labyfy project(':component:transform:javassist')
 }
