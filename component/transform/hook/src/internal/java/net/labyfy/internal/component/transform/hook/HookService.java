@@ -43,7 +43,7 @@ public class HookService implements ServiceHandler {
   ) {
     this.classMappingProvider = classMappingProvider;
     this.hooks = Sets.newHashSet();
-    this.version = (String) launchArguments.get("--version");
+    this.version = (String) launchArguments.get("--game-version");
   }
 
   public static void notify(

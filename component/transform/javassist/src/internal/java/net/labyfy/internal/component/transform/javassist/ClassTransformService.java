@@ -61,7 +61,7 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
     this.classMappingProvider = classMappingProvider;
     this.classTransformContextFactory = classTransformContextFactory;
     this.classTransformContexts = new HashSet<>();
-    this.version = (String) launchArguments.get("--version");
+    this.version = (String) launchArguments.get("--game-version");
   }
 
   @Override
