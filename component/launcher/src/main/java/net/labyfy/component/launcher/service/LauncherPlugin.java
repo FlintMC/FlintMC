@@ -75,6 +75,7 @@ public interface LauncherPlugin {
    * @param className the name of the class to modify
    * @param classData the class to modify
    * @return the modified data or null, if no modification was made
+   * @throws ClassTransformException If the class fails to transform
    */
   default byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
     return null;

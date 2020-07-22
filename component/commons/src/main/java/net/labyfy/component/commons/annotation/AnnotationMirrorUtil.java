@@ -58,20 +58,17 @@ public class AnnotationMirrorUtil {
    *
    * <p>
    * Example:
-   * <pre>
-   *   {@code
-   * @interface BaseAnnotation {}
+   * <blockquote><pre>
+   * {@literal @}interface BaseAnnotation {}
    *
-   * @BaseAnnotation
-   * @interface TransitiveAnnotation {}
+   * {@literal @}BaseAnnotation
+   * {@literal @}interface TransitiveAnnotation {}
    *
-   * @TransitiveAnnotation
-   * class SomeClass {}
-   *   }
-   * </pre>
+   * {@literal @}TransitiveAnnotation
+   *  class SomeClass {}
+   * </pre></blockquote>
    * Calling {@code collectTransitiveAnnotations} on the {@link TypeElement} of {@code SomeClass} would
    * yield {@code [TransitiveAnnotation, BaseAnnotation]}.
-   * </p>
    *
    * @param typeElement The type element to collect annotations transitively from
    * @return A collection of all transitively found annotations

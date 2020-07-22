@@ -22,12 +22,12 @@ public @interface Type {
   Class<?> reference() default TypeDummy.class;
 
   /**
-   * @return class by name, resolved and eventually modified by {@link Type#typeNameResolver()}
+   * @return Class by name, resolved and eventually modified by {@link Type#typeNameResolver()}
    */
   String typeName() default "";
 
   /**
-   * @return
+   * @return The type name resolver for this {@link Type}
    */
   Class<? extends AnnotationResolver<Type, String>> typeNameResolver() default
       DefaultTypeNameResolver.class;

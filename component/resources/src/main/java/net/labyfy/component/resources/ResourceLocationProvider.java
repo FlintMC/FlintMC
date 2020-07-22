@@ -23,7 +23,7 @@ public interface ResourceLocationProvider {
    * {@link ResourceLocation.Factory#create(String, String)}
    *
    * @param nameSpace The namespace of the resource location, see
-   *                  {@link ResourceLocation.Factory#create(String, String) for more information
+   *                  {@link ResourceLocation.Factory#create(String, String)} for more information
    * @param path      The path of the resource location, see {@link ResourceLocation.Factory#create(String, String)}
    *                  for more information
    * @return The created resource location
