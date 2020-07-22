@@ -12,27 +12,25 @@ import java.util.concurrent.ConcurrentHashMap;
  * The difference to the java {@link ServiceLoader} is the reload and multi classloader capability.
  * <p>
  * example:
- * <pre>
- * {@code
+ * <blockquote><pre>
+ *
  * package com.example;
- * interface Service{
  *
- * void doSomething();
+ * interface Service {
+ *      void doSomething();
  * }
  *
- * class ServiceImpl implements Service{
- *
- * @Override
- * public void doSomething(){
+ * class ServiceImpl implements Service {
+ *    {@literal @}Override
+ *     public void doSomething() {}
  * }
- * }
- * }
- * </pre>
+ * </pre></blockquote>
  * <p>
  * Content of "META-INF/services/com.example.Service":
+ * {@code com.example.ServiceImpl}
  * <p>
  * To find all implementations:
- * Set<Service> services = ExtendedServiceLoader.get(Service.class).discover(classLoader);
+ * {@code Set<Service> services = ExtendedServiceLoader.get(Service.class).discover(classLoader);}
  *
  * @see ServiceLoader
  */

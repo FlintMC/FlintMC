@@ -8,7 +8,7 @@ import javax.lang.model.element.TypeElement;
 /**
  * Service interface for annotation processors controlled by the {@link LabyfyAnnotationProcessor}.
  * To hook into this processor, use a java service file, it will then be loaded by the default
- * {@link java.util.ServiceLoader}<{@link Processor}>.
+ * {@link java.util.ServiceLoader}{@literal <}{@link Processor}{@literal >}.
  */
 public interface Processor {
   /**
