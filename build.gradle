@@ -12,7 +12,7 @@ buildscript {
 
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
-        classpath "net.labyfy:labyfy-gradle-plugin"
+        classpath "net.labyfy:labyfy-gradle-plugin:+"
     }
 
     repositories {

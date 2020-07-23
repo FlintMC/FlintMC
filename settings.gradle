@@ -86,5 +86,3 @@ findProject(':component:inject-primitive')?.name = 'inject-primitive'
 include 'component:i18n'
 findProject('component:i18n')?.name = 'i18n'
 
-include 'labyfy-1-15-2'
-
