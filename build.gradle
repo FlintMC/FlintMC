@@ -12,6 +12,7 @@ buildscript {
 
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+        classpath "net.labyfy:labyfy-gradle-javadocs-plugin:1.0.0"
         classpath "net.labyfy:labyfy-gradle-plugin:+"
     }
 
@@ -25,7 +26,11 @@ buildscript {
     }
 }
 
+// adds labyfy tasks
 apply plugin: 'labyfy-gradle'
+
+// adds docyfy task
+apply plugin: 'labyfy-gradle-javadocs-plugin'
 
 labyfy{
     projectFilter { true }
@@ -107,6 +112,13 @@ allprojects {
                 )
             }
         }
+
+        javadoc {
+            options.addStringOption("tag", "apiNote:a:API Note:")
+            options.addStringOption("tag", "implSpec:a:Implementation Requirements:")
+            options.addStringOption("tag", "implNote:a:Implementation Note:")
+        }
+
         publishing {
             publications {
                 mavenJava(MavenPublication) {

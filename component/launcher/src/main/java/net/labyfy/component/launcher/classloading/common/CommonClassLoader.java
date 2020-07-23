@@ -16,6 +16,7 @@ public interface CommonClassLoader {
   /**
    * Method bridge for the protected method `definePackage` in {@link ClassLoader}
    */
+  @SuppressWarnings("allJavadoc")
   Package commonDefinePackage(String name, String specTitle,
                               String specVersion, String specVendor,
                               String implTitle, String implVersion,
@@ -26,6 +27,7 @@ public interface CommonClassLoader {
    * This method has to be overwritten of the implementing classloader is an
    * {@link URLClassLoader}, else it may be left as is.
    */
+  @SuppressWarnings("allJavadoc")
   default Package commonDefinePackage(String name, Manifest man, URL url) {
     if (this instanceof URLClassLoader) {
       throw new AssertionError("Expected commonDefinePackage(String name, Manifest man, URL url) to" +
@@ -72,14 +74,17 @@ public interface CommonClassLoader {
   /**
    * Method bridge for the protected `defineClass` method in {@link ClassLoader}
    */
+  @SuppressWarnings("allJavadoc")
   Class<?> commonDefineClass(String name, byte[] b, int off, int len, CodeSource cs);
 
   /**
    * Method bridge for the protected `findResource` method in {@link ClassLoader}
    * Additionally, the parameter `forClassLoad` has been added.
    *
+   * @param name The name of the resource to find
    * @param forClassLoad true, if the searched resource will be used as for classloading.
    *                     Usually, this will be true, when name ends with `".class"`
+   * @return An URL to the found resource, or {@code null}, if the resource was not found
    */
   URL commonFindResource(String name, boolean forClassLoad);
 

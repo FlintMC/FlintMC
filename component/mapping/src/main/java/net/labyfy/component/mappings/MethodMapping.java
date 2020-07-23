@@ -108,7 +108,10 @@ public class MethodMapping {
   }
 
   /**
-   * internal use
+   * Sets the unobfuscated method identifier on this mapping.
+   *
+   * @param unObfuscatedMethodIdentifier Thew new identifier
+   * @return this
    */
   public MethodMapping setUnObfuscatedMethodIdentifier(String unObfuscatedMethodIdentifier) {
     this.unObfuscatedMethodIdentifier = unObfuscatedMethodIdentifier;
