@@ -23,7 +23,7 @@ public class ClassMappingProvider {
   @Inject
   private ClassMappingProvider(MappingFileProvider mappingFileProvider, @Named("launchArguments") Map launchArguments) throws IOException {
     McpMappingParser mcpMappingParser = new McpMappingParser();
-    Collection<ClassMapping> parse = mcpMappingParser.parse(this, mappingFileProvider.getMappings(launchArguments.get("--version").toString()));
+    Collection<ClassMapping> parse = mcpMappingParser.parse(this, mappingFileProvider.getMappings(launchArguments.get("--game-version").toString()));
 
     for (ClassMapping classMapping : parse) {
       this.obfuscatedClassMappings.put(classMapping.getObfuscatedName(), classMapping);

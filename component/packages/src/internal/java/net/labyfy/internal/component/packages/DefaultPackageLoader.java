@@ -3,13 +3,15 @@ package net.labyfy.internal.component.packages;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import net.labyfy.component.processing.autoload.AutoLoad;
-import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
-import net.labyfy.internal.component.inject.DefaultLoggingProvider;
-import net.labyfy.component.packages.*;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
+import net.labyfy.component.packages.PackageClassLoader;
+import net.labyfy.component.packages.PackageLoader;
+import net.labyfy.component.packages.PackageState;
+import net.labyfy.component.processing.autoload.AutoLoad;
+import net.labyfy.internal.component.inject.DefaultLoggingProvider;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -65,6 +67,9 @@ public class DefaultPackageLoader implements PackageLoader {
     }
 
     if (exists) {
+      if (!packageFolder.exists()) {
+        packageFolder.mkdirs();
+      }
       this.jars =
           Stream.of(Objects.requireNonNull(packageFolder.listFiles()))
               // Filter for JAR files

@@ -10,7 +10,19 @@ repositories {
     mavenCentral()
 }
 
+labyfy{
+    minecraftVersions '1.15.2'
+}
+
 dependencies {
-    api project(':component:inject')
     annotationProcessor project(':component:annotation-processing:autoload')
+    v1_15_2AnnotationProcessor project(':component:annotation-processing:autoload')
+
+    api project(':component:inject')
+    v1_15_2Implementation project(path: ':component:inject', configuration: 'internal')
+    v1_15_2Implementation project(':component:tasks')
+
+    labyfy project(':component:inject')
+    labyfy project(path: ':component:inject', configuration: 'internal')
+    labyfy project(':component:tasks')
 }

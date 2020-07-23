@@ -8,30 +8,25 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    internal {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.main.compileClasspath
-        runtimeClasspath += sourceSets.main.runtimeClasspath
-    }
-}
-
-configurations {
-    internal
-    internal.extendsFrom internalImplementation, implementation
+labyfy{
+    minecraftVersions '1.15.2'
 }
 
 dependencies {
-    api group: "net.janrupf", name: "juklear-base", version: "0.1.0"
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+    v1_15_2AnnotationProcessor project(':component:annotation-processing:autoload')
+
     api project(':component:stereotype')
     api project(':component:inject')
     api project(':component:tasks')
     api project(':component:gui')
+    api group: "net.janrupf", name: "juklear-base", version: "0.1.0"
 
-    internal sourceSets.internal.output
-    internal sourceSets.main.output
-    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+    labyfy project(':component:stereotype')
+    labyfy project(':component:inject')
+    labyfy project(':component:tasks')
+    labyfy project(':component:gui')
+    labyfy group: "net.janrupf", name: "juklear-base", version: "0.1.0"
 
-    labyManifest group: "net.janrupf", name: "juklear-base", version: "0.1.0"
 }

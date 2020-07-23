@@ -185,11 +185,11 @@ public class DefaultPackage implements Package {
 
     // Iterate over the classes and register them to the service register
     sortedClasses.forEach((round, classes) -> {
-      classes.forEach((priority, className) -> {
+      classes.entries().forEach(entry -> {
         try {
-          EntryPoint.notifyService(Class.forName(className, true, DefaultPackage.class.getClassLoader()));
+          EntryPoint.notifyService(Class.forName(entry.getValue(), true, DefaultPackage.class.getClassLoader()));
         } catch (Exception exception) {
-          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + className, exception);
+          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + entry.getValue(), exception);
         }
       });
 

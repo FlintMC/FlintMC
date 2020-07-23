@@ -10,38 +10,28 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    internal {
-        runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.runtimeClasspath
-        compileClasspath += sourceSets.main.compileClasspath
-    }
-}
-
-configurations {
-    internal
-    internal.extendsFrom internalImplementation, implementation
+labyfy {
 }
 
 dependencies {
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+
     api project(':component:launcher')
     api project(':component:commons')
     api project(':component:annotation-processing:autoload')
     api project(':component:inject-primitive')
     api group: 'com.google.guava', name: 'guava', version: '21.0'
-    api 'com.google.inject:guice:4.0'
+    api 'com.google.inject:guice:4.2.0'
     api 'org.apache.commons:commons-lang3:3.9'
     api 'org.codehaus.groovy:groovy-all:3.0.2'
 
-    labyManifest 'com.google.inject:guice:4.0'
-    labyManifest 'aopalliance:aopalliance:1.0'
-    labyManifest 'javax.inject:javax.inject:1'
-    labyManifest 'org.codehaus.groovy:groovy:3.0.2'
-
-    internal sourceSets.internal.output
-    internal sourceSets.main.output
-
-    annotationProcessor project(':component:annotation-processing:autoload')
-    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+    labyfy project(':component:launcher')
+    labyfy project(':component:commons')
+    labyfy project(':component:annotation-processing:autoload')
+    labyfy project(':component:inject-primitive')
+    labyfy group: 'com.google.guava', name: 'guava', version: '21.0'
+    labyfy 'com.google.inject:guice:4.2.0'
+    labyfy 'org.apache.commons:commons-lang3:3.9'
+    labyfy 'org.codehaus.groovy:groovy-all:3.0.2'
 }

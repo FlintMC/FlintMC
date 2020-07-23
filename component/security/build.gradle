@@ -9,25 +9,20 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    internal {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.main.compileClasspath
-        runtimeClasspath += sourceSets.main.runtimeClasspath
-    }
-}
-
-configurations {
-    internal
-    internal.extendsFrom internalImplementation, implementation
+labyfy {
 }
 
 dependencies {
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+
+    api project(':component:commons')
+    api project(':component:annotation-processing:autoload')
     internalImplementation project(':component:stereotype')
     internalImplementation project(':component:tasks')
 
-    internal sourceSets.internal.output
-    internal sourceSets.main.output
-    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+    labyfy project(':component:commons')
+    labyfy project(':component:annotation-processing:autoload')
+    labyfy project(':component:stereotype')
+    labyfy project(':component:tasks')
 }

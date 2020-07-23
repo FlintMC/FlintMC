@@ -6,9 +6,6 @@ findProject(':component:transform:exceptions')?.name = "exceptions"
 include 'component:transform:javassist'
 findProject(':component:transform:javassist')?.name = "javassist"
 
-include 'versioned:labyfy-1.15.2'
-findProject(':versioned:labyfy-1.15.2')?.name = 'labyfy-1.15.2'
-
 include 'component:initializer'
 findProject(':component:initializer')?.name = 'initializer'
 
@@ -33,26 +30,14 @@ findProject(':component:transform:asm')?.name = 'asm'
 include 'component:gui'
 findProject(':component:gui')?.name = 'gui'
 
-include 'component:gui:gui-1.15.2'
-findProject(':component:gui:gui-1.15.2')?.name = 'gui-1.15.2'
-
 include 'component:gui:juklearmc'
 findProject(':component:gui:juklearmc')?.name = 'juklearmc'
-
-include 'component:gui:juklearmc:juklearmc-1.15.2'
-findProject(':component:gui:juklearmc:juklearmc-1.15.2')?.name = 'juklearmc-1.15.2'
-
-include 'component:tasks:tasks-1.15.2'
-findProject(':component:tasks:tasks-1.15.2')?.name = 'tasks-1.15.2'
 
 include 'component:transform:hook'
 findProject(':component:transform:hook')?.name = 'hook'
 
 include 'component:resources'
 findProject(':component:resources')?.name = 'resources'
-
-include 'component:resources:resources-1.15.2'
-findProject(':component:resources:resources-1.15.2')?.name = 'resources-1.15.2'
 
 include 'component:packages'
 findProject(':component:packages')?.name = 'packages'
@@ -73,8 +58,6 @@ include ':component:annotation-processing:autoload'
 findProject(':component:annotation-processing:autoload')?.name = 'autoload'
 
 ext.isPush = true
-
-includeBuild 'labyfy-gradle-plugin'
 
 buildCache {
     local {
@@ -102,7 +85,4 @@ findProject(':component:inject-primitive')?.name = 'inject-primitive'
 
 include 'component:i18n'
 findProject('component:i18n')?.name = 'i18n'
-
-include 'component:i18n:i18n-1.15.2'
-findProject('component:i18n:i18n-1.15.2')?.name = 'i18n-1.15.2'
 

@@ -10,21 +10,13 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    internal {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.main.compileClasspath
-        runtimeClasspath += sourceSets.main.runtimeClasspath
-    }
-}
-
-configurations {
-    internal
-    internal.extendsFrom internalImplementation, implementation
+labyfy{
 }
 
 dependencies {
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+
     api project(':component:commons')
     api project(':component:stereotype')
     internalImplementation project(':component:service')
@@ -33,7 +25,11 @@ dependencies {
     internalImplementation project(path: ':component:stereotype', configuration: 'internal')
     internalImplementation 'com.google.code.gson:gson:2.8.6'
 
-    internal sourceSets.internal.output
-    internal sourceSets.main.output
-    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+    labyfy project(':component:commons')
+    labyfy project(':component:stereotype')
+    labyfy project(':component:service')
+    labyfy project(':component:initializer')
+    labyfy project(path: ':component:inject', configuration: 'internal')
+    labyfy project(path: ':component:stereotype', configuration: 'internal')
+    labyfy 'com.google.code.gson:gson:2.8.6'
 }

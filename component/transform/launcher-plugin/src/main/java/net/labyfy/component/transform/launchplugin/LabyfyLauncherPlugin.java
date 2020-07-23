@@ -191,8 +191,8 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     String environment = "PRODUCTION";
     String mcversion = "unknown";
 
-    if (arguments.containsKey("--version"))
-      mcversion = arguments.get("--version");
+    if (arguments.containsKey("--game-version"))
+      mcversion = arguments.get("--game-version");
 
     if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")) {
       environment = "DEVELOPMENT";

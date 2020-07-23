@@ -18,7 +18,7 @@ public interface JuklearMCScreen extends Closeable {
    *
    * @return A fixed list of components to apply to the screen
    */
-  Collection<JuklearTopLevelComponent> topLevelComponents();
+  Collection<JuklearTopLevelComponent<?>> topLevelComponents();
 
   /**
    * Called by the Juklear service to notify you that the display width or height has changed.

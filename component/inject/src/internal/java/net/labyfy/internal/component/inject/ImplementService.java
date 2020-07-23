@@ -11,7 +11,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Map;
 
-import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.*;
+import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.IMPLEMENT_SERVICE_PRIORITY;
+import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.IMPLEMENT_SERVICE_ROUND;
 
 /**
  * Service for binding classes annotated with {@link Implement}.
@@ -36,9 +37,8 @@ public class ImplementService extends InjectionServiceShare implements ServiceHa
 
     if (!annotation.value().isAssignableFrom(location)) return;
 
-    // TODO: --version is unreliable
     if (!(annotation.version().isEmpty()
-        || launchArguments.get("--version").equals(annotation.version()))) return;
+        || launchArguments.get("--game-version").equals(annotation.version()))) return;
 
     implementations.put(annotation.value(), location);
   }
