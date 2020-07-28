@@ -52,8 +52,8 @@ public class LaunchController {
 
     /**
      * Executes the launch. This is effectively the new `main` method.
-     *
-     * @implNote Called by the {@link LabyLauncher} using reflection
+     * <p>
+     * <b>Called by the {@link LabyLauncher} using reflection</b>
      */
     public void run() {
         logger.info("Initializing LaunchController");
