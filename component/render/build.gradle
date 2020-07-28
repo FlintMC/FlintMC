@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.labyfy.component'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+labyfy{
+    minecraftVersions '1.15.2'
+}
+
+dependencies {
+    annotationProcessor project(':component:annotation-processing:autoload')
+    v1_15_2AnnotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+
+    api 'org.joml:joml:1.9.25'
+    api project(':component:annotation-processing:autoload')
+    api project(':component:resources')
+    internalImplementation project(':component:inject')
+    v1_15_2Implementation project(':component:transform:javassist')
+    v1_15_2Implementation project(':component:transform:asm')
+}
