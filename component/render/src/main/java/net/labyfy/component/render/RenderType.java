@@ -1,5 +1,7 @@
 package net.labyfy.component.render;
 
+import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.resources.ResourceLocation;
 
 public interface RenderType {
@@ -43,5 +45,10 @@ public interface RenderType {
   RenderType lineEmpty();
 
   <T> T getHandle();
+
+  @AssistedFactory(RenderType.class)
+  interface Factory {
+    RenderType create(@Assisted VertexFormat format, @Assisted String name, @Assisted int drawMode);
+  }
 
 }

@@ -1,7 +1,11 @@
 package net.labyfy.internal.component.render.v1_15_2;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.VertexFormatElement;
 
+@Implement(VertexFormatElement.class)
 public class VertexFormatElementImpl implements VertexFormatElement {
 
   private final String name;
@@ -9,7 +13,8 @@ public class VertexFormatElementImpl implements VertexFormatElement {
   private final int amount;
   private final net.minecraft.client.renderer.vertex.VertexFormatElement handle;
 
-  public VertexFormatElementImpl(String name, Type type, int amount) {
+  @AssistedInject
+  private VertexFormatElementImpl(@Assisted String name, @Assisted Type type, @Assisted int amount) {
     this.name = name;
     this.type = type;
     this.amount = amount;

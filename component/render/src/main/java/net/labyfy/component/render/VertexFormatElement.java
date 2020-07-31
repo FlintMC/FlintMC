@@ -1,11 +1,16 @@
 package net.labyfy.component.render;
 
+import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.inject.assisted.AssistedFactory;
+
 public interface VertexFormatElement {
   <T> T getHandle();
 
   int getAmount();
 
   Type getType();
+
+  String getName();
 
   enum Type {
     FLOAT(4, "Float", 5126),
@@ -20,7 +25,7 @@ public interface VertexFormatElement {
     private final String displayName;
     private final int glConstant;
 
-    private Type(int sizeIn, String displayNameIn, int glConstantIn) {
+    Type(int sizeIn, String displayNameIn, int glConstantIn) {
       this.size = sizeIn;
       this.displayName = displayNameIn;
       this.glConstant = glConstantIn;
@@ -37,5 +42,12 @@ public interface VertexFormatElement {
     public int getGlConstant() {
       return this.glConstant;
     }
+  }
+
+  @AssistedFactory(VertexFormatElement.class)
+  interface Factory {
+
+    VertexFormatElement create(@Assisted String name, @Assisted Type type, @Assisted int amount);
+
   }
 }

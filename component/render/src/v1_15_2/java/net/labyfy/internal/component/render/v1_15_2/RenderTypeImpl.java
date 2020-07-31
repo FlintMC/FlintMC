@@ -1,11 +1,15 @@
 package net.labyfy.internal.component.render.v1_15_2;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.RenderType;
 import net.labyfy.component.render.VertexFormat;
 import net.labyfy.component.resources.ResourceLocation;
 
 import java.util.OptionalDouble;
 
+@Implement(RenderType.class)
 public class RenderTypeImpl implements RenderType {
 
   private final net.minecraft.client.renderer.RenderType.State.Builder stateBuilder;
@@ -13,7 +17,8 @@ public class RenderTypeImpl implements RenderType {
   private final String name;
   private final int drawMode;
 
-  public RenderTypeImpl(VertexFormat format, String name, int drawMode) {
+  @AssistedInject
+  private RenderTypeImpl(@Assisted VertexFormat format, @Assisted String name, @Assisted int drawMode) {
     this.format = format;
     this.name = name;
     this.drawMode = drawMode;

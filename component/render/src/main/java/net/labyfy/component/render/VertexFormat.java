@@ -1,5 +1,8 @@
 package net.labyfy.component.render;
 
+import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.inject.assisted.AssistedFactory;
+
 import java.nio.ByteBuffer;
 
 public interface VertexFormat {
@@ -19,4 +22,10 @@ public interface VertexFormat {
   int getByteOffset(String name);
 
   <T> T getHandle();
+
+  @AssistedFactory(VertexFormat.class)
+  interface Factory {
+    VertexFormat create(@Assisted VertexFormatElement[] elements);
+  }
+
 }
