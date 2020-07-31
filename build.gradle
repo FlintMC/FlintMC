@@ -1,6 +1,8 @@
 import org.gradle.api.GradleScriptException
 import java.text.SimpleDateFormat
 
+group 'net.labyfy'
+
 buildscript {
     def versionFile = file(".dev-version")
     def fixedVersion = null

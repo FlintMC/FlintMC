@@ -73,6 +73,7 @@ buildCache {
         push = isPush
     }
 }
+
 include 'component:service'
 findProject(':component:service')?.name = 'service'
 

@@ -35,7 +35,6 @@ public class DefaultMappingFileProvider implements MappingFileProvider {
 
   @Override
   public Map<String, InputStream> getMappings(String version) throws IOException {
-
     File assetRoot = new File(labyfyRoot, "assets/" + version);
     File methodsFile = new File(assetRoot, "methods.csv").getAbsoluteFile();
     File fieldsFile = new File(assetRoot, "fields.csv").getAbsoluteFile();
@@ -43,12 +42,11 @@ public class DefaultMappingFileProvider implements MappingFileProvider {
 
     if (!methodsFile.exists() || !fieldsFile.exists() || !joinedFile.exists()) {
       assetRoot.mkdirs();
-      McpMappingIndex fetch = this.mcpMappingIndexProvider.fetch();
-      McpMappingIndex.Version index = fetch.getMappings().get(version);
+      Version.Mapping index = this.mcpMappingIndexProvider.fetch().get(version).getModCoderPack();
 
-      Files.write(methodsFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getMcpBot() + "!/methods.csv")));
-      Files.write(fieldsFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getMcpBot() + "!/fields.csv")));
-      Files.write(joinedFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getMcpConfig() + "!/config/joined.tsrg")));
+      Files.write(methodsFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/methods.csv")));
+      Files.write(fieldsFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/fields.csv")));
+      Files.write(joinedFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getConfigDownload() + "!/config/joined.tsrg")));
     }
 
     return
