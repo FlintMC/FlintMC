@@ -60,8 +60,6 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
                   methodMapping =
                       MethodMapping.create(
                           classMapping, "<init>", "<init>", "<init>", "<init>", "<init>", "<init>");
-                } else {
-                  methodMapping = classMapping.getMethod(name);
                 }
               }
 
