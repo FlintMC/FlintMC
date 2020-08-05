@@ -2,6 +2,7 @@ package net.labyfy.internal.component.render.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.RenderType;
 import net.labyfy.component.render.VertexFormat;
@@ -23,6 +24,13 @@ public class RenderTypeImpl implements RenderType {
     this.name = name;
     this.drawMode = drawMode;
     this.stateBuilder = net.minecraft.client.renderer.RenderType.State.getBuilder();
+    stateBuilder.transparency(new net.minecraft.client.renderer.RenderState.TransparencyState("translucent_transparency", () -> {
+      RenderSystem.enableBlend();
+      RenderSystem.defaultBlendFunc();
+    }, () -> {
+      RenderSystem.disableBlend();
+    }));
+
   }
 
   public RenderTypeImpl texture(ResourceLocation resourceLocation, boolean blur, boolean mipmap) {

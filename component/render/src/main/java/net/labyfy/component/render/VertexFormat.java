@@ -25,7 +25,7 @@ public interface VertexFormat {
 
   @AssistedFactory(VertexFormat.class)
   interface Factory {
-    VertexFormat create(@Assisted VertexFormatElement[] elements);
+    VertexFormat create(@Assisted VertexFormatElement... elements);
   }
 
 }
