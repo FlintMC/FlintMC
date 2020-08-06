@@ -1,15 +1,17 @@
 package net.labyfy.component.mappings;
 
+import net.labyfy.component.mappings.exceptions.MappingParseException;
+
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Map;
 
-/**
- * Parses all class mappings.
- */
-@FunctionalInterface
 public interface MappingParser {
-
-  Collection<ClassMapping> parse(
-      ClassMappingProvider classMappingProvider, Map<String, InputStream> input);
+  /**
+   * Parse mappings.
+   *
+   * @param input Mapping input.
+   * @return A look-up table mapping obfuscated class names to class mappings.
+   * @throws MappingParseException If the mapping cannot be parsed.
+   */
+  Map<String, ClassMapping> parse(final Map<String, InputStream> input) throws MappingParseException;
 }
