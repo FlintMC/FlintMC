@@ -138,12 +138,6 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
       CtClass ctClass =
           ClassPool.getDefault().makeClass(new ByteArrayInputStream(classData), false);
 
-
-      CtConstructor initializer = ctClass.getClassInitializer();
-      if (initializer == null) {
-        initializer = ctClass.makeClassInitializer();
-      }
-
       return ctClass.toBytecode();
     } catch (IOException exception) {
       throw new RuntimeException("Failed to modify class due to IOException", exception);
