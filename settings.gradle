@@ -79,8 +79,13 @@ findProject(':component:service')?.name = 'service'
 
 include 'component:security'
 findProject('component:security')?.name = 'security'
+
 include 'component:commons'
 findProject(':component:commons')?.name = 'commons'
+
+include 'component:csv'
+findProject(':component:csv')?.name = 'csv'
+
 include ':component:inject-primitive'
 findProject(':component:inject-primitive')?.name = 'inject-primitive'
 
