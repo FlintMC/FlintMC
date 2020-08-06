@@ -8,6 +8,7 @@ import javassist.*;
 import net.labyfy.component.commons.resolve.AnnotationResolver;
 import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.property.Property;
@@ -181,13 +182,20 @@ public class HookService implements ServiceHandler {
     CtClass[] parameters = new CtClass[hook.parameters().length];
 
     for (int i = 0; i < hook.parameters().length; i++) {
+      String name = hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i]);
+      ClassMapping classMapping = classMappingProvider.get(name);
+
+      if (classMapping == null) {
+        classMapping = new ClassMapping(false, name, name);
+      }
+
       parameters[i] =
           ClassPool.getDefault()
-              .get(classMappingProvider.get(hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i])).getName());
+              .get(classMapping.getName());
     }
 
-    CtMethod declaredMethod =
-        ctClass.getDeclaredMethod(classMappingProvider.get(ctClass.getName()).getMethod(hookEntry.methodNameResolver.resolve(hook), parameters).getName(), parameters);
+    CtMethod declaredMethod = ctClass.getDeclaredMethod(classMappingProvider.get(ctClass.getName()).getMethod(hookEntry.methodNameResolver.resolve(hook), parameters).getName(), parameters);
+
     if (declaredMethod != null) {
       for (Hook.ExecutionTime executionTime : hook.executionTime()) {
         this.insert(declaredMethod, executionTime, callback);
