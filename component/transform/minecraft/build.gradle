@@ -10,8 +10,7 @@ repositories {
     mavenCentral()
 }
 
-labyfy{
-}
+labyfy.configureNow()
 
 dependencies {
     annotationProcessor project(':component:annotation-processing:autoload')
