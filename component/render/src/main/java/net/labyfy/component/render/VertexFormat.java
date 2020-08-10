@@ -11,6 +11,8 @@ public interface VertexFormat {
 
   VertexFormat pushBytes(ByteBuffer byteBuffer, VertexBuffer bufferBuilder, String name, byte... bytes);
 
+  VertexFormat pushShorts(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, short... shorts);
+
   VertexFormatElement[] getElements();
 
   boolean hasElement(String name);
@@ -22,6 +24,7 @@ public interface VertexFormat {
   int getByteOffset(String name);
 
   <T> T getHandle();
+
 
   @AssistedFactory(VertexFormat.class)
   interface Factory {

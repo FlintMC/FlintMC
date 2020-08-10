@@ -47,7 +47,7 @@ public interface VertexFormatElement {
   @AssistedFactory(VertexFormatElement.class)
   interface Factory {
 
-    VertexFormatElement create(@Assisted String name, @Assisted Type type, @Assisted int amount);
+    VertexFormatElement create(@Assisted VertexFormatUsage usage, @Assisted String name, @Assisted Type type, @Assisted int amount);
 
   }
 }

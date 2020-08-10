@@ -47,6 +47,15 @@ public class VertexFormatImpl implements VertexFormat {
     return this;
   }
 
+  public VertexFormat pushShorts(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, short... shorts) {
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getBytes()) + vertexBuffer.getFormat().getByteOffset(name);
+    byteBuffer.position(offset);
+    for (short aShort : shorts) {
+      byteBuffer.putShort(aShort);
+    }
+    return this;
+  }
+
   public VertexFormatImpl pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, ByteBuffer bytes) {
     int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getBytes()) + vertexBuffer.getFormat().getByteOffset(name);
     byteBuffer.position(offset);

@@ -99,8 +99,13 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  public VertexBufferImpl lightmap(short sky, short ground) {
+    this.pushShorts("lightmap", sky, ground);
+    return this;
+  }
+
   public VertexBufferImpl texture(float x, float y) {
-    this.pushFloats("uv", x, y);
+    this.pushFloats("texture", x, y);
     return this;
   }
 
@@ -115,6 +120,13 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getBytes()));
     vertexFormat.pushBytes(this.byteBuffer, this, name, bytes);
     this.writtenBytes += bytes.length;
+    return this;
+  }
+
+  public AdvancedVertexBuffer pushShorts(String name, short... shorts) {
+    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getBytes()));
+    vertexFormat.pushShorts(this.byteBuffer, this, name, shorts);
+    this.writtenBytes += shorts.length * Short.BYTES;
     return this;
   }
 
@@ -236,43 +248,98 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  public VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureDensityX, float textureDensityY) {
+    return this.box(x, y, z, width, height, depth, textureDensityX, textureDensityY, 0, 0);
+  }
+
   public VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureDensityX, float textureDensityY, float textureOffsetX, float textureOffsetY) {
     this
         .quad(
-            x, y + height, z, depth / textureDensityX, 0,
-            x, y + height, z + depth, depth / textureDensityX, depth / textureDensityY,
-            x + width, y + height, z + depth, (depth + width) / textureDensityX, depth / textureDensityY,
-            x + width, y + height, z, (depth + width) / textureDensityX, 0
+            x, y + height, z, textureOffsetX + depth / textureDensityX, textureOffsetY,
+            x, y + height, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y + height, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y + height, z, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY
         )
         .quad(
-            x, y, z, (depth + width) / textureDensityX, 0,
-            x, y, z + depth, (depth + width) / textureDensityX, depth / textureDensityY,
-            x + width, y, z + depth, (depth + width + depth) / textureDensityX, depth / textureDensityY,
-            x + width, y, z, (depth + width + depth) / textureDensityX, 0
+            x, y, z, textureOffsetX + (width + depth) / textureDensityX, textureOffsetY,
+            x, y, z + depth, textureOffsetX + (width + depth) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y, z + depth, textureOffsetX + (depth + width + width) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y, z, textureOffsetX + (depth + width + width) / textureDensityX, textureOffsetY
         )
         .quad(
-            x, y + height, z + depth, depth / textureDensityX, depth / textureDensityY,
-            x, y, z + depth, depth / textureDensityX, (depth + height) / textureDensityY,
-            x + width, y, z + depth, (depth + width) / textureDensityX, (depth + height) / textureDensityY,
-            x + width, y + height, z + depth, (depth + width) / textureDensityX, depth / textureDensityY
+            x, y + height, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x, y, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y + height, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + depth / textureDensityY
         )
         .quad(
-            x + width, y, z, 0, (depth + height) / textureDensityY,
-            x + width, y, z + depth, depth / textureDensityX, (depth + height) / textureDensityY,
-            x + width, y + height, z + depth, depth / textureDensityX, depth / textureDensityY,
-            x + width, y + height, z, 0, depth / textureDensityY
+            x + width, y, z, textureOffsetX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y + height, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y + height, z, textureOffsetX, textureOffsetY + depth / textureDensityY
         )
         .quad(
-            x, y, z, (depth + width + depth) / textureDensityX, (depth + height) / textureDensityY,
-            x, y, z + depth, (depth + width) / textureDensityX, (depth + height) / textureDensityY,
-            x, y + height, z + depth, (depth + width) / textureDensityX, depth / textureDensityY,
-            x, y + height, z, (depth + width + depth) / textureDensityX, depth / textureDensityY
+            x, y, z, textureOffsetX + (depth + width + depth) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x, y, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x, y + height, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x, y + height, z, textureOffsetX + (depth + width + depth) / textureDensityX, textureOffsetY + depth / textureDensityY
         )
         .quad(
-            x, y, z, (depth + width + depth + width) / textureDensityX, (depth + height) / textureDensityY,
-            x + width, y, z, (depth + width + depth) / textureDensityX, (depth + height) / textureDensityY,
-            x + width, y + height, z, (depth + width + depth) / textureDensityX, (depth) / textureDensityY,
-            x, y + height, z, (depth + width + depth + width) / textureDensityX, (depth) / textureDensityY
+            x, y, z, textureOffsetX + (depth + width + depth + width) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y, z, textureOffsetX + (depth + width + depth) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y + height, z, textureOffsetX + (depth + width + depth) / textureDensityX, textureOffsetY + (depth) / textureDensityY,
+            x, y + height, z, textureOffsetX + (depth + width + depth + width) / textureDensityX, textureOffsetY + (depth) / textureDensityY
+        );
+    return this;
+  }
+
+  public VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureDensityX, float textureDensityY, int r, int g, int b, int alpha) {
+    return this.box(x, y, z, width, height, depth, textureDensityX, textureDensityY, 0, 0, r, g, b, alpha);
+  }
+
+  public VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureDensityX, float textureDensityY, float textureOffsetX, float textureOffsetY, int r, int g, int b, int alpha) {
+    this
+        .quad(
+            x, y + height, z, textureOffsetX + depth / textureDensityX, textureOffsetY,
+            x, y + height, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y + height, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y + height, z, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY,
+            r, g, b, alpha
+        )
+        .quad(
+            x, y, z, textureOffsetX + (width + depth) / textureDensityX, textureOffsetY,
+            x, y, z + depth, textureOffsetX + (width + depth) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y, z + depth, textureOffsetX + (depth + width + width) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y, z, textureOffsetX + (depth + width + width) / textureDensityX, textureOffsetY,
+            r, g, b, alpha
+        )
+        .quad(
+            x, y + height, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x, y, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y + height, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            r, g, b, alpha
+        )
+        .quad(
+            x + width, y, z, textureOffsetX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y + height, z + depth, textureOffsetX + depth / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x + width, y + height, z, textureOffsetX, textureOffsetY + depth / textureDensityY,
+            r, g, b, alpha
+        )
+        .quad(
+            x, y, z, textureOffsetX + (depth + width + depth) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x, y, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x, y + height, z + depth, textureOffsetX + (depth + width) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            x, y + height, z, textureOffsetX + (depth + width + depth) / textureDensityX, textureOffsetY + depth / textureDensityY,
+            r, g, b, alpha
+        )
+        .quad(
+            x, y, z, textureOffsetX + (depth + width + depth + width) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y, z, textureOffsetX + (depth + width + depth) / textureDensityX, textureOffsetY + (depth + height) / textureDensityY,
+            x + width, y + height, z, textureOffsetX + (depth + width + depth) / textureDensityX, textureOffsetY + (depth) / textureDensityY,
+            x, y + height, z, textureOffsetX + (depth + width + depth + width) / textureDensityX, textureOffsetY + (depth) / textureDensityY,
+            r, g, b, alpha
         );
     return this;
   }
@@ -338,6 +405,30 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  public VertexBuffer quad(
+      float x1, float y1, float z1, float texU1, float texV1,
+      float x2, float y2, float z2, float texU2, float texV2,
+      float x3, float y3, float z3, float texU3, float texV3,
+      float x4, float y4, float z4, float texU4, float texV4,
+      int r, int g, int b, int alpha
+  ) {
+    this
+        .triangle(
+            x1, y1, z1, texU1, texV1,
+            x2, y2, z2, texU2, texV2,
+            x3, y3, z3, texU3, texV3,
+            r, g, b, alpha
+        )
+        .triangle(
+            x3, y3, z3, texU3, texV3,
+            x1, y1, z1, texU1, texV1,
+            x4, y4, z4, texU4, texV4,
+            r, g, b, alpha
+        );
+
+    return this;
+  }
+
   public VertexBufferImpl triangle(
       float x1, float y1, float z1,
       float x2, float y2, float z2,
@@ -368,6 +459,27 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
         .end()
         .pos(x3, y3, z3)
         .texture(texU3, texV3)
+        .end();
+  }
+
+  public VertexBuffer triangle(
+      float x1, float y1, float z1, float texU1, float texV1,
+      float x2, float y2, float z2, float texU2, float texV2,
+      float x3, float y3, float z3, float texU3, float texV3,
+      int r, int g, int b, int alpha
+  ) {
+    return this
+        .pos(x1, y1, z1)
+        .texture(texU1, texV1)
+        .color(r, g, b, alpha)
+        .end()
+        .pos(x2, y2, z2)
+        .texture(texU2, texV2)
+        .color(r, g, b, alpha)
+        .end()
+        .pos(x3, y3, z3)
+        .texture(texU3, texV3)
+        .color(r, g, b, alpha)
         .end();
   }
 

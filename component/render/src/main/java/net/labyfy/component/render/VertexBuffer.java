@@ -28,7 +28,13 @@ public interface VertexBuffer {
 
   VertexBuffer box(float x, float y, float z, float width, float height, float depth, int r, int g, int b, int alpha);
 
-  VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureWidth, float textureHeight, float textureOffsetX, float textureOffsetY);
+  VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureDensityX, float textureDensityY);
+
+  VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureDensityX, float textureDensityY, int r, int g, int b, int alpha);
+
+  VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureDensityX, float textureDensityY, float textureOffsetX, float textureOffsetY);
+
+  VertexBuffer box(float x, float y, float z, float width, float height, float depth, float textureDensityX, float textureDensityY, float textureOffsetX, float textureOffsetY, int r, int g, int b, int alpha);
 
   VertexBuffer quad(
       float x1, float y1, float z1,
@@ -52,6 +58,14 @@ public interface VertexBuffer {
       float x4, float y4, float z4, float texU4, float texV4
   );
 
+  VertexBuffer quad(
+      float x1, float y1, float z1, float texU1, float texV1,
+      float x2, float y2, float z2, float texU2, float texV2,
+      float x3, float y3, float z3, float texU3, float texV3,
+      float x4, float y4, float z4, float texU4, float texV4,
+      int r, int g, int b, int alpha
+  );
+
   VertexBuffer triangle(
       float x1, float y1, float z1,
       float x2, float y2, float z2,
@@ -62,6 +76,13 @@ public interface VertexBuffer {
       float x1, float y1, float z1, float texU1, float texV1,
       float x2, float y2, float z2, float texU2, float texV2,
       float x3, float y3, float z3, float texU3, float texV3
+  );
+
+  VertexBuffer triangle(
+      float x1, float y1, float z1, float texU1, float texV1,
+      float x2, float y2, float z2, float texU2, float texV2,
+      float x3, float y3, float z3, float texU3, float texV3,
+      int r, int g, int b, int alpha
   );
 
   VertexBuffer triangle(
