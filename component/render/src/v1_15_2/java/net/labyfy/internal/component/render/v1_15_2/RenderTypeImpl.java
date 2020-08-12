@@ -1,5 +1,6 @@
 package net.labyfy.internal.component.render.v1_15_2;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -7,12 +8,15 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.RenderType;
 import net.labyfy.component.render.VertexFormat;
 import net.labyfy.component.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderState;
 
-import java.util.OptionalDouble;
+import java.lang.reflect.Field;
+import java.util.*;
 
 @Implement(RenderType.class)
 public class RenderTypeImpl implements RenderType {
 
+  private final Map<String, Map.Entry<Runnable, Runnable>> customStates = new HashMap<>();
   private final net.minecraft.client.renderer.RenderType.State.Builder stateBuilder;
   private final VertexFormat format;
   private final String name;
@@ -113,8 +117,34 @@ public class RenderTypeImpl implements RenderType {
     return this;
   }
 
+  public RenderTypeImpl custom(String name, Runnable enable, Runnable disable) {
+    this.customStates.put(name, new AbstractMap.SimpleEntry<>(enable, disable));
+    return this;
+  }
+
   public <T> T getHandle() {
-    return (T) net.minecraft.client.renderer.RenderType.makeType(this.name, this.getFormat().getHandle(), this.getDrawMode(), 0, this.stateBuilder.build(false));
+    net.minecraft.client.renderer.RenderType renderType = net.minecraft.client.renderer.RenderType.makeType(this.name, this.getFormat().getHandle(), this.getDrawMode(), 0, this.stateBuilder.build(false));
+    try {
+      Field renderStatesField = net.minecraft.client.renderer.RenderType.State.class.getDeclaredField("renderStates");
+      renderStatesField.setAccessible(true);
+
+      Field renderStateField = Class.forName("net.minecraft.client.renderer.RenderType$Type").getDeclaredField("renderState");
+      renderStateField.setAccessible(true);
+      Collection<net.minecraft.client.renderer.RenderState> renderStates = new ArrayList<>((Collection<RenderState>) renderStatesField.get(renderStateField.get(renderType)));
+
+      for (String name : this.customStates.keySet()) {
+        Map.Entry<Runnable, Runnable> entry = customStates.get(name);
+        renderStates.add(new RenderState(name, entry.getKey(), entry.getValue()) {
+        });
+      }
+
+      renderStatesField.set(renderStateField.get(renderType), ImmutableList.copyOf(renderStates));
+
+    } catch (NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+
+    return (T) renderType;
   }
 
   public String getName() {

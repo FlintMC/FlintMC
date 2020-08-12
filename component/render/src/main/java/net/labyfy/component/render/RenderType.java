@@ -44,6 +44,8 @@ public interface RenderType {
 
   RenderType lineEmpty();
 
+  RenderType custom(String name, Runnable enable, Runnable disable);
+
   <T> T getHandle();
 
   @AssistedFactory(RenderType.class)
