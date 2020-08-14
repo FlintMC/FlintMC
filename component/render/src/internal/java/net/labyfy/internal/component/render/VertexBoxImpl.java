@@ -19,9 +19,9 @@ public class VertexBoxImpl implements VertexBox {
   private final VertexQuad back;
   private final VertexQuad front;
   private final VertexQuad right;
-  //  private final VertexQuad left;
+  private final VertexQuad left;
   private final VertexQuad top;
-//  private final VertexQuad bottom;
+  private final VertexQuad bottom;
 
   private Supplier<Vector3f> position;
   private Supplier<Vector3f> dimensions;
@@ -96,16 +96,22 @@ public class VertexBoxImpl implements VertexBox {
         .withLightMap(() -> this.lightMap.getAsInt())
         .build();
 
-//    this.left = vertexQuadBuilderFactory.create()
-//        .withVertices(
-//            () -> this.getPosition().add(this.getWidth(), 0, 0),
-//            () -> this.getPosition().add(this.getWidth(), 0, this.getDepth()),
-//            () -> this.getPosition().add(this.getDimensions()),
-//            () -> this.getPosition().add(this.getWidth(), this.getHeight(), 0)
-//        )
-//        .withColor(() -> this.color.get())
-//        .withLightMap(() ->this.lightMap.getAsInt())
-//        .build();
+    this.left = vertexQuadBuilderFactory.create()
+        .withVertices(
+            () -> this.getPosition().add(this.getWidth(), 0, 0),
+            () -> this.getPosition().add(this.getWidth(), 0, this.getDepth()),
+            () -> this.getPosition().add(this.getDimensions()),
+            () -> this.getPosition().add(this.getWidth(), this.getHeight(), 0)
+        )
+        .withTextureUVs(
+            () -> new Vector2f(getTextureOffsetX(), getTextureOffsetY() + (getDepth() + getHeight()) / getTextureDensityY()),
+            () -> new Vector2f(getTextureOffsetX() + getDepth() / getTextureDensityX(), getTextureOffsetY() + (getDepth() + getHeight()) / getTextureDensityY()),
+            () -> new Vector2f(getTextureOffsetX() + getDepth() / getTextureDensityX(), getTextureOffsetY() + getDepth() / getTextureDensityY()),
+            () -> new Vector2f(getTextureOffsetX(), getTextureOffsetY() + getDepth() / getTextureDensityY())
+        )
+        .withColor(() -> this.color.get())
+        .withLightMap(() -> this.lightMap.getAsInt())
+        .build();
 
     this.top = vertexQuadBuilderFactory.create()
         .withVertices(
@@ -124,16 +130,22 @@ public class VertexBoxImpl implements VertexBox {
         .withLightMap(() -> this.lightMap.getAsInt())
         .build();
 
-//    this.bottom = vertexQuadBuilderFactory.create()
-//        .withVertices(
-//            () -> this.getPosition().add(0, 0, 0),
-//            () -> this.getPosition().add(0, 0, this.getDepth()),
-//            () -> this.getPosition().add(this.getWidth(), 0, this.getDepth()),
-//            () -> this.getPosition().add(this.getWidth(), 0, 0)
-//        )
-//        .withColor(() -> this.color.get())
-//        .withLightMap(() ->this.lightMap.getAsInt())
-//        .build();
+    this.bottom = vertexQuadBuilderFactory.create()
+        .withVertices(
+            () -> this.getPosition().add(0, 0, 0),
+            () -> this.getPosition().add(0, 0, this.getDepth()),
+            () -> this.getPosition().add(this.getWidth(), 0, this.getDepth()),
+            () -> this.getPosition().add(this.getWidth(), 0, 0)
+        )
+        .withTextureUVs(
+            () -> new Vector2f(getTextureOffsetX() + (getWidth() + getDepth()) / getTextureDensityX(), getTextureOffsetY()),
+            () -> new Vector2f(getTextureOffsetX() + (getWidth() + getDepth()) / getTextureDensityX(), getTextureOffsetY() + getDepth() / getTextureDensityY()),
+            () -> new Vector2f(getTextureOffsetX() + (getDepth() + getWidth() + getWidth()) / getTextureDensityX(), getTextureOffsetY() + getDepth() / getTextureDensityY()),
+            () -> new Vector2f(getTextureOffsetX() + (getDepth() + getWidth() + getWidth()) / getTextureDensityX(), getTextureOffsetY())
+        )
+        .withColor(() -> this.color.get())
+        .withLightMap(() -> this.lightMap.getAsInt())
+        .build();
   }
 
   public Vector2f getTextureDensity() {
