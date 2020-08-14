@@ -81,7 +81,7 @@ publish_labyfy_prerel_snapshot:
   environment:
     name: development
   only:
-    - develop
+    - /^release-.*$/
   when: on_success
 
 ## only tags
