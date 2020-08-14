@@ -72,7 +72,7 @@ test-docs:
 publish_labyfy_prerel_snapshot:
   stage: publish
   script:
-    - echo (${CI_COMMIT_BRANCH} | cut -f2 -d'-')-SNAPSHOT > .dev-version || exit 1
+    - echo $(${CI_COMMIT_BRANCH} | cut -f2 -d'-')-SNAPSHOT > .dev-version || exit 1
     - sh gradlew
       -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
       -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
