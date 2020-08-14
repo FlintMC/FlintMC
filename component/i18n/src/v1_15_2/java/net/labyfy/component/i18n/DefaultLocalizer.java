@@ -14,13 +14,13 @@ import java.util.ResourceBundle;
  */
 @Singleton
 @Implement(value = Localizer.class , version = "1.15.2")
-public class LabyLocalizer implements Localizer {
+public class DefaultLocalizer implements Localizer {
 
     private final Logger logger;
     private final GenericResourceBundle currValues;
 
     @Inject
-    public LabyLocalizer(Logger logger, GenericResourceBundle bundle){
+    public DefaultLocalizer(Logger logger, GenericResourceBundle bundle){
         this.logger = logger;
         this.currValues = bundle;
         load();
