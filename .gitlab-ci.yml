@@ -66,11 +66,13 @@ test-docs:
     - master
 
 ### PUBLISH
+# publish release snapshots by creating a release-VERSION branch
+# like 'release-4.0.13'
+# if you merge your feature branch into the release branch, a snapshot will be available in artifactory
 publish_labyfy_prerel_snapshot:
   stage: publish
   script:
-    - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
+    - echo ${CI_COMMIT_BRANCH} | cut -f2 -d'-' > .dev-version || exit 1
     - sh gradlew
       -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
       -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
@@ -81,7 +83,7 @@ publish_labyfy_prerel_snapshot:
   environment:
     name: development
   only:
-    - develop
+    - /^release-.*$/
   when: on_success
 
 ## only tags
@@ -124,16 +126,16 @@ lm_distributor_release:
   when: on_success
 
 ### REPLAY
-gitlab_release:
-  stage: replay
-  image: registry.gitlab.com/gitlab-org/release-cli
-  tags:
-    - docker
-  script:
-    - release-cli create --name "v$(cat .dev-version)" --description "$CI_COMMIT_MESSAGE" --tag-name $(cat .dev-version) --ref $CI_COMMIT_SHA
-  only:
-    - tags
-  when: on_success
+#gitlab_release:
+#  stage: replay
+#  image: registry.gitlab.com/gitlab-org/release-cli
+#  tags:
+#    - docker
+#  script:
+#    - release-cli create --name "v$(cat .dev-version)" --description "$CI_COMMIT_MESSAGE" --tag-name $(cat .dev-version) --ref $CI_COMMIT_SHA
+#  only:
+#    - tags
+#  when: on_success
 
 sentry_release:
   stage: replay
