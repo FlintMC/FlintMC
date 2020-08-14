@@ -66,6 +66,9 @@ test-docs:
     - master
 
 ### PUBLISH
+# publish release snapshots by creating a release-VERSION branch
+# like 'release-4.0.13'
+# if you merge your feature branch into the release branch, a snapshot will be available in artifactory
 publish_labyfy_prerel_snapshot:
   stage: publish
   script:
