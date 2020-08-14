@@ -1,55 +1,3 @@
-stages:
-  - version
-  - build
-  - test
-  - publish
-  - release
-  - replay
-
-variables:
-  SCRIPTS_REPO: "git@git.laby.tech:client/labymod4/common-scripts.git"
-
-before_script:
-  # cloning scripts repo
-  - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-  - ssh-keyscan git.laby.tech >> ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "$SSH_PRIVATE_KEY")
-  - export SCRIPTS_DIR=$(mktemp -d)
-  - git clone -q --depth 1 "$SCRIPTS_REPO" "$SCRIPTS_DIR"
-  # version this build
-  - bash $SCRIPTS_DIR/genSemVer.sh build ${CI_JOB_ID} > .dev-version
-
-### VERSION
-version:
-  stage: version
-  script:
-    - bash $SCRIPTS_DIR/versionPreCheck.sh "${CI_COMMIT_MESSAGE}"
-    - bash $SCRIPTS_DIR/genSemVer.sh $(cat BUMP_TYPE) > .dev-version
-    - bash $SCRIPTS_DIR/pushTag.sh
-  artifacts:
-    paths:
-      - .dev-version
-  only:
-    - master
-  when: manual
-
-### BUILD
-build:
-  stage: build
-  script:
-    - sh gradlew
-      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
-      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
-      -Partifactory_contextUrl=$artifactory_contextUrl
-      -Partifactory_password=$artifactory_password
-      -Partifactory_user=$artifactory_user
-      build --stacktrace --refresh-dependencies
-  only:
-    - branches
-  except:
-    - master
-
 test-docs:
   stage: test
   script:
@@ -149,27 +97,7 @@ sentry_release:
     - tags
   when: on_success
 
-update_develop_version:
-  stage: replay
-  script:
-    - git checkout origin/develop
-    - git pull origin master
-    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
-    - export VERSION=$(cat .dev-version)
-    - rm -r semver-tool
-    - git commit -a -m "${VERSION}"
-    - git config --global push.default simple
-    - git push origin HEAD:develop
-  only:
-    - tags
-  when: on_success
-## only tags
-
-check_against_develop:
-  stage: replay
-  script:
-    - git pull origin HEAD:develop
-  only:
-    - branches
-  except:
-    - develop
+include:
+  - project: client/labymod4/common-scripts
+    ref: master
+    file: .gitlab-ci-template.yml
