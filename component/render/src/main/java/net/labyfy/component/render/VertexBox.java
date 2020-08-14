@@ -2,7 +2,12 @@ package net.labyfy.component.render;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import java.awt.*;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 public interface VertexBox {
 
@@ -26,11 +31,13 @@ public interface VertexBox {
 
   short getLightMapV();
 
-  int getLightMapMasked();
+  int getLightMap();
 
   VertexBox setPosition(Vector3f position);
 
   VertexBox setPosition(float x, float y, float z);
+
+  VertexBox setDimensions(Supplier<Vector3f> dimensions);
 
   VertexBox setDimensions(Vector3f dimensions);
 
@@ -56,9 +63,34 @@ public interface VertexBox {
 
   VertexBox render(MatrixStack matrixStack, VertexBuffer vertexBuffer);
 
-  @AssistedFactory(VertexBox.class)
-  interface Factory{
-    VertexBox create(@Assisted("position") Vector3f position, @Assisted("dimensions") Vector3f dimensions);
+  interface Builder {
+
+    Builder withColor(Color color);
+
+    Builder withColor(Supplier<Color> color);
+
+    Builder withLightMap(int mask);
+
+    Builder withLightMap(IntSupplier lightmap);
+
+    Builder withTextureDensity(Supplier<Vector2f> textureDensity);
+
+    Builder withTextureDensity(Vector2f textureDensity);
+
+    Builder withTextureOffset(Supplier<Vector2f> textureOffset);
+
+    Builder withTextureOffset(Vector2f textureOffset);
+
+    VertexBox build();
+
+    @AssistedFactory(Builder.class)
+    interface Factory {
+      Builder create(@Assisted("position") Vector3f position, @Assisted("dimensions") Vector3f dimensions);
+
+      Builder create(@Assisted("position") Supplier<Vector3f> position, @Assisted("dimensions") Supplier<Vector3f> dimensions);
+    }
+
   }
+
 
 }

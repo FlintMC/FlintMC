@@ -12,6 +12,8 @@ public interface VertexFormatElement {
 
   String getName();
 
+  int getIndex();
+
   enum Type {
     FLOAT(4, "Float", 5126),
     UBYTE(1, "Unsigned Byte", 5121),
@@ -47,7 +49,13 @@ public interface VertexFormatElement {
   @AssistedFactory(VertexFormatElement.class)
   interface Factory {
 
-    VertexFormatElement create(@Assisted VertexFormatUsage usage, @Assisted String name, @Assisted Type type, @Assisted int amount);
+    VertexFormatElement create(
+        @Assisted("index") int index,
+        @Assisted VertexFormatUsage usage,
+        @Assisted String name,
+        @Assisted Type type,
+        @Assisted("amount") int amount
+    );
 
   }
 }

@@ -9,6 +9,7 @@ import net.labyfy.component.render.VertexFormatUsage;
 @Implement(VertexFormatElement.class)
 public class VertexFormatElementImpl implements VertexFormatElement {
 
+  private final int index;
   private final VertexFormatUsage usage;
   private final String name;
   private final Type type;
@@ -16,7 +17,14 @@ public class VertexFormatElementImpl implements VertexFormatElement {
   private final net.minecraft.client.renderer.vertex.VertexFormatElement handle;
 
   @AssistedInject
-  private VertexFormatElementImpl(@Assisted VertexFormatUsage usage, @Assisted String name, @Assisted Type type, @Assisted int amount) {
+  private VertexFormatElementImpl(
+      @Assisted("index") int index,
+      @Assisted VertexFormatUsage usage,
+      @Assisted String name,
+      @Assisted Type type,
+      @Assisted("amount") int amount
+  ) {
+    this.index = index;
     this.usage = usage;
     this.name = name;
     this.type = type;
@@ -26,7 +34,7 @@ public class VertexFormatElementImpl implements VertexFormatElement {
 
   private net.minecraft.client.renderer.vertex.VertexFormatElement createHandle() {
     return new net.minecraft.client.renderer.vertex.VertexFormatElement(
-        0,
+        this.index,
         net.minecraft.client.renderer.vertex.VertexFormatElement.Type.valueOf(this.type.name()),
         this.findUsage(),
         amount);
@@ -41,6 +49,10 @@ public class VertexFormatElementImpl implements VertexFormatElement {
     return net.minecraft.client.renderer.vertex.VertexFormatElement.Usage.GENERIC;
   }
 
+  public int getIndex() {
+    return this.index;
+  }
+
   public String getName() {
     return this.name;
   }
@@ -48,7 +60,6 @@ public class VertexFormatElementImpl implements VertexFormatElement {
   public <T> T getHandle() {
     return (T) this.handle;
   }
-
 
   public int getAmount() {
     return amount;
