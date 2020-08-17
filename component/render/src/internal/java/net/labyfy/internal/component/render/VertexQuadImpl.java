@@ -181,7 +181,7 @@ public class VertexQuadImpl implements VertexQuad {
     }
 
     public Builder withVertices(Vector3f vertex1, Vector3f vertex2, Vector3f vertex3, Vector3f vertex4) {
-      return this.withVertices(() -> vertex1, () -> vertex2, () -> vertex3, () -> vertex4);
+      return this.withVertices(() -> new Vector3f(vertex1), () -> new Vector3f(vertex2), () -> new Vector3f(vertex3), () -> new Vector3f(vertex4));
     }
 
     public Builder withTextureUVs(Supplier<Vector2f> vertex1TextureUV, Supplier<Vector2f> vertex2TextureUV, Supplier<Vector2f> vertex3TextureUV, Supplier<Vector2f> vertex4TextureUV) {
@@ -194,7 +194,7 @@ public class VertexQuadImpl implements VertexQuad {
 
 
     public Builder withTextureUVs(Vector2f vertex1TextureUV, Vector2f vertex2TextureUV, Vector2f vertex3TextureUV, Vector2f vertex4TextureUV) {
-      return this.withTextureUVs(() -> vertex1TextureUV, () -> vertex2TextureUV, () -> vertex3TextureUV, () -> vertex4TextureUV);
+      return this.withTextureUVs(() -> new Vector2f(vertex1TextureUV), () -> new Vector2f(vertex2TextureUV), () -> new Vector2f(vertex3TextureUV), () -> new Vector2f(vertex4TextureUV));
     }
 
     public Builder withColor(Supplier<Color> color) {

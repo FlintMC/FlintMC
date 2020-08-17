@@ -5,6 +5,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.nio.ByteBuffer;
 
+
 public interface VertexFormat {
 
   VertexFormat pushFloats(ByteBuffer byteBuffer, VertexBuffer bufferBuilder, String name, float... floats);
@@ -24,7 +25,6 @@ public interface VertexFormat {
   int getByteOffset(String name);
 
   <T> T getHandle();
-
 
   @AssistedFactory(VertexFormat.class)
   interface Factory {

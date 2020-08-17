@@ -16,7 +16,7 @@ import java.util.*;
 @Implement(RenderType.class)
 public class RenderTypeImpl implements RenderType {
 
-  private final Map<String, Map.Entry<Runnable, Runnable>> customStates = new HashMap<>();
+  private final Collection<net.labyfy.component.render.RenderState> customRenderStates = new HashSet<>();
   private final net.minecraft.client.renderer.RenderType.State.Builder stateBuilder;
   private final VertexFormat format;
   private final String name;
@@ -117,9 +117,12 @@ public class RenderTypeImpl implements RenderType {
     return this;
   }
 
-  public RenderTypeImpl custom(String name, Runnable enable, Runnable disable) {
-    this.customStates.put(name, new AbstractMap.SimpleEntry<>(enable, disable));
-    return this;
+  public RenderTypeImpl custom(net.labyfy.component.render.RenderState renderState) {
+    return this.custom(renderState);
+  }
+
+  public Collection<net.labyfy.component.render.RenderState> getCustomStates() {
+    return Collections.unmodifiableCollection(this.customRenderStates);
   }
 
   public <T> T getHandle() {
@@ -132,9 +135,8 @@ public class RenderTypeImpl implements RenderType {
       renderStateField.setAccessible(true);
       Collection<net.minecraft.client.renderer.RenderState> renderStates = new ArrayList<>((Collection<RenderState>) renderStatesField.get(renderStateField.get(renderType)));
 
-      for (String name : this.customStates.keySet()) {
-        Map.Entry<Runnable, Runnable> entry = customStates.get(name);
-        renderStates.add(new RenderState(name, entry.getKey(), entry.getValue()) {
+      for (net.labyfy.component.render.RenderState customRenderState : this.customRenderStates) {
+        renderStates.add(new RenderState(customRenderState.getName(), customRenderState::enable, customRenderState::disable) {
         });
       }
 

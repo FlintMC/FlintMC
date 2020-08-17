@@ -59,6 +59,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     this.normalContext = new Matrix3f();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBufferImpl pos(float x, float y, float z) {
     if (!this.getFormat().hasElement("position"))
       return this;
@@ -69,6 +72,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this.pushFloats("position", vector3f.x, vector3f.y, vector3f.z);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer color(int r, int g, int b, int alpha) {
     if (!this.getFormat().hasElement("color"))
       return this;
@@ -76,16 +82,25 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer color(Color color) {
     if (color == null)
       return this;
     return this.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer pos(Vector3f position) {
     return this.pos(position.x, position.y, position.z);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBufferImpl normal(float x, float y, float z) {
     if (!this.getFormat().hasElement("normal"))
       return this;
@@ -96,10 +111,16 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this.pushFloats("normal", vector3f.x, vector3f.y, vector3f.z);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer normal(Vector3f normal) {
     return this.normal(normal.x, normal.y, normal.z);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBufferImpl end() {
     this.vertexCount++;
     if (this.writtenBytes != this.vertexCount * this.vertexFormat.getBytes()) {
@@ -113,28 +134,43 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
-  public VertexBufferImpl lightmap(short sky, short ground) {
+  /**
+   * {@inheritDoc}
+   */
+  public VertexBufferImpl lightmap(short u, short v) {
     if (!this.getFormat().hasElement("lightmap"))
       return this;
-    this.pushShorts("lightmap", sky, ground);
+    this.pushShorts("lightmap", u, v);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer lightmap(int masked) {
     return this.lightmap((short) (masked & 0x00ff), (short) (((masked & 0xffff0000) >> 16) & 0xffff));
   }
 
-  public VertexBufferImpl texture(float x, float y) {
+  /**
+   * {@inheritDoc}
+   */
+  public VertexBufferImpl texture(float u, float v) {
     if (!this.getFormat().hasElement("texture"))
       return this;
-    this.pushFloats("texture", x, y);
+    this.pushFloats("texture", u, v);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer texture(Vector2f texture) {
     return this.texture(texture.x, texture.y);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBufferImpl pushFloats(String name, float... floats) {
     this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getBytes()));
     vertexFormat.pushFloats(this.byteBuffer, this, name, floats);
@@ -142,6 +178,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBufferImpl pushBytes(String name, byte... bytes) {
     this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getBytes()));
     vertexFormat.pushBytes(this.byteBuffer, this, name, bytes);
@@ -149,6 +188,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public AdvancedVertexBuffer pushShorts(String name, short... shorts) {
     this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getBytes()));
     vertexFormat.pushShorts(this.byteBuffer, this, name, shorts);
@@ -156,6 +198,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public AdvancedVertexBuffer incrementVertexCount(int count) {
     this.vertexCount += count;
     try {
@@ -166,6 +211,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBufferImpl growBufferEventually(int targetSize) {
     if (this.byteBuffer.limit() < targetSize) {
       ByteBuffer oldBuffer = this.byteBuffer;
@@ -180,47 +228,77 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexFormat getFormat() {
     return this.vertexFormat;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public Matrix4f getWorldContext() {
     return new Matrix4f(this.worldContext);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer setWorldContext(Matrix4f matrix) {
     if (matrix == null) matrix = new Matrix4f();
     this.worldContext = new Matrix4f(matrix);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer setNormalContext(Matrix3f normalContext) {
     if (normalContext == null) normalContext = new Matrix3f();
     this.normalContext = new Matrix3f(normalContext);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public Matrix3f getNormalContext() {
     return new Matrix3f(normalContext);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public AdvancedVertexBuffer advanced() {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer simple() {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public ByteBuffer getByteBuffer() {
     return this.byteBuffer;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public AdvancedVertexBuffer setByteBuffer(ByteBuffer byteBuffer) {
     this.byteBuffer = byteBuffer;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public int getVertexCount() {
     return this.vertexCount;
   }

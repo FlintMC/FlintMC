@@ -63,35 +63,56 @@ public class MatrixStackImpl implements MatrixStack {
     return b * 4 + a;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl push() {
     this.handle.push();
     this.updateVertexBuffer();
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl rotate(Quaternionf quaternionf) {
     this.handle.rotate(new Quaternion(quaternionf.x, quaternionf.y, quaternionf.z, quaternionf.w));
     this.updateVertexBuffer();
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl rotate(float angle, float xAxis, float yAxis, float zAxis) {
     return this.rotate(angle, new Vector3f(xAxis, yAxis, zAxis));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl rotate(float angle, Vector3f axis) {
     return this.rotate(new Quaternionf().rotateAxis(angle, axis));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl rotate(float angle, float xAxis, float yAxis, float zAxis, float xPoint, float yPoint, float zPoint) {
     return this.rotate(angle, new Vector3f(xAxis, yAxis, zAxis), new Vector3f(xPoint, yPoint, zPoint));
   }
 
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl rotate(float angle, Vector3f axis, Vector3f point) {
     return this.rotate(new Quaternionf().rotateAxis(angle, axis), point);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl rotate(Quaternionf rotation, Vector3f point) {
     this.translate(-point.x, -point.y, -point.z);
     this.rotate(rotation);
@@ -99,12 +120,18 @@ public class MatrixStackImpl implements MatrixStack {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl translate(Vector3f vector3f) {
     this.handle.translate(vector3f.x, vector3f.y, vector3f.z);
     this.updateVertexBuffer();
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl translate(float x, float y, float z) {
     this.handle.translate(x, y, z);
     this.updateVertexBuffer();
@@ -205,30 +232,36 @@ public class MatrixStackImpl implements MatrixStack {
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl scale(Vector3f vector3f) {
     return this.scale(vector3f.x, vector3f.y, vector3f.z);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl scale(float scale) {
     return this.scale(scale, scale, scale);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl scale(float x, float y, float z) {
     this.handle.scale(x, y, z);
     this.updateVertexBuffer();
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public MatrixStackImpl pop() {
     this.handle.pop();
     this.updateVertexBuffer();
     return this;
-  }
-
-  public boolean clear() {
-    boolean clear = this.handle.clear();
-    this.updateVertexBuffer();
-    return clear;
   }
 
 }
