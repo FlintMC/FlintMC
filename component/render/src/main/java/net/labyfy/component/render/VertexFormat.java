@@ -5,22 +5,82 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.nio.ByteBuffer;
 
+/**
+ * A {@link VertexFormat} defines the structure for a collection of vertices.
+ * see at {@link VertexFormatElement}
+ */
 public interface VertexFormat {
 
-  VertexFormat pushFloats(ByteBuffer byteBuffer, VertexBuffer bufferBuilder, String name, float... floats);
+  /**
+   * Pushes floats to the current vertex and checks for the existence of the {@link VertexFormatElement}.
+   *
+   * @param byteBuffer   the bytebuffer to push the data to
+   * @param vertexBuffer the vertexBuffer to fetch the current vertex data from
+   * @param floats       data to push
+   * @return this
+   */
+  VertexFormat pushFloats(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, float... floats);
 
-  VertexFormat pushBytes(ByteBuffer byteBuffer, VertexBuffer bufferBuilder, String name, byte... bytes);
+  /**
+   * Pushes bytes to the current vertex and checks for the existence of the {@link VertexFormatElement}.
+   *
+   * @param byteBuffer   the bytebuffer to push the data to
+   * @param vertexBuffer the vertexBuffer to fetch the current vertex data from
+   * @param bytes        data to push
+   * @return this
+   */
+  VertexFormat pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, byte... bytes);
 
+  /**
+   * Pushes shorts to the current vertex and checks for the existence of the {@link VertexFormatElement}.
+   *
+   * @param byteBuffer   the bytebuffer to push the data to
+   * @param vertexBuffer the vertexBuffer to fetch the current vertex data from
+   * @param shorts       data to push
+   * @return this
+   */
   VertexFormat pushShorts(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, short... shorts);
 
+
+  /**
+   * Pushes bytes to the current vertex and checks for the existence of the {@link VertexFormatElement}.
+   *
+   * @param byteBuffer   the bytebuffer to push the data to
+   * @param vertexBuffer the vertexBuffer to fetch the current vertex data from
+   * @param bytes        data to push
+   * @return this
+   */
+  VertexFormat pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, ByteBuffer bytes);
+
+  /**
+   * @return all elements of this vertex format
+   */
   VertexFormatElement[] getElements();
 
+  /**
+   * @param name the name to search the format element from
+   * @return if this vertex format has an format element with the name name
+   */
   boolean hasElement(String name);
 
+  /**
+   * @param name the name to search the format element from
+   * @return the vertex format element by name
+   */
   VertexFormatElement getElement(String name);
 
-  int getBytes();
+  /**
+   * @return the size of all {@link VertexFormatElement} together in bytes.
+   */
+  int getSize();
 
+  /**
+   * Every {@link VertexFormatElement} gets a byte offset in the context of a {@link VertexFormat}.
+   * The byte offset is the index in the current already allocated vertex data where the data for the {@link VertexFormatElement} should be written at.
+   *
+   * @param name the name of {@link VertexFormatElement} to look for
+   * @return the byte offset
+   */
   int getByteOffset(String name);
 
   <T> T getHandle();

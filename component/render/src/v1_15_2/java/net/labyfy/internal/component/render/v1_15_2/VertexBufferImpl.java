@@ -102,7 +102,7 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
 
   public VertexBufferImpl end() {
     this.vertexCount++;
-    if (this.writtenBytes != this.vertexCount * this.vertexFormat.getBytes()) {
+    if (this.writtenBytes != this.vertexCount * this.vertexFormat.getSize()) {
       throw new IllegalStateException("Not all or too many vertex elements have been written.");
     }
     try {
@@ -136,21 +136,21 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
   }
 
   public VertexBufferImpl pushFloats(String name, float... floats) {
-    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getBytes()));
+    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getSize()));
     vertexFormat.pushFloats(this.byteBuffer, this, name, floats);
     this.writtenBytes += floats.length * Float.BYTES;
     return this;
   }
 
   public VertexBufferImpl pushBytes(String name, byte... bytes) {
-    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getBytes()));
+    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getSize()));
     vertexFormat.pushBytes(this.byteBuffer, this, name, bytes);
     this.writtenBytes += bytes.length;
     return this;
   }
 
   public AdvancedVertexBuffer pushShorts(String name, short... shorts) {
-    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getBytes()));
+    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getSize()));
     vertexFormat.pushShorts(this.byteBuffer, this, name, shorts);
     this.writtenBytes += shorts.length * Short.BYTES;
     return this;

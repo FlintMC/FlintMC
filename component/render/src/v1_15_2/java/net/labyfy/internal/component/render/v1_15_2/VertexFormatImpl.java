@@ -31,8 +31,11 @@ public class VertexFormatImpl implements VertexFormat {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexFormatImpl pushFloats(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, float... floats) {
-    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getBytes()) + vertexBuffer.getFormat().getByteOffset(name);
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getSize()) + vertexBuffer.getFormat().getByteOffset(name);
     byteBuffer.position(offset);
     for (float f : floats) {
       byteBuffer.putFloat(f);
@@ -40,15 +43,21 @@ public class VertexFormatImpl implements VertexFormat {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexFormatImpl pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, byte... bytes) {
-    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getBytes()) + vertexBuffer.getFormat().getByteOffset(name);
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getSize()) + vertexBuffer.getFormat().getByteOffset(name);
     byteBuffer.position(offset);
     byteBuffer.put(bytes);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexFormat pushShorts(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, short... shorts) {
-    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getBytes()) + vertexBuffer.getFormat().getByteOffset(name);
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getSize()) + vertexBuffer.getFormat().getByteOffset(name);
     byteBuffer.position(offset);
     for (short aShort : shorts) {
       byteBuffer.putShort(aShort);
@@ -56,17 +65,26 @@ public class VertexFormatImpl implements VertexFormat {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexFormatImpl pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, ByteBuffer bytes) {
-    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getBytes()) + vertexBuffer.getFormat().getByteOffset(name);
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getSize()) + vertexBuffer.getFormat().getByteOffset(name);
     byteBuffer.position(offset);
     byteBuffer.put(bytes);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexFormatElement[] getElements() {
     return this.elements;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public boolean hasElement(String name) {
     for (VertexFormatElement element : this.elements) {
       if (element.getName().equalsIgnoreCase(name)) {
@@ -76,6 +94,9 @@ public class VertexFormatImpl implements VertexFormat {
     return false;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexFormatElement getElement(String name) {
     for (VertexFormatElement element : this.elements) {
       if (element.getName().equalsIgnoreCase(name)) {
@@ -85,7 +106,10 @@ public class VertexFormatImpl implements VertexFormat {
     return null;
   }
 
-  public int getBytes() {
+  /**
+   * {@inheritDoc}
+   */
+  public int getSize() {
     int bytes = 0;
     for (VertexFormatElement element : this.elements) {
       bytes += element.getAmount() * element.getType().getSize();
@@ -93,6 +117,9 @@ public class VertexFormatImpl implements VertexFormat {
     return bytes;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public int getByteOffset(String name) {
     int offset = 0;
     for (VertexFormatElement element : this.elements) {
