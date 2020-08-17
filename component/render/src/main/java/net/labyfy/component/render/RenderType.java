@@ -4,6 +4,8 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.resources.ResourceLocation;
 
+import java.util.Collection;
+
 public interface RenderType {
 
   String getName();
@@ -44,7 +46,9 @@ public interface RenderType {
 
   RenderType lineEmpty();
 
-  RenderType custom(String name, Runnable enable, Runnable disable);
+  RenderType custom(RenderState renderState);
+
+  Collection<RenderState> getCustomStates();
 
   <T> T getHandle();
 

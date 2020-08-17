@@ -15,6 +15,9 @@ public class VertexBufferProviderImpl implements VertexBufferProvider {
     this.iRenderTypeBuffer = iRenderTypeBuffer;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public VertexBuffer get(RenderType renderType) {
     net.minecraft.client.renderer.RenderType minecraftRenderTypeHandle = renderType.getHandle();
     IVertexBuilder buffer = this.iRenderTypeBuffer.getBuffer(minecraftRenderTypeHandle);
