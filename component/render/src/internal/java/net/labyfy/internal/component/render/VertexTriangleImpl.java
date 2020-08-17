@@ -144,11 +144,11 @@ public class VertexTriangleImpl implements VertexTriangle {
 
 
     public Builder withTextureUVs(Vector2f vertex1TextureUV, Vector2f vertex2TextureUV, Vector2f vertex3TextureUV) {
-      return this.withTextureUVs(() -> vertex1TextureUV, () -> vertex2TextureUV, () -> vertex3TextureUV);
+      return this.withTextureUVs(() -> new Vector2f(vertex1TextureUV), () -> new Vector2f(vertex2TextureUV), () -> new Vector2f(vertex3TextureUV));
     }
 
     public Builder withVertices(Vector3f vertex1, Vector3f vertex2, Vector3f vertex3) {
-      return this.withVertices(() -> vertex1, () -> vertex2, () -> vertex3);
+      return this.withVertices(() -> new Vector3f(vertex1), () -> new Vector3f(vertex2), () -> new Vector3f(vertex3));
     }
 
     public Builder withColor(Supplier<Color> color) {
