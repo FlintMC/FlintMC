@@ -2,6 +2,7 @@ package net.labyfy.component.render;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -59,6 +60,11 @@ public interface VertexBox {
   float getTextureOffsetY();
 
   /**
+   * @return the local transformation matrix of the box
+   */
+  Matrix4f getTransform();
+
+  /**
    * @return the position of the box
    */
   Vector3f getPosition();
@@ -78,6 +84,23 @@ public interface VertexBox {
    * @return this
    */
   VertexBox setPosition(Vector3f position);
+
+  /**
+   * Sets the local transformation matrix of this box
+   *
+   * @param transform the world matrix
+   * @return this
+   */
+  VertexBox setTransform(Supplier<Matrix4f> transform);
+
+  /**
+   * Sets the local transformation matrix of this box
+   *
+   * @param transform the world matrix
+   * @return this
+   */
+  VertexBox setTransform(Matrix4f transform);
+
 
   /**
    * @return the dimensions of the box
@@ -253,6 +276,27 @@ public interface VertexBox {
    * @return this
    */
   VertexBox setColor(Supplier<Color> color);
+
+  /**
+   * @return the parent of this box
+   */
+  VertexBox getParent();
+
+  /**
+   * Sets the parent of this box.
+   *
+   * @param vertexBox the parent
+   * @return this
+   */
+  VertexBox setParent(VertexBox parent);
+
+  /**
+   * Sets the parent of this box.
+   *
+   * @param vertexBox the parent
+   * @return this
+   */
+  VertexBox setParent(Supplier<VertexBox> parent);
 
   /**
    * Renders the box to the target {@link VertexBuffer} and {@link MatrixStack}.

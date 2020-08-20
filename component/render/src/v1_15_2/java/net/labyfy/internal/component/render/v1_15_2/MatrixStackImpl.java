@@ -138,6 +138,17 @@ public class MatrixStackImpl implements MatrixStack {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public MatrixStack mul(Matrix4f matrix4f) {
+    if (matrix4f == null) return this;
+    this.handle.getLast().getMatrix().mul(convert(matrix4f));
+    this.handle.getLast().getNormal().mul(convert(matrix4f.get3x3(new Matrix3f())));
+    this.updateVertexBuffer();
+    return this;
+  }
+
   public MatrixStackImpl updateVertexBuffer() {
     this.vertexBuffer.setWorldContext(this.convert(this.handle.getLast().getMatrix()));
     this.vertexBuffer.setNormalContext(this.convert(this.handle.getLast().getNormal()));
@@ -159,6 +170,10 @@ public class MatrixStackImpl implements MatrixStack {
       matrix4fConversionSetters.get("m12").invoke(minecraftMatrix, matrix4f.m21());
       matrix4fConversionSetters.get("m22").invoke(minecraftMatrix, matrix4f.m22());
       matrix4fConversionSetters.get("m32").invoke(minecraftMatrix, matrix4f.m23());
+      matrix4fConversionSetters.get("m03").invoke(minecraftMatrix, matrix4f.m30());
+      matrix4fConversionSetters.get("m13").invoke(minecraftMatrix, matrix4f.m31());
+      matrix4fConversionSetters.get("m23").invoke(minecraftMatrix, matrix4f.m32());
+      matrix4fConversionSetters.get("m33").invoke(minecraftMatrix, matrix4f.m33());
       return minecraftMatrix;
     } catch (Throwable throwable) {
       throwable.printStackTrace();

@@ -8,6 +8,7 @@ import net.labyfy.component.render.VertexQuad;
 import net.labyfy.component.render.VertexTriangle;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.awt.*;
 import java.util.Objects;
@@ -34,6 +35,12 @@ public class VertexQuadImpl implements VertexQuad {
       vertex3TextureUV,
       vertex4TextureUV;
 
+  private final Supplier<Vector3i>
+      normal1,
+      normal2,
+      normal3,
+      normal4;
+
   private final IntSupplier lightMap;
 
   private VertexQuadImpl(
@@ -47,6 +54,10 @@ public class VertexQuadImpl implements VertexQuad {
       Supplier<Vector2f> vertex2TextureUV,
       Supplier<Vector2f> vertex3TextureUV,
       Supplier<Vector2f> vertex4TextureUV,
+      Supplier<Vector3i> normal1,
+      Supplier<Vector3i> normal2,
+      Supplier<Vector3i> normal3,
+      Supplier<Vector3i> normal4,
       IntSupplier lightMap) {
     this.vertex1 = vertex1;
     this.vertex2 = vertex2;
@@ -57,6 +68,10 @@ public class VertexQuadImpl implements VertexQuad {
     this.vertex2TextureUV = vertex2TextureUV;
     this.vertex3TextureUV = vertex3TextureUV;
     this.vertex4TextureUV = vertex4TextureUV;
+    this.normal1 = normal1;
+    this.normal2 = normal2;
+    this.normal3 = normal3;
+    this.normal4 = normal4;
     this.lightMap = lightMap;
 
     this.triangle1 = vertexTriangleBuilderFactory
@@ -73,6 +88,11 @@ public class VertexQuadImpl implements VertexQuad {
             this::getVertex2TextureUV,
             this::getVertex3TextureUV
         )
+        .withNormals(
+            this::getNormal1,
+            this::getNormal2,
+            this::getNormal3
+        )
         .build();
 
     this.triangle2 = vertexTriangleBuilderFactory
@@ -88,6 +108,11 @@ public class VertexQuadImpl implements VertexQuad {
             this::getVertex1TextureUV,
             this::getVertex3TextureUV,
             this::getVertex4TextureUV
+        )
+        .withNormals(
+            this::getNormal1,
+            this::getNormal3,
+            this::getNormal4
         )
         .build();
 
@@ -133,6 +158,26 @@ public class VertexQuadImpl implements VertexQuad {
     return new Vector2f[]{this.getVertex1TextureUV(), this.getVertex2TextureUV(), this.getVertex3TextureUV(), this.getVertex4TextureUV()};
   }
 
+  public Vector3i getNormal1() {
+    return this.normal1.get();
+  }
+
+  public Vector3i getNormal2() {
+    return this.normal2.get();
+  }
+
+  public Vector3i getNormal3() {
+    return this.normal3.get();
+  }
+
+  public Vector3i getNormal4() {
+    return this.normal4.get();
+  }
+
+  public Vector3i[] getNormals() {
+    return new Vector3i[]{this.getNormal1(), this.getNormal2(), getNormal3(), getNormal4()};
+  }
+
   public Color getColor() {
     return this.color.get();
   }
@@ -165,6 +210,12 @@ public class VertexQuadImpl implements VertexQuad {
         vertex3TextureUV = () -> null,
         vertex4TextureUV = () -> null;
 
+    private Supplier<Vector3i>
+        normal1,
+        normal2,
+        normal3,
+        normal4;
+
     private IntSupplier lightMap = () -> 0;
 
     @AssistedInject
@@ -182,6 +233,18 @@ public class VertexQuadImpl implements VertexQuad {
 
     public Builder withVertices(Vector3f vertex1, Vector3f vertex2, Vector3f vertex3, Vector3f vertex4) {
       return this.withVertices(() -> vertex1, () -> vertex2, () -> vertex3, () -> vertex4);
+    }
+
+    public Builder withNormals(Supplier<Vector3i> normal1, Supplier<Vector3i> normal2, Supplier<Vector3i> normal3, Supplier<Vector3i> normal4) {
+      this.normal1 = normal1;
+      this.normal2 = normal2;
+      this.normal3 = normal3;
+      this.normal4 = normal4;
+      return this;
+    }
+
+    public Builder withNormals(Vector3i normal1, Vector3i normal2, Vector3i normal3, Vector3i normal4) {
+      return this.withNormals(() -> new Vector3i(normal1), () -> new Vector3i(normal2), () -> new Vector3i(normal3), () -> new Vector3i(normal4));
     }
 
     public Builder withTextureUVs(Supplier<Vector2f> vertex1TextureUV, Supplier<Vector2f> vertex2TextureUV, Supplier<Vector2f> vertex3TextureUV, Supplier<Vector2f> vertex4TextureUV) {
@@ -220,7 +283,7 @@ public class VertexQuadImpl implements VertexQuad {
       Objects.requireNonNull(vertex2);
       Objects.requireNonNull(vertex3);
       Objects.requireNonNull(vertex4);
-      return new VertexQuadImpl(vertexTriangleBuilderFactory, vertex1, vertex2, vertex3, vertex4, color, vertex1TextureUV, vertex2TextureUV, vertex3TextureUV, vertex4TextureUV, lightMap);
+      return new VertexQuadImpl(vertexTriangleBuilderFactory, vertex1, vertex2, vertex3, vertex4, color, vertex1TextureUV, vertex2TextureUV, vertex3TextureUV, vertex4TextureUV, normal1, normal2, normal3, normal4, lightMap);
     }
   }
 

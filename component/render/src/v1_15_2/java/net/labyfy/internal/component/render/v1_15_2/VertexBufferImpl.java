@@ -5,12 +5,10 @@ import net.labyfy.component.render.AdvancedVertexBuffer;
 import net.labyfy.component.render.VertexBuffer;
 import net.labyfy.component.render.VertexFormat;
 import net.minecraft.client.renderer.BufferBuilder;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.*;
 
 import java.awt.*;
+import java.lang.Math;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
@@ -101,21 +99,21 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
   /**
    * {@inheritDoc}
    */
-  public VertexBufferImpl normal(float x, float y, float z) {
+  public VertexBufferImpl normal(byte x, byte y, byte z) {
     if (!this.getFormat().hasElement("normal"))
       return this;
     Vector3f vector3f = new Vector3f(x, y, z);
     if (this.worldContext != null) {
       vector3f.mulPosition(this.worldContext);
     }
-    return this.pushFloats("normal", vector3f.x, vector3f.y, vector3f.z);
+    return this.pushBytes("normal", (byte) Math.round(vector3f.x), (byte) Math.round(vector3f.y), (byte) Math.round(vector3f.z));
   }
 
   /**
    * {@inheritDoc}
    */
-  public VertexBuffer normal(Vector3f normal) {
-    return this.normal(normal.x, normal.y, normal.z);
+  public VertexBuffer normal(Vector3i normal) {
+    return this.normal((byte) normal.x, (byte) normal.y, (byte) normal.z);
   }
 
   /**

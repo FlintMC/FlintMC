@@ -1,9 +1,6 @@
 package net.labyfy.component.render;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.*;
 
 import java.awt.*;
 
@@ -66,7 +63,7 @@ public interface VertexBuffer {
    * @param z z normal to set the current vertex to
    * @return this
    */
-  VertexBuffer normal(float x, float y, float z);
+  VertexBuffer normal(byte x, byte y, byte z);
 
   /**
    * Sets the normal of the current vertex.
@@ -74,7 +71,7 @@ public interface VertexBuffer {
    * @param normal normal to set the current vertex to
    * @return this
    */
-  VertexBuffer normal(Vector3f normal);
+  VertexBuffer normal(Vector3i normal);
 
   /**
    * Marks the current vertex as finished and prepare the context for the next vertex.

@@ -7,6 +7,7 @@ import net.labyfy.component.render.VertexBuffer;
 import net.labyfy.component.render.VertexTriangle;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.awt.*;
 import java.util.Objects;
@@ -26,10 +27,14 @@ public class VertexTriangleImpl implements VertexTriangle {
       vertex1TextureUV,
       vertex2TextureUV,
       vertex3TextureUV;
+  private final Supplier<Vector3i>
+      normal1,
+      normal2,
+      normal3;
 
   private final IntSupplier lightMap;
 
-  private VertexTriangleImpl(Supplier<Vector3f> vertex1, Supplier<Vector3f> vertex2, Supplier<Vector3f> vertex3, Supplier<Color> color, Supplier<Vector2f> vertex1TextureUV, Supplier<Vector2f> vertex2TextureUV, Supplier<Vector2f> vertex3TextureUV, IntSupplier lightMap) {
+  private VertexTriangleImpl(Supplier<Vector3f> vertex1, Supplier<Vector3f> vertex2, Supplier<Vector3f> vertex3, Supplier<Color> color, Supplier<Vector2f> vertex1TextureUV, Supplier<Vector2f> vertex2TextureUV, Supplier<Vector2f> vertex3TextureUV, Supplier<Vector3i> normal1, Supplier<Vector3i> normal2, Supplier<Vector3i> normal3, IntSupplier lightMap) {
     this.vertex1 = vertex1;
     this.vertex2 = vertex2;
     this.vertex3 = vertex3;
@@ -37,6 +42,9 @@ public class VertexTriangleImpl implements VertexTriangle {
     this.vertex1TextureUV = vertex1TextureUV;
     this.vertex2TextureUV = vertex2TextureUV;
     this.vertex3TextureUV = vertex3TextureUV;
+    this.normal1 = normal1;
+    this.normal2 = normal2;
+    this.normal3 = normal3;
     this.lightMap = lightMap;
   }
 
@@ -56,6 +64,22 @@ public class VertexTriangleImpl implements VertexTriangle {
     return new Vector3f[]{
         this.getVertex1(), this.getVertex2(), this.getVertex3()
     };
+  }
+
+  public Vector3i getNormal1() {
+    return this.normal1.get();
+  }
+
+  public Vector3i getNormal2() {
+    return this.normal2.get();
+  }
+
+  public Vector3i getNormal3() {
+    return this.normal3.get();
+  }
+
+  public Vector3i[] getNormals() {
+    return new Vector3i[]{this.getNormal1(), this.getNormal2(), this.getNormal3()};
   }
 
   public Vector2f getVertex1TextureUV() {
@@ -88,16 +112,19 @@ public class VertexTriangleImpl implements VertexTriangle {
         .scale(1, -1, -1);
     vertexBuffer
         .pos(this.getVertex1())
+        .normal(this.getNormal1())
         .color(this.getColor())
         .lightmap(this.getLightMap())
         .texture(this.getVertex1TextureUV())
         .end()
         .pos(this.getVertex2())
+        .normal(this.getNormal2())
         .color(this.getColor())
         .lightmap(this.getLightMap())
         .texture(this.getVertex2TextureUV())
         .end()
         .pos(this.getVertex3())
+        .normal(this.getNormal3())
         .color(this.getColor())
         .lightmap(this.getLightMap())
         .texture(this.getVertex3TextureUV())
@@ -122,6 +149,10 @@ public class VertexTriangleImpl implements VertexTriangle {
         vertex1TextureUV = () -> null,
         vertex2TextureUV = () -> null,
         vertex3TextureUV = () -> null;
+    private Supplier<Vector3i>
+        normal1 = () -> null,
+        normal2 = () -> null,
+        normal3 = () -> null;
 
     @AssistedInject
     private BuilderImpl() {
@@ -169,11 +200,22 @@ public class VertexTriangleImpl implements VertexTriangle {
       return this;
     }
 
+    public Builder withNormals(Supplier<Vector3i> normal1, Supplier<Vector3i> normal2, Supplier<Vector3i> normal3) {
+      this.normal1 = normal1;
+      this.normal2 = normal2;
+      this.normal3 = normal3;
+      return this;
+    }
+
+    public Builder withNormals(Vector3i normal1, Vector3i normal2, Vector3i normal3) {
+      return this.withNormals(() -> new Vector3i(normal1), () -> new Vector3i(normal2), () -> new Vector3i(normal3));
+    }
+
     public VertexTriangle build() {
       Objects.requireNonNull(this.vertex1);
       Objects.requireNonNull(this.vertex2);
       Objects.requireNonNull(this.vertex3);
-      return new VertexTriangleImpl(this.vertex1, this.vertex2, this.vertex3, this.color, this.vertex1TextureUV, this.vertex2TextureUV, this.vertex3TextureUV, this.lightMap);
+      return new VertexTriangleImpl(this.vertex1, this.vertex2, this.vertex3, this.color, this.vertex1TextureUV, this.vertex2TextureUV, this.vertex3TextureUV, normal1, normal2, normal3, this.lightMap);
     }
   }
 

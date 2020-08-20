@@ -7,8 +7,10 @@ import net.labyfy.component.render.MatrixStack;
 import net.labyfy.component.render.VertexBox;
 import net.labyfy.component.render.VertexBuffer;
 import net.labyfy.component.render.VertexQuad;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.awt.*;
 import java.util.function.IntSupplier;
@@ -28,9 +30,11 @@ public class VertexBoxImpl implements VertexBox {
   //all properties of the box
   private Supplier<Vector3f> position;
   private Supplier<Vector3f> dimensions;
+  private Supplier<Matrix4f> transform;
   private Supplier<Color> color;
   private Supplier<Vector2f> textureDensity;
   private Supplier<Vector2f> textureOffset;
+  private Supplier<VertexBox> parent;
   private IntSupplier lightMap;
 
   /**
@@ -44,14 +48,20 @@ public class VertexBoxImpl implements VertexBox {
    * @param color                    The color of the box
    * @param textureDensity           The texture density of the box. Describes how many pixels of texture will be mapped to 1 unit of dimensions
    * @param textureOffset            The texture uv offset in %
-   * @param lightMap                 The lightmap of the bux
+   * @param parent                   The parent of this box
+   * @param transform                The local transformation matrix of this box
+   * @param lightMap                 The lightmap of the box
    */
   private VertexBoxImpl(
       Supplier<Vector3f> position,
       Supplier<Vector3f> dimensions,
       VertexQuad.Builder.Factory vertexQuadBuilderFactory,
       Supplier<Color> color,
-      Supplier<Vector2f> textureDensity, Supplier<Vector2f> textureOffset, IntSupplier lightMap
+      Supplier<Vector2f> textureDensity,
+      Supplier<Vector2f> textureOffset,
+      Supplier<VertexBox> parent,
+      Supplier<Matrix4f> transform,
+      IntSupplier lightMap
   ) {
 
     this.position = position;
@@ -59,6 +69,8 @@ public class VertexBoxImpl implements VertexBox {
     this.color = color;
     this.textureDensity = textureDensity;
     this.textureOffset = textureOffset;
+    this.parent = parent;
+    this.transform = transform;
     this.lightMap = lightMap;
 
 
@@ -77,6 +89,12 @@ public class VertexBoxImpl implements VertexBox {
         )
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
+        .withNormals(
+            new Vector3i(1, 0, 0),
+            new Vector3i(1, 0, 0),
+            new Vector3i(1, 0, 0),
+            new Vector3i(1, 0, 0)
+        )
         .build();
 
     this.front = vertexQuadBuilderFactory.create()
@@ -94,6 +112,12 @@ public class VertexBoxImpl implements VertexBox {
         )
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
+        .withNormals(
+            new Vector3i(0, 0, 1),
+            new Vector3i(0, 0, 1),
+            new Vector3i(0, 0, 1),
+            new Vector3i(0, 0, 1)
+        )
         .build();
 
     this.right = vertexQuadBuilderFactory.create()
@@ -111,6 +135,12 @@ public class VertexBoxImpl implements VertexBox {
         )
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
+        .withNormals(
+            new Vector3i(-1, 0, 0),
+            new Vector3i(-1, 0, 0),
+            new Vector3i(-1, 0, 0),
+            new Vector3i(-1, 0, 0)
+        )
         .build();
 
     this.left = vertexQuadBuilderFactory.create()
@@ -128,6 +158,12 @@ public class VertexBoxImpl implements VertexBox {
         )
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
+        .withNormals(
+            new Vector3i(1, 0, 0),
+            new Vector3i(1, 0, 0),
+            new Vector3i(1, 0, 0),
+            new Vector3i(1, 0, 0)
+        )
         .build();
 
     this.top = vertexQuadBuilderFactory.create()
@@ -145,6 +181,12 @@ public class VertexBoxImpl implements VertexBox {
         )
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
+        .withNormals(
+            new Vector3i(0, 1, 0),
+            new Vector3i(0, 1, 0),
+            new Vector3i(0, 1, 0),
+            new Vector3i(0, 1, 0)
+        )
         .build();
 
     this.bottom = vertexQuadBuilderFactory.create()
@@ -162,6 +204,12 @@ public class VertexBoxImpl implements VertexBox {
         )
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
+        .withNormals(
+            new Vector3i(0, -1, 0),
+            new Vector3i(0, -1, 0),
+            new Vector3i(0, -1, 0),
+            new Vector3i(0, -1, 0)
+        )
         .build();
   }
 
@@ -206,6 +254,16 @@ public class VertexBoxImpl implements VertexBox {
    */
   public float getTextureOffsetY() {
     return this.getTextureOffset().y;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public Matrix4f getTransform() {
+    if (this.getParent() != null) {
+      return this.getParent().getTransform().mul(this.transform.get(), new Matrix4f());
+    }
+    return transform.get();
   }
 
   /**
@@ -307,7 +365,23 @@ public class VertexBoxImpl implements VertexBox {
    * {@inheritDoc}
    */
   public VertexBox setPosition(float x, float y, float z) {
-    return this.setPosition(new Vector3f(x, y, z));
+    return this.setPosition(() -> new Vector3f(x, y, z));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public VertexBox setParent(VertexBox parent) {
+    this.setParent(() -> parent);
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public VertexBox setParent(Supplier<VertexBox> parent) {
+    this.parent = parent;
+    return this;
   }
 
   /**
@@ -329,7 +403,7 @@ public class VertexBoxImpl implements VertexBox {
    * {@inheritDoc}
    */
   public VertexBox setDimensions(float x, float y, float z) {
-    return this.setDimensions(new Vector3f(x, y, z));
+    return this.setDimensions(() -> new Vector3f(x, y, z));
   }
 
   /**
@@ -449,15 +523,36 @@ public class VertexBoxImpl implements VertexBox {
   /**
    * {@inheritDoc}
    */
+  public VertexBox getParent() {
+    return parent.get();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public VertexBox render(MatrixStack matrixStack, VertexBuffer vertexBuffer) {
+    matrixStack
+        .push()
+        .mul(this.getTransform());
     this.back.render(matrixStack, vertexBuffer);
     this.front.render(matrixStack, vertexBuffer);
     this.right.render(matrixStack, vertexBuffer);
     this.left.render(matrixStack, vertexBuffer);
     this.top.render(matrixStack, vertexBuffer);
     this.bottom.render(matrixStack, vertexBuffer);
+    matrixStack.pop();
     return this;
   }
+
+  public VertexBox setTransform(Supplier<Matrix4f> transform) {
+    this.transform = transform;
+    return this;
+  }
+
+  public VertexBox setTransform(Matrix4f transform) {
+    return this.setTransform(() -> transform);
+  }
+
 
   @Implement(VertexBox.Builder.class)
   public static class BuilderImpl implements VertexBox.Builder {
@@ -467,8 +562,10 @@ public class VertexBoxImpl implements VertexBox {
     private final Supplier<Vector3f> dimensions;
     private Supplier<Color> color = () -> null;
     private IntSupplier lightMap = () -> 0;
+    private Supplier<Matrix4f> transform = Matrix4f::new;
     private Supplier<Vector2f> textureOffset = () -> new Vector2f(0, 0);
     private Supplier<Vector2f> textureDensity = () -> new Vector2f(1, 1);
+    private Supplier<VertexBox> parent = () -> null;
 
     @AssistedInject
     private BuilderImpl(
@@ -506,6 +603,16 @@ public class VertexBoxImpl implements VertexBox {
       return this;
     }
 
+    public Builder withTransform(Matrix4f transform) {
+      return this.withTransform(() -> transform);
+    }
+
+
+    public Builder withTransform(Supplier<Matrix4f> transform) {
+      this.transform = transform;
+      return this;
+    }
+
     public Builder withTextureDensity(Supplier<Vector2f> textureDensity) {
       this.textureDensity = textureDensity;
       return this;
@@ -524,8 +631,17 @@ public class VertexBoxImpl implements VertexBox {
       return this.withTextureOffset(() -> textureOffset);
     }
 
+    public Builder withParent(VertexBox parent) {
+      return this.withParent(() -> parent);
+    }
+
+    public Builder withParent(Supplier<VertexBox> parent) {
+      this.parent = parent;
+      return this;
+    }
+
     public VertexBox build() {
-      return new VertexBoxImpl(this.position, this.dimensions, this.vertexQuadBuilderFactory, this.color, this.textureDensity, this.textureOffset, this.lightMap);
+      return new VertexBoxImpl(this.position, this.dimensions, this.vertexQuadBuilderFactory, this.color, this.textureDensity, this.textureOffset, this.parent, this.transform, this.lightMap);
     }
   }
 
