@@ -10,7 +10,6 @@ import net.labyfy.component.render.VertexQuad;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 
 import java.awt.*;
 import java.util.function.IntSupplier;
@@ -26,6 +25,7 @@ public class VertexBoxImpl implements VertexBox {
   private final VertexQuad left;
   private final VertexQuad top;
   private final VertexQuad bottom;
+
 
   //all properties of the box
   private Supplier<Vector3f> position;
@@ -90,10 +90,10 @@ public class VertexBoxImpl implements VertexBox {
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
         .withNormals(
-            new Vector3i(1, 0, 0),
-            new Vector3i(1, 0, 0),
-            new Vector3i(1, 0, 0),
-            new Vector3i(1, 0, 0)
+            new Vector3f(-1, 0, 0),
+            new Vector3f(-1, 0, 0),
+            new Vector3f(-1, 0, 0),
+            new Vector3f(-1, 0, 0)
         )
         .build();
 
@@ -113,10 +113,10 @@ public class VertexBoxImpl implements VertexBox {
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
         .withNormals(
-            new Vector3i(0, 0, 1),
-            new Vector3i(0, 0, 1),
-            new Vector3i(0, 0, 1),
-            new Vector3i(0, 0, 1)
+            new Vector3f(0, 0, -1),
+            new Vector3f(0, 0, -1),
+            new Vector3f(0, 0, -1),
+            new Vector3f(0, 0, -1)
         )
         .build();
 
@@ -136,10 +136,10 @@ public class VertexBoxImpl implements VertexBox {
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
         .withNormals(
-            new Vector3i(-1, 0, 0),
-            new Vector3i(-1, 0, 0),
-            new Vector3i(-1, 0, 0),
-            new Vector3i(-1, 0, 0)
+            new Vector3f(1, 0, 0),
+            new Vector3f(1, 0, 0),
+            new Vector3f(1, 0, 0),
+            new Vector3f(1, 0, 0)
         )
         .build();
 
@@ -159,10 +159,10 @@ public class VertexBoxImpl implements VertexBox {
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
         .withNormals(
-            new Vector3i(1, 0, 0),
-            new Vector3i(1, 0, 0),
-            new Vector3i(1, 0, 0),
-            new Vector3i(1, 0, 0)
+            new Vector3f(-1, 0, 0),
+            new Vector3f(-1, 0, 0),
+            new Vector3f(-1, 0, 0),
+            new Vector3f(-1, 0, 0)
         )
         .build();
 
@@ -182,10 +182,10 @@ public class VertexBoxImpl implements VertexBox {
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
         .withNormals(
-            new Vector3i(0, 1, 0),
-            new Vector3i(0, 1, 0),
-            new Vector3i(0, 1, 0),
-            new Vector3i(0, 1, 0)
+            new Vector3f(0, -1, 0),
+            new Vector3f(0, -1, 0),
+            new Vector3f(0, -1, 0),
+            new Vector3f(0, -1, 0)
         )
         .build();
 
@@ -205,10 +205,10 @@ public class VertexBoxImpl implements VertexBox {
         .withColor(() -> this.color.get())
         .withLightMap(() -> this.lightMap.getAsInt())
         .withNormals(
-            new Vector3i(0, -1, 0),
-            new Vector3i(0, -1, 0),
-            new Vector3i(0, -1, 0),
-            new Vector3i(0, -1, 0)
+            new Vector3f(0, 1, 0),
+            new Vector3f(0, 1, 0),
+            new Vector3f(0, 1, 0),
+            new Vector3f(0, 1, 0)
         )
         .build();
   }
@@ -553,6 +553,34 @@ public class VertexBoxImpl implements VertexBox {
     return this.setTransform(() -> transform);
   }
 
+
+  public VertexQuad getBack() {
+    return back;
+  }
+
+  public VertexQuad getBottom() {
+    return bottom;
+  }
+
+  public Color getColor() {
+    return color.get();
+  }
+
+  public VertexQuad getFront() {
+    return front;
+  }
+
+  public VertexQuad getLeft() {
+    return left;
+  }
+
+  public VertexQuad getRight() {
+    return right;
+  }
+
+  public VertexQuad getTop() {
+    return top;
+  }
 
   @Implement(VertexBox.Builder.class)
   public static class BuilderImpl implements VertexBox.Builder {

@@ -101,6 +101,40 @@ public interface VertexBox {
    */
   VertexBox setTransform(Matrix4f transform);
 
+  /**
+   * @return the color of the box
+   */
+  Color getColor();
+
+  /**
+   * @return the back side of the box
+   */
+  VertexQuad getBack();
+
+  /**
+   * @return the bottom side of the box
+   */
+  VertexQuad getBottom();
+
+  /**
+   * @return the front side of the box
+   */
+  VertexQuad getFront();
+
+  /**
+   * @return the left side of the box
+   */
+  VertexQuad getLeft();
+
+  /**
+   * @return the right side of the box
+   */
+  VertexQuad getRight();
+
+  /**
+   * @return the top side of the box
+   */
+  VertexQuad getTop();
 
   /**
    * @return the dimensions of the box
