@@ -1,5 +1,7 @@
 package net.labyfy.internal.component.transform.javassist;
 
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -122,21 +124,25 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
     ClassMapping classMapping = classMappingProvider.get(className);
 
     if (classMapping == null)
-      classMapping = ClassMapping.create(classMappingProvider, className, className);
+      classMapping = new ClassMapping(InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated"))), className, className);
 
     for (String ignoredPackage : this.ignoredPackages) {
-      if (classMapping.getUnObfuscatedName().startsWith(ignoredPackage)) {
+      if (classMapping.getDeobfuscatedName().startsWith(ignoredPackage)) {
         return bytes;
       }
     }
 
     for (ClassTransformContext classTransformContext : this.classTransformContexts) {
       for (String target : classTransformContext.getClassTransform().value()) {
-        target = classTransformContext.getNameResolver().resolve(target);
+        String resolve = classTransformContext.getNameResolver().resolve(target);
+
+        if (resolve != null) {
+          target = resolve;
+        }
 
         if ((classTransformContext.getClassTransform().version().isEmpty()
             || classTransformContext.getClassTransform().version().equals(this.version))
-            && ((target.isEmpty() || target.equals(classMapping.getUnObfuscatedName()))
+            && ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
             || target.equals(classMapping.getObfuscatedName()))
             && classTransformContext.getFilters().stream()
             .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass))) {

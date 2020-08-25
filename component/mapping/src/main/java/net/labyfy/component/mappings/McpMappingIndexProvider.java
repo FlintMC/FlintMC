@@ -16,9 +16,15 @@ public class McpMappingIndexProvider {
   private final static String INDEX_URL = "https://dl.labymod.net/mappings/index_new.json";
   private final static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
+  /**
+   * Fetch information about Minecraft mappings.
+   *
+   * @return A version &lt;-&gt; mapping information map.
+   * @throws IOException If the mapping information could not be retrieved.
+   */
   public Map<String, Version> fetch() throws IOException {
     HttpURLConnection connection = (HttpURLConnection) new URL(INDEX_URL).openConnection();
-    connection.setRequestProperty("User-Agent", "Labyfy/0.2.1 (+https://www.labymod.net/)");
+    connection.setRequestProperty("User-Agent", "Labyfy/0.2.2 (+https://www.labymod.net/)");
     connection.connect();
 
     try (InputStreamReader reader = new InputStreamReader(connection.getInputStream())) {
