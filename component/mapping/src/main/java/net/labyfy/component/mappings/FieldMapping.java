@@ -1,134 +1,62 @@
 package net.labyfy.component.mappings;
 
-import com.google.inject.Key;
-import com.google.inject.name.Names;
-import net.labyfy.component.inject.primitive.InjectionHolder;
-
 import java.lang.reflect.Field;
 
-public class FieldMapping {
-
-  private final ClassMapping labyClassMapping;
-  private final String obfuscatedFieldName;
-  private final String unObfuscatedFieldName;
-  private Field cached;
-
-  private FieldMapping(
-      ClassMapping labyClassMapping, String obfuscatedFieldName, String unObfuscatedFieldName) {
-    this.labyClassMapping = labyClassMapping;
-    this.obfuscatedFieldName = obfuscatedFieldName;
-    this.unObfuscatedFieldName = unObfuscatedFieldName;
-  }
+public final class FieldMapping extends BaseMapping {
+  private final ClassMapping classMapping;
+  private Field field;
 
   /**
-   * @return the unobfuscated field name
-   */
-  public String getObfuscatedFieldName() {
-    return obfuscatedFieldName;
-  }
-
-  /**
-   * @return the obfuscated field name
-   */
-  public String getUnObfuscatedFieldName() {
-    return unObfuscatedFieldName;
-  }
-
-  public static FieldMapping create(
-      ClassMapping labyClassMapping, String obfuscatedFieldName, String unObfuscatedFieldName) {
-    return new FieldMapping(labyClassMapping, obfuscatedFieldName, unObfuscatedFieldName);
-  }
-
-  /**
-   * @return the parent {@link ClassMapping}
-   */
-  public ClassMapping getClassMapping() {
-    return this.labyClassMapping;
-  }
-
-  /**
-   * Asserts that the represented field is static and gets it static value.
+   * Construct a field mapping.
    *
-   * @param <T> Implicit type to cast to
-   * @return The static fields value
-   * @throws IllegalAccessException If the field definition could not be accessed.
-   * @throws NoSuchFieldException   If the field could not be found.
-   * @throws ClassNotFoundException If the class could not be found.
+   * @param obfuscated       Whether the current environment is encrypted.
+   * @param classMapping     The class mapping the field belongs to.
+   * @param obfuscatedName   An obfuscated name.
+   * @param deobfuscatedName A deobfuscated name.
    */
-  public <T> T getStaticValue() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
-    return this.getValue(null);
+  public FieldMapping(final boolean obfuscated,
+                      final ClassMapping classMapping,
+                      final String obfuscatedName,
+                      final String deobfuscatedName) {
+    super(obfuscated, obfuscatedName, deobfuscatedName);
+    this.classMapping = classMapping;
   }
 
   /**
-   * Asserts that the represented field is static and sets it static value.
+   * Get the field value.
    *
-   * @param value New value to set
-   * @throws IllegalAccessException If the field definition could not be accessed.
+   * @param instance The instance or null if you want to get the static value.
+   * @param <T>      The type of the field.
+   * @return The value of the field from instance.
    * @throws NoSuchFieldException   If the field could not be found.
    * @throws ClassNotFoundException If the class could not be found.
+   * @throws IllegalAccessException If the field definition could not be found.
    */
-  public void setStaticValue(Object value) throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
-    this.setValue(null, value);
+  public <T> T getValue(final Object instance) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException {
+    return (T) getField().get(instance);
   }
 
   /**
-   * @return Either {@link FieldMapping#getUnObfuscatedFieldName()} or {@link FieldMapping#getObfuscatedFieldName()} depending on if the current minecraft environment is obfuscated or not.
-   */
-  public String getName() {
-    if (InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")))) {
-      return this.obfuscatedFieldName;
-    } else {
-      return this.unObfuscatedFieldName;
-    }
-  }
-
-  /**
-   * @return The {@link Field} that this {@link FieldMapping} represents.
-   * @throws ClassNotFoundException If the class could not be found.
+   * Get the field.
+   *
+   * @return The the field.
    * @throws NoSuchFieldException   If the field could not be found.
+   * @throws ClassNotFoundException If the class could not be found.
    */
   public Field getField() throws ClassNotFoundException, NoSuchFieldException {
-    if (this.cached == null) {
-      Field declaredField = this.labyClassMapping.get().getDeclaredField(this.getName());
-      declaredField.setAccessible(true);
-      this.cached = declaredField;
+    if (field == null) {
+      field = classMapping.get().getDeclaredField(name);
+      field.setAccessible(true);
     }
-    return this.cached;
+    return field;
   }
 
   /**
-   * Asserts that the represented field is non static and gets it value.
+   * Get the class mapping the field belongs to.
    *
-   * @param instance Object instance to get value from
-   * @param <T>      Implicit type to cast result to
-   * @return Resolved field value
-   * @throws NoSuchFieldException   If the field could not be found.
-   * @throws ClassNotFoundException If the class could not be found.
-   * @throws IllegalAccessException If the field definition could not be accessed.
+   * @return A class mapping.
    */
-  public <T> T getValue(Object instance) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException {
-    return (T) this.getField().get(instance);
-  }
-
-  /**
-   * Asserts that the represented field is non static and gets it value.
-   *
-   * @param instance Object instance to set value to
-   * @param value    New value to set
-   * @throws NoSuchFieldException   If the field could not be found.
-   * @throws ClassNotFoundException If the class could not be found.
-   * @throws IllegalAccessException If the field definition could not be accessed.
-   */
-  public void setValue(Object instance, Object value) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException {
-    this.getField().set(instance, value);
-  }
-
-  /**
-   * Returns true if obfuscatedName and unObfuscatedName are equals.
-   *
-   * @return if this class mapping is "default"
-   */
-  public boolean isDefault() {
-    return this.unObfuscatedFieldName.equals(obfuscatedFieldName);
+  public ClassMapping getClassMapping() {
+    return classMapping;
   }
 }

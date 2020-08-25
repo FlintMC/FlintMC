@@ -1,145 +1,101 @@
 package net.labyfy.component.mappings;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import net.labyfy.component.csv.lexical.Tokenizer;
+import net.labyfy.component.csv.parsing.NamedCSVParser;
+import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.mappings.exceptions.MappingParseException;
+import net.labyfy.component.mappings.utils.IOUtils;
+import net.labyfy.component.mappings.utils.MappingUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 
-public class McpMappingParser implements MappingParser {
+public final class McpMappingParser implements MappingParser {
+  @Override public Map<String, ClassMapping> parse(final Map<String, InputStream> input) throws MappingParseException {
+    boolean obfuscated = InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
+    Map<String, String> fieldLookupTable, methodLookupTable;
+    String source;
 
-  private ClassMappingProvider classMappingProvider;
-
-  public Collection<ClassMapping> parse(
-      ClassMappingProvider classMappingProvider, Map<String, InputStream> input) {
-    assert input.containsKey("methods.csv") : "Methods not provided";
-    assert input.containsKey("fields.csv") : "Fields not provided";
-    assert input.containsKey("joined.tsrg") : "Joined not provided";
-
-    this.classMappingProvider = classMappingProvider;
-
-    Map<String, String> methodIdentifiers = this.parseIdentifiers(input.get("methods.csv"));
-    Map<String, String> fieldIdentifiers = this.parseIdentifiers(input.get("fields.csv"));
-    Collection<ClassMapping> classMappings = new HashSet<>();
-
-    Scanner scanner = new Scanner(input.get("joined.tsrg"));
-    ClassMapping lastClassMapping = null;
-
-    while (scanner.hasNext()) {
-
-      String line = scanner.nextLine();
-      if (!line.startsWith("\t")) {
-        line = line.replace('/', '.');
-        String[] s = line.split(" ");
-        lastClassMapping = ClassMapping.create(classMappingProvider, s[0], s[1]);
-        classMappings.add(lastClassMapping);
-      } else if (line.matches("(\\t)(.*)( )(.*)( )(.*)")) {
-        String[] properties = line.replaceFirst("\t", "").split(" ");
-        String unique = properties[2];
-        String obfName = properties[0];
-        String obfDesc = properties[1];
-
-        String obfIdentifier = obfName + obfDesc.substring(0, obfDesc.lastIndexOf(")") + 1);
-
-        String unobfName = methodIdentifiers.getOrDefault(unique, unique);
-        lastClassMapping.addMethod(obfName, obfIdentifier, obfDesc, unobfName, null, null);
-
-      } else {
-        String[] properties = line.replaceFirst("\t", "").split(" ");
-        lastClassMapping.addField(
-            properties[0], fieldIdentifiers.getOrDefault(properties[1], properties[1]));
-      }
+    try {
+      Tokenizer tokenizer = new Tokenizer(',');
+      NamedCSVParser csvParser = new NamedCSVParser();
+      fieldLookupTable = csvParser.parse(tokenizer.tokenize(IOUtils.readToString(input.get("fields.csv")))).relation("searge", "name");
+      methodLookupTable = csvParser.parse(tokenizer.tokenize(IOUtils.readToString(input.get("methods.csv")))).relation("searge", "name");
+      source = IOUtils.readToString(input.get("joined.tsrg"));
+    } catch (IOException exception) {
+      throw new MappingParseException("Cannot read input", exception);
     }
 
-    for (ClassMapping mapping : classMappings) {
-      for (MethodMapping methodMapping : mapping.getMethods()) {
-        methodMapping.setUnObfuscatedMethodDescription(
-            this.translateMethodDescription(methodMapping.getObfuscatedMethodDescription(), classMappings));
-        Pattern compile = Pattern.compile("\\(.*\\)(.+)");
-        Matcher matcher = compile.matcher(methodMapping.getUnObfuscatedMethodDescription());
-        if (matcher.matches()) {
-          String unobfIdentifier =
-              methodMapping.getUnObfuscatedMethodName()
-                  + methodMapping
-                  .getUnObfuscatedMethodDescription()
-                  .substring(
-                      0, methodMapping.getUnObfuscatedMethodDescription().lastIndexOf(")") + 1);
-          methodMapping.setUnObfuscatedMethodIdentifier(unobfIdentifier);
+    Map<String, ClassMapping> classMappings = new HashMap<>();
+
+    String[] lines = source.split("\n");
+    ClassMapping classMapping = null;
+
+    for (String line : lines) {
+      if (line.charAt(0) == '\t') {
+        String[] split = line.substring(1).split(" ");
+
+        if (classMapping == null) {
+          throw new MappingParseException("Invalid mapping: field/method start before class");
         }
+
+        if (split.length == 3) {
+          String to = methodLookupTable.get(split[2]);
+
+          if (to == null) to = split[0];
+
+          String identifier = split[0] + ' ' + split[1].substring(1, split[1].lastIndexOf(')'));
+          MethodMapping methodMapping = new MethodMapping(obfuscated, classMapping, split[1], identifier, split[0], to);
+          classMapping.obfuscatedMethods.put(identifier, methodMapping);
+        } else if (split.length == 2) {
+          String to = fieldLookupTable.get(split[1]);
+
+          if (to == null) to = split[0];
+
+          FieldMapping fieldMapping = new FieldMapping(obfuscated, classMapping, split[0], to);
+          classMapping.obfuscatedFields.put(split[0], fieldMapping);
+          classMapping.deobfuscatedFields.put(to, fieldMapping);
+        } else {
+          throw new MappingParseException("Illegal parameter count: " + split.length + ": " + line);
+        }
+      } else {
+        String[] split = line.split(" ");
+
+        if (classMapping != null) {
+          classMappings.put(classMapping.obfuscatedName.replace("/", "."), classMapping);
+        }
+
+        classMapping = new ClassMapping(obfuscated, split[0].replace("/", "."), split[1].replace("/", "."));
       }
     }
 
-    for (ClassMapping classMapping : classMappings) {
-      Multimap<String, MethodMapping> methodDuplicates = MultimapBuilder.linkedHashKeys().linkedListValues().build();
-
-      for (MethodMapping method : classMapping.getMethods()) {
-        if (method.isDefault()) continue;
-        methodDuplicates.put(method.getClassMapping().getUnObfuscatedName() + "." + method.getUnObfuscatedMethodIdentifier(), method);
-      }
-
-      Collection<MethodMapping> finalMethodMappings = new HashSet<>();
-
-      for (String key : methodDuplicates.keySet()) {
-        List<MethodMapping> methodMappings = new LinkedList<>(methodDuplicates.get(key));
-        finalMethodMappings.add(methodMappings.get(0));
-      }
-
-      classMapping.setMethods(finalMethodMappings);
+    if (classMapping != null) {
+      classMappings.put(classMapping.obfuscatedName.replace("/", "."), classMapping);
     }
 
+    updateMethodDescriptors(classMappings);
     return classMappings;
   }
 
-  public String translateMethodDescription(String obfDesc, Collection<ClassMapping> classMappings) {
-    String tempObfDesc = obfDesc.substring(1, obfDesc.lastIndexOf(')'));
-    StringBuilder unObfDesc = new StringBuilder("(");
-    int currentIndex = 0;
+  /**
+   * Update method descriptors.
+   *
+   * @param classMappings Class mappings.
+   */
+  private static void updateMethodDescriptors(final Map<String, ClassMapping> classMappings) {
+    for (ClassMapping mapping : classMappings.values()) {
+      for (MethodMapping methodMapping : mapping.obfuscatedMethods.values()) {
+        String descriptor = MappingUtils.deobfuscateMethodDescriptor(classMappings, methodMapping.obfuscatedDescriptor);
+        String identifier = methodMapping.deobfuscatedName + ' ' + descriptor.substring(1, descriptor.lastIndexOf(')'));
 
-    while (currentIndex != tempObfDesc.length()) {
-      if (tempObfDesc.charAt(currentIndex) != 'L') {
-        unObfDesc.append(tempObfDesc.charAt(currentIndex++));
-      } else {
-        int maxIndex = tempObfDesc.substring(currentIndex + 1).indexOf(';') + currentIndex + 1;
-        String obfClassName = tempObfDesc.substring(currentIndex + 1, maxIndex);
-        ClassMapping descClassMapping = classMappings.stream().filter(classMapping -> classMapping.getObfuscatedName().equals(obfClassName)).findAny().orElse(null);
-        unObfDesc
-            .append("L")
-            .append(
-                descClassMapping != null
-                    ? descClassMapping.getUnObfuscatedName().replace('.', '/')
-                    : obfClassName)
-            .append(";");
-        currentIndex = maxIndex + 1;
+        methodMapping.deobfuscatedDescriptor = descriptor;
+        methodMapping.deobfuscatedIdentifier = identifier;
+        mapping.deobfuscatedMethods.put(identifier, methodMapping);
       }
     }
-
-    String methodType = obfDesc.substring(obfDesc.lastIndexOf(')') + 1);
-
-    if (methodType.charAt(0) == 'L') {
-      String finalMethodType = methodType;
-      ClassMapping typeClassMapping =
-          classMappings.stream().filter(classMapping -> classMapping.getObfuscatedName().equals(finalMethodType.substring(1, finalMethodType.length() - 1))).findAny().orElse(null);
-      if (typeClassMapping != null) {
-        methodType = "L" + typeClassMapping.getUnObfuscatedName().replace('.', '/') + ";";
-      }
-    }
-
-    unObfDesc.append(")").append(methodType);
-    return unObfDesc.toString();
-  }
-
-  private Map<String, String> parseIdentifiers(InputStream input) {
-    Map<String, String> translations = new HashMap<>();
-    Scanner scanMethods = new Scanner(input);
-    scanMethods.nextLine();
-    while (scanMethods.hasNext()) {
-      String[] split = scanMethods.nextLine().split(",");
-      translations.put(split[0], split[1]);
-    }
-    return translations;
   }
 }

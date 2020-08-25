@@ -10,11 +10,17 @@ public class DefaultNameResolver implements NameResolver {
   private final ClassMappingProvider classMappingProvider;
 
   @Inject
-  private DefaultNameResolver(ClassMappingProvider classMappingProvider) {
+  private DefaultNameResolver(final ClassMappingProvider classMappingProvider) {
     this.classMappingProvider = classMappingProvider;
   }
 
   public String resolve(String name) {
-    return this.classMappingProvider.get(name).getName();
+    ClassMapping classMapping = this.classMappingProvider.get(name);
+
+    if (classMapping != null) {
+      return classMapping.getName();
+    }
+
+    return null;
   }
 }

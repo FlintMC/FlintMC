@@ -171,7 +171,7 @@ public class DefaultGuiController implements GuiController {
   public void screenChanged(Object newScreen) {
     if (newScreen != null) {
       // Deobfuscate the name of the screen class to map it back to a ScreenName
-      String mappedName = classMappingProvider.get(newScreen.getClass().getName()).getUnObfuscatedName();
+      String mappedName = classMappingProvider.get(newScreen.getClass().getName()).getDeobfuscatedName();
       currentScreen = nameMapper.fromClass(mappedName);
       if (currentScreen == null) {
         // If we don't know the screen, mark it as unknown

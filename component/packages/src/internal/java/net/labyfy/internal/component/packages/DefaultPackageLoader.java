@@ -12,6 +12,7 @@ import net.labyfy.component.packages.PackageLoader;
 import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.internal.component.inject.DefaultLoggingProvider;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -41,13 +42,12 @@ public class DefaultPackageLoader implements PackageLoader {
 
   @Inject
   private DefaultPackageLoader(
-      @InjectLogger Logger logger,
       DefaultLoggingProvider loggingProvider,
       @Named("labyfyPackageFolder") File packageFolder,
       DefaultPackageManifestLoader descriptionLoader,
       DefaultPackageManifestLoader labyPackageDescriptionLoader
   ) {
-    this.logger = logger;
+    this.logger = LogManager.getLogger(DefaultPackageLoader.class);
     this.labyPackageDescriptionLoader = labyPackageDescriptionLoader;
 
     // Tell the logging provider we now are able to resolve logging prefixes
