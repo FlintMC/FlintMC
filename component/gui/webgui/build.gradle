@@ -4,12 +4,12 @@ plugins {
 
 group 'net.labyfy.component.gui'
 
-repositories {
-    mavenCentral()
-}
-
 labyfy {
     minecraftVersions '1.15.2'
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {

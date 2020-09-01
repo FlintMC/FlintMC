@@ -18,5 +18,7 @@ dependencies {
     v1_15_2AnnotationProcessor project(':component:annotation-processing:autoload')
 
     api project(':component:gui:webgui')
+    implementation 'net.labymedia:ultralight-java-base:0.1.0'
+
     labyfy project(':component:gui:webgui')
 }
