@@ -90,5 +90,10 @@ include ':component:inject-primitive'
 findProject(':component:inject-primitive')?.name = 'inject-primitive'
 
 include 'component:i18n'
-findProject('component:i18n')?.name = 'i18n'
+findProject(':component:i18n')?.name = 'i18n'
 
+include 'component:gui:webgui'
+findProject(':component:gui:webgui')?.name = 'webgui'
+
+include 'component:gui:webgui:ultralight'
+findProject(':component:gui:webgui:ultralight')?.name = 'ultralight'
