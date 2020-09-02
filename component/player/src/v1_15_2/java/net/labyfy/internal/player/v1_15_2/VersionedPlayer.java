@@ -1,12 +1,16 @@
 package net.labyfy.internal.player.v1_15_2;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.mojang.authlib.properties.Property;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.player.FoodStats;
 import net.labyfy.component.player.Player;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.gameprofile.property.PropertyMap;
+import net.labyfy.component.player.gui.TabOverlay;
+import net.labyfy.component.player.inventory.PlayerInventory;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.SkinModel;
@@ -14,7 +18,10 @@ import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.internal.player.gameprofile.property.DefaultProperty;
 import net.labyfy.internal.player.gameprofile.property.DefaultPropertyMap;
+import net.labyfy.internal.player.v1_15_2.inventory.VersionedPlayerInventory;
+import net.labyfy.internal.player.v1_15_2.overlay.VersionedTabOverlay;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 
 import java.util.Map;
@@ -23,9 +30,13 @@ import java.util.UUID;
 /**
  * 1.15.2 implementation of a minecraft player.
  */
+@Singleton
 @Implement(value = Player.class, version = "1.15.2")
 public class VersionedPlayer implements Player {
 
+    private final ClientPlayerEntity player;
+
+    private final ClassMappingProvider classMappingProvider;
     private final GameProfile.Builder profileBuilder;
     private final FoodStats foodStats;
     private final ResourceLocationProvider resourceLocationProvider;
@@ -33,16 +44,19 @@ public class VersionedPlayer implements Player {
     /**
      * Initializes a versioned player
      *
-     * @param profileBuilder The game profile builder for this player
+     * @param profileBuilder           The game profile builder for this player
      * @param resourceLocationProvider The resource location provider for this player
-     * @param foodStats The food statistics for this player
+     * @param foodStats                The food statistics for this player
      */
     @Inject
     public VersionedPlayer(
+            ClassMappingProvider classMappingProvider,
             GameProfile.Builder profileBuilder,
             ResourceLocationProvider resourceLocationProvider,
             FoodStats foodStats
     ) {
+        this.player = Minecraft.getInstance().player;
+        this.classMappingProvider = classMappingProvider;
         this.profileBuilder = profileBuilder;
         this.foodStats = foodStats;
         this.resourceLocationProvider = resourceLocationProvider;
@@ -55,7 +69,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public GameProfile getGameProfile() {
-        com.mojang.authlib.GameProfile gameProfile = Minecraft.getInstance().player.getGameProfile();
+        com.mojang.authlib.GameProfile gameProfile = this.player.getGameProfile();
 
         PropertyMap properties = new DefaultPropertyMap();
         for (Map.Entry<String, Property> entry : gameProfile.getProperties().entries()) {
@@ -83,7 +97,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public Object getName() {
-        return Minecraft.getInstance().player.getName();
+        return this.player.getName();
     }
 
     /**
@@ -93,7 +107,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public Object getDisplayName() {
-        return Minecraft.getInstance().player.getDisplayName();
+        return this.player.getDisplayName();
     }
 
     /**
@@ -103,7 +117,17 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public UUID getUniqueId() {
-        return Minecraft.getInstance().player.getUniqueID();
+        return this.player.getUniqueID();
+    }
+
+    /**
+     * Retrieves the inventory of this player.
+     *
+     * @return the inventory of this player
+     */
+    @Override
+    public PlayerInventory getPlayerInventory() {
+        return new VersionedPlayerInventory();
     }
 
     /**
@@ -113,7 +137,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public float getHealth() {
-        return Minecraft.getInstance().player.getHealth();
+        return this.player.getHealth();
     }
 
     /**
@@ -123,7 +147,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public int getExperienceLevel() {
-        return Minecraft.getInstance().player.experienceLevel;
+        return this.player.experienceLevel;
     }
 
     /**
@@ -133,7 +157,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public int getExperienceTotal() {
-        return Minecraft.getInstance().player.experienceTotal;
+        return this.player.experienceTotal;
     }
 
     /**
@@ -143,7 +167,47 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public float getExperience() {
-        return Minecraft.getInstance().player.experience;
+        return this.player.experience;
+    }
+
+    /**
+     * Retrieves the language of this player.
+     *
+     * @return the language of this player
+     */
+    @Override
+    public String getLocale() {
+        return Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getName();
+    }
+
+    /**
+     * Retrieves the list name of this player.
+     *
+     * @return the list name of this player.
+     */
+    @Override
+    public String getPlayerListName() {
+        return this.player.getScoreboardName();
+    }
+
+    /**
+     * Retrieves the world time of this player.
+     *
+     * @return the world time of this player.
+     */
+    @Override
+    public long getPlayerTime() {
+        return this.player.worldClient.getDayTime();
+    }
+
+    /**
+     * Retrieves the tab overlay of this player.
+     *
+     * @return the tab overlay of this player.
+     */
+    @Override
+    public TabOverlay getTabOverlay() {
+        return new VersionedTabOverlay(this.classMappingProvider);
     }
 
     /**
@@ -153,7 +217,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public double getX() {
-        return Minecraft.getInstance().player.getPosX();
+        return this.player.getPosX();
     }
 
     /**
@@ -163,7 +227,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public double getY() {
-        return Minecraft.getInstance().player.getPosY();
+        return this.player.getPosY();
     }
 
     /**
@@ -173,7 +237,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public double getZ() {
-        return Minecraft.getInstance().player.getPosZ();
+        return this.player.getPosZ();
     }
 
     /**
@@ -183,7 +247,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public float getPitch() {
-        return Minecraft.getInstance().player.getPitchYaw().x;
+        return this.player.getPitchYaw().x;
     }
 
     /**
@@ -193,7 +257,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public float getYaw() {
-        return Minecraft.getInstance().player.getPitchYaw().y;
+        return this.player.getPitchYaw().y;
     }
 
     /**
@@ -203,7 +267,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public float getRotationYawHead() {
-        return Minecraft.getInstance().player.getRotationYawHead();
+        return this.player.getRotationYawHead();
     }
 
     /**
@@ -213,7 +277,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public boolean isSpectator() {
-        return Minecraft.getInstance().player.isSpectator();
+        return this.player.isSpectator();
     }
 
     /**
@@ -223,7 +287,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public boolean isCreative() {
-        return Minecraft.getInstance().player.isCreative();
+        return this.player.isCreative();
     }
 
     /**
@@ -233,7 +297,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public boolean hasPlayerInfo() {
-        return Minecraft.getInstance().player.hasPlayerInfo();
+        return this.player.hasPlayerInfo();
     }
 
     /**
@@ -243,7 +307,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public float getFovModifier() {
-        return Minecraft.getInstance().player.getFovModifier();
+        return this.player.getFovModifier();
     }
 
     /**
@@ -253,7 +317,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public Hand getActiveHand() {
-        net.minecraft.util.Hand minecraftHand = Minecraft.getInstance().player.getActiveHand();
+        net.minecraft.util.Hand minecraftHand = this.player.getActiveHand();
         Hand activeHand;
 
         switch (minecraftHand) {
@@ -277,7 +341,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public boolean isHandActive() {
-        return Minecraft.getInstance().player.isHandActive();
+        return this.player.isHandActive();
     }
 
     /**
@@ -287,7 +351,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public Object getActiveItemStack() {
-        return Minecraft.getInstance().player.getActiveItemStack();
+        return this.player.getActiveItemStack();
     }
 
     /**
@@ -297,7 +361,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public int getItemInUseCount() {
-        return Minecraft.getInstance().player.getItemInUseCount();
+        return this.player.getItemInUseCount();
     }
 
     /**
@@ -307,7 +371,7 @@ public class VersionedPlayer implements Player {
      */
     @Override
     public int getItemInUseMaxCount() {
-        return Minecraft.getInstance().player.getItemInUseMaxCount();
+        return this.player.getItemInUseMaxCount();
     }
 
     /**
@@ -331,13 +395,23 @@ public class VersionedPlayer implements Player {
     }
 
     /**
-     * Sends a message to the chat
+     * Prints a message in this player chat
      *
-     * @param component The message to be sent
+     * @param component The message to print
      */
     @Override
     public void sendMessage(Object component) {
+        // TODO: 02.09.2020 Print the message to the chat
+    }
 
+    /**
+     * Sends a message to the chat
+     *
+     * @param content The message content
+     */
+    @Override
+    public void sendMessage(String content) {
+        this.player.sendChatMessage(content);
     }
 
     /**

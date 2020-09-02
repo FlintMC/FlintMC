@@ -24,5 +24,6 @@ dependencies {
     api project(':component:inject')
     api project(':component:resources')
     api project(':component:tasks')
+    api project(':component:transform:hook')
     api "com.google.code.gson:gson:2.8.6"
 }

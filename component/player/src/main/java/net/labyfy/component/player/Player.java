@@ -1,6 +1,8 @@
 package net.labyfy.component.player;
 
 import net.labyfy.component.player.gameprofile.GameProfile;
+import net.labyfy.component.player.gui.TabOverlay;
+import net.labyfy.component.player.inventory.PlayerInventory;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.util.Hand;
 
@@ -42,6 +44,13 @@ public interface Player extends PlayerSkinProfile {
     UUID getUniqueId();
 
     /**
+     * Retrieves the inventory of this player.
+     *
+     * @return the inventory of this player
+     */
+    PlayerInventory getPlayerInventory();
+
+    /**
      * Retrieves the health of this player.
      *
      * @return the health of this player
@@ -68,6 +77,34 @@ public interface Player extends PlayerSkinProfile {
      * @return the experience of this player.
      */
     float getExperience();
+
+    /**
+     * Retrieves the language of this player.
+     *
+     * @return the language of this player
+     */
+    String getLocale();
+
+    /**
+     * Retrieves the list name of this player.
+     *
+     * @return the list name of this player.
+     */
+    String getPlayerListName();
+
+    /**
+     * Retrieves the world time of this player.
+     *
+     * @return the world time of this player.
+     */
+    long getPlayerTime();
+
+    /**
+     * Retrieves the tab overlay of this player.
+     *
+     * @return the tab overlay of this player.
+     */
+    TabOverlay getTabOverlay();
 
     /**
      * Retrieves the x position of this player.
@@ -190,11 +227,18 @@ public interface Player extends PlayerSkinProfile {
     NetworkPlayerInfo getNetworkPlayerInfo();
 
     /**
-     * Sends a message to the chat
+     * Prints a message in this player chat
      *
-     * @param component The message to be sent
+     * @param component The message to print
      */
     // TODO: 31.08.2020 Replaces the Object to TextComponent when the Chat API is ready
     void sendMessage(Object component);
+
+    /**
+     * Sends a message to the chat
+     *
+     * @param content The message content
+     */
+    void sendMessage(String content);
 
 }

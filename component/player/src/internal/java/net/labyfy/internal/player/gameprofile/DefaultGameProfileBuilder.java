@@ -1,5 +1,6 @@
 package net.labyfy.internal.player.gameprofile;
 
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.gameprofile.property.PropertyMap;
 
@@ -8,6 +9,7 @@ import java.util.UUID;
 /**
  * An implementation of {@link net.labyfy.component.player.gameprofile.GameProfile.Builder}
  */
+@Implement(GameProfile.Builder.class)
 public class DefaultGameProfileBuilder implements GameProfile.Builder {
 
     private UUID uniqueId;
