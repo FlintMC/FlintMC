@@ -5,7 +5,11 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.RemoteClientPlayer;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.player.serializer.util.HandSerializer;
+import net.labyfy.component.player.serializer.util.HandSideSerializer;
+import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
 import net.labyfy.component.player.serializer.util.PoseSerializer;
+import net.labyfy.component.player.serializer.util.sound.SoundCategorySerializer;
+import net.labyfy.component.player.serializer.util.sound.SoundSerializer;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 
@@ -20,10 +24,22 @@ public class VersionedRemoteClientPlayer extends VersionedPlayer implements Remo
     @Inject
     protected VersionedRemoteClientPlayer(
             HandSerializer handSerializer,
+            HandSideSerializer handSideSerializer,
             GameProfileSerializer gameProfileSerializer,
-            PoseSerializer poseSerializer
+            PlayerClothingSerializer playerClothingSerializer,
+            PoseSerializer poseSerializer,
+            SoundCategorySerializer soundCategorySerializer,
+            SoundSerializer soundSerializer
     ) {
-        super(handSerializer, gameProfileSerializer, poseSerializer);
+        super(
+                handSerializer,
+                handSideSerializer,
+                gameProfileSerializer,
+                playerClothingSerializer,
+                poseSerializer,
+                soundCategorySerializer,
+                soundSerializer
+        );
     }
 
     /**

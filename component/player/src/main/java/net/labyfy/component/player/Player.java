@@ -4,6 +4,9 @@ import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.util.EntityPose;
 import net.labyfy.component.player.util.Hand;
+import net.labyfy.component.player.util.PlayerClothing;
+import net.labyfy.component.player.util.sound.Sound;
+import net.labyfy.component.player.util.sound.SoundCategory;
 import net.labyfy.component.player.world.World;
 
 import java.util.UUID;
@@ -343,6 +346,14 @@ public interface Player<T> extends PlayerSkinProfile {
     }
 
     /**
+     * Whether the player is wearing the given clothing.
+     *
+     * @param playerClothing The clothing that should be worn.
+     * @return {@code true} if the player is wearing the clothing, otherwise {@code false}
+     */
+    boolean isWearing(PlayerClothing playerClothing);
+
+    /**
      * Whether the player is invisible
      *
      * @return {@code true} if the player is invisible, otherwise {@code false}
@@ -407,6 +418,118 @@ public interface Player<T> extends PlayerSkinProfile {
      * @return the network player info of this  player
      */
     NetworkPlayerInfo getNetworkPlayerInfo();
+
+    /**
+     * Plays a sound to the player.
+     *
+     * @param sound  The sound to play.
+     * @param volume The volume of this sound.
+     * @param pitch  The pitch of this sound.
+     */
+    void playSound(Sound sound, float volume, float pitch);
+
+    /**
+     * Plays a sound to the player.
+     *
+     * @param sound    The sound to play.
+     * @param category The category for this sound.
+     * @param volume   The volume of this sound.
+     * @param pitch    The pitch of this sound.
+     */
+    void playSound(Sound sound, SoundCategory category, float volume, float pitch);
+
+    /**
+     * Retrieves the sound category of this player.
+     *
+     * @return the sound category of this player.
+     */
+    default SoundCategory getSoundCategory() {
+        return SoundCategory.PLAYER;
+    }
+
+    /**
+     * Retrieves the fall distance of this player.
+     *
+     * @return the fall distance of this player.
+     */
+    float getFallDistance();
+
+    /**
+     * Retrieves the maximal fall distance of this player.
+     *
+     * @return the maximal fall distance of this player.
+     */
+    int getMaxFallDistance();
+
+    /**
+     * Swings the arm through the given hand.
+     *
+     * @param hand The hand to swing.
+     */
+    void swingArm(Hand hand);
+
+    /**
+     * Retrieves the maximal in portal time of this player.
+     *
+     * @return the maximal in portal time of this player.
+     */
+    int getMaxInPortalTime();
+
+    /**
+     * Retrieves the fly speed of this player.
+     *
+     * @return the fly speed of this player.
+     */
+    float getFlySpeed();
+
+    /**
+     * Sets the fly speed of this player.
+     *
+     * @param speed The new fly speed.
+     */
+    void setFlySpeed(float speed);
+
+    /**
+     * Retrieves the walk speed of this player.
+     *
+     * @return the walk speed of this player.
+     */
+    float getWalkSpeed();
+
+    /**
+     * Sets the walk speed of this player.
+     *
+     * @param speed The new walk speed.
+     */
+    void setWalkSpeed(float speed);
+
+    /**
+     * Whether the player is on the ground.
+     *
+     * @return {@code true} if the player is on the ground, otherwise {@code false}
+     */
+    boolean isOnGround();
+
+    /**
+     * Retrieves the luck of this player.
+     *
+     * @return the luck of this player.
+     */
+    float getLuck();
+
+    /**
+     * Retrieves the primary hand this player.
+     *
+     * @return the primary hand this player.
+     */
+    Hand.Side getPrimaryHand();
+
+    /**
+     * Sets the primary hand of this player.
+     *
+     * @param side the primary hand of this player.
+     */
+    void setPrimaryHand(Hand.Side side);
 
     /**
      * A factory class for {@link Player}

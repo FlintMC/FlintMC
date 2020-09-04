@@ -1,6 +1,7 @@
 package net.labyfy.internal.component.player.gameprofile.property;
 
 import com.google.gson.*;
+import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.gameprofile.property.Property;
 import net.labyfy.component.player.gameprofile.property.PropertyMap;
@@ -12,6 +13,7 @@ import java.util.Set;
 /**
  * An implementation of {@link PropertyMap.Serializer}
  */
+@Singleton
 @Implement(PropertyMap.Serializer.class)
 public class DefaultPropertyMapSerializer implements PropertyMap.Serializer {
 

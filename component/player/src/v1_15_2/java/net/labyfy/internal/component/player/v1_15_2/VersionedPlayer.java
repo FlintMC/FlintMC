@@ -8,15 +8,24 @@ import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.player.serializer.util.HandSerializer;
+import net.labyfy.component.player.serializer.util.HandSideSerializer;
+import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
 import net.labyfy.component.player.serializer.util.PoseSerializer;
+import net.labyfy.component.player.serializer.util.sound.SoundCategorySerializer;
+import net.labyfy.component.player.serializer.util.sound.SoundSerializer;
 import net.labyfy.component.player.util.EntityPose;
 import net.labyfy.component.player.util.Hand;
+import net.labyfy.component.player.util.PlayerClothing;
 import net.labyfy.component.player.util.SkinModel;
+import net.labyfy.component.player.util.sound.Sound;
+import net.labyfy.component.player.util.sound.SoundCategory;
 import net.labyfy.component.player.world.World;
 import net.labyfy.component.resources.ResourceLocation;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.util.HandSide;
+import net.minecraft.util.SoundEvent;
 
 import java.util.UUID;
 
@@ -29,18 +38,30 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     private AbstractClientPlayerEntity player;
 
     private final HandSerializer<net.minecraft.util.Hand> handSerializer;
+    private final HandSideSerializer<HandSide> handSideSerializer;
     private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
+    private final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
     private final PoseSerializer<Pose> poseSerializer;
+    private final SoundCategorySerializer<net.minecraft.util.SoundCategory> soundCategorySerializer;
+    private final SoundSerializer<SoundEvent> soundSerializer;
 
     @Inject
     protected VersionedPlayer(
             HandSerializer handSerializer,
+            HandSideSerializer handSideSerializer,
             GameProfileSerializer gameProfileSerializer,
-            PoseSerializer poseSerializer
+            PlayerClothingSerializer playerClothingSerializer,
+            PoseSerializer poseSerializer,
+            SoundCategorySerializer soundCategorySerializer,
+            SoundSerializer soundSerializer
     ) {
         this.handSerializer = handSerializer;
+        this.handSideSerializer = handSideSerializer;
         this.gameProfileSerializer = gameProfileSerializer;
+        this.playerClothingSerializer = playerClothingSerializer;
         this.poseSerializer = poseSerializer;
+        this.soundCategorySerializer = soundCategorySerializer;
+        this.soundSerializer = soundSerializer;
         this.player = null;
     }
 
@@ -497,6 +518,17 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     }
 
     /**
+     * Whether the player is wearing the given clothing.
+     *
+     * @param playerClothing The clothing that should be worn.
+     * @return {@code true} if the player is wearing the clothing, otherwise {@code false}
+     */
+    @Override
+    public boolean isWearing(PlayerClothing playerClothing) {
+        return this.player.isWearing(this.playerClothingSerializer.serialize(playerClothing));
+    }
+
+    /**
      * Whether the player is invisible
      *
      * @return {@code true} if the player is invisible, otherwise {@code false}
@@ -574,6 +606,156 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     @Override
     public NetworkPlayerInfo getNetworkPlayerInfo() {
         return InjectionHolder.getInjectedInstance(NetworkPlayerInfo.class);
+    }
+
+    /**
+     * Plays a sound to the player.
+     *
+     * @param sound  The sound to play.
+     * @param volume The volume of this sound.
+     * @param pitch  The pitch of this sound.
+     */
+    @Override
+    public void playSound(Sound sound, float volume, float pitch) {
+        this.playSound(sound, this.getSoundCategory(), volume, pitch);
+    }
+
+    /**
+     * Plays a sound to the player.
+     *
+     * @param sound    The sound to play.
+     * @param category The category for this sound.
+     * @param volume   The volume of this sound.
+     * @param pitch    The pitch of this sound.
+     */
+    @Override
+    public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
+        this.player.playSound(
+                this.soundSerializer.serialize(sound),
+                this.soundCategorySerializer.serialize(category),
+                volume,
+                pitch
+        );
+    }
+
+    /**
+     * Retrieves the fall distance of this player.
+     *
+     * @return the fall distance of this player.
+     */
+    @Override
+    public float getFallDistance() {
+        return this.player.fallDistance;
+    }
+
+    /**
+     * Retrieves the maximal fall distance of this player.
+     *
+     * @return the maximal fall distance of this player.
+     */
+    @Override
+    public int getMaxFallDistance() {
+        return this.player.getMaxFallHeight();
+    }
+
+    /**
+     * Swings the arm through the given hand.
+     *
+     * @param hand The hand to swing.
+     */
+    @Override
+    public void swingArm(Hand hand) {
+        this.player.swingArm(this.handSerializer.serialize(hand));
+    }
+
+    /**
+     * Retrieves the maximal in portal time of this player.
+     *
+     * @return the maximal in portal time of this player.
+     */
+    @Override
+    public int getMaxInPortalTime() {
+        return this.player.getMaxInPortalTime();
+    }
+
+    /**
+     * Retrieves the fly speed of this player.
+     *
+     * @return the fly speed of this player.
+     */
+    @Override
+    public float getFlySpeed() {
+        return this.player.abilities.getFlySpeed();
+    }
+
+    /**
+     * Sets the fly speed of this player.
+     *
+     * @param speed The new fly speed.
+     */
+    @Override
+    public void setFlySpeed(float speed) {
+        this.player.abilities.setFlySpeed(speed);
+    }
+
+    /**
+     * Retrieves the walk speed of this player.
+     *
+     * @return the walk speed of this player.
+     */
+    @Override
+    public float getWalkSpeed() {
+        return this.player.abilities.getWalkSpeed();
+    }
+
+    /**
+     * Sets the walk speed of this player.
+     *
+     * @param speed The new walk speed.
+     */
+    @Override
+    public void setWalkSpeed(float speed) {
+        this.player.abilities.setWalkSpeed(speed);
+    }
+
+    /**
+     * Whether the player is on the ground.
+     *
+     * @return {@code true} if the player is on the ground, otherwise {@code false}
+     */
+    @Override
+    public boolean isOnGround() {
+        return this.player.onGround;
+    }
+
+    /**
+     * Retrieves the luck of this player.
+     *
+     * @return the luck of this player.
+     */
+    @Override
+    public float getLuck() {
+        return this.player.getLuck();
+    }
+
+    /**
+     * Retrieves the primary hand this player.
+     *
+     * @return the primary hand this player.
+     */
+    @Override
+    public Hand.Side getPrimaryHand() {
+        return this.handSideSerializer.deserialize(this.player.getPrimaryHand());
+    }
+
+    /**
+     * Sets the primary hand of this player.
+     *
+     * @param side the primary hand of this player.
+     */
+    @Override
+    public void setPrimaryHand(Hand.Side side) {
+        this.player.setPrimaryHand(this.handSideSerializer.serialize(side));
     }
 
     /**

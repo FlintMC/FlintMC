@@ -4,11 +4,16 @@ import com.google.inject.Inject;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.player.ClientPlayer;
-import net.labyfy.component.player.overlay.TabOverlay;
 import net.labyfy.component.player.inventory.PlayerInventory;
+import net.labyfy.component.player.overlay.TabOverlay;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.player.serializer.util.HandSerializer;
+import net.labyfy.component.player.serializer.util.HandSideSerializer;
+import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
 import net.labyfy.component.player.serializer.util.PoseSerializer;
+import net.labyfy.component.player.serializer.util.sound.SoundCategorySerializer;
+import net.labyfy.component.player.serializer.util.sound.SoundSerializer;
+import net.labyfy.component.player.util.PlayerClothing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -28,13 +33,21 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     @Inject
     protected VersionedClientPlayer(
             HandSerializer handSerializer,
+            HandSideSerializer handSideSerializer,
             GameProfileSerializer gameProfileSerializer,
-            PoseSerializer poseSerializer
+            PlayerClothingSerializer playerClothingSerializer,
+            PoseSerializer poseSerializer,
+            SoundCategorySerializer soundCategorySerializer,
+            SoundSerializer soundSerializer
     ) {
         super(
                 handSerializer,
+                handSideSerializer,
                 gameProfileSerializer,
-                poseSerializer
+                playerClothingSerializer,
+                poseSerializer,
+                soundCategorySerializer,
+                soundSerializer
         );
     }
 

@@ -1,5 +1,6 @@
 package net.labyfy.internal.component.player.v1_15_2;
 
+import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.player.RemoteClientPlayer;
@@ -8,6 +9,7 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 /**
  * 1.15.2 implementation of {@link net.labyfy.component.player.RemoteClientPlayer.Factory}
  */
+@Singleton
 @Implement(value = RemoteClientPlayer.Factory.class, version = "1.15.2")
 public class VersionedRemoteClientPlayerFactory implements RemoteClientPlayer.Factory<AbstractClientPlayerEntity> {
 
