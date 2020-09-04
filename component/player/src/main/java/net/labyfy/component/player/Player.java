@@ -402,13 +402,6 @@ public interface Player<T> extends PlayerSkinProfile {
     void sendMessage(Object component);
 
     /**
-     * Sends a message to the chat
-     *
-     * @param content The message content
-     */
-    void sendMessage(String content);
-
-    /**
      * Retrieves the network player info of this player.
      *
      * @return the network player info of this  player

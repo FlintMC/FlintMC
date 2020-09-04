@@ -133,6 +133,13 @@ public interface ClientPlayer<T> extends Player<T> {
     float getTimeInPortal();
 
     /**
+     * Sends a message to the chat
+     *
+     * @param content The message content
+     */
+    void sendMessage(String content);
+
+    /**
      * Performs a command
      *
      * @param command The command to perform

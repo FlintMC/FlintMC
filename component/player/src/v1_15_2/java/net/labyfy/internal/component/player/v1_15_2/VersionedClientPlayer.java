@@ -220,6 +220,16 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     }
 
     /**
+     * Sends a message to the chat
+     *
+     * @param content The message content
+     */
+    @Override
+    public void sendMessage(String content) {
+        this.clientPlayer.sendChatMessage(content);
+    }
+
+    /**
      * Performs a command
      *
      * @param command The command to perform

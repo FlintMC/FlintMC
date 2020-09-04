@@ -567,16 +567,6 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     }
 
     /**
-     * Sends a message to the chat
-     *
-     * @param content The message content
-     */
-    @Override
-    public void sendMessage(String content) {
-        this.player.sendMessage(new StringTextComponent(content));
-    }
-
-    /**
      * Retrieves the network player info of this player.
      *
      * @return the network player info of this  player
