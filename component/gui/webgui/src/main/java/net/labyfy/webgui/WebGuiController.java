@@ -12,4 +12,11 @@ public interface WebGuiController {
    * @return A collection of all active views
    */
   Collection<WebGuiView> getViews();
+
+  /**
+   * Retrieves the main view, also known as the view displayed in the main game window.
+   *
+   * @return The main view
+   */
+  WebGuiView getMainView();
 }

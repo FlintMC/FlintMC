@@ -1,11 +1,13 @@
-package net.labyfy.webgui.ultralight;
+package net.labyfy.internal.webgui.ultralight;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.gui.GuiController;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
+import net.labyfy.internal.webgui.ultralight.view.UltralightMainWebGuiView;
 import net.labyfy.webgui.WebGuiController;
 import net.labyfy.webgui.WebGuiView;
 import net.labymedia.ultralight.UltralightJava;
@@ -24,12 +26,14 @@ import java.util.Collection;
 @Implement(WebGuiController.class)
 public class UltralightWebGuiController implements WebGuiController {
   private final Logger logger;
+  private final GuiController guiController;
 
   private UltralightPlatform platform;
 
   @Inject
-  private UltralightWebGuiController(@InjectLogger Logger logger) {
+  private UltralightWebGuiController(@InjectLogger Logger logger, GuiController guiController) {
     this.logger = logger;
+    this.guiController = guiController;
   }
 
   /**
@@ -47,11 +51,21 @@ public class UltralightWebGuiController implements WebGuiController {
 
     // Get the ultralight platform singleton
     platform = UltralightPlatform.instance();
-    logger.debug("Ultralight platform singleton at 0x{}\n", Long.toHexString(platform.getHandle()));
+    logger.trace("Ultralight platform singleton at 0x{}\n", Long.toHexString(platform.getHandle()));
+  }
+
+  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
+  public void setupMainView(UltralightMainWebGuiView view) {
+    logger.debug("Registering Ultralight main view as component");
   }
 
   @Override
   public Collection<WebGuiView> getViews() {
+    return null;
+  }
+
+  @Override
+  public WebGuiView getMainView() {
     return null;
   }
 }

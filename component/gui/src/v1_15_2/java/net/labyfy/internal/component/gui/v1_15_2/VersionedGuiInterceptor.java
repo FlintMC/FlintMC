@@ -128,8 +128,6 @@ public class VersionedGuiInterceptor {
       version = "1.15.2"
   )
   public void hookScreenChanged() {
-    // Make sure to end input on screen change
-    controller.safeEndInput();
     controller.screenChanged(Minecraft.getInstance().currentScreen);
   }
 
