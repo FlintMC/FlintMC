@@ -105,11 +105,18 @@ public interface ClientPlayer<T> extends Player<T> {
     boolean isShowDeathScreen();
 
     /**
-     * Retrieves the water brightness of this player.
+     * Retrieves the server brand of this player.
      *
-     * @return the water brightness of this player.
+     * @return the server brand of this player.
      */
     String getServerBrand();
+
+    /**
+     * Sets the server brand of this player.
+     *
+     * @param brand The new server brand.
+     */
+    void setServerBrand(String brand);
 
     /**
      * Retrieves the water brightness of this player.
@@ -146,6 +153,46 @@ public interface ClientPlayer<T> extends Player<T> {
      * @return {@code true} was the command successful performed, otherwise {@code false}
      */
     boolean performCommand(String command);
+
+    /**
+     * Closes the screen and drop the item stack
+     */
+    void closeScreenAndDropStack();
+
+    /**
+     * Whether the player can swim.
+     *
+     * @return {@code true} if the player can swim, otherwise {@code false}
+     */
+    boolean canSwim();
+
+    /**
+     * Sends the horse inventory to the server.
+     */
+    void sendHorseInventory();
+
+    /**
+     * Retrieves the horse jump power.
+     *
+     * @return the horse jump power.
+     */
+    float getHorseJumpPower();
+
+    /**
+     * Sets the experience stats of this player.
+     *
+     * @param currentExperience The current experience of this player.
+     * @param maxExperience     The max experience of this  player.
+     * @param level             The level of this player.
+     */
+    void setExperienceStats(int currentExperience, int maxExperience, int level);
+
+    /**
+     * Whether the player is holding the sneak key.
+     *
+     * @return {@code true} if the player is holding the sneak key, otherwise {@code false}
+     */
+    boolean isHoldingSneakKey();
 
     /**
      * A factory class for {@link ClientPlayer}

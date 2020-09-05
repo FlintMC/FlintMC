@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.network.play.client.CChatMessagePacket;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,6 +61,11 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     public void setPlayer(AbstractClientPlayerEntity player) {
         super.setPlayer(player);
         this.clientPlayer = (ClientPlayerEntity) player;
+    }
+
+    @Override
+    public AbstractClientPlayerEntity getPlayer() {
+        return this.clientPlayer;
     }
 
     /**
@@ -193,13 +199,23 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     }
 
     /**
-     * Retrieves the water brightness of this player.
+     * Retrieves the server brand of this player.
      *
-     * @return the water brightness of this player.
+     * @return the server brand of this player.
      */
     @Override
     public String getServerBrand() {
         return this.clientPlayer.getServerBrand();
+    }
+
+    /**
+     * Sets the server brand of this player.
+     *
+     * @param brand The new server brand.
+     */
+    @Override
+    public void setServerBrand(String brand) {
+        this.clientPlayer.setServerBrand(brand);
     }
 
     /**
@@ -257,4 +273,72 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
         return true;
     }
 
+    /**
+     * Closes the screen and drop the item stack
+     */
+    @Override
+    public void closeScreenAndDropStack() {
+        this.clientPlayer.closeScreenAndDropStack();
+    }
+
+    /**
+     * Whether the player can swim.
+     *
+     * @return {@code true} if the player can swim, otherwise {@code false}
+     */
+    @Override
+    public boolean canSwim() {
+        return this.clientPlayer.canSwim();
+    }
+
+    /**
+     * Sends the horse inventory to the server.
+     */
+    @Override
+    public void sendHorseInventory() {
+        this.clientPlayer.sendHorseInventory();
+    }
+
+    /**
+     * Retrieves the horse jump power.
+     *
+     * @return the horse jump power.
+     */
+    @Override
+    public float getHorseJumpPower() {
+        return this.clientPlayer.getHorseJumpPower();
+    }
+
+    /**
+     * Sets the experience stats of this player.
+     *
+     * @param currentExperience The current experience of this player.
+     * @param maxExperience     The max experience of this  player.
+     * @param level             The level of this player.
+     */
+    @Override
+    public void setExperienceStats(int currentExperience, int maxExperience, int level) {
+        this.clientPlayer.setXPStats(currentExperience, maxExperience, level);
+    }
+
+    /**
+     * Whether the player is holding the sneak key.
+     *
+     * @return {@code true} if the player is holding the sneak key, otherwise {@code false}
+     */
+    @Override
+    public boolean isHoldingSneakKey() {
+        return this.clientPlayer.func_228354_I_();
+    }
+
+    /**
+     * Sends a status message to this player.
+     *
+     * @param component The message for this status.
+     * @param actionBar Whether to send to the action bar.
+     */
+    @Override
+    public void sendStatusMessage(Object component, boolean actionBar) {
+        this.clientPlayer.sendStatusMessage((ITextComponent) component, actionBar);
+    }
 }

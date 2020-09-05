@@ -53,6 +53,11 @@ public class VersionedRemoteClientPlayer extends VersionedPlayer implements Remo
         this.clientPlayer = (RemoteClientPlayerEntity) player;
     }
 
+    @Override
+    public AbstractClientPlayerEntity getPlayer() {
+        return this.clientPlayer;
+    }
+
     /**
      * Whether the player is in the range to render.
      *

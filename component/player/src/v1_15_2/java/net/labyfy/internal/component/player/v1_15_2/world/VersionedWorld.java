@@ -79,4 +79,14 @@ public class VersionedWorld implements World {
     public Dimension getDimension() {
         return this.dimensionSerializer.deserialize(this.world.getDimension().getType());
     }
+
+    /**
+     * Retrieves the scoreboard of this world.
+     *
+     * @return the scoreboard of this world.
+     */
+    @Override
+    public Object getScoreboard() {
+        return this.world.getScoreboard();
+    }
 }

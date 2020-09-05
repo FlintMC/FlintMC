@@ -21,11 +21,16 @@ import net.labyfy.component.player.util.sound.Sound;
 import net.labyfy.component.player.util.sound.SoundCategory;
 import net.labyfy.component.player.world.World;
 import net.labyfy.component.resources.ResourceLocation;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.UUID;
 
@@ -76,6 +81,16 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     }
 
     /**
+     * Retrieves the player.
+     *
+     * @return the player.
+     */
+    @Override
+    public AbstractClientPlayerEntity getPlayer() {
+        return this.player;
+    }
+
+    /**
      * Retrieves the world of this player.
      *
      * @return the world of this player.
@@ -115,6 +130,16 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     @Override
     public Object getDisplayName() {
         return this.player.getDisplayName();
+    }
+
+    /**
+     * Retrieves the display name and the unique identifier of this player.
+     *
+     * @return the display name and the unique identiifer of this player.
+     */
+    @Override
+    public Object getDisplayNameAndUniqueId() {
+        return this.player.getDisplayNameAndUUID();
     }
 
     /**
@@ -569,6 +594,16 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     }
 
     /**
+     * Sets the absorption amount of this player.
+     *
+     * @param amount The new absorption amount.
+     */
+    @Override
+    public void setAbsorptionAmount(float amount) {
+        this.player.setAbsorptionAmount(amount);
+    }
+
+    /**
      * Retrieves the absorption amount of this player.
      *
      * @return the absorption amount of this player.
@@ -759,6 +794,343 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     }
 
     /**
+     * Whether the player can use command block.
+     *
+     * @return {@code true} if the player can use command blocks, otherwise {@code false}
+     */
+    @Override
+    public boolean canUseCommandBlock() {
+        return this.player.canUseCommandBlock();
+    }
+
+    /**
+     * Retrieves the cooldown period of this player.
+     *
+     * @return the cooldown period of this player.
+     */
+    @Override
+    public float getCooldownPeriod() {
+        return this.player.getCooldownPeriod();
+    }
+
+    /**
+     * Retrieves the cooled attack strength of this player.
+     *
+     * @param adjustTicks The ticks to adjust the cooled strength of the attack.
+     * @return the cooled attack strength of this player.
+     */
+    @Override
+    public float getCooledAttackStrength(float adjustTicks) {
+        return this.player.getCooledAttackStrength(adjustTicks);
+    }
+
+    /**
+     * Resets the cooldown of this player.
+     */
+    @Override
+    public void resetCooldown() {
+        this.player.resetCooldown();
+    }
+
+    /**
+     * Whether the player has reduced debug.
+     *
+     * @return {@code true} if the player has reduced debug, otherwise {@code false}
+     */
+    @Override
+    public boolean hasReducedDebug() {
+        return this.player.hasReducedDebug();
+    }
+
+    /**
+     * Sets the reduced debug for this player.
+     *
+     * @param reducedDebug The new reduced debug.
+     */
+    @Override
+    public void setReducedDebug(boolean reducedDebug) {
+        this.player.setReducedDebug(reducedDebug);
+    }
+
+    /**
+     * Whether the item stack at the slot can be replaced.
+     *
+     * @param slot      The slot that should be replaced.
+     * @param itemStack The item stack to be replaced.
+     * @return {@code true} if the item stack can be replaced, otherwise {@code false}
+     */
+    @Override
+    public boolean replaceItemInInventory(int slot, Object itemStack) {
+        return this.player.replaceItemInInventory(slot, (ItemStack) itemStack);
+    }
+
+    /**
+     * Whether the player is pushed by water.
+     *
+     * @return {@code true} if the player pushed by water, otherwise {@code false}
+     */
+    @Override
+    public boolean isPushedByWater() {
+        return this.player.isPushedByWater();
+    }
+
+    /**
+     * Retrieves an iterable collection of the equipment held by that player.
+     *
+     * @return an iterable collection of the equipment held by that player.
+     */
+    @Override
+    public Iterable<Object> getHeldEquipment() {
+        /*return this.player.getHeldEquipment();*/
+        return null;
+    }
+
+    /**
+     * Retrieves an iterable inventory of that player's armor.
+     *
+     * @return an iterable inventory of that player's armor.
+     */
+    @Override
+    public Iterable<Object> getArmorInventoryList() {
+        /*return this.player.getArmorInventoryList();*/
+        return null;
+    }
+
+    /**
+     * Whether the item stack was added to this main inventory.
+     *
+     * @param itemStack The item stack to be added
+     * @return {@code true} if was the item stack added, otherwise {@code false}
+     */
+    @Override
+    public boolean addItemStackToInventory(Object itemStack) {
+        return this.player.addItemStackToInventory((ItemStack) itemStack);
+    }
+
+    /**
+     * Whether the player is allowed to edit.
+     *
+     * @return {@code true} if the player is allowed to edit, otherwise {@code false}
+     */
+    @Override
+    public boolean isAllowEdit() {
+        return this.player.isAllowEdit();
+    }
+
+    /**
+     * Whether the player should heal.
+     *
+     * @return {@code true} if the player should heal, otherwise {@code false}
+     */
+    @Override
+    public boolean shouldHeal() {
+        return this.player.shouldHeal();
+    }
+
+    /**
+     * Whether the player can eat.
+     *
+     * @param ignoreHunger Whether hunger should be ignored.
+     * @return {@code true} if the player can eat, otherwise {@code false}
+     */
+    @Override
+    public boolean canEat(boolean ignoreHunger) {
+        return this.player.canEat(ignoreHunger);
+    }
+
+    /**
+     * Adds the exhaustion of this player.
+     *
+     * @param exhaustion The exhaustion to be added.
+     */
+    @Override
+    public void addExhaustion(float exhaustion) {
+        this.player.addExhaustion(exhaustion);
+    }
+
+    /**
+     * Adds the experience level to this player.
+     *
+     * @param levels The levels to be added.
+     */
+    @Override
+    public void addExperienceLevel(int levels) {
+        this.player.addExperienceLevel(levels);
+    }
+
+    /**
+     * Retrieves the experience bar cap of this player.
+     *
+     * @return the experience bar cap of this player.
+     */
+    @Override
+    public int experienceBarCap() {
+        return this.player.xpBarCap();
+    }
+
+    /**
+     * Retrieves the experience speed of this player.
+     *
+     * @return the experience speed of this player.
+     */
+    @Override
+    public int getExperienceSpeed() {
+        return this.player.getXPSeed();
+    }
+
+    /**
+     * Gives this player experience points.
+     *
+     * @param points The points to be assigned
+     */
+    @Override
+    public void giveExperiencePoints(int points) {
+        this.player.giveExperiencePoints(points);
+    }
+
+    /**
+     * Whether can be tried to start the fall flying of this player.
+     *
+     * @return {@code true} if can be tried to start the fall flying, otherwise {@code false}
+     */
+    @Override
+    public boolean tryToStartFallFlying() {
+        return this.player.tryToStartFallFlying();
+    }
+
+    /**
+     * Starts the fall flying of this player.
+     */
+    @Override
+    public void startFallFlying() {
+        this.player.startFallFlying();
+    }
+
+    /**
+     * Stops the fall flying of this player.
+     */
+    @Override
+    public void stopFallFlying() {
+        this.player.stopFallFlying();
+    }
+
+    /**
+     * Lets the player jump.
+     */
+    @Override
+    public void jump() {
+        this.player.jump();
+    }
+
+    /**
+     * Updates the swimming of this player.
+     */
+    @Override
+    public void updateSwimming() {
+        this.player.updateSwimming();
+    }
+
+    /**
+     * Retrieves the AI move speed of this player.
+     *
+     * @return the AI move speed of this player.
+     */
+    @Override
+    public float getAIMoveSpeed() {
+        return this.player.getAIMoveSpeed();
+    }
+
+    /**
+     * Adds movement stats to this player.
+     *
+     * @param x The x position to be added
+     * @param y The y position to be added
+     * @param z The z position to be added
+     */
+    @Override
+    public void addMovementStat(double x, double y, double z) {
+        this.player.addMovementStat(x, y, z);
+    }
+
+    /**
+     * Whether the spawn is forced.
+     *
+     * @return {@code true} if the spawn is forced, otherwise {@code false}
+     */
+    @Override
+    public boolean isSpawnForced() {
+        return this.player.isSpawnForced();
+    }
+
+    /**
+     * Whether the player is fully asleep.
+     *
+     * @return {@code true} if the player is fully  asleep, otherwise {@code false}
+     */
+    @Override
+    public boolean isPlayerFullyAsleep() {
+        return this.player.isPlayerFullyAsleep();
+    }
+
+    /**
+     * Retrieves the sleep timer of this player.
+     *
+     * @return the sleep timer of this player.
+     */
+    @Override
+    public int getSleepTimer() {
+        return this.player.getSleepTimer();
+    }
+
+    /**
+     * Wakes up this player.
+     */
+    @Override
+    public void wakeUp() {
+        this.player.wakeUp();
+    }
+
+    /**
+     * Wakes up this player or updates all sleeping players.
+     *
+     * @param updateTimer           Updates the sleep timer
+     * @param updateSleepingPlayers Updates all sleeping players.
+     */
+    @Override
+    public void wakeUp(boolean updateTimer, boolean updateSleepingPlayers) {
+        this.player.stopSleepInBed(updateTimer, updateSleepingPlayers);
+    }
+
+    /**
+     * Disables the shield of this player.
+     *
+     * @param sprinting Whether the player is sprinting.
+     */
+    @Override
+    public void disableShield(boolean sprinting) {
+        this.player.disableShield(sprinting);
+    }
+
+    /**
+     * Stops the ride of this player.
+     */
+    @Override
+    public void stopRiding() {
+        this.player.stopRiding();
+    }
+
+    /**
+     * Whether the player can attack another player.
+     *
+     * @param player The player to be attacked
+     * @return {@code true} if can the player be attacked, otherwise {@code false}
+     */
+    @Override
+    public boolean canAttackPlayer(Player<AbstractClientPlayerEntity> player) {
+        return this.player.canAttackPlayer(player.getPlayer());
+    }
+
+    /**
      * Retrieves the skin model of this player
      *
      * @return the skin model of this player
@@ -831,4 +1203,301 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
         return playerInfo != null && playerInfo.hasElytra();
     }
 
+    /**
+     * Whether the item has a cooldown.
+     *
+     * @param item The item to be checked
+     * @return {@code true} if the item has a cooldown, otherwise {@code false}
+     */
+    @Override
+    public boolean hasCooldown(Object item) {
+        return this.player.getCooldownTracker().hasCooldown((Item) item);
+    }
+
+    /**
+     * Retrieves the cooldown of the given item.
+     *
+     * @param item         The item to get the cooldown
+     * @param partialTicks The period of time, in fractions of a tick,
+     *                     that has passed since the last full tick.
+     * @return the cooldown of this given item.
+     */
+    @Override
+    public float getCooldown(Object item, float partialTicks) {
+        return this.player.getCooldownTracker().getCooldown((Item) item, partialTicks);
+    }
+
+    /**
+     * Sets the for the cooldown tracking.
+     *
+     * @param item  The item for setting the cooldown.
+     * @param ticks The ticks, how long the cooldown lasts.
+     */
+    @Override
+    public void setCooldown(Object item, int ticks) {
+        this.player.getCooldownTracker().setCooldown((Item) item, ticks);
+    }
+
+    /**
+     * Retrieves the score of this player.
+     *
+     * @return the score of this player.
+     */
+    @Override
+    public int getScore() {
+        return this.player.getScore();
+    }
+
+    /**
+     * Sets the score of this player.
+     *
+     * @param score The new score
+     */
+    @Override
+    public void setScore(int score) {
+        this.player.setScore(score);
+    }
+
+    /**
+     * Adds the score to this player.
+     *
+     * @param score The score to be added
+     */
+    @Override
+    public void addScore(int score) {
+        this.player.addScore(score);
+    }
+
+    /**
+     * Whether the selected item can be dropped.
+     *
+     * @param dropEntireStack Whether the entire stack can be dropped.
+     * @return {@code true} if the selected item can be dropped, otherwise {@code false}
+     */
+    @Override
+    public boolean drop(boolean dropEntireStack) {
+        return this.player.drop(dropEntireStack);
+    }
+
+    /**
+     * Retrieves the dropped item as an entity.
+     *
+     * @param droppedItem The dropped item
+     * @param traceItem   Whether the item can be traced.
+     * @return the dropped item as an entity, or {@code null}
+     */
+    @Override
+    public Object dropItem(Object droppedItem, boolean traceItem) {
+        return this.player.dropItem((ItemStack) droppedItem, traceItem);
+    }
+
+    /**
+     * Retrieves the dropped item as an entity.
+     *
+     * @param droppedItem The dropped item
+     * @param dropAround  If {@code true}, the item will be thrown in a random direction
+     *                    from the entity regardless of which direction the entity is facing
+     * @param traceItem   Whether the item can be traced.
+     * @return the dropped item as an entity, or {@code null}
+     */
+    @Override
+    public Object dropItem(Object droppedItem, boolean dropAround, boolean traceItem) {
+        return this.player.dropItem((ItemStack) droppedItem, dropAround, traceItem);
+    }
+
+    /**
+     * Retrieves the digging speed of the given block state for this player.
+     *
+     * @param blockState The block state that is to receive the dig speed.
+     * @return the digging speed of the block state for this player.
+     */
+    @Override
+    public float getDigSpeed(Object blockState) {
+        return this.player.getDigSpeed((BlockState) blockState);
+    }
+
+    /**
+     * Whether the player can harvest the block.
+     *
+     * @param blockState The block to be harvested
+     * @return {@code true} if the player can harvest the block, otherwise {@code false}.
+     */
+    @Override
+    public boolean canHarvestBlock(Object blockState) {
+        return this.player.canHarvestBlock((BlockState) blockState);
+    }
+
+    /**
+     * Reads the additional of the given compound nbt.
+     *
+     * @param compoundNBT The compound nbt to be read.
+     */
+    @Override
+    public void readAdditional(Object compoundNBT) {
+        this.player.readAdditional((CompoundNBT) compoundNBT);
+    }
+
+    /**
+     * Writes into the additional of this player.
+     *
+     * @param compoundNBT The additional to be written.
+     */
+    @Override
+    public void writeAdditional(Object compoundNBT) {
+        this.player.writeAdditional((CompoundNBT) compoundNBT);
+    }
+
+    /**
+     * Sends a status message to this player.
+     *
+     * @param component The message for this status.
+     * @param actionBar Whether to send to the action bar.
+     */
+    @Override
+    public void sendStatusMessage(Object component, boolean actionBar) {
+        this.player.sendStatusMessage((ITextComponent) component, actionBar);
+    }
+
+    /**
+     * Finds shootable items in the inventory of this player.
+     *
+     * @param shootable The item to be fired.
+     * @return an item to be fired or an empty item.
+     */
+    @Override
+    public Object findAmmo(Object shootable) {
+        return this.player.findAmmo((ItemStack) shootable);
+    }
+
+    /**
+     * Whether the player can pick up the item.
+     *
+     * @param itemStack The item to be pick up
+     * @return {@code true} if the player can pick up the item, otherwise {@code false}
+     */
+    @Override
+    public boolean canPickUpItem(Object itemStack) {
+        return this.player.canPickUpItem((ItemStack) itemStack);
+    }
+
+    /**
+     * Adds should entity to this player.
+     *
+     * @param compoundNbt The entity as a compound nbt
+     * @return {@code true} if an entity was added to the shoulder, otherwise {@code false}
+     */
+    @Override
+    public boolean addShoulderEntity(Object compoundNbt) {
+        return this.player.addShoulderEntity((CompoundNBT) compoundNbt);
+    }
+
+    /**
+     * Retrieves the entity which is on the left shoulder.
+     *
+     * @return the entity as a compound nbt.
+     */
+    @Override
+    public Object getLeftShoulderEntity() {
+        return this.player.getLeftShoulderEntity();
+    }
+
+    /**
+     * Retrieves the entity which is on the right shoulder.
+     *
+     * @return the entity as a compound nbt.
+     */
+    @Override
+    public Object getRightShoulderEntity() {
+        return this.player.getRightShoulderEntity();
+    }
+
+    /**
+     * Retrieves the fire timer of this player.
+     *
+     * @return the fire timer of this player.
+     */
+    @Override
+    public int getFireTimer() {
+        return this.player.getFireTimer();
+    }
+
+    /**
+     * Retrieves the step height of this player.
+     *
+     * @return the step height of this player.
+     */
+    @Override
+    public float getStepHeight() {
+        return this.player.stepHeight;
+    }
+
+    /**
+     * Retrieves the x rotate elytra of this player.
+     *
+     * @return the x rotate elytra of this player.
+     */
+    @Override
+    public float getRotateElytraX() {
+        return this.player.rotateElytraX;
+    }
+
+    /**
+     * Retrieves the y rotate elytra of this player.
+     *
+     * @return the y rotate elytra of this player.
+     */
+    @Override
+    public float getRotateElytraY() {
+        return this.player.rotateElytraY;
+    }
+
+    /**
+     * Retrieves the z rotate elytra of this player.
+     *
+     * @return the z rotate elytra of this player.
+     */
+    @Override
+    public float getRotateElytraZ() {
+        return this.player.rotateElytraZ;
+    }
+
+    /**
+     * Whether the player is collided.
+     *
+     * @return {@code true} if the player is collided, otherwise {@code false}
+     */
+    @Override
+    public boolean isCollided() {
+        return this.player.collided;
+    }
+
+    /**
+     * Whether the player is collided horizontally.
+     *
+     * @return {@code true} if the player is collided horizontally, otherwise {@code false}
+     */
+    @Override
+    public boolean isCollidedHorizontally() {
+        return this.player.collidedHorizontally;
+    }
+
+    /**
+     * Whether the player is collided vertically.
+     *
+     * @return {@code true} if the player is collided vertically, otherwise {@code false}
+     */
+    @Override
+    public boolean isCollidedVertically() {
+        return this.player.collidedVertically;
+    }
+
+    /**
+     * Removes the item from the cooldown tracking.
+     *
+     * @param item The item to be removed
+     */
+    @Override
+    public void removeCooldown(Object item) {
+        this.player.getCooldownTracker().removeCooldown((Item) item);
+    }
 }

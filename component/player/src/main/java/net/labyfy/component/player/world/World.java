@@ -37,4 +37,12 @@ public interface World {
      */
     Dimension getDimension();
 
+    /**
+     * Retrieves the scoreboard of this world.
+     *
+     * @return the scoreboard of this world.
+     */
+    // TODO: 05.09.2020 Replaces the Object to Scoreboard when the Scoreboard API is ready
+    Object getScoreboard();
+
 }

@@ -1,7 +1,9 @@
 package net.labyfy.component.player;
 
+import groovyjarjarantlr4.v4.runtime.misc.ObjectEqualityComparator;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
+import net.labyfy.component.player.util.CooldownTracking;
 import net.labyfy.component.player.util.EntityPose;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.PlayerClothing;
@@ -14,7 +16,7 @@ import java.util.UUID;
 /**
  * Represents a player
  */
-public interface Player<T> extends PlayerSkinProfile {
+public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
 
     /**
      * Sets the player.
@@ -22,6 +24,13 @@ public interface Player<T> extends PlayerSkinProfile {
      * @param player The new player.
      */
     void setPlayer(T player);
+
+    /**
+     * Retrieves the player.
+     *
+     * @return the player.
+     */
+    T getPlayer();
 
     /**
      * Retrieves the world of this player.
@@ -52,6 +61,14 @@ public interface Player<T> extends PlayerSkinProfile {
      */
     // TODO: 01.09.2020 Replaces the Object to TextComponent when the Chat API is ready
     Object getDisplayName();
+
+    /**
+     * Retrieves the display name and the unique identifier of this player.
+     *
+     * @return the display name and the unique identiifer of this player.
+     */
+    // TODO: 05.09.2020 Replaces the Object to TextComponent when the Chat API is ready
+    Object getDisplayNameAndUniqueId();
 
     /**
      * Retrieves the unique identifier of this player.
@@ -391,6 +408,13 @@ public interface Player<T> extends PlayerSkinProfile {
     boolean isElytraFlying();
 
     /**
+     * Sets the absorption amount of this player.
+     *
+     * @param amount The new absorption amount.
+     */
+    void setAbsorptionAmount(float amount);
+
+    /**
      * Retrieves the absorption amount of this player.
      *
      * @return the absorption amount of this player.
@@ -530,6 +554,448 @@ public interface Player<T> extends PlayerSkinProfile {
      * @param side the primary hand of this player.
      */
     void setPrimaryHand(Hand.Side side);
+
+    /**
+     * Whether the player can use command block.
+     *
+     * @return {@code true} if the player can use command blocks, otherwise {@code false}
+     */
+    boolean canUseCommandBlock();
+
+    /**
+     * Retrieves the cooldown period of this player.
+     *
+     * @return the cooldown period of this player.
+     */
+    float getCooldownPeriod();
+
+    /**
+     * Retrieves the cooled attack strength of this player.
+     *
+     * @param adjustTicks The ticks to adjust the cooled strength of the attack.
+     * @return the cooled attack strength of this player.
+     */
+    float getCooledAttackStrength(float adjustTicks);
+
+    /**
+     * Resets the cooldown of this player.
+     */
+    void resetCooldown();
+
+    /**
+     * Whether the player has reduced debug.
+     *
+     * @return {@code true} if the player has reduced debug, otherwise {@code false}
+     */
+    boolean hasReducedDebug();
+
+    /**
+     * Sets the reduced debug for this player.
+     *
+     * @param reducedDebug The new reduced debug.
+     */
+    void setReducedDebug(boolean reducedDebug);
+
+    /**
+     * Whether the item stack at the slot can be replaced.
+     *
+     * @param slot      The slot that should be replaced.
+     * @param itemStack The item stack to be replaced.
+     * @return {@code true} if the item stack can be replaced, otherwise {@code false}
+     */
+    boolean replaceItemInInventory(int slot, Object itemStack);
+
+    /**
+     * Whether the player is pushed by water.
+     *
+     * @return {@code true} if the player pushed by water, otherwise {@code false}
+     */
+    boolean isPushedByWater();
+
+    /**
+     * Retrieves an iterable collection of the equipment held by that player.
+     *
+     * @return an iterable collection of the equipment held by that player.
+     */
+    // TODO: 05.09.2020 Replaces the Object to ItemStack when the (Item API?) is ready
+    Iterable<Object> getHeldEquipment();
+
+    /**
+     * Retrieves an iterable inventory of that player's armor.
+     *
+     * @return an iterable inventory of that player's armor.
+     */
+    // TODO: 05.09.2020 Replaces the Object to ItemStack when the (Item API?) is ready
+    Iterable<Object> getArmorInventoryList();
+
+    /**
+     * Whether the item stack was added to this main inventory.
+     *
+     * @param itemStack The item stack to be added
+     * @return {@code true} if was the item stack added, otherwise {@code false}
+     */
+    boolean addItemStackToInventory(Object itemStack);
+
+    /**
+     * Whether the player is allowed to edit.
+     *
+     * @return {@code true} if the player is allowed to edit, otherwise {@code false}
+     */
+    boolean isAllowEdit();
+
+    /**
+     * Whether the player should heal.
+     *
+     * @return {@code true} if the player should heal, otherwise {@code false}
+     */
+    boolean shouldHeal();
+
+    /**
+     * Whether the player can eat.
+     *
+     * @param ignoreHunger Whether hunger should be ignored.
+     * @return {@code true} if the player can eat, otherwise {@code false}
+     */
+    boolean canEat(boolean ignoreHunger);
+
+    /**
+     * Adds the exhaustion of this player.
+     *
+     * @param exhaustion The exhaustion to be added.
+     */
+    void addExhaustion(float exhaustion);
+
+    /**
+     * Adds the experience level to this player.
+     *
+     * @param levels The levels to be added.
+     */
+    void addExperienceLevel(int levels);
+
+    /**
+     * Retrieves the experience bar cap of this player.
+     *
+     * @return the experience bar cap of this player.
+     */
+    int experienceBarCap();
+
+    /**
+     * Retrieves the experience speed of this player.
+     *
+     * @return the experience speed of this player.
+     */
+    int getExperienceSpeed();
+
+    /**
+     * Gives this player experience points.
+     *
+     * @param points The points to be assigned
+     */
+    void giveExperiencePoints(int points);
+
+    /**
+     * Whether can be tried to start the fall flying of this player.
+     *
+     * @return {@code true} if can be tried to start the fall flying, otherwise {@code false}
+     */
+    boolean tryToStartFallFlying();
+
+    /**
+     * Starts the fall flying of this player.
+     */
+    void startFallFlying();
+
+    /**
+     * Stops the fall flying of this player.
+     */
+    void stopFallFlying();
+
+    /**
+     * Lets the player jump.
+     */
+    void jump();
+
+    /**
+     * Updates the swimming of this player.
+     */
+    void updateSwimming();
+
+    /**
+     * Retrieves the AI move speed of this player.
+     *
+     * @return the AI move speed of this player.
+     */
+    float getAIMoveSpeed();
+
+    /**
+     * Adds movement stats to this player.
+     *
+     * @param x The x position to be added
+     * @param y The y position to be added
+     * @param z The z position to be added
+     */
+    void addMovementStat(double x, double y, double z);
+
+    /**
+     * Whether the spawn is forced.
+     *
+     * @return {@code true} if the spawn is forced, otherwise {@code false}
+     */
+    boolean isSpawnForced();
+
+    /**
+     * Whether the player is fully asleep.
+     *
+     * @return {@code true} if the player is fully  asleep, otherwise {@code false}
+     */
+    boolean isPlayerFullyAsleep();
+
+    /**
+     * Retrieves the sleep timer of this player.
+     *
+     * @return the sleep timer of this player.
+     */
+    int getSleepTimer();
+
+    /**
+     * Wakes up this player.
+     */
+    void wakeUp();
+
+    /**
+     * Wakes up this player or updates all sleeping players.
+     *
+     * @param updateTimer           Updates the sleep timer
+     * @param updateSleepingPlayers Updates all sleeping players.
+     */
+    void wakeUp(boolean updateTimer, boolean updateSleepingPlayers);
+
+    /**
+     * Disables the shield of this player.
+     *
+     * @param sprinting Whether the player is sprinting.
+     */
+    void disableShield(boolean sprinting);
+
+    /**
+     * Stops the ride of this player.
+     */
+    void stopRiding();
+
+    /**
+     * Whether the player can attack another player.
+     *
+     * @param player The player to be attacked
+     * @return {@code true} if can the player be attacked, otherwise {@code false}
+     */
+    boolean canAttackPlayer(Player<T> player);
+
+    /**
+     * Retrieves the score of this player.
+     *
+     * @return the score of this player.
+     */
+    int getScore();
+
+    /**
+     * Sets the score of this player.
+     *
+     * @param score The new score
+     */
+    void setScore(int score);
+
+    /**
+     * Adds the score to this player.
+     *
+     * @param score The score to be added
+     */
+    void addScore(int score);
+
+    /**
+     * Whether the selected item can be dropped.
+     *
+     * @param dropEntireStack Whether the entire stack can be dropped.
+     * @return {@code true} if the selected item can be dropped, otherwise {@code false}
+     */
+    boolean drop(boolean dropEntireStack);
+
+    /**
+     * Retrieves the dropped item as an entity.
+     *
+     * @param droppedItem The dropped item
+     * @param traceItem   Whether the item can be traced.
+     * @return the dropped item as an entity, or {@code null}
+     */
+    // TODO: 05.09.2020 (Method Type) Replaces the Object to ItemEntity when the (Entity API?) is ready
+    // TODO: 05.09.2020 (Parameter 1) Replaces the Object to ItemStack when the (Item API?) is ready
+    Object dropItem(Object droppedItem, boolean traceItem);
+
+    /**
+     * Retrieves the dropped item as an entity.
+     *
+     * @param droppedItem The dropped item
+     * @param dropAround  If {@code true}, the item will be thrown in a random direction
+     *                    from the entity regardless of which direction the entity is facing
+     * @param traceItem   Whether the item can be traced.
+     * @return the dropped item as an entity, or {@code null}
+     */
+    // TODO: 05.09.2020 (Method Type) Replaces the Object to ItemEntity when the (Entity API?) is ready
+    // TODO: 05.09.2020 (Parameter 1) Replaces the Object to ItemStack when the (Item API?) is ready
+    Object dropItem(Object droppedItem, boolean dropAround, boolean traceItem);
+
+
+    /**
+     * Retrieves the digging speed of the given block state for this player.
+     *
+     * @param blockState The block state that is to receive the dig speed.
+     * @return the digging speed of the block state for this player.
+     */
+    // TODO: 05.09.2020 Replaces the Object to BlockState when the Block API is ready
+    float getDigSpeed(Object blockState);
+
+    /**
+     * Whether the player can harvest the block.
+     *
+     * @param blockState The block to be harvested
+     * @return {@code true} if the player can harvest the block, otherwise {@code false}.
+     */
+    // TODO: 05.09.2020 Replaces the Object to BlockState when the Block API is ready
+    boolean canHarvestBlock(Object blockState);
+
+    /**
+     * Reads the additional of the given compound nbt.
+     *
+     * @param compoundNBT The compound nbt to be read.
+     */
+    // TODO: 05.09.2020 Replaces the Object to CompoundNBT when the NBT API is ready
+    void readAdditional(Object compoundNBT);
+
+    /**
+     * Writes into the additional of this player.
+     *
+     * @param compoundNBT The additional to be written.
+     */
+    // TODO: 05.09.2020 Replaces the Object to CompoundNBT when the NBT API is ready
+    void writeAdditional(Object compoundNBT);
+
+    /**
+     * Sends a status message to this player.
+     *
+     * @param component The message for this status.
+     * @param actionBar Whether to send to the action bar.
+     */
+    // TODO: 05.09.2020 Replaces the Object to TextComponent when the Chat API is ready
+    void sendStatusMessage(Object component, boolean actionBar);
+
+    /**
+     * Finds shootable items in the inventory of this player.
+     *
+     * @param shootable The item to be fired.
+     * @return an item to be fired or an empty item.
+     */
+    // TODO: 05.09.2020 (Method Type) Replaces the Object to ItemStack when the Item API is ready
+    // TODO: 05.09.2020 (Parameter 1) Replaces the Object to ItemStack when the Item API is ready
+    Object findAmmo(Object shootable);
+
+    /**
+     * Whether the player can pick up the item.
+     *
+     * @param itemStack The item to be pick up
+     * @return {@code true} if the player can pick up the item, otherwise {@code false}
+     */
+    // TODO: 05.09.2020 Replaces the Object to ItemStack when the Item API is ready
+    boolean canPickUpItem(Object itemStack);
+
+    /**
+     * Adds should entity to this player.
+     *
+     * @param compoundNbt The entity as a compound nbt
+     * @return {@code true} if an entity was added to the shoulder, otherwise {@code false}
+     */
+    // TODO: 05.09.2020 Replaces the Object to CompoundNBT when the NBT API is ready
+    boolean addShoulderEntity(Object compoundNbt);
+
+    /**
+     * Retrieves the entity which is on the left shoulder.
+     *
+     * @return the entity as a compound nbt.
+     */
+    // TODO: 05.09.2020 Replaces the Object to CompoundNBT when the NBT API is ready
+    Object getLeftShoulderEntity();
+
+    /**
+     * Retrieves the entity which is on the right shoulder.
+     *
+     * @return the entity as a compound nbt.
+     */
+    // TODO: 05.09.2020 Replaces the Object to CompoundNBT when the NBT API is ready
+    Object getRightShoulderEntity();
+
+    /**
+     * Retrieves the world scoreboard of this player.
+     *
+     * @return the world scoreboard of this player.
+     */
+    // TODO: 05.09.2020 Replaces the Object to Scoreboard when the Scoreboard API is ready
+    default Object getWorldScoreboard() {
+        return this.getWorld().getScoreboard();
+    }
+
+    /**
+     * Retrieves the fire timer of this player.
+     *
+     * @return the fire timer of this player.
+     */
+    int getFireTimer();
+
+    /**
+     * Retrieves the step height of this player.
+     *
+     * @return the step height of this player.
+     */
+    float getStepHeight();
+
+    /**
+     * Retrieves the x rotate elytra of this player.
+     *
+     * @return the x rotate elytra of this player.
+     */
+    float getRotateElytraX();
+
+    /**
+     * Retrieves the y rotate elytra of this player.
+     *
+     * @return the y rotate elytra of this player.
+     */
+    float getRotateElytraY();
+
+    /**
+     * Retrieves the z rotate elytra of this player.
+     *
+     * @return the z rotate elytra of this player.
+     */
+    float getRotateElytraZ();
+
+    /**
+     * Whether the player is collided.
+     *
+     * @return {@code true} if the player is collided, otherwise {@code false}
+     */
+    boolean isCollided();
+
+    /**
+     * Whether the player is collided horizontally.
+     *
+     * @return {@code true} if the player is collided horizontally, otherwise {@code false}
+     */
+    boolean isCollidedHorizontally();
+
+    /**
+     * Whether the player is collided vertically.
+     *
+     * @return {@code true} if the player is collided vertically, otherwise {@code false}
+     */
+    boolean isCollidedVertically();
 
     /**
      * A factory class for {@link Player}
