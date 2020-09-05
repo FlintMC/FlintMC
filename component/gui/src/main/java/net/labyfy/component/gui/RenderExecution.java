@@ -8,8 +8,8 @@ public class RenderExecution {
   private final VanillaRenderCancellation cancellation;
 
   /**
-   * Constructs a new {@link RenderExecution} with the given mouse x and y coordinates,
-   * the current partial ticks value and an internal cancellation.
+   * Constructs a new {@link RenderExecution} with the given mouse x and y coordinates, the current partial ticks value
+   * and an internal cancellation.
    *
    * @param partialTicks The current partial tick counter
    */
@@ -19,10 +19,10 @@ public class RenderExecution {
   }
 
   /**
-   * Constructs a new {@link RenderExecution} with a boolean determining the the cancellation is canceled already,
-   * the given mouse x and y coordinate and the current partial ticks value.
+   * Constructs a new {@link RenderExecution} with a boolean determining the the cancellation is canceled already, the
+   * given mouse x and y coordinate and the current partial ticks value.
    *
-   * @param isCancelled  Wether the execution has been cancelled already
+   * @param isCancelled  Whether the execution has been cancelled already
    * @param partialTicks The current partial tick counter
    */
   public RenderExecution(boolean isCancelled, float partialTicks) {

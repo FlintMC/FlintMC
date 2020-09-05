@@ -5,8 +5,7 @@ import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.transform.hook.Hook;
 
 /**
- * Represents a GUI component. As a package developer, you usually don't want to use this directly, but rather
- * the JuklearMC components.
+ * Represents a GUI component.
  */
 public interface GuiComponent {
   /**
@@ -17,8 +16,8 @@ public interface GuiComponent {
   void screenChanged(ScreenName newScreen);
 
   /**
-   * Called by the {@link net.labyfy.component.gui.GuiController} to determine if the components
-   * {@link #render(RenderExecution)} method should be called.
+   * Called by the {@link net.labyfy.component.gui.GuiController} to determine if the components {@link
+   * #render(RenderExecution)} method should be called.
    *
    * @param executionTime The time the hook is being executed
    * @param execution     The current execution, may be used for cancellation and such
@@ -27,16 +26,15 @@ public interface GuiComponent {
   boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution);
 
   /**
-   * Called by the {@link net.labyfy.component.gui.GuiController} to signal that the component
-   * should be drawn now.
+   * Called by the {@link net.labyfy.component.gui.GuiController} to signal that the component should be drawn now.
    *
    * @param execution The current execution, may be used for cancellation and such
    */
   void render(RenderExecution execution);
 
   /**
-   * Called by the {@link net.labyfy.component.gui.GuiController} to signal that a frame has completed.
-   * Can be used for state reset and similar tasks.
+   * Called by the {@link net.labyfy.component.gui.GuiController} to signal that a frame has completed. Can be used for
+   * state reset and similar tasks.
    */
   default void frameDone() {
   }

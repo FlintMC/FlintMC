@@ -6,8 +6,6 @@ import net.labyfy.component.gui.screen.ScreenName;
 
 /**
  * Helper class for maintaining state and control of the entire minecraft GUI.
- * As a package developer you usually don't want to use this low level class, but
- * rather the interface provided by the JuklearMC component.
  */
 public interface GuiController {
   /**

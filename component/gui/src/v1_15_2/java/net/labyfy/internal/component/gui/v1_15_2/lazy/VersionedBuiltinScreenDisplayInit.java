@@ -22,6 +22,7 @@ public class VersionedBuiltinScreenDisplayInit {
    * @param screens The map to fill with the instantiators
    */
   public static void init(Map<ScreenName, Consumer<Object[]>> screens) {
+    // TODO: Handle passing arguments to the screen constructors
     screens.put(ScreenName.minecraft(ScreenName.MAIN_MENU),
         (args) -> Minecraft.getInstance().displayGuiScreen(new MainMenuScreen()));
     screens.put(ScreenName.minecraft(ScreenName.OPTIONS),

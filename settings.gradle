@@ -30,9 +30,6 @@ findProject(':component:transform:asm')?.name = 'asm'
 include 'component:gui'
 findProject(':component:gui')?.name = 'gui'
 
-include 'component:gui:juklearmc'
-findProject(':component:gui:juklearmc')?.name = 'juklearmc'
-
 include 'component:transform:hook'
 findProject(':component:transform:hook')?.name = 'hook'
 

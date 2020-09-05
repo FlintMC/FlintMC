@@ -30,7 +30,6 @@ public class DefaultGuiController implements GuiController {
   private final List<GuiComponent> components;
 
   private ScreenName currentScreen;
-  private boolean inputActive;
 
   @Inject
   private DefaultGuiController(
@@ -60,13 +59,9 @@ public class DefaultGuiController implements GuiController {
    * Called from injected code, every time input events occur.
    *
    * @param event The input event that occurred
-   * @return Wether the event has been captured and should not be passed on
+   * @return Whether the event has been consumed and should not be passed on
    */
   public boolean doInput(GuiInputEvent event) {
-    if (!inputActive) {
-      throw new IllegalStateException("Input is not active");
-    }
-
     boolean capture = false;
     for (GuiInputEventProcessor processor : inputEventProcessors) {
       if (processor.process(event)) {
@@ -111,52 +106,6 @@ public class DefaultGuiController implements GuiController {
   }
 
   /**
-   * Called from injected code, prepares the controller for input.
-   *
-   * @throws IllegalStateException If the input is active already
-   */
-  public void beginInput() {
-    if (inputActive) {
-      throw new IllegalStateException("Input is active already");
-    }
-
-    inputActive = true;
-    this.inputEventProcessors.forEach(GuiInputEventProcessor::beginInput);
-  }
-
-  /**
-   * Called from injected code, prepares the controller for input if is not prepared already.
-   */
-  public void safeBeginInput() {
-    if (!inputActive) {
-      beginInput();
-    }
-  }
-
-  /**
-   * Called from injected code, finalizes the controllers input state.
-   *
-   * @throws IllegalStateException If the controller has not been prepared for input
-   */
-  public void endInput() {
-    if (!inputActive) {
-      throw new IllegalStateException("Input is not active");
-    }
-
-    inputActive = false;
-    this.inputEventProcessors.forEach(GuiInputEventProcessor::endInput);
-  }
-
-  /**
-   * Called from injected code, finalizes the controllers input state if the controller has been prepared for input.
-   */
-  public void safeEndInput() {
-    if (inputActive) {
-      endInput();
-    }
-  }
-
-  /**
    * Called from injected code, marks the current frame as done.
    */
   public void endFrame() {
@@ -190,16 +139,6 @@ public class DefaultGuiController implements GuiController {
    * Invokes the mouse position callback in the GUI interceptor to prevent outdated positions
    */
   public void updateMousePosition() {
-    boolean shouldControlInput = !inputActive;
-
-    if (shouldControlInput) {
-      beginInput();
-    }
-
     inputInterceptor.signalCurrentMousePosition();
-
-    if (shouldControlInput) {
-      endInput();
-    }
   }
 }
