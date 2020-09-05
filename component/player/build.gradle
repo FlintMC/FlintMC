@@ -25,5 +25,6 @@ dependencies {
     api project(':component:resources')
     api project(':component:tasks')
     api project(':component:transform:hook')
+    api project(':component:chat')
     api "com.google.code.gson:gson:2.8.6"
 }

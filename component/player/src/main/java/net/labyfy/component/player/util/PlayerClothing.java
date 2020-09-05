@@ -1,5 +1,9 @@
 package net.labyfy.component.player.util;
 
+import net.labyfy.chat.builder.ComponentBuilder;
+import net.labyfy.chat.component.ChatComponent;
+import net.labyfy.component.inject.primitive.InjectionHolder;
+
 /**
  * An enumeration of all available articles of clothing.
  */
@@ -37,15 +41,17 @@ public enum PlayerClothing {
     private final int clothingId;
     private final int clothingMask;
     private final String clothingName;
-    // TODO: 04.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-    private final Object name;
+    private final ChatComponent name;
 
     PlayerClothing(int clothingId, String clothingName) {
         this.clothingId = clothingId;
         this.clothingMask = 1 << clothingId;
         this.clothingName = clothingName;
-        // TODO: 04.09.2020 Initializes a TranslatableComponent
-        this.name = null;
+        this.name = InjectionHolder
+                .getInjectedInstance(ComponentBuilder.Factory.class)
+                .translation()
+                .translationKey("options.modelPart." + clothingName)
+                .build();;
     }
 
     /**
@@ -80,7 +86,7 @@ public enum PlayerClothing {
      *
      * @return the translated name of this clothing.
      */
-    public Object getName() {
+    public ChatComponent getName() {
         return name;
     }
 }

@@ -1,6 +1,7 @@
 package net.labyfy.internal.component.player.v1_15_2;
 
 import com.google.inject.Inject;
+import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.RemoteClientPlayer;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
@@ -26,6 +27,7 @@ public class VersionedRemoteClientPlayer extends VersionedPlayer implements Remo
             HandSerializer handSerializer,
             HandSideSerializer handSideSerializer,
             GameProfileSerializer gameProfileSerializer,
+            MinecraftComponentMapper minecraftComponentMapper,
             PlayerClothingSerializer playerClothingSerializer,
             PoseSerializer poseSerializer,
             SoundCategorySerializer soundCategorySerializer,
@@ -35,6 +37,7 @@ public class VersionedRemoteClientPlayer extends VersionedPlayer implements Remo
                 handSerializer,
                 handSideSerializer,
                 gameProfileSerializer,
+                minecraftComponentMapper,
                 playerClothingSerializer,
                 poseSerializer,
                 soundCategorySerializer,

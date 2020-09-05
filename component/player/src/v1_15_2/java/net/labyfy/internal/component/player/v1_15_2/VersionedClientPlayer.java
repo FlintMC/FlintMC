@@ -1,6 +1,8 @@
 package net.labyfy.internal.component.player.v1_15_2;
 
 import com.google.inject.Inject;
+import net.labyfy.chat.MinecraftComponentMapper;
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.player.ClientPlayer;
@@ -13,7 +15,6 @@ import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
 import net.labyfy.component.player.serializer.util.PoseSerializer;
 import net.labyfy.component.player.serializer.util.sound.SoundCategorySerializer;
 import net.labyfy.component.player.serializer.util.sound.SoundSerializer;
-import net.labyfy.component.player.util.PlayerClothing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -36,6 +37,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
             HandSerializer handSerializer,
             HandSideSerializer handSideSerializer,
             GameProfileSerializer gameProfileSerializer,
+            MinecraftComponentMapper minecraftComponentMapper,
             PlayerClothingSerializer playerClothingSerializer,
             PoseSerializer poseSerializer,
             SoundCategorySerializer soundCategorySerializer,
@@ -45,6 +47,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
                 handSerializer,
                 handSideSerializer,
                 gameProfileSerializer,
+                minecraftComponentMapper,
                 playerClothingSerializer,
                 poseSerializer,
                 soundCategorySerializer,
@@ -338,7 +341,10 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
      * @param actionBar Whether to send to the action bar.
      */
     @Override
-    public void sendStatusMessage(Object component, boolean actionBar) {
-        this.clientPlayer.sendStatusMessage((ITextComponent) component, actionBar);
+    public void sendStatusMessage(ChatComponent component, boolean actionBar) {
+        this.clientPlayer.sendStatusMessage(
+                (ITextComponent) this.minecraftComponentMapper.toMinecraft(component),
+                actionBar
+        );
     }
 }

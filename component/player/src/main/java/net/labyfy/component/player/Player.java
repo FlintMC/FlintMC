@@ -1,6 +1,6 @@
 package net.labyfy.component.player;
 
-import groovyjarjarantlr4.v4.runtime.misc.ObjectEqualityComparator;
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.util.CooldownTracking;
@@ -51,24 +51,21 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      *
      * @return the name of this player
      */
-    // TODO: 31.08.2020 Replaces the Object to TextComponent when the Chat API is ready
-    Object getName();
+    ChatComponent getName();
 
     /**
      * Retrieves the display name of this player
      *
      * @return the display name of this player
      */
-    // TODO: 01.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-    Object getDisplayName();
+    ChatComponent getDisplayName();
 
     /**
      * Retrieves the display name and the unique identifier of this player.
      *
      * @return the display name and the unique identiifer of this player.
      */
-    // TODO: 05.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-    Object getDisplayNameAndUniqueId();
+    ChatComponent getDisplayNameAndUniqueId();
 
     /**
      * Retrieves the unique identifier of this player.
@@ -433,8 +430,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      *
      * @param component The message to print
      */
-    // TODO: 31.08.2020 Replaces the Object to TextComponent when the Chat API is ready
-    void sendMessage(Object component);
+    void sendMessage(ChatComponent component);
 
     /**
      * Retrieves the network player info of this player.
@@ -884,8 +880,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      * @param component The message for this status.
      * @param actionBar Whether to send to the action bar.
      */
-    // TODO: 05.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-    void sendStatusMessage(Object component, boolean actionBar);
+    void sendStatusMessage(ChatComponent component, boolean actionBar);
 
     /**
      * Finds shootable items in the inventory of this player.

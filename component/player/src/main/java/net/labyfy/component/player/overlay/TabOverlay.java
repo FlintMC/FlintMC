@@ -1,5 +1,7 @@
 package net.labyfy.component.player.overlay;
 
+import net.labyfy.chat.component.ChatComponent;
+
 /**
  * Represents the tab overlay
  */
@@ -10,31 +12,27 @@ public interface TabOverlay {
      *
      * @return the header of this player
      */
-    // TODO: 02.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-    Object getHeader() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
+    ChatComponent getHeader() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
 
     /**
      * Updates the header of this player.
      *
      * @param header The new header content
      */
-    // TODO: 02.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-    void updateHeader(Object header);
+    void updateHeader(ChatComponent header);
 
     /**
      * Retrieves the footer of this player.
      *
      * @return the footer of this player.
      */
-    // TODO: 02.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-    Object getFooter() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
+    ChatComponent getFooter() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
 
     /**
      * Updates the footer of this player.
      *
      * @param footer The new footer content
      */
-    // TODO: 02.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-    void updateFooter(Object footer);
+    void updateFooter(ChatComponent footer);
 
 }

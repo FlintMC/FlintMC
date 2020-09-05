@@ -1,6 +1,8 @@
 package net.labyfy.internal.component.player.v1_15_2;
 
 import com.google.inject.Inject;
+import net.labyfy.chat.MinecraftComponentMapper;
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.player.Player;
@@ -42,19 +44,21 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
 
     private AbstractClientPlayerEntity player;
 
-    private final HandSerializer<net.minecraft.util.Hand> handSerializer;
-    private final HandSideSerializer<HandSide> handSideSerializer;
-    private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
-    private final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
-    private final PoseSerializer<Pose> poseSerializer;
-    private final SoundCategorySerializer<net.minecraft.util.SoundCategory> soundCategorySerializer;
-    private final SoundSerializer<SoundEvent> soundSerializer;
+    protected final HandSerializer<net.minecraft.util.Hand> handSerializer;
+    protected final HandSideSerializer<HandSide> handSideSerializer;
+    protected final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
+    protected final MinecraftComponentMapper minecraftComponentMapper;
+    protected final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
+    protected final PoseSerializer<Pose> poseSerializer;
+    protected final SoundCategorySerializer<net.minecraft.util.SoundCategory> soundCategorySerializer;
+    protected final SoundSerializer<SoundEvent> soundSerializer;
 
     @Inject
     protected VersionedPlayer(
             HandSerializer handSerializer,
             HandSideSerializer handSideSerializer,
             GameProfileSerializer gameProfileSerializer,
+            MinecraftComponentMapper minecraftComponentMapper,
             PlayerClothingSerializer playerClothingSerializer,
             PoseSerializer poseSerializer,
             SoundCategorySerializer soundCategorySerializer,
@@ -63,6 +67,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
         this.handSerializer = handSerializer;
         this.handSideSerializer = handSideSerializer;
         this.gameProfileSerializer = gameProfileSerializer;
+        this.minecraftComponentMapper = minecraftComponentMapper;
         this.playerClothingSerializer = playerClothingSerializer;
         this.poseSerializer = poseSerializer;
         this.soundCategorySerializer = soundCategorySerializer;
@@ -115,10 +120,9 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      *
      * @return the name of this player
      */
-    // TODO: 04.09.2020 Replaces the Object to TextComponent when the Chat API is ready 
     @Override
-    public Object getName() {
-        return this.player.getName();
+    public ChatComponent getName() {
+        return this.minecraftComponentMapper.fromMinecraft(this.player.getName());
     }
 
     /**
@@ -126,10 +130,9 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      *
      * @return the display name of this player
      */
-    // TODO: 04.09.2020 Replaces the Object to TextComponent when the Chat API is ready 
     @Override
-    public Object getDisplayName() {
-        return this.player.getDisplayName();
+    public ChatComponent getDisplayName() {
+        return this.minecraftComponentMapper.fromMinecraft(this.player.getDisplayName());
     }
 
     /**
@@ -138,8 +141,8 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * @return the display name and the unique identiifer of this player.
      */
     @Override
-    public Object getDisplayNameAndUniqueId() {
-        return this.player.getDisplayNameAndUUID();
+    public ChatComponent getDisplayNameAndUniqueId() {
+        return this.minecraftComponentMapper.fromMinecraft(this.player.getDisplayNameAndUUID());
     }
 
     /**
@@ -629,8 +632,8 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * @param component The message to print
      */
     @Override
-    public void sendMessage(Object component) {
-
+    public void sendMessage(ChatComponent component) {
+        this.player.sendMessage((ITextComponent) this.minecraftComponentMapper.toMinecraft(component));
     }
 
     /**
@@ -1354,8 +1357,8 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * @param actionBar Whether to send to the action bar.
      */
     @Override
-    public void sendStatusMessage(Object component, boolean actionBar) {
-        this.player.sendStatusMessage((ITextComponent) component, actionBar);
+    public void sendStatusMessage(ChatComponent component, boolean actionBar) {
+        this.player.sendStatusMessage((ITextComponent) this.minecraftComponentMapper.toMinecraft(component), actionBar);
     }
 
     /**

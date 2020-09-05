@@ -1,5 +1,12 @@
 package net.labyfy.component.player.util;
 
+import net.labyfy.chat.builder.ComponentBuilder;
+import net.labyfy.chat.builder.TranslationComponentBuilder;
+import net.labyfy.chat.component.ChatComponent;
+import net.labyfy.chat.component.TextComponent;
+import net.labyfy.chat.component.TranslationComponent;
+import net.labyfy.component.inject.primitive.InjectionHolder;
+
 /**
  * An enumeration of all available hands.
  */
@@ -21,13 +28,15 @@ public enum Hand {
         RIGHT("options.mainHand.right");
 
         private final String translateKey;
-        // TODO: 04.09.2020 Replaces the Object to TextComponent when the Chat API is ready
-        private final Object handName;
+        private final ChatComponent handName;
 
         Side(String translateKey) {
             this.translateKey = translateKey;
-            // TODO: 04.09.2020 Initializes a TranslatableComponent
-            this.handName = null;
+            this.handName = InjectionHolder
+                    .getInjectedInstance(ComponentBuilder.Factory.class)
+                    .translation()
+                    .translationKey(translateKey)
+                    .build();
         }
 
         /**
@@ -53,7 +62,7 @@ public enum Hand {
          *
          * @return the translated name of this hand side.
          */
-        public Object getHandName() {
+        public ChatComponent getHandName() {
             return handName;
         }
     }
