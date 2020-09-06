@@ -95,3 +95,5 @@ findProject('component:i18n')?.name = 'i18n'
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
 
+include 'component:items'
+findProject(':component:items')?.name = 'items'
