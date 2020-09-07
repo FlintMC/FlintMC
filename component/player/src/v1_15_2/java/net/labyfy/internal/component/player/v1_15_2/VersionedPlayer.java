@@ -9,30 +9,30 @@ import net.labyfy.component.player.Player;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.serializer.util.HandSerializer;
-import net.labyfy.component.player.serializer.util.HandSideSerializer;
-import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
-import net.labyfy.component.player.serializer.util.PoseSerializer;
+import net.labyfy.component.player.serializer.util.*;
 import net.labyfy.component.player.serializer.util.sound.SoundCategorySerializer;
 import net.labyfy.component.player.serializer.util.sound.SoundSerializer;
-import net.labyfy.component.player.util.EntityPose;
-import net.labyfy.component.player.util.Hand;
-import net.labyfy.component.player.util.PlayerClothing;
-import net.labyfy.component.player.util.SkinModel;
+import net.labyfy.component.player.util.*;
 import net.labyfy.component.player.util.sound.Sound;
 import net.labyfy.component.player.util.sound.SoundCategory;
-import net.labyfy.component.player.world.World;
+import net.labyfy.component.player.world.ClientWorld;
 import net.labyfy.component.resources.ResourceLocation;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.GameType;
 
 import java.util.UUID;
 
@@ -46,6 +46,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
 
     protected final HandSerializer<net.minecraft.util.Hand> handSerializer;
     protected final HandSideSerializer<HandSide> handSideSerializer;
+    protected final GameModeSerializer<GameType> gameModeSerializer;
     protected final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
     protected final MinecraftComponentMapper minecraftComponentMapper;
     protected final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
@@ -57,6 +58,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     protected VersionedPlayer(
             HandSerializer handSerializer,
             HandSideSerializer handSideSerializer,
+            GameModeSerializer gameModeSerializer,
             GameProfileSerializer gameProfileSerializer,
             MinecraftComponentMapper minecraftComponentMapper,
             PlayerClothingSerializer playerClothingSerializer,
@@ -66,6 +68,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     ) {
         this.handSerializer = handSerializer;
         this.handSideSerializer = handSideSerializer;
+        this.gameModeSerializer = gameModeSerializer;
         this.gameProfileSerializer = gameProfileSerializer;
         this.minecraftComponentMapper = minecraftComponentMapper;
         this.playerClothingSerializer = playerClothingSerializer;
@@ -101,8 +104,8 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * @return the world of this player.
      */
     @Override
-    public World getWorld() {
-        return InjectionHolder.getInjectedInstance(World.class);
+    public ClientWorld getWorld() {
+        return InjectionHolder.getInjectedInstance(ClientWorld.class);
     }
 
     /**
@@ -1492,6 +1495,188 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     @Override
     public boolean isCollidedVertically() {
         return this.player.collidedVertically;
+    }
+
+    /**
+     * Opens a sign editor.
+     *
+     * @param signTileEntity The sign to be edited.
+     */
+    @Override
+    public void openSignEditor(Object signTileEntity) {
+        this.player.openSignEditor((SignTileEntity) signTileEntity);
+    }
+
+    /**
+     * Opens a minecart command block.
+     *
+     * @param commandBlock The minecart command block to be opened.
+     */
+    @Override
+    public void openMinecartCommandBlock(Object commandBlock) {
+        this.player.openMinecartCommandBlock((CommandBlockLogic) commandBlock);
+    }
+
+    /**
+     * Opens a command block.
+     *
+     * @param commandBlock The command block to be opened.
+     */
+    @Override
+    public void openCommandBlock(Object commandBlock) {
+        this.player.openCommandBlock((CommandBlockTileEntity) commandBlock);
+    }
+
+    /**
+     * Opens a structure block.
+     *
+     * @param structureBlock The structure block to be opened.
+     */
+    @Override
+    public void openStructureBlock(Object structureBlock) {
+        this.player.openStructureBlock((StructureBlockTileEntity) structureBlock);
+    }
+
+    /**
+     * Opens a jigsaw.
+     *
+     * @param jigsaw The jigsaw to be opened.
+     */
+    @Override
+    public void openJigsaw(Object jigsaw) {
+        this.player.openJigsaw((JigsawTileEntity) jigsaw);
+    }
+
+    /**
+     * Opens a horse inventory
+     *
+     * @param horse     The horse that has an inventory
+     * @param inventory Inventory of the horse
+     */
+    @Override
+    public void openHorseInventory(Object horse, Object inventory) {
+        this.player.openHorseInventory((AbstractHorseEntity) horse, (IInventory) inventory);
+    }
+
+    /**
+     * Opens a merchant inventory.
+     *
+     * @param merchantOffers  The offers of the merchant
+     * @param container       The container identifier for this merchant
+     * @param levelProgress   The level progress of this merchant.<br>
+     *                        <b>Note:</b><br>
+     *                        1 = Novice<br>
+     *                        2 = Apprentice<br>
+     *                        3 = Journeyman<br>
+     *                        4 = Expert<br>
+     *                        5 = Master
+     * @param experience      The total experience for this villager (Always 0 for the wandering trader)
+     * @param regularVillager {@code True} if this is a regular villager,
+     *                        otherwise {@code false} for the wandering trader. When {@code false},
+     *                        hides the villager level  and some other GUI elements
+     * @param refreshable     {@code True} for regular villagers and {@code false} for the wandering trader.
+     *                        If {@code true}, the "Villagers restock up to two times per day".
+     */
+    @Override
+    public void openMerchantInventory(
+            Object merchantOffers,
+            int container,
+            int levelProgress,
+            int experience,
+            boolean regularVillager,
+            boolean refreshable
+    ) {
+        this.player.openMerchantContainer(
+                container,
+                (MerchantOffers) merchantOffers,
+                levelProgress,
+                experience,
+                regularVillager,
+                refreshable
+        );
+    }
+
+    /**
+     * Opens a book.
+     *
+     * @param itemStack The item stack which should be a book.
+     * @param hand      The hand of this player.
+     */
+    @Override
+    public void openBook(Object itemStack, Hand hand) {
+        this.player.openBook((ItemStack) itemStack, this.handSerializer.serialize(hand));
+    }
+
+    /**
+     * Prepare this player for spawning.
+     */
+    @Override
+    public void preparePlayerToSpawn() {
+        this.player.preparePlayerToSpawn();
+    }
+
+    /**
+     * Whether block actions are restricted for this player.
+     *
+     * @param clientWorld    This world of this player
+     * @param blockPos This position of this block
+     * @param gameMode This game mode of this player
+     * @return {@code true} if this player has restricted block actions, otherwise {@code false}
+     */
+    @Override
+    public boolean blockActionRestricted(ClientWorld clientWorld, Object blockPos, GameMode gameMode) {
+        return this.player.blockActionRestricted(
+                (net.minecraft.world.World) this.getWorld().getMinecraftWorld(),
+                (BlockPos) blockPos,
+                this.gameModeSerializer.serialize(gameMode)
+        );
+    }
+
+    /**
+     * Spawns sweep particles.
+     */
+    @Override
+    public void spawnSweepParticles() {
+        this.player.spawnSweepParticles();
+    }
+
+    /**
+     * Respawns this player.
+     */
+    @Override
+    public void respawnPlayer() {
+        this.player.respawnPlayer();
+    }
+
+    /**
+     * Sends the abilities of this player to the server.
+     */
+    @Override
+    public void sendPlayerAbilities() {
+        this.player.sendPlayerAbilities();
+    }
+
+    /**
+     * Updates the game mode of this player.
+     * <br>
+     * <b>Note:</b> This is only on the server side.
+     *
+     * @param gameMode The new game of this player
+     */
+    @Override
+    public void updateGameMode(GameMode gameMode) {
+        this.player.setGameType(this.gameModeSerializer.serialize(gameMode));
+    }
+
+    /**
+     * Enchants the given item stack with the cost.
+     *
+     * @param itemStack The item stack to enchant
+     * @param cost      The cost of the enchant
+     */
+    @Override
+    public void enchantItem(Object itemStack, int cost) {
+        this.player.onEnchant((ItemStack) itemStack, cost);
     }
 
     /**

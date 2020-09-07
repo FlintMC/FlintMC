@@ -5,9 +5,16 @@ import net.labyfy.component.player.Player;
 import java.util.List;
 
 /**
- * Represents a world
+ * Represents the world of this client
  */
-public interface World {
+public interface ClientWorld {
+
+    /**
+     * Retrieves the minecraft world.
+     *
+     * @return the minecraft world.
+     */
+    Object getMinecraftWorld();
 
     /**
      * Retrieves the time of this world.

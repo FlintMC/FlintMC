@@ -3,13 +3,10 @@ package net.labyfy.component.player;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
-import net.labyfy.component.player.util.CooldownTracking;
-import net.labyfy.component.player.util.EntityPose;
-import net.labyfy.component.player.util.Hand;
-import net.labyfy.component.player.util.PlayerClothing;
+import net.labyfy.component.player.util.*;
 import net.labyfy.component.player.util.sound.Sound;
 import net.labyfy.component.player.util.sound.SoundCategory;
-import net.labyfy.component.player.world.World;
+import net.labyfy.component.player.world.ClientWorld;
 
 import java.util.UUID;
 
@@ -37,7 +34,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      *
      * @return the world of this player.
      */
-    World getWorld();
+    ClientWorld getWorld();
 
     /**
      * Retrieves the game profile of this player.
@@ -991,6 +988,144 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      * @return {@code true} if the player is collided vertically, otherwise {@code false}
      */
     boolean isCollidedVertically();
+
+    /**
+     * Opens a sign editor.
+     *
+     * @param signTileEntity The sign to be edited.
+     */
+    // TODO: 06.09.2020 Replaces the Object to SignTileEntity when the Entity API is ready
+    void openSignEditor(Object signTileEntity);
+
+    /**
+     * Opens a minecart command block.
+     *
+     * @param commandBlock The minecart command block to be opened.
+     */
+    // TODO: 06.09.2020 Replaces the Object to CommandBlockLogic when the Entity API / Command API is ready
+    void openMinecartCommandBlock(Object commandBlock);
+
+    /**
+     * Opens a command block.
+     *
+     * @param commandBlock The command block to be opened.
+     */
+    // TODO: 06.09.2020 Replaces the Object to CommandBlockTileEntity when the Entity API / Command API is ready
+    void openCommandBlock(Object commandBlock);
+
+    /**
+     * Opens a structure block.
+     *
+     * @param structureBlock The structure block to be opened.
+     */
+    // TODO: 06.09.2020 Replaces the Object to StructureBlockTileEntity when the Entity API is ready
+    void openStructureBlock(Object structureBlock);
+
+    /**
+     * Opens a jigsaw.
+     *
+     * @param jigsaw The jigsaw to be opened.
+     */
+    // TODO: 06.09.2020 Replaces the Object to JigsawTileEntity when the Entity API is ready
+    void openJigsaw(Object jigsaw);
+
+    /**
+     * Opens a horse inventory
+     *
+     * @param horse     The horse that has an inventory
+     * @param inventory Inventory of the horse
+     */
+    // TODO: 06.09.2020 (Parameter 1) Replaces the Object to AbstractHorseEntity when the Entity API is ready
+    // TODO: 06.09.2020 (Parameter 2) Replaces the Object to Inventory when the Inventory API is ready
+    void openHorseInventory(Object horse, Object inventory);
+
+    /**
+     * Opens a merchant inventory.
+     *
+     * @param merchantOffers  The offers of the merchant
+     * @param container       The container identifier for this merchant
+     * @param levelProgress   The level progress of this merchant.<br>
+     *                        <b>Note:</b><br>
+     *                        1 = Novice<br>
+     *                        2 = Apprentice<br>
+     *                        3 = Journeyman<br>
+     *                        4 = Expert<br>
+     *                        5 = Master
+     * @param experience      The total experience for this villager (Always 0 for the wandering trader)
+     * @param regularVillager {@code True} if this is a regular villager,
+     *                        otherwise {@code false} for the wandering trader. When {@code false},
+     *                        hides the villager level  and some other GUI elements
+     * @param refreshable     {@code True} for regular villagers and {@code false} for the wandering trader.
+     *                        If {@code true}, the "Villagers restock up to two times per day".
+     */
+    // TODO: 06.09.2020  (Parameter 1) Replaces the Object to MerchantOffers when the (Item API / Entity API)? is ready
+    void openMerchantInventory(
+            Object merchantOffers,
+            int container,
+            int levelProgress,
+            int experience,
+            boolean regularVillager,
+            boolean refreshable
+    );
+
+    /**
+     * Opens a book.
+     *
+     * @param itemStack The item stack which should be a book.
+     * @param hand      The hand of this player.
+     */
+    // TODO: 06.09.2020 (Parameter 1) Replaces Object to ItemStack when the Item API is ready.
+    void openBook(Object itemStack, Hand hand);
+
+    /**
+     * Prepare this player for spawning.
+     */
+    void preparePlayerToSpawn();
+
+    /**
+     * Whether block actions are restricted for this player.
+     *
+     * @param clientWorld    This world of this player
+     * @param blockPos This position of this block
+     * @param gameMode This game mode of this player
+     * @return {@code true} if this player has restricted block actions, otherwise {@code false}
+     */
+    // TODO: 06.09.2020 (Parameter 2) Replaces Object to BlockPos when the Block API is ready.
+    boolean blockActionRestricted(ClientWorld clientWorld, Object blockPos, GameMode gameMode);
+
+    /**
+     * Spawns sweep particles.
+     */
+    void spawnSweepParticles();
+
+    /**
+     * Respawns this player.
+     */
+    void respawnPlayer();
+
+    /**
+     * Sends the abilities of this player to the server.
+     */
+    void sendPlayerAbilities();
+
+    /**
+     * Updates the game mode of this player.
+     * <br>
+     * <b>Note:</b> This is only on the server side.
+     *
+     * @param gameMode The new game of this player
+     */
+    void updateGameMode(GameMode gameMode);
+
+
+    /**
+     * Enchants the given item stack with the cost.
+     *
+     * @param itemStack The item stack to enchant
+     * @param cost      The cost of the enchant
+     */
+    void enchantItem(Object itemStack, int cost);
+
 
     /**
      * A factory class for {@link Player}

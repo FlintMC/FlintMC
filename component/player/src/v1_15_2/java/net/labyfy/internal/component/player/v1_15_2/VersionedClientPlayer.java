@@ -6,19 +6,22 @@ import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.player.ClientPlayer;
-import net.labyfy.component.player.inventory.PlayerInventory;
 import net.labyfy.component.player.overlay.TabOverlay;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.serializer.util.HandSerializer;
-import net.labyfy.component.player.serializer.util.HandSideSerializer;
-import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
-import net.labyfy.component.player.serializer.util.PoseSerializer;
+import net.labyfy.component.player.serializer.util.*;
 import net.labyfy.component.player.serializer.util.sound.SoundCategorySerializer;
 import net.labyfy.component.player.serializer.util.sound.SoundSerializer;
+import net.labyfy.component.player.util.Hand;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.passive.horse.AbstractHorseEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.MerchantOffers;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.play.client.CChatMessagePacket;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.Collections;
@@ -36,6 +39,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     protected VersionedClientPlayer(
             HandSerializer handSerializer,
             HandSideSerializer handSideSerializer,
+            GameModeSerializer gameModeSerializer,
             GameProfileSerializer gameProfileSerializer,
             MinecraftComponentMapper minecraftComponentMapper,
             PlayerClothingSerializer playerClothingSerializer,
@@ -46,6 +50,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
         super(
                 handSerializer,
                 handSideSerializer,
+                gameModeSerializer,
                 gameProfileSerializer,
                 minecraftComponentMapper,
                 playerClothingSerializer,
@@ -77,8 +82,8 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
      * @return the inventory of this player
      */
     @Override
-    public PlayerInventory getPlayerInventory() {
-        return null;
+    public Object getPlayerInventory() {
+        return this.clientPlayer.inventory;
     }
 
     /**
@@ -335,6 +340,64 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     }
 
     /**
+     * Retrieves the statistics manager of this player.
+     *
+     * @return the statistics manager of this player.
+     */
+    @Override
+    public Object getStatistics() {
+        return this.clientPlayer.getStats();
+    }
+
+    /**
+     * Retrieves the recipe book of this player.
+     *
+     * @return the recipe book of this player.
+     */
+    @Override
+    public Object getRecipeBook() {
+        return this.clientPlayer.getRecipeBook();
+    }
+
+    /**
+     * Removes the highlight a recipe.
+     *
+     * @param recipe The recipe to removing the highlighting.
+     */
+    @Override
+    public void removeRecipeHighlight(Object recipe) {
+        this.clientPlayer.removeRecipeHighlight((IRecipe<?>) recipe);
+    }
+
+    /**
+     * Updates the health of this player.
+     * <br><br>
+     * <b>Note:</b> This is only on the client side.
+     *
+     * @param health The new health of this player.
+     */
+    @Override
+    public void updatePlayerHealth(float health) {
+        this.clientPlayer.setPlayerSPHealth(health);
+    }
+
+    /**
+     * Sends the abilities of this player to the server.
+     */
+    @Override
+    public void sendPlayerAbilities() {
+        this.clientPlayer.sendPlayerAbilities();
+    }
+
+    /**
+     * Updates the entity action state of this player.
+     */
+    @Override
+    public void updateEntityActionState() {
+        this.clientPlayer.updateEntityActionState();
+    }
+
+    /**
      * Sends a status message to this player.
      *
      * @param component The message for this status.
@@ -345,6 +408,119 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
         this.clientPlayer.sendStatusMessage(
                 (ITextComponent) this.minecraftComponentMapper.toMinecraft(component),
                 actionBar
+        );
+    }
+
+    /**
+     * Opens a sign editor.
+     *
+     * @param signTileEntity The sign to be edited.
+     */
+    @Override
+    public void openSignEditor(Object signTileEntity) {
+        this.clientPlayer.openSignEditor((SignTileEntity) signTileEntity);
+    }
+
+    /**
+     * Opens a minecart command block.
+     *
+     * @param commandBlock The minecart command block to be opened.
+     */
+    @Override
+    public void openMinecartCommandBlock(Object commandBlock) {
+        this.clientPlayer.openMinecartCommandBlock((CommandBlockLogic) commandBlock);
+    }
+
+    /**
+     * Opens a command block.
+     *
+     * @param commandBlock The command block to be opened.
+     */
+    @Override
+    public void openCommandBlock(Object commandBlock) {
+        this.clientPlayer.openCommandBlock((CommandBlockTileEntity) commandBlock);
+    }
+
+    /**
+     * Opens a structure block.
+     *
+     * @param structureBlock The structure block to be opened.
+     */
+    @Override
+    public void openStructureBlock(Object structureBlock) {
+        this.clientPlayer.openStructureBlock((StructureBlockTileEntity) structureBlock);
+    }
+
+    /**
+     * Opens a jigsaw.
+     *
+     * @param jigsaw The jigsaw to be opened.
+     */
+    @Override
+    public void openJigsaw(Object jigsaw) {
+        this.clientPlayer.openJigsaw((JigsawTileEntity) jigsaw);
+    }
+
+    /**
+     * Opens a book.
+     *
+     * @param itemStack The item stack which should be a book.
+     * @param hand      The hand of this player.
+     */
+    @Override
+    public void openBook(Object itemStack, Hand hand) {
+        this.clientPlayer.openBook((ItemStack) itemStack, this.handSerializer.serialize(hand));
+    }
+
+    /**
+     * Opens a horse inventory
+     *
+     * @param horse     The horse that has an inventory
+     * @param inventory Inventory of the horse
+     */
+    @Override
+    public void openHorseInventory(Object horse, Object inventory) {
+        this.clientPlayer.openHorseInventory(
+                (AbstractHorseEntity) horse,
+                (IInventory) inventory
+        );
+    }
+
+    /**
+     * Opens a merchant inventory.
+     *
+     * @param merchantOffers  The offers of the merchant
+     * @param container       The container identifier for this merchant
+     * @param levelProgress   The level progress of this merchant.<br>
+     *                        <b>Note:</b><br>
+     *                        1 = Novice<br>
+     *                        2 = Apprentice<br>
+     *                        3 = Journeyman<br>
+     *                        4 = Expert<br>
+     *                        5 = Master
+     * @param experience      The total experience for this villager (Always 0 for the wandering trader)
+     * @param regularVillager {@code True} if this is a regular villager,
+     *                        otherwise {@code false} for the wandering trader. When {@code false},
+     *                        hides the villager level  and some other GUI elements
+     * @param refreshable     {@code True} for regular villagers and {@code false} for the wandering trader.
+     *                        If {@code true}, the "Villagers restock up to two times per day".
+     */
+    @Override
+    public void openMerchantInventory(
+            Object merchantOffers,
+            int container,
+            int levelProgress,
+            int experience,
+            boolean regularVillager,
+            boolean refreshable
+    ) {
+        this.clientPlayer.openMerchantContainer(
+                container,
+                (MerchantOffers) merchantOffers,
+                levelProgress,
+                experience,
+                regularVillager,
+                refreshable
         );
     }
 }

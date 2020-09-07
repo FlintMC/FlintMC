@@ -2,7 +2,6 @@ package net.labyfy.component.player;
 
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.overlay.TabOverlay;
-import net.labyfy.component.player.inventory.PlayerInventory;
 
 import java.util.List;
 
@@ -17,7 +16,8 @@ public interface ClientPlayer<T> extends Player<T> {
      *
      * @return the inventory of this player
      */
-    PlayerInventory getPlayerInventory();
+    // TODO: 07.09.2020 Replaces the Object to PlayerInventory when the Inventory API is ready
+    Object getPlayerInventory();
 
     /**
      * Retrieves the armor contents of this player.
@@ -193,6 +193,44 @@ public interface ClientPlayer<T> extends Player<T> {
      * @return {@code true} if the player is holding the sneak key, otherwise {@code false}
      */
     boolean isHoldingSneakKey();
+
+    /**
+     * Retrieves the statistics manager of this player.
+     *
+     * @return the statistics manager of this player.
+     */
+    // TODO: 06.09.2020 Replaces the Object to StatisticsManager when the Statistics API is ready.
+    Object getStatistics();
+
+    /**
+     * Retrieves the recipe book of this player.
+     *
+     * @return the recipe book of this player.
+     */
+    // TODO: 06.09.2020 Replaces the Object to ClientRecipeBook/RecipeBook when the Item API is ready.
+    Object getRecipeBook();
+
+    /**
+     * Removes the highlight a recipe.
+     *
+     * @param recipe The recipe to removing the highlighting.
+     */
+    // TODO: 06.09.2020 Replaces the Object to Recipe when the Item API is ready.
+    void removeRecipeHighlight(Object recipe);
+
+    /**
+     * Updates the health of this player.
+     * <br><br>
+     * <b>Note:</b> This is only on the client side.
+     *
+     * @param health The new health of this player.
+     */
+    void updatePlayerHealth(float health);
+
+    /**
+     * Updates the entity action state of this player.
+     */
+    void updateEntityActionState();
 
     /**
      * A factory class for {@link ClientPlayer}
