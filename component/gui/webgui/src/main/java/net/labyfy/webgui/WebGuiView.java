@@ -9,4 +9,11 @@ public interface WebGuiView {
    * as closing the window if the view has wrapped a window.
    */
   void close();
+
+  /**
+   * Navigates the view to the given URL.
+   *
+   * @param url The url to navigate to
+   */
+  void setURL(String url);
 }

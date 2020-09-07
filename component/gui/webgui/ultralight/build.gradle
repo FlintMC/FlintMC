@@ -19,6 +19,7 @@ dependencies {
 
     api project(':component:gui:webgui')
     implementation 'net.labymedia:ultralight-java-base:0.1.0'
+    implementation 'org.lwjgl:lwjgl-opengl:3.2.2'
 
     labyfy project(':component:gui:webgui')
 }
