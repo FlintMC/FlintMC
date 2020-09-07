@@ -1626,7 +1626,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     @Override
     public boolean blockActionRestricted(ClientWorld clientWorld, Object blockPos, GameMode gameMode) {
         return this.player.blockActionRestricted(
-                (net.minecraft.world.World) this.getWorld().getMinecraftWorld(),
+                (net.minecraft.world.World) this.getWorld().getClientWorld(),
                 (BlockPos) blockPos,
                 this.gameModeSerializer.serialize(gameMode)
         );

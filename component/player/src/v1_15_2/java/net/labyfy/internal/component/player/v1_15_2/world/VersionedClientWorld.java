@@ -45,7 +45,7 @@ public class VersionedClientWorld implements ClientWorld {
      * @return the minecraft world.
      */
     @Override
-    public Object getMinecraftWorld() {
+    public Object getClientWorld() {
         return this.clientWorld;
     }
 

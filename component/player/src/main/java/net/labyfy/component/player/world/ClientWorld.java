@@ -14,7 +14,7 @@ public interface ClientWorld {
      *
      * @return the minecraft world.
      */
-    Object getMinecraftWorld();
+    Object getClientWorld();
 
     /**
      * Retrieves the time of this world.
