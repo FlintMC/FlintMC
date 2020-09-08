@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import net.labyfy.component.gui.GuiController;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.internal.webgui.ultralight.view.UltralightMainWebGuiView;
@@ -40,7 +41,7 @@ public class UltralightWebGuiController implements WebGuiController {
 
   private UltralightPlatform platform;
   private UltralightRenderer renderer;
-  private WebGuiView mainView;
+  private UltralightMainWebGuiView mainView;
 
   @Inject
   private UltralightWebGuiController(@InjectLogger Logger logger, GuiController guiController) {
@@ -54,47 +55,54 @@ public class UltralightWebGuiController implements WebGuiController {
    * Runs Ultralight setup and initializes the native files.
    */
   @Task(Tasks.PRE_MINECRAFT_INITIALIZE)
-  public void setupUltralight() throws UltralightLoadException {
-    logger.debug("Setting up Ultralight...");
+  public void setupUltralightNatives() throws UltralightLoadException {
+    logger.debug("Setting up Ultralight natives...");
 
     // Extract the native libraries into the run directory and load them from there
     // TODO: This works on Windows, but could cause issues on Linux and OSX
     Path runDirectory = Paths.get(".");
     // UltralightJava.extractNativeLibrary(runDirectory);
     UltralightJava.load(runDirectory);
+  }
 
+  /**
+   * Wires up the Ultralight main view with the controller.
+   */
+  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
+  public void setupUltralight() throws UltralightLoadException {
+    logger.debug("Setting up Ultralight...");
+
+    // NOTE: This **needs** to be called on the render thread, else Ultralight will not work!
     // Get the ultralight platform singleton
     platform = UltralightPlatform.instance();
     logger.trace("Ultralight platform singleton at 0x{}\n", Long.toHexString(platform.getHandle()));
 
     // Configure ultralight
-    platform.setConfig(
-        new UltralightConfig()
-            .resourcePath("./resources")
-            .fontHinting(FontHinting.NORMAL)
-            .deviceScale(1.0)
-            .faceWinding(FaceWinding.COUNTER_CLOCKWISE)
-            .userAgent("Labyfy") // TODO: Use better user agent (possibly unify with framework?)
-            .useGpuRenderer(useGPURenderer)
-    );
+    platform.setConfig(new UltralightConfig()
+        .resourcePath("./resources")
+        .fontHinting(FontHinting.NORMAL)
+        .deviceScale(1.0)
+        .faceWinding(FaceWinding.COUNTER_CLOCKWISE)
+        .userAgent("Labyfy") // TODO: Use better user agent (possibly unify with framework?)
+        .useGpuRenderer(useGPURenderer));
+
+    // Configure the platform
+    platform.usePlatformFontLoader();
+    platform.usePlatformFileSystem(".");
+    platform.setLogger(InjectionHolder.getInjectedInstance(UltralightLoggingBridge.class));
 
     // Create the renderer
     renderer = UltralightRenderer.create();
-  }
 
-  /**
-   * Wires up the Ultralight main view with the controller.
-   *
-   * @param view The view to wire up (dependency injected)
-   */
-  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void setupMainView(UltralightMainWebGuiView view) {
-    logger.debug("Registering Ultralight main view as component");
-    guiController.registerComponent(view);
+    // Create the view displayed in the minecraft window
+    this.mainView = InjectionHolder.getInjectedInstance(UltralightMainWebGuiView.class);
 
-    this.mainView = view;
+    // The view needs to be known by the GUI controller in order to call back to it
+    guiController.registerComponent(this.mainView);
+
+    // Set up the view and register it internally
     this.mainView.setURL("http://localhost:8080");
-    this.views.add(view);
+    this.views.add(this.mainView);
   }
 
   /**
@@ -137,6 +145,7 @@ public class UltralightWebGuiController implements WebGuiController {
      *       case, either method 2.1 needs to be used or another way of passing the texture to the separate context.
      *
      */
+    renderer.update();
     renderer.render();
 
     if(useGPURenderer) {

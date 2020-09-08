@@ -10,6 +10,7 @@ import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
 import net.labymedia.ultralight.UltralightSurface;
 import net.labymedia.ultralight.UltralightView;
+import net.labymedia.ultralight.bitmap.UltralightBitmapSurface;
 import net.labymedia.ultralight.math.IntRect;
 
 import java.nio.ByteBuffer;
@@ -47,7 +48,12 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
   public boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution) {
     // TODO: Maybe allow the Javascript running in the view to signal whether transparency is required, and if
     //       it is not required, cancel the rendering of other stuff and render in the BEFORE ExecutionTime?
-    return executionTime == Hook.ExecutionTime.AFTER;
+    if(executionTime == Hook.ExecutionTime.BEFORE) {
+      execution.getCancellation().cancel();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override
