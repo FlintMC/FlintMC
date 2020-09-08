@@ -233,6 +233,22 @@ public interface ClientPlayer<T> extends Player<T> {
     void updateEntityActionState();
 
     /**
+     * Sends a plugin message to the server.
+     *
+     * @param channel The name of this channel
+     * @param data    The data to be written into the channel
+     */
+    void sendPluginMessage(String channel, byte[] data);
+
+    /**
+     * Retrieves the network communicator of this player.<br>
+     * The network communicator allows this player to send packets to the server.
+     *
+     * @return the network communicator of this player.
+     */
+    Object getConnection();
+
+    /**
      * A factory class for {@link ClientPlayer}
      */
     interface Factory {

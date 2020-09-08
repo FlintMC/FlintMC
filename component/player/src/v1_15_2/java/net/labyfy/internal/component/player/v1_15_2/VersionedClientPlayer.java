@@ -1,6 +1,7 @@
 package net.labyfy.internal.component.player.v1_15_2;
 
 import com.google.inject.Inject;
+import io.netty.buffer.Unpooled;
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.implement.Implement;
@@ -20,8 +21,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CChatMessagePacket;
+import net.minecraft.network.play.client.CCustomPayloadPacket;
 import net.minecraft.tileentity.*;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.Collections;
@@ -395,6 +399,33 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     @Override
     public void updateEntityActionState() {
         this.clientPlayer.updateEntityActionState();
+    }
+
+    /**
+     * Sends a plugin message to the server.
+     *
+     * @param channel The name of this channel
+     * @param data    The data to be written into the channel
+     */
+    @Override
+    public void sendPluginMessage(String channel, byte[] data) {
+        this.clientPlayer.connection.sendPacket(
+                new CCustomPayloadPacket(
+                        new ResourceLocation(channel),
+                        new PacketBuffer(Unpooled.wrappedBuffer(data))
+                )
+        );
+    }
+
+    /**
+     * Retrieves the network communicator of this player.<br>
+     * The network communicator allows this player to send packets to the server.
+     *
+     * @return the network communicator of this player.
+     */
+    @Override
+    public Object getConnection() {
+        return this.clientPlayer.connection;
     }
 
     /**
