@@ -2,16 +2,24 @@ package net.labyfy.items.inventory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.builder.ComponentBuilder;
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.stereotype.NameSpacedKey;
 import net.labyfy.items.ItemRegistry;
 import net.labyfy.items.mapper.MinecraftItemMapper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.DispenserContainer;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static net.labyfy.items.inventory.InventoryDimension.rect;
 
 @Singleton
 @Implement(value = InventoryController.class, version = "1.15.2")
@@ -19,9 +27,13 @@ public class VersionedInventoryController extends DefaultInventoryController {
 
   private final Map<Class<? extends Container>, InventoryType> minecraftMappings = new HashMap<>();
 
+  private final ItemRegistry itemRegistry;
+  private final MinecraftItemMapper itemMapper;
+  private final MinecraftComponentMapper componentMapper;
+
   @Inject
   public VersionedInventoryController(ItemRegistry itemRegistry, ComponentBuilder.Factory componentFactory,
-                                      InventoryType.Factory typeFactory, MinecraftItemMapper itemMapper) {
+                                      InventoryType.Factory typeFactory, MinecraftItemMapper itemMapper, MinecraftComponentMapper componentMapper) {
     super(
         typeFactory.newBuilder()
             .registryName(NameSpacedKey.minecraft("player"))
@@ -30,19 +42,25 @@ public class VersionedInventoryController extends DefaultInventoryController {
             .build()
     );
 
-    /*this.registerDefaultType(ChestContainer.class, typeFactory.newBuilder()
+    this.itemRegistry = itemRegistry;
+    this.itemMapper = itemMapper;
+    this.componentMapper = componentMapper;
+
+    this.registerDefaultType(ChestContainer.class, typeFactory.newBuilder()
         .registryName(NameSpacedKey.minecraft("chest"))
         .defaultTitle(componentFactory.translation().translationKey("generic_9x3").build())
         .defaultDimension(rect(9, 3))
+        .factory((type, title, dimension) -> null) // TODO these factories are necessary to create custom inventories that aren't automatically opened by a chest, the server, ...
         .customizableDimensions()
         .build());
     this.registerDefaultType(DispenserContainer.class, typeFactory.newBuilder()
         .registryName(NameSpacedKey.minecraft("dispenser"))
         .defaultTitle(componentFactory.translation().translationKey("generic_3x3").build())
+        .factory((type, title, dimension) -> null)
         .defaultDimension(rect(3, 3))
         .build());
 
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("anvil")).defaultDimension(other(3)).build());
+    /*this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("anvil")).defaultDimension(other(3)).build());
     this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("beacon")).defaultDimension(other(3)).build());
     this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("blast_furnace")).defaultDimension(other(1)).build());
     this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("brewing_stand")).defaultDimension(other(5)).build());
@@ -66,8 +84,42 @@ public class VersionedInventoryController extends DefaultInventoryController {
   }
 
   @Override
-  public Inventory getOpenInventory() {
-    return null;
+  protected boolean isOpened(Inventory inventory) {
+    Container container = Minecraft.getInstance().player.openContainer;
+    if (container == null) {
+      return false;
+    }
+
+    return inventory instanceof VersionedInventory && ((VersionedInventory) inventory).getContainer().equals(container);
+  }
+
+  @Override
+  protected Inventory defineOpenInventory() {
+    if (!this.canOpenInventories()) {
+      return null;
+    }
+
+    Container container = Minecraft.getInstance().player.openContainer;
+    if (container == null) {
+      return null;
+    }
+
+    InventoryType type = this.minecraftMappings.get(container.getClass());
+    if (type == null) {
+      return null;
+    }
+
+    InventoryDimension dimension = type.isCustomizableDimensions() ?
+        InventoryDimension.other(container.getInventory().size() - this.getPlayerInventory().getDimension().getSlotCount()) : // TODO this can also be a rect
+        type.getDefaultDimension();
+
+    ChatComponent title = type.getDefaultTitle();
+    Screen currentScreen = Minecraft.getInstance().currentScreen;
+    if (currentScreen instanceof ContainerScreen && currentScreen.getTitle() != null) {
+      title = this.componentMapper.fromMinecraft(currentScreen.getTitle());
+    }
+
+    return new VersionedInventory(this.itemRegistry, container.windowId, type, dimension, this.itemMapper, () -> container, title);
   }
 
   @Override

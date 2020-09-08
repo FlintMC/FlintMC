@@ -13,6 +13,8 @@ public abstract class DefaultInventoryController implements InventoryController 
 
   private final Map<NameSpacedKey, InventoryType> inventoryTypes = new HashMap<>();
 
+  private Inventory openInventory;
+
   public DefaultInventoryController(InventoryType playerInventoryType) {
     this.registerType(playerInventoryType);
     this.playerInventory = (PlayerInventory) playerInventoryType.newInventory();
@@ -38,4 +40,17 @@ public abstract class DefaultInventoryController implements InventoryController 
   public PlayerInventory getPlayerInventory() {
     return this.canOpenInventories() ? this.playerInventory : null;
   }
+
+  @Override
+  public Inventory getOpenInventory() {
+    if (this.openInventory == null || !this.isOpened(this.openInventory)) {
+      this.openInventory = this.defineOpenInventory();
+    }
+    return this.openInventory;
+  }
+
+  protected abstract boolean isOpened(Inventory inventory);
+
+  protected abstract Inventory defineOpenInventory();
+
 }

@@ -3,17 +3,19 @@ package net.labyfy.items.inventory;
 import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.items.ItemRegistry;
 import net.labyfy.items.ItemStack;
+import net.labyfy.items.inventory.player.PlayerArmorPart;
 import net.labyfy.items.inventory.player.PlayerHand;
+import net.labyfy.items.inventory.player.PlayerInventory;
 import net.labyfy.items.mapper.MinecraftItemMapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.NonNullList;
 
-public class VersionedPlayerInventory extends DefaultPlayerInventory {
+public class VersionedPlayerInventory extends VersionedInventory implements PlayerInventory {
 
   private final MinecraftItemMapper itemMapper;
 
   public VersionedPlayerInventory(ItemRegistry registry, InventoryType type, InventoryDimension dimension, ComponentBuilder.Factory componentFactory, MinecraftItemMapper itemMapper) {
-    super(registry, type, dimension, componentFactory);
+    super(registry, 0, type, dimension, itemMapper, () -> Minecraft.getInstance().player.container, componentFactory.text().text("Player").build());
     this.itemMapper = itemMapper;
   }
 
@@ -30,23 +32,30 @@ public class VersionedPlayerInventory extends DefaultPlayerInventory {
   }
 
   @Override
-  protected ItemStack getArmorSlot(int slot) {
-    return this.getItem(Minecraft.getInstance().player.inventory.armorInventory, slot);
+  public ItemStack getItem(int slot) throws IndexOutOfBoundsException {
+    this.validateSlot(slot);
+
+    if (slot >= 0 && slot <= 35) {
+      return this.getItem(Minecraft.getInstance().player.inventory.mainInventory, slot);
+    }
+    if (slot >= 36 && slot <= 39) {
+      return this.getItem(Minecraft.getInstance().player.inventory.armorInventory, slot - 36);
+    }
+    if (this.getHandSlot(PlayerHand.OFF_HAND) == slot) {
+      return this.getItem(Minecraft.getInstance().player.inventory.offHandInventory, 0);
+    }
+    throw new IndexOutOfBoundsException("Invalid slot provided: " + slot);
   }
 
   @Override
-  protected ItemStack getMainSlot(int slot) {
-    return this.getItem(Minecraft.getInstance().player.inventory.mainInventory, slot);
+  public ItemStack getArmorPart(PlayerArmorPart part) {
+    return this.getItem(Minecraft.getInstance().player.inventory.armorInventory, part.getIndex());
   }
 
   @Override
-  protected ItemStack getOffHandSlot() {
-    return this.getItem(Minecraft.getInstance().player.inventory.offHandInventory, 0);
-  }
-
-  @Override
-  public ItemStack[] getArmorContents() {
-    return this.map(Minecraft.getInstance().player.inventory.armorInventory);
+  public ItemStack getItemInHand(PlayerHand hand) {
+    int slot = this.getHandSlot(hand);
+    return slot == -1 ? super.registry.getAirType().createStack() : this.getItem(slot);
   }
 
   @Override
@@ -65,17 +74,12 @@ public class VersionedPlayerInventory extends DefaultPlayerInventory {
 
   @Override
   public ItemStack getCursor() {
-    return null;
+    return null; // TODO
   }
 
   @Override
   public ItemStack[] getContents() {
     return this.map(Minecraft.getInstance().player.inventory.mainInventory);
-  }
-
-  @Override
-  public void setContents(ItemStack[] contents) throws IllegalArgumentException {
-    // TODO implement?
   }
 
 }

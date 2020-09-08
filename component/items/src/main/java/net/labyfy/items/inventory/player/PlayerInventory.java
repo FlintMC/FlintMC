@@ -5,7 +5,13 @@ import net.labyfy.items.inventory.Inventory;
 
 public interface PlayerInventory extends Inventory {
 
-  ItemStack[] getArmorContents();
+  /**
+   * Retrieves a part of the armor of this inventory.
+   *
+   * @param part The non-null part to get the armor from
+   * @return The non-null item stack in the given slot
+   */
+  ItemStack getArmorPart(PlayerArmorPart part);
 
   ItemStack getItemInHand(PlayerHand hand);
 

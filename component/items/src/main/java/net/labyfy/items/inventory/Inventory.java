@@ -30,12 +30,7 @@ public interface Inventory {
    */
   ChatComponent getTitle();
 
-  /**
-   * Sets the title of this inventory to be displayed at the top.
-   *
-   * @param component The new non-null title of this inventory
-   */
-  void setTitle(ChatComponent component);
+  InventoryDimension getDimension();
 
   /**
    * Retrieves every item in this inventory ordered by their slot. Modifications to this array will have no effect.
@@ -61,6 +56,8 @@ public interface Inventory {
    *                                   slot in this inventory
    */
   ItemStack getItem(int slot) throws IndexOutOfBoundsException;
+
+  void setItem(int slot, ItemStack item) throws IndexOutOfBoundsException;
 
   /**
    * Counts all items in this inventory matching the given type. If a stack has multiple items on it, every single one

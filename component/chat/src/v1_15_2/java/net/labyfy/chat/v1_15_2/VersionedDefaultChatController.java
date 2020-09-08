@@ -1,5 +1,6 @@
 package net.labyfy.chat.v1_15_2;
 
+import com.google.inject.Singleton;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.controller.ChatController;
 import net.labyfy.chat.controller.DefaultChatController;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Singleton
 @Implement(value = ChatController.class, version = "1.15.2")
 public class VersionedDefaultChatController extends DefaultChatController {
 

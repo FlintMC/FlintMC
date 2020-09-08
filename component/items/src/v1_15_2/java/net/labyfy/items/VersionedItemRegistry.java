@@ -1,6 +1,7 @@
 package net.labyfy.items;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.component.inject.implement.Implement;
@@ -17,6 +18,7 @@ import net.minecraft.util.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
+@Singleton
 @Implement(value = ItemRegistry.class, version = "1.15.2")
 public class VersionedItemRegistry extends DefaultItemRegistry {
 

@@ -1,5 +1,7 @@
 package net.labyfy.items.inventory;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Objects;
 
 public class InventoryDimension {
@@ -14,11 +16,32 @@ public class InventoryDimension {
     this.slotCount = slotCount;
   }
 
+  /**
+   * Creates a new inventory dimension that represents a rectangle inventory like chests and dispensers.
+   *
+   * @param width  The width of the inventory in slots
+   * @param height The height of the inventory in slots
+   * @return The new non-null dimension with the given width and height and width * height and the number of slots
+   * @throws IllegalArgumentException If the width is zero or lower
+   * @throws IllegalArgumentException If the height is zero or lower
+   */
   public static InventoryDimension rect(int width, int height) {
+    Preconditions.checkArgument(width > 0, "Width has to be greater than zero");
+    Preconditions.checkArgument(height > 0, "Height has to be greater than zero");
+
     return new InventoryDimension(width, height, width * height);
   }
 
+  /**
+   * Creates a new inventory dimension that represents any inventory like merchants and enchantment tables.
+   *
+   * @param slotCount The number of slots in the inventory
+   * @return The new non-null dimension with the given slot count and -1 as the width and height
+   * @throws IllegalArgumentException If the given slotCount is zero or lower
+   */
   public static InventoryDimension other(int slotCount) {
+    Preconditions.checkArgument(slotCount > 0, "SlotCount has to be greater than zero");
+
     return new InventoryDimension(-1, -1, slotCount);
   }
 

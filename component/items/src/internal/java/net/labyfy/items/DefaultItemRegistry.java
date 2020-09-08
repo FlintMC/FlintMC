@@ -1,7 +1,6 @@
 package net.labyfy.items;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.Singleton;
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.component.resources.ResourceLocationProvider;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-@Singleton
 public abstract class DefaultItemRegistry implements ItemRegistry {
 
   protected final ItemType.Factory itemFactory;
