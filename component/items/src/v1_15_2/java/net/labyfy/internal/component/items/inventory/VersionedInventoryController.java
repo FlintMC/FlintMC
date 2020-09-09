@@ -1,5 +1,6 @@
 package net.labyfy.internal.component.items.inventory;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.chat.MinecraftComponentMapper;
@@ -14,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.DispenserContainer;
 
@@ -137,11 +139,64 @@ public class VersionedInventoryController extends DefaultInventoryController {
   }
 
   @Override
+  public boolean hasInventoryOpened() {
+    return Minecraft.getInstance().currentScreen instanceof ContainerScreen;
+  }
+
+  @Override
   public void performClick(InventoryClick click, int slot) {
+    Preconditions.checkArgument(this.hasInventoryOpened(), "Cannot click into the inventory if no inventory is opened");
+
+    switch (click) {
+      case DROP_ALL:
+        this.clickWindow(slot, 1, ClickType.THROW);
+        break;
+
+      case DROP:
+        this.clickWindow(slot, 0, ClickType.THROW);
+        break;
+
+      case CLONE:
+        this.clickWindow(slot, 2, ClickType.CLONE);
+        break;
+
+      case PICKUP_ALL:
+        this.clickWindow(slot, 0, ClickType.PICKUP);
+        break;
+
+      case PICKUP_HALF:
+        this.clickWindow(slot, 1, ClickType.PICKUP);
+        break;
+
+      case MOVE:
+        this.clickWindow(slot, 0, ClickType.QUICK_MOVE);
+        break;
+
+      case MERGE_ALL:
+        this.clickWindow(slot, 0, ClickType.PICKUP);
+        this.clickWindow(slot, 0, ClickType.PICKUP_ALL);
+        break;
+
+      default:
+        throw new IllegalArgumentException("Unknown click: " + click);
+    }
   }
 
   @Override
   public void performHotkeyPress(int hotkey, int slot) throws IndexOutOfBoundsException {
+    Preconditions.checkArgument(this.hasInventoryOpened(), "Cannot click into the inventory if no inventory is opened");
+
+    if (hotkey < 0 || hotkey > 8) {
+      throw new IllegalArgumentException("Invalid hotkey provided: " + hotkey + " (Not in range 0 - 8)");
+    }
+
+    this.clickWindow(slot, hotkey, ClickType.SWAP);
+  }
+
+  private void clickWindow(int slot, int button, ClickType type) {
+    int windowId = ((ContainerScreen<?>) Minecraft.getInstance().currentScreen).getContainer().windowId;
+
+    Minecraft.getInstance().playerController.windowClick(windowId, slot, button, type, Minecraft.getInstance().player);
   }
 
 }

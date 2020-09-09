@@ -45,6 +45,13 @@ public enum InventoryClick {
    * <p>
    * The default keybind is Left and Right Mouse Button.
    */
-  MOVE
+  MOVE,
+
+  /**
+   * Collect one stack (or less, depending on the contents of the inventory) of a specific item in an inventory.
+   * <p>
+   * The default keybind is Double Left Mouse Button.
+   */
+  MERGE_ALL
 
 }
