@@ -45,13 +45,6 @@ public interface InventoryController {
   void registerType(InventoryType type);
 
   /**
-   * Shows the given inventory to the player.
-   *
-   * @param inventory The inventory to be shown
-   */
-  void showInventory(Inventory inventory);
-
-  /**
    * Whether inventories can be opened.
    *
    * @return {@code true} if can inventories be opened, otherwise {@code false}

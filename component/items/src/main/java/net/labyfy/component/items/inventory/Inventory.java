@@ -89,21 +89,4 @@ public interface Inventory {
    */
   int[] findSlots(ItemType type);
 
-  /**
-   * A factory class for {@link Inventory}
-   */
-  interface Factory {
-
-    /**
-     * Creates an {@link Inventory} with an type, title and the dimension.
-     *
-     * @param type      The type of the created inventory
-     * @param title     The title of the created inventory
-     * @param dimension The size of the created inventory
-     * @return the created inventory
-     */
-    Inventory createInventory(InventoryType type, ChatComponent title, InventoryDimension dimension);
-
-  }
-
 }

@@ -18,9 +18,9 @@ public abstract class DefaultInventoryController implements InventoryController 
 
   private Inventory openInventory;
 
-  public DefaultInventoryController(InventoryType playerInventoryType) {
-    this.registerType(playerInventoryType);
-    this.playerInventory = (PlayerInventory) playerInventoryType.newInventory();
+  public DefaultInventoryController(PlayerInventory playerInventory) {
+    this.registerType(playerInventory.getType());
+    this.playerInventory = playerInventory;
   }
 
   @Override

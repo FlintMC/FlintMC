@@ -39,38 +39,6 @@ public interface InventoryType {
   boolean isCustomizableDimensions();
 
   /**
-   * Retrieves a new inventory of this inventory type.
-   *
-   * @return a new inventory of this inventory type.
-   */
-  Inventory newInventory();
-
-  /**
-   * Retrieves a new inventory of this inventory type.
-   *
-   * @param title The new title of the inventory
-   * @return a new inventory with a new name of this inventory type.
-   */
-  Inventory newInventory(ChatComponent title);
-
-  /**
-   * Retrieves a new inventory of this inventory type.
-   *
-   * @param dimension The new dimension of the inventory
-   * @return a new inventory with a new dimension of this inventory type.
-   */
-  Inventory newInventory(InventoryDimension dimension);
-
-  /**
-   * Retrieves a new inventory of this inventory type.
-   *
-   * @param title     The new title of the inventory
-   * @param dimension The new dimension of the inventory
-   * @return a new inventory with a new title and dimension of this inventory type.
-   */
-  Inventory newInventory(ChatComponent title, InventoryDimension dimension);
-
-  /**
    * A builder class for {@link InventoryType}
    */
   interface Builder {
@@ -107,21 +75,13 @@ public interface InventoryType {
     Builder customizableDimensions();
 
     /**
-     * Sets the {@link Inventory.Factory} for the inventory type.
-     *
-     * @param factory The factory for the built inventory type.
-     * @return this builder, for chaining
-     */
-    Builder factory(Inventory.Factory factory);
-
-    /**
      * Builds a new {@link InventoryType} with the parameters specified in this builder.
      * <p>
-     * The only parameters that must be specified are {@link #registryName(NameSpacedKey)},
-     * {@link #defaultDimension(InventoryDimension)} and {@link #factory(Inventory.Factory)}.
+     * The only parameters that must be specified are {@link #registryName(NameSpacedKey)} and {@link
+     * #defaultDimension(InventoryDimension)}.
      * <p>
-     * If no {@link #defaultTitle(ChatComponent)} has been provided, a new {@link TextComponent} will be used with
-     * the {@link #registryName(NameSpacedKey)}.
+     * If no {@link #defaultTitle(ChatComponent)} has been provided, a new {@link TextComponent} will be used with the
+     * {@link #registryName(NameSpacedKey)}.
      *
      * @return the built inventory type.
      */

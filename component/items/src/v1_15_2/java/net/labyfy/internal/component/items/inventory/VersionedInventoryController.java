@@ -20,6 +20,7 @@ import net.minecraft.inventory.container.DispenserContainer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static net.labyfy.component.items.inventory.InventoryDimension.other;
 import static net.labyfy.component.items.inventory.InventoryDimension.rect;
 
 @Singleton
@@ -35,12 +36,15 @@ public class VersionedInventoryController extends DefaultInventoryController {
   @Inject
   public VersionedInventoryController(ItemRegistry itemRegistry, ComponentBuilder.Factory componentFactory,
                                       InventoryType.Factory typeFactory, MinecraftItemMapper itemMapper, MinecraftComponentMapper componentMapper) {
-    super(
+    super(new VersionedPlayerInventory(
+        itemRegistry,
         typeFactory.newBuilder()
             .registryName(NameSpacedKey.minecraft("player"))
-            .defaultDimension(InventoryDimension.other(41))
-            .factory((type, title, dimension) -> new VersionedPlayerInventory(itemRegistry, type, dimension, componentFactory, itemMapper))
-            .build()
+            .defaultDimension(other(41))
+            .build(),
+        other(41),
+        componentFactory,
+        itemMapper)
     );
 
     this.itemRegistry = itemRegistry;
@@ -51,13 +55,11 @@ public class VersionedInventoryController extends DefaultInventoryController {
         .registryName(NameSpacedKey.minecraft("chest"))
         .defaultTitle(componentFactory.translation().translationKey("generic_9x3").build())
         .defaultDimension(rect(9, 3))
-        .factory((type, title, dimension) -> null) // TODO these factories are necessary to create custom inventories that aren't automatically opened by a chest, the server, ...
         .customizableDimensions()
         .build());
     this.registerDefaultType(DispenserContainer.class, typeFactory.newBuilder()
         .registryName(NameSpacedKey.minecraft("dispenser"))
         .defaultTitle(componentFactory.translation().translationKey("generic_3x3").build())
-        .factory((type, title, dimension) -> null)
         .defaultDimension(rect(3, 3))
         .build());
 
@@ -111,7 +113,7 @@ public class VersionedInventoryController extends DefaultInventoryController {
     }
 
     InventoryDimension dimension = type.isCustomizableDimensions() ?
-        InventoryDimension.other(container.getInventory().size() - this.getPlayerInventory().getDimension().getSlotCount()) : // TODO this can also be a rect
+        other(container.getInventory().size() - this.getPlayerInventory().getDimension().getSlotCount()) : // TODO this can also be a rect
         type.getDefaultDimension();
 
     ChatComponent title = type.getDefaultTitle();
@@ -121,10 +123,6 @@ public class VersionedInventoryController extends DefaultInventoryController {
     }
 
     return new VersionedInventory(this.itemRegistry, container.windowId, type, dimension, this.itemMapper, () -> container, title);
-  }
-
-  @Override
-  public void showInventory(Inventory inventory) {
   }
 
   @Override
