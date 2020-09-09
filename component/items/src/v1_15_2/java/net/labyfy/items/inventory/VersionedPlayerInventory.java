@@ -8,6 +8,7 @@ import net.labyfy.items.inventory.player.PlayerHand;
 import net.labyfy.items.inventory.player.PlayerInventory;
 import net.labyfy.items.mapper.MinecraftItemMapper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.NonNullList;
 
 public class VersionedPlayerInventory extends VersionedInventory implements PlayerInventory {
@@ -76,6 +77,13 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
   public ItemStack getCursor() {
     Object item = Minecraft.getInstance().player.inventory.getItemStack();
     return item == null ? super.registry.getAirType().createStack() : this.itemMapper.fromMinecraft(item);
+  }
+
+  @Override
+  public void closeInventory() {
+    if (Minecraft.getInstance().currentScreen instanceof ContainerScreen) {
+      Minecraft.getInstance().player.closeScreen();
+    }
   }
 
   @Override
