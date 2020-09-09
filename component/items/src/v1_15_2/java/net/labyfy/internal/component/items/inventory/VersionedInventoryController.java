@@ -27,7 +27,7 @@ import static net.labyfy.component.items.inventory.InventoryDimension.rect;
 @Implement(value = InventoryController.class, version = "1.15.2")
 public class VersionedInventoryController extends DefaultInventoryController {
 
-  private final Map<Class<? extends Container>, InventoryType> minecraftMappings = new HashMap<>();
+  private final Map<Class<? extends Container>, InternalInventoryMapping> minecraftMappings = new HashMap<>();
 
   private final ItemRegistry itemRegistry;
   private final MinecraftItemMapper itemMapper;
@@ -51,12 +51,12 @@ public class VersionedInventoryController extends DefaultInventoryController {
     this.itemMapper = itemMapper;
     this.componentMapper = componentMapper;
 
-    this.registerDefaultType(ChestContainer.class, typeFactory.newBuilder()
+    this.registerDefaultType(ChestContainer.class, InternalInventoryMapping.create(typeFactory.newBuilder()
         .registryName(NameSpacedKey.minecraft("chest"))
         .defaultTitle(componentFactory.translation().translationKey("generic_9x3").build())
         .defaultDimension(rect(9, 3))
         .customizableDimensions()
-        .build());
+        .build(), slotCount -> InventoryDimension.rect(9, slotCount / 9)));
     this.registerDefaultType(DispenserContainer.class, typeFactory.newBuilder()
         .registryName(NameSpacedKey.minecraft("dispenser"))
         .defaultTitle(componentFactory.translation().translationKey("generic_3x3").build())
@@ -81,9 +81,14 @@ public class VersionedInventoryController extends DefaultInventoryController {
     this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("stonecutter")).defaultDimension(other(2)).build());*/
   }
 
-  private void registerDefaultType(Class<? extends Container> handleClass, InventoryType type) {
-    super.registerType(type);
-    this.minecraftMappings.put(handleClass, type);
+  private void registerDefaultType(Class<? extends Container> handleClass, InventoryType inventoryType) {
+    // any inventory type that can't be customized and is no rectangle
+    this.registerDefaultType(handleClass, InternalInventoryMapping.create(inventoryType));
+  }
+
+  private void registerDefaultType(Class<? extends Container> handleClass, InternalInventoryMapping mapping) {
+    super.registerType(mapping.getInventoryType());
+    this.minecraftMappings.put(handleClass, mapping);
   }
 
   @Override
@@ -107,13 +112,14 @@ public class VersionedInventoryController extends DefaultInventoryController {
       return null;
     }
 
-    InventoryType type = this.minecraftMappings.get(container.getClass());
-    if (type == null) {
+    InternalInventoryMapping mapping = this.minecraftMappings.get(container.getClass());
+    if (mapping == null) {
       return null;
     }
+    InventoryType type = mapping.getInventoryType();
 
     InventoryDimension dimension = type.isCustomizableDimensions() ?
-        other(container.getInventory().size() - this.getPlayerInventory().getDimension().getSlotCount()) : // TODO this can also be a rect
+        mapping.createDimension(container.getInventory().size() - Minecraft.getInstance().player.inventory.mainInventory.size()) :
         type.getDefaultDimension();
 
     ChatComponent title = type.getDefaultTitle();
