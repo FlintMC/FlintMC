@@ -74,7 +74,8 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
 
   @Override
   public ItemStack getCursor() {
-    return null; // TODO
+    Object item = Minecraft.getInstance().player.inventory.getItemStack();
+    return item == null ? super.registry.getAirType().createStack() : this.itemMapper.fromMinecraft(item);
   }
 
   @Override
