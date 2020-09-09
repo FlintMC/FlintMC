@@ -22,7 +22,7 @@ import java.util.UUID;
 @Implement(value = NetworkPlayerInfo.class, version = "1.15.2")
 public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
 
-    private final Player player;
+    private final Player.Factory player;
     private final GameModeSerializer<GameType> gameModeSerializer;
     private final ResourceLocationProvider resourceLocationProvider;
     private final SkinModelSerializer<String> skinModelSerializer;
@@ -35,7 +35,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      */
     @Inject
     public VersionedNetworkPlayerInfo(
-            Player player,
+            Player.Factory player,
             GameModeSerializer gameModeSerializer,
             ResourceLocationProvider provider,
             SkinModelSerializer skinModelSerializer
@@ -53,7 +53,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      */
     @Override
     public GameProfile getGameProfile() {
-        return this.player.getGameProfile();
+        return this.get().getGameProfile();
     }
 
     /**
@@ -63,7 +63,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      */
     @Override
     public int getResponseTime() {
-        return this.getPlayerInfo(this.player.getUniqueId()).getResponseTime();
+        return this.getPlayerInfo(this.get().getUniqueId()).getResponseTime();
     }
 
     /**
@@ -75,7 +75,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     public GameMode getGameMode() {
         return this.gameModeSerializer.deserialize(
                 this.getPlayerInfo(
-                        this.player.getUniqueId()
+                        this.get().getUniqueId()
                 ).getGameType()
         );
     }
@@ -87,7 +87,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      */
     @Override
     public int getLastHealth() {
-        return this.getPlayerInfo(this.player.getUniqueId()).getLastHealth();
+        return this.getPlayerInfo(this.get().getUniqueId()).getLastHealth();
     }
 
     /**
@@ -97,7 +97,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      */
     @Override
     public int getDisplayHealth() {
-        return this.getPlayerInfo(this.player.getUniqueId()).getDisplayHealth();
+        return this.getPlayerInfo(this.get().getUniqueId()).getDisplayHealth();
     }
 
     /**
@@ -107,7 +107,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      */
     @Override
     public long getLastHealthTime() {
-        return this.getPlayerInfo(this.player.getUniqueId()).getLastHealthTime();
+        return this.getPlayerInfo(this.get().getUniqueId()).getLastHealthTime();
     }
 
     /**
@@ -117,7 +117,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      */
     @Override
     public long getHealthBlinkTime() {
-        return this.getPlayerInfo(this.player.getUniqueId()).getHealthBlinkTime();
+        return this.getPlayerInfo(this.get().getUniqueId()).getHealthBlinkTime();
     }
 
     /**
@@ -127,7 +127,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      */
     @Override
     public long getRenderVisibilityId() {
-        return this.getPlayerInfo(this.player.getUniqueId()).getRenderVisibilityId();
+        return this.getPlayerInfo(this.get().getUniqueId()).getRenderVisibilityId();
     }
 
     /**
@@ -139,7 +139,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     public SkinModel getSkinModel() {
         return this.skinModelSerializer.deserialize(
                 this.getPlayerInfo(
-                        this.player.getUniqueId()
+                        this.get().getUniqueId()
                 ).getSkinType()
         );
     }
@@ -153,7 +153,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     public ResourceLocation getSkinLocation() {
         return this.resourceLocationProvider.get(
                 this.getPlayerInfo(
-                        this.player.getUniqueId()
+                        this.get().getUniqueId()
                 ).getLocationSkin().getPath()
         );
     }
@@ -167,7 +167,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     public ResourceLocation getCloakLocation() {
         return this.resourceLocationProvider.get(
                 this.getPlayerInfo(
-                        this.player.getUniqueId()
+                        this.get().getUniqueId()
                 ).getLocationCape().getPath()
         );
     }
@@ -181,7 +181,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     public ResourceLocation getElytraLocation() {
         return this.resourceLocationProvider.get(
                 this.getPlayerInfo(
-                        this.player.getUniqueId()
+                        this.get().getUniqueId()
                 ).getLocationElytra().getPath()
         );
     }
@@ -218,6 +218,10 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
 
     private net.minecraft.client.network.play.NetworkPlayerInfo getPlayerInfo(UUID uniqueId) {
         return Minecraft.getInstance().getConnection().getPlayerInfo(uniqueId);
+    }
+
+    private Player get() {
+        return this.player.create(Minecraft.getInstance().player);
     }
 
 }

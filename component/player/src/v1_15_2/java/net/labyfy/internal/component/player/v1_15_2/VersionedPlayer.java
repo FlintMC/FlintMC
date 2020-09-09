@@ -1680,6 +1680,106 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     }
 
     /**
+     * Retrieves the opened container of this player.
+     *
+     * @return the opened container of this player.
+     */
+    @Override
+    public Object getOpenedContainer() {
+        return this.player.openContainer;
+    }
+
+    /**
+     * Retrieves the opened container of this player.
+     *
+     * @return the opened container of this player.
+     */
+    @Override
+    public Object getPlayerContainer() {
+        return this.player.container;
+    }
+
+    /**
+     * Retrieves the previous camera yaw of this player.
+     *
+     * @return the previous camera yaw of this player.
+     */
+    @Override
+    public float getPrevCameraYaw() {
+        return this.player.prevCameraYaw;
+    }
+
+    /**
+     * Retrieves the camera yaw of this player.
+     *
+     * @return the camera yaw of this player.
+     */
+    @Override
+    public float getCameraYaw() {
+        return this.player.cameraYaw;
+    }
+
+    /**
+     * Retrieves the previous chasing position X-axis of this player.
+     *
+     * @return the previous chasing position X-axis  of this player.
+     */
+    @Override
+    public double getPrevChasingPosX() {
+        return this.player.prevChasingPosX;
+    }
+
+    /**
+     * Retrieves the previous chasing position Y-axis of this player.
+     *
+     * @return the previous chasing position Y-axis  of this player.
+     */
+    @Override
+    public double getPrevChasingPosY() {
+        return this.player.prevChasingPosY;
+    }
+
+    /**
+     * Retrieves the previous chasing position Z-axis of this player.
+     *
+     * @return the previous chasing position Z-axis  of this player.
+     */
+    @Override
+    public double getPrevChasingPosZ() {
+        return this.player.prevChasingPosZ;
+    }
+
+    /**
+     * Retrieves the chasing position X-axis of this player.
+     *
+     * @return the chasing position X-axis  of this player.
+     */
+    @Override
+    public double getChasingPosX() {
+        return this.player.chasingPosX;
+    }
+
+    /**
+     * Retrieves the chasing position Y-axis of this player.
+     *
+     * @return the chasing position Y-axis  of this player.
+     */
+    @Override
+    public double getChasingPosY() {
+        return this.player.chasingPosY;
+    }
+
+    /**
+     * Retrieves the  chasing position Z-axis of this player.
+     *
+     * @return the chasing position Z-axis  of this player.
+     */
+    @Override
+    public double getChasingPosZ() {
+        return this.player.chasingPosZ;
+    }
+
+    /**
      * Removes the item from the cooldown tracking.
      *
      * @param item The item to be removed

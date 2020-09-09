@@ -1085,9 +1085,9 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Whether block actions are restricted for this player.
      *
-     * @param clientWorld    This world of this player
-     * @param blockPos This position of this block
-     * @param gameMode This game mode of this player
+     * @param clientWorld This world of this player
+     * @param blockPos    This position of this block
+     * @param gameMode    This game mode of this player
      * @return {@code true} if this player has restricted block actions, otherwise {@code false}
      */
     // TODO: 06.09.2020 (Parameter 2) Replaces Object to BlockPos when the Block API is ready.
@@ -1126,6 +1126,77 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      */
     void enchantItem(Object itemStack, int cost);
 
+    /**
+     * Retrieves the opened container of this player.
+     *
+     * @return the opened container of this player.
+     */
+    // TODO: 09.09.2020 Replaces the Object to Container when the Inventory/Item API is ready
+    Object getOpenedContainer();
+
+    /**
+     * Retrieves the container of this player.
+     *
+     * @return the container of this player.
+     */
+    // TODO: 09.09.2020 Replaces the Object to Container when the Inventory/Item API is ready
+    Object getPlayerContainer();
+
+    /**
+     * Retrieves the previous camera yaw of this player.
+     *
+     * @return the previous camera yaw of this player.
+     */
+    float getPrevCameraYaw();
+
+    /**
+     * Retrieves the camera yaw of this player.
+     *
+     * @return the camera yaw of this player.
+     */
+    float getCameraYaw();
+
+    /**
+     * Retrieves the previous chasing position X-axis of this player.
+     *
+     * @return the previous chasing position X-axis  of this player.
+     */
+    double getPrevChasingPosX();
+
+    /**
+     * Retrieves the previous chasing position Y-axis of this player.
+     *
+     * @return the previous chasing position Y-axis  of this player.
+     */
+    double getPrevChasingPosY();
+
+    /**
+     * Retrieves the previous chasing position Z-axis of this player.
+     *
+     * @return the previous chasing position Z-axis  of this player.
+     */
+    double getPrevChasingPosZ();
+
+    /**
+     * Retrieves the chasing position X-axis of this player.
+     *
+     * @return the chasing position X-axis  of this player.
+     */
+    double getChasingPosX();
+
+    /**
+     * Retrieves the chasing position Y-axis of this player.
+     *
+     * @return the chasing position Y-axis  of this player.
+     */
+    double getChasingPosY();
+
+    /**
+     * Retrieves the  chasing position Z-axis of this player.
+     *
+     * @return the chasing position Z-axis  of this player.
+     */
+    double getChasingPosZ();
 
     /**
      * A factory class for {@link Player}
