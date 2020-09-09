@@ -1,5 +1,8 @@
 package net.labyfy.items.inventory;
 
+/**
+ * An enumeration of all inventory clicks.
+ */
 public enum InventoryClick {
 
   /**

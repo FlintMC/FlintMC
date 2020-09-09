@@ -3,20 +3,59 @@ package net.labyfy.items.inventory;
 import net.labyfy.component.stereotype.NameSpacedKey;
 import net.labyfy.items.inventory.player.PlayerInventory;
 
+/**
+ * Represents a controller for inventories.
+ */
 public interface InventoryController {
 
+  /**
+   * Retrieves the opened inventory.
+   *
+   * @return the opened inventory.
+   */
   Inventory getOpenInventory();
 
+  /**
+   * Retrieves the player's inventory.
+   *
+   * @return the player's inventory.
+   */
   PlayerInventory getPlayerInventory();
 
+  /**
+   * Retrieves an array of all registered inventory types.
+   *
+   * @return an array of all registered inventory types.
+   */
   InventoryType[] getTypes();
 
+  /**
+   * Retrieves the inventory type by the given registry name.
+   *
+   * @param registryName The registry name of an inventory type
+   * @return an inventory with the registry name or {@code null}
+   */
   InventoryType getType(NameSpacedKey registryName);
 
+  /**
+   * Registers an inventory type to the controller.
+   *
+   * @param type The inventory type to register
+   */
   void registerType(InventoryType type);
 
+  /**
+   * Shows the given inventory to the player.
+   *
+   * @param inventory The inventory to be shown
+   */
   void showInventory(Inventory inventory);
 
+  /**
+   * Whether inventories can be opened.
+   *
+   * @return {@code true} if can inventories be opened, otherwise {@code false}
+   */
   boolean canOpenInventories();
 
   /**

@@ -30,6 +30,11 @@ public interface Inventory {
    */
   ChatComponent getTitle();
 
+  /**
+   * Retrieves the dimension of this inventory, which contains the size of the inventory.
+   *
+   * @return the size of this inventory.
+   */
   InventoryDimension getDimension();
 
   /**
@@ -57,6 +62,14 @@ public interface Inventory {
    */
   ItemStack getItem(int slot) throws IndexOutOfBoundsException;
 
+  /**
+   * Sets the given stack of items in the slot.
+   *
+   * @param slot The slot to which the stack of items to be set
+   * @param item The stack of items to set
+   * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to the highest possible
+   *                                   slot in this inventory.
+   */
   void setItem(int slot, ItemStack item) throws IndexOutOfBoundsException;
 
   /**
@@ -76,8 +89,19 @@ public interface Inventory {
    */
   int[] findSlots(ItemType type);
 
+  /**
+   * A factory class for {@link Inventory}
+   */
   interface Factory {
 
+    /**
+     * Creates an {@link Inventory} with an type, title and the dimension.
+     *
+     * @param type      The type of the created inventory
+     * @param title     The title of the created inventory
+     * @param dimension The size of the created inventory
+     * @return the created inventory
+     */
     Inventory createInventory(InventoryType type, ChatComponent title, InventoryDimension dimension);
 
   }

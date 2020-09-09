@@ -13,10 +13,28 @@ public interface PlayerInventory extends Inventory {
    */
   ItemStack getArmorPart(PlayerArmorPart part);
 
+  /**
+   * Retrieves an item from the player's hand.
+   *
+   * @param hand The hand to get the item from
+   * @return The non-null item stack in the given hand
+   */
   ItemStack getItemInHand(PlayerHand hand);
 
+  /**
+   * Retrieves the slot from the player's hand.
+   *
+   * @param hand The hand to get the slot from
+   * @return The slot from the given hand
+   */
   int getHandSlot(PlayerHand hand);
 
+  /**
+   * Whether the player has this hand.
+   *
+   * @param hand The hand to check
+   * @return {@code true} when the player has the given hand, otherwise {@code false}
+   */
   boolean hasHand(PlayerHand hand);
 
   /**
