@@ -65,22 +65,25 @@ public class VersionedInventoryController extends DefaultInventoryController {
         .defaultDimension(rect(3, 3))
         .build());
 
-    /*this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("anvil")).defaultDimension(other(3)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("beacon")).defaultDimension(other(3)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("blast_furnace")).defaultDimension(other(1)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("brewing_stand")).defaultDimension(other(5)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("crafting")).defaultDimension(other(10)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("enchantment")).defaultDimension(other(2)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("furnace")).defaultDimension(other(3)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("grindstone")).defaultDimension(other(3)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("hopper")).defaultDimension(other(5)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("lectern")).defaultDimension(other(0)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("loom")).defaultDimension(other(4)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("merchant")).defaultDimension(other(3)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("shulker_box")).defaultDimension(rect(9, 3)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("smoker")).defaultDimension(other(3)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("cartography_table")).defaultDimension(other(3)).build());
-    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("stonecutter")).defaultDimension(other(2)).build());*/
+    /*
+    TODO implement more types than the chest and dispenser
+
+    this.registerDefaultType(RepairContainer.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("anvil")).defaultDimension(other(3)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("beacon")).defaultDimension(other(3)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("blast_furnace")).defaultDimension(other(1)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("brewing_stand")).defaultDimension(other(5)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("crafting")).defaultDimension(other(10)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("enchantment")).defaultDimension(other(2)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("furnace")).defaultDimension(other(3)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("grindstone")).defaultDimension(other(3)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("hopper")).defaultDimension(other(5)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("lectern")).defaultDimension(other(0)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("loom")).defaultDimension(other(4)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("merchant")).defaultDimension(other(3)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("shulker_box")).defaultDimension(rect(9, 3)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("smoker")).defaultDimension(other(3)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("cartography_table")).defaultDimension(other(3)).build());
+    this.registerDefaultType(.class, typeFactory.newBuilder().registryName(NameSpacedKey.minecraft("stonecutter")).defaultDimension(other(2)).build());*/
   }
 
   private void registerDefaultType(Class<? extends Container> handleClass, InventoryType inventoryType) {
@@ -130,7 +133,7 @@ public class VersionedInventoryController extends DefaultInventoryController {
       title = this.componentMapper.fromMinecraft(currentScreen.getTitle());
     }
 
-    return new VersionedInventory(this.itemRegistry, container.windowId, type, dimension, this.itemMapper, () -> container, title);
+    return new VersionedOpenedInventory(this.itemRegistry, type, dimension, this.itemMapper, container, title);
   }
 
   @Override

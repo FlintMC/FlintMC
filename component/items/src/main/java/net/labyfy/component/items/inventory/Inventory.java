@@ -24,7 +24,7 @@ public interface Inventory {
   InventoryType getType();
 
   /**
-   * Retrieves the title of this inventory which will be displayed at the top.
+   * Retrieves the unmodifiable title of this inventory which will be displayed at the top.
    *
    * @return The non-null title of this inventory
    */

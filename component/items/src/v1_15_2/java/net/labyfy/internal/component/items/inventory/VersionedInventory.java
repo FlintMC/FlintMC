@@ -7,13 +7,12 @@ import net.labyfy.component.items.inventory.InventoryDimension;
 import net.labyfy.component.items.inventory.InventoryType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.util.NonNullList;
 
 import java.util.function.Supplier;
 
-public class VersionedInventory extends DefaultInventory {
+public abstract class VersionedInventory extends DefaultInventory {
 
-  private final MinecraftItemMapper mapper;
+  protected final MinecraftItemMapper mapper;
   private final Supplier<Container> containerSupplier;
   private final ChatComponent title;
 
@@ -32,17 +31,6 @@ public class VersionedInventory extends DefaultInventory {
   @Override
   public ChatComponent getTitle() {
     return this.title;
-  }
-
-  @Override
-  public ItemStack[] getContents() {
-    NonNullList<net.minecraft.item.ItemStack> items = this.getContainer().getInventory();
-    ItemStack[] contents = new ItemStack[super.getDimension().getSlotCount()];
-    for (int i = 0; i < contents.length; i++) {
-      contents[i] = this.mapper.fromMinecraft(items.get(i));
-    }
-
-    return contents;
   }
 
   @Override
