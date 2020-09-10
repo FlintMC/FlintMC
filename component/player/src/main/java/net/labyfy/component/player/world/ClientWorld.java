@@ -3,6 +3,7 @@ package net.labyfy.component.player.world;
 import net.labyfy.component.player.Player;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Represents the world of this client
@@ -31,11 +32,35 @@ public interface ClientWorld {
     int getPlayerCount();
 
     /**
+     * Adds a player to the collection.
+     *
+     * @param player The player to add
+     * @return {@code true} if this collection changed as a result of the call, otherwise {@code false}.
+     */
+    boolean addPlayer(Player player);
+
+    /**
+     * Removes all of the players of this collection that satisfy the given predicate. Error or runtime
+     * exception thrown during iteration or by the predicate are relayed to the caller.
+     *
+     * @param filter A predicate which returns {@code true} for players to removed
+     * @return {@code true} if any players were removed
+     */
+    boolean removeIfPlayer(Predicate<? super Player> filter);
+
+    /**
      * Retrieves a collection with all players of this world.
      *
      * @return a collection with all players of this world.
      */
     List<Player> getPlayers();
+
+    /**
+     * Retrieves the entity count of this world.
+     *
+     * @return the entity count of this world.
+     */
+    int getCountLoadedEntities();
 
     /**
      * Retrieves the dimension of this world.
