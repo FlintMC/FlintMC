@@ -16,6 +16,7 @@ import net.labyfy.component.player.util.Hand;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,10 @@ import net.minecraft.network.play.client.CChatMessagePacket;
 import net.minecraft.network.play.client.CCustomPayloadPacket;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 
 import java.util.Collections;
 import java.util.List;
@@ -553,5 +557,38 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
                 regularVillager,
                 refreshable
         );
+    }
+
+    /**
+     * Retrieves the current biome name of this player.
+     *
+     * @return the current biome name or {@code null}
+     */
+    @Override
+    public String getBiome() {
+        World world = (World) this.getWorld();
+        Entity renderViewEntity = Minecraft.getInstance().getRenderViewEntity();
+        if(renderViewEntity == null) return null;
+        BlockPos blockPos = new BlockPos(renderViewEntity);
+
+        if(world != null) {
+            String biomePath = Registry.BIOME.getKey(world.getBiome(blockPos)).getPath();
+            String[] split = biomePath.split("_");
+            StringBuilder builder = new StringBuilder();
+
+            for (int i = 0; i < split.length; i++) {
+                String biomeName = split[i];
+                biomeName = biomeName.substring(0, 1).toUpperCase() + biomeName.substring(1).toLowerCase();
+                if(i == split.length - 1) {
+                    builder.append(biomeName);
+                    break;
+                }
+                builder.append(biomeName).append(" ");
+            }
+
+            return builder.toString();
+        }
+
+        return null;
     }
 }

@@ -249,6 +249,13 @@ public interface ClientPlayer<T> extends Player<T> {
     Object getConnection();
 
     /**
+     * Retrieves the current biome name of this player.
+     *
+     * @return the current biome name or {@code null}
+     */
+    String getBiome();
+
+    /**
      * A factory class for {@link ClientPlayer}
      */
     interface Factory {
