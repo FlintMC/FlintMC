@@ -792,7 +792,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Sets the primary hand of this player.
      *
-     * @param side the primary hand of this player.
+     * @param side The new primary hand of this player.
      */
     @Override
     public void setPrimaryHand(Hand.Side side) {

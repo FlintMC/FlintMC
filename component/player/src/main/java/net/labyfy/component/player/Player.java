@@ -544,7 +544,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Sets the primary hand of this player.
      *
-     * @param side the primary hand of this player.
+     * @param side The new primary hand of this player.
      */
     void setPrimaryHand(Hand.Side side);
 

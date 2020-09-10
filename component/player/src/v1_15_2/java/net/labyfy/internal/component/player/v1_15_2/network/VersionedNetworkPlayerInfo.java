@@ -27,12 +27,6 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     private final ResourceLocationProvider resourceLocationProvider;
     private final SkinModelSerializer<String> skinModelSerializer;
 
-    /**
-     * Initializes a versioned network player info
-     *
-     * @param player The game profile this player
-     * @param provider    The resource location provider
-     */
     @Inject
     public VersionedNetworkPlayerInfo(
             Player.Factory player,
@@ -216,10 +210,21 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
         return this.getElytraLocation() != null;
     }
 
+    /**
+     * Retrieves a {@link net.minecraft.client.network.play.NetworkPlayerInfo} with the given unique identifier.
+     *
+     * @param uniqueId The unique identifier of the profile
+     * @return a {@link net.minecraft.client.network.play.NetworkPlayerInfo} or {@code null}
+     */
     private net.minecraft.client.network.play.NetworkPlayerInfo getPlayerInfo(UUID uniqueId) {
         return Minecraft.getInstance().getConnection().getPlayerInfo(uniqueId);
     }
 
+    /**
+     * Retrieves the player of this client.
+     *
+     * @return the client player
+     */
     private Player get() {
         return this.player.create(Minecraft.getInstance().player);
     }
