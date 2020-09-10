@@ -30,7 +30,7 @@ public class VersionedTabOverlay implements TabOverlay {
     /**
      * Retrieves the header of this player.
      *
-     * @return the header of this player
+     * @return The header of this player
      */
     @Override
     public ChatComponent getHeader() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
@@ -57,7 +57,7 @@ public class VersionedTabOverlay implements TabOverlay {
     /**
      * Retrieves the footer of this player.
      *
-     * @return the footer of this player.
+     * @return The footer of this player.
      */
     @Override
     public ChatComponent getFooter() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {

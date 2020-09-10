@@ -23,7 +23,7 @@ public class VersionedPropertyMapSerializer implements PropertyMapSerializer<com
      * to the Labyfy {@link PropertyMap}
      *
      * @param value The properties being deserialized
-     * @return a deserialized {@link PropertyMap}
+     * @return A deserialized {@link PropertyMap}
      */
     @Override
     public PropertyMap deserialize(com.mojang.authlib.properties.PropertyMap value) {
@@ -47,7 +47,7 @@ public class VersionedPropertyMapSerializer implements PropertyMapSerializer<com
      * to the Mojang {@link com.mojang.authlib.properties.PropertyMap}
      *
      * @param value The properties being serialized
-     * @return a serialized {@link com.mojang.authlib.properties.PropertyMap}
+     * @return A serialized {@link com.mojang.authlib.properties.PropertyMap}
      */
     @Override
     public com.mojang.authlib.properties.PropertyMap serialize(PropertyMap value) {

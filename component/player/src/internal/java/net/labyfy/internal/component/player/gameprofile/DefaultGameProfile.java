@@ -46,7 +46,7 @@ public class DefaultGameProfile implements GameProfile {
      * Retrieves the unique identifier of this game profile.
      * This may be null for partial profile data if constructed manually.
      *
-     * @return the unique identifier of the profile
+     * @return The unique identifier of the profile
      */
     @Override
     public UUID getUniqueId() {
@@ -57,7 +57,7 @@ public class DefaultGameProfile implements GameProfile {
      * Retrieves the display name of this game profile.
      * This may be null for partial profile data if constructed manually.
      *
-     * @return the name of the profile
+     * @return The name of the profile
      */
     @Override
     public String getName() {
@@ -67,7 +67,7 @@ public class DefaultGameProfile implements GameProfile {
     /**
      * Retrieves any known properties about this game profile.
      *
-     * @return a modifiable map of profile properties.
+     * @return A modifiable map of profile properties.
      */
     @Override
     public PropertyMap getProperties() {

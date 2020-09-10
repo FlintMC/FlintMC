@@ -10,7 +10,7 @@ public interface Sound {
     /**
      * Retrieves the resource location of this sound.
      *
-     * @return the resource location of this sound.
+     * @return The resource location of this sound.
      */
     ResourceLocation getName();
 
@@ -23,7 +23,7 @@ public interface Sound {
          * Creates a new {@link Sound} with the given path.
          *
          * @param path The path of the sound.
-         * @return the created sound.
+         * @return The created sound.
          */
         Sound create(String path);
     }

@@ -12,7 +12,7 @@ public interface Serializer<S, D> {
      * Deserializes the given {@link S} type to the {@link D} type
      *
      * @param value The {@link S} being deserialized
-     * @return a deserialized {@link D}
+     * @return A deserialized {@link D}
      */
     D deserialize(S value);
 
@@ -20,7 +20,7 @@ public interface Serializer<S, D> {
      * Serializes the given {@link D} type to the {@link S} type
      *
      * @param value The {@link D} being serialized
-     * @return a serialized {@link S}
+     * @return A serialized {@link S}
      */
     S serialize(D value);
 

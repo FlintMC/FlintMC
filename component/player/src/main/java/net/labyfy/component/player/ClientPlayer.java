@@ -14,7 +14,7 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the inventory of this player.
      *
-     * @return the inventory of this player
+     * @return The inventory of this player
      */
     // TODO: 07.09.2020 Replaces the Object to PlayerInventory when the Inventory API is ready
     Object getPlayerInventory();
@@ -22,7 +22,7 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the armor contents of this player.
      *
-     * @return the armor contents of this player.
+     * @return The armor contents of this player.
      */
     // TODO: 04.09.2020 Replaces the Object to ItemStack when the (Item API?) is ready
     List<Object> getArmorContents();
@@ -30,35 +30,35 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the experience level of this player.
      *
-     * @return the experience level of this player
+     * @return The experience level of this player
      */
     int getExperienceLevel();
 
     /**
      * Retrieves the experience total of this player.
      *
-     * @return the experience total of this player
+     * @return The experience total of this player
      */
     int getExperienceTotal();
 
     /**
      * Retrieves the experience of this player.
      *
-     * @return the experience of this player.
+     * @return The experience of this player.
      */
     float getExperience();
 
     /**
      * Retrieves the language of this player.
      *
-     * @return the language of this player
+     * @return The language of this player
      */
     String getLocale();
 
     /**
      * Retrieves the tab overlay of this player.
      *
-     * @return the tab overlay of this player.
+     * @return The tab overlay of this player.
      */
     TabOverlay getTabOverlay();
 
@@ -72,7 +72,7 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the <b>FOV</b> modifier of this player.
      *
-     * @return the fov modifier of this player
+     * @return The fov modifier of this player
      */
     float getFovModifier();
 
@@ -107,7 +107,7 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the server brand of this player.
      *
-     * @return the server brand of this player.
+     * @return The server brand of this player.
      */
     String getServerBrand();
 
@@ -121,21 +121,21 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the water brightness of this player.
      *
-     * @return the water brightness of this player.
+     * @return The water brightness of this player.
      */
     float getWaterBrightness();
 
     /**
      * Retrieves the previous time in portal of this player.
      *
-     * @return the previous time in portal of this player.
+     * @return The previous time in portal of this player.
      */
     float getPrevTimeInPortal();
 
     /**
      * Retrieves the time in portal of this player.
      *
-     * @return the time in portal of this player.
+     * @return The time in portal of this player.
      */
     float getTimeInPortal();
 
@@ -174,7 +174,7 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the horse jump power.
      *
-     * @return the horse jump power.
+     * @return The horse jump power.
      */
     float getHorseJumpPower();
 
@@ -197,7 +197,7 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the statistics manager of this player.
      *
-     * @return the statistics manager of this player.
+     * @return The statistics manager of this player.
      */
     // TODO: 06.09.2020 Replaces the Object to StatisticsManager when the Statistics API is ready.
     Object getStatistics();
@@ -205,7 +205,7 @@ public interface ClientPlayer<T> extends Player<T> {
     /**
      * Retrieves the recipe book of this player.
      *
-     * @return the recipe book of this player.
+     * @return The recipe book of this player.
      */
     // TODO: 06.09.2020 Replaces the Object to ClientRecipeBook/RecipeBook when the Item API is ready.
     Object getRecipeBook();
@@ -244,14 +244,14 @@ public interface ClientPlayer<T> extends Player<T> {
      * Retrieves the network communicator of this player.<br>
      * The network communicator allows this player to send packets to the server.
      *
-     * @return the network communicator of this player.
+     * @return The network communicator of this player.
      */
     Object getConnection();
 
     /**
      * Retrieves the current biome name of this player.
      *
-     * @return the current biome name or {@code null}
+     * @return The current biome name or {@code null}
      */
     String getBiome();
 
@@ -263,7 +263,7 @@ public interface ClientPlayer<T> extends Player<T> {
         /**
          * Creates a new {@link ClientPlayer}.
          *
-         * @return the created client player
+         * @return The created client player
          */
         ClientPlayer create();
 

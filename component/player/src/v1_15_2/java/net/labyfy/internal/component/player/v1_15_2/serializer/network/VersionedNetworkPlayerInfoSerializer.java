@@ -18,7 +18,7 @@ public class VersionedNetworkPlayerInfoSerializer implements NetworkPlayerInfoSe
      * to the Labyfy {@link NetworkPlayerInfo}
      *
      * @param value The network player info being deserialized
-     * @return a deserialized {@link NetworkPlayerInfo}
+     * @return A deserialized {@link NetworkPlayerInfo}
      */
     @Override
     public NetworkPlayerInfo deserialize(net.minecraft.client.network.play.NetworkPlayerInfo value) {
@@ -30,7 +30,7 @@ public class VersionedNetworkPlayerInfoSerializer implements NetworkPlayerInfoSe
      * to the {@link net.minecraft.client.network.play.NetworkPlayerInfo}
      *
      * @param value The network player info being serialized
-     * @return a serialized {@link net.minecraft.client.network.play.NetworkPlayerInfo}
+     * @return A serialized {@link net.minecraft.client.network.play.NetworkPlayerInfo}
      */
     @Override
     @Deprecated

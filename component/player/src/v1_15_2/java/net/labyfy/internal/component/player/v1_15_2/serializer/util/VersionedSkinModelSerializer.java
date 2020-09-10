@@ -16,7 +16,7 @@ public class VersionedSkinModelSerializer implements SkinModelSerializer<String>
      * Deserializes the internal Mojang skin name to the {@link SkinModel}
      *
      * @param value The skin name being deserialized
-     * @return a deserialized {@link SkinModel}
+     * @return A deserialized {@link SkinModel}
      */
     @Override
     public SkinModel deserialize(String value) {
@@ -35,7 +35,7 @@ public class VersionedSkinModelSerializer implements SkinModelSerializer<String>
      * Serializes the {@link SkinModel} to the internal Mojang skin name.
      *
      * @param value The skin model being serialized
-     * @return a serialized skin name
+     * @return A serialized skin name
      */
     @Override
     public String serialize(SkinModel value) {

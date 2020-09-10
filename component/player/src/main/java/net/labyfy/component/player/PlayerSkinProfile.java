@@ -11,28 +11,28 @@ public interface PlayerSkinProfile {
     /**
      * Retrieves the skin model of this player
      *
-     * @return the skin model of this player
+     * @return The skin model of this player
      */
     SkinModel getSkinModel();
 
     /**
      * Retrieves the location of the player's skin
      *
-     * @return the skin location
+     * @return The skin location
      */
     ResourceLocation getSkinLocation();
 
     /**
      * Retrieves the location of the player's cloak
      *
-     * @return the cloak location
+     * @return The cloak location
      */
     ResourceLocation getCloakLocation();
 
     /**
      * Retrieves the location of the player's elytra
      *
-     * @return the elytra location
+     * @return The elytra location
      */
     ResourceLocation getElytraLocation();
 

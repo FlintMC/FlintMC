@@ -16,7 +16,7 @@ public class VersionedHandSerializer implements HandSerializer<net.minecraft.uti
      * Deserializes the Mojang {@link net.minecraft.util.Hand} to the Labyfy {@link Hand}
      *
      * @param value The hand being deserialized
-     * @return a deserialized {@link Hand}
+     * @return A deserialized {@link Hand}
      */
     @Override
     public Hand deserialize(net.minecraft.util.Hand value) {
@@ -34,7 +34,7 @@ public class VersionedHandSerializer implements HandSerializer<net.minecraft.uti
      * Serializes the Labyfy {@link Hand} to the {@link net.minecraft.util.Hand}
      *
      * @param value The hand being serialized
-     * @return a serialized {@link net.minecraft.util.Hand}
+     * @return A serialized {@link net.minecraft.util.Hand}
      */
     @Override
     public net.minecraft.util.Hand serialize(Hand value) {

@@ -34,7 +34,7 @@ public enum GameMode {
     /**
      * Retrieves the game mode identifier
      *
-     * @return the game mode identifier
+     * @return The game mode identifier
      */
     public int getGameMode() {
         return this.ordinal();
@@ -43,7 +43,7 @@ public enum GameMode {
     /**
      * Retrieves the game mode name
      *
-     * @return the game mode name
+     * @return The game mode name
      */
     public String getName() {
         return this.name().toLowerCase();

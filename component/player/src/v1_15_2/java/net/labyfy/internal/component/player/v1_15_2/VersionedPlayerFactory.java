@@ -17,7 +17,7 @@ public class VersionedPlayerFactory implements Player.Factory<AbstractClientPlay
      * Creates a new {@link Player} with the given {@link AbstractClientPlayerEntity}.
      *
      * @param player The {@link AbstractClientPlayerEntity} to create this player
-     * @return the created player
+     * @return The created player
      */
     @Override
     public Player create(AbstractClientPlayerEntity player) {

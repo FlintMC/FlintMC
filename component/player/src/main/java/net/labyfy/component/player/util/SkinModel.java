@@ -28,7 +28,7 @@ public enum SkinModel {
     /**
      * Retrieves the official mojang name of this skin model
      *
-     * @return the official mojang name of this skin model
+     * @return The official mojang name of this skin model
      */
     public String getModel() {
         return model;

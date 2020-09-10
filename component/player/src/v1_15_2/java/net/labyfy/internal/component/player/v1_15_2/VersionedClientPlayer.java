@@ -87,7 +87,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the inventory of this player.
      *
-     * @return the inventory of this player
+     * @return The inventory of this player
      */
     @Override
     public Object getPlayerInventory() {
@@ -97,7 +97,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the armor contents of this player.
      *
-     * @return the armor contents of this player.
+     * @return The armor contents of this player.
      */
     @Override
     public List<Object> getArmorContents() {
@@ -107,7 +107,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the experience level of this player.
      *
-     * @return the experience level of this player
+     * @return The experience level of this player
      */
     @Override
     public int getExperienceLevel() {
@@ -117,7 +117,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the experience total of this player.
      *
-     * @return the experience total of this player
+     * @return The experience total of this player
      */
     @Override
     public int getExperienceTotal() {
@@ -127,7 +127,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the experience of this player.
      *
-     * @return the experience of this player.
+     * @return The experience of this player.
      */
     @Override
     public float getExperience() {
@@ -137,7 +137,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the language of this player.
      *
-     * @return the language of this player
+     * @return The language of this player
      */
     @Override
     public String getLocale() {
@@ -147,7 +147,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the tab overlay of this player.
      *
-     * @return the tab overlay of this player.
+     * @return The tab overlay of this player.
      */
     @Override
     public TabOverlay getTabOverlay() {
@@ -167,7 +167,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the <b>FOV</b> modifier of this player.
      *
-     * @return the fov modifier of this player
+     * @return The fov modifier of this player
      */
     @Override
     public float getFovModifier() {
@@ -217,7 +217,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the server brand of this player.
      *
-     * @return the server brand of this player.
+     * @return The server brand of this player.
      */
     @Override
     public String getServerBrand() {
@@ -237,7 +237,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the water brightness of this player.
      *
-     * @return the water brightness of this player.
+     * @return The water brightness of this player.
      */
     @Override
     public float getWaterBrightness() {
@@ -247,7 +247,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the previous time in portal of this player.
      *
-     * @return the previous time in portal of this player.
+     * @return The previous time in portal of this player.
      */
     @Override
     public float getPrevTimeInPortal() {
@@ -257,7 +257,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the time in portal of this player.
      *
-     * @return the time in portal of this player.
+     * @return The time in portal of this player.
      */
     @Override
     public float getTimeInPortal() {
@@ -318,7 +318,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the horse jump power.
      *
-     * @return the horse jump power.
+     * @return The horse jump power.
      */
     @Override
     public float getHorseJumpPower() {
@@ -350,7 +350,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the statistics manager of this player.
      *
-     * @return the statistics manager of this player.
+     * @return The statistics manager of this player.
      */
     @Override
     public Object getStatistics() {
@@ -360,7 +360,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the recipe book of this player.
      *
-     * @return the recipe book of this player.
+     * @return The recipe book of this player.
      */
     @Override
     public Object getRecipeBook() {
@@ -425,7 +425,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
      * Retrieves the network communicator of this player.<br>
      * The network communicator allows this player to send packets to the server.
      *
-     * @return the network communicator of this player.
+     * @return The network communicator of this player.
      */
     @Override
     public Object getConnection() {
@@ -562,7 +562,7 @@ public class VersionedClientPlayer extends VersionedPlayer implements ClientPlay
     /**
      * Retrieves the current biome name of this player.
      *
-     * @return the current biome name or {@code null}
+     * @return The current biome name or {@code null}
      */
     @Override
     public String getBiome() {

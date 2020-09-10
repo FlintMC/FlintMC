@@ -44,7 +44,7 @@ public class DefaultProperty implements Property {
     /**
      * Retrieves the name of this property
      *
-     * @return the property name
+     * @return The property name
      */
     @Override
     public String getName() {
@@ -54,7 +54,7 @@ public class DefaultProperty implements Property {
     /**
      * Retrieves the value of this property
      *
-     * @return the property value
+     * @return The property value
      */
     @Override
     public String getValue() {
@@ -64,7 +64,7 @@ public class DefaultProperty implements Property {
     /**
      * Retrieves the signature of this property
      *
-     * @return the property signature
+     * @return The property signature
      */
     @Override
     public String getSignature() {

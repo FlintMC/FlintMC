@@ -20,7 +20,7 @@ public interface CooldownTracking {
      * @param item         The item to get the cooldown
      * @param partialTicks The period of time, in fractions of a tick,
      *                     that has passed since the last full tick.
-     * @return the cooldown of this given item.
+     * @return The cooldown of this given item.
      */
     // TODO: 05.09.2020 Replaces the Object to Item when the (Item API?) is ready
     float getCooldown(Object item, float partialTicks);

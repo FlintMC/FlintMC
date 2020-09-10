@@ -49,7 +49,7 @@ public enum SoundCategory {
     /**
      * Retrieves the name of this sound category.
      *
-     * @return the name of this sound category.
+     * @return The name of this sound category.
      */
     public String getName() {
         return this.name().toLowerCase();

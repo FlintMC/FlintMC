@@ -16,7 +16,7 @@ public interface PropertyMap {
      *
      * @param key      The key with which the specified value is to be associated
      * @param property The property to be associated with the specified key
-     * @return the property to which the specified key is mapped, or {@code null} if this map contains no mapping for the key
+     * @return The property to which the specified key is mapped, or {@code null} if this map contains no mapping for the key
      */
     Property put(String key, Property property);
 
@@ -28,7 +28,7 @@ public interface PropertyMap {
     /**
      * Retrieves the properties of the game profile
      *
-     * @return the properties
+     * @return The properties
      */
     Map<String, Set<Property>> getProperties();
 

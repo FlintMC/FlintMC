@@ -17,7 +17,7 @@ public class VersionedPoseSerializer implements PoseSerializer<Pose> {
      * Deserializes the {@link Pose} to the {@link EntityPose}
      *
      * @param value The pose being deserialized
-     * @return a deserialized {@link EntityPose}
+     * @return A deserialized {@link EntityPose}
      */
     @Override
     public EntityPose deserialize(Pose value) {
@@ -45,7 +45,7 @@ public class VersionedPoseSerializer implements PoseSerializer<Pose> {
      * Serializes the {@link EntityPose} to the {@link Pose}
      *
      * @param value The entity pose being serialized
-     * @return a serialized {@link Pose}
+     * @return A serialized {@link Pose}
      */
     @Override
     public Pose serialize(EntityPose value) {

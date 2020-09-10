@@ -28,8 +28,7 @@ public class DefaultPropertyMapSerializer implements PropertyMap.Serializer {
      *
      * @param json    The Json data being deserialized
      * @param typeOfT The type of the Object to deserialize to
-     * @param context
-     * @return a deserialized object of the specified type typeOfT which is a subclass of {@code T}
+     * @return A deserialized object of the specified type typeOfT which is a subclass of {@code T}
      * @throws JsonParseException if json is not in the expected format of {@code typeofT}
      */
     @Override
@@ -84,8 +83,7 @@ public class DefaultPropertyMapSerializer implements PropertyMap.Serializer {
      *
      * @param src       the object that needs to be converted to Json.
      * @param typeOfSrc the actual type (fully genericized version) of the source object.
-     * @param context
-     * @return a JsonElement corresponding to the specified object.
+     * @return A JsonElement corresponding to the specified object.
      */
     @Override
     public JsonElement serialize(PropertyMap src, Type typeOfSrc, JsonSerializationContext context) {

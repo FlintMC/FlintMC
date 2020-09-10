@@ -17,7 +17,7 @@ public class VersionedPlayerClothingSerializer implements PlayerClothingSerializ
      * Deserializes the {@link PlayerModelPart} to the {@link PlayerClothing}
      *
      * @param value The player model part being deserialized
-     * @return a deserialized {@link PlayerClothing}
+     * @return A deserialized {@link PlayerClothing}
      */
     @Override
     public PlayerClothing deserialize(PlayerModelPart value) {
@@ -45,7 +45,7 @@ public class VersionedPlayerClothingSerializer implements PlayerClothingSerializ
      * Serializes the {@link PlayerClothing} to the {@link PlayerModelPart}
      *
      * @param value The player clothing being serialized
-     * @return a serialized {@link PlayerModelPart}
+     * @return A serialized {@link PlayerModelPart}
      */
     @Override
     public PlayerModelPart serialize(PlayerClothing value) {

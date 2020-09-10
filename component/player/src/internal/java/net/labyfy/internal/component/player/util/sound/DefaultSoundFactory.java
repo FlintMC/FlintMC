@@ -24,7 +24,7 @@ public class DefaultSoundFactory implements Sound.Factory {
      * Creates a new {@link Sound} with the given path.
      *
      * @param path The path of the sound.
-     * @return the created sound.
+     * @return The created sound.
      */
     @Override
     public Sound create(String path) {

@@ -25,98 +25,98 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the player.
      *
-     * @return the player.
+     * @return The player.
      */
     T getPlayer();
 
     /**
      * Retrieves the world of this player.
      *
-     * @return the world of this player.
+     * @return The world of this player.
      */
     ClientWorld getWorld();
 
     /**
      * Retrieves the game profile of this player.
      *
-     * @return the game profile of this player.
+     * @return The game profile of this player.
      */
     GameProfile getGameProfile();
 
     /**
      * Retrieves the name of this player.
      *
-     * @return the name of this player
+     * @return The name of this player
      */
     ChatComponent getName();
 
     /**
      * Retrieves the display name of this player
      *
-     * @return the display name of this player
+     * @return The display name of this player
      */
     ChatComponent getDisplayName();
 
     /**
      * Retrieves the display name and the unique identifier of this player.
      *
-     * @return the display name and the unique identiifer of this player.
+     * @return The display name and the unique identiifer of this player.
      */
     ChatComponent getDisplayNameAndUniqueId();
 
     /**
      * Retrieves the unique identifier of this player.
      *
-     * @return the unique identifier of this player
+     * @return The unique identifier of this player
      */
     UUID getUniqueId();
 
     /**
      * Retrieves the health of this player.
      *
-     * @return the health of this player
+     * @return The health of this player
      */
     float getHealth();
 
     /**
      * Retrieves the list name of this player.
      *
-     * @return the list name of this player.
+     * @return The list name of this player.
      */
     String getPlayerListName();
 
     /**
      * Retrieves the world time of this player.
      *
-     * @return the world time of this player.
+     * @return The world time of this player.
      */
     long getPlayerTime();
 
     /**
      * Retrieves the x position of this player.
      *
-     * @return the x position of this player
+     * @return The x position of this player
      */
     double getX();
 
     /**
      * Retrieves the y position of this player.
      *
-     * @return the y position of this player
+     * @return The y position of this player
      */
     double getY();
 
     /**
      * Retrieves the z position of this player.
      *
-     * @return the z position of this playe
+     * @return The z position of this playe
      */
     double getZ();
 
     /**
      * Retrieves the pitch of this player.
      *
-     * @return the pitch of this player.
+     * @return The pitch of this player.
      */
     float getPitch();
 
@@ -125,14 +125,14 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      *
      * @param partialTicks The period of time, in fractions of a tick,
      *                     that has passed since the last full tick
-     * @return the pitch of this player.
+     * @return The pitch of this player.
      */
     float getPitch(float partialTicks);
 
     /**
      * Retrieves the yaw of this player.
      *
-     * @return the yaw of this player.
+     * @return The yaw of this player.
      */
     float getYaw();
 
@@ -141,21 +141,21 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      *
      * @param partialTicks The period of time, in fractions of a tick,
      *                     that has passed since the last full tick
-     * @return the yaw of this player.
+     * @return The yaw of this player.
      */
     float getYaw(float partialTicks);
 
     /**
      * Retrieves the rotation yaw head of this player.
      *
-     * @return the rotation yaw head of this player.
+     * @return The rotation yaw head of this player.
      */
     float getRotationYawHead();
 
     /**
      * Retrieves the eye height of this player.
      *
-     * @return the eye height of this player.
+     * @return The eye height of this player.
      */
     float getEyeHeight();
 
@@ -163,21 +163,21 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      * Retrieves the eye height of this player.
      *
      * @param entityPose The current pose for the eye height
-     * @return the eye height of this player
+     * @return The eye height of this player
      */
     float getEyeHeight(EntityPose entityPose);
 
     /**
      * Retrieves the y position of the eyes of this player.
      *
-     * @return the y position of the eyes of this player
+     * @return The y position of the eyes of this player
      */
     double getPosYEye();
 
     /**
      * Retrieves the pose of this player.
      *
-     * @return the pose of this player.
+     * @return The pose of this player.
      */
     EntityPose getPose();
 
@@ -198,7 +198,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the active hand of this player.
      *
-     * @return the active hand of this player
+     * @return The active hand of this player
      */
     Hand getActiveHand();
 
@@ -212,7 +212,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the active item stack of this player.
      *
-     * @return the active item stack of this player
+     * @return The active item stack of this player
      */
     // TODO: 01.09.2020 Replaces the Object to ItemStack when the (Item API?) is ready
     Object getActiveItemStack();
@@ -220,28 +220,28 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves use count of the item.
      *
-     * @return the use count of the item
+     * @return The use count of the item
      */
     int getItemInUseCount();
 
     /**
      * Retrieves the maximal use count of the item.
      *
-     * @return the maximal use count of this item.
+     * @return The maximal use count of this item.
      */
     int getItemInUseMaxCount();
 
     /**
      * Retrieves the food level of this player.
      *
-     * @return the food level of this player.
+     * @return The food level of this player.
      */
     int getFoodLevel();
 
     /**
      * Retrieves the saturation of this player.
      *
-     * @return the saturation of this player.
+     * @return The saturation of this player.
      */
     float getSaturationLevel();
 
@@ -411,14 +411,14 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the absorption amount of this player.
      *
-     * @return the absorption amount of this player.
+     * @return The absorption amount of this player.
      */
     float getAbsorptionAmount();
 
     /**
      * Retrieves the total armor value of this player.
      *
-     * @return the total armor value of this player.
+     * @return The total armor value of this player.
      */
     int getTotalArmorValue();
 
@@ -432,7 +432,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the network player info of this player.
      *
-     * @return the network player info of this  player
+     * @return The network player info of this  player
      */
     NetworkPlayerInfo getNetworkPlayerInfo();
 
@@ -458,7 +458,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the sound category of this player.
      *
-     * @return the sound category of this player.
+     * @return The sound category of this player.
      */
     default SoundCategory getSoundCategory() {
         return SoundCategory.PLAYER;
@@ -467,14 +467,14 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the fall distance of this player.
      *
-     * @return the fall distance of this player.
+     * @return The fall distance of this player.
      */
     float getFallDistance();
 
     /**
      * Retrieves the maximal fall distance of this player.
      *
-     * @return the maximal fall distance of this player.
+     * @return The maximal fall distance of this player.
      */
     int getMaxFallDistance();
 
@@ -488,14 +488,14 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the maximal in portal time of this player.
      *
-     * @return the maximal in portal time of this player.
+     * @return The maximal in portal time of this player.
      */
     int getMaxInPortalTime();
 
     /**
      * Retrieves the fly speed of this player.
      *
-     * @return the fly speed of this player.
+     * @return The fly speed of this player.
      */
     float getFlySpeed();
 
@@ -509,7 +509,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the walk speed of this player.
      *
-     * @return the walk speed of this player.
+     * @return The walk speed of this player.
      */
     float getWalkSpeed();
 
@@ -530,14 +530,14 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the luck of this player.
      *
-     * @return the luck of this player.
+     * @return The luck of this player.
      */
     float getLuck();
 
     /**
      * Retrieves the primary hand this player.
      *
-     * @return the primary hand this player.
+     * @return The primary hand this player.
      */
     Hand.Side getPrimaryHand();
 
@@ -558,7 +558,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the cooldown period of this player.
      *
-     * @return the cooldown period of this player.
+     * @return The cooldown period of this player.
      */
     float getCooldownPeriod();
 
@@ -566,7 +566,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      * Retrieves the cooled attack strength of this player.
      *
      * @param adjustTicks The ticks to adjust the cooled strength of the attack.
-     * @return the cooled attack strength of this player.
+     * @return The cooled attack strength of this player.
      */
     float getCooledAttackStrength(float adjustTicks);
 
@@ -608,7 +608,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves an iterable collection of the equipment held by that player.
      *
-     * @return an iterable collection of the equipment held by that player.
+     * @return An iterable collection of the equipment held by that player.
      */
     // TODO: 05.09.2020 Replaces the Object to ItemStack when the (Item API?) is ready
     Iterable<Object> getHeldEquipment();
@@ -616,7 +616,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves an iterable inventory of that player's armor.
      *
-     * @return an iterable inventory of that player's armor.
+     * @return An iterable inventory of that player's armor.
      */
     // TODO: 05.09.2020 Replaces the Object to ItemStack when the (Item API?) is ready
     Iterable<Object> getArmorInventoryList();
@@ -668,14 +668,14 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the experience bar cap of this player.
      *
-     * @return the experience bar cap of this player.
+     * @return The experience bar cap of this player.
      */
     int experienceBarCap();
 
     /**
      * Retrieves the experience speed of this player.
      *
-     * @return the experience speed of this player.
+     * @return The experience speed of this player.
      */
     int getExperienceSpeed();
 
@@ -716,7 +716,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the AI move speed of this player.
      *
-     * @return the AI move speed of this player.
+     * @return The AI move speed of this player.
      */
     float getAIMoveSpeed();
 
@@ -746,7 +746,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the sleep timer of this player.
      *
-     * @return the sleep timer of this player.
+     * @return The sleep timer of this player.
      */
     int getSleepTimer();
 
@@ -786,7 +786,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the score of this player.
      *
-     * @return the score of this player.
+     * @return The score of this player.
      */
     int getScore();
 
@@ -817,7 +817,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      *
      * @param droppedItem The dropped item
      * @param traceItem   Whether the item can be traced.
-     * @return the dropped item as an entity, or {@code null}
+     * @return The dropped item as an entity, or {@code null}
      */
     // TODO: 05.09.2020 (Method Type) Replaces the Object to ItemEntity when the (Entity API?) is ready
     // TODO: 05.09.2020 (Parameter 1) Replaces the Object to ItemStack when the (Item API?) is ready
@@ -830,7 +830,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      * @param dropAround  If {@code true}, the item will be thrown in a random direction
      *                    from the entity regardless of which direction the entity is facing
      * @param traceItem   Whether the item can be traced.
-     * @return the dropped item as an entity, or {@code null}
+     * @return The dropped item as an entity, or {@code null}
      */
     // TODO: 05.09.2020 (Method Type) Replaces the Object to ItemEntity when the (Entity API?) is ready
     // TODO: 05.09.2020 (Parameter 1) Replaces the Object to ItemStack when the (Item API?) is ready
@@ -841,7 +841,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
      * Retrieves the digging speed of the given block state for this player.
      *
      * @param blockState The block state that is to receive the dig speed.
-     * @return the digging speed of the block state for this player.
+     * @return The digging speed of the block state for this player.
      */
     // TODO: 05.09.2020 Replaces the Object to BlockState when the Block API is ready
     float getDigSpeed(Object blockState);
@@ -910,7 +910,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the entity which is on the left shoulder.
      *
-     * @return the entity as a compound nbt.
+     * @return The entity as a compound nbt.
      */
     // TODO: 05.09.2020 Replaces the Object to CompoundNBT when the NBT API is ready
     Object getLeftShoulderEntity();
@@ -918,7 +918,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the entity which is on the right shoulder.
      *
-     * @return the entity as a compound nbt.
+     * @return The entity as a compound nbt.
      */
     // TODO: 05.09.2020 Replaces the Object to CompoundNBT when the NBT API is ready
     Object getRightShoulderEntity();
@@ -926,7 +926,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the world scoreboard of this player.
      *
-     * @return the world scoreboard of this player.
+     * @return The world scoreboard of this player.
      */
     // TODO: 05.09.2020 Replaces the Object to Scoreboard when the Scoreboard API is ready
     default Object getWorldScoreboard() {
@@ -936,35 +936,35 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the fire timer of this player.
      *
-     * @return the fire timer of this player.
+     * @return The fire timer of this player.
      */
     int getFireTimer();
 
     /**
      * Retrieves the step height of this player.
      *
-     * @return the step height of this player.
+     * @return The step height of this player.
      */
     float getStepHeight();
 
     /**
      * Retrieves the x rotate elytra of this player.
      *
-     * @return the x rotate elytra of this player.
+     * @return The x rotate elytra of this player.
      */
     float getRotateElytraX();
 
     /**
      * Retrieves the y rotate elytra of this player.
      *
-     * @return the y rotate elytra of this player.
+     * @return The y rotate elytra of this player.
      */
     float getRotateElytraY();
 
     /**
      * Retrieves the z rotate elytra of this player.
      *
-     * @return the z rotate elytra of this player.
+     * @return The z rotate elytra of this player.
      */
     float getRotateElytraZ();
 
@@ -1129,7 +1129,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the opened container of this player.
      *
-     * @return the opened container of this player.
+     * @return The opened container of this player.
      */
     // TODO: 09.09.2020 Replaces the Object to Container when the Inventory/Item API is ready
     Object getOpenedContainer();
@@ -1137,7 +1137,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the container of this player.
      *
-     * @return the container of this player.
+     * @return The container of this player.
      */
     // TODO: 09.09.2020 Replaces the Object to Container when the Inventory/Item API is ready
     Object getPlayerContainer();
@@ -1145,56 +1145,56 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
     /**
      * Retrieves the previous camera yaw of this player.
      *
-     * @return the previous camera yaw of this player.
+     * @return The previous camera yaw of this player.
      */
     float getPrevCameraYaw();
 
     /**
      * Retrieves the camera yaw of this player.
      *
-     * @return the camera yaw of this player.
+     * @return The camera yaw of this player.
      */
     float getCameraYaw();
 
     /**
      * Retrieves the previous chasing position X-axis of this player.
      *
-     * @return the previous chasing position X-axis  of this player.
+     * @return The previous chasing position X-axis  of this player.
      */
     double getPrevChasingPosX();
 
     /**
      * Retrieves the previous chasing position Y-axis of this player.
      *
-     * @return the previous chasing position Y-axis  of this player.
+     * @return The previous chasing position Y-axis  of this player.
      */
     double getPrevChasingPosY();
 
     /**
      * Retrieves the previous chasing position Z-axis of this player.
      *
-     * @return the previous chasing position Z-axis  of this player.
+     * @return The previous chasing position Z-axis  of this player.
      */
     double getPrevChasingPosZ();
 
     /**
      * Retrieves the chasing position X-axis of this player.
      *
-     * @return the chasing position X-axis  of this player.
+     * @return The chasing position X-axis  of this player.
      */
     double getChasingPosX();
 
     /**
      * Retrieves the chasing position Y-axis of this player.
      *
-     * @return the chasing position Y-axis  of this player.
+     * @return The chasing position Y-axis  of this player.
      */
     double getChasingPosY();
 
     /**
      * Retrieves the  chasing position Z-axis of this player.
      *
-     * @return the chasing position Z-axis  of this player.
+     * @return The chasing position Z-axis  of this player.
      */
     double getChasingPosZ();
 
@@ -1209,7 +1209,7 @@ public interface Player<T> extends PlayerSkinProfile, CooldownTracking {
          * Creates a new {@link Player} with the given type.
          *
          * @param player A type to create this player
-         * @return the created player
+         * @return The created player
          */
         Player create(T player);
 

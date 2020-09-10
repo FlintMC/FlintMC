@@ -32,7 +32,7 @@ public class VersionedSoundSerializer implements SoundSerializer<SoundEvent> {
      * Deserializes the {@link SoundEvent} to the {@link Sound}
      *
      * @param value The sound event being deserialized
-     * @return a deserialized {@link Sound}
+     * @return A deserialized {@link Sound}
      */
     @Override
     public Sound deserialize(SoundEvent value) {
@@ -43,7 +43,7 @@ public class VersionedSoundSerializer implements SoundSerializer<SoundEvent> {
      * Serializes the {@link Sound} to the {@link SoundEvent}
      *
      * @param value The sound being serialized
-     * @return a serialized {@link SoundEvent}
+     * @return A serialized {@link SoundEvent}
      */
     @Override
     public SoundEvent serialize(Sound value) {

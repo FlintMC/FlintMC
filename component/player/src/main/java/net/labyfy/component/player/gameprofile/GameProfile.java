@@ -15,7 +15,7 @@ public interface GameProfile {
      * @param uniqueId   The unique identifier of this game profile
      * @param name       The display name of this game profile
      * @param properties The properties of this game profile
-     * @return this profile, for chaining
+     * @return This profile, for chaining
      */
     GameProfile createProfile(UUID uniqueId, String name, PropertyMap properties);
 
@@ -23,7 +23,7 @@ public interface GameProfile {
      * Retrieves the unique identifier of this game profile.
      * This may be null for partial profile data if constructed manually.
      *
-     * @return the unique identifier of the profile
+     * @return The unique identifier of the profile
      */
     UUID getUniqueId();
 
@@ -31,14 +31,14 @@ public interface GameProfile {
      * Retrieves the display name of this game profile.
      * This may be null for partial profile data if constructed manually.
      *
-     * @return the name of the profile
+     * @return The name of the profile
      */
     String getName();
 
     /**
      * Retrieves any known properties about this game profile.
      *
-     * @return a modifiable map of profile properties.
+     * @return A modifiable map of profile properties.
      */
     PropertyMap getProperties();
 
@@ -67,7 +67,7 @@ public interface GameProfile {
          * Sets the unique identifier for this game profile
          *
          * @param uniqueId The unique identifier of this game profile
-         * @return this builder, for chaining
+         * @return This builder, for chaining
          */
         Builder setUniqueId(UUID uniqueId);
 
@@ -75,7 +75,7 @@ public interface GameProfile {
          * Sets the display name for this game profile
          *
          * @param name The display name of this game profile
-         * @return this builder, for chaining
+         * @return This builder, for chaining
          */
         Builder setName(String name);
 
@@ -83,14 +83,14 @@ public interface GameProfile {
          * Sets the properties for this game profile
          *
          * @param properties The game profile properies
-         * @return this builder, for chaining
+         * @return This builder, for chaining
          */
         Builder setProperties(PropertyMap properties);
 
         /**
          * Built the game profile
          *
-         * @return the built game profile
+         * @return The built game profile
          */
         GameProfile build();
 

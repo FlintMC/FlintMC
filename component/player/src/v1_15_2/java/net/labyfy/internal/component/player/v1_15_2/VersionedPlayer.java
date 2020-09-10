@@ -91,7 +91,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the player.
      *
-     * @return the player.
+     * @return The player.
      */
     @Override
     public AbstractClientPlayerEntity getPlayer() {
@@ -101,7 +101,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the world of this player.
      *
-     * @return the world of this player.
+     * @return The world of this player.
      */
     @Override
     public ClientWorld getWorld() {
@@ -111,7 +111,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the game profile of this player.
      *
-     * @return the game profile of this player.
+     * @return The game profile of this player.
      */
     @Override
     public GameProfile getGameProfile() {
@@ -121,7 +121,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the name of this player.
      *
-     * @return the name of this player
+     * @return The name of this player
      */
     @Override
     public ChatComponent getName() {
@@ -131,7 +131,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the display name of this player
      *
-     * @return the display name of this player
+     * @return The display name of this player
      */
     @Override
     public ChatComponent getDisplayName() {
@@ -141,7 +141,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the display name and the unique identifier of this player.
      *
-     * @return the display name and the unique identiifer of this player.
+     * @return The display name and the unique identiifer of this player.
      */
     @Override
     public ChatComponent getDisplayNameAndUniqueId() {
@@ -151,7 +151,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the unique identifier of this player.
      *
-     * @return the unique identifier of this player
+     * @return The unique identifier of this player
      */
     @Override
     public UUID getUniqueId() {
@@ -161,7 +161,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the health of this player.
      *
-     * @return the health of this player
+     * @return The health of this player
      */
     @Override
     public float getHealth() {
@@ -171,7 +171,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the list name of this player.
      *
-     * @return the list name of this player.
+     * @return The list name of this player.
      */
     @Override
     public String getPlayerListName() {
@@ -181,7 +181,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the world time.
      *
-     * @return the world time.
+     * @return The world time.
      */
     @Override
     public long getPlayerTime() {
@@ -191,7 +191,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the x position of this player.
      *
-     * @return the x position of this player
+     * @return The x position of this player
      */
     @Override
     public double getX() {
@@ -201,7 +201,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the y position of this player.
      *
-     * @return the y position of this player
+     * @return The y position of this player
      */
     @Override
     public double getY() {
@@ -211,7 +211,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the z position of this player.
      *
-     * @return the z position of this playe
+     * @return The z position of this playe
      */
     @Override
     public double getZ() {
@@ -221,7 +221,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the pitch of this player.
      *
-     * @return the pitch of this player.
+     * @return The pitch of this player.
      */
     @Override
     public float getPitch() {
@@ -233,7 +233,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      *
      * @param partialTicks The period of time, in fractions of a tick,
      *                     that has passed since the last full tick
-     * @return the pitch of this player.
+     * @return The pitch of this player.
      */
     @Override
     public float getPitch(float partialTicks) {
@@ -243,7 +243,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the yaw of this player.
      *
-     * @return the yaw of this player.
+     * @return The yaw of this player.
      */
     @Override
     public float getYaw() {
@@ -255,7 +255,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      *
      * @param partialTicks The period of time, in fractions of a tick,
      *                     that has passed since the last full tick
-     * @return the yaw of this player.
+     * @return The yaw of this player.
      */
     @Override
     public float getYaw(float partialTicks) {
@@ -265,7 +265,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the rotation yaw head of this player.
      *
-     * @return the rotation yaw head of this player.
+     * @return The rotation yaw head of this player.
      */
     @Override
     public float getRotationYawHead() {
@@ -275,7 +275,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the eye height of this player.
      *
-     * @return the eye height of this player.
+     * @return The eye height of this player.
      */
     @Override
     public float getEyeHeight() {
@@ -286,7 +286,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * Retrieves the eye height of this player.
      *
      * @param entityPose The current pose for the eye height
-     * @return the eye height of this player
+     * @return The eye height of this player
      */
     @Override
     public float getEyeHeight(EntityPose entityPose) {
@@ -296,7 +296,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the y position of the eyes of this player.
      *
-     * @return the y position of the eyes of this player
+     * @return The y position of the eyes of this player
      */
     @Override
     public double getPosYEye() {
@@ -306,7 +306,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the pose of this player.
      *
-     * @return the pose of this player.
+     * @return The pose of this player.
      */
     @Override
     public EntityPose getPose() {
@@ -336,7 +336,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the active hand of this player.
      *
-     * @return the active hand of this player
+     * @return The active hand of this player
      */
     @Override
     public Hand getActiveHand() {
@@ -356,7 +356,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the active item stack of this player.
      *
-     * @return the active item stack of this player
+     * @return The active item stack of this player
      */
     // TODO: 04.09.2020 Replaces the Object to ItemStack when the (Item API?) is ready 
     @Override
@@ -367,7 +367,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves use count of the item.
      *
-     * @return the use count of the item
+     * @return The use count of the item
      */
     @Override
     public int getItemInUseCount() {
@@ -377,7 +377,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the maximal use count of the item.
      *
-     * @return the maximal use count of this item.
+     * @return The maximal use count of this item.
      */
     @Override
     public int getItemInUseMaxCount() {
@@ -387,7 +387,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the food level of this player.
      *
-     * @return the food level of this player.
+     * @return The food level of this player.
      */
     @Override
     public int getFoodLevel() {
@@ -397,7 +397,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the saturation of this player.
      *
-     * @return the saturation of this player.
+     * @return The saturation of this player.
      */
     @Override
     public float getSaturationLevel() {
@@ -612,7 +612,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the absorption amount of this player.
      *
-     * @return the absorption amount of this player.
+     * @return Theabsorption amount of this player.
      */
     @Override
     public float getAbsorptionAmount() {
@@ -622,7 +622,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the total armor value of this player.
      *
-     * @return the total armor value of this player.
+     * @return The total armor value of this player.
      */
     @Override
     public int getTotalArmorValue() {
@@ -642,7 +642,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the network player info of this player.
      *
-     * @return the network player info of this  player
+     * @return The network player info of this  player
      */
     @Override
     public NetworkPlayerInfo getNetworkPlayerInfo() {
@@ -682,7 +682,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the fall distance of this player.
      *
-     * @return the fall distance of this player.
+     * @return The fall distance of this player.
      */
     @Override
     public float getFallDistance() {
@@ -692,7 +692,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the maximal fall distance of this player.
      *
-     * @return the maximal fall distance of this player.
+     * @return The maximal fall distance of this player.
      */
     @Override
     public int getMaxFallDistance() {
@@ -712,7 +712,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the maximal in portal time of this player.
      *
-     * @return the maximal in portal time of this player.
+     * @return The maximal in portal time of this player.
      */
     @Override
     public int getMaxInPortalTime() {
@@ -722,7 +722,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the fly speed of this player.
      *
-     * @return the fly speed of this player.
+     * @return The fly speed of this player.
      */
     @Override
     public float getFlySpeed() {
@@ -742,7 +742,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the walk speed of this player.
      *
-     * @return the walk speed of this player.
+     * @return The walk speed of this player.
      */
     @Override
     public float getWalkSpeed() {
@@ -772,7 +772,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the luck of this player.
      *
-     * @return the luck of this player.
+     * @return The luck of this player.
      */
     @Override
     public float getLuck() {
@@ -782,7 +782,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the primary hand this player.
      *
-     * @return the primary hand this player.
+     * @return The primary hand this player.
      */
     @Override
     public Hand.Side getPrimaryHand() {
@@ -812,7 +812,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the cooldown period of this player.
      *
-     * @return the cooldown period of this player.
+     * @return The cooldown period of this player.
      */
     @Override
     public float getCooldownPeriod() {
@@ -823,7 +823,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * Retrieves the cooled attack strength of this player.
      *
      * @param adjustTicks The ticks to adjust the cooled strength of the attack.
-     * @return the cooled attack strength of this player.
+     * @return The cooled attack strength of this player.
      */
     @Override
     public float getCooledAttackStrength(float adjustTicks) {
@@ -883,7 +883,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves an iterable collection of the equipment held by that player.
      *
-     * @return an iterable collection of the equipment held by that player.
+     * @return An iterable collection of the equipment held by that player.
      */
     @Override
     public Iterable<Object> getHeldEquipment() {
@@ -894,7 +894,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves an iterable inventory of that player's armor.
      *
-     * @return an iterable inventory of that player's armor.
+     * @return An iterable inventory of that player's armor.
      */
     @Override
     public Iterable<Object> getArmorInventoryList() {
@@ -967,7 +967,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the experience bar cap of this player.
      *
-     * @return the experience bar cap of this player.
+     * @return The experience bar cap of this player.
      */
     @Override
     public int experienceBarCap() {
@@ -977,7 +977,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the experience speed of this player.
      *
-     * @return the experience speed of this player.
+     * @return The experience speed of this player.
      */
     @Override
     public int getExperienceSpeed() {
@@ -1039,7 +1039,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the AI move speed of this player.
      *
-     * @return the AI move speed of this player.
+     * @return The AI move speed of this player.
      */
     @Override
     public float getAIMoveSpeed() {
@@ -1081,7 +1081,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the sleep timer of this player.
      *
-     * @return the sleep timer of this player.
+     * @return The sleep timer of this player.
      */
     @Override
     public int getSleepTimer() {
@@ -1149,7 +1149,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the location of the player's skin
      *
-     * @return the skin location
+     * @return The skin location
      */
     @Override
     public ResourceLocation getSkinLocation() {
@@ -1159,7 +1159,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the location of the player's cloak
      *
-     * @return the cloak location
+     * @return The cloak location
      */
     @Override
     public ResourceLocation getCloakLocation() {
@@ -1169,7 +1169,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the location of the player's elytra
      *
-     * @return the elytra location
+     * @return The elytra location
      */
     @Override
     public ResourceLocation getElytraLocation() {
@@ -1226,7 +1226,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * @param item         The item to get the cooldown
      * @param partialTicks The period of time, in fractions of a tick,
      *                     that has passed since the last full tick.
-     * @return the cooldown of this given item.
+     * @return The cooldown of this given item.
      */
     @Override
     public float getCooldown(Object item, float partialTicks) {
@@ -1247,7 +1247,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the score of this player.
      *
-     * @return the score of this player.
+     * @return The score of this player.
      */
     @Override
     public int getScore() {
@@ -1290,7 +1290,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      *
      * @param droppedItem The dropped item
      * @param traceItem   Whether the item can be traced.
-     * @return the dropped item as an entity, or {@code null}
+     * @return The dropped item as an entity, or {@code null}
      */
     @Override
     public Object dropItem(Object droppedItem, boolean traceItem) {
@@ -1304,7 +1304,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * @param dropAround  If {@code true}, the item will be thrown in a random direction
      *                    from the entity regardless of which direction the entity is facing
      * @param traceItem   Whether the item can be traced.
-     * @return the dropped item as an entity, or {@code null}
+     * @return The dropped item as an entity, or {@code null}
      */
     @Override
     public Object dropItem(Object droppedItem, boolean dropAround, boolean traceItem) {
@@ -1315,7 +1315,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * Retrieves the digging speed of the given block state for this player.
      *
      * @param blockState The block state that is to receive the dig speed.
-     * @return the digging speed of the block state for this player.
+     * @return The digging speed of the block state for this player.
      */
     @Override
     public float getDigSpeed(Object blockState) {
@@ -1368,7 +1368,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
      * Finds shootable items in the inventory of this player.
      *
      * @param shootable The item to be fired.
-     * @return an item to be fired or an empty item.
+     * @return An item to be fired or an empty item.
      */
     @Override
     public Object findAmmo(Object shootable) {
@@ -1400,7 +1400,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the entity which is on the left shoulder.
      *
-     * @return the entity as a compound nbt.
+     * @return The entity as a compound nbt.
      */
     @Override
     public Object getLeftShoulderEntity() {
@@ -1410,7 +1410,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the entity which is on the right shoulder.
      *
-     * @return the entity as a compound nbt.
+     * @return The entity as a compound nbt.
      */
     @Override
     public Object getRightShoulderEntity() {
@@ -1420,7 +1420,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the fire timer of this player.
      *
-     * @return the fire timer of this player.
+     * @return The fire timer of this player.
      */
     @Override
     public int getFireTimer() {
@@ -1430,7 +1430,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the step height of this player.
      *
-     * @return the step height of this player.
+     * @return The step height of this player.
      */
     @Override
     public float getStepHeight() {
@@ -1440,7 +1440,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the x rotate elytra of this player.
      *
-     * @return the x rotate elytra of this player.
+     * @return The x rotate elytra of this player.
      */
     @Override
     public float getRotateElytraX() {
@@ -1450,7 +1450,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the y rotate elytra of this player.
      *
-     * @return the y rotate elytra of this player.
+     * @return The y rotate elytra of this player.
      */
     @Override
     public float getRotateElytraY() {
@@ -1460,7 +1460,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the z rotate elytra of this player.
      *
-     * @return the z rotate elytra of this player.
+     * @return The z rotate elytra of this player.
      */
     @Override
     public float getRotateElytraZ() {
@@ -1682,7 +1682,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the opened container of this player.
      *
-     * @return the opened container of this player.
+     * @return The opened container of this player.
      */
     @Override
     public Object getOpenedContainer() {
@@ -1692,7 +1692,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the opened container of this player.
      *
-     * @return the opened container of this player.
+     * @return The opened container of this player.
      */
     @Override
     public Object getPlayerContainer() {
@@ -1702,7 +1702,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the previous camera yaw of this player.
      *
-     * @return the previous camera yaw of this player.
+     * @return The previous camera yaw of this player.
      */
     @Override
     public float getPrevCameraYaw() {
@@ -1712,7 +1712,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the camera yaw of this player.
      *
-     * @return the camera yaw of this player.
+     * @return The camera yaw of this player.
      */
     @Override
     public float getCameraYaw() {
@@ -1722,7 +1722,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the previous chasing position X-axis of this player.
      *
-     * @return the previous chasing position X-axis  of this player.
+     * @return The previous chasing position X-axis  of this player.
      */
     @Override
     public double getPrevChasingPosX() {
@@ -1732,7 +1732,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the previous chasing position Y-axis of this player.
      *
-     * @return the previous chasing position Y-axis  of this player.
+     * @return The previous chasing position Y-axis  of this player.
      */
     @Override
     public double getPrevChasingPosY() {
@@ -1742,7 +1742,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the previous chasing position Z-axis of this player.
      *
-     * @return the previous chasing position Z-axis  of this player.
+     * @return The previous chasing position Z-axis  of this player.
      */
     @Override
     public double getPrevChasingPosZ() {
@@ -1752,7 +1752,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the chasing position X-axis of this player.
      *
-     * @return the chasing position X-axis  of this player.
+     * @return The chasing position X-axis  of this player.
      */
     @Override
     public double getChasingPosX() {
@@ -1762,7 +1762,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the chasing position Y-axis of this player.
      *
-     * @return the chasing position Y-axis  of this player.
+     * @return The chasing position Y-axis  of this player.
      */
     @Override
     public double getChasingPosY() {
@@ -1772,7 +1772,7 @@ public class VersionedPlayer implements Player<AbstractClientPlayerEntity> {
     /**
      * Retrieves the  chasing position Z-axis of this player.
      *
-     * @return the chasing position Z-axis  of this player.
+     * @return The chasing position Z-axis  of this player.
      */
     @Override
     public double getChasingPosZ() {

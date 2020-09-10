@@ -17,7 +17,7 @@ public class VersionedGameModeSerializer implements GameModeSerializer<GameType>
      * Deserializes the Labyfy {@link GameType} to the {@link GameMode}
      *
      * @param value The game type being deserialize
-     * @return a deserialized {@link GameMode}
+     * @return A deserialized {@link GameMode}
      */
     @Override
     public GameMode deserialize(GameType value) {
@@ -40,7 +40,7 @@ public class VersionedGameModeSerializer implements GameModeSerializer<GameType>
      * Serializes the Labyfy {@link GameMode} to the {@link GameType}
      *
      * @param value The game mode being serialized
-     * @return a serialized game type
+     * @return A serialized game type
      */
     @Override
     public GameType serialize(GameMode value) {

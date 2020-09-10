@@ -31,7 +31,7 @@ public class VersionedGameProfileSerializer implements GameProfileSerializer<com
      * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Labyfy {@link GameProfile}
      *
      * @param profile The game profile to deserialize
-     * @return a deserialized {@link GameProfile}
+     * @return A deserialized {@link GameProfile}
      */
     @Override
     public GameProfile deserialize(com.mojang.authlib.GameProfile profile) {
@@ -49,7 +49,7 @@ public class VersionedGameProfileSerializer implements GameProfileSerializer<com
      * Serializes the Labyfy {@link GameProfile} to the Mojang {@link com.mojang.authlib.GameProfile}.
      *
      * @param profile The profile to serialize
-     * @return a serialized game profile
+     * @return A serialized game profile
      */
     @Override
     public com.mojang.authlib.GameProfile serialize(GameProfile profile) {

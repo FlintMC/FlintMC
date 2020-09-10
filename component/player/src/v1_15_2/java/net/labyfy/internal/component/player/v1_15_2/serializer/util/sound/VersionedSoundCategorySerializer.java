@@ -16,7 +16,7 @@ public class VersionedSoundCategorySerializer implements SoundCategorySerializer
      * Deserializes the Mojang {@link net.minecraft.util.SoundCategory} to the Labyfy {@link SoundCategory}
      *
      * @param value The sound category being deserialized
-     * @return a deserialized {@link SoundCategory}
+     * @return A deserialized {@link SoundCategory}
      */
     @Override
     public SoundCategory deserialize(net.minecraft.util.SoundCategory value) {
@@ -50,7 +50,7 @@ public class VersionedSoundCategorySerializer implements SoundCategorySerializer
      * Serializes the Labyfy {@link SoundCategory} to the Mojang {@link net.minecraft.util.SoundCategory}
      *
      * @param value The sound category being serialized
-     * @return a serialized {@link net.minecraft.util.SoundCategory}
+     * @return A serialized {@link net.minecraft.util.SoundCategory}
      */
     @Override
     public net.minecraft.util.SoundCategory serialize(SoundCategory value) {

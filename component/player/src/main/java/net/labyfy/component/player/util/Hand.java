@@ -42,7 +42,7 @@ public enum Hand {
         /**
          * Retrieves the opposite hand.
          *
-         * @return the opposite hand.
+         * @return The opposite hand.
          */
         public Side opposite() {
             return this == LEFT ? RIGHT : LEFT;
@@ -51,7 +51,7 @@ public enum Hand {
         /**
          * Retrieves the translation key of this hand side.
          *
-         * @return the translation key of this hand side.
+         * @return The translation key of this hand side.
          */
         public String getTranslateKey() {
             return translateKey;
@@ -60,7 +60,7 @@ public enum Hand {
         /**
          * Retrieves the translated name of this hand side.
          *
-         * @return the translated name of this hand side.
+         * @return The translated name of this hand side.
          */
         public ChatComponent getHandName() {
             return handName;

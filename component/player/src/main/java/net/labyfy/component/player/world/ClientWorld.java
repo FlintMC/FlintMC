@@ -13,21 +13,21 @@ public interface ClientWorld {
     /**
      * Retrieves the minecraft world.
      *
-     * @return the minecraft world.
+     * @return The minecraft world.
      */
     Object getClientWorld();
 
     /**
      * Retrieves the time of this world.
      *
-     * @return the time of this world.
+     * @return The time of this world.
      */
     long getTime();
 
     /**
      * Retrieves the player count of this world.
      *
-     * @return the player count of this world.
+     * @return The player count of this world.
      */
     int getPlayerCount();
 
@@ -51,28 +51,28 @@ public interface ClientWorld {
     /**
      * Retrieves a collection with all players of this world.
      *
-     * @return a collection with all players of this world.
+     * @return A collection with all players of this world.
      */
     List<Player> getPlayers();
 
     /**
      * Retrieves the entity count of this world.
      *
-     * @return the entity count of this world.
+     * @return The entity count of this world.
      */
     int getCountLoadedEntities();
 
     /**
      * Retrieves the dimension of this world.
      *
-     * @return the dimension of this world.
+     * @return The dimension of this world.
      */
     Dimension getDimension();
 
     /**
      * Retrieves the scoreboard of this world.
      *
-     * @return the scoreboard of this world.
+     * @return The scoreboard of this world.
      */
     // TODO: 05.09.2020 Replaces the Object to Scoreboard when the Scoreboard API is ready
     Object getScoreboard();

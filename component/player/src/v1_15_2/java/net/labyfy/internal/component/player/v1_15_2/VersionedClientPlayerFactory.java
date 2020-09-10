@@ -17,7 +17,7 @@ public class VersionedClientPlayerFactory implements ClientPlayer.Factory {
     /**
      * Creates a new {@link ClientPlayer}
      *
-     * @return the created client player
+     * @return The created client player
      */
     @Override
     public ClientPlayer<AbstractClientPlayerEntity> create() {

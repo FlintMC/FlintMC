@@ -21,7 +21,7 @@ public class DefaultGameProfileBuilder implements GameProfile.Builder {
      * Sets the unique identifier for this game profile
      *
      * @param uniqueId The unique identifier of this game profile
-     * @return this builder, for chaining
+     * @return This builder, for chaining
      */
     @Override
     public GameProfile.Builder setUniqueId(UUID uniqueId) {
@@ -33,7 +33,7 @@ public class DefaultGameProfileBuilder implements GameProfile.Builder {
      * Sets the display name for this game profile
      *
      * @param name The display name of this game profile
-     * @return this builder, for chaining
+     * @return This builder, for chaining
      */
     @Override
     public GameProfile.Builder setName(String name) {
@@ -44,8 +44,8 @@ public class DefaultGameProfileBuilder implements GameProfile.Builder {
     /**
      * Sets the properties for this game profile
      *
-     * @param properties The game profile properies
-     * @return this builder, for chaining
+     * @param properties The game profile properties
+     * @return This builder, for chaining
      */
     @Override
     public GameProfile.Builder setProperties(PropertyMap properties) {
@@ -56,7 +56,7 @@ public class DefaultGameProfileBuilder implements GameProfile.Builder {
     /**
      * Built the game profile
      *
-     * @return the built game profile
+     * @return The built game profile
      */
     @Override
     public GameProfile build() {

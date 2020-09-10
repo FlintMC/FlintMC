@@ -17,7 +17,7 @@ public class VersionedDimensionSerializer implements DimensionSerializer<Dimensi
      * Deserializes the Mojang {@link DimensionType} to the Labyfy {@link Dimension}
      *
      * @param value The dimension type being deserialized
-     * @return a deserialized {@link Dimension}
+     * @return A deserialized {@link Dimension}
      */
     @Override
     public Dimension deserialize(DimensionType value) {
@@ -37,7 +37,7 @@ public class VersionedDimensionSerializer implements DimensionSerializer<Dimensi
      * Serializes the Labyfy {@link Dimension} to the Mojang {@link DimensionType}
      *
      * @param value The dimension being serialized
-     * @return a serialized {@link DimensionType}
+     * @return A serialized {@link DimensionType}
      */
     @Override
     public DimensionType serialize(Dimension value) {

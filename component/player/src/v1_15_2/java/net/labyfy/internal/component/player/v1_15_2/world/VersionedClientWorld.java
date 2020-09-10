@@ -40,7 +40,7 @@ public class VersionedClientWorld implements ClientWorld {
     /**
      * Retrieves the minecraft world.
      *
-     * @return the minecraft world.
+     * @return The minecraft world.
      */
     @Override
     public Object getClientWorld() {
@@ -50,7 +50,7 @@ public class VersionedClientWorld implements ClientWorld {
     /**
      * Retrieves the time of this world.
      *
-     * @return the time of this world.
+     * @return The time of this world.
      */
     @Override
     public long getTime() {
@@ -60,7 +60,7 @@ public class VersionedClientWorld implements ClientWorld {
     /**
      * Retrieves the player count of this world.
      *
-     * @return the player count of this world.
+     * @return The player count of this world.
      */
     @Override
     public int getPlayerCount() {
@@ -93,7 +93,7 @@ public class VersionedClientWorld implements ClientWorld {
     /**
      * Retrieves a collection with all players of this world.
      *
-     * @return a collection with all players of this world.
+     * @return A collection with all players of this world.
      */
     @Override
     public List<Player> getPlayers() {
@@ -103,7 +103,7 @@ public class VersionedClientWorld implements ClientWorld {
     /**
      * Retrieves the loaded entity count of this world.
      *
-     * @return the loaded entity count of this world.
+     * @return The loaded entity count of this world.
      */
     @Override
     public int getCountLoadedEntities() {
@@ -113,7 +113,7 @@ public class VersionedClientWorld implements ClientWorld {
     /**
      * Retrieves the type of this world.
      *
-     * @return the type of this world.
+     * @return The type of this world.
      */
     @Override
     public Dimension getDimension() {
@@ -123,7 +123,7 @@ public class VersionedClientWorld implements ClientWorld {
     /**
      * Retrieves the scoreboard of this world.
      *
-     * @return the scoreboard of this world.
+     * @return The scoreboard of this world.
      */
     @Override
     public Object getScoreboard() {

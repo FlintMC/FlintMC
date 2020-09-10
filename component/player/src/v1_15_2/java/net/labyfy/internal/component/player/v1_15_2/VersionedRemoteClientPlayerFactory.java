@@ -17,7 +17,7 @@ public class VersionedRemoteClientPlayerFactory implements RemoteClientPlayer.Fa
      * Creates a new {@link RemoteClientPlayer} with the given {@link AbstractClientPlayerEntity}.
      *
      * @param player The {@link AbstractClientPlayerEntity} to create this player.
-     * @return a created remote client player
+     * @return A created remote client player
      */
     @Override
     public RemoteClientPlayer create(AbstractClientPlayerEntity player) {

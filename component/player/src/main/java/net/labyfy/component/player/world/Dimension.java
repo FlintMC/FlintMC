@@ -32,7 +32,7 @@ public enum Dimension {
     /**
      * Retrieves the identifier of this dimension.
      *
-     * @return the identifier of this dimension.
+     * @return The identifier of this dimension.
      */
     public int getId() {
         return id;

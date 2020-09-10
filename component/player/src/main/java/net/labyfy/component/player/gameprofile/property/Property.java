@@ -10,21 +10,21 @@ public interface Property {
     /**
      * Retrieves the name of this property
      *
-     * @return the property name
+     * @return The property name
      */
     String getName();
 
     /**
      * Retrieves the value of this property
      *
-     * @return the property value
+     * @return The property value
      */
     String getValue();
 
     /**
      * Retrieves the signature of this property
      *
-     * @return the property signature
+     * @return The property signature
      */
     String getSignature();
 

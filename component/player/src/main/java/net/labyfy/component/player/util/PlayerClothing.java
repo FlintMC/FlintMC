@@ -57,7 +57,7 @@ public enum PlayerClothing {
     /**
      * Retrieves the identifier of this clothing.
      *
-     * @return the identifier of this clothing.
+     * @return The identifier of this clothing.
      */
     public int getClothingId() {
         return clothingId;
@@ -66,7 +66,7 @@ public enum PlayerClothing {
     /**
      * Retrieves the mask of this clothing.
      *
-     * @return the mask of this clothing.
+     * @return The mask of this clothing.
      */
     public int getClothingMask() {
         return clothingMask;
@@ -75,7 +75,7 @@ public enum PlayerClothing {
     /**
      * Retrieves the name of this clothing.
      *
-     * @return the name of this clothing.
+     * @return The name of this clothing.
      */
     public String getClothingName() {
         return clothingName;
@@ -84,7 +84,7 @@ public enum PlayerClothing {
     /**
      * Retrieves the translated name of this clothing.
      *
-     * @return the translated name of this clothing.
+     * @return The translated name of this clothing.
      */
     public ChatComponent getName() {
         return name;

@@ -16,7 +16,7 @@ public interface RemoteClientPlayer<T> extends Player<T> {
          * Creates a new {@link RemoteClientPlayer} with the given type.
          *
          * @param player A type to create this player.
-         * @return a created remote client player
+         * @return A created remote client player
          */
         RemoteClientPlayer create(T player);
 

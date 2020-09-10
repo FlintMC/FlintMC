@@ -43,7 +43,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the game profile form the network information.
      *
-     * @return the game profile of a player
+     * @return The game profile of a player
      */
     @Override
     public GameProfile getGameProfile() {
@@ -53,7 +53,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the response time from the network information.
      *
-     * @return the response time form the network information
+     * @return The response time form the network information
      */
     @Override
     public int getResponseTime() {
@@ -63,7 +63,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the player game mode from the network information.
      *
-     * @return the player game mode
+     * @return The player game mode
      */
     @Override
     public GameMode getGameMode() {
@@ -77,7 +77,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the player last health.
      *
-     * @return the player last health
+     * @return The player last health
      */
     @Override
     public int getLastHealth() {
@@ -87,7 +87,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the player display health.
      *
-     * @return the player display health
+     * @return The player display health
      */
     @Override
     public int getDisplayHealth() {
@@ -97,7 +97,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the player last health time.
      *
-     * @return the player last health time
+     * @return The player last health time
      */
     @Override
     public long getLastHealthTime() {
@@ -107,7 +107,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the player health blink time.
      *
-     * @return the player health blink time
+     * @return The player health blink time
      */
     @Override
     public long getHealthBlinkTime() {
@@ -117,7 +117,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the player render visibility identifier.
      *
-     * @return the player render visibility identifier
+     * @return The player render visibility identifier
      */
     @Override
     public long getRenderVisibilityId() {
@@ -127,7 +127,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the skin model of this player
      *
-     * @return the skin model of this player
+     * @return The skin model of this player
      */
     @Override
     public SkinModel getSkinModel() {
@@ -141,7 +141,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the location of the player's skin
      *
-     * @return the skin location
+     * @return The skin location
      */
     @Override
     public ResourceLocation getSkinLocation() {
@@ -155,7 +155,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the location of the player's cloak
      *
-     * @return the cloak location
+     * @return The cloak location
      */
     @Override
     public ResourceLocation getCloakLocation() {
@@ -169,7 +169,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the location of the player's elytra
      *
-     * @return the elytra location
+     * @return The elytra location
      */
     @Override
     public ResourceLocation getElytraLocation() {
@@ -214,7 +214,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
      * Retrieves a {@link net.minecraft.client.network.play.NetworkPlayerInfo} with the given unique identifier.
      *
      * @param uniqueId The unique identifier of the profile
-     * @return a {@link net.minecraft.client.network.play.NetworkPlayerInfo} or {@code null}
+     * @return A {@link net.minecraft.client.network.play.NetworkPlayerInfo} or {@code null}
      */
     private net.minecraft.client.network.play.NetworkPlayerInfo getPlayerInfo(UUID uniqueId) {
         return Minecraft.getInstance().getConnection().getPlayerInfo(uniqueId);
@@ -223,7 +223,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     /**
      * Retrieves the player of this client.
      *
-     * @return the client player
+     * @return The client player
      */
     private Player get() {
         return this.player.create(Minecraft.getInstance().player);
