@@ -37,6 +37,8 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
         minecraftWindow.getFramebufferHeight(),
         true
     );
+
+    this.openglTextureId = -1;
   }
 
   @Override
@@ -66,7 +68,7 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
   @Override
   public void close() {
     // Perform cleanup
-    if(openglTextureId != 0) {
+    if(openglTextureId != -1) {
       glDeleteTextures(openglTextureId);
     }
   }
@@ -89,7 +91,7 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
 
   @Override
   public void drawUsingSurface() {
-    if(openglTextureId == 0) {
+    if(openglTextureId == -1) {
       // Create objects required for OpenGL upload
       initGL();
     }
@@ -138,6 +140,9 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
               GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
               (ByteBuffer) imageData.position(startOffset) // Offset the data pointer
           );
+
+          // Reset the pixels per row value to auto detection, else we cause weird crashes
+          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
         }
       } finally {
         // Make the pixels available again to Ultralight
