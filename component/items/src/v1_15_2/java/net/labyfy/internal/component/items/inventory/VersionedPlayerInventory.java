@@ -51,6 +51,11 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
   }
 
   @Override
+  public void setItem(int slot, ItemStack item) throws IndexOutOfBoundsException {
+    Minecraft.getInstance().player.inventory.mainInventory.set(slot, super.mapToVanilla(item));
+  }
+
+  @Override
   public ItemStack getArmorPart(PlayerArmorPart part) {
     return this.getItem(Minecraft.getInstance().player.inventory.armorInventory, part.getIndex());
   }

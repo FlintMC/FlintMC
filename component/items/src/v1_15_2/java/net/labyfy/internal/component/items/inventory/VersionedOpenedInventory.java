@@ -47,7 +47,7 @@ public class VersionedOpenedInventory extends VersionedInventory {
 
   @Override
   public void setItem(int slot, ItemStack item) throws IndexOutOfBoundsException {
-    super.setItem(slot, item);
+    this.getContainer().getSlot(slot).putStack(super.mapToVanilla(item));
     this.invalidate();
   }
 

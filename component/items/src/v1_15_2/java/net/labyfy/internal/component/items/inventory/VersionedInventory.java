@@ -51,9 +51,8 @@ public abstract class VersionedInventory extends DefaultInventory {
     return this.mapper.fromMinecraft(this.getContainer().getInventory().get(slot));
   }
 
-  @Override
-  public void setItem(int slot, ItemStack item) throws IndexOutOfBoundsException {
-    this.getContainer().getSlot(slot).putStack((net.minecraft.item.ItemStack) this.mapper.toMinecraft(item == null ? this.registry.getAirType().createStack() : item));
+  protected net.minecraft.item.ItemStack mapToVanilla(ItemStack item) {
+    return (net.minecraft.item.ItemStack) this.mapper.toMinecraft(item == null ? this.registry.getAirType().createStack() : item);
   }
 
 }
