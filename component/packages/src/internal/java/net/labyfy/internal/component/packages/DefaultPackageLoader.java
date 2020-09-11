@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
@@ -28,10 +27,10 @@ import java.util.stream.Stream;
 @Implement(PackageLoader.class)
 @AutoLoad(round = -4, priority = -900)
 public class DefaultPackageLoader implements PackageLoader {
-  private final DefaultPackageManifestLoader labyPackageDescriptionLoader;
   private final Logger logger;
   private final File packageFolder;
   private final Set<JarTuple> jars;
+  private final Package.Factory packageFactory;
 
   private Set<Package> allPackages;
 
@@ -45,10 +44,10 @@ public class DefaultPackageLoader implements PackageLoader {
       DefaultLoggingProvider loggingProvider,
       @Named("labyfyPackageFolder") File packageFolder,
       DefaultPackageManifestLoader descriptionLoader,
-      DefaultPackageManifestLoader labyPackageDescriptionLoader
+      Package.Factory packageFactory
   ) {
+    this.packageFactory = packageFactory;
     this.logger = LogManager.getLogger(DefaultPackageLoader.class);
-    this.labyPackageDescriptionLoader = labyPackageDescriptionLoader;
 
     // Tell the logging provider we now are able to resolve logging prefixes
     loggingProvider.setPrefixProvider(this::getLogPrefix);
@@ -121,7 +120,7 @@ public class DefaultPackageLoader implements PackageLoader {
     // Construct a collection of all packages
     this.allPackages =
         jars.stream()
-            .map(jarTuple -> new DefaultPackage(this.labyPackageDescriptionLoader, jarTuple.getFile(), jarTuple.getJar()))
+            .map(jarTuple -> this.packageFactory.create(jarTuple.getFile(), jarTuple.getJar()))
             .collect(Collectors.toSet());
 
     // Filter out all packages which can be loaded

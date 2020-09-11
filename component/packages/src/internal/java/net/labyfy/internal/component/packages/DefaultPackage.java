@@ -2,8 +2,11 @@ package net.labyfy.internal.component.packages;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.commons.consumer.TriConsumer;
 import net.labyfy.component.initializer.EntryPoint;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
@@ -25,6 +28,7 @@ import java.util.jar.JarFile;
 /**
  * Default implementation of the {@link Package}.
  */
+@Implement(Package.class)
 public class DefaultPackage implements Package {
   private final File jarFile;
   private PackageManifest packageManifest;
@@ -41,10 +45,11 @@ public class DefaultPackage implements Package {
    * @param jar            The java IO jar file this package should be loaded from, must point to the same file as
    *                       the `file` parameter, or must be null if the package has been loaded from the classpath
    */
-  protected DefaultPackage(
-      DefaultPackageManifestLoader manifestLoader,
-      File jarFile,
-      JarFile jar) {
+  @AssistedInject
+  private DefaultPackage(
+          DefaultPackageManifestLoader manifestLoader,
+          @Assisted File jarFile,
+          @Assisted JarFile jar) {
     this.jarFile = jarFile;
 
     if (jar != null) {
