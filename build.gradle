@@ -117,6 +117,27 @@ allprojects {
         }
     }
 
+    /*
+     * NOTE: This is important, else Java will keep files locked which gradle
+     *       tries to overwrite. This is an issue with annotation processors
+     *       and there is no real way to fix it, other than executing the
+     *       annotation processor in an external process.
+     *
+     * What exactly is happening?
+     * Gradle loads our general annotation processing module (and its annotation processor), which in return
+     * loads other annotation processors using the service loader. With the fork option disabled
+     * (default setting in gradle) the jar file the autoload processor is in is kept loaded in the gradle daemon, thus
+     * locking the file on disk. Subsequent executions of builds may try to write to this file and then fail
+     * catastrophically, because the file is still locked by the very same daemon. Using the fork option, the Java
+     * compilers loading the annotation processor exit after the compilation is done, thus freeing the file and
+     * invalidating the lock after the build is done.
+     *
+     * TLDR; Fork or the build process will explode due to locked files!
+     */
+    tasks.withType(JavaCompile) {
+        options.fork = true
+    }
+
     plugins.withType(JavaPlugin) {
         jar {
             manifest {
