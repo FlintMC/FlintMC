@@ -41,7 +41,12 @@ public class VersionedOpenedInventory extends VersionedInventory {
 
   @Override
   public void setContents(ItemStack[] contents) {
-    super.setContents(contents);
+    super.validateContents(contents);
+
+    for (int i = 0; i < contents.length; i++) {
+      this.getContainer().getSlot(i).putStack(super.mapToVanilla(contents[i]));
+    }
+
     this.invalidate();
   }
 

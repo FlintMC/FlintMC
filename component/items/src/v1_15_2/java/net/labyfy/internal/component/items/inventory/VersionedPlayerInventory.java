@@ -98,4 +98,13 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
     return this.map(Minecraft.getInstance().player.inventory.mainInventory);
   }
 
+  @Override
+  public void setContents(ItemStack[] contents) throws IllegalArgumentException {
+    super.validateContents(contents);
+
+    for (int i = 0; i < contents.length; i++) {
+      this.setItem(i, contents[i]);
+    }
+  }
+
 }

@@ -33,16 +33,9 @@ public abstract class VersionedInventory extends DefaultInventory {
     return this.title;
   }
 
-  @Override
-  public void setContents(ItemStack[] contents) throws IllegalArgumentException {
+  protected void validateContents(ItemStack[] contents) throws IllegalArgumentException {
     if (contents.length > super.getDimension().getSlotCount()) {
       throw new IllegalArgumentException(contents.length + " are too many contents for an inventory with a size of " + super.getDimension().getSlotCount());
-    }
-
-    for (int i = 0; i < contents.length; i++) {
-      ItemStack stack = contents[i] == null ? this.registry.getAirType().createStack() : contents[i];
-
-      this.getContainer().getSlot(i).putStack((net.minecraft.item.ItemStack) this.mapper.toMinecraft(stack));
     }
   }
 
