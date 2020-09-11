@@ -7,10 +7,13 @@ import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemRegistry;
 import net.labyfy.component.items.meta.ItemMeta;
+import net.labyfy.component.items.meta.enchantment.EnchantmentRarity;
+import net.labyfy.component.items.meta.enchantment.EnchantmentType;
 import net.labyfy.component.items.type.ItemCategory;
 import net.labyfy.component.items.type.ItemType;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.component.stereotype.NameSpacedKey;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
@@ -24,9 +27,10 @@ import java.util.Map;
 public class VersionedItemRegistry extends DefaultItemRegistry {
 
   @Inject
-  public VersionedItemRegistry(ItemType.Factory itemFactory, MinecraftComponentMapper componentMapper,
-                               ComponentBuilder.Factory componentFactory, ResourceLocationProvider resourceLocationProvider) {
-    super(itemFactory, componentMapper, componentFactory, resourceLocationProvider);
+  public VersionedItemRegistry(ItemType.Factory itemFactory, EnchantmentType.Factory enchantmentFactory,
+                               MinecraftComponentMapper componentMapper, ComponentBuilder.Factory componentFactory,
+                               ResourceLocationProvider resourceLocationProvider) {
+    super(itemFactory, enchantmentFactory, componentMapper, componentFactory, resourceLocationProvider);
   }
 
   @Override
@@ -62,6 +66,24 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
 
       // re-use the builder for every other item in the registry
       builder.reset();
+    }
+
+    for (Enchantment enchantment : Registry.ENCHANTMENT) {
+      // name in the registry like minecraft:sharpness
+      ResourceLocation resourceLocation = Registry.ENCHANTMENT.getKey(enchantment);
+
+      NameSpacedKey registryName = NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
+      Enchantment.Rarity rarity = enchantment.getRarity();
+
+      super.registerEnchantmentType(super.enchantmentFactory.newBuilder()
+          .registryName(registryName)
+          .highestLevel(enchantment.getMaxLevel())
+          .rarity(
+              rarity == Enchantment.Rarity.UNCOMMON ? EnchantmentRarity.UNCOMMON :
+                  rarity == Enchantment.Rarity.COMMON ? EnchantmentRarity.COMMON :
+                      rarity == Enchantment.Rarity.RARE ? EnchantmentRarity.RARE :
+                          rarity == Enchantment.Rarity.VERY_RARE ? EnchantmentRarity.EPIC : null)
+          .build());
     }
   }
 

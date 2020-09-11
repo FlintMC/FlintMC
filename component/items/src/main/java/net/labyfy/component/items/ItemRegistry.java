@@ -1,5 +1,6 @@
 package net.labyfy.component.items;
 
+import net.labyfy.component.items.meta.enchantment.EnchantmentType;
 import net.labyfy.component.items.type.ItemCategory;
 import net.labyfy.component.items.type.ItemType;
 import net.labyfy.component.stereotype.NameSpacedKey;
@@ -78,5 +79,28 @@ public interface ItemRegistry {
    * @return The category with the given name or {@code null} if no category with the given name exists in this registry
    */
   ItemCategory getCategory(NameSpacedKey registryName);
+
+  /**
+   * Registers a new enchantment type in this registry.
+   *
+   * @param type The new non-null type
+   */
+  void registerEnchantmentType(EnchantmentType type);
+
+  /**
+   * Retrieves all available types of enchantments in this registry.
+   *
+   * @return The non-null array of enchantment types, modification to the array will have no effect
+   */
+  EnchantmentType[] getEnchantmentTypes();
+
+  /**
+   * Retrieves an enchantment type by the name out of this registry.
+   *
+   * @param registryName The non-null key for the enchantment type
+   * @return The enchantment type out of this registry matching the given key or {@code null} if no type with the given
+   * key could be found
+   */
+  EnchantmentType getEnchantmentType(NameSpacedKey registryName);
 
 }

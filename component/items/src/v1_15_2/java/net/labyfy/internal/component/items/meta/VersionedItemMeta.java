@@ -6,25 +6,34 @@ import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.exception.ComponentDeserializationException;
 import net.labyfy.chat.serializer.ComponentSerializer;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.items.ItemRegistry;
 import net.labyfy.component.items.meta.ItemMeta;
+import net.labyfy.component.items.meta.enchantment.Enchantment;
+import net.labyfy.component.items.meta.enchantment.EnchantmentType;
+import net.labyfy.component.stereotype.NameSpacedKey;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Implement(value = ItemMeta.class, version = "1.15.2")
 public class VersionedItemMeta extends DefaultItemMeta {
 
+  private final ItemRegistry itemRegistry;
   private final CompoundNBT nbt;
   private final ComponentSerializer.Factory componentFactory;
   private ChatComponent customDisplayName;
   private ChatComponent[] lore;
+  private Map<EnchantmentType, Enchantment> enchantments;
 
   @Inject
-  public VersionedItemMeta(ComponentSerializer.Factory componentFactory) {
+  public VersionedItemMeta(ItemRegistry itemRegistry, ComponentSerializer.Factory componentFactory) {
+    this.itemRegistry = itemRegistry;
     this.nbt = new CompoundNBT();
     this.componentFactory = componentFactory;
   }
@@ -132,6 +141,93 @@ public class VersionedItemMeta extends DefaultItemMeta {
     this.nbt.putInt(Keys.DAMAGE, damage);
   }
 
+  private void loadEnchantments() {
+    if (this.enchantments != null) {
+      return;
+    }
+
+    this.enchantments = new HashMap<>();
+
+    if (!this.nbt.contains(Keys.ENCHANTMENTS, 9)) { // 9 = list
+      return;
+    }
+
+    ListNBT enchantments = this.nbt.getList(Keys.ENCHANTMENTS, 10); // 10 = compound
+    for (INBT enchantmentBase : enchantments) {
+      CompoundNBT enchantment = (CompoundNBT) enchantmentBase;
+      if (!enchantment.contains(Keys.ENCHANTMENT_ID, 8)) {
+        continue;
+      }
+
+      NameSpacedKey registryName = NameSpacedKey.parse(enchantment.getString(Keys.ENCHANTMENT_ID));
+      int level = enchantment.getShort(Keys.ENCHANTMENT_LEVEL); // begins at 1
+
+      EnchantmentType type = this.itemRegistry.getEnchantmentType(registryName);
+      if (type == null) {
+        continue;
+      }
+
+      this.enchantments.put(type, type.createEnchantment(level));
+    }
+  }
+
+  private void writeEnchantments() {
+    if (this.enchantments == null) {
+      return;
+    }
+
+    ListNBT enchantments = new ListNBT();
+
+    for (Enchantment enchantment : this.enchantments.values()) {
+      CompoundNBT compound = new CompoundNBT();
+
+      compound.putString(Keys.ENCHANTMENT_ID, enchantment.getType().getRegistryName().toString());
+      compound.putShort(Keys.ENCHANTMENT_LEVEL, (short) enchantment.getLevel());
+
+      enchantments.add(compound);
+    }
+
+    this.nbt.put(Keys.ENCHANTMENTS, enchantments);
+  }
+
+  @Override
+  public Enchantment[] getEnchantments() {
+    this.loadEnchantments();
+    return this.enchantments.values().toArray(new Enchantment[0]);
+  }
+
+  @Override
+  public boolean hasEnchantment(EnchantmentType type) {
+    this.loadEnchantments();
+    return this.enchantments.containsKey(type);
+  }
+
+  @Override
+  public void addEnchantment(Enchantment enchantment) {
+    if (this.hasEnchantment(enchantment.getType()) && this.getEnchantment(enchantment.getType()).getLevel() == enchantment.getLevel()) {
+      return;
+    }
+
+    this.enchantments.put(enchantment.getType(), enchantment);
+    this.writeEnchantments();
+  }
+
+  @Override
+  public void removeEnchantment(EnchantmentType type) {
+    if (!this.hasEnchantment(type)) {
+      return;
+    }
+
+    this.enchantments.remove(type);
+    this.writeEnchantments();
+  }
+
+  @Override
+  public Enchantment getEnchantment(EnchantmentType type) {
+    this.loadEnchantments();
+    return this.enchantments.get(type);
+  }
+
   @Override
   public void applyNBTFrom(Object source) {
     Preconditions.checkArgument(source instanceof CompoundNBT, "Provided nbt object " + source.getClass().getName() + " is no instance of " + CompoundNBT.class.getName());
@@ -162,6 +258,9 @@ public class VersionedItemMeta extends DefaultItemMeta {
     String NAME = "Name";
     String LORE = "Lore";
     String DAMAGE = "Damage";
+    String ENCHANTMENTS = "Enchantments";
+    String ENCHANTMENT_ID = "id";
+    String ENCHANTMENT_LEVEL = "lvl";
 
   }
 

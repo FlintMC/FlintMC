@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.component.items.ItemRegistry;
+import net.labyfy.component.items.meta.enchantment.EnchantmentType;
 import net.labyfy.component.items.type.ItemCategory;
 import net.labyfy.component.items.type.ItemType;
 import net.labyfy.component.resources.ResourceLocationProvider;
@@ -17,6 +18,7 @@ import java.util.Map;
 public abstract class DefaultItemRegistry implements ItemRegistry {
 
   protected final ItemType.Factory itemFactory;
+  protected final EnchantmentType.Factory enchantmentFactory;
   protected final MinecraftComponentMapper componentMapper;
   protected final ComponentBuilder.Factory componentFactory;
   protected final ResourceLocationProvider resourceLocationProvider;
@@ -25,10 +27,13 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
 
   private final Map<NameSpacedKey, ItemCategory> itemCategories = new HashMap<>();
   private final Map<NameSpacedKey, ItemType> itemTypes = new HashMap<>();
+  private final Map<NameSpacedKey, EnchantmentType> enchantmentTypes = new HashMap<>();
 
-  public DefaultItemRegistry(ItemType.Factory itemFactory, MinecraftComponentMapper componentMapper,
-                             ComponentBuilder.Factory componentFactory, ResourceLocationProvider resourceLocationProvider) {
+  public DefaultItemRegistry(ItemType.Factory itemFactory, EnchantmentType.Factory enchantmentFactory,
+                             MinecraftComponentMapper componentMapper, ComponentBuilder.Factory componentFactory,
+                             ResourceLocationProvider resourceLocationProvider) {
     this.itemFactory = itemFactory;
+    this.enchantmentFactory = enchantmentFactory;
     this.componentMapper = componentMapper;
     this.componentFactory = componentFactory;
     this.resourceLocationProvider = resourceLocationProvider;
@@ -101,5 +106,21 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
   @Override
   public ItemCategory getCategory(NameSpacedKey registryName) {
     return this.itemCategories.get(registryName);
+  }
+
+  @Override
+  public void registerEnchantmentType(EnchantmentType type) {
+    Preconditions.checkArgument(!this.enchantmentTypes.containsKey(type.getRegistryName()), "An enchantment type with the name %s is already registered", type.getRegistryName());
+    this.enchantmentTypes.put(type.getRegistryName(), type);
+  }
+
+  @Override
+  public EnchantmentType[] getEnchantmentTypes() {
+    return this.enchantmentTypes.values().toArray(new EnchantmentType[0]);
+  }
+
+  @Override
+  public EnchantmentType getEnchantmentType(NameSpacedKey registryName) {
+    return this.enchantmentTypes.get(registryName);
   }
 }

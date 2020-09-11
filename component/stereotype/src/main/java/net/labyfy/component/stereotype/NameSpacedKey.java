@@ -4,6 +4,11 @@ import java.util.Objects;
 
 public class NameSpacedKey {
 
+  /**
+   * The default splitter between the name space and the key.
+   */
+  private static final char DEFAULT_SPLITTER = ':';
+
   private final String nameSpace;
   private final String key;
 
@@ -20,6 +25,19 @@ public class NameSpacedKey {
     return of("minecraft", key);
   }
 
+  public static NameSpacedKey parse(String in) {
+    return parse(in, DEFAULT_SPLITTER);
+  }
+
+  public static NameSpacedKey parse(String in, char splitter) {
+    int index = in.indexOf(splitter);
+    if (index == -1 || index > in.length() - 1) {
+      return minecraft(in);
+    }
+
+    return of(in.substring(0, index), in.substring(index + 1));
+  }
+
   public String getNameSpace() {
     return this.nameSpace;
   }
@@ -30,7 +48,7 @@ public class NameSpacedKey {
 
   @Override
   public String toString() {
-    return this.nameSpace + ":" + this.key;
+    return this.nameSpace + DEFAULT_SPLITTER + this.key;
   }
 
   @Override

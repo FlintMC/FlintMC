@@ -2,6 +2,8 @@ package net.labyfy.component.items.meta;
 
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.items.ItemStack;
+import net.labyfy.component.items.meta.enchantment.Enchantment;
+import net.labyfy.component.items.meta.enchantment.EnchantmentType;
 import net.labyfy.component.items.type.ItemType;
 
 import java.util.List;
@@ -66,7 +68,7 @@ public interface ItemMeta {
   void setRemainingDurability(int remainingDurability) throws IllegalStateException, IllegalArgumentException;
 
   /**
-   * Gets the amount of damage that has been done to the item of this meta.
+   * Retrieves the amount of damage that has been done to the item of this meta.
    *
    * @return The damage of this meta or -1 if the item of this meta is not damageable
    */
@@ -82,6 +84,48 @@ public interface ItemMeta {
    *                                  the {@link ItemType} of this meta
    */
   void setDamage(int damage) throws IllegalStateException, IllegalArgumentException;
+
+  /**
+   * Retrieves an array of all enchantments of this meta.
+   *
+   * @return The non-null array of enchantments on this meta, modification to this array will have no effect
+   */
+  Enchantment[] getEnchantments();
+
+  /**
+   * Retrieves whether this meta is enchanted with the given type
+   *
+   * @param type The non-null type to check for
+   * @return {@code true} if it is enchanted with this meta or {@code false} otherwise
+   */
+  boolean hasEnchantment(EnchantmentType type);
+
+  /**
+   * Adds the given enchantment to this meta if it is not already added.
+   *
+   * @param enchantment The new non-null enchantment
+   * @throws IllegalArgumentException If an enchantment with the given type is already added to this meta
+   * @see #hasEnchantment(EnchantmentType)
+   * @see EnchantmentType#createEnchantment(int)
+   */
+  void addEnchantment(Enchantment enchantment) throws IllegalArgumentException;
+
+  /**
+   * Removes an enchantment with the given type out of this meta if it is added. Nothing will happen if this meta isn't
+   * enchanted with the given type.
+   *
+   * @param type The non-null type to be removed
+   */
+  void removeEnchantment(EnchantmentType type);
+
+  /**
+   * Retrieves an enchantment by the given out of this meta. If an enchantment is returned, the type in this enchantment
+   * will match the given type in this method.
+   *
+   * @param type The non-null type to get the enchantment for
+   * @return The enchantment of this meta or {@code null} if this meta isn't enchanted with the given type
+   */
+  Enchantment getEnchantment(EnchantmentType type);
 
   /**
    * Fills this meta from the given NBT compound. This method is only intended to be used internally.
