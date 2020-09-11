@@ -1,5 +1,6 @@
 package net.labyfy.component.items.meta.enchantment;
 
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemRegistry;
 import net.labyfy.component.stereotype.NameSpacedKey;
@@ -31,6 +32,13 @@ public interface EnchantmentType {
    * @return The non-null rarity of this type
    */
   EnchantmentRarity getRarity();
+
+  /**
+   * Retrieves the display name of this enchantment type which will be displayed by the client.
+   *
+   * @return The non-null display name of this type
+   */
+  ChatComponent getDisplayName();
 
   /**
    * Creates a new enchantment with this type and the given level.
@@ -75,6 +83,8 @@ public interface EnchantmentType {
      * @return this
      */
     Builder highestLevel(int highestLevel);
+
+    Builder displayName(ChatComponent displayName);
 
     /**
      * Sets the rarity of the result of this builder.

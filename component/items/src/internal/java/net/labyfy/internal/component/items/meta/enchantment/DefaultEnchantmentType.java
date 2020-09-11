@@ -1,5 +1,6 @@
 package net.labyfy.internal.component.items.meta.enchantment;
 
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.items.meta.enchantment.Enchantment;
 import net.labyfy.component.items.meta.enchantment.EnchantmentRarity;
 import net.labyfy.component.items.meta.enchantment.EnchantmentType;
@@ -10,12 +11,14 @@ public class DefaultEnchantmentType implements EnchantmentType {
   private final Enchantment.Factory enchantmentFactory;
   private final NameSpacedKey registryName;
   private final int highestLevel;
+  private final ChatComponent displayName;
   private final EnchantmentRarity rarity;
 
-  public DefaultEnchantmentType(Enchantment.Factory enchantmentFactory, NameSpacedKey registryName, int highestLevel, EnchantmentRarity rarity) {
+  public DefaultEnchantmentType(Enchantment.Factory enchantmentFactory, NameSpacedKey registryName, int highestLevel, ChatComponent displayName, EnchantmentRarity rarity) {
     this.enchantmentFactory = enchantmentFactory;
     this.registryName = registryName;
     this.highestLevel = highestLevel;
+    this.displayName = displayName;
     this.rarity = rarity;
   }
 
@@ -32,6 +35,11 @@ public class DefaultEnchantmentType implements EnchantmentType {
   @Override
   public EnchantmentRarity getRarity() {
     return this.rarity;
+  }
+
+  @Override
+  public ChatComponent getDisplayName() {
+    return this.displayName;
   }
 
   @Override

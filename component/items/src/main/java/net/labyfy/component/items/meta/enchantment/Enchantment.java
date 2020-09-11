@@ -1,6 +1,7 @@
 package net.labyfy.component.items.meta.enchantment;
 
 import com.google.inject.assistedinject.Assisted;
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 /**
@@ -21,6 +22,14 @@ public interface Enchantment {
    * @return The level of this enchantment
    */
   int getLevel();
+
+  /**
+   * Retrieves the display name of this enchantment. It will be constructed by chaining the display name of the type, a
+   * space and the level of this enchantment.
+   *
+   * @return The non-null display name of the enchantment
+   */
+  ChatComponent getDisplayName();
 
   /**
    * Factory for {@link Enchantment}.
