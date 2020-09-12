@@ -27,6 +27,7 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
   private final UltralightView view;
 
   private int openglTextureId;
+  private boolean isTransparent;
 
   @Inject
   private UltralightMainWebGuiView(UltralightWebGuiController controller, MinecraftWindow minecraftWindow) {
@@ -48,14 +49,14 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
 
   @Override
   public boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution) {
-    // TODO: Maybe allow the Javascript running in the view to signal whether transparency is required, and if
-    //       it is not required, cancel the rendering of other stuff and render in the BEFORE ExecutionTime?
-    if(executionTime == Hook.ExecutionTime.BEFORE) {
+    if(isTransparent && executionTime == Hook.ExecutionTime.AFTER) {
+      return true;
+    } else if(!isTransparent && executionTime == Hook.ExecutionTime.BEFORE){
       execution.getCancellation().cancel();
       return true;
-    } else {
-      return false;
     }
+
+    return false;
   }
 
   @Override
@@ -71,6 +72,11 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
     if(openglTextureId != -1) {
       glDeleteTextures(openglTextureId);
     }
+  }
+
+  @Override
+  public void setTransparent(boolean transparent) {
+    this.isTransparent = transparent;
   }
 
   @Override

@@ -69,7 +69,7 @@ public class UltralightWebGuiController implements WebGuiController {
    * Wires up the Ultralight main view with the controller.
    */
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void setupUltralight() throws UltralightLoadException {
+  public void setupUltralight() {
     logger.debug("Setting up Ultralight...");
 
     // NOTE: This **needs** to be called on the render thread, else Ultralight will not work!
