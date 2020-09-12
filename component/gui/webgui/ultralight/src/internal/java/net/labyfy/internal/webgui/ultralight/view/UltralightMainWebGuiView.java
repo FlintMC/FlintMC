@@ -2,7 +2,7 @@ package net.labyfy.internal.webgui.ultralight.view;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.gui.MinecraftWindow;
+import net.labyfy.component.gui.windowing.MinecraftWindow;
 import net.labyfy.component.gui.RenderExecution;
 import net.labyfy.component.gui.component.GuiComponent;
 import net.labyfy.component.gui.screen.ScreenName;
@@ -10,7 +10,6 @@ import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
 import net.labymedia.ultralight.UltralightSurface;
 import net.labymedia.ultralight.UltralightView;
-import net.labymedia.ultralight.bitmap.UltralightBitmapSurface;
 import net.labymedia.ultralight.math.IntRect;
 
 import java.nio.ByteBuffer;

@@ -1,4 +1,4 @@
-package net.labyfy.component.gui;
+package net.labyfy.component.gui.windowing;
 
 /**
  * Interface representing the minecraft main window.

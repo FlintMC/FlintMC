@@ -1,6 +1,6 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
-import net.labyfy.component.gui.MinecraftWindow;
+import net.labyfy.component.gui.windowing.MinecraftWindow;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
