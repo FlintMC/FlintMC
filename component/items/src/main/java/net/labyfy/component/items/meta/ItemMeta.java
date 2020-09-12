@@ -8,6 +8,8 @@ import net.labyfy.component.items.type.ItemType;
 
 import java.util.List;
 
+// TODO implement the 'CanPlaceOn' and 'CanDestroy' tags
+
 /**
  * Represents the NBT of an {@link ItemStack}.
  */
@@ -126,6 +128,38 @@ public interface ItemMeta {
    * @return The enchantment of this meta or {@code null} if this meta isn't enchanted with the given type
    */
   Enchantment getEnchantment(EnchantmentType type);
+
+  /**
+   * Retrieves an array of all hide flags of this meta. This array defines which values will be displayed by the
+   * client.
+   *
+   * @return The non-null array of hide flags, modification to this array will have no effect
+   */
+  ItemHideFlag[] getHideFlags();
+
+  /**
+   * Sets the value of the given flag. This method does nothing, if the flag is already set with the given value-
+   *
+   * @param flag  The non-null flag to be set. {@code true} means that the client will display the given flag, {@code
+   *              false} means that it will not be displayed
+   * @param value The value to set the flag to
+   */
+  void setHideFlag(ItemHideFlag flag, boolean value);
+
+  /**
+   * Sets the value of all flags to the given value.
+   *
+   * @param value The new value for all hide flags
+   */
+  void setAllHideFlags(boolean value);
+
+  /**
+   * Retrieves whether this meta has the given hide flag set.
+   *
+   * @param flag The flag to check for
+   * @return {@code true} if this meta has the given flag set, {@code false} otherwise
+   */
+  boolean hasHideFlag(ItemHideFlag flag);
 
   /**
    * Fills this meta from the given NBT compound. This method is only intended to be used internally.

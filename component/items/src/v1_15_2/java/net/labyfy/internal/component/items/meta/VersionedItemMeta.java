@@ -252,11 +252,22 @@ public class VersionedItemMeta extends DefaultItemMeta {
     }
   }
 
+  @Override
+  protected int getHideFlagsBase() {
+    return this.nbt.getInt(Keys.HIDE_FLAGS);
+  }
+
+  @Override
+  protected void setHideFlagsBase(int base) {
+    this.nbt.putInt(Keys.HIDE_FLAGS, base);
+  }
+
   interface Keys {
 
     String DISPLAY = "display";
     String NAME = "Name";
     String LORE = "Lore";
+    String HIDE_FLAGS = "HideFlags";
     String DAMAGE = "Damage";
     String ENCHANTMENTS = "Enchantments";
     String ENCHANTMENT_ID = "id";
