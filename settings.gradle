@@ -94,3 +94,9 @@ findProject(':component:gui:webgui')?.name = 'webgui'
 
 include 'component:gui:webgui:ultralight'
 findProject(':component:gui:webgui:ultralight')?.name = 'ultralight'
+
+include 'component:chat'
+findProject(':component:chat')?.name = 'chat'
+
+include 'component:player'
+findProject(':component:player')?.name = 'player'
