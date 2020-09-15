@@ -242,6 +242,11 @@ public class VersionedItemMeta extends DefaultItemMeta {
     this.move(this.nbt, (CompoundNBT) target);
   }
 
+  @Override
+  public Object getNBT() {
+    return this.nbt;
+  }
+
   private void move(CompoundNBT source, CompoundNBT target) {
     for (String key : target.keySet()) {
       target.remove(key);

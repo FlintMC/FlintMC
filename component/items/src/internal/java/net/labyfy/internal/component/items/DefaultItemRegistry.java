@@ -1,14 +1,16 @@
 package net.labyfy.internal.component.items;
 
 import com.google.common.base.Preconditions;
-import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.builder.ComponentBuilder;
+import net.labyfy.chat.component.event.HoverEvent;
+import net.labyfy.chat.serializer.ComponentSerializer;
 import net.labyfy.component.items.ItemRegistry;
+import net.labyfy.component.items.ItemStackSerializer;
 import net.labyfy.component.items.meta.enchantment.EnchantmentType;
 import net.labyfy.component.items.type.ItemCategory;
 import net.labyfy.component.items.type.ItemType;
-import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.component.stereotype.NameSpacedKey;
+import net.labyfy.internal.component.items.component.HoverItemSerializer;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,9 +21,7 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
 
   protected final ItemType.Factory itemFactory;
   protected final EnchantmentType.Factory enchantmentFactory;
-  protected final MinecraftComponentMapper componentMapper;
   protected final ComponentBuilder.Factory componentFactory;
-  protected final ResourceLocationProvider resourceLocationProvider;
 
   private final ItemType airType;
 
@@ -30,16 +30,16 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
   private final Map<NameSpacedKey, EnchantmentType> enchantmentTypes = new HashMap<>();
 
   public DefaultItemRegistry(ItemType.Factory itemFactory, EnchantmentType.Factory enchantmentFactory,
-                             MinecraftComponentMapper componentMapper, ComponentBuilder.Factory componentFactory,
-                             ResourceLocationProvider resourceLocationProvider) {
+                             ComponentBuilder.Factory componentFactory, ComponentSerializer.Factory componentSerializerFactory,
+                             ItemStackSerializer itemStackSerializer) {
     this.itemFactory = itemFactory;
     this.enchantmentFactory = enchantmentFactory;
-    this.componentMapper = componentMapper;
     this.componentFactory = componentFactory;
-    this.resourceLocationProvider = resourceLocationProvider;
 
     this.airType = itemFactory.newBuilder().category(null).registryName(NameSpacedKey.minecraft("air")).build();
     this.registerItems();
+
+    componentSerializerFactory.gson().registerHoverContentSerializer(HoverEvent.Action.SHOW_ITEM, new HoverItemSerializer(itemStackSerializer));
   }
 
   protected abstract void registerItems();

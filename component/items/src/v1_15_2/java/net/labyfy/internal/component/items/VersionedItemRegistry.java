@@ -2,16 +2,16 @@ package net.labyfy.internal.component.items;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.builder.ComponentBuilder;
+import net.labyfy.chat.serializer.ComponentSerializer;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemRegistry;
+import net.labyfy.component.items.ItemStackSerializer;
 import net.labyfy.component.items.meta.ItemMeta;
 import net.labyfy.component.items.meta.enchantment.EnchantmentRarity;
 import net.labyfy.component.items.meta.enchantment.EnchantmentType;
 import net.labyfy.component.items.type.ItemCategory;
 import net.labyfy.component.items.type.ItemType;
-import net.labyfy.component.resources.ResourceLocationProvider;
 import net.labyfy.component.stereotype.NameSpacedKey;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
@@ -28,9 +28,9 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
 
   @Inject
   public VersionedItemRegistry(ItemType.Factory itemFactory, EnchantmentType.Factory enchantmentFactory,
-                               MinecraftComponentMapper componentMapper, ComponentBuilder.Factory componentFactory,
-                               ResourceLocationProvider resourceLocationProvider) {
-    super(itemFactory, enchantmentFactory, componentMapper, componentFactory, resourceLocationProvider);
+                               ComponentBuilder.Factory componentFactory, ComponentSerializer.Factory componentSerializerFactory,
+                               ItemStackSerializer itemStackSerializer) {
+    super(itemFactory, enchantmentFactory, componentFactory, componentSerializerFactory, itemStackSerializer);
   }
 
   @Override

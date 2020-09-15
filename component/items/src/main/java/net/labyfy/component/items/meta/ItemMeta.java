@@ -180,6 +180,13 @@ public interface ItemMeta {
   void copyNBTTo(Object target);
 
   /**
+   * Retrieves the NBT of this meta. This method is only intended to be used internally.
+   *
+   * @return The non-null NBT compound tag of this meta
+   */
+  Object getNBT();
+
+  /**
    * Factory for {@link ItemMeta}.
    */
   interface Factory {
