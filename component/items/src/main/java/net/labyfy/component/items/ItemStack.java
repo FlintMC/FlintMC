@@ -18,7 +18,7 @@ public interface ItemStack {
   boolean hasItemMeta();
 
   /**
-   * Retrieves the meta of this ItemStack and creates it if it is necessary and allowed.
+   * Retrieves the meta of this ItemStack and creates it if this stack doesn't have a meta and allowed.
    *
    * @param create Whether this method is allowed to create the ItemMeta if it is not present
    * @return The ItemMeta of this ItemStack or {@code null}, if no ItemMeta is present and {@code create} has been set
@@ -26,6 +26,13 @@ public interface ItemStack {
    * @see #hasItemMeta()
    */
   ItemMeta getItemMeta(boolean create);
+
+  /**
+   * Retrieves the meta of this ItemStack and creates it if this stack doesn't have a meta.
+   *
+   * @return The non-null meta of this item
+   */
+  ItemMeta getItemMeta();
 
   /**
    * Gets the amount of items on this stack.

@@ -44,6 +44,11 @@ public class DefaultItemStack implements ItemStack {
   }
 
   @Override
+  public ItemMeta getItemMeta() {
+    return this.getItemMeta(true);
+  }
+
+  @Override
   public int getStackSize() {
     return this.stackSize;
   }
