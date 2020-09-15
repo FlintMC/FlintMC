@@ -16,7 +16,7 @@ public class ChatColor {
    * The character in legacy chat messages which defines that the char (for RGB the six or seven chars) after it defines
    * a color.
    */
-  public static final char PREFIX_CHAR = '§';
+  public static final char PREFIX_CHAR = '\u00A7';
 
   private static final Map<String, ChatColor> DEFAULT_COLORS = new HashMap<>();
   private static final Map<Character, ChatColor> DEFAULT_COLORS_BY_CHAR = new HashMap<>();
