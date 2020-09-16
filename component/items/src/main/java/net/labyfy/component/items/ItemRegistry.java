@@ -50,7 +50,8 @@ public interface ItemRegistry {
   ItemType[] getTypesInCategory(ItemCategory category);
 
   /**
-   * Registers a new category in this registry.
+   * Registers a new category in this registry. Currently, this is only intended to be used internally as new categories
+   * aren't displayed by the client.
    *
    * @param category The new non-null category
    */

@@ -111,6 +111,7 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
     category = ItemCategory.create(registryName,
         this.componentFactory.translation().translationKey(item.getGroup().getTranslationKey()).build(),
         () -> super.getType(itemRegistryName),
+        item.getGroup().drawInForegroundOfTab(),
         item.getGroup().getIndex()
     );
 
