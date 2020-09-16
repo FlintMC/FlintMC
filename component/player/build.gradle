@@ -6,12 +6,13 @@ group 'net.labyfy.component'
 
 sourceCompatibility = 1.8
 
-labyfy{
-    minecraftVersions '1.15.2'
-}
-
 repositories {
     mavenCentral()
+}
+
+labyfy {
+    projectFilter { true }
+    minecraftVersions '1.15.2'
 }
 
 dependencies {
@@ -21,13 +22,9 @@ dependencies {
 
     api project(':component:stereotype')
     api project(':component:inject')
-    api 'org.eclipse.collections:eclipse-collections:8.2.1'
-    api 'org.happy.library:happy-library:1.3'
-    v1_15_2Implementation project(':component:transform:javassist')
-
-    labyfy project(':component:stereotype')
-    labyfy project(':component:inject')
-    labyfy 'org.eclipse.collections:eclipse-collections:8.2.1'
-    labyfy 'org.happy.library:happy-library:1.3'
-    labyfy project(':component:transform:javassist')
+    api project(':component:resources')
+    api project(':component:tasks')
+    api project(':component:transform:hook')
+    api project(':component:chat')
+    api "com.google.code.gson:gson:2.8.6"
 }
