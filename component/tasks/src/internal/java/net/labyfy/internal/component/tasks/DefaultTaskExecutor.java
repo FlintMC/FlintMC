@@ -36,7 +36,9 @@ public class DefaultTaskExecutor implements TaskExecutor {
     this.methods = new ConcurrentHashMap<>();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public final void register(Task task, Method method) {
     method.setAccessible(true);
     List<Pair<Double, Method>> bodies = methods.computeIfAbsent(task, t -> new ArrayList<>());
@@ -44,12 +46,16 @@ public class DefaultTaskExecutor implements TaskExecutor {
     bodies.sort(Map.Entry.comparingByKey());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public void execute(Tasks name) throws TaskExecutionException {
     this.execute(name, Maps.newConcurrentMap());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public void execute(Tasks name, Map<Key<?>, ?> arguments) throws TaskExecutionException {
     for (Map.Entry<Task, List<Pair<Double, Method>>> entry : this.methods.entrySet()) {
       if (!entry.getKey().value().equals(name)) continue;

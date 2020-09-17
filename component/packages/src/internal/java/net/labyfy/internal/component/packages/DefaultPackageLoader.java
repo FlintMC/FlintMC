@@ -216,13 +216,17 @@ public class DefaultPackageLoader implements PackageLoader {
     return resolvedPackages;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Set<Package> getAllPackages() {
     return Collections.unmodifiableSet(this.allPackages);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Set<Package> getLoadedPackages() {
     return Collections.unmodifiableSet(
@@ -250,7 +254,9 @@ public class DefaultPackageLoader implements PackageLoader {
     }
   }
 
-  /** Helper class for storing a {@link JarFile} associated with a {@link File}. */
+  /**
+   * Helper class for storing a {@link JarFile} associated with a {@link File}.
+   */
   private static class JarTuple {
     private final File file;
     private final JarFile jar;
