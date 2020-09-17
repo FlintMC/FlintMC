@@ -8,6 +8,9 @@ import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
+import net.labyfy.component.tasks.TaskExecutionException;
+import net.labyfy.component.tasks.TaskExecutor;
+import net.labyfy.component.tasks.Tasks;
 import net.labyfy.internal.component.inject.InjectionServiceShare;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 
@@ -36,6 +39,12 @@ public class Initializer {
 
       InjectionServiceShare.flush();
       InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
+    }
+    try {
+      InjectionHolder.getInjectedInstance(TaskExecutor.class).execute(Tasks.INTERNAL_INITIALIZE);
+    } catch (TaskExecutionException e) {
+      System.err.println("Failed to execute INTERNAL_INITIALIZE tasks.");
+      e.printStackTrace();
     }
   }
 }
