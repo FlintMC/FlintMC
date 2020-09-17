@@ -85,7 +85,7 @@ public class DefaultPackageLoader implements PackageLoader {
                     if (descriptionLoader.isManifestPresent(jarTuple.getJar())) return true;
                     else {
                       this.logger.warn(
-                          "{} is in the package directory, but doesn not contain a package manifest. Ignoring it.",
+                          "{} is in the package directory, but doesn't not contain a package manifest. Ignoring it.",
                           jarTuple.getFile().getName());
                       return false;
                     }
