@@ -13,6 +13,8 @@ import net.labyfy.component.tasks.TaskExecutor;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.internal.component.inject.InjectionServiceShare;
 import net.labyfy.internal.component.stereotype.service.ServiceRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +22,9 @@ import java.util.TreeMap;
 
 public class Initializer {
   public static void boot() throws ClassNotFoundException, ServiceNotFoundException {
+
+    Logger logger = LogManager.getLogger(Initializer.class);
+
     Set<AutoLoadProvider> autoLoadProviders =
         ExtendedServiceLoader.get(AutoLoadProvider.class).discover(LaunchController.getInstance().getRootLoader());
 
@@ -43,8 +48,8 @@ public class Initializer {
     try {
       InjectionHolder.getInjectedInstance(TaskExecutor.class).execute(Tasks.INTERNAL_INITIALIZE);
     } catch (TaskExecutionException e) {
-      System.err.println("Failed to execute INTERNAL_INITIALIZE tasks.");
-      e.printStackTrace();
+      logger.error("Failed to execute INTERNAL_INITIALIZE tasks.");
+      logger.error(e);
     }
   }
 }

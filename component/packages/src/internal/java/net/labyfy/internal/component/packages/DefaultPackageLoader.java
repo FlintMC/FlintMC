@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.PackageLoader;
@@ -11,7 +12,6 @@ import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.internal.component.inject.DefaultLoggingProvider;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 @Singleton
 @Implement(PackageLoader.class)
 public class DefaultPackageLoader implements PackageLoader {
+
   private final Logger logger;
   private final File packageFolder;
   private final Set<JarTuple> jars;
@@ -38,9 +39,11 @@ public class DefaultPackageLoader implements PackageLoader {
       DefaultLoggingProvider loggingProvider,
       @Named("labyfyPackageFolder") File packageFolder,
       DefaultPackageManifestLoader descriptionLoader,
-      Package.Factory packageFactory) {
+      Package.Factory packageFactory,
+      @InjectLogger Logger logger) {
+
     this.packageFactory = packageFactory;
-    this.logger = LogManager.getLogger(DefaultPackageLoader.class);
+    this.logger = logger;
 
     // Tell the logging provider we now are able to resolve logging prefixes
     loggingProvider.setPrefixProvider(this::getLogPrefix);
