@@ -169,6 +169,9 @@ public class UltralightMainWebGuiView implements UltralightWebGuiView, WindowRen
 
   @Override
   public void render() {
+    // Trigger rendering of all windows now
+    controller.renderAll();
+
     // Bind the OpenGL texture
     glBindTexture(GL_TEXTURE_2D, openglTextureId);
 

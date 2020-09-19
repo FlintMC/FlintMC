@@ -36,7 +36,6 @@ import java.util.Set;
 public class UltralightWebGuiController implements WebGuiController {
   private final Logger logger;
   private final Set<UltralightWebGuiView> views;
-  private final MinecraftWindow minecraftWindow;
   private final boolean useGPURenderer; // TODO: Make this configurable
 
   private UltralightPlatform platform;
@@ -44,9 +43,8 @@ public class UltralightWebGuiController implements WebGuiController {
   private UltralightMainWebGuiView mainView;
 
   @Inject
-  private UltralightWebGuiController(@InjectLogger Logger logger, MinecraftWindow minecraftWindow) {
+  private UltralightWebGuiController(@InjectLogger Logger logger) {
     this.logger = logger;
-    this.minecraftWindow = minecraftWindow;
     this.views = new HashSet<>();
     this.useGPURenderer = false;
   }
