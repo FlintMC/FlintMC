@@ -11,4 +11,14 @@ public interface ScreenNameMapper {
    * @return The converted screen name
    */
   ScreenName fromClass(String className);
+
+  /**
+   * Converts the given object into a screen name.
+   *
+   * @param screen The screen object
+   * @return The converted screen name
+   */
+  default ScreenName fromObject(Object screen) {
+    return fromClass(screen.getClass().getName());
+  }
 }

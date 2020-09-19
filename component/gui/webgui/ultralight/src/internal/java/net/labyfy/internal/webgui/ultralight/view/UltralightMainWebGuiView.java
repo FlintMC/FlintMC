@@ -3,10 +3,7 @@ package net.labyfy.internal.webgui.ultralight.view;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.gui.windowing.MinecraftWindow;
-import net.labyfy.component.gui.RenderExecution;
-import net.labyfy.component.gui.component.GuiComponent;
-import net.labyfy.component.gui.screen.ScreenName;
-import net.labyfy.component.transform.hook.Hook;
+import net.labyfy.component.gui.windowing.WindowRenderer;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
 import net.labymedia.ultralight.UltralightSurface;
 import net.labymedia.ultralight.UltralightView;
@@ -20,7 +17,7 @@ import static org.lwjgl.opengl.GL20.*;
  * Main view of the Ultralight web content.
  */
 @Singleton
-public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiView {
+public class UltralightMainWebGuiView implements UltralightWebGuiView, WindowRenderer {
   private final UltralightWebGuiController controller;
   private final MinecraftWindow minecraftWindow;
   private final UltralightView view;
@@ -39,30 +36,6 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
     );
 
     this.openglTextureId = -1;
-  }
-
-  @Override
-  public void screenChanged(ScreenName newScreen) {
-
-  }
-
-  @Override
-  public boolean shouldRender(Hook.ExecutionTime executionTime, RenderExecution execution) {
-    if(isTransparent && executionTime == Hook.ExecutionTime.AFTER) {
-      return true;
-    } else if(!isTransparent && executionTime == Hook.ExecutionTime.BEFORE){
-      execution.getCancellation().cancel();
-      return true;
-    }
-
-    return false;
-  }
-
-  @Override
-  public void render(RenderExecution execution) {
-    // Use the main render call only as a trigger for the controller to trigger a render,
-    // real drawing is done depending on the used renderer in the draw* methods
-    controller.renderAll();
   }
 
   @Override
@@ -95,7 +68,7 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
   }
 
   @Override
-  public void drawUsingSurface() {
+  public void dataReadyOnSurface() {
     if(openglTextureId == -1) {
       // Create objects required for OpenGL upload
       initGL();
@@ -157,11 +130,45 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
     }
 
     // Dispatch draw using OpenGL
-    drawUsingOpenGLTexture(openglTextureId);
+    dataReadyOnOpenGLTexture(openglTextureId);
   }
 
   @Override
-  public void drawUsingOpenGLTexture(int textureId) {
+  public void dataReadyOnOpenGLTexture(int textureId) {
+    openglTextureId = textureId;
+  }
+
+  private void initGL() {
+    // Create and bind the texture
+    openglTextureId = glGenTextures();
+    glBindTexture(GL_TEXTURE_2D, openglTextureId);
+
+    // Disable mipmapping, the texture is always directly user facing
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // Clamp the texture, those settings are only here for clarity and
+    // possibly bad OpenGL implementations, as the texture will always
+    // be automatically adjusted to match the window size
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+
+    // Clean up
+    glBindTexture(GL_TEXTURE_2D, 0);
+  }
+
+  @Override
+  public void initialize() {
+
+  }
+
+  @Override
+  public boolean isIntrusive() {
+    return !isTransparent;
+  }
+
+  @Override
+  public void render() {
     // Bind the OpenGL texture
     glBindTexture(GL_TEXTURE_2D, openglTextureId);
 
@@ -220,22 +227,8 @@ public class UltralightMainWebGuiView implements GuiComponent, UltralightWebGuiV
     glPopAttrib();
   }
 
-  private void initGL() {
-    // Create and bind the texture
-    openglTextureId = glGenTextures();
-    glBindTexture(GL_TEXTURE_2D, openglTextureId);
+  @Override
+  public void cleanup() {
 
-    // Disable mipmapping, the texture is always directly user facing
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    // Clamp the texture, those settings are only here for clarity and
-    // possibly bad OpenGL implementations, as the texture will always
-    // be automatically adjusted to match the window size
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-
-    // Clean up
-    glBindTexture(GL_TEXTURE_2D, 0);
   }
 }

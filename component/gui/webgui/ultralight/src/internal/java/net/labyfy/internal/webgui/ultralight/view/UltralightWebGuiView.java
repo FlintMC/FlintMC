@@ -12,14 +12,14 @@ public interface UltralightWebGuiView extends WebGuiView {
   void update();
 
   /**
-   * Draws this view using the surface API. Called when the CPU renderer is active.
+   * Notifies the view that the data that needs to be drawn is available on the surface.
    */
-  void drawUsingSurface();
+  void dataReadyOnSurface();
 
   /**
-   * Draws this view using an OpenGL texture.
+   * Notifies the view that the data that needs to be drawn is available in an OpenGL texture.
    *
    * @param textureId The id of the OpenGL texture
    */
-  void drawUsingOpenGLTexture(int textureId);
+  void dataReadyOnOpenGLTexture(int textureId);
 }

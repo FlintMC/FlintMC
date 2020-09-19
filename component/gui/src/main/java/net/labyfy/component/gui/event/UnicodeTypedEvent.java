@@ -3,7 +3,7 @@ package net.labyfy.component.gui.event;
 /**
  * Event indicating that the user has typed input
  */
-public class UnicodeTypedEvent implements GuiInputEvent {
+public class UnicodeTypedEvent implements GuiEvent {
   private final int value;
 
   /**

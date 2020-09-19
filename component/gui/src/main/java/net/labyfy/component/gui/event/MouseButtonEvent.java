@@ -3,7 +3,7 @@ package net.labyfy.component.gui.event;
 /**
  * Event indicating that a mouse button state has changed or is still being hold.
  */
-public class MouseButtonEvent implements GuiInputEvent {
+public class MouseButtonEvent implements GuiEvent {
   public static final int LEFT = 0;
   public static final int RIGHT = 1;
   public static final int MIDDLE = 2;

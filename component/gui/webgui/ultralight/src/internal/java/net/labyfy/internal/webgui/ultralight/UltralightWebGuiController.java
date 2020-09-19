@@ -2,7 +2,7 @@ package net.labyfy.internal.webgui.ultralight;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.gui.GuiController;
+import net.labyfy.component.gui.windowing.MinecraftWindow;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
@@ -35,8 +35,8 @@ import java.util.Set;
 @Implement(WebGuiController.class)
 public class UltralightWebGuiController implements WebGuiController {
   private final Logger logger;
-  private final GuiController guiController;
   private final Set<UltralightWebGuiView> views;
+  private final MinecraftWindow minecraftWindow;
   private final boolean useGPURenderer; // TODO: Make this configurable
 
   private UltralightPlatform platform;
@@ -44,9 +44,9 @@ public class UltralightWebGuiController implements WebGuiController {
   private UltralightMainWebGuiView mainView;
 
   @Inject
-  private UltralightWebGuiController(@InjectLogger Logger logger, GuiController guiController) {
+  private UltralightWebGuiController(@InjectLogger Logger logger, MinecraftWindow minecraftWindow) {
     this.logger = logger;
-    this.guiController = guiController;
+    this.minecraftWindow = minecraftWindow;
     this.views = new HashSet<>();
     this.useGPURenderer = false;
   }
@@ -69,7 +69,7 @@ public class UltralightWebGuiController implements WebGuiController {
    * Wires up the Ultralight main view with the controller.
    */
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void setupUltralight() {
+  public void setupUltralight(MinecraftWindow window) {
     logger.debug("Setting up Ultralight...");
 
     // NOTE: This **needs** to be called on the render thread, else Ultralight will not work!
@@ -98,7 +98,7 @@ public class UltralightWebGuiController implements WebGuiController {
     this.mainView = InjectionHolder.getInjectedInstance(UltralightMainWebGuiView.class);
 
     // The view needs to be known by the GUI controller in order to call back to it
-    guiController.registerComponent(this.mainView);
+    window.addRenderer(this.mainView);
 
     // Set up the view and register it internally
     this.mainView.setURL("http://localhost:8080");
@@ -153,7 +153,7 @@ public class UltralightWebGuiController implements WebGuiController {
     } else {
       // Draw each view
       for(UltralightWebGuiView view : views) {
-        view.drawUsingSurface();
+        view.dataReadyOnSurface();
       }
     }
   }

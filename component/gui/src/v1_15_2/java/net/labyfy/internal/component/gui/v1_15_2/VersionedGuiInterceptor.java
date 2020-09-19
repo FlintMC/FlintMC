@@ -3,7 +3,8 @@ package net.labyfy.internal.component.gui.v1_15_2;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
-import net.labyfy.component.gui.RenderExecution;
+import net.labyfy.component.gui.event.ScreenChangedEvent;
+import net.labyfy.component.gui.screen.ScreenNameMapper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
@@ -14,11 +15,10 @@ import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.component.transform.javassist.CtClassFilter;
 import net.labyfy.component.transform.javassist.CtClassFilters;
-import net.labyfy.internal.component.gui.DefaultGuiController;
+import net.labyfy.internal.component.gui.windowing.DefaultWindowManager;
 import net.minecraft.client.Minecraft;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -28,43 +28,31 @@ import javax.inject.Singleton;
 @AutoLoad
 public class VersionedGuiInterceptor {
   private final ClassMappingProvider mappingProvider;
-  private final DefaultGuiController controller;
+  private final DefaultWindowManager windowManager;
+  private final ScreenNameMapper nameMapper;
 
   @Inject
-  private VersionedGuiInterceptor(ClassMappingProvider mappingProvider, DefaultGuiController controller) {
+  private VersionedGuiInterceptor(
+      ClassMappingProvider mappingProvider, DefaultWindowManager windowManager, ScreenNameMapper nameMapper) {
     this.mappingProvider = mappingProvider;
-    this.controller = controller;
+    this.windowManager = windowManager;
+    this.nameMapper = nameMapper;
   }
 
-  // Called from injected code, see above
-  public static boolean preScreenRenderCallback(float partialTick) {
-    DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
+  public static boolean preScreenRenderCallback() {
+    DefaultWindowManager windowManager = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).windowManager;
 
-    RenderExecution execution = new RenderExecution(
-        partialTick
-    );
+    boolean intrusive = windowManager.isMinecraftWindowRenderedIntrusively();
+    if(intrusive) {
+      windowManager.renderMinecraftWindow();
+    }
 
-    controller.screenRenderCalled(
-        Hook.ExecutionTime.BEFORE,
-        execution
-    );
-
-    return execution.getCancellation().isCancelled();
+    return intrusive;
   }
 
-  // Called from injected code, see above
-  public static void postScreenRenderCallback(boolean isCancelled, float partialTick) {
-    DefaultGuiController controller = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).controller;
-
-    RenderExecution execution = new RenderExecution(
-        isCancelled,
-        partialTick
-    );
-
-    controller.screenRenderCalled(
-        Hook.ExecutionTime.AFTER,
-        execution
-    );
+  public static void postScreenRenderCallback() {
+    DefaultWindowManager windowManager = InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).windowManager;
+    windowManager.renderMinecraftWindow();
   }
 
   @Hook(
@@ -73,12 +61,9 @@ public class VersionedGuiInterceptor {
       methodName = "renderGameOverlay",
       parameters = @Type(reference = float.class)
   )
-  public void hookIngameRender(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
-    if (executionTime == Hook.ExecutionTime.BEFORE) {
-      preScreenRenderCallback((float) args[0]);
-    }
+  public void hookIngameRender(Hook.ExecutionTime executionTime) {
     if (executionTime == Hook.ExecutionTime.AFTER) {
-      postScreenRenderCallback(false, (float) args[0]);
+      postScreenRenderCallback();
     }
   }
 
@@ -98,23 +83,21 @@ public class VersionedGuiInterceptor {
       /*
        * Adjustment of the render method:
        *
-       * if(preRenderCallback(mouseX, mouseY, partialTicks) {
-       *   postRenderCallback(true, mouseX, mouseY, partialTicks);
+       * if(preRenderCallback() {
        *   return;
        * }
        * [... original method ...]
-       * postRenderCallback(false, mouseX, mouseY, partialTicks);
+       * postRenderCallback();
        */
 
       method.insertBefore(
-          "if(net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.preScreenRenderCallback($3)) {" +
-              "   net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback(true, $3);" +
+          "if(net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.preScreenRenderCallback()) {" +
               "   return;" +
               "}"
       );
 
       method.insertAfter(
-          "net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback(false, $3);");
+          "net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback();");
 
       break;
     }
@@ -128,22 +111,7 @@ public class VersionedGuiInterceptor {
       version = "1.15.2"
   )
   public void hookScreenChanged() {
-    controller.screenChanged(Minecraft.getInstance().currentScreen);
-  }
-
-  @Hook(
-      className = "net.minecraft.client.renderer.GameRenderer",
-      methodName = "updateCameraAndRender",
-      executionTime = Hook.ExecutionTime.AFTER,
-      parameters = {
-          @Type(reference = float.class),
-          @Type(reference = long.class),
-          @Type(reference = boolean.class)
-      },
-      version = "1.15.2"
-  )
-  public void hookAfterRender() {
-    // Let the frame end here
-    controller.endFrame();
+    windowManager.fireEvent(
+        -1, new ScreenChangedEvent(nameMapper.fromObject(Minecraft.getInstance().currentScreen)));
   }
 }

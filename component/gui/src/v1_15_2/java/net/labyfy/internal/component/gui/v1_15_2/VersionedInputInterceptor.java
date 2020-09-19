@@ -12,7 +12,7 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
-import net.labyfy.internal.component.gui.DefaultGuiController;
+import net.labyfy.internal.component.gui.windowing.DefaultWindowManager;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.*;
@@ -31,7 +31,6 @@ import java.util.function.BiFunction;
 @Singleton
 @Implement(InputInterceptor.class)
 public class VersionedInputInterceptor implements InputInterceptor {
-  private static double lastDrawTime = Double.MIN_VALUE;
   private GLFWCursorPosCallbackI cursorPosCallback;
 
   @Inject
@@ -46,13 +45,13 @@ public class VersionedInputInterceptor implements InputInterceptor {
       GLFWKeyCallbackI keyCallback,
       GLFWCharModsCallbackI charModsCallback
   ) {
-    DefaultGuiController guiController = InjectionHolder.getInjectedInstance(DefaultGuiController.class);
+    DefaultWindowManager windowManager = InjectionHolder.getInjectedInstance(DefaultWindowManager.class);
 
     // We don't hook the key callback yet, possible that this will be necessary
     overrideCallback(GLFW::glfwSetKeyCallback, windowHandle, keyCallback);
     overrideCallback(GLFW::glfwSetCharModsCallback, windowHandle, (window, codepoint, mods) -> {
-      if(!guiController.doInput(new UnicodeTypedEvent(codepoint))) {
-        // The GUI controller has not handled the event, pass it on to the original callback
+      if(!windowManager.fireEvent(windowHandle, new UnicodeTypedEvent(codepoint))) {
+        // The window manager has not handled the event, pass it on to the original callback
         charModsCallback.invoke(window, codepoint, mods);
       }
     });
@@ -67,12 +66,12 @@ public class VersionedInputInterceptor implements InputInterceptor {
       GLFWMouseButtonCallbackI mouseButtonCallback,
       GLFWScrollCallbackI scrollCallback
   ) {
-    DefaultGuiController guiController = InjectionHolder.getInjectedInstance(DefaultGuiController.class);
+    DefaultWindowManager windowManager = InjectionHolder.getInjectedInstance(DefaultWindowManager.class);
     VersionedInputInterceptor inputInterceptor = InjectionHolder.getInjectedInstance(VersionedInputInterceptor.class);
 
     inputInterceptor.cursorPosCallback = (window, xpos, ypos) -> {
-      if(!guiController.doInput(new CursorPosChangedEvent(xpos, ypos))) {
-        // The GUI controller has not handled the event, pass it on to the original callback
+      if(!windowManager.fireEvent(windowHandle, new CursorPosChangedEvent(xpos, ypos))) {
+        // The window manager has not handled the event, pass it on to the original callback
         cursorPosCallback.invoke(window, xpos, ypos);
       }
     };
@@ -100,8 +99,8 @@ public class VersionedInputInterceptor implements InputInterceptor {
           break;
       }
 
-      if(event != null && guiController.doInput(event)) {
-        // The GUI controller has handled the event, don't pass it on
+      if(event != null && windowManager.fireEvent(windowHandle, event)) {
+        // The window manager has handled the event, don't pass it on
         return;
       }
 
@@ -109,8 +108,8 @@ public class VersionedInputInterceptor implements InputInterceptor {
     });
 
     overrideCallback(GLFW::glfwSetScrollCallback, windowHandle, (window, xoffset, yoffset) -> {
-      if(!guiController.doInput(new MouseScrolledEvent(xoffset, yoffset))) {
-        // The GUI controller has not handled the event, pass it on to the original callback
+      if(!windowManager.fireEvent(windowHandle, new MouseScrolledEvent(xoffset, yoffset))) {
+        // The window manager has not handled the event, pass it on to the original callback
         scrollCallback.invoke(window, xoffset, yoffset);
       }
     });

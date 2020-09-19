@@ -3,14 +3,7 @@ package net.labyfy.component.gui.windowing;
 /**
  * Interface representing the minecraft main window.
  */
-public interface MinecraftWindow {
-  /**
-   * Retrieves the platform native handle.
-   *
-   * @return The platform native handle
-   */
-  long getHandle();
-
+public interface MinecraftWindow extends Window {
   /**
    * Retrieves the scale factor currently applied to the minecraft window. This will
    * usually be 1 to 4, but could be changed by mods.
@@ -18,20 +11,6 @@ public interface MinecraftWindow {
    * @return The scale factor of the minecraft window
    */
   int getScaleFactor();
-
-  /**
-   * Retrieves the width of the minecraft window.
-   *
-   * @return The current width of the window
-   */
-  float getWidth();
-
-  /**
-   * Retrieves the height of the minecraft window.
-   *
-   * @return The current height of the window
-   */
-  float getHeight();
 
   /**
    * Retrieves the scaled width of the minecraft window.
