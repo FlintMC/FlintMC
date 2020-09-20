@@ -33,6 +33,10 @@ public class VersionedGLFWCallbacks {
     overrideCallback(GLFW::glfwSetCursorPosCallback, handle, this::cursorPosCallback);
     overrideCallback(GLFW::glfwSetMouseButtonCallback, handle, this::mouseButtonCallback);
     overrideCallback(GLFW::glfwSetScrollCallback, handle, this::scrollCallback);
+    overrideCallback(GLFW::glfwSetWindowFocusCallback, handle, this::windowFocusCallback);
+    overrideCallback(GLFW::glfwSetFramebufferSizeCallback, handle, this::framebufferSizeCallback);
+    overrideCallback(GLFW::glfwSetWindowPosCallback, handle, this::windowPosCallback);
+    overrideCallback(GLFW::glfwSetWindowSizeCallback, handle, this::windowSizeCallback);
   }
 
   public boolean keyCallback(long window, int key, int scancode, int action, int mods) {
@@ -73,6 +77,30 @@ public class VersionedGLFWCallbacks {
 
   public boolean scrollCallback(long window, double x, double y) {
     MouseScrolledEvent event = new MouseScrolledEvent(x, y);
+
+    return windowManager.fireEvent(window, event);
+  }
+
+  public boolean windowFocusCallback(long window, boolean isFocused) {
+    WindowFocusEvent event = new WindowFocusEvent(isFocused);
+
+    return windowManager.fireEvent(window, event);
+  }
+
+  public boolean framebufferSizeCallback(long window, int width, int height) {
+    FramebufferSizeEvent event = new FramebufferSizeEvent(width, height);
+
+    return windowManager.fireEvent(window, event);
+  }
+
+  public boolean windowPosCallback(long window, int x, int y) {
+    WindowPosEvent event = new WindowPosEvent(x, y);
+
+    return windowManager.fireEvent(window, event);
+  }
+
+  public boolean windowSizeCallback(long window, int width, int height) {
+    WindowSizeEvent event = new WindowSizeEvent(width, height);
 
     return windowManager.fireEvent(window, event);
   }

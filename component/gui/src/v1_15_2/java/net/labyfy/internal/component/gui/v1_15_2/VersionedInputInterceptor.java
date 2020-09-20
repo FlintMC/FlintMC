@@ -1,21 +1,31 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
+import com.google.inject.name.Named;
 import javassist.CannotCompileException;
+import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.gui.InputInterceptor;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.mappings.ClassMapping;
+import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.component.stereotype.type.Type;
+import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.ReportedException;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryStack;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.DoubleBuffer;
 
 /**
@@ -107,6 +117,64 @@ public class VersionedInputInterceptor implements InputInterceptor {
         scrollCallback.invoke(window, x, y);
       }
     });
+  }
+
+  @ClassTransform(
+      value = "net.minecraft.client.MainWindow",
+      version = "1.15.2"
+  )
+  public void hookMainWindowConstructor(ClassTransformContext context) throws NotFoundException, CannotCompileException {
+    context.getDeclaredMethod("onFramebufferSizeUpdate", long.class, int.class, int.class)
+        .insertBefore(
+            "{" +
+                "net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = " +
+                "   (net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks)" +
+                "   net.labyfy.component.inject.primitive.InjectionHolder.getInjectedInstance(" +
+                "     net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class" +
+                "   );" +
+                "if(callbacks.framebufferSizeCallback($$)) {" +
+                "   return;" +
+                "}" +
+                "}");
+
+    context.getDeclaredMethod("onWindowPosUpdate", long.class, int.class, int.class)
+        .insertBefore(
+            "{" +
+                "net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = " +
+                "   (net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks)" +
+                "   net.labyfy.component.inject.primitive.InjectionHolder.getInjectedInstance(" +
+                "     net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class" +
+                "   );" +
+                "if(callbacks.windowPosCallback($$)) {" +
+                "   return;" +
+                "}" +
+                "}");
+
+    context.getDeclaredMethod("onWindowSizeUpdate", long.class, int.class, int.class)
+        .insertBefore(
+            "{" +
+                "net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = " +
+                "   (net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks)" +
+                "   net.labyfy.component.inject.primitive.InjectionHolder.getInjectedInstance(" +
+                "     net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class" +
+                "   );" +
+                "if(callbacks.windowSizeCallback($$)) {" +
+                "   return;" +
+                "}" +
+                "}");
+
+    context.getDeclaredMethod("onWindowFocusUpdate", long.class, boolean.class)
+        .insertBefore(
+            "{" +
+                "net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = " +
+                "   (net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks)" +
+                "   net.labyfy.component.inject.primitive.InjectionHolder.getInjectedInstance(" +
+                "     net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class" +
+                "   );" +
+                "if(callbacks.windowFocusCallback($$)) {" +
+                "   return;" +
+                "}" +
+                "}");
   }
 
   /**
