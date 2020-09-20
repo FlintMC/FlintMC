@@ -4,23 +4,19 @@ import javassist.CannotCompileException;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.gui.InputInterceptor;
-import net.labyfy.component.gui.event.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
-import net.labyfy.internal.component.gui.windowing.DefaultWindowManager;
+import net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.*;
-import org.lwjgl.system.Callback;
-import org.lwjgl.system.CallbackI;
 import org.lwjgl.system.MemoryStack;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.DoubleBuffer;
-import java.util.function.BiFunction;
 
 /**
  * 1.15.2 implementation of the input interceptor
@@ -32,104 +28,6 @@ public class VersionedInputInterceptor implements InputInterceptor {
 
   @Inject
   private VersionedInputInterceptor() {
-  }
-
-  /**
-   * Called from injected code, see above. The parameters match the hooked function
-   */
-  public static void interceptKeyboardCallbacks(
-      long minecraftWindowHandle,
-      GLFWKeyCallbackI keyCallback,
-      GLFWCharModsCallbackI charModsCallback
-  ) {
-    DefaultWindowManager windowManager = InjectionHolder.getInjectedInstance(DefaultWindowManager.class);
-
-    overrideCallback(GLFW::glfwSetKeyCallback, minecraftWindowHandle, (window, key, scancode, action, mods) -> {
-      KeyEvent event = new KeyEvent(
-          GLFWInputConverter.glfwKeyToLabyfyKey(key),
-          scancode,
-          GLFWInputConverter.glfwActionToLabyfyInputState(action),
-          GLFWInputConverter.glfwModifierToLabyfyModifier(mods)
-      );
-
-      if(!windowManager.fireEvent(window, event)) {
-        // The window manager has not handled the event, pass it on to the original callback
-        keyCallback.invoke(window, key, scancode, action, mods);
-      }
-    });
-
-    overrideCallback(GLFW::glfwSetCharModsCallback, minecraftWindowHandle, (window, codepoint, mods) -> {
-      UnicodeTypedEvent event = new UnicodeTypedEvent(
-          codepoint,
-          GLFWInputConverter.glfwModifierToLabyfyModifier(mods)
-     );
-
-      if(!windowManager.fireEvent(window, event)) {
-        // The window manager has not handled the event, pass it on to the original callback
-        charModsCallback.invoke(window, codepoint, mods);
-      }
-    });
-  }
-
-  /**
-   * Called from injected code, see above. The parameters match the hooked function.
-   */
-  public static void interceptMouseCallbacks(
-      long minecraftWindowHandle,
-      GLFWCursorPosCallbackI cursorPosCallback,
-      GLFWMouseButtonCallbackI mouseButtonCallback,
-      GLFWScrollCallbackI scrollCallback
-  ) {
-    DefaultWindowManager windowManager = InjectionHolder.getInjectedInstance(DefaultWindowManager.class);
-    VersionedInputInterceptor inputInterceptor = InjectionHolder.getInjectedInstance(VersionedInputInterceptor.class);
-
-    inputInterceptor.cursorPosCallback = (window, xpos, ypos) -> {
-      if(!windowManager.fireEvent(window, new CursorPosChangedEvent(xpos, ypos))) {
-        // The window manager has not handled the event, pass it on to the original callback
-        cursorPosCallback.invoke(window, xpos, ypos);
-      }
-    };
-
-    overrideCallback(GLFW::glfwSetCursorPosCallback, minecraftWindowHandle, inputInterceptor.cursorPosCallback);
-
-    overrideCallback(GLFW::glfwSetMouseButtonCallback, minecraftWindowHandle, (window, button, action, mods) -> {
-      MouseButtonEvent event = new MouseButtonEvent(
-          GLFWInputConverter.glfwMouseButtonToLabyfyMouseButton(button),
-          GLFWInputConverter.glfwActionToLabyfyInputState(action),
-          GLFWInputConverter.glfwModifierToLabyfyModifier(mods)
-      );
-
-      if(windowManager.fireEvent(window, event)) {
-        // The window manager has handled the event, don't pass it on
-        return;
-      }
-
-      mouseButtonCallback.invoke(window, button, action, mods);
-    });
-
-    overrideCallback(GLFW::glfwSetScrollCallback, minecraftWindowHandle, (window, xoffset, yoffset) -> {
-      if(!windowManager.fireEvent(window, new MouseScrolledEvent(xoffset, yoffset))) {
-        // The window manager has not handled the event, pass it on to the original callback
-        scrollCallback.invoke(window, xoffset, yoffset);
-      }
-    });
-  }
-
-  /**
-   * Utility function to set a GLFW callback while also taking care of freeing it.
-   *
-   * @param setter       The function to call setting the callback
-   * @param windowHandle The window handle to operator on
-   * @param value        The new callback function
-   * @param <T>          The old callback type
-   * @param <C>          The new callback type
-   */
-  private static <T extends Callback, C extends CallbackI> void overrideCallback(
-      BiFunction<Long, C, T> setter, long windowHandle, C value) {
-    T old = setter.apply(windowHandle, value);
-    if(old != null) {
-      old.free();
-    }
   }
 
   @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
@@ -148,6 +46,67 @@ public class VersionedInputInterceptor implements InputInterceptor {
     );
     setMouseCallbacksMethod.setBody(
         "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptMouseCallbacks($$);");
+  }
+
+  /**
+   * Called from injected code, see above. The parameters match the hooked function
+   */
+  public static void interceptKeyboardCallbacks(
+      long minecraftWindowHandle,
+      GLFWKeyCallbackI keyCallback,
+      GLFWCharModsCallbackI charModsCallback
+  ) {
+    VersionedGLFWCallbacks callbacks = InjectionHolder.getInjectedInstance(VersionedGLFWCallbacks.class);
+
+    VersionedGLFWCallbacks.overrideCallback(GLFW::glfwSetKeyCallback, minecraftWindowHandle, (window, key, scancode, action, mods) -> {
+      if(!callbacks.keyCallback(window, key, scancode, action, mods)) {
+        // The window manager has not handled the event, pass it on to the original callback
+        keyCallback.invoke(window, key, scancode, action, mods);
+      }
+    });
+
+    VersionedGLFWCallbacks.overrideCallback(GLFW::glfwSetCharModsCallback, minecraftWindowHandle, (window, codepoint, mods) -> {
+      if(!callbacks.charModsCallback(window, codepoint, mods)) {
+        // The window manager has not handled the event, pass it on to the original callback
+        charModsCallback.invoke(window, codepoint, mods);
+      }
+    });
+  }
+
+  /**
+   * Called from injected code, see above. The parameters match the hooked function.
+   */
+  public static void interceptMouseCallbacks(
+      long minecraftWindowHandle,
+      GLFWCursorPosCallbackI cursorPosCallback,
+      GLFWMouseButtonCallbackI mouseButtonCallback,
+      GLFWScrollCallbackI scrollCallback
+  ) {
+    VersionedGLFWCallbacks callbacks = InjectionHolder.getInjectedInstance(VersionedGLFWCallbacks.class);
+    VersionedInputInterceptor inputInterceptor = InjectionHolder.getInjectedInstance(VersionedInputInterceptor.class);
+
+    inputInterceptor.cursorPosCallback = (window, x, y) -> {
+      if(!callbacks.cursorPosCallback(window, x, y)) {
+        // The window manager has not handled the event, pass it on to the original callback
+        cursorPosCallback.invoke(window, x, y);
+      }
+    };
+
+    VersionedGLFWCallbacks.overrideCallback(GLFW::glfwSetCursorPosCallback, minecraftWindowHandle, inputInterceptor.cursorPosCallback);
+
+    VersionedGLFWCallbacks.overrideCallback(GLFW::glfwSetMouseButtonCallback, minecraftWindowHandle, (window, button, action, mods) -> {
+      if(!callbacks.mouseButtonCallback(window, button, action, mods)) {
+        // The window manager has not handled the event, pass it on to the original callback
+        mouseButtonCallback.invoke(window, button, action, mods);
+      }
+    });
+
+    VersionedGLFWCallbacks.overrideCallback(GLFW::glfwSetScrollCallback, minecraftWindowHandle, (window, x, y) -> {
+      if(!callbacks.scrollCallback(window, x, y)) {
+        // The window manager has not handled the event, pass it on to the original callback
+        scrollCallback.invoke(window, x, y);
+      }
+    });
   }
 
   /**

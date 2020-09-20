@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.gui.v1_15_2;
+package net.labyfy.internal.component.gui.v1_15_2.glfw;
 
 
 import net.labyfy.component.gui.event.input.Key;
@@ -10,13 +10,12 @@ import org.lwjgl.glfw.GLFW;
 import java.util.EnumSet;
 import java.util.Set;
 
-
 /**
  * Utility class to convert GLFW constants to labyfy constants.
  */
-public class GLFWInputConverter {
+public class VersionedGLFWInputConverter {
   // Static class
-  private GLFWInputConverter() {
+  private VersionedGLFWInputConverter() {
     throw new UnsupportedOperationException("GLFWInput converter is a utility class");
 
   }

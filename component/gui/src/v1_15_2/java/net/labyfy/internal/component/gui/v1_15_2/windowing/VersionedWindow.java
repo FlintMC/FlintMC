@@ -8,6 +8,7 @@ import net.labyfy.component.gui.windowing.MinecraftWindow;
 import net.labyfy.component.gui.windowing.Window;
 import net.labyfy.component.gui.windowing.WindowRenderer;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
 import net.labyfy.internal.component.gui.windowing.DefaultWindowManager;
 import net.labyfy.internal.component.gui.windowing.InternalWindow;
 import org.lwjgl.system.MemoryStack;
@@ -38,6 +39,7 @@ public class VersionedWindow implements InternalWindow {
    * @param height          The height of the new window
    * @param minecraftWindow The main minecraft window, used to derive the context
    * @param windowManager   The window manager of this Labyfy instance
+   * @param callbacks       The callbacks to install on the window
    */
   @AssistedInject
   public VersionedWindow(
@@ -45,12 +47,14 @@ public class VersionedWindow implements InternalWindow {
       @Assisted("width") int width,
       @Assisted("height") int height,
       MinecraftWindow minecraftWindow,
-      DefaultWindowManager windowManager) {
+      DefaultWindowManager windowManager,
+      VersionedGLFWCallbacks callbacks) {
     this.renderers = new ArrayList<>();
     this.listeners = new ArrayList<>();
     this.windowManager = windowManager;
     this.handle = glfwCreateWindow(width, height, title, 0, minecraftWindow.getHandle());
 
+    callbacks.install(handle);
     windowManager.registerWindow(this);
   }
 
@@ -59,7 +63,7 @@ public class VersionedWindow implements InternalWindow {
    * <p>
    * <b>Registration of the window needs to be done by the caller or by other means!</b>
    *
-   * @param handle The GLFW handle to wrap
+   * @param handle        The GLFW handle to wrap
    * @param windowManager The window manager to unregister this window on when it is closed
    */
   protected VersionedWindow(long handle, DefaultWindowManager windowManager) {
