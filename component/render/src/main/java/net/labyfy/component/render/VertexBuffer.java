@@ -1,9 +1,6 @@
 package net.labyfy.component.render;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.*;
 
 import java.awt.*;
 
@@ -117,6 +114,11 @@ public interface VertexBuffer {
    * @return this
    */
   VertexBuffer texture(Vector2f texture);
+
+  VertexBuffer overlay(short x, short y);
+
+  VertexBuffer overlay(Vector2i overlay);
+
 
   /**
    * @return the amount of written vertices

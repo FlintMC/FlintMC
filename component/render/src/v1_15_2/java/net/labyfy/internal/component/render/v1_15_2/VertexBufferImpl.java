@@ -1,14 +1,12 @@
 package net.labyfy.internal.component.render.v1_15_2;
 
 
+import com.mojang.blaze3d.vertex.IVertexConsumer;
 import net.labyfy.component.render.AdvancedVertexBuffer;
 import net.labyfy.component.render.VertexBuffer;
 import net.labyfy.component.render.VertexFormat;
 import net.minecraft.client.renderer.BufferBuilder;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.*;
 
 import java.awt.*;
 import java.lang.invoke.MethodHandle;
@@ -105,10 +103,10 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
     if (!this.getFormat().hasElement("normal"))
       return this;
     Vector3f vector3f = new Vector3f(x, y, z);
-    if (this.worldContext != null) {
-      vector3f.mulPosition(this.worldContext);
+    if (this.normalContext != null) {
+      vector3f.mul(this.normalContext);
     }
-    return this.pushFloats("normal", vector3f.x, vector3f.y, vector3f.z);
+    return this.pushBytes("normal", IVertexConsumer.normalInt(x), IVertexConsumer.normalInt(y), IVertexConsumer.normalInt(z));
   }
 
   /**
@@ -166,6 +164,19 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    */
   public VertexBuffer texture(Vector2f texture) {
     return this.texture(texture.x, texture.y);
+  }
+
+  public VertexBuffer overlay(short x, short y) {
+    if (!this.getFormat().hasElement("overlay"))
+      return this;
+    this.pushShorts("overlay", x, y);
+    return this;
+  }
+
+  public VertexBuffer overlay(Vector2i vector2i) {
+    if (vector2i == null)
+      return this.overlay((short) 0, (short) 0);
+    return this.overlay((short) vector2i.x, (short) vector2i.y);
   }
 
   /**

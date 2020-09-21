@@ -1,5 +1,6 @@
 package net.labyfy.component.render;
 
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -105,6 +106,14 @@ public interface MatrixStack {
    * @return this
    */
   MatrixStack translate(float x, float y, float z);
+
+  /**
+   * Multiplies the current matrix with a target matrix.
+   *
+   * @param matrix4f the target matrix
+   * @return this
+   */
+  MatrixStack mul(Matrix4f matrix4f);
 
   /**
    * Similar to glScalef(FFF).
