@@ -73,7 +73,7 @@ public interface Vector3I extends Comparable<Vector3I> {
    * @param x         The X coordinate of the specified point to be measured against this {@link Vector3I}.
    * @param y         The Y coordinate of the specified point to be measured against this {@link Vector3I}.
    * @param z         The Z coordinate of the specified point to be measured against this {@link Vector3I}.
-   * @param useCenter {@link true} if the center should be used, otherwise {@code false}.
+   * @param useCenter {@code true} if the center should be used, otherwise {@code false}.
    * @return The square of the distance from this {@link Vector3I} to a specified point.
    */
   double distanceSq(double x, double y, double z, boolean useCenter);
