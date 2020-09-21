@@ -9,13 +9,12 @@ import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.world.mapper.ScoreboardMapper;
 import net.labyfy.component.world.scoreboad.Scoreboard;
-import net.labyfy.component.world.scoreboad.score.PlayerTeam;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 
 /**
- *
+ * 1.15.2 implementation of the scoreboard interceptor.
  */
 @Singleton
 @AutoLoad
@@ -23,7 +22,6 @@ public class VersionedScoreboardInterceptor {
 
   private final Scoreboard scoreboard;
   private final ScoreboardMapper scoreboardMapper;
-  private final MinecraftComponentMapper minecraftComponentMapper;
 
   @Inject
   public VersionedScoreboardInterceptor(
@@ -33,8 +31,30 @@ public class VersionedScoreboardInterceptor {
   ) {
     this.scoreboard = scoreboard;
     this.scoreboardMapper = scoreboardMapper;
-    this.minecraftComponentMapper = minecraftComponentMapper;
   }
+
+  @Hook(className = "net.minecraft.scoreboard.Scoreboard",
+          methodName = "addPlayerToTeam",
+          parameters = {
+                  @Type(reference = String.class),
+                  @Type(reference = ScorePlayerTeam.class)
+          }
+  )
+  public void hookAfterAddPlayerToTeam(@Named("args") Object[] args) {
+    this.scoreboard.attachPlayerToTeam((String) args[0], this.scoreboardMapper.fromMinecraftPlayerTeam(args[1]));
+  }
+
+  @Hook(className = "net.minecraft.scoreboard.Scoreboard",
+          methodName = "removePlayerFromTeam",
+          parameters = {
+                  @Type(reference = String.class),
+                  @Type(reference = ScorePlayerTeam.class)
+          }
+  )
+  public void hookAfterRemovePlayerFromTeam(@Named("args") Object[] args) {
+    this.scoreboard.detachPlayerFromTeam((String) args[0], this.scoreboardMapper.fromMinecraftPlayerTeam(args[1]));
+  }
+
 
   @Hook(
           className = "net.minecraft.scoreboard.Scoreboard",
@@ -71,24 +91,13 @@ public class VersionedScoreboardInterceptor {
 
   @Hook(
           className = "net.minecraft.scoreboard.Scoreboard",
-          methodName = "onScoreChanged",
-          parameters = {
-                  @Type(reference = Score.class)
-          }
-  )
-  public void hookAfterScoreChanged(@Named("args") Object[] args) {
-    this.scoreboard.scoreChanged(this.scoreboardMapper.fromMinecraftScore(args[0]));
-  }
-
-  @Hook(
-          className = "net.minecraft.scoreboard.Scoreboard",
           methodName = "onTeamAdded",
           parameters = {
                   @Type(reference = ScorePlayerTeam.class)
           }
   )
   public void hookAfterTeamAdded(@Named("args") Object[] args) {
-    this.scoreboard.addTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
+    this.scoreboard.addPlayerTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
   }
 
   @Hook(
@@ -99,7 +108,7 @@ public class VersionedScoreboardInterceptor {
           }
   )
   public void hookAfterTeamChanged(@Named("args") Object[] args) {
-    this.scoreboard.updateTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
+    this.scoreboard.updatePlayerTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
   }
 
   @Hook(
@@ -110,8 +119,30 @@ public class VersionedScoreboardInterceptor {
           }
   )
   public void hookAfterTeamRemoved(@Named("args") Object[] args) {
-    this.scoreboard.removeTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
+    this.scoreboard.removePlayerTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
   }
 
+  @Hook(
+          className = "net.minecraft.scoreboard.Scoreboard",
+          methodName = "onPlayerRemoved",
+          parameters = {
+                  @Type(reference = String.class)
+          }
+  )
+  public void hookAfterPlayerRemoved(@Named("args") Object[] args) {
+    this.scoreboard.removePlayer((String) args[0]);
+  }
+
+  @Hook(
+          className = "net.minecraft.scoreboard.Scoreboard",
+          methodName = "onPlayerScoreRemoved",
+          parameters = {
+                  @Type(reference = String.class),
+                  @Type(reference = ScoreObjective.class)
+          }
+  )
+  public void hookAfterPlayerScoreRemoved(@Named("args") Object[] args) {
+    this.scoreboard.removeScorePlayer((String) args[0], this.scoreboardMapper.fromMinecraftObjective(args[1]));
+  }
 
 }

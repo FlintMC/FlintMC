@@ -10,7 +10,7 @@ import net.labyfy.component.world.scoreboad.type.CollisionType;
 import net.labyfy.component.world.scoreboad.type.VisibleType;
 
 /**
- * Represents a score player team from Minecraft
+ * Represents a Minecraft score player team
  */
 public interface PlayerTeam extends Team {
 
@@ -105,20 +105,39 @@ public interface PlayerTeam extends Team {
    */
   void setCollisionType(CollisionType type);
 
+  /**
+   * A factory class for {@link PlayerTeam}
+   */
   @AssistedFactory(PlayerTeam.class)
   interface Factory {
 
-    /*
+    /**
+     * Creates a new {@link PlayerTeam} with the given parameters.
+     *
+     * @param scoreboard  The scoreboard for this player team.
+     * @param name        The registry name for this player team.
+     * @param displayName The name that is displayed.
+     * @return A created player team.
+     */
     PlayerTeam create(
-            Scoreboard scoreboard,
+            @Assisted("scoreboard") Scoreboard scoreboard,
             @Assisted("name") String name,
             @Assisted("chatComponent") ChatComponent displayName
-    );*/
+    );
 
   }
 
+  /**
+   * Represents a service interface for creating {@link PlayerTeam}
+   */
   interface Provider {
 
+    /**
+     * Creates a new {@link PlayerTeam} with the given name.
+     *
+     * @param name The registry name for this player team.
+     * @return A created player team.
+     */
     PlayerTeam get(String name);
 
   }

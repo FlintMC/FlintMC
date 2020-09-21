@@ -13,17 +13,14 @@ import java.util.List;
 /**
  * 1.15.2 implementation of {@link Criteria.Provider}
  */
-@AutoLoad
 @Singleton
-@Implement(Criteria.Provider.class)
+@Implement(value = Criteria.Provider.class, version = "1.15.2")
 public class VersionedCriteriaProvider implements Criteria.Provider {
 
-  private final List<Criteria> criteriaRegistry;
   private final VersionedCriteria.Factory criteriaFactory;
 
   @Inject
   public VersionedCriteriaProvider(Criteria.Factory criteriaFactory) {
-    this.criteriaRegistry = new ArrayList<>();
     this.criteriaFactory = criteriaFactory;
   }
 
@@ -32,14 +29,7 @@ public class VersionedCriteriaProvider implements Criteria.Provider {
    */
   @Override
   public Criteria get(String name) {
-    Criteria criteria = this.getCriteria(name);
-
-    if (criteria == null) {
-      criteria = this.criteriaFactory.create(name);
-      this.criteriaRegistry.add(criteria);
-    }
-
-    return criteria;
+    return this.criteriaFactory.create(name);
   }
 
   /**
@@ -47,27 +37,7 @@ public class VersionedCriteriaProvider implements Criteria.Provider {
    */
   @Override
   public Criteria get(String name, boolean readOnly, RenderType renderType) {
-    Criteria criteria = this.getCriteria(name);
-
-    if (criteria == null) {
-      criteria = this.criteriaFactory.create(name, readOnly, renderType);
-      this.criteriaRegistry.add(criteria);
-    }
-
-    return criteria;
-  }
-
-  /**
-   * Retrieves a registered criteria through the given name.
-   *
-   * @param name The name of the criteria.
-   * @return A registered criteria with the name or {@code null}
-   */
-  private Criteria getCriteria(String name) {
-    for (Criteria criteria : this.criteriaRegistry) {
-      if (criteria.getName().equals(name)) return criteria;
-    }
-    return null;
+    return this.criteriaFactory.create(name, readOnly, renderType);
   }
 
 }

@@ -1,6 +1,7 @@
 package net.labyfy.internal.component.world.v1_15_2.scoreboard.score;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.chat.builder.TextComponentBuilder;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.format.ChatColor;
@@ -14,7 +15,7 @@ import net.labyfy.component.world.scoreboad.type.VisibleType;
 /**
  * 1.15.2 implementation of {@link PlayerTeam.Provider}
  */
-@AutoLoad
+@Singleton
 @Implement(value = PlayerTeam.Provider.class, version = "1.15.2")
 public class VersionedPlayerTeamProvider implements PlayerTeam.Provider {
 
@@ -33,10 +34,11 @@ public class VersionedPlayerTeamProvider implements PlayerTeam.Provider {
     this.textComponentBuilder = textComponentBuilder;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PlayerTeam get(String name) {
-    return null;
-    /*
     return this.playerTeamFactory.create(scoreboard, name, this.textComponentBuilder.text(name).build());
-  */}
+  }
 }

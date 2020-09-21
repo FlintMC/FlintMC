@@ -33,16 +33,38 @@ public class VersionedScore implements Score {
     this.username = username;
   }
 
+  @AssistedInject
+  private VersionedScore(
+          @Assisted("scoreboard") Scoreboard scoreboard,
+          @Assisted("objective") Objective objective,
+          @Assisted("username") String username,
+          @Assisted("score") int scorePoints
+  ) {
+    this.scoreboard = scoreboard;
+    this.objective = objective;
+    this.username = username;
+    this.scorePoints = scorePoints;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getPlayerName() {
     return this.username;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Objective getObjective() {
     return this.objective;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void increaseScore(int amount) {
     if (this.objective.getCriteria().readOnly()) {
@@ -52,36 +74,51 @@ public class VersionedScore implements Score {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void incrementScore() {
     this.increaseScore(1);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getScorePoints() {
     return this.scorePoints;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setScorePoints(int points) {
-    int scorePoints = this.scorePoints;
-    this.scorePoints = scorePoints;
-
-    if (scorePoints != points || this.forceUpdate) {
+    if (this.scorePoints != points || this.forceUpdate) {
       this.forceUpdate = false;
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void reset() {
     this.setScorePoints(0);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean locked() {
     return this.locked;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setLocked(boolean locked) {
     this.locked = locked;

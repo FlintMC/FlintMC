@@ -7,7 +7,7 @@ import net.labyfy.component.world.scoreboad.score.Criteria;
 import net.labyfy.component.world.scoreboad.type.RenderType;
 
 /**
- *
+ * 1.15.2 implementation of {@link Criteria}
  */
 @Implement(value = Criteria.class, version = "1.15.2")
 public class VersionedCriteria implements Criteria {
@@ -32,16 +32,25 @@ public class VersionedCriteria implements Criteria {
     this.renderType = renderType;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean readOnly() {
     return this.readOnly;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RenderType getRenderType() {
     return this.renderType;

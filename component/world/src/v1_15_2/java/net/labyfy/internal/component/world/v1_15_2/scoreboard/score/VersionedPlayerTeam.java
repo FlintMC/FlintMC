@@ -37,10 +37,11 @@ public class VersionedPlayerTeam implements PlayerTeam {
   private ChatColor color;
   private CollisionType collisionType;
 
+  @AssistedInject
   private VersionedPlayerTeam(
-          Scoreboard scoreboard,
+          @Assisted("scoreboard") Scoreboard scoreboard,
           @Assisted("name") String name,
-          @Assisted("displayName") ChatComponent displayName) {
+          @Assisted("chatComponent") ChatComponent displayName) {
     this.scoreboard = scoreboard;
     this.name = name;
     this.displayName = displayName;
@@ -166,14 +167,6 @@ public class VersionedPlayerTeam implements PlayerTeam {
   @Override
   public String getName() {
     return this.name;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public ChatComponent format(ChatComponent component) {
-    return null;
   }
 
   /**
