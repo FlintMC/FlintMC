@@ -153,11 +153,10 @@ public interface Vertex {
   /**
    * Renders this vertex to a given 3d context
    *
-   * @param matrixStack  the world context to render into
    * @param vertexBuffer the vertex data to render into
    * @return this
    */
-  Vertex render(MatrixStack matrixStack, VertexBuffer vertexBuffer);
+  Vertex render(VertexBuffer vertexBuffer);
 
   @AssistedFactory(Vertex.class)
   interface Factory {

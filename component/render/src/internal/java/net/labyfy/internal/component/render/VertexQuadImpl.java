@@ -3,7 +3,12 @@ package net.labyfy.internal.component.render;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.render.*;
+import net.labyfy.component.render.Vertex;
+import net.labyfy.component.render.VertexBuffer;
+import net.labyfy.component.render.VertexQuad;
+import net.labyfy.component.render.VertexTriangle;
+
+import java.awt.*;
 
 @Implement(VertexQuad.class)
 public class VertexQuadImpl implements VertexQuad {
@@ -34,9 +39,21 @@ public class VertexQuadImpl implements VertexQuad {
 
   }
 
-  public VertexQuad render(MatrixStack matrixStack, VertexBuffer vertexBuffer) {
-    this.triangle1.render(matrixStack, vertexBuffer);
-    this.triangle2.render(matrixStack, vertexBuffer);
+  public VertexQuad render(VertexBuffer vertexBuffer) {
+    this.triangle1.render(vertexBuffer);
+    this.triangle2.render(vertexBuffer);
+    return this;
+  }
+
+  public VertexQuad setLightmapUV(int lightmapUV) {
+    this.triangle1.setLightmapUV(lightmapUV);
+    this.triangle2.setLightmapUV(lightmapUV);
+    return this;
+  }
+
+  public VertexQuad setColor(Color color) {
+    this.triangle1.setColor(color);
+    this.triangle2.setColor(color);
     return this;
   }
 

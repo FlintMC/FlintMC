@@ -8,11 +8,20 @@ import java.util.Collection;
 
 public interface RenderType {
 
+  float ALPHA_DEFAULT = 1f / 255f;
+  float ALPHA_HALF = 0.5f;
+  float ALPHA_ZERO = 0f;
+  float ALPHA_ONE = 1f;
+
   String getName();
 
   VertexFormat getFormat();
 
   int getDrawMode();
+
+  RenderType blendFunc(int src, int dest);
+
+  RenderType blend(boolean enabled);
 
   RenderType texture(ResourceLocation resourceLocation, boolean blur, boolean mipmap);
 
@@ -47,6 +56,8 @@ public interface RenderType {
   RenderType lineEmpty();
 
   RenderType custom(RenderState renderState);
+
+  boolean hasCustom(String name);
 
   Collection<RenderState> getCustomStates();
 

@@ -3,6 +3,8 @@ package net.labyfy.component.render;
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
+import java.awt.*;
+
 public interface VertexTriangle {
 
   /**
@@ -13,11 +15,14 @@ public interface VertexTriangle {
   /**
    * Renders this triangle to a given 3d context
    *
-   * @param matrixStack  the world context to render into
    * @param vertexBuffer the vertex data to render into
    * @return this
    */
-  VertexTriangle render(MatrixStack matrixStack, VertexBuffer vertexBuffer);
+  VertexTriangle render(VertexBuffer vertexBuffer);
+
+  VertexTriangle setLightmapUV(int lightmapUV);
+
+  VertexTriangle setColor(Color color);
 
   @AssistedFactory(VertexTriangle.class)
   interface Factory {

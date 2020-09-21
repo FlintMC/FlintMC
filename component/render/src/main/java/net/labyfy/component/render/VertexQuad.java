@@ -3,6 +3,8 @@ package net.labyfy.component.render;
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
+import java.awt.*;
+
 /**
  * Represents a quad in the 3 dimensional coordinate space.
  * Utility class to render quads more easily and match the minecraft structure better.
@@ -17,11 +19,14 @@ public interface VertexQuad {
   /**
    * Renders this quad to a given 3d context
    *
-   * @param matrixStack  the world context to render into
    * @param vertexBuffer the vertex data to render into
    * @return this
    */
-  VertexQuad render(MatrixStack matrixStack, VertexBuffer vertexBuffer);
+  VertexQuad render(VertexBuffer vertexBuffer);
+
+  VertexQuad setLightmapUV(int lightmapUV);
+
+  VertexQuad setColor(Color color);
 
   @AssistedFactory(VertexQuad.class)
   interface Factory {

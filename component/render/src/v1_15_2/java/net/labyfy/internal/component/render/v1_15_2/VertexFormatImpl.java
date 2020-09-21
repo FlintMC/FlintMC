@@ -7,19 +7,32 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.VertexBuffer;
 import net.labyfy.component.render.VertexFormat;
 import net.labyfy.component.render.VertexFormatElement;
+import net.labyfy.component.render.VertexFormatElementType;
 
 import java.nio.ByteBuffer;
+import java.util.EnumMap;
 
 @Implement(VertexFormat.class)
 public class VertexFormatImpl implements VertexFormat {
-
   private final VertexFormatElement[] elements;
   private final net.minecraft.client.renderer.vertex.VertexFormat handle;
+  private final int size;
+  private final EnumMap<VertexFormatElementType, Integer> elementOffsets = new EnumMap<>(VertexFormatElementType.class);
+  private final EnumMap<VertexFormatElementType, VertexFormatElement> elementsByType = new EnumMap<>(VertexFormatElementType.class);
 
   @Inject
   private VertexFormatImpl(@Assisted VertexFormatElement[] elements) {
     this.elements = elements;
     this.handle = this.createHandle();
+
+    int offset = 0;
+    for (VertexFormatElement element : elements) {
+      elementOffsets.put(element.getId(), offset);
+      elementsByType.put(element.getId(), element);
+      offset += element.getAmount() * element.getType().getSize();
+    }
+
+    this.size = offset;
   }
 
   private net.minecraft.client.renderer.vertex.VertexFormat createHandle() {
@@ -28,14 +41,13 @@ public class VertexFormatImpl implements VertexFormat {
       elements.add(element.<net.minecraft.client.renderer.vertex.VertexFormatElement>getHandle());
     }
     return new net.minecraft.client.renderer.vertex.VertexFormat(elements.build());
-
   }
 
   /**
    * {@inheritDoc}
    */
-  public VertexFormatImpl pushFloats(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, float... floats) {
-    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getSize()) + vertexBuffer.getFormat().getByteOffset(name);
+  public VertexFormatImpl pushFloats(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, VertexFormatElementType vertexFormatElementType, float... floats) {
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getRenderType().getFormat().getSize()) + vertexBuffer.getRenderType().getFormat().getByteOffset(vertexFormatElementType);
     byteBuffer.position(offset);
     for (float f : floats) {
       byteBuffer.putFloat(f);
@@ -46,8 +58,8 @@ public class VertexFormatImpl implements VertexFormat {
   /**
    * {@inheritDoc}
    */
-  public VertexFormatImpl pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, byte... bytes) {
-    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getSize()) + vertexBuffer.getFormat().getByteOffset(name);
+  public VertexFormatImpl pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, VertexFormatElementType vertexFormatElementType, byte... bytes) {
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getRenderType().getFormat().getSize()) + vertexBuffer.getRenderType().getFormat().getByteOffset(vertexFormatElementType);
     byteBuffer.position(offset);
     byteBuffer.put(bytes);
     return this;
@@ -56,8 +68,8 @@ public class VertexFormatImpl implements VertexFormat {
   /**
    * {@inheritDoc}
    */
-  public VertexFormat pushShorts(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, short... shorts) {
-    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getSize()) + vertexBuffer.getFormat().getByteOffset(name);
+  public VertexFormat pushShorts(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, VertexFormatElementType vertexFormatElementType, short... shorts) {
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getRenderType().getFormat().getSize()) + vertexBuffer.getRenderType().getFormat().getByteOffset(vertexFormatElementType);
     byteBuffer.position(offset);
     for (short aShort : shorts) {
       byteBuffer.putShort(aShort);
@@ -68,8 +80,8 @@ public class VertexFormatImpl implements VertexFormat {
   /**
    * {@inheritDoc}
    */
-  public VertexFormatImpl pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, ByteBuffer bytes) {
-    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getFormat().getSize()) + vertexBuffer.getFormat().getByteOffset(name);
+  public VertexFormatImpl pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, VertexFormatElementType vertexFormatElementType, ByteBuffer bytes) {
+    int offset = (vertexBuffer.getVertexCount() * vertexBuffer.getRenderType().getFormat().getSize()) + vertexBuffer.getRenderType().getFormat().getByteOffset(vertexFormatElementType);
     byteBuffer.position(offset);
     byteBuffer.put(bytes);
     return this;
@@ -85,50 +97,29 @@ public class VertexFormatImpl implements VertexFormat {
   /**
    * {@inheritDoc}
    */
-  public boolean hasElement(String name) {
-    for (VertexFormatElement element : this.elements) {
-      if (element.getName().equalsIgnoreCase(name)) {
-        return true;
-      }
-    }
-    return false;
+  public boolean hasElement(VertexFormatElementType vertexFormatElementType) {
+    return elementOffsets.containsKey(vertexFormatElementType);
   }
 
   /**
    * {@inheritDoc}
    */
-  public VertexFormatElement getElement(String name) {
-    for (VertexFormatElement element : this.elements) {
-      if (element.getName().equalsIgnoreCase(name)) {
-        return element;
-      }
-    }
-    return null;
+  public VertexFormatElement getElement(VertexFormatElementType vertexFormatElementType) {
+    return elementsByType.get(vertexFormatElementType);
   }
 
   /**
    * {@inheritDoc}
    */
   public int getSize() {
-    int bytes = 0;
-    for (VertexFormatElement element : this.elements) {
-      bytes += element.getAmount() * element.getType().getSize();
-    }
-    return bytes;
+    return this.size;
   }
 
   /**
    * {@inheritDoc}
    */
-  public int getByteOffset(String name) {
-    int offset = 0;
-    for (VertexFormatElement element : this.elements) {
-      if (name.equalsIgnoreCase(element.getName())) {
-        return offset;
-      }
-      offset += element.getAmount() * element.getType().getSize();
-    }
-    throw new IllegalStateException();
+  public int getByteOffset(VertexFormatElementType vertexFormatElementType) {
+    return this.elementOffsets.get(vertexFormatElementType);
   }
 
   public <T> T getHandle() {

@@ -10,9 +10,7 @@ public interface VertexFormatElement {
 
   Type getType();
 
-  String getName();
-
-  int getIndex();
+  VertexFormatElementType getId();
 
   enum Type {
     FLOAT(4, "Float", 5126),
@@ -52,7 +50,7 @@ public interface VertexFormatElement {
     VertexFormatElement create(
         @Assisted("index") int index,
         @Assisted VertexFormatUsage usage,
-        @Assisted String name,
+        @Assisted("id") VertexFormatElementType id,
         @Assisted Type type,
         @Assisted("amount") int amount
     );

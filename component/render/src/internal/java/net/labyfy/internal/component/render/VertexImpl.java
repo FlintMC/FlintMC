@@ -3,7 +3,6 @@ package net.labyfy.internal.component.render;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.render.MatrixStack;
 import net.labyfy.component.render.Vertex;
 import net.labyfy.component.render.VertexBuffer;
 import org.joml.Vector2f;
@@ -18,8 +17,8 @@ public class VertexImpl implements Vertex {
   private Vector3f position;
   private Vector3f normal = new Vector3f(0, 0, 0);
   private Vector2f textureUV = new Vector2f(0, 0);
-  private Vector2i overlayUV = new Vector2i(0, 0);
-  private int lightingUV;
+  private Vector2i overlayUV = new Vector2i(0, 10);
+  private Vector2i lightingUV = new Vector2i(0, 0);
   private Color color = Color.WHITE;
 
   @AssistedInject
@@ -36,35 +35,35 @@ public class VertexImpl implements Vertex {
    * {@inheritDoc}
    */
   public Vector3f getPosition() {
-    return new Vector3f(this.position);
+    return this.position;
   }
 
   /**
    * {@inheritDoc}
    */
   public Vector2f getTextureUV() {
-    return new Vector2f(this.textureUV);
+    return this.textureUV;
   }
 
   /**
    * {@inheritDoc}
    */
   public Vector3f getNormal() {
-    return new Vector3f(this.normal);
+    return this.normal;
   }
 
   /**
    * {@inheritDoc}
    */
   public Vector2i getOverlayUV() {
-    return new Vector2i(this.overlayUV);
+    return this.overlayUV;
   }
 
   /**
    * {@inheritDoc}
    */
   public Vector2i getLightingUV() {
-    return new Vector2i(this.lightingUV);
+    return this.lightingUV;
   }
 
   /**
@@ -137,7 +136,7 @@ public class VertexImpl implements Vertex {
    * {@inheritDoc}
    */
   public Vertex setLightmapUV(Vector2i lightmap) {
-    this.setLightmapUV((short) lightmap.x, (short) lightmap.y);
+    this.lightingUV.set(lightmap);
     return this;
   }
 
@@ -145,7 +144,7 @@ public class VertexImpl implements Vertex {
    * {@inheritDoc}
    */
   public Vertex setLightmapUV(int masked) {
-    this.lightingUV = masked;
+    this.lightingUV.set(masked & 0xff, masked >>> 16);
     return this;
   }
 
@@ -177,7 +176,7 @@ public class VertexImpl implements Vertex {
   /**
    * {@inheritDoc}
    */
-  public Vertex render(MatrixStack matrixStack, VertexBuffer vertexBuffer) {
+  public Vertex render(VertexBuffer vertexBuffer) {
     vertexBuffer
         .pos(this.getPosition())
         .normal(this.getNormal())
