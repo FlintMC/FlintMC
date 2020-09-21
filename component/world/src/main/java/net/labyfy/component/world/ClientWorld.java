@@ -4,6 +4,7 @@ import net.labyfy.component.player.Player;
 import net.labyfy.component.world.scoreboad.Scoreboard;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents the world of this client.
@@ -24,6 +25,14 @@ public interface ClientWorld extends World {
    * @return {@code true} if this collection changed as a result of the call, otherwise {@code false}
    */
   boolean addPlayer(Player player);
+
+  /**
+   * Removes a player from the collection.
+   *
+   * @param uniqueId The unique identifier of the player to be removed.
+   * @return {@code true} if the player was removed, otherwise {@code false}.
+   */
+  boolean removePlayer(UUID uniqueId);
 
   /**
    * Retrieves a collection with all loaded players of this world.
