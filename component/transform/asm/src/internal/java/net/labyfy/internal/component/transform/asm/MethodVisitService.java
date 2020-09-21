@@ -40,6 +40,7 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
   @Override
   public byte[] transform(String s, byte[] bytes) {
     ClassMapping classMapping = classMappingProvider.get(s);
+    if (classMapping == null) return bytes;
     for (MethodVisitorContext methodVisitorContext : this.methodVisitorContexts) {
       MethodVisit methodVisit = methodVisitorContext.getMethodVisit();
       String className = methodVisit.className();
@@ -58,13 +59,13 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
               MethodMapping methodMapping =
                   classMapping.getMethod(name + desc.substring(0, desc.lastIndexOf(')') + 1));
 
-              if (methodMapping.isDefault()) {
-                if (name.equals("<init>")) {
-                  methodMapping = new MethodMapping(obfuscated, classMapping, "<init>", "<init>", "<init>", "<init>");
-                }
-              }
-
               if (methodMapping != null) {
+                if (methodMapping.isDefault()) {
+                  if (name.equals("<init>")) {
+                    methodMapping = new MethodMapping(obfuscated, classMapping, "<init>", "<init>", "<init>", "<init>");
+                  }
+                }
+
                 for (InternalMethodVisitorContext methodVisitorContext : methodVisitorContexts) {
                   if (methodVisitorContext.getMethodVisit().desc().isEmpty()
                       || methodMapping
