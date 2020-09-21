@@ -37,35 +37,35 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   private static Map<String, String> collectMappings(ClassMappingProvider classMappingProvider) {
     Map<String, String> mappings = new HashMap<>();
-    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
+    mappings.putAll(classMappingProvider.getDeobfuscatedClassMappings().values().stream()
         .filter(classMapping -> !classMapping.isDefault())
         .collect(
             Collectors.toMap(
-                classMapping -> classMapping.getUnObfuscatedName().replace('.', '/'),
+                classMapping -> classMapping.getDeobfuscatedName().replace('.', '/'),
                 classMapping -> classMapping.getObfuscatedName().replace('.', '/')))
     );
 
 
     List<MethodMapping> methodMappings = new ArrayList<>();
 
-    for (ClassMapping classMapping : classMappingProvider.getUnObfuscatedClassMappings().values()) {
-      for (MethodMapping method : classMapping.getMethods()) {
-        if (mappings.containsKey(method.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + method.getUnObfuscatedMethodIdentifier())) {
+    for (ClassMapping classMapping : classMappingProvider.getDeobfuscatedClassMappings().values()) {
+      for (MethodMapping method : classMapping.getObfuscatedMethods().values()) {
+        if (mappings.containsKey(method.getClassMapping().getDeobfuscatedName().replace('.', '/') + "." + method.getDeobfuscatedIdentifier())) {
           methodMappings.add(method);
         } else {
-          mappings.put(method.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + method.getUnObfuscatedMethodIdentifier(), method.getObfuscatedMethodName());
+          mappings.put(method.getClassMapping().getDeobfuscatedName().replace('.', '/') + "." + method.getDeobfuscatedIdentifier(), method.getObfuscatedName());
         }
       }
     }
 
-    mappings.putAll(classMappingProvider.getUnObfuscatedClassMappings().values().stream()
-        .map(ClassMapping::getFields)
+    mappings.putAll(classMappingProvider.getDeobfuscatedClassMappings().values().stream()
+        .map(classMapping -> classMapping.getObfuscatedFields().values())
         .flatMap(Collection::stream)
         .filter(fieldMapping -> !fieldMapping.isDefault())
         .collect(
             Collectors.toMap(
-                fieldMapping -> fieldMapping.getClassMapping().getUnObfuscatedName().replace('.', '/') + "." + fieldMapping.getUnObfuscatedFieldName(),
-                FieldMapping::getObfuscatedFieldName)
+                fieldMapping -> fieldMapping.getClassMapping().getDeobfuscatedName().replace('.', '/') + "." + fieldMapping.getDeobfuscatedName(),
+                FieldMapping::getObfuscatedName)
         ));
     return mappings;
   }

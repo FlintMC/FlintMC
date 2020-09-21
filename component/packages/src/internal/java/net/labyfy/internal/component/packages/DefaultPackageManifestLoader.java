@@ -57,7 +57,7 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     private String version;
     private Set<String> authors;
     private String description;
-    private Set<LabyDependencyDescription> dependencies = new HashSet<>();
+    private Set<DefaultDependencyDescription> dependencies = new HashSet<>();
 
     /**
      * {@inheritDoc}
@@ -126,7 +126,7 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
    * Default implementation of a {@link DependencyDescription}.
    */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
-  private static class LabyDependencyDescription implements DependencyDescription, Serializable {
+  private static class DefaultDependencyDescription implements DependencyDescription, Serializable {
     private String name;
     private List<String> versions = new ArrayList<>();
 

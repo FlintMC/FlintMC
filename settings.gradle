@@ -83,6 +83,9 @@ findProject('component:security')?.name = 'security'
 include 'component:commons'
 findProject(':component:commons')?.name = 'commons'
 
+include 'component:csv'
+findProject(':component:csv')?.name = 'csv'
+
 include ':component:inject-primitive'
 findProject(':component:inject-primitive')?.name = 'inject-primitive'
 
@@ -92,3 +95,8 @@ findProject('component:i18n')?.name = 'i18n'
 include ':component:render'
 findProject(':component:render')?.name = 'render'
 
+include 'component:chat'
+findProject(':component:chat')?.name = 'chat'
+
+include 'component:player'
+findProject(':component:player')?.name = 'player'

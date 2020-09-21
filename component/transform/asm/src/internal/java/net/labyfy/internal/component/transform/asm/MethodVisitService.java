@@ -2,7 +2,9 @@ package net.labyfy.internal.component.transform.asm;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.google.inject.Key;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
@@ -25,6 +27,7 @@ import java.util.Collection;
 @MinecraftTransformer
 @Service(MethodVisit.class)
 public class MethodVisitService implements ServiceHandler, LateInjectedTransformer {
+  private final boolean obfuscated = InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
   private final Collection<InternalMethodVisitorContext> methodVisitorContexts;
   private final ClassMappingProvider classMappingProvider;
 
@@ -42,7 +45,7 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
       String className = methodVisit.className();
 
       if (!(className.equals(classMapping.getObfuscatedName())
-          || className.equals(classMapping.getUnObfuscatedName()))) continue;
+          || className.equals(classMapping.getDeobfuscatedName()))) continue;
 
       ClassReader classReader = new ClassReader(bytes);
       ClassWriter classWriter = new ClassWriter(classReader, 3);
@@ -57,9 +60,7 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
 
               if (methodMapping.isDefault()) {
                 if (name.equals("<init>")) {
-                  methodMapping =
-                      MethodMapping.create(
-                          classMapping, "<init>", "<init>", "<init>", "<init>", "<init>", "<init>");
+                  methodMapping = new MethodMapping(obfuscated, classMapping, "<init>", "<init>", "<init>", "<init>");
                 }
               }
 
@@ -67,18 +68,18 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
                 for (InternalMethodVisitorContext methodVisitorContext : methodVisitorContexts) {
                   if (methodVisitorContext.getMethodVisit().desc().isEmpty()
                       || methodMapping
-                      .getObfuscatedMethodDescription()
+                      .getObfuscatedDescriptor()
                       .equals(methodVisitorContext.getMethodVisit().desc())
                       || methodMapping
-                      .getUnObfuscatedMethodDescription()
+                      .getDeobfuscatedDescriptor()
                       .equals(methodVisitorContext.getMethodVisit().desc())) {
 
                     if (methodVisitorContext.getMethodVisit().methodName().isEmpty()
                         || methodMapping
-                        .getObfuscatedMethodName()
+                        .getObfuscatedName()
                         .equals(methodVisitorContext.getMethodVisit().methodName())
                         || methodMapping
-                        .getUnObfuscatedMethodName()
+                        .getDeobfuscatedName()
                         .equals(methodVisitorContext.getMethodVisit().methodName())) {
                       methodVisitorContext.setMethodVisitor(
                           new MethodVisitor(

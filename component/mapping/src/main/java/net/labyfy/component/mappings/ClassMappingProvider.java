@@ -1,91 +1,80 @@
 package net.labyfy.component.mappings;
 
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import net.labyfy.component.mappings.exceptions.MappingParseException;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Provides all fields, methods and class name obfuscation provided by the chosen {@link MappingParser}.
- * At the moment only the mcp mappings are used. This will probably change in the future.
+ * <code>ClassMappingProvider</code> manages class mappings produced by a mapping parser.
  */
 @Singleton
-public class ClassMappingProvider {
-
-  private final Map<String, ClassMapping> obfuscatedClassMappings = Maps.newConcurrentMap();
-  private final Map<String, ClassMapping> unObfuscatedClassMappings = Maps.newConcurrentMap();
+public final class ClassMappingProvider {
+  private final Map<String, ClassMapping> obfuscatedClassMappings;
+  private final Map<String, ClassMapping> deobfuscatedClassMappings = new HashMap<>();
 
   @Inject
-  private ClassMappingProvider(MappingFileProvider mappingFileProvider, @Named("launchArguments") Map launchArguments) throws IOException {
+  private ClassMappingProvider(final MappingFileProvider mappingFileProvider,
+                               @Named("launchArguments") final Map launchArguments) throws IOException, MappingParseException {
     McpMappingParser mcpMappingParser = new McpMappingParser();
-    Collection<ClassMapping> parse = mcpMappingParser.parse(this, mappingFileProvider.getMappings(launchArguments.get("--game-version").toString()));
+    obfuscatedClassMappings = mcpMappingParser.parse(mappingFileProvider.getMappings(launchArguments.get("--game-version").toString()));
 
-    for (ClassMapping classMapping : parse) {
-      this.obfuscatedClassMappings.put(classMapping.getObfuscatedName(), classMapping);
-      this.unObfuscatedClassMappings.put(classMapping.getUnObfuscatedName(), classMapping);
+    for (ClassMapping classMapping : obfuscatedClassMappings.values()) {
+      deobfuscatedClassMappings.put(classMapping.deobfuscatedName, classMapping);
     }
   }
 
-  private ClassMapping add(String obfuscatedName, String unObfuscatedName) {
-    ClassMapping classMapping = ClassMapping.create(this, obfuscatedName, unObfuscatedName);
-    this.unObfuscatedClassMappings.put(unObfuscatedName, classMapping);
-    this.obfuscatedClassMappings.put(obfuscatedName, classMapping);
-    return classMapping;
+  /**
+   * Get a class mapping by obfuscated name.
+   *
+   * @param name An obfuscated name.
+   * @return A class mapping.
+   */
+  public ClassMapping getByObfuscatedName(final String name) {
+    return obfuscatedClassMappings.get(name);
   }
 
   /**
-   * @return all known class mappings, mapped to this format.
-   * Key: {@link ClassMapping#getObfuscatedName()} ()}
-   * Value: {@link ClassMapping}
+   * Get a class mapping by deobfuscated name.
+   *
+   * @param name An deobfuscated name.
+   * @return A class mapping.
+   */
+  public ClassMapping getByDeobfuscatedName(final String name) {
+    return deobfuscatedClassMappings.get(name);
+  }
+
+  /**
+   * Get a class mapping by obfuscated or deobfuscated name. Obfuscated name being preferred.
+   *
+   * @param name An obfuscated name.
+   * @return A class mapping.
+   */
+  public ClassMapping get(final String name) {
+    if (obfuscatedClassMappings.containsKey(name)) return obfuscatedClassMappings.get(name);
+    return deobfuscatedClassMappings.get(name);
+  }
+
+  /**
+   * Get obfuscated class mappings.
+   *
+   * @return Obfuscated class mappings.
    */
   public Map<String, ClassMapping> getObfuscatedClassMappings() {
-    return Collections.unmodifiableMap(this.obfuscatedClassMappings);
+    return Collections.unmodifiableMap(obfuscatedClassMappings);
   }
 
   /**
-   * @return all known class mappings, mapped to this format.
-   * Key: {@link ClassMapping#getUnObfuscatedName()}
-   * Value: {@link ClassMapping}
-   */
-  public Map<String, ClassMapping> getUnObfuscatedClassMappings() {
-    return Collections.unmodifiableMap(this.unObfuscatedClassMappings);
-  }
-
-  /**
-   * Find {@link ClassMapping} by the obfuscated class name. ({@link ClassMapping#getObfuscatedName()})
+   * Get deobfuscated class mappings.
    *
-   * @param key obfuscated class name
-   * @return classMapping found by obfuscated class name. If no mapping was found, a default {@link ClassMapping} with same obfuscated and unobfuscated name will be created. ({@link ClassMapping#isDefault()} will be true)
+   * @return Deobfuscated class mappings.
    */
-  public ClassMapping getByObfuscatedName(String key) {
-    return this.obfuscatedClassMappings.get(key);
-  }
-
-  /**
-   * Find {@link ClassMapping} by the unobfuscated class name. ({@link ClassMapping#getUnObfuscatedName()} ()})
-   *
-   * @param key unobfuscated class name
-   * @return classMapping found by unobfuscated class name. If no mapping was found, a default {@link ClassMapping} with same obfuscated and unobfuscated name will be created. ({@link ClassMapping#isDefault()} will be true)
-   */
-  public ClassMapping getByUnObfuscatedName(String key) {
-    return this.unObfuscatedClassMappings.get(key);
-  }
-
-  /**
-   * Find {@link ClassMapping} by the obfuscated or the unobfuscated class name. ({@link ClassMapping#getObfuscatedName()} || {@link ClassMapping#getUnObfuscatedName()})
-   *
-   * @param key obfuscated or unobfuscated class name
-   * @return classMapping found by obfuscated or unobfuscated class name. If no mapping was found, a default {@link ClassMapping} with same obfuscated and unobfuscated name will be created. ({@link ClassMapping#isDefault()} will be true)
-   */
-  public ClassMapping get(String key) {
-    ClassMapping mapping = this.getByObfuscatedName(key);
-    if (mapping == null) mapping = this.getByUnObfuscatedName(key);
-    if (mapping != null) return mapping;
-    return ClassMapping.create(this, key, key);
+  public Map<String, ClassMapping> getDeobfuscatedClassMappings() {
+    return Collections.unmodifiableMap(deobfuscatedClassMappings);
   }
 }
