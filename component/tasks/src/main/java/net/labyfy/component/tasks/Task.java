@@ -17,7 +17,7 @@ public @interface Task {
   /**
    * @return task name to listen for
    */
-  String value();
+  Tasks value();
 
   /**
    * Should not be necessary to change in most cases.

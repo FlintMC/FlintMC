@@ -5,14 +5,13 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
-import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.PackageLoader;
 import net.labyfy.component.packages.PackageState;
-import net.labyfy.component.processing.autoload.AutoLoad;
+import net.labyfy.component.tasks.Task;
+import net.labyfy.component.tasks.Tasks;
 import net.labyfy.internal.component.inject.DefaultLoggingProvider;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -26,29 +25,25 @@ import java.util.stream.Stream;
 
 @Singleton
 @Implement(PackageLoader.class)
-@AutoLoad(round = -4, priority = -900)
 public class DefaultPackageLoader implements PackageLoader {
-  private final DefaultPackageManifestLoader labyPackageDescriptionLoader;
+
   private final Logger logger;
   private final File packageFolder;
   private final Set<JarTuple> jars;
+  private final Package.Factory packageFactory;
 
   private Set<Package> allPackages;
-
-  static {
-    // Make sure to construct as early as possible
-    InjectionHolder.getInjectedInstance(DefaultPackageLoader.class);
-  }
 
   @Inject
   private DefaultPackageLoader(
       DefaultLoggingProvider loggingProvider,
       @Named("labyfyPackageFolder") File packageFolder,
       DefaultPackageManifestLoader descriptionLoader,
-      DefaultPackageManifestLoader labyPackageDescriptionLoader
-  ) {
-    this.logger = LogManager.getLogger(DefaultPackageLoader.class);
-    this.labyPackageDescriptionLoader = labyPackageDescriptionLoader;
+      Package.Factory packageFactory,
+      @InjectLogger Logger logger) {
+
+    this.packageFactory = packageFactory;
+    this.logger = logger;
 
     // Tell the logging provider we now are able to resolve logging prefixes
     loggingProvider.setPrefixProvider(this::getLogPrefix);
@@ -93,7 +88,7 @@ public class DefaultPackageLoader implements PackageLoader {
                     if (descriptionLoader.isManifestPresent(jarTuple.getJar())) return true;
                     else {
                       this.logger.warn(
-                          "{} is in the package directory, but doesn not contain a package manifest. Ignoring it.",
+                          "{} is in the package directory, but doesn't not contain a package manifest. Ignoring it.",
                           jarTuple.getFile().getName());
                       return false;
                     }
@@ -105,15 +100,13 @@ public class DefaultPackageLoader implements PackageLoader {
       this.logger.error(
           "Cant load packages as package directory does not exist and is not creatable.");
     }
-
-    // Once we have collected all jar files, begin loading
-    this.load();
   }
 
+  @Task(Tasks.INTERNAL_INITIALIZE)
   private void load() {
     if (this.jars.isEmpty()) {
       // We have no files to load, skip it
-      this.logger.info("No jar files in the package directory, skipping load process.");
+      this.logger.info("No loadable Packages found in {}...", packageFolder.getAbsolutePath());
       return;
     }
     this.logger.info("Loading packages from {}...", packageFolder.getAbsolutePath());
@@ -121,7 +114,7 @@ public class DefaultPackageLoader implements PackageLoader {
     // Construct a collection of all packages
     this.allPackages =
         jars.stream()
-            .map(jarTuple -> new DefaultPackage(this.labyPackageDescriptionLoader, jarTuple.getFile(), jarTuple.getJar()))
+            .map(jarTuple -> this.packageFactory.create(jarTuple.getFile(), jarTuple.getJar()))
             .collect(Collectors.toSet());
 
     // Filter out all packages which can be loaded
@@ -153,7 +146,8 @@ public class DefaultPackageLoader implements PackageLoader {
 
         // Check if the package has been loaded successfully, if not, log the error and continue
         if (toLoad.load().equals(PackageState.ERRORED)) {
-          this.logger.error("Failed to load package {}.", toLoad.getName(), toLoad.getLoadException());
+          this.logger.error(
+              "Failed to load package {}.", toLoad.getName(), toLoad.getLoadException());
         } else {
           loadedPackages.add(toLoad);
         }
@@ -242,11 +236,12 @@ public class DefaultPackageLoader implements PackageLoader {
   }
 
   /**
-   * Retrieves a log prefix for the given class. This will always be the name
-   * of the package if the class has been loaded by a package class loader.
+   * Retrieves a log prefix for the given class. This will always be the name of the package if the
+   * class has been loaded by a package class loader.
    *
    * @param clazz The clazz to determine the log prefix for
-   * @return The log prefix to use for the class or null, if the class has not been loaded from a package
+   * @return The log prefix to use for the class or null, if the class has not been loaded from a
+   *     package
    * @implNote The log prefix is simply the name of the package the class has been loaded from
    */
   private String getLogPrefix(Class<?> clazz) {
@@ -270,8 +265,8 @@ public class DefaultPackageLoader implements PackageLoader {
      * Constructs a new {@link JarTuple}.
      *
      * @param file The jar file representation of file
-     * @param jar  The IO file representation of the jar file, assumed to point to the same file
-     *             as the jar representation
+     * @param jar The IO file representation of the jar file, assumed to point to the same file as
+     *     the jar representation
      */
     public JarTuple(File file, JarFile jar) {
       this.file = file;
