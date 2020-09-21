@@ -24,7 +24,7 @@ public class McpMappingIndexProvider {
    */
   public Map<String, Version> fetch() throws IOException {
     HttpURLConnection connection = (HttpURLConnection) new URL(INDEX_URL).openConnection();
-    connection.setRequestProperty("User-Agent", "Labyfy/0.2.2 (+https://www.labymod.net/)");
+    connection.setRequestProperty("User-Agent", "Labyfy (+https://www.labymod.net/)");
     connection.connect();
 
     try (InputStreamReader reader = new InputStreamReader(connection.getInputStream())) {
