@@ -19,7 +19,7 @@ public interface VertexFormat {
    * @param floats       data to push
    * @return this
    */
-  VertexFormat pushFloats(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, float... floats);
+  VertexFormat pushFloats(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, VertexFormatElementType vertexFormatElementType, float... floats);
 
   /**
    * Pushes bytes to the current vertex and checks for the existence of the {@link VertexFormatElement}.
@@ -29,7 +29,7 @@ public interface VertexFormat {
    * @param bytes        data to push
    * @return this
    */
-  VertexFormat pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, byte... bytes);
+  VertexFormat pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, VertexFormatElementType vertexFormatElementType, byte... bytes);
 
   /**
    * Pushes shorts to the current vertex and checks for the existence of the {@link VertexFormatElement}.
@@ -39,7 +39,7 @@ public interface VertexFormat {
    * @param shorts       data to push
    * @return this
    */
-  VertexFormat pushShorts(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, short... shorts);
+  VertexFormat pushShorts(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, VertexFormatElementType vertexFormatElementType, short... shorts);
 
 
   /**
@@ -50,7 +50,7 @@ public interface VertexFormat {
    * @param bytes        data to push
    * @return this
    */
-  VertexFormat pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, String name, ByteBuffer bytes);
+  VertexFormat pushBytes(ByteBuffer byteBuffer, VertexBuffer vertexBuffer, VertexFormatElementType vertexFormatElementType, ByteBuffer bytes);
 
   /**
    * @return all elements of this vertex format
@@ -58,16 +58,16 @@ public interface VertexFormat {
   VertexFormatElement[] getElements();
 
   /**
-   * @param name the name to search the format element from
+   * @param vertexFormatElementType the type to search the format element from
    * @return if this vertex format has an format element with the name name
    */
-  boolean hasElement(String name);
+  boolean hasElement(VertexFormatElementType vertexFormatElementType);
 
   /**
    * @param name the name to search the format element from
    * @return the vertex format element by name
    */
-  VertexFormatElement getElement(String name);
+  VertexFormatElement getElement(VertexFormatElementType vertexFormatElementType);
 
   /**
    * @return the size of all {@link VertexFormatElement} together in bytes.
@@ -81,7 +81,7 @@ public interface VertexFormat {
    * @param name the name of {@link VertexFormatElement} to look for
    * @return the byte offset
    */
-  int getByteOffset(String name);
+  int getByteOffset(VertexFormatElementType vertexFormatElementType);
 
   <T> T getHandle();
 

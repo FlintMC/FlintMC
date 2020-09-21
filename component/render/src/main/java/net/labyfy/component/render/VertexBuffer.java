@@ -125,12 +125,7 @@ public interface VertexBuffer {
    */
   int getVertexCount();
 
-  /**
-   * A {@link VertexFormat} defines which properties can be set to a vertex.
-   *
-   * @return the vertex format of the current vertex
-   */
-  VertexFormat getFormat();
+  RenderType getRenderType();
 
   /**
    * @return the current world transformation matrix
@@ -168,4 +163,5 @@ public interface VertexBuffer {
    */
   AdvancedVertexBuffer advanced();
 
+  MatrixStack getMatrixStack();
 }

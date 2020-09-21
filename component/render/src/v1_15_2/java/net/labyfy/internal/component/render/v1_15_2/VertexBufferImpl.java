@@ -2,81 +2,57 @@ package net.labyfy.internal.component.render.v1_15_2;
 
 
 import com.mojang.blaze3d.vertex.IVertexConsumer;
-import net.labyfy.component.render.AdvancedVertexBuffer;
-import net.labyfy.component.render.VertexBuffer;
-import net.labyfy.component.render.VertexFormat;
+import net.labyfy.component.commons.math.MathFactory;
+import net.labyfy.component.render.*;
 import net.minecraft.client.renderer.BufferBuilder;
 import org.joml.*;
 
 import java.awt.*;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 
 public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
-  private final static MethodHandle byteBufferFieldGetter;
-  private final static MethodHandle byteBufferFieldSetter;
-  private final static MethodHandle vertexCountFieldSetter;
-
-  static {
-    MethodHandle byteBufferFieldGetterTmp = null;
-    MethodHandle byteBufferFieldSetterTmp = null;
-    MethodHandle vertexCountFieldSetterTmp = null;
-    try {
-      Field byteBuffer = BufferBuilder.class.getDeclaredField("byteBuffer");
-      byteBuffer.setAccessible(true);
-      byteBufferFieldGetterTmp = MethodHandles.lookup().unreflectGetter(byteBuffer);
-      byteBufferFieldSetterTmp = MethodHandles.lookup().unreflectSetter(byteBuffer);
-
-      Field vertexCount = BufferBuilder.class.getDeclaredField("vertexCount");
-      vertexCount.setAccessible(true);
-      vertexCountFieldSetterTmp = MethodHandles.lookup().unreflectSetter(vertexCount);
-
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      e.printStackTrace();
-    }
-    byteBufferFieldGetter = byteBufferFieldGetterTmp;
-    byteBufferFieldSetter = byteBufferFieldSetterTmp;
-    vertexCountFieldSetter = vertexCountFieldSetterTmp;
-  }
 
   private final BufferBuilder buffer;
-  private final VertexFormat vertexFormat;
+  private final RenderType renderType;
+  private final MatrixStack matrixStack;
+  private final MathFactory mathFactory;
   private Matrix4f worldContext;
   private Matrix3f normalContext;
   private ByteBuffer byteBuffer;
   private int vertexCount;
   private int writtenBytes;
 
-  public VertexBufferImpl(BufferBuilder buffer, VertexFormat vertexFormat) throws Throwable {
-    this.byteBuffer = (ByteBuffer) byteBufferFieldGetter.invoke(buffer);
+  public VertexBufferImpl(MathFactory mathFactory, Matrix4f matrixTransformation, com.mojang.blaze3d.matrix.MatrixStack matrixStack, BufferBuilder buffer, RenderType renderType) throws Throwable {
+    this.mathFactory = mathFactory;
+    this.matrixStack = new MatrixStackImpl(mathFactory, this, matrixStack);
+    this.matrixStack.mul(matrixTransformation);
+    this.byteBuffer = ((BufferBuilderAccessor) buffer).getByteBuffer();
     this.buffer = buffer;
-    this.vertexFormat = vertexFormat;
-    this.worldContext = new Matrix4f();
-    this.normalContext = new Matrix3f();
+    this.renderType = renderType;
+    this.worldContext = mathFactory.getMatrix4f();
+    this.normalContext = mathFactory.getMatrix3f();
   }
 
   /**
    * {@inheritDoc}
    */
   public VertexBufferImpl pos(float x, float y, float z) {
-    if (!this.getFormat().hasElement("position"))
+    if (!this.getRenderType().getFormat().hasElement(VertexFormatElementType.POSITION))
       return this;
-    Vector3f vector3f = new Vector3f(x, y, z);
+    Vector3f vector3f = mathFactory.getVector3f(x, y, z);
     if (this.worldContext != null) {
       vector3f.mulPosition(this.worldContext);
     }
-    return this.pushFloats("position", vector3f.x, vector3f.y, vector3f.z);
+    return this.pushFloats(VertexFormatElementType.POSITION, vector3f.x, vector3f.y, vector3f.z);
   }
 
   /**
    * {@inheritDoc}
    */
   public VertexBuffer color(int r, int g, int b, int alpha) {
-    if (!this.getFormat().hasElement("color"))
+    if (!this.getRenderType().getFormat().hasElement(VertexFormatElementType.COLOR))
       return this;
-    this.pushBytes("color", ((byte) r), ((byte) g), ((byte) b), ((byte) alpha));
+    this.pushBytes(VertexFormatElementType.COLOR, ((byte) r), ((byte) g), ((byte) b), ((byte) alpha));
     return this;
   }
 
@@ -100,13 +76,13 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    * {@inheritDoc}
    */
   public VertexBufferImpl normal(float x, float y, float z) {
-    if (!this.getFormat().hasElement("normal"))
+    if (!this.getRenderType().getFormat().hasElement(VertexFormatElementType.NORMAL))
       return this;
-    Vector3f vector3f = new Vector3f(x, y, z);
+    Vector3f vector3f = mathFactory.getVector3f(x, y, z);
     if (this.normalContext != null) {
       vector3f.mul(this.normalContext);
     }
-    return this.pushBytes("normal", IVertexConsumer.normalInt(x), IVertexConsumer.normalInt(y), IVertexConsumer.normalInt(z));
+    return this.pushBytes(VertexFormatElementType.NORMAL, IVertexConsumer.normalInt(x), IVertexConsumer.normalInt(y), IVertexConsumer.normalInt(z));
   }
 
   /**
@@ -121,14 +97,10 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    */
   public VertexBufferImpl end() {
     this.vertexCount++;
-    if (this.writtenBytes != this.vertexCount * this.vertexFormat.getSize()) {
+    if (this.writtenBytes != this.vertexCount * this.getRenderType().getFormat().getSize()) {
       throw new IllegalStateException("Not all or too many vertex elements have been written.");
     }
-    try {
-      vertexCountFieldSetter.invoke(this.buffer, this.vertexCount);
-    } catch (Throwable throwable) {
-      throwable.printStackTrace();
-    }
+    ((BufferBuilderAccessor) buffer).setVertexCount(this.vertexCount);
     return this;
   }
 
@@ -136,9 +108,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    * {@inheritDoc}
    */
   public VertexBufferImpl lightmap(short u, short v) {
-    if (!this.getFormat().hasElement("lightmap"))
+    if (!this.getRenderType().getFormat().hasElement(VertexFormatElementType.LIGHTMAP))
       return this;
-    this.pushShorts("lightmap", u, v);
+    this.pushShorts(VertexFormatElementType.LIGHTMAP, u, v);
     return this;
   }
 
@@ -153,9 +125,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    * {@inheritDoc}
    */
   public VertexBufferImpl texture(float u, float v) {
-    if (!this.getFormat().hasElement("texture"))
+    if (!this.getRenderType().getFormat().hasElement(VertexFormatElementType.TEXTURE))
       return this;
-    this.pushFloats("texture", u, v);
+    this.pushFloats(VertexFormatElementType.TEXTURE, u, v);
     return this;
   }
 
@@ -167,24 +139,24 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
   }
 
   public VertexBuffer overlay(short x, short y) {
-    if (!this.getFormat().hasElement("overlay"))
+    if (!this.getRenderType().getFormat().hasElement(VertexFormatElementType.OVERLAY))
       return this;
-    this.pushShorts("overlay", x, y);
+    this.pushShorts(VertexFormatElementType.OVERLAY, x, y);
     return this;
   }
 
   public VertexBuffer overlay(Vector2i vector2i) {
     if (vector2i == null)
-      return this.overlay((short) 0, (short) 0);
+      return this.overlay((short) 0, (short) 10);
     return this.overlay((short) vector2i.x, (short) vector2i.y);
   }
 
   /**
    * {@inheritDoc}
    */
-  public VertexBufferImpl pushFloats(String name, float... floats) {
-    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getSize()));
-    vertexFormat.pushFloats(this.byteBuffer, this, name, floats);
+  public VertexBufferImpl pushFloats(VertexFormatElementType vertexFormatElementType, float... floats) {
+    this.growBufferEventually(((this.vertexCount + 1) * getRenderType().getFormat().getSize()));
+    getRenderType().getFormat().pushFloats(this.byteBuffer, this, vertexFormatElementType, floats);
     this.writtenBytes += floats.length * Float.BYTES;
     return this;
   }
@@ -192,9 +164,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
   /**
    * {@inheritDoc}
    */
-  public VertexBufferImpl pushBytes(String name, byte... bytes) {
-    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getSize()));
-    vertexFormat.pushBytes(this.byteBuffer, this, name, bytes);
+  public VertexBufferImpl pushBytes(VertexFormatElementType vertexFormatElementType, byte... bytes) {
+    this.growBufferEventually(((this.vertexCount + 1) * this.getRenderType().getFormat().getSize()));
+    getRenderType().getFormat().pushBytes(this.byteBuffer, this, vertexFormatElementType, bytes);
     this.writtenBytes += bytes.length;
     return this;
   }
@@ -202,9 +174,9 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
   /**
    * {@inheritDoc}
    */
-  public AdvancedVertexBuffer pushShorts(String name, short... shorts) {
-    this.growBufferEventually(((this.vertexCount + 1) * this.vertexFormat.getSize()));
-    vertexFormat.pushShorts(this.byteBuffer, this, name, shorts);
+  public AdvancedVertexBuffer pushShorts(VertexFormatElementType vertexFormatElementType, short... shorts) {
+    this.growBufferEventually(((this.vertexCount + 1) * this.getRenderType().getFormat().getSize()));
+    getRenderType().getFormat().pushShorts(this.byteBuffer, this, vertexFormatElementType, shorts);
     this.writtenBytes += shorts.length * Short.BYTES;
     return this;
   }
@@ -214,11 +186,7 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    */
   public AdvancedVertexBuffer incrementVertexCount(int count) {
     this.vertexCount += count;
-    try {
-      vertexCountFieldSetter.invoke(this.buffer, this.vertexCount);
-    } catch (Throwable throwable) {
-      throwable.printStackTrace();
-    }
+    ((BufferBuilderAccessor) buffer).setVertexCount(vertexCount);
     return this;
   }
 
@@ -228,10 +196,10 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
   public VertexBufferImpl growBufferEventually(int targetSize) {
     if (this.byteBuffer.limit() < targetSize) {
       ByteBuffer oldBuffer = this.byteBuffer;
-      this.byteBuffer = ByteBuffer.allocateDirect(targetSize);
+      this.byteBuffer = ByteBuffer.allocateDirect(targetSize * 2);
       this.byteBuffer.put(oldBuffer);
       try {
-        byteBufferFieldSetter.invoke(this.buffer, byteBuffer);
+        ((BufferBuilderAccessor) this.buffer).setByteBuffer(byteBuffer);
       } catch (Throwable throwable) {
         throwable.printStackTrace();
       }
@@ -242,23 +210,16 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
   /**
    * {@inheritDoc}
    */
-  public VertexFormat getFormat() {
-    return this.vertexFormat;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   public Matrix4f getWorldContext() {
-    return new Matrix4f(this.worldContext);
+    return mathFactory.getMatrix4f(this.worldContext);
   }
 
   /**
    * {@inheritDoc}
    */
   public VertexBuffer setWorldContext(Matrix4f matrix) {
-    if (matrix == null) matrix = new Matrix4f();
-    this.worldContext = new Matrix4f(matrix);
+    if (matrix == null) matrix = mathFactory.getMatrix4f();
+    this.worldContext = mathFactory.getMatrix4f(matrix);
     return this;
   }
 
@@ -266,8 +227,8 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    * {@inheritDoc}
    */
   public VertexBuffer setNormalContext(Matrix3f normalContext) {
-    if (normalContext == null) normalContext = new Matrix3f();
-    this.normalContext = new Matrix3f(normalContext);
+    if (normalContext == null) normalContext = mathFactory.getMatrix3f();
+    this.normalContext = mathFactory.getMatrix3f(normalContext);
     return this;
   }
 
@@ -275,7 +236,7 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    * {@inheritDoc}
    */
   public Matrix3f getNormalContext() {
-    return new Matrix3f(normalContext);
+    return mathFactory.getMatrix3f(normalContext);
   }
 
   /**
@@ -283,6 +244,10 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    */
   public AdvancedVertexBuffer advanced() {
     return this;
+  }
+
+  public MatrixStack getMatrixStack() {
+    return this.matrixStack;
   }
 
   /**
@@ -312,6 +277,10 @@ public class VertexBufferImpl implements AdvancedVertexBuffer, VertexBuffer {
    */
   public int getVertexCount() {
     return this.vertexCount;
+  }
+
+  public RenderType getRenderType() {
+    return this.renderType;
   }
 
 }

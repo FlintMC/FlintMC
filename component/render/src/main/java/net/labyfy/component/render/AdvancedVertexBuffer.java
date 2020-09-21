@@ -17,29 +17,29 @@ public interface AdvancedVertexBuffer {
   /**
    * Pushes floats to the current vertex and checks for the existence of the {@link VertexFormatElement} defined by name.
    *
-   * @param name   name of the {@link VertexFormatElement}
-   * @param floats data to push
+   * @param vertexFormatElementType type of the {@link VertexFormatElement}
+   * @param floats                  data to push
    * @return this
    */
-  AdvancedVertexBuffer pushFloats(String name, float... floats);
+  AdvancedVertexBuffer pushFloats(VertexFormatElementType vertexFormatElementType, float... floats);
 
   /**
    * Pushes bytes to the current vertex and checks for the existence of the {@link VertexFormatElement} defined by name.
    *
-   * @param name  name of the {@link VertexFormatElement}
-   * @param bytes data to push
+   * @param vertexFormatElementType type of the {@link VertexFormatElement}
+   * @param bytes                   data to push
    * @return this
    */
-  AdvancedVertexBuffer pushBytes(String name, byte... bytes);
+  AdvancedVertexBuffer pushBytes(VertexFormatElementType vertexFormatElementType, byte... bytes);
 
   /**
    * Pushes shorts to the current vertex and checks for the existence of the {@link VertexFormatElement} defined by name.
    *
-   * @param name   name of the {@link VertexFormatElement}
-   * @param shorts data to push
+   * @param vertexFormatElementType type of the {@link VertexFormatElement}
+   * @param shorts                  data to push
    * @return this
    */
-  AdvancedVertexBuffer pushShorts(String name, short... shorts);
+  AdvancedVertexBuffer pushShorts(VertexFormatElementType vertexFormatElementType, short... shorts);
 
   /**
    * Increment the vertex count by count.
@@ -62,5 +62,7 @@ public interface AdvancedVertexBuffer {
   ByteBuffer getByteBuffer();
 
   AdvancedVertexBuffer setByteBuffer(ByteBuffer byteBuffer);
+
+  MatrixStack getMatrixStack();
 
 }

@@ -3,11 +3,11 @@ package net.labyfy.internal.component.render;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.render.MatrixStack;
 import net.labyfy.component.render.Vertex;
 import net.labyfy.component.render.VertexBuffer;
 import net.labyfy.component.render.VertexTriangle;
 
+import java.awt.*;
 import java.util.Arrays;
 
 @Implement(VertexTriangle.class)
@@ -32,14 +32,23 @@ public class VertexTriangleImpl implements VertexTriangle {
   /**
    * {@inheritDoc}
    */
-  public VertexTriangle render(MatrixStack matrixStack, VertexBuffer vertexBuffer) {
-    matrixStack
-        .push()
-        .scale(1, -1, -1);
-    for (Vertex vertex : this.vertices) {
-      vertex.render(matrixStack, vertexBuffer);
+  public VertexTriangle render(VertexBuffer vertexBuffer) {
+    for (int i = 0; i < 3; i++)
+      this.vertices[i].render(vertexBuffer);
+    return this;
+  }
+
+  public VertexTriangle setLightmapUV(int lightmapUV) {
+    for (int i = 0; i < 3; i++) {
+      vertices[i].setLightmapUV(lightmapUV);
     }
-    matrixStack.pop();
+    return this;
+  }
+
+  public VertexTriangle setColor(Color color) {
+    for (int i = 0; i < 3; i++) {
+      vertices[i].setColor(color);
+    }
     return this;
   }
 
