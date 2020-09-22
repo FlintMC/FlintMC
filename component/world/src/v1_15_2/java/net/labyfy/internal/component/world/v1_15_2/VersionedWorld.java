@@ -6,9 +6,11 @@ import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
 import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.util.Dimension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Random;
 
@@ -262,6 +264,11 @@ public class VersionedWorld implements World {
     );
   }
 
+  @Override
+  public Dimension getDimension() {
+    return this.fromMinecraftDimension(Minecraft.getInstance().world.getDimension().getType());
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -280,5 +287,34 @@ public class VersionedWorld implements World {
     BlockPos blockPos = (BlockPos) handle;
 
     return this.blockPositionFactory.create(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftDimension(Dimension dimension) {
+    return DimensionType.getById(dimension.getId());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Dimension fromMinecraftDimension(Object handle) {
+    if (!(handle instanceof DimensionType)) return null;
+
+    DimensionType dimensionType = (DimensionType) handle;
+
+    switch (dimensionType.getId()) {
+      case -1:
+        return Dimension.NETHER;
+      case 0:
+        return Dimension.OVERWORLD;
+      case 1:
+        return Dimension.THE_END;
+      default:
+        throw new IllegalStateException("Unexpected value: " + dimensionType.getId());
+    }
   }
 }

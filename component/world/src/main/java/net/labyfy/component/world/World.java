@@ -4,6 +4,7 @@ import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
 import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.util.Dimension;
 
 import java.util.Random;
 
@@ -195,6 +196,13 @@ public interface World {
   int getNeighborAwareLightSubtracted(BlockPosition position, int amount);
 
   /**
+   * Retrieves the dimension of the world.
+   *
+   * @return The world dimension.
+   */
+  Dimension getDimension();
+
+  /**
    * Creates a new Minecraft block pos by using the given {@link BlockPosition} as the base.
    *
    * @param position The non-null {@link BlockPosition}.
@@ -209,5 +217,22 @@ public interface World {
    * @return The new {@link BlockPosition} or {@code null} if the given Minecraft block pos was invalid.
    */
   BlockPosition fromMinecraftBlockPos(Object handle);
+
+  /**
+   * Creates a new Minecraft dimension type by using the given {@link Dimension} as the base.
+   *
+   * @param dimension The non-null {@link Dimension}.
+   * @return The new Minecraft dimension type or {@code null} if the given {@link Dimension} was invalid.
+   */
+  Object toMinecraftDimension(Dimension dimension);
+
+  /**
+   * Creates a new {@link Dimension} by using the given Minecraft dimension type as the base.
+   *
+   * @param handle The non-null minecraft dimension type.
+   * @return The new {@link Dimension} or {@code null} if the given {@link Dimension} was invalid.
+   * @throws IllegalStateException When an unexpected value is received.
+   */
+  Dimension fromMinecraftDimension(Object handle);
 
 }
