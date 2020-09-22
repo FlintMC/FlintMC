@@ -17,10 +17,10 @@ import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 
 /**
- * 1.15.2 implementation of {@link ScoreboardMapper}.
+ * 1.16.3 implementation of {@link ScoreboardMapper}.
  */
 @Singleton
-@Implement(value = ScoreboardMapper.class, version = "1.15.2")
+@Implement(value = ScoreboardMapper.class, version = "1.16.3")
 public class VersionedScoreboardMapper implements ScoreboardMapper {
 
   private final Scoreboard scoreboard;

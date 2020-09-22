@@ -21,10 +21,10 @@ import net.minecraft.util.text.ITextComponent;
 import java.util.*;
 
 /**
- * 1.15.2 implementation of {@link Scoreboard}
+ * 1.16.3 implementation of {@link Scoreboard}
  */
 @Singleton
-@Implement(value = Scoreboard.class, version = "1.15.2")
+@Implement(value = Scoreboard.class, version = "1.16.3")
 public class VersionedScoreboard implements Scoreboard {
 
   private final ScoreboardMapper scoreboardMapper;

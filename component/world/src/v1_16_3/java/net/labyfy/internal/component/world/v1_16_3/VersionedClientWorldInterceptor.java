@@ -14,7 +14,7 @@ import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.entity.Entity;
 
 /**
- * 1.15.2 implementation of the client world interceptor
+ * 1.16.3 implementation of the client world interceptor
  */
 @Singleton
 @AutoLoad

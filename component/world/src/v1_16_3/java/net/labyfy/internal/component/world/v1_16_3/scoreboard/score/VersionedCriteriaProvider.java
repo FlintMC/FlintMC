@@ -7,10 +7,10 @@ import net.labyfy.component.world.scoreboad.score.Criteria;
 import net.labyfy.component.world.scoreboad.type.RenderType;
 
 /**
- * 1.15.2 implementation of {@link Criteria.Provider}
+ * 1.16.3 implementation of {@link Criteria.Provider}
  */
 @Singleton
-@Implement(value = Criteria.Provider.class, version = "1.15.2")
+@Implement(value = Criteria.Provider.class, version = "1.16.3")
 public class VersionedCriteriaProvider implements Criteria.Provider {
 
   private final VersionedCriteria.Factory criteriaFactory;

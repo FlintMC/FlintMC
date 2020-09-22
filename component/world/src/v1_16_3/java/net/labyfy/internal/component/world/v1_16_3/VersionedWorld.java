@@ -16,7 +16,7 @@ import net.minecraft.world.DimensionType;
 import java.util.Random;
 
 /**
- * 1.15.2 implementation of {@link World}.
+ * 1.16.3 implementation of {@link World}.
  */
 public class VersionedWorld implements World {
 

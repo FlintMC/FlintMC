@@ -8,9 +8,9 @@ import net.labyfy.component.world.scoreboad.score.Objective;
 import net.labyfy.component.world.scoreboad.score.Score;
 
 /**
- * 1.15.2 implementation of {@link Score}
+ * 1.16.3 implementation of {@link Score}
  */
-@Implement(value = Score.class, version = "1.15.2")
+@Implement(value = Score.class, version = "1.16.3")
 public class VersionedScore implements Score {
 
   private final Scoreboard scoreboard;

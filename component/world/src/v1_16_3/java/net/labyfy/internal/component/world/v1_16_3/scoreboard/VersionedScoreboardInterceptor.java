@@ -13,7 +13,7 @@ import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 
 /**
- * 1.15.2 implementation of the scoreboard interceptor.
+ * 1.16.3 implementation of the scoreboard interceptor.
  */
 @Singleton
 @AutoLoad

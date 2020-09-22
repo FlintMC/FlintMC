@@ -10,9 +10,9 @@ import net.labyfy.component.world.scoreboad.score.Objective;
 import net.labyfy.component.world.scoreboad.type.RenderType;
 
 /**
- * 1.15.2 implementation of {@link Objective}.
+ * 1.16.3 implementation of {@link Objective}.
  */
-@Implement(value = Objective.class, version = "1.15.2")
+@Implement(value = Objective.class, version = "1.16.3")
 public class VersionedObjective implements Objective {
 
   private final Scoreboard scoreboard;

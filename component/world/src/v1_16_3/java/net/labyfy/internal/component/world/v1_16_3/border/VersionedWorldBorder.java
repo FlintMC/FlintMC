@@ -8,10 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.border.BorderStatus;
 
 /**
- * 1.15.2 implementation of {@link WorldBorder}.
+ * 1.16.3 implementation of {@link WorldBorder}.
  */
 @Singleton
-@Implement(value = WorldBorder.class, version = "1.15.2")
+@Implement(value = WorldBorder.class, version = "1.16.3")
 public class VersionedWorldBorder implements WorldBorder {
 
   /**

@@ -10,10 +10,10 @@ import net.labyfy.component.world.scoreboad.score.Objective;
 import net.labyfy.component.world.scoreboad.type.RenderType;
 
 /**
- * 1.15.2 implementation of {@link Objective.Provider}
+ * 1.16.3 implementation of {@link Objective.Provider}
  */
 @Singleton
-@Implement(value = Objective.Provider.class, version = "1.15.2")
+@Implement(value = Objective.Provider.class, version = "1.16.3")
 public class VersionedObjectiveProvider implements Objective.Provider {
 
   private final Objective.Factory objectiveFactory;

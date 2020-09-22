@@ -8,10 +8,10 @@ import net.labyfy.component.world.scoreboad.score.Objective;
 import net.labyfy.component.world.scoreboad.score.Score;
 
 /**
- * 1.15.2 implementation of {@link Score.Provider}.
+ * 1.16.3 implementation of {@link Score.Provider}.
  */
 @Singleton
-@Implement(value = Score.Provider.class, version = "1.15.2")
+@Implement(value = Score.Provider.class, version = "1.16.3")
 public class VersionedScoreProvider implements Score.Provider {
 
   private final Scoreboard scoreboard;

@@ -8,10 +8,10 @@ import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.scoreboad.score.PlayerTeam;
 
 /**
- * 1.15.2 implementation of {@link PlayerTeam.Provider}
+ * 1.16.3 implementation of {@link PlayerTeam.Provider}
  */
 @Singleton
-@Implement(value = PlayerTeam.Provider.class, version = "1.15.2")
+@Implement(value = PlayerTeam.Provider.class, version = "1.16.3")
 public class VersionedPlayerTeamProvider implements PlayerTeam.Provider {
 
   private final PlayerTeam.Factory playerTeamFactory;

@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * 1.15.2 implementation of {@link ClientWorld}
+ * 1.16.3 implementation of {@link ClientWorld}
  */
 @Singleton
-@Implement(value = ClientWorld.class, version = "1.15.2")
+@Implement(value = ClientWorld.class, version = "1.16.3")
 public class VersionedClientWorld extends VersionedWorld implements ClientWorld {
 
   private final List<Player> players;

@@ -15,9 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Robby
+ * 1.16.3 implementation of {@link PlayerTeam}
  */
-@Implement(value = PlayerTeam.class, version = "1.15.2")
+@Implement(value = PlayerTeam.class, version = "1.16.3")
 public class VersionedPlayerTeam implements PlayerTeam {
 
   private final Set<String> members = new HashSet<>();
