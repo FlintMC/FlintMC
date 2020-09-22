@@ -49,13 +49,6 @@ public interface ClientWorld extends World {
   int getPlayerCount();
 
   /**
-   * Retrieves the time of this world.
-   *
-   * @return The time of this world.
-   */
-  long getTime();
-
-  /**
    * Retrieves the scoreboard of this world.
    *
    * @return The scoreboard of this world.

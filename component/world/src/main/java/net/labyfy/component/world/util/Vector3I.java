@@ -1,8 +1,5 @@
 package net.labyfy.component.world.util;
 
-import com.google.inject.assistedinject.Assisted;
-import net.labyfy.component.inject.assisted.AssistedFactory;
-
 /**
  * Represents a three-dimensional vector.
  */
@@ -85,37 +82,5 @@ public interface Vector3I extends Comparable<Vector3I> {
    * @return The calculated distance between three points.
    */
   int manhattanDistance(Vector3I vector);
-
-  /**
-   * A factory class for {@link Vector3I}
-   */
-  @AssistedFactory(Vector3I.class)
-  interface Factory {
-
-    /**
-     * Creates a new {@link Vector3I} with the given coordinates.
-     *
-     * @param x The X coordinate.
-     * @param y The Y coordinate.
-     * @param z The Z coordinate.
-     * @return A created vector.
-     */
-    Vector3I create(
-            @Assisted("x") int x,
-            @Assisted("y") int y,
-            @Assisted("z") int z
-    );
-
-    /**
-     * Creates a new {@link Vector3I} with the given vector.
-     *
-     * @param vector The vector for the coordinates.
-     * @return A created vector.
-     */
-    Vector3I create(
-            @Assisted("vector") Vector3I vector
-    );
-
-  }
 
 }

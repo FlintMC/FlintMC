@@ -1,33 +1,23 @@
 package net.labyfy.internal.component.world.util;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.world.util.Vector3I;
 
 /**
  * Default implementation of {@link Vector3I}.
  */
-@Implement(Vector3I.class)
 public class DefaultVector3I implements Vector3I {
 
-  private int x;
-  private int y;
-  private int z;
+  private final int x;
+  private final int y;
+  private final int z;
 
-  @AssistedInject
-  private DefaultVector3I(
-          @Assisted("x") int x,
-          @Assisted("y") int y,
-          @Assisted("z") int z
-  ) {
+  protected DefaultVector3I(int x, int y, int z) {
     this.x = x;
     this.y = y;
     this.z = z;
   }
 
-  @AssistedInject
-  private DefaultVector3I(@Assisted("vector") Vector3I vector) {
+  protected DefaultVector3I(Vector3I vector) {
     this(vector.getX(), vector.getY(), vector.getZ());
   }
 

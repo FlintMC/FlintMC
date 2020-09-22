@@ -1,10 +1,14 @@
 package net.labyfy.component.world.util;
 
+import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.inject.assisted.AssistedFactory;
+
 /**
  * Represents the Minecraft BlockPos.
  */
 public interface BlockPosition extends Vector3I {
 
+  @AssistedFactory(BlockPosition.class)
   interface Factory {
 
     /**
@@ -15,7 +19,11 @@ public interface BlockPosition extends Vector3I {
      * @param z The Z coordinate.
      * @return A created block position.
      */
-    BlockPosition create(int x, int y, int z);
+    BlockPosition create(
+            @Assisted("x") int x,
+            @Assisted("y") int y,
+            @Assisted("z") int z
+    );
 
   }
 

@@ -24,8 +24,10 @@ public class VersionedClientWorldInterceptor {
   private final ClientWorld clientWorld;
 
   @Inject
-  private VersionedClientWorldInterceptor
-          (ClientPlayer clientPlayer, ClientWorld clientWorld) {
+  private VersionedClientWorldInterceptor(
+          ClientPlayer clientPlayer,
+          ClientWorld clientWorld
+  ) {
     this.clientPlayer = clientPlayer;
     this.clientWorld = clientWorld;
   }
@@ -52,7 +54,7 @@ public class VersionedClientWorldInterceptor {
 
   @Hook(
           className = "net.minecraft.client.world.ClientWorld",
-          methodName = "removePlayer",
+          methodName = "removeEntity",
           parameters = {
                   @Type(reference = Entity.class)
           }

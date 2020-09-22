@@ -12,7 +12,7 @@ import net.labyfy.component.world.scoreboad.type.RenderType;
 public interface ScoreboardMapper {
 
   /**
-   * Creates a new Minecraft component by using the given {@link PlayerTeam} as the base.
+   * Creates a new Minecraft player team by using the given {@link PlayerTeam} as the base.
    *
    * @param team The non-null {@link PlayerTeam}.
    * @return The new Minecraft player team or {@code null} if the given player team was invalid.

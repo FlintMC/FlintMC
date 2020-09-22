@@ -41,7 +41,7 @@ public class VersionedClientWorldInterceptor {
    *
    * @param args The parameters of the hooked method
    */
-  @Hook(
+/*  @Hook(
           executionTime = Hook.ExecutionTime.AFTER,
           className = "net.minecraft.client.world.ClientWorld",
           methodName = "addPlayer",
@@ -58,13 +58,13 @@ public class VersionedClientWorldInterceptor {
       this.clientWorld.addPlayer(this.factoryRemoteClientPlayer.create(playerEntity));
     }
   }
-
+*/
   /**
    * Appends to the {@link net.minecraft.client.world.ClientWorld#removeEntity(Entity)} method.
    *
    * @param args The parameters of the hooked method
    */
-  @Hook(
+ /* @Hook(
           executionTime = Hook.ExecutionTime.AFTER,
           className = "net.minecraft.client.world.ClientWorld",
           methodName = "removeEntity",
@@ -86,5 +86,5 @@ public class VersionedClientWorldInterceptor {
       );
     }
   }
-
+*/
 }
