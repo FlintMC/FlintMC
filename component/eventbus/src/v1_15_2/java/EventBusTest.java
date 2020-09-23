@@ -52,36 +52,36 @@ public class EventBusTest {
   }
 
   @Hook(
-          executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
-          className = "net.minecraft.client.renderer.WorldRenderer",
-          methodName = "tick"
+      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
+      className = "net.minecraft.client.renderer.WorldRenderer",
+      methodName = "tick"
   )
   public void hookWorldRendererTick(Hook.ExecutionTime executionTime) {
     TickEvent event = new WorldRendererTick();
     callTick(executionTime, event);
   }
 
-  @Subscribe(priority = Byte.MAX_VALUE)
-  public void clientTick(TickEvent event) {
-    System.out.println("client tick");
+  @Subscribe(priority = Byte.MAX_VALUE, phase = Subscribe.Phase.PRE)
+  public void any(TickEvent event) {
+    System.out.println("any " + event.getType());
   }
 
-  @Subscribe(priority = Byte.MAX_VALUE)
-  @TickEvent.TickPhase
-  public void timeBasedTick(TickEvent event) {
-    System.out.println("Pre client tick.");
+  @Subscribe(priority = Byte.MAX_VALUE, phase = Subscribe.Phase.ANY)
+  @TickEvent.TickPhase(type = TickEvent.Type.CLIENT)
+  public void client(TickEvent event) {
+    System.out.println("client " + event.getType());
   }
 
   @Subscribe(phase = Subscribe.Phase.POST)
   @TickEvent.TickPhase(type = TickEvent.Type.RENDER)
-  public void postRenderTick(TickEvent event) {
-    System.out.println("Post tick renderer");
+  public void render(TickEvent event) {
+    System.out.println("render " + event.getType());
   }
 
   @Subscribe
   @TickEvent.TickPhase(type = TickEvent.Type.WORLD_RENDERER)
-  public void preWorldRenderer(TickEvent event) {
-    System.out.println("Pre tick world renderer");
+  public void worldRender(TickEvent event) {
+    System.out.println("world renderer " + event.getType());
   }
 
 /*

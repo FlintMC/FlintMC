@@ -1,9 +1,8 @@
 package net.labyfy.component.eventbus.method;
 
-import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.eventbus.event.Subscribe;
-import net.labyfy.component.inject.assisted.AssistedFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
@@ -14,13 +13,17 @@ public class SubscribeMethod {
   private final boolean asynchronously;
   private final byte priority;
   private final Subscribe.Phase phase;
+  private final Object instance;
   private final Method eventMethod;
+  private final Annotation extraAnnotation;
 
-  public SubscribeMethod(boolean asynchronously, byte priority, Subscribe.Phase phase, Method eventMethod) {
+  public SubscribeMethod(boolean asynchronously, byte priority, Subscribe.Phase phase, Object instance, Method eventMethod, Annotation extraAnnotation) {
     this.asynchronously = asynchronously;
     this.priority = priority;
     this.phase = phase;
+    this.instance = instance;
     this.eventMethod = eventMethod;
+    this.extraAnnotation = extraAnnotation;
   }
 
   /**
@@ -28,7 +31,7 @@ public class SubscribeMethod {
    *
    * @return {@code true} if the subscribed method asynchronous, otherwise {@code false}.
    */
-  public boolean asynchronously() {
+  public boolean isAsynchronously() {
     return this.asynchronously;
   }
 
@@ -41,6 +44,10 @@ public class SubscribeMethod {
     return this.priority;
   }
 
+  public Object getInstance() {
+    return this.instance;
+  }
+
   /**
    * Retrieves the event method.
    *
@@ -51,7 +58,11 @@ public class SubscribeMethod {
   }
 
   public Subscribe.Phase getPhase() {
-    return phase;
+    return this.phase;
+  }
+
+  public Annotation getExtraAnnotation() {
+    return this.extraAnnotation;
   }
 
   /**
@@ -62,5 +73,4 @@ public class SubscribeMethod {
   public Class<?> getEventClass() {
     return this.getEventMethod().getParameterTypes()[0];
   }
-
 }

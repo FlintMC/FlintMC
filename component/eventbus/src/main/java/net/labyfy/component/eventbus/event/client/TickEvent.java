@@ -1,5 +1,7 @@
 package net.labyfy.component.eventbus.event.client;
 
+import net.labyfy.component.eventbus.event.filter.EventGroup;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,6 +21,7 @@ public abstract class TickEvent {
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
+  @EventGroup(groupEvent = TickEvent.class)
   public @interface TickPhase {
 
     Type type() default Type.CLIENT;

@@ -31,11 +31,11 @@ public @interface Subscribe {
    */
   byte priority() default 0;
 
-  Phase phase() default Phase.NONE;
+  Phase phase() default Phase.PRE;
 
   enum Phase {
 
-    NONE,
+    ANY,
     PRE,
     POST
 

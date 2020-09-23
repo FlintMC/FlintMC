@@ -3,42 +3,46 @@ package net.labyfy.internal.component.eventbus;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
-import com.google.inject.Key;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.Subscribe;
+import net.labyfy.component.eventbus.event.filter.EventFilter;
+import net.labyfy.component.eventbus.event.filter.EventGroup;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
-import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-import org.apache.groovy.util.Maps;
 
+import javax.inject.Named;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Singleton
 @Service(value = Subscribe.class, priority = -10000)
 @Implement(EventBus.class)
 public class EventBusService implements ServiceHandler, EventBus {
 
-  private final InjectedInvocationHelper injectedInvocationHelper;
   private final Multimap<Class<?>, SubscribeMethod> registry;
   private final ExecutorService executorService;
-  private final EventGroupModuleService eventGroupModuleService;
+  private final EventFilter eventFilter;
+  private final AtomicReference<Injector> injectorReference;
 
   @Inject
-  public EventBusService(InjectedInvocationHelper injectedInvocationHelper, EventGroupModuleService eventGroupModuleService) {
-    this.injectedInvocationHelper = injectedInvocationHelper;
-    this.eventGroupModuleService = eventGroupModuleService;
+  public EventBusService(EventFilter eventFilter, @Named("injectorReference") AtomicReference injectorReference) {
+    this.eventFilter = eventFilter;
+    this.injectorReference = injectorReference;
     this.registry = HashMultimap.create();
     this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   }
@@ -48,18 +52,30 @@ public class EventBusService implements ServiceHandler, EventBus {
 
     LocatedIdentifiedAnnotation locatedIdentifiedAnnotation = property.getProperty().getLocatedIdentifiedAnnotation();
     Subscribe subscribe = locatedIdentifiedAnnotation.getAnnotation();
+    Method method = locatedIdentifiedAnnotation.getLocation();
+    Annotation extraAnnotation = null;
+
+    for (Annotation annotation : method.getDeclaredAnnotations()) {
+      if (annotation.annotationType().isAnnotationPresent(EventGroup.class)) {
+        extraAnnotation = annotation;
+        break;
+      }
+    }
+
+    if (method.getParameterCount() != 1) {
+      throw new IllegalArgumentException("Method " + method.getName() + " in " + method.getDeclaringClass().getName() + " doesn't have exactly one parameter");
+    }
 
     SubscribeMethod subscribeMethod = new SubscribeMethod(
-            subscribe.async(),
-            subscribe.priority(),
-            subscribe.phase(),
-            locatedIdentifiedAnnotation.getLocation()
+        subscribe.async(),
+        subscribe.priority(),
+        subscribe.phase(),
+        this.injectorReference.get().getInstance(method.getDeclaringClass()),
+        method,
+        extraAnnotation
     );
 
-    this.registry.put(
-            subscribeMethod.getEventClass(),
-            subscribeMethod
-    );
+    this.registry.put(subscribeMethod.getEventClass(), subscribeMethod);
   }
 
   @Override
@@ -72,65 +88,46 @@ public class EventBusService implements ServiceHandler, EventBus {
     return eventFuture;
   }
 
-  @Override
-  public <E> CompletableFuture<E> fire(E event, Subscribe.Phase phase, Map<Key<?>, Object> customParameters) {
-    if (event == null) throw new NullPointerException("An error is occurred because the event is null");
-    CompletableFuture<E> eventFuture = new CompletableFuture<>();
+  private List<SubscribeMethod> findMethods(Class<?> eventClass) {
+    // TODO optimize?
 
-    this.fireEvent(event, phase, eventFuture, customParameters);
+    List<SubscribeMethod> methods = new ArrayList<>();
+    Class<?> currentClass = eventClass;
 
-    return eventFuture;
+    do {
+      methods.addAll(this.registry.get(currentClass));
+    } while ((currentClass = currentClass.getSuperclass()) != Object.class);
+
+    methods.sort(Comparator.comparingInt(SubscribeMethod::getPriority));
+
+    return methods;
   }
-
 
   private <E> void fireEvent(E event, Subscribe.Phase phase, CompletableFuture<E> eventFuture) {
-    this.fireEvent(event, phase, eventFuture, Collections.emptyMap());
-  }
-
-
-  private <E> void fireEvent(E event, Subscribe.Phase phase, CompletableFuture<E> eventFuture, Map<Key<?>, Object> customParameters) {
     if (event == null) throw new NullPointerException("An error is occurred because the event is null");
 
-    Map<Key<?>, Object> parameters = new HashMap<>(
-            Maps.of(
-                    Key.get(event.getClass()),
-                    event,
-                    Key.get(Object.class, Names.named("event")),
-                    event
-            )
-    );
-    parameters.putAll(customParameters);
+    List<SubscribeMethod> methods = this.findMethods(event.getClass());
 
-    List<SubscribeMethod> sortedList = new ArrayList<>(this.registry.get(event.getClass()));
-    sortedList.sort((o1, o2) -> o2.getPriority() - o1.getPriority());
+    for (SubscribeMethod method : methods) {
+      if ((method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase()) && this.eventFilter.matches(event, method)) {
 
-    // TODO: 23.09.2020 Optimize..
-    for (SubscribeMethod subscribeMethod : sortedList) {
-      if(phase == subscribeMethod.getPhase()) {
-        if (this.handleAnnotationLogic(subscribeMethod.getEventMethod(), event))
-          if (subscribeMethod.asynchronously()) {
-            this.executorService.execute(() -> {
-              eventFuture.complete(event);
-              try {
-                this.injectedInvocationHelper.invokeMethod(subscribeMethod.getEventMethod(), parameters);
-              } catch (InvocationTargetException | IllegalAccessException e) {
-                e.printStackTrace();
-              }
-            });
-          } else {
-            eventFuture.complete(event);
-            try {
-              this.injectedInvocationHelper.invokeMethod(subscribeMethod.getEventMethod(), parameters);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-              e.printStackTrace();
-            }
-          }
+        if (method.isAsynchronously()) {
+          this.executorService.execute(() -> this.fireLast(event, method, eventFuture));
+        } else {
+          this.fireLast(event, method, eventFuture);
+        }
+
       }
     }
   }
 
-  private boolean handleAnnotationLogic(Method method, Object event) {
-    return this.eventGroupModuleService.handleAnnotation(method, event);
+  private <E> void fireLast(E event, SubscribeMethod method, CompletableFuture<E> eventFuture) {
+    try {
+      method.getEventMethod().invoke(method.getInstance(), event);
+    } catch (InvocationTargetException | IllegalAccessException e) {
+      e.printStackTrace();
+    }
+    eventFuture.complete(event);
   }
 
 }
