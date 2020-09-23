@@ -97,3 +97,7 @@ findProject(':component:chat')?.name = 'chat'
 
 include 'component:player'
 findProject(':component:player')?.name = 'player'
+
+include 'component:transform:shadow'
+findProject(':component:transform:shadow')?.name = 'shadow'
+
