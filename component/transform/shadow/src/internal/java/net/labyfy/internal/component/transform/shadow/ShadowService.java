@@ -25,6 +25,7 @@ public class ShadowService implements ServiceHandler {
 
   private final Map<String, Property.Base> transforms = new HashMap<>();
 
+  @Override
   public void discover(Identifier.Base property) throws ServiceNotFoundException {
     transforms.put(property.getProperty().getLocatedIdentifiedAnnotation().<Shadow>getAnnotation().value(), property.getProperty());
   }
