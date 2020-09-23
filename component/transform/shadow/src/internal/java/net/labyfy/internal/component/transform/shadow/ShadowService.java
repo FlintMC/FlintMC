@@ -41,13 +41,13 @@ public class ShadowService implements ServiceHandler {
   }
 
   private void handleFieldSetters(Property.Base property, CtClass ctClass) throws CannotCompileException {
-    for (Property.Base fieldGetterProperty : property.getSubProperties(FieldSetter.class)) {
-      Method method = fieldGetterProperty.getLocatedIdentifiedAnnotation().getLocation();
-      FieldSetter fieldSetter = fieldGetterProperty.getLocatedIdentifiedAnnotation().getAnnotation();
+    for (Property.Base fieldSetterProperty : property.getSubProperties(FieldSetter.class)) {
+      Method method = fieldSetterProperty.getLocatedIdentifiedAnnotation().getLocation();
+      FieldSetter fieldSetter = fieldSetterProperty.getLocatedIdentifiedAnnotation().getAnnotation();
 
       Parameter[] parameters = method.getParameters();
       if (parameters.length != 1) {
-        throw new IllegalArgumentException("Getter " + method + " must not have arguments.");
+        throw new IllegalArgumentException("Setter " + method + " must have one arguments.");
       }
       if (method.getReturnType() != Void.TYPE) {
         throw new IllegalStateException("Return type for " + method + " must be void");
