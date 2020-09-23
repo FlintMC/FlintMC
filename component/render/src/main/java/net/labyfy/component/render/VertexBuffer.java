@@ -29,9 +29,7 @@ public interface VertexBuffer {
   /**
    * Sets the position of the current vertex.
    *
-   * @param x x position to set the current vertex to
-   * @param y y position to set the current vertex to
-   * @param z z position to set the current vertex to
+   * @param position position to set the current vertex to
    * @return this
    */
   VertexBuffer pos(Vector3f position);

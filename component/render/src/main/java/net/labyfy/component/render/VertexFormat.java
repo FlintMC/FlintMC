@@ -64,7 +64,7 @@ public interface VertexFormat {
   boolean hasElement(VertexFormatElementType vertexFormatElementType);
 
   /**
-   * @param name the name to search the format element from
+   * @param vertexFormatElementType the type to search the format element from
    * @return the vertex format element by name
    */
   VertexFormatElement getElement(VertexFormatElementType vertexFormatElementType);
@@ -78,7 +78,7 @@ public interface VertexFormat {
    * Every {@link VertexFormatElement} gets a byte offset in the context of a {@link VertexFormat}.
    * The byte offset is the index in the current already allocated vertex data where the data for the {@link VertexFormatElement} should be written at.
    *
-   * @param name the name of {@link VertexFormatElement} to look for
+   * @param vertexFormatElementType the type of {@link VertexFormatElement} to look for
    * @return the byte offset
    */
   int getByteOffset(VertexFormatElementType vertexFormatElementType);
