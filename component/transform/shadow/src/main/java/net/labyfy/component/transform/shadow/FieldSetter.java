@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * Example:
  * {@code private String test;}
  * can be modified with
- * {@code @FieldGetter void setTest(String test);}
+ * {@code @FieldSetter void setTest(String test);}
  *
  * @see Shadow
  * @see FieldGetter
