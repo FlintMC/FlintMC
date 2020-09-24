@@ -6,7 +6,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
- * Represents a subscribed method.
+ * A subscribed method in an {@link net.labyfy.component.eventbus.EventBus}.
  */
 public class SubscribeMethod {
 
@@ -57,9 +57,10 @@ public class SubscribeMethod {
   }
 
   /**
-   * Retrieves the priority of the method.
+   * Retrieves the priority of the method. The lower the value, the earlier the event will be called.
    *
    * @return The method priority.
+   * @see net.labyfy.component.eventbus.event.util.EventPriority
    */
   public byte getPriority() {
     return this.priority;

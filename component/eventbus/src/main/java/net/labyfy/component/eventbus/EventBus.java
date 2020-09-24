@@ -6,7 +6,9 @@ import net.labyfy.component.transform.hook.Hook;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Represents an event bus.
+ * The EventBus manages all methods with the {@link Subscribe} annotation in the project. The {@link
+ * net.labyfy.component.eventbus.event.filter.EventGroup} can be used to group events and filter them before the
+ * underlying method is being called.
  */
 public interface EventBus {
 
@@ -34,9 +36,9 @@ public interface EventBus {
   /**
    * Fires the given event to the bus.
    *
-   * @param event The event to fire.
+   * @param event         The event to fire.
    * @param executionTime The execution time of a hooked method.
-   * @param <E>   The type of the fired event.
+   * @param <E>           The type of the fired event.
    * @return A {@link CompletableFuture} representing the fired event.
    */
   default <E> CompletableFuture<E> fireEvent(E event, Hook.ExecutionTime executionTime) {

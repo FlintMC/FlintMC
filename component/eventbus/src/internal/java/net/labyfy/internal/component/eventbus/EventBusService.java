@@ -72,8 +72,11 @@ public class EventBusService implements ServiceHandler, EventBus {
       Class<? extends Annotation> type = annotation.annotationType();
       if (type.isAnnotationPresent(EventGroup.class) &&
           type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
+        if (groupAnnotation != null) {
+          throw new IllegalArgumentException("Cannot have multiple EventGroup annotations per @Subscribe method (found on " + method.getDeclaringClass().getName() + "#" + method.getName() + ")");
+        }
+
         groupAnnotation = annotation;
-        break;
       }
     }
 

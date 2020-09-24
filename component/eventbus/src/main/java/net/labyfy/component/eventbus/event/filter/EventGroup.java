@@ -9,7 +9,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Bounds a custom annotation to an event class.
+ * Bounds a custom annotation to an event class. Annotations that are annotated with this annotation can be used on a
+ * method that is annotated with {@link net.labyfy.component.eventbus.event.Subscribe} to filter the events that will be
+ * posted to the underlying method.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
@@ -18,9 +20,10 @@ import java.lang.annotation.Target;
 public @interface EventGroup {
 
   /**
-   * Retrieves the event class.
+   * Retrieves the event class which marks this group. Methods that shouldn't ignore this group, need to declare exactly
+   * one parameter that has this class as one of its superclasses.
    *
-   * @return An event class
+   * @return The non-null event class of this group
    */
   Class<?> groupEvent();
 

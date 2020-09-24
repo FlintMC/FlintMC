@@ -2,7 +2,6 @@ package net.labyfy.component.eventbus.event.entity;
 
 import com.google.inject.name.Named;
 import net.labyfy.component.eventbus.event.filter.EventGroup;
-import net.labyfy.component.eventbus.event.util.Dummy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -28,7 +27,7 @@ public abstract class EntityEvent {
   public @interface EntityFilter {
 
     @Named("filter")
-    Class<?> filter() default Dummy.class;
+    Class<?> filter();
 
   }
 
