@@ -60,6 +60,6 @@ public class VertexQuadImpl implements VertexQuad {
   public Vertex[] getVertices() {
     Vertex[] vertices1 = this.triangle1.getVertices();
     Vertex[] vertices2 = this.triangle2.getVertices();
-    return new Vertex[]{vertices1[0], vertices1[1], vertices1[2], vertices2[3]};
+    return new Vertex[]{vertices1[0], vertices1[1], vertices1[2], vertices2[2]};
   }
 }
