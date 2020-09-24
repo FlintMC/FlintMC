@@ -27,7 +27,7 @@ public interface EventBus {
    * @param phase The phase when the event is fired.
    * @param <E>   The type of the fired event.
    */
-  default <E> void fireEventAndOblivion(E event, Subscribe.Phase phase) {
+  default <E> void fireEventAndForget(E event, Subscribe.Phase phase) {
     this.fire(event, phase);
   }
 
@@ -57,15 +57,8 @@ public interface EventBus {
    * @param executionTime The execution time of a hooked method.
    * @param <E>           The type of the fired event.
    */
-  default <E> void fireEventAndForgot(E event, Hook.ExecutionTime executionTime) {
-    switch (executionTime) {
-      case BEFORE:
-        this.fire(event, Subscribe.Phase.PRE);
-        break;
-      case AFTER:
-        this.fire(event, Subscribe.Phase.POST);
-        break;
-    }
+  default <E> void fireEventAndForget(E event, Hook.ExecutionTime executionTime) {
+    this.fireEvent(event, executionTime);
   }
 
 

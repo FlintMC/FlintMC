@@ -19,8 +19,9 @@ public class EventFilterMapping {
     Object required = this.annotationMethod.invoke(annotation);
     Object provided = this.eventMethod.invoke(event);
 
-    if (required instanceof Class && provided instanceof Class) {
-      return ((Class<?>) required).isAssignableFrom((Class<?>) provided);
+    if (required instanceof Class) {
+      Class<?> providedClass = provided instanceof Class ? (Class<?>) provided : provided.getClass();
+      return ((Class<?>) required).isAssignableFrom(providedClass);
     }
 
     return Objects.equals(required, provided);

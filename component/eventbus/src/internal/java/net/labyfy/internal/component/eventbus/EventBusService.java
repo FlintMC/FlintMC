@@ -22,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -59,27 +60,32 @@ public class EventBusService implements ServiceHandler, EventBus {
     LocatedIdentifiedAnnotation locatedIdentifiedAnnotation = property.getProperty().getLocatedIdentifiedAnnotation();
     Subscribe subscribe = locatedIdentifiedAnnotation.getAnnotation();
     Method method = locatedIdentifiedAnnotation.getLocation();
-    Annotation extraAnnotation = null;
-
-    for (Annotation annotation : method.getDeclaredAnnotations()) {
-      if (annotation.annotationType().isAnnotationPresent(EventGroup.class)) {
-        extraAnnotation = annotation;
-        break;
-      }
-    }
 
     if (method.getParameterCount() != 1) {
       throw new IllegalArgumentException("Method " + method.getName() + " in " + method.getDeclaringClass().getName() + " doesn't have exactly one parameter");
     }
 
+    Class<?> eventClass = method.getParameterTypes()[0];
+    Annotation groupAnnotation = null;
+
+    for (Annotation annotation : method.getDeclaredAnnotations()) {
+      Class<? extends Annotation> type = annotation.annotationType();
+      if (type.isAnnotationPresent(EventGroup.class) &&
+          type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
+        groupAnnotation = annotation;
+        break;
+      }
+    }
+
     // Initializes a new subscribe method
     SubscribeMethod subscribeMethod = new SubscribeMethod(
-            subscribe.async(),
-            subscribe.priority(),
-            subscribe.phase(),
-            this.injectorReference.get().getInstance(method.getDeclaringClass()),
-            method,
-            extraAnnotation
+        subscribe.async(),
+        subscribe.priority(),
+        subscribe.phase(),
+        this.injectorReference.get().getInstance(method.getDeclaringClass()),
+        method,
+        eventClass,
+        groupAnnotation
     );
 
     this.subscribeMethods.put(subscribeMethod.getEventClass(), subscribeMethod);
@@ -91,11 +97,8 @@ public class EventBusService implements ServiceHandler, EventBus {
   @Override
   public <E> CompletableFuture<E> fire(E event, Subscribe.Phase phase) {
     if (event == null) throw new NullPointerException("An error is occurred because the event is null");
-    CompletableFuture<E> eventFuture = new CompletableFuture<>();
 
-    this.fireEvent(event, phase, eventFuture);
-
-    return eventFuture;
+    return this.postEvent(event, phase);
   }
 
   /**
@@ -122,27 +125,46 @@ public class EventBusService implements ServiceHandler, EventBus {
   /**
    * Fires the given event.
    *
-   * @param event       The event to fire.
-   * @param phase       The phase when the event is fired.
-   * @param eventFuture The {@link CompletableFuture} that represents the fired event.
-   * @param <E>         The event type.
+   * @param event The event to fire.
+   * @param phase The phase when the event is fired.
+   * @param <E>   The event type.
    */
-  private <E> void fireEvent(E event, Subscribe.Phase phase, CompletableFuture<E> eventFuture) {
-    if (event == null) throw new NullPointerException("An error is occurred because the event is null");
-
+  private <E> CompletableFuture<E> postEvent(E event, Subscribe.Phase phase) {
     List<SubscribeMethod> methods = this.findMethods(event.getClass());
+    if (methods.isEmpty()) {
+      return CompletableFuture.completedFuture(event);
+    }
+
+    Collection<CompletableFuture<Void>> futures = new ArrayList<>();
 
     for (SubscribeMethod method : methods) {
-      if ((method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase()) && this.eventFilter.matches(event, method)) {
+      if ((method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase()) &&
+          this.eventFilter.matches(event, method)) {
+
+        CompletableFuture<Void> future = new CompletableFuture<>();
 
         if (method.isAsynchronously()) {
-          this.executorService.execute(() -> this.fireLast(event, method, eventFuture));
+          this.executorService.execute(() -> this.fireLast(event, method, future));
         } else {
-          this.fireLast(event, method, eventFuture);
+          this.fireLast(event, method, future);
         }
+
+        futures.add(future);
 
       }
     }
+
+    CompletableFuture<E> resultFuture = new CompletableFuture<>();
+    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+        .whenComplete((unused, throwable) -> {
+          if (throwable != null) {
+            resultFuture.completeExceptionally(throwable);
+            return;
+          }
+
+          resultFuture.complete(event);
+        });
+    return resultFuture;
   }
 
   /**
@@ -153,13 +175,13 @@ public class EventBusService implements ServiceHandler, EventBus {
    * @param eventFuture The {@link CompletableFuture} that represents the fired event.
    * @param <E>         The event type.
    */
-  private <E> void fireLast(E event, SubscribeMethod method, CompletableFuture<E> eventFuture) {
+  private <E> void fireLast(E event, SubscribeMethod method, CompletableFuture<Void> eventFuture) {
     try {
       method.getEventMethod().invoke(method.getInstance(), event);
     } catch (InvocationTargetException | IllegalAccessException e) {
       e.printStackTrace();
     }
-    eventFuture.complete(event);
+    eventFuture.complete(null);
   }
 
 }

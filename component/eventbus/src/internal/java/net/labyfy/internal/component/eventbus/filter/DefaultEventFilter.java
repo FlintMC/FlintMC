@@ -34,30 +34,31 @@ public class DefaultEventFilter implements EventFilter {
 
   @Override
   public boolean matches(Object event, SubscribeMethod method) {
-    if (method.getExtraAnnotation() == null) {
+    if (method.getGroupAnnotation() == null) {
       return true;
     }
 
-    if (!this.mappings.containsKey(event.getClass())) {
-      this.mappings.put(event.getClass(), this.createMappings(event.getClass(), method.getExtraAnnotation()));
-    }
-
-    EventFilterMapping[] mappings = this.mappings.get(event.getClass());
-
     try {
+
+      if (!this.mappings.containsKey(event.getClass())) {
+        this.mappings.put(event.getClass(), this.createMappings(event.getClass(), method.getGroupAnnotation()));
+      }
+
+      EventFilterMapping[] mappings = this.mappings.get(event.getClass());
+
       for (EventFilterMapping mapping : mappings) {
-        if (!mapping.matches(event, method.getExtraAnnotation())) {
+        if (!mapping.matches(event, method.getGroupAnnotation())) {
           return false;
         }
       }
       return true;
     } catch (InvocationTargetException | IllegalAccessException e) {
-      this.logger.error("Error while trying to match the event " + event.getClass().getName() + " with the annotation " + method.getExtraAnnotation().getClass().getName());
+      this.logger.error("Error while trying to match the event " + event.getClass().getName() + " with the annotation " + method.getGroupAnnotation().getClass().getName());
       return false;
     }
   }
 
-  private EventFilterMapping[] createMappings(Class<?> eventClass, Annotation annotation) {
+  private EventFilterMapping[] createMappings(Class<?> eventClass, Annotation annotation) throws InvocationTargetException, IllegalAccessException {
     Class<? extends Annotation> annotationClass = AnnotationCollector.getRealAnnotationClass(annotation);
 
     Collection<EventFilterMapping> mappings = new ArrayList<>();
@@ -71,19 +72,14 @@ public class DefaultEventFilter implements EventFilter {
           continue;
         }
 
-        if (named != null && eventMethod.isAnnotationPresent(Named.class)) {
-          if (named.value().equals(eventMethod.getAnnotation(Named.class).value())) {
-            mappings.add(new EventFilterMapping(annotationMethod, eventMethod));
-            break;
-          }
-
-          continue;
-        }
-
-        if (eventMethod.getReturnType().equals(annotationMethod.getReturnType())) {
+        if (
+            (named != null && eventMethod.isAnnotationPresent(Named.class) && named.value().equals(eventMethod.getAnnotation(Named.class).value())) ||
+                eventMethod.getReturnType().equals(annotationMethod.getReturnType())
+        ) {
           mappings.add(new EventFilterMapping(annotationMethod, eventMethod));
           break;
         }
+
       }
 
     }

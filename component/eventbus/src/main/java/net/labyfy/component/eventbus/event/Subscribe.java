@@ -1,6 +1,6 @@
 package net.labyfy.component.eventbus.event;
 
-import net.labyfy.component.eventbus.event.util.Priority;
+import net.labyfy.component.eventbus.event.util.EventPriority;
 import net.labyfy.component.stereotype.annotation.Transitive;
 import net.labyfy.component.stereotype.identifier.Identifier;
 
@@ -30,7 +30,7 @@ public @interface Subscribe {
    *
    * @return The the subscribed method priority.
    */
-  byte priority() default Priority.NORMAL;
+  byte priority() default EventPriority.NORMAL;
 
   /**
    * Retrieves the phase of the subscribed method.

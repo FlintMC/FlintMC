@@ -3,7 +3,7 @@ package net.labyfy.component.eventbus.event.util;
 /**
  * Represents any example priorities for events fired on listener methods.
  */
-public final class Priority {
+public final class EventPriority {
 
   public static final byte FIRST = Byte.MAX_VALUE;
   public static final byte EARLY = 64;

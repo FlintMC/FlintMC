@@ -15,7 +15,8 @@ public class SubscribeMethod {
   private final Subscribe.Phase phase;
   private final Object instance;
   private final Method eventMethod;
-  private final Annotation extraAnnotation;
+  private final Class<?> eventClass;
+  private final Annotation groupAnnotation;
 
   /**
    * Constructs a new subscribed method.
@@ -25,22 +26,25 @@ public class SubscribeMethod {
    * @param phase           The phase of the subscribed method.
    * @param instance        The owner of the event method.
    * @param eventMethod     The subscribed method.
-   * @param extraAnnotation Extra annotations for the subscribed method.
+   * @param eventClass      The class of the event which is subscribed by this method
+   * @param groupAnnotation Extra annotations for the subscribed method.
    */
   public SubscribeMethod(
-          boolean asynchronously,
-          byte priority,
-          Subscribe.Phase phase,
-          Object instance,
-          Method eventMethod,
-          Annotation extraAnnotation
+      boolean asynchronously,
+      byte priority,
+      Subscribe.Phase phase,
+      Object instance,
+      Method eventMethod,
+      Class<?> eventClass,
+      Annotation groupAnnotation
   ) {
     this.asynchronously = asynchronously;
     this.priority = priority;
     this.phase = phase;
     this.instance = instance;
     this.eventMethod = eventMethod;
-    this.extraAnnotation = extraAnnotation;
+    this.eventClass = eventClass;
+    this.groupAnnotation = groupAnnotation;
   }
 
   /**
@@ -89,12 +93,13 @@ public class SubscribeMethod {
   }
 
   /**
-   * Retrieves an extra annotation of the subscribed method.
+   * Retrieves an group annotation of the subscribed method.
    *
-   * @return An extra annotation of the subscribed method.
+   * @return The group annotation of the subscribed method or {@code null} if the method isn't annotated with an
+   * annotation that is annotated with the {@link net.labyfy.component.eventbus.event.filter.EventGroup} annotation.
    */
-  public Annotation getExtraAnnotation() {
-    return this.extraAnnotation;
+  public Annotation getGroupAnnotation() {
+    return this.groupAnnotation;
   }
 
   /**
@@ -103,6 +108,6 @@ public class SubscribeMethod {
    * @return The first parameter type of the event method.
    */
   public Class<?> getEventClass() {
-    return this.getEventMethod().getParameterTypes()[0];
+    return this.eventClass;
   }
 }

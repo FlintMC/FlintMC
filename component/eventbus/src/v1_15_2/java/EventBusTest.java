@@ -2,7 +2,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.eventbus.EventBus;
-import net.labyfy.component.eventbus.event.util.Priority;
 import net.labyfy.component.eventbus.event.Subscribe;
 import net.labyfy.component.eventbus.event.client.ClientTick;
 import net.labyfy.component.eventbus.event.client.RenderTick;
@@ -10,6 +9,7 @@ import net.labyfy.component.eventbus.event.client.TickEvent;
 import net.labyfy.component.eventbus.event.client.WorldRendererTick;
 import net.labyfy.component.eventbus.event.entity.EntityEvent;
 import net.labyfy.component.eventbus.event.entity.EntitySpawnEvent;
+import net.labyfy.component.eventbus.event.util.EventPriority;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
@@ -114,7 +114,7 @@ public class EventBusTest {
     System.out.println("world renderer " + event.getType());
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST, priority = Priority.FIRST, async = true)
+  @Subscribe(phase = Subscribe.Phase.POST, priority = EventPriority.FIRST, async = true)
   @TickEvent.TickPhase(type = TickEvent.Type.CLIENT)
   public void asyncClientTick(TickEvent event) {
     System.out.println("Called async");
@@ -140,14 +140,14 @@ public class EventBusTest {
     }
   }
 
-  @Subscribe(priority = Priority.EARLY, phase = Subscribe.Phase.POST)
+  @Subscribe(priority = EventPriority.EARLY, phase = Subscribe.Phase.POST)
   // Custom annotation for the EntityEvent group
   @EntityEvent.EntityFilter(filter = EndermanEntity.class)
   public void handleEndermanSpawn(EntitySpawnEvent event) {
     // Handle enderman spawn logic
   }
 
-  @Subscribe(priority = Priority.EARLY, phase = Subscribe.Phase.PRE)
+  @Subscribe(priority = EventPriority.EARLY, phase = Subscribe.Phase.PRE)
   // Custom annotation for the EntityEvent group
   @EntityEvent.EntityFilter(filter = VillagerEntity.class)
   public void handleVillagerSpawn(EntitySpawnEvent event) {

@@ -1,8 +1,8 @@
 package net.labyfy.component.eventbus.event.entity;
 
 import com.google.inject.name.Named;
-import net.labyfy.component.eventbus.event.util.Dummy;
 import net.labyfy.component.eventbus.event.filter.EventGroup;
+import net.labyfy.component.eventbus.event.util.Dummy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,13 +17,9 @@ public abstract class EntityEvent {
     this.entity = entity;
   }
 
-  public Object getEntity() {
-    return entity;
-  }
-
   @Named("filter")
-  public Class<?> getEntityClass() {
-    return entity.getClass();
+  public Object getEntity() {
+    return this.entity;
   }
 
   @Retention(RetentionPolicy.RUNTIME)
