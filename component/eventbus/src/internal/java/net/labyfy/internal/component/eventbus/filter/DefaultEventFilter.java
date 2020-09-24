@@ -17,6 +17,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Default implementation of the {@link EventFilter}.
+ */
 @Implement(EventFilter.class)
 public class DefaultEventFilter implements EventFilter {
 

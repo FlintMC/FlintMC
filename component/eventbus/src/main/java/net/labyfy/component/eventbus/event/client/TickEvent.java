@@ -1,5 +1,6 @@
 package net.labyfy.component.eventbus.event.client;
 
+import com.google.inject.name.Named;
 import net.labyfy.component.eventbus.event.filter.EventGroup;
 
 import java.lang.annotation.ElementType;
@@ -15,6 +16,7 @@ public abstract class TickEvent {
     this.type = type;
   }
 
+  @Named("type")
   public Type getType() {
     return type;
   }
@@ -24,6 +26,7 @@ public abstract class TickEvent {
   @EventGroup(groupEvent = TickEvent.class)
   public @interface TickPhase {
 
+    @Named("type")
     Type type() default Type.CLIENT;
 
   }

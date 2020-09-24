@@ -8,12 +8,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Bounds a custom annotation to an event class.
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target(ElementType.ANNOTATION_TYPE)
 @Identifier
 @Transitive
 public @interface EventGroup {
 
+  /**
+   * Retrieves the event class.
+   *
+   * @return An event class
+   */
   Class<?> groupEvent();
 
 }

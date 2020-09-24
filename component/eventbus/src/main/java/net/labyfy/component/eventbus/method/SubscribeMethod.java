@@ -17,7 +17,24 @@ public class SubscribeMethod {
   private final Method eventMethod;
   private final Annotation extraAnnotation;
 
-  public SubscribeMethod(boolean asynchronously, byte priority, Subscribe.Phase phase, Object instance, Method eventMethod, Annotation extraAnnotation) {
+  /**
+   * Constructs a new subscribed method.
+   *
+   * @param asynchronously  Whether the subscribed method is fired asynchronously.
+   * @param priority        The priority of the subscribed method.
+   * @param phase           The phase of the subscribed method.
+   * @param instance        The owner of the event method.
+   * @param eventMethod     The subscribed method.
+   * @param extraAnnotation Extra annotations for the subscribed method.
+   */
+  public SubscribeMethod(
+          boolean asynchronously,
+          byte priority,
+          Subscribe.Phase phase,
+          Object instance,
+          Method eventMethod,
+          Annotation extraAnnotation
+  ) {
     this.asynchronously = asynchronously;
     this.priority = priority;
     this.phase = phase;
@@ -44,6 +61,11 @@ public class SubscribeMethod {
     return this.priority;
   }
 
+  /**
+   * Retrieves the owner of the subscribed method.
+   *
+   * @return The owner of the subscribed method.
+   */
   public Object getInstance() {
     return this.instance;
   }
@@ -57,10 +79,20 @@ public class SubscribeMethod {
     return this.eventMethod;
   }
 
+  /**
+   * Retrieves the phase of the subscribed method.
+   *
+   * @return The phase of teh subscribed method.
+   */
   public Subscribe.Phase getPhase() {
     return this.phase;
   }
 
+  /**
+   * Retrieves an extra annotation of the subscribed method.
+   *
+   * @return An extra annotation of the subscribed method.
+   */
   public Annotation getExtraAnnotation() {
     return this.extraAnnotation;
   }

@@ -1,5 +1,6 @@
 package net.labyfy.component.eventbus.event;
 
+import net.labyfy.component.eventbus.event.util.Priority;
 import net.labyfy.component.stereotype.annotation.Transitive;
 import net.labyfy.component.stereotype.identifier.Identifier;
 
@@ -25,18 +26,35 @@ public @interface Subscribe {
   boolean async() default false;
 
   /**
-   * Retrieves the priority.
+   * Retrieves the priority of the subscribed method.
    *
-   * @return The priority.
+   * @return The the subscribed method priority.
    */
-  byte priority() default 0;
+  byte priority() default Priority.NORMAL;
 
-  Phase phase() default Phase.PRE;
+  /**
+   * Retrieves the phase of the subscribed method.
+   *
+   * @return The subscribed method phase.
+   */
+  Phase phase() default Phase.ANY;
 
+  /**
+   * An enumeration representing all available phases.
+   */
   enum Phase {
 
+    /**
+     * If the subscribed method has {@link #ANY} as phase, the events {@link #PRE} and {@link #POST} are fired.
+     */
     ANY,
+    /**
+     * Defines the fired event as pre/before.
+     */
     PRE,
+    /**
+     * Defines the fired event as post/after.
+     */
     POST
 
   }
