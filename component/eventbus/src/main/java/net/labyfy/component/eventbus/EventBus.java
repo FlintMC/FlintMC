@@ -18,7 +18,7 @@ public interface EventBus {
    * @param <E>   The type of the fired event.
    * @return The input event
    */
-  <E> E fire(E event, Subscribe.Phase phase);
+  <E> E fireEvent(E event, Subscribe.Phase phase);
 
   /**
    * Fires the given event to the bus.
@@ -31,9 +31,9 @@ public interface EventBus {
   default <E> E fireEvent(E event, Hook.ExecutionTime executionTime) {
     switch (executionTime) {
       case BEFORE:
-        return this.fire(event, Subscribe.Phase.PRE);
+        return this.fireEvent(event, Subscribe.Phase.PRE);
       case AFTER:
-        return this.fire(event, Subscribe.Phase.POST);
+        return this.fireEvent(event, Subscribe.Phase.POST);
       default:
         throw new IllegalStateException("Unexpected value: " + executionTime);
     }

@@ -24,13 +24,6 @@ import java.lang.annotation.Target;
 public @interface Subscribe {
 
   /**
-   * Whether the event is fired asynchronously into the bus.
-   *
-   * @return {@code true} if the event is fired asynchronously into the bus.
-   */
-  boolean async() default false;
-
-  /**
    * Retrieves the priority of the subscribed method.
    *
    * @return The the subscribed method priority.

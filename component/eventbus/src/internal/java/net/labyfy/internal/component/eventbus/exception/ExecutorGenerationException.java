@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.eventbus.execpetion;
+package net.labyfy.internal.component.eventbus.exception;
 
 import net.labyfy.component.eventbus.method.Executor;
 

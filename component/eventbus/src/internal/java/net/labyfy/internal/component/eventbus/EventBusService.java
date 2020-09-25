@@ -18,14 +18,13 @@ import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-import net.labyfy.internal.component.eventbus.execpetion.ExecutorGenerationException;
+import net.labyfy.internal.component.eventbus.exception.ExecutorGenerationException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -104,7 +103,7 @@ public class EventBusService implements ServiceHandler, EventBus {
    * {@inheritDoc}
    */
   @Override
-  public <E> E fire(E event, Subscribe.Phase phase) {
+  public <E> E fireEvent(E event, Subscribe.Phase phase) {
     if (event == null) throw new NullPointerException("An error is occurred because the event is null");
 
     this.postEvent(event, phase);
@@ -122,12 +121,23 @@ public class EventBusService implements ServiceHandler, EventBus {
     Class<?> currentClass = eventClass;
 
     do {
-      methods.addAll(this.subscribeMethods.get(currentClass));
+      this.copyMethods(currentClass, methods);
+      for (Class<?> implemented : eventClass.getInterfaces()) {
+        this.copyMethods(implemented, methods);
+      }
     } while ((currentClass = currentClass.getSuperclass()) != Object.class);
 
     methods.sort(Comparator.comparingInt(SubscribeMethod::getPriority));
 
     return methods;
+  }
+
+  private void copyMethods(Class<?> eventClass, List<SubscribeMethod> targetMethods) {
+    for (SubscribeMethod subscribeMethod : this.subscribeMethods.get(eventClass)) {
+      if (!targetMethods.contains(subscribeMethod)) {
+        targetMethods.add(subscribeMethod);
+      }
+    }
   }
 
   /**
@@ -158,7 +168,6 @@ public class EventBusService implements ServiceHandler, EventBus {
    *
    * @param event       The fired event.
    * @param method      The subscribed method.
-   * @param eventFuture The {@link CompletableFuture} that represents the fired event.
    * @param <E>         The event type.
    */
   private <E> void fireLast(E event, SubscribeMethod method) {
