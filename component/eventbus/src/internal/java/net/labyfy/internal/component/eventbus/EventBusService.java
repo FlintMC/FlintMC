@@ -10,6 +10,7 @@ import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.Subscribe;
 import net.labyfy.component.eventbus.event.filter.EventFilter;
 import net.labyfy.component.eventbus.event.filter.EventGroup;
+import net.labyfy.component.eventbus.method.Executor;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.stereotype.identifier.Identifier;
@@ -17,9 +18,10 @@ import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
+import net.labyfy.internal.component.eventbus.execpetion.ExecutorGenerationException;
+import net.labyfy.internal.component.eventbus.method.ASMExecutorFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +44,7 @@ public class EventBusService implements ServiceHandler, EventBus {
   private final ExecutorService executorService;
   private final EventFilter eventFilter;
   private final AtomicReference<Injector> injectorReference;
+  private final Executor.Factory factory;
 
   @Inject
   public EventBusService(EventFilter eventFilter, @Named("injectorReference") AtomicReference injectorReference) {
@@ -49,6 +52,7 @@ public class EventBusService implements ServiceHandler, EventBus {
     this.injectorReference = injectorReference;
     this.subscribeMethods = HashMultimap.create();
     this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    this.factory = new ASMExecutorFactory();
   }
 
   /**
@@ -71,7 +75,7 @@ public class EventBusService implements ServiceHandler, EventBus {
     for (Annotation annotation : method.getDeclaredAnnotations()) {
       Class<? extends Annotation> type = annotation.annotationType();
       if (type.isAnnotationPresent(EventGroup.class) &&
-          type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
+              type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
         if (groupAnnotation != null) {
           throw new IllegalArgumentException("Cannot have multiple EventGroup annotations per @Subscribe method (found on " + method.getDeclaringClass().getName() + "#" + method.getName() + ")");
         }
@@ -80,18 +84,27 @@ public class EventBusService implements ServiceHandler, EventBus {
       }
     }
 
+    Object instance = this.injectorReference.get().getInstance(method.getDeclaringClass());
+
+    Executor executor;
+
+    try {
+      executor = this.factory.create(instance, method);
+    } catch (Throwable throwable) {
+      throw new ExecutorGenerationException("Encountered an exception while creating an event subscriber for method \"" + method + "\"!", throwable);
+    }
     // Initializes a new subscribe method
     SubscribeMethod subscribeMethod = new SubscribeMethod(
-        subscribe.async(),
-        subscribe.priority(),
-        subscribe.phase(),
-        this.injectorReference.get().getInstance(method.getDeclaringClass()),
-        method,
-        eventClass,
-        groupAnnotation
+            subscribe.async(),
+            subscribe.priority(),
+            subscribe.phase(),
+            instance,
+            executor,
+            method,
+            groupAnnotation
     );
 
-    this.subscribeMethods.put(subscribeMethod.getEventClass(), subscribeMethod);
+    this.subscribeMethods.put(eventClass, subscribeMethod);
   }
 
   /**
@@ -111,8 +124,6 @@ public class EventBusService implements ServiceHandler, EventBus {
    * @return A collection with all subscribed method that listen to the given class.
    */
   private List<SubscribeMethod> findMethods(Class<?> eventClass) {
-    // TODO optimize?
-
     List<SubscribeMethod> methods = new ArrayList<>();
     Class<?> currentClass = eventClass;
 
@@ -142,7 +153,7 @@ public class EventBusService implements ServiceHandler, EventBus {
 
     for (SubscribeMethod method : methods) {
       if ((method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase()) &&
-          this.eventFilter.matches(event, method)) {
+              this.eventFilter.matches(event, method)) {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
@@ -159,14 +170,14 @@ public class EventBusService implements ServiceHandler, EventBus {
 
     CompletableFuture<E> resultFuture = new CompletableFuture<>();
     CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-        .whenComplete((unused, throwable) -> {
-          if (throwable != null) {
-            resultFuture.completeExceptionally(throwable);
-            return;
-          }
+            .whenComplete((unused, throwable) -> {
+              if (throwable != null) {
+                resultFuture.completeExceptionally(throwable);
+                return;
+              }
 
-          resultFuture.complete(event);
-        });
+              resultFuture.complete(event);
+            });
     return resultFuture;
   }
 
@@ -180,9 +191,9 @@ public class EventBusService implements ServiceHandler, EventBus {
    */
   private <E> void fireLast(E event, SubscribeMethod method, CompletableFuture<Void> eventFuture) {
     try {
-      method.getEventMethod().invoke(method.getInstance(), event);
-    } catch (InvocationTargetException | IllegalAccessException e) {
-      e.printStackTrace();
+      method.invoke(event);
+    } catch (Throwable throwable) {
+      throwable.printStackTrace();
     }
     eventFuture.complete(null);
   }

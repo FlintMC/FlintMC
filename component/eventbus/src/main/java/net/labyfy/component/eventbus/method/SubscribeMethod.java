@@ -14,8 +14,8 @@ public class SubscribeMethod {
   private final byte priority;
   private final Subscribe.Phase phase;
   private final Object instance;
+  private final Executor executor;
   private final Method eventMethod;
-  private final Class<?> eventClass;
   private final Annotation groupAnnotation;
 
   /**
@@ -25,25 +25,24 @@ public class SubscribeMethod {
    * @param priority        The priority of the subscribed method.
    * @param phase           The phase of the subscribed method.
    * @param instance        The owner of the event method.
+   * @param executor        The event executor.
    * @param eventMethod     The subscribed method.
-   * @param eventClass      The class of the event which is subscribed by this method
    * @param groupAnnotation Extra annotations for the subscribed method.
    */
   public SubscribeMethod(
-      boolean asynchronously,
-      byte priority,
-      Subscribe.Phase phase,
-      Object instance,
-      Method eventMethod,
-      Class<?> eventClass,
-      Annotation groupAnnotation
+          boolean asynchronously,
+          byte priority,
+          Subscribe.Phase phase,
+          Object instance, Executor executor,
+          Method eventMethod,
+          Annotation groupAnnotation
   ) {
     this.asynchronously = asynchronously;
     this.priority = priority;
     this.phase = phase;
     this.instance = instance;
+    this.executor = executor;
     this.eventMethod = eventMethod;
-    this.eventClass = eventClass;
     this.groupAnnotation = groupAnnotation;
   }
 
@@ -64,15 +63,6 @@ public class SubscribeMethod {
    */
   public byte getPriority() {
     return this.priority;
-  }
-
-  /**
-   * Retrieves the owner of the subscribed method.
-   *
-   * @return The owner of the subscribed method.
-   */
-  public Object getInstance() {
-    return this.instance;
   }
 
   /**
@@ -104,11 +94,14 @@ public class SubscribeMethod {
   }
 
   /**
-   * Retrieves the first parameter type of the event method.
+   * Invokes this event subscriber.
+   * Called by the bus when a new event is fired to this subscriber.
    *
-   * @return The first parameter type of the event method.
+   * @param event The event that was fired.
+   * @throws Throwable Any exception thrown during handling
    */
-  public Class<?> getEventClass() {
-    return this.eventClass;
+  public void invoke(Object event) throws Throwable {
+    this.executor.invoke(this.instance, event);
   }
+
 }
