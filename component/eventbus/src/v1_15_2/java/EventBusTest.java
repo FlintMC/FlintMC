@@ -114,12 +114,6 @@ public class EventBusTest {
     System.out.println("world renderer " + event.getType());
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST, priority = EventPriority.FIRST, async = true)
-  @TickEvent.TickPhase(type = TickEvent.Type.CLIENT)
-  public void asyncClientTick(TickEvent event) {
-    System.out.println("Called async");
-  }
-
   /*
    * The ugly and bullied method.
    */

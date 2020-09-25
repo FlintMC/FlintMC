@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
  */
 public class SubscribeMethod {
 
-  private final boolean asynchronously;
   private final byte priority;
   private final Subscribe.Phase phase;
   private final Object instance;
@@ -21,7 +20,6 @@ public class SubscribeMethod {
   /**
    * Constructs a new subscribed method.
    *
-   * @param asynchronously  Whether the subscribed method is fired asynchronously.
    * @param priority        The priority of the subscribed method.
    * @param phase           The phase of the subscribed method.
    * @param instance        The owner of the event method.
@@ -30,29 +28,18 @@ public class SubscribeMethod {
    * @param groupAnnotation Extra annotations for the subscribed method.
    */
   public SubscribeMethod(
-          boolean asynchronously,
-          byte priority,
-          Subscribe.Phase phase,
-          Object instance, Executor executor,
-          Method eventMethod,
-          Annotation groupAnnotation
+      byte priority,
+      Subscribe.Phase phase,
+      Object instance, Executor executor,
+      Method eventMethod,
+      Annotation groupAnnotation
   ) {
-    this.asynchronously = asynchronously;
     this.priority = priority;
     this.phase = phase;
     this.instance = instance;
     this.executor = executor;
     this.eventMethod = eventMethod;
     this.groupAnnotation = groupAnnotation;
-  }
-
-  /**
-   * Whether the subscribed method asynchronously.
-   *
-   * @return {@code true} if the subscribed method asynchronous, otherwise {@code false}.
-   */
-  public boolean isAsynchronously() {
-    return this.asynchronously;
   }
 
   /**
@@ -94,8 +81,7 @@ public class SubscribeMethod {
   }
 
   /**
-   * Invokes this event subscriber.
-   * Called by the bus when a new event is fired to this subscriber.
+   * Invokes this event subscriber. Called by the bus when a new event is fired to this subscriber.
    *
    * @param event The event that was fired.
    * @throws Throwable Any exception thrown during handling

@@ -24,7 +24,6 @@ import net.labyfy.internal.component.eventbus.method.ASMExecutorFactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -75,7 +74,7 @@ public class EventBusService implements ServiceHandler, EventBus {
     for (Annotation annotation : method.getDeclaredAnnotations()) {
       Class<? extends Annotation> type = annotation.annotationType();
       if (type.isAnnotationPresent(EventGroup.class) &&
-              type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
+          type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
         if (groupAnnotation != null) {
           throw new IllegalArgumentException("Cannot have multiple EventGroup annotations per @Subscribe method (found on " + method.getDeclaringClass().getName() + "#" + method.getName() + ")");
         }
@@ -95,13 +94,12 @@ public class EventBusService implements ServiceHandler, EventBus {
     }
     // Initializes a new subscribe method
     SubscribeMethod subscribeMethod = new SubscribeMethod(
-            subscribe.async(),
-            subscribe.priority(),
-            subscribe.phase(),
-            instance,
-            executor,
-            method,
-            groupAnnotation
+        subscribe.priority(),
+        subscribe.phase(),
+        instance,
+        executor,
+        method,
+        groupAnnotation
     );
 
     this.subscribeMethods.put(eventClass, subscribeMethod);
@@ -111,10 +109,11 @@ public class EventBusService implements ServiceHandler, EventBus {
    * {@inheritDoc}
    */
   @Override
-  public <E> CompletableFuture<E> fire(E event, Subscribe.Phase phase) {
+  public <E> E fire(E event, Subscribe.Phase phase) {
     if (event == null) throw new NullPointerException("An error is occurred because the event is null");
 
-    return this.postEvent(event, phase);
+    this.postEvent(event, phase);
+    return event;
   }
 
   /**
@@ -143,42 +142,20 @@ public class EventBusService implements ServiceHandler, EventBus {
    * @param phase The phase when the event is fired.
    * @param <E>   The event type.
    */
-  private <E> CompletableFuture<E> postEvent(E event, Subscribe.Phase phase) {
+  private <E> void postEvent(E event, Subscribe.Phase phase) {
     List<SubscribeMethod> methods = this.findMethods(event.getClass());
     if (methods.isEmpty()) {
-      return CompletableFuture.completedFuture(event);
+      return;
     }
-
-    Collection<CompletableFuture<Void>> futures = new ArrayList<>();
 
     for (SubscribeMethod method : methods) {
       if ((method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase()) &&
-              this.eventFilter.matches(event, method)) {
+          this.eventFilter.matches(event, method)) {
 
-        CompletableFuture<Void> future = new CompletableFuture<>();
-
-        if (method.isAsynchronously()) {
-          this.executorService.execute(() -> this.fireLast(event, method, future));
-        } else {
-          this.fireLast(event, method, future);
-        }
-
-        futures.add(future);
+        this.fireLast(event, method);
 
       }
     }
-
-    CompletableFuture<E> resultFuture = new CompletableFuture<>();
-    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-            .whenComplete((unused, throwable) -> {
-              if (throwable != null) {
-                resultFuture.completeExceptionally(throwable);
-                return;
-              }
-
-              resultFuture.complete(event);
-            });
-    return resultFuture;
   }
 
   /**
@@ -189,13 +166,12 @@ public class EventBusService implements ServiceHandler, EventBus {
    * @param eventFuture The {@link CompletableFuture} that represents the fired event.
    * @param <E>         The event type.
    */
-  private <E> void fireLast(E event, SubscribeMethod method, CompletableFuture<Void> eventFuture) {
+  private <E> void fireLast(E event, SubscribeMethod method) {
     try {
       method.invoke(event);
     } catch (Throwable throwable) {
       throwable.printStackTrace();
     }
-    eventFuture.complete(null);
   }
 
 }
