@@ -19,7 +19,6 @@ import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.eventbus.execpetion.ExecutorGenerationException;
-import net.labyfy.internal.component.eventbus.method.ASMExecutorFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -27,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -40,18 +37,16 @@ import java.util.concurrent.atomic.AtomicReference;
 public class EventBusService implements ServiceHandler, EventBus {
 
   private final Multimap<Class<?>, SubscribeMethod> subscribeMethods;
-  private final ExecutorService executorService;
   private final EventFilter eventFilter;
   private final AtomicReference<Injector> injectorReference;
   private final Executor.Factory factory;
 
   @Inject
-  public EventBusService(EventFilter eventFilter, @Named("injectorReference") AtomicReference injectorReference) {
+  public EventBusService(EventFilter eventFilter, @Named("injectorReference") AtomicReference injectorReference, Executor.Factory executorFactory) {
     this.eventFilter = eventFilter;
     this.injectorReference = injectorReference;
     this.subscribeMethods = HashMultimap.create();
-    this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    this.factory = new ASMExecutorFactory();
+    this.factory = executorFactory;
   }
 
   /**
