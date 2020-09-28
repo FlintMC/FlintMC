@@ -44,7 +44,7 @@ public interface SubscribeMethod {
    * annotated with any annotation that is annotated with the {@link net.labyfy.component.eventbus.event.filter.EventGroup}
    * annotation.
    */
-  Collection<Annotation> getGroupAnnotation();
+  Collection<Annotation> getGroupAnnotations();
 
   /**
    * Invokes this event subscriber. Called by the bus when a new event is fired to this subscriber.
@@ -72,12 +72,12 @@ public interface SubscribeMethod {
      * @return A created subscribed method.
      */
     SubscribeMethod create(
-            @Assisted("priority") byte priority,
-            @Assisted("phase") Subscribe.Phase phase,
-            @Assisted("instance") Object instance,
-            @Assisted("executor") Executor executor,
-            @Assisted("eventMethod") Method eventMethod,
-            @Assisted("groupAnnotation") Annotation groupAnnotation
+        @Assisted("priority") byte priority,
+        @Assisted("phase") Subscribe.Phase phase,
+        @Assisted("instance") Object instance,
+        @Assisted("executor") Executor executor,
+        @Assisted("eventMethod") Method eventMethod,
+        @Assisted("groupAnnotations") Collection<Annotation> groupAnnotation
     );
 
   }
