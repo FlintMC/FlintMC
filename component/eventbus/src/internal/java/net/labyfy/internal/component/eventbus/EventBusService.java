@@ -23,6 +23,7 @@ import net.labyfy.internal.component.eventbus.exception.ExecutorGenerationExcept
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -70,17 +71,13 @@ public class EventBusService implements ServiceHandler, EventBus {
     }
 
     Class<?> eventClass = method.getParameterTypes()[0];
-    Annotation groupAnnotation = null;
+    Collection<Annotation> groupAnnotations = new ArrayList<>();
 
     for (Annotation annotation : method.getDeclaredAnnotations()) {
       Class<? extends Annotation> type = annotation.annotationType();
       if (type.isAnnotationPresent(EventGroup.class) &&
-              type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
-        if (groupAnnotation != null) {
-          throw new IllegalArgumentException("Cannot have multiple EventGroup annotations per @Subscribe method (found on " + method.getDeclaringClass().getName() + "#" + method.getName() + ")");
-        }
-
-        groupAnnotation = annotation;
+          type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
+        groupAnnotations.add(annotation);
       }
     }
 
@@ -95,12 +92,12 @@ public class EventBusService implements ServiceHandler, EventBus {
     }
     // Initializes a new subscribe method
     SubscribeMethod subscribeMethod = this.subscribedMethodFactory.create(
-            subscribe.priority(),
-            subscribe.phase(),
-            instance,
-            executor,
-            method,
-            groupAnnotation
+        subscribe.priority(),
+        subscribe.phase(),
+        instance,
+        executor,
+        method,
+        groupAnnotations
     );
 
     this.subscribeMethods.put(eventClass, subscribeMethod);
@@ -162,7 +159,7 @@ public class EventBusService implements ServiceHandler, EventBus {
 
     for (SubscribeMethod method : methods) {
       if ((method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase()) &&
-              this.eventFilter.matches(event, method)) {
+          this.eventFilter.matches(event, method)) {
 
         this.fireLast(event, method);
 

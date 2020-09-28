@@ -10,6 +10,7 @@ import net.labyfy.component.inject.implement.Implement;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 /**
  * A subscribed method in an {@link EventBus}.
@@ -22,23 +23,23 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
   private final Object instance;
   private final Executor executor;
   private final Method eventMethod;
-  private final Annotation groupAnnotation;
+  private final Collection<Annotation> groupAnnotations;
 
   @AssistedInject
   private DefaultSubscribeMethod(
-          @Assisted("priority") byte priority,
-          @Assisted("phase") Subscribe.Phase phase,
-          @Assisted("instance") Object instance,
-          @Assisted("executor") Executor executor,
-          @Assisted("eventMethod") Method eventMethod,
-          @Assisted("groupAnnotation") Annotation groupAnnotation
+      @Assisted("priority") byte priority,
+      @Assisted("phase") Subscribe.Phase phase,
+      @Assisted("instance") Object instance,
+      @Assisted("executor") Executor executor,
+      @Assisted("eventMethod") Method eventMethod,
+      @Assisted("groupAnnotations") Collection<Annotation> groupAnnotations
   ) {
     this.priority = priority;
     this.phase = phase;
     this.instance = instance;
     this.executor = executor;
     this.eventMethod = eventMethod;
-    this.groupAnnotation = groupAnnotation;
+    this.groupAnnotations = groupAnnotations;
   }
 
   /**
@@ -71,8 +72,8 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
    * {@inheritDoc}
    */
   @Override
-  public Annotation getGroupAnnotation() {
-    return this.groupAnnotation;
+  public Collection<Annotation> getGroupAnnotations() {
+    return this.groupAnnotations;
   }
 
 

@@ -34,57 +34,64 @@ public class DefaultEventFilter implements EventFilter {
 
   @Override
   public boolean matches(Object event, SubscribeMethod method) {
-    if (method.getGroupAnnotation() == null) {
+    if (method.getGroupAnnotations().isEmpty()) {
       return true;
     }
 
     try {
 
       if (!this.mappings.containsKey(event.getClass())) {
-        this.mappings.put(event.getClass(), this.createMappings(event.getClass(), method.getGroupAnnotation()));
+        this.mappings.put(event.getClass(), this.createMappings(event.getClass(), method.getGroupAnnotations()));
       }
 
       EventFilterMapping[] mappings = this.mappings.get(event.getClass());
 
       for (EventFilterMapping mapping : mappings) {
-        if (!mapping.matches(event, method.getGroupAnnotation())) {
-          return false;
+        for (Annotation annotation : method.getGroupAnnotations()) {
+          if (!mapping.canMatch(annotation)) {
+            continue;
+          }
+          if (!mapping.matches(event, annotation)) {
+            return false;
+          }
         }
       }
       return true;
     } catch (InvocationTargetException | IllegalAccessException e) {
-      this.logger.error("Error while trying to match the event " + event.getClass().getName() + " with the annotation " + method.getGroupAnnotation().getClass().getName());
+      this.logger.error("Error while trying to match the event " + event.getClass().getName() + " with the annotation " + method.getGroupAnnotations().getClass().getName());
       return false;
     }
   }
 
-  private EventFilterMapping[] createMappings(Class<?> eventClass, Annotation annotation) throws InvocationTargetException, IllegalAccessException {
-    Class<? extends Annotation> annotationClass = AnnotationCollector.getRealAnnotationClass(annotation);
-
+  private EventFilterMapping[] createMappings(Class<?> eventClass, Collection<Annotation> annotations) {
     Collection<EventFilterMapping> mappings = new ArrayList<>();
 
+    for (Annotation annotation : annotations) {
+      Class<? extends Annotation> annotationClass = AnnotationCollector.getRealAnnotationClass(annotation);
+      this.addMappings(eventClass, annotationClass, mappings);
+    }
+
+    return mappings.toArray(new EventFilterMapping[0]);
+  }
+
+  private void addMappings(Class<?> eventClass, Class<? extends Annotation> annotationClass, Collection<EventFilterMapping> mappings) {
     for (Method annotationMethod : annotationClass.getDeclaredMethods()) {
 
       Named named = annotationMethod.getAnnotation(Named.class);
 
       for (Method eventMethod : eventClass.getMethods()) {
-        if (eventMethod.getParameterCount() != 0) {
+        if (eventMethod.getParameterCount() != 0 || (named != null && !eventMethod.isAnnotationPresent(Named.class))) {
           continue;
         }
 
-        if (
-            (named != null && eventMethod.isAnnotationPresent(Named.class) && named.value().equals(eventMethod.getAnnotation(Named.class).value())) ||
-                eventMethod.getReturnType().equals(annotationMethod.getReturnType())
-        ) {
+        if ((named != null && named.value().equals(eventMethod.getAnnotation(Named.class).value())) ||
+            eventMethod.getReturnType().equals(annotationMethod.getReturnType())) {
           mappings.add(new EventFilterMapping(annotationMethod, eventMethod));
           break;
         }
 
       }
-
     }
-
-    return mappings.toArray(new EventFilterMapping[0]);
   }
 
 }
