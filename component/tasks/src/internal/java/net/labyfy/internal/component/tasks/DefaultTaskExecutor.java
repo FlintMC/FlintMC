@@ -1,6 +1,5 @@
 package net.labyfy.internal.component.tasks;
 
-
 import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import net.labyfy.component.inject.InjectedInvocationHelper;
@@ -21,9 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * This class is responsible for the execution of all registered tasks.
- */
+/** This class is responsible for the execution of all registered tasks. */
 @Singleton
 @Implement(TaskExecutor.class)
 public class DefaultTaskExecutor implements TaskExecutor {
@@ -52,14 +49,14 @@ public class DefaultTaskExecutor implements TaskExecutor {
   /**
    * {@inheritDoc}
    */
-  public void execute(String name) throws TaskExecutionException {
+  public void execute(Tasks name) throws TaskExecutionException {
     this.execute(name, Maps.newConcurrentMap());
   }
 
   /**
    * {@inheritDoc}
    */
-  public void execute(String name, Map<Key<?>, ?> arguments) throws TaskExecutionException {
+  public void execute(Tasks name, Map<Key<?>, ?> arguments) throws TaskExecutionException {
     for (Map.Entry<Task, List<Pair<Double, Method>>> entry : this.methods.entrySet()) {
       if (!entry.getKey().value().equals(name)) continue;
       for (int i = 0; i < entry.getValue().size(); i++) {
@@ -68,9 +65,16 @@ public class DefaultTaskExecutor implements TaskExecutor {
         try {
           this.injectedInvocationHelper.invokeMethod(value, arguments);
         } catch (InvocationTargetException exception) {
-          throw new TaskExecutionException(value.getDeclaringClass().getName() + "#" + value.getName() + " threw an exception", exception);
+          throw new TaskExecutionException(
+              value.getDeclaringClass().getName() + "#" + value.getName() + " threw an exception",
+              exception);
         } catch (IllegalAccessException exception) {
-          throw new TaskExecutionException("unable to access method definition: " + value.getDeclaringClass().getName() + "#" + value.getName(), exception);
+          throw new TaskExecutionException(
+              "unable to access method definition: "
+                  + value.getDeclaringClass().getName()
+                  + "#"
+                  + value.getName(),
+              exception);
         }
 
         while (i < entry.getValue().size() && !value.equals(entry.getValue().get(i).getValue()))
