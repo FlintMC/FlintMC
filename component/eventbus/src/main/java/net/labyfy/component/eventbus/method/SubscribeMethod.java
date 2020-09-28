@@ -1,75 +1,41 @@
 package net.labyfy.component.eventbus.method;
 
+import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.Subscribe;
+import net.labyfy.component.eventbus.event.util.EventPriority;
+import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
- * A subscribed method in an {@link net.labyfy.component.eventbus.EventBus}.
+ * A subscribed method in an {@link EventBus}.
  */
-public class SubscribeMethod {
-
-  private final byte priority;
-  private final Subscribe.Phase phase;
-  private final Object instance;
-  private final Executor executor;
-  private final Method eventMethod;
-  private final Collection<Annotation> groupAnnotations;
-
-  /**
-   * Constructs a new subscribed method.
-   *
-   * @param priority         The priority of the subscribed method.
-   * @param phase            The phase of the subscribed method.
-   * @param instance         The owner of the event method.
-   * @param executor         The event executor.
-   * @param eventMethod      The subscribed method.
-   * @param groupAnnotations Extra annotations for the subscribed method.
-   */
-  public SubscribeMethod(
-      byte priority,
-      Subscribe.Phase phase,
-      Object instance, Executor executor,
-      Method eventMethod,
-      Collection<Annotation> groupAnnotations
-  ) {
-    this.priority = priority;
-    this.phase = phase;
-    this.instance = instance;
-    this.executor = executor;
-    this.eventMethod = eventMethod;
-    this.groupAnnotations = groupAnnotations;
-  }
+public interface SubscribeMethod {
 
   /**
    * Retrieves the priority of the method. The lower the value, the earlier the event will be called.
    *
    * @return The method priority.
-   * @see net.labyfy.component.eventbus.event.util.EventPriority
+   * @see EventPriority
    */
-  public byte getPriority() {
-    return this.priority;
-  }
+  byte getPriority();
 
   /**
    * Retrieves the event method.
    *
    * @return The event method.
    */
-  public Method getEventMethod() {
-    return this.eventMethod;
-  }
+  Method getEventMethod();
 
   /**
    * Retrieves the phase of the subscribed method.
    *
    * @return The phase of teh subscribed method.
    */
-  public Subscribe.Phase getPhase() {
-    return this.phase;
-  }
+  Subscribe.Phase getPhase();
 
   /**
    * Retrieves an group annotation of the subscribed method.
@@ -78,9 +44,7 @@ public class SubscribeMethod {
    * annotated with any annotation that is annotated with the {@link net.labyfy.component.eventbus.event.filter.EventGroup}
    * annotation.
    */
-  public Collection<Annotation> getGroupAnnotations() {
-    return this.groupAnnotations;
-  }
+  Collection<Annotation> getGroupAnnotation();
 
   /**
    * Invokes this event subscriber. Called by the bus when a new event is fired to this subscriber.
@@ -88,8 +52,33 @@ public class SubscribeMethod {
    * @param event The event that was fired.
    * @throws Throwable Any exception thrown during handling
    */
-  public void invoke(Object event) throws Throwable {
-    this.executor.invoke(this.instance, event);
-  }
+  void invoke(Object event) throws Throwable;
 
+  /**
+   * A factory class for {@link SubscribeMethod}.
+   */
+  @AssistedFactory(SubscribeMethod.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link SubscribeMethod} with the given parameters.
+     *
+     * @param priority        The priority of the subscribed method.
+     * @param phase           The phase of the subscribed method.
+     * @param instance        The owner of the event method.
+     * @param executor        The event executor.
+     * @param eventMethod     The subscribed method.
+     * @param groupAnnotation An extra annotation for the subscribed method.
+     * @return A created subscribed method.
+     */
+    SubscribeMethod create(
+            @Assisted("priority") byte priority,
+            @Assisted("phase") Subscribe.Phase phase,
+            @Assisted("instance") Object instance,
+            @Assisted("executor") Executor executor,
+            @Assisted("eventMethod") Method eventMethod,
+            @Assisted("groupAnnotation") Annotation groupAnnotation
+    );
+
+  }
 }

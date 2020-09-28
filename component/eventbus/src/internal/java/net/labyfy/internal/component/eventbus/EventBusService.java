@@ -17,6 +17,7 @@ import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.eventbus.exception.ExecutorGenerationException;
 
 import java.lang.annotation.Annotation;
@@ -36,14 +37,21 @@ import java.util.concurrent.atomic.AtomicReference;
 public class EventBusService implements ServiceHandler, EventBus {
 
   private final Multimap<Class<?>, SubscribeMethod> subscribeMethods;
-  private final EventFilter eventFilter;
   private final AtomicReference<Injector> injectorReference;
+  private final EventFilter eventFilter;
   private final Executor.Factory factory;
+  private final SubscribeMethod.Factory subscribedMethodFactory;
 
   @Inject
-  public EventBusService(EventFilter eventFilter, @Named("injectorReference") AtomicReference injectorReference, Executor.Factory executorFactory) {
+  public EventBusService(
+          EventFilter eventFilter,
+          @Named("injectorReference") AtomicReference injectorReference,
+          Executor.Factory executorFactory,
+          SubscribeMethod.Factory subscribedMethodFactory
+  ) {
     this.eventFilter = eventFilter;
     this.injectorReference = injectorReference;
+    this.subscribedMethodFactory = subscribedMethodFactory;
     this.subscribeMethods = HashMultimap.create();
     this.factory = executorFactory;
   }
@@ -52,7 +60,7 @@ public class EventBusService implements ServiceHandler, EventBus {
    * {@inheritDoc}
    */
   @Override
-  public void discover(Identifier.Base property) {
+  public void discover(Identifier.Base property) throws ServiceNotFoundException {
 
     LocatedIdentifiedAnnotation locatedIdentifiedAnnotation = property.getProperty().getLocatedIdentifiedAnnotation();
     Subscribe subscribe = locatedIdentifiedAnnotation.getAnnotation();
@@ -83,7 +91,7 @@ public class EventBusService implements ServiceHandler, EventBus {
       throw new ExecutorGenerationException("Encountered an exception while creating an event subscriber for method \"" + method + "\"!", throwable);
     }
     // Initializes a new subscribe method
-    SubscribeMethod subscribeMethod = new SubscribeMethod(
+    SubscribeMethod subscribeMethod = this.subscribedMethodFactory.create(
         subscribe.priority(),
         subscribe.phase(),
         instance,
