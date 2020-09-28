@@ -26,13 +26,13 @@ findProject(':component:inject')?.name = 'inject'
 
 include 'component:transform:asm'
 findProject(':component:transform:asm')?.name = 'asm'
-
+/*
 include 'component:gui'
 findProject(':component:gui')?.name = 'gui'
 
 include 'component:gui:juklearmc'
 findProject(':component:gui:juklearmc')?.name = 'juklearmc'
-
+*/
 include 'component:transform:hook'
 findProject(':component:transform:hook')?.name = 'hook'
 
@@ -100,4 +100,7 @@ findProject(':component:player')?.name = 'player'
 
 include 'component:transform:shadow'
 findProject(':component:transform:shadow')?.name = 'shadow'
+
+include 'component:game-settings'
+findProject(':component:game-settings')?.name = "game-settings"
 
