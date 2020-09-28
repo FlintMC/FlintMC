@@ -95,8 +95,12 @@ findProject('component:i18n')?.name = 'i18n'
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
 
-//include 'component:player'
-//findProject(':component:player')?.name = 'player'
+include 'component:player'
+findProject(':component:player')?.name = 'player'
 
 include 'component:eventbus'
 findProject(':component:eventbus')?.name = 'eventbus'
+
+include 'component:transform:shadow'
+findProject(':component:transform:shadow')?.name = 'shadow'
+
