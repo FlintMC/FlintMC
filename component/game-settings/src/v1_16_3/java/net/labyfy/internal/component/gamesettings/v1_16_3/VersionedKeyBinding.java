@@ -6,7 +6,7 @@ import net.labyfy.component.gamesettings.KeyBinding;
 import net.labyfy.component.inject.implement.Implement;
 import net.minecraft.client.util.InputMappings;
 
-@Implement(value = KeyBinding.class, version = "1.15.3")
+@Implement(value = KeyBinding.class, version = "1.16.3")
 public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding implements KeyBinding {
 
   private final int keyCode;
