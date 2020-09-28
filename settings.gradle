@@ -100,3 +100,6 @@ findProject(':component:player')?.name = 'player'
 
 include 'component:items'
 findProject(':component:items')?.name = 'items'
+
+include 'component:transform:shadow'
+findProject(':component:transform:shadow')?.name = 'shadow'
