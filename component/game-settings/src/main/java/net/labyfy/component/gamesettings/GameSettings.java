@@ -41,9 +41,9 @@ public interface GameSettings {
 
   void setCloudOption(CloudOption cloudOption);
 
-  boolean isFancyGraphics();
+  GraphicsFanciness getGraphicsFanciness();
 
-  void setFancyGraphics(boolean fancyGraphics);
+  void setGraphicsFanciness(GraphicsFanciness fancyGraphics);
 
   AmbientOcclusionStatus getAmbientOcclusionStatus();
 

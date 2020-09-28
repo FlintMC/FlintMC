@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.gamesettings.v1_15_2;
+package net.labyfy.internal.component.gamesettings.v1_16_3;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -16,12 +16,11 @@ import net.minecraft.util.HandSide;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
-@Implement(value = GameSettings.class, version = "1.15.2")
+@Implement(value = GameSettings.class, version = "1.16.3")
 public class VersionedGameSettings implements GameSettings {
 
   private final KeyBinding.Factory keyBindingFactory;
@@ -53,12 +52,12 @@ public class VersionedGameSettings implements GameSettings {
 
   @Override
   public float getEntityDistanceScaling() {
-    return 0;
+    return Minecraft.getInstance().gameSettings.field_238329_c_;
   }
 
   @Override
   public void setEntityDistanceScaling(float entityDistanceScaling) {
-    // NO-OP
+    Minecraft.getInstance().gameSettings.field_238329_c_ = entityDistanceScaling;
   }
 
   @Override
@@ -104,18 +103,29 @@ public class VersionedGameSettings implements GameSettings {
 
   @Override
   public GraphicsFanciness getGraphicsFanciness() {
-    return Minecraft.getInstance().gameSettings.fancyGraphics ? GraphicsFanciness.FANCY : GraphicsFanciness.FAST;
+    switch (Minecraft.getInstance().gameSettings.field_238330_f_) {
+      case FAST:
+        return GraphicsFanciness.FAST;
+      case FANCY:
+        return GraphicsFanciness.FANCY;
+      case FABULOUS:
+        return GraphicsFanciness.FABULOUS;
+      default:
+        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.field_238330_f_);
+    }
   }
 
   @Override
   public void setGraphicsFanciness(GraphicsFanciness fancyGraphics) {
     switch (fancyGraphics) {
       case FAST:
-        Minecraft.getInstance().gameSettings.fancyGraphics = false;
+        Minecraft.getInstance().gameSettings.field_238330_f_ = net.minecraft.client.settings.GraphicsFanciness.FAST;
         break;
       case FANCY:
+        Minecraft.getInstance().gameSettings.field_238330_f_ = net.minecraft.client.settings.GraphicsFanciness.FANCY;
+        break;
       case FABULOUS:
-        Minecraft.getInstance().gameSettings.fancyGraphics = true;
+        Minecraft.getInstance().gameSettings.field_238330_f_ = net.minecraft.client.settings.GraphicsFanciness.FABULOUS;
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + fancyGraphics);
@@ -214,12 +224,12 @@ public class VersionedGameSettings implements GameSettings {
 
   @Override
   public double getChatLineSpacing() {
-    return 0;
+    return Minecraft.getInstance().gameSettings.field_238331_l_;
   }
 
   @Override
   public void setChatLineSpacing(double chatLineSpacing) {
-    // NO-OP
+    Minecraft.getInstance().gameSettings.field_238331_l_ = chatLineSpacing;
   }
 
   @Override
@@ -389,12 +399,12 @@ public class VersionedGameSettings implements GameSettings {
 
   @Override
   public double getChatDelay() {
-    return 0;
+    return Minecraft.getInstance().gameSettings.field_238332_z_;
   }
 
   @Override
   public void setChatDelay(double chatDelay) {
-    // NO-OP
+    Minecraft.getInstance().gameSettings.field_238332_z_ = chatDelay;
   }
 
   @Override
@@ -929,15 +939,15 @@ public class VersionedGameSettings implements GameSettings {
 
   @Override
   public PointOfView getPointOfView() {
-    switch (Minecraft.getInstance().gameSettings.thirdPersonView) {
-      case 0:
+    switch (Minecraft.getInstance().gameSettings.func_243230_g()) {
+      case FIRST_PERSON:
         return PointOfView.FIRST_PERSON;
-      case 1:
+      case THIRD_PERSON_BACK:
         return PointOfView.THIRD_PERSON_BACK;
-      case 2:
+      case THIRD_PERSON_FRONT:
         return PointOfView.THIRD_PERSON_FRONT;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.thirdPersonView);
+        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.func_243230_g());
     }
   }
 
@@ -945,13 +955,13 @@ public class VersionedGameSettings implements GameSettings {
   public void setPointOfView(PointOfView pointOfView) {
     switch (pointOfView) {
       case FIRST_PERSON:
-        Minecraft.getInstance().gameSettings.thirdPersonView = 0;
+        Minecraft.getInstance().gameSettings.func_243229_a(net.minecraft.client.settings.PointOfView.FIRST_PERSON);
         break;
       case THIRD_PERSON_BACK:
-        Minecraft.getInstance().gameSettings.thirdPersonView = 1;
+        Minecraft.getInstance().gameSettings.func_243229_a(net.minecraft.client.settings.PointOfView.THIRD_PERSON_BACK);
         break;
       case THIRD_PERSON_FRONT:
-        Minecraft.getInstance().gameSettings.thirdPersonView = 2;
+        Minecraft.getInstance().gameSettings.func_243229_a(net.minecraft.client.settings.PointOfView.THIRD_PERSON_FRONT);
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + pointOfView);
@@ -1020,22 +1030,22 @@ public class VersionedGameSettings implements GameSettings {
 
   @Override
   public float getScreenEffectScale() {
-    return 0;
+    return Minecraft.getInstance().gameSettings.field_243226_aM;
   }
 
   @Override
   public void setScreenEffectScale(float screenEffectScale) {
-    // NO-OP
+    Minecraft.getInstance().gameSettings.field_243226_aM = screenEffectScale;
   }
 
   @Override
   public float getFovEffectScale() {
-    return 0;
+    return Minecraft.getInstance().gameSettings.field_243227_aN;
   }
 
   @Override
   public void setFovEffectScale(float fovEffectScale) {
-    // NO-OP
+    Minecraft.getInstance().gameSettings.field_243227_aN = fovEffectScale;
   }
 
   @Override
@@ -1137,12 +1147,12 @@ public class VersionedGameSettings implements GameSettings {
 
   @Override
   public boolean isChunkSyncWrites() {
-    return false;
+    return Minecraft.getInstance().gameSettings.field_241568_aS_;
   }
 
   @Override
   public void setChunkSyncWrites(boolean chunkSyncWrites) {
-    // NO-OP
+    Minecraft.getInstance().gameSettings.field_241568_aS_ = chunkSyncWrites;
   }
 
   private net.minecraft.util.SoundCategory toMinecraftSoundCategory(SoundCategory category) {
