@@ -36,14 +36,21 @@ import java.util.concurrent.atomic.AtomicReference;
 public class EventBusService implements ServiceHandler, EventBus {
 
   private final Multimap<Class<?>, SubscribeMethod> subscribeMethods;
-  private final EventFilter eventFilter;
   private final AtomicReference<Injector> injectorReference;
+  private final EventFilter eventFilter;
   private final Executor.Factory factory;
+  private final SubscribeMethod.Factory subscribedMethodFactory;
 
   @Inject
-  public EventBusService(EventFilter eventFilter, @Named("injectorReference") AtomicReference injectorReference, Executor.Factory executorFactory) {
+  public EventBusService(
+          EventFilter eventFilter,
+          @Named("injectorReference") AtomicReference injectorReference,
+          Executor.Factory executorFactory,
+          SubscribeMethod.Factory subscribedMethodFactory
+  ) {
     this.eventFilter = eventFilter;
     this.injectorReference = injectorReference;
+    this.subscribedMethodFactory = subscribedMethodFactory;
     this.subscribeMethods = HashMultimap.create();
     this.factory = executorFactory;
   }
@@ -68,7 +75,7 @@ public class EventBusService implements ServiceHandler, EventBus {
     for (Annotation annotation : method.getDeclaredAnnotations()) {
       Class<? extends Annotation> type = annotation.annotationType();
       if (type.isAnnotationPresent(EventGroup.class) &&
-          type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
+              type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
         if (groupAnnotation != null) {
           throw new IllegalArgumentException("Cannot have multiple EventGroup annotations per @Subscribe method (found on " + method.getDeclaringClass().getName() + "#" + method.getName() + ")");
         }
@@ -87,13 +94,13 @@ public class EventBusService implements ServiceHandler, EventBus {
       throw new ExecutorGenerationException("Encountered an exception while creating an event subscriber for method \"" + method + "\"!", throwable);
     }
     // Initializes a new subscribe method
-    SubscribeMethod subscribeMethod = new SubscribeMethod(
-        subscribe.priority(),
-        subscribe.phase(),
-        instance,
-        executor,
-        method,
-        groupAnnotation
+    SubscribeMethod subscribeMethod = this.subscribedMethodFactory.create(
+            subscribe.priority(),
+            subscribe.phase(),
+            instance,
+            executor,
+            method,
+            groupAnnotation
     );
 
     this.subscribeMethods.put(eventClass, subscribeMethod);
@@ -155,7 +162,7 @@ public class EventBusService implements ServiceHandler, EventBus {
 
     for (SubscribeMethod method : methods) {
       if ((method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase()) &&
-          this.eventFilter.matches(event, method)) {
+              this.eventFilter.matches(event, method)) {
 
         this.fireLast(event, method);
 
@@ -166,9 +173,9 @@ public class EventBusService implements ServiceHandler, EventBus {
   /**
    * Invokes the subscribed method.
    *
-   * @param event       The fired event.
-   * @param method      The subscribed method.
-   * @param <E>         The event type.
+   * @param event  The fired event.
+   * @param method The subscribed method.
+   * @param <E>    The event type.
    */
   private <E> void fireLast(E event, SubscribeMethod method) {
     try {
