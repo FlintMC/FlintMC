@@ -4,6 +4,7 @@ import net.labyfy.component.eventbus.event.Subscribe;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 /**
  * A subscribed method in an {@link net.labyfy.component.eventbus.EventBus}.
@@ -15,31 +16,31 @@ public class SubscribeMethod {
   private final Object instance;
   private final Executor executor;
   private final Method eventMethod;
-  private final Annotation groupAnnotation;
+  private final Collection<Annotation> groupAnnotations;
 
   /**
    * Constructs a new subscribed method.
    *
-   * @param priority        The priority of the subscribed method.
-   * @param phase           The phase of the subscribed method.
-   * @param instance        The owner of the event method.
-   * @param executor        The event executor.
-   * @param eventMethod     The subscribed method.
-   * @param groupAnnotation Extra annotations for the subscribed method.
+   * @param priority         The priority of the subscribed method.
+   * @param phase            The phase of the subscribed method.
+   * @param instance         The owner of the event method.
+   * @param executor         The event executor.
+   * @param eventMethod      The subscribed method.
+   * @param groupAnnotations Extra annotations for the subscribed method.
    */
   public SubscribeMethod(
       byte priority,
       Subscribe.Phase phase,
       Object instance, Executor executor,
       Method eventMethod,
-      Annotation groupAnnotation
+      Collection<Annotation> groupAnnotations
   ) {
     this.priority = priority;
     this.phase = phase;
     this.instance = instance;
     this.executor = executor;
     this.eventMethod = eventMethod;
-    this.groupAnnotation = groupAnnotation;
+    this.groupAnnotations = groupAnnotations;
   }
 
   /**
@@ -73,11 +74,12 @@ public class SubscribeMethod {
   /**
    * Retrieves an group annotation of the subscribed method.
    *
-   * @return The group annotation of the subscribed method or {@code null} if the method isn't annotated with an
-   * annotation that is annotated with the {@link net.labyfy.component.eventbus.event.filter.EventGroup} annotation.
+   * @return The non-null group annotations of the subscribed method or an empty collection if the method isn't
+   * annotated with any annotation that is annotated with the {@link net.labyfy.component.eventbus.event.filter.EventGroup}
+   * annotation.
    */
-  public Annotation getGroupAnnotation() {
-    return this.groupAnnotation;
+  public Collection<Annotation> getGroupAnnotations() {
+    return this.groupAnnotations;
   }
 
   /**

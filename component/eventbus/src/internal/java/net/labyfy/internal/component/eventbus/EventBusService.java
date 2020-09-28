@@ -17,12 +17,12 @@ import net.labyfy.component.stereotype.identifier.Identifier;
 import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
-import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.eventbus.exception.ExecutorGenerationException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -52,7 +52,7 @@ public class EventBusService implements ServiceHandler, EventBus {
    * {@inheritDoc}
    */
   @Override
-  public void discover(Identifier.Base property) throws ServiceNotFoundException {
+  public void discover(Identifier.Base property) {
 
     LocatedIdentifiedAnnotation locatedIdentifiedAnnotation = property.getProperty().getLocatedIdentifiedAnnotation();
     Subscribe subscribe = locatedIdentifiedAnnotation.getAnnotation();
@@ -63,17 +63,13 @@ public class EventBusService implements ServiceHandler, EventBus {
     }
 
     Class<?> eventClass = method.getParameterTypes()[0];
-    Annotation groupAnnotation = null;
+    Collection<Annotation> groupAnnotations = new ArrayList<>();
 
     for (Annotation annotation : method.getDeclaredAnnotations()) {
       Class<? extends Annotation> type = annotation.annotationType();
       if (type.isAnnotationPresent(EventGroup.class) &&
           type.getAnnotation(EventGroup.class).groupEvent().isAssignableFrom(eventClass)) {
-        if (groupAnnotation != null) {
-          throw new IllegalArgumentException("Cannot have multiple EventGroup annotations per @Subscribe method (found on " + method.getDeclaringClass().getName() + "#" + method.getName() + ")");
-        }
-
-        groupAnnotation = annotation;
+        groupAnnotations.add(annotation);
       }
     }
 
@@ -93,7 +89,7 @@ public class EventBusService implements ServiceHandler, EventBus {
         instance,
         executor,
         method,
-        groupAnnotation
+        groupAnnotations
     );
 
     this.subscribeMethods.put(eventClass, subscribeMethod);
@@ -166,9 +162,9 @@ public class EventBusService implements ServiceHandler, EventBus {
   /**
    * Invokes the subscribed method.
    *
-   * @param event       The fired event.
-   * @param method      The subscribed method.
-   * @param <E>         The event type.
+   * @param event  The fired event.
+   * @param method The subscribed method.
+   * @param <E>    The event type.
    */
   private <E> void fireLast(E event, SubscribeMethod method) {
     try {

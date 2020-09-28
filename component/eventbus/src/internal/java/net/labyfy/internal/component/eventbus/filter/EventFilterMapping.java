@@ -15,6 +15,10 @@ public class EventFilterMapping {
     this.eventMethod = eventMethod;
   }
 
+  public boolean canMatch(Annotation annotation) {
+    return this.annotationMethod.getDeclaringClass().isInstance(annotation);
+  }
+
   public boolean matches(Object event, Annotation annotation) throws InvocationTargetException, IllegalAccessException {
     Object required = this.annotationMethod.invoke(annotation);
     Object provided = this.eventMethod.invoke(event);
