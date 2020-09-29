@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-@Deprecated
 public interface ClassTransformContext {
     /**
      * Retrieves the owner class.
