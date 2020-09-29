@@ -14,7 +14,6 @@ import java.lang.annotation.Target;
 @Transitive
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
-@Deprecated
 public @interface CtClassFilter {
   CtClassFilters value();
 

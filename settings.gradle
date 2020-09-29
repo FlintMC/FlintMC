@@ -92,6 +92,9 @@ findProject(':component:inject-primitive')?.name = 'inject-primitive'
 include 'component:i18n'
 findProject('component:i18n')?.name = 'i18n'
 
+include ':component:render'
+findProject(':component:render')?.name = 'render'
+
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
 
@@ -109,4 +112,7 @@ findProject(':component:world')?.name = 'world'
 
 include 'component:transform:shadow'
 findProject(':component:transform:shadow')?.name = 'shadow'
+
+include 'component:render:shader'
+findProject(':component:render:shader')?.name = 'shader'
 
