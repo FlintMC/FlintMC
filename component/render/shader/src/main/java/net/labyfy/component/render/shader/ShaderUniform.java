@@ -2,7 +2,6 @@ package net.labyfy.component.render.shader;
 
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
 /** Represents a shader uniform and provides proxy methods to the respective OpenGL calls. */
