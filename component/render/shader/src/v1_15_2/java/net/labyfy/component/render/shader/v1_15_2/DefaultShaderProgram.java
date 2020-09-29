@@ -56,11 +56,15 @@ public class DefaultShaderProgram implements ShaderProgram {
 
   @Override
   public void addVertexShader(String shader) throws ShaderException {
+    if (this.vertexShader != 0)
+      throw new ShaderException("Only one vertex shader can be added to a shader program.");
     this.vertexShader = addShader(shader, GL_VERTEX_SHADER);
   }
 
   @Override
   public void addFragmentShader(String shader) throws ShaderException {
+    if (this.fragmentShader != 0)
+      throw new ShaderException("Only one fragment shader can be added to a shader program.");
     this.fragmentShader = addShader(shader, GL_FRAGMENT_SHADER);
   }
 
