@@ -30,6 +30,10 @@ public class ShadowService implements ServiceHandler {
   @ClassTransform
   public void transform(ClassTransformContext classTransformContext) throws NotFoundException, CannotCompileException {
     if (!this.transforms.containsKey(classTransformContext.getCtClass().getName())) return;
+    if (classTransformContext.getCtClass().isFrozen()) {
+      return;
+    }
+
     Property.Base property = this.transforms.get(classTransformContext.getCtClass().getName());
     ClassPool classPool = classTransformContext.getCtClass().getClassPool();
     classTransformContext.getCtClass().addInterface(classPool.get(property.getLocatedIdentifiedAnnotation().<Class<?>>getLocation().getName()));
@@ -51,7 +55,13 @@ public class ShadowService implements ServiceHandler {
       }
       if (!exist) {
         try {
-          ctClass.addField(new CtField(ctClass.getClassPool().get(fieldCreate.typeName()), fieldCreate.name(), ctClass), fieldCreate.defaultValue());
+          ctClass.addField(
+              new CtField(
+                  ctClass.getClassPool().get(fieldCreate.typeName()),
+                  fieldCreate.name(),
+                  ctClass
+              ),
+              fieldCreate.defaultValue());
         } catch (CannotCompileException | NotFoundException e) {
           e.printStackTrace();
         }
