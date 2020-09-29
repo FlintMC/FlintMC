@@ -94,14 +94,7 @@ public final class ClassMapping extends BaseMapping {
    */
   public MethodMapping getMethod(final String name, final Class<?>... parameters) {
     String identifier = name + ' ' + MappingUtils.generateDescriptor(parameters);
-
-    if (obfuscatedMethods.containsKey(identifier)) {
-      return obfuscatedMethods.get(identifier);
-    } else if (deobfuscatedMethods.containsKey(identifier)) {
-      return deobfuscatedMethods.get(identifier);
-    }
-
-    return null;
+    return this.getMethodByIdentifier(identifier);
   }
 
   /**
@@ -113,13 +106,21 @@ public final class ClassMapping extends BaseMapping {
    */
   public MethodMapping getMethod(final String name, final CtClass... parameters) {
     String identifier = name + ' ' + MappingUtils.generateDescriptor(parameters);
+    return this.getMethodByIdentifier(identifier);
+  }
 
+  /**
+   * Get a metrhod by the explicit identifier
+   *
+   * @param identifier the identifier of the method. Must have the format {methodName}({parameter types})
+   * @return the target method or null
+   */
+  public MethodMapping getMethodByIdentifier(String identifier) {
     if (obfuscatedMethods.containsKey(identifier)) {
       return obfuscatedMethods.get(identifier);
     } else if (deobfuscatedMethods.containsKey(identifier)) {
       return deobfuscatedMethods.get(identifier);
     }
-
     return null;
   }
 
