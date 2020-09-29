@@ -56,9 +56,9 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
                 int access, String name, String desc, String signature, String[] exceptions) {
 
               MethodMapping methodMapping =
-                  classMapping.getMethod(name + desc.substring(0, desc.lastIndexOf(')') + 1));
+                  classMapping.getMethodByIdentifier(name + desc.substring(0, desc.lastIndexOf(')') + 1));
 
-              if (methodMapping.isDefault()) {
+              if (methodMapping == null) {
                 if (name.equals("<init>")) {
                   methodMapping = new MethodMapping(obfuscated, classMapping, "<init>", "<init>", "<init>", "<init>");
                 }
