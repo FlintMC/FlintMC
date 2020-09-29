@@ -17,5 +17,5 @@ public @interface FieldCreate {
 
   String typeName();
 
-  String defaultValue() default "";
+  String defaultValue() default "null";
 }
