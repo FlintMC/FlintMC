@@ -7,7 +7,9 @@ import net.labyfy.internal.component.gui.windowing.DefaultWindowManager;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.CallbackI;
+import org.lwjgl.system.MemoryStack;
 
+import java.nio.DoubleBuffer;
 import java.util.function.BiFunction;
 
 /**
@@ -66,9 +68,26 @@ public class VersionedGLFWCallbacks {
   }
 
   public boolean mouseButtonCallback(long window, int button, int action, int mods) {
+    // GLFW does not supply mouse coordinates for click events, but they tend to be very useful
+    double mouseX;
+    double mouseY;
+
+    try(MemoryStack stack = MemoryStack.stackPush()) {
+      DoubleBuffer buffer = stack.callocDouble(2);
+
+      // Request mouse position
+      GLFW.glfwGetCursorPos(window, (DoubleBuffer) buffer.slice().position(0), (DoubleBuffer) buffer.slice().position(1));
+
+      // Extract x and y
+      mouseX = buffer.get(0);
+      mouseY = buffer.get(1);
+    }
+
     MouseButtonEvent event = new MouseButtonEvent(
         VersionedGLFWInputConverter.glfwMouseButtonToLabyfyMouseButton(button),
         VersionedGLFWInputConverter.glfwActionToLabyfyInputState(action),
+        mouseX,
+        mouseY,
         VersionedGLFWInputConverter.glfwModifierToLabyfyModifier(mods)
     );
 

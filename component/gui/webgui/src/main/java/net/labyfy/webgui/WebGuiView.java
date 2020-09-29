@@ -26,4 +26,11 @@ public interface WebGuiView {
    * @param url The url to navigate to
    */
   void setURL(String url);
+
+  /**
+   * Changes the scale of the view.
+   *
+   * @param scale The new scale
+   */
+  void setScale(float scale);
 }

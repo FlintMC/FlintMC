@@ -114,6 +114,11 @@ public class VersionedWindow implements InternalWindow {
   }
 
   @Override
+  public boolean isFocused() {
+    return glfwGetWindowAttrib(ensureHandle(), GLFW_FOCUSED) == GLFW_TRUE;
+  }
+
+  @Override
   public long getHandle() {
     return handle;
   }

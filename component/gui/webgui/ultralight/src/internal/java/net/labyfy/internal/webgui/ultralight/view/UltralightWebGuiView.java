@@ -7,11 +7,6 @@ import net.labyfy.webgui.WebGuiView;
  */
 public interface UltralightWebGuiView extends WebGuiView {
   /**
-   * Updates information about the view, such as width and height.
-   */
-  void update();
-
-  /**
    * Notifies the view that the data that needs to be drawn is available on the surface.
    */
   void dataReadyOnSurface();

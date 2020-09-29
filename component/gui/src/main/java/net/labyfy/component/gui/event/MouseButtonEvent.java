@@ -12,18 +12,24 @@ import java.util.Set;
 public class MouseButtonEvent extends EventWithModifierKeys {
   private final MouseButton button;
   private final InputState state;
+  private final double x;
+  private final double y;
 
   /**
    * Constructs a new {@link MouseButtonEvent} with the given state, button and modifier keys.
    *
    * @param state        The new state the button is in
    * @param button       The mouse button that has changed state
+   * @param x            The x coordinate of the event
+   * @param y            The y coordinate of the event
    * @param modifierKeys The modifier keys which were active while the event was fired
    */
-  public MouseButtonEvent(MouseButton button, InputState state, Set<ModifierKey> modifierKeys) {
+  public MouseButtonEvent(MouseButton button, InputState state, double x, double y, Set<ModifierKey> modifierKeys) {
     super(modifierKeys);
     this.button = button;
     this.state = state;
+    this.x = x;
+    this.y = y;
   }
 
   /**
@@ -42,5 +48,23 @@ public class MouseButtonEvent extends EventWithModifierKeys {
    */
   public MouseButton getButton() {
     return button;
+  }
+
+  /**
+   * Retrieves the x coordinate of the event.
+   *
+   * @return The x coordinate
+   */
+  public double getX() {
+    return x;
+  }
+
+  /**
+   * Retrieves the y coordinate of the event.
+   *
+   * @return The y coordinate
+   */
+  public double getY() {
+    return y;
   }
 }

@@ -85,6 +85,13 @@ public interface Window {
   boolean sendEvent(GuiEvent event);
 
   /**
+   * Tests whether the window is currently focused.
+   *
+   * @return {@code true} if the window is focused currently, {@code false} otherwise
+   */
+  boolean isFocused();
+
+  /**
    * Factory for {@link Window}s.
    */
   @AssistedFactory(Window.class)

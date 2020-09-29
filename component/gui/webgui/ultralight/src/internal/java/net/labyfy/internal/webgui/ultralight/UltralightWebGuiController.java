@@ -97,6 +97,7 @@ public class UltralightWebGuiController implements WebGuiController {
 
     // The view needs to be known by the GUI controller in order to call back to it
     window.addRenderer(this.mainView);
+    window.addEventListener(this.mainView);
 
     // Set up the view and register it internally
     this.mainView.setURL("http://localhost:8080");
@@ -107,11 +108,6 @@ public class UltralightWebGuiController implements WebGuiController {
    * Dispatches all render commands and updates the rendering resources.
    */
   public void renderAll() {
-    // Synchronize the state of all views
-    for(UltralightWebGuiView view : views) {
-      view.update();
-    }
-
     /*
      * Do ultralight internal drawing, this will draw **all** views, regardless of their state.
      * The main view can proceed just using the data, however, external views will need special care.
@@ -154,6 +150,15 @@ public class UltralightWebGuiController implements WebGuiController {
         view.dataReadyOnSurface();
       }
     }
+  }
+
+  /**
+   * Determines whether the Ultralight instance is using the GPU renderer.
+   *
+   * @return {@code true} if the GPU renderer is used, {@code false} otherwise
+   */
+  public boolean isUsingGPURenderer() {
+    return useGPURenderer;
   }
 
   /**
