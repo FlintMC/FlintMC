@@ -9,6 +9,8 @@ import javax.inject.Singleton;
 @Singleton
 @Implement(ProjectionMatrixProvider.class)
 public class DefaultProjectionMatrixProvider implements ProjectionMatrixProvider {
+
+  /** {@inheritDoc} */
   @Override
   public void apply(ShaderUniform uniform) {}
 }

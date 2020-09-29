@@ -10,6 +10,8 @@ import javax.inject.Singleton;
 @Singleton
 @Implement(PartialTickProvider.class)
 public class DefaultPartialTickProvider implements PartialTickProvider {
+
+  /** {@inheritDoc} */
   @Override
   public void apply(ShaderUniform uniform) {
     uniform.set1f(Minecraft.getInstance().getRenderPartialTicks());

@@ -5,8 +5,10 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
+/** Represents a shader uniform and provides proxy methods to the respective OpenGL calls. */
 public interface ShaderUniform {
 
+  /** @return the uniform location according to OpenGL */
   int getLocation();
 
   void set1f(float v0);
@@ -53,13 +55,30 @@ public interface ShaderUniform {
 
   void setMatrix4fv(boolean transpose, FloatBuffer value);
 
+  /** Calls the uniform value provider to update own value. */
   void updateFromValueProvider();
 
   @AssistedFactory(ShaderUniform.class)
   interface Factory {
 
+    /**
+     * Creates a new shader uniform.
+     *
+     * @param name the name of this uniform as used in the GLSL source
+     * @param shaderProgram the shader program this uniform refers to
+     * @return a new uniform
+     */
     ShaderUniform create(String name, ShaderProgram shaderProgram);
 
+    /**
+     * Creates a new shader uniform.
+     *
+     * @param name the name of this uniform as used in the GLSL source
+     * @param shaderProgram the shader program this uniform refers to
+     * @param valueProvider the value provider that should be used to automatically update the new
+     *     uniform's value
+     * @return a new uniform that gets updated automatically
+     */
     ShaderUniform create(
         String name, ShaderProgram shaderProgram, ShaderUniformProvider valueProvider);
   }

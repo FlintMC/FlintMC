@@ -9,6 +9,8 @@ import javax.inject.Singleton;
 @Singleton
 @Implement(WorldMatrixProvider.class)
 public class DefaultWorldMatrixProvider implements WorldMatrixProvider {
+
+  /** {@inheritDoc} */
   @Override
   public void apply(ShaderUniform uniform) {}
 }

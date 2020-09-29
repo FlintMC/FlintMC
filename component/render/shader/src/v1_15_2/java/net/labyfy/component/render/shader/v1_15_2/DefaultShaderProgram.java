@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL20.*;
 
+/** {@inheritDoc} */
 @Implement(ShaderProgram.class)
 public class DefaultShaderProgram implements ShaderProgram {
 
@@ -36,6 +37,7 @@ public class DefaultShaderProgram implements ShaderProgram {
     this.linked = true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addVertexShader(InputStream shader) throws ShaderException {
     try {
@@ -45,6 +47,7 @@ public class DefaultShaderProgram implements ShaderProgram {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addFragmentShader(InputStream shader) throws ShaderException {
     try {
@@ -54,6 +57,7 @@ public class DefaultShaderProgram implements ShaderProgram {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addVertexShader(String shader) throws ShaderException {
     if (this.vertexShader != 0)
@@ -61,6 +65,7 @@ public class DefaultShaderProgram implements ShaderProgram {
     this.vertexShader = addShader(shader, GL_VERTEX_SHADER);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addFragmentShader(String shader) throws ShaderException {
     if (this.fragmentShader != 0)
@@ -83,6 +88,7 @@ public class DefaultShaderProgram implements ShaderProgram {
     return shaderId;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void link() throws ShaderException {
     this.shaderProgram = glCreateProgram();
@@ -105,6 +111,7 @@ public class DefaultShaderProgram implements ShaderProgram {
     if (this.fragmentShader != 0) glDeleteShader(this.fragmentShader);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void useShader() {
     if (this.shaderProgram <= 0)
@@ -113,36 +120,43 @@ public class DefaultShaderProgram implements ShaderProgram {
     this.updateProvidedUniforms();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void stopShader() {
     glUseProgram(0);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void updateProvidedUniforms() {
     providedShaderUniforms.forEach(ShaderUniform::updateFromValueProvider);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addProvidedUniform(ShaderUniform uniform) {
     this.providedShaderUniforms.add(uniform);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getProgramID() {
     return this.shaderProgram;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getVertexShaderID() {
     return this.vertexShader;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getFragmentShaderID() {
     return this.fragmentShader;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isLinked() {
     return this.linked;
