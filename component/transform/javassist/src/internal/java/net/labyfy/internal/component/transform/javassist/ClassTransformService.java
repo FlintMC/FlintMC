@@ -33,10 +33,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Singleton
@@ -49,7 +46,7 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
   private final String version;
   private final ClassMappingProvider classMappingProvider;
   private final InternalClassTransformContext.Factory classTransformContextFactory;
-  private final Collection<ClassTransformContext> classTransformContexts;
+  private final List<ClassTransformContext> classTransformContexts;
   private final Collection<String> ignoredPackages =
       Arrays.asList("com.mojang.realmsclient", "net.minecraft.realms");
 
@@ -62,7 +59,7 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
     this.logger = logger;
     this.classMappingProvider = classMappingProvider;
     this.classTransformContextFactory = classTransformContextFactory;
-    this.classTransformContexts = new HashSet<>();
+    this.classTransformContexts = new ArrayList<>();
     this.version = (String) launchArguments.get("--game-version");
   }
 
@@ -107,6 +104,8 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
             locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass(),
             InjectionHolder.getInjectedInstance(
                 locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass())));
+
+    this.classTransformContexts.sort(Comparator.comparingInt(o -> o.getClassTransform().priority()));
   }
 
   @Override

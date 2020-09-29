@@ -23,4 +23,5 @@ public @interface ClassTransform {
 
   String version() default "";
 
+  int priority() default 0;
 }
