@@ -15,7 +15,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class McpMappingParser implements MappingParser {
-  @Override public Map<String, ClassMapping> parse(final Map<String, InputStream> input) throws MappingParseException {
+  /**
+   * Update method descriptors.
+   *
+   * @param classMappings Class mappings.
+   */
+  private static void updateMethodDescriptors(final Map<String, ClassMapping> classMappings) {
+    for (ClassMapping mapping : classMappings.values()) {
+      for (MethodMapping methodMapping : mapping.obfuscatedMethods.values()) {
+        String descriptor = MappingUtils.deobfuscateMethodDescriptor(classMappings, methodMapping.obfuscatedDescriptor);
+        String identifier = methodMapping.deobfuscatedName + '(' + descriptor.substring(1, descriptor.lastIndexOf(')')) + ")";
+
+        methodMapping.deobfuscatedDescriptor = descriptor;
+        methodMapping.deobfuscatedIdentifier = identifier;
+        mapping.deobfuscatedMethods.put(identifier, methodMapping);
+      }
+    }
+  }
+
+  @Override
+  public Map<String, ClassMapping> parse(final Map<String, InputStream> input) throws MappingParseException {
     boolean obfuscated = InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
     Map<String, String> fieldLookupTable, methodLookupTable;
     String source;
@@ -48,7 +67,7 @@ public final class McpMappingParser implements MappingParser {
 
           if (to == null) to = split[0];
 
-          String identifier = split[0] + ' ' + split[1].substring(1, split[1].lastIndexOf(')'));
+          String identifier = split[0] + "(" + split[1].substring(1, split[1].lastIndexOf(')')) + ")";
           MethodMapping methodMapping = new MethodMapping(obfuscated, classMapping, split[1], identifier, split[0], to);
           classMapping.obfuscatedMethods.put(identifier, methodMapping);
         } else if (split.length == 2) {
@@ -79,23 +98,5 @@ public final class McpMappingParser implements MappingParser {
 
     updateMethodDescriptors(classMappings);
     return classMappings;
-  }
-
-  /**
-   * Update method descriptors.
-   *
-   * @param classMappings Class mappings.
-   */
-  private static void updateMethodDescriptors(final Map<String, ClassMapping> classMappings) {
-    for (ClassMapping mapping : classMappings.values()) {
-      for (MethodMapping methodMapping : mapping.obfuscatedMethods.values()) {
-        String descriptor = MappingUtils.deobfuscateMethodDescriptor(classMappings, methodMapping.obfuscatedDescriptor);
-        String identifier = methodMapping.deobfuscatedName + ' ' + descriptor.substring(1, descriptor.lastIndexOf(')'));
-
-        methodMapping.deobfuscatedDescriptor = descriptor;
-        methodMapping.deobfuscatedIdentifier = identifier;
-        mapping.deobfuscatedMethods.put(identifier, methodMapping);
-      }
-    }
   }
 }
