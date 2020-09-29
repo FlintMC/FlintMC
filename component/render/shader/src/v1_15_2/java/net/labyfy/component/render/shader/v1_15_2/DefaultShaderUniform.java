@@ -1,5 +1,6 @@
 package net.labyfy.component.render.shader.v1_15_2;
 
+import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.shader.ShaderProgram;
@@ -21,7 +22,7 @@ public class DefaultShaderUniform implements ShaderUniform {
   private int location;
 
   @AssistedInject
-  private DefaultShaderUniform(String name, ShaderProgram shaderProgram) {
+  private DefaultShaderUniform(@Assisted String name, @Assisted ShaderProgram shaderProgram) {
     this.name = name;
     this.shaderProgram = shaderProgram;
     this.shaderUniformProvider = null;
@@ -30,7 +31,7 @@ public class DefaultShaderUniform implements ShaderUniform {
 
   @AssistedInject
   private DefaultShaderUniform(
-      String name, ShaderProgram shaderProgram, ShaderUniformProvider uniformProvider) {
+      @Assisted String name, @Assisted ShaderProgram shaderProgram, @Assisted ShaderUniformProvider uniformProvider) {
     this.name = name;
     this.shaderProgram = shaderProgram;
     this.shaderUniformProvider = uniformProvider;

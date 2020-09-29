@@ -78,10 +78,7 @@ public class DefaultShaderProgram implements ShaderProgram {
     glShaderSource(shaderId, shaderSource);
     glCompileShader(shaderId);
 
-    int[] shaderIV = new int[1];
-    glGetShaderiv(shaderId, GL_COMPILE_STATUS, shaderIV);
-
-    if (shaderIV[0] != 0) {
+    if (glGetShaderi(shaderId, GL_COMPILE_STATUS) != GL_TRUE) {
       throw new ShaderException(glGetShaderInfoLog(shaderId));
     }
 
@@ -98,10 +95,7 @@ public class DefaultShaderProgram implements ShaderProgram {
 
     glLinkProgram(this.shaderProgram);
 
-    int[] shaderIV = new int[1];
-    glGetShaderiv(this.shaderProgram, GL_LINK_STATUS, shaderIV);
-
-    if (shaderIV[0] != 0) {
+    if (glGetProgrami(this.shaderProgram, GL_LINK_STATUS) != GL_TRUE) {
       throw new ShaderException(glGetShaderInfoLog(this.vertexShader));
     }
 

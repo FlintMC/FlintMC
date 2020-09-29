@@ -1,7 +1,7 @@
 package net.labyfy.component.render.shader;
 
 /** Represents an exception that happened while loading, linking or using a shader program. */
-public class ShaderException extends RuntimeException {
+public class ShaderException extends Exception {
 
   /**
    * @param message A message that describes the fault

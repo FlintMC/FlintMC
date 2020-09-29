@@ -7,6 +7,9 @@ import net.labyfy.component.gui.event.input.InputState;
 import net.labyfy.component.gui.event.input.Key;
 import net.labyfy.component.gui.windowing.WindowRenderer;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.render.shader.ShaderException;
+import net.labyfy.component.render.shader.ShaderProgram;
+import net.labyfy.component.render.shader.ShaderUniform;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
 import net.labyfy.internal.webgui.ultralight.util.UltralightLabyfyBridge;
 import net.labymedia.ultralight.UltralightSurface;
@@ -16,13 +19,14 @@ import net.labymedia.ultralight.math.IntRect;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL33.*;
 
 public class UltralightWindowWebView implements UltralightWebGuiView, WindowRenderer, GuiEventListener {
   private final UltralightView view;
   private final boolean gpuRenderer;
 
   private int openGLTexture;
+  private int vao, vbo, ebo;
   private boolean transparent;
 
   private float scale; // TODO: make configurable
@@ -31,8 +35,14 @@ public class UltralightWindowWebView implements UltralightWebGuiView, WindowRend
   private int width;
   private int height;
 
+  private ShaderProgram shader;
+  private ShaderUniform dimsUniform;
+  private ShaderUniform textureUniform;
+
   @AssistedInject
   protected UltralightWindowWebView(
+      ShaderProgram.Factory shaderFactory,
+      ShaderUniform.Factory uniformFactory,
       UltralightWebGuiController controller,
       @Assisted("initialWidth") int initialWidth,
       @Assisted("initialHeight") int initialHeight,
@@ -50,6 +60,47 @@ public class UltralightWindowWebView implements UltralightWebGuiView, WindowRend
 
     this.width = initialWidth;
     this.height = initialHeight;
+
+    this.shader = shaderFactory.create();
+    try {
+      this.shader.addVertexShader("#version 330 core\n" +
+          "\n" +
+          "layout (location = 0) in vec3 inPos;\n" +
+          "layout (location = 1) in vec3 inColor;\n" +
+          "layout (location = 2) in vec2 inTexCoord;\n" +
+          "\n" +
+          "uniform vec2 Dims;\n" +
+          "\n" +
+          "out vec3 VertexColor;\n" +
+          "out vec2 TexCoord;\n" +
+          "\n" +
+          "void main() \n" +
+          "{\n" +
+          "    VertexColor = inColor;\n" +
+          "    TexCoord = inTexCoord;\n" +
+          "    gl_Position = vec4((inPos.xy / Dims)*2. - 1., 0., 1.);\n" +
+          "}");
+      this.shader.addFragmentShader("#version 330 core\n" +
+          "in vec3 VertexColor;\n" +
+          "in vec2 TexCoord;\n" +
+          "\n" +
+          "out vec4 FragColor;\n" +
+          "\n" +
+          "uniform sampler2D Text;\n" +
+          "\n" +
+          "void" +
+          " main()\n" +
+          "{\n" +
+          "    FragColor = texture(Text, TexCoord);\n" +
+          "    //FragColor = vec4(TexCoord,0., 1.);\n" +
+          "}");
+      this.shader.link();
+
+      this.dimsUniform = uniformFactory.create("Dims", this.shader);
+      this.textureUniform = uniformFactory.create("Text", this.shader);
+    } catch(ShaderException e) {
+      e.printStackTrace();
+    }
   }
 
 
@@ -137,11 +188,48 @@ public class UltralightWindowWebView implements UltralightWebGuiView, WindowRend
       return;
     }
 
+    int oldVertexArray = glGetInteger(GL_VERTEX_ARRAY_BINDING);
+    int oldVertexBuffer = glGetInteger(GL_ARRAY_BUFFER_BINDING);
+    int oldElementArrayBuffer = glGetInteger(GL_ELEMENT_ARRAY_BUFFER_BINDING);
+
     /*if(openGLTexture != -1) {
       throw new IllegalStateException("Renderer has been initialized and not been destructed yet");
     }*/
 
     openGLTexture = glGenTextures();
+    vao = glGenVertexArrays();
+    vbo = glGenBuffers();
+    ebo = glGenBuffers();
+    float[] vertices = new float[]{
+        width, height, 0,/**/ 0, 0, 1,/**/ 1, 1, // TOP RIGHT
+        width, 0, 0,/**/ 0, 0, 1,/**/ 1, 0,  // BOTTOM RIGHT
+        0, 0, 0,/**/ 1, 0, 0,/**/ 0, 0, // BOTTOM LEFT
+        0, height, 0,/**/ 0, 1, 0,/**/ 0, 1 // TOP LEFT
+    };
+    int[] indices = new int[]{
+        0, 3, 1,
+        3, 2, 1
+    };
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, 32, 0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, false, 32, 12);
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, false, 32, 24);
+    glEnableVertexAttribArray(2);
+
+    glEnableVertexAttribArray(2);
     glBindTexture(GL_TEXTURE_2D, openGLTexture);
 
     // Disable mipmapping, the texture is always directly user facing
@@ -156,15 +244,47 @@ public class UltralightWindowWebView implements UltralightWebGuiView, WindowRend
 
     // Clean up
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldElementArrayBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, oldVertexBuffer);
+    glBindVertexArray(oldVertexArray);
   }
 
   @Override
   public boolean isIntrusive() {
-    return !transparent;
+    return false;
   }
 
   @Override
   public void render() {
+
+    glViewport(0, 0, width, height);
+    glScissor(0, 0, width, height);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    glBindTexture(GL_TEXTURE_2D, openGLTexture);
+    this.shader.useShader();
+    this.dimsUniform.set2fv(new float[]{width, height});
+    this.textureUniform.set1i(this.openGLTexture);
+
+    int oldVertexArray = glGetInteger(GL_VERTEX_ARRAY_BINDING);
+    int oldVertexBuffer = glGetInteger(GL_ARRAY_BUFFER_BINDING);
+    int oldElementArrayBuffer = glGetInteger(GL_ELEMENT_ARRAY_BUFFER_BINDING);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldElementArrayBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, oldVertexBuffer);
+    glBindVertexArray(oldVertexArray);
+
+    this.shader.stopShader();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glPopMatrix();
    /* // Set up OpenGL state
     glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_TRANSFORM_BIT);
 
