@@ -93,7 +93,7 @@ public final class ClassMapping extends BaseMapping {
    * @return A method mapping or null.
    */
   public MethodMapping getMethod(final String name, final Class<?>... parameters) {
-    String identifier = name + ' ' + MappingUtils.generateDescriptor(parameters);
+    String identifier = name + '(' + MappingUtils.generateDescriptor(parameters) + ")";
     return this.getMethodByIdentifier(identifier);
   }
 
@@ -105,7 +105,7 @@ public final class ClassMapping extends BaseMapping {
    * @return A method mapping or null.
    */
   public MethodMapping getMethod(final String name, final CtClass... parameters) {
-    String identifier = name + ' ' + MappingUtils.generateDescriptor(parameters);
+    String identifier = name + '(' + MappingUtils.generateDescriptor(parameters) + ")";
     return this.getMethodByIdentifier(identifier);
   }
 
