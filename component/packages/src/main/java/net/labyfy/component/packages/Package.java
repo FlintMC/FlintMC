@@ -1,6 +1,10 @@
 package net.labyfy.component.packages;
 
+import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.inject.assisted.AssistedFactory;
+
 import java.io.File;
+import java.util.jar.JarFile;
 
 /**
  * Represents a package which has been identified and possibly loaded.
@@ -97,4 +101,19 @@ public interface Package {
    * @throws IllegalStateException If the pakcage is not in the {@link PackageState#ERRORED} state
    */
   Exception getLoadException();
+
+  @AssistedFactory(Package.class)
+  interface Factory {
+
+    /**
+     * Creates a Package instance.
+     *
+     * @param file The File of the Package
+     * @param jarFile the JarFile of the Package
+     * @return a Package instance representing the Package
+     */
+    Package create(@Assisted File file, @Assisted JarFile jarFile);
+
+  }
+
 }

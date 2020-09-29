@@ -19,12 +19,14 @@ dependencies {
     api project(path: ':component:inject', configuration: 'internal')
     api project(':component:service')
     api project(path: ':component:stereotype', configuration: 'internal')
+    api project(':component:tasks')
     api group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
     api 'com.google.inject:guice:4.2.0'
 
     labyfy project(path: ':component:inject', configuration: 'internal')
     labyfy project(':component:service')
     labyfy project(path: ':component:stereotype', configuration: 'internal')
+    labyfy project(':component:tasks')
     labyfy group: 'org.apache.logging.log4j', name: 'log4j-labyfy', version: '2.8.1'
     labyfy 'com.google.inject:guice:4.2.0'
 }

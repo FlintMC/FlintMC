@@ -31,9 +31,7 @@ public class DefaultTasks {
         .getCtClass()
         .getDeclaredConstructors()[0]
         .insertAfter(
-            "net.labyfy.component.tasks.v1_15_2.DefaultTasks.notify(\""
-                + Tasks.POST_MINECRAFT_INITIALIZE
-                + "\");");
+            "net.labyfy.component.tasks.v1_15_2.DefaultTasks.notify(net.labyfy.component.tasks.Tasks.POST_MINECRAFT_INITIALIZE);");
   }
 
   @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.15.2")
@@ -47,12 +45,10 @@ public class DefaultTasks {
                 .getMethod("setLogOnGlError")
                 .getName())
         .insertAfter(
-            "net.labyfy.component.tasks.v1_15_2.DefaultTasks.notify(\""
-                + Tasks.POST_OPEN_GL_INITIALIZE
-                + "\");");
+            "net.labyfy.component.tasks.v1_15_2.DefaultTasks.notify(net.labyfy.component.tasks.Tasks.POST_OPEN_GL_INITIALIZE);");
   }
 
-  public static void notify(String task) throws TaskExecutionException {
+  public static void notify(Tasks task) throws TaskExecutionException {
     InjectionHolder.getInjectedInstance(TaskExecutor.class).execute(task);
   }
 }
