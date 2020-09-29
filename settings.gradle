@@ -101,6 +101,9 @@ findProject(':component:player')?.name = 'player'
 include 'component:transform:shadow'
 findProject(':component:transform:shadow')?.name = 'shadow'
 
-include 'component:game-settings'
-findProject(':component:game-settings')?.name = "game-settings"
+include 'component:configuration:configuration'
+findProject(':component:configuration:configuration')?.name = "configuration"
+
+include 'component:configuration:game-settings'
+findProject(':component:configuration:game-settings')?.name = "game-settings"
 

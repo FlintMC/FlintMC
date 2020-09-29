@@ -1,26 +1,30 @@
 package net.labyfy.component.gamesettings;
 
-import net.labyfy.chat.Keybind;
+import net.labyfy.component.configuration.Configuration;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.PlayerClothing;
 import net.labyfy.component.player.util.sound.SoundCategory;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * Represents the Minecraft game settings
  */
+@Configuration(value = "labyfy/minecraft/minecraft_options")
 public interface GameSettings {
 
+  @Configuration.Entry("mouseSensitivity")
   double getMouseSensitivity();
 
+  @Configuration.Entry("mouseSensitivity")
   void setMouseSensitivity(double mouseSensitivity);
 
+  @Configuration.Entry("renderDistanceChunks")
   int getRenderDistanceChunks();
 
+  @Configuration.Entry("renderDistanceChunks")
   void setRenderDistanceChunks(int renderDistanceChunks);
 
   /**
