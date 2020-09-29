@@ -106,6 +106,7 @@ public class DefaultShaderProgram implements ShaderProgram {
     if (this.shaderProgram <= 0)
       throw new IllegalStateException("Shader program has not been successfully linked yet.");
     glUseProgram(shaderProgram);
+    this.updateProvidedUniforms();
   }
 
   @Override
