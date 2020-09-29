@@ -101,6 +101,12 @@ findProject(':component:player')?.name = 'player'
 include 'component:eventbus'
 findProject(':component:eventbus')?.name = 'eventbus'
 
+include 'component:server'
+findProject(':component:server')?.name = 'server'
+
+include 'component:items'
+findProject(':component:items')?.name = 'items'
+
 include 'component:world'
 findProject(':component:world')?.name = 'world'
 

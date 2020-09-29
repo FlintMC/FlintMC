@@ -1,6 +1,5 @@
 package net.labyfy.chat.controller;
 
-import com.google.inject.Singleton;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.controller.filter.ChatFilter;
 import net.labyfy.chat.controller.filter.FilterableChatMessage;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-@Singleton
 public abstract class DefaultChatController implements ChatController {
 
   private static final UUID NO_SENDER = new UUID(0, 0);

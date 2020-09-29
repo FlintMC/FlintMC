@@ -8,10 +8,7 @@ import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
-import net.labyfy.component.transform.shadow.FieldGetter;
-import net.labyfy.component.transform.shadow.FieldSetter;
-import net.labyfy.component.transform.shadow.MethodProxy;
-import net.labyfy.component.transform.shadow.Shadow;
+import net.labyfy.component.transform.shadow.*;
 
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
@@ -33,12 +30,41 @@ public class ShadowService implements ServiceHandler {
   @ClassTransform
   public void transform(ClassTransformContext classTransformContext) throws NotFoundException, CannotCompileException {
     if (!this.transforms.containsKey(classTransformContext.getCtClass().getName())) return;
+    CtClass ctClass = classTransformContext.getCtClass();
+
     Property.Base property = this.transforms.get(classTransformContext.getCtClass().getName());
     ClassPool classPool = classTransformContext.getCtClass().getClassPool();
     classTransformContext.getCtClass().addInterface(classPool.get(property.getLocatedIdentifiedAnnotation().<Class<?>>getLocation().getName()));
-    handleMethodProxies(property, classPool, classTransformContext);
-    handleFieldGetters(property, classTransformContext.getCtClass());
-    handleFieldSetters(property, classTransformContext.getCtClass());
+    handleMethodProxies(property, classPool, ctClass);
+    handleFieldCreators(property, ctClass);
+    handleFieldGetters(property, ctClass);
+    handleFieldSetters(property, ctClass);
+  }
+
+  private void handleFieldCreators(Property.Base property, CtClass ctClass) {
+    for (Property.Base fieldCreators : property.getSubProperties(FieldCreate.class)) {
+      FieldCreate fieldCreate = fieldCreators.getLocatedIdentifiedAnnotation().<FieldCreate>getAnnotation();
+
+      boolean exist = false;
+      for (CtField field : ctClass.getFields()) {
+        if (field.getName().equals(fieldCreate.name())) {
+          exist = true;
+        }
+      }
+      if (!exist) {
+        try {
+          ctClass.addField(
+              new CtField(
+                  ctClass.getClassPool().get(fieldCreate.typeName()),
+                  fieldCreate.name(),
+                  ctClass
+              ),
+              fieldCreate.defaultValue());
+        } catch (CannotCompileException | NotFoundException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   private void handleFieldSetters(Property.Base property, CtClass ctClass) throws CannotCompileException {
@@ -67,12 +93,11 @@ public class ShadowService implements ServiceHandler {
       if (parameters.length != 0) {
         throw new IllegalArgumentException("Getter " + method + " must not have arguments.");
       }
-
       ctClass.addMethod(CtMethod.make("public " + method.getReturnType().getTypeName() + " " + method.getName() + "(){return " + "this." + fieldGetter.value() + ";}", ctClass));
     }
   }
 
-  private void handleMethodProxies(Property.Base property, ClassPool classPool, ClassTransformContext classTransformContext) throws NotFoundException {
+  private void handleMethodProxies(Property.Base property, ClassPool classPool, CtClass ctClass) throws NotFoundException {
     for (Property.Base methodProxy : property.getSubProperties(MethodProxy.class)) {
       Method method = methodProxy.getLocatedIdentifiedAnnotation().getLocation();
 
@@ -82,7 +107,7 @@ public class ShadowService implements ServiceHandler {
         classes[i] = classPool.get(parameters[i].getType().getName());
       }
 
-      CtMethod target = classTransformContext.getCtClass().getDeclaredMethod(method.getName(), classes);
+      CtMethod target = ctClass.getDeclaredMethod(method.getName(), classes);
       target.setModifiers(Modifier.setPublic(target.getModifiers()));
     }
   }
