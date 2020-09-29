@@ -8,10 +8,7 @@ import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
-import net.labyfy.component.transform.shadow.FieldGetter;
-import net.labyfy.component.transform.shadow.FieldSetter;
-import net.labyfy.component.transform.shadow.MethodProxy;
-import net.labyfy.component.transform.shadow.Shadow;
+import net.labyfy.component.transform.shadow.*;
 
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
@@ -37,8 +34,29 @@ public class ShadowService implements ServiceHandler {
     ClassPool classPool = classTransformContext.getCtClass().getClassPool();
     classTransformContext.getCtClass().addInterface(classPool.get(property.getLocatedIdentifiedAnnotation().<Class<?>>getLocation().getName()));
     handleMethodProxies(property, classPool, classTransformContext);
+    handleFieldCreators(property, classTransformContext.getCtClass());
     handleFieldGetters(property, classTransformContext.getCtClass());
     handleFieldSetters(property, classTransformContext.getCtClass());
+  }
+
+  private void handleFieldCreators(Property.Base property, CtClass ctClass) {
+    for (Property.Base fieldCreators : property.getSubProperties(FieldCreate.class)) {
+      FieldCreate fieldCreate = fieldCreators.getLocatedIdentifiedAnnotation().<FieldCreate>getAnnotation();
+
+      boolean exist = false;
+      for (CtField field : ctClass.getFields()) {
+        if (field.getName().equals(fieldCreate.name())) {
+          exist = true;
+        }
+      }
+      if (!exist) {
+        try {
+          ctClass.addField(new CtField(ctClass.getClassPool().get(fieldCreate.typeName()), fieldCreate.name(), ctClass), fieldCreate.defaultValue());
+        } catch (CannotCompileException | NotFoundException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   private void handleFieldSetters(Property.Base property, CtClass ctClass) throws CannotCompileException {
@@ -67,7 +85,6 @@ public class ShadowService implements ServiceHandler {
       if (parameters.length != 0) {
         throw new IllegalArgumentException("Getter " + method + " must not have arguments.");
       }
-
       ctClass.addMethod(CtMethod.make("public " + method.getReturnType().getTypeName() + " " + method.getName() + "(){return " + "this." + fieldGetter.value() + ";}", ctClass));
     }
   }
