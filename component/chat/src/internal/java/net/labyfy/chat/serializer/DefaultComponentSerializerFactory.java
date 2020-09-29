@@ -1,6 +1,7 @@
 package net.labyfy.chat.serializer;
 
 import com.google.inject.Singleton;
+import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.chat.serializer.gson.DefaultGsonComponentSerializer;
 import org.apache.logging.log4j.Logger;
 
@@ -11,10 +12,10 @@ public class DefaultComponentSerializerFactory implements ComponentSerializer.Fa
   private final ComponentSerializer plain;
   private final GsonComponentSerializer gson;
 
-  public DefaultComponentSerializerFactory(Logger logger, boolean legacyHover) {
+  public DefaultComponentSerializerFactory(Logger logger, ComponentBuilder.Factory componentFactory, boolean legacyHover) {
     this.legacy = new PlainComponentSerializer(logger, true); // plain serializer with all colors/formatting
     this.plain = new PlainComponentSerializer(logger, false); // plain serializer without any colors/formatting
-    this.gson = new DefaultGsonComponentSerializer(logger, this, legacyHover); // in 1.16 the hoverEvent has completely changed
+    this.gson = new DefaultGsonComponentSerializer(logger, componentFactory, legacyHover); // in 1.16 the hoverEvent has completely changed
   }
 
   @Override
