@@ -30,17 +30,15 @@ public class ShadowService implements ServiceHandler {
   @ClassTransform
   public void transform(ClassTransformContext classTransformContext) throws NotFoundException, CannotCompileException {
     if (!this.transforms.containsKey(classTransformContext.getCtClass().getName())) return;
-    if (classTransformContext.getCtClass().isFrozen()) {
-      return;
-    }
+    CtClass ctClass = classTransformContext.getCtClass();
 
     Property.Base property = this.transforms.get(classTransformContext.getCtClass().getName());
     ClassPool classPool = classTransformContext.getCtClass().getClassPool();
     classTransformContext.getCtClass().addInterface(classPool.get(property.getLocatedIdentifiedAnnotation().<Class<?>>getLocation().getName()));
-    handleMethodProxies(property, classPool, classTransformContext);
-    handleFieldCreators(property, classTransformContext.getCtClass());
-    handleFieldGetters(property, classTransformContext.getCtClass());
-    handleFieldSetters(property, classTransformContext.getCtClass());
+    handleMethodProxies(property, classPool, ctClass);
+    handleFieldCreators(property, ctClass);
+    handleFieldGetters(property, ctClass);
+    handleFieldSetters(property, ctClass);
   }
 
   private void handleFieldCreators(Property.Base property, CtClass ctClass) {
@@ -99,7 +97,7 @@ public class ShadowService implements ServiceHandler {
     }
   }
 
-  private void handleMethodProxies(Property.Base property, ClassPool classPool, ClassTransformContext classTransformContext) throws NotFoundException {
+  private void handleMethodProxies(Property.Base property, ClassPool classPool, CtClass ctClass) throws NotFoundException {
     for (Property.Base methodProxy : property.getSubProperties(MethodProxy.class)) {
       Method method = methodProxy.getLocatedIdentifiedAnnotation().getLocation();
 
@@ -109,7 +107,7 @@ public class ShadowService implements ServiceHandler {
         classes[i] = classPool.get(parameters[i].getType().getName());
       }
 
-      CtMethod target = classTransformContext.getCtClass().getDeclaredMethod(method.getName(), classes);
+      CtMethod target = ctClass.getDeclaredMethod(method.getName(), classes);
       target.setModifiers(Modifier.setPublic(target.getModifiers()));
     }
   }
