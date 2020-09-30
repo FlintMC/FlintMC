@@ -2,8 +2,8 @@ package net.labyfy.internal.component.gamesettings.v1_16_3;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.gamesettings.GameSettings;
 import net.labyfy.component.gamesettings.KeyBinding;
+import net.labyfy.component.gamesettings.MinecraftConfiguration;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.util.Hand;
@@ -20,9 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
-@Implement(value = GameSettings.class, version = "1.16.3")
-public class VersionedGameSettings implements GameSettings {
-
+@Implement(value = MinecraftConfiguration.class, version = "1.16.3")
+public class VersionedGameSettings implements MinecraftConfiguration {
   private final KeyBinding.Factory keyBindingFactory;
 
   @Inject
@@ -335,6 +334,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setOverrideWidth(int overrideWidth) {
     Minecraft.getInstance().gameSettings.overrideWidth = overrideWidth;
+    this.saveOptions();
   }
 
   @Override
@@ -345,6 +345,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setOverrideHeight(int overrideHeight) {
     Minecraft.getInstance().gameSettings.overrideHeight = overrideHeight;
+    this.saveOptions();
   }
 
   @Override
@@ -355,6 +356,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setHeldItemTooltips(boolean heldItemTooltips) {
     Minecraft.getInstance().gameSettings.heldItemTooltips = heldItemTooltips;
+    this.saveOptions();
   }
 
   @Override
@@ -365,6 +367,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChatScale(double chatScale) {
     Minecraft.getInstance().gameSettings.chatScale = chatScale;
+    this.saveOptions();
   }
 
   @Override
@@ -375,6 +378,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChatWidth(double chatWidth) {
     Minecraft.getInstance().gameSettings.chatWidth = chatWidth;
+    this.saveOptions();
   }
 
   @Override
@@ -385,6 +389,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChatHeightUnfocused(double chatHeightUnfocused) {
     Minecraft.getInstance().gameSettings.chatHeightUnfocused = chatHeightUnfocused;
+    this.saveOptions();
   }
 
   @Override
@@ -395,6 +400,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChatHeightFocused(double chatHeightFocused) {
     Minecraft.getInstance().gameSettings.chatHeightFocused = chatHeightFocused;
+    this.saveOptions();
   }
 
   @Override
@@ -405,6 +411,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChatDelay(double chatDelay) {
     Minecraft.getInstance().gameSettings.field_238332_z_ = chatDelay;
+    this.saveOptions();
   }
 
   @Override
@@ -415,21 +422,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setMipmapLevels(int mipmapLevels) {
     Minecraft.getInstance().gameSettings.mipmapLevels = mipmapLevels;
-  }
-
-  @Override
-  public float getSoundVolume(SoundCategory category) {
-    return Minecraft.getInstance().gameSettings.getSoundLevel(
-            this.toMinecraftSoundCategory(category)
-    );
-  }
-
-  @Override
-  public void setSoundVolume(SoundCategory category, float volume) {
-    Minecraft.getInstance().gameSettings.setSoundLevel(
-            this.toMinecraftSoundCategory(category),
-            volume
-    );
+    this.saveOptions();
   }
 
   @Override
@@ -440,6 +433,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setUseNativeTransport(boolean useNativeTransport) {
     Minecraft.getInstance().gameSettings.useNativeTransport = useNativeTransport;
+    this.saveOptions();
   }
 
   @Override
@@ -461,12 +455,15 @@ public class VersionedGameSettings implements GameSettings {
     switch (attackIndicator) {
       case OFF:
         Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.OFF;
+        this.saveOptions();
         break;
       case CROSSHAIR:
         Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.CROSSHAIR;
+        this.saveOptions();
         break;
       case HOTBAR:
         Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.HOTBAR;
+        this.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + attackIndicator);
@@ -498,21 +495,27 @@ public class VersionedGameSettings implements GameSettings {
     switch (tutorialStep) {
       case MOVEMENT:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.MOVEMENT;
+        this.saveOptions();
         break;
       case FIND_TREE:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.FIND_TREE;
+        this.saveOptions();
         break;
       case PUNCH_TREE:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.PUNCH_TREE;
+        this.saveOptions();
         break;
       case OPEN_INVENTORY:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.OPEN_INVENTORY;
+        this.saveOptions();
         break;
       case CRAFT_PLANKS:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.CRAFT_PLANKS;
+        this.saveOptions();
         break;
       case NONE:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.NONE;
+        this.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + tutorialStep);
@@ -527,6 +530,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setBiomeBlendRadius(int biomeBlendRadius) {
     Minecraft.getInstance().gameSettings.biomeBlendRadius = biomeBlendRadius;
+    this.saveOptions();
   }
 
   @Override
@@ -537,6 +541,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setMouseWheelSensitivity(double mouseWheelSensitivity) {
     Minecraft.getInstance().gameSettings.mouseWheelSensitivity = mouseWheelSensitivity;
+    this.saveOptions();
   }
 
   @Override
@@ -547,6 +552,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setRawMouseInput(boolean rawMouseInput) {
     Minecraft.getInstance().gameSettings.rawMouseInput = rawMouseInput;
+    this.saveOptions();
   }
 
   @Override
@@ -557,6 +563,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setGlDebugVerbosity(int glDebugVerbosity) {
     Minecraft.getInstance().gameSettings.glDebugVerbosity = glDebugVerbosity;
+    this.saveOptions();
   }
 
   @Override
@@ -567,6 +574,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setAutoJump(boolean autoJump) {
     Minecraft.getInstance().gameSettings.autoJump = autoJump;
+    this.saveOptions();
   }
 
   @Override
@@ -577,6 +585,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setAutoSuggestCommands(boolean autoSuggestCommands) {
     Minecraft.getInstance().gameSettings.autoSuggestCommands = autoSuggestCommands;
+    this.saveOptions();
   }
 
   @Override
@@ -587,6 +596,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChatColor(boolean chatColor) {
     Minecraft.getInstance().gameSettings.chatColor = chatColor;
+    this.saveOptions();
   }
 
   @Override
@@ -597,6 +607,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChatLinks(boolean chatLinks) {
     Minecraft.getInstance().gameSettings.chatLinks = chatLinks;
+    this.saveOptions();
   }
 
   @Override
@@ -607,6 +618,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChatLinksPrompt(boolean chatLinksPrompt) {
     Minecraft.getInstance().gameSettings.chatLinksPrompt = chatLinksPrompt;
+    this.saveOptions();
   }
 
   @Override
@@ -617,6 +629,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setVsync(boolean vsync) {
     Minecraft.getInstance().gameSettings.vsync = vsync;
+    this.saveOptions();
   }
 
   @Override
@@ -627,147 +640,9 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setEntityShadows(boolean entityShadows) {
     Minecraft.getInstance().gameSettings.entityShadows = entityShadows;
+    this.saveOptions();
   }
 
-  @Override
-  public boolean isForceUnicodeFont() {
-    return Minecraft.getInstance().gameSettings.forceUnicodeFont;
-  }
-
-  @Override
-  public void setForceUnicodeFont(boolean forceUnicodeFont) {
-    Minecraft.getInstance().gameSettings.forceUnicodeFont = forceUnicodeFont;
-  }
-
-  @Override
-  public boolean isInvertMouse() {
-    return Minecraft.getInstance().gameSettings.invertMouse;
-  }
-
-  @Override
-  public void setInvertMouse(boolean invertMouse) {
-    Minecraft.getInstance().gameSettings.invertMouse = invertMouse;
-  }
-
-  @Override
-  public boolean isDiscreteMouseScroll() {
-    return Minecraft.getInstance().gameSettings.discreteMouseScroll;
-  }
-
-  @Override
-  public void setDiscreteMouseScroll(boolean discreteMouseScroll) {
-    Minecraft.getInstance().gameSettings.discreteMouseScroll = discreteMouseScroll;
-  }
-
-  @Override
-  public boolean isRealmsNotifications() {
-    return Minecraft.getInstance().gameSettings.realmsNotifications;
-  }
-
-  @Override
-  public void setRealmsNotifications(boolean realmsNotifications) {
-    Minecraft.getInstance().gameSettings.realmsNotifications = realmsNotifications;
-  }
-
-  @Override
-  public boolean isReducedDebugInfo() {
-    return Minecraft.getInstance().gameSettings.reducedDebugInfo;
-  }
-
-  @Override
-  public void setReducedDebugInfo(boolean reducedDebugInfo) {
-    Minecraft.getInstance().gameSettings.reducedDebugInfo = reducedDebugInfo;
-  }
-
-  @Override
-  public boolean isSnooper() {
-    return Minecraft.getInstance().gameSettings.snooper;
-  }
-
-  @Override
-  public void setSnooper(boolean snooper) {
-    Minecraft.getInstance().gameSettings.snooper = snooper;
-  }
-
-  @Override
-  public boolean isShowSubtitles() {
-    return Minecraft.getInstance().gameSettings.showSubtitles;
-  }
-
-  @Override
-  public void setShowSubtitles(boolean showSubtitles) {
-    Minecraft.getInstance().gameSettings.showSubtitles = showSubtitles;
-  }
-
-  @Override
-  public boolean isAccessibilityTextBackground() {
-    return Minecraft.getInstance().gameSettings.accessibilityTextBackground;
-  }
-
-  @Override
-  public void setAccessibilityTextBackground(boolean accessibilityTextBackground) {
-    Minecraft.getInstance().gameSettings.accessibilityTextBackground = accessibilityTextBackground;
-  }
-
-  @Override
-  public boolean isTouchscreen() {
-    return Minecraft.getInstance().gameSettings.touchscreen;
-  }
-
-  @Override
-  public void setTouchscreen(boolean touchscreen) {
-    Minecraft.getInstance().gameSettings.touchscreen = touchscreen;
-  }
-
-  @Override
-  public boolean isFullscreen() {
-    return Minecraft.getInstance().gameSettings.fullscreen;
-  }
-
-  @Override
-  public void setFullscreen(boolean fullscreen) {
-    Minecraft.getInstance().gameSettings.fullscreen = fullscreen;
-  }
-
-  @Override
-  public boolean isViewBobbing() {
-    return Minecraft.getInstance().gameSettings.viewBobbing;
-  }
-
-  @Override
-  public void setViewBobbing(boolean viewBobbing) {
-    Minecraft.getInstance().gameSettings.viewBobbing = viewBobbing;
-  }
-
-  @Override
-  public boolean isToggleCrouch() {
-    return Minecraft.getInstance().gameSettings.toggleCrouch;
-  }
-
-  @Override
-  public void setToggleCrouch(boolean toggleCrouch) {
-    Minecraft.getInstance().gameSettings.toggleCrouch = toggleCrouch;
-  }
-
-  @Override
-  public boolean isToggleSprint() {
-    return Minecraft.getInstance().gameSettings.toggleSprint;
-  }
-
-  @Override
-  public void setToggleSprint(boolean toggleSprint) {
-    Minecraft.getInstance().gameSettings.toggleSprint = toggleSprint;
-  }
-
-  @Override
-  public boolean isSkipMultiplayerWarning() {
-    return Minecraft.getInstance().gameSettings.field_230152_Z_;
-  }
-
-  @Override
-  public void setSkipMultiplayerWarning(boolean skipMultiplayerWarning) {
-    Minecraft.getInstance().gameSettings.field_230152_Z_ = skipMultiplayerWarning;
-  }
 
   @Override
   public KeyBinding getKeyBindForward() {
@@ -890,16 +765,6 @@ public class VersionedGameSettings implements GameSettings {
   }
 
   @Override
-  public KeyBinding getKeyBindSaveToolbar() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSaveToolbar);
-  }
-
-  @Override
-  public KeyBinding getKeyBindLoadToolbar() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindLoadToolbar);
-  }
-
-  @Override
   public List<KeyBinding> getKeyBindings() {
     List<KeyBinding> keyBindings;
 
@@ -918,13 +783,177 @@ public class VersionedGameSettings implements GameSettings {
   }
 
   @Override
+  public KeyBinding getKeyBindSaveToolbar() {
+    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSaveToolbar);
+  }
+
+  @Override
+  public KeyBinding getKeyBindLoadToolbar() {
+    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindLoadToolbar);
+  }
+
+  @Override
+  public boolean isForceUnicodeFont() {
+    return Minecraft.getInstance().gameSettings.forceUnicodeFont;
+  }
+
+  @Override
+  public void setForceUnicodeFont(boolean forceUnicodeFont) {
+    Minecraft.getInstance().gameSettings.forceUnicodeFont = forceUnicodeFont;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isInvertMouse() {
+    return Minecraft.getInstance().gameSettings.invertMouse;
+  }
+
+  @Override
+  public void setInvertMouse(boolean invertMouse) {
+    Minecraft.getInstance().gameSettings.invertMouse = invertMouse;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isDiscreteMouseScroll() {
+    return Minecraft.getInstance().gameSettings.discreteMouseScroll;
+  }
+
+  @Override
+  public void setDiscreteMouseScroll(boolean discreteMouseScroll) {
+    Minecraft.getInstance().gameSettings.discreteMouseScroll = discreteMouseScroll;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isRealmsNotifications() {
+    return Minecraft.getInstance().gameSettings.realmsNotifications;
+  }
+
+  @Override
+  public void setRealmsNotifications(boolean realmsNotifications) {
+    Minecraft.getInstance().gameSettings.realmsNotifications = realmsNotifications;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isReducedDebugInfo() {
+    return Minecraft.getInstance().gameSettings.reducedDebugInfo;
+  }
+
+  @Override
+  public void setReducedDebugInfo(boolean reducedDebugInfo) {
+    Minecraft.getInstance().gameSettings.reducedDebugInfo = reducedDebugInfo;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isSnooper() {
+    return Minecraft.getInstance().gameSettings.snooper;
+  }
+
+  @Override
+  public void setSnooper(boolean snooper) {
+    Minecraft.getInstance().gameSettings.snooper = snooper;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isShowSubtitles() {
+    return Minecraft.getInstance().gameSettings.showSubtitles;
+  }
+
+  @Override
+  public void setShowSubtitles(boolean showSubtitles) {
+    Minecraft.getInstance().gameSettings.showSubtitles = showSubtitles;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isAccessibilityTextBackground() {
+    return Minecraft.getInstance().gameSettings.accessibilityTextBackground;
+  }
+
+  @Override
+  public void setAccessibilityTextBackground(boolean accessibilityTextBackground) {
+    Minecraft.getInstance().gameSettings.accessibilityTextBackground = accessibilityTextBackground;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isTouchscreen() {
+    return Minecraft.getInstance().gameSettings.touchscreen;
+  }
+
+  @Override
+  public void setTouchscreen(boolean touchscreen) {
+    Minecraft.getInstance().gameSettings.touchscreen = touchscreen;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isFullscreen() {
+    return Minecraft.getInstance().gameSettings.fullscreen;
+  }
+
+  @Override
+  public void setFullscreen(boolean fullscreen) {
+    Minecraft.getInstance().gameSettings.fullscreen = fullscreen;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isViewBobbing() {
+    return Minecraft.getInstance().gameSettings.viewBobbing;
+  }
+
+  @Override
+  public void setViewBobbing(boolean viewBobbing) {
+    Minecraft.getInstance().gameSettings.viewBobbing = viewBobbing;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isToggleCrouch() {
+    return Minecraft.getInstance().gameSettings.toggleCrouch;
+  }
+
+  @Override
+  public void setToggleCrouch(boolean toggleCrouch) {
+    Minecraft.getInstance().gameSettings.toggleCrouch = toggleCrouch;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isToggleSprint() {
+    return Minecraft.getInstance().gameSettings.toggleSprint;
+  }
+
+  @Override
+  public void setToggleSprint(boolean toggleSprint) {
+    Minecraft.getInstance().gameSettings.toggleSprint = toggleSprint;
+    this.saveOptions();
+  }
+
+  @Override
+  public boolean isSkipMultiplayerWarning() {
+    return Minecraft.getInstance().gameSettings.field_230152_Z_;
+  }
+
+  @Override
+  public void setSkipMultiplayerWarning(boolean skipMultiplayerWarning) {
+    Minecraft.getInstance().gameSettings.field_230152_Z_ = skipMultiplayerWarning;
+    this.saveOptions();
+  }
+
+  @Override
   public Object getDifficulty() {
     return null;
   }
 
   @Override
   public void setDifficulty(Object difficulty) {
-
+    this.saveOptions();
   }
 
   @Override
@@ -956,12 +985,15 @@ public class VersionedGameSettings implements GameSettings {
     switch (pointOfView) {
       case FIRST_PERSON:
         Minecraft.getInstance().gameSettings.func_243229_a(net.minecraft.client.settings.PointOfView.FIRST_PERSON);
+        this.saveOptions();
         break;
       case THIRD_PERSON_BACK:
         Minecraft.getInstance().gameSettings.func_243229_a(net.minecraft.client.settings.PointOfView.THIRD_PERSON_BACK);
+        this.saveOptions();
         break;
       case THIRD_PERSON_FRONT:
         Minecraft.getInstance().gameSettings.func_243229_a(net.minecraft.client.settings.PointOfView.THIRD_PERSON_FRONT);
+        this.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + pointOfView);
@@ -976,6 +1008,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setShowDebugInfo(boolean showDebugInfo) {
     Minecraft.getInstance().gameSettings.showDebugInfo = showDebugInfo;
+    this.saveOptions();
   }
 
   @Override
@@ -986,6 +1019,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setShowDebugProfilerChart(boolean showDebugProfilerChart) {
     Minecraft.getInstance().gameSettings.showDebugProfilerChart = showDebugProfilerChart;
+    this.saveOptions();
   }
 
   @Override
@@ -996,6 +1030,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setShowLagometer(boolean showLagometer) {
     Minecraft.getInstance().gameSettings.showLagometer = showLagometer;
+    this.saveOptions();
   }
 
   @Override
@@ -1006,6 +1041,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setLastServer(String lastServer) {
     Minecraft.getInstance().gameSettings.lastServer = lastServer;
+    this.saveOptions();
   }
 
   @Override
@@ -1016,6 +1052,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setSmoothCamera(boolean smoothCamera) {
     Minecraft.getInstance().gameSettings.smoothCamera = smoothCamera;
+    this.saveOptions();
   }
 
   @Override
@@ -1026,6 +1063,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setFov(double fov) {
     Minecraft.getInstance().gameSettings.fov = fov;
+    this.saveOptions();
   }
 
   @Override
@@ -1036,6 +1074,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setScreenEffectScale(float screenEffectScale) {
     Minecraft.getInstance().gameSettings.field_243226_aM = screenEffectScale;
+    this.saveOptions();
   }
 
   @Override
@@ -1046,6 +1085,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setFovEffectScale(float fovEffectScale) {
     Minecraft.getInstance().gameSettings.field_243227_aN = fovEffectScale;
+    this.saveOptions();
   }
 
   @Override
@@ -1056,6 +1096,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setGamma(double gamma) {
     Minecraft.getInstance().gameSettings.gamma = gamma;
+    this.saveOptions();
   }
 
   @Override
@@ -1066,6 +1107,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setGuiScale(int guiScale) {
     Minecraft.getInstance().gameSettings.guiScale = guiScale;
+    this.saveOptions();
   }
 
   @Override
@@ -1087,12 +1129,15 @@ public class VersionedGameSettings implements GameSettings {
     switch (particles) {
       case ALL:
         Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.ALL;
+        this.saveOptions();
         break;
       case DECREASED:
         Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.DECREASED;
+        this.saveOptions();
         break;
       case MINIMAL:
         Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.MINIMAL;
+        this.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + particles);
@@ -1120,15 +1165,19 @@ public class VersionedGameSettings implements GameSettings {
     switch (narrator) {
       case OFF:
         Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.OFF;
+        this.saveOptions();
         break;
       case ALL:
         Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.ALL;
+        this.saveOptions();
         break;
       case CHAT:
         Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.CHAT;
+        this.saveOptions();
         break;
       case SYSTEM:
         Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.SYSTEM;
+        this.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + narrator);
@@ -1143,6 +1192,7 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setLanguage(String language) {
     Minecraft.getInstance().gameSettings.language = language;
+    this.saveOptions();
   }
 
   @Override
@@ -1153,33 +1203,117 @@ public class VersionedGameSettings implements GameSettings {
   @Override
   public void setChunkSyncWrites(boolean chunkSyncWrites) {
     Minecraft.getInstance().gameSettings.field_241568_aS_ = chunkSyncWrites;
+    this.saveOptions();
   }
 
-  private net.minecraft.util.SoundCategory toMinecraftSoundCategory(SoundCategory category) {
-    switch (category) {
-      case MASTER:
-        return net.minecraft.util.SoundCategory.MASTER;
-      case MUSIC:
-        return net.minecraft.util.SoundCategory.MUSIC;
-      case RECORD:
-        return net.minecraft.util.SoundCategory.RECORDS;
-      case WEATHER:
-        return net.minecraft.util.SoundCategory.WEATHER;
-      case BLOCK:
-        return net.minecraft.util.SoundCategory.BLOCKS;
-      case HOSTILE:
-        return net.minecraft.util.SoundCategory.HOSTILE;
-      case NEUTRAL:
-        return net.minecraft.util.SoundCategory.NEUTRAL;
-      case PLAYER:
-        return net.minecraft.util.SoundCategory.PLAYERS;
-      case AMBIENT:
-        return net.minecraft.util.SoundCategory.AMBIENT;
-      case VOICE:
-        return net.minecraft.util.SoundCategory.VOICE;
-      default:
-        throw new IllegalStateException("Unexpected value: " + category);
-    }
+  @Override
+  public float getMasterSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.MASTER);
+  }
+
+  @Override
+  public void setMasterSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.MASTER, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getMusicSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.MUSIC);
+  }
+
+  @Override
+  public void setMusicSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.MUSIC, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getRecordSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.RECORDS);
+  }
+
+  @Override
+  public void setRecordSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.RECORDS, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getWeatherSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.WEATHER);
+  }
+
+  @Override
+  public void setWeatherSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.WEATHER, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getBlockSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.BLOCKS);
+  }
+
+  @Override
+  public void setBlockSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.BLOCKS, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getHostileSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.HOSTILE);
+  }
+
+  @Override
+  public void setHostileSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.HOSTILE, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getNeutralSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.NEUTRAL);
+  }
+
+  @Override
+  public void setNeutralSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.NEUTRAL, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getPlayerSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.PLAYERS);
+  }
+
+  @Override
+  public void setPlayerSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.PLAYERS, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getAmbientSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.AMBIENT);
+  }
+
+  @Override
+  public void setAmbientSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.AMBIENT, volume);
+    this.saveOptions();
+  }
+
+  @Override
+  public float getVoiceSoundVolume() {
+    return Minecraft.getInstance().gameSettings.getSoundLevel(net.minecraft.util.SoundCategory.VOICE);
+  }
+
+  @Override
+  public void setVoiceSoundVolume(float volume) {
+    Minecraft.getInstance().gameSettings.setSoundLevel(net.minecraft.util.SoundCategory.VOICE, volume);
+    this.saveOptions();
   }
 
   private PlayerClothing fromMinecraftObject(PlayerModelPart playerModelPart) {
@@ -1234,5 +1368,9 @@ public class VersionedGameSettings implements GameSettings {
             keyBinding.getDefault().getKeyCode(),
             keyBinding.getKeyCategory()
     );
+  }
+
+  private void saveOptions() {
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 }
