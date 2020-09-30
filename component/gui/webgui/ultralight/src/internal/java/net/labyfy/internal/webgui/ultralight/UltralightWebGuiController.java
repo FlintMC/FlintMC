@@ -59,7 +59,7 @@ public class UltralightWebGuiController implements WebGuiController {
     // Extract the native libraries into the run directory and load them from there
     // TODO: This works on Windows, but could cause issues on Linux and OSX
     Path runDirectory = Paths.get(".");
-    // UltralightJava.extractNativeLibrary(runDirectory);
+    UltralightJava.extractNativeLibrary(runDirectory);
     UltralightJava.load(runDirectory);
   }
 

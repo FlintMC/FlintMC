@@ -67,11 +67,12 @@ public class VersionedGuiInterceptor {
     }
   }
 
-  @ClassTransform("net.minecraft.client.renderer.GameRenderer")
+  @ClassTransform
+  @CtClassFilter(className = "net.minecraft.client.gui.screen.Screen", value = CtClassFilters.SUBCLASS_OF)
   private void hookScreenRender(ClassTransformContext context) throws CannotCompileException {
     MethodMapping renderMapping = mappingProvider
-        .get("net.minecraft.client.renderer.GameRenderer")
-        .getMethod("updateCameraAndRender", float.class, long.class, boolean.class);
+        .get("net.minecraft.client.gui.IRenderable")
+        .getMethod("render", int.class, int.class, float.class);
 
     CtClass screenClass = context.getCtClass();
     for (CtMethod method : screenClass.getDeclaredMethods()) {
