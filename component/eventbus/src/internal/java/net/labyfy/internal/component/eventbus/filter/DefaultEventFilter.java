@@ -41,7 +41,7 @@ public class DefaultEventFilter implements EventFilter {
     try {
 
       if (!this.mappings.containsKey(event.getClass())) {
-        this.mappings.put(event.getClass(), this.createMappings(event.getClass(), method.getGroupAnnotations()));
+        this.mappings.put(event.getClass(), this.createMappings(method.getEventMethod().getParameterTypes()[0], method.getGroupAnnotations()));
       }
 
       EventFilterMapping[] mappings = this.mappings.get(event.getClass());

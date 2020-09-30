@@ -1,4 +1,4 @@
-package net.labyfy.component.eventbus.event;
+package net.labyfy.component.eventbus.event.subscribe;
 
 import net.labyfy.component.eventbus.event.filter.EventGroup;
 import net.labyfy.component.eventbus.event.util.EventPriority;
@@ -26,7 +26,7 @@ public @interface Subscribe {
   /**
    * Retrieves the priority of the subscribed method.
    *
-   * @return The the subscribed method priority.
+   * @return The priority of this subscribed method.
    */
   byte priority() default EventPriority.NORMAL;
 
@@ -43,7 +43,7 @@ public @interface Subscribe {
   enum Phase {
 
     /**
-     * If the subscribed method has {@link #ANY} as phase, the events {@link #PRE} and {@link #POST} are fired.
+     * Subscribed methods with this phase will be fired with the {@link #PRE} and {@link #POST} phases.
      */
     ANY,
     /**

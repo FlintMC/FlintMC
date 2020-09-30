@@ -1,6 +1,6 @@
 package net.labyfy.component.eventbus;
 
-import net.labyfy.component.eventbus.event.Subscribe;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.transform.hook.Hook;
 
 /**

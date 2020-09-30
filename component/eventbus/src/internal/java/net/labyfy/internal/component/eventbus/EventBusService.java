@@ -7,9 +7,11 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.eventbus.EventBus;
-import net.labyfy.component.eventbus.event.Subscribe;
 import net.labyfy.component.eventbus.event.filter.EventFilter;
 import net.labyfy.component.eventbus.event.filter.EventGroup;
+import net.labyfy.component.eventbus.event.subscribe.PostSubscribe;
+import net.labyfy.component.eventbus.event.subscribe.PreSubscribe;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.method.Executor;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
 import net.labyfy.component.inject.implement.Implement;
@@ -32,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Service for sending events to receivers.
  */
 @Singleton
-@Service(value = Subscribe.class, priority = -10000)
+@Service(value = {Subscribe.class, PreSubscribe.class, PostSubscribe.class}, priority = -10000)
 @Implement(EventBus.class)
 public class EventBusService implements ServiceHandler, EventBus {
 
@@ -63,7 +65,7 @@ public class EventBusService implements ServiceHandler, EventBus {
   public void discover(Identifier.Base property) throws ServiceNotFoundException {
 
     LocatedIdentifiedAnnotation locatedIdentifiedAnnotation = property.getProperty().getLocatedIdentifiedAnnotation();
-    Subscribe subscribe = locatedIdentifiedAnnotation.getAnnotation();
+    Annotation subscribe = locatedIdentifiedAnnotation.getAnnotation();
     Method method = locatedIdentifiedAnnotation.getLocation();
 
     if (method.getParameterCount() != 1) {
@@ -90,10 +92,26 @@ public class EventBusService implements ServiceHandler, EventBus {
     } catch (Throwable throwable) {
       throw new ExecutorGenerationException("Encountered an exception while creating an event subscriber for method \"" + method + "\"!", throwable);
     }
+
+    byte priority;
+    Subscribe.Phase phase;
+    if (subscribe instanceof PreSubscribe) {
+      priority = ((PreSubscribe) subscribe).priority();
+      phase = Subscribe.Phase.PRE;
+    } else if (subscribe instanceof PostSubscribe) {
+      priority = ((PostSubscribe) subscribe).priority();
+      phase = Subscribe.Phase.POST;
+    } else if (subscribe instanceof Subscribe) {
+      priority = ((Subscribe) subscribe).priority();
+      phase = ((Subscribe) subscribe).phase();
+    } else {
+      throw new ExecutorGenerationException("Unknown subscribe annotation: " + subscribe.annotationType().getName());
+    }
+
     // Initializes a new subscribe method
     SubscribeMethod subscribeMethod = this.subscribedMethodFactory.create(
-        subscribe.priority(),
-        subscribe.phase(),
+        priority,
+        phase,
         instance,
         executor,
         method,
@@ -126,14 +144,20 @@ public class EventBusService implements ServiceHandler, EventBus {
 
     do {
       this.copyMethods(currentClass, methods);
-      for (Class<?> implemented : eventClass.getInterfaces()) {
-        this.copyMethods(implemented, methods);
-      }
-    } while ((currentClass = currentClass.getSuperclass()) != Object.class);
+      this.searchInterfaces(eventClass, methods);
+    } while ((currentClass = currentClass.getSuperclass()) != Object.class || currentClass.getInterfaces().length != 0);
 
     methods.sort(Comparator.comparingInt(SubscribeMethod::getPriority));
 
     return methods;
+  }
+
+  private void searchInterfaces(Class<?> interfaceClass, List<SubscribeMethod> targetMethods) {
+    this.copyMethods(interfaceClass, targetMethods);
+
+    for (Class<?> implemented : interfaceClass.getInterfaces()) {
+      this.searchInterfaces(implemented, targetMethods);
+    }
   }
 
   private void copyMethods(Class<?> eventClass, List<SubscribeMethod> targetMethods) {

@@ -3,7 +3,7 @@ package net.labyfy.internal.component.eventbus.method;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.eventbus.EventBus;
-import net.labyfy.component.eventbus.event.Subscribe;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.method.Executor;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
 import net.labyfy.component.inject.implement.Implement;
