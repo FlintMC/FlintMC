@@ -15,7 +15,7 @@ public interface KeyBinding {
 
   void setPressed(boolean pressed);
 
-  void bind(String keyName);
+  void bind(KeyBindMappings keyBind);
 
   boolean isInvalid();
 
