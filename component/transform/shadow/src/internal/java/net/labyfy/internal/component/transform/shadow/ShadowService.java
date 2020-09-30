@@ -42,9 +42,8 @@ public class ShadowService implements ServiceHandler {
   }
 
   private void handleFieldCreators(Property.Base property, CtClass ctClass) {
-    for (Property.Base fieldCreators : property.getSubProperties(FieldCreate.class)) {
-      FieldCreate fieldCreate = fieldCreators.getLocatedIdentifiedAnnotation().<FieldCreate>getAnnotation();
-
+    for (Property.Base subProperty : property.getSubProperties(FieldCreate.class)) {
+      FieldCreate fieldCreate = subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
       boolean exist = false;
       for (CtField field : ctClass.getFields()) {
         if (field.getName().equals(fieldCreate.name())) {
@@ -53,13 +52,19 @@ public class ShadowService implements ServiceHandler {
       }
       if (!exist) {
         try {
-          ctClass.addField(
-              new CtField(
-                  ctClass.getClassPool().get(fieldCreate.typeName()),
-                  fieldCreate.name(),
-                  ctClass
-              ),
-              fieldCreate.defaultValue());
+          CtField ctField = new CtField(
+              ctClass.getClassPool().get(fieldCreate.typeName()),
+              fieldCreate.name(),
+              ctClass
+          );
+          if (fieldCreate.defaultValue().isEmpty()) {
+            ctClass.addField(ctField);
+          } else {
+            ctClass.addField(
+                ctField,
+                fieldCreate.defaultValue());
+          }
+
         } catch (CannotCompileException | NotFoundException e) {
           e.printStackTrace();
         }
@@ -97,7 +102,8 @@ public class ShadowService implements ServiceHandler {
     }
   }
 
-  private void handleMethodProxies(Property.Base property, ClassPool classPool, CtClass ctClass) throws NotFoundException {
+  private void handleMethodProxies(Property.Base property, ClassPool classPool, CtClass ctClass) throws
+      NotFoundException {
     for (Property.Base methodProxy : property.getSubProperties(MethodProxy.class)) {
       Method method = methodProxy.getLocatedIdentifiedAnnotation().getLocation();
 

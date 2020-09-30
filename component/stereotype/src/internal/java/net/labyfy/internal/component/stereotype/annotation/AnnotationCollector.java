@@ -13,7 +13,8 @@ import java.util.Collection;
  */
 public class AnnotationCollector {
 
-  private AnnotationCollector() {}
+  private AnnotationCollector() {
+  }
 
   /**
    * Collects all transitive annotations.
@@ -26,7 +27,20 @@ public class AnnotationCollector {
   public static Collection<Annotation> getTransitiveAnnotations(Class<?> clazz) {
     Collection<Annotation> annotations = Sets.newHashSet();
     for (Annotation declaredAnnotation : clazz.getDeclaredAnnotations()) {
-      if (getRealAnnotationClass(declaredAnnotation).isAnnotationPresent(Transitive.class))
+      Class<? extends Annotation> realAnnotationClass = getRealAnnotationClass(declaredAnnotation);
+      Method[] declaredMethods = realAnnotationClass.getMethods();
+      for (Method declaredMethod : declaredMethods) {
+        if (Annotation[].class.isAssignableFrom(declaredMethod.getReturnType())) {
+          if (declaredMethod.getReturnType().getComponentType().isAnnotationPresent(Transitive.class)) {
+            for (Annotation annotation : clazz.getDeclaredAnnotationsByType((Class<? extends Annotation>) declaredMethod.getReturnType().getComponentType())) {
+              annotations.add(annotation);
+            }
+            break;
+          }
+        }
+      }
+
+      if (realAnnotationClass.isAnnotationPresent(Transitive.class))
         annotations.add(declaredAnnotation);
     }
     return annotations;
