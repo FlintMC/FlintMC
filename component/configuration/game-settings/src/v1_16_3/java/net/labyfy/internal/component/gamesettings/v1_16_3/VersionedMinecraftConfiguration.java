@@ -7,8 +7,11 @@ import net.labyfy.component.gamesettings.configuration.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.minecraft.client.Minecraft;
 
+/**
+ * 1.16.3 implementation of {@link MinecraftConfiguration}.
+ */
 @Singleton
-@Implement(value = MinecraftConfiguration.class, version = "1.15.2")
+@Implement(value = MinecraftConfiguration.class, version = "1.16.3")
 public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
 
   private final AccessibilityConfiguration accessibilityConfiguration;
@@ -148,8 +151,6 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
   public void setDifficulty(Object difficulty) {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
-
-
 
 
 }

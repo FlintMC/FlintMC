@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 1.15.2 implementation of {@link GameSettingInterceptor}.
+ */
 @Singleton
 @Implement(value = GameSettingInterceptor.class, version = "1.15.2")
 public class VersionedGameSettingsInterceptor implements GameSettingInterceptor {

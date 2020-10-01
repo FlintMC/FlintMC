@@ -7,6 +7,9 @@ import net.labyfy.component.gamesettings.configuration.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.minecraft.client.Minecraft;
 
+/**
+ * 1.15.2 implementation of {@link MinecraftConfiguration}.
+ */
 @Singleton
 @Implement(value = MinecraftConfiguration.class, version = "1.15.2")
 public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
@@ -148,8 +151,6 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
   public void setDifficulty(Object difficulty) {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
-
-
 
 
 }

@@ -7,6 +7,9 @@ import net.labyfy.component.gamesettings.KeyBinding;
 import net.labyfy.component.inject.implement.Implement;
 import net.minecraft.client.util.InputMappings;
 
+/**
+ * 1.15.2 implementation of {@link KeyBinding}.
+ */
 @Implement(value = KeyBinding.class, version = "1.15.2")
 public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding implements KeyBinding {
 
