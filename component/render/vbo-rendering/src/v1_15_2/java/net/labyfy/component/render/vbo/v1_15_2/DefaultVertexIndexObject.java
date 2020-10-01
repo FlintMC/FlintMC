@@ -2,6 +2,7 @@ package net.labyfy.component.render.vbo.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.vbo.VboDrawMode;
 import net.labyfy.component.render.vbo.VertexBufferObject;
 import net.labyfy.component.render.vbo.VertexIndexObject;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL33.*;
 
+@Implement(VertexIndexObject.class)
 public class DefaultVertexIndexObject implements VertexIndexObject {
 
   private final VertexBufferObject vbo;
