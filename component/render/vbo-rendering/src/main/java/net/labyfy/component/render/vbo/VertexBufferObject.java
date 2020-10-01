@@ -18,6 +18,8 @@ public interface VertexBufferObject {
 
   boolean isAvailable();
 
+  VertexFormat getFormat();
+
   @AssistedFactory(VertexBufferObject.class)
   interface Factory {
 

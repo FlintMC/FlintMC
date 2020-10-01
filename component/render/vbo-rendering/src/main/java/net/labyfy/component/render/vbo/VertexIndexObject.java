@@ -24,5 +24,7 @@ public interface VertexIndexObject {
   interface Factory {
 
     VertexIndexObject create(VertexBufferObject vertexBufferObject);
+
+    VertexIndexObject create(VertexBufferObject vertexBufferObject, VboDrawMode drawMode);
   }
 }

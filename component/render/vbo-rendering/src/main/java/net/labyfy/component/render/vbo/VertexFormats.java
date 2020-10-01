@@ -2,7 +2,9 @@ package net.labyfy.component.render.vbo;
 
 import net.labyfy.component.inject.primitive.InjectionHolder;
 
-public enum VertexFormats implements VertexFormat {
+import java.util.List;
+
+public enum VertexFormats implements EnumeratedVertexFormat {
   POS4F_RGB_UV {
     @Override
     VertexFormat createCopy() {
@@ -60,6 +62,11 @@ public enum VertexFormats implements VertexFormat {
   @Override
   public int getVertexSize() {
     return this.format.getAttributeCount();
+  }
+
+  @Override
+  public List<VertexAttribute> getAttributes() {
+    return this.format.getAttributes();
   }
 
   @Override
