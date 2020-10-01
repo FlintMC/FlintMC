@@ -45,39 +45,6 @@ public abstract class HoverContent {
   }
 
   /**
-   * Creates a new content for a {@link HoverEvent} which displays an item with the count 1 and no NBT tag.
-   *
-   * @param id The non-null id of the item
-   * @return The new non-null content to be used in a {@link HoverEvent}
-   */
-  public static HoverContent item(String id) {
-    return item(id, 1);
-  }
-
-  /**
-   * Creates a new content for a {@link HoverEvent} which displays an item without an NBT tag.
-   *
-   * @param id    The non-null id of the item
-   * @param count The amount of items on this stack
-   * @return The new non-null content to be used in a {@link HoverEvent}
-   */
-  public static HoverContent item(String id, int count) {
-    return item(id, count, null);
-  }
-
-  /**
-   * Creates a new content for a {@link HoverEvent} which displays an item.
-   *
-   * @param id    The non-null id of the item
-   * @param count The amount of items on this stack
-   * @param nbt   The NBT tag of the item or {@code null} if the item doesn't have an NBT tag
-   * @return The new non-null content to be used in a {@link HoverEvent}
-   */
-  public static HoverContent item(String id, int count, String nbt) {
-    return new HoverItem(id, count, nbt);
-  }
-
-  /**
    * Retrieves the action which is used to identify the type of this content.
    *
    * @return The non-null action of this content
