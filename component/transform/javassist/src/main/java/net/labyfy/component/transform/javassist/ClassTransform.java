@@ -15,7 +15,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Identifier(optionalProperties = @Property(value = CtClassFilter.class, allowMultiple = true))
 @Transitive
-@Deprecated
 public @interface ClassTransform {
 
   String[] value() default "";

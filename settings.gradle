@@ -110,3 +110,6 @@ findProject(':component:world')?.name = 'world'
 include 'component:transform:shadow'
 findProject(':component:transform:shadow')?.name = 'shadow'
 
+include 'component:render:shader'
+findProject(':component:render:shader')?.name = 'shader'
+
