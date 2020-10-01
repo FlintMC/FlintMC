@@ -56,7 +56,10 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     if (isAvailable) throw new IllegalStateException("This VBO is already pushed to the GPU.");
     int totalSize = vertices.size() * vertexFormat.getVertexSize();
     float[] buffer = new float[totalSize];
-    this.vertices.forEach(vertex -> vertex.write(buffer));
+    int offset = 0;
+    for (VertexBuilder vertex : this.vertices) {
+      offset += vertex.write(buffer, offset);
+    }
 
     this.previousVbo = glGetInteger(GL_ARRAY_BUFFER_BINDING);
 

@@ -111,8 +111,8 @@ public class DefaultVertexBuilder implements VertexBuilder {
   }
 
   @Override
-  public void write(float[] buffer) {
-    int offset = 0;
+  public int write(float[] buffer, int startOffset) {
+    int offset = startOffset;
     for (VertexAttribute attribute : this.vbo
             .getFormat()
             .getAttributes()) {
@@ -132,6 +132,7 @@ public class DefaultVertexBuilder implements VertexBuilder {
                 "You're not supposed to implement EnumeratedVertexFormat yourself. Go away.");
       offset += attribute.getSize();
     }
+    return offset - startOffset;
   }
 
   private class AttributeValueHandler {
