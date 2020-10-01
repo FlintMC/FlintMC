@@ -6,9 +6,7 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.vbo.VertexBufferObject;
 import net.labyfy.component.render.vbo.VertexBuilder;
 import net.labyfy.component.render.vbo.VertexFormat;
-import org.lwjgl.system.MemoryUtil;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -5,7 +5,6 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.vbo.*;
 
-import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Function;
