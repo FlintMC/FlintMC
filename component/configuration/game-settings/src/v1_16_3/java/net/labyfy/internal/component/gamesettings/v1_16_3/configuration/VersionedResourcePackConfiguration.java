@@ -8,10 +8,10 @@ import net.minecraft.client.Minecraft;
 import java.util.List;
 
 /**
- * 1.15.2 implementation of {@link ResourcePackConfiguration}.
+ * 1.16.3 implementation of {@link ResourcePackConfiguration}.
  */
 @Singleton
-@Implement(value = ResourcePackConfiguration.class, version = "1.15.2")
+@Implement(value = ResourcePackConfiguration.class, version = "1.16.3")
 public class VersionedResourcePackConfiguration implements ResourcePackConfiguration {
 
   /**
