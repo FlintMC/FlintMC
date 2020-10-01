@@ -68,6 +68,27 @@ public class DefaultVertexBuilder implements VertexBuilder {
   }
 
   @Override
+  public VertexBuilder color(byte r, byte g, byte b) {
+    return this.color((float) r / 255.0f, (float) g / 255.0f, (float) b / 255.0f);
+  }
+
+  @Override
+  public VertexBuilder color(byte r, byte g, byte b, byte a) {
+    return this.color(
+        (float) r / 255.0f, (float) g / 255.0f, (float) b / 255.0f, (float) a / 255.0f);
+  }
+
+  @Override
+  public VertexBuilder color(float rgba) {
+    int bits = Float.floatToIntBits(rgba);
+    return this.color(
+        (byte) (bits >> 24) & 0xff,
+        (byte) (bits >> 16) & 0xff,
+        (byte) (bits >> 8) & 0xff,
+        (byte) (bits & 0xff));
+  }
+
+  @Override
   public VertexBuilder color(float r, float g, float b, float a) {
     this.rgbaHandler.addFloats(r, g, b, a);
     return this;

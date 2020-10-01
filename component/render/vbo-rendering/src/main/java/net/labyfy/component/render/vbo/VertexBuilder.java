@@ -14,6 +14,12 @@ public interface VertexBuilder {
 
   VertexBuilder color(float r, float g, float b);
 
+  VertexBuilder color(byte r, byte g, byte b);
+
+  VertexBuilder color(byte r, byte g, byte b, byte a);
+
+  VertexBuilder color(float rgba);
+
   VertexBuilder color(float r, float g, float b, float alpha);
 
   VertexBuilder texture(float u, float v);
