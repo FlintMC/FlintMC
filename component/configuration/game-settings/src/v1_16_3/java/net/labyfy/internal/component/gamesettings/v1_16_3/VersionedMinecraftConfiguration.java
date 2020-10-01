@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.gamesettings.v1_15_2;
+package net.labyfy.internal.component.gamesettings.v1_16_3;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
