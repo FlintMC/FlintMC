@@ -48,7 +48,6 @@ public class VersionedGameSettingsInterceptor implements GameSettingInterceptor 
 
     if (this.configurations != null && (this.getMinorVersion(this.launchArguments.get("--game-version")) < 13)) {
       this.makeQualifiedKeyBinds();
-      System.out.println("Key codes from LWJGL3 were fixed!");
     }
 
   }
