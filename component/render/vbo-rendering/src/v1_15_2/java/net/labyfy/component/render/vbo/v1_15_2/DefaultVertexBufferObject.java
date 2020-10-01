@@ -41,7 +41,9 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     if (isAvailable)
       throw new IllegalStateException(
           "This VBO is already pushed to the GPU, vertices can't be added anymore.");
-    return this.vertexBuilderFactory.create(this);
+    VertexBuilder builder = this.vertexBuilderFactory.create(this);
+    this.vertices.add(builder);
+    return builder;
   }
 
   @Override
