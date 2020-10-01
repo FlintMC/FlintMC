@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing ambient occlusion statuses.
+ */
 public enum AmbientOcclusionStatus {
 
   OFF("options.ao.off"),

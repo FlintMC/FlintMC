@@ -287,20 +287,60 @@ public interface GraphicConfiguration {
    */
   void setEntityShadows(boolean entityShadows);
 
+  /**
+   * Retrieves the override width.
+   *
+   * @return The override width.
+   */
   int getOverrideWidth();
 
+  /**
+   * Changes the override width.
+   *
+   * @param overrideWidth The new override width.
+   */
   void setOverrideWidth(int overrideWidth);
 
+  /**
+   * Retrieves the override height.
+   *
+   * @return The override height.
+   */
   int getOverrideHeight();
 
+  /**
+   * Changes the override height.
+   *
+   * @param overrideHeight The new override height.
+   */
   void setOverrideHeight(int overrideHeight);
 
+  /**
+   * Whether the unicode font is forced.
+   *
+   * @return {@code true} if the unicode font is forced, otherwise {@code false}.
+   */
   boolean isForceUnicodeFont();
 
+  /**
+   * Changes the state whether the unicode font is forced.
+   *
+   * @param forceUnicodeFont The new state.
+   */
   void setForceUnicodeFont(boolean forceUnicodeFont);
 
+  /**
+   * Whether the GUI is hidden.
+   *
+   * @return {@code true} if the GUI is hidden, otherwise {@code false}.
+   */
   boolean isHideGUI();
 
+  /**
+   * Changes the state whether the GUI is hidden.
+   *
+   * @param hideGUI The new state.
+   */
   void setHideGUI(boolean hideGUI);
 
 }

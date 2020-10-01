@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing points of view.
+ */
 public enum PointOfView {
 
   FIRST_PERSON(true, false),

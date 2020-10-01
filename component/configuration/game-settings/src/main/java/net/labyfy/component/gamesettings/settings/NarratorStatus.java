@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing narrator statuses.
+ */
 public enum NarratorStatus {
 
   OFF("options.narrator.off"),

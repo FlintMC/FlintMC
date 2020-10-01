@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing particle statuses.
+ */
 public enum ParticleStatus {
 
   ALL("options.particles.all"),

@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing chat visibility states.
+ */
 public enum ChatVisibility {
 
   FULL("options.chat.visibility.full"),

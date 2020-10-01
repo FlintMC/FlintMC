@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing attack indicator statuses.
+ */
 public enum AttackIndicatorStatus {
 
   OFF("options.off"),

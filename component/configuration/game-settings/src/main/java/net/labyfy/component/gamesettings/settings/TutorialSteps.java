@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing tutorial steps.
+ */
 public enum TutorialSteps {
 
   MOVEMENT("movement"),

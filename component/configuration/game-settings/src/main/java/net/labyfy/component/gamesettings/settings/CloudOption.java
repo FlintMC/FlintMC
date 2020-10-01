@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing options for clouds.
+ */
 public enum CloudOption {
 
   OFF("options.off"),

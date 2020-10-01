@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings.settings;
 
+/**
+ * An enumeration representing options for the graphics.
+ */
 public enum GraphicsFanciness {
 
   FAST("options.graphics.fast"),
