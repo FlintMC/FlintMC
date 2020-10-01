@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.MinecraftConfiguration;
 import net.labyfy.component.gamesettings.configuration.*;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.world.difficult.Difficulty;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -140,16 +141,47 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    * {@inheritDoc}
    */
   @Override
-  public Object getDifficulty() {
-    return null;
+  public Difficulty getDifficulty() {
+    switch (Minecraft.getInstance().gameSettings.difficulty) {
+      case PEACEFUL:
+        return Difficulty.PEACEFUL;
+      case EASY:
+        return Difficulty.EASY;
+      case NORMAL:
+        return Difficulty.NORMAL;
+      case HARD:
+        return Difficulty.HARD;
+      default:
+        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.difficulty);
+    }
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void setDifficulty(Object difficulty) {
-    Minecraft.getInstance().gameSettings.saveOptions();
+  public void setDifficulty(Difficulty difficulty) {
+    switch (difficulty) {
+      case PEACEFUL:
+        Minecraft.getInstance().gameSettings.difficulty = net.minecraft.world.Difficulty.PEACEFUL;
+        Minecraft.getInstance().gameSettings.saveOptions();
+        break;
+      case EASY:
+        Minecraft.getInstance().gameSettings.difficulty = net.minecraft.world.Difficulty.EASY;
+        Minecraft.getInstance().gameSettings.saveOptions();
+        break;
+      case NORMAL:
+        Minecraft.getInstance().gameSettings.difficulty = net.minecraft.world.Difficulty.NORMAL;
+        Minecraft.getInstance().gameSettings.saveOptions();
+        break;
+      case HARD:
+        Minecraft.getInstance().gameSettings.difficulty = net.minecraft.world.Difficulty.HARD;
+        Minecraft.getInstance().gameSettings.saveOptions();
+        break;
+      default:
+        throw new IllegalStateException("Unexpected value: " + difficulty);
+    }
+
   }
 
 

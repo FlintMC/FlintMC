@@ -1,6 +1,7 @@
 package net.labyfy.component.gamesettings;
 
 import net.labyfy.component.gamesettings.configuration.*;
+import net.labyfy.component.world.difficult.Difficulty;
 
 /**
  * Represents the Minecraft game settings
@@ -89,15 +90,13 @@ public interface MinecraftConfiguration {
    *
    * @return The current difficulty.
    */
-  // TODO: 28.09.2020 Wait for merge request #177 (Difficulty)
-  Object getDifficulty();
+  Difficulty getDifficulty();
 
   /**
    * Changes the difficulty.
    *
    * @param difficulty The new difficulty.
    */
-  // TODO: 28.09.2020 Wait for merge request #177 (Difficulty)
-  void setDifficulty(Object difficulty);
+  void setDifficulty(Difficulty difficulty);
 
 }
