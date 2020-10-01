@@ -22,7 +22,6 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
   private final int id;
 
   private List<VertexBuilder> vertices;
-  private FloatBuffer buffer;
   private boolean isAvailable;
   private int previousVbo;
 
@@ -58,14 +57,13 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
   public void pushToGPU() {
     if (isAvailable) throw new IllegalStateException("This VBO is already pushed to the GPU.");
     int totalSize = vertices.size() * vertexFormat.getVertexSize();
-    this.buffer = MemoryUtil.memAllocFloat(totalSize);
-    this.vertices.forEach(vertex -> vertex.write(this.buffer));
-    this.buffer.rewind();
+    float[] buffer = new float[totalSize];
+    this.vertices.forEach(vertex -> vertex.write(buffer));
 
     this.previousVbo = glGetInteger(GL_ARRAY_BUFFER_BINDING);
 
     glBindBuffer(GL_ARRAY_BUFFER, this.id);
-    glBufferData(GL_ARRAY_BUFFER, this.buffer, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, this.previousVbo);
 

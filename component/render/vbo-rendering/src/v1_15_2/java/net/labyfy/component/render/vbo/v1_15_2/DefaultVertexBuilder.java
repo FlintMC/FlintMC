@@ -112,27 +112,27 @@ public class DefaultVertexBuilder implements VertexBuilder {
   }
 
   @Override
-  public void write(FloatBuffer buffer) {
-    this.vbo
-        .getFormat()
-        .getAttributes()
-        .forEach(
-            attribute -> {
-              if (attribute == VertexAttributes.POSITION3F) this.pos3fHandler.writeFloats(buffer);
-              else if (attribute == VertexAttributes.POSITION4F)
-                this.pos4fHandler.writeFloats(buffer);
-              else if (attribute == VertexAttributes.NORMAL) this.normalHandler.writeFloats(buffer);
-              else if (attribute == VertexAttributes.COLOR_RGB) this.rgbHandler.writeFloats(buffer);
-              else if (attribute == VertexAttributes.COLOR_RGBA)
-                this.rgbaHandler.writeFloats(buffer);
-              else if (attribute == VertexAttributes.TEXTURE_UV)
-                this.textureHandler.writeFloats(buffer);
-              else if (!(attribute instanceof EnumeratedVertexFormat))
-                this.customHandler.writeFloats(buffer);
-              else
-                throw new IllegalStateException(
-                    "You're not supposed to implement EnumeratedVertexFormat yourself. Go away.");
-            });
+  public void write(float[] buffer) {
+    int offset = 0;
+    for (VertexAttribute attribute : this.vbo
+            .getFormat()
+            .getAttributes()) {
+      if (attribute == VertexAttributes.POSITION3F) this.pos3fHandler.writeFloats(buffer, offset);
+      else if (attribute == VertexAttributes.POSITION4F)
+        this.pos4fHandler.writeFloats(buffer, offset);
+      else if (attribute == VertexAttributes.NORMAL) this.normalHandler.writeFloats(buffer, offset);
+      else if (attribute == VertexAttributes.COLOR_RGB) this.rgbHandler.writeFloats(buffer, offset);
+      else if (attribute == VertexAttributes.COLOR_RGBA)
+        this.rgbaHandler.writeFloats(buffer, offset);
+      else if (attribute == VertexAttributes.TEXTURE_UV)
+        this.textureHandler.writeFloats(buffer, offset);
+      else if (!(attribute instanceof EnumeratedVertexFormat))
+        this.customHandler.writeFloats(buffer, offset);
+      else
+        throw new IllegalStateException(
+                "You're not supposed to implement EnumeratedVertexFormat yourself. Go away.");
+      offset += attribute.getSize();
+    }
   }
 
   private class AttributeValueHandler {
@@ -164,10 +164,10 @@ public class DefaultVertexBuilder implements VertexBuilder {
           "Can't write (another) attribute of this type as the vertex format doesn't match.");
     }
 
-    void writeFloats(FloatBuffer buffer) {
+    void writeFloats(float[] buffer, int offset) {
       int floatsPerAttribute = toWrite.size() / this.pos;
       for (int i = 0; i < floatsPerAttribute; i++) {
-        if (this.toWrite.peek() != null) buffer.put(this.toWrite.poll());
+        if (this.toWrite.peek() != null) buffer[offset + i] = this.toWrite.poll();
         else
           throw new IllegalStateException(
               "Not enough attributes have been written to match the vertex format.");

@@ -28,7 +28,7 @@ public interface VertexBuilder {
 
   VertexBuilder next();
 
-  void write(FloatBuffer buffer);
+  void write(float[] buffer);
 
   @AssistedFactory(VertexBuilder.class)
   interface Factory {

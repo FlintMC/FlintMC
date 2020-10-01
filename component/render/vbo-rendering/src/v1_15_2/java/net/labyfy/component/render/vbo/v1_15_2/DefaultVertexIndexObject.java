@@ -26,7 +26,6 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
 
   private boolean isAvailable;
   private int oldEbo;
-  private IntBuffer buffer;
 
   @AssistedInject
   private DefaultVertexIndexObject(@Assisted VertexBufferObject vbo) {
@@ -42,7 +41,6 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
     this.id = glGenBuffers();
     this.isAvailable = false;
     this.oldEbo = 0;
-    this.buffer = null;
   }
 
   @Override
@@ -60,12 +58,13 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
     if (this.isAvailable)
       throw new IllegalStateException("This EBO has already been pushed to the GPU.");
 
-    this.buffer = MemoryUtil.memAllocInt(this.indices.size());
-    this.indices.forEach(buffer::put);
-    this.buffer.rewind();
+    int[] indicesArray = new int[indices.size()];
+    for (int i = 0; i < this.indices.size(); i++) {
+      indicesArray[i] = this.indices.get(i);
+    }
 
     this.bind();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.buffer, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesArray, GL_STATIC_DRAW);
     this.unbind();
 
     this.isAvailable = true;
