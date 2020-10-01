@@ -9,6 +9,7 @@ import net.labyfy.component.render.vbo.VertexIndexObject;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
 
   private boolean isAvailable;
   private int oldEbo;
-  private FloatBuffer buffer;
+  private IntBuffer buffer;
 
   @AssistedInject
   private DefaultVertexIndexObject(@Assisted VertexBufferObject vbo) {
@@ -59,7 +60,7 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
     if (this.isAvailable)
       throw new IllegalStateException("This EBO has already been pushed to the GPU.");
 
-    this.buffer = MemoryUtil.memAllocFloat(this.indices.size());
+    this.buffer = MemoryUtil.memAllocInt(this.indices.size());
     this.indices.forEach(buffer::put);
     this.buffer.rewind();
 
