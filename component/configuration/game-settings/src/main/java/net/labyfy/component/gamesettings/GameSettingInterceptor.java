@@ -35,7 +35,7 @@ public interface GameSettingInterceptor {
     String[] elements = version.split("\\.");
 
     try {
-      return Integer.parseInt(elements[0]);
+      return Integer.parseInt(elements[1]);
     } catch (NumberFormatException exception) {
       return -1;
     }

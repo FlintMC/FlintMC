@@ -1,6 +1,7 @@
 package net.labyfy.internal.component.gamesettings.v1_16_3;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
@@ -87,7 +88,7 @@ public class VersionedGameSettingsInterceptor implements GameSettingInterceptor 
     for (Map.Entry<String, String> entry : this.configurations.entrySet()) {
       if (entry.getKey().startsWith("key")) {
 
-        int key = KeyBindMappings.getScanCode(entry.getValue());
+        int key = KeyBindMappings.getScanCode((String) entry.getValue());
 
         if (key != -1) {
           this.configurations.put(entry.getKey(), String.valueOf(key));
@@ -106,6 +107,8 @@ public class VersionedGameSettingsInterceptor implements GameSettingInterceptor 
 
   /**
    * {@inheritDoc}
+   *
+   * @return
    */
   @Override
   public Map<String, String> readOptions() {

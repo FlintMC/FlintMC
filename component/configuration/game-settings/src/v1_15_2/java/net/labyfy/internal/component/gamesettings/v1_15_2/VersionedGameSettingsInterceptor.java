@@ -1,9 +1,11 @@
 package net.labyfy.internal.component.gamesettings.v1_15_2;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import net.labyfy.component.gamesettings.frontend.FrontendCommunicator;
 import net.labyfy.component.gamesettings.GameSettingInterceptor;
 import net.labyfy.component.gamesettings.GameSettingsAccessor;
 import net.labyfy.component.gamesettings.KeyBindMappings;
@@ -19,10 +21,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * 1.15.2 implementation of {@link GameSettingInterceptor}.
@@ -32,12 +32,17 @@ import java.util.Map;
 public class VersionedGameSettingsInterceptor implements GameSettingInterceptor {
 
   private final Map<String, String> launchArguments;
+  private final FrontendCommunicator frontendCommunicator;
   private Map<String, String> configurations;
   private File optionsFile;
 
+  private final JsonObject object;
+
   @Inject
-  private VersionedGameSettingsInterceptor(@Named("launchArguments") Map launchArguments) {
+  private VersionedGameSettingsInterceptor(@Named("launchArguments") Map launchArguments, FrontendCommunicator frontendCommunicator) {
     this.launchArguments = launchArguments;
+    this.frontendCommunicator = frontendCommunicator;
+    this.object = new JsonObject();
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
@@ -106,6 +111,8 @@ public class VersionedGameSettingsInterceptor implements GameSettingInterceptor 
 
   /**
    * {@inheritDoc}
+   *
+   * @return
    */
   @Override
   public Map<String, String> readOptions() {
@@ -148,10 +155,44 @@ public class VersionedGameSettingsInterceptor implements GameSettingInterceptor 
         configuration.add(entry.getKey() + ":" + entry.getValue());
       }
 
+      Collections.sort(configuration);
       Files.write(this.optionsFile.toPath(), configuration, Charset.defaultCharset());
     } catch (IOException exception) {
       exception.printStackTrace();
     }
+  }
+
+  private void addProperty(JsonObject object, String name, Object value) {
+    String convert = String.valueOf(value);
+
+    try {
+      int i = Integer.parseInt(convert);
+      object.addProperty(name, i);
+      return;
+    } catch (NumberFormatException e) {
+
+    }
+
+    try {
+      double d = Double.parseDouble(convert);
+      object.addProperty(name, d);
+      return;
+    } catch (NumberFormatException e) {
+
+    }
+    if (convert.equalsIgnoreCase("true") || convert.equalsIgnoreCase("false")) {
+      object.addProperty(name, Boolean.parseBoolean(convert));
+    }
+    /*
+    if (value instanceof String) {
+      object.addProperty(name, (String) value);
+    } else if (value instanceof Boolean) {
+      object.addProperty(name, (Boolean) value);
+    } else if (value instanceof Number) {
+      object.addProperty(name, (Number) value);
+    } else if (value instanceof Character) {
+      object.addProperty(name, (Character) value);
+    }*/
   }
 
 }
