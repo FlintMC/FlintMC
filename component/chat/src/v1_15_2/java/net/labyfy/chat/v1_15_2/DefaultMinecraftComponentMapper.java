@@ -1,6 +1,5 @@
 package net.labyfy.chat.v1_15_2;
 
-import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.chat.EntitySelector;
@@ -12,7 +11,6 @@ import net.labyfy.chat.component.*;
 import net.labyfy.chat.component.event.ClickEvent;
 import net.labyfy.chat.component.event.HoverEvent;
 import net.labyfy.chat.component.event.content.HoverContent;
-import net.labyfy.chat.component.event.content.HoverText;
 import net.labyfy.chat.exception.ComponentDeserializationException;
 import net.labyfy.chat.exception.InvalidSelectorException;
 import net.labyfy.chat.format.ChatColor;
@@ -171,9 +169,7 @@ public class DefaultMinecraftComponentMapper implements MinecraftComponentMapper
       HoverEvent.Action action = HoverEvent.Action.valueOf(style.getHoverEvent().getAction().name());
       ITextComponent value = style.getHoverEvent().getValue();
 
-      HoverContent content = action == HoverEvent.Action.SHOW_TEXT || action == HoverEvent.Action.SHOW_ACHIEVEMENT ?
-          new HoverText(this.fromMinecraft(value)) :
-          this.factory.gson().getGson().fromJson(JsonParser.parseString(value.getUnformattedComponentText()), action.getContentClass());
+      HoverContent content = this.factory.gson().deserializeHoverContent(this.fromMinecraft(value), action);
 
       if (content != null) {
         component.hoverEvent(HoverEvent.of(content));
@@ -268,9 +264,7 @@ public class DefaultMinecraftComponentMapper implements MinecraftComponentMapper
       }
 
       if (action != null) {
-        ChatComponent value = content instanceof HoverText ?
-            ((HoverText) content).getText() :
-            new DefaultTextComponentBuilder().text(this.factory.gson().getGson().toJson(content)).build();
+        ChatComponent value = this.factory.gson().serializeHoverContent(content);
 
         style.setHoverEvent(new net.minecraft.util.text.event.HoverEvent(action, (ITextComponent) this.toMinecraft(value)));
       }

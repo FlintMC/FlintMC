@@ -3,7 +3,6 @@ package net.labyfy.chat.component.event;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.component.event.content.HoverContent;
 import net.labyfy.chat.component.event.content.HoverEntity;
-import net.labyfy.chat.component.event.content.HoverItem;
 import net.labyfy.chat.component.event.content.HoverText;
 
 import java.util.UUID;
@@ -65,20 +64,6 @@ public class HoverEvent {
   }
 
   /**
-   * Creates a new hover event which will display information about the given item.
-   *
-   * <p>Available since Minecraft 1.7.10.
-   *
-   * @param id    The non-null id of the item
-   * @param count The amount of items on this stack
-   * @param nbt   The NBT tag of the item or {@code null} if the item doesn't have an NBT tag
-   * @return The new non-null hover event
-   */
-  public static HoverEvent item(String id, int count, String nbt) {
-    return of(new HoverItem(id, count, nbt));
-  }
-
-  /**
    * Creates a new hover event which will display information about the given entity.
    *
    * <p>Available since Minecraft 1.7.10.
@@ -112,6 +97,9 @@ public class HoverEvent {
     return this.contents;
   }
 
+  /**
+   * Available actions for the {@link HoverEvent}.
+   */
   public enum Action {
 
     /**
@@ -119,21 +107,21 @@ public class HoverEvent {
      *
      * <p>Available since Minecraft 1.7.10.
      */
-    SHOW_TEXT(HoverText.class, HoverText[].class),
+    SHOW_TEXT,
 
     /**
      * Parses the text of the given value as a json and parses an ItemStack out of it which will then be displayed.
      *
      * <p>Available since Minecraft 1.7.10.
      */
-    SHOW_ITEM(HoverItem.class, HoverItem[].class),
+    SHOW_ITEM,
 
     /**
      * Parses the text of the given value as a json and parses an Entity out of it which will then be displayed.
      *
      * <p>Available since Minecraft 1.7.10.
      */
-    SHOW_ENTITY(HoverEntity.class, HoverEntity[].class),
+    SHOW_ENTITY,
 
     /**
      * Gets the achievement by using the text of the given value as the id for the achievement and displays it. This can
@@ -143,15 +131,11 @@ public class HoverEvent {
      * display advancements.
      */
     @Deprecated
-    SHOW_ACHIEVEMENT(HoverText.class, HoverText[].class);
+    SHOW_ACHIEVEMENT;
 
     private final String lowerName;
-    private final Class<? extends HoverContent> contentClass;
-    private final Class<? extends HoverContent[]> contentArrayClass;
 
-    Action(Class<? extends HoverContent> contentClass, Class<? extends HoverContent[]> contentArrayClass) {
-      this.contentClass = contentClass;
-      this.contentArrayClass = contentArrayClass;
+    Action() {
       this.lowerName = super.name().toLowerCase();
     }
 
@@ -159,12 +143,5 @@ public class HoverEvent {
       return this.lowerName;
     }
 
-    public Class<? extends HoverContent> getContentClass() {
-      return this.contentClass;
-    }
-
-    public Class<? extends HoverContent[]> getContentArrayClass() {
-      return this.contentArrayClass;
-    }
   }
 }

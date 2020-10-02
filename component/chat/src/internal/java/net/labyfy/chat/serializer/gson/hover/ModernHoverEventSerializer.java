@@ -1,8 +1,12 @@
 package net.labyfy.chat.serializer.gson.hover;
 
 import com.google.gson.*;
+import net.labyfy.chat.builder.ComponentBuilder;
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.component.event.HoverEvent;
 import net.labyfy.chat.component.event.content.HoverContent;
+import net.labyfy.chat.component.event.content.HoverContentSerializer;
+import net.labyfy.chat.serializer.GsonComponentSerializer;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
@@ -12,8 +16,11 @@ import java.lang.reflect.Type;
  */
 public class ModernHoverEventSerializer extends HoverEventSerializer {
 
-  public ModernHoverEventSerializer(Logger logger) {
-    super(logger);
+  private final ComponentBuilder.Factory componentFactory;
+
+  public ModernHoverEventSerializer(Logger logger, GsonComponentSerializer componentSerializer, ComponentBuilder.Factory componentFactory) {
+    super(logger, componentSerializer);
+    this.componentFactory = componentFactory;
   }
 
   @Override
@@ -23,24 +30,33 @@ public class ModernHoverEventSerializer extends HoverEventSerializer {
     }
 
     JsonObject object = json.getAsJsonObject();
-
-    HoverEvent.Action action = super.deserializeAction(object);
-    if (action == null) {
+    HoverContentSerializer serializer = super.parseSerializer(object);
+    if (serializer == null) {
       return null;
     }
 
     JsonElement value = object.get("contents");
     HoverContent[] contents;
     if (value.isJsonArray()) {
-      contents = context.deserialize(value, action.getContentArrayClass());
+      JsonArray array = value.getAsJsonArray();
+      contents = new HoverContent[array.size()];
+
+      for (int i = 0; i < contents.length; i++) {
+        contents[i] = this.deserialize(serializer, array.get(i), context);
+      }
+
     } else {
-      contents = new HoverContent[]{context.deserialize(value, action.getContentClass())};
+      contents = new HoverContent[]{this.deserialize(serializer, value, context)};
       if (contents[0] == null) {
         return null;
       }
     }
 
-    return contents != null ? HoverEvent.of(contents) : null;
+    return HoverEvent.of(contents);
+  }
+
+  private HoverContent deserialize(HoverContentSerializer serializer, JsonElement element, JsonDeserializationContext context) {
+    return serializer.deserialize(super.asComponent(element, context), this.componentFactory, super.componentSerializer.getGson());
   }
 
   @Override
@@ -49,10 +65,22 @@ public class ModernHoverEventSerializer extends HoverEventSerializer {
       return null;
     }
 
+    HoverEvent.Action action = src.getContents()[0].getAction();
+
     JsonObject object = new JsonObject();
 
-    object.addProperty("action", src.getContents()[0].getAction().getLowerName());
-    object.add("contents", context.serialize(src.getContents()));
+    object.addProperty("action", action.getLowerName());
+
+    HoverContentSerializer serializer = super.componentSerializer.getHoverContentSerializer(action);
+
+    JsonArray array = new JsonArray();
+    for (HoverContent content : src.getContents()) {
+      ChatComponent component = serializer.serialize(content, this.componentFactory, super.componentSerializer.getGson());
+      if (component != null) {
+        array.add(context.serialize(component));
+      }
+    }
+    object.add("contents", array);
 
     return object;
   }

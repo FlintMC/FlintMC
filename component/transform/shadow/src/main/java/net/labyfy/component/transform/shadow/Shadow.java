@@ -26,7 +26,8 @@ import java.lang.annotation.Target;
 @Identifier(optionalProperties = {
     @Property(value = MethodProxy.class, allowMultiple = true),
     @Property(value = FieldGetter.class, allowMultiple = true),
-    @Property(value = FieldSetter.class, allowMultiple = true)
+    @Property(value = FieldSetter.class, allowMultiple = true),
+    @Property(value = FieldCreate.class, allowMultiple = true)
 })
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
