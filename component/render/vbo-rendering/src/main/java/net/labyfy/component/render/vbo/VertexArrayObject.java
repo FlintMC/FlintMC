@@ -1,6 +1,5 @@
 package net.labyfy.component.render.vbo;
 
-import com.sun.prism.impl.VertexBuffer;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 public interface VertexArrayObject {
