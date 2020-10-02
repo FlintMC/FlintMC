@@ -63,10 +63,11 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
 
     this.previousVbo = glGetInteger(GL_ARRAY_BUFFER_BINDING);
 
-    glBindBuffer(GL_ARRAY_BUFFER, this.id);
+
+    this.bind();
     glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, this.previousVbo);
+    this.unbind();
 
     this.isAvailable = true;
     this.vertices = null;
@@ -80,12 +81,13 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
   @Override
   public void bind() {
     this.previousVbo = glGetInteger(GL_ARRAY_BUFFER_BINDING);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, this.id);
   }
 
   @Override
   public void unbind() {
-    glBindBuffer(GL_ARRAY_BUFFER, this.previousVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, Math.max(this.previousVbo, 0));
   }
 
   @Override

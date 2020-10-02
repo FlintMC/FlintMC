@@ -75,12 +75,13 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
   @Override
   public void bind() {
     this.oldEbo = glGetInteger(GL_ELEMENT_ARRAY_BUFFER_BINDING);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.id);
   }
 
   @Override
   public void unbind() {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.oldEbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Math.max(this.oldEbo, 0));
   }
 
   @Override
