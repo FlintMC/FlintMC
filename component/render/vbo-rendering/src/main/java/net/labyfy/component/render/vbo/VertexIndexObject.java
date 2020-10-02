@@ -22,9 +22,13 @@ public interface VertexIndexObject {
 
   boolean isAvailable();
 
+  VboDrawMode getDrawMode();
+
   @AssistedFactory(VertexIndexObject.class)
   interface Factory {
 
     VertexIndexObject create();
+
+    VertexIndexObject create(VboDrawMode drawMode);
   }
 }

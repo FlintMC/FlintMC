@@ -12,25 +12,20 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
 
   private final VertexFormat format;
   private final VertexBufferObject vbo;
-  private final VboDrawMode drawMode;
 
   private final int id;
   private int oldId;
 
   @AssistedInject
-  private DefaultVertexArrayObject(
-      @Assisted VertexBufferObject vbo, @Assisted VertexIndexObject ebo) {
-    this(vbo, VboDrawMode.TRIANGLES, () -> {});
+  private DefaultVertexArrayObject(@Assisted VertexBufferObject vbo) {
+    this(vbo, () -> {});
   }
 
   @AssistedInject
   private DefaultVertexArrayObject(
-      @Assisted VertexBufferObject vbo,
-      @Assisted VboDrawMode drawMode,
-      @Assisted Runnable bindCallback) {
+      @Assisted VertexBufferObject vbo, @Assisted Runnable bindCallback) {
     this.format = vbo.getFormat();
     this.vbo = vbo;
-    this.drawMode = drawMode;
 
     this.id = this.format.createVAO();
 
@@ -60,9 +55,9 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
 
   @Override
   public void drawWithoutBind(VertexIndexObject ebo) {
-    if (drawMode == VboDrawMode.TRIANGLES)
+    if (ebo.getDrawMode() == VboDrawMode.TRIANGLES)
       glDrawElements(GL_TRIANGLES, ebo.getSize(), GL_UNSIGNED_INT, 0);
-    else if (drawMode == VboDrawMode.QUADS)
+    else if (ebo.getDrawMode() == VboDrawMode.QUADS)
       glDrawElements(GL_QUADS, ebo.getSize(), GL_UNSIGNED_INT, 0);
   }
 

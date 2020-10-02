@@ -22,12 +22,9 @@ public interface VertexArrayObject {
   @AssistedFactory(VertexArrayObject.class)
   interface Factory {
 
-    VertexArrayObject create(VertexBufferObject vbo, VertexIndexObject ebo);
+    VertexArrayObject create(VertexBufferObject vbo);
 
     VertexArrayObject create(VertexBufferObject vbo, Runnable bindCallback);
 
-    VertexArrayObject create(VertexBufferObject vbo, VboDrawMode drawMode);
-
-    VertexArrayObject create(VertexBufferObject vbo, VboDrawMode drawMode, Runnable bindCallback);
   }
 }

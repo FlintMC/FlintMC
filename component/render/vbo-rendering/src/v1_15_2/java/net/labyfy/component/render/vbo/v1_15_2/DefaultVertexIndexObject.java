@@ -1,7 +1,9 @@
 package net.labyfy.component.render.vbo.v1_15_2;
 
+import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.render.vbo.VboDrawMode;
 import net.labyfy.component.render.vbo.VertexIndexObject;
 
 import java.util.ArrayList;
@@ -14,16 +16,23 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
 
   private final List<Integer> indices;
   private final int id;
+  private final VboDrawMode drawMode;
 
   private boolean isAvailable;
   private int oldEbo;
 
   @AssistedInject
   private DefaultVertexIndexObject() {
+    this(VboDrawMode.TRIANGLES);
+  }
+
+  @AssistedInject
+  private DefaultVertexIndexObject(@Assisted VboDrawMode drawMode) {
     this.indices = new ArrayList<>();
     this.id = glGenBuffers();
     this.isAvailable = false;
     this.oldEbo = 0;
+    this.drawMode = drawMode;
   }
 
   @Override
@@ -81,5 +90,10 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
   @Override
   public boolean isAvailable() {
     return this.isAvailable;
+  }
+
+  @Override
+  public VboDrawMode getDrawMode() {
+    return this.drawMode;
   }
 }
