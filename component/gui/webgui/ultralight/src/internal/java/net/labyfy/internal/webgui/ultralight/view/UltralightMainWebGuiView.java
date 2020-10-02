@@ -8,12 +8,13 @@ import net.labyfy.component.gui.event.WindowFocusEvent;
 import net.labyfy.component.gui.windowing.MinecraftWindow;
 import net.labyfy.component.render.shader.ShaderProgram;
 import net.labyfy.component.render.shader.ShaderUniform;
+import net.labyfy.component.render.vbo.VertexArrayObject;
+import net.labyfy.component.render.vbo.VertexBufferObject;
+import net.labyfy.component.render.vbo.VertexIndexObject;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
 import net.labyfy.webgui.MainWebGuiView;
 
-/**
- * Extension of a windowed Ultralight view for the main window.
- */
+/** Extension of a windowed Ultralight view for the main window. */
 @Singleton
 public class UltralightMainWebGuiView extends UltralightWindowWebView implements MainWebGuiView {
   private final UltralightWebGuiController controller;
@@ -22,8 +23,24 @@ public class UltralightMainWebGuiView extends UltralightWindowWebView implements
   private boolean allowFocus;
 
   @Inject
-  protected UltralightMainWebGuiView(ShaderProgram.Factory shaderFactory, ShaderUniform.Factory uniformFactory, UltralightWebGuiController controller, MinecraftWindow minecraftWindow) {
-    super(shaderFactory, uniformFactory, controller, minecraftWindow.getFramebufferWidth(), minecraftWindow.getFramebufferHeight(), true);
+  protected UltralightMainWebGuiView(
+      ShaderProgram.Factory shaderFactory,
+      ShaderUniform.Factory uniformFactory,
+      VertexArrayObject.Factory vaoFactory,
+      VertexBufferObject.Factory vboFactory,
+      VertexIndexObject.Factory eboFactory,
+      UltralightWebGuiController controller,
+      MinecraftWindow minecraftWindow) {
+    super(
+        shaderFactory,
+        uniformFactory,
+        vaoFactory,
+        vboFactory,
+        eboFactory,
+        controller,
+        minecraftWindow.getFramebufferWidth(),
+        minecraftWindow.getFramebufferHeight(),
+        true);
     this.controller = controller;
     this.minecraftWindow = minecraftWindow;
     this.allowFocus = true;
@@ -38,13 +55,13 @@ public class UltralightMainWebGuiView extends UltralightWindowWebView implements
 
   @Override
   public boolean handle(GuiEvent event) {
-    if(event instanceof FramebufferSizeEvent) {
+    if (event instanceof FramebufferSizeEvent) {
       // The framebuffer size event needs to be handled always (or the content will look weird)
       super.handle(event);
       return false;
     }
 
-    if(!allowFocus) {
+    if (!allowFocus) {
       return false; // Pass through events
     }
 

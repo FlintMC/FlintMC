@@ -113,9 +113,7 @@ public class DefaultVertexBuilder implements VertexBuilder {
   @Override
   public int write(float[] buffer, int startOffset) {
     int offset = startOffset;
-    for (VertexAttribute attribute : this.vbo
-            .getFormat()
-            .getAttributes()) {
+    for (VertexAttribute attribute : this.vbo.getFormat().getAttributes()) {
       if (attribute == VertexAttributes.POSITION3F) this.pos3fHandler.writeFloats(buffer, offset);
       else if (attribute == VertexAttributes.POSITION4F)
         this.pos4fHandler.writeFloats(buffer, offset);
@@ -129,7 +127,7 @@ public class DefaultVertexBuilder implements VertexBuilder {
         this.customHandler.writeFloats(buffer, offset);
       else
         throw new IllegalStateException(
-                "You're not supposed to implement EnumeratedVertexFormat yourself. Go away.");
+            "You're not supposed to implement EnumeratedVertexFormat yourself. Go away.");
       offset += attribute.getSize();
     }
     return offset - startOffset;
@@ -150,14 +148,16 @@ public class DefaultVertexBuilder implements VertexBuilder {
     void addFloats(float... floats) {
       int i = 0;
       for (VertexAttribute attribute : DefaultVertexBuilder.this.vbo.getFormat().getAttributes()) {
-        if (this.attributeTypeMatcher.apply(attribute) && i == this.pos) {
-          if (floats.length != attribute.getSize())
-            throw new IllegalArgumentException(
-                "The number of provided floats doesn't match the size of the attribute.");
-          for (float c : floats) toWrite.add(c);
-          this.pos++;
-          return;
-        } else i++;
+        if (this.attributeTypeMatcher.apply(attribute)) {
+          if (i == this.pos) {
+            if (floats.length != attribute.getSize())
+              throw new IllegalArgumentException(
+                  "The number of provided floats doesn't match the size of the attribute.");
+            for (float c : floats) toWrite.add(c);
+            this.pos++;
+            return;
+          } else i++;
+        }
       }
 
       throw new IllegalStateException(

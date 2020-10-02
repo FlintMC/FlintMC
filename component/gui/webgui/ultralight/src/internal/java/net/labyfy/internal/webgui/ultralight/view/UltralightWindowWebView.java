@@ -10,8 +10,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.render.shader.ShaderException;
 import net.labyfy.component.render.shader.ShaderProgram;
 import net.labyfy.component.render.shader.ShaderUniform;
-import net.labyfy.component.render.vbo.VertexBufferObject;
-import net.labyfy.component.render.vbo.VertexIndexObject;
+import net.labyfy.component.render.vbo.*;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
 import net.labyfy.internal.webgui.ultralight.util.UltralightLabyfyBridge;
 import net.labymedia.ultralight.UltralightSurface;
@@ -31,9 +30,11 @@ public class UltralightWindowWebView
   private int openGLTexture;
   private boolean transparent;
 
+  private final VertexArrayObject.Factory vaoFactory;
   private final VertexBufferObject.Factory vboFactory;
   private final VertexIndexObject.Factory eboFactory;
 
+  private VertexArrayObject vao;
   private VertexBufferObject vbo;
   private VertexIndexObject ebo;
 
@@ -49,6 +50,7 @@ public class UltralightWindowWebView
   protected UltralightWindowWebView(
       ShaderProgram.Factory shaderFactory,
       ShaderUniform.Factory uniformFactory,
+      VertexArrayObject.Factory vaoFactory,
       VertexBufferObject.Factory vboFactory,
       VertexIndexObject.Factory eboFactory,
       UltralightWebGuiController controller,
@@ -64,6 +66,7 @@ public class UltralightWindowWebView
     this.width = initialWidth;
     this.height = initialHeight;
 
+    this.vaoFactory = vaoFactory;
     this.vboFactory = vboFactory;
     this.eboFactory = eboFactory;
 
@@ -174,61 +177,48 @@ public class UltralightWindowWebView
       return;
     }
 
-    int oldVertexArray = glGetInteger(GL_VERTEX_ARRAY_BINDING);
-    int oldVertexBuffer = glGetInteger(GL_ARRAY_BUFFER_BINDING);
-    int oldElementArrayBuffer = glGetInteger(GL_ELEMENT_ARRAY_BUFFER_BINDING);
-
     if (openGLTexture != -1) {
       throw new IllegalStateException("Renderer has been initialized and not been destructed yet");
     }
 
     openGLTexture = glGenTextures();
-    vao = glGenVertexArrays();
-    vbo = glGenBuffers();
-    ebo = glGenBuffers();
-    float[] vertices =
-        new float[] {
-          -1, -1, 0, /**/ 0, 1, // BOTTOM LEFT
-          -1, 1, 0, /**/ 0, 0, // TOP LEFT
-          1, 1, 0, /**/ 1, 0, // TOP RIGHT
-          1, -1, 0, /**/ 1, 1, // BOTTOM RIGHT
-        };
-    int[] indices = new int[] {0, 1, 2, 3};
-    glBindVertexArray(vao);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    this.vbo = this.vboFactory.create(VertexFormats.POS3F_UV);
+    this.ebo = this.eboFactory.create();
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+    this.vbo
+        .addVertex()
+        .position(-1, -1, 0)
+        .texture(0, 1)
+        .next()
+        .position(-1, 1, 0)
+        .texture(0, 0)
+        .next()
+        .position(1, 1, 0)
+        .texture(1, 0)
+        .next()
+        .position(1, -1, 0)
+        .texture(1, 1);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+    this.ebo.addIndices(0, 1, 2, 3);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
-    glEnableVertexAttribArray(0);
+    this.vao =
+        this.vaoFactory.create(this.vbo, this.ebo, VboDrawMode.QUADS, () -> {
+          glBindTexture(GL_TEXTURE_2D, openGLTexture);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
-    glEnableVertexAttribArray(1);
+          // Disable mipmapping, the texture is always directly user facing
+          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glEnableVertexAttribArray(1);
-    glBindTexture(GL_TEXTURE_2D, openGLTexture);
+          // Clamp the texture, those settings are only here for clarity and
+          // possibly bad OpenGL implementations, as the texture will always
+          // be automatically adjusted to match the window size
+          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
-    // Disable mipmapping, the texture is always directly user facing
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    // Clamp the texture, those settings are only here for clarity and
-    // possibly bad OpenGL implementations, as the texture will always
-    // be automatically adjusted to match the window size
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-
-    // Clean up
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldElementArrayBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, oldVertexBuffer);
-    glBindVertexArray(oldVertexArray);
+          // Clean up
+          glBindTexture(GL_TEXTURE_2D, 0);
+        });
   }
 
   @Override
@@ -238,29 +228,14 @@ public class UltralightWindowWebView
 
   @Override
   public void render() {
-
     glViewport(0, 0, width, height);
     glScissor(0, 0, width, height);
     glDisable(GL_CULL_FACE);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-
     this.shader.useShader();
     glBindTexture(GL_TEXTURE_2D, openGLTexture);
-
-    int oldVertexArray = glGetInteger(GL_VERTEX_ARRAY_BINDING);
-    int oldVertexBuffer = glGetInteger(GL_ARRAY_BUFFER_BINDING);
-    int oldElementArrayBuffer = glGetInteger(GL_ELEMENT_ARRAY_BUFFER_BINDING);
-
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-    glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, 0);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldElementArrayBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, oldVertexBuffer);
-    glBindVertexArray(oldVertexArray);
+    this.vao.draw();
     glBindTexture(GL_TEXTURE_2D, 0);
     this.shader.stopShader();
 

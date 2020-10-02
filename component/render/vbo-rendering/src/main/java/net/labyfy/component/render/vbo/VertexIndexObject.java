@@ -2,9 +2,15 @@ package net.labyfy.component.render.vbo;
 
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
+import java.util.List;
+
 public interface VertexIndexObject {
 
   void addIndices(int... indices);
+
+  List<Integer> getIndices();
+
+  int getSize();
 
   void pushToGPU();
 
@@ -14,17 +20,11 @@ public interface VertexIndexObject {
 
   void unbind();
 
-  void draw();
-
-  void drawWithoutBind();
-
   boolean isAvailable();
 
   @AssistedFactory(VertexIndexObject.class)
   interface Factory {
 
-    VertexIndexObject create(VertexBufferObject vertexBufferObject);
-
-    VertexIndexObject create(VertexBufferObject vertexBufferObject, VboDrawMode drawMode);
+    VertexIndexObject create();
   }
 }

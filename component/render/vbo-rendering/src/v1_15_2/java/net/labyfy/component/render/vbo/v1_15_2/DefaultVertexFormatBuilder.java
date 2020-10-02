@@ -10,8 +10,6 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL33.*;
-
 @Singleton
 @Implement(VertexFormatBuilder.class)
 public class DefaultVertexFormatBuilder implements VertexFormatBuilder {
@@ -33,25 +31,7 @@ public class DefaultVertexFormatBuilder implements VertexFormatBuilder {
 
   @Override
   public VertexFormat build() {
-
-    int id = glGenVertexArrays();
-    VertexFormat format = this.vertexFormatFactory.create(this.currentAttributes, id);
-
-    int index = 0;
-    int offset = 0;
-
-    format.bind();
-
-    for (VertexAttribute attribute : this.currentAttributes) {
-      glVertexAttribPointer(
-          index, attribute.getSize(), GL_FLOAT, false, format.getVertexSize() * 4, offset);
-      glEnableVertexAttribArray(index);
-      index++;
-      offset += attribute.getSize() * 4;
-    }
-
-    format.unbind();
-
+    VertexFormat format = this.vertexFormatFactory.create(this.currentAttributes);
     this.currentAttributes = new ArrayList<>();
     return format;
   }
