@@ -12,7 +12,6 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
 
   private final VertexFormat format;
   private final VertexBufferObject vbo;
-  private final VertexIndexObject ebo;
   private final VboDrawMode drawMode;
 
   private final int id;
@@ -21,18 +20,16 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
   @AssistedInject
   private DefaultVertexArrayObject(
       @Assisted VertexBufferObject vbo, @Assisted VertexIndexObject ebo) {
-    this(vbo, ebo, VboDrawMode.TRIANGLES, () -> {});
+    this(vbo, VboDrawMode.TRIANGLES, () -> {});
   }
 
   @AssistedInject
   private DefaultVertexArrayObject(
       @Assisted VertexBufferObject vbo,
-      @Assisted VertexIndexObject ebo,
       @Assisted VboDrawMode drawMode,
       @Assisted Runnable bindCallback) {
     this.format = vbo.getFormat();
     this.vbo = vbo;
-    this.ebo = ebo;
     this.drawMode = drawMode;
 
     this.id = this.format.createVAO();
@@ -42,35 +39,31 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
     this.vbo.bind();
     this.vbo.pushToGPU();
 
-    this.ebo.bind();
-    this.ebo.pushToGPU();
-
     this.format.pushToGPU(this.id);
 
     bindCallback.run();
 
-    this.ebo.unbind();
     this.vbo.unbind();
     this.unbind();
   }
 
   @Override
-  public void draw() {
+  public void draw(VertexIndexObject ebo) {
     this.bind();
-    this.vbo.unbind();
-    this.ebo.bind();
-    this.drawWithoutBind();
+    this.vbo.bind();
+    ebo.bind();
+    this.drawWithoutBind(ebo);
     this.unbind();
     this.vbo.unbind();
-    this.ebo.unbind();
+    ebo.unbind();
   }
 
   @Override
-  public void drawWithoutBind() {
+  public void drawWithoutBind(VertexIndexObject ebo) {
     if (drawMode == VboDrawMode.TRIANGLES)
-      glDrawElements(GL_TRIANGLES, this.ebo.getSize(), GL_UNSIGNED_INT, 0);
+      glDrawElements(GL_TRIANGLES, ebo.getSize(), GL_UNSIGNED_INT, 0);
     else if (drawMode == VboDrawMode.QUADS)
-      glDrawElements(GL_QUADS, this.ebo.getSize(), GL_UNSIGNED_INT, 0);
+      glDrawElements(GL_QUADS, ebo.getSize(), GL_UNSIGNED_INT, 0);
   }
 
   @Override
@@ -81,11 +74,6 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
   @Override
   public VertexBufferObject getVBO() {
     return this.vbo;
-  }
-
-  @Override
-  public VertexIndexObject getEBO() {
-    return this.ebo;
   }
 
   @Override

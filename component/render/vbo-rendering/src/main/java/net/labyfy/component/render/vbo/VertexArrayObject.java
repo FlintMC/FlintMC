@@ -5,15 +5,13 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 
 public interface VertexArrayObject {
 
-  void draw();
+  void draw(VertexIndexObject ebo);
 
-  void drawWithoutBind();
+  void drawWithoutBind(VertexIndexObject ebo);
 
   VertexFormat getFormat();
 
   VertexBufferObject getVBO();
-
-  VertexIndexObject getEBO();
 
   void bind();
 
@@ -26,6 +24,10 @@ public interface VertexArrayObject {
 
     VertexArrayObject create(VertexBufferObject vbo, VertexIndexObject ebo);
 
-    VertexArrayObject create(VertexBufferObject vbo, VertexIndexObject ebo, VboDrawMode drawMode, Runnable bindCallback);
+    VertexArrayObject create(VertexBufferObject vbo, Runnable bindCallback);
+
+    VertexArrayObject create(VertexBufferObject vbo, VboDrawMode drawMode);
+
+    VertexArrayObject create(VertexBufferObject vbo, VboDrawMode drawMode, Runnable bindCallback);
   }
 }
