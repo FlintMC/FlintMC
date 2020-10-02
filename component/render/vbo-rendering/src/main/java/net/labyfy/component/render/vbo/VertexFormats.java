@@ -44,6 +44,15 @@ public enum VertexFormats implements EnumeratedVertexFormat {
           .addAttribute(VertexAttributes.TEXTURE_UV)
           .build();
     }
+  },
+  POS3F_UV {
+    @Override
+    VertexFormat createCopy() {
+      return InjectionHolder.getInjectedInstance(VertexFormatBuilder.class)
+          .addAttribute(VertexAttributes.POSITION3F)
+          .addAttribute(VertexAttributes.TEXTURE_UV)
+          .build();
+    }
   };
 
   private final VertexFormat format;
