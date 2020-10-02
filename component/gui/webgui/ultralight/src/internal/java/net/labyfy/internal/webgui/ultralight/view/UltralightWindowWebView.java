@@ -10,6 +10,8 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.render.shader.ShaderException;
 import net.labyfy.component.render.shader.ShaderProgram;
 import net.labyfy.component.render.shader.ShaderUniform;
+import net.labyfy.component.render.vbo.VertexBufferObject;
+import net.labyfy.component.render.vbo.VertexIndexObject;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
 import net.labyfy.internal.webgui.ultralight.util.UltralightLabyfyBridge;
 import net.labymedia.ultralight.UltralightSurface;
@@ -27,8 +29,13 @@ public class UltralightWindowWebView
   private final boolean gpuRenderer;
 
   private int openGLTexture;
-  private int vao, vbo, ebo;
   private boolean transparent;
+
+  private final VertexBufferObject.Factory vboFactory;
+  private final VertexIndexObject.Factory eboFactory;
+
+  private VertexBufferObject vbo;
+  private VertexIndexObject ebo;
 
   private float scale; // TODO: make configurable
 
@@ -42,6 +49,8 @@ public class UltralightWindowWebView
   protected UltralightWindowWebView(
       ShaderProgram.Factory shaderFactory,
       ShaderUniform.Factory uniformFactory,
+      VertexBufferObject.Factory vboFactory,
+      VertexIndexObject.Factory eboFactory,
       UltralightWebGuiController controller,
       @Assisted("initialWidth") int initialWidth,
       @Assisted("initialHeight") int initialHeight,
@@ -54,6 +63,9 @@ public class UltralightWindowWebView
 
     this.width = initialWidth;
     this.height = initialHeight;
+
+    this.vboFactory = vboFactory;
+    this.eboFactory = eboFactory;
 
     this.shader = shaderFactory.create();
 

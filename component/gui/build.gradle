@@ -26,6 +26,7 @@ dependencies {
     api project(':component:transform:javassist')
     api project(':component:transform:hook')
     api project(':component:render:shader')
+    api project(':component:render:vbo-rendering')
     api group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
     api 'commons-io:commons-io:2.6'
 
@@ -35,6 +36,7 @@ dependencies {
     labyfy project(':component:transform:javassist')
     labyfy project(':component:transform:hook')
     labyfy project(':component:render:shader')
+    labyfy project(':component:render:vbo-rendering')
     labyfy group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
     labyfy 'commons-io:commons-io:2.6'
 
