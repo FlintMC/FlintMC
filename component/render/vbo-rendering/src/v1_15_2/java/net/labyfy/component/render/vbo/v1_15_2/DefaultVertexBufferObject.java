@@ -61,13 +61,7 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
       offset += vertex.write(buffer, offset);
     }
 
-    this.previousVbo = glGetInteger(GL_ARRAY_BUFFER_BINDING);
-
-
-    this.bind();
     glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-
-    this.unbind();
 
     this.isAvailable = true;
     this.vertices = null;

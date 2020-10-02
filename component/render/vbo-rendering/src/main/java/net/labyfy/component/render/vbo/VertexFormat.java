@@ -12,15 +12,13 @@ public interface VertexFormat {
 
   List<VertexAttribute> getAttributes();
 
-  int getID();
+  int createVAO();
 
-  void bind();
-
-  void unbind();
+  void pushToGPU(int vao);
 
   @AssistedFactory(VertexFormat.class)
   interface Factory {
 
-    VertexFormat create(List<VertexAttribute> attributes, int id);
+    VertexFormat create(List<VertexAttribute> attributes);
   }
 }

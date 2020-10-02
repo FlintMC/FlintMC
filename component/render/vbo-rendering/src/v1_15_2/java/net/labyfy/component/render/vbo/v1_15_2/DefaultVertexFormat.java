@@ -14,18 +14,13 @@ import static org.lwjgl.opengl.GL33.*;
 public class DefaultVertexFormat implements VertexFormat {
 
   private final List<VertexAttribute> attributes;
-  private final int id;
   private final int stride;
 
-  private int oldVao;
-
   @AssistedInject
-  private DefaultVertexFormat(@Assisted List<VertexAttribute> attributes, @Assisted int id) {
+  private DefaultVertexFormat(@Assisted List<VertexAttribute> attributes) {
     this.attributes = attributes;
-    this.id = id;
     this.stride =
         this.attributes.stream().mapToInt(VertexAttribute::getSize).reduce(0, Integer::sum);
-    this.oldVao = 0;
   }
 
   @Override
@@ -44,18 +39,23 @@ public class DefaultVertexFormat implements VertexFormat {
   }
 
   @Override
-  public int getID() {
-    return this.id;
+  public int createVAO() {
+    return glGenVertexArrays();
   }
 
   @Override
-  public void bind() {
-    this.oldVao = glGetInteger(GL_VERTEX_ARRAY_BINDING);
-    glBindVertexArray(this.id);
+  public void pushToGPU(int vao) {
+    int index = 0;
+    int offset = 0;
+
+    for (VertexAttribute attribute : this.attributes) {
+      glVertexAttribPointer(
+              index, attribute.getSize(), GL_FLOAT, false, this.getVertexSize() * 4, offset);
+      glEnableVertexAttribArray(index);
+      index++;
+      offset += attribute.getSize() * 4;
+    }
+
   }
 
-  @Override
-  public void unbind() {
-    glBindVertexArray(this.oldVao);
-  }
 }

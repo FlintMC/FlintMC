@@ -70,7 +70,7 @@ public enum VertexFormats implements EnumeratedVertexFormat {
 
   @Override
   public int getVertexSize() {
-    return this.format.getAttributeCount();
+    return this.format.getVertexSize();
   }
 
   @Override
@@ -79,17 +79,13 @@ public enum VertexFormats implements EnumeratedVertexFormat {
   }
 
   @Override
-  public int getID() {
-    return this.format.getID();
+  public int createVAO() {
+    return this.format.createVAO();
   }
 
   @Override
-  public void bind() {
-    this.format.bind();
+  public void pushToGPU(int vao) {
+    this.format.pushToGPU(vao);
   }
 
-  @Override
-  public void unbind() {
-    this.format.unbind();
-  }
 }
