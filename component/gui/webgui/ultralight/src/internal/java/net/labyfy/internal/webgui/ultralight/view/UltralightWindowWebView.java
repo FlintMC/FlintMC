@@ -184,7 +184,7 @@ public class UltralightWindowWebView
     openGLTexture = glGenTextures();
 
     this.vbo = this.vboFactory.create(VertexFormats.POS3F_UV);
-    this.ebo = this.eboFactory.create();
+    this.ebo = this.eboFactory.create(VboDrawMode.QUADS);
 
     this.vbo
         .addVertex()
@@ -203,22 +203,24 @@ public class UltralightWindowWebView
     this.ebo.addIndices(0, 1, 2, 3);
 
     this.vao =
-        this.vaoFactory.create(this.vbo, this.ebo, VboDrawMode.QUADS, () -> {
-          glBindTexture(GL_TEXTURE_2D, openGLTexture);
+        this.vaoFactory.create(
+            this.vbo,
+            () -> {
+              glBindTexture(GL_TEXTURE_2D, openGLTexture);
 
-          // Disable mipmapping, the texture is always directly user facing
-          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+              // Disable mipmapping, the texture is always directly user facing
+              glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+              glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-          // Clamp the texture, those settings are only here for clarity and
-          // possibly bad OpenGL implementations, as the texture will always
-          // be automatically adjusted to match the window size
-          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+              // Clamp the texture, those settings are only here for clarity and
+              // possibly bad OpenGL implementations, as the texture will always
+              // be automatically adjusted to match the window size
+              glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+              glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
-          // Clean up
-          glBindTexture(GL_TEXTURE_2D, 0);
-        });
+              // Clean up
+              glBindTexture(GL_TEXTURE_2D, 0);
+            });
   }
 
   @Override
@@ -235,7 +237,7 @@ public class UltralightWindowWebView
     glPushMatrix();
     this.shader.useShader();
     glBindTexture(GL_TEXTURE_2D, openGLTexture);
-    this.vao.draw();
+    this.vao.draw(this.ebo);
     glBindTexture(GL_TEXTURE_2D, 0);
     this.shader.stopShader();
 
