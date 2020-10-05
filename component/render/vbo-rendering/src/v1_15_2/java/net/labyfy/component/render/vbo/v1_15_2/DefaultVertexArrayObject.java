@@ -51,6 +51,7 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
     this.bind();
     this.vbo.bind();
     ebo.bind();
+    if (!ebo.isAvailable()) ebo.pushToGPU();
     this.drawWithoutBind(ebo);
     this.unbind();
     this.vbo.unbind();

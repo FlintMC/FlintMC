@@ -8,6 +8,7 @@ import net.labyfy.component.render.vbo.VertexBuilder;
 import net.labyfy.component.render.vbo.VertexFormat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL33.*;
@@ -52,6 +53,12 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
       throw new IllegalStateException(
           "This VBO is already pushed to the GPU, vertices can't be added anymore.");
     this.vertices.add(vertexBuilder);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<VertexBuilder> getVertices() {
+    return Collections.unmodifiableList(this.vertices);
   }
 
   public int getVertexCount() {

@@ -2,6 +2,8 @@ package net.labyfy.component.render.vbo;
 
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
+import java.util.List;
+
 /** Represents an OpenGL vertex buffer object (VBO). */
 public interface VertexBufferObject {
 
@@ -18,6 +20,9 @@ public interface VertexBufferObject {
    * @param vertexBuilder the {@link VertexBuilder} to be added.
    */
   void addVertex(VertexBuilder vertexBuilder);
+
+  /** @return a list of currently added vertices. The list shall not be modified. */
+  List<VertexBuilder> getVertices();
 
   /** @return the number of vertices contained in this vertex buffer object. */
   int getVertexCount();
