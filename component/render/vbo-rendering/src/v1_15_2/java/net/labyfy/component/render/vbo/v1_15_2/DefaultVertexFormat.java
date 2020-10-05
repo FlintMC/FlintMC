@@ -6,10 +6,12 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.vbo.VertexAttribute;
 import net.labyfy.component.render.vbo.VertexFormat;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL33.*;
 
+/** {@inheritDoc} */
 @Implement(VertexFormat.class)
 public class DefaultVertexFormat implements VertexFormat {
 
@@ -23,26 +25,31 @@ public class DefaultVertexFormat implements VertexFormat {
         this.attributes.stream().mapToInt(VertexAttribute::getSize).reduce(0, Integer::sum);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getAttributeCount() {
     return attributes.size();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getVertexSize() {
     return this.stride;
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<VertexAttribute> getAttributes() {
-    return this.attributes;
+    return Collections.unmodifiableList(this.attributes);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int createVAO() {
     return glGenVertexArrays();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void pushToGPU(int vao) {
     int index = 0;
@@ -50,12 +57,10 @@ public class DefaultVertexFormat implements VertexFormat {
 
     for (VertexAttribute attribute : this.attributes) {
       glVertexAttribPointer(
-              index, attribute.getSize(), GL_FLOAT, false, this.getVertexSize() * 4, offset);
+          index, attribute.getSize(), GL_FLOAT, false, this.getVertexSize() * 4, offset);
       glEnableVertexAttribArray(index);
       index++;
       offset += attribute.getSize() * 4;
     }
-
   }
-
 }

@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Function;
 
+/** {@inheritDoc} */
 @Implement(VertexBuilder.class)
 public class DefaultVertexBuilder implements VertexBuilder {
 
@@ -42,41 +43,48 @@ public class DefaultVertexBuilder implements VertexBuilder {
         new AttributeValueHandler(attribute -> !(attribute instanceof EnumeratedVertexFormat));
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder position(float x, float y, float z) {
     this.pos3fHandler.addFloats(x, y, z);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder position(float x, float y, float z, float w) {
     this.pos4fHandler.addFloats(x, y, z, w);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder normal(float x, float y, float z) {
     this.normalHandler.addFloats(x, y, z);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder color(float r, float g, float b) {
     this.rgbHandler.addFloats(r, g, b);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder color(byte r, byte g, byte b) {
     return this.color((float) r / 255.0f, (float) g / 255.0f, (float) b / 255.0f);
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder color(byte r, byte g, byte b, byte a) {
     return this.color(
         (float) r / 255.0f, (float) g / 255.0f, (float) b / 255.0f, (float) a / 255.0f);
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder color(float rgba) {
     int bits = Float.floatToIntBits(rgba);
@@ -87,29 +95,34 @@ public class DefaultVertexBuilder implements VertexBuilder {
         (byte) (bits & 0xff));
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder color(float r, float g, float b, float a) {
     this.rgbaHandler.addFloats(r, g, b, a);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder texture(float u, float v) {
     this.textureHandler.addFloats(u, v);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder custom(float... values) {
     this.customHandler.addFloats(values);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder next() {
     return this.vbo.addVertex();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int write(float[] buffer, int startOffset) {
     int offset = startOffset;

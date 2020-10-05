@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
+/** {@inheritDoc} */
 @Singleton
 @Implement(VertexFormatBuilder.class)
 public class DefaultVertexFormatBuilder implements VertexFormatBuilder {
@@ -23,12 +24,14 @@ public class DefaultVertexFormatBuilder implements VertexFormatBuilder {
     this.vertexFormatFactory = vertexFormatFactory;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexFormatBuilder addAttribute(VertexAttribute attribute) {
     this.currentAttributes.add(attribute);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexFormat build() {
     VertexFormat format = this.vertexFormatFactory.create(this.currentAttributes);
