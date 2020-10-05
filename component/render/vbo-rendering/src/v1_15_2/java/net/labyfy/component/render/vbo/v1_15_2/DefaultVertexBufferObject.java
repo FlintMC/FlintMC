@@ -79,7 +79,6 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 
     this.isAvailable = true;
-    this.vertices = null;
   }
 
   /** {@inheritDoc} */
