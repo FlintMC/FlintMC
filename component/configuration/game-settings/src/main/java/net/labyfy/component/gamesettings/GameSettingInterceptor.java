@@ -24,22 +24,4 @@ public interface GameSettingInterceptor {
    */
   void saveOptions(File optionsFile, Map<String, String> configurations);
 
-  /**
-   * Retrieves the minor version of Minecraft.
-   *
-   * @param version The current Minecraft version.
-   * @return The minor version of Minecraft.
-   * @throws NumberFormatException if the string does not contain a
-   *                               parsable integer.
-   */
-  default int getMinorVersion(String version) {
-    String[] elements = version.split("\\.");
-
-    try {
-      return Integer.parseInt(elements[1]);
-    } catch (NumberFormatException exception) {
-      return -1;
-    }
-  }
-
 }

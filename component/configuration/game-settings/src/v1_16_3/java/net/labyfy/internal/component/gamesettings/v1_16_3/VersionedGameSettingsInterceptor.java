@@ -2,10 +2,10 @@ package net.labyfy.internal.component.gamesettings.v1_16_3;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import net.labyfy.component.gamesettings.GameSettingInterceptor;
 import net.labyfy.component.gamesettings.GameSettingsAccessor;
 import net.labyfy.component.processing.autoload.AutoLoad;
+import net.labyfy.component.stereotype.VersionHelper;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.transform.hook.Hook;
@@ -18,14 +18,17 @@ import java.util.Map;
 @AutoLoad
 public class VersionedGameSettingsInterceptor {
 
-  private final Map<String, String> launchArguments;
   private final GameSettingInterceptor gameSettingInterceptor;
+  private final VersionHelper versionHelper;
   private Map<String, String> configurations;
   private File optionsFile;
 
   @Inject
-  private VersionedGameSettingsInterceptor(@Named("launchArguments") Map launchArguments, GameSettingInterceptor gameSettingInterceptor) {
-    this.launchArguments = launchArguments;
+  private VersionedGameSettingsInterceptor(
+          GameSettingInterceptor gameSettingInterceptor,
+          VersionHelper versionHelper
+  ) {
+    this.versionHelper = versionHelper;
     this.gameSettingInterceptor = gameSettingInterceptor;
   }
 
@@ -35,7 +38,7 @@ public class VersionedGameSettingsInterceptor {
     this.optionsFile = gameSettingsAccessor.getOptionsFile();
     this.configurations = this.gameSettingInterceptor.readOptions(this.optionsFile);
 
-    if (this.configurations != null && (this.gameSettingInterceptor.getMinorVersion(this.launchArguments.get("--game-version")) < 13)) {
+    if (this.configurations != null && (this.versionHelper.isUnder13())) {
       this.gameSettingInterceptor.makeQualifiedKeyBinds(this.optionsFile, this.configurations);
     }
 

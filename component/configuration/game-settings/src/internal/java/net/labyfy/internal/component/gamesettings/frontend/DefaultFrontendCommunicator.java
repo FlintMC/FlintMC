@@ -7,13 +7,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.frontend.FrontendCommunicator;
 import net.labyfy.component.gamesettings.frontend.FrontendOption;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.util.Hand;
+import net.labyfy.component.stereotype.VersionHelper;
 import net.labyfy.component.world.difficult.Difficulty;
 
 import java.util.HashMap;
@@ -31,17 +31,17 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
   private static final Pattern NUMERIC_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 
   private final Multimap<String, FrontendOption> configurations;
+  private final VersionHelper versionHelper;
   private final JsonObject configurationObject;
-  private final Map<String, String> launchArguments;
   private final EnumConstantHelper enumConstantHelper;
 
   @Inject
   private DefaultFrontendCommunicator(
-          @Named("launchArguments") Map launchArguments,
+          EnumConstantHelper enumConstantHelper,
           FrontendOption.Factory frontedTypeFactory,
-          EnumConstantHelper enumConstantHelper
+          VersionHelper versionHelper
   ) {
-    this.launchArguments = launchArguments;
+    this.versionHelper = versionHelper;
     this.configurationObject = new JsonObject();
     this.configurations = HashMultimap.create();
     this.enumConstantHelper = enumConstantHelper;
@@ -109,7 +109,7 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
 
             // When the minor version is under 13 replaces
             // the configuration names to the scan codes
-            if (this.isUnder13()) {
+            if (this.versionHelper.isUnder13()) {
               value = String.valueOf(KeyBindMappings.getScanCode(value));
             }
 
@@ -186,7 +186,7 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
         value = CloudOption.FAST.name();
       }
     } else if (type.getConfigurationName().equalsIgnoreCase("fancyGraphics")) {
-      if (this.getMinorVersion(this.launchArguments.get("--game-version")) < 16) {
+      if (this.versionHelper.isUnder16()) {
         value = Boolean.getBoolean(value) ? GraphicsFanciness.FANCY.name() : GraphicsFanciness.FAST.name();
       } else {
         value = type.getType().getEnumConstants()[Integer.parseInt(value)].toString();
@@ -385,7 +385,7 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
     for (Map.Entry<String, String> entry : configurations.entrySet()) {
       // When the minor version is under 13 parses the
       // scan codes to the configuration names
-      if (this.isUnder13()) {
+      if (this.versionHelper.isUnder13()) {
 
         try {
           int key = Integer.parseInt(entry.getValue());
@@ -419,10 +419,6 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
       prettyConfiguration.put(key.toString(), entry.getValue());
     }
     return prettyConfiguration;
-  }
-
-  private boolean isUnder13() {
-    return this.getMinorVersion(this.launchArguments.get("--game-version")) < 13;
   }
 
   /**
