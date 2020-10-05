@@ -23,6 +23,7 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
 
   private List<VertexBuilder> vertices;
   private boolean isAvailable;
+  private boolean deleted;
   private int previousVbo;
 
   @AssistedInject
@@ -33,6 +34,7 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     this.vertices = new ArrayList<>();
     this.id = glGenBuffers();
     this.isAvailable = false;
+    this.deleted = false;
   }
 
   /** {@inheritDoc} */
@@ -111,5 +113,15 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
   @Override
   public VertexFormat getFormat() {
     return this.vertexFormat;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void delete() {
+    if (this.deleted) throw new IllegalStateException("The VBO was already deleted.");
+    this.bind();
+    glDeleteBuffers(this.id);
+    this.unbind();
+    this.deleted = true;
   }
 }

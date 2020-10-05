@@ -56,6 +56,9 @@ public interface VertexArrayObject {
   /** @return the OpenGL name of this VAO. */
   int getID();
 
+  /** Deletes the vertex array object and the corresponding vertex buffer object. */
+  void delete();
+
   @AssistedFactory(VertexArrayObject.class)
   interface Factory {
 
