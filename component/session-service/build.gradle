@@ -1,0 +1,31 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.labyfy.component'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url 'https://libraries.minecraft.net' }
+}
+
+labyfy {
+    projectFilter { true }
+    minecraftVersions '1.15.2'
+}
+
+dependencies {
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+    v1_15_2AnnotationProcessor project(':component:annotation-processing:autoload')
+
+    api project(':component:stereotype')
+    api project(':component:inject')
+    api project(':component:resources')
+    api project(':component:transform:shadow')
+    api project(':component:player')
+
+    api group: 'com.mojang', name: 'authlib', version: '1.6.25'
+}

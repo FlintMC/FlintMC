@@ -113,3 +113,5 @@ findProject(':component:transform:shadow')?.name = 'shadow'
 include 'component:render:shader'
 findProject(':component:render:shader')?.name = 'shader'
 
+include 'component:session-service'
+findProject(':component:session-service')?.name = 'session-service'
