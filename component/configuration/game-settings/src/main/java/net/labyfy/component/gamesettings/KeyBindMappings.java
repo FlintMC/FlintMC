@@ -150,7 +150,7 @@ public enum KeyBindMappings {
   }
 
   /**
-   * Retrieves the scan code by the configuration name.
+   * Retrieves the scan code by the given configuration name.
    *
    * @param name The configuration name.
    * @return The scan code of the given configuration name or {@code -1}.
@@ -162,6 +162,21 @@ public enum KeyBindMappings {
       }
     }
     return -1;
+  }
+
+  /**
+   * Retrieves the key configuration name by the given scanCode.
+   *
+   * @param scanCode The scan code of a keybinding.
+   * @return The configuration name or {@link #UNKNOWN#getConfigurationName()}
+   */
+  public static String getConfigurationName(int scanCode) {
+    for (KeyBindMappings value : values()) {
+      if (value.getKey() == scanCode) {
+        return value.getConfigurationName();
+      }
+    }
+    return UNKNOWN.getConfigurationName();
   }
 
   /**

@@ -1,12 +1,11 @@
 package net.labyfy.internal.component.gamesettings;
 
 import com.google.common.collect.Maps;
-import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.GameSettingInterceptor;
 import net.labyfy.component.gamesettings.KeyBindMappings;
-import net.labyfy.component.gamesettings.frontend.FrontendCommunicator;
+import net.labyfy.component.gamesettings.event.ConfigurationEvent;
 import net.labyfy.component.inject.implement.Implement;
 
 import java.io.BufferedReader;
@@ -21,11 +20,12 @@ import java.util.*;
 @Implement(GameSettingInterceptor.class)
 public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
 
-  private final FrontendCommunicator frontendCommunicator;
+  private final ConfigurationEvent.Factory configurationEventFactory;
+  private ConfigurationEvent configurationEvent;
 
   @Inject
-  public DefaultGameSettingInterceptor(FrontendCommunicator frontendCommunicator) {
-    this.frontendCommunicator = frontendCommunicator;
+  public DefaultGameSettingInterceptor(ConfigurationEvent.Factory configurationEventFactory) {
+    this.configurationEventFactory = configurationEventFactory;
   }
 
   /**
@@ -76,8 +76,7 @@ public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
         }
       }
 
-      JsonObject object = this.frontendCommunicator.parseOption(configurations);
-      this.frontendCommunicator.parseJson(object);
+      // TODO: 05.10.2020 Fired LoadConfigurationEvent
 
       bufferedReader.close();
     } catch (IOException exception) {
@@ -123,11 +122,38 @@ public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
         configuration.add(entry.getKey() + ":" + entry.getValue());
       }
 
+      // TODO: 05.10.2020 Fired SaveConfigurationEvent
+
       Collections.sort(configuration);
       Files.write(optionsFile.toPath(), configuration, Charset.defaultCharset());
     } catch (IOException exception) {
       exception.printStackTrace();
     }
+  }
+
+  /**
+   * Creates or updates the {@link #configurationEvent}.
+   *
+   * @param state          The state for the event.
+   * @param optionsFile    The options file for the event.
+   * @param configurations The configurations for the event.
+   * @return A created or updated {@link ConfigurationEvent}.
+   */
+  private ConfigurationEvent createOrUpdateEvent(
+          ConfigurationEvent.State state,
+          File optionsFile,
+          Map<String, String> configurations
+  ) {
+    if (this.configurationEvent == null) {
+      this.configurationEvent = this.configurationEventFactory.create(state, optionsFile, configurations);
+      return this.configurationEvent;
+    }
+
+    this.configurationEvent.setState(state);
+    this.configurationEvent.setOptionsFile(optionsFile);
+    this.configurationEvent.setConfigurations(configurations);
+
+    return this.configurationEvent;
   }
 
 }

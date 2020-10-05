@@ -1,0 +1,80 @@
+package net.labyfy.internal.component.gamesettings.event;
+
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.component.gamesettings.event.ConfigurationEvent;
+import net.labyfy.component.inject.implement.Implement;
+
+import java.io.File;
+import java.util.Map;
+
+/**
+ * Default implementation of the {@link ConfigurationEvent}.
+ */
+@Implement(ConfigurationEvent.class)
+public class DefaultConfigurationEvent implements ConfigurationEvent {
+
+  private State state;
+  private File optionsFile;
+  private Map<String, String> configurations;
+
+  @AssistedInject
+  private DefaultConfigurationEvent(
+          @Assisted("state") State state,
+          @Assisted("optionsFile") File optionsFile,
+          @Assisted("configurations") Map<String, String> configurations
+  ) {
+    this.state = state;
+    this.optionsFile = optionsFile;
+    this.configurations = configurations;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public State getState() {
+    return this.state;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setState(State state) {
+    this.state = state;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public File getOptionsFile() {
+    return this.optionsFile;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setOptionsFile(File optionsFile) {
+    this.optionsFile = optionsFile;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Map<String, String> getConfigurations() {
+    return this.configurations;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setConfigurations(Map<String, String> configurations) {
+    this.configurations = configurations;
+  }
+
+}

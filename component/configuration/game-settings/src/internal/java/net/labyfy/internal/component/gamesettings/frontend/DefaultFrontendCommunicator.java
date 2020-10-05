@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.frontend.FrontendCommunicator;
 import net.labyfy.component.gamesettings.frontend.FrontendOption;
 import net.labyfy.component.gamesettings.settings.*;
@@ -103,18 +104,26 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
     for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
       for (Map.Entry<String, JsonElement> elementEntry : entry.getValue().getAsJsonObject().entrySet()) {
         if (elementEntry.getValue().isJsonPrimitive()) {
+          String value = elementEntry.getValue().toString().replace("\"", "");
           if (entry.getKey().equalsIgnoreCase("keys")) {
-            configurations.put("key_key." + elementEntry.getKey(), elementEntry.getValue().toString());
+
+            // When the minor version is under 13 replaces
+            // the configuration names to the scan codes
+            if (this.isUnder13()) {
+              value = String.valueOf(KeyBindMappings.getScanCode(value));
+            }
+
+            configurations.put("key_key." + elementEntry.getKey(), value);
           } else if (entry.getKey().equalsIgnoreCase("sounds")) {
-            configurations.put("soundCategory_" + elementEntry.getKey(), elementEntry.getValue().toString());
+            configurations.put("soundCategory_" + elementEntry.getKey(), value);
           } else if (entry.getKey().equalsIgnoreCase("skinModel")) {
-            configurations.put("modelPart_" + this.convertToSnakeCase(elementEntry.getKey()), elementEntry.getValue().toString());
+            configurations.put("modelPart_" + this.convertToSnakeCase(elementEntry.getKey()), value);
           } else {
             if (elementEntry.getKey().startsWith("discrete")) {
-              configurations.put(this.convertToSnakeCase(elementEntry.getKey()), elementEntry.getValue().toString());
+              configurations.put(this.convertToSnakeCase(elementEntry.getKey()), value);
               continue;
             }
-            configurations.put(elementEntry.getKey(), elementEntry.getValue().toString());
+            configurations.put(elementEntry.getKey(), value);
           }
         } else {
           if (!elementEntry.getValue().isJsonArray()) {
@@ -374,6 +383,20 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
     Map<String, String> prettyConfiguration = new HashMap<>();
 
     for (Map.Entry<String, String> entry : configurations.entrySet()) {
+      // When the minor version is under 13 parses the
+      // scan codes to the configuration names
+      if (this.isUnder13()) {
+
+        try {
+          int key = Integer.parseInt(entry.getValue());
+          String name = KeyBindMappings.getConfigurationName(key);
+          configurations.put(entry.getKey(), name);
+        } catch (NumberFormatException ignored) {
+
+        }
+
+      }
+
       StringBuilder key = new StringBuilder(entry.getKey()
               .replace("key_key.", "")
               .replace("modelPart_", "")
@@ -396,6 +419,10 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
       prettyConfiguration.put(key.toString(), entry.getValue());
     }
     return prettyConfiguration;
+  }
+
+  private boolean isUnder13() {
+    return this.getMinorVersion(this.launchArguments.get("--game-version")) < 13;
   }
 
   /**
