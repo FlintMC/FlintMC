@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL33.*;
 
+/** {@inheritDoc} */
 @Implement(VertexBufferObject.class)
 public class DefaultVertexBufferObject implements VertexBufferObject {
 
@@ -33,6 +34,7 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     this.isAvailable = false;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBuilder addVertex() {
     if (isAvailable)
@@ -43,6 +45,7 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     return builder;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addVertex(VertexBuilder vertexBuilder) {
     if (isAvailable)
@@ -51,6 +54,11 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     this.vertices.add(vertexBuilder);
   }
 
+  public int getVertexCount() {
+    return this.vertices.size();
+  }
+
+  /** {@inheritDoc} */
   @Override
   public void pushToGPU() {
     if (isAvailable) throw new IllegalStateException("This VBO is already pushed to the GPU.");
@@ -67,11 +75,13 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     this.vertices = null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getID() {
     return this.id;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void bind() {
     this.previousVbo = glGetInteger(GL_ARRAY_BUFFER_BINDING);
@@ -79,16 +89,19 @@ public class DefaultVertexBufferObject implements VertexBufferObject {
     glBindBuffer(GL_ARRAY_BUFFER, this.id);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void unbind() {
     glBindBuffer(GL_ARRAY_BUFFER, Math.max(this.previousVbo, 0));
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isAvailable() {
     return this.isAvailable;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexFormat getFormat() {
     return this.vertexFormat;

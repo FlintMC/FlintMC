@@ -7,10 +7,12 @@ import net.labyfy.component.render.vbo.VboDrawMode;
 import net.labyfy.component.render.vbo.VertexIndexObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL33.*;
 
+/** {@inheritDoc} */
 @Implement(VertexIndexObject.class)
 public class DefaultVertexIndexObject implements VertexIndexObject {
 
@@ -35,6 +37,7 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
     this.drawMode = drawMode;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addIndices(int... indices) {
     if (this.isAvailable)
@@ -45,16 +48,19 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<Integer> getIndices() {
-    return this.indices;
+    return Collections.unmodifiableList(this.indices);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getSize() {
     return this.indices.size();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void pushToGPU() {
     if (this.isAvailable)
@@ -70,11 +76,13 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
     this.isAvailable = true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getID() {
     return this.id;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void bind() {
     this.oldEbo = glGetInteger(GL_ELEMENT_ARRAY_BUFFER_BINDING);
@@ -82,16 +90,19 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.id);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void unbind() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Math.max(this.oldEbo, 0));
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isAvailable() {
     return this.isAvailable;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VboDrawMode getDrawMode() {
     return this.drawMode;

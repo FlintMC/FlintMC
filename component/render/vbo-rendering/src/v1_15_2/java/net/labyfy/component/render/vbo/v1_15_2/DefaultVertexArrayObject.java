@@ -5,8 +5,11 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.vbo.*;
 
+import java.nio.IntBuffer;
+
 import static org.lwjgl.opengl.GL33.*;
 
+/** {@inheritDoc} */
 @Implement(VertexArrayObject.class)
 public class DefaultVertexArrayObject implements VertexArrayObject {
 
@@ -42,6 +45,7 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
     this.unbind();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void draw(VertexIndexObject ebo) {
     this.bind();
@@ -53,6 +57,16 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
     ebo.unbind();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void draw(IntBuffer indices, VboDrawMode drawMode) {
+    this.bind();
+    this.vbo.bind();
+    if (drawMode == VboDrawMode.TRIANGLES) glDrawElements(GL_TRIANGLES, indices);
+    else if (drawMode == VboDrawMode.QUADS) glDrawElements(GL_QUADS, indices);
+  }
+
+  /** {@inheritDoc} */
   @Override
   public void drawWithoutBind(VertexIndexObject ebo) {
     if (ebo.getDrawMode() == VboDrawMode.TRIANGLES)
@@ -61,27 +75,32 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
       glDrawElements(GL_QUADS, ebo.getSize(), GL_UNSIGNED_INT, 0);
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexFormat getFormat() {
     return this.format;
   }
 
+  /** {@inheritDoc} */
   @Override
   public VertexBufferObject getVBO() {
     return this.vbo;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void bind() {
     this.oldId = glGetInteger(GL_VERTEX_ARRAY_BINDING);
     glBindVertexArray(this.id);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void unbind() {
     glBindVertexArray(this.oldId);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getID() {
     return this.id;
