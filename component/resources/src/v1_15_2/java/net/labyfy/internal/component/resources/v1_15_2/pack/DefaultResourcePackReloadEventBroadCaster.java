@@ -20,7 +20,7 @@ public class DefaultResourcePackReloadEventBroadCaster {
   private final ResourcePackReloadEvent resourcePackReloadEvent;
 
   @Inject
-  public DefaultResourcePackReloadEventBroadCaster(EventBus eventBus, ResourcePackReloadEvent resourcePackReloadEvent) {
+  private DefaultResourcePackReloadEventBroadCaster(EventBus eventBus, ResourcePackReloadEvent resourcePackReloadEvent) {
     this.eventBus = eventBus;
     this.resourcePackReloadEvent = resourcePackReloadEvent;
   }
