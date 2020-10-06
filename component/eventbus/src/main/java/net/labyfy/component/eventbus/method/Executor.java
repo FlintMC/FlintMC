@@ -3,9 +3,8 @@ package net.labyfy.component.eventbus.method;
 import java.lang.reflect.Method;
 
 /**
- * A functional interface that can invoke a defined method on a listener object when an event is fired.
+ * An interface that can invoke a defined method on a listener object when an event is fired.
  */
-@FunctionalInterface
 public interface Executor {
 
   /**
