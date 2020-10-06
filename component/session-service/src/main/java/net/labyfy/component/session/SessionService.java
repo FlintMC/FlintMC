@@ -12,13 +12,6 @@ import java.util.concurrent.CompletableFuture;
 public interface SessionService {
 
   /**
-   * Retrieves the email of the account which is currently used by the client.
-   *
-   * @return The email or {@code null} if the client is not logged into any account
-   */
-  String getEmail();
-
-  /**
    * Retrieves the uniqueId of the player of the account which is currently used by the client.
    *
    * @return The uniqueId or {@code null} if the client is not logged into any account

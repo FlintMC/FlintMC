@@ -44,7 +44,6 @@ public abstract class DefaultSessionService implements SessionService {
   private final UserAuthentication authentication;
   private final String clientToken;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
-  private String email;
 
   private final SessionAccountLogInEvent.Factory logInEventFactory;
   private final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
@@ -69,11 +68,6 @@ public abstract class DefaultSessionService implements SessionService {
   }
 
   protected abstract void refreshSession();
-
-  @Override
-  public String getEmail() {
-    return this.email;
-  }
 
   @Override
   public UUID getUniqueId() {
@@ -127,7 +121,7 @@ public abstract class DefaultSessionService implements SessionService {
   @Override
   public CompletableFuture<RefreshTokenResult> refreshToken() {
     String accessToken = this.getAccessToken();
-    if (this.email == null || accessToken == null) {
+    if (accessToken == null) {
       return CompletableFuture.completedFuture(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.NOT_LOGGED_IN));
     }
     if (!(this.authentication instanceof RefreshableUserAuthentication)) {
@@ -214,10 +208,6 @@ public abstract class DefaultSessionService implements SessionService {
     GameProfile currentProfile = this.getProfile();
 
     if (this.authentication.isLoggedIn()) {
-      if (email.equals(this.email)) {
-        return CompletableFuture.completedFuture(this.authResultFactory.createFailed(Type.ALREADY_LOGGED_IN));
-      }
-
       this.authentication.logOut();
     }
 
@@ -230,7 +220,6 @@ public abstract class DefaultSessionService implements SessionService {
       try {
         this.authentication.logIn();
 
-        this.email = email;
         this.refreshSession();
 
         GameProfile newProfile = this.getProfile();
