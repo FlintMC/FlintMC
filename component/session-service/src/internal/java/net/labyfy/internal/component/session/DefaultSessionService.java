@@ -1,6 +1,7 @@
 package net.labyfy.internal.component.session;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.AuthenticationService;
@@ -12,10 +13,10 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.session.AuthenticationResult;
-import net.labyfy.component.session.Session;
-import net.labyfy.component.session.refresh.NotLoggedInException;
-import net.labyfy.component.session.refresh.RefreshTokenResult;
+import net.labyfy.component.session.RefreshTokenResult;
+import net.labyfy.component.session.SessionService;
 import net.labyfy.internal.component.session.refresh.RefreshableUserAuthentication;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -27,11 +28,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public abstract class DefaultSession implements Session {
+public abstract class DefaultSessionService implements SessionService {
 
   private static final String REFRESH_TOKEN_URL = "https://authserver.mojang.com/refresh";
+  private static final String VALIDATE_TOKEN_URL = "https://authserver.mojang.com/validate";
 
   private final ExecutorService executorService;
+  private final Logger logger;
 
   private final RefreshTokenResult.Factory refreshTokenResultFactory;
   private final UserAuthentication authentication;
@@ -39,8 +42,9 @@ public abstract class DefaultSession implements Session {
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
   private String email;
 
-  public DefaultSession(RefreshTokenResult.Factory refreshTokenResultFactory, GameProfileSerializer profileSerializer,
-                        Proxy minecraftProxy) {
+  public DefaultSessionService(Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
+                               GameProfileSerializer profileSerializer, Proxy minecraftProxy) {
+    this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
     this.profileSerializer = profileSerializer;
     this.executorService = Executors.newFixedThreadPool(1);
@@ -81,17 +85,40 @@ public abstract class DefaultSession implements Session {
   }
 
   @Override
+  public CompletableFuture<Boolean> isAccessTokenValid() {
+    String accessToken = this.getAccessToken();
+    if (accessToken == null) {
+      return CompletableFuture.completedFuture(false);
+    }
+
+    CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+    this.executorService.execute(() -> {
+      try {
+        future.complete(this.validateAccessToken(accessToken));
+      } catch (IOException e) {
+        this.logger.error("An error occurred while validating access token", e);
+        future.complete(false);
+      }
+    });
+
+    return future;
+  }
+
+  @Override
   public boolean isLoggedIn() {
     return this.authentication.isLoggedIn();
   }
 
   @Override
   public CompletableFuture<RefreshTokenResult> refreshToken() {
-    if (this.email == null) {
-      throw NotLoggedInException.INSTANCE;
+    String accessToken = this.getAccessToken();
+    if (this.email == null || accessToken == null) {
+      return CompletableFuture.completedFuture(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.NOT_LOGGED_IN));
     }
     if (!(this.authentication instanceof RefreshableUserAuthentication)) {
-      return CompletableFuture.completedFuture(this.refreshTokenResultFactory.create(false, "Not supported"));
+      // this can only happen if shadow has failed which basically never happens
+      return CompletableFuture.completedFuture(this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, "Not supported"));
     }
 
     RefreshableUserAuthentication refreshable = (RefreshableUserAuthentication) this.authentication;
@@ -99,45 +126,63 @@ public abstract class DefaultSession implements Session {
 
     this.executorService.execute(() -> {
       try {
-        JsonObject result = this.requestNewToken();
+        JsonObject result = this.requestNewToken(accessToken);
 
         if (result.has("accessToken")) {
           // TODO token refresh event?
           refreshable.setAccessToken(result.get("accessToken").getAsString());
           this.refreshSession();
-          future.complete(this.refreshTokenResultFactory.create(true));
+          future.complete(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.SUCCESS));
           return;
         }
 
         if (result.has("errorMessage")) {
-          future.complete(this.refreshTokenResultFactory.create(false, result.get("errorMessage").getAsString()));
+          future.complete(this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, result.get("errorMessage").getAsString()));
           return;
         }
 
-        future.complete(this.refreshTokenResultFactory.create(false));
-      } catch (IOException e) {
-        future.complete(this.refreshTokenResultFactory.create(false, e.getMessage()));
+        future.complete(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.OTHER));
+      } catch (IOException | JsonParseException e) {
+        future.complete(this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, e.getMessage()));
       }
     });
 
     return future;
   }
 
-  private JsonObject requestNewToken() throws IOException {
+  private byte[] generateAccessTokenBody(String accessToken) {
     JsonObject body = new JsonObject();
     body.addProperty("clientToken", this.clientToken);
-    body.addProperty("accessToken", this.getAccessToken());
+    body.addProperty("accessToken", accessToken);
+    return body.toString().getBytes(StandardCharsets.UTF_8);
+  }
 
-    byte[] bytes = body.toString().getBytes(StandardCharsets.UTF_8);
+  private boolean validateAccessToken(String accessToken) throws IOException {
+    byte[] body = this.generateAccessTokenBody(accessToken);
+
+    HttpURLConnection connection = (HttpURLConnection) new URL(VALIDATE_TOKEN_URL).openConnection();
+    connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+    connection.setRequestProperty("Content-Length", String.valueOf(body.length));
+    connection.setDoOutput(true);
+
+    try (OutputStream outputStream = connection.getOutputStream()) {
+      outputStream.write(body);
+    }
+
+    return connection.getResponseCode() == 204;
+  }
+
+  private JsonObject requestNewToken(String accessToken) throws IOException {
+    byte[] body = this.generateAccessTokenBody(accessToken);
 
     HttpURLConnection connection = (HttpURLConnection) new URL(REFRESH_TOKEN_URL).openConnection();
     connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-    connection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+    connection.setRequestProperty("Content-Length", String.valueOf(body.length));
     connection.setDoOutput(true);
     connection.setDoInput(true);
 
     try (OutputStream outputStream = connection.getOutputStream()) {
-      outputStream.write(bytes);
+      outputStream.write(body);
     }
 
     try (InputStream inputStream = connection.getInputStream();
@@ -168,12 +213,15 @@ public abstract class DefaultSession implements Session {
         this.email = email;
         this.refreshSession();
 
+        // TODO account switch event with the previous and current profiles?
+
         future.complete(AuthenticationResult.SUCCESS);
       } catch (AuthenticationUnavailableException e) {
         future.complete(AuthenticationResult.AUTH_SERVER_OFFLINE);
       } catch (InvalidCredentialsException e) {
         future.complete(AuthenticationResult.INVALID_CREDENTIALS);
       } catch (AuthenticationException e) {
+        this.logger.error("An error occurred while logging into an account", e);
         future.complete(AuthenticationResult.UNKNOWN_ERROR);
       }
     });

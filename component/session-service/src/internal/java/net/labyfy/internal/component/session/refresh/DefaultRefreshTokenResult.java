@@ -3,28 +3,28 @@ package net.labyfy.internal.component.session.refresh;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.session.refresh.RefreshTokenResult;
+import net.labyfy.component.session.RefreshTokenResult;
 
 @Implement(RefreshTokenResult.class)
 public class DefaultRefreshTokenResult implements RefreshTokenResult {
 
-  private final boolean success;
+  private final ResultType type;
   private final String errorMessage;
 
   @AssistedInject
-  public DefaultRefreshTokenResult(@Assisted("success") boolean success) {
-    this(success, null);
+  public DefaultRefreshTokenResult(@Assisted("type") ResultType type) {
+    this(type, null);
   }
 
   @AssistedInject
-  public DefaultRefreshTokenResult(@Assisted("success") boolean success, @Assisted("errorMessage") String errorMessage) {
-    this.success = success;
+  public DefaultRefreshTokenResult(@Assisted("type") ResultType type, @Assisted("errorMessage") String errorMessage) {
+    this.type = type;
     this.errorMessage = errorMessage;
   }
 
   @Override
-  public boolean wasSuccess() {
-    return this.success;
+  public ResultType getType() {
+    return this.type;
   }
 
   @Override

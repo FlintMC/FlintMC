@@ -28,10 +28,13 @@ public class DefaultProfileLoader implements ProfileLoader {
 
   @Override
   public PropertyMap loadProfileProperties(UUID uniqueId) {
+    return this.loadProfile(uniqueId).getProperties();
+  }
+
+  @Override
+  public net.labyfy.component.player.gameprofile.GameProfile loadProfile(UUID uniqueId) {
     GameProfile profile = new GameProfile(uniqueId, "Steve");
-
     this.sessionService.fillProfileProperties(profile, false);
-
-    return this.profileSerializer.deserialize(profile).getProperties();
+    return this.profileSerializer.deserialize(profile);
   }
 }

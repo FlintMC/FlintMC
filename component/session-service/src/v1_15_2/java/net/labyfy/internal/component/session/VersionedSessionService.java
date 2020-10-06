@@ -3,18 +3,20 @@ package net.labyfy.internal.component.session;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.session.Session;
-import net.labyfy.component.session.refresh.RefreshTokenResult;
+import net.labyfy.component.session.RefreshTokenResult;
+import net.labyfy.component.session.SessionService;
 import net.minecraft.client.Minecraft;
+import org.apache.logging.log4j.Logger;
 
 @Singleton
-@Implement(value = Session.class, version = "1.15.2")
-public class VersionedSession extends DefaultSession {
+@Implement(value = SessionService.class, version = "1.15.2")
+public class VersionedSessionService extends DefaultSessionService {
 
   @Inject
-  public VersionedSession(RefreshTokenResult.Factory refreshTokenResultFactory, GameProfileSerializer profileSerializer) {
-    super(refreshTokenResultFactory, profileSerializer, Minecraft.getInstance().getProxy());
+  public VersionedSessionService(@InjectLogger Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory, GameProfileSerializer profileSerializer) {
+    super(logger, refreshTokenResultFactory, profileSerializer, Minecraft.getInstance().getProxy());
   }
 
   @Override
