@@ -20,7 +20,6 @@ public interface Executor {
   /**
    * Factory for {@link Executor}'s.
    */
-  @FunctionalInterface
   interface Factory {
 
     /**
@@ -29,7 +28,11 @@ public interface Executor {
      * @param listener The listener object
      * @param method   The method to call on the object.
      * @return An created executor.
-     * @throws Exception If an exception occurred while creating an executor.
+     * @throws Exception              If an exception occurred while creating an executor.
+     * @throws IllegalAccessException If the class or its nullary constructor is not accessible.
+     * @throws InstantiationException If this {@link Class} represents an abstract class, an interface, an array class, a
+     *                                primitive type, or void; or if the class has not nullary constructor; or if the
+     *                                instantiation fails or some other reason.
      */
     Executor create(Object listener, Method method) throws Exception;
 

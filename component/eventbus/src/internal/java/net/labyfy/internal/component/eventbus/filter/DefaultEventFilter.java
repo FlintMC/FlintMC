@@ -28,10 +28,13 @@ public class DefaultEventFilter implements EventFilter {
   private final Logger logger;
 
   @Inject
-  public DefaultEventFilter(@InjectLogger Logger logger) {
+  private DefaultEventFilter(@InjectLogger Logger logger) {
     this.logger = logger;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean matches(Object event, SubscribeMethod method) {
     if (method.getGroupAnnotations().isEmpty()) {

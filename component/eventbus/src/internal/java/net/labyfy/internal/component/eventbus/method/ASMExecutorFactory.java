@@ -3,6 +3,7 @@ package net.labyfy.internal.component.eventbus.method;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.eventbus.method.Executor;
 import net.labyfy.component.inject.implement.Implement;
@@ -21,8 +22,8 @@ import static org.objectweb.asm.Opcodes.*;
 /**
  * An executor factory which used ASM to create event executors.
  */
-@Implement(Executor.Factory.class)
 @Singleton
+@Implement(Executor.Factory.class)
 public class ASMExecutorFactory implements Executor.Factory {
 
   private static final String[] GENERATED_EVENT_EXECUTOR_NAME = new String[]{Type.getInternalName(Executor.class)};
@@ -33,12 +34,9 @@ public class ASMExecutorFactory implements Executor.Factory {
   private final ExecutorClassLoader eventExecutorClassLoader;
   private final LoadingCache<Method, Class<? extends Executor>> cache;
 
-  public ASMExecutorFactory() {
-    this(ASMExecutorFactory.class.getClassLoader());
-  }
-
-  public ASMExecutorFactory(ClassLoader parent) {
-    this.eventExecutorClassLoader = new ExecutorClassLoader(parent);
+  @Inject
+  private ASMExecutorFactory() {
+    this.eventExecutorClassLoader = new ExecutorClassLoader(ASMExecutorFactory.class.getClassLoader());
     this.cache = CacheBuilder.newBuilder()
         .initialCapacity(16)
         .weakValues()
@@ -127,14 +125,6 @@ public class ASMExecutorFactory implements Executor.Factory {
 
   /**
    * {@inheritDoc}
-   *
-   * @param listener The listener object
-   * @param method   The method to call on the object.
-   * @return
-   * @throws IllegalAccessException If the class or its nullary constructor is not accessible.
-   * @throws InstantiationException If this {@link Class} represents an abstract class, an interface, an array class, a
-   *                                primitive type, or void; or if the class has not nullary constructor; or if the
-   *                                instantiation fails or some other reason.
    */
   @Override
   public Executor create(Object listener, Method method) throws IllegalAccessException, InstantiationException {

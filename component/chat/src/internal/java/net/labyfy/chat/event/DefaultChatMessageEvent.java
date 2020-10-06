@@ -8,6 +8,9 @@ public class DefaultChatMessageEvent implements ChatMessageEvent {
     this.type = type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getType() {
     return this.type;

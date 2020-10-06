@@ -12,26 +12,38 @@ public class DefaultChatReceiveEvent extends DefaultChatMessageEvent implements 
   private boolean cancelled;
 
   @AssistedInject
-  public DefaultChatReceiveEvent(@Assisted("message") ChatComponent message) {
+  private DefaultChatReceiveEvent(@Assisted("message") ChatComponent message) {
     super(Type.RECEIVE);
     this.message = message;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getMessage() {
     return this.message;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMessage(ChatComponent message) {
     this.message = message;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCancelled() {
     return this.cancelled;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;

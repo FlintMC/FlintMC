@@ -1,6 +1,8 @@
 package net.labyfy.component.eventbus;
 
+import com.google.common.collect.Multimap;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
+import net.labyfy.component.eventbus.method.SubscribeMethod;
 import net.labyfy.component.transform.hook.Hook;
 
 /**
@@ -38,6 +40,13 @@ public interface EventBus {
         throw new IllegalStateException("Unexpected value: " + executionTime);
     }
   }
+
+  /**
+   * Retrieves a {@link Multimap} that contains all subscribe methods.
+   *
+   * @return A multimap that contains all subscribe methods.
+   */
+  Multimap<Class<?>, SubscribeMethod> getSubscribeMethods();
 
 
 }

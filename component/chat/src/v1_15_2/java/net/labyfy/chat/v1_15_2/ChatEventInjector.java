@@ -23,7 +23,7 @@ public class ChatEventInjector {
   private final ChatReceiveEvent.Factory receiveFactory;
 
   @Inject
-  public ChatEventInjector(EventBus eventBus, MinecraftComponentMapper componentMapper,
+  private ChatEventInjector(EventBus eventBus, MinecraftComponentMapper componentMapper,
                            ChatSendEvent.Factory sendFactory, ChatReceiveEvent.Factory receiveFactory) {
     this.eventBus = eventBus;
     this.componentMapper = componentMapper;
