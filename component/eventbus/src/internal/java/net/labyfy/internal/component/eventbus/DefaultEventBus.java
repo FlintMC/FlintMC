@@ -3,6 +3,7 @@ package net.labyfy.internal.component.eventbus;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.filter.EventFilter;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * Default implementation of the {@link EventBus}.
  */
+@Singleton
 @Implement(EventBus.class)
 public class DefaultEventBus implements EventBus {
 
