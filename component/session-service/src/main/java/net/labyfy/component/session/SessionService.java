@@ -75,7 +75,8 @@ public interface SessionService {
 
   /**
    * Logs into an account with the given email and password asynchronously. If the username instead of the email is
-   * provided, {@link AuthenticationResult#INVALID_CREDENTIALS} will be returned.
+   * provided, an {@link AuthenticationResult} with the type {@link AuthenticationResult.Type#INVALID_CREDENTIALS} will
+   * be returned.
    *
    * @param email    The non-null email of the account
    * @param password The non-null password of the account

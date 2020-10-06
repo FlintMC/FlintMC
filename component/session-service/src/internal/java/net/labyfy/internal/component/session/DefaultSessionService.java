@@ -13,8 +13,11 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.session.AuthenticationResult;
+import net.labyfy.component.session.AuthenticationResult.Type;
 import net.labyfy.component.session.RefreshTokenResult;
 import net.labyfy.component.session.SessionService;
+import net.labyfy.component.session.event.SessionAccountLogInEvent;
+import net.labyfy.component.session.event.SessionTokenRefreshEvent;
 import net.labyfy.internal.component.session.refresh.RefreshableUserAuthentication;
 import org.apache.logging.log4j.Logger;
 
@@ -37,16 +40,27 @@ public abstract class DefaultSessionService implements SessionService {
   private final Logger logger;
 
   private final RefreshTokenResult.Factory refreshTokenResultFactory;
+  private final AuthenticationResult.Factory authResultFactory;
   private final UserAuthentication authentication;
   private final String clientToken;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
   private String email;
 
+  private final SessionAccountLogInEvent.Factory logInEventFactory;
+  private final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
+
   public DefaultSessionService(Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
-                               GameProfileSerializer profileSerializer, Proxy minecraftProxy) {
+                               GameProfileSerializer profileSerializer,
+                               SessionAccountLogInEvent.Factory logInEventFactory,
+                               SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
+                               AuthenticationResult.Factory authResultFactory,
+                               Proxy minecraftProxy) {
     this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
     this.profileSerializer = profileSerializer;
+    this.logInEventFactory = logInEventFactory;
+    this.tokenRefreshEventFactory = tokenRefreshEventFactory;
+    this.authResultFactory = authResultFactory;
     this.executorService = Executors.newFixedThreadPool(1);
 
     this.clientToken = UUID.randomUUID().toString();
@@ -129,8 +143,12 @@ public abstract class DefaultSessionService implements SessionService {
         JsonObject result = this.requestNewToken(accessToken);
 
         if (result.has("accessToken")) {
-          // TODO token refresh event?
-          refreshable.setAccessToken(result.get("accessToken").getAsString());
+          String newToken = result.get("accessToken").getAsString();
+
+          // TODO fire this event
+          this.tokenRefreshEventFactory.create(accessToken, newToken);
+
+          refreshable.setAccessToken(newToken);
           this.refreshSession();
           future.complete(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.SUCCESS));
           return;
@@ -193,9 +211,11 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public CompletableFuture<AuthenticationResult> logIn(String email, String password) {
+    GameProfile currentProfile = this.getProfile();
+
     if (this.authentication.isLoggedIn()) {
       if (email.equals(this.email)) {
-        return CompletableFuture.completedFuture(AuthenticationResult.ALREADY_LOGGED_IN);
+        return CompletableFuture.completedFuture(this.authResultFactory.createFailed(Type.ALREADY_LOGGED_IN));
       }
 
       this.authentication.logOut();
@@ -213,16 +233,21 @@ public abstract class DefaultSessionService implements SessionService {
         this.email = email;
         this.refreshSession();
 
-        // TODO account switch event with the previous and current profiles?
+        GameProfile newProfile = this.getProfile();
 
-        future.complete(AuthenticationResult.SUCCESS);
+        // TODO fire this event
+        SessionAccountLogInEvent event = currentProfile != null ?
+            this.logInEventFactory.create(currentProfile, newProfile) :
+            this.logInEventFactory.create(newProfile);
+
+        future.complete(this.authResultFactory.createSuccess(newProfile));
       } catch (AuthenticationUnavailableException e) {
-        future.complete(AuthenticationResult.AUTH_SERVER_OFFLINE);
+        future.complete(this.authResultFactory.createFailed(Type.AUTH_SERVER_OFFLINE));
       } catch (InvalidCredentialsException e) {
-        future.complete(AuthenticationResult.INVALID_CREDENTIALS);
+        future.complete(this.authResultFactory.createFailed(Type.INVALID_CREDENTIALS));
       } catch (AuthenticationException e) {
         this.logger.error("An error occurred while logging into an account", e);
-        future.complete(AuthenticationResult.UNKNOWN_ERROR);
+        future.complete(this.authResultFactory.createFailed(Type.UNKNOWN_ERROR));
       }
     });
 
