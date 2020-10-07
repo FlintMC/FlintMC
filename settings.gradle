@@ -107,9 +107,11 @@ findProject(':component:server')?.name = 'server'
 include 'component:items'
 findProject(':component:items')?.name = 'items'
 
-include 'component:world'
-findProject(':component:world')?.name = 'world'
+include 'component:minecraft'
+findProject(':component:minecraft')?.name = 'minecraft'
 
 include 'component:transform:shadow'
 findProject(':component:transform:shadow')?.name = 'shadow'
 
+include 'component:render:shader'
+findProject(':component:render:shader')?.name = 'shader'
