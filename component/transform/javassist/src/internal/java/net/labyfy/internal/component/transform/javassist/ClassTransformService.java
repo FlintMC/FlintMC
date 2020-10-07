@@ -2,21 +2,17 @@ package net.labyfy.internal.component.transform.javassist;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.NotFoundException;
+import javassist.*;
 import javassist.bytecode.ClassFile;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
-import net.labyfy.component.stereotype.property.Property;
+import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.component.transform.exceptions.ClassTransformException;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
@@ -32,7 +28,6 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -43,7 +38,7 @@ import java.util.function.Predicate;
 @MinecraftTransformer
 @Service(ClassTransform.class)
 @Deprecated
-public class ClassTransformService implements ServiceHandler, LateInjectedTransformer {
+public class ClassTransformService implements ServiceHandler<ClassTransform>, LateInjectedTransformer {
 
   private final Logger logger;
   private final String version;
@@ -67,47 +62,39 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
   }
 
   @Override
-  public void discover(Identifier.Base property) {
-    LocatedIdentifiedAnnotation locatedIdentifiedAnnotation =
-        property.getProperty().getLocatedIdentifiedAnnotation();
-    LaunchController.getInstance().getRootLoader().excludeFromModification(
-        locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass().getName());
-
+  public void discover(IdentifierMeta<ClassTransform> identifierMeta) throws ServiceNotFoundException {
     Collection<Predicate<CtClass>> filters = new HashSet<>();
+    ClassTransform classTransformAnnotation = identifierMeta.getAnnotation();
 
-    for (Property.Base subProperty :
-        property.getProperty().getSubProperties(CtClassFilter.class)) {
-      filters.add(
-          ctClass -> {
-            CtClassFilter annotation =
-                subProperty.getLocatedIdentifiedAnnotation().getAnnotation();
+    for (IdentifierMeta<CtClassFilter> ctClassFilter : identifierMeta.getProperties(CtClassFilter.class)) {
+      filters.add(ctClass -> {
+        CtClassFilter classFilterAnnotation = ctClassFilter.getAnnotation();
+        try {
+          return classFilterAnnotation
+              .value()
+              .test(
+                  ctClass,
+                  InjectionHolder.getInjectedInstance(classFilterAnnotation.classNameResolver())
+                      .resolve(classFilterAnnotation.className()));
+        } catch (NotFoundException exception) {
+          logger.error("Exception while discovering service: {}", classFilterAnnotation.className(), exception);
+        }
 
-            try {
-              return annotation
-                  .value()
-                  .test(
-                      ctClass,
-                      InjectionHolder.getInjectedInstance(annotation.classNameResolver())
-                          .resolve(annotation.className()));
-            } catch (NotFoundException exception) {
-              logger.error("Exception while discovering service: {}", annotation.className(), exception);
-            }
+        return false;
+      });
 
-            return false;
-          });
     }
 
     this.classTransformContexts.add(
         this.classTransformContextFactory.create(
             filters,
             InjectionHolder.getInjectedInstance(
-                locatedIdentifiedAnnotation.<ClassTransform>getAnnotation().classNameResolver()),
-            locatedIdentifiedAnnotation.getAnnotation(),
-            locatedIdentifiedAnnotation.getLocation(),
-            locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass(),
-            InjectionHolder.getInjectedInstance(
-                locatedIdentifiedAnnotation.<Method>getLocation().getDeclaringClass())));
+                classTransformAnnotation.classNameResolver()),
+            classTransformAnnotation,
+            identifierMeta.getTarget(),
+            identifierMeta.<CtMethod>getTarget().getDeclaringClass()));
   }
+
 
   @Override
   public byte[] transform(String className, byte[] bytes) throws ClassTransformException {
@@ -133,6 +120,8 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
     }
 
     for (ClassTransformContext classTransformContext : this.classTransformContexts) {
+      CtClass ownerClass = classTransformContext.getOwnerClass();
+
       for (String target : classTransformContext.getClassTransform().value()) {
         String resolve = classTransformContext.getNameResolver().resolve(target);
 
@@ -148,10 +137,10 @@ public class ClassTransformService implements ServiceHandler, LateInjectedTransf
             .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass))) {
 
           classTransformContext.setCtClass(ctClass);
-          Method method = classTransformContext.getOwnerMethod();
+          CtMethod method = classTransformContext.getOwnerMethod();
 
           try {
-            method.invoke(classTransformContext.getOwner(), classTransformContext);
+            CtResolver.get(method).invoke(InjectionHolder.getInjectedInstance(CtResolver.get(ownerClass)), classTransformContext);
           } catch (IllegalAccessException exception) {
             throw new ClassTransformException("Unable to access method: " + method.getName(), exception);
           } catch (InvocationTargetException exception) {

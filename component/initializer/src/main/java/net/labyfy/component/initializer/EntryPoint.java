@@ -1,5 +1,6 @@
 package net.labyfy.component.initializer;
 
+import javassist.CtClass;
 import net.labyfy.component.initializer.inject.InitializationModule;
 import net.labyfy.component.initializer.inject.LabyInjectionInitializer;
 import net.labyfy.component.inject.primitive.InjectionHolder;
@@ -29,11 +30,8 @@ public class EntryPoint {
    * @param clazz The loaded class to notify
    * @throws ServiceNotFoundException If the service could not be discovered.
    */
-  public static void notifyService(Class clazz) throws ServiceNotFoundException {
-    if ((clazz.getSuperclass() != null && clazz.getSuperclass().getName().contains("groovy"))
-        || clazz.getName().contains("groovy")) return;
-
+  public static void notifyService(CtClass ctClass) throws ServiceNotFoundException {
     if (initialized)
-      InjectionHolder.getInjectedInstance(ServiceRepository.class).notifyClassLoaded(clazz);
+      InjectionHolder.getInjectedInstance(ServiceRepository.class).notifyClassLoaded(ctClass);
   }
 }

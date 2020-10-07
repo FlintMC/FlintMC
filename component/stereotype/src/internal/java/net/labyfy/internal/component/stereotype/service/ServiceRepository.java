@@ -4,11 +4,13 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.inject.Injector;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import javassist.CtClass;
+import javassist.NotFoundException;
+import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
 import net.labyfy.internal.component.stereotype.identifier.IdentifierParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +27,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ServiceRepository {
 
   private final Logger logger;
-  private final Collection<Class<? extends ServiceHandler>> pendingServices;
-  private final Set<Class<?>> loadedClasses;
+  private final Collection<CtClass> pendingServices;
+  private final Set<CtClass> loadedClasses;
   private final Multimap<Class<?>, ServiceHandler> serviceHandlers;
   private final AtomicReference<Injector> injectorReference;
   private boolean initialized;
@@ -41,8 +43,8 @@ public class ServiceRepository {
     this.injectorReference = injectorReference;
   }
 
-  private synchronized ServiceRepository register(Class<? extends ServiceHandler> handler) throws ServiceNotFoundException {
-    this.pendingServices.add(handler);
+  private synchronized ServiceRepository register(CtClass ctClass) throws ServiceNotFoundException {
+    this.pendingServices.add(ctClass);
 
     if (initialized) {
       flushAll();
@@ -53,55 +55,68 @@ public class ServiceRepository {
 
   public synchronized ServiceRepository flushAll() throws ServiceNotFoundException {
     initialized = true;
-    for (Class<? extends ServiceHandler> handler : this.pendingServices) {
+    for (CtClass handler : this.pendingServices) {
       flushService(handler);
     }
     return this;
   }
 
-  private void flushService(Class<? extends ServiceHandler> handler) throws ServiceNotFoundException {
-    ServiceHandler serviceHandler = injectorReference.get().getInstance(handler);
+  private void flushService(CtClass handler) throws ServiceNotFoundException {
+    ServiceHandler serviceHandler = (ServiceHandler) injectorReference.get().getInstance(CtResolver.get(handler));
+    try {
+      Service service = (Service) handler.getAnnotation(Service.class);
+      for (Class<?> target : service.value()) {
+        this.serviceHandlers.put(target, serviceHandler);
+      }
 
-    for (Class<?> target : handler.getDeclaredAnnotation(Service.class).value()) {
-      this.serviceHandlers.put(target, serviceHandler);
-    }
-
-    for (Class<?> loadedClass : this.loadedClasses) {
-      Collection<Identifier.Base> identifier = IdentifierParser.parse(loadedClass);
-
-      for (Identifier.Base base : identifier) {
-
-        for (Class<?> target : handler
-            .getDeclaredAnnotation(Service.class)
-            .value()) {
-          if (target.isAssignableFrom(
-              base.getProperty().getLocatedIdentifiedAnnotation().getAnnotation().getClass())) {
-            serviceHandler.discover(base);
-            logger.trace("Servicehandler {} discovered {}", serviceHandler.getClass().getName(), base.getProperty().getLocatedIdentifiedAnnotation().getLocation());
+      for (CtClass loadedClass : this.loadedClasses) {
+        Collection<IdentifierMeta<?>> identifierMetas = IdentifierParser.collectIdentifiers(loadedClass);
+        for (IdentifierMeta<?> identifierMeta : identifierMetas) {
+          for (Class<?> annotationClass : service.value()) {
+            if (annotationClass.isAssignableFrom(identifierMeta.getAnnotation().annotationType())) {
+              serviceHandler.discover(identifierMeta);
+              logger.trace("Servicehandler {} discovered {}", serviceHandler.getClass().getName(), identifierMeta.getTarget());
+            }
           }
         }
       }
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
     }
     this.pendingServices.remove(handler);
   }
 
-  public ServiceRepository notifyClassLoaded(Class<?> clazz) throws ServiceNotFoundException {
+  public void notifyClassLoaded(CtClass clazz) throws ServiceNotFoundException {
     this.loadedClasses.add(clazz);
-    Collection<Identifier.Base> identifier = IdentifierParser.parse(clazz);
-
-    if (ServiceHandler.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Service.class)) {
-      this.register(((Class<? extends ServiceHandler>) clazz));
-    }
-
-    for (Identifier.Base base : identifier) {
-      for (ServiceHandler serviceHandler :
-          this.serviceHandlers.get(
-              AnnotationCollector.getRealAnnotationClass(
-                  base.getProperty().getLocatedIdentifiedAnnotation().getAnnotation()))) {
-        serviceHandler.discover(base);
+    try {
+      Collection<IdentifierMeta<?>> identifierMetas = IdentifierParser.collectIdentifiers(clazz);
+      if (clazz.subtypeOf(clazz.getClassPool().get("net.labyfy.component.stereotype.service.ServiceHandler")) && clazz.hasAnnotation(Service.class)) {
+        this.register(clazz);
       }
+
+      for (IdentifierMeta<?> identifierMeta : identifierMetas) {
+        for (ServiceHandler serviceHandler : this.serviceHandlers.get(identifierMeta.getAnnotation().annotationType())) {
+          serviceHandler.discover(identifierMeta);
+        }
+      }
+
+    } catch (ClassNotFoundException | NotFoundException e) {
+      throw new ServiceNotFoundException(e);
     }
-    return this;
+//    Collection<IdentifierLegacy.Base> identifier = IdentifierParserLegacy.parse(clazz);
+//
+//    if (ServiceHandler.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Service.class)) {
+//      this.register(((Class<? extends ServiceHandler>) clazz));
+//    }
+//
+//    for (IdentifierLegacy.Base base : identifier) {
+//      for (ServiceHandler serviceHandler :
+//          this.serviceHandlers.get(
+//              AnnotationCollector.getRealAnnotationClass(
+//                  base.getProperty().getLocatedIdentifiedAnnotation().getAnnotation()))) {
+//        serviceHandler.discover(base);
+//      }
+//    }
   }
 
   public Multimap<Class<?>, ServiceHandler> getServices() {

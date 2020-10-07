@@ -9,9 +9,9 @@ import java.lang.annotation.*;
  * Marks a method to be executed when a task is triggered.
  */
 @Documented
-@Identifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@Identifier
 @Transitive
 public @interface Task {
   /**

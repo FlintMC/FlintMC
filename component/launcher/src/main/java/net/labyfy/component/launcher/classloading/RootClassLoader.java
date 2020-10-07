@@ -22,18 +22,18 @@ import java.util.stream.Collectors;
  * Main class loader for applications launched using a {@link net.labyfy.component.launcher.LaunchController}.
  */
 public class RootClassLoader extends URLClassLoader implements CommonClassLoader {
-    static {
-        ClassLoader.registerAsParallelCapable();
-    }
+  static {
+    ClassLoader.registerAsParallelCapable();
+  }
 
-    private final Set<String> currentlyLoading;
-    private final Set<LauncherPlugin> plugins;
-    private final List<ChildClassLoader> children;
-    private final List<String> modificationExclusions;
-    private final Map<String, Class<?>> classCache;
-    private final Map<URL, byte[]> resourceDataCache;
-    private final Logger logger;
-    private boolean transformEnabled;
+  private final Set<String> currentlyLoading;
+  private final Set<LauncherPlugin> plugins;
+  private final List<ChildClassLoader> children;
+  private final List<String> modificationExclusions;
+  private final Map<String, Class<?>> classCache;
+  private final Map<URL, byte[]> resourceDataCache;
+  private final Logger logger;
+  private boolean transformEnabled;
 
   /**
    * Constructs a new instance of the root class loader with the specified set
@@ -128,7 +128,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * @throws ClassNotFoundException If the class can't be found or an exception occurs finding the class
    * @throws IllegalStateException  If the class is being searched already
    */
-  public Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException {
+  public synchronized Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException {
     if (currentlyLoading.contains(name)) {
       throw new IllegalStateException("Circular load detected: " + name);
     }
@@ -207,6 +207,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       CodeSource codeSource = new CodeSource(information.getResourceURL(), information.getSigners());
       Class<?> clazz = loader.commonDefineClass(name, classBytes, 0, classBytes.length, codeSource);
       classCache.put(name, clazz);
+
       return clazz;
     } catch (IOException exception) {
       throw new ClassNotFoundException("Failed to find class " + name + " due to IOException", exception);
@@ -217,6 +218,27 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       currentlyLoading.remove(name);
     }
   }
+
+  @Override
+  protected synchronized Class<?> loadClass(String name, boolean resolve)
+      throws ClassNotFoundException {
+    Class<?> oldClass = this.findLoadedClass(name);
+    Class<?> aClass = super.loadClass(name, resolve);
+    Class<?> newClass = this.findLoadedClass(name);
+
+    if (oldClass == null && newClass != null) {
+      for (LauncherPlugin plugin : this.plugins) {
+        try {
+          plugin.postModifyClass(name);
+        } catch (ClassTransformException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    return aClass;
+  }
+
 
   /**
    * {@inheritDoc}
@@ -298,16 +320,16 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     return findResources(name, true);
   }
 
-    /**
-     * Extension of {@link ClassLoader#findResources(String)} allowing to disable
-     * redirects by launch plugins.
-     *
-     * @param name          The name of the resource to found
-     * @param allowRedirect Wether child plugins should be allowed to redirect the URL to a new one
-     * @return An enumeration of URL's pointing to resources matching the given name
-     * @throws IOException If an I/O error occurs finding the resources
-     * @see ClassLoader#findResources(String)
-     */
+  /**
+   * Extension of {@link ClassLoader#findResources(String)} allowing to disable
+   * redirects by launch plugins.
+   *
+   * @param name          The name of the resource to found
+   * @param allowRedirect Wether child plugins should be allowed to redirect the URL to a new one
+   * @return An enumeration of URL's pointing to resources matching the given name
+   * @throws IOException If an I/O error occurs finding the resources
+   * @see ClassLoader#findResources(String)
+   */
   public Enumeration<URL> findResources(String name, boolean allowRedirect) throws IOException {
     // First search our own classpath
     List<URL> resources = Collections.list(super.findResources(name));

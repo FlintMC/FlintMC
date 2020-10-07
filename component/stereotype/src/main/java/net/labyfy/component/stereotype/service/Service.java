@@ -8,7 +8,7 @@ import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants
 import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.SERVICE_ROUND;
 
 /**
- * A service can be used to discover {@link net.labyfy.component.stereotype.identifier.Identifier}s.
+ * A service can be used to discover {@link IdentifierLegacy}s.
  * {@link Service} marks a class which implements {@link ServiceHandler}.
  */
 @Documented

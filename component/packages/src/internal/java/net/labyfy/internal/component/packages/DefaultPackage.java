@@ -5,7 +5,6 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.commons.consumer.TriConsumer;
-import net.labyfy.component.initializer.EntryPoint;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
@@ -192,7 +191,7 @@ public class DefaultPackage implements Package {
     sortedClasses.forEach((round, classes) -> {
       classes.entries().forEach(entry -> {
         try {
-          EntryPoint.notifyService(Class.forName(entry.getValue(), true, DefaultPackage.class.getClassLoader()));
+          Class.forName(entry.getValue(), true, DefaultPackage.class.getClassLoader());
         } catch (Exception exception) {
           throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + entry.getValue(), exception);
         }

@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Identifier
 @Transitive
+@Identifier
 public @interface MinecraftTransformer {
 
   /**

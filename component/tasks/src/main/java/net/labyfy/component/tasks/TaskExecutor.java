@@ -1,12 +1,12 @@
 package net.labyfy.component.tasks;
 
 import com.google.inject.Key;
+import javassist.CtMethod;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 public interface TaskExecutor {
-  void register(Task task, Method method);
+  void register(Task task, CtMethod method);
 
   void execute(Tasks name) throws TaskExecutionException;
 

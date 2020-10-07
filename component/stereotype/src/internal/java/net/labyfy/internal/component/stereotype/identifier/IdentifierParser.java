@@ -1,113 +1,79 @@
 package net.labyfy.internal.component.stereotype.identifier;
 
+import javassist.CtClass;
+import javassist.CtMethod;
+import net.labyfy.component.stereotype.annotation.Transitive;
 import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.stereotype.property.Property;
-import net.labyfy.internal.component.stereotype.annotation.AnnotationCollector;
-import net.labyfy.internal.component.stereotype.property.PropertyParser;
+import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.stereotype.identifier.PropertyMeta;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.lang.annotation.ElementType;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.function.Predicate;
 
 public class IdentifierParser {
 
+  public static Collection<IdentifierMeta<?>> collectIdentifiers(CtClass ctClass) throws ClassNotFoundException {
+    Collection<IdentifierMeta<?>> identifierMetas = new HashSet<>();
 
-  private IdentifierParser() {
-  }
+    for (Object object : ctClass.getAnnotations()) {
+      Annotation annotation = (Annotation) object;
+      if (!annotation.annotationType().isAnnotationPresent(Transitive.class)) continue;
+      if (!annotation.annotationType().isAnnotationPresent(Identifier.class)) continue;
 
-  public static Collection<Identifier.Base> parse(Class<?> clazz) {
-
-    Collection<DefaultLocatedIdentifiedAnnotation> standaloneIdentifiers =
-        new ArrayList<>(findStandaloneClassIdentifiers(clazz));
-
-    for (Method declaredMethod : clazz.getDeclaredMethods()) {
-      declaredMethod.setAccessible(true);
-      standaloneIdentifiers.addAll(findStandaloneMethodIdentifiers(declaredMethod));
+      identifierMetas.add(new DefaultIdentifierMeta<>(annotation.annotationType().getAnnotation(Identifier.class), ElementType.TYPE, annotation, ctClass));
     }
 
-    Collection<Identifier.Base> identifiers = new LinkedList<>();
-
-    for (DefaultLocatedIdentifiedAnnotation standaloneIdentifier : standaloneIdentifiers) {
-      Property.Base parse = PropertyParser.parse(standaloneIdentifier);
-      if (parse != null) identifiers.add(new Identifier.Base(parse));
+    for (CtMethod declaredMethod : ctClass.getDeclaredMethods()) {
+      identifierMetas.addAll(collectIdentifiers(declaredMethod));
     }
 
-    return identifiers;
-  }
-
-  private static Collection<DefaultLocatedIdentifiedAnnotation> findStandaloneMethodIdentifiers(Method method) {
-
-    Predicate<Annotation> standalone =
-        identifierCandidate ->
-            AnnotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
-                && !((Identifier) identifierCandidate).requireParent();
-
-    Collection<DefaultLocatedIdentifiedAnnotation> identifiedAnnotations = new ArrayList<>();
-
-    for (Annotation transitiveAnnotation : AnnotationCollector.getTransitiveAnnotations(method)) {
-      boolean found = false;
-      for (Annotation annotation :
-          AnnotationCollector.getTransitiveAnnotations(
-              AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))) {
-        if (!standalone.test(annotation)) continue;
-        found = true;
-      }
-
-      if (found) {
-        AnnotationCollector.getTransitiveAnnotations(
-            AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
-            .stream()
-            .map(
-                annotation ->
-                    new DefaultLocatedIdentifiedAnnotation(
-                        (Identifier) annotation,
-                        transitiveAnnotation,
-                        method,
-                        DefaultLocatedIdentifiedAnnotation.Type.METHOD,
-                        DefaultLocatedIdentifiedAnnotation.Type.METHOD))
-            .forEach(e -> identifiedAnnotations.add(e));
-      }
+    for (IdentifierMeta<?> identifierMeta : identifierMetas) {
+      addChildren(identifierMeta);
     }
 
-    return identifiedAnnotations;
+    return identifierMetas;
   }
 
-  private static Collection<DefaultLocatedIdentifiedAnnotation> findStandaloneClassIdentifiers(Class<?> clazz) {
-    Predicate<Annotation> standalone =
-        identifierCandidate ->
-            AnnotationCollector.getRealAnnotationClass(identifierCandidate).equals(Identifier.class)
-                && !((Identifier) identifierCandidate).requireParent();
+  public static Collection<DefaultIdentifierMeta<?>> collectIdentifiers(CtMethod ctMethod) throws ClassNotFoundException {
+    Collection<DefaultIdentifierMeta<?>> identifierMetas = new HashSet<>();
 
-    Collection<DefaultLocatedIdentifiedAnnotation> identifiedAnnotations = new HashSet<>();
+    for (Object object : ctMethod.getAnnotations()) {
+      Annotation annotation = (Annotation) object;
+      if (!annotation.annotationType().isAnnotationPresent(Transitive.class)) continue;
+      if (!annotation.annotationType().isAnnotationPresent(Identifier.class)) continue;
 
-    for (Annotation transitiveAnnotation : AnnotationCollector.getTransitiveAnnotations(clazz)) {
-      boolean found = false;
-      for (Annotation annotation :
-          AnnotationCollector.getTransitiveAnnotations(
-              AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))) {
-        if (!standalone.test(annotation)) continue;
-        found = true;
-      }
-      if (found) {
-        AnnotationCollector.getTransitiveAnnotations(
-            AnnotationCollector.getRealAnnotationClass(transitiveAnnotation))
-            .stream()
-            .map(
-                annotation ->
-                    new DefaultLocatedIdentifiedAnnotation(
-                        (Identifier) annotation,
-                        transitiveAnnotation,
-                        clazz,
-                        DefaultLocatedIdentifiedAnnotation.Type.CLASS,
-                        DefaultLocatedIdentifiedAnnotation.Type.CLASS))
-            .forEach(identifiedAnnotations::add);
+      identifierMetas.add(new DefaultIdentifierMeta<>(annotation.annotationType().getAnnotation(Identifier.class), ElementType.METHOD, annotation, ctMethod));
+    }
+
+    return identifierMetas;
+  }
+
+  private static void addChildren(IdentifierMeta<?> identifierMeta) throws ClassNotFoundException {
+    Collection<DefaultIdentifierMeta<?>> childIdentifierMeta = new HashSet<>();
+
+    for (PropertyMeta propertyMeta : identifierMeta.getRequiredPropertyMeta()) {
+      if (!propertyMeta.getAnnotationType().isAnnotationPresent(Identifier.class))
+        throw new IllegalArgumentException("Target identifier child is not marked with @Identifier");
+
+      if (identifierMeta.getTargetType() == ElementType.TYPE) {
+//        CtClass ctClass = identifierMeta.getTarget();
+//        if (!ctClass.hasAnnotation(propertyMeta.getAnnotationType()))
+//          throw new IllegalArgumentException("Identifier is missing child.");
+//
+//        Identifier childIdentifier = propertyMeta.getAnnotationType().getDeclaredAnnotation(Identifier.class);
+//        childIdentifierMeta.add(new DefaultIdentifierMeta<>(childIdentifier, ElementType.TYPE, (Annotation) ctClass.getAnnotation(propertyMeta.getAnnotationType()), ctClass));
+        //Todo add children
+      } else {
+        //Todo add children
+
       }
     }
 
-    return identifiedAnnotations;
+    for (IdentifierMeta<?> meta : childIdentifierMeta) {
+      identifierMeta.getProperties().put(meta.getAnnotation().annotationType(), meta);
+    }
   }
+
 }

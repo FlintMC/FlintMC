@@ -1,7 +1,6 @@
 package net.labyfy.component.inject.event;
 
 import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,7 +15,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Identifier
 @Transitive
 @Deprecated
 public @interface Event {
