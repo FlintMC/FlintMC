@@ -76,7 +76,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
-    classloader.excludeFromModification("javassist.", "com.google.");
+    classloader.excludeFromModification("javassist.", "com.google.", "net.labyfy.component.transform.");
   }
 
   @Override
@@ -101,10 +101,10 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     new EntryPoint(arguments);
 
     // init sentry
-    if (logger != null){
+    if (logger != null) {
       try {
-        if (arguments.containsKey("--sentry")){
-          if(arguments.get("--sentry").equals("true"))
+        if (arguments.containsKey("--sentry")) {
+          if (arguments.get("--sentry").equals("true"))
             initSentry(arguments);
         } else initSentry(arguments);
       } catch (IOException exception) {
@@ -144,6 +144,16 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     } catch (CannotCompileException exception) {
       logger.warn("Failed to modify class due to compilation error", exception);
       return null;
+    }
+  }
+
+  @Override
+  public void postModifyClass(String className) throws ClassTransformException {
+    try {
+      if (className.startsWith("javassist")) return;
+      EntryPoint.notifyService(ClassPool.getDefault().get(className));
+    } catch (ServiceNotFoundException | NotFoundException e) {
+      throw new ClassTransformException(e);
     }
   }
 

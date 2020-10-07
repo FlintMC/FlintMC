@@ -3,8 +3,10 @@ package net.labyfy.internal.component.inject;
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import javassist.CtClass;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.stereotype.service.CtResolver;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,8 +21,8 @@ public class InjectionServiceShare {
   private static final Collection<Class> assistedFlushed = new HashSet<>();
   private static final Collection<Class> ignoreFlushed = new HashSet<>();
 
-  protected static final Map<Class, Class> implementations = Maps.newHashMap();
-  protected static final Map<Class, AssistedFactory> assisted = new HashMap<>();
+  protected static final Map<Class, CtClass> implementations = Maps.newHashMap();
+  protected static final Map<CtClass, AssistedFactory> assisted = new HashMap<>();
   protected static final Collection<Class> ignore = new HashSet<>();
 
   /**
@@ -37,7 +39,7 @@ public class InjectionServiceShare {
    *
    * @return Mapping of classes and their assisted factories
    */
-  public static Map<Class, AssistedFactory> getAssisted() {
+  public static Map<CtClass, AssistedFactory> getAssisted() {
     return assisted;
   }
 
@@ -47,7 +49,7 @@ public class InjectionServiceShare {
    *
    * @return Mapping of classes and their implementations
    */
-  public static Map<Class, Class> getImplementations() {
+  public static Map<Class, CtClass> getImplementations() {
     return implementations;
   }
 
@@ -62,20 +64,22 @@ public class InjectionServiceShare {
                 // Flush all implementations
                 implementations.forEach(
                     (superClass, implementation) -> {
-                      if (!ignore.contains(superClass) && !ignore.contains(implementation) && !implementationsFlushed.contains(implementation)) {
-                        this.bind(superClass).to(implementation);
-                        implementationsFlushed.add(implementation);
+                      Class<?> implementationResolved = CtResolver.get(implementation);
+                      if (!ignore.contains(superClass) && !ignore.contains(implementationResolved) && !implementationsFlushed.contains(implementationResolved)) {
+                        this.bind(superClass).to(implementationResolved);
+                        implementationsFlushed.add(implementationResolved);
                       }
                     });
 
                 // Flush all factories
                 assisted.forEach(
                     (clazz, factory) -> {
-                      if (!assistedFlushed.contains(clazz)) {
+                      Class<?> resolvedClass = CtResolver.get(clazz);
+                      if (!assistedFlushed.contains(resolvedClass)) {
                         FactoryModuleBuilder factoryModuleBuilder = new FactoryModuleBuilder();
-                        implementations.forEach(factoryModuleBuilder::implement);
-                        install(factoryModuleBuilder.build(clazz));
-                        assistedFlushed.add(clazz);
+                        implementations.forEach((interfaceClass, implementation) -> factoryModuleBuilder.implement(interfaceClass, CtResolver.get(implementation)));
+                        install(factoryModuleBuilder.build(resolvedClass));
+                        assistedFlushed.add(resolvedClass);
                       }
                     });
               }

@@ -9,7 +9,6 @@ import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,9 +23,8 @@ public class InternalClassTransformContext implements ClassTransformContext {
   private final Collection<Predicate<CtClass>> filters;
   private final NameResolver nameResolver;
   private final ClassTransform classTransform;
-  private final Method method;
-  private final Class<?> ownerClass;
-  private final Object owner;
+  private final CtMethod method;
+  private final CtClass ownerClass;
   private CtClass ctClass;
 
   @AssistedInject
@@ -35,20 +33,18 @@ public class InternalClassTransformContext implements ClassTransformContext {
       @Assisted("filters") Collection<Predicate<CtClass>> filters,
       @Assisted NameResolver nameResolver,
       @Assisted ClassTransform classTransform,
-      @Assisted Method method,
-      @Assisted Class<?> ownerClass,
-      @Assisted("owner") Object owner) {
+      @Assisted CtMethod method,
+      @Assisted CtClass ownerClass) {
     this.labyClassMappingProvider = labyClassMappingProvider;
     this.filters = Collections.unmodifiableCollection(filters);
     this.nameResolver = nameResolver;
     this.classTransform = classTransform;
     this.method = method;
     this.ownerClass = ownerClass;
-    this.owner = owner;
   }
 
   @Override
-  public Class<?> getOwnerClass() {
+  public CtClass getOwnerClass() {
     return ownerClass;
   }
 
@@ -131,18 +127,13 @@ public class InternalClassTransformContext implements ClassTransformContext {
   }
 
   @Override
-  public Method getOwnerMethod() {
+  public CtMethod getOwnerMethod() {
     return method;
   }
 
   @Override
   public ClassTransform getClassTransform() {
     return classTransform;
-  }
-
-  @Override
-  public Object getOwner() {
-    return owner;
   }
 
   @Override

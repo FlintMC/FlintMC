@@ -1,22 +1,17 @@
 package net.labyfy.internal.component.gui.juklearmc;
 
-import net.labyfy.component.gui.juklearmc.JuklearScreen;
-import net.labyfy.component.gui.juklearmc.menues.JuklearMCScreen;
-import net.labyfy.component.gui.screen.ScreenName;
-import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
-import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.stereotype.identifier.IdentifierMeta;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Handles the discovery of Juklear screens.
+ * wasnt fixed, because it should be already removed.
  */
-@Singleton
-@Service(JuklearScreen.class)
+//@Singleton
+//@Service(JuklearScreen.class)
 public class JuklearScreenService implements ServiceHandler {
   private final DefaultJuklearMC juklearMC;
 
@@ -25,12 +20,17 @@ public class JuklearScreenService implements ServiceHandler {
     this.juklearMC = juklearMC;
   }
 
+  @Override
+  public void discover(IdentifierMeta identifierMeta) throws ServiceNotFoundException {
+
+  }
+
   /**
    * {@inheritDoc}
    */
-  @Override
-  public void discover(Identifier.Base property) {
-    LocatedIdentifiedAnnotation annotation = property.getProperty().getLocatedIdentifiedAnnotation();
+ /* @Override
+  public void discover(IdentifierLegacy.Base property) {
+    LocatedIdentifiedAnnotationLegacy annotation = property.getProperty().getLocatedIdentifiedAnnotation();
 
     // Construct the target screen name from the annotation values
     Class<? extends JuklearMCScreen> clazz = annotation.getLocation();
@@ -40,5 +40,5 @@ public class JuklearScreenService implements ServiceHandler {
     // Add the initialization task so that once Juklear is initialized, the screen gets initialized
     juklearMC.onInitialize(
         () -> juklearMC.overwriteScreen(overwrittenName,  InjectionHolder.getInjectedInstance(clazz)));
-  }
+  }*/
 }

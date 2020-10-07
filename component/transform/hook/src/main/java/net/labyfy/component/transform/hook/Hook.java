@@ -6,8 +6,6 @@ import net.labyfy.component.commons.resolve.AnnotationResolver;
 import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.mappings.DefaultNameResolver;
 import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.stereotype.property.Property;
 import net.labyfy.component.stereotype.type.DefaultTypeNameResolver;
 import net.labyfy.component.stereotype.type.Type;
 
@@ -19,7 +17,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Transitive
-@Identifier(optionalProperties = @Property(HookFilter.class))
 @Deprecated
 public @interface Hook {
 

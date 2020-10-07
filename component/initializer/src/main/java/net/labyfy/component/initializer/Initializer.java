@@ -39,7 +39,7 @@ public class Initializer {
 
     for (Multimap<Integer, String> classes : sortedClasses.values()) {
       for (String className : classes.values()) {
-        EntryPoint.notifyService(Class.forName(className, true, Initializer.class.getClassLoader()));
+        Class.forName(className, true, Initializer.class.getClassLoader());
       }
 
       InjectionServiceShare.flush();

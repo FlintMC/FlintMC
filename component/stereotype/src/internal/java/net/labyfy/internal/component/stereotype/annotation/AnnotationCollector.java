@@ -1,6 +1,7 @@
 package net.labyfy.internal.component.stereotype.annotation;
 
 import com.google.common.collect.Sets;
+import javassist.CtClass;
 import net.labyfy.component.stereotype.annotation.Transitive;
 
 import java.lang.annotation.Annotation;
@@ -15,6 +16,7 @@ public class AnnotationCollector {
 
   private AnnotationCollector() {
   }
+
 
   /**
    * Collects all transitive annotations.
@@ -42,6 +44,41 @@ public class AnnotationCollector {
 
       if (realAnnotationClass.isAnnotationPresent(Transitive.class))
         annotations.add(declaredAnnotation);
+    }
+    return annotations;
+  }
+
+  /**
+   * Collects all transitive annotations.
+   * That means, every annotation that is annotated to the annotation on the input class
+   * will be recursively collected, as long as they have a {@link Transitive} annotation in the recursive order.
+   *
+   * @param clazz The class to collect annotations transitively from
+   * @return All transitive annotations
+   */
+  public static Collection<Annotation> getTransitiveAnnotations(CtClass clazz) {
+    Collection<Annotation> annotations = Sets.newHashSet();
+    try {
+      for (Object object : clazz.getAnnotations()) {
+        Annotation declaredAnnotation = (Annotation) object;
+        Class<? extends Annotation> realAnnotationClass = getRealAnnotationClass(declaredAnnotation);
+       /* Method[] declaredMethods = realAnnotationClass.getMethods();
+        for (Method declaredMethod : declaredMethods) {
+          if (Annotation[].class.isAssignableFrom(declaredMethod.getReturnType())) {
+            if (declaredMethod.getReturnType().getComponentType().isAnnotationPresent(Transitive.class)) {
+              for (Annotation annotation : clazz.getDeclaredAnnotationsByType((Class<? extends Annotation>) declaredMethod.getReturnType().getComponentType())) {
+                annotations.add(annotation);
+              }
+              break;
+            }
+          }
+        }*/
+
+        if (realAnnotationClass.isAnnotationPresent(Transitive.class))
+          annotations.add(declaredAnnotation);
+      }
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
     }
     return annotations;
   }
@@ -79,4 +116,6 @@ public class AnnotationCollector {
     }
     return annotationClass;
   }
+
+
 }

@@ -4,18 +4,19 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import javassist.CtMethod;
 import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.event.Event;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import org.apache.groovy.util.Maps;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +29,9 @@ import java.util.Map;
 @Singleton
 @Service(value = Event.class, priority = -10000)
 @Deprecated
-public class EventService implements ServiceHandler {
+public class EventService implements ServiceHandler<Event> {
   private final InjectedInvocationHelper injectedInvocationHelper;
-  private final Multimap<Class<?>, Method> methods = HashMultimap.create();
+  private final Multimap<Class<?>, CtMethod> methods = HashMultimap.create();
 
   @Inject
   private EventService(InjectedInvocationHelper injectedInvocationHelper) {
@@ -41,10 +42,8 @@ public class EventService implements ServiceHandler {
    * {@inheritDoc}
    */
   @Override
-  public void discover(Identifier.Base property) {
-    this.methods.put(
-        property.getProperty().getLocatedIdentifiedAnnotation().<Event>getAnnotation().value(),
-        (property.getProperty().getLocatedIdentifiedAnnotation().getLocation()));
+  public void discover(IdentifierMeta<Event> identifierMeta) throws ServiceNotFoundException {
+    this.methods.put(identifierMeta.getAnnotation().value(), identifierMeta.getTarget());
   }
 
   /**
@@ -76,8 +75,8 @@ public class EventService implements ServiceHandler {
                 event));
     parameters.putAll(customParameters);
 
-    for (Method method : methods.get(event.getClass())) {
-      injectedInvocationHelper.invokeMethod(method, parameters);
+    for (CtMethod method : methods.get(event.getClass())) {
+      injectedInvocationHelper.invokeMethod(CtResolver.get(method), parameters);
     }
   }
 }

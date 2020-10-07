@@ -10,8 +10,7 @@ import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.stereotype.property.Property;
+import net.labyfy.component.stereotype.identifier.IdentifierMeta;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.type.Type;
@@ -31,7 +30,7 @@ import java.util.Map;
 @Singleton
 @Service(Hook.class)
 @Deprecated
-public class HookService implements ServiceHandler {
+public class HookService implements ServiceHandler<Hook> {
 
   private final ClassMappingProvider classMappingProvider;
   private final String version;
@@ -69,25 +68,24 @@ public class HookService implements ServiceHandler {
   }
 
   @Override
-  public void discover(Identifier.Base property) {
-    Map<Property.Base, AnnotationResolver<Type, String>> subProperties = Maps.newHashMap();
+  public void discover(IdentifierMeta<Hook> identifierMeta) {
+    Map<IdentifierMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties = Maps.newHashMap();
 
-    for (Property.Base subProperty : property.getProperty().getSubProperties(HookFilter.class)) {
+    for (IdentifierMeta<HookFilter> subProperty : identifierMeta.getProperties(HookFilter.class)) {
       subProperties.put(
           subProperty,
           InjectionHolder.getInjectedInstance(
               subProperty
-                  .getLocatedIdentifiedAnnotation()
-                  .<HookFilter>getAnnotation()
+                  .getAnnotation()
                   .type()
                   .typeNameResolver()));
     }
 
-    Hook annotation = property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+    Hook annotation = identifierMeta.getAnnotation();
 
     this.hooks.add(
         new HookEntry(
-            property,
+            identifierMeta,
             subProperties,
             InjectionHolder.getInjectedInstance(annotation.parameterTypeNameResolver()),
             InjectionHolder.getInjectedInstance(annotation.methodNameResolver())));
@@ -98,9 +96,9 @@ public class HookService implements ServiceHandler {
     CtClass ctClass = classTransformContext.getCtClass();
 
     for (HookEntry entry : hooks) {
-      Identifier.Base identifier = entry.hook;
+      IdentifierMeta<Hook> identifier = entry.hook;
 
-      Hook hook = identifier.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
+      Hook hook = identifier.getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
         String className = classMappingProvider.get(classTransformContext.getNameResolver().resolve(hook.className())).getName();
@@ -109,14 +107,14 @@ public class HookService implements ServiceHandler {
               entry,
               hook,
               ctClass,
-              identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
+              identifier.getTarget());
         }
       } else {
         boolean cancel = false;
-        for (Map.Entry<Property.Base, AnnotationResolver<Type, String>> subProperty :
+        for (Map.Entry<IdentifierMeta<HookFilter>, AnnotationResolver<Type, String>> subProperty :
             entry.subProperties.entrySet()) {
           HookFilter hookFilter =
-              subProperty.getKey().getLocatedIdentifiedAnnotation().getAnnotation();
+              subProperty.getKey().getAnnotation();
 
           if (!hookFilter
               .value()
@@ -128,37 +126,44 @@ public class HookService implements ServiceHandler {
                 entry,
                 hook,
                 ctClass,
-                identifier.getProperty().getLocatedIdentifiedAnnotation().getLocation());
+                identifier.getTarget());
           }
         }
       }
     }
   }
 
-  private String arrayClassToString(Class<?> clazz) {
+  private String arrayClassToString(CtClass clazz) {
     if (clazz.isArray()) {
-      return "[]" + arrayClassToString(clazz.getComponentType());
-    } else {
-      return "";
+      try {
+        return "[]" + arrayClassToString(clazz.getComponentType());
+      } catch (NotFoundException e) {
+        e.printStackTrace();
+      }
     }
+    return "";
   }
 
-  private void insert(CtMethod target, Hook.ExecutionTime executionTime, Method hook) throws CannotCompileException {
+  private void insert(CtMethod target, Hook.ExecutionTime executionTime, CtMethod hook) throws CannotCompileException {
     StringBuilder stringBuilder = new StringBuilder();
-    for (Class<?> parameterType : hook.getParameterTypes()) {
-      String className =
-          parameterType.isArray()
-              ? parameterType.getComponentType().getName()
-              : parameterType.getName();
-      if (parameterType.isArray()) {
-        className += arrayClassToString(parameterType);
-      }
+    try {
+      for (CtClass parameterType : hook.getParameterTypes()) {
+        String className =
+            parameterType.isArray()
+                ? parameterType.getComponentType().getName()
+                : parameterType.getName();
+        if (parameterType.isArray()) {
+          className += arrayClassToString(parameterType);
+        }
 
-      if (stringBuilder.toString().isEmpty()) {
-        stringBuilder.append(className).append(".class");
-      } else {
-        stringBuilder.append(", ").append(className).append(".class");
+        if (stringBuilder.toString().isEmpty()) {
+          stringBuilder.append(className).append(".class");
+        } else {
+          stringBuilder.append(", ").append(className).append(".class");
+        }
       }
+    } catch (NotFoundException e) {
+      e.printStackTrace();
     }
 
     executionTime.insert(
@@ -178,7 +183,7 @@ public class HookService implements ServiceHandler {
             + ", $args);");
   }
 
-  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, Method callback) throws NotFoundException, CannotCompileException {
+  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, CtMethod callback) throws NotFoundException, CannotCompileException {
     CtClass[] parameters = new CtClass[hook.parameters().length];
 
     for (int i = 0; i < hook.parameters().length; i++) {
@@ -204,14 +209,14 @@ public class HookService implements ServiceHandler {
   }
 
   private static class HookEntry {
-    private final Identifier.Base hook;
-    private final Map<Property.Base, AnnotationResolver<Type, String>> subProperties;
+    IdentifierMeta<Hook> hook;
+    Map<IdentifierMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties;
     private final AnnotationResolver<Type, String> parameterTypeNameResolver;
     private final AnnotationResolver<Hook, String> methodNameResolver;
 
     private HookEntry(
-        Identifier.Base hook,
-        Map<Property.Base, AnnotationResolver<Type, String>> subProperties,
+        IdentifierMeta<Hook> hook,
+        Map<IdentifierMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties,
         AnnotationResolver<Type, String> parameterTypeNameResolver,
         AnnotationResolver<Hook, String> methodNameResolver) {
       this.hook = hook;
