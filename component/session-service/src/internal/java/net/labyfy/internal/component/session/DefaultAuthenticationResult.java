@@ -13,12 +13,12 @@ public class DefaultAuthenticationResult implements AuthenticationResult {
   private final GameProfile profile;
 
   @AssistedInject
-  public DefaultAuthenticationResult(@Assisted("type") Type type) { // failed
+  private DefaultAuthenticationResult(@Assisted("type") Type type) { // failed
     this(type, null);
   }
 
   @AssistedInject
-  public DefaultAuthenticationResult(@Assisted("profile") GameProfile profile) { // success
+  private DefaultAuthenticationResult(@Assisted("profile") GameProfile profile) { // success
     this(Type.SUCCESS, profile);
   }
 

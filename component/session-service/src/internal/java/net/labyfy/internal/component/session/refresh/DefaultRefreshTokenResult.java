@@ -12,12 +12,12 @@ public class DefaultRefreshTokenResult implements RefreshTokenResult {
   private final String errorMessage;
 
   @AssistedInject
-  public DefaultRefreshTokenResult(@Assisted("type") ResultType type) {
+  private DefaultRefreshTokenResult(@Assisted("type") ResultType type) {
     this(type, null);
   }
 
   @AssistedInject
-  public DefaultRefreshTokenResult(@Assisted("type") ResultType type, @Assisted("errorMessage") String errorMessage) {
+  private DefaultRefreshTokenResult(@Assisted("type") ResultType type, @Assisted("errorMessage") String errorMessage) {
     this.type = type;
     this.errorMessage = errorMessage;
   }

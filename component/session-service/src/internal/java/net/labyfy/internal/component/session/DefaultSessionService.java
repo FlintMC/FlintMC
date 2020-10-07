@@ -48,12 +48,12 @@ public abstract class DefaultSessionService implements SessionService {
   private final SessionAccountLogInEvent.Factory logInEventFactory;
   private final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
 
-  public DefaultSessionService(Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
-                               GameProfileSerializer profileSerializer,
-                               SessionAccountLogInEvent.Factory logInEventFactory,
-                               SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
-                               AuthenticationResult.Factory authResultFactory,
-                               Proxy minecraftProxy) {
+  protected DefaultSessionService(Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
+                                  GameProfileSerializer profileSerializer,
+                                  SessionAccountLogInEvent.Factory logInEventFactory,
+                                  SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
+                                  AuthenticationResult.Factory authResultFactory,
+                                  Proxy minecraftProxy) {
     this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
     this.profileSerializer = profileSerializer;

@@ -18,9 +18,9 @@ import org.apache.logging.log4j.Logger;
 public class VersionedSessionService extends DefaultSessionService {
 
   @Inject
-  public VersionedSessionService(@InjectLogger Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
-                                 GameProfileSerializer profileSerializer, SessionAccountLogInEvent.Factory logInEventFactory,
-                                 SessionTokenRefreshEvent.Factory tokenRefreshEventFactory, AuthenticationResult.Factory authResultFactory) {
+  private VersionedSessionService(@InjectLogger Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
+                                  GameProfileSerializer profileSerializer, SessionAccountLogInEvent.Factory logInEventFactory,
+                                  SessionTokenRefreshEvent.Factory tokenRefreshEventFactory, AuthenticationResult.Factory authResultFactory) {
     super(logger, refreshTokenResultFactory, profileSerializer, logInEventFactory, tokenRefreshEventFactory, authResultFactory, Minecraft.getInstance().getProxy());
   }
 

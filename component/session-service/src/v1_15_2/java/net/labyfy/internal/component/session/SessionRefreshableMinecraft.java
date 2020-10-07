@@ -4,6 +4,7 @@ import net.labyfy.component.transform.shadow.FieldSetter;
 import net.labyfy.component.transform.shadow.Shadow;
 import net.minecraft.util.Session;
 
+// Minecraft doesn't allow for changing the session
 @Shadow("net.minecraft.client.Minecraft")
 public interface SessionRefreshableMinecraft {
 

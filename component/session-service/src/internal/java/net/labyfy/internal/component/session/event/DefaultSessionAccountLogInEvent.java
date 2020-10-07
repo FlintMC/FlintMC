@@ -13,7 +13,7 @@ public class DefaultSessionAccountLogInEvent implements SessionAccountLogInEvent
   private final GameProfile newProfile;
 
   @AssistedInject
-  public DefaultSessionAccountLogInEvent(@Assisted("previousProfile") GameProfile previousProfile, @Assisted("newProfile") GameProfile newProfile) {
+  private DefaultSessionAccountLogInEvent(@Assisted("previousProfile") GameProfile previousProfile, @Assisted("newProfile") GameProfile newProfile) {
     this.previousProfile = previousProfile;
     this.newProfile = newProfile;
   }

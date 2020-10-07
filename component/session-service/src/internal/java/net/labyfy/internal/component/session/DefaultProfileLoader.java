@@ -21,7 +21,7 @@ public class DefaultProfileLoader implements ProfileLoader {
   private final MinecraftSessionService sessionService;
 
   @Inject
-  public DefaultProfileLoader(GameProfileSerializer profileSerializer) {
+  private DefaultProfileLoader(GameProfileSerializer profileSerializer) {
     this.profileSerializer = profileSerializer;
     this.sessionService = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString()).createMinecraftSessionService();
   }
