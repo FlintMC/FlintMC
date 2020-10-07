@@ -8,7 +8,7 @@ import net.labyfy.component.player.gameprofile.property.PropertyMap;
 import java.util.UUID;
 
 /**
- * An implementation of {@link net.labyfy.component.player.gameprofile.GameProfile.Builder}
+ * An implementation of {@link GameProfile.Builder}
  */
 @Implement(GameProfile.Builder.class)
 public class DefaultGameProfileBuilder implements GameProfile.Builder {

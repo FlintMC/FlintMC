@@ -23,6 +23,6 @@ dependencies {
 
     api project(':component:stereotype')
     api project(':component:inject')
-    api project(':component:player')
+    api project(':component:minecraft')
     api project(':component:chat')
 }
