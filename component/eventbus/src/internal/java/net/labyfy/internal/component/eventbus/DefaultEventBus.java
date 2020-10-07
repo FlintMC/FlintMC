@@ -9,6 +9,8 @@ import net.labyfy.component.eventbus.event.filter.EventFilter;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.logging.InjectLogger;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,11 +23,13 @@ import java.util.List;
 @Implement(EventBus.class)
 public class DefaultEventBus implements EventBus {
 
+  private final Logger logger;
   private final EventFilter eventFilter;
   private final Multimap<Class<?>, SubscribeMethod> subscribeMethods;
 
   @Inject
-  private DefaultEventBus(EventFilter eventFilter) {
+  private DefaultEventBus(@InjectLogger Logger logger, EventFilter eventFilter) {
+    this.logger = logger;
     this.eventFilter = eventFilter;
     this.subscribeMethods = HashMultimap.create();
   }
@@ -119,7 +123,8 @@ public class DefaultEventBus implements EventBus {
     try {
       method.invoke(event);
     } catch (Throwable throwable) {
-      throwable.printStackTrace();
+      this.logger.error("Error while posting event " + event.getClass().getName()
+          + " to method " + method.getEventMethod(), throwable);
     }
   }
 
