@@ -95,8 +95,8 @@ findProject('component:i18n')?.name = 'i18n'
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
 
-include 'component:player'
-findProject(':component:player')?.name = 'player'
+include 'component:eventbus'
+findProject(':component:eventbus')?.name = 'eventbus'
 
 include 'component:server'
 findProject(':component:server')?.name = 'server'
@@ -104,8 +104,8 @@ findProject(':component:server')?.name = 'server'
 include 'component:items'
 findProject(':component:items')?.name = 'items'
 
-include 'component:world'
-findProject(':component:world')?.name = 'world'
+include 'component:minecraft'
+findProject(':component:minecraft')?.name = 'minecraft'
 
 include 'component:transform:shadow'
 findProject(':component:transform:shadow')?.name = 'shadow'
@@ -115,4 +115,3 @@ findProject(':component:configuration:game-settings')?.name = "game-settings"
 
 include 'component:render:shader'
 findProject(':component:render:shader')?.name = 'shader'
-
