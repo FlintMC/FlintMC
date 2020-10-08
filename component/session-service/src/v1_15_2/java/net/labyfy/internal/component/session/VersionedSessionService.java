@@ -2,6 +2,7 @@ package net.labyfy.internal.component.session;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
@@ -20,8 +21,10 @@ public class VersionedSessionService extends DefaultSessionService {
   @Inject
   private VersionedSessionService(@InjectLogger Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
                                   GameProfileSerializer profileSerializer, SessionAccountLogInEvent.Factory logInEventFactory,
-                                  SessionTokenRefreshEvent.Factory tokenRefreshEventFactory, AuthenticationResult.Factory authResultFactory) {
-    super(logger, refreshTokenResultFactory, profileSerializer, logInEventFactory, tokenRefreshEventFactory, authResultFactory, Minecraft.getInstance().getProxy());
+                                  SessionTokenRefreshEvent.Factory tokenRefreshEventFactory, AuthenticationResult.Factory authResultFactory,
+                                  EventBus eventBus) {
+    super(logger, refreshTokenResultFactory, profileSerializer, logInEventFactory, tokenRefreshEventFactory,
+        authResultFactory, eventBus, Minecraft.getInstance().getProxy());
   }
 
   @Override

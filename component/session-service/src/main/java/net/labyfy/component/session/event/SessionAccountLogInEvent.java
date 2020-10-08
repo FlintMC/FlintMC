@@ -6,7 +6,7 @@ import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.session.SessionService;
 
 /**
- * This event will be fired whenever the {@link SessionService} logs into an account.
+ * This event will be fired in the POST state whenever the {@link SessionService} logs into an account.
  *
  * @see SessionService#logIn(String, String)
  */

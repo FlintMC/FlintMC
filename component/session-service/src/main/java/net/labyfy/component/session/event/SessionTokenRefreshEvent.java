@@ -5,7 +5,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.session.SessionService;
 
 /**
- * This event will be fired whenever the {@link SessionService} has refreshed its token.
+ * This event will be fired in the POST state whenever the {@link SessionService} has refreshed its token.
  *
  * @see SessionService#refreshToken()
  */

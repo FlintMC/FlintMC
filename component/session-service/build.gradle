@@ -25,7 +25,7 @@ dependencies {
     api project(':component:inject')
     api project(':component:resources')
     api project(':component:transform:shadow')
-    api project(':component:player')
+    api project(':component:minecraft')
 
     api group: 'com.mojang', name: 'authlib', version: '1.6.25'
 }

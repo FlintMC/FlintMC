@@ -10,6 +10,8 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import net.labyfy.component.eventbus.EventBus;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.session.AuthenticationResult;
@@ -45,6 +47,7 @@ public abstract class DefaultSessionService implements SessionService {
   private final String clientToken;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
 
+  private final EventBus eventBus;
   private final SessionAccountLogInEvent.Factory logInEventFactory;
   private final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
 
@@ -53,6 +56,7 @@ public abstract class DefaultSessionService implements SessionService {
                                   SessionAccountLogInEvent.Factory logInEventFactory,
                                   SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
                                   AuthenticationResult.Factory authResultFactory,
+                                  EventBus eventBus,
                                   Proxy minecraftProxy) {
     this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
@@ -60,6 +64,7 @@ public abstract class DefaultSessionService implements SessionService {
     this.logInEventFactory = logInEventFactory;
     this.tokenRefreshEventFactory = tokenRefreshEventFactory;
     this.authResultFactory = authResultFactory;
+    this.eventBus = eventBus;
     this.executorService = Executors.newFixedThreadPool(1);
 
     this.clientToken = UUID.randomUUID().toString();
@@ -139,8 +144,7 @@ public abstract class DefaultSessionService implements SessionService {
         if (result.has("accessToken")) {
           String newToken = result.get("accessToken").getAsString();
 
-          // TODO fire this event
-          this.tokenRefreshEventFactory.create(accessToken, newToken);
+          this.eventBus.fireEvent(this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
 
           refreshable.setAccessToken(newToken);
           this.refreshSession();
@@ -224,10 +228,10 @@ public abstract class DefaultSessionService implements SessionService {
 
         GameProfile newProfile = this.getProfile();
 
-        // TODO fire this event
         SessionAccountLogInEvent event = currentProfile != null ?
             this.logInEventFactory.create(currentProfile, newProfile) :
             this.logInEventFactory.create(newProfile);
+        this.eventBus.fireEvent(event, Subscribe.Phase.POST);
 
         future.complete(this.authResultFactory.createSuccess(newProfile));
       } catch (AuthenticationUnavailableException e) {
