@@ -3,6 +3,8 @@ package net.labyfy.internal.component.gamesettings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.eventbus.EventBus;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.gamesettings.GameSettingInterceptor;
 import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.event.ConfigurationEvent;
@@ -20,11 +22,13 @@ import java.util.*;
 @Implement(GameSettingInterceptor.class)
 public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
 
+  private final EventBus eventBus;
   private final ConfigurationEvent.Factory configurationEventFactory;
   private ConfigurationEvent configurationEvent;
 
   @Inject
-  public DefaultGameSettingInterceptor(ConfigurationEvent.Factory configurationEventFactory) {
+  private DefaultGameSettingInterceptor(EventBus eventBus, ConfigurationEvent.Factory configurationEventFactory) {
+    this.eventBus = eventBus;
     this.configurationEventFactory = configurationEventFactory;
   }
 
@@ -76,7 +80,14 @@ public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
         }
       }
 
-      // TODO: 05.10.2020 Fired LoadConfigurationEvent
+      this.eventBus.fireEvent(
+              this.createOrUpdateEvent(
+                      ConfigurationEvent.State.LOAD,
+                      optionsFile,
+                      configurations
+              ),
+              Subscribe.Phase.ANY
+      );
 
       bufferedReader.close();
     } catch (IOException exception) {
@@ -122,7 +133,14 @@ public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
         configuration.add(entry.getKey() + ":" + entry.getValue());
       }
 
-      // TODO: 05.10.2020 Fired SaveConfigurationEvent
+      this.eventBus.fireEvent(
+              this.createOrUpdateEvent(
+                      ConfigurationEvent.State.SAVE,
+                      optionsFile,
+                      configurations
+              ),
+              Subscribe.Phase.ANY
+      );
 
       Collections.sort(configuration);
       Files.write(optionsFile.toPath(), configuration, Charset.defaultCharset());
