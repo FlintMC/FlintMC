@@ -3,6 +3,7 @@ package net.labyfy.component.world;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
+import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.BlockPosition;
 import net.labyfy.component.world.util.Dimension;
 
@@ -201,6 +202,8 @@ public interface World {
    * @return The world dimension.
    */
   Dimension getDimension();
+
+  Scoreboard getScoreboard();
 
   /**
    * Creates a new Minecraft block pos by using the given {@link BlockPosition} as the base.

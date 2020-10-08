@@ -8,13 +8,16 @@ import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
+import net.labyfy.component.player.util.GameMode;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.sound.Sound;
+import net.labyfy.component.player.util.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.minecraft.entity.Pose;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.GameType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -171,6 +174,109 @@ public class VersionedEntityMapper implements EntityMapper {
             sound.getName().getPath(),
             new SoundEvent(sound.getName().getHandle())
     );
+  }
+
+  @Override
+  public SoundCategory fromMinecraftSoundCategory(Object object) {
+    if (!(object instanceof net.minecraft.util.SoundCategory)) {
+      throw new IllegalArgumentException("");
+    }
+
+    net.minecraft.util.SoundCategory soundCategory = (net.minecraft.util.SoundCategory) object;
+
+    switch (soundCategory) {
+      case MASTER:
+        return SoundCategory.MASTER;
+      case MUSIC:
+        return SoundCategory.MUSIC;
+      case RECORDS:
+        return SoundCategory.RECORD;
+      case WEATHER:
+        return SoundCategory.WEATHER;
+      case BLOCKS:
+        return SoundCategory.BLOCK;
+      case HOSTILE:
+        return SoundCategory.HOSTILE;
+      case NEUTRAL:
+        return SoundCategory.NEUTRAL;
+      case PLAYERS:
+        return SoundCategory.PLAYER;
+      case AMBIENT:
+        return SoundCategory.AMBIENT;
+      case VOICE:
+        return SoundCategory.VOICE;
+      default:
+        throw new IllegalStateException("Unexpected value: " + soundCategory);
+    }
+  }
+
+  @Override
+  public Object toMinecraftSoundCategory(SoundCategory category) {
+    switch (category) {
+      case MASTER:
+        return net.minecraft.util.SoundCategory.MASTER;
+      case MUSIC:
+        return net.minecraft.util.SoundCategory.MUSIC;
+      case RECORD:
+        return net.minecraft.util.SoundCategory.RECORDS;
+      case WEATHER:
+        return net.minecraft.util.SoundCategory.WEATHER;
+      case BLOCK:
+        return net.minecraft.util.SoundCategory.BLOCKS;
+      case HOSTILE:
+        return net.minecraft.util.SoundCategory.HOSTILE;
+      case NEUTRAL:
+        return net.minecraft.util.SoundCategory.NEUTRAL;
+      case PLAYER:
+        return net.minecraft.util.SoundCategory.PLAYERS;
+      case AMBIENT:
+        return net.minecraft.util.SoundCategory.AMBIENT;
+      case VOICE:
+        return net.minecraft.util.SoundCategory.VOICE;
+      default:
+        throw new IllegalStateException("Unexpected value: " + category);
+    }
+
+  }
+
+  @Override
+  public GameMode fromMinecraftGameType(Object object) {
+    if (!(object instanceof GameType)) {
+      throw new IllegalArgumentException("");
+    }
+
+    GameType gameType = (GameType) object;
+
+    switch (gameType) {
+      case NOT_SET:
+      case SURVIVAL:
+        return GameMode.SURVIVAL;
+      case CREATIVE:
+        return GameMode.CREATIVE;
+      case ADVENTURE:
+        return GameMode.ADVENTURE;
+      case SPECTATOR:
+        return GameMode.SPECTATOR;
+      default:
+        throw new IllegalStateException("Unexpected value: " + gameType);
+    }
+
+  }
+
+  @Override
+  public Object toMinecraftGameType(GameMode mode) {
+    switch (mode) {
+      case SURVIVAL:
+        return GameType.SURVIVAL;
+      case CREATIVE:
+        return GameType.CREATIVE;
+      case ADVENTURE:
+        return GameType.ADVENTURE;
+      case SPECTATOR:
+        return GameType.SPECTATOR;
+      default:
+        return GameType.NOT_SET;
+    }
   }
 
   @Override

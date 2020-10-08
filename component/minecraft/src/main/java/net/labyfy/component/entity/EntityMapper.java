@@ -4,8 +4,10 @@ import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
+import net.labyfy.component.player.util.GameMode;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.sound.Sound;
+import net.labyfy.component.player.util.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocationProvider;
 
 public interface EntityMapper {
@@ -25,6 +27,14 @@ public interface EntityMapper {
   Sound fromMinecraftSound(Object object);
 
   Object toMinecraftSoundEvent(Sound sound);
+
+  SoundCategory fromMinecraftSoundCategory(Object object);
+
+  Object toMinecraftSoundCategory(SoundCategory category);
+
+  GameMode fromMinecraftGameType(Object object);
+
+  Object toMinecraftGameType(GameMode mode);
 
   EntityPose fromMinecraftPose(Object object);
 
