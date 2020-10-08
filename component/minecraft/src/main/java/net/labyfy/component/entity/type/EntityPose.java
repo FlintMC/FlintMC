@@ -1,4 +1,4 @@
-package net.labyfy.component.player.util;
+package net.labyfy.component.entity.type;
 
 /**
  * An enumeration of all available pose for an entity.

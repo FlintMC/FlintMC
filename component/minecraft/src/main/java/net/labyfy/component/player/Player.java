@@ -1,6 +1,7 @@
 package net.labyfy.component.player;
 
 import net.labyfy.chat.component.ChatComponent;
+import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.util.*;

@@ -51,6 +51,16 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
     }
   }
 
+  @Override
+  public Map<String, EntityType> getEntityTypes() {
+    return this.entityTypes;
+  }
+
+  @Override
+  public EntityType getEntityType(String key) {
+    return this.entityTypes.get(key);
+  }
+
   private void registerMinecraft(String key, EntityType entityType) {
     Registry.register(
             Registry.ENTITY_TYPE,

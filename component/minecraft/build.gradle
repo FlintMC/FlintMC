@@ -22,6 +22,7 @@ dependencies {
     v1_16_3AnnotationProcessor project(':component:annotation-processing:autoload')
 
     api project(':component:chat')
+    api project(':component:items')
     api project(':component:inject')
     api project(':component:resources')
     api project(':component:stereotype')

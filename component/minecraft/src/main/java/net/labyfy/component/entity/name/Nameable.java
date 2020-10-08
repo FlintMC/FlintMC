@@ -1,5 +1,6 @@
 package net.labyfy.component.entity.name;
 
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.component.TextComponent;
 
 /**
@@ -12,7 +13,7 @@ public interface Nameable {
    *
    * @return The object name.
    */
-  TextComponent getName();
+  ChatComponent getName();
 
   /**
    * Whether the object has a custom name.
@@ -28,7 +29,7 @@ public interface Nameable {
    *
    * @return The object display name.
    */
-  default TextComponent getDisplayName() {
+  default ChatComponent getDisplayName() {
     return this.getName();
   }
 
@@ -37,7 +38,7 @@ public interface Nameable {
    *
    * @return The object custom name.
    */
-  default TextComponent getCustomName() {
+  default ChatComponent getCustomName() {
     return null;
   }
 

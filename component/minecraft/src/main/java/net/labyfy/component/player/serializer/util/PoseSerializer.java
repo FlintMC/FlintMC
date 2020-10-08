@@ -1,7 +1,7 @@
 package net.labyfy.component.player.serializer.util;
 
 import net.labyfy.component.player.serializer.Serializer;
-import net.labyfy.component.player.util.EntityPose;
+import net.labyfy.component.entity.type.EntityPose;
 
 /**
  * Represents a {@link EntityPose} serializer

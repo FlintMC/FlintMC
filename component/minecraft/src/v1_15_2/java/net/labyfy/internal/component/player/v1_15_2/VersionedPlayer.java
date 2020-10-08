@@ -3,6 +3,7 @@ package net.labyfy.internal.component.player.v1_15_2;
 import com.google.inject.Inject;
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.component.ChatComponent;
+import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.player.Player;

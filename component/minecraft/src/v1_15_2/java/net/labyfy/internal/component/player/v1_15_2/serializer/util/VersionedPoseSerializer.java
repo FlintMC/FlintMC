@@ -3,7 +3,7 @@ package net.labyfy.internal.component.player.v1_15_2.serializer.util;
 import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.serializer.util.PoseSerializer;
-import net.labyfy.component.player.util.EntityPose;
+import net.labyfy.component.entity.type.EntityPose;
 import net.minecraft.entity.Pose;
 
 /**
