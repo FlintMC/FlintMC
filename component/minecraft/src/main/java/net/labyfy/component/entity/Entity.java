@@ -1,6 +1,10 @@
 package net.labyfy.component.entity;
 
+import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.name.Nameable;
+import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.world.ClientWorld;
 
 /**
  * Represents the Minecraft entity.
@@ -25,6 +29,7 @@ public interface Entity extends Nameable {
 
   void setPacketCoordinates(double x, double y, double z);
 
+  EntityType getType();
 
   /**
    * An enumeration representing all classifications for entities.
@@ -64,6 +69,17 @@ public interface Entity extends Nameable {
     public boolean isAnimal() {
       return animal;
     }
+  }
+
+  @AssistedFactory(Entity.class)
+  interface Factory {
+
+    Entity create(
+            @Assisted("entity") Object entity,
+            @Assisted("entityType") EntityType entityType,
+            @Assisted("world") ClientWorld world
+    );
+
   }
 
 

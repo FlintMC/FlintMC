@@ -2,10 +2,10 @@ package net.labyfy.component.entity.type;
 
 import net.labyfy.component.entity.Entity;
 
-public interface EntityTypeRegister<T extends Entity> {
+public interface EntityTypeRegister {
 
-  void convertRegisteredEntityTypes();
+  void remappedRegisteredEntityTypes();
 
-  void register(String key, EntityType.Builder<T> builder);
+  void register(String key, Entity.Classification classification, EntityTypeBuilder.Provider provider);
 
 }

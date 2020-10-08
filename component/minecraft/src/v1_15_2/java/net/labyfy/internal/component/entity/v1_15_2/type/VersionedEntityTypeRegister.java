@@ -3,6 +3,7 @@ package net.labyfy.internal.component.entity.v1_15_2.type;
 import com.beust.jcommander.internal.Maps;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.entity.type.EntityTypeBuilder;
 import net.labyfy.component.entity.type.EntityTypeMapper;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
@@ -15,11 +16,11 @@ import javax.inject.Singleton;
 import java.util.Map;
 
 @Singleton
-@Implement(value = EntityTypeMapper.class, version = "1.15.2")
-public class VersionedEntityTypeRegister<T extends Entity> implements EntityTypeRegister<T> {
+@Implement(value = EntityTypeRegister.class, version = "1.15.2")
+public class VersionedEntityTypeRegister implements EntityTypeRegister {
 
   private final EntityTypeMapper entityTypeMapper;
-  private final Map<String, EntityType<?>> entityTypes;
+  private final Map<String, EntityType> entityTypes;
 
   @Inject
   private VersionedEntityTypeRegister(EntityTypeMapper entityTypeMapper) {
@@ -28,12 +29,12 @@ public class VersionedEntityTypeRegister<T extends Entity> implements EntityType
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void convert() {
-    this.convertRegisteredEntityTypes();
+  public void remappedMinecraftEntityTypes() {
+    this.remappedRegisteredEntityTypes();
   }
 
   @Override
-  public void convertRegisteredEntityTypes() {
+  public void remappedRegisteredEntityTypes() {
     for (net.minecraft.entity.EntityType<?> entityType : Registry.ENTITY_TYPE) {
       String key = Registry.ENTITY_TYPE.getKey(entityType).getPath();
       this.entityTypes.put(key, this.entityTypeMapper.fromMinecraftEntityType(entityType));
@@ -41,8 +42,8 @@ public class VersionedEntityTypeRegister<T extends Entity> implements EntityType
   }
 
   @Override
-  public void register(String key, EntityType.Builder<T> builder) {
-    EntityType<T> entityType = builder.build(key);
+  public void register(String key, Entity.Classification classification, EntityTypeBuilder.Provider provider) {
+    EntityType entityType = provider.create(classification).build(key);
 
     if (!this.entityTypes.containsKey(key)) {
       this.entityTypes.put(key, entityType);
@@ -50,7 +51,7 @@ public class VersionedEntityTypeRegister<T extends Entity> implements EntityType
     }
   }
 
-  private void registerMinecraft(String key, EntityType<?> entityType) {
+  private void registerMinecraft(String key, EntityType entityType) {
     Registry.register(
             Registry.ENTITY_TYPE,
             key,

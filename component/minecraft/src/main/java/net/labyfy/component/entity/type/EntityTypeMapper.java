@@ -5,9 +5,9 @@ import net.labyfy.component.entity.EntitySize;
 
 public interface EntityTypeMapper {
 
-  Object toMinecraftEntityType(EntityType<?> type);
+  Object toMinecraftEntityType(EntityType type);
 
-  EntityType<?> fromMinecraftEntityType(Object object);
+  EntityType fromMinecraftEntityType(Object object);
 
   Object toMinecraftEntityClassification(Entity.Classification classification);
 

@@ -4,8 +4,9 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntitySize;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.world.ClientWorld;
 
-public interface EntityType<T extends Entity> {
+public interface EntityType {
 
   /**
    * Retrieves the classification of this entity type.
@@ -47,6 +48,7 @@ public interface EntityType<T extends Entity> {
      * @return The created entity type.
      */
     EntityType create(
+            @Assisted("entityFactory") Entity.Factory entityFactory,
             @Assisted("classification") Entity.Classification classification,
             @Assisted("serializable") boolean serializable,
             @Assisted("summonable") boolean summonable,
@@ -54,36 +56,6 @@ public interface EntityType<T extends Entity> {
             @Assisted("canSpawnFarFromPlayer") boolean canSpawnFarFromPlayer,
             @Assisted("entitySize") EntitySize entitySize
     );
-
-  }
-
-  interface Builder<T extends Entity> {
-
-    Builder<T> size(float width, float height);
-
-    Builder<T> disableSummoning();
-
-    Builder<T> disableSerialization();
-
-    Builder<T> immuneToFire();
-
-    Builder<T> canSpawnFarFromPlayer();
-
-    EntityType<T> build(String id);
-
-    /**
-     * A factory class for {@link Builder}.
-     */
-    @AssistedFactory(Builder.class)
-    interface Factory<T extends Entity> {
-
-      Builder create(
-              @Assisted("classification") Entity.Classification classification,
-              @Assisted("entityTypeFactory") EntityType.Factory entityTypeFactory,
-              @Assisted("entitySizeFactory") EntitySize.Factory entitySizeFactory
-      );
-
-    }
 
   }
 

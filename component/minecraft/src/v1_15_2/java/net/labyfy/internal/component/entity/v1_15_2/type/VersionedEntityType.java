@@ -6,10 +6,12 @@ import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntitySize;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.world.ClientWorld;
 
 @Implement(value = EntityType.class, version = "1.15.2")
-public class VersionedEntityType<T extends Entity> implements EntityType<T> {
+public class VersionedEntityType implements EntityType {
 
+  private final Entity.Factory entityFactory;
   private final Entity.Classification classification;
   private final boolean serializable;
   private final boolean summonable;
@@ -19,6 +21,7 @@ public class VersionedEntityType<T extends Entity> implements EntityType<T> {
 
   @AssistedInject
   private VersionedEntityType(
+          @Assisted("entityFactory") Entity.Factory entityFactory,
           @Assisted("classification") Entity.Classification classification,
           @Assisted("serializable") boolean serializable,
           @Assisted("summonable") boolean summonable,
@@ -26,6 +29,7 @@ public class VersionedEntityType<T extends Entity> implements EntityType<T> {
           @Assisted("canSpawnFarFromPlayer") boolean canSpawnFarFromPlayer,
           @Assisted("entitySize") EntitySize entitySize
   ) {
+    this.entityFactory = entityFactory;
     this.classification = classification;
     this.serializable = serializable;
     this.summonable = summonable;
@@ -63,4 +67,5 @@ public class VersionedEntityType<T extends Entity> implements EntityType<T> {
   public EntitySize getSize() {
     return this.entitySize;
   }
+
 }
