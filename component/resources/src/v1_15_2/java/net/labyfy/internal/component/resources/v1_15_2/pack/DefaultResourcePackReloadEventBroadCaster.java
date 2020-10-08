@@ -1,51 +1,35 @@
 package net.labyfy.internal.component.resources.v1_15_2.pack;
 
-import net.labyfy.component.inject.implement.Implement;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import net.labyfy.component.eventbus.EventBus;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.processing.autoload.AutoLoad;
-import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
-import net.labyfy.component.resources.pack.ResourcePackReloadEventBroadcaster;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
-import net.labyfy.internal.component.inject.EventService;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.resources.SimpleReloadableResourceManager;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.lang.reflect.InvocationTargetException;
-
-/**
- * 1.15.2 implementation of the {@link ResourcePackReloadEventBroadcaster}.
- *
- * @deprecated See {@link ResourcePackReloadEventBroadcaster}
- */
 @Singleton
 @AutoLoad
-@Deprecated
-@Implement(value = ResourceLocation.class, version = "1.15.2")
-public class DefaultResourcePackReloadEventBroadCaster implements ResourcePackReloadEventBroadcaster {
+public class DefaultResourcePackReloadEventBroadCaster {
 
-  private final EventService eventService;
+  private final EventBus eventBus;
+  private final ResourcePackReloadEvent resourcePackReloadEvent;
 
   @Inject
-  private DefaultResourcePackReloadEventBroadCaster(EventService eventService) {
-    this.eventService = eventService;
+  private DefaultResourcePackReloadEventBroadCaster(EventBus eventBus, ResourcePackReloadEvent resourcePackReloadEvent) {
+    this.eventBus = eventBus;
+    this.resourcePackReloadEvent = resourcePackReloadEvent;
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void broadcast() {
+  public void init() {
     // Install a hook on the minecraft resource manager
-    ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager())
-        .addReloadListener(
-            (IResourceManagerReloadListener) iResourceManager ->
-            {
-              try {
-                eventService.broadcast(new ResourcePackReloadEvent());
-              } catch (InvocationTargetException | IllegalAccessException exception) {
-                throw new RuntimeException("unable to broadcast ResourcePackReloadEvent", exception);
-              }
-            });
+    ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(
+        (IResourceManagerReloadListener) iResourceManager -> this.eventBus.fireEvent(this.resourcePackReloadEvent, Subscribe.Phase.POST)
+    );
   }
 }
