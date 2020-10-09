@@ -82,9 +82,6 @@ public interface LauncherPlugin {
   }
 
 
-  default void postModifyClass(String className) throws ClassTransformException {
-  }
-
   /**
    * Allows the plugin to override where resources can be found.
    *

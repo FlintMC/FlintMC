@@ -121,6 +121,7 @@ public class ClassTransformService implements ServiceHandler<ClassTransform>, La
 
     for (ClassTransformContext classTransformContext : this.classTransformContexts) {
       CtClass ownerClass = classTransformContext.getOwnerClass();
+      if (className.equals(ownerClass.getName())) continue;
 
       for (String target : classTransformContext.getClassTransform().value()) {
         String resolve = classTransformContext.getNameResolver().resolve(target);
@@ -129,18 +130,17 @@ public class ClassTransformService implements ServiceHandler<ClassTransform>, La
           target = resolve;
         }
 
-        if ((classTransformContext.getClassTransform().version().isEmpty()
-            || classTransformContext.getClassTransform().version().equals(this.version))
-            && ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
-            || target.equals(classMapping.getObfuscatedName()))
-            && classTransformContext.getFilters().stream()
-            .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass))) {
+        if (
+            (classTransformContext.getClassTransform().version().isEmpty() || classTransformContext.getClassTransform().version().equals(this.version))
+                && ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName())) || target.equals(classMapping.getObfuscatedName()))
+                && classTransformContext.getFilters().stream().allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass))
+        ) {
 
           classTransformContext.setCtClass(ctClass);
           CtMethod method = classTransformContext.getOwnerMethod();
 
           try {
-            CtResolver.get(method).invoke(InjectionHolder.getInjectedInstance(CtResolver.get(ownerClass)), classTransformContext);
+            CtResolver.get(method).invoke(classTransformContext.getOwner(), classTransformContext);
           } catch (IllegalAccessException exception) {
             throw new ClassTransformException("Unable to access method: " + method.getName(), exception);
           } catch (InvocationTargetException exception) {

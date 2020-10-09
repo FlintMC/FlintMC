@@ -3,16 +3,16 @@ package net.labyfy.component.initializer;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.labyfy.component.commons.consumer.TriConsumer;
+import net.labyfy.component.inject.InjectionServiceShare;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
+import net.labyfy.component.stereotype.service.ServiceRepository;
 import net.labyfy.component.tasks.TaskExecutionException;
 import net.labyfy.component.tasks.TaskExecutor;
 import net.labyfy.component.tasks.Tasks;
-import net.labyfy.internal.component.inject.InjectionServiceShare;
-import net.labyfy.internal.component.stereotype.service.ServiceRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

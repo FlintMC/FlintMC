@@ -1,15 +1,12 @@
 package net.labyfy.component.inject.implement;
 
 import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.identifier.Identifier;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.*;
 
 /**
  * Marks a class as an implementation of an interface. This class will then be made available for injection
@@ -19,7 +16,7 @@ import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants
 @Retention(RetentionPolicy.RUNTIME)
 @Identifier
 @Transitive
-@AutoLoad(priority = IMPLEMENT_PRIORITY, round = IMPLEMENT_ROUND)
+//@AutoLoad(priority = IMPLEMENT_PRIORITY, round = IMPLEMENT_ROUND)
 public @interface Implement {
   /**
    * The interface implemented by this class. This means, the class also needs to {@code implements} the given

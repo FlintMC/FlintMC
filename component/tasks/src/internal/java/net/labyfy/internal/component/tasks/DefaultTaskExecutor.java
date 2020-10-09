@@ -5,7 +5,6 @@ import com.google.inject.Key;
 import javassist.CtMethod;
 import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.TaskExecutionException;
@@ -32,8 +31,6 @@ public class DefaultTaskExecutor implements TaskExecutor {
   @Inject
   protected DefaultTaskExecutor(InjectedInvocationHelper injectedInvocationHelper) {
     this.injectedInvocationHelper = injectedInvocationHelper;
-    InjectionHolder.getInstance()
-        .addInitializationListener(() -> execute(Tasks.PRE_MINECRAFT_INITIALIZE));
     this.methods = new ConcurrentHashMap<>();
   }
 

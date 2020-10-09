@@ -5,7 +5,9 @@ import com.google.inject.assistedinject.AssistedInject;
 import javassist.*;
 import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
@@ -25,6 +27,7 @@ public class InternalClassTransformContext implements ClassTransformContext {
   private final ClassTransform classTransform;
   private final CtMethod method;
   private final CtClass ownerClass;
+  private final Object owner;
   private CtClass ctClass;
 
   @AssistedInject
@@ -41,11 +44,17 @@ public class InternalClassTransformContext implements ClassTransformContext {
     this.classTransform = classTransform;
     this.method = method;
     this.ownerClass = ownerClass;
+    this.owner = InjectionHolder.getInjectedInstance(CtResolver.get(ownerClass));
   }
 
   @Override
   public CtClass getOwnerClass() {
     return ownerClass;
+  }
+
+  @Override
+  public Object getOwner() {
+    return this.owner;
   }
 
   @Override

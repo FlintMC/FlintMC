@@ -219,27 +219,6 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     }
   }
 
-  @Override
-  protected synchronized Class<?> loadClass(String name, boolean resolve)
-      throws ClassNotFoundException {
-    Class<?> oldClass = this.findLoadedClass(name);
-    Class<?> aClass = super.loadClass(name, resolve);
-    Class<?> newClass = this.findLoadedClass(name);
-
-    if (oldClass == null && newClass != null) {
-      for (LauncherPlugin plugin : this.plugins) {
-        try {
-          plugin.postModifyClass(name);
-        } catch (ClassTransformException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-
-    return aClass;
-  }
-
-
   /**
    * {@inheritDoc}
    */

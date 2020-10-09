@@ -14,8 +14,7 @@ import net.labyfy.component.packages.PackageState;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-import net.labyfy.internal.component.inject.InjectionServiceShare;
-import net.labyfy.internal.component.stereotype.service.ServiceRepository;
+import net.labyfy.component.stereotype.service.ServiceRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -197,7 +196,7 @@ public class DefaultPackage implements Package {
         }
       });
 
-      InjectionServiceShare.flush();
+//      InjectionServiceShare.flush();
 
       try {
         InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();

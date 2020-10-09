@@ -1,6 +1,6 @@
 package net.labyfy.component.stereotype.identifier;
 
-import net.labyfy.component.processing.autoload.AutoLoad;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 import net.labyfy.component.stereotype.annotation.Transitive;
 
 import java.lang.annotation.ElementType;
@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
+@DetectableAnnotation
 @Transitive
-@AutoLoad
 public @interface Identifier {
 
   boolean requireParent() default false;

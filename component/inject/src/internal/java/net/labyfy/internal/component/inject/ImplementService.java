@@ -2,6 +2,7 @@ package net.labyfy.internal.component.inject;
 
 import com.google.inject.Singleton;
 import javassist.CtClass;
+import net.labyfy.component.inject.InjectionServiceShare;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.identifier.IdentifierMeta;
@@ -42,6 +43,7 @@ public class ImplementService extends InjectionServiceShare implements ServiceHa
         || launchArguments.get("--game-version").equals(annotation.version()))) return;
 
     implementations.put(annotation.value(), location);
+    implementationsReversed.put(location, annotation.value());
   }
 
 

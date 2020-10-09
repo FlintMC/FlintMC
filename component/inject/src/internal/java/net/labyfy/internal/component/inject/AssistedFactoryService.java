@@ -1,5 +1,6 @@
 package net.labyfy.internal.component.inject;
 
+import net.labyfy.component.inject.InjectionServiceShare;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.identifier.IdentifierMeta;

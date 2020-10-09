@@ -3,6 +3,7 @@ package net.labyfy.component.stereotype.service;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import net.labyfy.component.launcher.LaunchController;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -22,7 +23,9 @@ public class CtResolver {
         for (int i = 0; i < ctMethod.getParameterTypes().length; i++) {
           parameters[i] = Class.forName(ctMethod.getParameterTypes()[i].getName());
         }
-        methods.put(hash, Class.forName(ctMethod.getDeclaringClass().getName()).getDeclaredMethod(ctMethod.getName(), parameters));
+        Method declaredMethod = LaunchController.getInstance().getRootLoader().loadClass(ctMethod.getDeclaringClass().getName()).getDeclaredMethod(ctMethod.getName(), parameters);
+        declaredMethod.setAccessible(true);
+        methods.put(hash, declaredMethod);
       } catch (ClassNotFoundException | NoSuchMethodException | NotFoundException e) {
         e.printStackTrace();
       }

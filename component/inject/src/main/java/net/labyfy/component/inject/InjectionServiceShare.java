@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.inject;
+package net.labyfy.component.inject;
 
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
@@ -22,6 +22,7 @@ public class InjectionServiceShare {
   private static final Collection<Class> ignoreFlushed = new HashSet<>();
 
   protected static final Map<Class, CtClass> implementations = Maps.newHashMap();
+  protected static final Map<CtClass, Class> implementationsReversed = Maps.newHashMap();
   protected static final Map<CtClass, AssistedFactory> assisted = new HashMap<>();
   protected static final Collection<Class> ignore = new HashSet<>();
 
@@ -51,6 +52,10 @@ public class InjectionServiceShare {
    */
   public static Map<Class, CtClass> getImplementations() {
     return implementations;
+  }
+
+  public static Map<CtClass, Class> getImplementationsReversed() {
+    return implementationsReversed;
   }
 
   /**

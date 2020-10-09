@@ -16,6 +16,8 @@ public interface ClassTransformContext {
      */
     CtClass getOwnerClass();
 
+    Object getOwner();
+
     /**
      * Retrieves a field by name.
      *

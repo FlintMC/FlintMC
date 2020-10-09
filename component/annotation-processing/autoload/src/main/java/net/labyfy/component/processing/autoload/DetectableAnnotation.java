@@ -6,11 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface AutoLoad {
-
-  int round() default 1;
-
-  int priority() default 0;
-
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface DetectableAnnotation {
 }

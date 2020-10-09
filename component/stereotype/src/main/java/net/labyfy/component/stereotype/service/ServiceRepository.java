@@ -1,27 +1,21 @@
-package net.labyfy.internal.component.stereotype.service;
+package net.labyfy.component.stereotype.service;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.google.inject.Injector;
 import javassist.CtClass;
 import javassist.NotFoundException;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.stereotype.identifier.IdentifierMeta;
-import net.labyfy.component.stereotype.service.CtResolver;
-import net.labyfy.component.stereotype.service.Service;
-import net.labyfy.component.stereotype.service.ServiceHandler;
-import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-import net.labyfy.internal.component.stereotype.identifier.IdentifierParser;
+import net.labyfy.component.stereotype.identifier.IdentifierParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Singleton
 public class ServiceRepository {
@@ -30,17 +24,14 @@ public class ServiceRepository {
   private final Collection<CtClass> pendingServices;
   private final Set<CtClass> loadedClasses;
   private final Multimap<Class<?>, ServiceHandler> serviceHandlers;
-  private final AtomicReference<Injector> injectorReference;
   private boolean initialized;
 
   @Inject
-  private ServiceRepository(
-      @Named("injectorReference") AtomicReference injectorReference) {
+  private ServiceRepository() {
     this.logger = LogManager.getLogger(ServiceRepository.class);
     this.pendingServices = ConcurrentHashMap.newKeySet();
     this.loadedClasses = ConcurrentHashMap.newKeySet();
     this.serviceHandlers = HashMultimap.create();
-    this.injectorReference = injectorReference;
   }
 
   private synchronized ServiceRepository register(CtClass ctClass) throws ServiceNotFoundException {
@@ -62,7 +53,7 @@ public class ServiceRepository {
   }
 
   private void flushService(CtClass handler) throws ServiceNotFoundException {
-    ServiceHandler serviceHandler = (ServiceHandler) injectorReference.get().getInstance(CtResolver.get(handler));
+    ServiceHandler serviceHandler = InjectionHolder.getInjectedInstance(CtResolver.get(handler));
     try {
       Service service = (Service) handler.getAnnotation(Service.class);
       for (Class<?> target : service.value()) {
