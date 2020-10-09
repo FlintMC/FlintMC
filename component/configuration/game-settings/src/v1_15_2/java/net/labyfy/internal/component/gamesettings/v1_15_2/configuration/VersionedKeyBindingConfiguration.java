@@ -208,12 +208,9 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
    */
   @Override
   public List<KeyBinding> getKeyBindsHotbar() {
-    List<KeyBinding> keyBindings;
-
-    net.minecraft.client.settings.KeyBinding[] keyBindsHotbar = Minecraft.getInstance().gameSettings.keyBindsHotbar;
-    keyBindings = Arrays.stream(keyBindsHotbar).map(this::fromMinecraftObject).collect(Collectors.toList());
-
-    return keyBindings;
+    return Arrays
+            .stream(Minecraft.getInstance().gameSettings.keyBindsHotbar)
+            .map(this::fromMinecraftObject).collect(Collectors.toList());
   }
 
   /**
@@ -237,12 +234,9 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
    */
   @Override
   public List<KeyBinding> getKeyBindings() {
-    List<KeyBinding> keyBindings;
-
-    net.minecraft.client.settings.KeyBinding[] keyBinds = Minecraft.getInstance().gameSettings.keyBindings;
-    keyBindings = Arrays.stream(keyBinds).map(this::fromMinecraftObject).collect(Collectors.toList());
-
-    return keyBindings;
+    return Arrays
+            .stream(Minecraft.getInstance().gameSettings.keyBindings)
+            .map(this::fromMinecraftObject).collect(Collectors.toList());
   }
 
   /**
