@@ -137,7 +137,7 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public boolean isLoggedIn() {
-    return this.ensureAuthenticationAvailable().isLoggedIn();
+    return this.authentication != null && this.authentication.isLoggedIn();
   }
 
   @Override
