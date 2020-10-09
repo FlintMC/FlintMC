@@ -64,8 +64,10 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
   public void draw(IntBuffer indices, VboDrawMode drawMode) {
     this.bind();
     this.vbo.bind();
-    if (drawMode == VboDrawMode.TRIANGLES) glDrawElements(GL_TRIANGLES, indices);
-    else if (drawMode == VboDrawMode.QUADS) glDrawElements(GL_QUADS, indices);
+    if (drawMode == VboDrawMode.TRIANGLES)
+      glDrawElements(GL_TRIANGLES, indices);
+    else if (drawMode == VboDrawMode.QUADS)
+      glDrawElements(GL_QUADS, indices);
   }
 
   /** {@inheritDoc} */
@@ -74,7 +76,8 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
     if (this.deleted)
       throw new IllegalStateException(
           "The VAO has already been deleted and can not be used for drawing anymore.");
-    if (!ebo.isAvailable()) ebo.pushToGPU();
+    if (!ebo.isAvailable())
+      ebo.pushToGPU();
     if (ebo.getDrawMode() == VboDrawMode.TRIANGLES)
       glDrawElements(GL_TRIANGLES, ebo.getSize(), GL_UNSIGNED_INT, 0);
     else if (ebo.getDrawMode() == VboDrawMode.QUADS)
