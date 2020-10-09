@@ -6,7 +6,7 @@ import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
+import net.labyfy.component.player.type.model.ModelMapper;
 import net.labyfy.component.world.ClientWorld;
 
 public interface RemoteClientPlayerEntity extends AbstractClientPlayerEntity {
@@ -20,7 +20,7 @@ public interface RemoteClientPlayerEntity extends AbstractClientPlayerEntity {
             @Assisted("world") ClientWorld clientWorld,
             @Assisted("entityMapper") EntityMapper entityMapper,
             @Assisted("gameProfileSerializer") GameProfileSerializer gameProfileSerializer,
-            @Assisted("playerClothingSerializer") PlayerClothingSerializer playerClothingSerializer,
+            @Assisted("modelMapper") ModelMapper modelMapper,
             @Assisted("networkPlayerInfoRegistry") NetworkPlayerInfoRegistry networkPlayerInfoRegistry
     );
 

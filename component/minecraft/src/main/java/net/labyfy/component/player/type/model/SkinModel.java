@@ -1,4 +1,4 @@
-package net.labyfy.component.player.util;
+package net.labyfy.component.player.type.model;
 
 /**
  * An enumeration that shows all available skin models for a player.

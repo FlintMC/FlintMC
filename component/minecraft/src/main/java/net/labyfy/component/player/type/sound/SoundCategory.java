@@ -1,4 +1,4 @@
-package net.labyfy.component.player.util.sound;
+package net.labyfy.component.player.type.sound;
 
 /**
  * An enumeration of all available sound categories.

@@ -8,7 +8,7 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.RemoteClientPlayerEntity;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
+import net.labyfy.component.player.type.model.ModelMapper;
 import net.labyfy.component.world.ClientWorld;
 
 @Implement(value = RemoteClientPlayerEntity.class, version = "1.15.2")
@@ -21,9 +21,9 @@ public class VersionedRemoteClientPlayerEntity extends VersionedAbstractClientPl
           @Assisted("world") ClientWorld clientWorld,
           @Assisted("entityMapper") EntityMapper entityMapper,
           @Assisted("gameProfileSerializer") GameProfileSerializer gameProfileSerializer,
-          @Assisted("playerClothingSerializer") PlayerClothingSerializer playerClothingSerializer,
+          @Assisted("modelMapper") ModelMapper modelMapper,
           @Assisted("networkPlayerInfoRegistry") NetworkPlayerInfoRegistry networkPlayerInfoRegistry
   ) {
-    super(entity, entityType, clientWorld, entityMapper, gameProfileSerializer, playerClothingSerializer, networkPlayerInfoRegistry);
+    super(entity, entityType, clientWorld, entityMapper, gameProfileSerializer, modelMapper, networkPlayerInfoRegistry);
   }
 }

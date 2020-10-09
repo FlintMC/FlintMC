@@ -11,7 +11,7 @@ import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
-import net.labyfy.component.player.util.sound.Sound;
+import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.util.BlockPosition;
@@ -227,7 +227,7 @@ public class VersionedEntity implements Entity {
   @Override
   public void playSound(Sound sound, float volume, float pitch) {
     this.entity.playSound(
-            (SoundEvent) this.getEntityMapper().toMinecraftSoundEvent(sound),
+            (SoundEvent) this.getEntityMapper().getSoundMapper().toMinecraftSoundEvent(sound),
             volume,
             pitch
     );

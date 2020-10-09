@@ -1,6 +1,6 @@
 package net.labyfy.component.player;
 
-import net.labyfy.component.player.util.SkinModel;
+import net.labyfy.component.player.type.model.SkinModel;
 import net.labyfy.component.resources.ResourceLocation;
 
 /**

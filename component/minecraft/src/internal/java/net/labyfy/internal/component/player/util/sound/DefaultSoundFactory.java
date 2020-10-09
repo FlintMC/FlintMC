@@ -3,7 +3,7 @@ package net.labyfy.internal.component.player.util.sound;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.player.util.sound.Sound;
+import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.resources.ResourceLocationProvider;
 
 /**

@@ -4,11 +4,10 @@ import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.type.EntityType;
-import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
-import net.labyfy.component.player.util.Hand;
-import net.labyfy.component.player.util.sound.Sound;
+import net.labyfy.component.player.type.hand.Hand;
+import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.util.BlockPosition;
@@ -148,7 +147,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
 
   @Override
   public Sound getEatSound(ItemStack itemStack) {
-    return this.getEntityMapper().fromMinecraftSound(
+    return this.getEntityMapper().getSoundMapper().fromMinecraftSoundEvent(
             this.livingEntity.getEatSound(
                     (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack)
             )
@@ -193,14 +192,14 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void swingArm(Hand hand) {
     this.livingEntity.swingArm(
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand)
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
   @Override
   public void swing(Hand hand, boolean swing) {
     this.livingEntity.swing(
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand),
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand),
             swing
     );
   }
@@ -209,7 +208,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   public ItemStack getHeldItem(Hand hand) {
     return this.getEntityMapper().getItemMapper().fromMinecraft(
             this.livingEntity.getHeldItem(
-                    (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand)
+                    (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
             )
     );
   }
@@ -217,7 +216,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void setHeldItem(Hand hand, ItemStack heldItem) {
     this.livingEntity.setHeldItem(
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand),
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand),
             (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(heldItem)
     );
   }
@@ -311,18 +310,18 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
 
   @Override
   public Hand.Side getPrimaryHand() {
-    return this.getEntityMapper().fromMinecraftHandSide(this.livingEntity.getPrimaryHand());
+    return this.getEntityMapper().getHandMapper().fromMinecraftHandSide(this.livingEntity.getPrimaryHand());
   }
 
   @Override
   public Hand getActiveHand() {
-    return this.getEntityMapper().fromMinecraftHand(this.livingEntity.getActiveHand());
+    return this.getEntityMapper().getHandMapper().fromMinecraftHand(this.livingEntity.getActiveHand());
   }
 
   @Override
   public void setActiveHand(Hand hand) {
     this.livingEntity.setActiveHand(
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand)
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -456,7 +455,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void sendBreakAnimation(Hand hand) {
     this.livingEntity.sendBreakAnimation(
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand)
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 }

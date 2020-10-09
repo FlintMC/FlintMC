@@ -9,14 +9,11 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
 import net.labyfy.component.player.PlayerEntity;
-import net.labyfy.component.player.util.GameMode;
-import net.labyfy.component.player.util.Hand;
-import net.labyfy.component.player.util.sound.Sound;
-import net.labyfy.component.player.util.sound.SoundCategory;
+import net.labyfy.component.player.type.GameMode;
+import net.labyfy.component.player.type.hand.HandMapper;
+import net.labyfy.component.player.type.sound.SoundMapper;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.minecraft.entity.Pose;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameType;
 
@@ -30,7 +27,8 @@ public class VersionedEntityMapper implements EntityMapper {
   private final MinecraftItemMapper itemMapper;
   private final MinecraftComponentMapper componentMapper;
   private final ResourceLocationProvider resourceLocationProvider;
-  private final Sound.Factory soundFactory;
+  private final SoundMapper soundMapper;
+  private final HandMapper handMapper;
 
   private final Entity.Provider entityProvider;
   private final EntityTypeRegister entityTypeRegister;
@@ -40,11 +38,16 @@ public class VersionedEntityMapper implements EntityMapper {
           MinecraftItemMapper itemMapper,
           MinecraftComponentMapper componentMapper,
           ResourceLocationProvider resourceLocationProvider,
-          Sound.Factory soundFactory, Entity.Provider entityProvider, EntityTypeRegister entityTypeRegister) {
+          SoundMapper soundMapper,
+          HandMapper handMapper,
+          Entity.Provider entityProvider,
+          EntityTypeRegister entityTypeRegister
+  ) {
     this.itemMapper = itemMapper;
     this.componentMapper = componentMapper;
     this.resourceLocationProvider = resourceLocationProvider;
-    this.soundFactory = soundFactory;
+    this.soundMapper = soundMapper;
+    this.handMapper = handMapper;
     this.entityProvider = entityProvider;
     this.entityTypeRegister = entityTypeRegister;
   }
@@ -94,150 +97,6 @@ public class VersionedEntityMapper implements EntityMapper {
       default:
         throw new IllegalStateException("Unexpected value: " + equipmentSlotType);
     }
-  }
-
-  @Override
-  public Hand fromMinecraftHand(Object object) {
-    if (!(object instanceof net.minecraft.util.Hand)) {
-      throw new IllegalArgumentException("");
-    }
-
-    net.minecraft.util.Hand hand = (net.minecraft.util.Hand) object;
-
-    switch (hand) {
-
-      case MAIN_HAND:
-        return Hand.MAIN_HAND;
-      case OFF_HAND:
-        return Hand.OFF_HAND;
-      default:
-        throw new IllegalStateException("Unexpected value: " + hand);
-    }
-
-  }
-
-  @Override
-  public Object toMinecraftHand(Hand hand) {
-    switch (hand) {
-      case MAIN_HAND:
-        return net.minecraft.util.Hand.MAIN_HAND;
-      case OFF_HAND:
-        return net.minecraft.util.Hand.OFF_HAND;
-      default:
-        throw new IllegalStateException("Unexpected value: " + hand);
-    }
-  }
-
-  @Override
-  public Hand.Side fromMinecraftHandSide(Object object) {
-    if (!(object instanceof HandSide)) {
-      throw new IllegalArgumentException("");
-    }
-
-    HandSide handSide = (HandSide) object;
-
-    switch (handSide) {
-      case LEFT:
-        return Hand.Side.LEFT;
-      case RIGHT:
-        return Hand.Side.RIGHT;
-      default:
-        throw new IllegalStateException("Unexpected value: " + handSide);
-    }
-  }
-
-  @Override
-  public Object toMinecraftHandSide(Hand.Side handSide) {
-    switch (handSide) {
-      case LEFT:
-        return HandSide.LEFT;
-      case RIGHT:
-        return HandSide.RIGHT;
-      default:
-        throw new IllegalStateException("Unexpected value: " + handSide);
-    }
-  }
-
-  @Override
-  public Sound fromMinecraftSound(Object object) {
-    if (!(object instanceof SoundEvent)) {
-      throw new IllegalArgumentException("");
-    }
-
-    SoundEvent soundEvent = (SoundEvent) object;
-    return this.soundFactory.create(soundEvent.getName().getPath());
-  }
-
-  @Override
-  public Object toMinecraftSoundEvent(Sound sound) {
-    return Registry.register(
-            Registry.SOUND_EVENT,
-            sound.getName().getPath(),
-            new SoundEvent(sound.getName().getHandle())
-    );
-  }
-
-  @Override
-  public SoundCategory fromMinecraftSoundCategory(Object object) {
-    if (!(object instanceof net.minecraft.util.SoundCategory)) {
-      throw new IllegalArgumentException("");
-    }
-
-    net.minecraft.util.SoundCategory soundCategory = (net.minecraft.util.SoundCategory) object;
-
-    switch (soundCategory) {
-      case MASTER:
-        return SoundCategory.MASTER;
-      case MUSIC:
-        return SoundCategory.MUSIC;
-      case RECORDS:
-        return SoundCategory.RECORD;
-      case WEATHER:
-        return SoundCategory.WEATHER;
-      case BLOCKS:
-        return SoundCategory.BLOCK;
-      case HOSTILE:
-        return SoundCategory.HOSTILE;
-      case NEUTRAL:
-        return SoundCategory.NEUTRAL;
-      case PLAYERS:
-        return SoundCategory.PLAYER;
-      case AMBIENT:
-        return SoundCategory.AMBIENT;
-      case VOICE:
-        return SoundCategory.VOICE;
-      default:
-        throw new IllegalStateException("Unexpected value: " + soundCategory);
-    }
-  }
-
-  @Override
-  public Object toMinecraftSoundCategory(SoundCategory category) {
-    switch (category) {
-      case MASTER:
-        return net.minecraft.util.SoundCategory.MASTER;
-      case MUSIC:
-        return net.minecraft.util.SoundCategory.MUSIC;
-      case RECORD:
-        return net.minecraft.util.SoundCategory.RECORDS;
-      case WEATHER:
-        return net.minecraft.util.SoundCategory.WEATHER;
-      case BLOCK:
-        return net.minecraft.util.SoundCategory.BLOCKS;
-      case HOSTILE:
-        return net.minecraft.util.SoundCategory.HOSTILE;
-      case NEUTRAL:
-        return net.minecraft.util.SoundCategory.NEUTRAL;
-      case PLAYER:
-        return net.minecraft.util.SoundCategory.PLAYERS;
-      case AMBIENT:
-        return net.minecraft.util.SoundCategory.AMBIENT;
-      case VOICE:
-        return net.minecraft.util.SoundCategory.VOICE;
-      default:
-        throw new IllegalStateException("Unexpected value: " + category);
-    }
-
   }
 
   @Override
@@ -355,7 +214,7 @@ public class VersionedEntityMapper implements EntityMapper {
 
   @Override
   public PlayerEntity fromMinecraftPlayerEntity(Object entity) {
-    if(!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
+    if (!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
       throw new IllegalArgumentException("");
     }
 
@@ -367,6 +226,16 @@ public class VersionedEntityMapper implements EntityMapper {
   @Override
   public Object toMinecraftPlayerEntity(PlayerEntity entity) {
     return null;
+  }
+
+  @Override
+  public HandMapper getHandMapper() {
+    return this.handMapper;
+  }
+
+  @Override
+  public SoundMapper getSoundMapper() {
+    return this.soundMapper;
   }
 
   @Override

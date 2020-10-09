@@ -18,13 +18,13 @@ import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.overlay.TabOverlay;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
-import net.labyfy.component.player.util.GameMode;
-import net.labyfy.component.player.util.Hand;
-import net.labyfy.component.player.util.PlayerClothing;
-import net.labyfy.component.player.util.SkinModel;
-import net.labyfy.component.player.util.sound.Sound;
-import net.labyfy.component.player.util.sound.SoundCategory;
+import net.labyfy.component.player.type.GameMode;
+import net.labyfy.component.player.type.hand.Hand;
+import net.labyfy.component.player.type.model.ModelMapper;
+import net.labyfy.component.player.type.model.PlayerClothing;
+import net.labyfy.component.player.type.model.SkinModel;
+import net.labyfy.component.player.type.sound.Sound;
+import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.World;
@@ -53,7 +53,7 @@ import java.util.stream.Stream;
 public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer implements ClientPlayerEntity {
 
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
-  private final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
+  private final ModelMapper modelMapper;
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
 
   private final TabOverlay tabOverlay;
@@ -63,7 +63,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
           ClientWorld world,
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileSerializer,
-          PlayerClothingSerializer playerClothingSerializer,
+          ModelMapper modelMapper,
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
           EntityTypeRegister entityTypeRegister,
           TabOverlay tabOverlay
@@ -74,11 +74,11 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
             world,
             entityMapper,
             gameProfileSerializer,
-            playerClothingSerializer,
+            modelMapper,
             networkPlayerInfoRegistry
     );
     this.gameProfileSerializer = gameProfileSerializer;
-    this.playerClothingSerializer = playerClothingSerializer;
+    this.modelMapper = modelMapper;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
     this.tabOverlay = tabOverlay;
   }
@@ -146,8 +146,8 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   @Override
   public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
     Minecraft.getInstance().player.playSound(
-            (SoundEvent) this.getEntityMapper().toMinecraftSoundEvent(sound),
-            (net.minecraft.util.SoundCategory) this.getEntityMapper().toMinecraftSoundCategory(category),
+            (SoundEvent) this.getEntityMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            (net.minecraft.util.SoundCategory) this.getEntityMapper().getSoundMapper().toMinecraftSoundCategory(category),
             volume,
             pitch
     );
@@ -248,7 +248,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   public void openBook(ItemStack stack, Hand hand) {
     Minecraft.getInstance().player.openBook(
             (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(stack),
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand)
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -425,7 +425,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
 
   @Override
   public boolean isWearing(PlayerClothing clothing) {
-    return Minecraft.getInstance().player.isWearing(this.playerClothingSerializer.serialize(clothing));
+    return Minecraft.getInstance().player.isWearing((PlayerModelPart) this.modelMapper.toMinecraftPlayerModelPart(clothing));
   }
 
   @Override
@@ -590,7 +590,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
 
   @Override
   public Sound getEatSound(ItemStack itemStack) {
-    return this.getEntityMapper().fromMinecraftSound(Minecraft.getInstance().player.getEatSound(
+    return this.getEntityMapper().getSoundMapper().fromMinecraftSoundEvent(Minecraft.getInstance().player.getEatSound(
             (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack))
     );
   }
@@ -633,7 +633,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   @Override
   public void swing(Hand hand, boolean swing) {
     Minecraft.getInstance().player.swing(
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand),
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand),
             swing
     );
   }
@@ -641,13 +641,13 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   @Override
   public ItemStack getHeldItem(Hand hand) {
     return this.getEntityMapper().getItemMapper().fromMinecraft(Minecraft.getInstance().player.getHeldItem(
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand)));
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)));
   }
 
   @Override
   public void setHeldItem(Hand hand, ItemStack heldItem) {
     Minecraft.getInstance().player.setHeldItem(
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand),
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand),
             (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(heldItem));
   }
 
@@ -741,24 +741,24 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
 
   @Override
   public Hand.Side getPrimaryHand() {
-    return this.getEntityMapper().fromMinecraftHandSide(Minecraft.getInstance().player.getPrimaryHand());
+    return this.getEntityMapper().getHandMapper().fromMinecraftHandSide(Minecraft.getInstance().player.getPrimaryHand());
   }
 
   @Override
   public void setPrimaryHand(Hand.Side primaryHand) {
     Minecraft.getInstance().player.setPrimaryHand(
-            (HandSide) this.getEntityMapper().toMinecraftHandSide(primaryHand)
+            (HandSide) this.getEntityMapper().getHandMapper().toMinecraftHandSide(primaryHand)
     );
   }
 
   @Override
   public Hand getActiveHand() {
-    return this.getEntityMapper().fromMinecraftHand(Minecraft.getInstance().player.getActiveHand());
+    return this.getEntityMapper().getHandMapper().fromMinecraftHand(Minecraft.getInstance().player.getActiveHand());
   }
 
   @Override
   public void setActiveHand(Hand hand) {
-    Minecraft.getInstance().player.setActiveHand((net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand));
+    Minecraft.getInstance().player.setActiveHand((net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand));
   }
 
   @Override
@@ -891,7 +891,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   @Override
   public void sendBreakAnimation(Hand hand) {
     Minecraft.getInstance().player.sendBreakAnimation(
-            (net.minecraft.inventory.EquipmentSlotType) this.getEntityMapper().toMinecraftHand(hand)
+            (net.minecraft.inventory.EquipmentSlotType) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -1057,7 +1057,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   @Override
   public void playSound(Sound sound, float volume, float pitch) {
     Minecraft.getInstance().player.playSound(
-            (SoundEvent) this.getEntityMapper().toMinecraftSoundEvent(sound),
+            (SoundEvent) this.getEntityMapper().getSoundMapper().toMinecraftSoundEvent(sound),
             volume,
             pitch
     );
@@ -1497,7 +1497,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
 
   @Override
   public void swingArm(Hand hand) {
-    Minecraft.getInstance().player.swingArm((net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand));
+    Minecraft.getInstance().player.swingArm((net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand));
   }
 
   @Override
@@ -1619,7 +1619,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
 
   @Override
   public SoundCategory getSoundCategory() {
-    return this.getEntityMapper().fromMinecraftSoundCategory(
+    return this.getEntityMapper().getSoundMapper().fromMinecraftSoundCategory(
             Minecraft.getInstance().player.getSoundCategory()
     );
   }

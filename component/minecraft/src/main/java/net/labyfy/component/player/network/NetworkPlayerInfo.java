@@ -4,10 +4,9 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.inject.assisted.AssistedFactory;
-import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.PlayerSkinProfile;
 import net.labyfy.component.player.gameprofile.GameProfile;
-import net.labyfy.component.player.util.GameMode;
+import net.labyfy.component.player.type.GameMode;
 import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.scoreboad.score.PlayerTeam;
 

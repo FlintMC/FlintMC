@@ -1,4 +1,4 @@
-package net.labyfy.component.player.util;
+package net.labyfy.component.player.type;
 
 /**
  * Represents a cooldown tracker

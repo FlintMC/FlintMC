@@ -9,12 +9,12 @@ import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
-import net.labyfy.component.player.util.GameMode;
-import net.labyfy.component.player.util.Hand;
-import net.labyfy.component.player.util.PlayerClothing;
-import net.labyfy.component.player.util.sound.Sound;
-import net.labyfy.component.player.util.sound.SoundCategory;
+import net.labyfy.component.player.type.GameMode;
+import net.labyfy.component.player.type.hand.Hand;
+import net.labyfy.component.player.type.model.ModelMapper;
+import net.labyfy.component.player.type.model.PlayerClothing;
+import net.labyfy.component.player.type.sound.Sound;
+import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.World;
@@ -38,7 +38,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
 
   private final net.minecraft.entity.player.PlayerEntity entity;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileGameProfileSerializer;
-  private final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
+  private final ModelMapper modelMapper;
 
 
   public VersionedPlayerEntity(
@@ -47,11 +47,11 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
           ClientWorld world,
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileGameProfileSerializer,
-          PlayerClothingSerializer playerClothingSerializer
+          ModelMapper modelMapper
   ) {
     super(entity, entityType, world, entityMapper);
     this.gameProfileGameProfileSerializer = gameProfileGameProfileSerializer;
-    this.playerClothingSerializer = playerClothingSerializer;
+    this.modelMapper = modelMapper;
 
     if (!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
       throw new IllegalArgumentException("");
@@ -73,8 +73,8 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
     this.entity.playSound(
-            (SoundEvent) this.getEntityMapper().toMinecraftSoundEvent(sound),
-            (net.minecraft.util.SoundCategory) this.getEntityMapper().toMinecraftSoundCategory(category),
+            (SoundEvent) this.getEntityMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            (net.minecraft.util.SoundCategory) this.getEntityMapper().getSoundMapper().toMinecraftSoundCategory(category),
             volume,
             pitch
     );
@@ -172,7 +172,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   public void openBook(ItemStack stack, Hand hand) {
     this.entity.openBook(
             (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(stack),
-            (net.minecraft.util.Hand) this.getEntityMapper().toMinecraftHand(hand)
+            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -366,7 +366,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
 
   @Override
   public boolean isWearing(PlayerClothing clothing) {
-    return this.entity.isWearing(this.playerClothingSerializer.serialize(clothing));
+    return this.entity.isWearing((PlayerModelPart) this.modelMapper.toMinecraftPlayerModelPart(clothing));
   }
 
   @Override
@@ -382,7 +382,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void setPrimaryHand(Hand.Side primaryHand) {
     this.entity.setPrimaryHand(
-            (HandSide) this.getEntityMapper().toMinecraftHandSide(primaryHand)
+            (HandSide) this.getEntityMapper().getHandMapper().toMinecraftHandSide(primaryHand)
     );
   }
 

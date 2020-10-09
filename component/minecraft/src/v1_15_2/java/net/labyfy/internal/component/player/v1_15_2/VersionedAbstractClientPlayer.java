@@ -6,8 +6,8 @@ import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
-import net.labyfy.component.player.util.SkinModel;
+import net.labyfy.component.player.type.model.ModelMapper;
+import net.labyfy.component.player.type.model.SkinModel;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.ClientWorld;
 
@@ -22,9 +22,9 @@ public class VersionedAbstractClientPlayer extends VersionedPlayerEntity impleme
           ClientWorld world,
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileGameProfileSerializer,
-          PlayerClothingSerializer playerClothingSerializer,
+          ModelMapper modelMapper,
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry) {
-    super(entity, entityType, world, entityMapper, gameProfileGameProfileSerializer, playerClothingSerializer);
+    super(entity, entityType, world, entityMapper, gameProfileGameProfileSerializer, modelMapper);
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
 
     if (!(entity instanceof net.minecraft.client.entity.player.AbstractClientPlayerEntity)) {

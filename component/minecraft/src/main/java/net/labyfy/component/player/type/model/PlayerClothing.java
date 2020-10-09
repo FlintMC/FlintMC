@@ -1,4 +1,4 @@
-package net.labyfy.component.player.util;
+package net.labyfy.component.player.type.model;
 
 import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.chat.component.ChatComponent;

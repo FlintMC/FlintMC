@@ -9,9 +9,8 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.RemoteClientPlayerEntity;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
+import net.labyfy.component.player.type.model.ModelMapper;
 import net.labyfy.component.world.ClientWorld;
-import net.minecraft.entity.player.PlayerModelPart;
 
 @Singleton
 @Implement(value = RemoteClientPlayerEntity.Provider.class, version = "1.15.2")
@@ -22,7 +21,7 @@ public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPl
   private final ClientWorld clientWorld;
   private final EntityMapper entityMapper;
   private final GameProfileSerializer<GameProfile> gameProfileSerializer;
-  private final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
+  private final ModelMapper modelMapper;
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
 
   @Inject
@@ -32,7 +31,7 @@ public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPl
           ClientWorld clientWorld,
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileSerializer,
-          PlayerClothingSerializer playerClothingSerializer,
+          ModelMapper modelMapper,
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry
   ) {
     this.remoteClientPlayerEntity = remoteClientPlayerEntity;
@@ -40,7 +39,7 @@ public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPl
     this.clientWorld = clientWorld;
     this.entityMapper = entityMapper;
     this.gameProfileSerializer = gameProfileSerializer;
-    this.playerClothingSerializer = playerClothingSerializer;
+    this.modelMapper = modelMapper;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
   }
 
@@ -52,7 +51,7 @@ public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPl
             this.clientWorld,
             this.entityMapper,
             this.gameProfileSerializer,
-            this.playerClothingSerializer,
+            this.modelMapper,
             this.networkPlayerInfoRegistry
     );
   }

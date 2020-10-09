@@ -1,4 +1,4 @@
-package net.labyfy.component.player.util.sound;
+package net.labyfy.component.player.type.sound;
 
 import net.labyfy.component.resources.ResourceLocation;
 
