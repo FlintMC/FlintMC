@@ -16,6 +16,7 @@ import net.labyfy.component.player.ClientPlayerEntity;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
+import net.labyfy.component.player.overlay.TabOverlay;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
 import net.labyfy.component.player.util.GameMode;
@@ -55,6 +56,8 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   private final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
 
+  private final TabOverlay tabOverlay;
+
   @Inject
   private VersionedClientPlayerEntity(
           ClientWorld world,
@@ -62,7 +65,9 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
           GameProfileSerializer gameProfileSerializer,
           PlayerClothingSerializer playerClothingSerializer,
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
-          EntityTypeRegister entityTypeRegister) {
+          EntityTypeRegister entityTypeRegister,
+          TabOverlay tabOverlay
+  ) {
     super(
             Minecraft.getInstance().player,
             entityTypeRegister.getEntityType("player"),
@@ -75,6 +80,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
     this.gameProfileSerializer = gameProfileSerializer;
     this.playerClothingSerializer = playerClothingSerializer;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
+    this.tabOverlay = tabOverlay;
   }
 
   @Override
@@ -1577,6 +1583,11 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   @Override
   public float getWaterBrightness() {
     return Minecraft.getInstance().player.getWaterBrightness();
+  }
+
+  @Override
+  public TabOverlay getTabOverlay() {
+    return this.tabOverlay;
   }
 
   @Override

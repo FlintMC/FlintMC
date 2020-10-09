@@ -1,5 +1,7 @@
 package net.labyfy.component.player;
 
+import net.labyfy.component.player.overlay.TabOverlay;
+
 public interface ClientPlayerEntity extends AbstractClientPlayerEntity {
 
   void sendChatMessage(String message);
@@ -31,5 +33,7 @@ public interface ClientPlayerEntity extends AbstractClientPlayerEntity {
   boolean isAutoJumpEnabled();
 
   float getWaterBrightness();
+
+  TabOverlay getTabOverlay();
 
 }
