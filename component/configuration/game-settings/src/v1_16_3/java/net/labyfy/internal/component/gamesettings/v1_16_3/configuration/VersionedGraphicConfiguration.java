@@ -126,19 +126,17 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     switch (fancyGraphics) {
       case FAST:
         Minecraft.getInstance().gameSettings.field_238330_f_ = net.minecraft.client.settings.GraphicsFanciness.FAST;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case FANCY:
         Minecraft.getInstance().gameSettings.field_238330_f_ = net.minecraft.client.settings.GraphicsFanciness.FANCY;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case FABULOUS:
         Minecraft.getInstance().gameSettings.field_238330_f_ = net.minecraft.client.settings.GraphicsFanciness.FABULOUS;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + fancyGraphics);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**
