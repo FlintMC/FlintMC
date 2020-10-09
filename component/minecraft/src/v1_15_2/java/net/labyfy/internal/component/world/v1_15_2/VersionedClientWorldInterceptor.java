@@ -4,12 +4,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.player.ClientPlayerEntity;
+import net.labyfy.component.player.RemoteClientPlayerEntity;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.world.ClientWorld;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.entity.Entity;
 
 /**
@@ -21,14 +21,16 @@ public class VersionedClientWorldInterceptor {
 
   private final ClientPlayerEntity clientPlayer;
   private final ClientWorld clientWorld;
+  private final RemoteClientPlayerEntity.Provider remoteClientPlayerEntityProvider;
 
   @Inject
   private VersionedClientWorldInterceptor(
           ClientPlayerEntity clientPlayer,
-          ClientWorld clientWorld
-  ) {
+          ClientWorld clientWorld,
+          RemoteClientPlayerEntity.Provider remoteClientPlayerEntityProvider) {
     this.clientPlayer = clientPlayer;
     this.clientWorld = clientWorld;
+    this.remoteClientPlayerEntityProvider = remoteClientPlayerEntityProvider;
   }
 
   @Hook(
@@ -44,9 +46,8 @@ public class VersionedClientWorldInterceptor {
 
     if (playerEntity instanceof net.minecraft.client.entity.player.ClientPlayerEntity) {
       this.clientWorld.addPlayer(this.clientPlayer);
-    } else if (playerEntity instanceof RemoteClientPlayerEntity) {
-      // TODO: 21.09.2020 Wait for merge (#135-implement-1-16)
-      this.clientWorld.addPlayer(null);
+    } else if (playerEntity instanceof net.minecraft.client.entity.player.RemoteClientPlayerEntity) {
+      this.clientWorld.addPlayer(this.remoteClientPlayerEntityProvider.get(playerEntity));
     }
 
   }
