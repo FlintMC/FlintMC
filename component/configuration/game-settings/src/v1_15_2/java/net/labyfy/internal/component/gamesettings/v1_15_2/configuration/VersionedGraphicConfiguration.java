@@ -114,17 +114,7 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
    */
   @Override
   public void setGraphicsFanciness(GraphicsFanciness fancyGraphics) {
-    switch (fancyGraphics) {
-      case FAST:
-        Minecraft.getInstance().gameSettings.fancyGraphics = false;
-        break;
-      case FANCY:
-      case FABULOUS:
-        Minecraft.getInstance().gameSettings.fancyGraphics = true;
-        break;
-      default:
-        throw new IllegalStateException("Unexpected value: " + fancyGraphics);
-    }
+    Minecraft.getInstance().gameSettings.fancyGraphics = fancyGraphics != GraphicsFanciness.FAST;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
