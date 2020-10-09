@@ -3,7 +3,6 @@ package net.labyfy.component.session;
 import net.labyfy.component.player.gameprofile.GameProfile;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * The SessionService can be used to change the minecraft account to be played with, get the current logged in account
@@ -56,10 +55,10 @@ public interface SessionService {
   /**
    * Retrieves whether the current access token is valid or needs to be refreshed by using {@link #refreshToken()}.
    *
-   * @return A non-null completable future which will be completed with {@code true} if the access token is valid or
-   * {@code false} if either the access token is invalid or the {@link SessionService} is not logged into an account6
+   * @return {@code true} if the access token is valid or {@code false} if either the access token is invalid or the
+   * {@link SessionService} is not logged into an account6
    */
-  CompletableFuture<Boolean> isAccessTokenValid();
+  boolean isAccessTokenValid();
 
   /**
    * Retrieves whether this SessionService is currently logged in, this doesn't check if the access token is valid. To
@@ -72,9 +71,9 @@ public interface SessionService {
   /**
    * Refreshes the access token of the current session asynchronously.
    *
-   * @return A non-null completable future which will be completed with the result
+   * @return The non-null result
    */
-  CompletableFuture<RefreshTokenResult> refreshToken();
+  RefreshTokenResult refreshToken();
 
   /**
    * Logs into an account with the given email and password asynchronously. If the username instead of the email is
@@ -83,9 +82,9 @@ public interface SessionService {
    *
    * @param email    The non-null email of the account
    * @param password The non-null password of the account
-   * @return A non-null completable future which will be completed with the result
+   * @return The non-null result of the log in
    */
-  CompletableFuture<AuthenticationResult> logIn(String email, String password);
+  AuthenticationResult logIn(String email, String password);
 
   /**
    * Logs this SessionService out of the given account or does nothing if it is not logged in.

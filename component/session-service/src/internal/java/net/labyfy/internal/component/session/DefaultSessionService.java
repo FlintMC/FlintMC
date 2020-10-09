@@ -28,16 +28,12 @@ import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public abstract class DefaultSessionService implements SessionService {
 
   private static final String REFRESH_TOKEN_URL = "https://authserver.mojang.com/refresh";
   private static final String VALIDATE_TOKEN_URL = "https://authserver.mojang.com/validate";
 
-  private final ExecutorService executorService;
   private final Logger logger;
 
   private final Proxy minecraftProxy;
@@ -69,7 +65,6 @@ public abstract class DefaultSessionService implements SessionService {
     this.tokenRefreshEventFactory = tokenRefreshEventFactory;
     this.authResultFactory = authResultFactory;
     this.eventBus = eventBus;
-    this.executorService = Executors.newFixedThreadPool(1);
   }
 
   protected abstract void refreshSession();
@@ -126,24 +121,18 @@ public abstract class DefaultSessionService implements SessionService {
   }
 
   @Override
-  public CompletableFuture<Boolean> isAccessTokenValid() {
+  public boolean isAccessTokenValid() {
     String accessToken = this.getAccessToken();
     if (accessToken == null) {
-      return CompletableFuture.completedFuture(false);
+      return false;
     }
 
-    CompletableFuture<Boolean> future = new CompletableFuture<>();
-
-    this.executorService.execute(() -> {
-      try {
-        future.complete(this.validateAccessToken(accessToken));
-      } catch (IOException e) {
-        this.logger.error("An error occurred while validating access token", e);
-        future.complete(false);
-      }
-    });
-
-    return future;
+    try {
+      return this.validateAccessToken(accessToken);
+    } catch (IOException e) {
+      this.logger.error("An error occurred while validating access token", e);
+      return false;
+    }
   }
 
   @Override
@@ -152,47 +141,41 @@ public abstract class DefaultSessionService implements SessionService {
   }
 
   @Override
-  public CompletableFuture<RefreshTokenResult> refreshToken() {
+  public RefreshTokenResult refreshToken() {
     String accessToken = this.getAccessToken();
     if (accessToken == null) {
-      return CompletableFuture.completedFuture(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.NOT_LOGGED_IN));
+      return this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.NOT_LOGGED_IN);
     }
-    if (!(ensureAuthenticationAvailable() instanceof RefreshableUserAuthentication)) {
+    UserAuthentication authentication = this.ensureAuthenticationAvailable();
+
+    if (!(authentication instanceof RefreshableUserAuthentication)) {
       // this can only happen if shadow has failed which basically never happens
-      return CompletableFuture.completedFuture(this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, "Not supported"));
+      return this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, "Not supported");
     }
 
-    CompletableFuture<RefreshTokenResult> future = new CompletableFuture<>();
+    try {
+      RefreshableUserAuthentication refreshable = (RefreshableUserAuthentication) authentication;
 
-    this.executorService.execute(() -> {
-      try {
-        RefreshableUserAuthentication refreshable = (RefreshableUserAuthentication) this.ensureAuthenticationAvailable();
+      JsonObject result = this.requestNewToken(accessToken);
 
-        JsonObject result = this.requestNewToken(accessToken);
+      if (result.has("accessToken")) {
+        String newToken = result.get("accessToken").getAsString();
 
-        if (result.has("accessToken")) {
-          String newToken = result.get("accessToken").getAsString();
+        this.eventBus.fireEvent(this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
 
-          this.eventBus.fireEvent(this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
-
-          refreshable.setAccessToken(newToken);
-          this.refreshSession();
-          future.complete(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.SUCCESS));
-          return;
-        }
-
-        if (result.has("errorMessage")) {
-          future.complete(this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, result.get("errorMessage").getAsString()));
-          return;
-        }
-
-        future.complete(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.OTHER));
-      } catch (IOException | JsonParseException e) {
-        future.complete(this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, e.getMessage()));
+        refreshable.setAccessToken(newToken);
+        this.refreshSession();
+        return this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.SUCCESS);
       }
-    });
 
-    return future;
+      if (result.has("errorMessage")) {
+        return this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, result.get("errorMessage").getAsString());
+      }
+
+      return this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.OTHER);
+    } catch (IOException | JsonParseException e) {
+      return this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, e.getMessage());
+    }
   }
 
   private byte[] generateAccessTokenBody(String accessToken) {
@@ -237,45 +220,38 @@ public abstract class DefaultSessionService implements SessionService {
   }
 
   @Override
-  public CompletableFuture<AuthenticationResult> logIn(String email, String password) {
+  public AuthenticationResult logIn(String email, String password) {
     GameProfile currentProfile = this.getProfile();
+    UserAuthentication authentication = this.ensureAuthenticationAvailable();
 
-    CompletableFuture<AuthenticationResult> future = new CompletableFuture<>();
+    if (authentication.isLoggedIn()) {
+      authentication.logOut();
+    }
 
-    this.executorService.execute(() -> {
-      UserAuthentication authentication = this.ensureAuthenticationAvailable();
+    authentication.setUsername(email);
+    authentication.setPassword(password);
 
-      if (authentication.isLoggedIn()) {
-        authentication.logOut();
-      }
+    try {
+      authentication.logIn();
 
-      authentication.setUsername(email);
-      authentication.setPassword(password);
+      this.refreshSession();
 
-      try {
-        authentication.logIn();
+      GameProfile newProfile = this.getProfile();
 
-        this.refreshSession();
+      SessionAccountLogInEvent event = currentProfile != null ?
+          this.logInEventFactory.create(currentProfile, newProfile) :
+          this.logInEventFactory.create(newProfile);
+      this.eventBus.fireEvent(event, Subscribe.Phase.POST);
 
-        GameProfile newProfile = this.getProfile();
-
-        SessionAccountLogInEvent event = currentProfile != null ?
-            this.logInEventFactory.create(currentProfile, newProfile) :
-            this.logInEventFactory.create(newProfile);
-        this.eventBus.fireEvent(event, Subscribe.Phase.POST);
-
-        future.complete(this.authResultFactory.createSuccess(newProfile));
-      } catch (AuthenticationUnavailableException e) {
-        future.complete(this.authResultFactory.createFailed(Type.AUTH_SERVER_OFFLINE));
-      } catch (InvalidCredentialsException e) {
-        future.complete(this.authResultFactory.createFailed(Type.INVALID_CREDENTIALS));
-      } catch (AuthenticationException e) {
-        this.logger.error("An error occurred while logging into an account", e);
-        future.complete(this.authResultFactory.createFailed(Type.UNKNOWN_ERROR));
-      }
-    });
-
-    return future;
+      return this.authResultFactory.createSuccess(newProfile);
+    } catch (AuthenticationUnavailableException e) {
+      return this.authResultFactory.createFailed(Type.AUTH_SERVER_OFFLINE);
+    } catch (InvalidCredentialsException e) {
+      return this.authResultFactory.createFailed(Type.INVALID_CREDENTIALS);
+    } catch (AuthenticationException e) {
+      this.logger.error("An error occurred while logging into an account", e);
+      return this.authResultFactory.createFailed(Type.UNKNOWN_ERROR);
+    }
   }
 
   @Override
