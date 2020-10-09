@@ -30,6 +30,23 @@ public class AnnotationMirrorUtil {
   }
 
   /**
+   * Searches the given type element for an annotation of the given
+   * type and returns its {@link AnnotationMirror}.
+   *
+   * @param element   The element to search for the given annotation
+   * @param className The class name of the annotation to find
+   * @return The annotation mirror of the found annotation or null
+   */
+  public static AnnotationMirror getAnnotationMirror(Element element, String className) {
+    for (AnnotationMirror m : element.getAnnotationMirrors()) {
+      if (m.getAnnotationType().toString().equals(className)) {
+        return m;
+      }
+    }
+    return null;
+  }
+
+  /**
    * Retrieves the value of a given annotation mirror and falls back to a default
    * value if not found.
    *

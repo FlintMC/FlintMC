@@ -6,15 +6,15 @@ import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import net.labyfy.component.commons.annotation.AnnotationMirrorUtil;
 import net.labyfy.component.processing.Processor;
 import net.labyfy.component.processing.ProcessorState;
 
 import javax.lang.model.element.*;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
@@ -31,13 +31,13 @@ public class DetectableAnnotationProcessor implements Processor {
       "    public ${RETURN_TYPE_NAME} ${NAME}(){\n" +
       "        return ${RETURN_VALUE}; \n" +
       "    }";
-  private final Map<Element, String> autoFoundClasses;
+  private final Collection<String> found;
 
   /**
    * Constructs a new {@link AutoLoadProcessor}, expected to be called by a {@link java.util.ServiceLoader}
    */
   public DetectableAnnotationProcessor() {
-    this.autoFoundClasses = new HashMap<>();
+    this.found = new HashSet<>();
   }
 
   /**
@@ -48,12 +48,12 @@ public class DetectableAnnotationProcessor implements Processor {
     ClassName foundAnnotationClass = ClassName.get(DetectableAnnotationProvider.DetectableAnnotationMeta.class);
 
     // Create a method with the signature
-    return MethodSpec.methodBuilder("registerAutoFound")
+    return MethodSpec.methodBuilder("register")
         .addAnnotation(Override.class)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(
             ParameterizedTypeName.get(listClass, foundAnnotationClass),
-            "consumer")
+            "list")
         .returns(void.class);
   }
 
@@ -68,21 +68,101 @@ public class DetectableAnnotationProcessor implements Processor {
    * {@inheritDoc}
    */
   public void accept(TypeElement annotationType) {
-    if (annotationType.getAnnotation(DetectableAnnotation.class) == null) return;
     for (Element annotatedElement : ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(annotationType)) {
-      Map<ExecutableElement, AnnotationValue> annotationValues = collectAnnotationData(annotationType, annotatedElement);
-      System.out.println(annotatedElement + " " + annotationType);
-      String annotationTemplate = createAnnotationTemplate(annotationType, annotationValues, annotationType.toString());
-      this.autoFoundClasses.put(annotatedElement, annotationTemplate);
+      String parsedAnnotation = parseAnnotation(annotationType, annotatedElement);
+      if (parsedAnnotation.isEmpty()) continue;
+
+      this.found.add("list.add(" + parsedAnnotation + ")");
     }
+
+  }
+
+  private String parseAnnotation(TypeElement annotationType, Element annotatedElement) {
+    if (annotationType.getAnnotation(DetectableAnnotation.class) == null) return "";
+
+    String annotationTemplate = createAnnotationTemplate(annotationType, collectAnnotationData(annotationType, annotatedElement), annotationType.toString());
+    StringBuilder output = new StringBuilder();
+    output
+        .append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.DetectableAnnotationMeta(javax.lang.model.element.ElementKind.")
+        .append(annotatedElement.getKind().name())
+        .append(", ");
+
+    switch (annotatedElement.getKind()) {
+      case CLASS:
+      case ANNOTATION_TYPE:
+      case INTERFACE:
+        output.append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.DetectableAnnotationMeta.ClassIdentifier(\"")
+            .append(annotatedElement.toString())
+            .append("\")");
+        break;
+      case METHOD:
+        output.append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.DetectableAnnotationMeta.MethodIdentifier(\"")
+            .append(annotatedElement.getSimpleName())
+            .append("\", ");
+
+        boolean semicolon = false;
+        for (VariableElement parameter : ((ExecutableElement) annotatedElement).getParameters()) {
+          if (semicolon) {
+            output.append(", ");
+          }
+          output.append("\"")
+              .append(parameter.asType())
+              .append("\"");
+          semicolon = true;
+        }
+
+        output
+            .append("), ");
+        break;
+      default:
+        throw new IllegalStateException();
+    }
+
+    output
+        .append(annotationTemplate);
+
+    for (TypeElement metaElement : getAnnotationSubMetaTypes(annotationType)) {
+      AnnotationMirror annotationMirror = AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, metaElement.getQualifiedName().toString());
+      if (annotationMirror == null) continue;
+
+      output.append(", ")
+          .append(parseAnnotation(metaElement, annotatedElement));
+    }
+
+    output.append(")");
+    return output.toString();
+  }
+
+
+  private Collection<TypeElement> getAnnotationSubMetaTypes(TypeElement annotationType) {
+    TypeElement metaTypeElement = ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement(DetectableAnnotation.class.getName());
+    AnnotationMirror metaAnnotationMirror = annotationType.getAnnotationMirrors().stream().filter(annotationMirror -> annotationMirror.getAnnotationType().asElement().asType().equals(metaTypeElement.asType())).findAny().orElse(null);
+
+    List<TypeElement> metaClasses = new ArrayList<>();
+    if (metaAnnotationMirror != null) {
+      AnnotationMirror annotationMirror = SimpleAnnotationMirror.of(metaTypeElement, metaAnnotationMirror.getElementValues().entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getSimpleName().toString(), Map.Entry::getValue)));
+      AnnotationValue metaData = annotationMirror.getElementValues().get(annotationMirror.getElementValues().keySet().stream().filter(executableElement -> executableElement.getSimpleName().toString().equals("metaData")).findAny().get());
+      if (metaData != null) {
+        ((List<AnnotationValue>) metaData.getValue())
+            .stream()
+            .map(AnnotationValue::getValue)
+            .map(DeclaredType.class::cast)
+            .map(DeclaredType::asElement)
+            .map(TypeElement.class::cast)
+            .forEach(metaClasses::add);
+      }
+    }
+    return metaClasses;
   }
 
   private Map<ExecutableElement, AnnotationValue> collectAnnotationData(TypeElement typeElement, Element annotatedElement) {
-    Map<ExecutableElement, AnnotationValue> classValues = new HashMap<>(SimpleAnnotationMirror.of(typeElement).getElementValues());
-    if (annotatedElement != null) {
-      Map<ExecutableElement, AnnotationValue> instanceValues = new HashMap<>(annotatedElement.getAnnotationMirrors().stream().filter(annotationMirror -> annotationMirror.getAnnotationType().asElement().asType().equals(typeElement.asType())).map(AnnotationMirror::getElementValues).findAny().orElse(new HashMap<>()));
-      classValues.putAll(instanceValues);
-    }
+    Map<String, AnnotationValue> collect = new HashMap<>(annotatedElement.getAnnotationMirrors().stream().filter(annotationMirror -> annotationMirror.getAnnotationType().asElement().asType().equals(typeElement.asType())).map(AnnotationMirror::getElementValues).findAny().orElse(new HashMap<>()))
+        .entrySet()
+        .stream()
+        .collect(Collectors.toMap(entry -> entry.getKey().getSimpleName().toString(), Map.Entry::getValue));
+
+
+    Map<ExecutableElement, AnnotationValue> classValues = new HashMap<>(SimpleAnnotationMirror.of(typeElement, collect).getElementValues());
     return classValues;
   }
 
@@ -227,9 +307,6 @@ public class DetectableAnnotationProcessor implements Processor {
     return template;
   }
 
-  private void handleTypeElement(TypeElement element, AnnotationMirror annotation) {
-    System.out.println("Handle " + element + " with " + annotation);
-  }
 
   /**
    * {@inheritDoc}
@@ -237,21 +314,8 @@ public class DetectableAnnotationProcessor implements Processor {
   public void finish(MethodSpec.Builder targetMethod) {
 
     // Add a statement for all classes
-    this.autoFoundClasses.forEach((element, string) -> {
-      String identifier;
-      switch (element.getKind()) {
-        case CLASS:
-        case ANNOTATION_TYPE:
-        case INTERFACE:
-          identifier = element.toString();
-          break;
-        case METHOD:
-          identifier = element.getEnclosingElement().toString() + "." + element.toString();
-          break;
-        default:
-          throw new IllegalStateException();
-      }
-      targetMethod.addStatement("consumer.add(new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.DetectableAnnotationMeta(" + ElementKind.class.getName() + "." + element.getKind().name() + ", $S, " + string + "))", identifier);
+    this.found.forEach(string -> {
+      targetMethod.addStatement(string);
     });
 
   }

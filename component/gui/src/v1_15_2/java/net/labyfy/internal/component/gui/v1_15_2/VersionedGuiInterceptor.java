@@ -84,6 +84,7 @@ public class VersionedGuiInterceptor {
 
   @ClassTransform
   @CtClassFilter(className = "net.minecraft.client.gui.screen.Screen", value = CtClassFilters.SUBCLASS_OF)
+  @CtClassFilter.Test
   private void hookScreenRender(ClassTransformContext context) throws CannotCompileException {
     MethodMapping renderMapping = mappingProvider
         .get("net.minecraft.client.gui.IRenderable")
