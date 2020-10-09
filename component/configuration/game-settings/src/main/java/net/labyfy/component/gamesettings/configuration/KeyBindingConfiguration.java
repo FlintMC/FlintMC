@@ -150,6 +150,11 @@ public interface KeyBindingConfiguration {
    */
   KeyBinding getKeyBindFullscreen();
 
+  /**
+   * Retrieves the key binding for spectator outlines.
+   *
+   * @return The key binding for spectator outlines.
+   */
   KeyBinding getKeyBindSpectatorOutlines();
 
   /**

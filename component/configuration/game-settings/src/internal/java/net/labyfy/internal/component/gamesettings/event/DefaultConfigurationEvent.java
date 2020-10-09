@@ -1,5 +1,6 @@
 package net.labyfy.internal.component.gamesettings.event;
 
+import com.google.inject.Singleton;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.gamesettings.event.ConfigurationEvent;
@@ -14,7 +15,7 @@ import java.util.Map;
 @Implement(ConfigurationEvent.class)
 public class DefaultConfigurationEvent implements ConfigurationEvent {
 
-  private State state;
+  private final State state;
   private File optionsFile;
   private Map<String, String> configurations;
 
@@ -35,14 +36,6 @@ public class DefaultConfigurationEvent implements ConfigurationEvent {
   @Override
   public State getState() {
     return this.state;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setState(State state) {
-    this.state = state;
   }
 
   /**

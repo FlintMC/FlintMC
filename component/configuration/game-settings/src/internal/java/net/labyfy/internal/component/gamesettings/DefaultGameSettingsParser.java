@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
-import net.labyfy.component.gamesettings.GameSettingInterceptor;
+import net.labyfy.component.gamesettings.GameSettingsParser;
 import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.event.ConfigurationEvent;
 import net.labyfy.component.inject.implement.Implement;
@@ -18,16 +18,19 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.*;
 
+/**
+ * Default implementation of the {@link GameSettingsParser}.
+ */
 @Singleton
-@Implement(GameSettingInterceptor.class)
-public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
+@Implement(GameSettingsParser.class)
+public class DefaultGameSettingsParser implements GameSettingsParser {
 
   private final EventBus eventBus;
   private final ConfigurationEvent.Factory configurationEventFactory;
   private ConfigurationEvent configurationEvent;
 
   @Inject
-  private DefaultGameSettingInterceptor(EventBus eventBus, ConfigurationEvent.Factory configurationEventFactory) {
+  private DefaultGameSettingsParser(EventBus eventBus, ConfigurationEvent.Factory configurationEventFactory) {
     this.eventBus = eventBus;
     this.configurationEventFactory = configurationEventFactory;
   }
@@ -81,12 +84,12 @@ public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
       }
 
       this.eventBus.fireEvent(
-              this.createOrUpdateEvent(
+              this.configurationEventFactory.create(
                       ConfigurationEvent.State.LOAD,
                       optionsFile,
                       configurations
               ),
-              Subscribe.Phase.ANY
+              Subscribe.Phase.PRE
       );
 
       bufferedReader.close();
@@ -123,7 +126,7 @@ public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
   }
 
   /**
-   * @see DefaultGameSettingInterceptor#saveOptions(File, Map)
+   * @see DefaultGameSettingsParser#saveOptions(File, Map)
    */
   private void save(File optionsFile, Map<String, String> configurations) {
     try {
@@ -134,12 +137,12 @@ public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
       }
 
       this.eventBus.fireEvent(
-              this.createOrUpdateEvent(
+              this.configurationEventFactory.create(
                       ConfigurationEvent.State.SAVE,
                       optionsFile,
                       configurations
               ),
-              Subscribe.Phase.ANY
+              Subscribe.Phase.PRE
       );
 
       Collections.sort(configuration);
@@ -147,31 +150,6 @@ public class DefaultGameSettingInterceptor implements GameSettingInterceptor {
     } catch (IOException exception) {
       exception.printStackTrace();
     }
-  }
-
-  /**
-   * Creates or updates the {@link #configurationEvent}.
-   *
-   * @param state          The state for the event.
-   * @param optionsFile    The options file for the event.
-   * @param configurations The configurations for the event.
-   * @return A created or updated {@link ConfigurationEvent}.
-   */
-  private ConfigurationEvent createOrUpdateEvent(
-          ConfigurationEvent.State state,
-          File optionsFile,
-          Map<String, String> configurations
-  ) {
-    if (this.configurationEvent == null) {
-      this.configurationEvent = this.configurationEventFactory.create(state, optionsFile, configurations);
-      return this.configurationEvent;
-    }
-
-    this.configurationEvent.setState(state);
-    this.configurationEvent.setOptionsFile(optionsFile);
-    this.configurationEvent.setConfigurations(configurations);
-
-    return this.configurationEvent;
   }
 
 }

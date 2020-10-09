@@ -2,7 +2,7 @@ package net.labyfy.internal.component.gamesettings.v1_16_3;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.gamesettings.GameSettingInterceptor;
+import net.labyfy.component.gamesettings.GameSettingsParser;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.VersionHelper;
 import net.labyfy.component.tasks.Task;
@@ -17,28 +17,28 @@ import java.util.Map;
 @AutoLoad
 public class VersionedGameSettingsInterceptor {
 
-  private final GameSettingInterceptor gameSettingInterceptor;
+  private final GameSettingsParser gameSettingsParser;
   private final VersionHelper versionHelper;
   private Map<String, String> configurations;
   private File optionsFile;
 
   @Inject
   private VersionedGameSettingsInterceptor(
-          GameSettingInterceptor gameSettingInterceptor,
+          GameSettingsParser gameSettingsParser,
           VersionHelper versionHelper
   ) {
     this.versionHelper = versionHelper;
-    this.gameSettingInterceptor = gameSettingInterceptor;
+    this.gameSettingsParser = gameSettingsParser;
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
   public void hookLoadOptions() {
     GameSettingsAccessor gameSettingsAccessor = (GameSettingsAccessor) Minecraft.getInstance().gameSettings;
     this.optionsFile = gameSettingsAccessor.getOptionsFile();
-    this.configurations = this.gameSettingInterceptor.readOptions(this.optionsFile);
+    this.configurations = this.gameSettingsParser.readOptions(this.optionsFile);
 
     if (this.configurations != null && (this.versionHelper.isUnder13())) {
-      this.gameSettingInterceptor.makeQualifiedKeyBinds(this.optionsFile, this.configurations);
+      this.gameSettingsParser.makeQualifiedKeyBinds(this.optionsFile, this.configurations);
     }
 
   }
@@ -48,7 +48,7 @@ public class VersionedGameSettingsInterceptor {
           methodName = "saveOptions"
   )
   public void hookSaveOptions() {
-    this.gameSettingInterceptor.saveOptions(this.optionsFile, this.configurations);
+    this.gameSettingsParser.saveOptions(this.optionsFile, this.configurations);
   }
 
 }

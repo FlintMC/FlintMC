@@ -95,9 +95,20 @@ public interface KeyBinding {
    */
   String getTranslationKey();
 
+  /**
+   * A factory class for the {@link KeyBinding}.
+   */
   @AssistedFactory(KeyBinding.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link KeyBinding} with the given parameters.
+     *
+     * @param description The key binding description.
+     * @param keyCode     The code of the key binding.
+     * @param category    The category of the key binding.
+     * @return A created key binding.
+     */
     KeyBinding create(
             @Assisted("description") String description,
             @Assisted("keyCode") int keyCode,

@@ -3,7 +3,10 @@ package net.labyfy.component.gamesettings;
 import java.io.File;
 import java.util.Map;
 
-public interface GameSettingInterceptor {
+/**
+ * An interface to parse the Minecraft game settings.
+ */
+public interface GameSettingsParser {
 
   /**
    * Makes qualified key bindings for the specific version.
