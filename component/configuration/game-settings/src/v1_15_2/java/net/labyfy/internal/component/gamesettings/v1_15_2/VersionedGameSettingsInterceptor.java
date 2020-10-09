@@ -3,7 +3,6 @@ package net.labyfy.internal.component.gamesettings.v1_15_2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.GameSettingInterceptor;
-import net.labyfy.component.gamesettings.GameSettingsAccessor;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.VersionHelper;
 import net.labyfy.component.tasks.Task;

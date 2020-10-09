@@ -123,17 +123,15 @@ public class VersionedChatConfiguration implements ChatConfiguration {
     switch (chatVisibility) {
       case FULL:
         Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.FULL;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case SYSTEM:
         Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.SYSTEM;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case HIDDEN:
         Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.HIDDEN;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**

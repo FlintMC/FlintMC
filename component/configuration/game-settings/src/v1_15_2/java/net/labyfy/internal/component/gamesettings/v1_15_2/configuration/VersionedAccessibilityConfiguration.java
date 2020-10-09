@@ -130,31 +130,26 @@ public class VersionedAccessibilityConfiguration implements AccessibilityConfigu
     switch (tutorialStep) {
       case MOVEMENT:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.MOVEMENT;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case FIND_TREE:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.FIND_TREE;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case PUNCH_TREE:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.PUNCH_TREE;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case OPEN_INVENTORY:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.OPEN_INVENTORY;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case CRAFT_PLANKS:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.CRAFT_PLANKS;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case NONE:
         Minecraft.getInstance().gameSettings.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.NONE;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + tutorialStep);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**
@@ -182,19 +177,17 @@ public class VersionedAccessibilityConfiguration implements AccessibilityConfigu
     switch (pointOfView) {
       case FIRST_PERSON:
         Minecraft.getInstance().gameSettings.thirdPersonView = 0;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case THIRD_PERSON_BACK:
         Minecraft.getInstance().gameSettings.thirdPersonView = 1;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case THIRD_PERSON_FRONT:
         Minecraft.getInstance().gameSettings.thirdPersonView = 2;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + pointOfView);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**

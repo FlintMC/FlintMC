@@ -164,23 +164,20 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
     switch (difficulty) {
       case PEACEFUL:
         Minecraft.getInstance().gameSettings.difficulty = net.minecraft.world.Difficulty.PEACEFUL;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case EASY:
         Minecraft.getInstance().gameSettings.difficulty = net.minecraft.world.Difficulty.EASY;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case NORMAL:
         Minecraft.getInstance().gameSettings.difficulty = net.minecraft.world.Difficulty.NORMAL;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case HARD:
         Minecraft.getInstance().gameSettings.difficulty = net.minecraft.world.Difficulty.HARD;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + difficulty);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
 
   }
 

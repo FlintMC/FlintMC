@@ -72,15 +72,14 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     switch (mainHand) {
       case LEFT:
         Minecraft.getInstance().gameSettings.mainHand = HandSide.LEFT;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case RIGHT:
         Minecraft.getInstance().gameSettings.mainHand = HandSide.RIGHT;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + mainHand);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   private PlayerClothing fromMinecraftObject(PlayerModelPart playerModelPart) {

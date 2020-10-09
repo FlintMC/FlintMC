@@ -123,17 +123,15 @@ public class VersionedChatConfiguration implements ChatConfiguration {
     switch (chatVisibility) {
       case FULL:
         Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.FULL;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case SYSTEM:
         Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.SYSTEM;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case HIDDEN:
         Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.HIDDEN;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**
@@ -247,23 +245,20 @@ public class VersionedChatConfiguration implements ChatConfiguration {
     switch (narrator) {
       case OFF:
         Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.OFF;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case ALL:
         Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.ALL;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case CHAT:
         Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.CHAT;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case SYSTEM:
         Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.SYSTEM;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + narrator);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**

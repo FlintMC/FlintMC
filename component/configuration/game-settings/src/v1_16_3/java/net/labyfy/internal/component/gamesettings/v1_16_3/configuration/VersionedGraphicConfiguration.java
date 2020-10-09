@@ -88,19 +88,17 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     switch (cloudOption) {
       case OFF:
         Minecraft.getInstance().gameSettings.cloudOption = net.minecraft.client.settings.CloudOption.OFF;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case FAST:
         Minecraft.getInstance().gameSettings.cloudOption = net.minecraft.client.settings.CloudOption.FAST;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case FANCY:
         Minecraft.getInstance().gameSettings.cloudOption = net.minecraft.client.settings.CloudOption.FANCY;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + cloudOption);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**
@@ -168,19 +166,17 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     switch (ambientOcclusionStatus) {
       case OFF:
         Minecraft.getInstance().gameSettings.ambientOcclusionStatus = net.minecraft.client.settings.AmbientOcclusionStatus.OFF;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case MIN:
         Minecraft.getInstance().gameSettings.ambientOcclusionStatus = net.minecraft.client.settings.AmbientOcclusionStatus.MIN;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case MAX:
         Minecraft.getInstance().gameSettings.ambientOcclusionStatus = net.minecraft.client.settings.AmbientOcclusionStatus.MAX;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + ambientOcclusionStatus);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**
@@ -225,19 +221,17 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     switch (attackIndicator) {
       case OFF:
         Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.OFF;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case CROSSHAIR:
         Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.CROSSHAIR;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case HOTBAR:
         Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.HOTBAR;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + attackIndicator);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**
@@ -416,19 +410,17 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     switch (particles) {
       case ALL:
         Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.ALL;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case DECREASED:
         Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.DECREASED;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case MINIMAL:
         Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.MINIMAL;
-        Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + particles);
     }
+    Minecraft.getInstance().gameSettings.saveOptions();
   }
 
   /**

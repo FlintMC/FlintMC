@@ -1,4 +1,4 @@
-package net.labyfy.component.gamesettings;
+package net.labyfy.internal.component.gamesettings.v1_16_3;
 
 import net.labyfy.component.transform.shadow.FieldGetter;
 import net.labyfy.component.transform.shadow.Shadow;
