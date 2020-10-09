@@ -21,6 +21,7 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
   private final VboDrawMode drawMode;
 
   private boolean isAvailable;
+  private boolean deleted;
   private int oldEbo;
 
   @AssistedInject
@@ -33,6 +34,7 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
     this.indices = new ArrayList<>();
     this.id = glGenBuffers();
     this.isAvailable = false;
+    this.deleted = false;
     this.oldEbo = 0;
     this.drawMode = drawMode;
   }
@@ -106,5 +108,15 @@ public class DefaultVertexIndexObject implements VertexIndexObject {
   @Override
   public VboDrawMode getDrawMode() {
     return this.drawMode;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void delete() {
+    if (this.deleted) throw new IllegalStateException("The EBO was already deleted.");
+    this.bind();
+    glDeleteBuffers(this.id);
+    this.unbind();
+    this.deleted = true;
   }
 }

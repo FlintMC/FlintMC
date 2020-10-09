@@ -18,6 +18,7 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
 
   private final int id;
   private int oldId;
+  private boolean deleted;
 
   @AssistedInject
   private DefaultVertexArrayObject(@Assisted VertexBufferObject vbo) {
@@ -31,6 +32,7 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
     this.vbo = vbo;
 
     this.id = this.format.createVAO();
+    this.deleted = false;
 
     this.bind();
 
@@ -51,7 +53,6 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
     this.bind();
     this.vbo.bind();
     ebo.bind();
-    if (!ebo.isAvailable()) ebo.pushToGPU();
     this.drawWithoutBind(ebo);
     this.unbind();
     this.vbo.unbind();
@@ -70,6 +71,10 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
   /** {@inheritDoc} */
   @Override
   public void drawWithoutBind(VertexIndexObject ebo) {
+    if (this.deleted)
+      throw new IllegalStateException(
+          "The VAO has already been deleted and can not be used for drawing anymore.");
+    if (!ebo.isAvailable()) ebo.pushToGPU();
     if (ebo.getDrawMode() == VboDrawMode.TRIANGLES)
       glDrawElements(GL_TRIANGLES, ebo.getSize(), GL_UNSIGNED_INT, 0);
     else if (ebo.getDrawMode() == VboDrawMode.QUADS)
@@ -105,5 +110,16 @@ public class DefaultVertexArrayObject implements VertexArrayObject {
   @Override
   public int getID() {
     return this.id;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void delete() {
+    if (this.deleted) throw new IllegalStateException("The VAO was already deleted.");
+    this.vbo.delete();
+    this.bind();
+    glDeleteVertexArrays(this.id);
+    this.unbind();
+    this.deleted = true;
   }
 }

@@ -43,6 +43,9 @@ public interface VertexIndexObject {
   /** @return the {@link VboDrawMode} this index buffer expects to be drawn with. */
   VboDrawMode getDrawMode();
 
+  /** Deletes this EBO with OpenGL. */
+  void delete();
+
   @AssistedFactory(VertexIndexObject.class)
   interface Factory {
 

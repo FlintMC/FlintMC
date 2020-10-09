@@ -55,6 +55,9 @@ public interface VertexBufferObject {
    */
   VertexFormat getFormat();
 
+  /** Deletes this vertex buffer object. */
+  void delete();
+
   @AssistedFactory(VertexBufferObject.class)
   interface Factory {
 
