@@ -68,6 +68,8 @@ public class VersionHelper {
    * Retrieves an array with the version split in it.<br>
    * <b>Note:</b> The array has a size of {@code 3}<br>
    * The first index of the array is the major version, the minor version is the second index and the third index is the patch version.
+   * <br>
+   * The correct version format would be this one "<strong>MAJOR.MINOR.PATCH</strong>" but this would not be wrong either "<strong>MAJOR.MINOR</strong>"
    *
    * @return An array with the version split in it.
    */
