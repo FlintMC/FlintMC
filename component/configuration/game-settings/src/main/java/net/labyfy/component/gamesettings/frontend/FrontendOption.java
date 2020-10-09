@@ -4,7 +4,7 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 /**
- * Represents a option for the settings frontend.
+ * Represents an option for the settings frontend.
  */
 public interface FrontendOption {
 
