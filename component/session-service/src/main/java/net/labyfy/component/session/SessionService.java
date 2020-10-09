@@ -12,6 +12,16 @@ import java.util.concurrent.CompletableFuture;
 public interface SessionService {
 
   /**
+   * Changes the client token for this session service. This method also "logs out" (the accessToken will stay valid,
+   * but this SessionService won't use it anymore) from the account (if logged in).
+   * <p>
+   * After calling this method, you should also {@link #logIn(String, String) log in} again.
+   *
+   * @param clientToken The new non-null client token to be used for the authentication
+   */
+  void setClientToken(String clientToken);
+
+  /**
    * Retrieves the uniqueId of the player of the account which is currently used by the client.
    *
    * @return The uniqueId or {@code null} if the client is not logged into any account
@@ -76,5 +86,10 @@ public interface SessionService {
    * @return A non-null completable future which will be completed with the result
    */
   CompletableFuture<AuthenticationResult> logIn(String email, String password);
+
+  /**
+   * Logs this SessionService out of the given account or does nothing if it is not logged in.
+   */
+  void logOut();
 
 }

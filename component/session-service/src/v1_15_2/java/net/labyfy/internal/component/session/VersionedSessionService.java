@@ -14,6 +14,8 @@ import net.labyfy.component.session.event.SessionTokenRefreshEvent;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
+import java.util.UUID;
+
 @Singleton
 @Implement(value = SessionService.class, version = "1.15.2")
 public class VersionedSessionService extends DefaultSessionService {
@@ -29,12 +31,12 @@ public class VersionedSessionService extends DefaultSessionService {
 
   @Override
   protected void refreshSession() {
+    String uuid = (super.getUniqueId() != null ? super.getUniqueId() : UUID.randomUUID()).toString();
+    String name = super.getUsername() != null ? super.getUsername() : uuid.split("-")[0];
+    String accessToken = super.getAccessToken() != null ? super.getAccessToken() : "0";
+
     SessionRefreshableMinecraft minecraft = (SessionRefreshableMinecraft) Minecraft.getInstance();
-    minecraft.setSession(new net.minecraft.util.Session(
-        super.getUsername(),
-        super.getUniqueId().toString().replace("-", ""),
-        super.getAccessToken(),
-        net.minecraft.util.Session.Type.MOJANG.toString()
-    ));
+    minecraft.setSession(new net.minecraft.util.Session(name, uuid, accessToken,
+        net.minecraft.util.Session.Type.MOJANG.toString()));
   }
 }

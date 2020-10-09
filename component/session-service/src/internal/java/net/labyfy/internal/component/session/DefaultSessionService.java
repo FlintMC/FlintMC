@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.Agent;
-import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
@@ -41,10 +40,14 @@ public abstract class DefaultSessionService implements SessionService {
   private final ExecutorService executorService;
   private final Logger logger;
 
+  private final Proxy minecraftProxy;
+
   private final RefreshTokenResult.Factory refreshTokenResultFactory;
   private final AuthenticationResult.Factory authResultFactory;
-  private final UserAuthentication authentication;
-  private final String clientToken;
+
+  private UserAuthentication authentication;
+  private String clientToken;
+
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
 
   private final EventBus eventBus;
@@ -60,41 +63,66 @@ public abstract class DefaultSessionService implements SessionService {
                                   Proxy minecraftProxy) {
     this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
+    this.minecraftProxy = minecraftProxy;
     this.profileSerializer = profileSerializer;
     this.logInEventFactory = logInEventFactory;
     this.tokenRefreshEventFactory = tokenRefreshEventFactory;
     this.authResultFactory = authResultFactory;
     this.eventBus = eventBus;
     this.executorService = Executors.newFixedThreadPool(1);
-
-    this.clientToken = UUID.randomUUID().toString();
-    AuthenticationService authenticationService = new YggdrasilAuthenticationService(minecraftProxy, this.clientToken);
-    this.authentication = authenticationService.createUserAuthentication(Agent.MINECRAFT);
   }
 
   protected abstract void refreshSession();
 
+  private UserAuthentication ensureAuthenticationAvailable() {
+    if (this.authentication == null) {
+      if (this.clientToken == null) {
+        this.clientToken = UUID.randomUUID().toString().replace("-", "");
+      }
+
+      this.authentication = new YggdrasilAuthenticationService(this.minecraftProxy, this.clientToken).createUserAuthentication(Agent.MINECRAFT);
+    }
+
+    return this.authentication;
+  }
+
+  @Override
+  public void setClientToken(String clientToken) {
+    this.clientToken = clientToken;
+    this.authentication = null;
+    this.refreshSession();
+  }
+
   @Override
   public UUID getUniqueId() {
+    if (this.authentication == null) {
+      return null;
+    }
     com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
     return profile != null ? profile.getId() : null;
   }
 
   @Override
   public String getUsername() {
+    if (this.authentication == null) {
+      return null;
+    }
     com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
     return profile != null ? profile.getName() : null;
   }
 
   @Override
   public GameProfile getProfile() {
+    if (this.authentication == null) {
+      return null;
+    }
     com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
     return profile != null ? this.profileSerializer.deserialize(profile) : null;
   }
 
   @Override
   public String getAccessToken() {
-    return this.authentication.getAuthenticatedToken();
+    return this.authentication != null ? this.authentication.getAuthenticatedToken() : null;
   }
 
   @Override
@@ -120,7 +148,7 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public boolean isLoggedIn() {
-    return this.authentication.isLoggedIn();
+    return this.ensureAuthenticationAvailable().isLoggedIn();
   }
 
   @Override
@@ -129,16 +157,17 @@ public abstract class DefaultSessionService implements SessionService {
     if (accessToken == null) {
       return CompletableFuture.completedFuture(this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.NOT_LOGGED_IN));
     }
-    if (!(this.authentication instanceof RefreshableUserAuthentication)) {
+    if (!(ensureAuthenticationAvailable() instanceof RefreshableUserAuthentication)) {
       // this can only happen if shadow has failed which basically never happens
       return CompletableFuture.completedFuture(this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, "Not supported"));
     }
 
-    RefreshableUserAuthentication refreshable = (RefreshableUserAuthentication) this.authentication;
     CompletableFuture<RefreshTokenResult> future = new CompletableFuture<>();
 
     this.executorService.execute(() -> {
       try {
+        RefreshableUserAuthentication refreshable = (RefreshableUserAuthentication) this.ensureAuthenticationAvailable();
+
         JsonObject result = this.requestNewToken(accessToken);
 
         if (result.has("accessToken")) {
@@ -211,18 +240,20 @@ public abstract class DefaultSessionService implements SessionService {
   public CompletableFuture<AuthenticationResult> logIn(String email, String password) {
     GameProfile currentProfile = this.getProfile();
 
-    if (this.authentication.isLoggedIn()) {
-      this.authentication.logOut();
-    }
-
     CompletableFuture<AuthenticationResult> future = new CompletableFuture<>();
 
     this.executorService.execute(() -> {
-      this.authentication.setUsername(email);
-      this.authentication.setPassword(password);
+      UserAuthentication authentication = this.ensureAuthenticationAvailable();
+
+      if (authentication.isLoggedIn()) {
+        authentication.logOut();
+      }
+
+      authentication.setUsername(email);
+      authentication.setPassword(password);
 
       try {
-        this.authentication.logIn();
+        authentication.logIn();
 
         this.refreshSession();
 
@@ -245,5 +276,12 @@ public abstract class DefaultSessionService implements SessionService {
     });
 
     return future;
+  }
+
+  @Override
+  public void logOut() {
+    if (this.authentication != null && this.authentication.isLoggedIn()) {
+      this.authentication.logOut();
+    }
   }
 }
