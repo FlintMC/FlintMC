@@ -57,10 +57,10 @@ public class DefaultVertexFormat implements VertexFormat {
 
     for (VertexAttribute attribute : this.attributes) {
       glVertexAttribPointer(
-          index, attribute.getSize(), GL_FLOAT, false, this.getVertexSize() * 4, offset);
+          index, attribute.getSize(), GL_FLOAT, false, this.getVertexSize() * Float.BYTES, offset);
       glEnableVertexAttribArray(index);
       index++;
-      offset += attribute.getSize() * 4;
+      offset += attribute.getSize() * Float.BYTES;
     }
   }
 }

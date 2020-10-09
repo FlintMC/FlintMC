@@ -127,11 +127,14 @@ public class DefaultVertexBuilder implements VertexBuilder {
   public int write(float[] buffer, int startOffset) {
     int offset = startOffset;
     for (VertexAttribute attribute : this.vbo.getFormat().getAttributes()) {
-      if (attribute == VertexAttributes.POSITION3F) this.pos3fHandler.writeFloats(buffer, offset);
+      if (attribute == VertexAttributes.POSITION3F)
+        this.pos3fHandler.writeFloats(buffer, offset);
       else if (attribute == VertexAttributes.POSITION4F)
         this.pos4fHandler.writeFloats(buffer, offset);
-      else if (attribute == VertexAttributes.NORMAL) this.normalHandler.writeFloats(buffer, offset);
-      else if (attribute == VertexAttributes.COLOR_RGB) this.rgbHandler.writeFloats(buffer, offset);
+      else if (attribute == VertexAttributes.NORMAL)
+        this.normalHandler.writeFloats(buffer, offset);
+      else if (attribute == VertexAttributes.COLOR_RGB)
+        this.rgbHandler.writeFloats(buffer, offset);
       else if (attribute == VertexAttributes.COLOR_RGBA)
         this.rgbaHandler.writeFloats(buffer, offset);
       else if (attribute == VertexAttributes.TEXTURE_UV)
@@ -166,7 +169,8 @@ public class DefaultVertexBuilder implements VertexBuilder {
             if (floats.length != attribute.getSize())
               throw new IllegalArgumentException(
                   "The number of provided floats doesn't match the size of the attribute.");
-            for (float c : floats) toWrite.add(c);
+            for (float c : floats)
+              toWrite.add(c);
             this.pos++;
             return;
           } else i++;
@@ -180,7 +184,8 @@ public class DefaultVertexBuilder implements VertexBuilder {
     void writeFloats(float[] buffer, int offset) {
       int floatsPerAttribute = toWrite.size() / this.pos;
       for (int i = 0; i < floatsPerAttribute; i++) {
-        if (this.toWrite.peek() != null) buffer[offset + i] = this.toWrite.poll();
+        if (this.toWrite.peek() != null)
+          buffer[offset + i] = this.toWrite.poll();
         else
           throw new IllegalStateException(
               "Not enough attributes have been written to match the vertex format.");
