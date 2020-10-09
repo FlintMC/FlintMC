@@ -55,11 +55,11 @@ public interface Entity extends Nameable {
 
   boolean removeTag(String tag);
 
-  double getX();
+  double getPosX();
 
-  double getY();
+  double getPosY();
 
-  double getZ();
+  double getPosZ();
 
   void remove();
 

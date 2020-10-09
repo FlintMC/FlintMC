@@ -8,6 +8,7 @@ import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
+import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.util.GameMode;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.sound.Sound;
@@ -349,6 +350,22 @@ public class VersionedEntityMapper implements EntityMapper {
 
   @Override
   public Object toMinecraftEntity(Entity entity) {
+    return null;
+  }
+
+  @Override
+  public PlayerEntity fromMinecraftPlayerEntity(Object entity) {
+    if(!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
+      throw new IllegalArgumentException("");
+    }
+
+    net.minecraft.entity.player.PlayerEntity playerEntity = (net.minecraft.entity.player.PlayerEntity) entity;
+
+    return null;
+  }
+
+  @Override
+  public Object toMinecraftPlayerEntity(PlayerEntity entity) {
     return null;
   }
 

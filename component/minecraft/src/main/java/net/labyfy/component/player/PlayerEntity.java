@@ -19,7 +19,7 @@ import net.labyfy.component.world.util.BlockPosition;
 
 import java.util.UUID;
 
-public interface PlayerEntity extends LivingEntity {
+public interface PlayerEntity extends LivingEntity, CooldownTracking {
 
   boolean blockActionRestricted(World world, BlockPosition position, GameMode mode);
 
@@ -145,8 +145,6 @@ public interface PlayerEntity extends LivingEntity {
   float getCooledAttackStrength(float strength);
 
   void resetCooldown();
-
-  CooldownTracking getCooldownTracking();
 
   float getLuck();
 

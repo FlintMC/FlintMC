@@ -5,6 +5,7 @@ import net.labyfy.component.world.World;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
+import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.BlockPosition;
 import net.labyfy.component.world.util.Dimension;
 import net.minecraft.client.Minecraft;
@@ -22,16 +23,18 @@ public class VersionedWorld implements World {
   private final BlockPosition.Factory blockPositionFactory;
   private final DifficultyLocal.Factory difficultyLocalFactory;
   private final WorldBorder worldBorder;
+  private final Scoreboard scoreboard;
 
   @Inject
   public VersionedWorld(
           BlockPosition.Factory blockPositionFactory,
           DifficultyLocal.Factory difficultyLocalFactory,
-          WorldBorder worldBorder
-  ) {
+          WorldBorder worldBorder,
+          Scoreboard scoreboard) {
     this.blockPositionFactory = blockPositionFactory;
     this.difficultyLocalFactory = difficultyLocalFactory;
     this.worldBorder = worldBorder;
+    this.scoreboard = scoreboard;
   }
 
   /**
@@ -267,6 +270,11 @@ public class VersionedWorld implements World {
   @Override
   public Dimension getDimension() {
     return this.fromMinecraftDimension(Minecraft.getInstance().world.getDimension().getType());
+  }
+
+  @Override
+  public Scoreboard getScoreboard() {
+    return this.scoreboard;
   }
 
   /**

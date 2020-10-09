@@ -5,6 +5,7 @@ import net.labyfy.component.world.World;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
+import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.BlockPosition;
 import net.labyfy.component.world.util.Dimension;
 import net.minecraft.client.Minecraft;
@@ -277,6 +278,11 @@ public class VersionedWorld implements World {
   @Override
   public Dimension getDimension() {
     return this.fromMinecraftDimension(Minecraft.getInstance().world.func_234923_W_().func_240901_a_());
+  }
+
+  @Override
+  public Scoreboard getScoreboard() {
+    return null;
   }
 
   /**

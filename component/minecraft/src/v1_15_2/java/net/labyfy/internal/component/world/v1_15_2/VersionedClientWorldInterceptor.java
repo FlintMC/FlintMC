@@ -3,13 +3,12 @@ package net.labyfy.internal.component.world.v1_15_2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import net.labyfy.component.player.ClientPlayer;
+import net.labyfy.component.player.ClientPlayerEntity;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.world.ClientWorld;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.entity.Entity;
 
@@ -20,12 +19,12 @@ import net.minecraft.entity.Entity;
 @AutoLoad
 public class VersionedClientWorldInterceptor {
 
-  private final ClientPlayer clientPlayer;
+  private final ClientPlayerEntity clientPlayer;
   private final ClientWorld clientWorld;
 
   @Inject
   private VersionedClientWorldInterceptor(
-          ClientPlayer clientPlayer,
+          ClientPlayerEntity clientPlayer,
           ClientWorld clientWorld
   ) {
     this.clientPlayer = clientPlayer;
@@ -43,7 +42,7 @@ public class VersionedClientWorldInterceptor {
   public void hookAfterAddPlayer(@Named("args") Object[] args) {
     AbstractClientPlayerEntity playerEntity = (AbstractClientPlayerEntity) args[1];
 
-    if (playerEntity instanceof ClientPlayerEntity) {
+    if (playerEntity instanceof net.minecraft.client.entity.player.ClientPlayerEntity) {
       this.clientWorld.addPlayer(this.clientPlayer);
     } else if (playerEntity instanceof RemoteClientPlayerEntity) {
       // TODO: 21.09.2020 Wait for merge (#135-implement-1-16)

@@ -4,6 +4,7 @@ import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
+import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.util.GameMode;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.sound.Sound;
@@ -43,6 +44,10 @@ public interface EntityMapper {
   Entity fromMinecraftEntity(Object entity);
 
   Object toMinecraftEntity(Entity entity);
+
+  PlayerEntity fromMinecraftPlayerEntity(Object entity);
+
+  Object toMinecraftPlayerEntity(PlayerEntity entity);
 
   MinecraftComponentMapper getComponentMapper();
 

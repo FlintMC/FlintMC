@@ -96,17 +96,17 @@ public class VersionedEntity implements Entity {
   }
 
   @Override
-  public double getX() {
+  public double getPosX() {
     return this.entity.getPosX();
   }
 
   @Override
-  public double getY() {
+  public double getPosY() {
     return this.entity.getPosY();
   }
 
   @Override
-  public double getZ() {
+  public double getPosZ() {
     return this.entity.getPosZ();
   }
 
@@ -153,9 +153,9 @@ public class VersionedEntity implements Entity {
 
   @Override
   public float getDistance(Entity entity) {
-    float distanceX = (float) (this.getX() - entity.getX());
-    float distanceY = (float) (this.getY() - entity.getY());
-    float distanceZ = (float) (this.getZ() - entity.getZ());
+    float distanceX = (float) (this.getPosX() - entity.getPosX());
+    float distanceY = (float) (this.getPosY() - entity.getPosY());
+    float distanceZ = (float) (this.getPosZ() - entity.getPosZ());
     return MathHelper.sqrt(distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ);
   }
 
@@ -166,7 +166,7 @@ public class VersionedEntity implements Entity {
 
   @Override
   public double getDistanceSq(Entity entity) {
-    return this.getDistanceSq(entity.getX(), entity.getY(), entity.getZ());
+    return this.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ());
   }
 
   @Override

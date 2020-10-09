@@ -4,14 +4,12 @@ import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.type.EntityType;
-import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.player.serializer.util.PlayerClothingSerializer;
-import net.labyfy.component.player.util.CooldownTracking;
 import net.labyfy.component.player.util.GameMode;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.PlayerClothing;
@@ -24,6 +22,7 @@ import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.BlockPosition;
 import net.labyfy.internal.component.entity.v1_15_2.VersionedLivingEntity;
 import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.item.Item;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.HandSide;
@@ -35,24 +34,22 @@ import net.minecraft.world.GameType;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-@Implement(value = PlayerEntity.class, version = "1.15.2")
 public class VersionedPlayerEntity extends VersionedLivingEntity implements PlayerEntity {
 
   private final net.minecraft.entity.player.PlayerEntity entity;
-  private final CooldownTracking cooldownTracking;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileGameProfileSerializer;
   private final PlayerClothingSerializer<PlayerModelPart> playerClothingSerializer;
+
 
   public VersionedPlayerEntity(
           Object entity,
           EntityType entityType,
           ClientWorld world,
           EntityMapper entityMapper,
-          CooldownTracking cooldownTracking, GameProfileSerializer gameProfileGameProfileSerializer,
+          GameProfileSerializer gameProfileGameProfileSerializer,
           PlayerClothingSerializer playerClothingSerializer
   ) {
     super(entity, entityType, world, entityMapper);
-    this.cooldownTracking = cooldownTracking;
     this.gameProfileGameProfileSerializer = gameProfileGameProfileSerializer;
     this.playerClothingSerializer = playerClothingSerializer;
 
@@ -405,11 +402,6 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   }
 
   @Override
-  public CooldownTracking getCooldownTracking() {
-    return this.cooldownTracking;
-  }
-
-  @Override
   public float getLuck() {
     return this.entity.getLuck();
   }
@@ -417,5 +409,25 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public boolean canUseCommandBlock() {
     return this.entity.canUseCommandBlock();
+  }
+
+  @Override
+  public boolean hasCooldown(Object item) {
+    return this.entity.getCooldownTracker().hasCooldown((Item) item);
+  }
+
+  @Override
+  public float getCooldown(Object item, float partialTicks) {
+    return this.entity.getCooldownTracker().getCooldown((Item) item, partialTicks);
+  }
+
+  @Override
+  public void setCooldown(Object item, int ticks) {
+    this.entity.getCooldownTracker().setCooldown((Item) item, ticks);
+  }
+
+  @Override
+  public void removeCooldown(Object item) {
+    this.entity.getCooldownTracker().removeCooldown((Item) item);
   }
 }

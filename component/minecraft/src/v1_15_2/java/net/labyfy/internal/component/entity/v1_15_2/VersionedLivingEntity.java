@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import java.util.Optional;
 import java.util.Random;
 
-@Implement(value = LivingEntity.class, version = "1.15.2")
 public class VersionedLivingEntity extends VersionedEntity implements LivingEntity {
 
   private final net.minecraft.entity.LivingEntity livingEntity;
@@ -182,7 +181,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   }
 
   @Override
-  public int getBeeStringCount() {
+  public int getBeeStingCount() {
     return this.livingEntity.getBeeStingCount();
   }
 

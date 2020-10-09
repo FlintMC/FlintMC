@@ -12,7 +12,7 @@ public interface TabOverlay {
      *
      * @return The header of this player
      */
-    ChatComponent getHeader() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
+    ChatComponent getHeader();
 
     /**
      * Updates the header of this player.
@@ -26,7 +26,7 @@ public interface TabOverlay {
      *
      * @return The footer of this player.
      */
-    ChatComponent getFooter() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
+    ChatComponent getFooter();
 
     /**
      * Updates the footer of this player.

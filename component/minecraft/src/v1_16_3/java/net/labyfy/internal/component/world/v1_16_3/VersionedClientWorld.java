@@ -3,7 +3,7 @@ package net.labyfy.internal.component.world.v1_16_3;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.player.Player;
+import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.DifficultyLocal;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @Implement(value = ClientWorld.class, version = "1.16.3")
 public class VersionedClientWorld extends VersionedWorld implements ClientWorld {
 
-  private final List<Player> players;
+  private final List<PlayerEntity> players;
   private final Scoreboard scoreboard;
 
   @Inject
@@ -49,7 +49,7 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
    * {@inheritDoc}
    */
   @Override
-  public boolean addPlayer(Player player) {
+  public boolean addPlayer(PlayerEntity player) {
     return this.players.add(player);
   }
 
@@ -70,7 +70,7 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
    * {@inheritDoc}
    */
   @Override
-  public List<Player> getPlayers() {
+  public List<PlayerEntity> getPlayers() {
     return this.players;
   }
 

@@ -79,7 +79,7 @@ public interface LivingEntity extends Entity {
 
   void setArrowCountInEntity(int count);
 
-  int getBeeStringCount();
+  int getBeeStingCount();
 
   void setBeeStingCount(int stingCount);
 

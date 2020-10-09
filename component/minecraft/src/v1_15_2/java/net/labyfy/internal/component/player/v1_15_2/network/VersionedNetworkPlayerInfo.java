@@ -1,18 +1,18 @@
 package net.labyfy.internal.component.player.v1_15_2.network;
 
-import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.chat.component.ChatComponent;
+import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.player.Player;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
-import net.labyfy.component.player.serializer.util.GameModeSerializer;
-import net.labyfy.component.player.serializer.util.SkinModelSerializer;
 import net.labyfy.component.player.util.GameMode;
 import net.labyfy.component.player.util.SkinModel;
 import net.labyfy.component.resources.ResourceLocation;
-import net.labyfy.component.resources.ResourceLocationProvider;
+import net.labyfy.component.world.scoreboad.Scoreboard;
+import net.labyfy.component.world.scoreboad.score.PlayerTeam;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.GameType;
 
 import java.util.UUID;
 
@@ -22,211 +22,169 @@ import java.util.UUID;
 @Implement(value = NetworkPlayerInfo.class, version = "1.15.2")
 public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
 
-    private final Player.Factory player;
-    private final GameModeSerializer<GameType> gameModeSerializer;
-    private final ResourceLocationProvider resourceLocationProvider;
-    private final SkinModelSerializer<String> skinModelSerializer;
+  private final GameProfile gameProfile;
+  private final EntityMapper entityMapper;
+  private final Scoreboard scoreboard;
 
-    @Inject
-    public VersionedNetworkPlayerInfo(
-            Player.Factory player,
-            GameModeSerializer gameModeSerializer,
-            ResourceLocationProvider provider,
-            SkinModelSerializer skinModelSerializer
-    ) {
-        this.player = player;
-        this.gameModeSerializer = gameModeSerializer;
-        this.resourceLocationProvider = provider;
-        this.skinModelSerializer = skinModelSerializer;
-    }
+  @AssistedInject
+  private VersionedNetworkPlayerInfo(
+          @Assisted("gameProfile") GameProfile gameProfile,
+          @Assisted("scoreboard") Scoreboard scoreboard,
+          @Assisted("entityMapper") EntityMapper entityMapper
+  ) {
+    this.gameProfile = gameProfile;
+    this.scoreboard = scoreboard;
+    this.entityMapper = entityMapper;
+  }
 
-    /**
-     * Retrieves the game profile form the network information.
-     *
-     * @return The game profile of a player
-     */
-    @Override
-    public GameProfile getGameProfile() {
-        return this.get().getGameProfile();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public GameProfile getGameProfile() {
+    return this.gameProfile;
+  }
 
-    /**
-     * Retrieves the response time from the network information.
-     *
-     * @return The response time form the network information
-     */
-    @Override
-    public int getResponseTime() {
-        return this.getPlayerInfo(this.get().getUniqueId()).getResponseTime();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getResponseTime() {
+    return this.getPlayerInfo(this.gameProfile.getUniqueId()).getResponseTime();
+  }
 
-    /**
-     * Retrieves the player game mode from the network information.
-     *
-     * @return The player game mode
-     */
-    @Override
-    public GameMode getGameMode() {
-        return this.gameModeSerializer.deserialize(
-                this.getPlayerInfo(
-                        this.get().getUniqueId()
-                ).getGameType()
-        );
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public GameMode getGameMode() {
+    return this.entityMapper.fromMinecraftGameType(this.getPlayerInfo(this.gameProfile.getUniqueId()).getGameType());
+  }
 
-    /**
-     * Retrieves the player last health.
-     *
-     * @return The player last health
-     */
-    @Override
-    public int getLastHealth() {
-        return this.getPlayerInfo(this.get().getUniqueId()).getLastHealth();
-    }
+  @Override
+  public PlayerTeam getPlayerTeam() {
+    return this.scoreboard.getPlayerTeam(this.gameProfile.getName());
+  }
 
-    /**
-     * Retrieves the player display health.
-     *
-     * @return The player display health
-     */
-    @Override
-    public int getDisplayHealth() {
-        return this.getPlayerInfo(this.get().getUniqueId()).getDisplayHealth();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getLastHealth() {
+    return this.getPlayerInfo(this.gameProfile.getUniqueId()).getLastHealth();
+  }
 
-    /**
-     * Retrieves the player last health time.
-     *
-     * @return The player last health time
-     */
-    @Override
-    public long getLastHealthTime() {
-        return this.getPlayerInfo(this.get().getUniqueId()).getLastHealthTime();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getDisplayHealth() {
+    return this.getPlayerInfo(this.gameProfile.getUniqueId()).getDisplayHealth();
+  }
 
-    /**
-     * Retrieves the player health blink time.
-     *
-     * @return The player health blink time
-     */
-    @Override
-    public long getHealthBlinkTime() {
-        return this.getPlayerInfo(this.get().getUniqueId()).getHealthBlinkTime();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public long getLastHealthTime() {
+    return this.getPlayerInfo(this.gameProfile.getUniqueId()).getLastHealthTime();
+  }
 
-    /**
-     * Retrieves the player render visibility identifier.
-     *
-     * @return The player render visibility identifier
-     */
-    @Override
-    public long getRenderVisibilityId() {
-        return this.getPlayerInfo(this.get().getUniqueId()).getRenderVisibilityId();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public long getHealthBlinkTime() {
+    return this.getPlayerInfo(this.gameProfile.getUniqueId()).getHealthBlinkTime();
+  }
 
-    /**
-     * Retrieves the skin model of this player
-     *
-     * @return The skin model of this player
-     */
-    @Override
-    public SkinModel getSkinModel() {
-        return this.skinModelSerializer.deserialize(
-                this.getPlayerInfo(
-                        this.get().getUniqueId()
-                ).getSkinType()
-        );
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public long getRenderVisibilityId() {
+    return this.getPlayerInfo(this.gameProfile.getUniqueId()).getRenderVisibilityId();
+  }
 
-    /**
-     * Retrieves the location of the player's skin
-     *
-     * @return The skin location
-     */
-    @Override
-    public ResourceLocation getSkinLocation() {
-        return this.resourceLocationProvider.get(
-                this.getPlayerInfo(
-                        this.get().getUniqueId()
-                ).getLocationSkin().getPath()
-        );
-    }
+  @Override
+  public ChatComponent getDisplayName() {
+    return this.entityMapper.getComponentMapper().fromMinecraft(
+            this.getPlayerInfo(this.gameProfile.getUniqueId()).getDisplayName()
+    );
+  }
 
-    /**
-     * Retrieves the location of the player's cloak
-     *
-     * @return The cloak location
-     */
-    @Override
-    public ResourceLocation getCloakLocation() {
-        return this.resourceLocationProvider.get(
-                this.getPlayerInfo(
-                        this.get().getUniqueId()
-                ).getLocationCape().getPath()
-        );
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public SkinModel getSkinModel() {
+    return SkinModel.getModel(this.getPlayerInfo(this.gameProfile.getUniqueId()).getSkinType());
+  }
 
-    /**
-     * Retrieves the location of the player's elytra
-     *
-     * @return The elytra location
-     */
-    @Override
-    public ResourceLocation getElytraLocation() {
-        return this.resourceLocationProvider.get(
-                this.getPlayerInfo(
-                        this.get().getUniqueId()
-                ).getLocationElytra().getPath()
-        );
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ResourceLocation getSkinLocation() {
+    return this.entityMapper.getResourceLocationProvider().get(
+            this.getPlayerInfo(this.gameProfile.getUniqueId()).getLocationSkin().getPath()
+    );
+  }
 
-    /**
-     * Whether the player has a skin.
-     *
-     * @return {@code true} if this player has a skin, otherwise {@code false}
-     */
-    @Override
-    public boolean hasSkin() {
-        return this.getSkinLocation() != null;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ResourceLocation getCloakLocation() {
+    return this.entityMapper.getResourceLocationProvider().get(
+            this.getPlayerInfo(
+                    this.gameProfile.getUniqueId()
+            ).getLocationCape().getPath()
+    );
+  }
 
-    /**
-     * Whether the player has a cloak.
-     *
-     * @return {@code true} if this player has a skin, otherwise {@code false}
-     */
-    @Override
-    public boolean hasCloak() {
-        return this.getCloakLocation() != null;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ResourceLocation getElytraLocation() {
+    return this.entityMapper.getResourceLocationProvider().get(
+            this.getPlayerInfo(this.gameProfile.getUniqueId()).getLocationCape().getPath()
+    );
+  }
 
-    /**
-     * Whether the player has a elytra.
-     *
-     * @return {@code true} if this player has a skin, otherwise {@code false}
-     */
-    @Override
-    public boolean hasElytra() {
-        return this.getElytraLocation() != null;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasSkin() {
+    return this.getSkinLocation() != null;
+  }
 
-    /**
-     * Retrieves a {@link net.minecraft.client.network.play.NetworkPlayerInfo} with the given unique identifier.
-     *
-     * @param uniqueId The unique identifier of the profile
-     * @return A {@link net.minecraft.client.network.play.NetworkPlayerInfo} or {@code null}
-     */
-    private net.minecraft.client.network.play.NetworkPlayerInfo getPlayerInfo(UUID uniqueId) {
-        return Minecraft.getInstance().getConnection().getPlayerInfo(uniqueId);
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasCloak() {
+    return this.getCloakLocation() != null;
+  }
 
-    /**
-     * Retrieves the player of this client.
-     *
-     * @return The client player
-     */
-    private Player get() {
-        return this.player.create(Minecraft.getInstance().player);
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasElytra() {
+    return this.getElytraLocation() != null;
+  }
+
+  /**
+   * Retrieves a {@link net.minecraft.client.network.play.NetworkPlayerInfo} with the given unique identifier.
+   *
+   * @param uniqueId The unique identifier of the profile
+   * @return A {@link net.minecraft.client.network.play.NetworkPlayerInfo} or {@code null}
+   */
+  private net.minecraft.client.network.play.NetworkPlayerInfo getPlayerInfo(UUID uniqueId) {
+    return Minecraft.getInstance().getConnection().getPlayerInfo(uniqueId);
+  }
 
 }
