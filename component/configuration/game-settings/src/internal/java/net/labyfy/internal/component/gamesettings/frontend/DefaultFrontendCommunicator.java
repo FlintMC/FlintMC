@@ -13,7 +13,7 @@ import net.labyfy.component.gamesettings.frontend.FrontendOption;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.util.Hand;
-import net.labyfy.component.stereotype.VersionHelper;
+import net.labyfy.component.version.VersionHelper;
 import net.labyfy.component.world.difficult.Difficulty;
 
 import java.util.HashMap;

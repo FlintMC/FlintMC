@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.GameSettingsParser;
 import net.labyfy.component.processing.autoload.AutoLoad;
-import net.labyfy.component.stereotype.VersionHelper;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.transform.hook.Hook;
+import net.labyfy.component.version.VersionHelper;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;

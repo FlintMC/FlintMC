@@ -1,77 +1,64 @@
-package net.labyfy.component.stereotype;
+package net.labyfy.internal.component.version;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.version.VersionHelper;
 
 import java.util.Map;
 
 /**
- * The version helper can be used to write version specific code in the internal module.
+ * Default implementation of the {@link VersionHelper}.
  */
 @Singleton
-public class VersionHelper {
+@Implement(value = VersionHelper.class)
+public class DefaultVersionHelper implements VersionHelper {
 
   private final Map<String, String> launchArguments;
 
   @Inject
-  public VersionHelper(@Named("launchArguments") Map launchArguments) {
+  public DefaultVersionHelper(@Named("launchArguments") Map launchArguments) {
     this.launchArguments = launchArguments;
   }
 
   /**
-   * Whether the minor version is lower than 13.
-   *
-   * @return {@code true} if the minor version is lower than 13, otherwise {@code false}.
+   * {@inheritDoc}
    */
   public boolean isUnder13() {
     return this.getMinor() < 13;
   }
 
   /**
-   * Whether the minor version is lower than 16.
-   *
-   * @return {@code true} if the minor version is lower than 16, otherwise {@code false}.
+   * {@inheritDoc}
    */
   public boolean isUnder16() {
     return this.getMinor() < 16;
   }
 
   /**
-   * Retrieves the major version.
-   *
-   * @return The major version.
+   * {@inheritDoc}
    */
   public int getMajor() {
     return this.getVersioning()[0];
   }
 
   /**
-   * Retrieves the minor version.
-   *
-   * @return The minor version.
+   * {@inheritDoc}
    */
   public int getMinor() {
     return this.getVersioning()[1];
   }
 
   /**
-   * Retrieves the patch version.
-   *
-   * @return The patch version.
+   * {@inheritDoc}
    */
   public int getPatch() {
     return this.getVersioning()[2];
   }
 
   /**
-   * Retrieves an array with the version split in it.<br>
-   * <b>Note:</b> The array has a size of {@code 3}<br>
-   * The first index of the array is the major version, the minor version is the second index and the third index is the patch version.
-   * <br>
-   * The correct version format would be this one "<strong>MAJOR.MINOR.PATCH</strong>" but this would not be wrong either "<strong>MAJOR.MINOR</strong>"
-   *
-   * @return An array with the version split in it.
+   * {@inheritDoc}
    */
   public int[] getVersioning() {
     int[] versioning = new int[3];
@@ -97,9 +84,7 @@ public class VersionHelper {
   }
 
   /**
-   * Retrieves the current game version.
-   *
-   * @return The current game version.
+   * {@inheritDoc}
    */
   public String getVersion() {
     return this.launchArguments.get("--game-version");
