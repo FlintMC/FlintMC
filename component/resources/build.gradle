@@ -16,11 +16,14 @@ labyfy{
 
 dependencies {
     annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
     v1_15_2AnnotationProcessor project(':component:annotation-processing:autoload')
 
     api project(':component:inject')
     v1_15_2Implementation project(path: ':component:inject', configuration: 'internal')
     v1_15_2Implementation project(':component:tasks')
+
+    api project(':component:eventbus')
 
     labyfy project(':component:inject')
     labyfy project(path: ':component:inject', configuration: 'internal')

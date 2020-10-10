@@ -89,6 +89,9 @@ findProject('component:i18n')?.name = 'i18n'
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
 
+include 'component:eventbus'
+findProject(':component:eventbus')?.name = 'eventbus'
+
 include 'component:server'
 findProject(':component:server')?.name = 'server'
 
@@ -103,4 +106,7 @@ findProject(':component:transform:shadow')?.name = 'shadow'
 
 include 'component:render:shader'
 findProject(':component:render:shader')?.name = 'shader'
+
+include 'component:render:vbo-rendering'
+findProject(':component:render:vbo-rendering')?.name = 'vbo-rendering'
 
