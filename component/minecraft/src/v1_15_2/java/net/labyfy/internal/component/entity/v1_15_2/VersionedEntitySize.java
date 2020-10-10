@@ -5,6 +5,9 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.EntitySize;
 import net.labyfy.component.inject.implement.Implement;
 
+/**
+ * 1.15.2 implementation of the {@link EntitySize}.
+ */
 @Implement(value = EntitySize.class, version = "1.15.2")
 public class VersionedEntitySize implements EntitySize {
 
@@ -23,11 +26,17 @@ public class VersionedEntitySize implements EntitySize {
     this.fixed = fixed;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntitySize scale(float factor) {
     return this.scale(factor, factor);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntitySize scale(float widthFactor, float heightFactor) {
     if (!this.fixed && (widthFactor != 1.0F || heightFactor != 1.0F)) {

@@ -631,10 +631,10 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   }
 
   @Override
-  public void swing(Hand hand, boolean swing) {
+  public void swing(Hand hand, boolean sendToAll) {
     Minecraft.getInstance().player.swing(
             (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand),
-            swing
+            sendToAll
     );
   }
 
@@ -1239,7 +1239,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   }
 
   @Override
-  public boolean isInvisibleToPlayer(Object player) {
+  public boolean isInvisibleToPlayer(net.labyfy.component.player.PlayerEntity player) {
     return Minecraft.getInstance().player.isInvisibleToPlayer((PlayerEntity) player);
   }
 
@@ -1316,7 +1316,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   }
 
   @Override
-  public boolean getAlwaysRenderNameTagForRender() {
+  public boolean isAlwaysRenderNameTagForRender() {
     return Minecraft.getInstance().player.getAlwaysRenderNameTagForRender();
   }
 
