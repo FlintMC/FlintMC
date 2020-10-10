@@ -87,6 +87,15 @@ public interface SessionService {
   AuthenticationResult logIn(String email, String password);
 
   /**
+   * Logs into an account with the given access token. For this to work the {@link #setClientToken(String) clientToken}
+   * needs to be the same as it was when the access token has been obtained.
+   *
+   * @param accessToken The non-null access token of the session
+   * @return The non-null result of the log in
+   */
+  AuthenticationResult logIn(String accessToken);
+
+  /**
    * Logs this SessionService out of the given account or does nothing if it is not logged in.
    */
   void logOut();

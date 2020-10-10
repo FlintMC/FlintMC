@@ -9,6 +9,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import com.mojang.util.UUIDTypeAdapter;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.player.gameprofile.GameProfile;
@@ -19,7 +20,8 @@ import net.labyfy.component.session.RefreshTokenResult;
 import net.labyfy.component.session.SessionService;
 import net.labyfy.component.session.event.SessionAccountLogInEvent;
 import net.labyfy.component.session.event.SessionTokenRefreshEvent;
-import net.labyfy.internal.component.session.refresh.RefreshableUserAuthentication;
+import net.labyfy.internal.component.session.refresh.RefreshableBaseUserAuthentication;
+import net.labyfy.internal.component.session.refresh.RefreshableYggdrasilUserAuthentication;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
@@ -148,13 +150,13 @@ public abstract class DefaultSessionService implements SessionService {
     }
     UserAuthentication authentication = this.ensureAuthenticationAvailable();
 
-    if (!(authentication instanceof RefreshableUserAuthentication)) {
+    if (!(authentication instanceof RefreshableYggdrasilUserAuthentication)) {
       // this can only happen if shadow has failed which basically never happens
       return this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, "Not supported");
     }
 
     try {
-      RefreshableUserAuthentication refreshable = (RefreshableUserAuthentication) authentication;
+      RefreshableYggdrasilUserAuthentication refreshable = (RefreshableYggdrasilUserAuthentication) authentication;
 
       JsonObject result = this.requestNewToken(accessToken);
 
@@ -251,6 +253,40 @@ public abstract class DefaultSessionService implements SessionService {
     } catch (AuthenticationException e) {
       this.logger.error("An error occurred while logging into an account", e);
       return this.authResultFactory.createFailed(Type.UNKNOWN_ERROR);
+    }
+  }
+
+  @Override
+  public AuthenticationResult logIn(String accessToken) {
+    UserAuthentication authentication = this.ensureAuthenticationAvailable();
+
+    if (!(authentication instanceof RefreshableYggdrasilUserAuthentication) ||
+        !(authentication instanceof RefreshableBaseUserAuthentication)) {
+      // this can only happen if shadow has failed which basically never happens
+      return this.authResultFactory.createFailed(Type.UNKNOWN_ERROR);
+    }
+
+    RefreshableYggdrasilUserAuthentication refreshable = (RefreshableYggdrasilUserAuthentication) authentication;
+
+    try {
+      JsonObject object = this.requestNewToken(accessToken);
+      if (object == null || !object.has("accessToken")) {
+        return this.authResultFactory.createFailed(Type.INVALID_CREDENTIALS);
+      }
+      JsonObject profile = object.get("selectedProfile").getAsJsonObject();
+
+      this.authentication.logOut();
+
+      refreshable.setAccessToken(object.get("accessToken").getAsString());
+      ((RefreshableBaseUserAuthentication) authentication).setPublicSelectedProfile(new com.mojang.authlib.GameProfile(
+          UUIDTypeAdapter.fromString(profile.get("id").getAsString()),
+          profile.get("name").getAsString()
+      ));
+
+      return this.authResultFactory.createSuccess(this.getProfile());
+    } catch (IOException e) {
+      this.logger.error("Failed to log in using access token", e);
+      return this.authResultFactory.createFailed(Type.AUTH_SERVER_OFFLINE);
     }
   }
 

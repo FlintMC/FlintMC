@@ -34,10 +34,6 @@ public interface AuthenticationResult {
      */
     SUCCESS,
     /**
-     * Specifies that the {@link SessionService} is already logged in in the specified account (email).
-     */
-    ALREADY_LOGGED_IN,
-    /**
      * Specifies that the email and/or password provided to this method are invalid.
      */
     INVALID_CREDENTIALS,

@@ -5,7 +5,7 @@ import net.labyfy.component.transform.shadow.Shadow;
 
 // The default UserAuthentication of the Authlib doesn't support overriding the access token
 @Shadow("com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication")
-public interface RefreshableUserAuthentication {
+public interface RefreshableYggdrasilUserAuthentication {
 
   @FieldSetter("accessToken")
   void setAccessToken(String accessToken);
