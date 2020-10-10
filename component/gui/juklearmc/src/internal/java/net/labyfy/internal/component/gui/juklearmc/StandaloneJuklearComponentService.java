@@ -2,7 +2,7 @@ package net.labyfy.internal.component.gui.juklearmc;
 
 import com.google.inject.Inject;
 import net.labyfy.component.gui.juklearmc.StandaloneJuklearComponent;
-import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 
@@ -21,7 +21,7 @@ public class StandaloneJuklearComponentService implements ServiceHandler<Standal
   }
 
   @Override
-  public void discover(IdentifierMeta<StandaloneJuklearComponent> identifierMeta) throws ServiceNotFoundException {
+  public void discover(DetectableAnnotationProvider.AnnotationMeta<StandaloneJuklearComponent> identifierMeta) throws ServiceNotFoundException {
 
   }
 

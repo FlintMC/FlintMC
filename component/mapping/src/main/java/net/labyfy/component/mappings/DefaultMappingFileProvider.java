@@ -3,7 +3,6 @@ package net.labyfy.component.mappings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.name.Named;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
@@ -16,11 +15,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Map;
 
-import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.DEFAULT_MAPPING_FILE_PROVIDER_PRIORITY;
-import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.DEFAULT_MAPPING_FILE_PROVIDER_ROUND;
-
 @Singleton
-@AutoLoad(round = DEFAULT_MAPPING_FILE_PROVIDER_PRIORITY, priority = DEFAULT_MAPPING_FILE_PROVIDER_ROUND)
 @Implement(MappingFileProvider.class)
 public class DefaultMappingFileProvider implements MappingFileProvider {
 

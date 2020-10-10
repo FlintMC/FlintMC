@@ -128,7 +128,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * @throws ClassNotFoundException If the class can't be found or an exception occurs finding the class
    * @throws IllegalStateException  If the class is being searched already
    */
-  public synchronized Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException {
+  public Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException {
     if (currentlyLoading.contains(name)) {
       throw new IllegalStateException("Circular load detected: " + name);
     }

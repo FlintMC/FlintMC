@@ -5,7 +5,7 @@ import javassist.CtMethod;
 import net.labyfy.component.commons.resolve.AnnotationResolver;
 import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.mappings.DefaultNameResolver;
-import net.labyfy.component.stereotype.annotation.Transitive;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 import net.labyfy.component.stereotype.type.DefaultTypeNameResolver;
 import net.labyfy.component.stereotype.type.Type;
 
@@ -16,8 +16,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Transitive
 @Deprecated
+@DetectableAnnotation(metaData = HookFilter.class)
 public @interface Hook {
 
   String className() default "";

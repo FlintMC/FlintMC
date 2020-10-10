@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.chat.MinecraftComponentMapper;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.world.mapper.ScoreboardMapper;
@@ -16,7 +15,6 @@ import net.minecraft.scoreboard.ScorePlayerTeam;
  * 1.16.3 implementation of the scoreboard interceptor.
  */
 @Singleton
-@AutoLoad
 public class VersionedScoreboardInterceptor {
 
   private final Scoreboard scoreboard;

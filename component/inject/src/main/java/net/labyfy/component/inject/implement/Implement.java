@@ -1,7 +1,6 @@
 package net.labyfy.component.inject.implement;
 
-import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,9 +13,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Identifier
-@Transitive
-//@AutoLoad(priority = IMPLEMENT_PRIORITY, round = IMPLEMENT_ROUND)
+@DetectableAnnotation
 public @interface Implement {
   /**
    * The interface implemented by this class. This means, the class also needs to {@code implements} the given

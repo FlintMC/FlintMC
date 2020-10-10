@@ -15,7 +15,6 @@ labyfy {
 
 dependencies {
     annotationProcessor project(':component:annotation-processing:autoload')
-    internalAnnotationProcessor project(':component:annotation-processing:autoload')
 
     api project(':component:launcher')
     api project(':component:commons')

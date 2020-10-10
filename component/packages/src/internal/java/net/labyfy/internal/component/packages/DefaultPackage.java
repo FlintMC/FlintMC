@@ -1,26 +1,15 @@
 package net.labyfy.internal.component.packages;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.commons.consumer.TriConsumer;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageState;
-import net.labyfy.component.processing.autoload.AutoLoadProvider;
-import net.labyfy.component.service.ExtendedServiceLoader;
-import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-import net.labyfy.component.stereotype.service.ServiceRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.jar.JarFile;
 
 /**
@@ -173,37 +162,7 @@ public class DefaultPackage implements Package {
     }
 
     // Find all autoload providers within the package
-    Set<AutoLoadProvider> autoLoadProviders =
-        ExtendedServiceLoader.get(AutoLoadProvider.class).discover(classLoader.asClassLoader());
-
-    Map<Integer, Multimap<Integer, String>> sortedClasses = new TreeMap<>(Integer::compare);
-
-    TriConsumer<Integer, Integer, String> classAcceptor = (round, priority, name) ->
-        sortedClasses
-            .computeIfAbsent(round, (k) -> MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build())
-            .put(priority, name);
-
-    // Build the map of classes to load
-    autoLoadProviders.iterator().forEachRemaining((provider) -> provider.registerAutoLoad(classAcceptor));
-
-    // Iterate over the classes and register them to the service register
-    sortedClasses.forEach((round, classes) -> {
-      classes.entries().forEach(entry -> {
-        try {
-          Class.forName(entry.getValue(), true, DefaultPackage.class.getClassLoader());
-        } catch (Exception exception) {
-          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + entry.getValue(), exception);
-        }
-      });
-
-//      InjectionServiceShare.flush();
-
-      try {
-        InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
-      } catch (ServiceNotFoundException exception) {
-        throw new RuntimeException("Unable to discover service during flushAll: " + ServiceRepository.class.getName(), exception);
-      }
-    });
+    //todo implement package loading again
 
     // The package is now enabled
     this.packageState = PackageState.ENABLED;

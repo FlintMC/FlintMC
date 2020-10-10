@@ -6,9 +6,6 @@ findProject(':component:transform:exceptions')?.name = "exceptions"
 include 'component:transform:javassist'
 findProject(':component:transform:javassist')?.name = "javassist"
 
-include 'component:initializer'
-findProject(':component:initializer')?.name = 'initializer'
-
 include 'component:tasks'
 findProject(':component::tasks')?.name = 'tasks'
 

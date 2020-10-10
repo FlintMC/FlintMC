@@ -1,6 +1,6 @@
 package net.labyfy.internal.component.gui.juklearmc;
 
-import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 
@@ -21,7 +21,7 @@ public class JuklearScreenService implements ServiceHandler {
   }
 
   @Override
-  public void discover(IdentifierMeta identifierMeta) throws ServiceNotFoundException {
+  public void discover(DetectableAnnotationProvider.AnnotationMeta identifierMeta) throws ServiceNotFoundException {
 
   }
 

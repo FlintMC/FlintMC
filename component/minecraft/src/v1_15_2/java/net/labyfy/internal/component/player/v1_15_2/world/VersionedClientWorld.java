@@ -7,7 +7,6 @@ import net.labyfy.component.player.Player;
 import net.labyfy.component.player.serializer.world.DimensionSerializer;
 import net.labyfy.component.player.world.ClientWorld;
 import net.labyfy.component.player.world.Dimension;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -19,7 +18,6 @@ import java.util.function.Predicate;
  * 1.15.2 implementation of {@link ClientWorld}
  */
 @Singleton
-@AutoLoad
 @Implement(value = ClientWorld.class, version = "1.15.2")
 public class VersionedClientWorld implements ClientWorld {
 

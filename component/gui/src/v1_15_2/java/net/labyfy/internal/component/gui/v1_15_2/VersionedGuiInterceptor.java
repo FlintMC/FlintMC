@@ -7,7 +7,6 @@ import net.labyfy.component.gui.RenderExecution;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.transform.javassist.ClassTransform;
@@ -25,7 +24,6 @@ import javax.inject.Singleton;
  * 1.15.2 Implementation of the gui interceptor
  */
 @Singleton
-@AutoLoad
 public class VersionedGuiInterceptor {
   private final ClassMappingProvider mappingProvider;
   private final DefaultGuiController controller;
@@ -84,7 +82,6 @@ public class VersionedGuiInterceptor {
 
   @ClassTransform
   @CtClassFilter(className = "net.minecraft.client.gui.screen.Screen", value = CtClassFilters.SUBCLASS_OF)
-  @CtClassFilter.Test
   private void hookScreenRender(ClassTransformContext context) throws CannotCompileException {
     MethodMapping renderMapping = mappingProvider
         .get("net.minecraft.client.gui.IRenderable")

@@ -7,7 +7,7 @@ import com.google.inject.name.Names;
 import javassist.CtMethod;
 import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.event.Event;
-import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
@@ -42,8 +42,8 @@ public class EventService implements ServiceHandler<Event> {
    * {@inheritDoc}
    */
   @Override
-  public void discover(IdentifierMeta<Event> identifierMeta) throws ServiceNotFoundException {
-    this.methods.put(identifierMeta.getAnnotation().value(), identifierMeta.getTarget());
+  public void discover(DetectableAnnotationProvider.AnnotationMeta<Event> identifierMeta) throws ServiceNotFoundException {
+    this.methods.put(identifierMeta.getAnnotation().value(), identifierMeta.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
   }
 
   /**
@@ -60,7 +60,7 @@ public class EventService implements ServiceHandler<Event> {
   /**
    * Sends an event with parameters to all receivers which have subscribed the event.
    *
-   * @param event The event to send
+   * @param event            The event to send
    * @param customParameters The parameter bindings to make available to the event receivers
    * @throws InvocationTargetException If the invoked method threw an exception.
    * @throws IllegalAccessException    If the method definition could not be accessed.

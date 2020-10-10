@@ -1,8 +1,6 @@
 package net.labyfy.internal.component.resources.v1_15_2.pack;
 
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.processing.autoload.AutoLoad;
-import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import net.labyfy.component.resources.pack.ResourcePackReloadEventBroadcaster;
 import net.labyfy.component.tasks.Task;
@@ -22,9 +20,8 @@ import java.lang.reflect.InvocationTargetException;
  * @deprecated See {@link ResourcePackReloadEventBroadcaster}
  */
 @Singleton
-@AutoLoad
 @Deprecated
-@Implement(value = ResourceLocation.class, version = "1.15.2")
+@Implement(value = ResourcePackReloadEventBroadcaster.class, version = "1.15.2")
 public class DefaultResourcePackReloadEventBroadCaster implements ResourcePackReloadEventBroadcaster {
 
   private final EventService eventService;

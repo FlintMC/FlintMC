@@ -1,6 +1,6 @@
 package net.labyfy.component.transform.asm;
 
-import net.labyfy.component.stereotype.annotation.Transitive;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Transitive
+@DetectableAnnotation
 public @interface MethodVisit {
 
   String className();

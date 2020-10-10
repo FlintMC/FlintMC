@@ -1,7 +1,6 @@
 package net.labyfy.component.tasks;
 
-import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.*;
 
@@ -11,8 +10,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Identifier
-@Transitive
+@DetectableAnnotation
 public @interface Task {
   /**
    * @return task name to listen for

@@ -4,14 +4,12 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
 import javax.inject.Singleton;
 
 @Implement(Test123.class)
-@AutoLoad
 @Singleton
 public class Test1234 implements Test123 {
 

@@ -40,7 +40,7 @@ public class CtResolver {
   public static <T> Class<T> get(CtClass ctClass) {
     if (!classes.containsKey(ctClass)) {
       try {
-        classes.put(ctClass, Class.forName(ctClass.getName()));
+        classes.put(ctClass, LaunchController.getInstance().getRootLoader().loadClass(ctClass.getName()));
       } catch (ClassNotFoundException e) {
         e.printStackTrace();
       }

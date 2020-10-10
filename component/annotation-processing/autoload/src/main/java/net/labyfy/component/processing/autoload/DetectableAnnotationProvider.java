@@ -1,30 +1,33 @@
 package net.labyfy.component.processing.autoload;
 
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+
 import javax.lang.model.element.ElementKind;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public interface DetectableAnnotationProvider {
-  default void register(List<DetectableAnnotationMeta> consumer) {
+  default void register(List<AnnotationMeta> consumer) {
   }
 
-  class DetectableAnnotationMeta {
+  class AnnotationMeta<T extends Annotation> {
 
     private final ElementKind elementType;
     private final Identifier identifier;
-    private final Annotation annotation;
-    private final Collection<DetectableAnnotationMeta> metaData;
+    private final T annotation;
+    private final Collection<AnnotationMeta<?>> metaData;
 
-    public DetectableAnnotationMeta(ElementKind elementType, Identifier identifier, Annotation annotation, DetectableAnnotationMeta... metaData) {
+    public AnnotationMeta(ElementKind elementType, Identifier identifier, T annotation, AnnotationMeta<?>... metaData) {
       this.elementType = elementType;
       this.identifier = identifier;
       this.annotation = annotation;
       this.metaData = Arrays.asList(metaData);
     }
 
-    public Annotation getAnnotation() {
+    public T getAnnotation() {
       return annotation;
     }
 
@@ -32,22 +35,42 @@ public interface DetectableAnnotationProvider {
       return elementType;
     }
 
-    public Identifier getIdentifier() {
-      return identifier;
+    public <K extends Identifier<?>> K getIdentifier() {
+      return (K) identifier;
     }
 
-    public Collection<DetectableAnnotationMeta> getMetaData() {
-      return metaData;
+    public Collection<AnnotationMeta<?>> getMetaData() {
+      return Collections.unmodifiableCollection(metaData);
     }
 
-    interface Identifier {
+    public <K extends Annotation> Collection<AnnotationMeta<K>> getMetaData(Class<K> clazz) {
+      List<AnnotationMeta<K>> annotationMetas = new ArrayList<>();
+      for (AnnotationMeta<?> metaDatum : this.metaData) {
+        if (metaDatum.getAnnotation().annotationType().equals(clazz)) {
+          annotationMetas.add((AnnotationMeta<K>) metaDatum);
+        }
+      }
+      return annotationMetas;
     }
 
-    static class ClassIdentifier implements Identifier {
+    public interface Identifier<T> {
+      T getLocation();
+    }
+
+    public static class ClassIdentifier implements Identifier<CtClass> {
       private final String name;
 
       public ClassIdentifier(String name) {
         this.name = name;
+      }
+
+      @Override
+      public CtClass getLocation() {
+        try {
+          return ClassPool.getDefault().get(this.name);
+        } catch (NotFoundException e) {
+          throw new IllegalStateException(e);
+        }
       }
 
       public String getName() {
@@ -55,13 +78,19 @@ public interface DetectableAnnotationProvider {
       }
     }
 
-    public static class MethodIdentifier implements Identifier {
+    public static class MethodIdentifier implements Identifier<CtMethod> {
+      private final String owner;
       private final String name;
       private final String[] parameters;
 
-      public MethodIdentifier(String name, String... parameters) {
+      public MethodIdentifier(String owner, String name, String... parameters) {
+        this.owner = owner;
         this.name = name;
         this.parameters = parameters;
+      }
+
+      public String getOwner() {
+        return owner;
       }
 
       public String[] getParameters() {
@@ -72,7 +101,14 @@ public interface DetectableAnnotationProvider {
         return name;
       }
 
-
+      @Override
+      public CtMethod getLocation() {
+        try {
+          return ClassPool.getDefault().get(this.owner).getDeclaredMethod(this.name, ClassPool.getDefault().get(this.parameters));
+        } catch (NotFoundException e) {
+          throw new IllegalStateException(e);
+        }
+      }
     }
 
   }

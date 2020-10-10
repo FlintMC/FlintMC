@@ -10,7 +10,7 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
-import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -102,8 +102,8 @@ public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInje
   }
 
   @Override
-  public void discover(IdentifierMeta<MethodVisit> identifierMeta) throws ServiceNotFoundException {
-    this.visitorCandidates.add(identifierMeta.getTarget());
+  public void discover(DetectableAnnotationProvider.AnnotationMeta<MethodVisit> identifierMeta) throws ServiceNotFoundException {
+    this.visitorCandidates.add(identifierMeta.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
   }
 
  /* @Override

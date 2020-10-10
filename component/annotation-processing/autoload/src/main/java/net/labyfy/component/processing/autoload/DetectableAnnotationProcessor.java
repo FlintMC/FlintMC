@@ -34,7 +34,7 @@ public class DetectableAnnotationProcessor implements Processor {
   private final Collection<String> found;
 
   /**
-   * Constructs a new {@link AutoLoadProcessor}, expected to be called by a {@link java.util.ServiceLoader}
+   * Constructs a new {@link DetectableAnnotationProcessor}, expected to be called by a {@link java.util.ServiceLoader}
    */
   public DetectableAnnotationProcessor() {
     this.found = new HashSet<>();
@@ -45,7 +45,7 @@ public class DetectableAnnotationProcessor implements Processor {
    */
   public MethodSpec.Builder createMethod() {
     ClassName listClass = ClassName.get(List.class);
-    ClassName foundAnnotationClass = ClassName.get(DetectableAnnotationProvider.DetectableAnnotationMeta.class);
+    ClassName foundAnnotationClass = ClassName.get(DetectableAnnotationProvider.AnnotationMeta.class);
 
     // Create a method with the signature
     return MethodSpec.methodBuilder("register")
@@ -83,7 +83,7 @@ public class DetectableAnnotationProcessor implements Processor {
     String annotationTemplate = createAnnotationTemplate(annotationType, collectAnnotationData(annotationType, annotatedElement), annotationType.toString());
     StringBuilder output = new StringBuilder();
     output
-        .append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.DetectableAnnotationMeta(javax.lang.model.element.ElementKind.")
+        .append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta(javax.lang.model.element.ElementKind.")
         .append(annotatedElement.getKind().name())
         .append(", ");
 
@@ -91,22 +91,45 @@ public class DetectableAnnotationProcessor implements Processor {
       case CLASS:
       case ANNOTATION_TYPE:
       case INTERFACE:
-        output.append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.DetectableAnnotationMeta.ClassIdentifier(\"")
-            .append(annotatedElement.toString())
-            .append("\")");
+        output.append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier(\"")
+            .append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement).toString()
+                .replace("$", "$$")
+            )
+            .append("\"), ");
         break;
       case METHOD:
-        output.append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.DetectableAnnotationMeta.MethodIdentifier(\"")
+        output
+            .append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier(\"")
+            .append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement.getEnclosingElement()).toString()
+                .replace("$", "$$")
+            )
+            .append("\",\"")
             .append(annotatedElement.getSimpleName())
-            .append("\", ");
+            .append("\"");
+
+        if (((ExecutableElement) annotatedElement).getParameters().size() > 0) {
+          output.append(", ");
+        }
 
         boolean semicolon = false;
         for (VariableElement parameter : ((ExecutableElement) annotatedElement).getParameters()) {
           if (semicolon) {
             output.append(", ");
           }
+
+          String parameterName;
+
+          if (parameter.asType() instanceof DeclaredType) {
+            Element element = ((DeclaredType) parameter.asType()).asElement();
+            parameterName = ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName(((TypeElement) element)).toString();
+          } else {
+            parameterName = parameter.asType().toString();
+          }
+
+          parameterName = parameterName.replace("$", "$$");
+
           output.append("\"")
-              .append(parameter.asType())
+              .append(parameterName)
               .append("\"");
           semicolon = true;
         }

@@ -1,7 +1,6 @@
 package net.labyfy.component.gui.juklearmc;
 
 import net.labyfy.component.gui.screen.ScreenName;
-import net.labyfy.component.stereotype.annotation.Transitive;
 
 import java.lang.annotation.*;
 
@@ -12,7 +11,6 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Transitive
 public @interface JuklearScreen {
   /**
    * The origin type of the screen, used for constructing the {@link ScreenName}

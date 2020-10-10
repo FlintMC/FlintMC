@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Singleton
 @Implement(value = ResourcePackProvider.class, version = "1.15.2")
 public class DefaultResourcePackProvider implements ResourcePackProvider {
+
   /**
    * {@inheritDoc}
    */

@@ -1,7 +1,7 @@
 package net.labyfy.component.transform.shadow;
 
-import net.labyfy.component.processing.autoload.AutoLoad;
-import net.labyfy.component.stereotype.annotation.Transitive;
+
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,8 +23,13 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Transitive
-@AutoLoad(round = 10)
+@DetectableAnnotation(metaData = {
+    FieldCreate.class,
+    FieldCreates.class,
+    FieldGetter.class,
+    FieldSetter.class,
+    MethodProxy.class
+})
 public @interface Shadow {
   /**
    * @return the target class name that should be modified

@@ -10,7 +10,7 @@ import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.stereotype.identifier.IdentifierMeta;
+import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.type.Type;
@@ -68,10 +68,10 @@ public class HookService implements ServiceHandler<Hook> {
   }
 
   @Override
-  public void discover(IdentifierMeta<Hook> identifierMeta) {
-    Map<IdentifierMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties = Maps.newHashMap();
+  public void discover(DetectableAnnotationProvider.AnnotationMeta<Hook> identifierMeta) {
+    Map<DetectableAnnotationProvider.AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties = Maps.newHashMap();
 
-    for (IdentifierMeta<HookFilter> subProperty : identifierMeta.getProperties(HookFilter.class)) {
+    for (DetectableAnnotationProvider.AnnotationMeta<HookFilter> subProperty : identifierMeta.getMetaData(HookFilter.class)) {
       subProperties.put(
           subProperty,
           InjectionHolder.getInjectedInstance(
@@ -96,7 +96,7 @@ public class HookService implements ServiceHandler<Hook> {
     CtClass ctClass = classTransformContext.getCtClass();
 
     for (HookEntry entry : hooks) {
-      IdentifierMeta<Hook> identifier = entry.hook;
+      DetectableAnnotationProvider.AnnotationMeta<Hook> identifier = entry.hook;
 
       Hook hook = identifier.getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
@@ -107,11 +107,11 @@ public class HookService implements ServiceHandler<Hook> {
               entry,
               hook,
               ctClass,
-              identifier.getTarget());
+              identifier.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
         }
       } else {
         boolean cancel = false;
-        for (Map.Entry<IdentifierMeta<HookFilter>, AnnotationResolver<Type, String>> subProperty :
+        for (Map.Entry<DetectableAnnotationProvider.AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperty :
             entry.subProperties.entrySet()) {
           HookFilter hookFilter =
               subProperty.getKey().getAnnotation();
@@ -126,7 +126,7 @@ public class HookService implements ServiceHandler<Hook> {
                 entry,
                 hook,
                 ctClass,
-                identifier.getTarget());
+                identifier.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
           }
         }
       }
@@ -209,14 +209,14 @@ public class HookService implements ServiceHandler<Hook> {
   }
 
   private static class HookEntry {
-    IdentifierMeta<Hook> hook;
-    Map<IdentifierMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties;
+    DetectableAnnotationProvider.AnnotationMeta<Hook> hook;
+    Map<DetectableAnnotationProvider.AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties;
     private final AnnotationResolver<Type, String> parameterTypeNameResolver;
     private final AnnotationResolver<Hook, String> methodNameResolver;
 
     private HookEntry(
-        IdentifierMeta<Hook> hook,
-        Map<IdentifierMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties,
+        DetectableAnnotationProvider.AnnotationMeta<Hook> hook,
+        Map<DetectableAnnotationProvider.AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties,
         AnnotationResolver<Type, String> parameterTypeNameResolver,
         AnnotationResolver<Hook, String> methodNameResolver) {
       this.hook = hook;

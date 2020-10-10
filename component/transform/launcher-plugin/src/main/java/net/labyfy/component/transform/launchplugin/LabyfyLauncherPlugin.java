@@ -4,8 +4,9 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import io.sentry.Sentry;
 import io.sentry.event.BreadcrumbBuilder;
-import javassist.*;
-import net.labyfy.component.inject.InjectionServiceShare;
+import javassist.ClassPath;
+import javassist.ClassPool;
+import javassist.NotFoundException;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
@@ -15,7 +16,6 @@ import net.labyfy.component.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -82,17 +82,6 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     this.launchArguments = arguments;
   }
 
-  public static void callbackClassLoaded(Class<?> clazz) {
-    Class implementation = null;
-    try {
-      implementation = InjectionServiceShare.getImplementationsReversed().get(ClassPool.getDefault().get(clazz.getName()));
-    } catch (NotFoundException e) {
-      e.printStackTrace();
-    }
-    if (implementation == null) return;
-    System.out.println();
-  }
-
   @SuppressWarnings("InstantiationOfUtilityClass")
   @Override
   public void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {
@@ -134,19 +123,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
         classData = newData;
       }
     }
-
-    try {
-      CtClass ctClass =
-          ClassPool.getDefault().makeClass(new ByteArrayInputStream(classData), false);
-      ctClass.makeClassInitializer()
-          .insertAfter("net.labyfy.component.transform.launchplugin.LabyfyLauncherPlugin.callbackClassLoaded(" + ctClass.getName() + ".class);");
-      return ctClass.toBytecode();
-    } catch (IOException exception) {
-      throw new RuntimeException("Failed to modify class due to IOException", exception);
-    } catch (CannotCompileException exception) {
-      logger.warn("Failed to modify class due to compilation error", exception);
-    }
-    return null;
+    return classData;
   }
 
   /**
