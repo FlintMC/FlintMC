@@ -2,6 +2,7 @@ package net.labyfy.internal.component.gamesettings.v1_16_3.configuration;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.chat.Keybind;
 import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.KeyBinding;
 import net.labyfy.component.gamesettings.configuration.KeyBindingConfiguration;
@@ -31,176 +32,75 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
    * {@inheritDoc}
    */
   @Override
-  public KeyBinding getKeyBindForward() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindForward);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindLeft() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindLeft);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindBack() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindBack);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindRight() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindRight);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindJump() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindJump);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindSneak() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSneak);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindSprint() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSprint);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindInventory() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindInventory);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindSwapHands() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSwapHands);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindDrop() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindDrop);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindUseItem() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindUseItem);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindAttack() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindAttack);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindPickBlock() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindPickBlock);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindChat() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindChat);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindPlayerList() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindPlayerList);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindCommand() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindCommand);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindScreenshot() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindScreenshot);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindTogglePerspective() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindTogglePerspective);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindSmoothCamera() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSmoothCamera);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindFullscreen() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindFullscreen);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindSpectatorOutlines() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSpectatorOutlines);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindAdvancements() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindAdvancements);
+  public KeyBinding getKeyBinding(Keybind keybind) {
+    switch (keybind) {
+      case SNEAK:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSneak);
+      case SPRINT:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSprint);
+      case LEFT:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindLeft);
+      case RIGHT:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindRight);
+      case BACK:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindBack);
+      case FORWARD:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindForward);
+      case ATTACK:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindAttack);
+      case PICK_ITEM:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindPickBlock);
+      case USE:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindUseItem);
+      case DROP_ITEM:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindDrop);
+      case HOTBAR_1:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[0]);
+      case HOTBAR_2:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[1]);
+      case HOTBAR_3:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[2]);
+      case HOTBAR_4:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[3]);
+      case HOTBAR_5:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[4]);
+      case HOTBAR_6:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[5]);
+      case HOTBAR_7:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[6]);
+      case HOTBAR_8:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[7]);
+      case HOTBAR_9:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[8]);
+      case OPEN_INVENTORY:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindInventory);
+      case SWAP_HANDS:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSwapHands);
+      case LOAD_TOOLBAR:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindLoadToolbar);
+      case SAVE_TOOLBAR:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSaveToolbar);
+      case SHOW_PLAYER_LIST:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindPlayerList);
+      case OPEN_CHAT:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindChat);
+      case OPEN_COMMAND:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindCommand);
+      case ADVANCEMENTS:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindAdvancements);
+      case SPECTATOR_OUTLINES:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSpectatorOutlines);
+      case TAKE_SCREENSHOT:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindScreenshot);
+      case SMOOTH_CAMERA:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSmoothCamera);
+      case TOGGLE_FULLSCREEN:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindFullscreen);
+      case TOGGLE_PERSPECTIVE:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindTogglePerspective);
+      default:
+        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindJump);
+    }
   }
 
   /**
@@ -213,21 +113,6 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
             .map(this::fromMinecraftObject).collect(Collectors.toList());
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindSaveToolbar() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSaveToolbar);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBindLoadToolbar() {
-    return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindLoadToolbar);
-  }
 
   /**
    * {@inheritDoc}
