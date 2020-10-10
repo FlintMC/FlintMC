@@ -1,6 +1,8 @@
 package net.labyfy.internal.component.world.v1_15_2;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
@@ -18,23 +20,23 @@ import java.util.Random;
 /**
  * 1.15.2 implementation of {@link World}.
  */
-public class VersionedWorld implements World {
+@Singleton
+@Implement(value = World.class, version = "1.15.2")
+public abstract class VersionedWorld implements World {
 
   private final BlockPosition.Factory blockPositionFactory;
   private final DifficultyLocal.Factory difficultyLocalFactory;
   private final WorldBorder worldBorder;
-  private final Scoreboard scoreboard;
 
   @Inject
   public VersionedWorld(
           BlockPosition.Factory blockPositionFactory,
           DifficultyLocal.Factory difficultyLocalFactory,
-          WorldBorder worldBorder,
-          Scoreboard scoreboard) {
+          WorldBorder worldBorder
+  ) {
     this.blockPositionFactory = blockPositionFactory;
     this.difficultyLocalFactory = difficultyLocalFactory;
     this.worldBorder = worldBorder;
-    this.scoreboard = scoreboard;
   }
 
   /**
@@ -270,11 +272,6 @@ public class VersionedWorld implements World {
   @Override
   public Dimension getDimension() {
     return this.fromMinecraftDimension(Minecraft.getInstance().world.getDimension().getType());
-  }
-
-  @Override
-  public Scoreboard getScoreboard() {
-    return this.scoreboard;
   }
 
   /**

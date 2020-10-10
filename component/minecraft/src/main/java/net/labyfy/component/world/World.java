@@ -1,5 +1,7 @@
 package net.labyfy.component.world;
 
+import net.labyfy.component.entity.Entity;
+import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
@@ -7,7 +9,9 @@ import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.BlockPosition;
 import net.labyfy.component.world.util.Dimension;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Represents the Minecraft world.
@@ -203,7 +207,16 @@ public interface World {
    */
   Dimension getDimension();
 
+  /**
+   * Retrieves the world scoreboard.
+   *
+   * @return The world scoreboard.
+   */
   Scoreboard getScoreboard();
+
+  Map<Integer, Entity> getEntities();
+
+  Set<AbstractClientPlayerEntity> getPlayers();
 
   /**
    * Creates a new Minecraft block pos by using the given {@link BlockPosition} as the base.

@@ -1,5 +1,6 @@
 package net.labyfy.component.world;
 
+import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.world.scoreboad.Scoreboard;
 
@@ -24,7 +25,7 @@ public interface ClientWorld extends World {
    * @param player The player to add
    * @return {@code true} if this collection changed as a result of the call, otherwise {@code false}
    */
-  boolean addPlayer(PlayerEntity player);
+  boolean addPlayer(AbstractClientPlayerEntity player);
 
   /**
    * Removes a player from the collection.
@@ -33,13 +34,6 @@ public interface ClientWorld extends World {
    * @return {@code true} if the player was removed, otherwise {@code false}.
    */
   boolean removePlayer(UUID uniqueId);
-
-  /**
-   * Retrieves a collection with all loaded players of this world.
-   *
-   * @return A collection with all loaded players of this world.
-   */
-  List<PlayerEntity> getPlayers();
 
   /**
    * Retrieves the player count of this world.

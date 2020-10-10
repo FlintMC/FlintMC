@@ -13,6 +13,9 @@ import net.labyfy.component.player.type.GameMode;
 import net.labyfy.component.player.type.hand.HandMapper;
 import net.labyfy.component.player.type.sound.SoundMapper;
 import net.labyfy.component.resources.ResourceLocationProvider;
+import net.labyfy.component.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameType;
@@ -209,6 +212,12 @@ public class VersionedEntityMapper implements EntityMapper {
 
   @Override
   public Object toMinecraftEntity(Entity entity) {
+    for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
+      if(allEntity.getUniqueID().equals(entity.getUniqueId())) {
+        return allEntity;
+      }
+    }
+
     return null;
   }
 
@@ -225,6 +234,13 @@ public class VersionedEntityMapper implements EntityMapper {
 
   @Override
   public Object toMinecraftPlayerEntity(PlayerEntity entity) {
+
+    for (AbstractClientPlayerEntity player : Minecraft.getInstance().world.getPlayers()) {
+      if(player.getGameProfile().getId().equals(entity.getGameProfile().getUniqueId())) {
+        return player;
+      }
+    }
+
     return null;
   }
 

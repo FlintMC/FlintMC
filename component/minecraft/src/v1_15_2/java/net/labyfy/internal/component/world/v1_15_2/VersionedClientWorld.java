@@ -1,8 +1,12 @@
 package net.labyfy.internal.component.world.v1_15_2;
 
+import com.beust.jcommander.internal.Sets;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.entity.Entity;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.border.WorldBorder;
@@ -11,8 +15,8 @@ import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.BlockPosition;
 import net.minecraft.client.Minecraft;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -22,7 +26,9 @@ import java.util.UUID;
 @Implement(value = ClientWorld.class, version = "1.15.2")
 public class VersionedClientWorld extends VersionedWorld implements ClientWorld {
 
-  private final List<PlayerEntity> players;
+  private final Set<AbstractClientPlayerEntity> players;
+  private final Map<Integer, Entity> entities;
+  private final Scoreboard scoreboard;
 
   @Inject
   public VersionedClientWorld(
@@ -31,8 +37,10 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
           WorldBorder worldBorder,
           Scoreboard scoreboard
   ) {
-    super(blockPositionFactory, difficultyLocalFactory, worldBorder, scoreboard);
-    this.players = new ArrayList<>();
+    super(blockPositionFactory, difficultyLocalFactory, worldBorder);
+    this.scoreboard = scoreboard;
+    this.entities = Maps.newHashMap();
+    this.players = Sets.newHashSet();
   }
 
   /**
@@ -47,7 +55,7 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
    * {@inheritDoc}
    */
   @Override
-  public boolean addPlayer(PlayerEntity player) {
+  public boolean addPlayer(AbstractClientPlayerEntity player) {
     return this.players.add(player);
   }
 
@@ -64,11 +72,21 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
     );
   }
 
+  @Override
+  public Scoreboard getScoreboard() {
+    return this.scoreboard;
+  }
+
+  @Override
+  public Map<Integer, Entity> getEntities() {
+    return this.entities;
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
-  public List<PlayerEntity> getPlayers() {
+  public Set<AbstractClientPlayerEntity> getPlayers() {
     return this.players;
   }
 
