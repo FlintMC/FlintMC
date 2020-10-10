@@ -4,20 +4,18 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import io.sentry.Sentry;
 import io.sentry.event.BreadcrumbBuilder;
-import javassist.*;
-import net.labyfy.component.initializer.EntryPoint;
-import net.labyfy.component.initializer.Initializer;
+import javassist.ClassPath;
+import javassist.ClassPool;
+import javassist.NotFoundException;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
 import net.labyfy.component.launcher.service.PreLaunchException;
-import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.component.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -76,7 +74,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
-    classloader.excludeFromModification("javassist.", "com.google.");
+    classloader.excludeFromModification("javassist.", "com.google.", "net.labyfy.component.transform.");
   }
 
   @Override
@@ -98,31 +96,23 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
       }
     }
 
-    new EntryPoint(arguments);
+    InjectionHolder.getInjectedInstance(LabyfyFrameworkInitializer.class).initialize(arguments);
 
-    // init sentry
-    if (logger != null){
+  /*  // init sentry
+    if (logger != null) {
       try {
-        if (arguments.containsKey("--sentry")){
-          if(arguments.get("--sentry").equals("true"))
+        if (arguments.containsKey("--sentry")) {
+          if (arguments.get("--sentry").equals("true"))
             initSentry(arguments);
         } else initSentry(arguments);
       } catch (IOException exception) {
         throw new PreLaunchException("Unable to read manifest", exception);
       }
-    }
+    }*/
+  }
 
-    try {
-      Initializer.boot();
-    } catch (ClassNotFoundException | ServiceNotFoundException exception) {
-      throw new PreLaunchException("Unable to boot initializer", exception);
-    }
-
-    try {
-      InjectionHolder.enableIngameState();
-    } catch (Exception exception) {
-      throw new PreLaunchException("Unable to run initialization runnables", exception);
-    }
+  public void registerTransformer(int priority, LateInjectedTransformer transformer) {
+    injectedTransformers.put(priority, transformer);
   }
 
   @Override
@@ -133,22 +123,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
         classData = newData;
       }
     }
-
-    try {
-      CtClass ctClass =
-          ClassPool.getDefault().makeClass(new ByteArrayInputStream(classData), false);
-
-      return ctClass.toBytecode();
-    } catch (IOException exception) {
-      throw new RuntimeException("Failed to modify class due to IOException", exception);
-    } catch (CannotCompileException exception) {
-      logger.warn("Failed to modify class due to compilation error", exception);
-      return null;
-    }
-  }
-
-  public void registerTransformer(int priority, LateInjectedTransformer transformer) {
-    injectedTransformers.put(priority, transformer);
+    return classData;
   }
 
   /**

@@ -1,17 +1,15 @@
-package net.labyfy.component.transform.shadow;
+package net.labyfy.component.stereotype.service;
 
 import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.*;
 
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Repeatable(FieldCreates.class)
 @DetectableAnnotation
-public @interface FieldCreate {
-  String name();
+public @interface Services {
 
-  String typeName();
+  Service[] value();
 
-  String defaultValue() default "";
 }

@@ -5,11 +5,12 @@ import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import javassist.CtMethod;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -19,14 +20,15 @@ import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 import net.labyfy.component.transform.minecraft.MinecraftTransformer;
 import org.objectweb.asm.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 
 @Singleton
 @MinecraftTransformer
 @Service(MethodVisit.class)
-public class MethodVisitService implements ServiceHandler, LateInjectedTransformer {
+public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInjectedTransformer {
+
+  private final Collection<CtMethod> visitorCandidates = new HashSet<>();
   private final boolean obfuscated = InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
   private final Collection<InternalMethodVisitorContext> methodVisitorContexts;
   private final ClassMappingProvider classMappingProvider;
@@ -100,7 +102,12 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
   }
 
   @Override
-  public void discover(Identifier.Base property) throws ServiceNotFoundException {
+  public void discover(DetectableAnnotationProvider.AnnotationMeta<MethodVisit> identifierMeta) throws ServiceNotFoundException {
+    this.visitorCandidates.add(identifierMeta.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
+  }
+
+ /* @Override
+  public void discover(IdentifierLegacy.Base property) throws ServiceNotFoundException {
     MethodVisit methodVisit =
         property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
     InternalMethodVisitorContext methodVisitorContext = new InternalMethodVisitorContext(methodVisit);
@@ -115,5 +122,5 @@ public class MethodVisitService implements ServiceHandler, LateInjectedTransform
     }
 
     this.methodVisitorContexts.add(methodVisitorContext);
-  }
+  }*/
 }

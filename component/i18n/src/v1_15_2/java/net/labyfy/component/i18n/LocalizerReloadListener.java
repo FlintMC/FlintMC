@@ -1,7 +1,6 @@
 package net.labyfy.component.i18n;
 
 import com.google.inject.Inject;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.minecraft.client.resources.Language;
@@ -10,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * Listener for changing language in minecraft
  */
-@AutoLoad()
 public class LocalizerReloadListener {
 
     private final Localizer dsp;

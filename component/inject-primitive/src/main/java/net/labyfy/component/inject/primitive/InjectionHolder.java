@@ -8,12 +8,10 @@ import com.google.inject.Module;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class InjectionHolder {
 
-  private final Collection<ExceptionTolerantRunnable> initializationRunnables;
   private final Collection<Module> modules;
   private final AtomicReference<Injector> injectorReference;
 
@@ -22,7 +20,6 @@ public class InjectionHolder {
   }
 
   private InjectionHolder() {
-    this.initializationRunnables = new HashSet<>();
     this.modules = Sets.newConcurrentHashSet();
     this.injectorReference = new AtomicReference<>(null);
   }
@@ -48,16 +45,6 @@ public class InjectionHolder {
 
   public AtomicReference<Injector> getInjectorReference() {
     return injectorReference;
-  }
-
-  public void addInitializationListener(ExceptionTolerantRunnable runnable) {
-    this.initializationRunnables.add(runnable);
-  }
-
-  public static void enableIngameState() throws Exception {
-    for (ExceptionTolerantRunnable runnable : getInstance().initializationRunnables) {
-      runnable.run();
-    }
   }
 
   public static <T> T getInjectedInstance(Key<T> key) {

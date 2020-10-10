@@ -6,7 +6,6 @@ import com.google.inject.name.Named;
 import net.labyfy.component.player.ClientPlayer;
 import net.labyfy.component.player.RemoteClientPlayer;
 import net.labyfy.component.player.world.ClientWorld;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -18,7 +17,6 @@ import net.minecraft.entity.Entity;
  * The Object intercepts {@link net.minecraft.client.world.ClientWorld} to better cache the players on the world.
  */
 @Singleton
-@AutoLoad
 public class VersionedClientWorldInterceptor {
 
   private final ClientWorld clientWorld;

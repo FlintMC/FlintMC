@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.player.ClientPlayer;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.world.ClientWorld;
@@ -17,7 +16,6 @@ import net.minecraft.entity.Entity;
  * 1.15.2 implementation of the client world interceptor
  */
 @Singleton
-@AutoLoad
 public class VersionedClientWorldInterceptor {
 
   private final ClientPlayer clientPlayer;

@@ -5,7 +5,6 @@ import javassist.*;
 import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.function.Predicate;
 
@@ -15,7 +14,9 @@ public interface ClassTransformContext {
      *
      * @return The owner class.
      */
-    Class<?> getOwnerClass();
+    CtClass getOwnerClass();
+
+    Object getOwner();
 
     /**
      * Retrieves a field by name.
@@ -125,7 +126,7 @@ public interface ClassTransformContext {
      *
      * @return An owner method.
      */
-    Method getOwnerMethod();
+    CtMethod getOwnerMethod();
 
     /**
      * Retrieves the class transformer.
@@ -133,13 +134,6 @@ public interface ClassTransformContext {
      * @return A class transformer.
      */
     ClassTransform getClassTransform();
-
-    /**
-     * Retrieves the owner.
-     *
-     * @return An owner.
-     */
-    Object getOwner();
 
     /**
      * Retrieves the name resolver.
@@ -165,11 +159,10 @@ public interface ClassTransformContext {
     @AssistedFactory(ClassTransformContext.class)
     interface Factory {
         ClassTransformContext create(
-                @Assisted("filters") Collection<Predicate<CtClass>> filters,
-                NameResolver nameResolver,
-                ClassTransform classTransform,
-                Method method,
-                Class<?> ownerClass,
-                @Assisted("owner") Object owner);
+            @Assisted("filters") Collection<Predicate<CtClass>> filters,
+            NameResolver nameResolver,
+            ClassTransform classTransform,
+            CtMethod method,
+            CtClass ownerClass);
     }
 }

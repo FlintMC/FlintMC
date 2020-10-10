@@ -8,7 +8,6 @@ import net.labyfy.component.gui.screen.ScreenNameMapper;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.transform.javassist.ClassTransform;
@@ -25,7 +24,6 @@ import javax.inject.Singleton;
  * 1.15.2 Implementation of the gui interceptor
  */
 @Singleton
-@AutoLoad
 public class VersionedGuiInterceptor {
   private final ClassMappingProvider mappingProvider;
   private final DefaultWindowManager windowManager;

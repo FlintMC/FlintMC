@@ -1,15 +1,18 @@
-package net.labyfy.component.initializer.inject.module;
+package net.labyfy.component.transform.launchplugin.inject.module;
 
-import com.google.common.reflect.ClassPath;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
-import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import net.labyfy.component.inject.logging.InjectLogger;
+import net.labyfy.component.inject.util.ContextAwareProvisionListener;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
+import net.labyfy.component.transform.launchplugin.inject.logging.AnnotatedLoggerTypeListener;
+import net.labyfy.component.transform.launchplugin.inject.logging.LoggerTypeListener;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,8 +20,13 @@ import java.util.concurrent.Executors;
  * This class binds constants,
  * so the can be used with @named
  */
-@Singleton
 public class BindConstantModule extends AbstractModule {
+
+  private final Map<String, String> launchArguments;
+
+  public BindConstantModule(Map<String, String> launchArguments) {
+    this.launchArguments = launchArguments;
+  }
 
   protected void configure() {
     this.bindNamedFilePath("labyfyPackageFolder", "./Labyfy/packages");
@@ -31,6 +39,10 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamed(
         "obfuscated",
         obfuscated);
+    this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(this.launchArguments);
+    ContextAwareProvisionListener.bindContextAwareProvider(this.binder(), Key.get(Logger.class, InjectLogger.class), new AnnotatedLoggerTypeListener());
+    ContextAwareProvisionListener.bindContextAwareProvider(this.binder(), Logger.class, new LoggerTypeListener());
+
   }
 
   private void bindNamedFilePath(String name, String path) {

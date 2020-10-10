@@ -4,7 +4,6 @@ package net.labyfy.component.tasks;
 public enum Tasks {
 
   INTERNAL_INITIALIZE,
-  PRE_MINECRAFT_INITIALIZE,
   POST_MINECRAFT_INITIALIZE,
   POST_OPEN_GL_INITIALIZE;
 

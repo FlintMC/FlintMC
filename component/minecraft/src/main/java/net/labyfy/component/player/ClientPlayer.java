@@ -1,6 +1,5 @@
 package net.labyfy.component.player;
 
-import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.overlay.TabOverlay;
 
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.List;
 /**
  * Represents the client player
  */
-@Implement(Player.class)
 public interface ClientPlayer<T> extends Player<T> {
 
     /**

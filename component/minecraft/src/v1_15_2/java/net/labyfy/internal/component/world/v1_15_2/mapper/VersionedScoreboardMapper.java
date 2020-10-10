@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.world.mapper.ScoreboardMapper;
 import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.scoreboad.score.Criteria;

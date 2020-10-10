@@ -6,14 +6,12 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemRegistry;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.meta.ItemMeta;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.stereotype.NameSpacedKey;
 
 /**
  * Represents a unique type of an item.
  */
-@AutoLoad
 public interface ItemType {
 
   /**
