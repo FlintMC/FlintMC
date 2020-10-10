@@ -25,4 +25,18 @@ public interface FrontendCommunicator {
    */
   Map<String, String> parseJson(JsonObject object);
 
+  /**
+   * Retrieves the Minecraft `options.txt` as a {@link JsonObject}.
+   *
+   * @return The Minecraft `options.txt` as a {@link JsonObject}.
+   */
+  JsonObject getConfigurationObject();
+
+  /**
+   * Updates and save this configuration to the options.txt file.
+   *
+   * @param object The new configuration.
+   */
+  void updateConfiguration(JsonObject object);
+
 }

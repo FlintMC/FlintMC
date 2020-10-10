@@ -9,6 +9,13 @@ import java.util.Map;
 public interface GameSettingsParser {
 
   /**
+   * Retrieves the options file of Minecraft.
+   *
+   * @return The `options.txt` file.
+   */
+  File getOptionsFile();
+
+  /**
    * Makes qualified key bindings for the specific version.
    */
   void makeQualifiedKeyBinds(File optionsFile, Map<String, String> configurations);

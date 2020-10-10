@@ -180,5 +180,14 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void saveAndReloadOptions() {
+    Minecraft.getInstance().gameSettings.saveOptions();
+    Minecraft.getInstance().gameSettings.loadOptions();
+  }
+
 
 }

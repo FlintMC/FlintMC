@@ -99,4 +99,9 @@ public interface MinecraftConfiguration {
    */
   void setDifficulty(Difficulty difficulty);
 
+  /**
+   * Saves and reload the Minecraft options.
+   */
+  void saveAndReloadOptions();
+
 }

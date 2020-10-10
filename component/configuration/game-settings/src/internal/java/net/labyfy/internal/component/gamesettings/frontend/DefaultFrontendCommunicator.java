@@ -7,7 +7,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.gamesettings.GameSettingsParser;
 import net.labyfy.component.gamesettings.KeyBindMappings;
+import net.labyfy.component.gamesettings.MinecraftConfiguration;
 import net.labyfy.component.gamesettings.frontend.FrontendCommunicator;
 import net.labyfy.component.gamesettings.frontend.FrontendOption;
 import net.labyfy.component.gamesettings.settings.*;
@@ -34,14 +36,19 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
   private final VersionHelper versionHelper;
   private final JsonObject configurationObject;
   private final EnumConstantHelper enumConstantHelper;
+  private final GameSettingsParser gameSettingsParser;
+  private final MinecraftConfiguration minecraftConfiguration;
 
   @Inject
   private DefaultFrontendCommunicator(
           EnumConstantHelper enumConstantHelper,
           FrontendOption.Factory frontedTypeFactory,
-          VersionHelper versionHelper
-  ) {
+          VersionHelper versionHelper,
+          GameSettingsParser gameSettingsParser,
+          MinecraftConfiguration minecraftConfiguration) {
     this.versionHelper = versionHelper;
+    this.gameSettingsParser = gameSettingsParser;
+    this.minecraftConfiguration = minecraftConfiguration;
     this.configurationObject = new JsonObject();
     this.configurations = HashMultimap.create();
     this.enumConstantHelper = enumConstantHelper;
@@ -163,6 +170,23 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
     }
 
     return configurations;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public JsonObject getConfigurationObject() {
+    return this.configurationObject;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void updateConfiguration(JsonObject object) {
+    this.gameSettingsParser.saveOptions(this.gameSettingsParser.getOptionsFile(), this.parseJson(object));
+    this.minecraftConfiguration.saveAndReloadOptions();
   }
 
   /**

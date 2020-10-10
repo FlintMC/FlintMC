@@ -178,7 +178,15 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
         throw new IllegalStateException("Unexpected value: " + difficulty);
     }
     Minecraft.getInstance().gameSettings.saveOptions();
+  }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void saveAndReloadOptions() {
+    Minecraft.getInstance().gameSettings.saveOptions();
+    Minecraft.getInstance().gameSettings.loadOptions();
   }
 
 

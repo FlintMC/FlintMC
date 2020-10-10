@@ -27,12 +27,21 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
 
   private final EventBus eventBus;
   private final ConfigurationEvent.Factory configurationEventFactory;
-  private ConfigurationEvent configurationEvent;
+
+  private File optionsFile;
 
   @Inject
   private DefaultGameSettingsParser(EventBus eventBus, ConfigurationEvent.Factory configurationEventFactory) {
     this.eventBus = eventBus;
     this.configurationEventFactory = configurationEventFactory;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public File getOptionsFile() {
+    return this.optionsFile;
   }
 
   /**
@@ -65,6 +74,7 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
    */
   @Override
   public Map<String, String> readOptions(File optionsFile) {
+    this.optionsFile = optionsFile;
     if (!optionsFile.exists()) {
       return null;
     }
