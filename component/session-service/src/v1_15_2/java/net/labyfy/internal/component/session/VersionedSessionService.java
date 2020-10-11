@@ -15,10 +15,21 @@ import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 @Singleton
 @Implement(value = SessionService.class, version = "1.15.2")
 public class VersionedSessionService extends DefaultSessionService {
+
+  private static final Consumer<SessionService> REFRESHER = service -> {
+    String uuid = (service.getUniqueId() != null ? service.getUniqueId() : UUID.randomUUID()).toString();
+    String name = service.getUsername() != null ? service.getUsername() : uuid.split("-")[0];
+    String accessToken = service.getAccessToken() != null ? service.getAccessToken() : "0";
+
+    SessionRefreshableMinecraft minecraft = (SessionRefreshableMinecraft) Minecraft.getInstance();
+    minecraft.setSession(new net.minecraft.util.Session(name, uuid, accessToken,
+        net.minecraft.util.Session.Type.MOJANG.toString()));
+  };
 
   @Inject
   private VersionedSessionService(@InjectLogger Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
@@ -26,17 +37,18 @@ public class VersionedSessionService extends DefaultSessionService {
                                   SessionTokenRefreshEvent.Factory tokenRefreshEventFactory, AuthenticationResult.Factory authResultFactory,
                                   EventBus eventBus) {
     super(logger, refreshTokenResultFactory, profileSerializer, logInEventFactory, tokenRefreshEventFactory,
-        authResultFactory, eventBus, Minecraft.getInstance().getProxy());
+        authResultFactory, eventBus, Minecraft.getInstance().getProxy(), REFRESHER);
+  }
+
+  private VersionedSessionService(@InjectLogger Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
+                                  GameProfileSerializer profileSerializer, AuthenticationResult.Factory authResultFactory,
+                                  EventBus eventBus) {
+    super(logger, refreshTokenResultFactory, profileSerializer, null, null,
+        authResultFactory, eventBus, Minecraft.getInstance().getProxy(), null);
   }
 
   @Override
-  protected void refreshSession() {
-    String uuid = (super.getUniqueId() != null ? super.getUniqueId() : UUID.randomUUID()).toString();
-    String name = super.getUsername() != null ? super.getUsername() : uuid.split("-")[0];
-    String accessToken = super.getAccessToken() != null ? super.getAccessToken() : "0";
-
-    SessionRefreshableMinecraft minecraft = (SessionRefreshableMinecraft) Minecraft.getInstance();
-    minecraft.setSession(new net.minecraft.util.Session(name, uuid, accessToken,
-        net.minecraft.util.Session.Type.MOJANG.toString()));
+  public SessionService newSessionService() {
+    return new VersionedSessionService(super.logger, super.refreshTokenResultFactory, super.profileSerializer, super.authResultFactory, super.eventBus);
   }
 }

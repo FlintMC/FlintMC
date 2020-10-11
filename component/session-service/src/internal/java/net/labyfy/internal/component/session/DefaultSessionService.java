@@ -30,27 +30,30 @@ import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public abstract class DefaultSessionService implements SessionService {
 
   private static final String REFRESH_TOKEN_URL = "https://authserver.mojang.com/refresh";
   private static final String VALIDATE_TOKEN_URL = "https://authserver.mojang.com/validate";
 
-  private final Logger logger;
+  protected final Logger logger;
 
-  private final Proxy minecraftProxy;
+  protected final Proxy minecraftProxy;
 
-  private final RefreshTokenResult.Factory refreshTokenResultFactory;
-  private final AuthenticationResult.Factory authResultFactory;
+  protected final RefreshTokenResult.Factory refreshTokenResultFactory;
+  protected final AuthenticationResult.Factory authResultFactory;
 
   private UserAuthentication authentication;
   private String clientToken;
 
-  private final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
+  protected final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
 
-  private final EventBus eventBus;
-  private final SessionAccountLogInEvent.Factory logInEventFactory;
-  private final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
+  protected final EventBus eventBus;
+  protected final SessionAccountLogInEvent.Factory logInEventFactory;
+  protected final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
+
+  protected final Consumer<SessionService> sessionRefresher;
 
   protected DefaultSessionService(Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
                                   GameProfileSerializer profileSerializer,
@@ -58,7 +61,8 @@ public abstract class DefaultSessionService implements SessionService {
                                   SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
                                   AuthenticationResult.Factory authResultFactory,
                                   EventBus eventBus,
-                                  Proxy minecraftProxy) {
+                                  Proxy minecraftProxy,
+                                  Consumer<SessionService> sessionRefresher) {
     this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
     this.minecraftProxy = minecraftProxy;
@@ -67,9 +71,14 @@ public abstract class DefaultSessionService implements SessionService {
     this.tokenRefreshEventFactory = tokenRefreshEventFactory;
     this.authResultFactory = authResultFactory;
     this.eventBus = eventBus;
+    this.sessionRefresher = sessionRefresher;
   }
 
-  protected abstract void refreshSession();
+  private void refreshSession() {
+    if (this.sessionRefresher != null) {
+      this.sessionRefresher.accept(this);
+    }
+  }
 
   private UserAuthentication ensureAuthenticationAvailable() {
     if (this.authentication == null) {
@@ -160,10 +169,16 @@ public abstract class DefaultSessionService implements SessionService {
 
       JsonObject result = this.requestNewToken(accessToken);
 
+      if (result == null) {
+        return this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.OTHER);
+      }
+
       if (result.has("accessToken")) {
         String newToken = result.get("accessToken").getAsString();
 
-        this.eventBus.fireEvent(this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
+        if (this.tokenRefreshEventFactory != null) {
+          this.eventBus.fireEvent(this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
+        }
 
         refreshable.setAccessToken(newToken);
         this.refreshSession();
@@ -215,6 +230,10 @@ public abstract class DefaultSessionService implements SessionService {
       outputStream.write(body);
     }
 
+    if (connection.getResponseCode() < 200 || connection.getResponseCode() > 299) {
+      return null;
+    }
+
     try (InputStream inputStream = connection.getInputStream();
          Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
       return JsonParser.parseReader(reader).getAsJsonObject();
@@ -240,10 +259,12 @@ public abstract class DefaultSessionService implements SessionService {
 
       GameProfile newProfile = this.getProfile();
 
-      SessionAccountLogInEvent event = currentProfile != null ?
-          this.logInEventFactory.create(currentProfile, newProfile) :
-          this.logInEventFactory.create(newProfile);
-      this.eventBus.fireEvent(event, Subscribe.Phase.POST);
+      if (this.logInEventFactory != null) {
+        SessionAccountLogInEvent event = currentProfile != null ?
+            this.logInEventFactory.create(currentProfile, newProfile) :
+            this.logInEventFactory.create(newProfile);
+        this.eventBus.fireEvent(event, Subscribe.Phase.POST);
+      }
 
       return this.authResultFactory.createSuccess(newProfile);
     } catch (AuthenticationUnavailableException e) {
@@ -296,4 +317,10 @@ public abstract class DefaultSessionService implements SessionService {
       this.authentication.logOut();
     }
   }
+
+  @Override
+  public boolean isMain() {
+    return this.tokenRefreshEventFactory != null && this.logInEventFactory != null && this.sessionRefresher != null;
+  }
+
 }
