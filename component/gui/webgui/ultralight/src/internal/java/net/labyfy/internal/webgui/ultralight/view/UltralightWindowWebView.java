@@ -7,6 +7,7 @@ import net.labyfy.component.gui.event.input.InputState;
 import net.labyfy.component.gui.event.input.Key;
 import net.labyfy.component.gui.windowing.WindowRenderer;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.render.shader.ShaderException;
 import net.labyfy.component.render.shader.ShaderProgram;
 import net.labyfy.component.render.shader.ShaderUniform;
@@ -17,6 +18,10 @@ import net.labymedia.ultralight.UltralightSurface;
 import net.labymedia.ultralight.UltralightView;
 import net.labymedia.ultralight.input.*;
 import net.labymedia.ultralight.math.IntRect;
+import net.labymedia.ultralight.plugin.view.MessageLevel;
+import net.labymedia.ultralight.plugin.view.MessageSource;
+import net.labymedia.ultralight.plugin.view.UltralightViewListener;
+import org.apache.logging.log4j.Logger;
 
 import java.nio.ByteBuffer;
 
@@ -48,15 +53,16 @@ public class UltralightWindowWebView
 
   @AssistedInject
   protected UltralightWindowWebView(
-      ShaderProgram.Factory shaderFactory,
-      ShaderUniform.Factory uniformFactory,
-      VertexArrayObject.Factory vaoFactory,
-      VertexBufferObject.Factory vboFactory,
-      VertexIndexObject.Factory eboFactory,
-      UltralightWebGuiController controller,
-      @Assisted("initialWidth") int initialWidth,
-      @Assisted("initialHeight") int initialHeight,
-      @Assisted("transparent") boolean transparent) {
+          ShaderProgram.Factory shaderFactory,
+          ShaderUniform.Factory uniformFactory,
+          VertexArrayObject.Factory vaoFactory,
+          VertexBufferObject.Factory vboFactory,
+          VertexIndexObject.Factory eboFactory,
+          UltralightWebGuiController controller,
+          @InjectLogger Logger logger,
+          @Assisted("initialWidth") int initialWidth,
+          @Assisted("initialHeight") int initialHeight,
+          @Assisted("transparent") boolean transparent) {
     this.view = controller.getRenderer().createView(initialWidth, initialHeight, transparent);
     this.gpuRenderer = controller.isUsingGPURenderer();
     this.openGLTexture = -1;
@@ -79,8 +85,40 @@ public class UltralightWindowWebView
           getClass().getResourceAsStream("/shader/ultralight/mainMenu.fsh"));
       this.shader.link();
     } catch (ShaderException e) {
-      e.printStackTrace();
+      logger.error("Failed load shaders:", e);
     }
+
+    this.view.setViewListener(new UltralightViewListener() {
+      @Override
+      public void onChangeTitle(String title) {
+
+      }
+
+      @Override
+      public void onChangeURL(String url) {
+
+      }
+
+      @Override
+      public void onChangeTooltip(String tooltip) {
+
+      }
+
+      @Override
+      public void onChangeCursor(UltralightCursor cursor) {
+
+      }
+
+      @Override
+      public void onAddConsoleMessage(MessageSource source, MessageLevel level, String message, long lineNumber, long columnNumber, String sourceId) {
+        logger.info("[{}({}) '{}:{}:{}']: {}", level.name(), source.name(), sourceId, lineNumber, columnNumber, message);
+      }
+
+      @Override
+      public UltralightView onCreateChildView(String openerUrl, String targetUrl, boolean isPopup, IntRect popupRect) {
+        return null;
+      }
+    });
   }
 
   @Override

@@ -8,6 +8,7 @@ import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
+import net.labyfy.internal.webgui.ultralight.filesystem.UltralightFileSystemBridge;
 import net.labyfy.internal.webgui.ultralight.view.UltralightMainWebGuiView;
 import net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView;
 import net.labyfy.webgui.MainWebGuiView;
@@ -55,7 +56,7 @@ public class UltralightWebGuiController implements WebGuiController {
    * Wires up the Ultralight main view with the controller.
    */
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void setupUltralight(MinecraftWindow window) throws UltralightLoadException {
+  public void setupUltralight(MinecraftWindow window, UltralightFileSystemBridge fileSystemBridge) throws UltralightLoadException {
     logger.debug("Setting up Ultralight natives...");
 
     // Extract the native libraries into the run directory and load them from there
@@ -81,7 +82,7 @@ public class UltralightWebGuiController implements WebGuiController {
 
     // Configure the platform
     platform.usePlatformFontLoader();
-    platform.usePlatformFileSystem(".");
+    platform.setFileSystem(fileSystemBridge);
     platform.setLogger(InjectionHolder.getInjectedInstance(UltralightLoggingBridge.class));
 
     // Create the renderer
