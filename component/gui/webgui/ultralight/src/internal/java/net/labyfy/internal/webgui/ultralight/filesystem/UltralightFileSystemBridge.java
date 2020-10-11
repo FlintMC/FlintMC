@@ -143,7 +143,8 @@ public class UltralightFileSystemBridge implements UltralightFileSystem {
 
   private Pair<String, String> splitPath(String fullPath) {
     if (!fullPath.startsWith("$")) {
-      return null;
+      return new Pair<>(
+          "class-resource", fullPath.startsWith("/") ? fullPath.replaceFirst("/", "") : fullPath);
     }
 
     int indexOfSlash = fullPath.indexOf('/');

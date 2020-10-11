@@ -2,6 +2,8 @@ package net.labyfy.internal.webgui.ultralight;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.eventbus.EventBus;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.gui.windowing.MinecraftWindow;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
@@ -13,6 +15,7 @@ import net.labyfy.internal.webgui.ultralight.view.UltralightMainWebGuiView;
 import net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView;
 import net.labyfy.webgui.MainWebGuiView;
 import net.labyfy.webgui.WebGuiController;
+import net.labyfy.webgui.WebGuiInitializedEvent;
 import net.labyfy.webgui.WebGuiView;
 import net.labymedia.ultralight.UltralightJava;
 import net.labymedia.ultralight.UltralightLoadException;
@@ -37,6 +40,7 @@ import java.util.Set;
 @Implement(WebGuiController.class)
 public class UltralightWebGuiController implements WebGuiController {
   private final Logger logger;
+  private final EventBus eventBus;
   private final Set<UltralightWebGuiView> views;
   private final boolean useGPURenderer; // TODO: Make this configurable
 
@@ -46,8 +50,9 @@ public class UltralightWebGuiController implements WebGuiController {
   private MinecraftWindow window;
 
   @Inject
-  private UltralightWebGuiController(@InjectLogger Logger logger) {
+  private UltralightWebGuiController(@InjectLogger Logger logger, EventBus eventBus) {
     this.logger = logger;
+    this.eventBus = eventBus;
     this.views = new HashSet<>();
     this.useGPURenderer = false;
   }
@@ -89,6 +94,8 @@ public class UltralightWebGuiController implements WebGuiController {
     renderer = UltralightRenderer.create();
 
     this.window = window;
+    
+    this.eventBus.fireEvent(new WebGuiInitializedEvent() {}, Subscribe.Phase.ANY);
   }
 
   /**

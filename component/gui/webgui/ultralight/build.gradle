@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy.component.gui'
+group 'net.labyfy.component.gui.webgui'
 
 repositories {
     mavenCentral()
