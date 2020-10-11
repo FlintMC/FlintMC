@@ -7,7 +7,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 
 /**
  * This event will be fired whenever a message will be displayed in the chat, it supports both PRE and POST {@link
- * net.labyfy.component.eventbus.event.Subscribe.Phase}s but the cancellation will be ignored in the POST phase. If this
+ * net.labyfy.component.eventbus.event.subscribe.Subscribe.Phase}s but the cancellation will be ignored in the POST phase. If this
  * event has been cancelled in the PRE phase, the message won't be displayed anymore in the chat.
  */
 public interface ChatReceiveEvent extends ChatMessageEvent, Cancellable {
