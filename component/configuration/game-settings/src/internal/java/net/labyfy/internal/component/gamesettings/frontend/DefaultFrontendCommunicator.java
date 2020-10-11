@@ -307,7 +307,7 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
     JsonArray array = new JsonArray();
 
     for (String s : split) {
-      array.add(s);
+      array.add(s.replace("\"", ""));
     }
 
     configEntry.add(type.getConfigurationName(), array);
