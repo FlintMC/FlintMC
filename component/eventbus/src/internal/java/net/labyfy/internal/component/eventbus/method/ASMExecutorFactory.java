@@ -5,113 +5,83 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
 import net.labyfy.component.eventbus.method.Executor;
 import net.labyfy.component.inject.implement.Implement;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Type;
+import net.labyfy.component.launcher.LaunchController;
+import net.labyfy.internal.component.eventbus.exception.ExecutorGenerationException;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.objectweb.asm.Opcodes.*;
-
-/**
- * An executor factory which used ASM to create event executors.
- */
+/** An executor factory which used ASM to create event executors. */
 @Singleton
 @Implement(Executor.Factory.class)
 public class ASMExecutorFactory implements Executor.Factory {
 
-  private static final String[] GENERATED_EVENT_EXECUTOR_NAME = new String[]{Type.getInternalName(Executor.class)};
-
   private final String session = UUID.randomUUID().toString().replace("-", "");
   private final AtomicInteger identifier = new AtomicInteger();
 
-  private final ExecutorClassLoader eventExecutorClassLoader;
-  private final LoadingCache<Method, Class<? extends Executor>> cache;
+  private final LoadingCache<CtMethod, Class<? extends Executor>> cache;
 
   @Inject
   private ASMExecutorFactory() {
-    this.eventExecutorClassLoader = new ExecutorClassLoader(ASMExecutorFactory.class.getClassLoader());
-    this.cache = CacheBuilder.newBuilder()
-        .initialCapacity(16)
-        .weakValues()
-        .build(new CacheLoader<Method, Class<? extends Executor>>() {
-          @Override
-          public Class<? extends Executor> load(Method method) throws Exception {
-            Objects.requireNonNull(method, "method");
+    this.cache =
+        CacheBuilder.newBuilder()
+            .initialCapacity(16)
+            .weakValues()
+            .build(
+                new CacheLoader<CtMethod, Class<? extends Executor>>() {
+                  @Override
+                  public Class<? extends Executor> load(CtMethod method) throws Exception {
+                    Objects.requireNonNull(method, "method");
 
-            Class<?> listener = method.getDeclaringClass();
-            String listenerName = Type.getInternalName(listener);
+                    CtClass listener = method.getDeclaringClass();
+                    ClassPool cp = listener.getClassPool();
+                    String listenerName =
+                        executorClassName(listener, method, method.getParameterTypes()[0]);
+                    CtClass executor = cp.makeClass(listenerName);
+                    executor.addInterface(cp.get(Executor.class.getName()));
+                    executor.addMethod(
+                        CtMethod.make(
+                            String.format(
+                                "public void invoke(Object listener, Object event) {"
+                                    + "((%s) listener).%s((%s) event);"
+                                    + "}",
+                                listener.getName(),
+                                method.getName(),
+                                method.getParameterTypes()[0].getName()),
+                            executor));
 
-            Class<?> parameter = method.getParameterTypes()[0];
-            String className = executorClassName(listener, method, parameter);
+                    byte[] byteCode = executor.toBytecode();
 
-            ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            classWriter.visit(
-                V1_8,
-                ACC_PUBLIC | ACC_FINAL,
-                className.replace('.', '/'),
-                null,
-                "java/lang/Object",
-                GENERATED_EVENT_EXECUTOR_NAME
-            );
+                    @SuppressWarnings("unchecked")
+                    Class<? extends Executor> executorClass =
+                        (Class<? extends Executor>)
+                            LaunchController.getInstance()
+                                .getRootLoader()
+                                .commonDefineClass(
+                                    listenerName, byteCode, 0, byteCode.length, null);
 
-            MethodVisitor methodVisitor;
-
-            // Visits a constructor to the class
-            methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-            methodVisitor.visitCode();
-            methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-            methodVisitor.visitInsn(RETURN);
-            methodVisitor.visitMaxs(0, 0);
-            methodVisitor.visitEnd();
-
-            // Visits a method [invoke(Object, Object)]
-            methodVisitor = classWriter.visitMethod(
-                ACC_PUBLIC,
-                "invoke",
-                "(Ljava/lang/Object;Ljava/lang/Object;)V",
-                null,
-                null
-            );
-            methodVisitor.visitCode();
-            methodVisitor.visitVarInsn(ALOAD, 1);
-            methodVisitor.visitTypeInsn(CHECKCAST, listenerName);
-            methodVisitor.visitVarInsn(ALOAD, 2);
-            methodVisitor.visitTypeInsn(CHECKCAST, Type.getInternalName(parameter));
-            methodVisitor.visitMethodInsn(
-                INVOKEVIRTUAL,
-                listenerName,
-                method.getName(),
-                Type.getMethodDescriptor(method),
-                false
-            );
-            methodVisitor.visitInsn(RETURN);
-            methodVisitor.visitMaxs(0, 0);
-            methodVisitor.visitEnd();
-
-            classWriter.visitEnd();
-
-            return eventExecutorClassLoader.defineClass(className, classWriter.toByteArray());
-          }
-        });
+                    return executorClass;
+                  }
+                });
   }
 
   /**
    * Retrieves the formatted {@link Executor} class name.
    *
-   * @param listener  The class of the listener.
-   * @param method    The subscribed method.
+   * @param listener The class of the listener.
+   * @param method The subscribed method.
    * @param parameter The first parameter of the subscribed method.
    * @return The formatted {@link Executor} class name.
    */
-  private String executorClassName(final Class<?> listener, final Method method, final Class<?> parameter) {
+  private String executorClassName(
+      final CtClass listener, final CtMethod method, final CtClass parameter) {
     return String.format(
         "%s.%s.%s-%s-%s-%d",
         "net.labyfy.component.event.asm.generated",
@@ -119,24 +89,24 @@ public class ASMExecutorFactory implements Executor.Factory {
         listener.getSimpleName(),
         method.getName(),
         parameter.getSimpleName(),
-        this.identifier.incrementAndGet()
-    );
+        this.identifier.incrementAndGet());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public Executor create(Object listener, Method method) throws IllegalAccessException, InstantiationException {
-    if (!Modifier.isPublic(listener.getClass().getModifiers())) {
-      throw new IllegalArgumentException(
-          String.format("Listener class '%s' must be public", listener.getClass().getName())
-      );
+  public Executor create(CtClass declaringClass, CtMethod method)
+      throws IllegalAccessException, InstantiationException {
+    if (!Modifier.isPublic(declaringClass.getModifiers())) {
+      throw new ExecutorGenerationException("Listener class must be public.");
+      /* TODO: allow for modification
+      declaringClass.setModifiers(
+          (declaringClass.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED) | Modifier.PUBLIC);*/
     }
     if (!Modifier.isPublic(method.getModifiers())) {
-      throw new IllegalArgumentException(String.format("Subscriber method '%s' must be public", method));
+      throw new ExecutorGenerationException("Listener method must be public.");
+      /* TODO: allow for modification
+      method.setModifiers((method.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED) | Modifier.PUBLIC);*/
     }
     return this.cache.getUnchecked(method).newInstance();
   }
-
 }

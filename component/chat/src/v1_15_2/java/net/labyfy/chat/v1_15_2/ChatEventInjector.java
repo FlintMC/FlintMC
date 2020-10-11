@@ -8,13 +8,11 @@ import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.event.ChatReceiveEvent;
 import net.labyfy.chat.event.ChatSendEvent;
 import net.labyfy.component.eventbus.EventBus;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.minecraft.util.text.ITextComponent;
 
 @Singleton
-@AutoLoad
 public class ChatEventInjector {
 
   private final EventBus eventBus;

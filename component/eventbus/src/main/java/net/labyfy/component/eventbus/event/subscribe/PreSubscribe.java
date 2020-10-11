@@ -1,8 +1,7 @@
 package net.labyfy.component.eventbus.event.subscribe;
 
 import net.labyfy.component.eventbus.event.util.EventPriority;
-import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,8 +15,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Identifier
-@Transitive
+@DetectableAnnotation
 public @interface PreSubscribe {
 
   /**
@@ -27,5 +25,4 @@ public @interface PreSubscribe {
    * @see Subscribe#priority()
    */
   byte priority() default EventPriority.NORMAL;
-
 }

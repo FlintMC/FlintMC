@@ -1,8 +1,6 @@
 package net.labyfy.component.eventbus.event;
 
-/**
- * Represents a cancellable event.
- */
+/** Represents a cancellable event. */
 public interface Cancellable {
 
   /**
@@ -18,5 +16,4 @@ public interface Cancellable {
    * @param cancelled {@code true} if the even should be cancelled, otherwise {@code false}.
    */
   void setCancelled(boolean cancelled);
-
 }

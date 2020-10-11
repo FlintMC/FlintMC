@@ -22,6 +22,8 @@ public class LabyfyFrameworkInitializer {
 
 
   private final Map<CtClass, ServiceHandler> serviceHandlerInstances = new HashMap<>();
+  private final Collection<Pair<DetectableAnnotationProvider.AnnotationMeta<?>, CtClass> > discoveredMeta = new HashSet<>();
+
 
   @Inject
   private LabyfyFrameworkInitializer() {
@@ -57,6 +59,9 @@ public class LabyfyFrameworkInitializer {
       for (Class<? extends Annotation> annotationType : service.value()) {
         for (Pair<DetectableAnnotationProvider.AnnotationMeta<?>, Object> annotationMetaObjectPair : serviceRepository.getAnnotations().get(annotationType)) {
           try {
+            Pair<DetectableAnnotationProvider.AnnotationMeta<?>, CtClass> serviceMetaPair = new Pair<>(annotationMetaObjectPair.getFirst(), pair.getSecond());
+            if(discoveredMeta.contains(serviceMetaPair))continue;
+            discoveredMeta.add(serviceMetaPair);
             if (!serviceHandlerInstances.containsKey(pair.getSecond())) {
               serviceHandlerInstances.put(pair.getSecond(), InjectionHolder.getInjectedInstance(CtResolver.get(pair.getSecond())));
             }
