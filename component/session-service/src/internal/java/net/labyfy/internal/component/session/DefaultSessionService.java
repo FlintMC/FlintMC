@@ -100,6 +100,12 @@ public abstract class DefaultSessionService implements SessionService {
   }
 
   @Override
+  public String getClientToken() {
+    this.ensureAuthenticationAvailable(); // generate the client token if necessary
+    return this.clientToken;
+  }
+
+  @Override
   public UUID getUniqueId() {
     if (this.authentication == null) {
       return null;

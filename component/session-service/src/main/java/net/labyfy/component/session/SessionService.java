@@ -42,6 +42,14 @@ public interface SessionService {
   GameProfile getProfile();
 
   /**
+   * Retrieves the client token which is used to log in/log out/refresh the access token in this {@link
+   * SessionService}.
+   *
+   * @return The non-null client token of this session service
+   */
+  String getClientToken();
+
+  /**
    * Retrieves the current access of the account which is currently used by the client. This token will be used to log
    * in on servers. If the token is invalid, it can be refreshed with {@link #refreshToken()}. If the {@link
    * SessionService} is logged in, but the token is no more valid, this method will still return the token and not
