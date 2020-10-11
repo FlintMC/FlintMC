@@ -10,7 +10,7 @@ import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.GameSettingsParser;
 import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.MinecraftConfiguration;
-import net.labyfy.component.gamesettings.frontend.FrontendCommunicator;
+import net.labyfy.component.gamesettings.frontend.OptionsSerializer;
 import net.labyfy.component.gamesettings.frontend.FrontendOption;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.inject.implement.Implement;
@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Default implementation of {@link FrontendCommunicator}.
+ * Default implementation of {@link OptionsSerializer}.
  */
 @Singleton
-@Implement(FrontendCommunicator.class)
-public class DefaultFrontendCommunicator implements FrontendCommunicator {
+@Implement(OptionsSerializer.class)
+public class DefaultOptionsSerializer implements OptionsSerializer {
 
   private static final Pattern NUMERIC_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 
@@ -40,7 +40,7 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
   private final MinecraftConfiguration minecraftConfiguration;
 
   @Inject
-  private DefaultFrontendCommunicator(
+  private DefaultOptionsSerializer(
           EnumConstantHelper enumConstantHelper,
           FrontendOption.Factory frontedTypeFactory,
           VersionHelper versionHelper,
@@ -61,7 +61,7 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
    * {@inheritDoc}
    */
   @Override
-  public JsonObject parseOption(Map<String, String> configurations) {
+  public JsonObject serialize(Map<String, String> configurations) {
     Map<String, String> fixedConfiguration = this.prettyConfiguration(configurations);
     for (Map.Entry<String, FrontendOption> entry : this.configurations.entries()) {
       JsonObject configEntry = this.configurationObject.getAsJsonObject(entry.getKey());
@@ -104,7 +104,7 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
    * {@inheritDoc}
    */
   @Override
-  public Map<String, String> parseJson(JsonObject object) {
+  public Map<String, String> deserialize(JsonObject object) {
     Map<String, String> configurations = new HashMap<>();
 
 
@@ -185,7 +185,7 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
    */
   @Override
   public void updateConfiguration(JsonObject object) {
-    this.gameSettingsParser.saveOptions(this.gameSettingsParser.getOptionsFile(), this.parseJson(object));
+    this.gameSettingsParser.saveOptions(this.gameSettingsParser.getOptionsFile(), this.deserialize(object));
     this.minecraftConfiguration.saveAndReloadOptions();
   }
 
@@ -319,8 +319,8 @@ public class DefaultFrontendCommunicator implements FrontendCommunicator {
    * @param selected The current selected value.
    * @param array    An array with all available options.
    * @return A select entry for the configuration.
-   * @see DefaultFrontendCommunicator#createEnumOption(JsonObject, FrontendOption, String)
-   * @see DefaultFrontendCommunicator#createNumberOption(JsonObject, FrontendOption, String)
+   * @see DefaultOptionsSerializer#createEnumOption(JsonObject, FrontendOption, String)
+   * @see DefaultOptionsSerializer#createNumberOption(JsonObject, FrontendOption, String)
    */
   private JsonObject createSelectEntry(Object selected, Object... array) {
     JsonObject object = new JsonObject();

@@ -5,25 +5,25 @@ import com.google.gson.JsonObject;
 import java.util.Map;
 
 /**
- * Represents the communicator for the frontend.
+ * Represents a serializer for the options.
  */
-public interface FrontendCommunicator {
+public interface OptionsSerializer {
 
   /**
-   * Parses the given key value system which represents the `options.txt` file into a {@link JsonObject}.
+   * Serializes the given key value system which represents the `options.txt` file into a {@link JsonObject}.
    *
    * @param configurations The `options.txt` file as a key-value system.
    * @return The parsed json.
    */
-  JsonObject parseOption(Map<String, String> configurations);
+  JsonObject serialize(Map<String, String> configurations);
 
   /**
-   * Parses the given {@link JsonObject} to a key-value system which represents the `options.txt` file.
+   * Deserializes the given {@link JsonObject} to a key-value system which represents the `options.txt` file.
    *
    * @param object The `options.txt` file as a {@link JsonObject}.
    * @return The parsed key-value system.
    */
-  Map<String, String> parseJson(JsonObject object);
+  Map<String, String> deserialize(JsonObject object);
 
   /**
    * Retrieves the Minecraft `options.txt` as a {@link JsonObject}.

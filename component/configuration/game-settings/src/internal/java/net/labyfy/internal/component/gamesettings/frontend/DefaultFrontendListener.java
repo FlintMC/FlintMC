@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.gamesettings.event.ConfigurationEvent;
-import net.labyfy.component.gamesettings.frontend.FrontendCommunicator;
+import net.labyfy.component.gamesettings.frontend.OptionsSerializer;
 import net.labyfy.component.processing.autoload.AutoLoad;
 
 /**
@@ -15,17 +15,17 @@ import net.labyfy.component.processing.autoload.AutoLoad;
 @AutoLoad
 public class DefaultFrontendListener {
 
-  private final FrontendCommunicator frontendCommunicator;
+  private final OptionsSerializer optionsSerializer;
 
   @Inject
-  private DefaultFrontendListener(FrontendCommunicator frontendCommunicator) {
-    this.frontendCommunicator = frontendCommunicator;
+  private DefaultFrontendListener(OptionsSerializer optionsSerializer) {
+    this.optionsSerializer = optionsSerializer;
   }
 
   @Subscribe
   @ConfigurationEvent.OptionState(ConfigurationEvent.State.LOAD)
   public void loadConfiguration(ConfigurationEvent event) {
-    JsonObject object = this.frontendCommunicator.parseOption(event.getConfigurations());
+    JsonObject object = this.optionsSerializer.serialize(event.getConfigurations());
     // TODO: 08.10.2020 Sends the object to the frontend
   }
 
