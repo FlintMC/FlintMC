@@ -11,4 +11,12 @@ public interface MainWebGuiView extends WebGuiView {
    * @param allow Whether focusing the view is allowed
    */
   void setAllowFocus(boolean allow);
+
+  /**
+   * Sets the visibility of main view. It will not receive input events when it is invisible, regardless of what
+   * the focus allowance directs.
+   *
+   * @param visible If {@code true}, the view will be shown, if {@code false}, it will be hidden
+   */
+  void setVisible(boolean visible);
 }

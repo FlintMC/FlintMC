@@ -5,5 +5,5 @@ import net.labyfy.component.eventbus.event.Event;
 /**
  * Marker interface for all input events.
  */
-public interface GuiInputEvent extends Event {
+public interface GuiEvent extends Event {
 }

@@ -97,7 +97,7 @@ public class VersionedWindow implements InternalWindow {
   }
 
   @Override
-  public boolean removeListener(GuiEventListener listener) {
+  public boolean removeEventListener(GuiEventListener listener) {
     return this.listeners.remove(listener);
   }
 

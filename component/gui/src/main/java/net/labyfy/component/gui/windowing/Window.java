@@ -74,7 +74,7 @@ public interface Window {
    * @param listener The listener to remove
    * @return {@code true} if the listener had been added and was removed now, {@code false} otherwise
    */
-  boolean removeListener(GuiEventListener listener);
+  boolean removeEventListener(GuiEventListener listener);
 
   /**
    * Sends an event to this window.

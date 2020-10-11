@@ -10,6 +10,7 @@ import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.internal.webgui.ultralight.view.UltralightMainWebGuiView;
 import net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView;
+import net.labyfy.webgui.MainWebGuiView;
 import net.labyfy.webgui.WebGuiController;
 import net.labyfy.webgui.WebGuiView;
 import net.labymedia.ultralight.UltralightJava;
@@ -41,6 +42,7 @@ public class UltralightWebGuiController implements WebGuiController {
   private UltralightPlatform platform;
   private UltralightRenderer renderer;
   private UltralightMainWebGuiView mainView;
+  private MinecraftWindow window;
 
   @Inject
   private UltralightWebGuiController(@InjectLogger Logger logger) {
@@ -50,24 +52,17 @@ public class UltralightWebGuiController implements WebGuiController {
   }
 
   /**
-   * Runs Ultralight setup and initializes the native files.
-   */
-  @Task(Tasks.PRE_MINECRAFT_INITIALIZE)
-  public void setupUltralightNatives() throws UltralightLoadException {
-    logger.debug("Setting up Ultralight natives...");
-
-    // Extract the native libraries into the run directory and load them from there
-    // TODO: This works on Windows, but could cause issues on Linux and OSX
-    Path runDirectory = Paths.get(".");
-    UltralightJava.extractNativeLibrary(runDirectory);
-    UltralightJava.load(runDirectory);
-  }
-
-  /**
    * Wires up the Ultralight main view with the controller.
    */
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void setupUltralight(MinecraftWindow window) {
+  public void setupUltralight(MinecraftWindow window) throws UltralightLoadException {
+    logger.debug("Setting up Ultralight natives...");
+
+    // Extract the native libraries into the run directory and load them from there
+    Path runDirectory = Paths.get(".");
+    UltralightJava.extractNativeLibrary(runDirectory);
+    UltralightJava.load(runDirectory);
+
     logger.debug("Setting up Ultralight...");
 
     // NOTE: This **needs** to be called on the render thread, else Ultralight will not work!
@@ -92,16 +87,7 @@ public class UltralightWebGuiController implements WebGuiController {
     // Create the renderer
     renderer = UltralightRenderer.create();
 
-    // Create the view displayed in the minecraft window
-    this.mainView = InjectionHolder.getInjectedInstance(UltralightMainWebGuiView.class);
-
-    // The view needs to be known by the GUI controller in order to call back to it
-    window.addRenderer(this.mainView);
-    window.addEventListener(this.mainView);
-
-    // Set up the view and register it internally
-    this.mainView.setURL("http://localhost:8080");
-    this.views.add(this.mainView);
+    this.window = window;
   }
 
   /**
@@ -185,7 +171,20 @@ public class UltralightWebGuiController implements WebGuiController {
   }
 
   @Override
-  public WebGuiView getMainView() {
+  public MainWebGuiView getMainView() {
+    if (mainView == null) {
+      // View has not been created yet
+      // Create the view displayed in the minecraft window
+      this.mainView = InjectionHolder.getInjectedInstance(UltralightMainWebGuiView.class);
+
+      // The view needs to be known by the GUI controller in order to call back to it
+      this.window.addRenderer(this.mainView);
+      window.addEventListener(this.mainView);
+
+      // Set up the view and register it internally
+      this.views.add(this.mainView);
+    }
+
     return mainView;
   }
 }

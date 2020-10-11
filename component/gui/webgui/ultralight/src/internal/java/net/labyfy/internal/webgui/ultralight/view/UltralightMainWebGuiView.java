@@ -20,7 +20,9 @@ public class UltralightMainWebGuiView
 
   private final UltralightWindowWebView windowWebView;
 
+  private boolean transparent;
   private boolean allowFocus;
+  private boolean visible;
 
   @Inject
   protected UltralightMainWebGuiView(
@@ -32,7 +34,9 @@ public class UltralightMainWebGuiView
             minecraftWindow.getFramebufferWidth(), minecraftWindow.getFramebufferHeight(), true);
     this.controller = controller;
     this.minecraftWindow = minecraftWindow;
+    this.transparent = true;
     this.allowFocus = true;
+    this.visible = true;
   }
 
   @Override
@@ -47,8 +51,6 @@ public class UltralightMainWebGuiView
 
   @Override
   public void render() {
-    // Trigger rendering of all views now
-    this.controller.renderAll();
     this.windowWebView.render();
   }
 
@@ -65,7 +67,7 @@ public class UltralightMainWebGuiView
       return false;
     }
 
-    if (!allowFocus) {
+    if (!allowFocus || !visible) {
       return false; // Pass through events
     }
 
@@ -77,6 +79,22 @@ public class UltralightMainWebGuiView
     this.allowFocus = allow;
 
     handle(new WindowFocusEvent(allowFocus && minecraftWindow.isFocused()));
+  }
+
+  @Override
+  public void setVisible(boolean visible) {
+    if(this.visible == visible) {
+      return;
+    }
+
+    this.visible = visible;
+    if(this.visible) {
+      this.minecraftWindow.addRenderer(this);
+      this.minecraftWindow.addEventListener(this);
+    } else {
+      this.minecraftWindow.removeRenderer(this);
+      this.minecraftWindow.removeEventListener(this);
+    }
   }
 
   @Override
@@ -96,7 +114,16 @@ public class UltralightMainWebGuiView
 
   @Override
   public void setTransparent(boolean transparent) {
+    if(this.transparent == transparent) {
+      return;
+    }
+
     this.windowWebView.setTransparent(transparent);
+    if(visible) {
+      // Re-add the renderer to notify about the transparency change
+      this.minecraftWindow.removeRenderer(this);
+      this.minecraftWindow.addRenderer(this);
+    }
   }
 
   @Override

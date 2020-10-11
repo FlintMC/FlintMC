@@ -15,8 +15,10 @@ public interface WebGuiController {
 
   /**
    * Retrieves the main view, also known as the view displayed in the main game window.
+   * <b>
+   * When this method is called first, it will create the view and set it up.
    *
    * @return The main view
    */
-  WebGuiView getMainView();
+  MainWebGuiView getMainView();
 }

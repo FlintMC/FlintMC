@@ -100,7 +100,7 @@ public class UltralightWindowWebView
       try {
         // Retrieve the raw image data in BGRA format
         ByteBuffer imageData = surface.lockPixels();
-
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, (int) surface.rowBytes() / 4);
         // Needs updating
         if (dirtyBounds.width() >= width && dirtyBounds.height() >= height) {
           // Perform full upload as the entire image has been invalidated
@@ -123,10 +123,7 @@ public class UltralightWindowWebView
           int dirtyHeight = dirtyBounds.height();
 
           // Calculate the offset where the dirty data starts in the buffer
-          int startOffset = (dirtyY * width * 4) + dirtyX * 4;
-
-          // Tell OpenGL how much pixels to unpack per row
-          glPixelStorei(GL_UNPACK_ROW_LENGTH, width);
+          int startOffset = (int) ((dirtyY * surface.rowBytes()) + dirtyX * 4);
 
           // Upload the partial data
           glTexSubImage2D(
@@ -140,10 +137,9 @@ public class UltralightWindowWebView
               GL_UNSIGNED_INT_8_8_8_8_REV,
               (ByteBuffer) imageData.position(startOffset) // Offset the data pointer
               );
-
-          // Reset the pixels per row value to auto detection, else we cause weird crashes
-          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
         }
+        // Reset the pixels per row value to auto detection, else we cause weird crashes
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
       } finally {
         // Make the pixels available again to Ultralight
         surface.unlockPixels();
@@ -352,8 +348,8 @@ public class UltralightWindowWebView
       view.fireScrollEvent(
           new UltralightScrollEvent()
               .type(UltralightScrollEventType.BY_PIXEL)
-              .deltaX((int) evt.getXOffset())
-              .deltaY((int) evt.getYOffset()));
+              .deltaX((int) evt.getXOffset() * 20)
+              .deltaY((int) evt.getYOffset() * 20));
     } else if (event instanceof UnicodeTypedEvent) {
       // Translate normal char input
       UnicodeTypedEvent evt = (UnicodeTypedEvent) event;
