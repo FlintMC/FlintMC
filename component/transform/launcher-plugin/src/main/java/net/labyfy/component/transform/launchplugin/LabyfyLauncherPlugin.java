@@ -67,26 +67,38 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     return instance;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String name() {
     return "Labyfy";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
     classloader.excludeFromModification("javassist.", "com.google.", "net.labyfy.component.transform.");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void modifyCommandlineArguments(List<String> arguments) {
     this.launchArguments = arguments;
   }
 
-  @SuppressWarnings("InstantiationOfUtilityClass")
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {
     Map<String, String> arguments = new HashMap<>();
 
+    //Collect minecraft launch arguments as a map
     for (Iterator<String> it = launchArguments.iterator(); it.hasNext(); ) {
       String key = it.next();
       if (it.hasNext()) {
@@ -115,6 +127,9 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     injectedTransformers.put(priority, transformer);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
     for (LateInjectedTransformer transformer : injectedTransformers.values()) {
