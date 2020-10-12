@@ -5,7 +5,7 @@ import javassist.NotFoundException;
 import net.labyfy.component.commons.util.Pair;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
@@ -37,12 +37,12 @@ public class InternalWebFileSystemService
   }
 
   @Override
-  public void discover(DetectableAnnotationProvider.AnnotationMeta<WebFileSystem> annotationMeta)
+  public void discover(AnnotationMeta<WebFileSystem> annotationMeta)
       throws ServiceNotFoundException {
 
     CtClass fileSystem =
         annotationMeta
-            .<DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier>getIdentifier()
+            .<AnnotationMeta.ClassIdentifier>getIdentifier()
             .getLocation();
 
     try {
