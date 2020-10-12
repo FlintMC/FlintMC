@@ -227,17 +227,17 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
 
   @Override
   public void openMerchantContainer(
-          int containerId,
+          int container,
           Object merchantOffers,
-          int level,
+          int levelProgress,
           int experience,
           boolean regularVillager,
           boolean refreshable
   ) {
     Minecraft.getInstance().player.openMerchantContainer(
-            containerId,
+            container,
             (MerchantOffers) merchantOffers,
-            level,
+            levelProgress,
             experience,
             regularVillager,
             refreshable
@@ -301,20 +301,6 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   }
 
   @Override
-  public boolean isSpawnForced() {
-    return Minecraft.getInstance().player.isSpawnForced();
-  }
-
-  @Override
-  public void setRespawnPosition(BlockPosition position, boolean spawnForced, boolean bedSpawn) {
-    Minecraft.getInstance().player.setRespawnPosition(
-            (BlockPos) this.getWorld().toMinecraftBlockPos(position),
-            spawnForced,
-            bedSpawn
-    );
-  }
-
-  @Override
   public void addStat(ResourceLocation resourceLocation) {
     Minecraft.getInstance().player.addStat((net.minecraft.util.ResourceLocation) resourceLocation.getHandle());
   }
@@ -350,7 +336,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   }
 
   @Override
-  public int getXPSeed() {
+  public int getExperienceSeed() {
     return Minecraft.getInstance().player.getXPSeed();
   }
 
@@ -360,7 +346,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   }
 
   @Override
-  public int getXpBarCap() {
+  public int getExperienceBarCap() {
     return Minecraft.getInstance().player.xpBarCap();
   }
 

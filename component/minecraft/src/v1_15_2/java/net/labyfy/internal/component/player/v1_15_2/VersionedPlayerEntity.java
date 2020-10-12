@@ -60,16 +60,25 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     this.entity = (net.minecraft.entity.player.PlayerEntity) entity;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean blockActionRestricted(World world, BlockPosition position, GameMode mode) {
     return false;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isSecondaryUseActive() {
     return this.entity.isSecondaryUseActive();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
     this.entity.playSound(
@@ -80,26 +89,41 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getScore() {
     return this.entity.getScore();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setScore(int score) {
     this.entity.setScore(score);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addScore(int score) {
     this.entity.addScore(score);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean drop(boolean dropEntireStack) {
     return this.entity.drop(dropEntireStack);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object dropItem(ItemStack itemStack, boolean traceItem) {
     return this.entity.dropItem(
@@ -108,6 +132,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem) {
     return this.entity.dropItem(
@@ -117,57 +144,84 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canAttackPlayer(PlayerEntity playerEntity) {
     // TODO: 08.10.2020 Implement
     return false;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void openSignEditor(Object signTileEntity) {
     this.entity.openSignEditor((SignTileEntity) signTileEntity);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void openMinecartCommandBlock(Object commandBlockLogic) {
     this.entity.openMinecartCommandBlock((CommandBlockLogic) commandBlockLogic);
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void openCommandBlock(Object commandBlockTileEntity) {
     this.entity.openCommandBlock((CommandBlockTileEntity) commandBlockTileEntity);
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void openStructureBlock(Object structureBlockTileEntity) {
     this.entity.openStructureBlock((StructureBlockTileEntity) structureBlockTileEntity);
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void openJigsaw(Object jigsawTileEntity) {
     this.entity.openJigsaw((JigsawTileEntity) jigsawTileEntity);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void openHorseInventory(Object abstractHorseEntity, Inventory inventory) {
     // TODO: 08.10.2020 Implement
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void openMerchantContainer(int containerId, Object merchantOffers, int level, int experience, boolean regularVillager, boolean refreshable) {
+  public void openMerchantContainer(int container, Object merchantOffers, int levelProgress, int experience, boolean regularVillager, boolean refreshable) {
     this.entity.openMerchantContainer(
-            containerId,
+            container,
             (MerchantOffers) merchantOffers,
-            level,
+            levelProgress,
             experience,
             regularVillager,
             refreshable
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void openBook(ItemStack stack, Hand hand) {
     this.entity.openBook(
@@ -176,6 +230,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void attackTargetEntityWithCurrentItem(Entity entity) {
     this.entity.attackTargetEntityWithCurrentItem(
@@ -183,46 +240,73 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void disableShield(boolean disable) {
     this.entity.disableShield(disable);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void spawnSweepParticles() {
     this.entity.spawnSweepParticles();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void respawnPlayer() {
     this.entity.respawnPlayer();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isUser() {
     return this.entity.isUser();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile getGameProfile() {
     return this.gameProfileGameProfileSerializer.deserialize(this.entity.getGameProfile());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void stopSleepInBed(boolean updateTimer, boolean updateSleepingPlayers) {
     this.entity.stopSleepInBed(updateTimer, updateSleepingPlayers);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isPlayerFullyAsleep() {
     return this.entity.isPlayerFullyAsleep();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getSleepTimer() {
     return this.entity.getSleepTimer();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void sendStatusMessage(ChatComponent component, boolean actionbar) {
     this.entity.sendStatusMessage(
@@ -231,6 +315,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BlockPosition getBedLocation() {
     return this.getWorld().fromMinecraftBlockPos(
@@ -238,20 +325,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
-  @Override
-  public boolean isSpawnForced() {
-    return this.entity.isSpawnForced();
-  }
-
-  @Override
-  public void setRespawnPosition(BlockPosition position, boolean spawnForced, boolean bedSpawn) {
-    this.entity.setRespawnPosition(
-            (BlockPos) this.getWorld().toMinecraftBlockPos(position),
-            spawnForced,
-            bedSpawn
-    );
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addStat(ResourceLocation resourceLocation) {
     this.entity.addStat((net.minecraft.util.ResourceLocation) resourceLocation.getHandle());
@@ -288,7 +364,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   }
 
   @Override
-  public int getXPSeed() {
+  public int getExperienceSeed() {
     return this.entity.getXPSeed();
   }
 
@@ -298,7 +374,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   }
 
   @Override
-  public int getXpBarCap() {
+  public int getExperienceBarCap() {
     return this.entity.xpBarCap();
   }
 
