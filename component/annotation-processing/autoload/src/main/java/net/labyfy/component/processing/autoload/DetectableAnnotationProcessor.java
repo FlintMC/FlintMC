@@ -21,17 +21,49 @@ import java.util.stream.Collectors;
 @AutoService(Processor.class)
 public class DetectableAnnotationProcessor implements Processor {
 
-  public static final String ANNOTATION_TEMPLATE = "new ${TYPE_NAME}() {\n" +
+  /**
+   * Template to instantiate an annotation.
+   */
+  private static final String ANNOTATION_TEMPLATE = "" +
+      "new ${TYPE_NAME}() {\n" +
       "${METHODS}\n" +
       "    \n" +
       "    public java.lang.Class<? extends java.lang.annotation.Annotation> annotationType(){\n" +
       "        return ${TYPE_NAME}.class;\n" +
       "    }\n" +
       "}";
-  public static final String METHOD_TEMPLATE = "" +
+
+  /**
+   * Template to implement an annotation method.
+   */
+  private static final String ANNOTATION_METHOD_TEMPLATE = "" +
       "    public ${RETURN_TYPE_NAME} ${NAME}(){\n" +
       "        return ${RETURN_VALUE}; \n" +
       "    }";
+
+  /**
+   * Template to instantiate AnnotationMeta
+   */
+  private static final String ANNOTATION_META_TEMPLATE = "" +
+      "new net.labyfy.component.processing.autoload.AnnotationMeta(\n" +
+      "   javax.lang.model.element.ElementKind.${ELEMENT_KIND}, \n" +
+      "   ${IDENTIFIER}, \n" +
+      "   ${ANNOTATION}, \n" +
+      "new net.labyfy.component.processing.autoload.AnnotationMeta[]{${SUB_METADATA}})";
+
+  /**
+   * Template to instantiate a class identifier
+   */
+  private static final String ANNOTATION_META_CLASS_IDENTIFIER_TEMPLATE = ""
+      + "new net.labyfy.component.processing.autoload.AnnotationMeta.ClassIdentifier(\"${TYPE_NAME}\")";
+
+  /**
+   * Template to instantiate a method identifier
+   */
+  private static final String ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE = ""
+      + "new net.labyfy.component.processing.autoload.AnnotationMeta.MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
+
+
   private final Collection<String> found;
 
   /**
@@ -72,87 +104,96 @@ public class DetectableAnnotationProcessor implements Processor {
     for (Element annotatedElement : ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(annotationType)) {
       String parsedAnnotation = parseAnnotationMeta(annotationType, annotatedElement);
       if (parsedAnnotation.isEmpty()) continue;
-      this.found.add("list.add(" + parsedAnnotation + ")");
+      this.found.add(("list.add(" + parsedAnnotation + ")").replace("$", "$$"));
     }
 
   }
 
+  /**
+   * Parse a given annotation to java syntax that will instantiate the target annotation with the exact same values.
+   *
+   * @param annotationType   the annotation type to look for
+   * @param annotatedElement the element to look at for the annotationType
+   * @return the java code to instantiate the annotation
+   */
   private String parseAnnotationMeta(TypeElement annotationType, Element annotatedElement) {
+    //meta is optional, so if it is not present, we dont take any action
     if (annotationType.getAnnotation(DetectableAnnotation.class) == null) return "";
 
-    String annotationTemplate = createAnnotationTemplate(annotationType, collectAnnotationData(annotationType, annotatedElement), annotationType.toString());
-    StringBuilder output = new StringBuilder();
-    output
-        .append("new net.labyfy.component.processing.autoload.AnnotationMeta(javax.lang.model.element.ElementKind.")
-        .append(annotatedElement.getKind().name())
-        .append(", ");
+    return handleTemplate(
+        ImmutableMap.<String, String>builder()
+            .put("ELEMENT_KIND", annotatedElement.getKind().name())
+            .put("IDENTIFIER", createAnnotationMetaIdentifier(annotatedElement))
+            .put("ANNOTATION", createAnnotation(annotationType, collectAnnotationData(annotationType, annotatedElement), annotationType.toString()))
+            .put("SUB_METADATA", createSubMetaData(annotationType, annotatedElement))
+            .build(),
+        ANNOTATION_META_TEMPLATE);
 
+  }
+
+  private String createSubMetaData(TypeElement annotationType, Element annotatedElement) {
+    StringBuilder output = new StringBuilder();
+    boolean semicolon = false;
+    for (Pair<Element, AnnotationMirror> pair : getAnnotationSubMetaMirrors(annotationType, annotatedElement)) {
+      if (pair.getSecond() == null) continue;
+
+      if (semicolon) {
+        output.append(", ");
+      }
+      output.append(parseAnnotationMeta(((TypeElement) pair.getSecond().getAnnotationType().asElement()), pair.getFirst()));
+      semicolon = true;
+    }
+    return output.toString();
+  }
+
+  private String createAnnotationMetaIdentifier(Element annotatedElement) {
     switch (annotatedElement.getKind()) {
       case CLASS:
       case ANNOTATION_TYPE:
       case INTERFACE:
-        output.append("new net.labyfy.component.processing.autoload.AnnotationMeta.ClassIdentifier(\"")
-            .append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement).toString()
-                .replace("$", "$$")
-            )
-            .append("\"), ");
-        break;
+        return createAnnotationMetaClassIdentifier((TypeElement) annotatedElement);
       case METHOD:
-        output
-            .append("new net.labyfy.component.processing.autoload.AnnotationMeta.MethodIdentifier(\"")
-            .append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement.getEnclosingElement()).toString()
-                .replace("$", "$$")
-            )
-            .append("\",\"")
-            .append(annotatedElement.getSimpleName())
-            .append("\"");
-
-        if (((ExecutableElement) annotatedElement).getParameters().size() > 0) {
-          output.append(", ");
-        }
-
-        boolean semicolon = false;
-        for (VariableElement parameter : ((ExecutableElement) annotatedElement).getParameters()) {
-          if (semicolon) {
-            output.append(", ");
-          }
-
-          String parameterName;
-
-          if (parameter.asType() instanceof DeclaredType) {
-            Element element = ((DeclaredType) parameter.asType()).asElement();
-            parameterName = ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName(((TypeElement) element)).toString();
-          } else {
-            parameterName = parameter.asType().toString();
-          }
-
-          parameterName = parameterName.replace("$", "$$");
-
-          output.append("\"")
-              .append(parameterName)
-              .append("\"");
-          semicolon = true;
-        }
-
-        output
-            .append("), ");
-        break;
+        return createAnnotationMetaMethodIdentifier(annotatedElement);
       default:
-        throw new IllegalStateException();
+        throw new IllegalStateException("annotation target type " + annotatedElement.getKind() + " not supported yet.");
+    }
+  }
+
+  private String createAnnotationMetaMethodIdentifier(Element annotatedElement) {
+    StringBuilder parameters = new StringBuilder();
+    boolean semicolon = false;
+    for (VariableElement parameter : ((ExecutableElement) annotatedElement).getParameters()) {
+      if (semicolon) {
+        parameters.append(", ");
+      }
+
+      parameters.append("\"");
+      if (parameter.asType() instanceof DeclaredType) {
+        Element element = ((DeclaredType) parameter.asType()).asElement();
+        parameters.append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName(((TypeElement) element)).toString());
+      } else {
+        parameters.append(parameter.asType().toString());
+      }
+      parameters.append("\"");
+      semicolon = true;
     }
 
-    output
-        .append(annotationTemplate);
+    return handleTemplate(
+        ImmutableMap.<String, String>builder()
+            .put("OWNER_NAME", ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement.getEnclosingElement()).toString())
+            .put("NAME", annotatedElement.getSimpleName().toString())
+            .put("PARAMETERS", parameters.toString())
+            .build(),
+        ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE
+    );
+  }
 
-    for (Pair<Element, AnnotationMirror> pair : getAnnotationSubMetaMirrors(annotationType, annotatedElement)) {
-      if (pair.getSecond() == null) continue;
-
-      output.append(", ")
-          .append(parseAnnotationMeta(((TypeElement) pair.getSecond().getAnnotationType().asElement()), pair.getFirst()));
-    }
-
-    output.append(")");
-    return output.toString();
+  private String createAnnotationMetaClassIdentifier(TypeElement typeElement) {
+    return handleTemplate(
+        ImmutableMap.<String, String>builder()
+            .put("TYPE_NAME", ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName(typeElement).toString())
+            .build(),
+        ANNOTATION_META_CLASS_IDENTIFIER_TEMPLATE);
   }
 
 
@@ -208,15 +249,15 @@ public class DetectableAnnotationProcessor implements Processor {
     return classValues;
   }
 
-  private String createMethodTemplate(ExecutableElement executableElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
+  private String createMethod(ExecutableElement executableElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
     return handleTemplate(ImmutableMap.<String, String>builder()
         .put("NAME", executableElement.getSimpleName().toString())
         .put("RETURN_TYPE_NAME", executableElement.getReturnType().toString())
-        .put("RETURN_VALUE", createMethodReturnTemplate(executableElement, annotationValues))
-        .build(), METHOD_TEMPLATE);
+        .put("RETURN_VALUE", createMethodReturn(executableElement, annotationValues))
+        .build(), ANNOTATION_METHOD_TEMPLATE);
   }
 
-  private String createMethodReturnTemplate(ExecutableElement executableElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
+  private String createMethodReturn(ExecutableElement executableElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
     AnnotationValue value = annotationValues.get(executableElement);
 
     AnnotationValueVisitor<String, Void> annotationValueVisitor = new AnnotationValueVisitor<String, Void>() {
@@ -290,7 +331,7 @@ public class DetectableAnnotationProcessor implements Processor {
         Map<ExecutableElement, AnnotationValue> classValues = new HashMap<>(SimpleAnnotationMirror.of(((TypeElement) a.getAnnotationType().asElement()), a.getElementValues().entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getSimpleName().toString(), Map.Entry::getValue))).getElementValues());
         Map<ExecutableElement, AnnotationValue> instanceValues = new HashMap<>(a.getElementValues());
         classValues.putAll(instanceValues);
-        return createAnnotationTemplate(((TypeElement) a.getAnnotationType().asElement()), classValues, a.getAnnotationType().toString());
+        return createAnnotation(((TypeElement) a.getAnnotationType().asElement()), classValues, a.getAnnotationType().toString());
       }
 
       @Override
@@ -320,7 +361,7 @@ public class DetectableAnnotationProcessor implements Processor {
     return value.accept(annotationValueVisitor, null);
   }
 
-  private String createAnnotationTemplate(TypeElement annotationType, Map<ExecutableElement, AnnotationValue> annotationValues, String typeName) {
+  private String createAnnotation(TypeElement annotationType, Map<ExecutableElement, AnnotationValue> annotationValues, String typeName) {
     StringBuilder methods = new StringBuilder();
 
     for (Element enclosedElement : annotationType.getEnclosedElements()) {
@@ -329,7 +370,7 @@ public class DetectableAnnotationProcessor implements Processor {
       if (executableElement.getSimpleName().toString().equals("<init>") || enclosedElement.getSimpleName().toString().equals("<clinit>"))
         continue;
 
-      methods.append(createMethodTemplate(executableElement, annotationValues))
+      methods.append(createMethod(executableElement, annotationValues))
           .append(System.lineSeparator());
     }
 
@@ -354,12 +395,8 @@ public class DetectableAnnotationProcessor implements Processor {
    * {@inheritDoc}
    */
   public void finish(MethodSpec.Builder targetMethod) {
-
-    // Add a statement for all classes
-    this.found.forEach(string -> {
-      targetMethod.addStatement(string);
-    });
-
+    // Add sourcecode to auto generated class
+    this.found.forEach(targetMethod::addStatement);
   }
 
 
