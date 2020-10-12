@@ -98,6 +98,9 @@ public class UltralightWindowWebView
     this.databind = new Databind(DatabindConfiguration.builder()
         .automaticPrototype(autoBridgeJava)
         .build());
+
+    this.view.setViewListener(eventInterop);
+    this.view.setLoadListener(eventInterop);
   }
 
   @Override

@@ -81,7 +81,7 @@ public class UltralightWebGuiViewEventInterop implements UltralightViewListener,
         break;
     }
 
-    logger.log(logLevel, "({} in {}:{}:{}): {}", source.name(), source, lineNumber, columnNumber, message);
+    logger.log(logLevel, "({} in {}:{}:{}): {}", source, sourceId, lineNumber, columnNumber, message);
   }
 
   @Override
