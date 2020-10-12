@@ -31,6 +31,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class DefaultSessionService implements SessionService {
 
@@ -39,7 +40,7 @@ public abstract class DefaultSessionService implements SessionService {
 
   protected final Logger logger;
 
-  protected final Proxy minecraftProxy;
+  protected final Supplier<Proxy> minecraftProxySupplier;
 
   protected final RefreshTokenResult.Factory refreshTokenResultFactory;
   protected final AuthenticationResult.Factory authResultFactory;
@@ -61,11 +62,11 @@ public abstract class DefaultSessionService implements SessionService {
                                   SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
                                   AuthenticationResult.Factory authResultFactory,
                                   EventBus eventBus,
-                                  Proxy minecraftProxy,
+                                  Supplier<Proxy> minecraftProxySupplier,
                                   Consumer<SessionService> sessionRefresher) {
     this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
-    this.minecraftProxy = minecraftProxy;
+    this.minecraftProxySupplier = minecraftProxySupplier;
     this.profileSerializer = profileSerializer;
     this.logInEventFactory = logInEventFactory;
     this.tokenRefreshEventFactory = tokenRefreshEventFactory;
@@ -86,7 +87,7 @@ public abstract class DefaultSessionService implements SessionService {
         this.clientToken = UUID.randomUUID().toString().replace("-", "");
       }
 
-      this.authentication = new YggdrasilAuthenticationService(this.minecraftProxy, this.clientToken).createUserAuthentication(Agent.MINECRAFT);
+      this.authentication = new YggdrasilAuthenticationService(this.minecraftProxySupplier.get(), this.clientToken).createUserAuthentication(Agent.MINECRAFT);
     }
 
     return this.authentication;
@@ -261,18 +262,9 @@ public abstract class DefaultSessionService implements SessionService {
     try {
       authentication.logIn();
 
-      this.refreshSession();
+      this.fireLoginEvent(currentProfile);
 
-      GameProfile newProfile = this.getProfile();
-
-      if (this.logInEventFactory != null) {
-        SessionAccountLogInEvent event = currentProfile != null ?
-            this.logInEventFactory.create(currentProfile, newProfile) :
-            this.logInEventFactory.create(newProfile);
-        this.eventBus.fireEvent(event, Subscribe.Phase.POST);
-      }
-
-      return this.authResultFactory.createSuccess(newProfile);
+      return this.authResultFactory.createSuccess(this.getProfile());
     } catch (AuthenticationUnavailableException e) {
       return this.authResultFactory.createFailed(Type.AUTH_SERVER_OFFLINE);
     } catch (InvalidCredentialsException e) {
@@ -294,6 +286,7 @@ public abstract class DefaultSessionService implements SessionService {
     }
 
     RefreshableYggdrasilUserAuthentication refreshable = (RefreshableYggdrasilUserAuthentication) authentication;
+    GameProfile currentProfile = this.getProfile();
 
     try {
       JsonObject object = this.requestNewToken(accessToken);
@@ -310,11 +303,26 @@ public abstract class DefaultSessionService implements SessionService {
           profile.get("name").getAsString()
       ));
 
+      this.fireLoginEvent(currentProfile);
+
       return this.authResultFactory.createSuccess(this.getProfile());
     } catch (IOException e) {
       this.logger.error("Failed to log in using access token", e);
       return this.authResultFactory.createFailed(Type.AUTH_SERVER_OFFLINE);
     }
+  }
+
+  private void fireLoginEvent(GameProfile previousProfile) {
+    GameProfile newProfile = this.getProfile();
+
+    if (this.logInEventFactory != null) {
+      SessionAccountLogInEvent event = previousProfile != null ?
+          this.logInEventFactory.create(previousProfile, newProfile) :
+          this.logInEventFactory.create(newProfile);
+      this.eventBus.fireEvent(event, Subscribe.Phase.POST);
+    }
+
+    this.refreshSession();
   }
 
   @Override

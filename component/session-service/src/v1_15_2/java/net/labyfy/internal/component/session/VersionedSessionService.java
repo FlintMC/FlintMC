@@ -14,8 +14,10 @@ import net.labyfy.component.session.event.SessionTokenRefreshEvent;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
+import java.net.Proxy;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Singleton
 @Implement(value = SessionService.class, version = "1.15.2")
@@ -30,6 +32,7 @@ public class VersionedSessionService extends DefaultSessionService {
     minecraft.setSession(new net.minecraft.util.Session(name, uuid, accessToken,
         net.minecraft.util.Session.Type.MOJANG.toString()));
   };
+  private static final Supplier<Proxy> PROXY_SUPPLIER = () -> Minecraft.getInstance().getProxy();
 
   @Inject
   private VersionedSessionService(@InjectLogger Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
@@ -37,14 +40,14 @@ public class VersionedSessionService extends DefaultSessionService {
                                   SessionTokenRefreshEvent.Factory tokenRefreshEventFactory, AuthenticationResult.Factory authResultFactory,
                                   EventBus eventBus) {
     super(logger, refreshTokenResultFactory, profileSerializer, logInEventFactory, tokenRefreshEventFactory,
-        authResultFactory, eventBus, Minecraft.getInstance().getProxy(), REFRESHER);
+        authResultFactory, eventBus, PROXY_SUPPLIER, REFRESHER);
   }
 
   private VersionedSessionService(@InjectLogger Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
                                   GameProfileSerializer profileSerializer, AuthenticationResult.Factory authResultFactory,
                                   EventBus eventBus) {
     super(logger, refreshTokenResultFactory, profileSerializer, null, null,
-        authResultFactory, eventBus, Minecraft.getInstance().getProxy(), null);
+        authResultFactory, eventBus, PROXY_SUPPLIER, null);
   }
 
   @Override

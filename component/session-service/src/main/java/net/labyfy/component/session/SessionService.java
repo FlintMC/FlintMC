@@ -7,6 +7,9 @@ import java.util.UUID;
 /**
  * The SessionService can be used to change the minecraft account to be played with, get the current logged in account
  * and to refresh the access token which is used to login on servers.
+ * <p>
+ * It may not be used before the {@link net.labyfy.component.tasks.Tasks#POST_MINECRAFT_INITIALIZE} task has been
+ * called.
  */
 public interface SessionService {
 
