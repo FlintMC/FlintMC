@@ -1,7 +1,7 @@
 package net.labyfy.internal.component.transform.shadow;
 
 import javassist.*;
-import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -17,10 +17,10 @@ import java.util.Map;
 @Service(Shadow.class)
 public class ShadowService implements ServiceHandler<Shadow> {
 
-  private final Map<String, DetectableAnnotationProvider.AnnotationMeta<Shadow>> transforms = new HashMap<>();
+  private final Map<String, AnnotationMeta<Shadow>> transforms = new HashMap<>();
 
   @Override
-  public void discover(DetectableAnnotationProvider.AnnotationMeta<Shadow> identifierMeta) throws ServiceNotFoundException {
+  public void discover(AnnotationMeta<Shadow> identifierMeta) throws ServiceNotFoundException {
     transforms.put(identifierMeta.getAnnotation().value(), identifierMeta);
   }
 
@@ -29,17 +29,17 @@ public class ShadowService implements ServiceHandler<Shadow> {
     if (!this.transforms.containsKey(classTransformContext.getCtClass().getName())) return;
     CtClass ctClass = classTransformContext.getCtClass();
 
-    DetectableAnnotationProvider.AnnotationMeta<Shadow> identifierMeta = this.transforms.get(classTransformContext.getCtClass().getName());
+    AnnotationMeta<Shadow> identifierMeta = this.transforms.get(classTransformContext.getCtClass().getName());
     ClassPool classPool = classTransformContext.getCtClass().getClassPool();
-    classTransformContext.getCtClass().addInterface(classPool.get(identifierMeta.<DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier>getIdentifier().getName()));
+    classTransformContext.getCtClass().addInterface(classPool.get(identifierMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getName()));
     handleMethodProxies(identifierMeta, classPool, ctClass);
     handleFieldCreators(identifierMeta, ctClass);
     handleFieldGetters(identifierMeta, ctClass);
     handleFieldSetters(identifierMeta, ctClass);
   }
 
-  private void handleFieldCreators(DetectableAnnotationProvider.AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) {
-    for (DetectableAnnotationProvider.AnnotationMeta<FieldCreate> fieldCreateMeta : identifierMeta.getMetaData(FieldCreate.class)) {
+  private void handleFieldCreators(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) {
+    for (AnnotationMeta<FieldCreate> fieldCreateMeta : identifierMeta.getMetaData(FieldCreate.class)) {
       FieldCreate fieldCreate = fieldCreateMeta.getAnnotation();
       boolean exist = false;
       for (CtField field : ctClass.getFields()) {
@@ -69,10 +69,10 @@ public class ShadowService implements ServiceHandler<Shadow> {
     }
   }
 
-  private void handleFieldSetters(DetectableAnnotationProvider.AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) throws CannotCompileException, NotFoundException {
-    for (DetectableAnnotationProvider.AnnotationMeta<FieldSetter> fieldSetterMeta : identifierMeta.getMetaData(FieldSetter.class)) {
+  private void handleFieldSetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) throws CannotCompileException, NotFoundException {
+    for (AnnotationMeta<FieldSetter> fieldSetterMeta : identifierMeta.getMetaData(FieldSetter.class)) {
       FieldSetter fieldSetter = fieldSetterMeta.getAnnotation();
-      CtMethod method = fieldSetterMeta.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method = fieldSetterMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 1) {
@@ -85,10 +85,10 @@ public class ShadowService implements ServiceHandler<Shadow> {
     }
   }
 
-  private void handleFieldGetters(DetectableAnnotationProvider.AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) throws CannotCompileException, NotFoundException {
-    for (DetectableAnnotationProvider.AnnotationMeta<FieldGetter> fieldGetterMeta : identifierMeta.getMetaData(FieldGetter.class)) {
+  private void handleFieldGetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) throws CannotCompileException, NotFoundException {
+    for (AnnotationMeta<FieldGetter> fieldGetterMeta : identifierMeta.getMetaData(FieldGetter.class)) {
       FieldGetter fieldGetter = fieldGetterMeta.getAnnotation();
-      CtMethod method = fieldGetterMeta.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method = fieldGetterMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 0) {
@@ -98,10 +98,10 @@ public class ShadowService implements ServiceHandler<Shadow> {
     }
   }
 
-  private void handleMethodProxies(DetectableAnnotationProvider.AnnotationMeta<Shadow> identifierMeta, ClassPool classPool, CtClass ctClass) throws
+  private void handleMethodProxies(AnnotationMeta<Shadow> identifierMeta, ClassPool classPool, CtClass ctClass) throws
       NotFoundException {
-    for (DetectableAnnotationProvider.AnnotationMeta<MethodProxy> methodProxyMeta : identifierMeta.getMetaData(MethodProxy.class)) {
-      CtMethod method = methodProxyMeta.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+    for (AnnotationMeta<MethodProxy> methodProxyMeta : identifierMeta.getMetaData(MethodProxy.class)) {
+      CtMethod method = methodProxyMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       CtClass[] classes = new CtClass[parameters.length];

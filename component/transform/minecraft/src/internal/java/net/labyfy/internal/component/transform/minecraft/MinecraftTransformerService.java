@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
@@ -25,14 +25,14 @@ public class MinecraftTransformerService implements ServiceHandler<MinecraftTran
   }
 
   @Override
-  public void discover(DetectableAnnotationProvider.AnnotationMeta<MinecraftTransformer> identifierMeta) throws ServiceNotFoundException {
-    CtClass target = identifierMeta.<DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier>getIdentifier().getLocation();
+  public void discover(AnnotationMeta<MinecraftTransformer> identifierMeta) throws ServiceNotFoundException {
+    CtClass target = identifierMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getLocation();
     try {
       if (!target.subtypeOf(target.getClassPool().get(LateInjectedTransformer.class.getName()))) {
         throw new ServiceNotFoundException(new IllegalStateException("Class " + target.getName() + " does not implement " + LateInjectedTransformer.class.getName()));
       }
       LabyfyLauncherPlugin.getInstance()
-          .registerTransformer(identifierMeta.getAnnotation().priority(), InjectionHolder.getInjectedInstance(CtResolver.get(identifierMeta.<DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier>getIdentifier().getLocation())));
+          .registerTransformer(identifierMeta.getAnnotation().priority(), InjectionHolder.getInjectedInstance(CtResolver.get(identifierMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getLocation())));
     } catch (NotFoundException e) {
       throw new ServiceNotFoundException(e);
     }

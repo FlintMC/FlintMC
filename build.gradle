@@ -1,5 +1,3 @@
-import groovy.json.JsonOutput
-import org.apache.tools.ant.taskdefs.condition.Os
 import java.text.SimpleDateFormat
 
 group 'net.labyfy'
@@ -16,7 +14,7 @@ buildscript {
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
         classpath "net.labyfy:labyfy-gradle-javadocs-plugin:1.0.0"
-        classpath "net.labyfy:labyfy-gradle-plugin:2.0.1"
+        classpath "net.labyfy:labyfy-gradle-plugin:2.0.2"
     }
 
     repositories {
@@ -35,13 +33,14 @@ apply plugin: 'labyfy-gradle'
 // adds docyfy task
 apply plugin: 'labyfy-gradle-javadocs-plugin'
 
-labyfy{
-    projectFilter { true }
+labyfy {
+    projectFilter { !["annotation-processing", "autoload"].contains(it.name) }
     publishToken 'NzQzMjZkYTljMmU3NzlmMDU2NDQ3NTkz'
     runs{
         overrideMainClass 'net.labyfy.component.launcher.LabyLauncher'
     }
 }
+
 subprojects {
     task allDeps(type: DependencyReportTask) {}
 }

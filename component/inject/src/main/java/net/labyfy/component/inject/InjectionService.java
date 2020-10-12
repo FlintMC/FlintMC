@@ -7,7 +7,7 @@ import javassist.CtClass;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.*;
 
 import javax.inject.Inject;
@@ -42,23 +42,23 @@ public class InjectionService implements ServiceHandler<Annotation> {
   }
 
   @Override
-  public void discover(DetectableAnnotationProvider.AnnotationMeta annotationMeta) throws ServiceNotFoundException {
+  public void discover(AnnotationMeta annotationMeta) throws ServiceNotFoundException {
     if (annotationMeta.getAnnotation() instanceof Implement)
-      this.handleImplementAnnotation((DetectableAnnotationProvider.AnnotationMeta<Implement>) annotationMeta);
+      this.handleImplementAnnotation((AnnotationMeta<Implement>) annotationMeta);
 
     if (annotationMeta.getAnnotation() instanceof AssistedFactory)
-      this.handleAssistedFactoryAnnotation((DetectableAnnotationProvider.AnnotationMeta<AssistedFactory>) annotationMeta);
+      this.handleAssistedFactoryAnnotation((AnnotationMeta<AssistedFactory>) annotationMeta);
   }
 
-  private void handleAssistedFactoryAnnotation(DetectableAnnotationProvider.AnnotationMeta<AssistedFactory> annotationMeta) {
-    System.out.println("AssistedFactory " + annotationMeta.getAnnotation().value().getName() + " at " + annotationMeta.<DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier>getIdentifier().getLocation().getName());
+  private void handleAssistedFactoryAnnotation(AnnotationMeta<AssistedFactory> annotationMeta) {
+    System.out.println("AssistedFactory " + annotationMeta.getAnnotation().value().getName() + " at " + annotationMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getLocation().getName());
     AssistedFactory annotation = annotationMeta.getAnnotation();
-    assisted.put(annotationMeta.<DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier>getIdentifier().getLocation(), annotation);
+    assisted.put(annotationMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getLocation(), annotation);
     ignore.add(annotation.value());
   }
 
-  private void handleImplementAnnotation(DetectableAnnotationProvider.AnnotationMeta<Implement> annotationMeta) {
-    CtClass location = annotationMeta.<DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier>getIdentifier().getLocation();
+  private void handleImplementAnnotation(AnnotationMeta<Implement> annotationMeta) {
+    CtClass location = annotationMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getLocation();
     Implement annotation = annotationMeta.getAnnotation();
 
     System.out.println("Implement " + location.getName() + " " + annotation.value().getName());
@@ -68,7 +68,7 @@ public class InjectionService implements ServiceHandler<Annotation> {
 
     if (implementations.containsKey(annotation.value())) {
       //todo use String.format :)
-      throw new IllegalStateException("Cannot bind " + annotationMeta.<DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier>getIdentifier().getLocation().getName() + ". Implementation " + annotation.value() + " already provided by " + implementations.get(annotation.value()).getName() + ".");
+      throw new IllegalStateException("Cannot bind " + annotationMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getLocation().getName() + ". Implementation " + annotation.value() + " already provided by " + implementations.get(annotation.value()).getName() + ".");
     }
     implementations.put(annotation.value(), location);
   }

@@ -11,7 +11,7 @@ import net.labyfy.component.eventbus.event.subscribe.PreSubscribe;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.method.Executor;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
-import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -41,13 +41,15 @@ public class EventBusService implements ServiceHandler<Annotation> {
     this.factory = executorFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void discover(DetectableAnnotationProvider.AnnotationMeta<Annotation> annotationMeta)
+  public void discover(AnnotationMeta<Annotation> annotationMeta)
       throws ServiceNotFoundException {
 
     Annotation subscribe = annotationMeta.getAnnotation();
-    DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier identifier =
+    AnnotationMeta.MethodIdentifier identifier =
         annotationMeta.getIdentifier();
     CtMethod method = identifier.getLocation();
 
