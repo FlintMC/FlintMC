@@ -2,6 +2,7 @@ package net.labyfy.internal.webgui.ultralight.view;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.gui.event.*;
 import net.labyfy.component.gui.event.input.InputState;
 import net.labyfy.component.gui.event.input.Key;
@@ -13,14 +14,12 @@ import net.labyfy.component.render.shader.ShaderProgram;
 import net.labyfy.component.render.shader.ShaderUniform;
 import net.labyfy.component.render.vbo.*;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
+import net.labyfy.internal.webgui.ultralight.event.interop.UltralightWebGuiViewEventInterop;
 import net.labyfy.internal.webgui.ultralight.util.UltralightLabyfyBridge;
 import net.labymedia.ultralight.UltralightSurface;
 import net.labymedia.ultralight.UltralightView;
 import net.labymedia.ultralight.input.*;
 import net.labymedia.ultralight.math.IntRect;
-import net.labymedia.ultralight.plugin.view.MessageLevel;
-import net.labymedia.ultralight.plugin.view.MessageSource;
-import net.labymedia.ultralight.plugin.view.UltralightViewListener;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.ByteBuffer;
@@ -38,6 +37,7 @@ public class UltralightWindowWebView
   private final VertexArrayObject.Factory vaoFactory;
   private final VertexBufferObject.Factory vboFactory;
   private final VertexIndexObject.Factory eboFactory;
+  private final UltralightWebGuiViewEventInterop eventInterop;
 
   private VertexArrayObject vao;
   private VertexBufferObject vbo;
@@ -58,6 +58,7 @@ public class UltralightWindowWebView
           VertexArrayObject.Factory vaoFactory,
           VertexBufferObject.Factory vboFactory,
           VertexIndexObject.Factory eboFactory,
+          UltralightWebGuiViewEventInterop.Factory interopFactory,
           UltralightWebGuiController controller,
           @InjectLogger Logger logger,
           @Assisted("initialWidth") int initialWidth,
@@ -75,6 +76,7 @@ public class UltralightWindowWebView
     this.vaoFactory = vaoFactory;
     this.vboFactory = vboFactory;
     this.eboFactory = eboFactory;
+    this.eventInterop = interopFactory.create(this);
 
     this.shader = shaderFactory.create();
 
@@ -87,38 +89,6 @@ public class UltralightWindowWebView
     } catch (ShaderException e) {
       logger.error("Failed load shaders:", e);
     }
-
-    this.view.setViewListener(new UltralightViewListener() {
-      @Override
-      public void onChangeTitle(String title) {
-
-      }
-
-      @Override
-      public void onChangeURL(String url) {
-
-      }
-
-      @Override
-      public void onChangeTooltip(String tooltip) {
-
-      }
-
-      @Override
-      public void onChangeCursor(UltralightCursor cursor) {
-
-      }
-
-      @Override
-      public void onAddConsoleMessage(MessageSource source, MessageLevel level, String message, long lineNumber, long columnNumber, String sourceId) {
-        logger.info("[{}({}) '{}:{}:{}']: {}", level.name(), source.name(), sourceId, lineNumber, columnNumber, message);
-      }
-
-      @Override
-      public UltralightView onCreateChildView(String openerUrl, String targetUrl, boolean isPopup, IntRect popupRect) {
-        return null;
-      }
-    });
   }
 
   @Override
@@ -192,7 +162,12 @@ public class UltralightWindowWebView
   }
 
   @Override
-  public void close() {}
+  public void close() {
+    eventInterop.notifyClose(Subscribe.Phase.PRE);
+    this.view.setLoadListener(null);
+    this.view.setViewListener(null);
+    eventInterop.notifyClose(Subscribe.Phase.POST);
+  }
 
   @Override
   public void setTransparent(boolean transparent) {
@@ -202,6 +177,11 @@ public class UltralightWindowWebView
   @Override
   public void setURL(String url) {
     this.view.loadURL(url);
+  }
+
+  @Override
+  public String getURL() {
+    return this.view.url();
   }
 
   @Override

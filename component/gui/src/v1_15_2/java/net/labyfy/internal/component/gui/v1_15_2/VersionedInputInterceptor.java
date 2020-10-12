@@ -1,31 +1,21 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
-import com.google.inject.name.Named;
 import javassist.CannotCompileException;
-import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.gui.InputInterceptor;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.mappings.ClassMapping;
-import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.stereotype.type.Type;
-import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.ReportedException;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryStack;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.DoubleBuffer;
 
 /**

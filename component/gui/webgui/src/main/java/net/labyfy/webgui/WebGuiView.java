@@ -28,6 +28,13 @@ public interface WebGuiView {
   void setURL(String url);
 
   /**
+   * Retrieves the current URL of the view.
+   *
+   * @return The current view URL
+   */
+  String getURL();
+
+  /**
    * Changes the scale of the view.
    *
    * @param scale The new scale
