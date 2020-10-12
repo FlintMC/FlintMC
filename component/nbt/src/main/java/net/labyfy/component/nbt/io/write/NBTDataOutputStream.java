@@ -7,6 +7,10 @@ import net.labyfy.component.nbt.NBT;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * A data output stream lets an application write primitive Java data types and named binary tags to an output stream
+ * in a portable way. An application can then use a data input stream to read the data back in.
+ */
 public interface NBTDataOutputStream {
 
   /**

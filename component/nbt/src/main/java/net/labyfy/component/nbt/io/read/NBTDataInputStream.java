@@ -4,11 +4,15 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.commons.util.Pair;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.nbt.NBT;
-import net.labyfy.component.nbt.NBTCreator;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 
+/**
+ * A data input stream lets an application read primitive Java data types and named binary tags from an
+ * underlying input stream in a machine-independent way. An application ues a data output stream to write data that can
+ * later be read by a data input stream.
+ */
 public interface NBTDataInputStream {
 
   /**
@@ -45,29 +49,9 @@ public interface NBTDataInputStream {
      * Creates a new {@link NBTDataInputStream} with the given parameters.
      *
      * @param inputStream The input stream to read.
-     * @param nbtCreator  The named binary tag creator to creates tags.a
      * @return A created input stream.
      */
-    NBTDataInputStream create(
-            @Assisted("inputStream") DataInputStream inputStream,
-            @Assisted("nbtCreator") NBTCreator nbtCreator
-    );
-
-  }
-
-  /**
-   * A service interface for creating {@link NBTDataInputStream}.
-   */
-  interface Provider {
-
-    /**
-     * Creates a new {@link NBTDataInputStream}.
-     *
-     * @param inputStream The input stream to read.
-     * @return A created input stream.
-     * @see Factory#create(DataInputStream, NBTCreator)
-     */
-    NBTDataInputStream get(DataInputStream inputStream);
+    NBTDataInputStream create(@Assisted("inputStream") DataInputStream inputStream);
 
   }
 

@@ -44,13 +44,11 @@ public interface NBTWriter {
     /**
      * Creates a new {@link NBTWriter} with the given parameters.
      *
-     * @param factory      The factory for the output stream.
      * @param outputStream The output stream for the datas.
      * @param compressed   {@code true} if the data should be compressed, otherwise {@code false}.
      * @return A created named binary tag writer.
      */
     NBTWriter create(
-            @Assisted("factory") NBTDataOutputStream.Factory factory,
             @Assisted("output") OutputStream outputStream,
             @Assisted("compressed") boolean compressed
     );
@@ -58,13 +56,11 @@ public interface NBTWriter {
     /**
      * Creates a new {@link NBTWriter} with the given parameters.
      *
-     * @param factory    The factory for the output stream.
      * @param file       The output for the datas.
      * @param compressed {@code true} if the data should be compressed, otherwise {@code false}.
      * @return A created named binary tag writer.
      */
     NBTWriter create(
-            @Assisted("factory") NBTDataOutputStream.Factory factory,
             @Assisted("output") File file,
             @Assisted("compressed") boolean compressed
     );

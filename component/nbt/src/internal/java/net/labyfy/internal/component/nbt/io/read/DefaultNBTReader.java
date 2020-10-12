@@ -21,16 +21,16 @@ public class DefaultNBTReader implements NBTReader {
 
   @AssistedInject
   private DefaultNBTReader(
-          @Assisted("provider") NBTDataInputStream.Provider provider,
+          NBTDataInputStream.Factory factory,
           @Assisted("input") InputStream inputStream,
           @Assisted("compressed") boolean compressed
   ) throws IOException {
-    this.inputStream = provider.get(new DataInputStream(compressed ? new GZIPInputStream(inputStream) : inputStream));
+    this.inputStream = factory.create(new DataInputStream(compressed ? new GZIPInputStream(inputStream) : inputStream));
   }
 
   @AssistedInject
   private DefaultNBTReader(
-          @Assisted("provider") NBTDataInputStream.Provider provider,
+          NBTDataInputStream.Factory provider,
           @Assisted("file") File file,
           @Assisted("compressed") boolean compressed
   ) throws IOException {

@@ -25,7 +25,7 @@ public class DefaultNBTDataInputStream implements NBTDataInputStream {
   @AssistedInject
   private DefaultNBTDataInputStream(
           @Assisted("inputStream") DataInputStream dataInputStream,
-          @Assisted("nbtCreator") NBTCreator nbtCreator
+          NBTCreator nbtCreator
   ) {
     this.dataInputStream = dataInputStream;
     this.nbtCreator = nbtCreator;

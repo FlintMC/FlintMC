@@ -53,13 +53,11 @@ public interface NBTReader {
     /**
      * Creates a new {@link NBTReader} with the given parameters.
      *
-     * @param provider    The provider for the nbt input stream.
      * @param inputStream The input stream to read the data.
      * @param compressed  {@code true} if the data was compressed otherwise {@code false}.
      * @return A created named binary tag reader.
      */
     NBTReader create(
-            @Assisted("provider") NBTDataInputStream.Provider provider,
             @Assisted("input") InputStream inputStream,
             @Assisted("compressed") boolean compressed
     );
@@ -67,13 +65,11 @@ public interface NBTReader {
     /**
      * Creates a new {@link NBTReader} with the given parameters.
      *
-     * @param provider   The provider for the nbt input stream.
      * @param file       The input to read the data.
      * @param compressed {@code true} if the data was compressed otherwise {@code false}.
      * @return A created named binary tag reader.
      */
     NBTReader create(
-            @Assisted("provider") NBTDataInputStream.Provider provider,
             @Assisted("file") File file,
             @Assisted("compressed") boolean compressed
     );

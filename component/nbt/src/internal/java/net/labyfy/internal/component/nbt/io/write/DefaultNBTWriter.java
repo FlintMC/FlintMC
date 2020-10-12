@@ -20,7 +20,7 @@ public class DefaultNBTWriter implements NBTWriter {
 
   @AssistedInject
   private DefaultNBTWriter(
-          @Assisted("factory") NBTDataOutputStream.Factory factory,
+          NBTDataOutputStream.Factory factory,
           @Assisted("output") OutputStream outputStream,
           @Assisted("compressed") boolean compressed
   ) throws IOException {
@@ -29,7 +29,7 @@ public class DefaultNBTWriter implements NBTWriter {
 
   @AssistedInject
   private DefaultNBTWriter(
-          @Assisted("factory") NBTDataOutputStream.Factory factory,
+          NBTDataOutputStream.Factory factory,
           @Assisted("output") File file,
           @Assisted("compressed") boolean compressed
   ) throws IOException {
