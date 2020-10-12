@@ -1,0 +1,75 @@
+package net.labyfy.internal.component.nbt.io.read;
+
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.component.commons.util.Pair;
+import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.nbt.NBT;
+import net.labyfy.component.nbt.io.read.NBTDataInputStream;
+import net.labyfy.component.nbt.io.read.NBTReader;
+
+import java.io.*;
+import java.util.zip.GZIPInputStream;
+
+/**
+ * Default implementation of the {@link NBTReader}.
+ */
+@Implement(NBTReader.class)
+public class DefaultNBTReader implements NBTReader {
+
+  private final NBTDataInputStream inputStream;
+
+  @AssistedInject
+  private DefaultNBTReader(
+          @Assisted("provider") NBTDataInputStream.Provider provider,
+          @Assisted("input") InputStream inputStream,
+          @Assisted("compressed") boolean compressed
+  ) throws IOException {
+    this.inputStream = provider.get(new DataInputStream(compressed ? new GZIPInputStream(inputStream) : inputStream));
+  }
+
+  @AssistedInject
+  private DefaultNBTReader(
+          @Assisted("provider") NBTDataInputStream.Provider provider,
+          @Assisted("file") File file,
+          @Assisted("compressed") boolean compressed
+  ) throws IOException {
+    this(provider, new BufferedInputStream(new FileInputStream(file)), compressed);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Pair<String, NBT> readNamed() throws IOException {
+    return this.inputStream.readFullyFormedTag();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public NBT read() throws IOException {
+    return this.readNamed().getSecond();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public NBT readRaw(int identifier) throws IOException {
+    return this.inputStream.readTag(identifier);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void close() {
+    try {
+      this.inputStream.getDataInputStream().close();
+    } catch (IOException exception) {
+      exception.printStackTrace();
+    }
+  }
+}
