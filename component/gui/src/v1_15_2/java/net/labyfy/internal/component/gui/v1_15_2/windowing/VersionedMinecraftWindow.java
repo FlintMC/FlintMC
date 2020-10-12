@@ -12,7 +12,8 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 @Singleton
 @Implement(value = MinecraftWindow.class, version = "1.15.2")
@@ -156,6 +157,11 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
   @Override
   public void render() {
+    if(handle == 0) {
+      // Minecraft might call this method once more time even after the window has been closed already
+      return;
+    }
+
     glfwMakeContextCurrent(ensureHandle());
 
     // Render all intrusive renderers first

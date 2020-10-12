@@ -26,6 +26,7 @@ import net.labymedia.ultralight.math.IntRect;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import static org.lwjgl.opengl.GL33.*;
 
@@ -422,6 +423,24 @@ public class UltralightWindowWebView
           databind.getConversionUtils().toJavascript(context, value, clazz);
       globalObject.setProperty(key, converted, JavascriptPropertyAttributes.READ_ONLY);
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+
+    if(o instanceof UltralightMainWebGuiView) {
+      o = ((UltralightMainWebGuiView) o).getWindowWebView();
+    }
+
+    if (o == null || getClass() != o.getClass()) return false;
+    UltralightWindowWebView that = (UltralightWindowWebView) o;
+    return view.getHandle() == that.view.getHandle();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(view.getHandle());
   }
 
   @AssistedFactory(UltralightWindowWebView.class)

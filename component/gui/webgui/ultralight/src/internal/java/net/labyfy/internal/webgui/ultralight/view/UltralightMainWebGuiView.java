@@ -145,4 +145,22 @@ public class UltralightMainWebGuiView
   public <T> void setGlobalJavascriptObject(String key, T value, Class<? extends T> clazz) {
     this.windowWebView.setGlobalJavascriptObject(key, value, clazz);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if(o instanceof UltralightMainWebGuiView) {
+      return ((UltralightMainWebGuiView) o).windowWebView.equals(windowWebView);
+    }
+
+    return windowWebView.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return this.windowWebView.hashCode();
+  }
+
+  public UltralightWindowWebView getWindowWebView() {
+    return windowWebView;
+  }
 }

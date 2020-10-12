@@ -10,7 +10,7 @@ import net.minecraft.client.multiplayer.ServerList;
 
 /** {@inheritDoc} */
 @Singleton
-@Implement(value = ServerList.class, version = "1.15.2")
+@Implement(value = net.labyfy.component.server.ServerList .class, version = "1.15.2")
 public class VersionedServerList implements net.labyfy.component.server.ServerList {
 
   private final ServerList mcServerList;
