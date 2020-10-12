@@ -45,7 +45,7 @@ public class DetectableAnnotationProcessor implements Processor {
    */
   public MethodSpec.Builder createMethod() {
     ClassName listClass = ClassName.get(List.class);
-    ClassName foundAnnotationClass = ClassName.get(DetectableAnnotationProvider.AnnotationMeta.class);
+    ClassName foundAnnotationClass = ClassName.get(AnnotationMeta.class);
 
     // Create a method with the signature
     return MethodSpec.methodBuilder("register")
@@ -83,7 +83,7 @@ public class DetectableAnnotationProcessor implements Processor {
     String annotationTemplate = createAnnotationTemplate(annotationType, collectAnnotationData(annotationType, annotatedElement), annotationType.toString());
     StringBuilder output = new StringBuilder();
     output
-        .append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta(javax.lang.model.element.ElementKind.")
+        .append("new net.labyfy.component.processing.autoload.AnnotationMeta(javax.lang.model.element.ElementKind.")
         .append(annotatedElement.getKind().name())
         .append(", ");
 
@@ -91,7 +91,7 @@ public class DetectableAnnotationProcessor implements Processor {
       case CLASS:
       case ANNOTATION_TYPE:
       case INTERFACE:
-        output.append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier(\"")
+        output.append("new net.labyfy.component.processing.autoload.AnnotationMeta.ClassIdentifier(\"")
             .append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement).toString()
                 .replace("$", "$$")
             )
@@ -99,7 +99,7 @@ public class DetectableAnnotationProcessor implements Processor {
         break;
       case METHOD:
         output
-            .append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier(\"")
+            .append("new net.labyfy.component.processing.autoload.AnnotationMeta.MethodIdentifier(\"")
             .append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement.getEnclosingElement()).toString()
                 .replace("$", "$$")
             )

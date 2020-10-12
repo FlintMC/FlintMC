@@ -7,6 +7,7 @@ import net.labyfy.component.commons.util.Pair;
 import net.labyfy.component.inject.InjectionService;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.component.stereotype.service.*;
@@ -22,7 +23,7 @@ public class LabyfyFrameworkInitializer {
 
 
   private final Map<CtClass, ServiceHandler> serviceHandlerInstances = new HashMap<>();
-  private final Collection<Pair<DetectableAnnotationProvider.AnnotationMeta<?>, CtClass> > discoveredMeta = new HashSet<>();
+  private final Collection<Pair<AnnotationMeta<?>, CtClass>> discoveredMeta = new HashSet<>();
 
 
   @Inject
@@ -57,10 +58,10 @@ public class LabyfyFrameworkInitializer {
     for (Pair<Service, CtClass> pair : services) {
       Service service = pair.getFirst();
       for (Class<? extends Annotation> annotationType : service.value()) {
-        for (Pair<DetectableAnnotationProvider.AnnotationMeta<?>, Object> annotationMetaObjectPair : serviceRepository.getAnnotations().get(annotationType)) {
+        for (Pair<AnnotationMeta<?>, Object> annotationMetaObjectPair : serviceRepository.getAnnotations().get(annotationType)) {
           try {
-            Pair<DetectableAnnotationProvider.AnnotationMeta<?>, CtClass> serviceMetaPair = new Pair<>(annotationMetaObjectPair.getFirst(), pair.getSecond());
-            if(discoveredMeta.contains(serviceMetaPair))continue;
+            Pair<AnnotationMeta<?>, CtClass> serviceMetaPair = new Pair<>(annotationMetaObjectPair.getFirst(), pair.getSecond());
+            if (discoveredMeta.contains(serviceMetaPair)) continue;
             discoveredMeta.add(serviceMetaPair);
             if (!serviceHandlerInstances.containsKey(pair.getSecond())) {
               serviceHandlerInstances.put(pair.getSecond(), InjectionHolder.getInjectedInstance(CtResolver.get(pair.getSecond())));
@@ -76,28 +77,28 @@ public class LabyfyFrameworkInitializer {
   }
 
   private void prepareServices(ServiceRepository serviceRepository) throws NotFoundException {
-    List<DetectableAnnotationProvider.AnnotationMeta> annotations = getAnnotations();
-    for (DetectableAnnotationProvider.AnnotationMeta annotationMeta : annotations) {
+    List<AnnotationMeta> annotations = getAnnotations();
+    for (AnnotationMeta annotationMeta : annotations) {
       if (annotationMeta.getAnnotation().annotationType().equals(Service.class)) {
-        serviceRepository.registerService((Service) annotationMeta.getAnnotation(), ClassPool.getDefault().get(((DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+        serviceRepository.registerService((Service) annotationMeta.getAnnotation(), ClassPool.getDefault().get(((AnnotationMeta.ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
       } else if (annotationMeta.getAnnotation().annotationType().equals(Services.class)) {
         for (Service service : ((Services) annotationMeta.getAnnotation()).value()) {
-          serviceRepository.registerService(service, ClassPool.getDefault().get(((DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+          serviceRepository.registerService(service, ClassPool.getDefault().get(((AnnotationMeta.ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
         }
       }
     }
 
-    for (DetectableAnnotationProvider.AnnotationMeta annotationMeta : annotations) {
+    for (AnnotationMeta annotationMeta : annotations) {
       if (annotationMeta.getAnnotation().annotationType().equals(Service.class) || annotationMeta.getAnnotation().annotationType().equals(Services.class))
         continue;
-      if (annotationMeta.getIdentifier() instanceof DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier) {
+      if (annotationMeta.getIdentifier() instanceof AnnotationMeta.ClassIdentifier) {
         serviceRepository.registerClassAnnotation(
             annotationMeta,
-            ((DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier) (annotationMeta.getIdentifier())).getLocation()
+            ((AnnotationMeta.ClassIdentifier) (annotationMeta.getIdentifier())).getLocation()
         );
-      } else if (annotationMeta.getIdentifier() instanceof DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier) {
+      } else if (annotationMeta.getIdentifier() instanceof AnnotationMeta.MethodIdentifier) {
 
-        DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier identifier = (DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier) annotationMeta.getIdentifier();
+        AnnotationMeta.MethodIdentifier identifier = (AnnotationMeta.MethodIdentifier) annotationMeta.getIdentifier();
 
         CtClass[] parameters = new CtClass[identifier.getParameters().length];
         for (int i = 0; i < parameters.length; i++) {
@@ -108,8 +109,8 @@ public class LabyfyFrameworkInitializer {
     }
   }
 
-  private List<DetectableAnnotationProvider.AnnotationMeta> getAnnotations() {
-    List<DetectableAnnotationProvider.AnnotationMeta> annotationMetas = new ArrayList<>();
+  private List<AnnotationMeta> getAnnotations() {
+    List<AnnotationMeta> annotationMetas = new ArrayList<>();
 
     Set<DetectableAnnotationProvider> discover = ExtendedServiceLoader.get(DetectableAnnotationProvider.class).discover(LaunchController.getInstance().getRootLoader());
     discover.forEach(detectableAnnotationProvider -> detectableAnnotationProvider.register(annotationMetas));

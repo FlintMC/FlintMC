@@ -8,7 +8,7 @@ import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
@@ -62,11 +62,11 @@ public class ClassTransformService implements ServiceHandler<ClassTransform>, La
   }
 
   @Override
-  public void discover(DetectableAnnotationProvider.AnnotationMeta<ClassTransform> identifierMeta) throws ServiceNotFoundException {
+  public void discover(AnnotationMeta<ClassTransform> identifierMeta) throws ServiceNotFoundException {
     Collection<Predicate<CtClass>> filters = new HashSet<>();
     ClassTransform classTransformAnnotation = identifierMeta.getAnnotation();
 
-    for (DetectableAnnotationProvider.AnnotationMeta<CtClassFilter> ctClassFilter : identifierMeta.getMetaData(CtClassFilter.class)) {
+    for (AnnotationMeta<CtClassFilter> ctClassFilter : identifierMeta.getMetaData(CtClassFilter.class)) {
       filters.add(ctClass -> {
         CtClassFilter classFilterAnnotation = ctClassFilter.getAnnotation();
         try {
@@ -91,8 +91,8 @@ public class ClassTransformService implements ServiceHandler<ClassTransform>, La
             InjectionHolder.getInjectedInstance(
                 classTransformAnnotation.classNameResolver()),
             classTransformAnnotation,
-            identifierMeta.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation(),
-            identifierMeta.<DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier>getIdentifier().getLocation().getDeclaringClass()));
+            identifierMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation(),
+            identifierMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation().getDeclaringClass()));
   }
 
 
