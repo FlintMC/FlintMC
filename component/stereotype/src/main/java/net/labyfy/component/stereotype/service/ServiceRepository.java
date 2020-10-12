@@ -3,9 +3,8 @@ package net.labyfy.component.stereotype.service;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import javassist.CtClass;
-import javassist.CtMethod;
 import net.labyfy.component.commons.util.Pair;
-import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -15,7 +14,7 @@ import java.lang.annotation.Annotation;
 public class ServiceRepository {
 
   private final Multimap<Class<? extends Annotation>, Pair<Service, CtClass>> serviceHandlers;
-  private final Multimap<Class<? extends Annotation>, Pair<DetectableAnnotationProvider.AnnotationMeta<?>, Object>> annotations;
+  private final Multimap<Class<? extends Annotation>, AnnotationMeta<?>> annotations;
 
   @Inject
   private ServiceRepository() {
@@ -33,15 +32,11 @@ public class ServiceRepository {
     this.serviceHandlers.put(annotation, new Pair<>(service, ctClass));
   }
 
-  public void registerClassAnnotation(DetectableAnnotationProvider.AnnotationMeta<?> annotationMeta, CtClass ctClass) {
-    this.annotations.put(annotationMeta.getAnnotation().annotationType(), new Pair<>(annotationMeta, ctClass));
+  public void registerAnnotation(AnnotationMeta<?> annotationMeta) {
+    this.annotations.put(annotationMeta.getAnnotation().annotationType(), annotationMeta);
   }
 
-  public void registerMethodAnnotation(DetectableAnnotationProvider.AnnotationMeta<?> annotationMeta, CtMethod ctMethod) {
-    this.annotations.put(annotationMeta.getAnnotation().annotationType(), new Pair<>(annotationMeta, ctMethod));
-  }
-
-  public Multimap<Class<? extends Annotation>, Pair<DetectableAnnotationProvider.AnnotationMeta<?>, Object>> getAnnotations() {
+  public Multimap<Class<? extends Annotation>, AnnotationMeta<?>> getAnnotations() {
     return HashMultimap.create(annotations);
   }
 

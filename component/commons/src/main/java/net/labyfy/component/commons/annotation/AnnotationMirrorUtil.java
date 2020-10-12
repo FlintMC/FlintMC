@@ -2,6 +2,7 @@ package net.labyfy.component.commons.annotation;
 
 import javax.lang.model.element.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for working with annotations.
@@ -44,6 +45,10 @@ public class AnnotationMirrorUtil {
       }
     }
     return null;
+  }
+
+  public static Map<String, AnnotationValue> getElementValuesByName(AnnotationMirror annotationMirror) {
+    return annotationMirror.getElementValues().entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getSimpleName().toString(), Map.Entry::getValue));
   }
 
   /**

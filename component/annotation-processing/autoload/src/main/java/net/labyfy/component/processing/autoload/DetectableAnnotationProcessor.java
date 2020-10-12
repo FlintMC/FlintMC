@@ -7,6 +7,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import net.labyfy.component.commons.annotation.AnnotationMirrorUtil;
+import net.labyfy.component.commons.util.Pair;
 import net.labyfy.component.processing.Processor;
 import net.labyfy.component.processing.ProcessorState;
 
@@ -45,7 +46,7 @@ public class DetectableAnnotationProcessor implements Processor {
    */
   public MethodSpec.Builder createMethod() {
     ClassName listClass = ClassName.get(List.class);
-    ClassName foundAnnotationClass = ClassName.get(DetectableAnnotationProvider.AnnotationMeta.class);
+    ClassName foundAnnotationClass = ClassName.get(AnnotationMeta.class);
 
     // Create a method with the signature
     return MethodSpec.methodBuilder("register")
@@ -69,21 +70,20 @@ public class DetectableAnnotationProcessor implements Processor {
    */
   public void accept(TypeElement annotationType) {
     for (Element annotatedElement : ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(annotationType)) {
-      String parsedAnnotation = parseAnnotation(annotationType, annotatedElement);
+      String parsedAnnotation = parseAnnotationMeta(annotationType, annotatedElement);
       if (parsedAnnotation.isEmpty()) continue;
-
       this.found.add("list.add(" + parsedAnnotation + ")");
     }
 
   }
 
-  private String parseAnnotation(TypeElement annotationType, Element annotatedElement) {
+  private String parseAnnotationMeta(TypeElement annotationType, Element annotatedElement) {
     if (annotationType.getAnnotation(DetectableAnnotation.class) == null) return "";
 
     String annotationTemplate = createAnnotationTemplate(annotationType, collectAnnotationData(annotationType, annotatedElement), annotationType.toString());
     StringBuilder output = new StringBuilder();
     output
-        .append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta(javax.lang.model.element.ElementKind.")
+        .append("new net.labyfy.component.processing.autoload.AnnotationMeta(javax.lang.model.element.ElementKind.")
         .append(annotatedElement.getKind().name())
         .append(", ");
 
@@ -91,7 +91,7 @@ public class DetectableAnnotationProcessor implements Processor {
       case CLASS:
       case ANNOTATION_TYPE:
       case INTERFACE:
-        output.append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta.ClassIdentifier(\"")
+        output.append("new net.labyfy.component.processing.autoload.AnnotationMeta.ClassIdentifier(\"")
             .append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement).toString()
                 .replace("$", "$$")
             )
@@ -99,7 +99,7 @@ public class DetectableAnnotationProcessor implements Processor {
         break;
       case METHOD:
         output
-            .append("new net.labyfy.component.processing.autoload.DetectableAnnotationProvider.AnnotationMeta.MethodIdentifier(\"")
+            .append("new net.labyfy.component.processing.autoload.AnnotationMeta.MethodIdentifier(\"")
             .append(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getBinaryName((TypeElement) annotatedElement.getEnclosingElement()).toString()
                 .replace("$", "$$")
             )
@@ -144,12 +144,11 @@ public class DetectableAnnotationProcessor implements Processor {
     output
         .append(annotationTemplate);
 
-    for (TypeElement metaElement : getAnnotationSubMetaTypes(annotationType)) {
-      AnnotationMirror annotationMirror = AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, metaElement.getQualifiedName().toString());
-      if (annotationMirror == null) continue;
+    for (Pair<Element, AnnotationMirror> pair : getAnnotationSubMetaMirrors(annotationType, annotatedElement)) {
+      if (pair.getSecond() == null) continue;
 
       output.append(", ")
-          .append(parseAnnotation(metaElement, annotatedElement));
+          .append(parseAnnotationMeta(((TypeElement) pair.getSecond().getAnnotationType().asElement()), pair.getFirst()));
     }
 
     output.append(")");
@@ -157,24 +156,44 @@ public class DetectableAnnotationProcessor implements Processor {
   }
 
 
-  private Collection<TypeElement> getAnnotationSubMetaTypes(TypeElement annotationType) {
-    TypeElement metaTypeElement = ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement(DetectableAnnotation.class.getName());
-    AnnotationMirror metaAnnotationMirror = annotationType.getAnnotationMirrors().stream().filter(annotationMirror -> annotationMirror.getAnnotationType().asElement().asType().equals(metaTypeElement.asType())).findAny().orElse(null);
+  /**
+   * Collects all meta data of an annotation associated with their target.
+   * This can be used to implement meta that is not present on the same {@link Element}
+   * but on one of its children.
+   * <p>
+   * Currently only metadata that is present on the same element as their parent can be obtained.
+   *
+   * @param annotationType   the parent annotation type to look for. Must be annotated with {@link DetectableAnnotation}
+   * @param annotatedElement the location where to look for annotationType
+   * @return the direct metadata for annotationType on annotatedElement
+   */
+  private Collection<Pair<Element, AnnotationMirror>> getAnnotationSubMetaMirrors(TypeElement annotationType, Element annotatedElement) {
+    //get the type of DetectableAnnotation
+    TypeElement detectableAnnotationType = ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement(DetectableAnnotation.class.getName());
 
-    List<TypeElement> metaClasses = new ArrayList<>();
-    if (metaAnnotationMirror != null) {
-      AnnotationMirror annotationMirror = SimpleAnnotationMirror.of(metaTypeElement, metaAnnotationMirror.getElementValues().entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getSimpleName().toString(), Map.Entry::getValue)));
-      AnnotationValue metaData = annotationMirror.getElementValues().get(annotationMirror.getElementValues().keySet().stream().filter(executableElement -> executableElement.getSimpleName().toString().equals("metaData")).findAny().get());
-      if (metaData != null) {
-        ((List<AnnotationValue>) metaData.getValue())
-            .stream()
-            .map(AnnotationValue::getValue)
-            .map(DeclaredType.class::cast)
-            .map(DeclaredType::asElement)
-            .map(TypeElement.class::cast)
-            .forEach(metaClasses::add);
-      }
+    //get the DetectableAnnotation of the target annotation type
+    AnnotationMirror detectableAnnotationMirror = AnnotationMirrorUtil.getAnnotationMirror(annotationType, DetectableAnnotation.class.getName());
+
+    if (detectableAnnotationMirror == null) {
+      //we assert that this annotation is annotated with DetectableAnnotation
+      throw new AssertionError(annotationType + " must be annotated with " + DetectableAnnotation.class);
     }
+
+    List<Pair<Element, AnnotationMirror>> metaClasses = new ArrayList<>();
+    //Merge detectableAnnotationMirror with default class values
+    AnnotationMirror mergedDetectableAnnotationMirror = SimpleAnnotationMirror.of(detectableAnnotationType, AnnotationMirrorUtil.getElementValuesByName(detectableAnnotationMirror));
+    AnnotationValue metaData = mergedDetectableAnnotationMirror.getElementValues().get(mergedDetectableAnnotationMirror.getElementValues().keySet().stream().filter(executableElement -> executableElement.getSimpleName().toString().equals("metaData")).findAny().get());
+    if (metaData == null) return metaClasses;
+
+    //collect annotated elements with its target elements
+    ((List<AnnotationValue>) metaData.getValue())
+        .stream()
+        .map(AnnotationValue::getValue)
+        .map(DeclaredType.class::cast)
+        .map(DeclaredType::asElement)
+        .map(TypeElement.class::cast)
+        .map(typeElement -> new Pair<>(annotatedElement, AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, typeElement.getQualifiedName().toString())))
+        .forEach(metaClasses::add);
     return metaClasses;
   }
 
