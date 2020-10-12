@@ -2,6 +2,7 @@ package net.labyfy.internal.component.nbt.serializer;
 
 import com.google.gson.*;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.nbt.*;
 import net.labyfy.component.nbt.array.NBTByteArray;
@@ -14,6 +15,7 @@ import java.util.Map;
 /**
  * Default implementation of the {@link NBTSerializer}.
  */
+@Singleton
 @Implement(NBTSerializer.class)
 public class DefaultNBTSerializer implements NBTSerializer {
 
