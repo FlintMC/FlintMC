@@ -16,9 +16,12 @@ import net.labyfy.component.render.vbo.*;
 import net.labyfy.internal.webgui.ultralight.UltralightWebGuiController;
 import net.labyfy.internal.webgui.ultralight.event.interop.UltralightWebGuiViewEventInterop;
 import net.labyfy.internal.webgui.ultralight.util.UltralightLabyfyBridge;
+import net.labymedia.ultralight.Databind;
+import net.labymedia.ultralight.DatabindConfiguration;
 import net.labymedia.ultralight.UltralightSurface;
 import net.labymedia.ultralight.UltralightView;
 import net.labymedia.ultralight.input.*;
+import net.labymedia.ultralight.javascript.*;
 import net.labymedia.ultralight.math.IntRect;
 import org.apache.logging.log4j.Logger;
 
@@ -50,20 +53,22 @@ public class UltralightWindowWebView
   private int height;
 
   private final ShaderProgram shader;
+  private final Databind databind;
 
   @AssistedInject
   protected UltralightWindowWebView(
-          ShaderProgram.Factory shaderFactory,
-          ShaderUniform.Factory uniformFactory,
-          VertexArrayObject.Factory vaoFactory,
-          VertexBufferObject.Factory vboFactory,
-          VertexIndexObject.Factory eboFactory,
-          UltralightWebGuiViewEventInterop.Factory interopFactory,
-          UltralightWebGuiController controller,
-          @InjectLogger Logger logger,
-          @Assisted("initialWidth") int initialWidth,
-          @Assisted("initialHeight") int initialHeight,
-          @Assisted("transparent") boolean transparent) {
+      ShaderProgram.Factory shaderFactory,
+      ShaderUniform.Factory uniformFactory,
+      VertexArrayObject.Factory vaoFactory,
+      VertexBufferObject.Factory vboFactory,
+      VertexIndexObject.Factory eboFactory,
+      UltralightWebGuiViewEventInterop.Factory interopFactory,
+      UltralightWebGuiController controller,
+      @InjectLogger Logger logger,
+      @Assisted("initialWidth") int initialWidth,
+      @Assisted("initialHeight") int initialHeight,
+      @Assisted("transparent") boolean transparent,
+      @Assisted("autoBridgeJava") boolean autoBridgeJava) {
     this.view = controller.getRenderer().createView(initialWidth, initialHeight, transparent);
     this.gpuRenderer = controller.isUsingGPURenderer();
     this.openGLTexture = -1;
@@ -86,9 +91,13 @@ public class UltralightWindowWebView
       this.shader.addFragmentShader(
           getClass().getResourceAsStream("/shader/ultralight/mainMenu.fsh"));
       this.shader.link();
-    } catch (ShaderException e) {
+    } catch(ShaderException e) {
       logger.error("Failed load shaders:", e);
     }
+
+    this.databind = new Databind(DatabindConfiguration.builder()
+        .automaticPrototype(autoBridgeJava)
+        .build());
   }
 
   @Override
@@ -104,13 +113,13 @@ public class UltralightWindowWebView
     // Bind the OpenGL texture
     glBindTexture(GL_TEXTURE_2D, openGLTexture);
 
-    if (dirtyBounds.isValid()) {
+    if(dirtyBounds.isValid()) {
       try {
         // Retrieve the raw image data in BGRA format
         ByteBuffer imageData = surface.lockPixels();
         glPixelStorei(GL_UNPACK_ROW_LENGTH, (int) surface.rowBytes() / 4);
         // Needs updating
-        if (dirtyBounds.width() >= width && dirtyBounds.height() >= height) {
+        if(dirtyBounds.width() >= width && dirtyBounds.height() >= height) {
           // Perform full upload as the entire image has been invalidated
           glTexImage2D(
               GL_TEXTURE_2D,
@@ -144,7 +153,7 @@ public class UltralightWindowWebView
               GL_BGRA,
               GL_UNSIGNED_INT_8_8_8_8_REV,
               (ByteBuffer) imageData.position(startOffset) // Offset the data pointer
-              );
+          );
         }
         // Reset the pixels per row value to auto detection, else we cause weird crashes
         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -186,12 +195,12 @@ public class UltralightWindowWebView
 
   @Override
   public void initialize() {
-    if (gpuRenderer) {
+    if(gpuRenderer) {
       // If we are already rendering to a OpenGL texture in the renderer, ignore the initialization
       return;
     }
 
-    if (openGLTexture != -1) {
+    if(openGLTexture != -1) {
       throw new IllegalStateException("Renderer has been initialized and not been destructed yet");
     }
 
@@ -260,12 +269,12 @@ public class UltralightWindowWebView
 
   @Override
   public void cleanup() {
-    if (gpuRenderer) {
+    if(gpuRenderer) {
       // The renderer will clean up its own resources
       return;
     }
 
-    if (openGLTexture == -1) {
+    if(openGLTexture == -1) {
       throw new IllegalStateException("Renderer has been destructed already");
     }
 
@@ -275,7 +284,7 @@ public class UltralightWindowWebView
 
   @Override
   public boolean handle(GuiEvent event) {
-    if (event instanceof CursorPosChangedEvent) {
+    if(event instanceof CursorPosChangedEvent) {
       // Cursor position changed, signal to Ultralight
       CursorPosChangedEvent evt = (CursorPosChangedEvent) event;
 
@@ -284,7 +293,7 @@ public class UltralightWindowWebView
               .type(UltralightMouseEventType.MOVED)
               .x((int) evt.getX())
               .y((int) evt.getY()));
-    } else if (event instanceof FramebufferSizeEvent) {
+    } else if(event instanceof FramebufferSizeEvent) {
       // Update the framebuffer size
       FramebufferSizeEvent evt = (FramebufferSizeEvent) event;
 
@@ -292,7 +301,7 @@ public class UltralightWindowWebView
       this.height = (int) (evt.getHeight() * scale);
 
       view.resize(width, height);
-    } else if (event instanceof KeyEvent) {
+    } else if(event instanceof KeyEvent) {
       // Raw key input
       KeyEvent evt = (KeyEvent) event;
       InputState state = evt.getState();
@@ -315,7 +324,7 @@ public class UltralightWindowWebView
                   UltralightLabyfyBridge.labyfyToUltralightModifierKeys(evt.getModifierKeys())));
 
       // Some keys need special treatment, namely <ENTER> and <TAB>
-      if ((state == InputState.PRESS || state == InputState.REPEAT)
+      if((state == InputState.PRESS || state == InputState.REPEAT)
           && (key == Key.ENTER || key == Key.TAB)) {
         // Translate them into their string versions
         String text = key == Key.ENTER ? "\n" : "\t";
@@ -327,13 +336,13 @@ public class UltralightWindowWebView
                 .text(text)
                 .unmodifiedText(text));
       }
-    } else if (event instanceof MouseButtonEvent) {
+    } else if(event instanceof MouseButtonEvent) {
       // Translate mouse clicks
       MouseButtonEvent evt = (MouseButtonEvent) event;
 
       UltralightMouseEventButton button = null;
 
-      switch (evt.getButton()) {
+      switch(evt.getButton()) {
         case LEFT:
           button = UltralightMouseEventButton.LEFT;
           break;
@@ -359,7 +368,7 @@ public class UltralightWindowWebView
                   evt.getState() == InputState.PRESS
                       ? UltralightMouseEventType.DOWN
                       : UltralightMouseEventType.UP));
-    } else if (event instanceof MouseScrolledEvent) {
+    } else if(event instanceof MouseScrolledEvent) {
       // Translate mouse scrolling
       MouseScrolledEvent evt = (MouseScrolledEvent) event;
 
@@ -368,7 +377,7 @@ public class UltralightWindowWebView
               .type(UltralightScrollEventType.BY_PIXEL)
               .deltaX((int) evt.getXOffset() * 20)
               .deltaY((int) evt.getYOffset() * 20));
-    } else if (event instanceof UnicodeTypedEvent) {
+    } else if(event instanceof UnicodeTypedEvent) {
       // Translate normal char input
       UnicodeTypedEvent evt = (UnicodeTypedEvent) event;
 
@@ -380,9 +389,9 @@ public class UltralightWindowWebView
               .type(UltralightKeyEventType.CHAR)
               .text(text)
               .unmodifiedText(text));
-    } else if (event instanceof WindowFocusEvent) {
+    } else if(event instanceof WindowFocusEvent) {
       // Translate focus events
-      if (((WindowFocusEvent) event).isFocused()) {
+      if(((WindowFocusEvent) event).isFocused()) {
         view.focus();
       } else {
         view.unfocus();
@@ -400,20 +409,35 @@ public class UltralightWindowWebView
     handle(new FramebufferSizeEvent(width, height));
   }
 
+  @Override
+  public <T> void setGlobalJavascriptObject(String key, T value, Class<? extends T> clazz) {
+    try(JavascriptContextLock lock = this.view.lockJavascriptContext()) {
+      JavascriptContext context = lock.getContext();
+      JavascriptObject globalObject = context.getGlobalObject();
+
+      JavascriptValue converted = value == null ? context.makeUndefined() :
+          databind.getConversionUtils().toJavascript(context, value, clazz);
+      globalObject.setProperty(key, converted, JavascriptPropertyAttributes.READ_ONLY);
+    }
+  }
+
   @AssistedFactory(UltralightWindowWebView.class)
   public interface Factory {
     /**
-     * Creates a new {@link UltralightWindowWebView} instance with the specified initial width and
-     * height.
+     * Creates a new {@link UltralightWindowWebView} instance with the specified initial width and height.
      *
-     * @param initialWidth The initial with of the view
-     * @param initialHeight The initial height of the view
-     * @param transparent If the view should be transparent
+     * @param initialWidth   The initial with of the view
+     * @param initialHeight  The initial height of the view
+     * @param transparent    If the view should be transparent
+     * @param autoBridgeJava If {@code true}, unknown Java objects will be automatically translated when called from
+     *                       Javascript (set to {@code false} for externally loaded views!)
      * @return The created view
      */
     UltralightWindowWebView create(
         @Assisted("initialWidth") int initialWidth,
         @Assisted("initialHeight") int initialHeight,
-        @Assisted("transparent") boolean transparent);
+        @Assisted("transparent") boolean transparent,
+        @Assisted("autoBridgeJava") boolean autoBridgeJava
+    );
   }
 }

@@ -31,7 +31,7 @@ public class UltralightMainWebGuiView
       MinecraftWindow minecraftWindow) {
     this.windowWebView =
         windowWebViewFactory.create(
-            minecraftWindow.getFramebufferWidth(), minecraftWindow.getFramebufferHeight(), true);
+            minecraftWindow.getFramebufferWidth(), minecraftWindow.getFramebufferHeight(), true, true);
     this.controller = controller;
     this.minecraftWindow = minecraftWindow;
     this.transparent = true;
@@ -132,7 +132,17 @@ public class UltralightMainWebGuiView
   }
 
   @Override
+  public String getURL() {
+    return this.windowWebView.getURL();
+  }
+
+  @Override
   public void setScale(float scale) {
     this.windowWebView.setScale(scale);
+  }
+
+  @Override
+  public <T> void setGlobalJavascriptObject(String key, T value, Class<? extends T> clazz) {
+    this.windowWebView.setGlobalJavascriptObject(key, value, clazz);
   }
 }
