@@ -110,3 +110,6 @@ findProject(':component:render:shader')?.name = 'shader'
 include 'component:render:vbo-rendering'
 findProject(':component:render:vbo-rendering')?.name = 'vbo-rendering'
 
+include 'component:nbt'
+findProject(':component:nbt')?.name = "nbt"
+
