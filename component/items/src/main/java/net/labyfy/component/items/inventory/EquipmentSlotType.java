@@ -1,5 +1,8 @@
 package net.labyfy.component.items.inventory;
 
+/**
+ * An enumeration of all available slot types.
+ */
 public enum EquipmentSlotType {
 
   MAIN_HAND(Group.HAND, 0, 0),
@@ -19,18 +22,36 @@ public enum EquipmentSlotType {
     this.slotIndex = slotIndex;
   }
 
+  /**
+   * Retrieves the group of the slot type.
+   *
+   * @return The slot type group.
+   */
   public Group getGroup() {
     return group;
   }
 
+  /**
+   * Retrieves the index of the slot type.
+   *
+   * @return The slot type index.
+   */
   public int getIndex() {
     return index;
   }
 
+  /**
+   * Retrieves the slot index of the slot type.
+   *
+   * @return THe slot type slot index.
+   */
   public int getSlotIndex() {
     return slotIndex;
   }
 
+  /**
+   * An enumeration of all availables groups.
+   */
   enum Group {
     ARMOR,
     HAND

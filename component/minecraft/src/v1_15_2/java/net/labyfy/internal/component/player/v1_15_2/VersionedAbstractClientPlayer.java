@@ -27,7 +27,8 @@ public class VersionedAbstractClientPlayer extends VersionedPlayerEntity impleme
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileGameProfileSerializer,
           ModelMapper modelMapper,
-          NetworkPlayerInfoRegistry networkPlayerInfoRegistry) {
+          NetworkPlayerInfoRegistry networkPlayerInfoRegistry
+  ) {
     super(entity, entityType, world, entityMapper, gameProfileGameProfileSerializer, modelMapper);
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
 

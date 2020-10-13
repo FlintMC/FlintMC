@@ -407,7 +407,7 @@ public interface Entity extends Nameable {
   /**
    * Whether the entity is burning.
    *
-   * @return {@link true} if the entity is burning, otherwise {@code false}.
+   * @return {@code true} if the entity is burning, otherwise {@code false}.
    */
   boolean isBurning();
 
@@ -768,14 +768,6 @@ public interface Entity extends Nameable {
    * @return {@code true} if the given entity is a passenger, otherwise {@code false}.
    */
   boolean isPassenger(Entity entity);
-
-  /**
-   * Whether the given entity class is a passenger of this entity.
-   *
-   * @param passenger The entity class to be checked.
-   * @return {@code true} if the given entity is a passenger, otherwise {@code false}.
-   */
-  boolean isPassenger(Class<? extends Entity> passenger);
 
   /**
    * Retrieves a collection with all recursive passengers of this entity.

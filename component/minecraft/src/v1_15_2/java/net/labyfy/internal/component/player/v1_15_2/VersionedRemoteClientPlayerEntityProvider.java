@@ -2,16 +2,13 @@ package net.labyfy.internal.component.player.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.mojang.authlib.GameProfile;
-import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.RemoteClientPlayerEntity;
-import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
-import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.player.type.model.ModelMapper;
-import net.labyfy.component.world.ClientWorld;
 
+/**
+ * 1.15.2 implementation of the {@link RemoteClientPlayerEntity.Provider}.
+ */
 @Singleton
 @Implement(value = RemoteClientPlayerEntity.Provider.class, version = "1.15.2")
 public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPlayerEntity.Provider {
@@ -28,6 +25,9 @@ public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPl
     this.entityTypeRegister = entityTypeRegister;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RemoteClientPlayerEntity get(Object entity) {
     return this.remoteClientPlayerEntity.create(

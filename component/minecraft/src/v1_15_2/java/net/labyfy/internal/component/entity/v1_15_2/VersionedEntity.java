@@ -820,15 +820,6 @@ public class VersionedEntity implements Entity {
    * {@inheritDoc}
    */
   @Override
-  public boolean isPassenger(Class<? extends Entity> passenger) {
-    // TODO: 08.10.2020 Implement
-    return false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public Collection<Entity> getRecursivePassengers() {
     Set<Entity> entities = Sets.newHashSet();
     for (net.minecraft.entity.Entity passenger : this.entity.getPassengers()) {

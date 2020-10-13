@@ -19,7 +19,6 @@ import net.labyfy.component.player.type.model.PlayerClothing;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
-import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.BlockPosition;
@@ -30,6 +29,7 @@ import net.minecraft.item.MerchantOffers;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
 
@@ -68,7 +68,11 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public boolean blockActionRestricted(World world, BlockPosition position, GameMode mode) {
-    return false;
+    return this.entity.blockActionRestricted(
+            this.entity.world,
+            (BlockPos) this.getWorld().toMinecraftBlockPos(position),
+            (GameType) this.getEntityMapper().toMinecraftGameType(mode)
+    );
   }
 
   /**

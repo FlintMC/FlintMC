@@ -1,11 +1,27 @@
 package net.labyfy.component.player;
 
+import net.labyfy.component.items.inventory.Inventory;
+import net.labyfy.component.items.inventory.player.PlayerInventory;
 import net.labyfy.component.player.overlay.TabOverlay;
 
 /**
  * Represents the Minecraft client player.
  */
 public interface ClientPlayerEntity extends AbstractClientPlayerEntity {
+
+  /**
+   * Retrieves the inventory of this player.
+   *
+   * @return The player's inventory.
+   */
+  PlayerInventory getInventoryController();
+
+  /**
+   * Retrieves the opened inventory of this player.
+   *
+   * @return The opened inventory.
+   */
+  Inventory getOpenInventory();
 
   /**
    * Prints a message into the player chat.

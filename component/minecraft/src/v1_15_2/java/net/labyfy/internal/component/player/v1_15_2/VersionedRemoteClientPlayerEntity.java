@@ -11,6 +11,9 @@ import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
 import net.labyfy.component.player.type.model.ModelMapper;
 import net.labyfy.component.world.ClientWorld;
 
+/**
+ * 1.15.2 implementation of the {@link RemoteClientPlayerEntity}.
+ */
 @Implement(value = RemoteClientPlayerEntity.class, version = "1.15.2")
 public class VersionedRemoteClientPlayerEntity extends VersionedAbstractClientPlayer implements RemoteClientPlayerEntity {
 

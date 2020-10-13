@@ -12,6 +12,8 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.inventory.Inventory;
+import net.labyfy.component.items.inventory.InventoryController;
+import net.labyfy.component.items.inventory.player.PlayerInventory;
 import net.labyfy.component.player.ClientPlayerEntity;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
@@ -56,6 +58,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   private final ModelMapper modelMapper;
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
 
+  private final InventoryController inventoryController;
   private final TabOverlay tabOverlay;
 
   @Inject
@@ -66,6 +69,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
           ModelMapper modelMapper,
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
           EntityTypeRegister entityTypeRegister,
+          InventoryController inventoryController,
           TabOverlay tabOverlay
   ) {
     super(
@@ -80,7 +84,24 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
     this.gameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
+    this.inventoryController = inventoryController;
     this.tabOverlay = tabOverlay;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PlayerInventory getInventoryController() {
+    return this.inventoryController.getPlayerInventory();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Inventory getOpenInventory() {
+    return this.inventoryController.getOpenInventory();
   }
 
   /**
@@ -168,7 +189,11 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
    */
   @Override
   public boolean blockActionRestricted(World world, BlockPosition position, GameMode mode) {
-    return false;
+    return Minecraft.getInstance().player.blockActionRestricted(
+            Minecraft.getInstance().player.world,
+            (BlockPos) this.getWorld().toMinecraftBlockPos(position),
+            (GameType) this.getEntityMapper().toMinecraftGameType(mode)
+    );
   }
 
   /**
@@ -2052,14 +2077,6 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   @Override
   public boolean isPassenger(Entity entity) {
     return Minecraft.getInstance().player.isPassenger((net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isPassenger(Class<? extends Entity> passenger) {
-    return false;
   }
 
   /**

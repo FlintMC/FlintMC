@@ -6,6 +6,9 @@ import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.PlayerEntity;
 
+/**
+ * 1.15.2 implementation of the {@link PlayerEntity.Provider}.
+ */
 @Singleton
 @Implement(value = PlayerEntity.Provider.class, version = "1.15.2")
 public class VersionedPlayerEntityProvider implements PlayerEntity.Provider {
