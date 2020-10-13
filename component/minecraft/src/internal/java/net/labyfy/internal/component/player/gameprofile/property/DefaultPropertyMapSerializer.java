@@ -18,10 +18,12 @@ import java.util.Map;
 public class DefaultPropertyMapSerializer implements PropertyMap.Serializer {
 
   private final Property.Factory propertyFactory;
+  private final PropertyMap.Factory propertyMapFactory;
 
   @Inject
-  private DefaultPropertyMapSerializer(Property.Factory propertyFactory) {
+  private DefaultPropertyMapSerializer(Property.Factory propertyFactory, PropertyMap.Factory propertyMapFactory) {
     this.propertyFactory = propertyFactory;
+    this.propertyMapFactory = propertyMapFactory;
   }
 
   /**
@@ -41,7 +43,7 @@ public class DefaultPropertyMapSerializer implements PropertyMap.Serializer {
    */
   @Override
   public PropertyMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-    PropertyMap result = new DefaultPropertyMap();
+    PropertyMap result = this.propertyMapFactory.create();
 
     if (json instanceof JsonObject) {
       JsonObject object = (JsonObject) json;

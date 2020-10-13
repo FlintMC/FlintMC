@@ -46,11 +46,29 @@ public interface Property {
    */
   boolean isSignatureValid(PublicKey publicKey);
 
+  /**
+   * A factory class for the {@link Property}.
+   */
   @AssistedFactory(Property.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link Property} with the given name and value.
+     *
+     * @param name  The name of the property
+     * @param value The value of the property.
+     * @return A created property.
+     */
     Property create(@Assisted("name") String name, @Assisted("value") String value);
 
+    /**
+     * Creates a new {@link Property} with the given parameters.
+     *
+     * @param name      The name of the property
+     * @param value     The value of the property.
+     * @param signature The signature of the property.
+     * @return A created property.
+     */
     Property create(@Assisted("name") String name, @Assisted("value") String value, @Assisted("signature") String signature);
 
   }

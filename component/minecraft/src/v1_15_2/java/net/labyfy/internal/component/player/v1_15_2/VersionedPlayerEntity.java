@@ -47,7 +47,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   public VersionedPlayerEntity(
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
-          ClientWorld world,
+          World world,
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileGameProfileSerializer,
           ModelMapper modelMapper

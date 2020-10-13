@@ -17,15 +17,15 @@ public class DefaultGameProfile implements GameProfile {
   /**
    * The unique identifier of this profile.
    */
-  private UUID uniqueId;
+  private final UUID uniqueId;
   /**
    * The display name of this profile.
    */
-  private String name;
+  private final String name;
   /**
    * The properties of this profile.
    */
-  private PropertyMap properties;
+  private final PropertyMap properties;
   /**
    * If this profile is a legacy.
    */

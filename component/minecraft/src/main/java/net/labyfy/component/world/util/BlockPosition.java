@@ -8,6 +8,9 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
  */
 public interface BlockPosition extends Vector3I {
 
+  /**
+   * A factory class for the {@link BlockPosition}
+   */
   @AssistedFactory(BlockPosition.class)
   interface Factory {
 

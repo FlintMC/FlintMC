@@ -18,10 +18,12 @@ import java.util.Map;
 public class VersionedPropertyMapSerializer implements PropertyMapSerializer<com.mojang.authlib.properties.PropertyMap> {
 
   private final Property.Factory propertyFactory;
+  private final PropertyMap.Factory propertyMapFactory;
 
   @Inject
-  private VersionedPropertyMapSerializer(Property.Factory propertyFactory) {
+  private VersionedPropertyMapSerializer(Property.Factory propertyFactory, PropertyMap.Factory propertyMapFactory) {
     this.propertyFactory = propertyFactory;
+    this.propertyMapFactory = propertyMapFactory;
   }
 
   /**
@@ -33,7 +35,7 @@ public class VersionedPropertyMapSerializer implements PropertyMapSerializer<com
    */
   @Override
   public PropertyMap deserialize(com.mojang.authlib.properties.PropertyMap value) {
-    PropertyMap properties = new DefaultPropertyMap();
+    PropertyMap properties = this.propertyMapFactory.create();
 
     for (Map.Entry<String, com.mojang.authlib.properties.Property> entry : value.entries()) {
       properties.put(

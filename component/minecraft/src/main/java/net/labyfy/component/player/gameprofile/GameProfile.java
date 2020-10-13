@@ -50,6 +50,9 @@ public interface GameProfile {
    */
   boolean isLegacy();
 
+  /**
+   * A factory class for the {@link GameProfile}.
+   */
   @AssistedFactory(GameProfile.class)
   interface Factory {
 

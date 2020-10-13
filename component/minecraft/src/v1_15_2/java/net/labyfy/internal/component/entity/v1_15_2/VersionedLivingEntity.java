@@ -13,6 +13,7 @@ import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.ClientWorld;
+import net.labyfy.component.world.World;
 import net.labyfy.component.world.util.BlockPosition;
 import net.minecraft.util.math.BlockPos;
 
@@ -28,7 +29,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   public VersionedLivingEntity(
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
-          ClientWorld world,
+          World world,
           EntityMapper entityMapper
   ) {
     super(entity, entityType, world, entityMapper);

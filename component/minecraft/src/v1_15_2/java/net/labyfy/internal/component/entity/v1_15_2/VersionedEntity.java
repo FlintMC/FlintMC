@@ -37,7 +37,7 @@ public class VersionedEntity implements Entity {
   public VersionedEntity(
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
-          ClientWorld world,
+          World world,
           EntityMapper entityMapper) {
     this.entityType = entityType;
     this.world = world;
