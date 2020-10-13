@@ -48,4 +48,28 @@ public class VersionedEntitySize implements EntitySize {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getWidth() {
+    return this.width;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getHeight() {
+    return this.height;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isFixed() {
+    return this.fixed;
+  }
+
 }

@@ -1,9 +1,12 @@
 package net.labyfy.internal.component.player.v1_15_2;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.player.PlayerEntity;
@@ -27,23 +30,23 @@ import net.minecraft.item.MerchantOffers;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+@Implement(value = PlayerEntity.class, version = "1.15.2")
 public class VersionedPlayerEntity extends VersionedLivingEntity implements PlayerEntity {
 
   private final net.minecraft.entity.player.PlayerEntity entity;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileGameProfileSerializer;
   private final ModelMapper modelMapper;
 
-
+  @AssistedInject
   public VersionedPlayerEntity(
-          Object entity,
-          EntityType entityType,
+          @Assisted("entity") Object entity,
+          @Assisted("entityType") EntityType entityType,
           ClientWorld world,
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileGameProfileSerializer,
@@ -149,8 +152,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public boolean canAttackPlayer(PlayerEntity playerEntity) {
-    // TODO: 08.10.2020 Implement
-    return false;
+    return this.entity.canAttackPlayer((net.minecraft.entity.player.PlayerEntity) this.getEntityMapper().toMinecraftPlayerEntity(playerEntity));
   }
 
   /**
@@ -333,81 +335,129 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     this.entity.addStat((net.minecraft.util.ResourceLocation) resourceLocation.getHandle());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addStat(ResourceLocation resourceLocation, int state) {
     this.entity.addStat((net.minecraft.util.ResourceLocation) resourceLocation.getHandle(), state);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addMovementStat(double x, double y, double z) {
     this.entity.addMovementStat(x, y, z);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean tryToStartFallFlying() {
     return this.entity.tryToStartFallFlying();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void startFallFlying() {
     this.entity.startFallFlying();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void stopFallFlying() {
     this.entity.stopFallFlying();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void giveExperiencePoints(int experiencePoints) {
     this.entity.giveExperiencePoints(experiencePoints);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getExperienceSeed() {
     return this.entity.getXPSeed();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addExperienceLevel(int experienceLevel) {
     this.entity.addExperienceLevel(experienceLevel);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getExperienceBarCap() {
     return this.entity.xpBarCap();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addExhaustion(float exhaustion) {
     this.entity.addExhaustion(exhaustion);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canEat(boolean ignoreHunger) {
     return this.entity.canEat(ignoreHunger);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean shouldHeal() {
     return this.entity.shouldHeal();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isAllowEdit() {
     return this.entity.isAllowEdit();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void sendPlayerAbilities() {
     this.entity.sendPlayerAbilities();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setGameMode(GameMode gameMode) {
     this.entity.setGameType((GameType) this.getEntityMapper().toMinecraftGameType(gameMode));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean addItemStackToInventory(ItemStack itemStack) {
     return this.entity.addItemStackToInventory(
@@ -415,16 +465,25 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCreative() {
     return this.entity.isCreative();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Scoreboard getScoreboard() {
     return this.getWorld().getScoreboard();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getUniqueId(GameProfile profile) {
     UUID uniqueId = profile.getUniqueId();
@@ -435,26 +494,41 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     return uniqueId;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getOfflineUniqueId(String username) {
     return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(StandardCharsets.UTF_8));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isWearing(PlayerClothing clothing) {
     return this.entity.isWearing((PlayerModelPart) this.modelMapper.toMinecraftPlayerModelPart(clothing));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasReducedDebug() {
     return this.entity.hasReducedDebug();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setReducedDebug(boolean reducedDebug) {
     this.entity.setReducedDebug(reducedDebug);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPrimaryHand(Hand.Side primaryHand) {
     this.entity.setPrimaryHand(
@@ -462,46 +536,73 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getCooldownPeriod() {
     return this.entity.getCooldownPeriod();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getCooledAttackStrength(float strength) {
     return this.entity.getCooledAttackStrength(strength);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resetCooldown() {
     this.entity.resetCooldown();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getLuck() {
     return this.entity.getLuck();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canUseCommandBlock() {
     return this.entity.canUseCommandBlock();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasCooldown(Object item) {
     return this.entity.getCooldownTracker().hasCooldown((Item) item);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getCooldown(Object item, float partialTicks) {
     return this.entity.getCooldownTracker().getCooldown((Item) item, partialTicks);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCooldown(Object item, int ticks) {
     this.entity.getCooldownTracker().setCooldown((Item) item, ticks);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removeCooldown(Object item) {
     this.entity.getCooldownTracker().removeCooldown((Item) item);

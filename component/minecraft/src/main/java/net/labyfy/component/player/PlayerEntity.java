@@ -1,8 +1,11 @@
 package net.labyfy.component.player;
 
+import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.LivingEntity;
+import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.player.gameprofile.GameProfile;
@@ -469,5 +472,38 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @return {@code true} if the player can use a command block, otherwise {@code false}.
    */
   boolean canUseCommandBlock();
+
+  /**
+   * A factory class for the {@link PlayerEntity}.
+   */
+  @AssistedFactory(PlayerEntity.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link PlayerEntity} with the given parameters.
+     *
+     * @param entity     The non-null Minecraft entity.
+     * @param entityType The entity type.
+     * @return A created {@link PlayerEntity}.
+     */
+    PlayerEntity create(@Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
+
+  }
+
+  /**
+   * Service interface for creating {@link PlayerEntity}.
+   */
+  interface Provider {
+
+    /**
+     * Creates a new {@link PlayerEntity} with the given parameter.
+     *
+     * @param entity The non-null Minecraft entity.
+     * @return A created {@link PlayerEntity}.
+     */
+    PlayerEntity get(Object entity);
+
+  }
+
 
 }

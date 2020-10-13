@@ -3,6 +3,7 @@ package net.labyfy.internal.component.entity.v1_15_2;
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
@@ -13,16 +14,19 @@ import net.labyfy.component.player.type.GameMode;
 import net.labyfy.component.player.type.hand.HandMapper;
 import net.labyfy.component.player.type.sound.SoundMapper;
 import net.labyfy.component.resources.ResourceLocationProvider;
-import net.labyfy.component.world.World;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * 1.15.2 implementation of the {@link EntityMapper}.
+ */
 @Singleton
 @Implement(value = EntityMapper.class, version = "1.15.2")
 public class VersionedEntityMapper implements EntityMapper {
@@ -33,7 +37,9 @@ public class VersionedEntityMapper implements EntityMapper {
   private final SoundMapper soundMapper;
   private final HandMapper handMapper;
 
-  private final Entity.Provider entityProvider;
+  private final Entity.Factory entityFactory;
+  private final LivingEntity.Provider livingEntityProvider;
+  private final PlayerEntity.Provider playerEntityProvider;
   private final EntityTypeRegister entityTypeRegister;
 
   @Inject
@@ -43,7 +49,9 @@ public class VersionedEntityMapper implements EntityMapper {
           ResourceLocationProvider resourceLocationProvider,
           SoundMapper soundMapper,
           HandMapper handMapper,
-          Entity.Provider entityProvider,
+          Entity.Factory entityFactory,
+          LivingEntity.Provider livingEntityProvider,
+          PlayerEntity.Provider playerEntityProvider,
           EntityTypeRegister entityTypeRegister
   ) {
     this.itemMapper = itemMapper;
@@ -51,17 +59,22 @@ public class VersionedEntityMapper implements EntityMapper {
     this.resourceLocationProvider = resourceLocationProvider;
     this.soundMapper = soundMapper;
     this.handMapper = handMapper;
-    this.entityProvider = entityProvider;
+    this.entityFactory = entityFactory;
+    this.livingEntityProvider = livingEntityProvider;
+    this.playerEntityProvider = playerEntityProvider;
     this.entityTypeRegister = entityTypeRegister;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public EquipmentSlotType fromMinecraftEquipmentSlotType(Object object) {
-    if (!(object instanceof net.minecraft.inventory.EquipmentSlotType)) {
-      throw new IllegalArgumentException("");
+  public EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle) {
+    if (!(handle instanceof net.minecraft.inventory.EquipmentSlotType)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.inventory.EquipmentSlotType.class.getName());
     }
 
-    net.minecraft.inventory.EquipmentSlotType equipmentSlotType = (net.minecraft.inventory.EquipmentSlotType) object;
+    net.minecraft.inventory.EquipmentSlotType equipmentSlotType = (net.minecraft.inventory.EquipmentSlotType) handle;
 
     switch (equipmentSlotType) {
 
@@ -82,6 +95,9 @@ public class VersionedEntityMapper implements EntityMapper {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEquipmentSlotType(EquipmentSlotType equipmentSlotType) {
     switch (equipmentSlotType) {
@@ -102,13 +118,16 @@ public class VersionedEntityMapper implements EntityMapper {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public GameMode fromMinecraftGameType(Object object) {
-    if (!(object instanceof GameType)) {
-      throw new IllegalArgumentException("");
+  public GameMode fromMinecraftGameType(Object handle) {
+    if (!(handle instanceof GameType)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + GameType.class.getName());
     }
 
-    GameType gameType = (GameType) object;
+    GameType gameType = (GameType) handle;
 
     switch (gameType) {
       case NOT_SET:
@@ -126,6 +145,9 @@ public class VersionedEntityMapper implements EntityMapper {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftGameType(GameMode mode) {
     switch (mode) {
@@ -142,13 +164,16 @@ public class VersionedEntityMapper implements EntityMapper {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public EntityPose fromMinecraftPose(Object object) {
-    if (!(object instanceof Pose)) {
-      throw new IllegalArgumentException("");
+  public EntityPose fromMinecraftPose(Object handle) {
+    if (!(handle instanceof Pose)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + Pose.class.getName());
     }
 
-    Pose pose = (Pose) object;
+    Pose pose = (Pose) handle;
 
     switch (pose) {
       case STANDING:
@@ -171,6 +196,9 @@ public class VersionedEntityMapper implements EntityMapper {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPose(EntityPose pose) {
     switch (pose) {
@@ -194,15 +222,18 @@ public class VersionedEntityMapper implements EntityMapper {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public Entity fromMinecraftEntity(Object entity) {
-    if (!(entity instanceof net.minecraft.entity.Entity)) {
-      throw new IllegalArgumentException("");
+  public Entity fromMinecraftEntity(Object handle) {
+    if (!(handle instanceof net.minecraft.entity.Entity)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.Entity.class.getName());
     }
 
-    net.minecraft.entity.Entity minecraftEntity = (net.minecraft.entity.Entity) entity;
+    net.minecraft.entity.Entity minecraftEntity = (net.minecraft.entity.Entity) handle;
 
-    return this.entityProvider.get(
+    return this.entityFactory.create(
             minecraftEntity,
             this.entityTypeRegister.getEntityType(
                     Registry.ENTITY_TYPE.getKey(minecraftEntity.getType()).getPath()
@@ -210,10 +241,13 @@ public class VersionedEntityMapper implements EntityMapper {
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEntity(Entity entity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
-      if(allEntity.getUniqueID().equals(entity.getUniqueId())) {
+      if (allEntity.getUniqueID().equals(entity.getUniqueId())) {
         return allEntity;
       }
     }
@@ -221,22 +255,28 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public PlayerEntity fromMinecraftPlayerEntity(Object entity) {
-    if (!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
-      throw new IllegalArgumentException("");
+  public PlayerEntity fromMinecraftPlayerEntity(Object handle) {
+    if (!(handle instanceof net.minecraft.entity.player.PlayerEntity)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.player.PlayerEntity.class.getName());
     }
 
-    net.minecraft.entity.player.PlayerEntity playerEntity = (net.minecraft.entity.player.PlayerEntity) entity;
+    net.minecraft.entity.player.PlayerEntity playerEntity = (net.minecraft.entity.player.PlayerEntity) handle;
 
-    return null;
+    return this.playerEntityProvider.get(playerEntity);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPlayerEntity(PlayerEntity entity) {
 
     for (AbstractClientPlayerEntity player : Minecraft.getInstance().world.getPlayers()) {
-      if(player.getGameProfile().getId().equals(entity.getGameProfile().getUniqueId())) {
+      if (player.getGameProfile().getId().equals(entity.getGameProfile().getUniqueId())) {
         return player;
       }
     }
@@ -244,26 +284,76 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public LivingEntity fromMinecraftLivingEntity(Object handle) {
+    if (!(handle instanceof net.minecraft.entity.LivingEntity)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.LivingEntity.class.getName());
+    }
+
+    net.minecraft.entity.LivingEntity entity = (net.minecraft.entity.LivingEntity) handle;
+
+    return this.livingEntityProvider.get(entity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftLivingEntity(LivingEntity entity) {
+
+    for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
+      if (allEntity instanceof net.minecraft.entity.LivingEntity) {
+        net.minecraft.entity.LivingEntity livingEntity = (net.minecraft.entity.LivingEntity) allEntity;
+
+        if (livingEntity.getEntityId() == entity.getIdentifier()) {
+          return livingEntity;
+        }
+
+      }
+
+    }
+
+    return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HandMapper getHandMapper() {
     return this.handMapper;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SoundMapper getSoundMapper() {
     return this.soundMapper;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MinecraftComponentMapper getComponentMapper() {
     return this.componentMapper;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MinecraftItemMapper getItemMapper() {
     return this.itemMapper;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocationProvider getResourceLocationProvider() {
     return this.resourceLocationProvider;

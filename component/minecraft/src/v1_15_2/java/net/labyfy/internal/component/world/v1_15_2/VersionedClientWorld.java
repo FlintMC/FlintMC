@@ -7,7 +7,6 @@ import com.google.inject.Singleton;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.AbstractClientPlayerEntity;
-import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.DifficultyLocal;
@@ -37,7 +36,7 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
           WorldBorder worldBorder,
           Scoreboard scoreboard
   ) {
-    super(blockPositionFactory, difficultyLocalFactory, worldBorder);
+    super(blockPositionFactory, difficultyLocalFactory, worldBorder, scoreboard);
     this.scoreboard = scoreboard;
     this.entities = Maps.newHashMap();
     this.players = Sets.newHashSet();

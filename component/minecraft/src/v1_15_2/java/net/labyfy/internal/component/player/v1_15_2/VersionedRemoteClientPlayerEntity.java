@@ -18,11 +18,11 @@ public class VersionedRemoteClientPlayerEntity extends VersionedAbstractClientPl
   private VersionedRemoteClientPlayerEntity(
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
-          @Assisted("world") ClientWorld clientWorld,
-          @Assisted("entityMapper") EntityMapper entityMapper,
-          @Assisted("gameProfileSerializer") GameProfileSerializer gameProfileSerializer,
-          @Assisted("modelMapper") ModelMapper modelMapper,
-          @Assisted("networkPlayerInfoRegistry") NetworkPlayerInfoRegistry networkPlayerInfoRegistry
+          ClientWorld clientWorld,
+          EntityMapper entityMapper,
+          GameProfileSerializer gameProfileSerializer,
+          ModelMapper modelMapper,
+          NetworkPlayerInfoRegistry networkPlayerInfoRegistry
   ) {
     super(entity, entityType, clientWorld, entityMapper, gameProfileSerializer, modelMapper, networkPlayerInfoRegistry);
   }

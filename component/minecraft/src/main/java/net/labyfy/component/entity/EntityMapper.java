@@ -10,36 +10,146 @@ import net.labyfy.component.player.type.hand.HandMapper;
 import net.labyfy.component.player.type.sound.SoundMapper;
 import net.labyfy.component.resources.ResourceLocationProvider;
 
+/**
+ * Mapper between Minecraft entity and Labyfy entity.
+ */
 public interface EntityMapper {
 
-  EquipmentSlotType fromMinecraftEquipmentSlotType(Object object);
+  /**
+   * Creates a new {@link EquipmentSlotType} by using the given Minecraft equipment slot type as the base.
+   *
+   * @param handle The non-null Minecraft equipment slot type.
+   * @return The new Labyfy {@link EquipmentSlotType} or {@code null} if the given equipment slot type was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft equipment slot type.
+   */
+  EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle);
 
+  /**
+   * Creates a new Minecraft equipment slot type by using the Labyfy {@link EquipmentSlotType} as the base.
+   *
+   * @param equipmentSlotType The non-null Labyfy {@link EquipmentSlotType}.
+   * @return The new Minecraft equipment slot type or {@code null} if the given equipment slot type was invalid.
+   */
   Object toMinecraftEquipmentSlotType(EquipmentSlotType equipmentSlotType);
 
-  GameMode fromMinecraftGameType(Object object);
+  /**
+   * Creates a new {@link GameMode} by using the given Minecraft game type as the base.
+   *
+   * @param handle The non-null Minecraft game type.
+   * @return The new Labyfy {@link GameMode} or {@code null} if the given game type was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft game type type.
+   */
+  GameMode fromMinecraftGameType(Object handle);
 
+  /**
+   * Creates a new Minecraft game type by using the Labyfy {@link GameMode} as the base.
+   *
+   * @param mode The non-null Labyfy {@link GameMode}.
+   * @return The new Minecraft game type or {@code null} if the given game type was invalid.
+   */
   Object toMinecraftGameType(GameMode mode);
 
-  EntityPose fromMinecraftPose(Object object);
+  /**
+   * Creates a new {@link EntityPose} by using the given Minecraft entity pose as the base.
+   *
+   * @param handle The non-null Minecraft entity pose.
+   * @return The new Labyfy {@link EntityPose} or {@code null} if the given entity pose was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft entity pose.
+   */
+  EntityPose fromMinecraftPose(Object handle);
 
+  /**
+   * Creates a new Minecraft entity pose by using the Labyfy {@link EntityPose} as the base.
+   *
+   * @param pose The non-null Labyfy {@link EntityPose}.
+   * @return The new Minecraft entity pose or {@code null} if the given entity pose was invalid.
+   */
   Object toMinecraftPose(EntityPose pose);
 
-  Entity fromMinecraftEntity(Object entity);
+  /**
+   * Creates a new {@link Entity} by using the given Minecraft entity as the base.
+   *
+   * @param handle The non-null Minecraft entity.
+   * @return The new Labyfy {@link Entity} or {@code null} if the given entity was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft entity.
+   */
+  Entity fromMinecraftEntity(Object handle);
 
+  /**
+   * Creates a new Minecraft entity by using the Labyfy {@link Entity} as the base.
+   *
+   * @param entity The non-null Labyfy {@link Entity}.
+   * @return The new Minecraft entity or {@code null} if the given entity was invalid.
+   */
   Object toMinecraftEntity(Entity entity);
 
-  PlayerEntity fromMinecraftPlayerEntity(Object entity);
+  /**
+   * Creates a new {@link Entity} by using the given Minecraft player entity as the base.
+   *
+   * @param handle The non-null Minecraft player entity.
+   * @return The new Labyfy {@link Entity} or {@code null} if the given player entity was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft player entity.
+   */
+  PlayerEntity fromMinecraftPlayerEntity(Object handle);
 
+  /**
+   * Creates a new Minecraft player entity by using the Labyfy {@link PlayerEntity} as the base.
+   *
+   * @param entity The non-null Labyfy {@link PlayerEntity}.
+   * @return The new Minecraft player entity or {@code null} if the given player entity was invalid.
+   */
   Object toMinecraftPlayerEntity(PlayerEntity entity);
 
+  /**
+   * Creates a new {@link LivingEntity} by using the given Minecraft living entity as the base.
+   *
+   * @param handle The non-null Minecraft living entity.
+   * @return The new Labyfy {@link LivingEntity} or {@code null} if the given living entity was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft living entity.
+   */
+  LivingEntity fromMinecraftLivingEntity(Object handle);
+
+  /**
+   * Creates a new Minecraft living entity by using the Labyfy {@link LivingEntity} as the base.
+   *
+   * @param entity The non-null Labyfy {@link LivingEntity}.
+   * @return The new Minecraft living entity or {@code null} if the given living entity was invalid.
+   */
+  Object toMinecraftLivingEntity(LivingEntity entity);
+
+  /**
+   * Retrieves the hand mapper.
+   *
+   * @return The hand mapper.
+   */
   HandMapper getHandMapper();
 
+  /**
+   * Retrieves the sound mapper.
+   *
+   * @return The sound mapper.
+   */
   SoundMapper getSoundMapper();
 
+  /**
+   * Retrieves the component mapper.
+   *
+   * @return The component mapper.
+   */
   MinecraftComponentMapper getComponentMapper();
 
+  /**
+   * Retrieves the item mapper.
+   *
+   * @return The item mapper.
+   */
   MinecraftItemMapper getItemMapper();
 
+  /**
+   * Retrieves the resource location provider.
+   *
+   * @return The resource location provider.
+   */
   ResourceLocationProvider getResourceLocationProvider();
 
 }

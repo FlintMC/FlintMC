@@ -12,13 +12,15 @@ import net.minecraft.util.SharedConstants;
 import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.util.datafix.TypeReferences;
 
+/**
+ * 1.15.2 implementation of the {@link EntityTypeBuilder}.
+ */
 @Implement(value = EntityTypeBuilder.class, version = "1.15.2")
 public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
 
   private final Entity.Classification classification;
   private final EntitySize.Factory entitySizeFactory;
   private final EntityType.Factory entityTypeFactory;
-  private final Entity.Factory entityFactory;
   private boolean serializable;
   private boolean summonable;
   private boolean immuneToFire;
@@ -27,12 +29,10 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
 
   @AssistedInject
   private VersionedEntityTypeBuilder(
-          @Assisted("entityFactory") Entity.Factory entityFactory,
           @Assisted("classification") Entity.Classification classification,
-          @Assisted("entityTypeFactory") EntityType.Factory entityTypeFactory,
-          @Assisted("entitySizeFactory") EntitySize.Factory entitySizeFactory
+          EntityType.Factory entityTypeFactory,
+          EntitySize.Factory entitySizeFactory
   ) {
-    this.entityFactory = entityFactory;
     this.classification = classification;
     this.entitySizeFactory = entitySizeFactory;
     this.entityTypeFactory = entityTypeFactory;
@@ -43,36 +43,54 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
     this.size = entitySizeFactory.create(0.6F, 1.8F, false);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder size(float width, float height) {
     this.size = this.entitySizeFactory.create(width, height, false);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder disableSummoning() {
     this.summonable = false;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder disableSerialization() {
     this.serializable = false;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder immuneToFire() {
     this.immuneToFire = true;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder canSpawnFarFromPlayer() {
     this.canSpawnFarFromPlayer = true;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityType build(String id) {
     if (this.serializable) {
@@ -90,7 +108,6 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
     }
 
     return this.entityTypeFactory.create(
-            this.entityFactory,
             this.classification,
             this.serializable,
             this.summonable,

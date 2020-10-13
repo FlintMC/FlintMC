@@ -18,41 +18,21 @@ public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPl
 
   private final RemoteClientPlayerEntity.Factory remoteClientPlayerEntity;
   private final EntityTypeRegister entityTypeRegister;
-  private final ClientWorld clientWorld;
-  private final EntityMapper entityMapper;
-  private final GameProfileSerializer<GameProfile> gameProfileSerializer;
-  private final ModelMapper modelMapper;
-  private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
 
   @Inject
   private VersionedRemoteClientPlayerEntityProvider(
           RemoteClientPlayerEntity.Factory remoteClientPlayerEntity,
-          EntityTypeRegister entityTypeRegister,
-          ClientWorld clientWorld,
-          EntityMapper entityMapper,
-          GameProfileSerializer gameProfileSerializer,
-          ModelMapper modelMapper,
-          NetworkPlayerInfoRegistry networkPlayerInfoRegistry
+          EntityTypeRegister entityTypeRegister
   ) {
     this.remoteClientPlayerEntity = remoteClientPlayerEntity;
     this.entityTypeRegister = entityTypeRegister;
-    this.clientWorld = clientWorld;
-    this.entityMapper = entityMapper;
-    this.gameProfileSerializer = gameProfileSerializer;
-    this.modelMapper = modelMapper;
-    this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
   }
 
   @Override
   public RemoteClientPlayerEntity get(Object entity) {
     return this.remoteClientPlayerEntity.create(
             entity,
-            this.entityTypeRegister.getEntityType("player"),
-            this.clientWorld,
-            this.entityMapper,
-            this.gameProfileSerializer,
-            this.modelMapper,
-            this.networkPlayerInfoRegistry
+            this.entityTypeRegister.getEntityType("player")
     );
   }
 }

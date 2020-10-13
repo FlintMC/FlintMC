@@ -2,7 +2,9 @@ package net.labyfy.internal.component.world.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.entity.Entity;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
@@ -15,28 +17,32 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * 1.15.2 implementation of {@link World}.
  */
 @Singleton
 @Implement(value = World.class, version = "1.15.2")
-public abstract class VersionedWorld implements World {
+public class VersionedWorld implements World {
 
   private final BlockPosition.Factory blockPositionFactory;
   private final DifficultyLocal.Factory difficultyLocalFactory;
   private final WorldBorder worldBorder;
+  private final Scoreboard scoreboard;
 
   @Inject
   public VersionedWorld(
           BlockPosition.Factory blockPositionFactory,
           DifficultyLocal.Factory difficultyLocalFactory,
-          WorldBorder worldBorder
-  ) {
+          WorldBorder worldBorder,
+          Scoreboard scoreboard) {
     this.blockPositionFactory = blockPositionFactory;
     this.difficultyLocalFactory = difficultyLocalFactory;
     this.worldBorder = worldBorder;
+    this.scoreboard = scoreboard;
   }
 
   /**
@@ -272,6 +278,11 @@ public abstract class VersionedWorld implements World {
   @Override
   public Dimension getDimension() {
     return this.fromMinecraftDimension(Minecraft.getInstance().world.getDimension().getType());
+  }
+
+  @Override
+  public Scoreboard getScoreboard() {
+    return this.scoreboard;
   }
 
   /**

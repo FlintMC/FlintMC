@@ -214,10 +214,6 @@ public interface World {
    */
   Scoreboard getScoreboard();
 
-  Map<Integer, Entity> getEntities();
-
-  Set<AbstractClientPlayerEntity> getPlayers();
-
   /**
    * Creates a new Minecraft block pos by using the given {@link BlockPosition} as the base.
    *

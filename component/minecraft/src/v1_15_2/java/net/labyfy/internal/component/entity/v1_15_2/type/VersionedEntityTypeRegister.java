@@ -15,6 +15,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Map;
 
+/**
+ * 1.15.2 implementation of the {@link EntityTypeRegister}.
+ */
 @Singleton
 @Implement(value = EntityTypeRegister.class, version = "1.15.2")
 public class VersionedEntityTypeRegister implements EntityTypeRegister {
@@ -33,6 +36,9 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
     this.remappedRegisteredEntityTypes();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void remappedRegisteredEntityTypes() {
     for (net.minecraft.entity.EntityType<?> entityType : Registry.ENTITY_TYPE) {
@@ -41,9 +47,12 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void register(String key, Entity.Classification classification, EntityTypeBuilder.Provider provider) {
-    EntityType entityType = provider.create(classification).build(key);
+  public void register(String key, Entity.Classification classification, EntityTypeBuilder.Factory factory) {
+    EntityType entityType = factory.create(classification).build(key);
 
     if (!this.entityTypes.containsKey(key)) {
       this.entityTypes.put(key, entityType);
@@ -51,11 +60,17 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, EntityType> getEntityTypes() {
     return this.entityTypes;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityType getEntityType(String key) {
     return this.entityTypes.get(key);

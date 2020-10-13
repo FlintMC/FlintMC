@@ -4,8 +4,10 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntitySize;
 import net.labyfy.component.inject.assisted.AssistedFactory;
-import net.labyfy.component.world.ClientWorld;
 
+/**
+ * Represents the entity type.
+ */
 public interface EntityType {
 
   /**
@@ -15,12 +17,32 @@ public interface EntityType {
    */
   Entity.Classification getClassification();
 
+  /**
+   * Whether the entity type is serializable.
+   *
+   * @return {@code true} if the type is serializable, otherwise {@code false}.
+   */
   boolean isSerializable();
 
+  /**
+   * Whether the entity type is summonable.
+   *
+   * @return {@code true} if the type is summonable, otherwise {@code false}.
+   */
   boolean isSummonable();
 
+  /**
+   * Whether the entity type is immune to fire.
+   *
+   * @return {@code true} if the type is immune to fire, otherwise {@code false}.
+   */
   boolean isImmuneToFire();
 
+  /**
+   * Whether the entity type can spawn far from the player.
+   *
+   * @return {@code true} if the type can spawn far from the player, otherwise {@code false}.
+   */
   boolean canSpawnFarFromPlayer();
 
   /**
@@ -48,7 +70,6 @@ public interface EntityType {
      * @return The created entity type.
      */
     EntityType create(
-            @Assisted("entityFactory") Entity.Factory entityFactory,
             @Assisted("classification") Entity.Classification classification,
             @Assisted("serializable") boolean serializable,
             @Assisted("summonable") boolean summonable,

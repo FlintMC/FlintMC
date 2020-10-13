@@ -1,6 +1,8 @@
 package net.labyfy.component.entity;
 
+import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.player.type.hand.Hand;
@@ -11,6 +13,9 @@ import net.labyfy.component.world.util.BlockPosition;
 import java.util.Optional;
 import java.util.Random;
 
+/**
+ * Represents the living entity.
+ */
 public interface LivingEntity extends Entity {
 
   /**
@@ -560,5 +565,39 @@ public interface LivingEntity extends Entity {
    */
   void sendBreakAnimation(Hand hand);
 
+  /**
+   * A factory class for the {@link LivingEntity}.
+   */
+  @AssistedFactory(LivingEntity.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link LivingEntity} with the given parameters.
+     *
+     * @param entity     The non-null Minecraft entity.
+     * @param entityType The entity type.
+     * @return A created {@link LivingEntity}.
+     */
+    LivingEntity create(
+            @Assisted("entity") Object entity,
+            @Assisted("entityType") EntityType entityType
+    );
+
+  }
+
+  /**
+   * Service interface for creating {@link LivingEntity}'s.
+   */
+  interface Provider {
+
+    /**
+     * Creates a new {@link LivingEntity} with the given parameter.
+     *
+     * @param entity The non-null Minecraft entity.
+     * @return A created {@link LivingEntity}.
+     */
+    LivingEntity get(Object entity);
+
+  }
 
 }

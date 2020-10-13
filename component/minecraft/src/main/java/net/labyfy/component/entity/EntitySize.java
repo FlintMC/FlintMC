@@ -26,6 +26,27 @@ public interface EntitySize {
   EntitySize scale(float widthFactor, float heightFactor);
 
   /**
+   * Retrieves the entity width.
+   *
+   * @return The entity width.
+   */
+  float getWidth();
+
+  /**
+   * Retrieves the entity height.
+   *
+   * @return The entity height.
+   */
+  float getHeight();
+
+  /**
+   * Whether the entity size is fixed.
+   *
+   * @return {@code true} if the entity size is fixed, otherwise {@code false}.
+   */
+  boolean isFixed();
+
+  /**
    * A factory class for {@link EntitySize}.
    */
   @AssistedFactory(EntitySize.class)

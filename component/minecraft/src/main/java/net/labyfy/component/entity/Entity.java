@@ -1011,33 +1011,12 @@ public interface Entity extends Nameable {
      *
      * @param entity       The non-null minecraft entity.
      * @param entityType   The type of the entity.
-     * @param world        The world of the entity.
-     * @param entityMapper A mapper for the entity.
      * @return A created entity.
      */
     Entity create(
             @Assisted("entity") Object entity,
-            @Assisted("entityType") EntityType entityType,
-            @Assisted("world") ClientWorld world,
-            @Assisted("entityMapper") EntityMapper entityMapper
+            @Assisted("entityType") EntityType entityType
     );
-
-  }
-
-  /**
-   * A provider for the {@link Entity}.
-   */
-  interface Provider {
-
-    /**
-     * Creates an {@link Entity} with the given parameters.
-     *
-     * @param entity     The non-null minecraft entity.
-     * @param entityType The type of the entity.
-     * @return A created entity.
-     * @see Factory#create(Object, EntityType, ClientWorld, EntityMapper)
-     */
-    Entity get(Object entity, EntityType entityType);
 
   }
 

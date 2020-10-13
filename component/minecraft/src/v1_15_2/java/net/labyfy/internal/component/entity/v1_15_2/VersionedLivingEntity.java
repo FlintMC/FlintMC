@@ -1,9 +1,12 @@
 package net.labyfy.internal.component.entity.v1_15_2;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.player.type.hand.Hand;
@@ -16,11 +19,18 @@ import net.minecraft.util.math.BlockPos;
 import java.util.Optional;
 import java.util.Random;
 
+@Implement(value = LivingEntity.class, version = "1.15.2")
 public class VersionedLivingEntity extends VersionedEntity implements LivingEntity {
 
   private final net.minecraft.entity.LivingEntity livingEntity;
 
-  public VersionedLivingEntity(Object entity, EntityType entityType, ClientWorld world, EntityMapper entityMapper) {
+  @AssistedInject
+  public VersionedLivingEntity(
+          @Assisted("entity") Object entity,
+          @Assisted("entityType") EntityType entityType,
+          ClientWorld world,
+          EntityMapper entityMapper
+  ) {
     super(entity, entityType, world, entityMapper);
 
     if (!(entity instanceof net.minecraft.entity.LivingEntity)) {
@@ -67,8 +77,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public LivingEntity getRevengeTarget() {
-    // TODO: 08.10.2020 Implement
-    return null;
+    return this.getEntityMapper().fromMinecraftLivingEntity(this.livingEntity.getRevengeTarget());
   }
 
   /**
@@ -76,8 +85,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void setRevengeTarget(LivingEntity entity) {
-    // TODO: 08.10.2020 Implement
-
+    this.livingEntity.setRevengeTarget((net.minecraft.entity.LivingEntity) this.getEntityMapper().toMinecraftLivingEntity(entity));
   }
 
   /**
@@ -93,8 +101,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public LivingEntity getLastAttackedEntity() {
-    // TODO: 08.10.2020 Implement
-    return null;
+    return this.getEntityMapper().fromMinecraftLivingEntity(this.livingEntity.getRevengeTarget());
   }
 
   /**
@@ -102,8 +109,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void setLastAttackedEntity(Entity entity) {
-    // TODO: 08.10.2020 Implement
-
+    this.livingEntity.setLastAttackedEntity((net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -135,8 +141,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public double getVisibilityMultiplier(Entity entity) {
-    // TODO: 08.10.2020 Implement
-    return 0;
+    return this.livingEntity.getVisibilityMultiplier((net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -144,8 +149,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public boolean canAttack(LivingEntity entity) {
-    // TODO: 08.10.2020 Implement
-    return false;
+    return this.livingEntity.canAttack((net.minecraft.entity.EntityType<?>) this.getEntityMapper().toMinecraftLivingEntity(entity));
   }
 
   /**
@@ -204,8 +208,12 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void knockBack(Entity entity, float strength, double xRatio, double zRatio) {
-    // TODO: 08.10.2020 Implement
-
+    this.livingEntity.knockBack(
+            (net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity),
+            strength,
+            xRatio,
+            zRatio
+    );
   }
 
   @Override
@@ -365,7 +373,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void attackEntityAsMob(Entity entity) {
-    // TODO: 08.10.2020 Implement
+    this.livingEntity.attackEntityAsMob((net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -397,8 +405,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public boolean canEntityBeSeen(Entity entity) {
-    // TODO: 08.10.2020 Implement
-    return false;
+    return this.livingEntity.canEntityBeSeen((net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**

@@ -1,10 +1,13 @@
 package net.labyfy.component.world;
 
+import net.labyfy.component.entity.Entity;
 import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.world.scoreboad.Scoreboard;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -49,4 +52,7 @@ public interface ClientWorld extends World {
    */
   Scoreboard getScoreboard();
 
+  Map<Integer, Entity> getEntities();
+
+  Set<AbstractClientPlayerEntity> getPlayers();
 }
