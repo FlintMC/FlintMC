@@ -16,6 +16,7 @@ import net.labyfy.component.world.World;
 import net.labyfy.component.world.util.BlockPosition;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -43,7 +44,7 @@ public class VersionedEntity implements Entity {
     this.entityMapper = entityMapper;
 
     if (!(entity instanceof net.minecraft.entity.Entity)) {
-      throw new IllegalArgumentException("");
+      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.Entity.class.getName());
     }
 
     this.entity = (net.minecraft.entity.Entity) entity;

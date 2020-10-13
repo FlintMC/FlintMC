@@ -12,6 +12,7 @@ import net.labyfy.component.player.type.model.ModelMapper;
 import net.labyfy.component.player.type.model.SkinModel;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.ClientWorld;
+import net.minecraft.nbt.INBT;
 
 /**
  * 1.15.2 implementation of the {@link AbstractClientPlayerEntity}.
@@ -35,7 +36,7 @@ public class VersionedAbstractClientPlayer extends VersionedPlayerEntity impleme
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
 
     if (!(entity instanceof net.minecraft.client.entity.player.AbstractClientPlayerEntity)) {
-      throw new IllegalArgumentException("");
+      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.client.entity.player.AbstractClientPlayerEntity.class.getName());
     }
 
     this.entity = (net.minecraft.client.entity.player.AbstractClientPlayerEntity) entity;

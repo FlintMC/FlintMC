@@ -17,6 +17,7 @@ import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.util.BlockPosition;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;
@@ -40,7 +41,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
     this.nbtMapper = nbtMapper;
 
     if (!(entity instanceof net.minecraft.entity.LivingEntity)) {
-      throw new IllegalArgumentException("");
+      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.LivingEntity.class.getName());
     }
 
     this.livingEntity = (net.minecraft.entity.LivingEntity) entity;
