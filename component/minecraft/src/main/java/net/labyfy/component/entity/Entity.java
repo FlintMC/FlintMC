@@ -14,10 +14,7 @@ import net.labyfy.component.world.World;
 import net.labyfy.component.world.block.material.PushReaction;
 import net.labyfy.component.world.util.BlockPosition;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -240,12 +237,40 @@ public interface Entity extends Nameable {
   float getPitch(float partialTicks);
 
   /**
+   * Retrieves the pitch of this entity.
+   *
+   * @return The entity pitch.
+   */
+  float getPitch();
+
+  /**
+   * Changes the pitch of this entity.
+   *
+   * @param pitch The new entity pitch.
+   */
+  void setPitch(float pitch);
+
+  /**
    * Retrieves the yaw of this entity.
    *
    * @param partialTicks The period of time, in fractions of a tick, that has passed since the last full tick.
    * @return The entity yaw.
    */
   float getYaw(float partialTicks);
+
+  /**
+   * Retrieves the pitch of this entity.
+   *
+   * @return The entity yaw.
+   */
+  float getYaw();
+
+  /**
+   * Changes the yaw of this entity.
+   *
+   * @param yaw The new entity yaw.
+   */
+  void setYaw(float yaw);
 
   /**
    * Retrieves the maximal in portal time of this entity.
@@ -923,6 +948,13 @@ public interface Entity extends Nameable {
    */
   default void checkDespawn() {
   }
+
+  /**
+   * Retrieves the random of this entity.
+   *
+   * @return The random of this entity.
+   */
+  Random getRandom();
 
   /**
    * Retrieves an entity mapper to map entity relevant things.

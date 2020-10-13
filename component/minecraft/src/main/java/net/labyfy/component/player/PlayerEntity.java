@@ -4,6 +4,7 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.LivingEntity;
+import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
@@ -88,7 +89,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param traceItem Whether the item can be traced.
    * @return The dropped item as an entity, or {@code null}.
    */
-  Object dropItem(ItemStack itemStack, boolean traceItem);
+  ItemEntity dropItem(ItemStack itemStack, boolean traceItem);
 
   /**
    * Retrieves the dropped item as an entity.
@@ -99,7 +100,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param traceItem  Whether the item can be traced.
    * @return The dropped ite mas an entity, or {@code null}.
    */
-  Object dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem);
+  ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem);
 
   /**
    * Whether the player can attack another player.

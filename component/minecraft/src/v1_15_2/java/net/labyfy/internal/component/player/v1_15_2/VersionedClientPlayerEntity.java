@@ -6,6 +6,7 @@ import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
+import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
@@ -256,10 +257,12 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
    * {@inheritDoc}
    */
   @Override
-  public Object dropItem(ItemStack itemStack, boolean traceItem) {
-    return Minecraft.getInstance().player.dropItem(
-            (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
-            traceItem
+  public ItemEntity dropItem(ItemStack itemStack, boolean traceItem) {
+    return this.getEntityMapper().fromMinecraftItemEntity(
+            Minecraft.getInstance().player.dropItem(
+                    (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
+                    traceItem
+            )
     );
   }
 
@@ -267,12 +270,46 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
    * {@inheritDoc}
    */
   @Override
-  public Object dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem) {
-    return Minecraft.getInstance().player.dropItem(
-            (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
-            dropAround,
-            traceItem
+  public ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem) {
+    return this.getEntityMapper().fromMinecraftItemEntity(
+            Minecraft.getInstance().player.dropItem(
+                    (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
+                    dropAround,
+                    traceItem
+            )
     );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getPitch() {
+    return Minecraft.getInstance().player.rotationPitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setPitch(float pitch) {
+    Minecraft.getInstance().player.rotationPitch = pitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getYaw() {
+    return Minecraft.getInstance().player.rotationYaw;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setYaw(float yaw) {
+    Minecraft.getInstance().player.rotationPitch = yaw;
   }
 
   /**

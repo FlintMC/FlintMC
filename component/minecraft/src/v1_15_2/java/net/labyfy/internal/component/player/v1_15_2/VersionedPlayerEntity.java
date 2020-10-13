@@ -5,6 +5,7 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -137,10 +138,12 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    * {@inheritDoc}
    */
   @Override
-  public Object dropItem(ItemStack itemStack, boolean traceItem) {
-    return this.entity.dropItem(
-            (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
-            traceItem
+  public ItemEntity dropItem(ItemStack itemStack, boolean traceItem) {
+    return this.getEntityMapper().fromMinecraftItemEntity(
+            this.entity.dropItem(
+                    (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
+                    traceItem
+            )
     );
   }
 
@@ -148,11 +151,13 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    * {@inheritDoc}
    */
   @Override
-  public Object dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem) {
-    return this.entity.dropItem(
-            (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
-            dropAround,
-            traceItem
+  public ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem) {
+    return this.getEntityMapper().fromMinecraftItemEntity(
+            this.entity.dropItem(
+                    (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
+                    dropAround,
+                    traceItem
+            )
     );
   }
 

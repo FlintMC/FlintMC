@@ -1,6 +1,7 @@
 package net.labyfy.component.entity;
 
 import net.labyfy.chat.MinecraftComponentMapper;
+import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
@@ -116,6 +117,23 @@ public interface EntityMapper {
    * @return The new Minecraft living entity or {@code null} if the given living entity was invalid.
    */
   Object toMinecraftLivingEntity(LivingEntity entity);
+
+  /**
+   * Creates a new {@link ItemEntity} by using the given Minecraft item entity as the base.
+   *
+   * @param handle The non-null Minecraft item entity.
+   * @return The new Labyfy {@link ItemEntity} or {@code null} if the given item entity was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft item entity.
+   */
+  ItemEntity fromMinecraftItemEntity(Object handle);
+
+  /**
+   * Creates a new Minecraft item entity by using the Labyfy {@link ItemEntity} as the base.
+   *
+   * @param itemEntity The non-null Labyfy {@link ItemEntity}.
+   * @return The new Minecraft item entity or {@code null} if the given item entity was invalid.
+   */
+  Object toMinecraftItemEntity(ItemEntity itemEntity);
 
   /**
    * Retrieves the hand mapper.

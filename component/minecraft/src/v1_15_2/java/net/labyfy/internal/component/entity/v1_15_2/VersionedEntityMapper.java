@@ -4,6 +4,7 @@ import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
+import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
@@ -17,7 +18,6 @@ import net.labyfy.component.resources.ResourceLocationProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.nbt.INBT;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameType;
 
@@ -38,6 +38,7 @@ public class VersionedEntityMapper implements EntityMapper {
   private final HandMapper handMapper;
 
   private final Entity.Factory entityFactory;
+  private final ItemEntity.Factory itemEntityFactory;
   private final LivingEntity.Provider livingEntityProvider;
   private final PlayerEntity.Provider playerEntityProvider;
   private final EntityTypeRegister entityTypeRegister;
@@ -50,6 +51,7 @@ public class VersionedEntityMapper implements EntityMapper {
           SoundMapper soundMapper,
           HandMapper handMapper,
           Entity.Factory entityFactory,
+          ItemEntity.Factory itemEntityFactory,
           LivingEntity.Provider livingEntityProvider,
           PlayerEntity.Provider playerEntityProvider,
           EntityTypeRegister entityTypeRegister
@@ -60,6 +62,7 @@ public class VersionedEntityMapper implements EntityMapper {
     this.soundMapper = soundMapper;
     this.handMapper = handMapper;
     this.entityFactory = entityFactory;
+    this.itemEntityFactory = itemEntityFactory;
     this.livingEntityProvider = livingEntityProvider;
     this.playerEntityProvider = playerEntityProvider;
     this.entityTypeRegister = entityTypeRegister;
@@ -309,6 +312,41 @@ public class VersionedEntityMapper implements EntityMapper {
         net.minecraft.entity.LivingEntity livingEntity = (net.minecraft.entity.LivingEntity) allEntity;
 
         if (livingEntity.getEntityId() == entity.getIdentifier()) {
+          return livingEntity;
+        }
+
+      }
+
+    }
+
+    return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemEntity fromMinecraftItemEntity(Object handle) {
+    if (!(handle instanceof net.minecraft.entity.item.ItemEntity)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.item.ItemEntity.class.getName());
+    }
+
+    net.minecraft.entity.item.ItemEntity itemEntity = (net.minecraft.entity.item.ItemEntity) handle;
+
+    return this.itemEntityFactory.create(itemEntity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftItemEntity(ItemEntity itemEntity) {
+
+    for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
+      if (allEntity instanceof net.minecraft.entity.item.ItemEntity) {
+        net.minecraft.entity.item.ItemEntity livingEntity = (net.minecraft.entity.item.ItemEntity) allEntity;
+
+        if (livingEntity.getEntityId() == itemEntity.getIdentifier()) {
           return livingEntity;
         }
 

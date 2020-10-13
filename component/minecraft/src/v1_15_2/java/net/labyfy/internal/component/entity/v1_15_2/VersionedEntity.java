@@ -16,7 +16,6 @@ import net.labyfy.component.world.World;
 import net.labyfy.component.world.util.BlockPosition;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.INBT;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -32,6 +31,7 @@ public class VersionedEntity implements Entity {
   private final EntityMapper entityMapper;
 
   private final net.minecraft.entity.Entity entity;
+  private final Random random;
 
   @AssistedInject
   public VersionedEntity(
@@ -47,6 +47,7 @@ public class VersionedEntity implements Entity {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.Entity.class.getName());
     }
 
+    this.random = new Random();
     this.entity = (net.minecraft.entity.Entity) entity;
   }
 
@@ -271,8 +272,40 @@ public class VersionedEntity implements Entity {
    * {@inheritDoc}
    */
   @Override
+  public float getPitch() {
+    return this.entity.rotationPitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setPitch(float pitch) {
+    this.entity.rotationPitch = pitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public float getYaw(float partialTicks) {
     return this.entity.getYaw(partialTicks);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getYaw() {
+    return this.entity.rotationYaw;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setYaw(float yaw) {
+    this.entity.rotationYaw = yaw;
   }
 
   /**
@@ -979,6 +1012,14 @@ public class VersionedEntity implements Entity {
   @Override
   public void setRawPosition(double x, double y, double z) {
     this.entity.setRawPosition(x, y, z);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Random getRandom() {
+    return this.random;
   }
 
   /**
