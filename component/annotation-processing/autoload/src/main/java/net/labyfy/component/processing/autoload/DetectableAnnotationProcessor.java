@@ -238,6 +238,13 @@ public class DetectableAnnotationProcessor implements Processor {
     return metaClasses;
   }
 
+  /**
+   * Collects the annotation values of a specified annotation type on a target.
+   *
+   * @param typeElement      the annotation type to collect
+   * @param annotatedElement the target where the annotation is present
+   * @return the collected data
+   */
   private Map<ExecutableElement, AnnotationValue> collectAnnotationData(TypeElement typeElement, Element annotatedElement) {
     Map<String, AnnotationValue> collect = new HashMap<>(annotatedElement.getAnnotationMirrors().stream().filter(annotationMirror -> annotationMirror.getAnnotationType().asElement().asType().equals(typeElement.asType())).map(AnnotationMirror::getElementValues).findAny().orElse(new HashMap<>()))
         .entrySet()
