@@ -244,9 +244,7 @@ public class DetectableAnnotationProcessor implements Processor {
         .stream()
         .collect(Collectors.toMap(entry -> entry.getKey().getSimpleName().toString(), Map.Entry::getValue));
 
-
-    Map<ExecutableElement, AnnotationValue> classValues = new HashMap<>(SimpleAnnotationMirror.of(typeElement, collect).getElementValues());
-    return classValues;
+    return new HashMap<>(SimpleAnnotationMirror.of(typeElement, collect).getElementValues());
   }
 
   private String createMethod(ExecutableElement executableElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
