@@ -12,7 +12,6 @@ import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.player.type.sound.Sound;
-import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.util.BlockPosition;
 import net.minecraft.entity.Pose;

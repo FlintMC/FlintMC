@@ -8,6 +8,7 @@ import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.Inventory;
+import net.labyfy.component.nbt.NBTCompound;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.type.CooldownTracking;
 import net.labyfy.component.player.type.GameMode;
@@ -472,6 +473,20 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @return {@code true} if the player can use a command block, otherwise {@code false}.
    */
   boolean canUseCommandBlock();
+
+  /**
+   * Retrieves the left shoulder entity as a {@link NBTCompound}.
+   *
+   * @return The left shoulder entity.
+   */
+  NBTCompound getLeftShoulderEntity();
+
+  /**
+   * Retrieves the right shoulder entity as a {@link NBTCompound}.
+   *
+   * @return The right shoulder entity.
+   */
+  NBTCompound getRightShoulderEntity();
 
   /**
    * A factory class for the {@link PlayerEntity}.

@@ -9,6 +9,8 @@ import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.Inventory;
+import net.labyfy.component.nbt.NBTCompound;
+import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
@@ -42,6 +44,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   private final net.minecraft.entity.player.PlayerEntity entity;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileGameProfileSerializer;
   private final ModelMapper modelMapper;
+  private final NBTMapper nbtMapper;
 
   @AssistedInject
   public VersionedPlayerEntity(
@@ -50,14 +53,16 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
           World world,
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileGameProfileSerializer,
-          ModelMapper modelMapper
+          ModelMapper modelMapper,
+          NBTMapper nbtMapper
   ) {
-    super(entity, entityType, world, entityMapper);
+    super(entity, entityType, world, entityMapper, nbtMapper);
     this.gameProfileGameProfileSerializer = gameProfileGameProfileSerializer;
     this.modelMapper = modelMapper;
+    this.nbtMapper = nbtMapper;
 
     if (!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
-      throw new IllegalArgumentException("");
+      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.player.PlayerEntity.class.getName());
     }
 
     this.entity = (net.minecraft.entity.player.PlayerEntity) entity;
@@ -578,6 +583,22 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public boolean canUseCommandBlock() {
     return this.entity.canUseCommandBlock();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public NBTCompound getLeftShoulderEntity() {
+    return (NBTCompound) this.nbtMapper.fromMinecraftNBT(this.entity.getLeftShoulderEntity());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public NBTCompound getRightShoulderEntity() {
+    return (NBTCompound) this.nbtMapper.fromMinecraftNBT(this.entity.getRightShoulderEntity());
   }
 
   /**

@@ -2,6 +2,7 @@ package net.labyfy.internal.component.player.v1_15_2;
 
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
@@ -27,9 +28,10 @@ public class VersionedAbstractClientPlayer extends VersionedPlayerEntity impleme
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileGameProfileSerializer,
           ModelMapper modelMapper,
-          NetworkPlayerInfoRegistry networkPlayerInfoRegistry
+          NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
+          NBTMapper nbtMapper
   ) {
-    super(entity, entityType, world, entityMapper, gameProfileGameProfileSerializer, modelMapper);
+    super(entity, entityType, world, entityMapper, gameProfileGameProfileSerializer, modelMapper, nbtMapper);
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
 
     if (!(entity instanceof net.minecraft.client.entity.player.AbstractClientPlayerEntity)) {

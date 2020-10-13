@@ -10,7 +10,6 @@ import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.player.type.sound.SoundCategory;
-import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.block.material.PushReaction;
 import net.labyfy.component.world.util.BlockPosition;
@@ -1001,8 +1000,8 @@ public interface Entity extends Nameable {
     /**
      * Creates an {@link Entity} with the given parameters.
      *
-     * @param entity       The non-null minecraft entity.
-     * @param entityType   The type of the entity.
+     * @param entity     The non-null minecraft entity.
+     * @param entityType The type of the entity.
      * @return A created entity.
      */
     Entity create(

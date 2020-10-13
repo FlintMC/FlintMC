@@ -5,6 +5,7 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.RemoteClientPlayerEntity;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
@@ -25,8 +26,18 @@ public class VersionedRemoteClientPlayerEntity extends VersionedAbstractClientPl
           EntityMapper entityMapper,
           GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
-          NetworkPlayerInfoRegistry networkPlayerInfoRegistry
+          NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
+          NBTMapper nbtMapper
   ) {
-    super(entity, entityType, clientWorld, entityMapper, gameProfileSerializer, modelMapper, networkPlayerInfoRegistry);
+    super(
+            entity,
+            entityType,
+            clientWorld,
+            entityMapper,
+            gameProfileSerializer,
+            modelMapper,
+            networkPlayerInfoRegistry,
+            nbtMapper
+    );
   }
 }

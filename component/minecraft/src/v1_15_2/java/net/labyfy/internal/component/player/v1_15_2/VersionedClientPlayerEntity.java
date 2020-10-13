@@ -14,6 +14,7 @@ import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.items.inventory.InventoryController;
 import net.labyfy.component.items.inventory.player.PlayerInventory;
+import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.ClientPlayerEntity;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
@@ -70,7 +71,8 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
           EntityTypeRegister entityTypeRegister,
           InventoryController inventoryController,
-          TabOverlay tabOverlay
+          TabOverlay tabOverlay,
+          NBTMapper nbtMapper
   ) {
     super(
             Minecraft.getInstance().player,
@@ -79,7 +81,8 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
             entityMapper,
             gameProfileSerializer,
             modelMapper,
-            networkPlayerInfoRegistry
+            networkPlayerInfoRegistry,
+            nbtMapper
     );
     this.gameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;

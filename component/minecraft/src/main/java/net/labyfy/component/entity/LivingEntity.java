@@ -5,6 +5,7 @@ import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
+import net.labyfy.component.nbt.NBTCompound;
 import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.resources.ResourceLocation;
@@ -564,6 +565,21 @@ public interface LivingEntity extends Entity {
    * @param hand The hand for the break animation.
    */
   void sendBreakAnimation(Hand hand);
+
+  /**
+   * Reads additional named binary compound tag.
+   *
+   * @param compound The named binary compound to read.
+   */
+  void readAdditional(NBTCompound compound);
+
+  /**
+   * Writes additional named binary compound tag.
+   *
+   * @param compound The named binary compound to write.
+   */
+  void writeAdditional(NBTCompound compound);
+
 
   /**
    * A factory class for the {@link LivingEntity}.

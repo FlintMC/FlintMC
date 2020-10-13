@@ -9,12 +9,14 @@ import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
+import net.labyfy.component.nbt.NBTCompound;
+import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.resources.ResourceLocation;
-import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.util.BlockPosition;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;
@@ -24,15 +26,18 @@ import java.util.Random;
 public class VersionedLivingEntity extends VersionedEntity implements LivingEntity {
 
   private final net.minecraft.entity.LivingEntity livingEntity;
+  private final NBTMapper nbtMapper;
 
   @AssistedInject
   public VersionedLivingEntity(
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityMapper entityMapper
+          EntityMapper entityMapper,
+          NBTMapper nbtMapper
   ) {
     super(entity, entityType, world, entityMapper);
+    this.nbtMapper = nbtMapper;
 
     if (!(entity instanceof net.minecraft.entity.LivingEntity)) {
       throw new IllegalArgumentException("");
@@ -681,5 +686,21 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
     this.livingEntity.sendBreakAnimation(
             (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
     );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void readAdditional(NBTCompound compound) {
+    this.livingEntity.readAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void writeAdditional(NBTCompound compound) {
+    this.livingEntity.writeAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
   }
 }
