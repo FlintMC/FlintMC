@@ -567,21 +567,6 @@ public interface LivingEntity extends Entity {
   void sendBreakAnimation(Hand hand);
 
   /**
-   * Reads additional named binary compound tag.
-   *
-   * @param compound The named binary compound to read.
-   */
-  void readAdditional(NBTCompound compound);
-
-  /**
-   * Writes additional named binary compound tag.
-   *
-   * @param compound The named binary compound to write.
-   */
-  void writeAdditional(NBTCompound compound);
-
-
-  /**
    * A factory class for the {@link LivingEntity}.
    */
   @AssistedFactory(LivingEntity.class)

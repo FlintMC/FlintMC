@@ -4,7 +4,6 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
-import net.labyfy.component.nbt.NBTCompound;
 
 import java.util.UUID;
 
@@ -100,20 +99,6 @@ public interface ItemEntity extends Entity {
    * Makes the item entity as a fake item.
    */
   void makeFakeItem();
-
-  /**
-   * Reads additional named binary compound tag.
-   *
-   * @param compound The named binary compound to read.
-   */
-  void readAdditional(NBTCompound compound);
-
-  /**
-   * Writes additional named binary compound tag.
-   *
-   * @param compound The named binary compound to write.
-   */
-  void writeAdditional(NBTCompound compound);
 
   /**
    * A factory class for the {@link ItemEntity}.

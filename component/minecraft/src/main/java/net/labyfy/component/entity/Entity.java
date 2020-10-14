@@ -7,6 +7,7 @@ import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
+import net.labyfy.component.nbt.NBTCompound;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.player.type.sound.SoundCategory;
@@ -948,6 +949,21 @@ public interface Entity extends Nameable {
    */
   default void checkDespawn() {
   }
+
+
+  /**
+   * Reads additional named binary compound tag.
+   *
+   * @param compound The named binary compound to read.
+   */
+  default void readAdditional(NBTCompound compound) {}
+
+  /**
+   * Writes additional named binary compound tag.
+   *
+   * @param compound The named binary compound to write.
+   */
+  default void writeAdditional(NBTCompound compound) {}
 
   /**
    * Retrieves the random of this entity.
