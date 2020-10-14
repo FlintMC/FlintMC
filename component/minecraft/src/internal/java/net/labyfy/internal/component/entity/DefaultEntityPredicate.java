@@ -2,7 +2,7 @@ package net.labyfy.internal.component.entity;
 
 import net.labyfy.component.entity.EntityPredicate;
 import net.labyfy.component.entity.LivingEntity;
-import net.labyfy.component.entity.mob.MobEntity;
+import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.inject.implement.Implement;
 
 import java.util.function.Predicate;

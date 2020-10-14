@@ -1,8 +1,8 @@
-package net.labyfy.internal.component.entity.v1_15_2.mob;
+package net.labyfy.internal.component.entity.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.entity.mob.MobEntity;
+import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.entity.type.EntityTypeMapper;
 import net.labyfy.component.inject.implement.Implement;
 

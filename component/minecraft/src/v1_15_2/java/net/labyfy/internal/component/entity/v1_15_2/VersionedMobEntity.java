@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.entity.v1_15_2.mob;
+package net.labyfy.internal.component.entity.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
@@ -6,7 +6,7 @@ import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.ai.EntitySenses;
-import net.labyfy.component.entity.mob.MobEntity;
+import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -15,7 +15,6 @@ import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.util.BlockPosition;
-import net.labyfy.internal.component.entity.v1_15_2.VersionedLivingEntity;
 import net.minecraft.util.math.BlockPos;
 
 @Implement(value = MobEntity.class, version = "1.15.2")
@@ -25,7 +24,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   private final EntitySenses.Factory entitySensesFactory;
 
   @AssistedInject
-  private VersionedMobEntity(
+  public VersionedMobEntity(
           @Assisted("mobEntity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
@@ -37,7 +36,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
     this.entitySensesFactory = entitySensesFactory;
 
     if (!(entity instanceof net.minecraft.entity.MobEntity)) {
-      throw new IllegalArgumentException("");
+      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.MobEntity.class.getName());
     }
 
     this.mobEntity = (net.minecraft.entity.MobEntity) entity;

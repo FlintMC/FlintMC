@@ -5,7 +5,7 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.ai.EntitySenses;
-import net.labyfy.component.entity.mob.MobEntity;
+import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.inject.implement.Implement;
 
 /**

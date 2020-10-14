@@ -1,8 +1,6 @@
-package net.labyfy.component.entity.mob;
+package net.labyfy.component.entity;
 
 import com.google.inject.assistedinject.Assisted;
-import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.ai.EntitySenses;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;

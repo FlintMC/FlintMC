@@ -5,7 +5,7 @@ import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.item.ItemEntity;
-import net.labyfy.component.entity.mob.MobEntity;
+import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;

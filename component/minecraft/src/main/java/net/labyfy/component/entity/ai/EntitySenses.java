@@ -2,7 +2,7 @@ package net.labyfy.component.entity.ai;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.mob.MobEntity;
+import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 /**

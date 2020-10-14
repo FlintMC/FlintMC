@@ -2,7 +2,6 @@ package net.labyfy.component.entity;
 
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.item.ItemEntity;
-import net.labyfy.component.entity.mob.MobEntity;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
