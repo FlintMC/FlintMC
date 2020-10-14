@@ -13,6 +13,7 @@ import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.block.material.PushReaction;
+import net.labyfy.component.world.scoreboad.team.Team;
 import net.labyfy.component.world.util.BlockPosition;
 
 import java.util.*;
@@ -945,6 +946,50 @@ public interface Entity extends Nameable {
   void setRawPosition(double x, double y, double z);
 
   /**
+   * Whether the entity is invulnerable.
+   *
+   * @return {@code true} if the entity is invulnerable, otherwise {@code false}.
+   */
+  boolean isInvulnerable();
+
+  /**
+   * Changes the invulnerable of this entity.
+   *
+   * @param invulnerable {@code true} if the entity should be invulnerable, otherwise {@code false}.
+   */
+  void setInvulnerable(boolean invulnerable);
+
+  /**
+   * Retrieves the team of this entity.
+   *
+   * @return The entity team or {@code null}.
+   */
+  Team getTeam();
+
+  /**
+   * Whether the entity is in the same team.
+   *
+   * @param entity The entity to be checked.
+   * @return {@code true} if the entity is in the same team, otherwise {@code false}.
+   */
+  boolean isInSameTeam(Entity entity);
+
+  /**
+   * Whether the team is in the same scoreboard team.
+   *
+   * @param team The team to be checked.
+   * @return {@code true} if the team is in the same scoreboard team.
+   */
+  boolean isInScoreboardTeam(Team team);
+
+  /**
+   * Whether the entity is alive.
+   *
+   * @return {@code true} if the entity is alive, otherwise {@code false}.
+   */
+  boolean isAlive();
+
+  /**
    * Checks if the entity must be removed.
    */
   default void checkDespawn() {
@@ -956,14 +1001,16 @@ public interface Entity extends Nameable {
    *
    * @param compound The named binary compound to read.
    */
-  default void readAdditional(NBTCompound compound) {}
+  default void readAdditional(NBTCompound compound) {
+  }
 
   /**
    * Writes additional named binary compound tag.
    *
    * @param compound The named binary compound to write.
    */
-  default void writeAdditional(NBTCompound compound) {}
+  default void writeAdditional(NBTCompound compound) {
+  }
 
   /**
    * Retrieves the random of this entity.

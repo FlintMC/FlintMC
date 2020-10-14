@@ -13,6 +13,7 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.world.World;
+import net.labyfy.component.world.scoreboad.team.Team;
 import net.labyfy.component.world.util.BlockPosition;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -1012,6 +1013,51 @@ public class VersionedEntity implements Entity {
   @Override
   public void setRawPosition(double x, double y, double z) {
     this.entity.setRawPosition(x, y, z);
+  }
+
+  @Override
+  public boolean isInvulnerable() {
+    return this.entity.isInvulnerable();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setInvulnerable(boolean invulnerable) {
+    this.entity.setInvulnerable(invulnerable);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Team getTeam() {
+    return this.getWorld().getScoreboard().getPlayerTeam(this.getScoreboardName());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isInSameTeam(Entity entity) {
+    return this.isInScoreboardTeam(entity.getTeam());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isInScoreboardTeam(Team team) {
+    return this.getTeam() != null && this.getTeam().isSameTeam(team);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isAlive() {
+    return this.entity.isAlive();
   }
 
   /**
