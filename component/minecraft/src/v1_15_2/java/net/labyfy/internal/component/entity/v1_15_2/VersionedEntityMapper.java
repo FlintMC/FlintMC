@@ -5,6 +5,7 @@ import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.item.ItemEntity;
+import net.labyfy.component.entity.mob.MobEntity;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
@@ -40,6 +41,7 @@ public class VersionedEntityMapper implements EntityMapper {
   private final Entity.Factory entityFactory;
   private final ItemEntity.Factory itemEntityFactory;
   private final LivingEntity.Provider livingEntityProvider;
+  private final MobEntity.Provider mobEntityProvider;
   private final PlayerEntity.Provider playerEntityProvider;
   private final EntityTypeRegister entityTypeRegister;
 
@@ -51,6 +53,7 @@ public class VersionedEntityMapper implements EntityMapper {
           SoundMapper soundMapper,
           HandMapper handMapper,
           Entity.Factory entityFactory,
+          MobEntity.Provider mobEntityProvider,
           ItemEntity.Factory itemEntityFactory,
           LivingEntity.Provider livingEntityProvider,
           PlayerEntity.Provider playerEntityProvider,
@@ -62,6 +65,7 @@ public class VersionedEntityMapper implements EntityMapper {
     this.soundMapper = soundMapper;
     this.handMapper = handMapper;
     this.entityFactory = entityFactory;
+    this.mobEntityProvider = mobEntityProvider;
     this.itemEntityFactory = itemEntityFactory;
     this.livingEntityProvider = livingEntityProvider;
     this.playerEntityProvider = playerEntityProvider;
@@ -317,6 +321,35 @@ public class VersionedEntityMapper implements EntityMapper {
 
       }
 
+    }
+
+    return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MobEntity fromMinecraftMobEntity(Object handle) {
+    if (!(handle instanceof net.minecraft.entity.MobEntity)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.MobEntity.class.getName());
+    }
+
+    net.minecraft.entity.MobEntity mobEntity = (net.minecraft.entity.MobEntity) handle;
+
+    return this.mobEntityProvider.get(mobEntity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftMobEntity(MobEntity entity) {
+
+    for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
+      if (allEntity instanceof net.minecraft.entity.MobEntity && allEntity.getEntityId() == entity.getIdentifier()) {
+        return allEntity;
+      }
     }
 
     return null;

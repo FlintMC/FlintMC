@@ -2,6 +2,7 @@ package net.labyfy.component.entity;
 
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.item.ItemEntity;
+import net.labyfy.component.entity.mob.MobEntity;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
@@ -117,6 +118,23 @@ public interface EntityMapper {
    * @return The new Minecraft living entity or {@code null} if the given living entity was invalid.
    */
   Object toMinecraftLivingEntity(LivingEntity entity);
+
+  /**
+   * Creates a new {@link MobEntity} by using the given Minecraft mob entity as the base.
+   *
+   * @param handle The non-null Minecraft living entity.
+   * @return The new Labyfy {@link MobEntity} or {@code null} if the given mob entity was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft mob entity.
+   */
+  MobEntity fromMinecraftMobEntity(Object handle);
+
+  /**
+   * Creates a new Minecraft mob entity by using the Labyfy {@link MobEntity} as the base.
+   *
+   * @param entity The non-null Labyfy {@link MobEntity}.
+   * @return The new Minecraft mob entity or {@code null} if the given mob entity was invalid.
+   */
+  Object toMinecraftMobEntity(MobEntity entity);
 
   /**
    * Creates a new {@link ItemEntity} by using the given Minecraft item entity as the base.

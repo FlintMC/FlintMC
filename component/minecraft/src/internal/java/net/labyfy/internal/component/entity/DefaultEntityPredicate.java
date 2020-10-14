@@ -126,7 +126,7 @@ public class DefaultEntityPredicate implements EntityPredicate {
           }
         }
 
-        return this.requireLineOfSight || !(attacker instanceof MobEntity) || ((MobEntity) attacker).getEntitySenses().canSee(target);
+        return this.requireLineOfSight || !(attacker instanceof MobEntity) || ((MobEntity) attacker).getEntitySenses().canSeeEntity(target);
       }
 
       return true;
