@@ -234,7 +234,21 @@ public class DetectableAnnotationProcessor implements Processor {
         .map(DeclaredType::asElement)
         .map(TypeElement.class::cast)
         .map(typeElement -> new Pair<>(annotatedElement, AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, typeElement.getQualifiedName().toString())))
+        .filter(pair -> pair.getSecond() != null)
         .forEach(metaClasses::add);
+
+    for (Element enclosedElement : annotatedElement.getEnclosedElements()) {
+      ((List<AnnotationValue>) metaData.getValue())
+          .stream()
+          .map(AnnotationValue::getValue)
+          .map(DeclaredType.class::cast)
+          .map(DeclaredType::asElement)
+          .map(TypeElement.class::cast)
+          .filter(typeElement -> AnnotationMirrorUtil.getAnnotationMirror(enclosedElement, typeElement.getQualifiedName().toString()) != null)
+          .map(typeElement -> new Pair<>(enclosedElement, SimpleAnnotationMirror.of(typeElement, AnnotationMirrorUtil.getElementValuesByName(AnnotationMirrorUtil.getAnnotationMirror(enclosedElement, typeElement.getQualifiedName().toString())))))
+          .filter(pair -> pair.getSecond() != null)
+          .forEach(metaClasses::add);
+    }
     return metaClasses;
   }
 
