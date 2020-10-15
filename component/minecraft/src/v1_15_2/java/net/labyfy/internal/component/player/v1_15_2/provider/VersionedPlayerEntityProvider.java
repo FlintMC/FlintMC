@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.player.v1_15_2;
+package net.labyfy.internal.component.player.v1_15_2.provider;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
