@@ -7,7 +7,9 @@ import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.item.ItemEntity;
+import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
+import net.labyfy.component.entity.type.EntityTypeMapper;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -15,6 +17,7 @@ import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.items.inventory.InventoryController;
 import net.labyfy.component.items.inventory.player.PlayerInventory;
+import net.labyfy.component.nbt.NBTCompound;
 import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.ClientPlayerEntity;
 import net.labyfy.component.player.gameprofile.GameProfile;
@@ -32,8 +35,10 @@ import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.World;
-import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.component.world.math.Vector3D;
+import net.labyfy.component.world.scoreboad.Scoreboard;
+import net.labyfy.component.world.scoreboad.team.Team;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
@@ -41,11 +46,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.Item;
 import net.minecraft.item.MerchantOffers;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
 
@@ -60,6 +67,9 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   private final ModelMapper modelMapper;
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
 
+  private final EntityTypeMapper entityTypeMapper;
+  private final NBTMapper nbtMapper;
+
   private final InventoryController inventoryController;
   private final TabOverlay tabOverlay;
 
@@ -71,6 +81,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
           ModelMapper modelMapper,
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
           EntityTypeRegister entityTypeRegister,
+          EntityTypeMapper entityTypeMapper,
           InventoryController inventoryController,
           TabOverlay tabOverlay,
           NBTMapper nbtMapper
@@ -88,8 +99,10 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
     this.gameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
+    this.entityTypeMapper = entityTypeMapper;
     this.inventoryController = inventoryController;
     this.tabOverlay = tabOverlay;
+    this.nbtMapper = nbtMapper;
   }
 
   /**
@@ -2293,6 +2306,7 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
    */
   @Override
   public void heal(float health) {
+    Minecraft.getInstance().player.heal(health);
   }
 
   /**
@@ -2556,6 +2570,119 @@ public class VersionedClientPlayerEntity extends VersionedAbstractClientPlayer i
   public ChatComponent getCustomName() {
     return this.getEntityMapper().getComponentMapper().fromMinecraft(
             Minecraft.getInstance().player.getCustomName()
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public NBTCompound getLeftShoulderEntity() {
+    return (NBTCompound) this.nbtMapper.fromMinecraftNBT(
+            Minecraft.getInstance().player.getLeftShoulderEntity()
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public NBTCompound getRightShoulderEntity() {
+    return (NBTCompound) this.nbtMapper.fromMinecraftNBT(
+            Minecraft.getInstance().player.getRightShoulderEntity()
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void readAdditional(NBTCompound compound) {
+    Minecraft.getInstance().player.readAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void writeAdditional(NBTCompound compound) {
+    Minecraft.getInstance().player.writeAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean canAttack(net.labyfy.component.entity.type.EntityType entityType) {
+    return Minecraft.getInstance().player.canAttack(
+            (EntityType<?>) this.entityTypeMapper.toMinecraftEntityType(entityType)
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isPlayer() {
+    return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isInvulnerable() {
+    return Minecraft.getInstance().player.isInvulnerable();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setInvulnerable(boolean invulnerable) {
+    Minecraft.getInstance().player.setInvulnerable(invulnerable);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Team getTeam() {
+    return this.getScoreboard().getPlayerTeam(Minecraft.getInstance().player.getScoreboardName());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isInSameTeam(Entity entity) {
+    return this.isInScoreboardTeam(entity.getTeam());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isInScoreboardTeam(Team team) {
+    return this.getTeam() != null && this.getTeam().isSameTeam(team);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isAlive() {
+    return Minecraft.getInstance().player.isAlive();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void move(MoverType moverType, Vector3D vector3D) {
+    Minecraft.getInstance().player.move(
+            (net.minecraft.entity.MoverType) this.getEntityMapper().toMinecraftMoverType(moverType),
+            new Vec3d(vector3D.getX(), vector3D.getY(), vector3D.getZ())
     );
   }
 }
