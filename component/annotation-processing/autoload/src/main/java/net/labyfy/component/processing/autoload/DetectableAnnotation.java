@@ -16,4 +16,5 @@ public @interface DetectableAnnotation {
    */
   Class<? extends Annotation>[] metaData() default {};
 
+  Class<? extends Annotation> repeating() default Annotation.class;
 }
