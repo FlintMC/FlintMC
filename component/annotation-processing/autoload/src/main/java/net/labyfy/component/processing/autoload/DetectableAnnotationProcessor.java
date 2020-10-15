@@ -134,6 +134,7 @@ public class DetectableAnnotationProcessor implements Processor {
    *
    * @param annotationType   the annotation type to look for
    * @param annotatedElement the element to look at for the annotationType
+   * @param annotationValues the value of the annotation to write
    * @return the java code to instantiate the annotation
    */
   private String parseAnnotationMeta(TypeElement annotationType, Element annotatedElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
