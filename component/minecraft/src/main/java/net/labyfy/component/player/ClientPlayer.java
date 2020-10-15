@@ -2,12 +2,17 @@ package net.labyfy.component.player;
 
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.items.inventory.player.PlayerInventory;
+import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.overlay.TabOverlay;
 
-/**
- * Represents the Minecraft client player.
- */
-public interface ClientPlayerEntity extends AbstractClientPlayerEntity {
+public interface ClientPlayer extends PlayerSkinProfile, AbstractClientPlayer {
+
+  /**
+   * Retrieves the player entity.
+   *
+   * @return The client player entity.
+   */
+  PlayerEntity getEntity();
 
   /**
    * Retrieves the inventory of this player.

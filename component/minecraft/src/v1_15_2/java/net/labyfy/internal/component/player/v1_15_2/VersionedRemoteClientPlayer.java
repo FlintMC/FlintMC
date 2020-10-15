@@ -1,9 +1,12 @@
 package net.labyfy.internal.component.player.v1_15_2;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.nbt.mapper.NBTMapper;
-import net.labyfy.component.player.AbstractClientPlayerEntity;
+import net.labyfy.component.player.RemoteClientPlayer;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
@@ -11,53 +14,31 @@ import net.labyfy.component.player.type.GameMode;
 import net.labyfy.component.player.type.model.ModelMapper;
 import net.labyfy.component.player.type.model.SkinModel;
 import net.labyfy.component.resources.ResourceLocation;
-import net.labyfy.component.world.ClientWorld;
-import net.minecraft.nbt.INBT;
+import net.labyfy.component.world.World;
 
 /**
- * 1.15.2 implementation of the {@link AbstractClientPlayerEntity}.
+ * 1.15.2 implementation of the {@link RemoteClientPlayer}.
  */
-public class VersionedAbstractClientPlayer extends VersionedPlayerEntity implements AbstractClientPlayerEntity {
+@Implement(value = RemoteClientPlayer.class, version = "1.15.2")
+public class VersionedRemoteClientPlayer extends VersionedPlayerEntity implements RemoteClientPlayer {
 
-  private final net.minecraft.client.entity.player.AbstractClientPlayerEntity entity;
+  private final net.minecraft.client.entity.player.RemoteClientPlayerEntity playerEntity;
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
 
-  public VersionedAbstractClientPlayer(
-          Object entity,
-          EntityType entityType,
-          ClientWorld world,
+  @AssistedInject
+  private VersionedRemoteClientPlayer(
+          @Assisted("entity") Object entity,
+          @Assisted("entityType") EntityType entityType,
+          World world,
           EntityMapper entityMapper,
-          GameProfileSerializer gameProfileGameProfileSerializer,
+          GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
-          NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
-          NBTMapper nbtMapper
-  ) {
-    super(entity, entityType, world, entityMapper, gameProfileGameProfileSerializer, modelMapper, nbtMapper);
+          NBTMapper nbtMapper,
+          NetworkPlayerInfoRegistry networkPlayerInfoRegistry) {
+    super(entity, entityType, world, entityMapper, gameProfileSerializer, modelMapper, nbtMapper);
+
+    this.playerEntity = (net.minecraft.client.entity.player.RemoteClientPlayerEntity) entity;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
-
-    if (!(entity instanceof net.minecraft.client.entity.player.AbstractClientPlayerEntity)) {
-      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.client.entity.player.AbstractClientPlayerEntity.class.getName());
-    }
-
-    this.entity = (net.minecraft.client.entity.player.AbstractClientPlayerEntity) entity;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isSpectator() {
-    NetworkPlayerInfo networkPlayerInfo = this.getNetworkPlayerInfo();
-    return networkPlayerInfo != null && networkPlayerInfo.getGameMode() == GameMode.SPECTATOR;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isCreative() {
-    NetworkPlayerInfo networkPlayerInfo = this.getNetworkPlayerInfo();
-    return networkPlayerInfo != null && networkPlayerInfo.getGameMode() == GameMode.CREATIVE;
   }
 
   /**
@@ -65,7 +46,7 @@ public class VersionedAbstractClientPlayer extends VersionedPlayerEntity impleme
    */
   @Override
   public boolean hasPlayerInfo() {
-    return this.entity.hasPlayerInfo();
+    return this.getNetworkPlayerInfo() != null;
   }
 
   /**
@@ -73,7 +54,7 @@ public class VersionedAbstractClientPlayer extends VersionedPlayerEntity impleme
    */
   @Override
   public NetworkPlayerInfo getNetworkPlayerInfo() {
-    return this.networkPlayerInfoRegistry.getPlayerInfo(entity.getGameProfile().getId());
+    return this.networkPlayerInfoRegistry.getPlayerInfo(playerEntity.getGameProfile().getId());
   }
 
   /**
@@ -81,7 +62,7 @@ public class VersionedAbstractClientPlayer extends VersionedPlayerEntity impleme
    */
   @Override
   public float getFovModifier() {
-    return this.entity.getFovModifier();
+    return this.playerEntity.getFovModifier();
   }
 
   /**
@@ -138,5 +119,39 @@ public class VersionedAbstractClientPlayer extends VersionedPlayerEntity impleme
   @Override
   public boolean hasElytra() {
     return this.getNetworkPlayerInfo().hasElytra();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isChild() {
+    return this.playerEntity.isChild();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isSpectator() {
+    NetworkPlayerInfo networkPlayerInfo = this.getNetworkPlayerInfo();
+    return networkPlayerInfo != null && networkPlayerInfo.getGameMode() == GameMode.SPECTATOR;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isCreative() {
+    NetworkPlayerInfo networkPlayerInfo = this.getNetworkPlayerInfo();
+    return networkPlayerInfo != null && networkPlayerInfo.getGameMode() == GameMode.CREATIVE;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void checkDespawn() {
+    this.playerEntity.checkDespawn();
   }
 }

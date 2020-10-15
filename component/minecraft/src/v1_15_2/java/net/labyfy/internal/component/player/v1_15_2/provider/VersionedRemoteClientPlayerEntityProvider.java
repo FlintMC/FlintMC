@@ -4,21 +4,21 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.player.RemoteClientPlayerEntity;
+import net.labyfy.component.player.RemoteClientPlayer;
 
 /**
- * 1.15.2 implementation of the {@link RemoteClientPlayerEntity.Provider}.
+ * 1.15.2 implementation of the {@link RemoteClientPlayer.Provider}.
  */
 @Singleton
-@Implement(value = RemoteClientPlayerEntity.Provider.class, version = "1.15.2")
-public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPlayerEntity.Provider {
+@Implement(value = RemoteClientPlayer.Provider.class, version = "1.15.2")
+public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPlayer.Provider {
 
-  private final RemoteClientPlayerEntity.Factory remoteClientPlayerEntity;
+  private final RemoteClientPlayer.Factory remoteClientPlayerEntity;
   private final EntityTypeRegister entityTypeRegister;
 
   @Inject
   private VersionedRemoteClientPlayerEntityProvider(
-          RemoteClientPlayerEntity.Factory remoteClientPlayerEntity,
+          RemoteClientPlayer.Factory remoteClientPlayerEntity,
           EntityTypeRegister entityTypeRegister
   ) {
     this.remoteClientPlayerEntity = remoteClientPlayerEntity;
@@ -29,7 +29,7 @@ public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPl
    * {@inheritDoc}
    */
   @Override
-  public RemoteClientPlayerEntity get(Object entity) {
+  public RemoteClientPlayer get(Object entity) {
     return this.remoteClientPlayerEntity.create(
             entity,
             this.entityTypeRegister.getEntityType("player")

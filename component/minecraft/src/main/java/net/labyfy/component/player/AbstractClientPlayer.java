@@ -5,7 +5,21 @@ import net.labyfy.component.player.network.NetworkPlayerInfo;
 /**
  * Represents the Minecraft abstract client player.
  */
-public interface AbstractClientPlayerEntity extends PlayerEntity, PlayerSkinProfile {
+public interface AbstractClientPlayer extends PlayerSkinProfile {
+
+  /**
+   * Whether the entity is a spectator.
+   *
+   * @return {@code true} if the entity is a spectator, otherwise {@code false}.
+   */
+  boolean isSpectator();
+
+  /**
+   * Whether the entity is in creative mode.
+   *
+   * @return {@code true} if the entity is in the creative mode, otherwise {@code false}.
+   */
+  boolean isCreative();
 
   /**
    * Whether the player has network information.

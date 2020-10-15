@@ -3,8 +3,8 @@ package net.labyfy.internal.component.world.v1_15_2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import net.labyfy.component.player.ClientPlayerEntity;
-import net.labyfy.component.player.RemoteClientPlayerEntity;
+import net.labyfy.component.player.ClientPlayer;
+import net.labyfy.component.player.RemoteClientPlayer;
 import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
@@ -19,15 +19,15 @@ import net.minecraft.entity.Entity;
 @AutoLoad
 public class VersionedClientWorldInterceptor {
 
-  private final ClientPlayerEntity clientPlayer;
+  private final ClientPlayer clientPlayer;
   private final ClientWorld clientWorld;
-  private final RemoteClientPlayerEntity.Provider remoteClientPlayerEntityProvider;
+  private final RemoteClientPlayer.Provider remoteClientPlayerEntityProvider;
 
   @Inject
   private VersionedClientWorldInterceptor(
-          ClientPlayerEntity clientPlayer,
+          ClientPlayer clientPlayer,
           ClientWorld clientWorld,
-          RemoteClientPlayerEntity.Provider remoteClientPlayerEntityProvider) {
+          RemoteClientPlayer.Provider remoteClientPlayerEntityProvider) {
     this.clientPlayer = clientPlayer;
     this.clientWorld = clientWorld;
     this.remoteClientPlayerEntityProvider = remoteClientPlayerEntityProvider;

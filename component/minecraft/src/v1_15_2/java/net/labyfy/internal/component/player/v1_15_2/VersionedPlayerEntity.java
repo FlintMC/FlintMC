@@ -53,12 +53,12 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
           @Assisted("entityType") EntityType entityType,
           World world,
           EntityMapper entityMapper,
-          GameProfileSerializer gameProfileGameProfileSerializer,
+          GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
           NBTMapper nbtMapper
   ) {
     super(entity, entityType, world, entityMapper, nbtMapper);
-    this.gameProfileGameProfileSerializer = gameProfileGameProfileSerializer;
+    this.gameProfileGameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;
     this.nbtMapper = nbtMapper;
 
