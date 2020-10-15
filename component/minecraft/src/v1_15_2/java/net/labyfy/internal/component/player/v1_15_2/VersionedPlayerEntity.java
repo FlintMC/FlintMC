@@ -24,7 +24,7 @@ import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.scoreboad.Scoreboard;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 import net.labyfy.internal.component.entity.v1_15_2.VersionedLivingEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.Item;

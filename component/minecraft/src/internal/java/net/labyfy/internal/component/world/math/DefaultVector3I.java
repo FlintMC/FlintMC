@@ -1,24 +1,39 @@
-package net.labyfy.internal.component.world.util;
+package net.labyfy.internal.component.world.math;
 
-import net.labyfy.component.world.util.Vector3I;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
+import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.world.math.Vector3I;
 
 /**
  * Default implementation of {@link Vector3I}.
  */
+@Implement(Vector3I.class)
 public class DefaultVector3I implements Vector3I {
 
   private final int x;
   private final int y;
   private final int z;
+  private final Vector3I.Factory vector3IFactory;
 
-  protected DefaultVector3I(int x, int y, int z) {
+  @AssistedInject
+  protected DefaultVector3I(
+          @Assisted("x") int x,
+          @Assisted("y") int y,
+          @Assisted("z") int z,
+          Vector3I.Factory vector3IFactory
+  ) {
     this.x = x;
     this.y = y;
     this.z = z;
+    this.vector3IFactory = vector3IFactory;
   }
 
-  protected DefaultVector3I(Vector3I vector) {
-    this(vector.getX(), vector.getY(), vector.getZ());
+  @AssistedInject
+  protected DefaultVector3I(
+          @Assisted("vector") Vector3I vector,
+          Vector3I.Factory vector3IFactory) {
+    this(vector.getX(), vector.getY(), vector.getZ(), vector3IFactory);
   }
 
   /**
@@ -50,7 +65,7 @@ public class DefaultVector3I implements Vector3I {
    */
   @Override
   public Vector3I crossProduct(Vector3I vector) {
-    return new DefaultVector3I(
+    return this.vector3IFactory.create(
             this.getY() * vector.getZ() - this.getZ() * vector.getY(),
             this.getZ() * vector.getX() - this.getX() * vector.getZ(),
             this.getX() * vector.getY() - this.getY() * vector.getX()

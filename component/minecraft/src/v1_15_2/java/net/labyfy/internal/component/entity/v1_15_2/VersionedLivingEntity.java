@@ -15,9 +15,8 @@ import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.World;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

@@ -3,7 +3,7 @@ package net.labyfy.component.entity;
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 
 /**
  * Represents the Minecraft creature entity.

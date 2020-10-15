@@ -5,11 +5,10 @@ import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
-import net.labyfy.component.nbt.NBTCompound;
 import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.resources.ResourceLocation;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 
 import java.util.Optional;
 import java.util.Random;

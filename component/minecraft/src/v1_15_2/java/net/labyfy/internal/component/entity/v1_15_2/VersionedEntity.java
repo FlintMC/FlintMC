@@ -7,19 +7,22 @@ import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.EntitySize;
+import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.world.World;
+import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.component.world.math.Vector3D;
 import net.labyfy.component.world.scoreboad.team.Team;
-import net.labyfy.component.world.util.BlockPosition;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -1058,6 +1061,17 @@ public class VersionedEntity implements Entity {
   @Override
   public boolean isAlive() {
     return this.entity.isAlive();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void move(MoverType moverType, Vector3D vector3D) {
+    this.entity.move(
+            (net.minecraft.entity.MoverType) this.entityMapper.toMinecraftMoverType(moverType),
+            new Vec3d(vector3D.getX(), vector3D.getY(), vector3D.getZ())
+    );
   }
 
   /**

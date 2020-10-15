@@ -3,6 +3,7 @@ package net.labyfy.component.entity;
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.name.Nameable;
+import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
@@ -13,8 +14,9 @@ import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.block.material.PushReaction;
+import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.component.world.math.Vector3D;
 import net.labyfy.component.world.scoreboad.team.Team;
-import net.labyfy.component.world.util.BlockPosition;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -988,6 +990,14 @@ public interface Entity extends Nameable {
    * @return {@code true} if the entity is alive, otherwise {@code false}.
    */
   boolean isAlive();
+
+  /**
+   * Moves the entity.
+   *
+   * @param moverType The type for the move.
+   * @param vector3D  The vector for the move.
+   */
+  void move(MoverType moverType, Vector3D vector3D);
 
   /**
    * Checks if the entity must be removed.

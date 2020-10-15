@@ -7,7 +7,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.player.PlayerEntity;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 
 /**
  * Represents the Minecraft mob.

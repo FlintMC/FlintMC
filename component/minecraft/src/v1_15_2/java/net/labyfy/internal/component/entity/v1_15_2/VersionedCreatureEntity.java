@@ -9,7 +9,7 @@ import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.world.World;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 import net.minecraft.util.math.BlockPos;
 
 /**

@@ -5,12 +5,11 @@ import com.google.inject.Singleton;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.AbstractClientPlayerEntity;
-import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.DifficultyLocal;
 import net.labyfy.component.world.scoreboad.Scoreboard;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 import net.minecraft.client.Minecraft;
 
 import java.util.*;

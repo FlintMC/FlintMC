@@ -2,24 +2,20 @@ package net.labyfy.internal.component.world.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.entity.Entity;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
 import net.labyfy.component.world.scoreboad.Scoreboard;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 import net.labyfy.component.world.util.Dimension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * 1.15.2 implementation of {@link World}.

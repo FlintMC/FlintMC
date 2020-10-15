@@ -20,7 +20,7 @@ import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.scoreboad.Scoreboard;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 
 import java.util.UUID;
 

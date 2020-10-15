@@ -11,7 +11,7 @@ import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.DifficultyLocal;
 import net.labyfy.component.world.scoreboad.Scoreboard;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 import net.minecraft.client.Minecraft;
 
 import java.util.Map;

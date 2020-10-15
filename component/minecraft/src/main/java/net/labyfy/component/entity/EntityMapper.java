@@ -2,6 +2,7 @@ package net.labyfy.component.entity;
 
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.item.ItemEntity;
+import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
@@ -49,6 +50,23 @@ public interface EntityMapper {
    * @return The new Minecraft game type or {@code null} if the given game type was invalid.
    */
   Object toMinecraftGameType(GameMode mode);
+
+  /**
+   * Creates a new {@link GameMode} by using the given Minecraft mover type as the base.
+   *
+   * @param handle The non-null Minecraft mover type.
+   * @return The new Labyfy {@link GameMode} or {@code null} if the given mover type was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft mover type type.
+   */
+  MoverType fromMinecraftMoverType(Object handle);
+
+  /**
+   * Creates a new Minecraft mover type by using the Labyfy {@link MoverType} as the base.
+   *
+   * @param mode The non-null Labyfy {@link MoverType}.
+   * @return The new Minecraft mover type or {@code null} if the given mover type was invalid.
+   */
+  Object toMinecraftMoverType(MoverType mode);
 
   /**
    * Creates a new {@link EntityPose} by using the given Minecraft entity pose as the base.

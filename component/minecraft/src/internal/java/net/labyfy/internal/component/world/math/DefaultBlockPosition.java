@@ -1,10 +1,10 @@
-package net.labyfy.internal.component.world.util;
+package net.labyfy.internal.component.world.math;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.world.util.BlockPosition;
-import net.labyfy.component.world.util.Vector3I;
+import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.component.world.math.Vector3I;
 
 /**
  * Default implementation of {@link BlockPosition}.
@@ -16,8 +16,9 @@ public class DefaultBlockPosition extends DefaultVector3I implements BlockPositi
   private DefaultBlockPosition(
           @Assisted("x") int x,
           @Assisted("y") int y,
-          @Assisted("z") int z
+          @Assisted("z") int z,
+          Vector3I.Factory vector3IFactory
   ) {
-    super(x, y, z);
+    super(x, y, z, vector3IFactory);
   }
 }

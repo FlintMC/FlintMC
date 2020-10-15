@@ -1,4 +1,4 @@
-package net.labyfy.component.entity;
+package net.labyfy.component.entity.reason;
 
 /**
  * An enumeration of all available spawn reasons.

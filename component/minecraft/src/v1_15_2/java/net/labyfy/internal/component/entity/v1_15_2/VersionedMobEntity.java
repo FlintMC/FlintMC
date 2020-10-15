@@ -14,7 +14,7 @@ import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.world.World;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 import net.minecraft.util.math.BlockPos;
 
 @Implement(value = MobEntity.class, version = "1.15.2")

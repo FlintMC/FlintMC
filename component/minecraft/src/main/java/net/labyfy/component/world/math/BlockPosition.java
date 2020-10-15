@@ -1,4 +1,4 @@
-package net.labyfy.component.world.util;
+package net.labyfy.component.world.math;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;

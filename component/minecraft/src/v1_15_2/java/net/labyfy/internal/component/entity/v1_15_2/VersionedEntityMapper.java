@@ -4,8 +4,9 @@ import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntityMapper;
 import net.labyfy.component.entity.LivingEntity;
-import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.MobEntity;
+import net.labyfy.component.entity.item.ItemEntity;
+import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
@@ -168,6 +169,52 @@ public class VersionedEntityMapper implements EntityMapper {
         return GameType.SPECTATOR;
       default:
         return GameType.NOT_SET;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MoverType fromMinecraftMoverType(Object handle) {
+    if (!(handle instanceof net.minecraft.entity.MoverType)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.MoverType.class.getName());
+    }
+
+    net.minecraft.entity.MoverType moverType = (net.minecraft.entity.MoverType) handle;
+
+    switch (moverType) {
+      case SELF:
+        return MoverType.SELF;
+      case PLAYER:
+        return MoverType.PLAYER;
+      case PISTON:
+        return MoverType.PISTON;
+      case SHULKER_BOX:
+        return MoverType.SHULKER_BOX;
+      case SHULKER:
+        return MoverType.SHULKER;
+      default:
+        throw new IllegalStateException("Unexpected value: " + moverType);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftMoverType(MoverType mode) {
+    switch (mode) {
+      case PLAYER:
+        return net.minecraft.entity.MoverType.PLAYER;
+      case PISTON:
+        return net.minecraft.entity.MoverType.PISTON;
+      case SHULKER_BOX:
+        return net.minecraft.entity.MoverType.SHULKER_BOX;
+      case SHULKER:
+        return net.minecraft.entity.MoverType.SHULKER;
+      default:
+        return net.minecraft.entity.MoverType.SELF;
     }
   }
 

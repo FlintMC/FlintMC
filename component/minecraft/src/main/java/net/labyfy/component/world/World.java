@@ -1,17 +1,13 @@
 package net.labyfy.component.world;
 
-import net.labyfy.component.entity.Entity;
-import net.labyfy.component.player.AbstractClientPlayerEntity;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
 import net.labyfy.component.world.scoreboad.Scoreboard;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 import net.labyfy.component.world.util.Dimension;
 
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Represents the Minecraft world.
