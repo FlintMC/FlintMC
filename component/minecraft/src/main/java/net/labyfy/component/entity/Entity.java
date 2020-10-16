@@ -2,6 +2,7 @@ package net.labyfy.component.entity;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.name.Nameable;
 import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
@@ -1000,6 +1001,78 @@ public interface Entity extends Nameable {
   void move(MoverType moverType, Vector3D vector3D);
 
   /**
+   * Whether the entity is collided horizontally or vertically.
+   *
+   * @return {@code true} if the entity is collided horizontally or vertically, otherwise {@code false}.
+   */
+  default boolean isCollided() {
+    return this.isCollidedHorizontally() || this.isCollidedVertically();
+  }
+
+  /**
+   * Whether the entity is collided horizontally.
+   *
+   * @return {@code true} if the entity is collided horizontally, otherwise {@code false}.
+   */
+  boolean isCollidedHorizontally();
+
+  /**
+   * Changes whether the entity is collided horizontally.
+   *
+   * @param horizontally {@code true} if the entity should be collided horizontally, otherwise {@code false}.
+   */
+  void setCollidedHorizontally(boolean horizontally);
+
+  /**
+   * Whether the entity is collided vertically.
+   *
+   * @return {@code true} if the entity is collided vertically, otherwise {@code false}.
+   */
+  boolean isCollidedVertically();
+
+  /**
+   * Changes whether the entity is collied vertically.
+   *
+   * @param vertically {@code true} if the etity should be collided vertically, otherwise {@code false}.
+   */
+  void setCollidedVertically(boolean vertically);
+
+  /**
+   * Retrieves the chunk coordinate x of this entity.
+   *
+   * @return The x chunk coordinate.
+   */
+  int getChunkCoordinateX();
+
+  /**
+   * Retrieves the chunk coordinate y of this entity.
+   *
+   * @return The y chunk coordinate.
+   */
+  int getChunkCoordinateY();
+
+  /**
+   * Retrieves the chunk coordinate z of this entity.
+   *
+   * @return The z chunk coordinate.
+   */
+  int getChunkCoordinateZ();
+
+  /**
+   * Whether the entity is on ground.
+   *
+   * @return {@code true} if the entity is on ground, otherwise {@code false}.
+   */
+  boolean isOnGround();
+
+  /**
+   * Changes whether the entity is on ground.
+   *
+   * @param onGround {@code true} if the entity should be on ground, otherwise {@code false}.
+   */
+  void setOnGround(boolean onGround);
+
+  /**
    * Checks if the entity must be removed.
    */
   default void checkDespawn() {
@@ -1034,7 +1107,7 @@ public interface Entity extends Nameable {
    *
    * @return An entity mapper.
    */
-  EntityMapper getEntityMapper();
+  EntityBaseMapper getEntityBaseMapper();
 
   /**
    * An enumeration representing all classifications for entities.

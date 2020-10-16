@@ -2,7 +2,7 @@ package net.labyfy.internal.component.entity.v1_15_2.item;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
@@ -26,9 +26,9 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
           @Assisted("entity") Object entity,
           EntityTypeRegister entityTypeRegister,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           NBTMapper nbtMapper) {
-    super(entity, entityTypeRegister.getEntityType("item"), world, entityMapper);
+    super(entity, entityTypeRegister.getEntityType("item"), world, entityBaseMapper);
     this.nbtMapper = nbtMapper;
 
 
@@ -44,12 +44,12 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
           @Assisted("entity") Object entity,
           EntityTypeRegister entityTypeRegister,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           @Assisted("x") double x,
           @Assisted("y") double y,
           @Assisted("z") double z,
           NBTMapper nbtMapper) {
-    this(entity, entityTypeRegister, world, entityMapper, nbtMapper);
+    this(entity, entityTypeRegister, world, entityBaseMapper, nbtMapper);
     this.setPosition(x, y, z);
     this.setYaw(this.getRandom().nextFloat() * 360.0F);
     this.setMotion(this.getRandom().nextDouble() * 0.2D - 0.1D, 0.2D, this.getRandom().nextDouble() * 0.2D - 0.1D);
@@ -60,13 +60,13 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
           @Assisted("entity") Object entity,
           EntityTypeRegister entityTypeRegister,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           @Assisted("x") double x,
           @Assisted("y") double y,
           @Assisted("z") double z,
           @Assisted("itemStack") ItemStack itemStack,
           NBTMapper nbtMapper) {
-    this(entity, entityTypeRegister, world, entityMapper, x, y, z, nbtMapper);
+    this(entity, entityTypeRegister, world, entityBaseMapper, x, y, z, nbtMapper);
     this.setItemStack(itemStack);
   }
 
@@ -75,7 +75,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public ItemStack getItemStack() {
-    return this.getEntityMapper().getItemMapper().fromMinecraft(this.itemEntity.getItem());
+    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(this.itemEntity.getItem());
   }
 
   /**
@@ -83,7 +83,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setItemStack(ItemStack itemStack) {
-    this.itemEntity.setItem((net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack));
+    this.itemEntity.setItem((net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack));
   }
 
   /**

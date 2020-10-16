@@ -3,7 +3,7 @@ package net.labyfy.internal.component.entity.v1_15_2;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.ai.EntitySenses;
 import net.labyfy.component.entity.MobEntity;
@@ -28,11 +28,11 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
           @Assisted("mobEntity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           NBTMapper nbtMapper,
           EntitySenses.Factory entitySensesFactory
   ) {
-    super(entity, entityType, world, entityMapper, nbtMapper);
+    super(entity, entityType, world, entityBaseMapper, nbtMapper);
     this.entitySensesFactory = entitySensesFactory;
 
     if (!(entity instanceof net.minecraft.entity.MobEntity)) {
@@ -55,7 +55,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public LivingEntity getAttackTarget() {
-    return this.getEntityMapper().fromMinecraftLivingEntity(this.mobEntity.getAttackTarget());
+    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftLivingEntity(this.mobEntity.getAttackTarget());
   }
 
   /**
@@ -64,7 +64,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void setAttackTarget(LivingEntity entity) {
     this.mobEntity.setAttackTarget(
-            (net.minecraft.entity.LivingEntity) this.getEntityMapper().toMinecraftLivingEntity(entity)
+            (net.minecraft.entity.LivingEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftLivingEntity(entity)
     );
   }
 
@@ -170,7 +170,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void faceEntity(Entity entity, float maxYawIncrease, float maxPitchIncrease) {
     this.mobEntity.faceEntity(
-            (net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity),
+            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity),
             maxYawIncrease,
             maxPitchIncrease
     );
@@ -214,7 +214,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void setDropChance(EquipmentSlotType slotType, float chance) {
     this.mobEntity.setDropChance(
-            (net.minecraft.inventory.EquipmentSlotType) this.getEntityMapper().toMinecraftEquipmentSlotType(slotType),
+            (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType),
             chance
     );
   }
@@ -310,7 +310,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public boolean canBeLeashedTo(PlayerEntity playerEntity) {
     return this.mobEntity.canBeLeashedTo(
-            (net.minecraft.entity.player.PlayerEntity) this.getEntityMapper().toMinecraftPlayerEntity(playerEntity)
+            (net.minecraft.entity.player.PlayerEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftPlayerEntity(playerEntity)
     );
   }
 
@@ -327,7 +327,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public Entity getLeashHolder() {
-    return this.getEntityMapper().fromMinecraftEntity(this.mobEntity.getLeashHolder());
+    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftEntity(this.mobEntity.getLeashHolder());
   }
 
   /**
@@ -336,7 +336,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void setLeashHolder(Entity entity, boolean leashHolder) {
     this.mobEntity.setLeashHolder(
-            (net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity),
+            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity),
             leashHolder
     );
   }
@@ -355,8 +355,8 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public boolean isItemStackInSlot(EquipmentSlotType slotType, ItemStack itemStack) {
     return net.minecraft.entity.MobEntity.isItemStackInSlot(
-            (net.minecraft.inventory.EquipmentSlotType) this.getEntityMapper().toMinecraftEquipmentSlotType(slotType),
-            (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack)
+            (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType),
+            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
     );
   }
 

@@ -2,7 +2,7 @@ package net.labyfy.internal.component.player.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.nbt.mapper.NBTMapper;
@@ -30,12 +30,12 @@ public class VersionedRemoteClientPlayer extends VersionedPlayerEntity implement
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
           NBTMapper nbtMapper,
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry) {
-    super(entity, entityType, world, entityMapper, gameProfileSerializer, modelMapper, nbtMapper);
+    super(entity, entityType, world, entityBaseMapper, gameProfileSerializer, modelMapper, nbtMapper);
 
     this.playerEntity = (net.minecraft.client.entity.player.RemoteClientPlayerEntity) entity;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;

@@ -3,7 +3,7 @@ package net.labyfy.internal.component.player.v1_15_2.network;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.chat.component.ChatComponent;
-import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
@@ -23,18 +23,18 @@ import java.util.UUID;
 public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
 
   private final GameProfile gameProfile;
-  private final EntityMapper entityMapper;
+  private final EntityBaseMapper entityBaseMapper;
   private final Scoreboard scoreboard;
 
   @AssistedInject
   private VersionedNetworkPlayerInfo(
           @Assisted("gameProfile") GameProfile gameProfile,
           @Assisted("scoreboard") Scoreboard scoreboard,
-          @Assisted("entityMapper") EntityMapper entityMapper
+          @Assisted("entityMapper") EntityBaseMapper entityBaseMapper
   ) {
     this.gameProfile = gameProfile;
     this.scoreboard = scoreboard;
-    this.entityMapper = entityMapper;
+    this.entityBaseMapper = entityBaseMapper;
   }
 
   /**
@@ -58,7 +58,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public GameMode getGameMode() {
-    return this.entityMapper.fromMinecraftGameType(this.getPlayerInfo(this.gameProfile.getUniqueId()).getGameType());
+    return this.entityBaseMapper.fromMinecraftGameType(this.getPlayerInfo(this.gameProfile.getUniqueId()).getGameType());
   }
 
   @Override
@@ -108,7 +108,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
 
   @Override
   public ChatComponent getDisplayName() {
-    return this.entityMapper.getComponentMapper().fromMinecraft(
+    return this.entityBaseMapper.getComponentMapper().fromMinecraft(
             this.getPlayerInfo(this.gameProfile.getUniqueId()).getDisplayName()
     );
   }
@@ -126,7 +126,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public ResourceLocation getSkinLocation() {
-    return this.entityMapper.getResourceLocationProvider().get(
+    return this.entityBaseMapper.getResourceLocationProvider().get(
             this.getPlayerInfo(this.gameProfile.getUniqueId()).getLocationSkin().getPath()
     );
   }
@@ -136,7 +136,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public ResourceLocation getCloakLocation() {
-    return this.entityMapper.getResourceLocationProvider().get(
+    return this.entityBaseMapper.getResourceLocationProvider().get(
             this.getPlayerInfo(
                     this.gameProfile.getUniqueId()
             ).getLocationCape().getPath()
@@ -148,7 +148,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public ResourceLocation getElytraLocation() {
-    return this.entityMapper.getResourceLocationProvider().get(
+    return this.entityBaseMapper.getResourceLocationProvider().get(
             this.getPlayerInfo(this.gameProfile.getUniqueId()).getLocationCape().getPath()
     );
   }

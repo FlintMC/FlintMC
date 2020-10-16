@@ -3,7 +3,7 @@ package net.labyfy.internal.component.entity.v1_15_2.projectile;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.projectile.ThrowableEntity;
 import net.labyfy.component.entity.type.EntityType;
@@ -21,9 +21,9 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityMapper entityMapper
+          EntityBaseMapper entityBaseMapper
   ) {
-    super(entity, entityType, world, entityMapper);
+    super(entity, entityType, world, entityBaseMapper);
 
     this.throwableEntity = (net.minecraft.entity.projectile.ThrowableEntity) entity;
   }
@@ -34,7 +34,7 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
   @Override
   public void shoot(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
     this.throwableEntity.shoot(
-            (net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(thrower),
+            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(thrower),
             pitch,
             yaw,
             pitchOffset,
@@ -48,7 +48,7 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
    */
   @Override
   public LivingEntity getThrower() {
-    return this.getEntityMapper().fromMinecraftLivingEntity(this.throwableEntity);
+    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftLivingEntity(this.throwableEntity);
   }
 
   /**

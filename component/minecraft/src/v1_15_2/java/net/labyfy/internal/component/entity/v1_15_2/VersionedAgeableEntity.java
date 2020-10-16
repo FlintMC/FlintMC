@@ -3,7 +3,7 @@ package net.labyfy.internal.component.entity.v1_15_2;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.AgeableEntity;
-import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.ai.EntitySenses;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
@@ -25,11 +25,11 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           NBTMapper nbtMapper,
           EntitySenses.Factory entitySensesFactory
   ) {
-    super(entity, entityType, world, entityMapper, nbtMapper, entitySensesFactory);
+    super(entity, entityType, world, entityBaseMapper, nbtMapper, entitySensesFactory);
 
     if (!(entity instanceof net.minecraft.entity.AgeableEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.AgeableEntity.class.getName());
@@ -44,8 +44,8 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
   @Override
   public boolean processInteract(PlayerEntity entity, Hand hand) {
     return this.ageableEntity.processInteract(
-            (net.minecraft.entity.player.PlayerEntity) this.getEntityMapper().toMinecraftPlayerEntity(entity),
-            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
+            (net.minecraft.entity.player.PlayerEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftPlayerEntity(entity),
+            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 

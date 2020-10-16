@@ -4,7 +4,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
@@ -52,12 +52,12 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
           NBTMapper nbtMapper
   ) {
-    super(entity, entityType, world, entityMapper, nbtMapper);
+    super(entity, entityType, world, entityBaseMapper, nbtMapper);
     this.gameProfileGameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;
     this.nbtMapper = nbtMapper;
@@ -77,7 +77,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     return this.entity.blockActionRestricted(
             this.entity.world,
             (BlockPos) this.getWorld().toMinecraftBlockPos(position),
-            (GameType) this.getEntityMapper().toMinecraftGameType(mode)
+            (GameType) this.getEntityBaseMapper().toMinecraftGameType(mode)
     );
   }
 
@@ -95,8 +95,8 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
     this.entity.playSound(
-            (SoundEvent) this.getEntityMapper().getSoundMapper().toMinecraftSoundEvent(sound),
-            (net.minecraft.util.SoundCategory) this.getEntityMapper().getSoundMapper().toMinecraftSoundCategory(category),
+            (SoundEvent) this.getEntityBaseMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            (net.minecraft.util.SoundCategory) this.getEntityBaseMapper().getSoundMapper().toMinecraftSoundCategory(category),
             volume,
             pitch
     );
@@ -139,9 +139,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public ItemEntity dropItem(ItemStack itemStack, boolean traceItem) {
-    return this.getEntityMapper().fromMinecraftItemEntity(
+    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftItemEntity(
             this.entity.dropItem(
-                    (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
+                    (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack),
                     traceItem
             )
     );
@@ -152,9 +152,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem) {
-    return this.getEntityMapper().fromMinecraftItemEntity(
+    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftItemEntity(
             this.entity.dropItem(
-                    (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack),
+                    (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack),
                     dropAround,
                     traceItem
             )
@@ -166,7 +166,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public boolean canAttackPlayer(PlayerEntity playerEntity) {
-    return this.entity.canAttackPlayer((net.minecraft.entity.player.PlayerEntity) this.getEntityMapper().toMinecraftPlayerEntity(playerEntity));
+    return this.entity.canAttackPlayer((net.minecraft.entity.player.PlayerEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftPlayerEntity(playerEntity));
   }
 
   /**
@@ -241,8 +241,8 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void openBook(ItemStack stack, Hand hand) {
     this.entity.openBook(
-            (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(stack),
-            (net.minecraft.util.Hand) this.getEntityMapper().getHandMapper().toMinecraftHand(hand)
+            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(stack),
+            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -252,7 +252,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void attackTargetEntityWithCurrentItem(Entity entity) {
     this.entity.attackTargetEntityWithCurrentItem(
-            (net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(entity)
+            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity)
     );
   }
 
@@ -326,7 +326,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void sendStatusMessage(ChatComponent component, boolean actionbar) {
     this.entity.sendStatusMessage(
-            (ITextComponent) this.getEntityMapper().getComponentMapper().toMinecraft(component),
+            (ITextComponent) this.getEntityBaseMapper().getComponentMapper().toMinecraft(component),
             actionbar
     );
   }
@@ -466,7 +466,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public void setGameMode(GameMode gameMode) {
-    this.entity.setGameType((GameType) this.getEntityMapper().toMinecraftGameType(gameMode));
+    this.entity.setGameType((GameType) this.getEntityBaseMapper().toMinecraftGameType(gameMode));
   }
 
   /**
@@ -475,7 +475,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public boolean addItemStackToInventory(ItemStack itemStack) {
     return this.entity.addItemStackToInventory(
-            (net.minecraft.item.ItemStack) this.getEntityMapper().getItemMapper().toMinecraft(itemStack)
+            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
     );
   }
 
@@ -546,7 +546,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void setPrimaryHand(Hand.Side primaryHand) {
     this.entity.setPrimaryHand(
-            (HandSide) this.getEntityMapper().getHandMapper().toMinecraftHandSide(primaryHand)
+            (HandSide) this.getEntityBaseMapper().getHandMapper().toMinecraftHandSide(primaryHand)
     );
   }
 

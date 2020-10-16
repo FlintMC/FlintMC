@@ -3,11 +3,10 @@ package net.labyfy.internal.component.entity.v1_15_2.projectile;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.EntityMapper;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.projectile.ArrowBaseEntity;
 import net.labyfy.component.entity.projectile.PickupStatus;
-import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -30,9 +29,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   public VersionedArrowBaseEntity(
           @Assisted("entity") Object entity,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           EntityTypeRegister entityTypeRegister) {
-    super(entity, entityTypeRegister.getEntityType("arrow"), world, entityMapper);
+    super(entity, entityTypeRegister.getEntityType("arrow"), world, entityBaseMapper);
 
 
     if (!(entity instanceof net.minecraft.entity.projectile.AbstractArrowEntity)) {
@@ -51,10 +50,10 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
           @Assisted("y") double y,
           @Assisted("z") double z,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           EntityTypeRegister entityTypeRegister
   ) {
-    this(entity, world, entityMapper, entityTypeRegister);
+    this(entity, world, entityBaseMapper, entityTypeRegister);
     this.setPosition(x, y, z);
   }
 
@@ -63,7 +62,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
           @Assisted("entity") Object entity,
           @Assisted("shooter") LivingEntity shooter,
           World world,
-          EntityMapper entityMapper,
+          EntityBaseMapper entityBaseMapper,
           EntityTypeRegister entityTypeRegister
   ) {
     this(
@@ -72,7 +71,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
             shooter.getPosYEye() - 0.1D,
             shooter.getPosZ(),
             world,
-            entityMapper,
+            entityBaseMapper,
             entityTypeRegister
     );
     this.setShooter(shooter);
@@ -96,7 +95,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   @Override
   public void setHitSound(Sound sound) {
     this.hitSound = sound;
-    this.arrowBaseEntity.setHitSound((SoundEvent) this.getEntityMapper().getSoundMapper().toMinecraftSoundEvent(this.hitSound));
+    this.arrowBaseEntity.setHitSound((SoundEvent) this.getEntityBaseMapper().getSoundMapper().toMinecraftSoundEvent(this.hitSound));
   }
 
   /**
@@ -105,7 +104,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   @Override
   public void shoot(Entity shooter, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
     this.arrowBaseEntity.shoot(
-            (net.minecraft.entity.Entity) this.getEntityMapper().fromMinecraftEntity(shooter),
+            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().fromMinecraftEntity(shooter),
             pitch,
             yaw,
             pitchOffset,
@@ -119,7 +118,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public Entity getShooter() {
-    return this.getEntityMapper().fromMinecraftEntity(this.arrowBaseEntity.getShooter());
+    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftEntity(this.arrowBaseEntity.getShooter());
   }
 
   /**
@@ -128,7 +127,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   @Override
   public void setShooter(Entity shooter) {
     this.arrowBaseEntity.setShooter(
-            (net.minecraft.entity.Entity) this.getEntityMapper().toMinecraftEntity(shooter)
+            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(shooter)
     );
   }
 
@@ -137,7 +136,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public ItemStack getArrowStack() {
-    return this.getEntityMapper().getItemMapper().fromMinecraft(this.accessibleAbstractArrowEntity.getArrowStack());
+    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(this.accessibleAbstractArrowEntity.getArrowStack());
   }
 
   /**
@@ -210,7 +209,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   @Override
   public void setEnchantmentEffectsFromEntity(LivingEntity entity, float damage) {
     this.arrowBaseEntity.setEnchantmentEffectsFromEntity(
-            (net.minecraft.entity.LivingEntity) this.getEntityMapper().fromMinecraftEntity(entity),
+            (net.minecraft.entity.LivingEntity) this.getEntityBaseMapper().getEntityMapper().fromMinecraftEntity(entity),
             damage
     );
   }
