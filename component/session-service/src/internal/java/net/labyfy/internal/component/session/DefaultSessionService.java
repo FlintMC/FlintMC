@@ -45,8 +45,8 @@ public abstract class DefaultSessionService implements SessionService {
   protected final RefreshTokenResult.Factory refreshTokenResultFactory;
   protected final AuthenticationResult.Factory authResultFactory;
 
-  private UserAuthentication authentication;
-  private String clientToken;
+  protected UserAuthentication authentication;
+  protected String clientToken;
 
   protected final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
 
@@ -81,9 +81,10 @@ public abstract class DefaultSessionService implements SessionService {
     }
   }
 
-  private UserAuthentication ensureAuthenticationAvailable() {
+  protected UserAuthentication ensureAuthenticationAvailable() {
     if (this.authentication == null) {
       if (this.clientToken == null) {
+        // no custom client token set, generate a new one
         this.clientToken = UUID.randomUUID().toString().replace("-", "");
       }
 
@@ -93,10 +94,18 @@ public abstract class DefaultSessionService implements SessionService {
     return this.authentication;
   }
 
+  protected void updateAuthenticationContent(UUID uniqueId, String name, String newAccessToken) {
+    ((RefreshableYggdrasilUserAuthentication) this.authentication).setAccessToken(newAccessToken);
+    ((RefreshableBaseUserAuthentication) this.authentication)
+        .setPublicSelectedProfile(new com.mojang.authlib.GameProfile(uniqueId, name));
+  }
+
   @Override
   public void setClientToken(String clientToken) {
     this.clientToken = clientToken;
+    // remove the authentication because it gets invalid with a new clientToken
     this.authentication = null;
+    // refresh the Session in the Minecraft client
     this.refreshSession();
   }
 
@@ -109,6 +118,7 @@ public abstract class DefaultSessionService implements SessionService {
   @Override
   public UUID getUniqueId() {
     if (this.authentication == null) {
+      // never authenticated
       return null;
     }
     com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
@@ -118,6 +128,7 @@ public abstract class DefaultSessionService implements SessionService {
   @Override
   public String getUsername() {
     if (this.authentication == null) {
+      // never authenticated
       return null;
     }
     com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
@@ -127,6 +138,7 @@ public abstract class DefaultSessionService implements SessionService {
   @Override
   public GameProfile getProfile() {
     if (this.authentication == null) {
+      // never authenticated
       return null;
     }
     com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
@@ -135,7 +147,7 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public String getAccessToken() {
-    return this.authentication != null ? this.authentication.getAuthenticatedToken() : null;
+    return this.authentication != null /* never authenticated in this SessionService */ ? this.authentication.getAuthenticatedToken() : null;
   }
 
   @Override
@@ -168,7 +180,7 @@ public abstract class DefaultSessionService implements SessionService {
 
     if (!(authentication instanceof RefreshableYggdrasilUserAuthentication)) {
       // this can only happen if shadow has failed which basically never happens
-      return this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, "Not supported");
+      throw new RuntimeException("Token refreshing not supported, possibly Shadow has failed transforming the UserAuthentication");
     }
 
     try {
@@ -183,6 +195,7 @@ public abstract class DefaultSessionService implements SessionService {
       if (result.has("accessToken")) {
         String newToken = result.get("accessToken").getAsString();
 
+        // fire the event if enabled
         if (this.tokenRefreshEventFactory != null) {
           this.eventBus.fireEvent(this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
         }
@@ -282,10 +295,9 @@ public abstract class DefaultSessionService implements SessionService {
     if (!(authentication instanceof RefreshableYggdrasilUserAuthentication) ||
         !(authentication instanceof RefreshableBaseUserAuthentication)) {
       // this can only happen if shadow has failed which basically never happens
-      return this.authResultFactory.createFailed(Type.UNKNOWN_ERROR);
+      throw new RuntimeException("Token refreshing not supported, possibly Shadow has failed transforming the UserAuthentication");
     }
 
-    RefreshableYggdrasilUserAuthentication refreshable = (RefreshableYggdrasilUserAuthentication) authentication;
     GameProfile currentProfile = this.getProfile();
 
     try {
@@ -297,11 +309,11 @@ public abstract class DefaultSessionService implements SessionService {
 
       this.authentication.logOut();
 
-      refreshable.setAccessToken(object.get("accessToken").getAsString());
-      ((RefreshableBaseUserAuthentication) authentication).setPublicSelectedProfile(new com.mojang.authlib.GameProfile(
+      this.updateAuthenticationContent(
           UUIDTypeAdapter.fromString(profile.get("id").getAsString()),
-          profile.get("name").getAsString()
-      ));
+          profile.get("name").getAsString(),
+          object.get("accessToken").getAsString()
+      );
 
       this.fireLoginEvent(currentProfile);
 
