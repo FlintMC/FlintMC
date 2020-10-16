@@ -1,87 +1,63 @@
 package net.labyfy.component.entity.projectile;
 
-import net.labyfy.component.entity.Entity;
+import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.LivingEntity;
+import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
-import net.labyfy.component.player.type.sound.Sound;
 
 /**
  * Represents the Minecraft arrow entity.
  */
-public interface ArrowEntity extends Entity, Projectile {
+public interface ArrowEntity extends ArrowBaseEntity {
 
   /**
-   * Retrieves the hit sound of this arrow entity.
+   * Changes the potion effect of the arrow.
    *
-   * @return The hit sound.
+   * @param itemStack The item stack to change the potion effect.
    */
-  Sound getHitSound();
+  void setPotionEffect(ItemStack itemStack);
 
   /**
-   * Changes the hit sound of this arrow entity.
+   * Retrieves the arrow color.
    *
-   * @param sound The new hit sound for this arrow entity.
+   * @return The arrow color.
    */
-  void setHitSound(Sound sound);
-
-  void shoot(Entity shooter, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy);
+  int getColor();
 
   /**
-   * Retrieves the shooter of this arrow entity.
-   *
-   * @return The arrow entity shooter.
+   * A factory class for the {@link ArrowBaseEntity}.
    */
-  Entity getShooter();
+  @AssistedFactory(ArrowEntity.class)
+  interface Factory {
 
-  /**
-   * Changes the shooter of this arrow entity.
-   *
-   * @param shooter The new shooter.
-   */
-  void setShooter(Entity shooter);
+    /**
+     * Creates a new {@link ArrowBaseEntity} with the given entity.
+     *
+     * @param entity The entity.
+     * @return A created arrow base entity.
+     */
+    ArrowEntity create(@Assisted("entity") Object entity);
 
-  ItemStack getArrowStack();
+    /**
+     * Creates a new {@link ArrowBaseEntity} with the given parameters.
+     *
+     * @param entity The entity.
+     * @param x      The x position.
+     * @param y      The y position.
+     * @param z      The z position.
+     * @return A created arrow base entity.
+     */
+    ArrowEntity create(@Assisted("entity") Object entity, @Assisted("x") double x, @Assisted("y") double y, @Assisted("z") double z);
 
-  /**
-   * Retrieves the damage of this arrow entity.
-   *
-   * @return The arrow entity damage.
-   */
-  double getDamage();
+    /**
+     * Creates a new {@link ArrowBaseEntity} with the given parameters.
+     *
+     * @param entity  The entity.
+     * @param shooter The shooter of the arrow.
+     * @return A created arrow base entity.
+     */
+    ArrowEntity create(@Assisted("entity") Object entity, @Assisted("shooter") LivingEntity shooter);
 
-  /**
-   * Changes the damage of this arrow entity.
-   *
-   * @param damage The new damage for the arrow entity.
-   */
-  void setDamage(double damage);
-
-  void setKnockbackStrength(int knockbackStrength);
-
-  boolean isCritical();
-
-  void setCritical(boolean critical);
-
-  /**
-   * Retrieves the pierce level of this arrow entity.
-   *
-   * @return The pierce level.
-   */
-  byte getPierceLevel();
-
-  /**
-   * Changes the pierce level of this arrow entity.
-   *
-   * @param level The new pierce level.
-   */
-  void setPierceLevel(byte level);
-
-  void setEnchantmentEffectsFromEntity(LivingEntity entity, float damage);
-
-  boolean isNoClip();
-
-  void setNoClip(boolean noClip);
-
-  void setShotFromCrossbow(boolean fromCrossbow);
+  }
 
 }

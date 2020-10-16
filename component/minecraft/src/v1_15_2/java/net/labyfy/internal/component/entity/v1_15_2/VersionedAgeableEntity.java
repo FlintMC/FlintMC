@@ -31,6 +31,9 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
   ) {
     super(entity, entityType, world, entityMapper, nbtMapper, entitySensesFactory);
 
+    if (!(entity instanceof net.minecraft.entity.AgeableEntity)) {
+      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.AgeableEntity.class.getName());
+    }
 
     this.ageableEntity = (net.minecraft.entity.AgeableEntity) entity;
   }
