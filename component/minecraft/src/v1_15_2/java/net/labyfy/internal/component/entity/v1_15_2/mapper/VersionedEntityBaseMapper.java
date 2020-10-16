@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.entity.v1_15_2;
+package net.labyfy.internal.component.entity.v1_15_2.mapper;
 
 import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.component.entity.mapper.EntityBaseMapper;

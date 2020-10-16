@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.entity.v1_15_2.animal;
+package net.labyfy.internal.component.entity.v1_15_2.passive;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
@@ -28,6 +28,12 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
           EntitySenses.Factory entitySensesFactory
   ) {
     super(entity, entityType, world, entityBaseMapper, nbtMapper, entitySensesFactory);
+
+    if (!(entity instanceof net.minecraft.entity.passive.AnimalEntity)) {
+      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.passive.AnimalEntity.class.getName());
+    }
+
+
     this.animalEntity = (net.minecraft.entity.passive.AnimalEntity) entity;
   }
 

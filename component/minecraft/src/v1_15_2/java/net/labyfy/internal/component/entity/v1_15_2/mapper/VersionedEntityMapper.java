@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.entity.v1_15_2;
+package net.labyfy.internal.component.entity.v1_15_2.mapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
