@@ -10,7 +10,10 @@ import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.world.ClientWorld;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import org.apache.logging.log4j.Logger;
 
 /**
  * 1.15.2 implementation of the client world interceptor
@@ -27,10 +30,24 @@ public class VersionedClientWorldInterceptor {
   private VersionedClientWorldInterceptor(
           ClientPlayer clientPlayer,
           ClientWorld clientWorld,
-          RemoteClientPlayer.Provider remoteClientPlayerEntityProvider) {
+          RemoteClientPlayer.Provider remoteClientPlayerEntityProvider, Logger logger) {
     this.clientPlayer = clientPlayer;
     this.clientWorld = clientWorld;
     this.remoteClientPlayerEntityProvider = remoteClientPlayerEntityProvider;
+  }
+
+  @Hook(
+          className = "net.minecraft.client.world.ClientWorld",
+          methodName = "addEntityImpl",
+          parameters = {
+                  @Type(reference = int.class),
+                  @Type(reference = Entity.class)
+          }
+  )
+  public void hookAddEntityImpl(@Named("args") Object[] args) {
+    int entityId = (int) args[0];
+    Entity entity = (Entity) args[1];
+    // TODO: 16.10.2020 Puts all entities into the key-value system
   }
 
   @Hook(
@@ -44,9 +61,9 @@ public class VersionedClientWorldInterceptor {
   public void hookAfterAddPlayer(@Named("args") Object[] args) {
     AbstractClientPlayerEntity playerEntity = (AbstractClientPlayerEntity) args[1];
 
-    if (playerEntity instanceof net.minecraft.client.entity.player.ClientPlayerEntity) {
+    if (playerEntity instanceof ClientPlayerEntity) {
       this.clientWorld.addPlayer(this.clientPlayer);
-    } else if (playerEntity instanceof net.minecraft.client.entity.player.RemoteClientPlayerEntity) {
+    } else if (playerEntity instanceof RemoteClientPlayerEntity) {
       this.clientWorld.addPlayer(this.remoteClientPlayerEntityProvider.get(playerEntity));
     }
 

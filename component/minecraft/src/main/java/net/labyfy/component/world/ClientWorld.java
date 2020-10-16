@@ -50,7 +50,17 @@ public interface ClientWorld extends World {
    */
   Scoreboard getScoreboard();
 
+  /**
+   * Retrieves a key-value system with all entities in the world.
+   *
+   * @return A key-value system with all entities in the world.
+   */
   Map<Integer, Entity> getEntities();
 
+  /**
+   * Retrieves a collection with all players in the world.
+   *
+   * @return A collection with all players in the world.
+   */
   Set<AbstractClientPlayer> getPlayers();
 }

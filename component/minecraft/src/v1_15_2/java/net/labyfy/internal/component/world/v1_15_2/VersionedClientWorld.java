@@ -66,11 +66,17 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
     return true;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Scoreboard getScoreboard() {
     return this.scoreboard;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<Integer, Entity> getEntities() {
     return this.entities;
