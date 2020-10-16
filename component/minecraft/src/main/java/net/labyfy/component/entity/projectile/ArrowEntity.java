@@ -31,7 +31,7 @@ public interface ArrowEntity extends ArrowBaseEntity {
   interface Factory {
 
     /**
-     * Creates a new {@link ArrowBaseEntity} with the given entity.
+     * Creates a new {@link ArrowEntity} with the given entity.
      *
      * @param entity The entity.
      * @return A created arrow base entity.
@@ -39,7 +39,7 @@ public interface ArrowEntity extends ArrowBaseEntity {
     ArrowEntity create(@Assisted("entity") Object entity);
 
     /**
-     * Creates a new {@link ArrowBaseEntity} with the given parameters.
+     * Creates a new {@link ArrowEntity} with the given parameters.
      *
      * @param entity The entity.
      * @param x      The x position.
@@ -50,7 +50,7 @@ public interface ArrowEntity extends ArrowBaseEntity {
     ArrowEntity create(@Assisted("entity") Object entity, @Assisted("x") double x, @Assisted("y") double y, @Assisted("z") double z);
 
     /**
-     * Creates a new {@link ArrowBaseEntity} with the given parameters.
+     * Creates a new {@link ArrowEntity} with the given parameters.
      *
      * @param entity  The entity.
      * @param shooter The shooter of the arrow.
