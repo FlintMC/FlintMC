@@ -2,10 +2,9 @@ package net.labyfy.component.player;
 
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.items.inventory.player.PlayerInventory;
-import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.overlay.TabOverlay;
 
-public interface ClientPlayer extends PlayerSkinProfile, AbstractClientPlayer {
+public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
 
   /**
    * Retrieves the player entity.

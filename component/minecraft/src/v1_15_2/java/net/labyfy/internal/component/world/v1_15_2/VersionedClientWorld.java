@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.player.AbstractClientPlayer;
+import net.labyfy.component.player.BaseClientPlayer;
 import net.labyfy.component.world.ClientWorld;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.DifficultyLocal;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Implement(value = ClientWorld.class, version = "1.15.2")
 public class VersionedClientWorld extends VersionedWorld implements ClientWorld {
 
-  private final Set<AbstractClientPlayer> players;
+  private final Set<BaseClientPlayer> players;
   private final Map<Integer, Entity> entities;
   private final Scoreboard scoreboard;
 
@@ -54,7 +54,7 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
    * {@inheritDoc}
    */
   @Override
-  public boolean addPlayer(AbstractClientPlayer player) {
+  public boolean addPlayer(BaseClientPlayer player) {
     return this.players.add(player);
   }
 
@@ -86,7 +86,7 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
    * {@inheritDoc}
    */
   @Override
-  public Set<AbstractClientPlayer> getPlayers() {
+  public Set<BaseClientPlayer> getPlayers() {
     return this.players;
   }
 

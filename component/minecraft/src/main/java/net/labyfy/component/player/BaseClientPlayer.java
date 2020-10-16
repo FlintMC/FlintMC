@@ -5,7 +5,7 @@ import net.labyfy.component.player.network.NetworkPlayerInfo;
 /**
  * Represents the Minecraft abstract client player.
  */
-public interface AbstractClientPlayer extends PlayerSkinProfile {
+public interface BaseClientPlayer extends PlayerSkinProfile {
 
   /**
    * Whether the entity is a spectator.

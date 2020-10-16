@@ -7,7 +7,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 /**
  * Represents the remote client player.
  */
-public interface RemoteClientPlayer extends AbstractClientPlayer {
+public interface RemoteClientPlayer extends BaseClientPlayer {
 
   /**
    * A factory class for the {@link RemoteClientPlayer}.
