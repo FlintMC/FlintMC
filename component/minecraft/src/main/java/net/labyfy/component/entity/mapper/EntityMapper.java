@@ -4,6 +4,7 @@ import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.entity.item.ItemEntity;
+import net.labyfy.component.entity.passive.AnimalEntity;
 import net.labyfy.component.player.PlayerEntity;
 
 /**
@@ -95,5 +96,23 @@ public interface EntityMapper {
    * @return The new Minecraft item entity or {@code null} if the given item entity was invalid.
    */
   Object toMinecraftItemEntity(ItemEntity itemEntity);
+
+  /**
+   * Creates a new {@link AnimalEntity} by using the given Minecraft animal entity as the base.
+   *
+   * @param handle The non-null Minecraft animal entity.
+   * @return The new Labyfy {@link AnimalEntity} or {@code null} if the given animal entity was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft animal entity.
+   */
+  AnimalEntity fromMinecraftAnimalEntity(Object handle);
+
+  /**
+   * Creates a new Minecraft animal entity by using the Labyfy {@link AnimalEntity} as the base.
+   *
+   * @param animalEntity The non-null Labyfy {@link AnimalEntity}.
+   * @return The new Minecraft animal entity or {@code null} if the given animal entity was invalid.
+   */
+  Object toMinecraftAnimalEntity(AnimalEntity animalEntity);
+
 
 }

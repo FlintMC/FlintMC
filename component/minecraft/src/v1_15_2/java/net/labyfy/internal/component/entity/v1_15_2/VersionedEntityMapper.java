@@ -7,6 +7,7 @@ import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.mapper.EntityMapper;
+import net.labyfy.component.entity.passive.AnimalEntity;
 import net.labyfy.component.entity.type.EntityTypeMapper;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.PlayerEntity;
@@ -22,6 +23,7 @@ public class VersionedEntityMapper implements EntityMapper {
   private final LivingEntity.Provider livingEntityProvider;
   private final MobEntity.Provider mobEntityProvider;
   private final PlayerEntity.Provider playerEntityProvider;
+  private final AnimalEntity.Provider animalEntityProvider;
   private final EntityTypeMapper entityTypeMapper;
 
   @Inject
@@ -31,6 +33,7 @@ public class VersionedEntityMapper implements EntityMapper {
           LivingEntity.Provider livingEntityProvider,
           MobEntity.Provider mobEntityProvider,
           PlayerEntity.Provider playerEntityProvider,
+          AnimalEntity.Provider animalEntityProvider,
           EntityTypeMapper entityTypeMapper
   ) {
     this.entityFactory = entityFactory;
@@ -38,6 +41,7 @@ public class VersionedEntityMapper implements EntityMapper {
     this.livingEntityProvider = livingEntityProvider;
     this.mobEntityProvider = mobEntityProvider;
     this.playerEntityProvider = playerEntityProvider;
+    this.animalEntityProvider = animalEntityProvider;
     this.entityTypeMapper = entityTypeMapper;
   }
 
@@ -181,6 +185,36 @@ public class VersionedEntityMapper implements EntityMapper {
 
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
       if (allEntity instanceof net.minecraft.entity.item.ItemEntity && allEntity.getEntityId() == itemEntity.getIdentifier()) {
+        return allEntity;
+      }
+
+    }
+
+    return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public AnimalEntity fromMinecraftAnimalEntity(Object handle) {
+    if (!(handle instanceof net.minecraft.entity.passive.AnimalEntity)) {
+      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.passive.AnimalEntity.class.getName());
+    }
+
+    net.minecraft.entity.passive.AnimalEntity itemEntity = (net.minecraft.entity.passive.AnimalEntity) handle;
+
+    return this.animalEntityProvider.get(itemEntity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftAnimalEntity(AnimalEntity animalEntity) {
+
+    for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
+      if (allEntity instanceof net.minecraft.entity.item.ItemEntity && allEntity.getEntityId() == animalEntity.getIdentifier()) {
         return allEntity;
       }
 
