@@ -3,9 +3,7 @@ package net.labyfy.internal.webgui.ultralight.event;
 import net.labyfy.webgui.WebGuiView;
 import net.labyfy.webgui.event.WebGuiViewEvent;
 
-/**
- * Base class for all ultralight {@link WebGuiViewEvent}s.
- */
+/** Base class for all ultralight {@link WebGuiViewEvent}s. */
 public abstract class UltralightWebGuiViewEvent implements WebGuiViewEvent {
   private final WebGuiView view;
 
@@ -18,6 +16,7 @@ public abstract class UltralightWebGuiViewEvent implements WebGuiViewEvent {
     this.view = view;
   }
 
+  /** {@inheritDoc} */
   @Override
   public WebGuiView view() {
     return view;

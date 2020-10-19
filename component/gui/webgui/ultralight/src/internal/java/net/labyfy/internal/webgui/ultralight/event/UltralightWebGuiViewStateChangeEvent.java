@@ -4,7 +4,8 @@ import net.labyfy.webgui.WebGuiView;
 import net.labyfy.webgui.event.WebGuiViewStateChangeEvent;
 
 /**
- * Event fired when a {@link net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView} changes its state.
+ * Event fired when a {@link net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView}
+ * changes its state.
  */
 public class UltralightWebGuiViewStateChangeEvent extends UltralightWebGuiViewEvent
     implements WebGuiViewStateChangeEvent {
@@ -15,9 +16,9 @@ public class UltralightWebGuiViewStateChangeEvent extends UltralightWebGuiViewEv
   /**
    * Constructs a new {@link UltralightWebGuiViewStateChangeEvent}.
    *
-   * @param view        The view that sent the event
-   * @param frameId     The ID of the frame that sent the event
-   * @param url         The URL the event originated from
+   * @param view The view that sent the event
+   * @param frameId The ID of the frame that sent the event
+   * @param url The URL the event originated from
    * @param isMainFrame Whether the event has been sent by a main frame
    */
   public UltralightWebGuiViewStateChangeEvent(
@@ -28,16 +29,19 @@ public class UltralightWebGuiViewStateChangeEvent extends UltralightWebGuiViewEv
     this.isMainFrame = isMainFrame;
   }
 
+  /** {@inheritDoc} */
   @Override
   public long frameId() {
     return frameId;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String url() {
     return url;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isMainFrame() {
     return isMainFrame;

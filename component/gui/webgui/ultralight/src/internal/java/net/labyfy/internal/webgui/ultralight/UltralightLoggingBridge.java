@@ -8,9 +8,7 @@ import net.labymedia.ultralight.plugin.logging.UltralightLogger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Simple logging bridge to convert Ultralight log messages to Log4J messages.
- */
+/** Simple logging bridge to convert Ultralight log messages to Log4J messages. */
 @Singleton
 public class UltralightLoggingBridge implements UltralightLogger {
   private final Logger logger;
@@ -25,7 +23,7 @@ public class UltralightLoggingBridge implements UltralightLogger {
     Level log4jLevel = null;
 
     // Translate the log level from Ultralight to Log4J
-    switch(level) {
+    switch (level) {
       case INFO:
         log4jLevel = Level.INFO;
         break;

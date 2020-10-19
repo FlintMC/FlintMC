@@ -41,9 +41,7 @@ public class InternalWebFileSystemService
       throws ServiceNotFoundException {
 
     CtClass fileSystem =
-        annotationMeta
-            .<AnnotationMeta.ClassIdentifier>getIdentifier()
-            .getLocation();
+        annotationMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getLocation();
 
     try {
       if (Arrays.stream(fileSystem.getInterfaces())

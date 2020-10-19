@@ -4,7 +4,8 @@ import net.labyfy.webgui.WebGuiView;
 import net.labyfy.webgui.event.WebGuiViewTitleChangedEvent;
 
 /**
- * Event fired when a {@link net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView} changes its title.
+ * Event fired when a {@link net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView}
+ * changes its title.
  */
 public class UltralightWebGuiViewTitleChangedEvent extends UltralightWebGuiViewEvent
     implements WebGuiViewTitleChangedEvent {
@@ -13,7 +14,7 @@ public class UltralightWebGuiViewTitleChangedEvent extends UltralightWebGuiViewE
   /**
    * Constructs a new {@link UltralightWebGuiViewTitleChangedEvent}.
    *
-   * @param view     The view that sent the event
+   * @param view The view that sent the event
    * @param newTitle The new title of the view
    */
   public UltralightWebGuiViewTitleChangedEvent(WebGuiView view, String newTitle) {
@@ -21,6 +22,7 @@ public class UltralightWebGuiViewTitleChangedEvent extends UltralightWebGuiViewE
     this.newTitle = newTitle;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String newTitle() {
     return newTitle;

@@ -4,8 +4,8 @@ import net.labyfy.webgui.WebGuiView;
 import net.labyfy.webgui.event.WebGuiViewLoadingEvent;
 
 /**
- * Event fired when a {@link net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView} changes its loading
- * status.
+ * Event fired when a {@link net.labyfy.internal.webgui.ultralight.view.UltralightWebGuiView}
+ * changes its loading status.
  */
 public class UltralightWebGuiViewLoadingEvent extends UltralightWebGuiViewStateChangeEvent
     implements WebGuiViewLoadingEvent {
@@ -14,9 +14,9 @@ public class UltralightWebGuiViewLoadingEvent extends UltralightWebGuiViewStateC
   /**
    * Constructs a new {@link UltralightWebGuiViewStateChangeEvent}.
    *
-   * @param view      The view that sent the event
-   * @param frameId   The ID of the frame that sent the event
-   * @param url       The URL the event originated from
+   * @param view The view that sent the event
+   * @param frameId The ID of the frame that sent the event
+   * @param url The URL the event originated from
    * @param mainFrame Whether the event has been sent by a main frame
    * @param errorInfo Information about an error that occurred, or {@code null}, if none
    */
@@ -26,6 +26,7 @@ public class UltralightWebGuiViewLoadingEvent extends UltralightWebGuiViewStateC
     this.errorInfo = errorInfo;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ErrorInfo errorInfo() {
     return errorInfo;

@@ -34,26 +34,31 @@ public class UltralightWebGuiViewEventInterop implements UltralightViewListener,
     this.logger = logger;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onChangeTitle(String title) {
     eventBus.fireEvent(new UltralightWebGuiViewTitleChangedEvent(view, title), Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onChangeURL(String url) {
     eventBus.fireEvent(new UltralightWebGuiViewURLChangedEvent(view, url), Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onChangeTooltip(String tooltip) {
     eventBus.fireEvent(new UltralightWebGuiViewTitleChangedEvent(view, tooltip), Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onChangeCursor(UltralightCursor cursor) {
 
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onAddConsoleMessage(
       MessageSource source, MessageLevel level, String message, long lineNumber, long columnNumber, String sourceId) {
@@ -84,23 +89,27 @@ public class UltralightWebGuiViewEventInterop implements UltralightViewListener,
     logger.log(logLevel, "({} in {}:{}:{}): {}", source, sourceId, lineNumber, columnNumber, message);
   }
 
+  /** {@inheritDoc} */
   @Override
   public UltralightView onCreateChildView(String openerUrl, String targetUrl, boolean isPopup, IntRect popupRect) {
     return null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onBeginLoading(long frameId, boolean isMainFrame, String url) {
     eventBus.fireEvent(
         new UltralightWebGuiViewLoadingEvent(view, frameId, url, isMainFrame, null), Subscribe.Phase.PRE);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onFinishLoading(long frameId, boolean isMainFrame, String url) {
     eventBus.fireEvent(
         new UltralightWebGuiViewLoadingEvent(view, frameId, url, isMainFrame, null), Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onFailLoading(
       long frameId, boolean isMainFrame, String url, String description, String errorDomain, int errorCode) {
@@ -114,17 +123,20 @@ public class UltralightWebGuiViewEventInterop implements UltralightViewListener,
         ), Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onUpdateHistory() {
     eventBus.fireEvent(new UltralightWebGuiViewNavigateEvent(view), Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onWindowObjectReady(long frameId, boolean isMainFrame, String url) {
     eventBus.fireEvent(
         new UltralightWebGuiViewWindowObjectReadyEvent(view, frameId, url, isMainFrame), Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void onDOMReady(long frameId, boolean isMainFrame, String url) {
     eventBus.fireEvent(

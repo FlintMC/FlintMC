@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 @Singleton
 public class UltralightFileSystemBridge implements UltralightFileSystem {
 
+  private static final String DEFAULT_FILESYSTEM_HANDLER = "class-resource";
+
   private final Map<String, WebFileSystemHandler> fileSystems;
   private final Map<Long, String> openedResources;
   private final LoadingCache<String, WebResource> resources;
@@ -144,7 +146,8 @@ public class UltralightFileSystemBridge implements UltralightFileSystem {
   private Pair<String, String> splitPath(String fullPath) {
     if (!fullPath.startsWith("$")) {
       return new Pair<>(
-          "class-resource", fullPath.startsWith("/") ? fullPath.replaceFirst("/", "") : fullPath);
+          DEFAULT_FILESYSTEM_HANDLER,
+          fullPath.startsWith("/") ? fullPath.replaceFirst("/", "") : fullPath);
     }
 
     int indexOfSlash = fullPath.indexOf('/');

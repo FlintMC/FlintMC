@@ -20,6 +20,7 @@ public class UltralightWebGuiViewURLChangedEvent extends UltralightWebGuiViewEve
     this.newURL = newURL;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String newURL() {
     return newURL;

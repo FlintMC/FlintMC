@@ -33,9 +33,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Ultralight implementation of the {@link WebGuiController}.
- */
+/** Ultralight implementation of the {@link WebGuiController}. */
 @Singleton
 @Implement(WebGuiController.class)
 public class UltralightWebGuiController implements WebGuiController {
@@ -57,11 +55,10 @@ public class UltralightWebGuiController implements WebGuiController {
     this.useGPURenderer = false;
   }
 
-  /**
-   * Wires up the Ultralight main view with the controller.
-   */
+  /** Wires up the Ultralight main view with the controller. */
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void setupUltralight(MinecraftWindow window, UltralightFileSystemBridge fileSystemBridge) throws UltralightLoadException {
+  public void setupUltralight(MinecraftWindow window, UltralightFileSystemBridge fileSystemBridge)
+      throws UltralightLoadException {
     logger.debug("Setting up Ultralight natives...");
 
     // Extract the native libraries into the run directory and load them from there
@@ -77,13 +74,14 @@ public class UltralightWebGuiController implements WebGuiController {
     logger.trace("Ultralight platform singleton at 0x{}\n", Long.toHexString(platform.getHandle()));
 
     // Configure ultralight
-    platform.setConfig(new UltralightConfig()
-        .resourcePath("./resources")
-        .fontHinting(FontHinting.NORMAL)
-        .deviceScale(1.0)
-        .faceWinding(FaceWinding.COUNTER_CLOCKWISE)
-        .userAgent("Labyfy") // TODO: Use better user agent (possibly unify with framework?)
-        .useGpuRenderer(useGPURenderer));
+    platform.setConfig(
+        new UltralightConfig()
+            .resourcePath("./resources")
+            .fontHinting(FontHinting.NORMAL)
+            .deviceScale(1.0)
+            .faceWinding(FaceWinding.COUNTER_CLOCKWISE)
+            .userAgent("Labyfy") // TODO: Use better user agent (possibly unify with framework?)
+            .useGpuRenderer(useGPURenderer));
 
     // Configure the platform
     platform.usePlatformFontLoader();
@@ -94,13 +92,11 @@ public class UltralightWebGuiController implements WebGuiController {
     renderer = UltralightRenderer.create();
 
     this.window = window;
-    
+
     this.eventBus.fireEvent(new WebGuiInitializedEvent() {}, Subscribe.Phase.ANY);
   }
 
-  /**
-   * Dispatches all render commands and updates the rendering resources.
-   */
+  /** Dispatches all render commands and updates the rendering resources. */
   public void renderAll() {
     /*
      * Do ultralight internal drawing, this will draw **all** views, regardless of their state.
@@ -136,11 +132,11 @@ public class UltralightWebGuiController implements WebGuiController {
     renderer.update();
     renderer.render();
 
-    if(useGPURenderer) {
+    if (useGPURenderer) {
       throw new UnsupportedOperationException("Not yet implemented");
     } else {
       // Draw each view
-      for(UltralightWebGuiView view : views) {
+      for (UltralightWebGuiView view : views) {
         view.dataReadyOnSurface();
       }
     }
