@@ -29,4 +29,6 @@ public @interface FieldSetter {
 
   String value();
 
+  boolean removeFinal() default false;
+
 }
