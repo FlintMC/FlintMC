@@ -4,12 +4,10 @@ import com.google.inject.Singleton;
 import javassist.CtField;
 import javassist.Modifier;
 import javassist.NotFoundException;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
 @Singleton
-@AutoLoad
 public class RenderStateModifyTransformer {
 
   @ClassTransform("net.minecraft.client.renderer.RenderType$State")

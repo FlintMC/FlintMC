@@ -5,15 +5,15 @@ import javassist.CtClass;
 import javassist.NotFoundException;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 
-@AutoLoad
+@Singleton
 public class MatrixClassTransforms {
   private final ClassMappingProvider mappingProvider;
 
