@@ -18,7 +18,6 @@ public interface TileEntity {
    */
   World getWorld();
 
-
   /**
    * Whether the tile entity has a world.
    *

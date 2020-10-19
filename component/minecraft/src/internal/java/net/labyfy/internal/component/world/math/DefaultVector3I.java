@@ -104,13 +104,7 @@ public class DefaultVector3I implements Vector3I {
     } else {
       Vector3I vector = (Vector3I) object;
 
-      if (this.getX() != vector.getX()) {
-        return false;
-      } else if (this.getY() != vector.getY()) {
-        return false;
-      } else {
-        return this.getZ() == vector.getZ();
-      }
+      return this.getX() == vector.getX() && this.getY() == vector.getY() && this.getZ() == vector.getZ();
     }
   }
 

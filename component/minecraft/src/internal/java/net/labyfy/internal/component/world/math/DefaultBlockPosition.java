@@ -21,4 +21,16 @@ public class DefaultBlockPosition extends DefaultVector3I implements BlockPositi
   ) {
     super(x, y, z, vector3IFactory);
   }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    } else if (!(object instanceof BlockPosition)) {
+      return false;
+    } else {
+      BlockPosition position = (BlockPosition) object;
+      return position.getX() == this.getX() && position.getY() == this.getY() && position.getZ() == this.getZ();
+    }
+  }
 }

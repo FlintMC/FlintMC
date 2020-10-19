@@ -1,20 +1,23 @@
 package net.labyfy.internal.component.world.v1_15_2;
 
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.tileentity.TileEntity;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
-import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.Dimension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -29,6 +32,8 @@ public class VersionedWorld implements World {
   private final WorldBorder worldBorder;
   private final Scoreboard scoreboard;
 
+  private final List<TileEntity> loadedTileEntities;
+
   @Inject
   public VersionedWorld(
           BlockPosition.Factory blockPositionFactory,
@@ -39,6 +44,8 @@ public class VersionedWorld implements World {
     this.difficultyLocalFactory = difficultyLocalFactory;
     this.worldBorder = worldBorder;
     this.scoreboard = scoreboard;
+
+    this.loadedTileEntities = Lists.newArrayList();
   }
 
   /**
@@ -271,14 +278,41 @@ public class VersionedWorld implements World {
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Dimension getDimension() {
     return this.fromMinecraftDimension(Minecraft.getInstance().world.getDimension().getType());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Scoreboard getScoreboard() {
     return this.scoreboard;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public TileEntity getTileEntity(BlockPosition blockPosition) {
+    for (TileEntity loadedTileEntity : this.loadedTileEntities) {
+      if (loadedTileEntity.getPosition().equals(blockPosition)) {
+        return loadedTileEntity;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<TileEntity> getLoadedTileEntities() {
+    return this.loadedTileEntities;
   }
 
   /**
