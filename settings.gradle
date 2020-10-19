@@ -86,6 +86,9 @@ findProject(':component:inject-primitive')?.name = 'inject-primitive'
 include 'component:i18n'
 findProject('component:i18n')?.name = 'i18n'
 
+include ':component:render'
+findProject(':component:render')?.name = 'render'
+
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
 
@@ -112,4 +115,7 @@ findProject(':component:render:vbo-rendering')?.name = 'vbo-rendering'
 
 include 'component:nbt'
 findProject(':component:nbt')?.name = "nbt"
+
+include 'component:render:shader'
+findProject(':component:render:shader')?.name = 'shader'
 

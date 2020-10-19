@@ -28,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,7 +45,7 @@ public class ClassTransformService implements ServiceHandler<ClassTransform>, La
   private final String version;
   private final ClassMappingProvider classMappingProvider;
   private final InternalClassTransformContext.Factory classTransformContextFactory;
-  private final Collection<ClassTransformContext> classTransformContexts;
+  private final List<ClassTransformContext> classTransformContexts;
   private final Collection<String> ignoredPackages =
       Arrays.asList("com.mojang.realmsclient", "net.minecraft.realms");
 
@@ -57,7 +58,7 @@ public class ClassTransformService implements ServiceHandler<ClassTransform>, La
     this.logger = logger;
     this.classMappingProvider = classMappingProvider;
     this.classTransformContextFactory = classTransformContextFactory;
-    this.classTransformContexts = new HashSet<>();
+    this.classTransformContexts = new ArrayList<>();
     this.version = (String) launchArguments.get("--game-version");
   }
 
@@ -93,6 +94,8 @@ public class ClassTransformService implements ServiceHandler<ClassTransform>, La
             classTransformAnnotation,
             identifierMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation(),
             identifierMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation().getDeclaringClass()));
+
+    this.classTransformContexts.sort(Comparator.comparingInt(o -> o.getClassTransform().priority()));
   }
 
 
