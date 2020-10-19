@@ -14,9 +14,11 @@ import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.nbt.NBTCompound;
 import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.PlayerEntity;
+import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.math.BlockPosition;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
 @Implement(value = MobEntity.class, version = "1.15.2")
@@ -24,6 +26,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
 
   private final net.minecraft.entity.MobEntity mobEntity;
   private final EntitySenses.Factory entitySensesFactory;
+  private final NBTMapper nbtMapper;
 
   @AssistedInject
   public VersionedMobEntity(
@@ -40,7 +43,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
     if (!(entity instanceof net.minecraft.entity.MobEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.MobEntity.class.getName());
     }
-
+    this.nbtMapper = nbtMapper;
     this.mobEntity = (net.minecraft.entity.MobEntity) entity;
   }
 
@@ -504,4 +507,29 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
             (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity)
     );
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void writeAdditional(NBTCompound compound) {
+    this.mobEntity.writeAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void readAdditional(NBTCompound compound) {
+    this.mobEntity.readAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Hand.Side getPrimaryHand() {
+    return this.getEntityBaseMapper().getHandMapper().fromMinecraftHandSide(this.mobEntity.getPrimaryHand());
+  }
+
 }

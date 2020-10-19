@@ -382,6 +382,9 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
     this.livingEntity.applyEntityCollision((net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getYaw(float partialTicks) {
     return this.livingEntity.getYaw(partialTicks);
@@ -672,6 +675,9 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
     this.livingEntity.clearBedPosition();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isSleeping() {
     return this.livingEntity.isSleeping();
