@@ -14,6 +14,7 @@ import net.labyfy.component.player.type.GameMode;
 import net.labyfy.component.player.type.model.ModelMapper;
 import net.labyfy.component.player.type.model.SkinModel;
 import net.labyfy.component.resources.ResourceLocation;
+import net.labyfy.component.tileentity.mapper.TileEntityMapper;
 import net.labyfy.component.world.World;
 
 /**
@@ -34,8 +35,9 @@ public class VersionedRemoteClientPlayer extends VersionedPlayerEntity implement
           GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
           NBTMapper nbtMapper,
-          NetworkPlayerInfoRegistry networkPlayerInfoRegistry) {
-    super(entity, entityType, world, entityBaseMapper, gameProfileSerializer, modelMapper, nbtMapper);
+          NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
+          TileEntityMapper tileEntityMapper) {
+    super(entity, entityType, world, entityBaseMapper, gameProfileSerializer, modelMapper, nbtMapper, tileEntityMapper);
 
     this.playerEntity = (net.minecraft.client.entity.player.RemoteClientPlayerEntity) entity;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;

@@ -9,14 +9,6 @@ import net.labyfy.component.entity.EntitySize;
 public interface EntityTypeMapper {
 
   /**
-   * Creates a new Minecraft entity type by using the Labyfy {@link EntityType} as the base.
-   *
-   * @param type The non-null Labyfy {@link EntityType}.
-   * @return The new Minecraft entity type or {@code null} if the given entity type was invalid.
-   */
-  Object toMinecraftEntityType(EntityType type);
-
-  /**
    * Creates a new {@link EntityType} by using the given Minecraft entity type as the base.
    *
    * @param handle The non-null Minecraft entity type.

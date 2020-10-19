@@ -35,15 +35,6 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
    * {@inheritDoc}
    */
   @Override
-  public Object toMinecraftEntityType(EntityType type) {
-    // TODO: 13.10.2020 Implement
-    return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public EntityType fromMinecraftEntityType(Object handle) {
     if (!(handle instanceof net.minecraft.entity.EntityType)) {
       throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.EntityType.class.getName());

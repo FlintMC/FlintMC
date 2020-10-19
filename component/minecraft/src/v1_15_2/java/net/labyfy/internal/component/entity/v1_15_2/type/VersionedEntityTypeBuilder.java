@@ -93,20 +93,6 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
    */
   @Override
   public EntityType build(String id) {
-    if (this.serializable) {
-      try {
-        DataFixesManager.getDataFixer().getSchema(
-                DataFixUtils.makeKey(
-                        SharedConstants.getVersion().getWorldVersion()
-                )
-        ).getChoiceType(TypeReferences.ENTITY_TYPE, id);
-      } catch (IllegalStateException exception) {
-        if (SharedConstants.developmentMode) {
-          throw exception;
-        }
-      }
-    }
-
     return this.entityTypeFactory.create(
             this.classification,
             this.serializable,

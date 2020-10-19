@@ -18,9 +18,10 @@ import net.labyfy.component.player.type.model.PlayerClothing;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
+import net.labyfy.component.tileentity.SignTileEntity;
 import net.labyfy.component.world.World;
-import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.component.world.scoreboad.Scoreboard;
 
 import java.util.UUID;
 
@@ -115,7 +116,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param signTileEntity The sign to be edited.
    */
-  void openSignEditor(Object signTileEntity);
+  void openSignEditor(SignTileEntity signTileEntity);
 
   /**
    * Opens a minecart command block.

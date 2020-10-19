@@ -23,6 +23,8 @@ import net.labyfy.component.player.type.model.PlayerClothing;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
+import net.labyfy.component.tileentity.SignTileEntity;
+import net.labyfy.component.tileentity.mapper.TileEntityMapper;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.math.BlockPosition;
 import net.labyfy.component.world.scoreboad.Scoreboard;
@@ -31,7 +33,10 @@ import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.Item;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.CommandBlockLogic;
+import net.minecraft.tileentity.CommandBlockTileEntity;
+import net.minecraft.tileentity.JigsawTileEntity;
+import net.minecraft.tileentity.StructureBlockTileEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -48,6 +53,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileGameProfileSerializer;
   private final ModelMapper modelMapper;
   private final NBTMapper nbtMapper;
+  private final TileEntityMapper tileEntityMapper;
 
   @AssistedInject
   public VersionedPlayerEntity(
@@ -57,12 +63,13 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
           EntityBaseMapper entityBaseMapper,
           GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
-          NBTMapper nbtMapper
-  ) {
+          NBTMapper nbtMapper,
+          TileEntityMapper tileEntityMapper) {
     super(entity, entityType, world, entityBaseMapper, nbtMapper);
     this.gameProfileGameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;
     this.nbtMapper = nbtMapper;
+    this.tileEntityMapper = tileEntityMapper;
 
     if (!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.player.PlayerEntity.class.getName());
@@ -175,8 +182,8 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    * {@inheritDoc}
    */
   @Override
-  public void openSignEditor(Object signTileEntity) {
-    this.entity.openSignEditor((SignTileEntity) signTileEntity);
+  public void openSignEditor(SignTileEntity signTileEntity) {
+    this.entity.openSignEditor((net.minecraft.tileentity.SignTileEntity) this.tileEntityMapper.toMinecraftSignTileEntity(signTileEntity));
   }
 
   /**
