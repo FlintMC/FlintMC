@@ -10,11 +10,14 @@ import net.labyfy.component.entity.projectile.PickupStatus;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
+import net.labyfy.component.nbt.NBTCompound;
+import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.PlayerEntity;
 import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.world.World;
 import net.labyfy.internal.component.entity.v1_15_2.VersionedEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 
 @Implement(value = ArrowBaseEntity.class, version = "1.15.2")
@@ -22,6 +25,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
 
   private final AccessibleAbstractArrowEntity accessibleAbstractArrowEntity;
   private final AbstractArrowEntity arrowBaseEntity;
+  protected final NBTMapper nbtMapper;
   private Sound hitSound;
   private PickupStatus pickupStatus;
 
@@ -30,8 +34,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
           @Assisted("entity") Object entity,
           World world,
           EntityBaseMapper entityBaseMapper,
-          EntityTypeRegister entityTypeRegister) {
+          EntityTypeRegister entityTypeRegister, NBTMapper nbtMapper) {
     super(entity, entityTypeRegister.getEntityType("arrow"), world, entityBaseMapper);
+    this.nbtMapper = nbtMapper;
 
 
     if (!(entity instanceof net.minecraft.entity.projectile.AbstractArrowEntity)) {
@@ -51,9 +56,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
           @Assisted("z") double z,
           World world,
           EntityBaseMapper entityBaseMapper,
-          EntityTypeRegister entityTypeRegister
-  ) {
-    this(entity, world, entityBaseMapper, entityTypeRegister);
+          EntityTypeRegister entityTypeRegister,
+          NBTMapper nbtMapper) {
+    this(entity, world, entityBaseMapper, entityTypeRegister, nbtMapper);
     this.setPosition(x, y, z);
   }
 
@@ -63,8 +68,8 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
           @Assisted("shooter") LivingEntity shooter,
           World world,
           EntityBaseMapper entityBaseMapper,
-          EntityTypeRegister entityTypeRegister
-  ) {
+          EntityTypeRegister entityTypeRegister,
+          NBTMapper nbtMapper) {
     this(
             entity,
             shooter.getPosX(),
@@ -72,8 +77,8 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
             shooter.getPosZ(),
             world,
             entityBaseMapper,
-            entityTypeRegister
-    );
+            entityTypeRegister,
+            nbtMapper);
     this.setShooter(shooter);
 
     if (shooter instanceof PlayerEntity) {
@@ -283,6 +288,30 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   @Override
   public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
     this.arrowBaseEntity.shoot(x, y, z, velocity, inaccuracy);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void readAdditional(NBTCompound compound) {
+    this.arrowBaseEntity.readAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void writeAdditional(NBTCompound compound) {
+    this.arrowBaseEntity.writeAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setMotion(double x, double y, double z) {
+    this.arrowBaseEntity.setMotion(x, y, z);
   }
 
   protected PickupStatus fromMinecraftPickupStatus(AbstractArrowEntity.PickupStatus pickupStatus) {
