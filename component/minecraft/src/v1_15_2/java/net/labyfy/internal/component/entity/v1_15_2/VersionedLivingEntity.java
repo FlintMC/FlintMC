@@ -3,8 +3,8 @@ package net.labyfy.internal.component.entity.v1_15_2;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.LivingEntity;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -378,8 +378,37 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    * {@inheritDoc}
    */
   @Override
+  public void applyEntityCollision(Entity entity) {
+    this.livingEntity.applyEntityCollision((net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity));
+  }
+
+  @Override
+  public float getYaw(float partialTicks) {
+    return this.livingEntity.getYaw(partialTicks);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void attackEntityAsMob(Entity entity) {
     this.livingEntity.attackEntityAsMob((net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setSprinting(boolean sprinting) {
+    this.livingEntity.setSprinting(sprinting);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isActuallySwimming() {
+    return this.livingEntity.isActualySwimming();
   }
 
   /**
@@ -580,6 +609,14 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    * {@inheritDoc}
    */
   @Override
+  public boolean canBeRiddenInWater() {
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public boolean attackable() {
     return this.livingEntity.attackable();
   }
@@ -702,5 +739,13 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.livingEntity.writeAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isAlive() {
+    return this.livingEntity.isAlive();
   }
 }

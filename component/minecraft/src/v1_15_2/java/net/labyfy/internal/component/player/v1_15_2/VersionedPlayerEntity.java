@@ -4,11 +4,12 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.item.ItemEntity;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
+import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.nbt.NBTCompound;
 import net.labyfy.component.nbt.mapper.NBTMapper;
@@ -23,12 +24,13 @@ import net.labyfy.component.player.type.sound.Sound;
 import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.World;
-import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.internal.component.entity.v1_15_2.VersionedLivingEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.Item;
 import net.minecraft.item.MerchantOffers;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvent;
@@ -637,4 +639,164 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   public void removeCooldown(Object item) {
     this.entity.getCooldownTracker().removeCooldown((Item) item);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemStack findAmmo(ItemStack shootable) {
+    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
+            this.entity.findAmmo((net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(shootable))
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean canPickUpItem(ItemStack stack) {
+    return this.entity.canPickUpItem((net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(stack));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
+    return this.entity.replaceItemInInventory(
+            slot,
+            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getAbsorptionAmount() {
+    return this.entity.getAbsorptionAmount();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setAbsorptionAmount(float absorptionAmount) {
+    this.entity.setAbsorptionAmount(absorptionAmount);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getScoreboardName() {
+    return this.entity.getScoreboardName();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isPushedByWater() {
+    return this.entity.isPushedByWater();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isSwimming() {
+    return this.entity.isSwimming();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemStack getItemStackFromSlot(EquipmentSlotType slotType) {
+    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
+            this.entity.getItemStackFromSlot(
+                    (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType)
+            )
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getAIMoveSpeed() {
+    return this.entity.getAIMoveSpeed();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void updateSwim() {
+    this.entity.updateSwimming();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void wakeUp() {
+    this.entity.wakeUp();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startSleeping(BlockPosition position) {
+    this.entity.startSleeping(
+            (BlockPos) this.getWorld().toMinecraftBlockPos(position)
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void remove() {
+    this.entity.remove();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void readAdditional(NBTCompound compound) {
+    this.entity.readAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void writeAdditional(NBTCompound compound) {
+    this.entity.writeAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public SoundCategory getSoundCategory() {
+    return SoundCategory.PLAYER;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void playSound(Sound sound, float volume, float pitch) {
+    this.entity.playSound(
+            (SoundEvent) this.getEntityBaseMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            volume,
+            pitch
+    );
+  }
+
 }

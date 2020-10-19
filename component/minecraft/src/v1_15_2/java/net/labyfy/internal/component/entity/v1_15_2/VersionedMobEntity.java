@@ -3,16 +3,18 @@ package net.labyfy.internal.component.entity.v1_15_2;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.LivingEntity;
-import net.labyfy.component.entity.ai.EntitySenses;
 import net.labyfy.component.entity.MobEntity;
+import net.labyfy.component.entity.ai.EntitySenses;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
+import net.labyfy.component.nbt.NBTCompound;
 import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.PlayerEntity;
+import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.world.World;
 import net.labyfy.component.world.math.BlockPosition;
 import net.minecraft.util.math.BlockPos;
@@ -406,5 +408,100 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void setAggressive(boolean aggressive) {
     this.mobEntity.setAggroed(aggressive);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ResourceLocation getLootTableResourceLocation() {
+    return this.getEntityBaseMapper().getResourceLocationProvider().get(
+            this.mobEntity.getLootTableResourceLocation().getPath()
+    ).getHandle();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setAIMoveSpeed(float speed) {
+    this.mobEntity.setAIMoveSpeed(speed);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void checkDespawn() {
+    this.mobEntity.checkDespawn();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemStack getItemStackFromSlot(EquipmentSlotType slotType) {
+    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
+            this.mobEntity.getItemStackFromSlot(
+                    (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType)
+            )
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean canPickUpItem(ItemStack stack) {
+    return this.mobEntity.canPickUpItem(
+            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(stack)
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
+    return this.mobEntity.replaceItemInInventory(
+            slot,
+            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean canPassengerSteer() {
+    return this.mobEntity.canPassengerSteer();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isServerWorld() {
+    return this.mobEntity.isServerWorld();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean canAttack(LivingEntity entity) {
+    return this.mobEntity.canAttack(
+            (net.minecraft.entity.LivingEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity)
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void attackEntityAsMob(Entity entity) {
+    this.mobEntity.attackEntityAsMob(
+            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity)
+    );
   }
 }
