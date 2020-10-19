@@ -15,15 +15,6 @@ public interface EntityTypeRegister {
   void remappedRegisteredEntityTypes();
 
   /**
-   * Registers Labyfy {@link EntityType}'s with the given parameters.
-   *
-   * @param key            The key for the entity type.
-   * @param classification The classification for the entity type.
-   * @param factory       The factory to built an entity type.
-   */
-  void register(String key, Entity.Classification classification, EntityTypeBuilder.Factory factory);
-
-  /**
    * Retrieves a key-value system with the registered {@link EntityType}'s.
    *
    * @return A key-value system.

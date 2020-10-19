@@ -51,18 +51,6 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
    * {@inheritDoc}
    */
   @Override
-  public void register(String key, Entity.Classification classification, EntityTypeBuilder.Factory factory) {
-    EntityType entityType = factory.create(classification).build(key);
-
-    if (!this.entityTypes.containsKey(key)) {
-      this.entityTypes.put(key, entityType);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public Map<String, EntityType> getEntityTypes() {
     return this.entityTypes;
   }
