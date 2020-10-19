@@ -56,7 +56,6 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
 
     if (!this.entityTypes.containsKey(key)) {
       this.entityTypes.put(key, entityType);
-      this.registerMinecraft(key, entityType);
     }
   }
 
@@ -74,14 +73,6 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
   @Override
   public EntityType getEntityType(String key) {
     return this.entityTypes.get(key);
-  }
-
-  private void registerMinecraft(String key, EntityType entityType) {
-    Registry.register(
-            Registry.ENTITY_TYPE,
-            key,
-            (net.minecraft.entity.EntityType<?>) this.entityTypeMapper.toMinecraftEntityType(entityType)
-    );
   }
 
 }
