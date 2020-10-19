@@ -2,8 +2,9 @@ package net.labyfy.internal.component.entity.v1_15_2.item;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.item.ItemEntity;
+import net.labyfy.component.entity.mapper.EntityBaseMapper;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -197,4 +198,13 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
   public void writeAdditional(NBTCompound compound) {
     this.itemEntity.writeAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ChatComponent getName() {
+    return this.getEntityBaseMapper().getComponentMapper().fromMinecraft(this.itemEntity.getName());
+  }
+
 }

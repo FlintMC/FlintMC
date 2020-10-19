@@ -135,7 +135,6 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    super.readAdditional(compound);
     this.animalEntity.readAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
   }
 
@@ -144,7 +143,6 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    super.writeAdditional(compound);
     this.animalEntity.writeAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
   }
 }
