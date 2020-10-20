@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@DetectableAnnotation
+@DetectableAnnotation(requiresParent = true)
 public @interface FieldSetter {
 
   String value();

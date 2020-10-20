@@ -15,6 +15,7 @@ import javax.lang.model.element.*;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import java.lang.annotation.Repeatable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class DetectableAnnotationProcessor implements Processor {
       "   javax.lang.model.element.ElementKind.${ELEMENT_KIND}, \n" +
       "   ${IDENTIFIER}, \n" +
       "   ${ANNOTATION}, \n" +
-      "new net.labyfy.component.processing.autoload.AnnotationMeta[]{${SUB_METADATA}})";
+      "new net.labyfy.component.processing.autoload.AnnotationMeta[]{${META_DATA}})";
 
   /**
    * Template to instantiate a class identifier
@@ -101,33 +102,66 @@ public class DetectableAnnotationProcessor implements Processor {
    * {@inheritDoc}
    */
   public void accept(TypeElement annotationType) {
+
+    //We dont want to discover annotation types without DetectableAnnotation
+    if (annotationType.getAnnotation(DetectableAnnotation.class) != null)
+      acceptDetectableAnnotation(annotationType);
+
+    //We dont want to discover annotation types without RepeatingDetectableAnnotation
+    if (annotationType.getAnnotation(RepeatingDetectableAnnotation.class) != null)
+      acceptRepeatableDetectableAnnotation(annotationType);
+
+  }
+
+  private void acceptRepeatableDetectableAnnotation(TypeElement annotationType) {
+    //Get the RepeatingDetectableAnnotation as a type
+    TypeElement repeatingDetectableAnnotationType = ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement("net.labyfy.component.processing.autoload.RepeatingDetectableAnnotation");
+
+    //Get the values of the RepeatingDetectableAnnotation at the instance on the annotationType
+    Map<String, AnnotationValue> repeatingDetectableAnnotationValues = AnnotationMirrorUtil.getElementValuesByName(AnnotationMirrorUtil.getAnnotationMirror(annotationType, repeatingDetectableAnnotationType));
+
+    //Get the annotation type that is repeated by @param annotationType
+    TypeElement repeatedAnnotationType = ((TypeElement) ((DeclaredType) repeatingDetectableAnnotationValues.get("value").getValue()).asElement());
+    System.out.println("Repeating " + repeatedAnnotationType + " with " + annotationType);
+
     for (Element annotatedElement : ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(annotationType)) {
-      if (annotationType.getAnnotation(DetectableAnnotation.class) == null) continue;
-      Map<String, AnnotationValue> detectableAnnotationValues = AnnotationMirrorUtil.getElementValuesByName(SimpleAnnotationMirror.of(ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement("net.labyfy.component.processing.autoload.DetectableAnnotation"), AnnotationMirrorUtil.getElementValuesByName(AnnotationMirrorUtil.getAnnotationMirror(annotationType, "net.labyfy.component.processing.autoload.DetectableAnnotation"))));
-      TypeElement repeatingType = (TypeElement) ((DeclaredType) detectableAnnotationValues.get("repeating").getValue()).asElement();
-      if (!repeatingType.getQualifiedName().toString().equals("java.lang.annotation.Annotation")) {
-        Object repeatingValue = AnnotationMirrorUtil.getElementValuesByName(AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, annotationType.toString())).get("value").getValue();
-        if (!(repeatingValue instanceof List))
-          throw new IllegalArgumentException("repeating value() of " + annotationType.toString() + " must be " + repeatingType.toString() + "[]");
-        List<AnnotationMirror> repeatingCollection = ((List<AnnotationMirror>) repeatingValue);
+      //The root annotation as a mirror
+      AnnotationMirror annotationMirror = AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, annotationType);
+      List<AnnotationValue> repeatedAnnotations = (List<AnnotationValue>) AnnotationMirrorUtil.getElementValuesByName(annotationMirror).get("value").getValue();
+      for (AnnotationValue repeatedAnnotation : repeatedAnnotations) {
 
-        for (AnnotationMirror annotationMirror : repeatingCollection) {
-          String parsedAnnotation = parseAnnotationMeta(((TypeElement) annotationMirror.getAnnotationType().asElement()), annotatedElement, (Map<ExecutableElement, AnnotationValue>) SimpleAnnotationMirror.of(((TypeElement) annotationMirror.getAnnotationType().asElement()), AnnotationMirrorUtil.getElementValuesByName(annotationMirror)).getElementValues());
-          if (parsedAnnotation.isEmpty()) continue;
-          this.found.add(("list.add(" + parsedAnnotation + ")").replace("$", "$$"));
-        }
+        String parsedAnnotation = parseAnnotation(repeatedAnnotationType, annotatedElement, (Map<ExecutableElement, AnnotationValue>) SimpleAnnotationMirror.of(repeatedAnnotationType, AnnotationMirrorUtil.getElementValuesByName(((AnnotationMirror) repeatedAnnotation))).getElementValues());
+        if (parsedAnnotation.isEmpty()) return;
+        this.found.add(("list.add(" + parsedAnnotation + ")").replace("$", "$$"));
+        System.out.println(parsedAnnotation);
       }
-
-      String parsedAnnotation = parseAnnotationMeta(annotationType, annotatedElement);
-      if (parsedAnnotation.isEmpty()) continue;
-      this.found.add(("list.add(" + parsedAnnotation + ")").replace("$", "$$"));
     }
 
   }
 
-  private String parseAnnotationMeta(TypeElement annotationType, Element annotatedElement) {
-    return this.parseAnnotationMeta(annotationType, annotatedElement, collectAnnotationData(annotationType, annotatedElement));
+  public void acceptDetectableAnnotation(TypeElement annotationType) {
+    //Get the DetectableAnnotation as a type
+    TypeElement detectableAnnotationType = ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement("net.labyfy.component.processing.autoload.DetectableAnnotation");
+
+    //Get the values of the DetectableAnnotation at the instance on the annotationType
+    Map<String, AnnotationValue> detectableAnnotationValues = AnnotationMirrorUtil.getElementValuesByName(AnnotationMirrorUtil.getAnnotationMirror(annotationType, detectableAnnotationType));
+
+    //meta that requires a parent will not be handled standalone
+    if (((boolean) detectableAnnotationValues.get("requiresParent").getValue()))
+      return;
+
+    for (Element annotatedElement : ProcessorState.getInstance().getCurrentRoundEnvironment().getElementsAnnotatedWith(annotationType)) {
+
+
+      //get the discovered annotation as a mirror
+      AnnotationMirror annotationMirror = AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, annotationType);
+
+      String parsedAnnotation = parseAnnotation(annotationType, annotatedElement, (Map<ExecutableElement, AnnotationValue>) annotationMirror.getElementValues());
+      if (parsedAnnotation.isEmpty()) continue;
+      this.found.add(("list.add(" + parsedAnnotation + ")").replace("$", "$$"));
+    }
   }
+
 
   /**
    * Parse a given annotation to java syntax that will instantiate the target annotation with the exact same values.
@@ -137,37 +171,37 @@ public class DetectableAnnotationProcessor implements Processor {
    * @param annotationValues the value of the annotation to write
    * @return the java code to instantiate the annotation
    */
-  private String parseAnnotationMeta(TypeElement annotationType, Element annotatedElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
+  private String parseAnnotation(TypeElement annotationType, Element annotatedElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
     //meta is optional, so if it is not present, we dont take any action
     if (annotationType.getAnnotation(DetectableAnnotation.class) == null) return "";
 
     return handleTemplate(
         ImmutableMap.<String, String>builder()
             .put("ELEMENT_KIND", annotatedElement.getKind().name())
-            .put("IDENTIFIER", createAnnotationMetaIdentifier(annotatedElement))
+            .put("IDENTIFIER", createAnnotationIdentifier(annotatedElement))
             .put("ANNOTATION", createAnnotation(annotationType, annotationValues, annotationType.toString()))
-            .put("SUB_METADATA", createSubMetaData(annotationType, annotatedElement))
+            .put("META_DATA", createMetaData(annotationType, annotatedElement))
             .build(),
         ANNOTATION_META_TEMPLATE);
 
   }
 
-  private String createSubMetaData(TypeElement annotationType, Element annotatedElement) {
+  private String createMetaData(TypeElement annotationType, Element annotatedElement) {
     StringBuilder output = new StringBuilder();
     boolean semicolon = false;
-    for (Pair<Element, AnnotationMirror> pair : getAnnotationSubMetaMirrors(annotationType, annotatedElement)) {
+    for (Pair<Element, AnnotationMirror> pair : getAnnotationMetaMirrors(annotationType, annotatedElement)) {
       if (pair.getSecond() == null) continue;
 
       if (semicolon) {
         output.append(", ");
       }
-      output.append(parseAnnotationMeta(((TypeElement) pair.getSecond().getAnnotationType().asElement()), pair.getFirst()));
+      output.append(parseAnnotation(((TypeElement) pair.getSecond().getAnnotationType().asElement()), pair.getFirst(), (Map<ExecutableElement, AnnotationValue>) pair.getSecond().getElementValues()));
       semicolon = true;
     }
     return output.toString();
   }
 
-  private String createAnnotationMetaIdentifier(Element annotatedElement) {
+  private String createAnnotationIdentifier(Element annotatedElement) {
     switch (annotatedElement.getKind()) {
       case CLASS:
       case ANNOTATION_TYPE:
@@ -229,8 +263,57 @@ public class DetectableAnnotationProcessor implements Processor {
    * @param annotatedElement the location where to look for annotationType
    * @return the direct metadata for annotationType on annotatedElement
    */
-  private Collection<Pair<Element, AnnotationMirror>> getAnnotationSubMetaMirrors(TypeElement annotationType, Element annotatedElement) {
-    //get the type of DetectableAnnotation
+  private Collection<Pair<Element, AnnotationMirror>> getAnnotationMetaMirrors(TypeElement annotationType, Element annotatedElement) {
+    List<Pair<Element, AnnotationMirror>> metaClasses = new ArrayList<>();
+
+    //Get the DetectableAnnotation mirror of annotationType
+    AnnotationMirror detectableAnnotationMirror = AnnotationMirrorUtil.getAnnotationMirror(annotationType, ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement("net.labyfy.component.processing.autoload.DetectableAnnotation"));
+
+    //Collect all possible meta types
+    Collection<TypeElement> annotationMetaTypes = ((List<AnnotationValue>) AnnotationMirrorUtil.getElementValuesByName(detectableAnnotationMirror).get("metaData").getValue())
+        .stream()
+        .map(annotationValue -> ((TypeElement) ((DeclaredType) annotationValue.getValue()).asElement()))
+        .collect(Collectors.toSet());
+
+    Collection<Element> potentialElements = new HashSet<>();
+
+    potentialElements.add(annotatedElement);
+    potentialElements.addAll(annotatedElement.getEnclosedElements());
+
+    for (TypeElement annotationMetaType : annotationMetaTypes) {
+      for (Element potentialElement : potentialElements) {
+
+        if (annotationMetaType.getAnnotation(Repeatable.class) != null) {
+          AnnotationMirror repeatableAnnotationMirror = AnnotationMirrorUtil.getAnnotationMirror(annotationMetaType, ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement("java.lang.annotation.Repeatable"));
+          TypeElement repeatingAnnotationType = (TypeElement) ((DeclaredType) AnnotationMirrorUtil.getElementValuesByName(repeatableAnnotationMirror).get("value").getValue()).asElement();
+          if (repeatingAnnotationType.getAnnotation(RepeatingDetectableAnnotation.class) == null) {
+            throw new IllegalStateException("Repeating annotation " + repeatingAnnotationType + " must have @RepeatingDetectableAnnotation");
+          }
+
+          AnnotationMirror repeatingAnnotationMirror = AnnotationMirrorUtil.getAnnotationMirror(potentialElement, repeatingAnnotationType);
+          if (repeatingAnnotationMirror != null) {
+            List<AnnotationMirror> annotationMirrors = (List<AnnotationMirror>) AnnotationMirrorUtil.getElementValuesByName(repeatingAnnotationMirror).get("value").getValue();
+            for (AnnotationMirror annotationMirror : annotationMirrors) {
+              metaClasses.add(new Pair<>(potentialElement, SimpleAnnotationMirror.of(((TypeElement) annotationMirror.getAnnotationType().asElement()), AnnotationMirrorUtil.getElementValuesByName(annotationMirror))));
+            }
+          }
+        }
+
+        AnnotationMirror annotationMetaMirror = AnnotationMirrorUtil.getAnnotationMirror(potentialElement, annotationMetaType);
+        if (annotationMetaMirror == null) continue;
+
+        if (annotationMetaType.getAnnotation(DetectableAnnotation.class) != null) {
+          metaClasses.add(new Pair<>(potentialElement, annotationMetaMirror));
+        }
+
+
+      }
+
+    }
+
+    return metaClasses;
+
+   /* //get the type of DetectableAnnotation
     TypeElement detectableAnnotationType = ProcessorState.getInstance().getProcessingEnvironment().getElementUtils().getTypeElement(DetectableAnnotation.class.getName());
 
     //get the DetectableAnnotation of the target annotation type
@@ -247,6 +330,18 @@ public class DetectableAnnotationProcessor implements Processor {
     AnnotationValue metaData = mergedDetectableAnnotationMirror.getElementValues().get(mergedDetectableAnnotationMirror.getElementValues().keySet().stream().filter(executableElement -> executableElement.getSimpleName().toString().equals("metaData")).findAny().get());
     if (metaData == null) return metaClasses;
 
+
+    TypeElement repeatingType = ((TypeElement) ((DeclaredType) AnnotationMirrorUtil.getElementValuesByName(mergedDetectableAnnotationMirror).get("repeating").getValue()).asElement());
+    if (!repeatingType.getQualifiedName().toString().equals("java.lang.annotation.Annotation")) {
+
+      for (AnnotationValue annotationValue : ((List<AnnotationValue>) metaData.getValue())) {
+        AnnotationMirror annotationMirror = (AnnotationMirror) annotationValue.getValue();
+
+//        metaClasses.add(new Pair<>(annotatedElement, SimpleAnnotationMirror.of((TypeElement) annotationMirror.getAnnotationType().asElement(), AnnotationMirrorUtil.getElementValuesByName(annotationMirror))));
+      }
+
+    }
+
     //collect annotated elements with its target elements
     ((List<AnnotationValue>) metaData.getValue())
         .stream()
@@ -254,7 +349,12 @@ public class DetectableAnnotationProcessor implements Processor {
         .map(DeclaredType.class::cast)
         .map(DeclaredType::asElement)
         .map(TypeElement.class::cast)
-        .map(typeElement -> new Pair<>(annotatedElement, AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, typeElement.getQualifiedName().toString())))
+        .map(typeElement -> {
+          AnnotationMirror foundAnnotationMirror = AnnotationMirrorUtil.getAnnotationMirror(annotatedElement, typeElement.getQualifiedName().toString());
+          if(foundAnnotationMirror == null) return null;
+          return new Pair<>(annotatedElement, SimpleAnnotationMirror.of(typeElement, AnnotationMirrorUtil.getElementValuesByName(foundAnnotationMirror)));
+        })
+        .filter(Objects::nonNull)
         .filter(pair -> pair.getSecond() != null)
         .forEach(metaClasses::add);
 
@@ -270,23 +370,7 @@ public class DetectableAnnotationProcessor implements Processor {
           .filter(pair -> pair.getSecond() != null)
           .forEach(metaClasses::add);
     }
-    return metaClasses;
-  }
-
-  /**
-   * Collects the annotation values of a specified annotation type on a target.
-   *
-   * @param typeElement      the annotation type to collect
-   * @param annotatedElement the target where the annotation is present
-   * @return the collected data
-   */
-  private Map<ExecutableElement, AnnotationValue> collectAnnotationData(TypeElement typeElement, Element annotatedElement) {
-    Map<String, AnnotationValue> collect = new HashMap<>(annotatedElement.getAnnotationMirrors().stream().filter(annotationMirror -> annotationMirror.getAnnotationType().asElement().asType().equals(typeElement.asType())).map(AnnotationMirror::getElementValues).findAny().orElse(new HashMap<>()))
-        .entrySet()
-        .stream()
-        .collect(Collectors.toMap(entry -> entry.getKey().getSimpleName().toString(), Map.Entry::getValue));
-
-    return new HashMap<>(SimpleAnnotationMirror.of(typeElement, collect).getElementValues());
+    return metaClasses;*/
   }
 
   private String createMethod(ExecutableElement executableElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
@@ -299,6 +383,9 @@ public class DetectableAnnotationProcessor implements Processor {
 
   private String createMethodReturn(ExecutableElement executableElement, Map<ExecutableElement, AnnotationValue> annotationValues) {
     AnnotationValue value = annotationValues.get(executableElement);
+    if (value == null)
+      throw new AssertionError("Annotation value for " + executableElement.toString() + " must not be null. " + annotationValues);
+
 
     AnnotationValueVisitor<String, Void> annotationValueVisitor = new AnnotationValueVisitor<String, Void>() {
       @Override
@@ -437,6 +524,7 @@ public class DetectableAnnotationProcessor implements Processor {
   public void finish(MethodSpec.Builder targetMethod) {
     // Add sourcecode to auto generated class
     this.found.forEach(targetMethod::addStatement);
+    this.found.clear();
   }
 
 

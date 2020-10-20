@@ -4,12 +4,13 @@ plugins {
 
 group 'net.labyfy.component'
 
-labyfy{
+labyfy {
 }
 
 dependencies {
     api 'org.joml:joml:1.9.25'
     api 'javax.inject:javax.inject:1'
+    implementation group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
 }
 
 repositories {
