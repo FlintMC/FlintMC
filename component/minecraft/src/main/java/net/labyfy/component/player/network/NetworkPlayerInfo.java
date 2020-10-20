@@ -2,7 +2,7 @@ package net.labyfy.component.player.network;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.player.PlayerSkinProfile;
 import net.labyfy.component.player.gameprofile.GameProfile;
@@ -81,7 +81,7 @@ public interface NetworkPlayerInfo extends PlayerSkinProfile {
     NetworkPlayerInfo create(
             @Assisted("gameProfile") GameProfile gameProfile,
             @Assisted("scoreboard") Scoreboard scoreboard,
-            @Assisted("entityMapper") EntityBaseMapper entityBaseMapper
+            @Assisted("entityMapper") EntityFoundationMapper entityFoundationMapper
     );
   }
 

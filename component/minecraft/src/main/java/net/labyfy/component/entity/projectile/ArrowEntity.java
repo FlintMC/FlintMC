@@ -47,7 +47,12 @@ public interface ArrowEntity extends ArrowBaseEntity {
      * @param z      The z position.
      * @return A created arrow base entity.
      */
-    ArrowEntity create(@Assisted("entity") Object entity, @Assisted("x") double x, @Assisted("y") double y, @Assisted("z") double z);
+    ArrowEntity create(
+            @Assisted("entity") Object entity,
+            @Assisted("x") double x,
+            @Assisted("y") double y,
+            @Assisted("z") double z
+    );
 
     /**
      * Creates a new {@link ArrowEntity} with the given parameters.
@@ -56,7 +61,10 @@ public interface ArrowEntity extends ArrowBaseEntity {
      * @param shooter The shooter of the arrow.
      * @return A created arrow base entity.
      */
-    ArrowEntity create(@Assisted("entity") Object entity, @Assisted("shooter") LivingEntity shooter);
+    ArrowEntity create(
+            @Assisted("entity") Object entity,
+            @Assisted("shooter") LivingEntity shooter
+    );
 
   }
 

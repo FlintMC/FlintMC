@@ -1,4 +1,4 @@
-package net.labyfy.component.entity.projectile;
+package net.labyfy.component.entity.projectile.type;
 
 /**
  * Represents a projectile.

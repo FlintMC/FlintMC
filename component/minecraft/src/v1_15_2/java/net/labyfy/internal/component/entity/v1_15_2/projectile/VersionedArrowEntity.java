@@ -2,7 +2,7 @@ package net.labyfy.internal.component.entity.v1_15_2.projectile;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.projectile.ArrowEntity;
 import net.labyfy.component.entity.type.EntityTypeRegister;
@@ -13,7 +13,7 @@ import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.world.World;
 import net.minecraft.nbt.CompoundNBT;
 
-@Implement(ArrowEntity.class)
+@Implement(value = ArrowEntity.class, version = "1.15.2")
 public class VersionedArrowEntity extends VersionedArrowBaseEntity implements ArrowEntity {
 
   private final net.minecraft.entity.projectile.ArrowEntity arrowEntity;
@@ -22,11 +22,10 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
   public VersionedArrowEntity(
           @Assisted("entity") Object entity,
           World world,
-          EntityBaseMapper entityBaseMapper,
-          EntityTypeRegister entityTypeRegister,
-          NBTMapper nbtMapper
+          EntityFoundationMapper entityFoundationMapper,
+          EntityTypeRegister entityTypeRegister
   ) {
-    super(entity, world, entityBaseMapper, entityTypeRegister, nbtMapper);
+    super(entity, world, entityFoundationMapper, entityTypeRegister);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.projectile.ArrowEntity.class.getName());
@@ -42,11 +41,10 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
           @Assisted("y") double y,
           @Assisted("z") double z,
           World world,
-          EntityBaseMapper entityBaseMapper,
-          EntityTypeRegister entityTypeRegister,
-          NBTMapper nbtMapper
+          EntityFoundationMapper entityFoundationMapper,
+          EntityTypeRegister entityTypeRegister
   ) {
-    super(entity, x, y, z, world, entityBaseMapper, entityTypeRegister, nbtMapper);
+    super(entity, x, y, z, world, entityFoundationMapper, entityTypeRegister);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.projectile.ArrowEntity.class.getName());
@@ -60,11 +58,10 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
           @Assisted("entity") Object entity,
           @Assisted("shooter") LivingEntity shooter,
           World world,
-          EntityBaseMapper entityBaseMapper,
-          EntityTypeRegister entityTypeRegister,
-          NBTMapper nbtMapper
+          EntityFoundationMapper entityFoundationMapper,
+          EntityTypeRegister entityTypeRegister
   ) {
-    super(entity, shooter, world, entityBaseMapper, entityTypeRegister, nbtMapper);
+    super(entity, shooter, world, entityFoundationMapper, entityTypeRegister);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.projectile.ArrowEntity.class.getName());
@@ -79,7 +76,7 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
   @Override
   public void setPotionEffect(ItemStack itemStack) {
     this.arrowEntity.setPotionEffect(
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack)
     );
   }
 
@@ -96,7 +93,7 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.arrowEntity.readAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+    this.arrowEntity.readAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
   /**
@@ -104,7 +101,7 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.arrowEntity.writeAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+    this.arrowEntity.writeAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
 }

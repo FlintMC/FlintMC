@@ -3,6 +3,8 @@ package net.labyfy.component.entity.projectile;
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.LivingEntity;
+import net.labyfy.component.entity.projectile.type.PickupStatus;
+import net.labyfy.component.entity.projectile.type.Projectile;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.items.ItemStack;
 import net.labyfy.component.player.type.sound.Sound;
@@ -196,7 +198,12 @@ public interface ArrowBaseEntity extends Entity, Projectile {
      * @param z      The z position.
      * @return A created arrow base entity.
      */
-    ArrowBaseEntity create(@Assisted("entity") Object entity, @Assisted("x") double x, @Assisted("y") double y, @Assisted("z") double z);
+    ArrowBaseEntity create(
+            @Assisted("entity") Object entity,
+            @Assisted("x") double x,
+            @Assisted("y") double y,
+            @Assisted("z") double z
+    );
 
     /**
      * Creates a new {@link ArrowBaseEntity} with the given parameters.
@@ -205,7 +212,10 @@ public interface ArrowBaseEntity extends Entity, Projectile {
      * @param shooter The shooter of the arrow.
      * @return A created arrow base entity.
      */
-    ArrowBaseEntity create(@Assisted("entity") Object entity, @Assisted("shooter") LivingEntity shooter);
+    ArrowBaseEntity create(
+            @Assisted("entity") Object entity,
+            @Assisted("shooter") LivingEntity shooter
+    );
 
   }
 

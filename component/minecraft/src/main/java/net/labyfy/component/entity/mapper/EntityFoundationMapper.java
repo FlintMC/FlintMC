@@ -5,6 +5,7 @@ import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
+import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.type.GameMode;
 import net.labyfy.component.player.type.hand.HandMapper;
 import net.labyfy.component.player.type.sound.SoundMapper;
@@ -13,7 +14,7 @@ import net.labyfy.component.resources.ResourceLocationProvider;
 /**
  * Mapper between Minecraft entity and Labyfy entity.
  */
-public interface EntityBaseMapper {
+public interface EntityFoundationMapper {
 
   /**
    * Creates a new {@link EquipmentSlotType} by using the given Minecraft equipment slot type as the base.
@@ -124,5 +125,12 @@ public interface EntityBaseMapper {
    * @return The entity mapper.
    */
   EntityMapper getEntityMapper();
-  
+
+  /**
+   * Retrieves the nbt mapper.
+   *
+   * @return The nbt mapper.
+   */
+  NBTMapper getNbtMapper();
+
 }

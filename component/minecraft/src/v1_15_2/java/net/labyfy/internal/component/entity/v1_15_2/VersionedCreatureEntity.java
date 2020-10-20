@@ -3,7 +3,7 @@ package net.labyfy.internal.component.entity.v1_15_2;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.CreatureEntity;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.ai.EntitySenses;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
@@ -25,11 +25,10 @@ public class VersionedCreatureEntity extends VersionedMobEntity implements Creat
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityBaseMapper entityBaseMapper,
-          NBTMapper nbtMapper,
+          EntityFoundationMapper entityFoundationMapper,
           EntitySenses.Factory entitySensesFactory
   ) {
-    super(entity, entityType, world, entityBaseMapper, nbtMapper, entitySensesFactory);
+    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
 
 
     if (!(entity instanceof net.minecraft.entity.CreatureEntity)) {

@@ -6,7 +6,7 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.EntitySize;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.entity.type.EntityType;
@@ -32,7 +32,7 @@ public class VersionedEntity implements Entity {
 
   private final EntityType entityType;
   private final World world;
-  private final EntityBaseMapper entityBaseMapper;
+  private final EntityFoundationMapper entityFoundationMapper;
 
   private final net.minecraft.entity.Entity entity;
   private final Random random;
@@ -42,10 +42,10 @@ public class VersionedEntity implements Entity {
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityBaseMapper entityBaseMapper) {
+          EntityFoundationMapper entityFoundationMapper) {
     this.entityType = entityType;
     this.world = world;
-    this.entityBaseMapper = entityBaseMapper;
+    this.entityFoundationMapper = entityFoundationMapper;
 
     if (!(entity instanceof net.minecraft.entity.Entity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.Entity.class.getName());
@@ -164,7 +164,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public EntityPose getPose() {
-    return this.entityBaseMapper.fromMinecraftPose(
+    return this.entityFoundationMapper.fromMinecraftPose(
             this.entity.getPose()
     );
   }
@@ -245,7 +245,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public void applyEntityCollision(Entity entity) {
-    this.entity.applyEntityCollision((net.minecraft.entity.Entity) this.entityBaseMapper.getEntityMapper().toMinecraftEntity(entity));
+    this.entity.applyEntityCollision((net.minecraft.entity.Entity) this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -366,7 +366,7 @@ public class VersionedEntity implements Entity {
   @Override
   public void playSound(Sound sound, float volume, float pitch) {
     this.entity.playSound(
-            (SoundEvent) this.getEntityBaseMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            (SoundEvent) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
             volume,
             pitch
     );
@@ -721,7 +721,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public float getEyeHeight(EntityPose pose) {
-    return this.entity.getEyeHeight((Pose) this.entityBaseMapper.toMinecraftPose(pose));
+    return this.entity.getEyeHeight((Pose) this.entityFoundationMapper.toMinecraftPose(pose));
   }
 
   /**
@@ -753,7 +753,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public Entity getRidingEntity() {
-    return this.entityBaseMapper.getEntityMapper().fromMinecraftEntity(this.entity.getRidingEntity());
+    return this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(this.entity.getRidingEntity());
   }
 
   /**
@@ -803,7 +803,7 @@ public class VersionedEntity implements Entity {
   public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
     return this.entity.replaceItemInInventory(
             slot,
-            (net.minecraft.item.ItemStack) this.entityBaseMapper.getItemMapper().toMinecraft(itemStack)
+            (net.minecraft.item.ItemStack) this.entityFoundationMapper.getItemMapper().toMinecraft(itemStack)
     );
   }
 
@@ -828,7 +828,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public Entity getControllingPassenger() {
-    return this.entityBaseMapper.getEntityMapper().fromMinecraftEntity(this.entity.getControllingPassenger());
+    return this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(this.entity.getControllingPassenger());
   }
 
   /**
@@ -839,7 +839,7 @@ public class VersionedEntity implements Entity {
     List<Entity> passengers = new ArrayList<>();
 
     for (net.minecraft.entity.Entity passenger : this.entity.getPassengers()) {
-      passengers.add(this.entityBaseMapper.getEntityMapper().fromMinecraftEntity(passenger));
+      passengers.add(this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(passenger));
     }
 
     return passengers;
@@ -850,7 +850,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public boolean isPassenger(Entity entity) {
-    return this.entity.isPassenger((net.minecraft.entity.Entity) this.entityBaseMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.entity.isPassenger((net.minecraft.entity.Entity) this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -860,7 +860,7 @@ public class VersionedEntity implements Entity {
   public Collection<Entity> getRecursivePassengers() {
     Set<Entity> entities = Sets.newHashSet();
     for (net.minecraft.entity.Entity passenger : this.entity.getPassengers()) {
-      entities.add(this.entityBaseMapper.getEntityMapper().fromMinecraftEntity(passenger));
+      entities.add(this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(passenger));
     }
 
     return entities;
@@ -887,7 +887,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public Entity getLowestRidingEntity() {
-    return this.entityBaseMapper.getEntityMapper().fromMinecraftEntity(this.entity.getLowestRidingEntity());
+    return this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(this.entity.getLowestRidingEntity());
   }
 
   /**
@@ -895,7 +895,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public boolean isRidingSameEntity(Entity entity) {
-    return this.entity.isRidingSameEntity((net.minecraft.entity.Entity) this.entityBaseMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.entity.isRidingSameEntity((net.minecraft.entity.Entity) this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -903,7 +903,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public boolean isRidingOrBeingRiddenBy(Entity entity) {
-    return this.entity.isRidingOrBeingRiddenBy((net.minecraft.entity.Entity) this.entityBaseMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.entity.isRidingOrBeingRiddenBy((net.minecraft.entity.Entity) this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -1069,7 +1069,7 @@ public class VersionedEntity implements Entity {
   @Override
   public void move(MoverType moverType, Vector3D vector3D) {
     this.entity.move(
-            (net.minecraft.entity.MoverType) this.entityBaseMapper.toMinecraftMoverType(moverType),
+            (net.minecraft.entity.MoverType) this.entityFoundationMapper.toMinecraftMoverType(moverType),
             new Vec3d(vector3D.getX(), vector3D.getY(), vector3D.getZ())
     );
   }
@@ -1158,8 +1158,8 @@ public class VersionedEntity implements Entity {
    * {@inheritDoc}
    */
   @Override
-  public EntityBaseMapper getEntityBaseMapper() {
-    return this.entityBaseMapper;
+  public EntityFoundationMapper getEntityFoundationMapper() {
+    return this.entityFoundationMapper;
   }
 
   /**
@@ -1167,7 +1167,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public ChatComponent getName() {
-    return this.entityBaseMapper.getComponentMapper().fromMinecraft(
+    return this.entityFoundationMapper.getComponentMapper().fromMinecraft(
             this.entity.getName()
     );
   }

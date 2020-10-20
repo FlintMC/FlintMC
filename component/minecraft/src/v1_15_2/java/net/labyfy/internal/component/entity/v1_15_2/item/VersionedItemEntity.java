@@ -4,7 +4,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.item.ItemEntity;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -20,18 +20,14 @@ import java.util.UUID;
 public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
 
   private final net.minecraft.entity.item.ItemEntity itemEntity;
-  private final NBTMapper nbtMapper;
 
   @AssistedInject
   private VersionedItemEntity(
           @Assisted("entity") Object entity,
           EntityTypeRegister entityTypeRegister,
           World world,
-          EntityBaseMapper entityBaseMapper,
-          NBTMapper nbtMapper) {
-    super(entity, entityTypeRegister.getEntityType("item"), world, entityBaseMapper);
-    this.nbtMapper = nbtMapper;
-
+          EntityFoundationMapper entityFoundationMapper) {
+    super(entity, entityTypeRegister.getEntityType("item"), world, entityFoundationMapper);
 
     if (!(entity instanceof net.minecraft.entity.item.ItemEntity)) {
       throw new IllegalArgumentException("");
@@ -45,12 +41,11 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
           @Assisted("entity") Object entity,
           EntityTypeRegister entityTypeRegister,
           World world,
-          EntityBaseMapper entityBaseMapper,
+          EntityFoundationMapper entityFoundationMapper,
           @Assisted("x") double x,
           @Assisted("y") double y,
-          @Assisted("z") double z,
-          NBTMapper nbtMapper) {
-    this(entity, entityTypeRegister, world, entityBaseMapper, nbtMapper);
+          @Assisted("z") double z) {
+    this(entity, entityTypeRegister, world, entityFoundationMapper);
     this.setPosition(x, y, z);
     this.setYaw(this.getRandom().nextFloat() * 360.0F);
     this.setMotion(this.getRandom().nextDouble() * 0.2D - 0.1D, 0.2D, this.getRandom().nextDouble() * 0.2D - 0.1D);
@@ -61,13 +56,12 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
           @Assisted("entity") Object entity,
           EntityTypeRegister entityTypeRegister,
           World world,
-          EntityBaseMapper entityBaseMapper,
+          EntityFoundationMapper entityFoundationMapper,
           @Assisted("x") double x,
           @Assisted("y") double y,
           @Assisted("z") double z,
-          @Assisted("itemStack") ItemStack itemStack,
-          NBTMapper nbtMapper) {
-    this(entity, entityTypeRegister, world, entityBaseMapper, x, y, z, nbtMapper);
+          @Assisted("itemStack") ItemStack itemStack) {
+    this(entity, entityTypeRegister, world, entityFoundationMapper, x, y, z);
     this.setItemStack(itemStack);
   }
 
@@ -76,7 +70,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public ItemStack getItemStack() {
-    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(this.itemEntity.getItem());
+    return this.getEntityFoundationMapper().getItemMapper().fromMinecraft(this.itemEntity.getItem());
   }
 
   /**
@@ -84,7 +78,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setItemStack(ItemStack itemStack) {
-    this.itemEntity.setItem((net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack));
+    this.itemEntity.setItem((net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
   /**
@@ -188,7 +182,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.itemEntity.readAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
+    this.itemEntity.readAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
   /**
@@ -196,7 +190,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.itemEntity.writeAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
+    this.itemEntity.writeAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
   /**
@@ -204,7 +198,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public ChatComponent getName() {
-    return this.getEntityBaseMapper().getComponentMapper().fromMinecraft(this.itemEntity.getName());
+    return this.getEntityFoundationMapper().getComponentMapper().fromMinecraft(this.itemEntity.getName());
   }
 
 }

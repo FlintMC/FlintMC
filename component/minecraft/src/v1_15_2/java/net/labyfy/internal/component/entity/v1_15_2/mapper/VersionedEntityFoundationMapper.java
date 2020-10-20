@@ -1,13 +1,14 @@
 package net.labyfy.internal.component.entity.v1_15_2.mapper;
 
 import net.labyfy.chat.MinecraftComponentMapper;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.mapper.EntityMapper;
 import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.inventory.EquipmentSlotType;
 import net.labyfy.component.items.mapper.MinecraftItemMapper;
+import net.labyfy.component.nbt.mapper.NBTMapper;
 import net.labyfy.component.player.type.GameMode;
 import net.labyfy.component.player.type.hand.HandMapper;
 import net.labyfy.component.player.type.sound.SoundMapper;
@@ -19,29 +20,33 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * 1.15.2 implementation of the {@link EntityBaseMapper}.
+ * 1.15.2 implementation of the {@link EntityFoundationMapper}.
  */
 @Singleton
-@Implement(value = EntityBaseMapper.class, version = "1.15.2")
-public class VersionedEntityBaseMapper implements EntityBaseMapper {
+@Implement(value = EntityFoundationMapper.class, version = "1.15.2")
+public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
 
+  private final EntityMapper entityMapper;
+  private final HandMapper handMapper;
   private final MinecraftItemMapper itemMapper;
   private final MinecraftComponentMapper componentMapper;
+  private final NBTMapper nbtMapper;
   private final ResourceLocationProvider resourceLocationProvider;
   private final SoundMapper soundMapper;
-  private final HandMapper handMapper;
-  private final EntityMapper entityMapper;
 
   @Inject
-  private VersionedEntityBaseMapper(
+  private VersionedEntityFoundationMapper(
+          EntityMapper entityMapper,
+          HandMapper handMapper,
           MinecraftItemMapper itemMapper,
           MinecraftComponentMapper componentMapper,
+          NBTMapper nbtMapper,
           ResourceLocationProvider resourceLocationProvider,
-          SoundMapper soundMapper,
-          HandMapper handMapper,
-          EntityMapper entityMapper) {
+          SoundMapper soundMapper
+  ) {
     this.itemMapper = itemMapper;
     this.componentMapper = componentMapper;
+    this.nbtMapper = nbtMapper;
     this.resourceLocationProvider = resourceLocationProvider;
     this.soundMapper = soundMapper;
     this.handMapper = handMapper;
@@ -297,5 +302,13 @@ public class VersionedEntityBaseMapper implements EntityBaseMapper {
   @Override
   public EntityMapper getEntityMapper() {
     return this.entityMapper;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public NBTMapper getNbtMapper() {
+    return this.nbtMapper;
   }
 }

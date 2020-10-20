@@ -6,7 +6,7 @@ import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.MobEntity;
 import net.labyfy.component.entity.ai.EntitySenses;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -26,24 +26,21 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
 
   private final net.minecraft.entity.MobEntity mobEntity;
   private final EntitySenses.Factory entitySensesFactory;
-  private final NBTMapper nbtMapper;
 
   @AssistedInject
   public VersionedMobEntity(
           @Assisted("mobEntity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityBaseMapper entityBaseMapper,
-          NBTMapper nbtMapper,
+          EntityFoundationMapper entityFoundationMapper,
           EntitySenses.Factory entitySensesFactory
   ) {
-    super(entity, entityType, world, entityBaseMapper, nbtMapper);
+    super(entity, entityType, world, entityFoundationMapper);
     this.entitySensesFactory = entitySensesFactory;
 
     if (!(entity instanceof net.minecraft.entity.MobEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.MobEntity.class.getName());
     }
-    this.nbtMapper = nbtMapper;
     this.mobEntity = (net.minecraft.entity.MobEntity) entity;
   }
 
@@ -60,7 +57,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public LivingEntity getAttackTarget() {
-    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftLivingEntity(this.mobEntity.getAttackTarget());
+    return this.getEntityFoundationMapper().getEntityMapper().fromMinecraftLivingEntity(this.mobEntity.getAttackTarget());
   }
 
   /**
@@ -69,7 +66,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void setAttackTarget(LivingEntity entity) {
     this.mobEntity.setAttackTarget(
-            (net.minecraft.entity.LivingEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftLivingEntity(entity)
+            (net.minecraft.entity.LivingEntity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftLivingEntity(entity)
     );
   }
 
@@ -175,7 +172,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void faceEntity(Entity entity, float maxYawIncrease, float maxPitchIncrease) {
     this.mobEntity.faceEntity(
-            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity),
+            (net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity),
             maxYawIncrease,
             maxPitchIncrease
     );
@@ -219,7 +216,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void setDropChance(EquipmentSlotType slotType, float chance) {
     this.mobEntity.setDropChance(
-            (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType),
+            (net.minecraft.inventory.EquipmentSlotType) this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType),
             chance
     );
   }
@@ -315,7 +312,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public boolean canBeLeashedTo(PlayerEntity playerEntity) {
     return this.mobEntity.canBeLeashedTo(
-            (net.minecraft.entity.player.PlayerEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftPlayerEntity(playerEntity)
+            (net.minecraft.entity.player.PlayerEntity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftPlayerEntity(playerEntity)
     );
   }
 
@@ -332,7 +329,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public Entity getLeashHolder() {
-    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftEntity(this.mobEntity.getLeashHolder());
+    return this.getEntityFoundationMapper().getEntityMapper().fromMinecraftEntity(this.mobEntity.getLeashHolder());
   }
 
   /**
@@ -341,7 +338,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void setLeashHolder(Entity entity, boolean leashHolder) {
     this.mobEntity.setLeashHolder(
-            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity),
+            (net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity),
             leashHolder
     );
   }
@@ -360,8 +357,8 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public boolean isItemStackInSlot(EquipmentSlotType slotType, ItemStack itemStack) {
     return net.minecraft.entity.MobEntity.isItemStackInSlot(
-            (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType),
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
+            (net.minecraft.inventory.EquipmentSlotType) this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType),
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack)
     );
   }
 
@@ -418,7 +415,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public ResourceLocation getLootTableResourceLocation() {
-    return this.getEntityBaseMapper().getResourceLocationProvider().get(
+    return this.getEntityFoundationMapper().getResourceLocationProvider().get(
             this.mobEntity.getLootTableResourceLocation().getPath()
     ).getHandle();
   }
@@ -444,9 +441,9 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public ItemStack getItemStackFromSlot(EquipmentSlotType slotType) {
-    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
+    return this.getEntityFoundationMapper().getItemMapper().fromMinecraft(
             this.mobEntity.getItemStackFromSlot(
-                    (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType)
+                    (net.minecraft.inventory.EquipmentSlotType) this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)
             )
     );
   }
@@ -457,7 +454,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public boolean canPickUpItem(ItemStack stack) {
     return this.mobEntity.canPickUpItem(
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(stack)
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack)
     );
   }
 
@@ -468,7 +465,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
     return this.mobEntity.replaceItemInInventory(
             slot,
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack)
     );
   }
 
@@ -494,7 +491,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public boolean canAttack(LivingEntity entity) {
     return this.mobEntity.canAttack(
-            (net.minecraft.entity.LivingEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity)
+            (net.minecraft.entity.LivingEntity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity)
     );
   }
 
@@ -504,7 +501,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
   @Override
   public void attackEntityAsMob(Entity entity) {
     this.mobEntity.attackEntityAsMob(
-            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity)
+            (net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity)
     );
   }
 
@@ -513,7 +510,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.mobEntity.writeAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+    this.mobEntity.writeAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
   /**
@@ -521,7 +518,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.mobEntity.readAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+    this.mobEntity.readAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
   /**
@@ -529,7 +526,7 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
    */
   @Override
   public Hand.Side getPrimaryHand() {
-    return this.getEntityBaseMapper().getHandMapper().fromMinecraftHandSide(this.mobEntity.getPrimaryHand());
+    return this.getEntityFoundationMapper().getHandMapper().fromMinecraftHandSide(this.mobEntity.getPrimaryHand());
   }
 
 }

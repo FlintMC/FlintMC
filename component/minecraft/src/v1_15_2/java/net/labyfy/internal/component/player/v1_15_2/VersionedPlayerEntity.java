@@ -5,7 +5,8 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.item.ItemEntity;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.item.ItemEntityMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -52,7 +53,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   private final net.minecraft.entity.player.PlayerEntity entity;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileGameProfileSerializer;
   private final ModelMapper modelMapper;
-  private final NBTMapper nbtMapper;
+  private final ItemEntityMapper itemEntityMapper;
   private final TileEntityMapper tileEntityMapper;
 
   @AssistedInject
@@ -60,15 +61,15 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityBaseMapper entityBaseMapper,
+          EntityFoundationMapper entityFoundationMapper,
           GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
-          NBTMapper nbtMapper,
+          ItemEntityMapper itemEntityMapper,
           TileEntityMapper tileEntityMapper) {
-    super(entity, entityType, world, entityBaseMapper, nbtMapper);
+    super(entity, entityType, world, entityFoundationMapper);
     this.gameProfileGameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;
-    this.nbtMapper = nbtMapper;
+    this.itemEntityMapper = itemEntityMapper;
     this.tileEntityMapper = tileEntityMapper;
 
     if (!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
@@ -86,7 +87,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     return this.entity.blockActionRestricted(
             this.entity.world,
             (BlockPos) this.getWorld().toMinecraftBlockPos(position),
-            (GameType) this.getEntityBaseMapper().toMinecraftGameType(mode)
+            (GameType) this.getEntityFoundationMapper().toMinecraftGameType(mode)
     );
   }
 
@@ -104,8 +105,8 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
     this.entity.playSound(
-            (SoundEvent) this.getEntityBaseMapper().getSoundMapper().toMinecraftSoundEvent(sound),
-            (net.minecraft.util.SoundCategory) this.getEntityBaseMapper().getSoundMapper().toMinecraftSoundCategory(category),
+            (SoundEvent) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            (net.minecraft.util.SoundCategory) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundCategory(category),
             volume,
             pitch
     );
@@ -148,9 +149,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public ItemEntity dropItem(ItemStack itemStack, boolean traceItem) {
-    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftItemEntity(
+    return this.itemEntityMapper.fromMinecraftItemEntity(
             this.entity.dropItem(
-                    (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack),
+                    (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack),
                     traceItem
             )
     );
@@ -161,9 +162,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem) {
-    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftItemEntity(
+    return this.itemEntityMapper.fromMinecraftItemEntity(
             this.entity.dropItem(
-                    (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack),
+                    (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack),
                     dropAround,
                     traceItem
             )
@@ -175,7 +176,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public boolean canAttackPlayer(PlayerEntity playerEntity) {
-    return this.entity.canAttackPlayer((net.minecraft.entity.player.PlayerEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftPlayerEntity(playerEntity));
+    return this.entity.canAttackPlayer((net.minecraft.entity.player.PlayerEntity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftPlayerEntity(playerEntity));
   }
 
   /**
@@ -250,8 +251,8 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void openBook(ItemStack stack, Hand hand) {
     this.entity.openBook(
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(stack),
-            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand)
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack),
+            (net.minecraft.util.Hand) this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -261,7 +262,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void attackTargetEntityWithCurrentItem(Entity entity) {
     this.entity.attackTargetEntityWithCurrentItem(
-            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity)
+            (net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity)
     );
   }
 
@@ -335,7 +336,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void sendStatusMessage(ChatComponent component, boolean actionbar) {
     this.entity.sendStatusMessage(
-            (ITextComponent) this.getEntityBaseMapper().getComponentMapper().toMinecraft(component),
+            (ITextComponent) this.getEntityFoundationMapper().getComponentMapper().toMinecraft(component),
             actionbar
     );
   }
@@ -475,7 +476,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public void setGameMode(GameMode gameMode) {
-    this.entity.setGameType((GameType) this.getEntityBaseMapper().toMinecraftGameType(gameMode));
+    this.entity.setGameType((GameType) this.getEntityFoundationMapper().toMinecraftGameType(gameMode));
   }
 
   /**
@@ -484,7 +485,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public boolean addItemStackToInventory(ItemStack itemStack) {
     return this.entity.addItemStackToInventory(
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack)
     );
   }
 
@@ -555,7 +556,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void setPrimaryHand(Hand.Side primaryHand) {
     this.entity.setPrimaryHand(
-            (HandSide) this.getEntityBaseMapper().getHandMapper().toMinecraftHandSide(primaryHand)
+            (HandSide) this.getEntityFoundationMapper().getHandMapper().toMinecraftHandSide(primaryHand)
     );
   }
 
@@ -604,7 +605,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public NBTCompound getLeftShoulderEntity() {
-    return (NBTCompound) this.nbtMapper.fromMinecraftNBT(this.entity.getLeftShoulderEntity());
+    return (NBTCompound) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(this.entity.getLeftShoulderEntity());
   }
 
   /**
@@ -612,7 +613,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public NBTCompound getRightShoulderEntity() {
-    return (NBTCompound) this.nbtMapper.fromMinecraftNBT(this.entity.getRightShoulderEntity());
+    return (NBTCompound) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(this.entity.getRightShoulderEntity());
   }
 
   /**
@@ -652,8 +653,8 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public ItemStack findAmmo(ItemStack shootable) {
-    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
-            this.entity.findAmmo((net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(shootable))
+    return this.getEntityFoundationMapper().getItemMapper().fromMinecraft(
+            this.entity.findAmmo((net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(shootable))
     );
   }
 
@@ -662,7 +663,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public boolean canPickUpItem(ItemStack stack) {
-    return this.entity.canPickUpItem((net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(stack));
+    return this.entity.canPickUpItem((net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack));
   }
 
   /**
@@ -672,7 +673,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
     return this.entity.replaceItemInInventory(
             slot,
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack)
     );
   }
 
@@ -721,9 +722,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public ItemStack getItemStackFromSlot(EquipmentSlotType slotType) {
-    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
+    return this.getEntityFoundationMapper().getItemMapper().fromMinecraft(
             this.entity.getItemStackFromSlot(
-                    (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType)
+                    (net.minecraft.inventory.EquipmentSlotType) this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)
             )
     );
   }
@@ -775,7 +776,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.entity.readAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
+    this.entity.readAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
   /**
@@ -783,7 +784,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.entity.writeAdditional((CompoundNBT) this.nbtMapper.toMinecraftNBT(compound));
+    this.entity.writeAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
   /**
@@ -800,7 +801,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   @Override
   public void playSound(Sound sound, float volume, float pitch) {
     this.entity.playSound(
-            (SoundEvent) this.getEntityBaseMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            (SoundEvent) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
             volume,
             pitch
     );

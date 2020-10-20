@@ -3,8 +3,8 @@ package net.labyfy.component.entity.mapper;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.LivingEntity;
 import net.labyfy.component.entity.MobEntity;
-import net.labyfy.component.entity.item.ItemEntity;
-import net.labyfy.component.entity.passive.AnimalEntity;
+import net.labyfy.component.entity.item.ItemEntityMapper;
+import net.labyfy.component.entity.passive.PassiveEntityMapper;
 import net.labyfy.component.player.PlayerEntity;
 
 /**
@@ -81,38 +81,16 @@ public interface EntityMapper {
   Object toMinecraftMobEntity(MobEntity entity);
 
   /**
-   * Creates a new {@link ItemEntity} by using the given Minecraft item entity as the base.
+   * Retrieves the item entity mapper.
    *
-   * @param handle The non-null Minecraft item entity.
-   * @return The new Labyfy {@link ItemEntity} or {@code null} if the given item entity was invalid.
-   * @throws IllegalArgumentException If the given object is no Minecraft item entity.
+   * @return The item entity mapper.
    */
-  ItemEntity fromMinecraftItemEntity(Object handle);
+  ItemEntityMapper getItemEntityMapper();
 
   /**
-   * Creates a new Minecraft item entity by using the Labyfy {@link ItemEntity} as the base.
+   * Retrieves the passive entity mapper.
    *
-   * @param itemEntity The non-null Labyfy {@link ItemEntity}.
-   * @return The new Minecraft item entity or {@code null} if the given item entity was invalid.
+   * @return The passive entity mapper.
    */
-  Object toMinecraftItemEntity(ItemEntity itemEntity);
-
-  /**
-   * Creates a new {@link AnimalEntity} by using the given Minecraft animal entity as the base.
-   *
-   * @param handle The non-null Minecraft animal entity.
-   * @return The new Labyfy {@link AnimalEntity} or {@code null} if the given animal entity was invalid.
-   * @throws IllegalArgumentException If the given object is no Minecraft animal entity.
-   */
-  AnimalEntity fromMinecraftAnimalEntity(Object handle);
-
-  /**
-   * Creates a new Minecraft animal entity by using the Labyfy {@link AnimalEntity} as the base.
-   *
-   * @param animalEntity The non-null Labyfy {@link AnimalEntity}.
-   * @return The new Minecraft animal entity or {@code null} if the given animal entity was invalid.
-   */
-  Object toMinecraftAnimalEntity(AnimalEntity animalEntity);
-
-
+  PassiveEntityMapper getPassiveEntityMapper();
 }

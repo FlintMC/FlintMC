@@ -4,7 +4,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.LivingEntity;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.ItemStack;
@@ -26,18 +26,15 @@ import java.util.Random;
 public class VersionedLivingEntity extends VersionedEntity implements LivingEntity {
 
   private final net.minecraft.entity.LivingEntity livingEntity;
-  private final NBTMapper nbtMapper;
 
   @AssistedInject
   public VersionedLivingEntity(
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityBaseMapper entityBaseMapper,
-          NBTMapper nbtMapper
+          EntityFoundationMapper entityFoundationMapper
   ) {
-    super(entity, entityType, world, entityBaseMapper);
-    this.nbtMapper = nbtMapper;
+    super(entity, entityType, world, entityFoundationMapper);
 
     if (!(entity instanceof net.minecraft.entity.LivingEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.LivingEntity.class.getName());
@@ -83,7 +80,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public LivingEntity getRevengeTarget() {
-    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftLivingEntity(this.livingEntity.getRevengeTarget());
+    return this.getEntityFoundationMapper().getEntityMapper().fromMinecraftLivingEntity(this.livingEntity.getRevengeTarget());
   }
 
   /**
@@ -91,7 +88,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void setRevengeTarget(LivingEntity entity) {
-    this.livingEntity.setRevengeTarget((net.minecraft.entity.LivingEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftLivingEntity(entity));
+    this.livingEntity.setRevengeTarget((net.minecraft.entity.LivingEntity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftLivingEntity(entity));
   }
 
   /**
@@ -107,7 +104,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public LivingEntity getLastAttackedEntity() {
-    return this.getEntityBaseMapper().getEntityMapper().fromMinecraftLivingEntity(this.livingEntity.getRevengeTarget());
+    return this.getEntityFoundationMapper().getEntityMapper().fromMinecraftLivingEntity(this.livingEntity.getRevengeTarget());
   }
 
   /**
@@ -115,7 +112,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void setLastAttackedEntity(Entity entity) {
-    this.livingEntity.setLastAttackedEntity((net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity));
+    this.livingEntity.setLastAttackedEntity((net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -147,7 +144,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public double getVisibilityMultiplier(Entity entity) {
-    return this.livingEntity.getVisibilityMultiplier((net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity));
+    return this.livingEntity.getVisibilityMultiplier((net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -155,7 +152,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public boolean canAttack(LivingEntity entity) {
-    return this.livingEntity.canAttack((net.minecraft.entity.EntityType<?>) this.getEntityBaseMapper().getEntityMapper().toMinecraftLivingEntity(entity));
+    return this.livingEntity.canAttack((net.minecraft.entity.EntityType<?>) this.getEntityFoundationMapper().getEntityMapper().toMinecraftLivingEntity(entity));
   }
 
   /**
@@ -203,7 +200,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public ResourceLocation getLootTableResourceLocation() {
-    return this.getEntityBaseMapper().getResourceLocationProvider().get(
+    return this.getEntityFoundationMapper().getResourceLocationProvider().get(
             this.livingEntity.getLootTableResourceLocation().getPath(),
             this.livingEntity.getLootTableResourceLocation().getNamespace()
     );
@@ -215,7 +212,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void knockBack(Entity entity, float strength, double xRatio, double zRatio) {
     this.livingEntity.knockBack(
-            (net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity),
+            (net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity),
             strength,
             xRatio,
             zRatio
@@ -224,9 +221,9 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
 
   @Override
   public Sound getEatSound(ItemStack itemStack) {
-    return this.getEntityBaseMapper().getSoundMapper().fromMinecraftSoundEvent(
+    return this.getEntityFoundationMapper().getSoundMapper().fromMinecraftSoundEvent(
             this.livingEntity.getEatSound(
-                    (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(itemStack)
+                    (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack)
             )
     );
   }
@@ -290,7 +287,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void swingArm(Hand hand) {
     this.livingEntity.swingArm(
-            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand)
+            (net.minecraft.util.Hand) this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -300,7 +297,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void swing(Hand hand, boolean sendToAll) {
     this.livingEntity.swing(
-            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand),
+            (net.minecraft.util.Hand) this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand),
             sendToAll
     );
   }
@@ -310,9 +307,9 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public ItemStack getHeldItem(Hand hand) {
-    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
+    return this.getEntityFoundationMapper().getItemMapper().fromMinecraft(
             this.livingEntity.getHeldItem(
-                    (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand)
+                    (net.minecraft.util.Hand) this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand)
             )
     );
   }
@@ -323,8 +320,8 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void setHeldItem(Hand hand, ItemStack heldItem) {
     this.livingEntity.setHeldItem(
-            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand),
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(heldItem)
+            (net.minecraft.util.Hand) this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand),
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(heldItem)
     );
   }
 
@@ -334,7 +331,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public boolean hasItemInSlot(EquipmentSlotType slotType) {
     return this.livingEntity.hasItemInSlot(
-            (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType)
+            (net.minecraft.inventory.EquipmentSlotType) this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)
     );
   }
 
@@ -343,9 +340,9 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public ItemStack getItemStackFromSlot(EquipmentSlotType slotType) {
-    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
+    return this.getEntityFoundationMapper().getItemMapper().fromMinecraft(
             this.livingEntity.getItemStackFromSlot(
-                    (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType)
+                    (net.minecraft.inventory.EquipmentSlotType) this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)
             )
     );
   }
@@ -379,7 +376,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void applyEntityCollision(Entity entity) {
-    this.livingEntity.applyEntityCollision((net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity));
+    this.livingEntity.applyEntityCollision((net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -395,7 +392,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void attackEntityAsMob(Entity entity) {
-    this.livingEntity.attackEntityAsMob((net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity));
+    this.livingEntity.attackEntityAsMob((net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -443,7 +440,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public boolean canEntityBeSeen(Entity entity) {
-    return this.livingEntity.canEntityBeSeen((net.minecraft.entity.Entity) this.getEntityBaseMapper().getEntityMapper().toMinecraftEntity(entity));
+    return this.livingEntity.canEntityBeSeen((net.minecraft.entity.Entity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
   /**
@@ -499,7 +496,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public Hand.Side getPrimaryHand() {
-    return this.getEntityBaseMapper().getHandMapper().fromMinecraftHandSide(this.livingEntity.getPrimaryHand());
+    return this.getEntityFoundationMapper().getHandMapper().fromMinecraftHandSide(this.livingEntity.getPrimaryHand());
   }
 
   /**
@@ -507,7 +504,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public Hand getActiveHand() {
-    return this.getEntityBaseMapper().getHandMapper().fromMinecraftHand(this.livingEntity.getActiveHand());
+    return this.getEntityFoundationMapper().getHandMapper().fromMinecraftHand(this.livingEntity.getActiveHand());
   }
 
   /**
@@ -516,7 +513,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void setActiveHand(Hand hand) {
     this.livingEntity.setActiveHand(
-            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand)
+            (net.minecraft.util.Hand) this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -525,7 +522,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public ItemStack getActiveItemStack() {
-    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(this.livingEntity.getActiveItemStack());
+    return this.getEntityFoundationMapper().getItemMapper().fromMinecraft(this.livingEntity.getActiveItemStack());
   }
 
   /**
@@ -689,7 +686,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public boolean canPickUpItem(ItemStack stack) {
     return this.livingEntity.canPickUpItem(
-            (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(stack)
+            (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack)
     );
   }
 
@@ -752,9 +749,9 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public ItemStack findAmmo(ItemStack shootable) {
-    return this.getEntityBaseMapper().getItemMapper().fromMinecraft(
+    return this.getEntityFoundationMapper().getItemMapper().fromMinecraft(
             this.livingEntity.findAmmo(
-                    (net.minecraft.item.ItemStack) this.getEntityBaseMapper().getItemMapper().toMinecraft(shootable)
+                    (net.minecraft.item.ItemStack) this.getEntityFoundationMapper().getItemMapper().toMinecraft(shootable)
             )
     );
   }
@@ -765,7 +762,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void sendBreakAnimation(EquipmentSlotType slotType) {
     this.livingEntity.sendBreakAnimation(
-            (net.minecraft.inventory.EquipmentSlotType) this.getEntityBaseMapper().toMinecraftEquipmentSlotType(slotType)
+            (net.minecraft.inventory.EquipmentSlotType) this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)
     );
   }
 
@@ -775,7 +772,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   @Override
   public void sendBreakAnimation(Hand hand) {
     this.livingEntity.sendBreakAnimation(
-            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand)
+            (net.minecraft.util.Hand) this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -784,7 +781,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.livingEntity.readAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+    this.livingEntity.readAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
   /**
@@ -792,7 +789,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.livingEntity.writeAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+    this.livingEntity.writeAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
   /**

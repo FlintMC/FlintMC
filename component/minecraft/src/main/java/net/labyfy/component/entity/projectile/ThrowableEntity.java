@@ -3,6 +3,7 @@ package net.labyfy.component.entity.projectile;
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.LivingEntity;
+import net.labyfy.component.entity.projectile.type.Projectile;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
@@ -44,23 +45,41 @@ public interface ThrowableEntity extends Entity, Projectile {
      * @param entityType The type of the throwable entity.
      * @return A created throwable entity.
      */
-    ThrowableEntity create(@Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
-
-  }
-
-  /**
-   * Service interface for creating {@link ThrowableEntity}'s.
-   */
-  interface Provider {
+    ThrowableEntity create(
+            @Assisted("entity") Object entity,
+            @Assisted("entityType") EntityType entityType
+    );
 
     /**
-     * Creates a new {@link ThrowableEntity} with the given entity.
+     * Creates a new {@link ThrowableEntity} with the given parameters.
      *
-     * @param entity     The throwable entity.
+     * @param entity The entity.
+     * @param x      The x position.
+     * @param y      The y position.
+     * @param z      The z position.
      * @return A created throwable entity.
      */
-    ThrowableEntity get(Object entity);
+    ThrowableEntity create(
+            @Assisted("entity") Object entity,
+            @Assisted("entityType") EntityType entityType,
+            @Assisted("x") double x,
+            @Assisted("y") double y,
+            @Assisted("z") double z
+    );
 
+    /**
+     * Creates a new {@link ThrowableEntity} with the given parameters.
+     *
+     * @param entity     The entity.
+     * @param entityType The type of the entity.
+     * @param thrower    The thrower of the entity.
+     * @return A created throwable entity.
+     */
+    ThrowableEntity create(
+            @Assisted("entity") Object entity,
+            @Assisted("entityType") EntityType entityType,
+            @Assisted("thrower") LivingEntity thrower
+    );
   }
 
 }

@@ -3,7 +3,7 @@ package net.labyfy.internal.component.entity.v1_15_2;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.entity.AgeableEntity;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.ai.EntitySenses;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
@@ -21,23 +21,20 @@ import net.minecraft.nbt.CompoundNBT;
 public class VersionedAgeableEntity extends VersionedCreatureEntity implements AgeableEntity {
 
   private final net.minecraft.entity.AgeableEntity ageableEntity;
-  private final NBTMapper nbtMapper;
 
   @AssistedInject
   public VersionedAgeableEntity(
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityBaseMapper entityBaseMapper,
-          NBTMapper nbtMapper,
+          EntityFoundationMapper entityFoundationMapper,
           EntitySenses.Factory entitySensesFactory
   ) {
-    super(entity, entityType, world, entityBaseMapper, nbtMapper, entitySensesFactory);
+    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
 
     if (!(entity instanceof net.minecraft.entity.AgeableEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.AgeableEntity.class.getName());
     }
-    this.nbtMapper = nbtMapper;
     this.ageableEntity = (net.minecraft.entity.AgeableEntity) entity;
   }
 
@@ -47,8 +44,8 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
   @Override
   public boolean processInteract(PlayerEntity entity, Hand hand) {
     return this.ageableEntity.processInteract(
-            (net.minecraft.entity.player.PlayerEntity) this.getEntityBaseMapper().getEntityMapper().toMinecraftPlayerEntity(entity),
-            (net.minecraft.util.Hand) this.getEntityBaseMapper().getHandMapper().toMinecraftHand(hand)
+            (net.minecraft.entity.player.PlayerEntity) this.getEntityFoundationMapper().getEntityMapper().toMinecraftPlayerEntity(entity),
+            (net.minecraft.util.Hand) this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand)
     );
   }
 
@@ -89,7 +86,7 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.ageableEntity.readAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+    this.ageableEntity.readAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
   /**
@@ -97,7 +94,7 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.ageableEntity.writeAdditional((CompoundNBT) this.nbtMapper.fromMinecraftNBT(compound));
+    this.ageableEntity.writeAdditional((CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
   /**

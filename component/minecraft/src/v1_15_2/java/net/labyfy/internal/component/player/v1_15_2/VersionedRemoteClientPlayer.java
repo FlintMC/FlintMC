@@ -2,7 +2,8 @@ package net.labyfy.internal.component.player.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.item.ItemEntityMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.type.EntityType;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.nbt.mapper.NBTMapper;
@@ -31,13 +32,13 @@ public class VersionedRemoteClientPlayer extends VersionedPlayerEntity implement
           @Assisted("entity") Object entity,
           @Assisted("entityType") EntityType entityType,
           World world,
-          EntityBaseMapper entityBaseMapper,
+          EntityFoundationMapper entityFoundationMapper,
           GameProfileSerializer gameProfileSerializer,
           ModelMapper modelMapper,
-          NBTMapper nbtMapper,
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
+          ItemEntityMapper itemEntityMapper,
           TileEntityMapper tileEntityMapper) {
-    super(entity, entityType, world, entityBaseMapper, gameProfileSerializer, modelMapper, nbtMapper, tileEntityMapper);
+    super(entity, entityType, world, entityFoundationMapper, gameProfileSerializer, modelMapper, itemEntityMapper, tileEntityMapper);
 
     if (!(entity instanceof net.minecraft.client.entity.player.RemoteClientPlayerEntity)) {
       throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.client.entity.player.RemoteClientPlayerEntity.class.getName());

@@ -2,7 +2,7 @@ package net.labyfy.component.entity;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.entity.name.Nameable;
 import net.labyfy.component.entity.reason.MoverType;
 import net.labyfy.component.entity.type.EntityPose;
@@ -1107,7 +1107,7 @@ public interface Entity extends Nameable {
    *
    * @return An entity mapper.
    */
-  EntityBaseMapper getEntityBaseMapper();
+  EntityFoundationMapper getEntityFoundationMapper();
 
   /**
    * An enumeration representing all classifications for entities.

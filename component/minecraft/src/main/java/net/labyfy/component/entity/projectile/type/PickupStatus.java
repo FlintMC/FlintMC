@@ -1,4 +1,4 @@
-package net.labyfy.component.entity.projectile;
+package net.labyfy.component.entity.projectile.type;
 
 /**
  * An enumeration for all pickup statuses.

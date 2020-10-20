@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.mojang.authlib.GameProfile;
-import net.labyfy.component.entity.mapper.EntityBaseMapper;
+import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
@@ -21,7 +21,7 @@ public class VersionedClientPlayNetHandlerInterceptor {
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
   private final NetworkPlayerInfo.Factory networkPlayerInfoFactory;
   private final GameProfileSerializer<GameProfile> gameProfileGameProfileSerializer;
-  private final EntityBaseMapper entityBaseMapper;
+  private final EntityFoundationMapper entityFoundationMapper;
   private final Scoreboard scoreboard;
 
   @Inject
@@ -29,13 +29,13 @@ public class VersionedClientPlayNetHandlerInterceptor {
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
           NetworkPlayerInfo.Factory networkPlayerInfoFactory,
           GameProfileSerializer<GameProfile> gameProfileGameProfileSerializer,
-          EntityBaseMapper entityBaseMapper,
+          EntityFoundationMapper entityFoundationMapper,
           Scoreboard scoreboard
   ) {
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
     this.networkPlayerInfoFactory = networkPlayerInfoFactory;
     this.gameProfileGameProfileSerializer = gameProfileGameProfileSerializer;
-    this.entityBaseMapper = entityBaseMapper;
+    this.entityFoundationMapper = entityFoundationMapper;
     this.scoreboard = scoreboard;
   }
 
@@ -57,7 +57,7 @@ public class VersionedClientPlayNetHandlerInterceptor {
                 this.networkPlayerInfoFactory.create(
                         this.gameProfileGameProfileSerializer.deserialize(entry.getProfile()),
                         this.scoreboard,
-                        this.entityBaseMapper
+                        this.entityFoundationMapper
                 )
         );
 
