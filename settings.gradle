@@ -119,3 +119,5 @@ findProject(':component:render:vbo-rendering')?.name = 'vbo-rendering'
 include 'component:nbt'
 findProject(':component:nbt')?.name = "nbt"
 
+include 'component:session-service'
+findProject(':component:session-service')?.name = 'session-service'
