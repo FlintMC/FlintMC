@@ -82,6 +82,20 @@ public class ShadowService implements ServiceHandler<Shadow> {
         throw new IllegalStateException("Return type for " + method + " must be void");
       }
       ctClass.addMethod(CtMethod.make("public void " + method.getName() + "(" + parameters[0].getName() + " arg){this." + fieldSetter.value() + " = arg;}", ctClass));
+
+      String fieldName = fieldSetter.value();
+      try {
+        CtField field = ctClass.getField(fieldName);
+
+        if (fieldSetter.removeFinal() && Modifier.isFinal(field.getModifiers())) {
+          field.setModifiers(field.getModifiers() & Modifier.FINAL);
+        }
+
+        ctClass.addMethod(CtMethod.make("public void " + method.getName() + "(" + parameters[0].getType().getTypeName() + " arg){this." + fieldName + " = arg;}", ctClass));
+
+      } catch (NotFoundException e) {
+        throw new IllegalArgumentException("Field for setter " + method + " '" + fieldName + "' doesn't exist");
+      }
     }
   }
 
