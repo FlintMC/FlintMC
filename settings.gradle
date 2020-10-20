@@ -86,9 +86,6 @@ findProject(':component:i18n')?.name = 'i18n'
 include 'component:gui:webgui'
 findProject(':component:gui:webgui')?.name = 'webgui'
 
-include 'component:gui:webgui:ultralight'
-findProject(':component:gui:webgui:ultralight')?.name = 'ultralight'
-
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
 
