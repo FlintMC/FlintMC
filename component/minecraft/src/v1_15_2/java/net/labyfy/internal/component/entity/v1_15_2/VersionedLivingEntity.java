@@ -628,6 +628,54 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    * {@inheritDoc}
    */
   @Override
+  public float getMoveStrafing() {
+    return this.livingEntity.moveStrafing;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setMoveStrafing(float moveStrafing) {
+    this.livingEntity.moveStrafing = moveStrafing;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getMoveVertical() {
+    return this.livingEntity.moveVertical;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setMoveVertical(float moveVertical) {
+    this.livingEntity.moveVertical = moveVertical;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getMoveForward() {
+    return this.livingEntity.moveForward;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setMoveForward(float moveForward) {
+    this.livingEntity.moveForward = moveForward;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void setPartying(BlockPosition position, boolean isPartying) {
     this.livingEntity.setPartying(
             (BlockPos) this.getWorld().toMinecraftBlockPos(position),

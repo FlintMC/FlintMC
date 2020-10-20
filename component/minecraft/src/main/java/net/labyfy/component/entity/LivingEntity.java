@@ -495,6 +495,54 @@ public interface LivingEntity extends Entity {
    */
   boolean attackable();
 
+  /**
+   * Retrieves the move strafing speed of this living entity.
+   *
+   * @return The move strafing speed.
+   */
+  float getMoveStrafing();
+
+  /**
+   * Changes the move strafing speed of this living entity.
+   *
+   * @param moveStrafing The new move strafing speed.
+   */
+  void setMoveStrafing(float moveStrafing);
+
+  /**
+   * Retrieves the move vertical speed of this living entity.
+   *
+   * @return The move vertical speed.
+   */
+  float getMoveVertical();
+
+  /**
+   * Changes the move vertical speed of this living entity.
+   *
+   * @param moveVertical The new move vertical speed.
+   */
+  void setMoveVertical(float moveVertical);
+
+  /**
+   * Retrieves the move forward speed of this living entity.
+   *
+   * @return The move forward speed.
+   */
+  float getMoveForward();
+
+  /**
+   * Changes the move forward speed of this living entity.
+   *
+   * @param moveForward The new move forward speed.
+   */
+  void setMoveForward(float moveForward);
+
+  /**
+   * Changes the state of this entity if it is in party mood.
+   *
+   * @param position   The position of this jukebox.
+   * @param isPartying {@code true} if the party should start, otherwise {@code false}.
+   */
   void setPartying(BlockPosition position, boolean isPartying);
 
   /**
