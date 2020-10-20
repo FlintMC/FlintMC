@@ -139,4 +139,61 @@ public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
    */
   TabOverlay getTabOverlay();
 
+
+  /**
+   * Retrieves the render arm yaw of this player entity.
+   *
+   * @return The player entity render arm yaw.
+   */
+  float getRenderArmYaw();
+
+  /**
+   * Changes the render arm yaw of this player entity.
+   *
+   * @param renderArmYaw The new render arm yaw.
+   */
+  void setRenderArmYaw(float renderArmYaw);
+
+  /**
+   * Retrieves the previous render arm yaw of this player entity.
+   *
+   * @return The player entity previous render arm yaw.
+   */
+  float getPreviousRenderArmYaw();
+
+  /**
+   * Changes the previous render arm yaw of this player entity.
+   *
+   * @param previousRenderArmYaw The new previous render arm yaw.
+   */
+  void setPreviousArmYaw(float previousRenderArmYaw);
+
+  /**
+   * Retrieves the previous render arm pitch of this player entity.
+   *
+   * @return The player entity previous render arm pitch.
+   */
+  float getRenderArmPitch();
+
+  /**
+   * Changes the render arm pitch of this player entity.
+   *
+   * @param renderArmPitch The new render arm pitch.
+   */
+  void setRenderArmPitch(float renderArmPitch);
+
+  /**
+   * Retrieves the previous render arm pitch of this player entity.
+   *
+   * @return The player entity previous render arm pitch.
+   */
+  float getPreviousRenderArmPitch();
+
+  /**
+   * Changes the previous render arm pitch of this player entity.
+   *
+   * @param previousRenderArmPitch The new previous render arm pitch.
+   */
+  void setPreviousRenderArmPitch(float previousRenderArmPitch);
+
 }

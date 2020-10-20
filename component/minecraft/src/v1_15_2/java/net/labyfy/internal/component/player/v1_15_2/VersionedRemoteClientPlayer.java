@@ -39,6 +39,9 @@ public class VersionedRemoteClientPlayer extends VersionedPlayerEntity implement
           TileEntityMapper tileEntityMapper) {
     super(entity, entityType, world, entityBaseMapper, gameProfileSerializer, modelMapper, nbtMapper, tileEntityMapper);
 
+    if (!(entity instanceof net.minecraft.client.entity.player.RemoteClientPlayerEntity)) {
+      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.client.entity.player.RemoteClientPlayerEntity.class.getName());
+    }
     this.playerEntity = (net.minecraft.client.entity.player.RemoteClientPlayerEntity) entity;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
   }
@@ -129,6 +132,54 @@ public class VersionedRemoteClientPlayer extends VersionedPlayerEntity implement
   @Override
   public boolean isChild() {
     return this.playerEntity.isChild();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getElytraPitch() {
+    return this.playerEntity.rotateElytraX;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setElytraPitch(float elytraPitch) {
+    this.playerEntity.rotateElytraX = elytraPitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getElytraYaw() {
+    return this.playerEntity.rotateElytraY;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setElytraYaw(float elytraYaw) {
+    this.playerEntity.rotateElytraY = elytraYaw;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getElytraRoll() {
+    return this.playerEntity.rotateElytraZ;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setElytraRoll(float elytraRoll) {
+    this.playerEntity.rotateElytraZ = elytraRoll;
   }
 
   /**

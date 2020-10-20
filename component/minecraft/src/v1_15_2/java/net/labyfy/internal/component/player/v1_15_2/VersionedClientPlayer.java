@@ -46,6 +46,54 @@ public class VersionedClientPlayer implements ClientPlayer {
    * {@inheritDoc}
    */
   @Override
+  public float getElytraPitch() {
+    return Minecraft.getInstance().player.rotateElytraX;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setElytraPitch(float elytraPitch) {
+    Minecraft.getInstance().player.rotateElytraX = elytraPitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getElytraYaw() {
+    return Minecraft.getInstance().player.rotateElytraY;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setElytraYaw(float elytraYaw) {
+    Minecraft.getInstance().player.rotateElytraY = elytraYaw;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getElytraRoll() {
+    return Minecraft.getInstance().player.rotateElytraZ;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setElytraRoll(float elytraRoll) {
+    Minecraft.getInstance().player.rotateElytraZ = elytraRoll;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public boolean isSpectator() {
     NetworkPlayerInfo networkPlayerInfo = this.getNetworkPlayerInfo();
     return networkPlayerInfo != null && networkPlayerInfo.getGameMode() == GameMode.SPECTATOR;
@@ -244,6 +292,70 @@ public class VersionedClientPlayer implements ClientPlayer {
   @Override
   public TabOverlay getTabOverlay() {
     return this.tabOverlay;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getRenderArmYaw() {
+    return Minecraft.getInstance().player.renderArmYaw;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setRenderArmYaw(float renderArmYaw) {
+    Minecraft.getInstance().player.renderArmYaw = renderArmYaw;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getPreviousRenderArmYaw() {
+    return Minecraft.getInstance().player.prevRenderArmYaw;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setPreviousArmYaw(float previousRenderArmYaw) {
+    Minecraft.getInstance().player.prevRenderArmYaw = previousRenderArmYaw;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getRenderArmPitch() {
+    return Minecraft.getInstance().player.renderArmPitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setRenderArmPitch(float renderArmPitch) {
+    Minecraft.getInstance().player.renderArmPitch = renderArmPitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getPreviousRenderArmPitch() {
+    return Minecraft.getInstance().player.prevRenderArmPitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setPreviousRenderArmPitch(float previousRenderArmPitch) {
+    Minecraft.getInstance().player.prevRenderArmPitch = previousRenderArmPitch;
   }
 
   /**
