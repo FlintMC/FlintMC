@@ -101,6 +101,9 @@ public interface MinecraftConfiguration {
 
   /**
    * Saves and reload the Minecraft options.
+   * <p>
+   * <b>Note:</b> This is needed to save configurations that have not been changed via the Minecraft settings.
+   * The changes to the configuration will be loaded immediately so that the client can use the changes.
    */
   void saveAndReloadOptions();
 

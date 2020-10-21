@@ -16,52 +16,68 @@ import java.util.Map;
 public class DefaultVersionHelper implements VersionHelper {
 
   private final Map<String, String> launchArguments;
+  private int majorVersion;
+  private int minorVersion;
+  private int patchVersion;
 
   @Inject
-  public DefaultVersionHelper(@Named("launchArguments") Map launchArguments) {
+  private DefaultVersionHelper(@Named("launchArguments") Map launchArguments) {
     this.launchArguments = launchArguments;
+    this.splitVersion();
   }
 
   /**
    * {@inheritDoc}
    */
-  public boolean isUnder13() {
-    return this.getMinor() < 13;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public boolean isUnder16() {
-    return this.getMinor() < 16;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
+  @Override
   public int getMajor() {
-    return this.getVersioning()[0];
+    return this.majorVersion;
   }
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public int getMinor() {
-    return this.getVersioning()[1];
+    return this.minorVersion;
   }
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public int getPatch() {
-    return this.getVersioning()[2];
+    return this.patchVersion;
   }
 
   /**
    * {@inheritDoc}
    */
-  public int[] getVersioning() {
-    int[] versioning = new int[3];
+  @Override
+  public boolean isUnder(int minor) {
+    return this.getMinor() < minor;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isUnder(int minor, int patch) {
+    return this.getMinor() < minor && this.getPatch() < patch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isUnder(int major, int minor, int patch) {
+    return this.getMajor() < major && this.getMinor() < major && this.getPatch() < patch;
+  }
+
+  /**
+   * Splits up the versioning of the client.
+   */
+  private void splitVersion() {
     String version = this.getVersion();
 
     if (!version.contains(".")) {
@@ -72,20 +88,26 @@ public class DefaultVersionHelper implements VersionHelper {
     String[] split = this.getVersion().split("\\.");
 
     for (int i = 0; i < split.length; i++) {
-      versioning[i] = Integer.parseInt(split[i]);
+      int versionNumber = Integer.parseInt(split[i]);
+      if (i == 0) {
+        this.majorVersion = versionNumber;
+      } else if (i == 1) {
+        this.minorVersion = versionNumber;
+      } else if (i == 2) {
+        this.patchVersion = versionNumber;
+      }
     }
 
     // Is only for version without any patches
     if (split.length < 3) {
-      versioning[2] = 0;
+      this.patchVersion = 0;
     }
-
-    return versioning;
   }
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getVersion() {
     return this.launchArguments.get("--game-version");
   }

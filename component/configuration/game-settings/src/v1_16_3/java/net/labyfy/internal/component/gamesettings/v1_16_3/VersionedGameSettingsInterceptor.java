@@ -37,7 +37,7 @@ public class VersionedGameSettingsInterceptor {
     this.optionsFile = gameSettingsAccessor.getOptionsFile();
     this.configurations = this.gameSettingsParser.readOptions(this.optionsFile);
 
-    if (this.configurations != null && (this.versionHelper.isUnder13())) {
+    if (this.configurations != null && (this.versionHelper.isUnder(13))) {
       this.gameSettingsParser.makeQualifiedKeyBinds(this.optionsFile, this.configurations);
     }
 

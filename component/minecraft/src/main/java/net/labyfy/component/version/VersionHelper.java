@@ -6,20 +6,6 @@ package net.labyfy.component.version;
 public interface VersionHelper {
 
   /**
-   * Whether the minor version is lower than 13.
-   *
-   * @return {@code true} if the minor version is lower than 13, otherwise {@code false}.
-   */
-  boolean isUnder13();
-
-  /**
-   * Whether the minor version is lower than 16.
-   *
-   * @return {@code true} if the minor version is lower than 16, otherwise {@code false}.
-   */
-  boolean isUnder16();
-
-  /**
    * Retrieves the major version.
    *
    * @return The major version.
@@ -41,15 +27,32 @@ public interface VersionHelper {
   int getPatch();
 
   /**
-   * Retrieves an array with the version split in it.<br>
-   * <b>Note:</b> The array has a size of {@code 3}<br>
-   * The first index of the array is the major version, the minor version is the second index and the third index is the patch version.
-   * <br>
-   * The correct version format would be this one "<strong>MAJOR.MINOR.PATCH</strong>" but this would not be wrong either "<strong>MAJOR.MINOR</strong>"
+   * Whether the minor version of the client is below the given minor version.
    *
-   * @return An array with the version split in it.
+   * @param minor The minor version.
+   * @return {@code true} if the minor version of the client is below the given minor version, otherwise {@code false}.
    */
-  int[] getVersioning();
+  boolean isUnder(int minor);
+
+  /**
+   * Whether the minor and patch versions of the client is below the given minor and patch versions.
+   *
+   * @param minor The minor version.
+   * @param patch The patch version.
+   * @return {@code true} if the minor and patch versions of the client is below the given minor and patch versions,
+   * otherwise {@code false}.
+   */
+  boolean isUnder(int minor, int patch);
+
+  /**
+   * Whether the versioning of the client is below the given versioning.
+   *
+   * @param major The major version.
+   * @param minor The minor version.
+   * @param patch The patch version.
+   * @return {@code true} if the client version under the given version numbers, otherwise {@code false}.
+   */
+  boolean isUnder(int major, int minor, int patch);
 
   /**
    * Retrieves the current game version.

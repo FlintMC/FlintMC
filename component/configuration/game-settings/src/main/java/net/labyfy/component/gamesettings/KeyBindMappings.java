@@ -1,5 +1,8 @@
 package net.labyfy.component.gamesettings;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An enumeration representing some keys from a keyboard or mouse.
  */
@@ -92,7 +95,7 @@ public enum KeyBindMappings {
   NUMPAD_EQUAL("key.keyboard.keypad.equal", 336, 141),
   NUMPAD_MULTIPLY("key.keyboard.keypad.multiply", 332, 55),
   NUMPAD_DIVIDE("key.keyboard.keypad.divide", 331, 181),
-  NUMPAD_SUBTRACt("key.keyboard.keypad.subtract", 333, 74),
+  NUMPAD_SUBTRACT("key.keyboard.keypad.subtract", 333, 74),
   DOWN("key.keyboard.down", 264, 208),
   LEFT("key.keyboard.left", 263, 203),
   RIGHT("key.keyboard.right", 262, 205),
@@ -115,7 +118,7 @@ public enum KeyBindMappings {
   SHIFT("key.keyboard.left.shift", 340, 42),
   LEFT_WIN("key.keyboard.left.win", 343, 219),
   RIGHT_ALT("key.keyboard.right.alt", 346, 184),
-  RIGHT_CONTROl("key.keyboard.right.control", 345, 157),
+  RIGHT_CONTROL("key.keyboard.right.control", 345, 157),
   RIGHT_SHIFT("key.keyboard.right.shift", 344, 54),
   RIGHT_WIN("key.keyboard.right.win", 347, 220),
   ENTER("key.keyboard.enter", 257, 28),
@@ -134,6 +137,16 @@ public enum KeyBindMappings {
   PRINT_SCREEN("key.keyboard.print.screen", 283),
   WORLD_1("key.keyboard.world.1", 161),
   WORLD_2("key.keyboard.world.2", 162);
+
+  private static final Map<String, Integer> BY_NAME = new HashMap<>();
+  private static final Map<Integer, String> BY_SCAN_CODE = new HashMap<>();
+
+  static {
+    for (KeyBindMappings value : values()) {
+      BY_NAME.put(value.configurationName, value.scanCode);
+      BY_SCAN_CODE.put(value.scanCode, value.configurationName);
+    }
+  }
 
   private final String configurationName;
   private final int key;
@@ -156,12 +169,7 @@ public enum KeyBindMappings {
    * @return The scan code of the given configuration name or {@code -1}.
    */
   public static int getScanCode(String name) {
-    for (KeyBindMappings value : values()) {
-      if (value.getConfigurationName().equalsIgnoreCase(name)) {
-        return value.getScanCode();
-      }
-    }
-    return -1;
+    return BY_NAME.get(name) == null ? -1 : BY_NAME.get(name);
   }
 
   /**
@@ -171,12 +179,7 @@ public enum KeyBindMappings {
    * @return The configuration name or {@link #UNKNOWN#getConfigurationName()}
    */
   public static String getConfigurationName(int scanCode) {
-    for (KeyBindMappings value : values()) {
-      if (value.getKey() == scanCode) {
-        return value.getConfigurationName();
-      }
-    }
-    return UNKNOWN.getConfigurationName();
+    return BY_SCAN_CODE.get(scanCode) == null ? UNKNOWN.getConfigurationName() : BY_SCAN_CODE.get(scanCode);
   }
 
   /**

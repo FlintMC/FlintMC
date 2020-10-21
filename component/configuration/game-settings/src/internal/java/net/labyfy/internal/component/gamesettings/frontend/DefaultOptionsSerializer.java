@@ -116,7 +116,7 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
 
             // When the minor version is under 13 replaces
             // the configuration names to the scan codes
-            if (this.versionHelper.isUnder13()) {
+            if (this.versionHelper.isUnder(13)) {
               value = String.valueOf(KeyBindMappings.getScanCode(value));
             }
 
@@ -210,7 +210,7 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
         value = CloudOption.FAST.name();
       }
     } else if (type.getConfigurationName().equalsIgnoreCase("fancyGraphics")) {
-      if (this.versionHelper.isUnder16()) {
+      if (this.versionHelper.isUnder(16)) {
         value = Boolean.getBoolean(value) ? GraphicsFanciness.FANCY.name() : GraphicsFanciness.FAST.name();
       } else {
         value = type.getType().getEnumConstants()[Integer.parseInt(value)].toString();
@@ -409,7 +409,7 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
     for (Map.Entry<String, String> entry : configurations.entrySet()) {
       // When the minor version is under 13 parses the
       // scan codes to the configuration names
-      if (this.versionHelper.isUnder13()) {
+      if (this.versionHelper.isUnder(13)) {
 
         try {
           int key = Integer.parseInt(entry.getValue());
