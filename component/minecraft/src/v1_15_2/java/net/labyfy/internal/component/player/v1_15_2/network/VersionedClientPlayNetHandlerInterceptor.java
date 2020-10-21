@@ -42,7 +42,9 @@ public class VersionedClientPlayNetHandlerInterceptor {
   )
   public void hookHandlePlayerListItem(@Named("args") Object[] args) {
     SPlayerListItemPacket packet = (SPlayerListItemPacket) args[0];
+
     for (SPlayerListItemPacket.AddPlayerData entry : packet.getEntries()) {
+
       if (packet.getAction() == SPlayerListItemPacket.Action.REMOVE_PLAYER) {
         this.networkPlayerInfoRegistry.getPlayerInfoMap().remove(entry.getProfile().getId());
       } else if (packet.getAction() == SPlayerListItemPacket.Action.ADD_PLAYER) {
@@ -54,6 +56,7 @@ public class VersionedClientPlayNetHandlerInterceptor {
         );
 
       }
+
     }
 
   }

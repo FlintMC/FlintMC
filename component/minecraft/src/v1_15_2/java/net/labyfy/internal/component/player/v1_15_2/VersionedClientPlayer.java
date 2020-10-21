@@ -1,6 +1,7 @@
 package net.labyfy.internal.component.player.v1_15_2;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.items.inventory.Inventory;
 import net.labyfy.component.items.inventory.InventoryController;
@@ -20,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
+@Singleton
 @Implement(value = ClientPlayer.class, version = "1.15.2")
 public class VersionedClientPlayer implements ClientPlayer {
 

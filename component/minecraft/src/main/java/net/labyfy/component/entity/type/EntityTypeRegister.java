@@ -1,18 +1,11 @@
 package net.labyfy.component.entity.type;
 
-import net.labyfy.component.entity.Entity;
-
 import java.util.Map;
 
 /**
  * The register is used to register {@link EntityType}'s or to get {@link EntityType}'s.
  */
 public interface EntityTypeRegister {
-
-  /**
-   * Remapped all registered Minecraft entity types.
-   */
-  void remappedRegisteredEntityTypes();
 
   /**
    * Retrieves a key-value system with the registered {@link EntityType}'s.

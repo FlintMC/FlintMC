@@ -1,9 +1,7 @@
 package net.labyfy.internal.component.entity.v1_15_2.type;
 
 import com.beust.jcommander.internal.Maps;
-import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.type.EntityType;
-import net.labyfy.component.entity.type.EntityTypeBuilder;
 import net.labyfy.component.entity.type.EntityTypeMapper;
 import net.labyfy.component.entity.type.EntityTypeRegister;
 import net.labyfy.component.inject.implement.Implement;
@@ -32,21 +30,12 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void remappedMinecraftEntityTypes() {
-    this.remappedRegisteredEntityTypes();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void remappedRegisteredEntityTypes() {
+  public void convertEntityTypes() {
     for (net.minecraft.entity.EntityType<?> entityType : Registry.ENTITY_TYPE) {
       String key = Registry.ENTITY_TYPE.getKey(entityType).getPath();
       this.entityTypes.put(key, this.entityTypeMapper.fromMinecraftEntityType(entityType));
     }
   }
-
   /**
    * {@inheritDoc}
    */

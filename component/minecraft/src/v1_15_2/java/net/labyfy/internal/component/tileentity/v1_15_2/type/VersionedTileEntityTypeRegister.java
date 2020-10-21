@@ -26,7 +26,7 @@ public class VersionedTileEntityTypeRegister implements TileEntityTypeRegister {
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void convertEntityTypes() {
+  public void convertTileEntityTypes() {
     for (net.minecraft.tileentity.TileEntityType<?> tileEntityType : Registry.BLOCK_ENTITY_TYPE) {
       String key = Registry.BLOCK_ENTITY_TYPE.getKey(tileEntityType).getPath();
       this.tileEntityTypes.put(key, this.tileEntityTypeFactory.create());

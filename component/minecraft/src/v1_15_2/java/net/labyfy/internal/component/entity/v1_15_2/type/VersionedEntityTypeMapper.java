@@ -23,7 +23,6 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
 
   @Inject
   private VersionedEntityTypeMapper(
-          EntityTypeRegister entityTypeRegister,
           EntityType.Factory entityTypeFactory,
           EntitySize.Factory entitySizeFactory
   ) {
