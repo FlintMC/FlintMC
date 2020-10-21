@@ -32,5 +32,10 @@ public interface NetworkPlayerInfoRegistry {
    */
   Collection<NetworkPlayerInfo> getPlayerInfo();
 
+  /**
+   * Retrieves a key-value system of all online players network information.
+   *
+   * @return A key-value system.
+   */
   Map<UUID, NetworkPlayerInfo> getPlayerInfoMap();
 }

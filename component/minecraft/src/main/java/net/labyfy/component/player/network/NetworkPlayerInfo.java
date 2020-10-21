@@ -2,12 +2,10 @@ package net.labyfy.component.player.network;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
-import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.player.PlayerSkinProfile;
 import net.labyfy.component.player.gameprofile.GameProfile;
 import net.labyfy.component.player.type.GameMode;
-import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.scoreboad.score.PlayerTeam;
 
 /**
@@ -36,6 +34,11 @@ public interface NetworkPlayerInfo extends PlayerSkinProfile {
    */
   GameMode getGameMode();
 
+  /**
+   * Retrieves the player team of the network information.
+   *
+   * @return The player team.
+   */
   PlayerTeam getPlayerTeam();
 
   /**
@@ -73,16 +76,26 @@ public interface NetworkPlayerInfo extends PlayerSkinProfile {
    */
   long getRenderVisibilityId();
 
+  /**
+   * Retrieves the display name of the display name.
+   *
+   * @return The display name.
+   */
   ChatComponent getDisplayName();
 
+  /**
+   * A factory class for the {@link NetworkPlayerInfo}.
+   */
   @AssistedFactory(NetworkPlayerInfo.class)
   interface Factory {
 
-    NetworkPlayerInfo create(
-            @Assisted("gameProfile") GameProfile gameProfile,
-            @Assisted("scoreboard") Scoreboard scoreboard,
-            @Assisted("entityMapper") EntityFoundationMapper entityFoundationMapper
-    );
+    /**
+     * Creates a new {@link NetworkPlayerInfo} with the given parameters.
+     *
+     * @param gameProfile            The game profile for the network information.
+     * @return A created network information.
+     */
+    NetworkPlayerInfo create(@Assisted("gameProfile") GameProfile gameProfile);
   }
 
 }

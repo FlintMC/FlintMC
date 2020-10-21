@@ -1,5 +1,8 @@
 package net.labyfy.component.player.type.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An enumeration that shows all available skin models for a player.
  */
@@ -14,6 +17,14 @@ public enum SkinModel {
    */
   ALEX("slim");
 
+  private static final Map<String, SkinModel> BY_NAME = new HashMap<>();
+
+  static {
+    for (SkinModel value : values()) {
+      BY_NAME.put(value.model, value);
+    }
+  }
+
   private final String model;
 
   /**
@@ -25,13 +36,14 @@ public enum SkinModel {
     this.model = model;
   }
 
+  /**
+   * Retrieves the model by the given name.
+   *
+   * @param name The name of the model.
+   * @return A model by the given name or {@link #STEVE}.
+   */
   public static SkinModel getModel(String name) {
-    for (SkinModel value : values()) {
-      if (value.getModel().equalsIgnoreCase(name)) {
-        return value;
-      }
-    }
-    return STEVE;
+    return BY_NAME.getOrDefault(name, STEVE);
   }
 
   /**

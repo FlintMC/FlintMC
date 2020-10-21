@@ -17,14 +17,8 @@ public enum Hand {
    * An enumeration of all available hand sides.
    */
   public enum Side {
-    LEFT("options.mainHand.left"),
-    RIGHT("options.mainHand.right");
-
-    private final String translateKey;
-
-    Side(String translateKey) {
-      this.translateKey = translateKey;
-    }
+    LEFT,
+    RIGHT;
 
     /**
      * Retrieves the opposite hand.
@@ -33,15 +27,6 @@ public enum Hand {
      */
     public Side opposite() {
       return this == LEFT ? RIGHT : LEFT;
-    }
-
-    /**
-     * Retrieves the translation key of this hand side.
-     *
-     * @return The translation key of this hand side.
-     */
-    public String getTranslateKey() {
-      return translateKey;
     }
 
   }

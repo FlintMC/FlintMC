@@ -29,8 +29,8 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
   @AssistedInject
   private VersionedNetworkPlayerInfo(
           @Assisted("gameProfile") GameProfile gameProfile,
-          @Assisted("scoreboard") Scoreboard scoreboard,
-          @Assisted("entityMapper") EntityFoundationMapper entityFoundationMapper
+          Scoreboard scoreboard,
+          EntityFoundationMapper entityFoundationMapper
   ) {
     this.gameProfile = gameProfile;
     this.scoreboard = scoreboard;
@@ -61,6 +61,9 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     return this.entityFoundationMapper.fromMinecraftGameType(this.getPlayerInfo(this.gameProfile.getUniqueId()).getGameType());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PlayerTeam getPlayerTeam() {
     return this.scoreboard.getPlayerTeam(this.gameProfile.getName());
