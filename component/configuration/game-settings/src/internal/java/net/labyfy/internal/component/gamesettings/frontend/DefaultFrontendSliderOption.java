@@ -1,5 +1,7 @@
 package net.labyfy.internal.component.gamesettings.frontend;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.gamesettings.frontend.FrontendSliderOption;
 import net.labyfy.component.inject.implement.Implement;
 
@@ -15,7 +17,12 @@ public class DefaultFrontendSliderOption extends DefaultFrontendOption implement
   private double minVal;
   private double maxVal;
 
-  protected DefaultFrontendSliderOption(String name, Class<?> type, String defaultValue) {
+  @AssistedInject
+  protected DefaultFrontendSliderOption(
+          @Assisted("name") String name,
+          @Assisted("type") Class<?> type,
+          @Assisted("defaultValue") String defaultValue
+  ) {
     super(name, type, defaultValue);
     this.min = this.max = 0;
     this.minVal = this.maxVal = 0D;
