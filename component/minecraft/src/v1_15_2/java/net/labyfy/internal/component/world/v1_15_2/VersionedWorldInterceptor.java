@@ -2,15 +2,9 @@ package net.labyfy.internal.component.world.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import net.labyfy.component.processing.autoload.AutoLoad;
-import net.labyfy.component.stereotype.type.Type;
-import net.labyfy.component.tileentity.TileEntity;
 import net.labyfy.component.tileentity.mapper.TileEntityMapper;
-import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.world.World;
-import net.minecraft.tileentity.SignTileEntity;
-import net.minecraft.util.math.BlockPos;
 
 /**
  * 1.15.2 implementation nof the world interceptor.
@@ -28,6 +22,8 @@ public class VersionedWorldInterceptor {
     this.tileEntityMapper = tileEntityMapper;
   }
 
+  // TODO: 21.10.2020 It does not work with the current hook system. The Game says: 'I'm cold, I freezing' :(
+  /*
   @Hook(
           className = "net.minecraft.world.World",
           methodName = "addTileEntity",
@@ -63,4 +59,6 @@ public class VersionedWorldInterceptor {
       this.world.getLoadedTileEntities().remove(tileEntity);
     }
   }
+  
+   */
 }
