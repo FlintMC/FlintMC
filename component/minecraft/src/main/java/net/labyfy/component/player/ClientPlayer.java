@@ -196,4 +196,11 @@ public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
    */
   void setPreviousRenderArmPitch(float previousRenderArmPitch);
 
+  /**
+   * Retrieves the current biome name of this player.
+   *
+   * @return Player's current biome name.
+   */
+  String getBiome();
+
 }

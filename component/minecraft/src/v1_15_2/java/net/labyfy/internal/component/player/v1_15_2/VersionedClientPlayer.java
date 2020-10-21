@@ -15,9 +15,15 @@ import net.labyfy.component.player.type.model.SkinModel;
 import net.labyfy.component.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 @Implement(value = ClientPlayer.class, version = "1.15.2")
 public class VersionedClientPlayer implements ClientPlayer {
+
+  private static final String UNKNOWN_BIOME = "Unknown";
 
   private final PlayerEntity.Provider playerEntityProvider;
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
@@ -356,6 +362,43 @@ public class VersionedClientPlayer implements ClientPlayer {
   @Override
   public void setPreviousRenderArmPitch(float previousRenderArmPitch) {
     Minecraft.getInstance().player.prevRenderArmPitch = previousRenderArmPitch;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getBiome() {
+    World world = Minecraft.getInstance().world;
+    Entity renderViewEntity = Minecraft.getInstance().getRenderViewEntity();
+
+    if (renderViewEntity == null) {
+      return UNKNOWN_BIOME;
+    }
+
+    BlockPos blockPos = new BlockPos(renderViewEntity);
+
+    if (world != null) {
+      String biomePath = Registry.BIOME.getKey(world.getBiome(blockPos)).getPath();
+      String[] split = biomePath.split("_");
+
+      StringBuilder builder = new StringBuilder();
+
+      for (int i = 0; i < split.length; i++) {
+        String biomeName = split[i];
+        biomeName = biomePath.substring(0, 1).toUpperCase() + biomeName.substring(1).toLowerCase();
+
+        if (i == split.length - 1) {
+          builder.append(biomeName);
+          break;
+        }
+
+        builder.append(biomeName).append(" ");
+      }
+      return builder.toString();
+    }
+
+    return UNKNOWN_BIOME;
   }
 
   /**
