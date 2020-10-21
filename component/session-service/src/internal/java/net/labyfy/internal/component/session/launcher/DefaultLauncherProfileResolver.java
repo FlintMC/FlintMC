@@ -1,10 +1,13 @@
 package net.labyfy.internal.component.session.launcher;
 
 import com.google.gson.*;
+import javassist.CtClass;
+import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.session.launcher.LauncherProfile;
 import net.labyfy.component.session.launcher.LauncherProfileResolver;
 import net.labyfy.component.session.launcher.serializer.LauncherProfileSerializer;
 import net.labyfy.component.session.launcher.LauncherProfiles;
+import net.labyfy.component.stereotype.service.CtResolver;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -23,33 +26,38 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
   private final Gson gson;
   private final Supplier<Path> launcherProfilesPathSupplier;
 
+  private final Map<Integer, CtClass> serializerClasses;
   private final Map<Integer, LauncherProfileSerializer> serializers;
 
   protected DefaultLauncherProfileResolver(LauncherProfiles.Factory profilesFactory, Supplier<Path> minecraftDirSupplier) {
     this.profilesFactory = profilesFactory;
     this.launcherProfilesPathSupplier = () -> minecraftDirSupplier.get().resolve("launcher_profiles.json");
     this.gson = new GsonBuilder().setPrettyPrinting().create();
+    this.serializerClasses = new HashMap<>();
     this.serializers = new HashMap<>();
   }
 
   @Override
-  public void registerSerializer(int version, LauncherProfileSerializer serializer) {
-    if (this.serializers.containsKey(version)) {
+  public void registerSerializer(int version, CtClass serializerClass) {
+    if (this.serializerClasses.containsKey(version)) {
       throw new IllegalArgumentException("A serializer for the version " + version + " is already registered");
     }
 
-    this.serializers.put(version, serializer);
+    this.serializerClasses.put(version, serializerClass);
   }
 
   @Override
   public LauncherProfileSerializer getSerializer(int version) {
+    if(!this.serializers.containsKey(version)){
+      this.serializers.put(version, InjectionHolder.getInjectedInstance(CtResolver.get(serializerClasses.get(version))));
+    }
     return this.serializers.get(version);
   }
 
   @Override
   public int getHighestSerializerVersion() {
     int max = 0;
-    for (Integer version : this.serializers.keySet()) {
+    for (Integer version : this.serializerClasses.keySet()) {
       if (version > max) {
         max = version;
       }

@@ -10,6 +10,7 @@ import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.component.transform.shadow.*;
 
 import javax.inject.Singleton;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,13 +26,19 @@ public class ShadowService implements ServiceHandler<Shadow> {
   }
 
   @ClassTransform
-  public void transform(ClassTransformContext classTransformContext) throws NotFoundException, CannotCompileException {
+  public void transform(ClassTransformContext classTransformContext)
+      throws NotFoundException, CannotCompileException {
     if (!this.transforms.containsKey(classTransformContext.getCtClass().getName())) return;
     CtClass ctClass = classTransformContext.getCtClass();
 
-    AnnotationMeta<Shadow> identifierMeta = this.transforms.get(classTransformContext.getCtClass().getName());
+    AnnotationMeta<Shadow> identifierMeta =
+        this.transforms.get(classTransformContext.getCtClass().getName());
     ClassPool classPool = classTransformContext.getCtClass().getClassPool();
-    classTransformContext.getCtClass().addInterface(classPool.get(identifierMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getName()));
+    classTransformContext
+        .getCtClass()
+        .addInterface(
+            classPool.get(
+                identifierMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getName()));
     handleMethodProxies(identifierMeta, classPool, ctClass);
     handleFieldCreators(identifierMeta, ctClass);
     handleFieldGetters(identifierMeta, ctClass);
@@ -39,7 +46,8 @@ public class ShadowService implements ServiceHandler<Shadow> {
   }
 
   private void handleFieldCreators(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) {
-    for (AnnotationMeta<FieldCreate> fieldCreateMeta : identifierMeta.getMetaData(FieldCreate.class)) {
+    for (AnnotationMeta<FieldCreate> fieldCreateMeta :
+        identifierMeta.getMetaData(FieldCreate.class)) {
       FieldCreate fieldCreate = fieldCreateMeta.getAnnotation();
       boolean exist = false;
       for (CtField field : ctClass.getFields()) {
@@ -49,17 +57,13 @@ public class ShadowService implements ServiceHandler<Shadow> {
       }
       if (!exist) {
         try {
-          CtField ctField = new CtField(
-              ctClass.getClassPool().get(fieldCreate.typeName()),
-              fieldCreate.name(),
-              ctClass
-          );
+          CtField ctField =
+              new CtField(
+                  ctClass.getClassPool().get(fieldCreate.typeName()), fieldCreate.name(), ctClass);
           if (fieldCreate.defaultValue().isEmpty()) {
             ctClass.addField(ctField);
           } else {
-            ctClass.addField(
-                ctField,
-                fieldCreate.defaultValue());
+            ctClass.addField(ctField, fieldCreate.defaultValue());
           }
 
         } catch (CannotCompileException | NotFoundException e) {
@@ -69,10 +73,13 @@ public class ShadowService implements ServiceHandler<Shadow> {
     }
   }
 
-  private void handleFieldSetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) throws CannotCompileException, NotFoundException {
-    for (AnnotationMeta<FieldSetter> fieldSetterMeta : identifierMeta.getMetaData(FieldSetter.class)) {
+  private void handleFieldSetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass)
+      throws CannotCompileException, NotFoundException {
+    for (AnnotationMeta<FieldSetter> fieldSetterMeta :
+        identifierMeta.getMetaData(FieldSetter.class)) {
       FieldSetter fieldSetter = fieldSetterMeta.getAnnotation();
-      CtMethod method = fieldSetterMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method =
+          fieldSetterMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 1) {
@@ -81,41 +88,75 @@ public class ShadowService implements ServiceHandler<Shadow> {
       if (method.getReturnType() != CtClass.voidType) {
         throw new IllegalStateException("Return type for " + method + " must be void");
       }
-      ctClass.addMethod(CtMethod.make("public void " + method.getName() + "(" + parameters[0].getName() + " arg){this." + fieldSetter.value() + " = arg;}", ctClass));
+
+      if (!hasMethod(ctClass, method.getName(), parameters))
+        ctClass.addMethod(
+            CtMethod.make(
+                String.format(
+                    "public void %s(%s arg){this.%s = arg;}",
+                    method.getName(), parameters[0].getName(), fieldSetter.value()),
+                ctClass));
 
       String fieldName = fieldSetter.value();
-      try {
-        CtField field = ctClass.getField(fieldName);
+      CtField field = ctClass.getField(fieldName);
 
-        if (fieldSetter.removeFinal() && Modifier.isFinal(field.getModifiers())) {
-          field.setModifiers(field.getModifiers() & Modifier.FINAL);
-        }
-
-        ctClass.addMethod(CtMethod.make("public void " + method.getName() + "(" + parameters[0].getType().getTypeName() + " arg){this." + fieldName + " = arg;}", ctClass));
-
-      } catch (NotFoundException e) {
-        throw new IllegalArgumentException("Field for setter " + method + " '" + fieldName + "' doesn't exist");
+      if (fieldSetter.removeFinal() && Modifier.isFinal(field.getModifiers())) {
+        field.setModifiers(field.getModifiers() & ~Modifier.FINAL);
       }
+
+      if (!hasMethod(ctClass, method.getName(), parameters))
+        ctClass.addMethod(
+            CtMethod.make(
+                String.format(
+                    "public void %s(%s arg){this.%s = arg;}",
+                    method.getName(), parameters[0].getName(), fieldSetter.value()),
+                ctClass));
     }
   }
 
-  private void handleFieldGetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass) throws CannotCompileException, NotFoundException {
-    for (AnnotationMeta<FieldGetter> fieldGetterMeta : identifierMeta.getMetaData(FieldGetter.class)) {
+  private boolean hasMethod(CtClass ctClass, String name, CtClass[] parameters) {
+    return Arrays.stream(ctClass.getDeclaredMethods())
+        .anyMatch(
+            method -> {
+              try {
+                return method.getName().equals(name)
+                    && Arrays.equals(method.getParameterTypes(), parameters);
+              } catch (NotFoundException e) {
+                e.printStackTrace();
+              }
+              return false;
+            });
+  }
+
+  private void handleFieldGetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass)
+      throws CannotCompileException, NotFoundException {
+    for (AnnotationMeta<FieldGetter> fieldGetterMeta :
+        identifierMeta.getMetaData(FieldGetter.class)) {
       FieldGetter fieldGetter = fieldGetterMeta.getAnnotation();
-      CtMethod method = fieldGetterMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method =
+          fieldGetterMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 0) {
         throw new IllegalArgumentException("Getter " + method + " must not have arguments.");
       }
-      ctClass.addMethod(CtMethod.make("public " + method.getReturnType().getName() + " " + method.getName() + "(){return " + "this." + fieldGetter.value() + ";}", ctClass));
+      if (!hasMethod(ctClass, method.getName(), parameters))
+        ctClass.addMethod(
+            CtMethod.make(
+                String.format(
+                    "public %s %s(){return this.%s;}",
+                    method.getReturnType().getName(), method.getName(), fieldGetter.value()),
+                ctClass));
     }
   }
 
-  private void handleMethodProxies(AnnotationMeta<Shadow> identifierMeta, ClassPool classPool, CtClass ctClass) throws
-      NotFoundException {
-    for (AnnotationMeta<MethodProxy> methodProxyMeta : identifierMeta.getMetaData(MethodProxy.class)) {
-      CtMethod method = methodProxyMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+  private void handleMethodProxies(
+      AnnotationMeta<Shadow> identifierMeta, ClassPool classPool, CtClass ctClass)
+      throws NotFoundException {
+    for (AnnotationMeta<MethodProxy> methodProxyMeta :
+        identifierMeta.getMetaData(MethodProxy.class)) {
+      CtMethod method =
+          methodProxyMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       CtClass[] classes = new CtClass[parameters.length];

@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.eventbus.event.subscribe.PostSubscribe;
 import net.labyfy.component.player.gameprofile.GameProfile;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.session.SessionService;
 import net.labyfy.component.session.event.SessionAccountLogInEvent;
 import net.labyfy.component.session.event.SessionTokenRefreshEvent;
@@ -15,7 +14,6 @@ import net.labyfy.component.session.launcher.LauncherProfiles;
 import java.io.IOException;
 
 @Singleton
-@AutoLoad
 public class LauncherProfileUpdater {
 
   private final LauncherProfileResolver resolver;
