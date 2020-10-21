@@ -3,6 +3,9 @@ package net.labyfy.component.gamesettings.frontend;
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
+/**
+ * Represents an option slider for the settings frontend.
+ */
 public interface FrontendSliderOption extends FrontendOption {
 
   /**
