@@ -6,7 +6,7 @@ import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.overlay.TabOverlay;
-import net.labyfy.component.player.overlay.TabOverlayAccessor;
+import net.labyfy.component.player.overlay.AccessibleTabOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 
@@ -31,8 +31,8 @@ public class VersionedTabOverlay implements TabOverlay {
    */
   @Override
   public ChatComponent getHeader() {
-    TabOverlayAccessor tabOverlayAccessor = (TabOverlayAccessor) Minecraft.getInstance().ingameGUI.getTabList();
-    return this.minecraftComponentMapper.fromMinecraft(tabOverlayAccessor.getHeader());
+    AccessibleTabOverlay accessibleTabOverlay = (AccessibleTabOverlay) Minecraft.getInstance().ingameGUI.getTabList();
+    return this.minecraftComponentMapper.fromMinecraft(accessibleTabOverlay.getHeader());
   }
 
   /**
@@ -54,8 +54,8 @@ public class VersionedTabOverlay implements TabOverlay {
    */
   @Override
   public ChatComponent getFooter() {
-    TabOverlayAccessor tabOverlayAccessor = (TabOverlayAccessor) Minecraft.getInstance().ingameGUI.getTabList();
-    return this.minecraftComponentMapper.fromMinecraft(tabOverlayAccessor.getFooter());
+    AccessibleTabOverlay accessibleTabOverlay = (AccessibleTabOverlay) Minecraft.getInstance().ingameGUI.getTabList();
+    return this.minecraftComponentMapper.fromMinecraft(accessibleTabOverlay.getFooter());
   }
 
   /**

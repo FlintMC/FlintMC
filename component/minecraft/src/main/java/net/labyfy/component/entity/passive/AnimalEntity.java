@@ -23,14 +23,14 @@ public interface AnimalEntity extends AgeableEntity {
   /**
    * Whether the animal entity can breed.
    *
-   * @return {@link true} if the animal entity can breed, otherwise {@code false}.
+   * @return {@code true} if the animal entity can breed, otherwise {@code false}.
    */
   boolean canBreed();
 
   /**
    * Whether the animal entity is in love.
    *
-   * @return {@link true} if the animal entity is in love, otherwise {@code false}.
+   * @return {@code true} if the animal entity is in love, otherwise {@code false}.
    */
   boolean isInLove();
 
