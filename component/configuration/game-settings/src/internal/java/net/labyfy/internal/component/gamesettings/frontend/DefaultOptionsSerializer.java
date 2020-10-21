@@ -10,8 +10,9 @@ import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.GameSettingsParser;
 import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.MinecraftConfiguration;
-import net.labyfy.component.gamesettings.frontend.OptionsSerializer;
 import net.labyfy.component.gamesettings.frontend.FrontendOption;
+import net.labyfy.component.gamesettings.frontend.FrontendSliderOption;
+import net.labyfy.component.gamesettings.frontend.OptionsSerializer;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.util.Hand;
@@ -42,7 +43,8 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
   @Inject
   private DefaultOptionsSerializer(
           EnumConstantHelper enumConstantHelper,
-          FrontendOption.Factory frontedTypeFactory,
+          FrontendOption.Factory frontendOptionFactory,
+          FrontendSliderOption.Factory frontendSliderOptionFactory,
           VersionHelper versionHelper,
           GameSettingsParser gameSettingsParser,
           MinecraftConfiguration minecraftConfiguration) {
@@ -54,7 +56,7 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
     this.enumConstantHelper = enumConstantHelper;
 
     // Registers default options
-    this.setupDefaultOption(frontedTypeFactory);
+    this.setupDefaultOption(frontendOptionFactory, frontendSliderOptionFactory);
   }
 
   /**
@@ -256,31 +258,34 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
    * @param value       The current value.
    */
   private void createNumberOption(JsonObject configEntry, FrontendOption type, String value) {
-    if (type.getType().equals(Integer.TYPE)) {
-      if (type.getMin() != type.getMax()) {
-        configEntry.add(
-                type.getConfigurationName(),
-                this.createSelectEntry(
-                        Integer.parseInt(value),
-                        type.getMin(),
-                        type.getMax()
-                )
-        );
-      } else {
-        configEntry.addProperty(type.getConfigurationName(), Integer.parseInt(value));
-      }
-    } else if (type.getType().equals(Double.TYPE)) {
-      if (type.getMinValue() != type.getMaxValue()) {
-        configEntry.add(
-                type.getConfigurationName(),
-                this.createSelectEntry(
-                        Double.parseDouble(value),
-                        type.getMinValue(),
-                        type.getMaxValue()
-                )
-        );
-      } else {
-        configEntry.addProperty(type.getConfigurationName(), Double.parseDouble(value));
+    if (type instanceof FrontendSliderOption) {
+      FrontendSliderOption sliderOption = (FrontendSliderOption) type;
+      if (sliderOption.getType().equals(Integer.TYPE)) {
+        if (sliderOption.getMin() != sliderOption.getMax()) {
+          configEntry.add(
+                  sliderOption.getConfigurationName(),
+                  this.createSelectEntry(
+                          Integer.parseInt(value),
+                          sliderOption.getMin(),
+                          sliderOption.getMax()
+                  )
+          );
+        } else {
+          configEntry.addProperty(sliderOption.getConfigurationName(), Integer.parseInt(value));
+        }
+      } else if (sliderOption.getType().equals(Double.TYPE)) {
+        if (sliderOption.getMinValue() != sliderOption.getMaxValue()) {
+          configEntry.add(
+                  sliderOption.getConfigurationName(),
+                  this.createSelectEntry(
+                          Double.parseDouble(value),
+                          sliderOption.getMinValue(),
+                          sliderOption.getMaxValue()
+                  )
+          );
+        } else {
+          configEntry.addProperty(sliderOption.getConfigurationName(), Double.parseDouble(value));
+        }
       }
     }
   }
@@ -448,10 +453,14 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
   /**
    * Setups the default options.
    *
-   * @param frontendOptionFactory The factory to create {@link FrontendOption}'s.
+   * @param frontendOptionFactory       The factory to create {@link FrontendOption}'s.
+   * @param frontendSliderOptionFactory
    */
-  private void setupDefaultOption(FrontendOption.Factory frontendOptionFactory) {
-    this.configurations.put("none", frontendOptionFactory.create("fov", Double.TYPE, "0.0").setRange(-1D, 1D));
+  private void setupDefaultOption(
+          FrontendOption.Factory frontendOptionFactory,
+          FrontendSliderOption.Factory frontendSliderOptionFactory
+  ) {
+    this.configurations.put("none", frontendSliderOptionFactory.create("fov", Double.TYPE, "0.0").setRange(-1D, 1D));
     this.configurations.put("none", frontendOptionFactory.create("realmsNotifications", Boolean.TYPE, "true"));
     this.configurations.put("none", frontendOptionFactory.create("difficulty", Difficulty.class, "2"));
 
@@ -465,17 +474,17 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
     this.configurations.put("chat", frontendOptionFactory.create("autoSuggestions", Boolean.TYPE, "true"));
     this.configurations.put("chat", frontendOptionFactory.create("chatLinks", Boolean.TYPE, "true"));
     this.configurations.put("chat", frontendOptionFactory.create("reducedDebugInfo", Boolean.TYPE, "false"));
-    this.configurations.put("chat", frontendOptionFactory.create("chatOpacity", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("chat", frontendOptionFactory.create("chatHeightFocused", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("chat", frontendOptionFactory.create("chatHeightUnfocused", Double.TYPE, "0.44366195797920227").setRange(0D, 1D));
-    this.configurations.put("chat", frontendOptionFactory.create("chatWidth", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("chat", frontendOptionFactory.create("chatScale", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("chat", frontendOptionFactory.create("textBackgroundOpacity", Double.TYPE, "0.5").setRange(0D, 1D));
+    this.configurations.put("chat", frontendSliderOptionFactory.create("chatOpacity", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("chat", frontendSliderOptionFactory.create("chatHeightFocused", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("chat", frontendSliderOptionFactory.create("chatHeightUnfocused", Double.TYPE, "0.44366195797920227").setRange(0D, 1D));
+    this.configurations.put("chat", frontendSliderOptionFactory.create("chatWidth", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("chat", frontendSliderOptionFactory.create("chatScale", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("chat", frontendSliderOptionFactory.create("textBackgroundOpacity", Double.TYPE, "0.5").setRange(0D, 1D));
     this.configurations.put("chat", frontendOptionFactory.create("chatVisibility", ChatVisibility.class, "0"));
     this.configurations.put("chat", frontendOptionFactory.create("narrator", NarratorStatus.class, "0"));
     // 1.16
-    this.configurations.put("chat", frontendOptionFactory.create("chatDelay", Double.TYPE, "0.0").setRange(0D, 6D));
-    this.configurations.put("chat", frontendOptionFactory.create("chatLineSpacing", Double.TYPE, "0.0").setRange(0D, 6D));
+    this.configurations.put("chat", frontendSliderOptionFactory.create("chatDelay", Double.TYPE, "0.0").setRange(0D, 6D));
+    this.configurations.put("chat", frontendSliderOptionFactory.create("chatLineSpacing", Double.TYPE, "0.0").setRange(0D, 6D));
 
     this.configurations.put("graphics", frontendOptionFactory.create("attackIndicator", AttackIndicatorStatus.class, "1"));
     this.configurations.put("graphics", frontendOptionFactory.create("ao", AmbientOcclusionStatus.class, "2"));
@@ -483,15 +492,15 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
     this.configurations.put("graphics", frontendOptionFactory.create("overrideHeight", Integer.TYPE, "0"));
     this.configurations.put("graphics", frontendOptionFactory.create("overrideWidth", Integer.TYPE, "0"));
     this.configurations.put("graphics", frontendOptionFactory.create("heldItemTooltips", Boolean.TYPE, "true"));
-    this.configurations.put("graphics", frontendOptionFactory.create("gamma", Double.TYPE, "0.0").setRange(0D, 1D));
-    this.configurations.put("graphics", frontendOptionFactory.create("biomeBlendRadius", Integer.TYPE, "2").setRange(0D, 7D));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("gamma", Double.TYPE, "0.0").setRange(0D, 1D));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("biomeBlendRadius", Integer.TYPE, "2").setRange(0D, 7D));
     this.configurations.put("graphics", frontendOptionFactory.create("forceUnicodeFont", AttackIndicatorStatus.class, "false"));
-    this.configurations.put("graphics", frontendOptionFactory.create("guiScale", Integer.TYPE, "0").setRange(0, 2));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("guiScale", Integer.TYPE, "0").setRange(0, 2));
     this.configurations.put("graphics", frontendOptionFactory.create("renderClouds", CloudOption.class, "true"));
-    this.configurations.put("graphics", frontendOptionFactory.create("maxFps", Integer.TYPE, "120").setRange(10, 260));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("maxFps", Integer.TYPE, "120").setRange(10, 260));
     this.configurations.put("graphics", frontendOptionFactory.create("glDebugVerbosity", Integer.TYPE, "1"));
     this.configurations.put("graphics", frontendOptionFactory.create("skipMultiplayerWarning", Boolean.TYPE, "false"));
-    this.configurations.put("graphics", frontendOptionFactory.create("renderDistance", Integer.TYPE, "12").setRange(2, 32));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("renderDistance", Integer.TYPE, "12").setRange(2, 32));
     this.configurations.put("graphics", frontendOptionFactory.create("fullscreen", Boolean.TYPE, "false"));
     this.configurations.put("graphics", frontendOptionFactory.create("fullscreenResolution", String.class, ""));
     this.configurations.put("graphics", frontendOptionFactory.create("entityShadows", Boolean.TYPE, "true"));
@@ -499,18 +508,18 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
     this.configurations.put("graphics", frontendOptionFactory.create("particles", ParticleStatus.class, "0"));
     this.configurations.put("graphics", frontendOptionFactory.create("enableVsync", Boolean.TYPE, "true"));
     this.configurations.put("graphics", frontendOptionFactory.create("fancyGraphics", GraphicsFanciness.class, "true"));
-    this.configurations.put("graphics", frontendOptionFactory.create("mipmapLevels", Integer.class, "4").setRange(0, 4));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("mipmapLevels", Integer.class, "4").setRange(0, 4));
     // 1.16
-    this.configurations.put("graphics", frontendOptionFactory.create("entityDistanceScaling", Double.TYPE, "1.0").setRange(0.5D, 5D));
-    this.configurations.put("graphics", frontendOptionFactory.create("screenEffectScale", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("graphics", frontendOptionFactory.create("fovEffectScale", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("entityDistanceScaling", Double.TYPE, "1.0").setRange(0.5D, 5D));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("screenEffectScale", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("graphics", frontendSliderOptionFactory.create("fovEffectScale", Double.TYPE, "1.0").setRange(0D, 1D));
 
     this.configurations.put("mouse", frontendOptionFactory.create("touchscreen", Boolean.TYPE, "false"));
     this.configurations.put("mouse", frontendOptionFactory.create("discreteMouseScroll", Boolean.TYPE, "false"));
     this.configurations.put("mouse", frontendOptionFactory.create("invertYMouse", Boolean.TYPE, "false"));
     this.configurations.put("mouse", frontendOptionFactory.create("rawMouseInput", Boolean.TYPE, "true"));
-    this.configurations.put("mouse", frontendOptionFactory.create("mouseSensitivity", Double.TYPE, "0.5").setRange(0D, 1D));
-    this.configurations.put("mouse", frontendOptionFactory.create("mouseWheelSensitivity", Double.TYPE, "1.0").setRange(0.01D, 10D));
+    this.configurations.put("mouse", frontendSliderOptionFactory.create("mouseSensitivity", Double.TYPE, "0.5").setRange(0D, 1D));
+    this.configurations.put("mouse", frontendSliderOptionFactory.create("mouseWheelSensitivity", Double.TYPE, "1.0").setRange(0.01D, 10D));
 
     this.configurations.put("keys", frontendOptionFactory.create("pickItem", String.class, "key.mouse.middle"));
     this.configurations.put("keys", frontendOptionFactory.create("playerlist", String.class, "key.keyboard.tab"));
@@ -553,16 +562,16 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
     this.configurations.put("skinModel", frontendOptionFactory.create("leftPantsLeg", Boolean.TYPE, "true"));
     this.configurations.put("skinModel", frontendOptionFactory.create("mainHand", Hand.Side.class, "right"));
 
-    this.configurations.put("sounds", frontendOptionFactory.create("master", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("voice", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("record", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("music", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("weather", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("block", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("player", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("neutral", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("ambient", Double.TYPE, "1.0").setRange(0D, 1D));
-    this.configurations.put("sounds", frontendOptionFactory.create("hostile", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("master", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("voice", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("record", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("music", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("weather", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("block", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("player", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("neutral", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("ambient", Double.TYPE, "1.0").setRange(0D, 1D));
+    this.configurations.put("sounds", frontendSliderOptionFactory.create("hostile", Double.TYPE, "1.0").setRange(0D, 1D));
     this.configurations.put("sounds", frontendOptionFactory.create("showSubtitles", Boolean.TYPE, "false"));
 
     this.configurations.put("resources", frontendOptionFactory.create("resourcePacks", List.class, "[]"));

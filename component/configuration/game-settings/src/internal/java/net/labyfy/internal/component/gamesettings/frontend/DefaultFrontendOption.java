@@ -15,14 +15,8 @@ public class DefaultFrontendOption implements FrontendOption {
   private final Class<?> type;
   private final String defaultValue;
 
-  private int min;
-  private int max;
-
-  private double minVal;
-  private double maxVal;
-
   @AssistedInject
-  private DefaultFrontendOption(
+  protected DefaultFrontendOption(
           @Assisted("name") String name,
           @Assisted("type") Class<?> type,
           @Assisted("defaultValue") String defaultValue
@@ -30,8 +24,6 @@ public class DefaultFrontendOption implements FrontendOption {
     this.name = name;
     this.type = type;
     this.defaultValue = defaultValue;
-    this.min = this.max = 0;
-    this.minVal = this.maxVal = 0D;
   }
 
   /**
@@ -58,55 +50,4 @@ public class DefaultFrontendOption implements FrontendOption {
     return this.defaultValue;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public FrontendOption setRange(int min, int max) {
-    this.min = min;
-    this.max = max;
-    return this;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public int getMin() {
-    return this.min;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public int getMax() {
-    return this.max;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public FrontendOption setRange(double min, double max) {
-    this.minVal = min;
-    this.maxVal = max;
-    return this;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public double getMinValue() {
-    return this.minVal;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public double getMaxValue() {
-    return this.maxVal;
-  }
 }

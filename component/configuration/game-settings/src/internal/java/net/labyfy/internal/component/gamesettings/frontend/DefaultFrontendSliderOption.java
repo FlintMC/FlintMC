@@ -1,0 +1,75 @@
+package net.labyfy.internal.component.gamesettings.frontend;
+
+import net.labyfy.component.gamesettings.frontend.FrontendSliderOption;
+import net.labyfy.component.inject.implement.Implement;
+
+/**
+ * Default implementation of a {@link FrontendSliderOption}.
+ */
+@Implement(FrontendSliderOption.class)
+public class DefaultFrontendSliderOption extends DefaultFrontendOption implements FrontendSliderOption {
+
+  private int min;
+  private int max;
+
+  private double minVal;
+  private double maxVal;
+
+  protected DefaultFrontendSliderOption(String name, Class<?> type, String defaultValue) {
+    super(name, type, defaultValue);
+    this.min = this.max = 0;
+    this.minVal = this.maxVal = 0D;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public FrontendSliderOption setRange(int min, int max) {
+    this.min = min;
+    this.max = max;
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getMin() {
+    return this.min;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getMax() {
+    return this.max;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public FrontendSliderOption setRange(double min, double max) {
+    this.minVal = min;
+    this.maxVal = max;
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public double getMinValue() {
+    return this.minVal;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public double getMaxValue() {
+    return this.maxVal;
+  }
+}

@@ -29,58 +29,6 @@ public interface FrontendOption {
    */
   String getDefaultValue();
 
-  /*
-
-  SLIDER
-
-   */
-
-  /**
-   * Sets the range for the slider.
-   *
-   * @param min The minimum of the slider.
-   * @param max The maximum of the slider.
-   * @return This object, for chaining.
-   */
-  FrontendOption setRange(int min, int max);
-
-  /**
-   * Retrieves the minimum value of an {@link Integer} slider.
-   *
-   * @return The minimum value of a slider.
-   */
-  int getMin();
-
-  /**
-   * Retrieves the maximum value of an {@link Integer} slider.
-   *
-   * @return The maximum value of a slider.
-   */
-  int getMax();
-
-  /**
-   * Sets the range for the slider.
-   *
-   * @param min The minimum value of the slider.
-   * @param max The maximum value of the slider.
-   * @return This object, for chaining.
-   */
-  FrontendOption setRange(double min, double max);
-
-  /**
-   * Retrieves the minimum value of a {@link Double} slider.
-   *
-   * @return The minimum value of a slider.
-   */
-  double getMinValue();
-
-  /**
-   * Retrieves the maximum value of a {@link Double} slider.
-   *
-   * @return The maximum value of a slider.
-   */
-  double getMaxValue();
-
   /**
    * A factory class for {@link FrontendOption}.
    */
