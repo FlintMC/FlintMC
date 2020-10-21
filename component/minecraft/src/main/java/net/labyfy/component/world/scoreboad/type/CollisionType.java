@@ -31,6 +31,15 @@ public enum CollisionType {
   }
 
   /**
+   * Retrieves the internal name of this collision type.
+   *
+   * @return The internal name of this collision type.
+   */
+  public String getInternalName() {
+    return internalName;
+  }
+
+  /**
    * Retrieves the identifier of this collision type.
    *
    * @return The identifier of this collision type.
@@ -39,12 +48,4 @@ public enum CollisionType {
     return identifier;
   }
 
-  /**
-   * Retrieves the translation key of this collision type.
-   *
-   * @return The translation key of this collision type.
-   */
-  public String getTranslationKey() {
-    return "team.collision." + this.internalName;
-  }
 }
