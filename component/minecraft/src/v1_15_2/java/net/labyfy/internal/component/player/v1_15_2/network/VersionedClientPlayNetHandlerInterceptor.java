@@ -21,22 +21,16 @@ public class VersionedClientPlayNetHandlerInterceptor {
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
   private final NetworkPlayerInfo.Factory networkPlayerInfoFactory;
   private final GameProfileSerializer<GameProfile> gameProfileGameProfileSerializer;
-  private final EntityFoundationMapper entityFoundationMapper;
-  private final Scoreboard scoreboard;
 
   @Inject
   private VersionedClientPlayNetHandlerInterceptor(
           NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
           NetworkPlayerInfo.Factory networkPlayerInfoFactory,
-          GameProfileSerializer<GameProfile> gameProfileGameProfileSerializer,
-          EntityFoundationMapper entityFoundationMapper,
-          Scoreboard scoreboard
+          GameProfileSerializer<GameProfile> gameProfileGameProfileSerializer
   ) {
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
     this.networkPlayerInfoFactory = networkPlayerInfoFactory;
     this.gameProfileGameProfileSerializer = gameProfileGameProfileSerializer;
-    this.entityFoundationMapper = entityFoundationMapper;
-    this.scoreboard = scoreboard;
   }
 
   @Hook(
@@ -55,9 +49,7 @@ public class VersionedClientPlayNetHandlerInterceptor {
         this.networkPlayerInfoRegistry.getPlayerInfoMap().put(
                 entry.getProfile().getId(),
                 this.networkPlayerInfoFactory.create(
-                        this.gameProfileGameProfileSerializer.deserialize(entry.getProfile()),
-                        this.scoreboard,
-                        this.entityFoundationMapper
+                        this.gameProfileGameProfileSerializer.deserialize(entry.getProfile())
                 )
         );
 
