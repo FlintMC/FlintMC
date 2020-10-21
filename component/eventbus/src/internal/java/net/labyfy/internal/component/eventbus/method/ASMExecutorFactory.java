@@ -97,15 +97,17 @@ public class ASMExecutorFactory implements Executor.Factory {
   public Executor create(CtClass declaringClass, CtMethod method)
       throws IllegalAccessException, InstantiationException {
     if (!Modifier.isPublic(declaringClass.getModifiers())) {
-      throw new ExecutorGenerationException("Listener class must be public.");
-      /* TODO: allow for modification
+//      throw new ExecutorGenerationException("Listener class must be public.");
+//      /* TODO: allow for modification
       declaringClass.setModifiers(
-          (declaringClass.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED) | Modifier.PUBLIC);*/
+          (declaringClass.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED) | Modifier.PUBLIC);
+//      */
     }
     if (!Modifier.isPublic(method.getModifiers())) {
-      throw new ExecutorGenerationException("Listener method must be public.");
-      /* TODO: allow for modification
-      method.setModifiers((method.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED) | Modifier.PUBLIC);*/
+//      throw new ExecutorGenerationException("Listener method must be public.");
+//      /* TODO: allow for modification
+      method.setModifiers((method.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED) | Modifier.PUBLIC);
+//      */
     }
     return this.cache.getUnchecked(method).newInstance();
   }
