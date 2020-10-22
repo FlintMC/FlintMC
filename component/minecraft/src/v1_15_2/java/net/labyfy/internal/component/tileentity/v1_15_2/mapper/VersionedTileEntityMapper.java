@@ -7,7 +7,9 @@ import net.labyfy.component.tileentity.SignTileEntity;
 import net.labyfy.component.tileentity.TileEntity;
 import net.labyfy.component.tileentity.mapper.TileEntityMapper;
 import net.labyfy.component.tileentity.type.TileEntityTypeRegister;
+import net.labyfy.component.world.World;
 import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.internal.component.tileentity.cache.TileEntityCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -16,19 +18,24 @@ import net.minecraft.util.registry.Registry;
 @Implement(value = TileEntityMapper.class, version = "1.15.2")
 public class VersionedTileEntityMapper implements TileEntityMapper {
 
+  private final TileEntityCache tileEntityCache;
   private final TileEntity.Factory tileEntityFactory;
   private final TileEntityTypeRegister tileEntityTypeRegister;
   private final SignTileEntity.Factory signTileEntityFactory;
+  private final World world;
 
   @Inject
   private VersionedTileEntityMapper(
+          TileEntityCache tileEntityCache,
           TileEntity.Factory tileEntityFactory,
           TileEntityTypeRegister tileEntityTypeRegister,
-          SignTileEntity.Factory signTileEntityFactory
-  ) {
+          SignTileEntity.Factory signTileEntityFactory,
+          World world) {
+    this.tileEntityCache = tileEntityCache;
     this.tileEntityFactory = tileEntityFactory;
     this.tileEntityTypeRegister = tileEntityTypeRegister;
     this.signTileEntityFactory = signTileEntityFactory;
+    this.world = world;
   }
 
   /**
@@ -59,14 +66,31 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
 
     net.minecraft.tileentity.TileEntity minecraftTileEntity = (net.minecraft.tileentity.TileEntity) tileEntity;
 
-    return this.tileEntityFactory.create(
-            minecraftTileEntity,
-            this.tileEntityTypeRegister.getTileEntityType(
-                    Registry.BLOCK_ENTITY_TYPE.getKey(
-                            minecraftTileEntity.getType()
-                    ).getPath()
-            )
-    );
+    BlockPosition blockPosition = this.world.fromMinecraftBlockPos(minecraftTileEntity.getPos());
+
+    if (this.tileEntityCache.isCached(blockPosition)) {
+      return this.tileEntityCache.getTileEntity(blockPosition);
+    }
+
+    if (minecraftTileEntity instanceof net.minecraft.tileentity.SignTileEntity) {
+      return this.tileEntityCache.putAndRetrieveTileEntity(
+              blockPosition,
+              fromMinecraftSignTileEntity(minecraftTileEntity)
+      );
+    } else {
+      return this.tileEntityCache.putAndRetrieveTileEntity(
+              blockPosition,
+              this.tileEntityFactory.create(
+                      minecraftTileEntity,
+                      this.tileEntityTypeRegister.getTileEntityType(
+                              Registry.BLOCK_ENTITY_TYPE.getKey(
+                                      minecraftTileEntity.getType()
+                              ).getPath()
+                      )
+              )
+      );
+    }
+
   }
 
   /**
@@ -95,7 +119,17 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
     }
 
     net.minecraft.tileentity.SignTileEntity minecraftSignTileEntity = (net.minecraft.tileentity.SignTileEntity) signTileEntity;
-    return this.signTileEntityFactory.create(minecraftSignTileEntity);
+
+    BlockPosition blockPosition = this.world.fromMinecraftBlockPos(minecraftSignTileEntity.getPos());
+
+    if (this.tileEntityCache.isCached(blockPosition)) {
+      return (SignTileEntity) this.tileEntityCache.getTileEntity(blockPosition);
+    }
+
+    return (SignTileEntity) this.tileEntityCache.putAndRetrieveTileEntity(
+            blockPosition,
+            this.signTileEntityFactory.create(minecraftSignTileEntity)
+    );
   }
 
   private boolean equalsBlockPosition(BlockPosition position, BlockPos blockPos) {
