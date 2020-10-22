@@ -1,6 +1,6 @@
 package net.labyfy.component.gamesettings.configuration;
 
-import net.labyfy.component.player.util.sound.SoundCategory;
+import net.labyfy.component.player.type.sound.SoundCategory;
 
 /**
  * Represents the sound configuration.
