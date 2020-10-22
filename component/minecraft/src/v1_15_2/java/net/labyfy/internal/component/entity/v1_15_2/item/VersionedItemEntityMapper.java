@@ -2,19 +2,23 @@ package net.labyfy.internal.component.entity.v1_15_2.item;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.entity.Entity;
 import net.labyfy.component.entity.item.ItemEntity;
 import net.labyfy.component.entity.item.ItemEntityMapper;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.internal.component.entity.cache.EntityCache;
 import net.minecraft.client.Minecraft;
 
 @Singleton
 @Implement(value = ItemEntityMapper.class, version = "1.15.2")
 public class VersionedItemEntityMapper implements ItemEntityMapper {
 
+  private final EntityCache entityCache;
   private final ItemEntity.Factory itemEntityFactory;
 
   @Inject
-  private VersionedItemEntityMapper(ItemEntity.Factory itemEntityFactory) {
+  private VersionedItemEntityMapper(EntityCache entityCache, ItemEntity.Factory itemEntityFactory) {
+    this.entityCache = entityCache;
     this.itemEntityFactory = itemEntityFactory;
   }
 
@@ -29,7 +33,18 @@ public class VersionedItemEntityMapper implements ItemEntityMapper {
 
     net.minecraft.entity.item.ItemEntity itemEntity = (net.minecraft.entity.item.ItemEntity) handle;
 
-    return this.itemEntityFactory.create(itemEntity);
+    if (this.entityCache.isCached(itemEntity.getUniqueID())) {
+      Entity entity = this.entityCache.getEntity(itemEntity.getUniqueID());
+
+      if (entity instanceof ItemEntity) {
+        return (ItemEntity) entity;
+      }
+    }
+
+    return (ItemEntity) this.entityCache.putAndRetrieveEntity(
+            itemEntity.getUniqueID(),
+            this.itemEntityFactory.create(itemEntity)
+    );
   }
 
   /**

@@ -11,31 +11,44 @@ import net.labyfy.component.entity.passive.PassiveEntityMapper;
 import net.labyfy.component.entity.type.EntityTypeMapper;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.PlayerEntity;
+import net.labyfy.component.player.RemoteClientPlayer;
+import net.labyfy.internal.component.entity.cache.EntityCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.passive.PigEntity;
+
+import java.util.UUID;
 
 @Singleton
 @Implement(value = EntityMapper.class, version = "1.15.2")
 public class VersionedEntityMapper implements EntityMapper {
 
+  private final EntityCache entityCache;
+
   private final Entity.Factory entityFactory;
-  private final LivingEntity.Provider livingEntityProvider;
-  private final MobEntity.Provider mobEntityProvider;
-  private final PlayerEntity.Provider playerEntityProvider;
   private final EntityTypeMapper entityTypeMapper;
 
+  private final LivingEntity.Provider livingEntityProvider;
+  private final MobEntity.Provider mobEntityProvider;
   private final ItemEntityMapper itemEntityMapper;
   private final PassiveEntityMapper passiveEntityMapper;
+  private final PlayerEntity.Provider playerEntityProvider;
+  private final RemoteClientPlayer.Provider remoteClientPlayerProvider;
 
   @Inject
   private VersionedEntityMapper(
+          EntityCache entityCache,
           Entity.Factory entityFactory,
-          LivingEntity.Provider livingEntityProvider,
-          MobEntity.Provider mobEntityProvider,
-          PlayerEntity.Provider playerEntityProvider,
           EntityTypeMapper entityTypeMapper,
           ItemEntityMapper itemEntityMapper,
-          PassiveEntityMapper passiveEntityMapper) {
+          LivingEntity.Provider livingEntityProvider,
+          MobEntity.Provider mobEntityProvider,
+          PassiveEntityMapper passiveEntityMapper,
+          PlayerEntity.Provider playerEntityProvider,
+          RemoteClientPlayer.Provider remoteClientPlayerProvider) {
+    this.entityCache = entityCache;
     this.entityFactory = entityFactory;
     this.livingEntityProvider = livingEntityProvider;
     this.mobEntityProvider = mobEntityProvider;
@@ -43,6 +56,7 @@ public class VersionedEntityMapper implements EntityMapper {
     this.entityTypeMapper = entityTypeMapper;
     this.itemEntityMapper = itemEntityMapper;
     this.passiveEntityMapper = passiveEntityMapper;
+    this.remoteClientPlayerProvider = remoteClientPlayerProvider;
   }
 
   /**
@@ -56,10 +70,36 @@ public class VersionedEntityMapper implements EntityMapper {
 
     net.minecraft.entity.Entity minecraftEntity = (net.minecraft.entity.Entity) handle;
 
-    return this.entityFactory.create(
-            minecraftEntity,
-            this.entityTypeMapper.fromMinecraftEntityType(minecraftEntity.getType())
-    );
+    UUID uniqueId = minecraftEntity.getUniqueID();
+
+    if (this.entityCache.isCached(uniqueId)) {
+      return this.entityCache.getEntity(uniqueId);
+    }
+
+    if (minecraftEntity instanceof ItemEntity) {
+      return this.entityCache.putAndRetrieveEntity(
+              uniqueId,
+              this.itemEntityMapper.fromMinecraftItemEntity(minecraftEntity)
+      );
+    } else if (minecraftEntity instanceof PigEntity) {
+      return this.entityCache.putAndRetrieveEntity(
+              uniqueId,
+              this.passiveEntityMapper.fromMinecraftPigEntity(minecraftEntity)
+      );
+    } else if (minecraftEntity instanceof RemoteClientPlayerEntity) {
+      return this.entityCache.putAndRetrieveEntity(
+              uniqueId,
+              this.remoteClientPlayerProvider.get(minecraftEntity)
+      );
+    } else {
+      return this.entityCache.putAndRetrieveEntity(
+              uniqueId,
+              this.entityFactory.create(
+                      minecraftEntity,
+                      this.entityTypeMapper.fromMinecraftEntityType(minecraftEntity.getType())
+              )
+      );
+    }
   }
 
   /**
@@ -87,7 +127,18 @@ public class VersionedEntityMapper implements EntityMapper {
 
     net.minecraft.entity.player.PlayerEntity playerEntity = (net.minecraft.entity.player.PlayerEntity) handle;
 
-    return this.playerEntityProvider.get(playerEntity);
+    if (this.entityCache.isCached(playerEntity.getUniqueID())) {
+      Entity entity = this.entityCache.getEntity(playerEntity.getUniqueID());
+
+      if (entity instanceof PlayerEntity) {
+        return (PlayerEntity) entity;
+      }
+    }
+
+    return (PlayerEntity) this.entityCache.putAndRetrieveEntity(
+            playerEntity.getUniqueID(),
+            this.playerEntityProvider.get(playerEntity)
+    );
   }
 
   /**
@@ -114,9 +165,20 @@ public class VersionedEntityMapper implements EntityMapper {
       throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.LivingEntity.class.getName());
     }
 
-    net.minecraft.entity.LivingEntity entity = (net.minecraft.entity.LivingEntity) handle;
+    net.minecraft.entity.LivingEntity livingEntity = (net.minecraft.entity.LivingEntity) handle;
 
-    return this.livingEntityProvider.get(entity);
+    if (this.entityCache.isCached(livingEntity.getUniqueID())) {
+      Entity entity = this.entityCache.getEntity(livingEntity.getUniqueID());
+
+      if (entity instanceof LivingEntity) {
+        return (LivingEntity) entity;
+      }
+    }
+
+    return (LivingEntity) this.entityCache.putAndRetrieveEntity(
+            livingEntity.getUniqueID(),
+            this.livingEntityProvider.get(livingEntity)
+    );
   }
 
   /**
@@ -145,7 +207,18 @@ public class VersionedEntityMapper implements EntityMapper {
 
     net.minecraft.entity.MobEntity mobEntity = (net.minecraft.entity.MobEntity) handle;
 
-    return this.mobEntityProvider.get(mobEntity);
+    if (this.entityCache.isCached(mobEntity.getUniqueID())) {
+      Entity entity = this.entityCache.getEntity(mobEntity.getUniqueID());
+
+      if (entity instanceof MobEntity) {
+        return (MobEntity) entity;
+      }
+    }
+
+    return (MobEntity) this.entityCache.putAndRetrieveEntity(
+            mobEntity.getUniqueID(),
+            this.mobEntityProvider.get(mobEntity)
+    );
   }
 
   /**

@@ -7,7 +7,15 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 /**
  * Represents the remote client player.
  */
-public interface RemoteClientPlayer extends BaseClientPlayer {
+public interface RemoteClientPlayer extends PlayerEntity, BaseClientPlayer {
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  default boolean isSpectator() {
+    return false;
+  }
 
   /**
    * A factory class for the {@link RemoteClientPlayer}.
