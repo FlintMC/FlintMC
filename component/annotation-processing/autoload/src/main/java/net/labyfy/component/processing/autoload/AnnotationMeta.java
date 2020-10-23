@@ -71,6 +71,11 @@ public class AnnotationMeta<T extends Annotation> {
     return Collections.unmodifiableCollection(metaData);
   }
 
+  /**
+   * @param clazz the annotation class of the child metadata to look for
+   * @param <K>   the annotation type of the child metadata to look for
+   * @return all provided child metadata of the type clazz
+   */
   public <K extends Annotation> Collection<AnnotationMeta<K>> getMetaData(Class<K> clazz) {
     List<AnnotationMeta<K>> annotationMetas = new ArrayList<>();
     for (AnnotationMeta<?> metaDatum : this.metaData) {
