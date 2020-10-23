@@ -22,11 +22,14 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-/** An executor factory which used ASM to create event executors. */
+/**
+ * An executor factory which used ASM to create event executors.
+ */
 @Singleton
 @Implement(Executor.Factory.class)
-public class ASMExecutorFactory implements Executor.Factory {
+public class JavassistExecutorFactory implements Executor.Factory {
 
+  private static final int INITIAL_CACHE_CAPACITY = 16;
   private final String session = UUID.randomUUID().toString().replace("-", "");
   private final AtomicInteger identifier = new AtomicInteger();
 
@@ -35,13 +38,13 @@ public class ASMExecutorFactory implements Executor.Factory {
   private final ClassTransformService classTransformService;
 
   @Inject
-  private ASMExecutorFactory(@InjectLogger Logger logger, ClassTransformService classTransformService) {
+  private JavassistExecutorFactory(@InjectLogger Logger logger, ClassTransformService classTransformService) {
     this.logger = logger;
     this.classTransformService = classTransformService;
 
     this.cache =
         CacheBuilder.newBuilder()
-            .initialCapacity(16)
+            .initialCapacity(INITIAL_CACHE_CAPACITY)
             .weakValues()
             .build(
                 new CacheLoader<CtMethod, Class<? extends Executor>>() {
