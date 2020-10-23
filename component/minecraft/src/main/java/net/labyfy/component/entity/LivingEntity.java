@@ -479,7 +479,16 @@ public interface LivingEntity extends Entity {
    */
   int getTicksElytraFlying();
 
-  boolean attemptTeleport(double x, double y, double z, boolean teleportState);
+  /**
+   * Attempts to teleport the living entity.
+   *
+   * @param x               The x position where the living entity should be teleported to.
+   * @param y               The y position where the living entity should be teleported to.
+   * @param z               The z position where the living entity should be teleported to.
+   * @param particleEffects {@code true} if particle effects should be displayed, otherwise {@code false}.
+   * @return {@code true} if the teleport attempt was successful, otherwise {@code false}.
+   */
+  boolean attemptTeleport(double x, double y, double z, boolean particleEffects);
 
   /**
    * Whether the living entity can be hit with a potion.

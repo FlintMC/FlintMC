@@ -87,7 +87,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Retrieves the dropped item as an entity.
    *
    * @param itemStack The dropped item.
-   * @param traceItem Whether the item can be traced.
+   * @param traceItem {@code true} if the item can be traced, otherwise {@code false}.
    * @return The dropped item as an entity, or {@code null}.
    */
   ItemEntity dropItem(ItemStack itemStack, boolean traceItem);
@@ -98,7 +98,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param itemStack  The dropped item.
    * @param dropAround If {@code true}, the item will be thrown in a random direction from the entity regardless
    *                   of which direction the entity is facing.
-   * @param traceItem  Whether the item can be traced.
+   * @param traceItem  {@code true} if the item can be traced, otherwise {@code false}.
    * @return The dropped ite mas an entity, or {@code null}.
    */
   ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem);
@@ -167,10 +167,10 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *                        4 = Expert<br>
    *                        5 = Master
    * @param experience      The total experience for this villager (Always 0 for the wandering trader)
-   * @param regularVillager {@code True} if this is a regular villager,
+   * @param regularVillager {@code true} if this is a regular villager,
    *                        otherwise {@code false} for the wandering trader. When {@code false},
    *                        hides the villager level  and some other GUI elements
-   * @param refreshable     {@code True} for regular villagers and {@code false} for the wandering trader.
+   * @param refreshable     {@code true} for regular villagers and {@code false} for the wandering trader.
    *                        If {@code true}, the "Villagers restock up to two times per day".
    */
   void openMerchantContainer(
@@ -200,7 +200,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
   /**
    * Disables the shield of this player.
    *
-   * @param disable Whether the shield should be deactivated.
+   * @param disable {@code true} if the shield should be deactivated, otherwise {@code false}.
    */
   void disableShield(boolean disable);
 
@@ -231,8 +231,8 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
   /**
    * Wakes up this player or updates all sleeping players.
    *
-   * @param updateTimer           Updates the sleep timer.
-   * @param updateSleepingPlayers Updates all sleeping players.
+   * @param updateTimer           {@code true} if the sleep timer should be updated, otherwise {@code false}.
+   * @param updateSleepingPlayers {@code true} if all sleeping players should be updated, otherwise {@code false}.
    */
   void stopSleepInBed(boolean updateTimer, boolean updateSleepingPlayers);
 
@@ -254,7 +254,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Sends a status message to this player.
    *
    * @param component The message for this status.
-   * @param actionbar Whether to send to the action bar.
+   * @param actionbar {@code true} if the status message should be displayed in the action bar, otherwise {@code false}.
    */
   void sendStatusMessage(ChatComponent component, boolean actionbar);
 
@@ -431,7 +431,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
   /**
    * Sets the reduced debug for this player.
    *
-   * @param reducedDebug The new reduced debug state.
+   * @param reducedDebug {@code true} if the reduced should be enabled for this player, otherwise {@code false}.
    */
   void setReducedDebug(boolean reducedDebug);
 

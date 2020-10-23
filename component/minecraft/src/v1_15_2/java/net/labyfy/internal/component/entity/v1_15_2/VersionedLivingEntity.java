@@ -593,8 +593,8 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
    * {@inheritDoc}
    */
   @Override
-  public boolean attemptTeleport(double x, double y, double z, boolean teleportState) {
-    return this.livingEntity.attemptTeleport(x, y, z, teleportState);
+  public boolean attemptTeleport(double x, double y, double z, boolean particleEffects) {
+    return this.livingEntity.attemptTeleport(x, y, z, particleEffects);
   }
 
   /**
