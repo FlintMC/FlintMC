@@ -1,5 +1,7 @@
 package net.labyfy.internal.component.gui;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.component.gui.GuiController;
 import net.labyfy.component.gui.InputInterceptor;
 import net.labyfy.component.gui.RenderExecution;
@@ -12,8 +14,6 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.transform.hook.Hook;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 

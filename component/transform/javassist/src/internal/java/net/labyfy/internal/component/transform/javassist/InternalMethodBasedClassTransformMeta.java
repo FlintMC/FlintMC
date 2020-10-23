@@ -3,6 +3,7 @@ package net.labyfy.internal.component.transform.javassist;
 import com.google.inject.Key;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -22,9 +23,11 @@ import net.labyfy.component.transform.javassist.CtClassFilter;
 import net.labyfy.component.transform.javassist.MethodBasedClassTransformMeta;
 import org.apache.logging.log4j.Logger;
 
-import javax.inject.Named;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.function.Predicate;
 
 @Implement(MethodBasedClassTransformMeta.class)

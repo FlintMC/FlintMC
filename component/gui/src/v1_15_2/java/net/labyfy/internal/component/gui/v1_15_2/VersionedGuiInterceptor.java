@@ -1,5 +1,8 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -15,10 +18,6 @@ import net.labyfy.component.transform.javassist.CtClassFilter;
 import net.labyfy.component.transform.javassist.CtClassFilters;
 import net.labyfy.internal.component.gui.DefaultGuiController;
 import net.minecraft.client.Minecraft;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * 1.15.2 Implementation of the gui interceptor

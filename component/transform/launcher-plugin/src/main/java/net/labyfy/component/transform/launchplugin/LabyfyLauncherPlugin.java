@@ -4,7 +4,9 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import io.sentry.Sentry;
 import io.sentry.event.BreadcrumbBuilder;
-import javassist.*;
+import javassist.ClassPath;
+import javassist.ClassPool;
+import javassist.NotFoundException;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
@@ -104,7 +106,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
     InjectionHolder.getInjectedInstance(LabyfyFrameworkInitializer.class).initialize(arguments);
 
-    /*  // init sentry
+    // init sentry
     if (logger != null) {
       try {
         if (arguments.containsKey("--sentry")) {
@@ -114,7 +116,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
       } catch (IOException exception) {
         throw new PreLaunchException("Unable to read manifest", exception);
       }
-    }*/
+    }
   }
 
   public void registerTransformer(int priority, LateInjectedTransformer transformer) {

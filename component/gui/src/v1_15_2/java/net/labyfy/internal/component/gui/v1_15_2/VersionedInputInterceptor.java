@@ -1,5 +1,7 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import javassist.CannotCompileException;
 import javassist.CtMethod;
@@ -22,8 +24,6 @@ import org.lwjgl.system.Callback;
 import org.lwjgl.system.CallbackI;
 import org.lwjgl.system.MemoryStack;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.DoubleBuffer;
 import java.util.function.BiFunction;
 

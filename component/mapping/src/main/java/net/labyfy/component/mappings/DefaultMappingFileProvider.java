@@ -1,12 +1,12 @@
 package net.labyfy.component.mappings;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.labyfy.component.inject.implement.Implement;
 import org.apache.commons.io.IOUtils;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

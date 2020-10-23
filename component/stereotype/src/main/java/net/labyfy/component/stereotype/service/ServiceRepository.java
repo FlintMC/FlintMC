@@ -2,12 +2,12 @@ package net.labyfy.component.stereotype.service;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javassist.CtClass;
 import net.labyfy.component.commons.util.Pair;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 
 @Singleton

@@ -2,7 +2,10 @@ package net.labyfy.component.inject;
 
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.name.Named;
 import javassist.CtClass;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.inject.implement.Implement;
@@ -10,9 +13,6 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;

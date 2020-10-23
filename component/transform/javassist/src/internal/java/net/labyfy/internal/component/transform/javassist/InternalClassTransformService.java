@@ -1,12 +1,13 @@
 package net.labyfy.internal.component.transform.javassist;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.bytecode.ClassFile;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
-import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
@@ -17,8 +18,6 @@ import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
 import net.labyfy.component.transform.minecraft.MinecraftTransformer;
 import org.apache.logging.log4j.Logger;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;

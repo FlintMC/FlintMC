@@ -1,11 +1,11 @@
 package net.labyfy.internal.component.resources.v1_15_2.pack;
 
+import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.pack.ResourcePack;
 import net.labyfy.component.resources.pack.ResourcePackProvider;
 import net.minecraft.client.Minecraft;
 
-import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.stream.Collectors;
 

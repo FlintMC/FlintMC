@@ -1,5 +1,6 @@
 package net.labyfy.internal.component.transform.shadow;
 
+import com.google.inject.Singleton;
 import javassist.*;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.Service;
@@ -9,7 +10,6 @@ import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 import net.labyfy.component.transform.shadow.*;
 
-import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;

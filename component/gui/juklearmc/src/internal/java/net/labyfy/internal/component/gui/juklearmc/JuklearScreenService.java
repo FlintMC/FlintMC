@@ -1,10 +1,9 @@
 package net.labyfy.internal.component.gui.juklearmc;
 
+import com.google.inject.Inject;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-
-import javax.inject.Inject;
 
 /**
  * Handles the discovery of Juklear screens.

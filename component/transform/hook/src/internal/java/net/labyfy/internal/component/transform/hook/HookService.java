@@ -2,7 +2,10 @@ package net.labyfy.internal.component.transform.hook;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import com.google.inject.Key;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import javassist.*;
 import net.labyfy.component.commons.resolve.AnnotationResolver;
@@ -19,9 +22,6 @@ import net.labyfy.component.transform.hook.HookFilter;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;

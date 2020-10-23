@@ -1,5 +1,7 @@
 package net.labyfy.component.transform.launchplugin;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -13,8 +15,6 @@ import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.component.stereotype.service.*;
 import net.labyfy.component.transform.launchplugin.inject.module.BindConstantModule;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.util.*;
 

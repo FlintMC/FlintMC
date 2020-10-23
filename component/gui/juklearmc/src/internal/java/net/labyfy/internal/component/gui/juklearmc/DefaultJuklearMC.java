@@ -1,5 +1,7 @@
 package net.labyfy.internal.component.gui.juklearmc;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.janrupf.juklear.Juklear;
 import net.janrupf.juklear.JuklearContext;
 import net.janrupf.juklear.drawing.JuklearAntialiasing;
@@ -29,8 +31,6 @@ import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.internal.component.gui.juklearmc.style.DefaultLabyModStyle;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

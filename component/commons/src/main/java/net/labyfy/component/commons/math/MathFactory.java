@@ -1,11 +1,11 @@
 package net.labyfy.component.commons.math;
 
+import com.google.inject.Singleton;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
