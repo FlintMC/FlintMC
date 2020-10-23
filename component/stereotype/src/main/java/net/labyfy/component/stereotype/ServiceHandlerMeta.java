@@ -5,6 +5,9 @@ import net.labyfy.component.stereotype.service.Service;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Class representation of a {@link Service} annotation.
+ */
 public class ServiceHandlerMeta {
 
   private final Class<? extends Annotation>[] annotationTypes;
