@@ -1,11 +1,17 @@
 package net.labyfy.component.gamesettings;
 
+import net.labyfy.component.config.annotation.Config;
+import net.labyfy.component.config.annotation.ExcludeStorage;
+import net.labyfy.component.config.annotation.Implemented;
 import net.labyfy.component.gamesettings.configuration.*;
 import net.labyfy.component.world.difficult.Difficulty;
 
 /**
  * Represents the Minecraft game settings
  */
+@Config
+@Implemented
+@ExcludeStorage("local")
 public interface MinecraftConfiguration {
 
   /**

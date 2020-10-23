@@ -1,5 +1,6 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.component.config.annotation.Implemented;
 import net.labyfy.component.player.util.Hand;
 import net.labyfy.component.player.util.PlayerClothing;
 
@@ -8,6 +9,7 @@ import java.util.Set;
 /**
  * Represents the skin configuration.
  */
+@Implemented
 public interface SkinConfiguration {
 
   /**

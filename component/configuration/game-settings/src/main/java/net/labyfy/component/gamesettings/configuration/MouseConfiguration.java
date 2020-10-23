@@ -1,8 +1,11 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.component.config.annotation.Implemented;
+
 /**
  * Represents the mouse configuration.
  */
+@Implemented
 public interface MouseConfiguration {
 
   /**

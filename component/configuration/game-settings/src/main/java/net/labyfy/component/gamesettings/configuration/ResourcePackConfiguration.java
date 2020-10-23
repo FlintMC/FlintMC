@@ -1,10 +1,13 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.component.config.annotation.Implemented;
+
 import java.util.List;
 
 /**
  * Represents the resource pack configuration.
  */
+@Implemented
 public interface ResourcePackConfiguration {
 
   /**

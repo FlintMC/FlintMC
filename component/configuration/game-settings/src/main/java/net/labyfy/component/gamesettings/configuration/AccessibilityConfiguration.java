@@ -1,11 +1,13 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.component.config.annotation.Implemented;
 import net.labyfy.component.gamesettings.settings.PointOfView;
 import net.labyfy.component.gamesettings.settings.TutorialSteps;
 
 /**
  * Represents the accessibility configuration.
  */
+@Implemented
 public interface AccessibilityConfiguration {
 
   /**

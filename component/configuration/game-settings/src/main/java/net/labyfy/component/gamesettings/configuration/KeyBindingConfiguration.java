@@ -1,6 +1,7 @@
 package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.Keybind;
+import net.labyfy.component.config.annotation.Implemented;
 import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.KeyBinding;
 
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * Represents the key binding configuration.
  */
+@Implemented
 public interface KeyBindingConfiguration {
 
   /**

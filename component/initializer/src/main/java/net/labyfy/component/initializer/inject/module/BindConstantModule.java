@@ -10,13 +10,15 @@ import net.labyfy.component.launcher.classloading.RootClassLoader;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
- * This class binds constants,
- * so the can be used with @named
+ * This class binds constants, so the can be used with @named
  */
 @Singleton
 public class BindConstantModule extends AbstractModule {
+
+  private static final int SCHEDULED_POOL_SIZE = 2;
 
   protected void configure() {
     this.bindNamedFilePath("labyfyPackageFolder", "./Labyfy/packages");
@@ -24,11 +26,10 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
     this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
+    this.bind(ScheduledExecutorService.class).toInstance(Executors.newScheduledThreadPool(SCHEDULED_POOL_SIZE));
     boolean obfuscated = ((RootClassLoader) getClass().getClassLoader()).findResource("net/minecraft/client/Minecraft.class") == null;
 
-    this.bindNamed(
-        "obfuscated",
-        obfuscated);
+    this.bindNamed("obfuscated", obfuscated);
   }
 
   private void bindNamedFilePath(String name, String path) {

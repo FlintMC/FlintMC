@@ -1,10 +1,12 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.component.config.annotation.Implemented;
 import net.labyfy.component.gamesettings.settings.*;
 
 /**
  * Represents the graphic configuration.
  */
+@Implemented
 public interface GraphicConfiguration {
 
   /**

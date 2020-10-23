@@ -1,11 +1,13 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.component.config.annotation.Implemented;
 import net.labyfy.component.gamesettings.settings.ChatVisibility;
 import net.labyfy.component.gamesettings.settings.NarratorStatus;
 
 /**
  * Represents the chat configuration.
  */
+@Implemented
 public interface ChatConfiguration {
 
   /**

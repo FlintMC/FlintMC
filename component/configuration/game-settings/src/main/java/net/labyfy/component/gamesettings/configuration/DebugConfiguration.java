@@ -1,8 +1,11 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.component.config.annotation.Implemented;
+
 /**
  * Represents the debug configuration.
  */
+@Implemented
 public interface DebugConfiguration {
 
   /**
