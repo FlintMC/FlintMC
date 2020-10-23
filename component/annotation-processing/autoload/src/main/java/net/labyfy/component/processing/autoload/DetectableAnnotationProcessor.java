@@ -56,13 +56,13 @@ public class DetectableAnnotationProcessor implements Processor {
    * Template to instantiate a class identifier
    */
   private static final String ANNOTATION_META_CLASS_IDENTIFIER_TEMPLATE = ""
-      + "new net.labyfy.component.processing.autoload.AnnotationMeta.ClassIdentifier(\"${TYPE_NAME}\")";
+      + "new net.labyfy.component.processing.autoload.identifier.ClassIdentifier(\"${TYPE_NAME}\")";
 
   /**
    * Template to instantiate a method identifier
    */
   private static final String ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE = ""
-      + "new net.labyfy.component.processing.autoload.AnnotationMeta.MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
+      + "new net.labyfy.component.processing.autoload.identifier.MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
 
 
   private final Collection<String> found;

@@ -3,6 +3,8 @@ package net.labyfy.internal.component.transform.shadow;
 import com.google.inject.Singleton;
 import javassist.*;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
+import net.labyfy.component.processing.autoload.identifier.MethodIdentifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -38,7 +40,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
         .getCtClass()
         .addInterface(
             classPool.get(
-                identifierMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getName()));
+                identifierMeta.<ClassIdentifier>getIdentifier().getName()));
     handleMethodProxies(identifierMeta, classPool, ctClass);
     handleFieldCreators(identifierMeta, ctClass);
     handleFieldGetters(identifierMeta, ctClass);
@@ -79,7 +81,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
         identifierMeta.getMetaData(FieldSetter.class)) {
       FieldSetter fieldSetter = fieldSetterMeta.getAnnotation();
       CtMethod method =
-          fieldSetterMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+          fieldSetterMeta.<MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 1) {
@@ -134,7 +136,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
         identifierMeta.getMetaData(FieldGetter.class)) {
       FieldGetter fieldGetter = fieldGetterMeta.getAnnotation();
       CtMethod method =
-          fieldGetterMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+          fieldGetterMeta.<MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 0) {
@@ -156,7 +158,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
     for (AnnotationMeta<MethodProxy> methodProxyMeta :
         identifierMeta.getMetaData(MethodProxy.class)) {
       CtMethod method =
-          methodProxyMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation();
+          methodProxyMeta.<MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       CtClass[] classes = new CtClass[parameters.length];

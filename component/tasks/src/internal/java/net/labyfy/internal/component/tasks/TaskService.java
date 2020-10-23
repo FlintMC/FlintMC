@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.identifier.MethodIdentifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -25,7 +26,7 @@ public class TaskService implements ServiceHandler<Task> {
   public void discover(AnnotationMeta<Task> identifierMeta) throws ServiceNotFoundException {
     Task annotation = identifierMeta.getAnnotation();
     TaskExecutor executor = InjectionHolder.getInjectedInstance(annotation.executor());
-    executor.register(annotation, identifierMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
+    executor.register(annotation, identifierMeta.<MethodIdentifier>getIdentifier().getLocation());
   }
 
 }

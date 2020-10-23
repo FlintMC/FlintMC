@@ -1,9 +1,8 @@
 package net.labyfy.component.processing.autoload;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
+import net.labyfy.component.processing.autoload.identifier.Identifier;
+import net.labyfy.component.processing.autoload.identifier.MethodIdentifier;
 
 import javax.lang.model.element.ElementKind;
 import java.lang.annotation.Annotation;
@@ -82,63 +81,4 @@ public class AnnotationMeta<T extends Annotation> {
     return annotationMetas;
   }
 
-  public interface Identifier<T> {
-    T getLocation();
-  }
-
-  public static class ClassIdentifier implements Identifier<CtClass> {
-    private final String name;
-
-    public ClassIdentifier(String name) {
-      this.name = name;
-    }
-
-    @Override
-    public CtClass getLocation() {
-      try {
-        return ClassPool.getDefault().get(this.name);
-      } catch (NotFoundException e) {
-        throw new IllegalStateException(e);
-      }
-    }
-
-    public String getName() {
-      return name;
-    }
-  }
-
-  public static class MethodIdentifier implements Identifier<CtMethod> {
-    private final String owner;
-    private final String name;
-    private final String[] parameters;
-
-    public MethodIdentifier(String owner, String name, String... parameters) {
-      this.owner = owner;
-      this.name = name;
-      this.parameters = parameters;
-    }
-
-    public String getOwner() {
-      return owner;
-    }
-
-    public String[] getParameters() {
-      return parameters;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    @Override
-    public CtMethod getLocation() {
-      try {
-        return ClassPool.getDefault()
-            .get(this.owner)
-            .getDeclaredMethod(this.name, ClassPool.getDefault().get(this.parameters));
-      } catch (NotFoundException e) {
-        throw new IllegalStateException(e);
-      }
-    }
-  }
 }

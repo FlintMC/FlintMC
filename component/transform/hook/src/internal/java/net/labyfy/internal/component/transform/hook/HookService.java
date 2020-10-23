@@ -14,6 +14,7 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.identifier.MethodIdentifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.type.Type;
@@ -107,7 +108,7 @@ public class HookService implements ServiceHandler<Hook> {
               entry,
               hook,
               ctClass,
-              identifier.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
+              identifier.<MethodIdentifier>getIdentifier().getLocation());
         }
       } else {
         boolean cancel = false;
@@ -126,7 +127,7 @@ public class HookService implements ServiceHandler<Hook> {
                 entry,
                 hook,
                 ctClass,
-                identifier.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
+                identifier.<MethodIdentifier>getIdentifier().getLocation());
           }
         }
       }

@@ -106,17 +106,6 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
     InjectionHolder.getInjectedInstance(LabyfyFrameworkInitializer.class).initialize(arguments);
 
-    /*// init sentry
-    if (logger != null) {
-      try {
-        if (arguments.containsKey("--sentry")) {
-          if (arguments.get("--sentry").equals("true"))
-            initSentry(arguments);
-        } else initSentry(arguments);
-      } catch (IOException exception) {
-        throw new PreLaunchException("Unable to read manifest", exception);
-      }
-    }*/
   }
 
   public void registerTransformer(int priority, LateInjectedTransformer transformer) {

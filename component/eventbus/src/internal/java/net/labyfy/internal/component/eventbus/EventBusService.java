@@ -12,6 +12,7 @@ import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.method.Executor;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.identifier.MethodIdentifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -47,7 +48,7 @@ public class EventBusService implements ServiceHandler<Annotation> {
   public void discover(AnnotationMeta<Annotation> annotationMeta) throws ServiceNotFoundException {
 
     Annotation subscribe = annotationMeta.getAnnotation();
-    AnnotationMeta.MethodIdentifier identifier = annotationMeta.getIdentifier();
+    MethodIdentifier identifier = annotationMeta.getIdentifier();
     CtMethod method = identifier.getLocation();
 
     if (identifier.getParameters().length != 1) {

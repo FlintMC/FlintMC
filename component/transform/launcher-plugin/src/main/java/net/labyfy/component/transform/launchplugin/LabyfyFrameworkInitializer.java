@@ -11,6 +11,7 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
 import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.component.stereotype.ServiceHandlerMeta;
 import net.labyfy.component.stereotype.service.*;
@@ -115,7 +116,7 @@ public class LabyfyFrameworkInitializer {
             annotation.state(),
             ClassPool.getDefault()
                 .get(
-                    ((AnnotationMeta.ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+                    ((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
         // if not check if it might be multiple services at once. the Javapoet framework sadly seems
         // to not support Repeatable annotations yet. Maybe this will change sometime.
       } else if (annotationMeta.getAnnotation().annotationType().equals(Services.class)) {
@@ -127,7 +128,7 @@ public class LabyfyFrameworkInitializer {
               service.state(),
               ClassPool.getDefault()
                   .get(
-                      ((AnnotationMeta.ClassIdentifier) (annotationMeta.getIdentifier()))
+                      ((ClassIdentifier) (annotationMeta.getIdentifier()))
                           .getName()));
         }
       }
