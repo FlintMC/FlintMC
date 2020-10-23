@@ -8,13 +8,14 @@ import net.labyfy.component.tileentity.TileEntity;
 import net.labyfy.component.world.math.BlockPosition;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * This cache is used to store all tile entities ported from Minecraft to Labyfy to save resources.
  * <p>
  * This cache is cleared when the player leaves the world or server.
  * <p>
- * To cache a tile entity {@link #putAndRetrieveTileEntity(BlockPosition, TileEntity)} is used, this will cache the
+ * To cache a tile entity {@link #putIfAbsent(BlockPosition, Supplier)} is used, this will cache the
  * given tile entity and its block position.
  */
 @Singleton
@@ -29,17 +30,6 @@ public class TileEntityCache {
   }
 
   /**
-   * Puts and retrieves the cached tile entity.
-   *
-   * @param blockPosition The block position of this tile entity.
-   * @param entity        The Labyfy tile entity to be cached.
-   * @return The cached Labyfy tile entity.
-   */
-  public TileEntity putAndRetrieveTileEntity(BlockPosition blockPosition, TileEntity entity) {
-    return this.tileEntities.putIfAbsent(blockPosition, entity);
-  }
-
-  /**
    * Retrieves an tile entity with the given block position.
    *
    * @param blockPosition The block position of a cached tile entity.
@@ -50,13 +40,20 @@ public class TileEntityCache {
   }
 
   /**
-   * Whether the given block position is already cached.
+   * If the given block position is already associated with a tile entity, the associated ile entity is returned.
+   * If the specified block position is not associated with a tile entity associates the block position with
+   * the given supplied tile entity.
    *
-   * @param blockPosition The block position of a cached tile entity.
-   * @return {@code true} if the given block position is already cached, otherwise {@code false}.
+   * @param blockPosition The block position with the specified tile entity is to be associated.
+   * @param supplier The tile entity to be associated with the specified block position.
+   * @return The previous tile entity associated with the specified block position, or a the given supplied
+   * tile entity if there was not mapping for the block position.
    */
-  public boolean isCached(BlockPosition blockPosition) {
-    return this.tileEntities.containsKey(blockPosition);
+  public TileEntity putIfAbsent(BlockPosition blockPosition, Supplier<TileEntity> supplier) {
+    if (this.tileEntities.containsKey(blockPosition)) {
+      return this.getTileEntity(blockPosition);
+    }
+    return this.tileEntities.put(blockPosition, supplier.get());
   }
 
   /**

@@ -403,9 +403,9 @@ public interface Entity extends Nameable {
   void updateSwim();
 
   /**
-   * Whether the entity handle water movement.
+   * Whether the entity handles water movement.
    *
-   * @return {@code true} if the entity handle water movement, otherwise {@code false}.
+   * @return {@code true} if the entity handles water movement, otherwise {@code false}.
    */
   boolean handleWaterMovement();
 

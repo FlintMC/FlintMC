@@ -8,13 +8,14 @@ import net.labyfy.component.processing.autoload.AutoLoad;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * This cache is used to store all entities ported from Minecraft to Labyfy to save resources.
  * <p>
  * This cache is cleared when the player leaves the world or server.
  * <p>
- * To cache an entity {@link #putAndRetrieveEntity(UUID, Entity)} is used, this will cache the given entity and
+ * To cache an entity {@link #putIfAbsent(UUID, Supplier)} is used, this will cache the given entity and
  * its unique identifier.
  */
 @Singleton
@@ -29,17 +30,6 @@ public class EntityCache {
   }
 
   /**
-   * Puts and retrieves the cached entity.
-   *
-   * @param uniqueId The unique identifier of this entity.
-   * @param entity   The Labyfy entity to be cached.
-   * @return The cached Labyfy entity.
-   */
-  public Entity putAndRetrieveEntity(UUID uniqueId, Entity entity) {
-    return this.entities.putIfAbsent(uniqueId, entity);
-  }
-
-  /**
    * Retrieves an entity with the given unique identifier.
    *
    * @param uniqueId The unique identifier of a cached entity.
@@ -50,13 +40,20 @@ public class EntityCache {
   }
 
   /**
-   * Whether the given unique identifier is already cached.
+   * If the given unique identifier is already associated with an entity, the associated entity is returned. If the
+   * specified unique identifier is not associated with an entity associates the unique identifier with the given
+   * supplied entity.
    *
-   * @param uniqueId The unique identifier of a cached entity.
-   * @return {@code true} if the given unique identifier is already cached, otherwise {@code false}.
+   * @param uniqueId The unique identifier with the specified entity is to be associated.
+   * @param supplier The entity to be associated with the specified unique identifier.
+   * @return The previous entity associated with the specified unique identifier, or a the given supplied entity if
+   * there was not mapping for the unique identifier.
    */
-  public boolean isCached(UUID uniqueId) {
-    return this.entities.containsKey(uniqueId);
+  public Entity putIfAbsent(UUID uniqueId, Supplier<Entity> supplier) {
+    if (this.entities.containsKey(uniqueId)) {
+      return this.getEntity(uniqueId);
+    }
+    return this.entities.put(uniqueId, supplier.get());
   }
 
   /**

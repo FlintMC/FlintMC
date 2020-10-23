@@ -69,32 +69,31 @@ public class VersionedEntityMapper implements EntityMapper {
     }
 
     net.minecraft.entity.Entity minecraftEntity = (net.minecraft.entity.Entity) handle;
-
     UUID uniqueId = minecraftEntity.getUniqueID();
 
-    if (this.entityCache.isCached(uniqueId)) {
-      return this.entityCache.getEntity(uniqueId);
-    }
-
     if (minecraftEntity instanceof ItemEntity) {
-      return this.entityCache.putAndRetrieveEntity(
+
+      return this.entityCache.putIfAbsent(
               uniqueId,
-              this.itemEntityMapper.fromMinecraftItemEntity(minecraftEntity)
+              () -> this.itemEntityMapper.fromMinecraftItemEntity(minecraftEntity)
       );
     } else if (minecraftEntity instanceof PigEntity) {
-      return this.entityCache.putAndRetrieveEntity(
+
+      return this.entityCache.putIfAbsent(
               uniqueId,
-              this.passiveEntityMapper.fromMinecraftPigEntity(minecraftEntity)
+              () -> this.passiveEntityMapper.fromMinecraftPigEntity(minecraftEntity)
       );
     } else if (minecraftEntity instanceof RemoteClientPlayerEntity) {
-      return this.entityCache.putAndRetrieveEntity(
+
+      return this.entityCache.putIfAbsent(
               uniqueId,
-              this.remoteClientPlayerProvider.get(minecraftEntity)
+              () -> this.remoteClientPlayerProvider.get(minecraftEntity)
       );
     } else {
-      return this.entityCache.putAndRetrieveEntity(
+
+      return this.entityCache.putIfAbsent(
               uniqueId,
-              this.entityFactory.create(
+              () -> this.entityFactory.create(
                       minecraftEntity,
                       this.entityTypeMapper.fromMinecraftEntityType(minecraftEntity.getType())
               )
@@ -127,17 +126,9 @@ public class VersionedEntityMapper implements EntityMapper {
 
     net.minecraft.entity.player.PlayerEntity playerEntity = (net.minecraft.entity.player.PlayerEntity) handle;
 
-    if (this.entityCache.isCached(playerEntity.getUniqueID())) {
-      Entity entity = this.entityCache.getEntity(playerEntity.getUniqueID());
-
-      if (entity instanceof PlayerEntity) {
-        return (PlayerEntity) entity;
-      }
-    }
-
-    return (PlayerEntity) this.entityCache.putAndRetrieveEntity(
+    return (PlayerEntity) this.entityCache.putIfAbsent(
             playerEntity.getUniqueID(),
-            this.playerEntityProvider.get(playerEntity)
+            () -> this.playerEntityProvider.get(playerEntity)
     );
   }
 
@@ -167,17 +158,9 @@ public class VersionedEntityMapper implements EntityMapper {
 
     net.minecraft.entity.LivingEntity livingEntity = (net.minecraft.entity.LivingEntity) handle;
 
-    if (this.entityCache.isCached(livingEntity.getUniqueID())) {
-      Entity entity = this.entityCache.getEntity(livingEntity.getUniqueID());
-
-      if (entity instanceof LivingEntity) {
-        return (LivingEntity) entity;
-      }
-    }
-
-    return (LivingEntity) this.entityCache.putAndRetrieveEntity(
+    return (LivingEntity) this.entityCache.putIfAbsent(
             livingEntity.getUniqueID(),
-            this.livingEntityProvider.get(livingEntity)
+            () -> this.livingEntityProvider.get(livingEntity)
     );
   }
 
@@ -207,17 +190,9 @@ public class VersionedEntityMapper implements EntityMapper {
 
     net.minecraft.entity.MobEntity mobEntity = (net.minecraft.entity.MobEntity) handle;
 
-    if (this.entityCache.isCached(mobEntity.getUniqueID())) {
-      Entity entity = this.entityCache.getEntity(mobEntity.getUniqueID());
-
-      if (entity instanceof MobEntity) {
-        return (MobEntity) entity;
-      }
-    }
-
-    return (MobEntity) this.entityCache.putAndRetrieveEntity(
+    return (MobEntity) this.entityCache.putIfAbsent(
             mobEntity.getUniqueID(),
-            this.mobEntityProvider.get(mobEntity)
+            () -> this.mobEntityProvider.get(mobEntity)
     );
   }
 

@@ -68,19 +68,17 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
 
     BlockPosition blockPosition = this.world.fromMinecraftBlockPos(minecraftTileEntity.getPos());
 
-    if (this.tileEntityCache.isCached(blockPosition)) {
-      return this.tileEntityCache.getTileEntity(blockPosition);
-    }
-
     if (minecraftTileEntity instanceof net.minecraft.tileentity.SignTileEntity) {
-      return this.tileEntityCache.putAndRetrieveTileEntity(
+
+      return this.tileEntityCache.putIfAbsent(
               blockPosition,
-              fromMinecraftSignTileEntity(minecraftTileEntity)
+              () -> fromMinecraftSignTileEntity(minecraftTileEntity)
       );
     } else {
-      return this.tileEntityCache.putAndRetrieveTileEntity(
+
+      return this.tileEntityCache.putIfAbsent(
               blockPosition,
-              this.tileEntityFactory.create(
+              () -> this.tileEntityFactory.create(
                       minecraftTileEntity,
                       this.tileEntityTypeRegister.getTileEntityType(
                               Registry.BLOCK_ENTITY_TYPE.getKey(
@@ -122,13 +120,9 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
 
     BlockPosition blockPosition = this.world.fromMinecraftBlockPos(minecraftSignTileEntity.getPos());
 
-    if (this.tileEntityCache.isCached(blockPosition)) {
-      return (SignTileEntity) this.tileEntityCache.getTileEntity(blockPosition);
-    }
-
-    return (SignTileEntity) this.tileEntityCache.putAndRetrieveTileEntity(
+    return (SignTileEntity) this.tileEntityCache.putIfAbsent(
             blockPosition,
-            this.signTileEntityFactory.create(minecraftSignTileEntity)
+            () -> this.signTileEntityFactory.create(minecraftSignTileEntity)
     );
   }
 

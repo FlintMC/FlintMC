@@ -96,7 +96,7 @@ public interface ItemEntity extends Entity {
   void setNoDespawn();
 
   /**
-   * Makes the item entity as a fake item.
+   * Make the entity a fake item.
    */
   void makeFakeItem();
 

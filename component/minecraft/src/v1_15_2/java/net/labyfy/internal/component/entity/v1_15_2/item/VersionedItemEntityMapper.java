@@ -33,17 +33,9 @@ public class VersionedItemEntityMapper implements ItemEntityMapper {
 
     net.minecraft.entity.item.ItemEntity itemEntity = (net.minecraft.entity.item.ItemEntity) handle;
 
-    if (this.entityCache.isCached(itemEntity.getUniqueID())) {
-      Entity entity = this.entityCache.getEntity(itemEntity.getUniqueID());
-
-      if (entity instanceof ItemEntity) {
-        return (ItemEntity) entity;
-      }
-    }
-
-    return (ItemEntity) this.entityCache.putAndRetrieveEntity(
+    return (ItemEntity) this.entityCache.putIfAbsent(
             itemEntity.getUniqueID(),
-            this.itemEntityFactory.create(itemEntity)
+            () -> this.itemEntityFactory.create(itemEntity)
     );
   }
 

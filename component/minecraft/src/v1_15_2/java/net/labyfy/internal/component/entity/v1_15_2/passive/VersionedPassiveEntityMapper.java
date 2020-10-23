@@ -44,17 +44,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
 
     net.minecraft.entity.passive.AmbientEntity ambientEntity = (net.minecraft.entity.passive.AmbientEntity) handle;
 
-    if (this.entityCache.isCached(ambientEntity.getUniqueID())) {
-      Entity entity = this.entityCache.getEntity(ambientEntity.getUniqueID());
-
-      if (entity instanceof AmbientEntity) {
-        return (AmbientEntity) entity;
-      }
-    }
-
-    return (AmbientEntity) this.entityCache.putAndRetrieveEntity(
+    return (AmbientEntity) this.entityCache.putIfAbsent(
             ambientEntity.getUniqueID(),
-            this.ambientEntityProvider.get(ambientEntity)
+            () -> this.ambientEntityProvider.get(ambientEntity)
     );
   }
 
@@ -83,17 +75,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
 
     net.minecraft.entity.passive.AnimalEntity animalEntity = (net.minecraft.entity.passive.AnimalEntity) handle;
 
-    if (this.entityCache.isCached(animalEntity.getUniqueID())) {
-      Entity entity = this.entityCache.getEntity(animalEntity.getUniqueID());
-
-      if (entity instanceof AnimalEntity) {
-        return (AnimalEntity) entity;
-      }
-    }
-
-    return (AnimalEntity) this.entityCache.putAndRetrieveEntity(
+    return (AnimalEntity) this.entityCache.putIfAbsent(
             animalEntity.getUniqueID(),
-            this.animalEntityProvider.get(animalEntity)
+            () -> this.animalEntityProvider.get(animalEntity)
     );
   }
 
@@ -122,17 +106,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
 
     net.minecraft.entity.passive.PigEntity pigEntity = (net.minecraft.entity.passive.PigEntity) handle;
 
-    if (this.entityCache.isCached(pigEntity.getUniqueID())) {
-      Entity entity = this.entityCache.getEntity(pigEntity.getUniqueID());
-
-      if (entity instanceof PigEntity) {
-        return (PigEntity) entity;
-      }
-    }
-
-    return (PigEntity) this.entityCache.putAndRetrieveEntity(
+    return (PigEntity) this.entityCache.putIfAbsent(
             pigEntity.getUniqueID(),
-            this.animalEntityProvider.get(pigEntity)
+            () -> this.pigEntityFactory.create(pigEntity)
     );
   }
 
