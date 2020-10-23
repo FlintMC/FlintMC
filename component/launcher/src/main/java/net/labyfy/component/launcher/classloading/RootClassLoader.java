@@ -35,6 +35,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   private final Logger logger;
   private boolean transformEnabled;
 
+  private final Map<String, byte[]> modifiedClasses;
+
   /**
    * Constructs a new instance of the root class loader with the specified set
    * of URL's as the class path.
@@ -53,12 +55,18 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
 
     this.transformEnabled = false;
 
+    this.modifiedClasses = new HashMap<>();
+
     // We don't want those packages to be transformed,
     // they either are Java/JVM internals or launcher parts
     excludeFromModification("java.");
     excludeFromModification("javax.");
     excludeFromModification("com.sun.");
     excludeFromModification("net.labyfy.component.launcher.");
+  }
+
+  public void addModifiedClass(String name, byte[] byteCode) {
+    this.modifiedClasses.put(name, byteCode);
   }
 
   /**
@@ -191,9 +199,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
               + children.size() + " child loaders)");
         }
       }
-
       // Retrieve the raw class bytes
-      byte[] classBytes = information.getClassBytes();
+      byte[] classBytes = this.modifiedClasses.getOrDefault(name, information.getClassBytes());
 
       for (LauncherPlugin plugin : plugins) {
         byte[] newBytes = plugin.modifyClass(name, classBytes);

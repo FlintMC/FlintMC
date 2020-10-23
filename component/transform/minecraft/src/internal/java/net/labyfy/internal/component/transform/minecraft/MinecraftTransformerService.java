@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
@@ -22,6 +23,7 @@ public class MinecraftTransformerService implements ServiceHandler<MinecraftTran
 
   @Inject
   private MinecraftTransformerService() {
+    LaunchController.getInstance().getRootLoader().excludeFromModification("net.labyfy.internal.component.transform.");
   }
 
   @Override

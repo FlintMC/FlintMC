@@ -37,6 +37,8 @@ public class LabyfyFrameworkInitializer {
    */
   public void initialize(Map<String, String> arguments) {
     try {
+      LaunchController.getInstance().getRootLoader().excludeFromModification("net.labyfy.internal.component.transform.");
+
       //create guice constant module
       InjectionHolder.getInstance().addModules(new BindConstantModule(arguments));
       //Apply module and instantiate service repository
@@ -77,7 +79,12 @@ public class LabyfyFrameworkInitializer {
             if (!serviceHandlerInstances.containsKey(pair.getSecond())) {
               serviceHandlerInstances.put(pair.getSecond(), InjectionHolder.getInjectedInstance(CtResolver.get(pair.getSecond())));
             }
+            if(!pair.getSecond().isFrozen()){
+              pair.getSecond().freeze();
+            }
             serviceHandlerInstances.get(pair.getSecond()).discover(annotationMeta);
+            pair.getSecond().defrost();
+
           } catch (Exception e) {
             e.printStackTrace();
           }

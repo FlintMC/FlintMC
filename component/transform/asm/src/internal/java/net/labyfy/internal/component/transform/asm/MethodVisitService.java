@@ -106,21 +106,4 @@ public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInje
     this.visitorCandidates.add(identifierMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
   }
 
- /* @Override
-  public void discover(IdentifierLegacy.Base property) throws ServiceNotFoundException {
-    MethodVisit methodVisit =
-        property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
-    InternalMethodVisitorContext methodVisitorContext = new InternalMethodVisitorContext(methodVisit);
-    Method location = property.getProperty().getLocatedIdentifiedAnnotation().getLocation();
-
-    try {
-      location.invoke(
-          InjectionHolder.getInjectedInstance(location.getDeclaringClass()),
-          methodVisitorContext);
-    } catch (IllegalAccessException | InvocationTargetException exception) {
-      throw new ServiceNotFoundException("error while discovering service: " + location.getDeclaringClass().getName(), exception);
-    }
-
-    this.methodVisitorContexts.add(methodVisitorContext);
-  }*/
 }

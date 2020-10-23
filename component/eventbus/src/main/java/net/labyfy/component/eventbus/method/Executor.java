@@ -3,6 +3,8 @@ package net.labyfy.component.eventbus.method;
 import javassist.CtClass;
 import javassist.CtMethod;
 
+import java.util.function.Supplier;
+
 /** An interface that can invoke a defined method on a listener object when an event is fired. */
 public interface Executor {
 
@@ -30,6 +32,6 @@ public interface Executor {
      *     interface, an array class, a primitive type, or void; or if the class has not nullary
      *     constructor; or if the instantiation fails or some other reason.
      */
-    Executor create(CtClass declaringClass, CtMethod method) throws Exception;
+    Supplier<Executor> create(CtClass declaringClass, CtMethod method) throws Exception;
   }
 }

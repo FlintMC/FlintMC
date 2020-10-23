@@ -101,7 +101,7 @@ public class HookService implements ServiceHandler<Hook> {
       Hook hook = identifier.getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
-        String className = classMappingProvider.get(classTransformContext.getNameResolver().resolve(hook.className())).getName();
+        String className = classMappingProvider.get(hook.className()).getName();
         if (className != null && className.equals(ctClass.getName())) {
           this.modify(
               entry,

@@ -8,15 +8,19 @@ import com.google.inject.Singleton;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
+import javassist.NotFoundException;
 import net.labyfy.component.eventbus.method.Executor;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.launcher.LaunchController;
-import net.labyfy.internal.component.eventbus.exception.ExecutorGenerationException;
+import net.labyfy.component.transform.javassist.ClassTransformService;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 /** An executor factory which used ASM to create event executors. */
 @Singleton
@@ -27,9 +31,14 @@ public class ASMExecutorFactory implements Executor.Factory {
   private final AtomicInteger identifier = new AtomicInteger();
 
   private final LoadingCache<CtMethod, Class<? extends Executor>> cache;
+  private final Logger logger;
+  private final ClassTransformService classTransformService;
 
   @Inject
-  private ASMExecutorFactory() {
+  private ASMExecutorFactory(@InjectLogger Logger logger, ClassTransformService classTransformService) {
+    this.logger = logger;
+    this.classTransformService = classTransformService;
+
     this.cache =
         CacheBuilder.newBuilder()
             .initialCapacity(16)
@@ -94,21 +103,51 @@ public class ASMExecutorFactory implements Executor.Factory {
 
   /** {@inheritDoc} */
   @Override
-  public Executor create(CtClass declaringClass, CtMethod method)
+  public Supplier<Executor> create(CtClass declaringClass, CtMethod ctMethod)
       throws IllegalAccessException, InstantiationException {
-    if (!Modifier.isPublic(declaringClass.getModifiers())) {
-//      throw new ExecutorGenerationException("Listener class must be public.");
-//      /* TODO: allow for modification
-      declaringClass.setModifiers(
-          (declaringClass.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED) | Modifier.PUBLIC);
-//      */
-    }
-    if (!Modifier.isPublic(method.getModifiers())) {
-//      throw new ExecutorGenerationException("Listener method must be public.");
-//      /* TODO: allow for modification
-      method.setModifiers((method.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED) | Modifier.PUBLIC);
-//      */
-    }
-    return this.cache.getUnchecked(method).newInstance();
+
+    this.classTransformService.addClassTransformation(
+        declaringClass,
+        classTransformContext -> {
+          CtClass ctClass = classTransformContext.getCtClass();
+          if (!Modifier.isPublic(ctClass.getModifiers())) {
+            //      throw new ExecutorGenerationException("Listener class must be public.");
+            //      /* TODO: allow for modification
+            ctClass.setModifiers(
+                (ctClass.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
+                    | Modifier.PUBLIC);
+            //      */
+          }
+          try {
+
+            String[] parameterTypesAsStrings = new String[ctMethod.getParameterTypes().length];
+            for (int i = 0; i < parameterTypesAsStrings.length; i++) {
+              parameterTypesAsStrings[i] = ctMethod.getParameterTypes()[i].getName();
+            }
+
+            CtMethod method =
+                ctClass.getDeclaredMethod(ctMethod.getName(), ctClass.getClassPool().get(parameterTypesAsStrings));
+
+            if (!Modifier.isPublic(method.getModifiers())) {
+              //      throw new ExecutorGenerationException("Listener method must be public.");
+              //      /* TODO: allow for modification
+              method.setModifiers(
+                  (method.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
+                      | Modifier.PUBLIC);
+              //      */
+            }
+          } catch (NotFoundException e) {
+            logger.error(e);
+          }
+        });
+
+    return () -> {
+      try {
+        return cache.getUnchecked(ctMethod).newInstance();
+      } catch (InstantiationException | IllegalAccessException e) {
+        logger.error(e);
+      }
+      return null;
+    };
   }
 }

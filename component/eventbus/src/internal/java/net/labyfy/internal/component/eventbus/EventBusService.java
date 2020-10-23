@@ -18,6 +18,7 @@ import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.internal.component.eventbus.exception.ExecutorGenerationException;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Supplier;
 
 /** Service for sending events to receivers. */
 @Singleton
@@ -41,16 +42,12 @@ public class EventBusService implements ServiceHandler<Annotation> {
     this.factory = executorFactory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public void discover(AnnotationMeta<Annotation> annotationMeta)
-      throws ServiceNotFoundException {
+  public void discover(AnnotationMeta<Annotation> annotationMeta) throws ServiceNotFoundException {
 
     Annotation subscribe = annotationMeta.getAnnotation();
-    AnnotationMeta.MethodIdentifier identifier =
-        annotationMeta.getIdentifier();
+    AnnotationMeta.MethodIdentifier identifier = annotationMeta.getIdentifier();
     CtMethod method = identifier.getLocation();
 
     if (identifier.getParameters().length != 1) {
@@ -69,10 +66,10 @@ public class EventBusService implements ServiceHandler<Annotation> {
       throw new ServiceNotFoundException("Failed to retrieve CtClass of parameter type.", e);
     }
 
-    Executor executor;
+    Supplier<Executor> executorSupplier;
 
     try {
-      executor = this.factory.create(method.getDeclaringClass(), method);
+      executorSupplier = this.factory.create(method.getDeclaringClass(), method);
     } catch (Throwable throwable) {
       throw new ExecutorGenerationException(
           "Encountered an exception while creating an event subscriber for method \""
@@ -100,7 +97,7 @@ public class EventBusService implements ServiceHandler<Annotation> {
     // Initializes a new subscribe method
     SubscribeMethod subscribeMethod =
         this.subscribedMethodFactory.create(
-            priority, phase, method.getDeclaringClass(), executor, method);
+            priority, phase, method.getDeclaringClass(), executorSupplier, method);
 
     this.eventBus.getSubscribeMethods().put(eventClass.getName(), subscribeMethod);
   }

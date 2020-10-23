@@ -8,6 +8,8 @@ import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.event.util.EventPriority;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
+import java.util.function.Supplier;
+
 /** A subscribed method in an {@link EventBus}. */
 public interface SubscribeMethod {
 
@@ -60,7 +62,7 @@ public interface SubscribeMethod {
         @Assisted("priority") byte priority,
         @Assisted("phase") Subscribe.Phase phase,
         @Assisted("declaringClass") CtClass ctClass,
-        @Assisted("executor") Executor executor,
+        @Assisted("executorSupplier") Supplier<Executor> executorSupplier,
         @Assisted("eventMethod") CtMethod eventMethod);
   }
 }
