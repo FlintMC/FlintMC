@@ -1,11 +1,12 @@
 package net.labyfy.component.config;
 
-import net.labyfy.component.config.annotation.Category;
 import net.labyfy.component.config.annotation.Config;
 import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.IncludeStorage;
 
 import java.util.Map;
+
+// TODO remove?
 
 @Config
 // Dieses Interface soll in der Datei automatisch beim Start geladen und bei Änderungen wieder gespeichert werden
@@ -18,7 +19,6 @@ public interface ExampleConfig {
 
   // kein @Storage -> @Storage des Interfaces
   //@Storage("online") // nur online gespeichert
-  @Category("catX")
   @IncludeStorage("1234")
   String getX();
 
@@ -30,11 +30,9 @@ public interface ExampleConfig {
   double getZ();
 
   //@Storage("local") // nur lokal gespeichert
-  @Category("catZ")
   void setZ(double z);
 
   // eine Instanz von dem Local interface wird automatisch erstellt, setter methoden nicht notwendig, aber möglich
-  @Category("catY")
   Local getY();
 
   @ExcludeStorage("local")
@@ -58,7 +56,6 @@ public interface ExampleConfig {
   }
 
   @IncludeStorage("local") // nur lokal gespeichert - könnte auch auf getXY und getY stehen
-  @Category("catLocal")
   interface Local {
 
     int getLocalInt();

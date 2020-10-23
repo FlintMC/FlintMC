@@ -5,15 +5,12 @@ import com.google.inject.Singleton;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.storage.ConfigStorage;
 import net.labyfy.component.config.storage.ConfigStorageProvider;
-import net.labyfy.component.config.storage.LoadStorage;
+import net.labyfy.component.config.storage.StoragePriority;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -72,12 +69,12 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
   }
 
   @Override
-  public void registerStorage(ConfigStorage storage) {
-    if (!storage.getClass().isAnnotationPresent(LoadStorage.class)) {
+  public void registerStorage(ConfigStorage storage) throws IllegalStateException {
+    if (!storage.getClass().isAnnotationPresent(StoragePriority.class)) {
       return;
     }
 
-    int priority = storage.getClass().getAnnotation(LoadStorage.class).priority();
+    int priority = storage.getClass().getAnnotation(StoragePriority.class).value();
     String name = storage.getName();
 
     for (ComparableConfigStorage registered : this.storages) {
@@ -87,6 +84,6 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
     }
 
     this.storages.add(ComparableConfigStorage.wrap(storage, priority));
-    this.storages.sort(null);
+    this.storages.sort(Collections.reverseOrder());
   }
 }

@@ -31,7 +31,7 @@ public class ConfigTransformer {
 
   @ClassTransform
   public void transformConfigs(ClassTransformContext context) throws CannotCompileException, NotFoundException {
-    // TODO this doesn't work yet because of the curret implementation system
+    // TODO this doesn't work yet because of the current implementation/service system
 
     for (PendingTransform transform : this.pendingTransforms) {
       ConfigMethod method = transform.getMethod();
