@@ -125,7 +125,7 @@ public class DefaultPackageLoader implements PackageLoader {
                   if (PackageState.NOT_LOADED.matches(pack)) return true;
                   else {
                     this.logger.warn(
-                        "The package {} has the state {} and this will not be loaded.",
+                        "The package {} has the state {} and thus will not be loaded.",
                         pack.getName(),
                         pack.getState().name());
                     return false;

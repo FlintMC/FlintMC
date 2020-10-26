@@ -23,7 +23,7 @@ public interface PackageLocalization {
   String getLocalizationContentAsString();
 
   /**
-   * Retrieves the localization content as an byte array.
+   * Retrieves the localization content as a byte array.
    *
    * @return The byte array of the localization content.
    */

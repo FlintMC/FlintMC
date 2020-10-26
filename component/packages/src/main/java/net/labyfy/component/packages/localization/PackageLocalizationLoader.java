@@ -10,7 +10,7 @@ import java.util.jar.JarFile;
 public interface PackageLocalizationLoader {
 
   /**
-   * Whether if a language folder is present in the given {@link JarFile}.
+   * Whether a language folder is present in the given {@link JarFile}.
    *
    * @param file The jar file to check for the language folder.
    * @return {@code true} if a language folder is present, otherwise {@code false}.

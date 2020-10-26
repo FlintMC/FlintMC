@@ -94,6 +94,11 @@ public interface Package {
    */
   PackageClassLoader getPackageClassLoader();
 
+  /**
+   * Retrieves the localization loader the package has been loaded with.
+   *
+   * @return The localization loader used for loading the translations.
+   */
   PackageLocalizationLoader getPackageLocalizationLoader();
 
   /**
