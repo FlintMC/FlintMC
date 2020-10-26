@@ -2,11 +2,11 @@ package net.labyfy.component.transform.minecraft.obfuscate;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.transform.asm.ASMUtils;
 import net.labyfy.component.transform.exceptions.ClassTransformException;
 import net.labyfy.component.transform.launchplugin.LateInjectedTransformer;
@@ -17,18 +17,13 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
-import javax.inject.Named;
 import java.io.IOException;
-
-import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.MINECRAFT_INSTRUCTION_OBFUSCATOR_PRIORITY;
-import static net.labyfy.component.processing.autoload.AutoLoadPriorityConstants.MINECRAFT_INSTRUCTION_OBFUSCATOR_ROUND;
 
 /**
  * Deobfuscates all minecraft classes for which mappings are provided
  */
 @Singleton
 @MinecraftTransformer(priority = Integer.MIN_VALUE)
-@AutoLoad(priority = MINECRAFT_INSTRUCTION_OBFUSCATOR_PRIORITY, round = MINECRAFT_INSTRUCTION_OBFUSCATOR_ROUND)
 public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
 
   private final MinecraftClassRemapper minecraftClassRemapper;

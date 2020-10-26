@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
@@ -13,7 +12,6 @@ import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.resources.SimpleReloadableResourceManager;
 
 @Singleton
-@AutoLoad
 public class DefaultResourcePackReloadEventBroadCaster {
 
   private final EventBus eventBus;

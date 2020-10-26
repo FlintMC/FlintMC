@@ -2,7 +2,6 @@ package net.labyfy.component.gamesettings.event;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
-import net.labyfy.component.eventbus.event.filter.EventGroup;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.io.File;
@@ -74,7 +73,6 @@ public interface ConfigurationEvent {
    */
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
-  @EventGroup(groupEvent = ConfigurationEvent.class)
   @interface OptionState {
 
     /**

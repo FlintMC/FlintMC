@@ -4,20 +4,18 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import io.sentry.Sentry;
 import io.sentry.event.BreadcrumbBuilder;
-import javassist.*;
-import net.labyfy.component.initializer.EntryPoint;
-import net.labyfy.component.initializer.Initializer;
+import javassist.ClassPath;
+import javassist.ClassPool;
+import javassist.NotFoundException;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.service.LauncherPlugin;
 import net.labyfy.component.launcher.service.PreLaunchException;
-import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.component.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -37,29 +35,32 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     }
     RootClassLoader rootLoader = LaunchController.getInstance().getRootLoader();
 
-    ClassPool.getDefault().appendClassPath(new ClassPath() {
-      public InputStream openClassfile(String classname) throws NotFoundException {
-        URL result = find(classname);
-        if (result == null) {
-          throw new NotFoundException("Class " + classname + " not found");
-        }
+    ClassPool.getDefault()
+        .appendClassPath(
+            new ClassPath() {
+              public InputStream openClassfile(String classname) throws NotFoundException {
+                URL result = find(classname);
+                if (result == null) {
+                  throw new NotFoundException("Class " + classname + " not found");
+                }
 
-        try {
-          return result.openStream();
-        } catch (IOException exception) {
-          throw new NotFoundException("Failed to open class " + classname, exception);
-        }
-      }
+                try {
+                  return result.openStream();
+                } catch (IOException exception) {
+                  throw new NotFoundException("Failed to open class " + classname, exception);
+                }
+              }
 
-      public URL find(String classname) {
-        return rootLoader.getResource(classname.replace('.', '/') + ".class");
-      }
-    });
+              public URL find(String classname) {
+                return rootLoader.getResource(classname.replace('.', '/') + ".class");
+              }
+            });
 
     instance = this;
 
     this.logger = LogManager.getLogger(LabyfyLauncherPlugin.class);
-    this.injectedTransformers = MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build();
+    this.injectedTransformers =
+        MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build();
   }
 
   public static LabyfyLauncherPlugin getInstance() {
@@ -69,26 +70,31 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     return instance;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String name() {
     return "Labyfy";
   }
 
+  /** {@inheritDoc} */
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
-    classloader.excludeFromModification("javassist.", "com.google.");
+    classloader.excludeFromModification(
+        "javassist.", "com.google.", "net.labyfy.component.transform.");
   }
 
+  /** {@inheritDoc} */
   @Override
   public void modifyCommandlineArguments(List<String> arguments) {
     this.launchArguments = arguments;
   }
 
-  @SuppressWarnings("InstantiationOfUtilityClass")
+  /** {@inheritDoc} */
   @Override
   public void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {
     Map<String, String> arguments = new HashMap<>();
 
+    // Collect minecraft launch arguments as a map
     for (Iterator<String> it = launchArguments.iterator(); it.hasNext(); ) {
       String key = it.next();
       if (it.hasNext()) {
@@ -98,33 +104,15 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
       }
     }
 
-    new EntryPoint(arguments);
+    InjectionHolder.getInjectedInstance(LabyfyFrameworkInitializer.class).initialize(arguments);
 
-    // init sentry
-    if (logger != null){
-      try {
-        if (arguments.containsKey("--sentry")){
-          if(arguments.get("--sentry").equals("true"))
-            initSentry(arguments);
-        } else initSentry(arguments);
-      } catch (IOException exception) {
-        throw new PreLaunchException("Unable to read manifest", exception);
-      }
-    }
-
-    try {
-      Initializer.boot();
-    } catch (ClassNotFoundException | ServiceNotFoundException exception) {
-      throw new PreLaunchException("Unable to boot initializer", exception);
-    }
-
-    try {
-      InjectionHolder.enableIngameState();
-    } catch (Exception exception) {
-      throw new PreLaunchException("Unable to run initialization runnables", exception);
-    }
   }
 
+  public void registerTransformer(int priority, LateInjectedTransformer transformer) {
+    injectedTransformers.put(priority, transformer);
+  }
+
+  /** {@inheritDoc} */
   @Override
   public byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
     for (LateInjectedTransformer transformer : injectedTransformers.values()) {
@@ -133,22 +121,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
         classData = newData;
       }
     }
-
-    try {
-      CtClass ctClass =
-          ClassPool.getDefault().makeClass(new ByteArrayInputStream(classData), false);
-
-      return ctClass.toBytecode();
-    } catch (IOException exception) {
-      throw new RuntimeException("Failed to modify class due to IOException", exception);
-    } catch (CannotCompileException exception) {
-      logger.warn("Failed to modify class due to compilation error", exception);
-      return null;
-    }
-  }
-
-  public void registerTransformer(int priority, LateInjectedTransformer transformer) {
-    injectedTransformers.put(priority, transformer);
+    return classData;
   }
 
   /**
@@ -158,8 +131,8 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
    * @return Value for requested entry
    */
   private String findManifestEntry(String name) throws IOException {
-    Enumeration<URL> resources = Thread.currentThread().getContextClassLoader()
-        .getResources("META-INF/MANIFEST.MF");
+    Enumeration<URL> resources =
+        Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
     while (resources.hasMoreElements()) {
       URL manifestUrl = resources.nextElement();
       Manifest manifest = new Manifest(manifestUrl.openStream());
@@ -185,8 +158,7 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     String environment = "PRODUCTION";
     String mcversion = "unknown";
 
-    if (arguments.containsKey("--game-version"))
-      mcversion = arguments.get("--game-version");
+    if (arguments.containsKey("--game-version")) mcversion = arguments.get("--game-version");
 
     if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")) {
       environment = "DEVELOPMENT";
@@ -194,10 +166,14 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
 
     // sentry project id 2
     Sentry.init(
-        "https://" + dsn + "@sentry.labymod.net/2?" +
-            "release=" + version + "&" +
-            "environment=" + environment
-    );
+        "https://"
+            + dsn
+            + "@sentry.labymod.net/2?"
+            + "release="
+            + version
+            + "&"
+            + "environment="
+            + environment);
     Sentry.getContext().addTag("mc_version", mcversion);
     Sentry.getContext().addTag("java_version", System.getProperty("java.version"));
     Sentry.getContext().addTag("java_vendor", System.getProperty("java.vendor"));
@@ -206,9 +182,11 @@ public class LabyfyLauncherPlugin implements LauncherPlugin {
     Sentry.getContext().addTag("os.bitrate", getOSBitRate());
 
     if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")) {
-      Sentry.getContext().recordBreadcrumb(
-          new BreadcrumbBuilder().setMessage("User started with development enviroment").build()
-      );
+      Sentry.getContext()
+          .recordBreadcrumb(
+              new BreadcrumbBuilder()
+                  .setMessage("User started with development enviroment")
+                  .build());
     }
   }
 

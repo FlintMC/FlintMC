@@ -4,6 +4,7 @@ import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.component.event.content.HoverContent;
 import net.labyfy.chat.component.event.content.HoverEntity;
 import net.labyfy.chat.component.event.content.HoverText;
+import net.labyfy.component.eventbus.event.Event;
 
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
  * <p>HoverEvents for the chat are available since Minecraft 1.7.10. With Minecraft 1.12.2, the
  * {@link Action#SHOW_ACHIEVEMENT} has been removed.
  */
-public class HoverEvent {
+public class HoverEvent implements Event {
 
   private final HoverContent[] contents;
 

@@ -1,12 +1,11 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.component.gui.MinecraftWindow;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 @Singleton
 @Implement(value = MinecraftWindow.class, version = "1.15.2")

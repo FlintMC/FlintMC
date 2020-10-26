@@ -1,17 +1,17 @@
 package net.labyfy.internal.component.gui.juklearmc;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import net.labyfy.component.gui.juklearmc.StandaloneJuklearComponent;
-import net.labyfy.component.gui.juklearmc.menues.JuklearMCComponent;
-import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.ServiceHandler;
+import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 
-@Singleton
-@Service(StandaloneJuklearComponent.class)
-public class StandaloneJuklearComponentService implements ServiceHandler {
+/**
+ * Not fixed because should be removed already.
+ */
+//@Singleton
+//@Service(StandaloneJuklearComponent.class)
+public class StandaloneJuklearComponentService implements ServiceHandler<StandaloneJuklearComponent> {
 
   private final DefaultJuklearMC defaultJuklearMC;
 
@@ -20,10 +20,15 @@ public class StandaloneJuklearComponentService implements ServiceHandler {
     this.defaultJuklearMC = defaultJuklearMC;
   }
 
-  public void discover(Identifier.Base property) {
-    this.defaultJuklearMC.onInitialize(
-        () -> this.defaultJuklearMC
-            .registerStandaloneComponent(
-                InjectionHolder.getInjectedInstance(property.getProperty().getLocatedIdentifiedAnnotation().<Class<? extends JuklearMCComponent>>getLocation())));
+  @Override
+  public void discover(AnnotationMeta<StandaloneJuklearComponent> identifierMeta) throws ServiceNotFoundException {
+
   }
+
+//  public void discover(IdentifierLegacy.Base property) {
+//    this.defaultJuklearMC.onInitialize(
+//        () -> this.defaultJuklearMC
+//            .registerStandaloneComponent(
+//                InjectionHolder.getInjectedInstance(property.getProperty().getLocatedIdentifiedAnnotation().<Class<? extends JuklearMCComponent>>getLocation())));
+//  }
 }

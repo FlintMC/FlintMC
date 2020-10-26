@@ -213,6 +213,10 @@ public class InternalMethodVisitorContext extends MethodVisitor implements Metho
     super.visitMethodInsn(opcode, owner, name, dest, itf);
   }
 
+  public void svisitMethodInsn(int opcode, String owner, String name, String dest) {
+    super.visitMethodInsn(opcode, owner, name, dest);
+  }
+
   public void visitInsn(int opcode) {
     if (this.visitInsn != null) {
       this.visitInsn.visitInsn(VisitInsn.Context.of(this, opcode));

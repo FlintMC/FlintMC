@@ -1,5 +1,8 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -7,7 +10,6 @@ import net.labyfy.component.gui.RenderExecution;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.labyfy.component.transform.javassist.ClassTransform;
@@ -17,15 +19,10 @@ import net.labyfy.component.transform.javassist.CtClassFilters;
 import net.labyfy.internal.component.gui.DefaultGuiController;
 import net.minecraft.client.Minecraft;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 /**
  * 1.15.2 Implementation of the gui interceptor
  */
 @Singleton
-@AutoLoad
 public class VersionedGuiInterceptor {
   private final ClassMappingProvider mappingProvider;
   private final DefaultGuiController controller;

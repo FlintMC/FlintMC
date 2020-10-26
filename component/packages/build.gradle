@@ -20,8 +20,8 @@ dependencies {
     api project(':component:commons')
     api project(':component:stereotype')
     api project(':component:inject')
+    internalImplementation project(':component:tasks')
     internalImplementation project(':component:service')
-    internalImplementation project(':component:initializer')
     internalImplementation project(path: ':component:inject', configuration: 'internal')
     internalImplementation project(path: ':component:stereotype', configuration: 'internal')
     internalImplementation 'com.google.code.gson:gson:2.8.6'
@@ -29,7 +29,6 @@ dependencies {
     labyfy project(':component:commons')
     labyfy project(':component:stereotype')
     labyfy project(':component:service')
-    labyfy project(':component:initializer')
     labyfy project(':component:inject')
     labyfy project(path: ':component:inject', configuration: 'internal')
     labyfy project(path: ':component:stereotype', configuration: 'internal')

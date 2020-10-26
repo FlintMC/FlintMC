@@ -1,11 +1,11 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.inject.Singleton;
 import net.labyfy.component.gui.screen.ScreenName;
 import net.labyfy.component.gui.screen.ScreenNameMapper;
 import net.labyfy.component.inject.implement.Implement;
 
-import javax.inject.Singleton;
 import java.util.Map;
 
 @Singleton

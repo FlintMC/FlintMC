@@ -1,13 +1,13 @@
 package net.labyfy.internal.component.resources.v1_15_2;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.resources.ResourceLocation;
 import net.labyfy.component.resources.ResourceLocationProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResource;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Predicate;

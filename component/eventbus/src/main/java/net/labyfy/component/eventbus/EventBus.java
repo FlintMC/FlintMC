@@ -5,11 +5,7 @@ import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
 import net.labyfy.component.transform.hook.Hook;
 
-/**
- * The EventBus manages all methods with the {@link Subscribe} annotation in the project. The {@link
- * net.labyfy.component.eventbus.event.filter.EventGroup} can be used to group events and filter them before the
- * underlying method is being called.
- */
+/** The EventBus manages all methods with the {@link Subscribe} annotation in the project. */
 public interface EventBus {
 
   /**
@@ -17,7 +13,7 @@ public interface EventBus {
    *
    * @param event The event to fire.
    * @param phase The phase when the event is fired.
-   * @param <E>   The type of the fired event.
+   * @param <E> The type of the fired event.
    * @return The input event
    */
   <E> E fireEvent(E event, Subscribe.Phase phase);
@@ -25,9 +21,9 @@ public interface EventBus {
   /**
    * Fires the given event to the bus.
    *
-   * @param event         The event to fire.
+   * @param event The event to fire.
    * @param executionTime The execution time of a hooked method.
-   * @param <E>           The type of the fired event.
+   * @param <E> The type of the fired event.
    * @return The input event
    */
   default <E> E fireEvent(E event, Hook.ExecutionTime executionTime) {
@@ -46,7 +42,5 @@ public interface EventBus {
    *
    * @return A multimap that contains all subscribe methods.
    */
-  Multimap<Class<?>, SubscribeMethod> getSubscribeMethods();
-
-
+  Multimap<String, SubscribeMethod> getSubscribeMethods();
 }

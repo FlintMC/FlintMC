@@ -1,14 +1,15 @@
 package net.labyfy.component.stereotype.service;
 
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
 
-@FunctionalInterface
-public interface ServiceHandler {
+import java.lang.annotation.Annotation;
+
+public interface ServiceHandler<T extends Annotation> {
   /**
    * Discover a service.
    *
-   * @param property The property where the service was discovered.
+   * @param annotationMeta The meta of the discovered annotation.
    * @throws ServiceNotFoundException If the service could not be discovered.
    */
-  void discover(Identifier.Base property) throws ServiceNotFoundException;
+  void discover(AnnotationMeta<T> annotationMeta) throws ServiceNotFoundException;
 }
