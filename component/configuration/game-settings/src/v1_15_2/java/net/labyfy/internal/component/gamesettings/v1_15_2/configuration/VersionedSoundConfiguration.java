@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.configuration.SoundConfiguration;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.player.serializer.util.sound.SoundCategorySerializer;
-import net.labyfy.component.player.util.sound.SoundCategory;
+import net.labyfy.component.player.type.sound.SoundCategory;
+import net.labyfy.component.player.type.sound.SoundMapper;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -15,11 +15,11 @@ import net.minecraft.client.Minecraft;
 @Implement(value = SoundConfiguration.class, version = "1.15.2")
 public class VersionedSoundConfiguration implements SoundConfiguration {
 
-  private final SoundCategorySerializer<net.minecraft.util.SoundCategory> soundCategorySoundSerializer;
+  private final SoundMapper soundMapper;
 
   @Inject
-  private VersionedSoundConfiguration(SoundCategorySerializer soundCategorySoundSerializer) {
-    this.soundCategorySoundSerializer = soundCategorySoundSerializer;
+  private VersionedSoundConfiguration(SoundMapper soundMapper) {
+    this.soundMapper = soundMapper;
   }
 
   /**
@@ -27,7 +27,7 @@ public class VersionedSoundConfiguration implements SoundConfiguration {
    */
   @Override
   public float getSoundVolume(SoundCategory soundCategory) {
-    return Minecraft.getInstance().gameSettings.getSoundLevel(this.soundCategorySoundSerializer.serialize(soundCategory));
+    return Minecraft.getInstance().gameSettings.getSoundLevel((net.minecraft.util.SoundCategory) this.soundMapper.toMinecraftSoundCategory(soundCategory));
   }
 
   /**
@@ -36,7 +36,7 @@ public class VersionedSoundConfiguration implements SoundConfiguration {
   @Override
   public void setSoundVolume(SoundCategory soundCategory, float volume) {
     Minecraft.getInstance().gameSettings.setSoundLevel(
-            this.soundCategorySoundSerializer.serialize(soundCategory),
+            (net.minecraft.util.SoundCategory) this.soundMapper.toMinecraftSoundCategory(soundCategory),
             volume
     );
   }

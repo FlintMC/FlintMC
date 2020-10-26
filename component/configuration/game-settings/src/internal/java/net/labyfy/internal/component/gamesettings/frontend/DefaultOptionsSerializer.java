@@ -15,7 +15,7 @@ import net.labyfy.component.gamesettings.frontend.FrontendSliderOption;
 import net.labyfy.component.gamesettings.frontend.OptionsSerializer;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.player.util.Hand;
+import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.version.VersionHelper;
 import net.labyfy.component.world.difficult.Difficulty;
 

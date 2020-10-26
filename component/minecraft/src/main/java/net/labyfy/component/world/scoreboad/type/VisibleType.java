@@ -31,21 +31,21 @@ public enum VisibleType {
   }
 
   /**
+   * Retrieves the internal name of this visible type.
+   *
+   * @return The internal name of this visible type.
+   */
+  public String getInternalName() {
+    return internalName;
+  }
+
+  /**
    * Retrieves the identifier of this visible type.
    *
    * @return The identifier of this visible type.
    */
   public int getId() {
     return id;
-  }
-
-  /**
-   * Retrieves the translation key of this visible type.
-   *
-   * @return The translation key of this visible type.
-   */
-  public String getTranslationKey() {
-    return "team.visibility." + this.internalName;
   }
 
 }

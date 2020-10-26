@@ -39,8 +39,8 @@ public class InternalMethodBasedClassTransformMeta implements MethodBasedClassTr
   private final AnnotationMeta<ClassTransform> annotationMeta;
   private final Logger logger;
   private final String version;
+  private final NameResolver classNameResolver;
   private Object transformInstance;
-  private NameResolver classNameResolver;
 
   @AssistedInject
   private InternalMethodBasedClassTransformMeta(
@@ -54,6 +54,7 @@ public class InternalMethodBasedClassTransformMeta implements MethodBasedClassTr
     this.version = (String) launchArguments.get("--game-version");
     this.classMappingProvider = classMappingProvider;
     this.annotationMeta = annotationMeta;
+    this.classNameResolver = InjectionHolder.getInjectedInstance(getAnnotation().classNameResolver());
 
     this.filters = this.createFilters();
   }
@@ -170,10 +171,6 @@ public class InternalMethodBasedClassTransformMeta implements MethodBasedClassTr
 
   @Override
   public NameResolver getClassNameResolver() {
-    if (this.classNameResolver == null) {
-      this.classNameResolver =
-          InjectionHolder.getInjectedInstance(this.getAnnotation().classNameResolver());
-    }
     return this.classNameResolver;
   }
 

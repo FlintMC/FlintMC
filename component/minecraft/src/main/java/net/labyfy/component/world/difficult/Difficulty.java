@@ -34,13 +34,4 @@ public enum Difficulty {
     return this.ordinal();
   }
 
-  /**
-   * Retrieves the translation string of this difficulty.
-   *
-   * @return The translation string of this difficulty.
-   */
-  public String getTranslationString() {
-    return "options.difficulty." + this.name().toLowerCase();
-  }
-
 }
