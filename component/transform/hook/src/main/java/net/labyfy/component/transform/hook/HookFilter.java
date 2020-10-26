@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
-@Deprecated
 @DetectableAnnotation(requiresParent = true)
 public @interface HookFilter {
   HookFilters value();

@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
-@Deprecated
 public enum HookFilters {
   SUBCLASS_OF {
     public boolean test(CtClass source, String value) throws NotFoundException {

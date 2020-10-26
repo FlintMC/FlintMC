@@ -16,7 +16,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Deprecated
 @DetectableAnnotation(metaData = HookFilter.class)
 public @interface Hook {
 

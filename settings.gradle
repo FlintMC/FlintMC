@@ -27,9 +27,6 @@ findProject(':component:transform:asm')?.name = 'asm'
 include 'component:gui'
 findProject(':component:gui')?.name = 'gui'
 
-include 'component:gui:juklearmc'
-findProject(':component:gui:juklearmc')?.name = 'juklearmc'
-
 include 'component:transform:hook'
 findProject(':component:transform:hook')?.name = 'hook'
 
@@ -84,7 +81,10 @@ include ':component:inject-primitive'
 findProject(':component:inject-primitive')?.name = 'inject-primitive'
 
 include 'component:i18n'
-findProject('component:i18n')?.name = 'i18n'
+findProject(':component:i18n')?.name = 'i18n'
+
+include 'component:gui:webgui'
+findProject(':component:gui:webgui')?.name = 'webgui'
 
 include ':component:render'
 findProject(':component:render')?.name = 'render'

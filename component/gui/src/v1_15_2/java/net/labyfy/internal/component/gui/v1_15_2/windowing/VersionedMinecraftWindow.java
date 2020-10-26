@@ -1,0 +1,177 @@
+package net.labyfy.internal.component.gui.v1_15_2.windowing;
+
+import net.labyfy.component.gui.windowing.MinecraftWindow;
+import net.labyfy.component.gui.windowing.WindowRenderer;
+import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.mappings.ClassMappingProvider;
+import net.labyfy.internal.component.gui.windowing.DefaultWindowManager;
+import net.minecraft.client.Minecraft;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+
+@Singleton
+@Implement(value = MinecraftWindow.class, version = "1.15.2")
+public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
+  private final ClassMappingProvider classMappingProvider;
+  private final List<WindowRenderer> intrusiveRenderers;
+
+  @Inject
+  private VersionedMinecraftWindow(ClassMappingProvider classMappingProvider, DefaultWindowManager windowManager) {
+    super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager);
+    this.classMappingProvider = classMappingProvider;
+    this.intrusiveRenderers = new ArrayList<>();
+  }
+
+  @Override
+  public void close() {
+    // The implementation actually destroys the window, for the Minecraft window we only want to mark
+    // to signal the close operation and let the game itself handle the close
+    glfwSetWindowShouldClose(ensureHandle(), true);
+
+    // Clean up intrusive renderers, the others will be cleaned up by the close method
+    glfwMakeContextCurrent(ensureHandle());
+    for(WindowRenderer renderer : intrusiveRenderers) {
+      renderer.cleanup();
+    }
+    close(false);
+  }
+
+  @Override
+  public void addRenderer(WindowRenderer renderer) {
+    if(renderer.isIntrusive()) {
+      intrusiveRenderers.add(renderer);
+    } else {
+      renderers.add(renderer);
+    }
+
+    glfwMakeContextCurrent(ensureHandle());
+    renderer.initialize();
+  }
+
+  @Override
+  public boolean removeRenderer(WindowRenderer renderer) {
+    List<WindowRenderer> lookupList = renderer.isIntrusive() ? intrusiveRenderers : renderers;
+
+    if(!lookupList.remove(renderer)) {
+      // Slow case: renderer is not found in the correct state list, maybe the intrusive state has changed,
+      //            check the other list
+      lookupList = renderer.isIntrusive() ? renderers : intrusiveRenderers;
+      if(!lookupList.remove(renderer)) {
+        // Renderer is not attached
+        return false;
+      }
+    }
+
+    // Perform detach
+    glfwMakeContextCurrent(ensureHandle());
+    renderer.cleanup();
+    return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getScaleFactor() {
+    return (int) Minecraft.getInstance().getMainWindow().getGuiScaleFactor();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getWidth() {
+    return Minecraft.getInstance().getMainWindow().getWidth();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getHeight() {
+    return Minecraft.getInstance().getMainWindow().getHeight();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getScaledWidth() {
+    return Minecraft.getInstance().getMainWindow().getScaledWidth();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public float getScaledHeight() {
+    return Minecraft.getInstance().getMainWindow().getScaledHeight();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getFramebufferWidth() {
+    return Minecraft.getInstance().getFramebuffer().framebufferWidth;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getFramebufferHeight() {
+    return Minecraft.getInstance().getFramebuffer().framebufferHeight;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
+    return this.classMappingProvider
+        .get("net.minecraft.client.Minecraft")
+        .getField("debugFPS")
+        .getValue(null);
+  }
+
+  public boolean isIngame() {
+    return Minecraft.getInstance().world != null;
+  }
+
+  /**
+   * Determines if the window is currently rendered intrusively.
+   *
+   * @return {@code true} if the window is rendered intrusively, {@code false} otherwise
+   */
+  @Override
+  public boolean isRenderedIntrusively() {
+    return !intrusiveRenderers.isEmpty();
+  }
+
+  @Override
+  public void render() {
+    if(handle == 0) {
+      // Minecraft might call this method once more time even after the window has been closed already
+      return;
+    }
+
+    glfwMakeContextCurrent(ensureHandle());
+
+    // Render all intrusive renderers first
+    for(WindowRenderer renderer : intrusiveRenderers) {
+      renderer.render();
+    }
+
+    // Follow with other renderers
+    for(WindowRenderer renderer : renderers) {
+      renderer.render();
+    }
+  }
+}

@@ -1,62 +1,70 @@
 package net.labyfy.component.gui.event;
 
+import net.labyfy.component.gui.event.input.InputState;
+import net.labyfy.component.gui.event.input.ModifierKey;
+import net.labyfy.component.gui.event.input.MouseButton;
+
+import java.util.Set;
+
 /**
  * Event indicating that a mouse button state has changed or is still being hold.
  */
-public class MouseButtonEvent implements GuiInputEvent {
-  public static final int LEFT = 0;
-  public static final int RIGHT = 1;
-  public static final int MIDDLE = 2;
-
-  private final State state;
-  private final int value;
+public class MouseButtonEvent extends EventWithModifierKeys {
+  private final MouseButton button;
+  private final InputState state;
+  private final double x;
+  private final double y;
 
   /**
-   * Constructs a new {@link MouseButtonEvent} with the given state and button number
+   * Constructs a new {@link MouseButtonEvent} with the given state, button and modifier keys.
    *
-   * @param state The new state the button is in
-   * @param value The numerical id of the mouse button
+   * @param state        The new state the button is in
+   * @param button       The mouse button that has changed state
+   * @param x            The x coordinate of the event
+   * @param y            The y coordinate of the event
+   * @param modifierKeys The modifier keys which were active while the event was fired
    */
-  public MouseButtonEvent(State state, int value) {
+  public MouseButtonEvent(MouseButton button, InputState state, double x, double y, Set<ModifierKey> modifierKeys) {
+    super(modifierKeys);
+    this.button = button;
     this.state = state;
-    this.value = value;
+    this.x = x;
+    this.y = y;
   }
 
   /**
    * Retrieves the new state of the mouse button
    *
-   * @return The new state of the button with the id {@link #getValue()}
+   * @return The new state of the button
    */
-  public State getState() {
+  public InputState getState() {
     return state;
   }
 
   /**
-   * Retrieves the numerical id of the mouse button which has changed the state
+   * Retrieves the mouse button that has changed state.
    *
-   * @return The numerical id of the button which has changed
+   * @return The button that has changed state
    */
-  public int getValue() {
-    return value;
+  public MouseButton getButton() {
+    return button;
   }
 
   /**
-   * Simple representation of possible mouse button states
+   * Retrieves the x coordinate of the event.
+   *
+   * @return The x coordinate
    */
-  public enum State {
-    /**
-     * The button has been pressed
-     */
-    PRESS,
+  public double getX() {
+    return x;
+  }
 
-    /**
-     * The button has been released
-     */
-    RELEASE,
-
-    /**
-     * The button is being hold for a long duration
-     */
-    REPEAT
+  /**
+   * Retrieves the y coordinate of the event.
+   *
+   * @return The y coordinate
+   */
+  public double getY() {
+    return y;
   }
 }

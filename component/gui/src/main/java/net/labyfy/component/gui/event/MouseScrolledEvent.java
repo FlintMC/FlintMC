@@ -3,7 +3,7 @@ package net.labyfy.component.gui.event;
 /**
  * Event indicating that the user has done scroll input
  */
-public class MouseScrolledEvent implements GuiInputEvent {
+public class MouseScrolledEvent implements GuiEvent {
   private final double xOffset;
   private final double yOffset;
 

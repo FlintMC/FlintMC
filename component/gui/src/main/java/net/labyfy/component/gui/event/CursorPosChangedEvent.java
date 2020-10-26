@@ -3,7 +3,7 @@ package net.labyfy.component.gui.event;
 /**
  * Event indicating that the cursor position has changed within the window bounds.
  */
-public class CursorPosChangedEvent implements GuiInputEvent {
+public class CursorPosChangedEvent implements GuiEvent {
   private final double x;
   private final double y;
 
