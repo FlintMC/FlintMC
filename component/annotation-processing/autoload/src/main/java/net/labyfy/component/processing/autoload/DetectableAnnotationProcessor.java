@@ -445,7 +445,7 @@ public class DetectableAnnotationProcessor implements Processor {
 
       @Override
       public String visitType(TypeMirror t, Void unused) {
-        return t.toString() + ".class";
+        return String.format("%s.class", t.toString());
       }
 
       @Override

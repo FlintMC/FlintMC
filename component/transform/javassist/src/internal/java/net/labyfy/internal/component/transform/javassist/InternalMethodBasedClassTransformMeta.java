@@ -12,6 +12,7 @@ import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
+import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
@@ -124,15 +125,11 @@ public class InternalMethodBasedClassTransformMeta implements MethodBasedClassTr
         target = resolve;
       }
 
-      if ((annotation.version().isEmpty() || annotation.version().equals(this.version))
+      return (annotation.version().isEmpty() || annotation.version().equals(this.version))
           && ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
-              || target.equals(classMapping.getObfuscatedName()))
+          || target.equals(classMapping.getObfuscatedName()))
           && this.getFilters().stream()
-              .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass))) {
-
-        return true;
-      }
-      return false;
+          .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass));
     }
     return true;
   }
@@ -174,8 +171,11 @@ public class InternalMethodBasedClassTransformMeta implements MethodBasedClassTr
   @Override
   public NameResolver getClassNameResolver() {
     if (this.classNameResolver == null) {
+      boolean transformEnabled = LaunchController.getInstance().getRootLoader().isTransformEnabled();
+      LaunchController.getInstance().getRootLoader().setTransformEnabled(false);
       this.classNameResolver =
           InjectionHolder.getInjectedInstance(this.getAnnotation().classNameResolver());
+      LaunchController.getInstance().getRootLoader().setTransformEnabled(transformEnabled);
     }
     return this.classNameResolver;
   }
