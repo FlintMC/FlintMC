@@ -4,6 +4,12 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 
+/**
+ * Implements an {@link Identifier} to locate {@link
+ * net.labyfy.component.processing.autoload.DetectableAnnotation}s located at class level.
+ *
+ * @see Identifier
+ */
 public class ClassIdentifier implements Identifier<CtClass> {
   private final String name;
 
@@ -11,6 +17,9 @@ public class ClassIdentifier implements Identifier<CtClass> {
     this.name = name;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CtClass getLocation() {
     try {
@@ -20,6 +29,7 @@ public class ClassIdentifier implements Identifier<CtClass> {
     }
   }
 
+  /** @return The class name of this identifier */
   public String getName() {
     return name;
   }
