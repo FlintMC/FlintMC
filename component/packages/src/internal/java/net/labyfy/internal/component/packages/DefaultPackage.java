@@ -12,6 +12,7 @@ import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageState;
+import net.labyfy.component.packages.localization.PackageLocalizationLoader;
 import net.labyfy.component.processing.autoload.AutoLoadProvider;
 import net.labyfy.component.service.ExtendedServiceLoader;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -31,6 +32,7 @@ import java.util.jar.JarFile;
 @Implement(Package.class)
 public class DefaultPackage implements Package {
   private final File jarFile;
+  private PackageLocalizationLoader localizationLoader;
   private PackageManifest packageManifest;
   private PackageState packageState;
   private PackageClassLoader classLoader;
@@ -47,6 +49,7 @@ public class DefaultPackage implements Package {
    */
   @AssistedInject
   private DefaultPackage(
+          PackageLocalizationLoader localizationLoader,
           DefaultPackageManifestLoader manifestLoader,
           @Assisted File jarFile,
           @Assisted JarFile jar) {
@@ -56,7 +59,7 @@ public class DefaultPackage implements Package {
       // If the package should be loaded from a jar file, try to retrieve the manifest from it
       if (!manifestLoader.isManifestPresent(jar)) {
         throw new IllegalArgumentException("The given JAR file " + jarFile.getName() +
-            " does not contain a package manifest");
+                " does not contain a package manifest");
       }
 
       // Try to load the manifest
@@ -71,8 +74,16 @@ public class DefaultPackage implements Package {
         }
 
         this.packageManifest = manifest;
+
+        // Try to load localizations
+        this.localizationLoader = localizationLoader;
+        if (localizationLoader.isLanguageFolderPresent(jar)) {
+          localizationLoader.loadLocalizations(jar);
+        }
+
       } catch (IOException ignored) {
       }
+
     } else {
       // The package should not be loaded from a file, thus we don't have a manifest and mark  the package
       // as ready for load
@@ -102,8 +113,8 @@ public class DefaultPackage implements Package {
   @Override
   public String getDisplayName() {
     return this.packageManifest != null
-        ? this.packageManifest.getDisplayName()
-        : jarFile.getName();
+            ? this.packageManifest.getDisplayName()
+            : jarFile.getName();
   }
 
   /**
@@ -126,23 +137,23 @@ public class DefaultPackage implements Package {
    * {@inheritDoc}
    */
   @Override
-  public File getFile() {
-    return this.jarFile;
+  public void setState(PackageState state) {
+    if (packageState != PackageState.NOT_LOADED) {
+      throw new IllegalStateException(
+              "The package state can only be changed if the package has not been loaded already");
+    } else if (state == PackageState.LOADED) {
+      throw new IllegalArgumentException("The package state can't be set to LOADED explicitly, use the load() method");
+    }
+
+    this.packageState = state;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void setState(PackageState state) {
-    if (packageState != PackageState.NOT_LOADED) {
-      throw new IllegalStateException(
-          "The package state can only be changed if the package has not been loaded already");
-    } else if (state == PackageState.LOADED) {
-      throw new IllegalArgumentException("The package state can't be set to LOADED explicitly, use the load() method");
-    }
-
-    this.packageState = state;
+  public File getFile() {
+    return this.jarFile;
   }
 
   /**
@@ -176,14 +187,14 @@ public class DefaultPackage implements Package {
 
     // Find all autoload providers within the package
     Set<AutoLoadProvider> autoLoadProviders =
-        ExtendedServiceLoader.get(AutoLoadProvider.class).discover(classLoader.asClassLoader());
+            ExtendedServiceLoader.get(AutoLoadProvider.class).discover(classLoader.asClassLoader());
 
     Map<Integer, Multimap<Integer, String>> sortedClasses = new TreeMap<>(Integer::compare);
 
     TriConsumer<Integer, Integer, String> classAcceptor = (round, priority, name) ->
-        sortedClasses
-            .computeIfAbsent(round, (k) -> MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build())
-            .put(priority, name);
+            sortedClasses
+                    .computeIfAbsent(round, (k) -> MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build())
+                    .put(priority, name);
 
     // Build the map of classes to load
     autoLoadProviders.iterator().forEachRemaining((provider) -> provider.registerAutoLoad(classAcceptor));
@@ -218,10 +229,15 @@ public class DefaultPackage implements Package {
   public PackageClassLoader getPackageClassLoader() {
     if (packageState != PackageState.LOADED && packageState != PackageState.ENABLED) {
       throw new IllegalStateException("The package has to be in the LOADED or ENABLED state in order to retrieve " +
-          "the class loader of it");
+              "the class loader of it");
     }
 
     return this.classLoader;
+  }
+
+  @Override
+  public PackageLocalizationLoader getPackageLocalizationLoader() {
+    return this.localizationLoader;
   }
 
   /**
@@ -231,7 +247,7 @@ public class DefaultPackage implements Package {
   public Exception getLoadException() {
     if (packageState != PackageState.ERRORED) {
       throw new IllegalStateException("The package has to be in the ERRORED state in order to retrieve the exception " +
-          "which caused its loading to fail");
+              "which caused its loading to fail");
     }
 
     return this.loadException;
