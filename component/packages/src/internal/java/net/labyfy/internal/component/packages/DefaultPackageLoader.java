@@ -104,6 +104,7 @@ public class DefaultPackageLoader implements PackageLoader {
     if (this.jars.isEmpty()) {
       // We have no files to load, skip it
       this.logger.info("No loadable Packages found in {}...", packageFolder.getAbsolutePath());
+      this.allPackages = Collections.emptySet();
       return;
     }
     this.logger.info("Loading packages from {}...", packageFolder.getAbsolutePath());
