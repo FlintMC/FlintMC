@@ -20,4 +20,6 @@ public interface PackageLoader {
    * @return A set of all loaded or enabled packages
    */
   Set<Package> getLoadedPackages();
+
+  void load();
 }

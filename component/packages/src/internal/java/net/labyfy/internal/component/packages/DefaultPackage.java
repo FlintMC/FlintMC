@@ -1,28 +1,30 @@
 package net.labyfy.internal.component.packages;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.commons.consumer.TriConsumer;
-import net.labyfy.component.initializer.EntryPoint;
+import javassist.ClassPool;
+import javassist.NotFoundException;
+import net.labyfy.component.inject.InjectionService;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageState;
-import net.labyfy.component.processing.autoload.AutoLoadProvider;
+import net.labyfy.component.packages.localization.PackageLocalizationLoader;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
+import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
 import net.labyfy.component.service.ExtendedServiceLoader;
-import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-import net.labyfy.internal.component.inject.InjectionServiceShare;
-import net.labyfy.internal.component.stereotype.service.ServiceRepository;
+import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.stereotype.service.ServiceRepository;
+import net.labyfy.component.stereotype.service.Services;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.jar.JarFile;
 
 /**
@@ -30,7 +32,11 @@ import java.util.jar.JarFile;
  */
 @Implement(Package.class)
 public class DefaultPackage implements Package {
+
+  private final ServiceRepository serviceRepository;
   private final File jarFile;
+
+  private PackageLocalizationLoader localizationLoader;
   private PackageManifest packageManifest;
   private PackageState packageState;
   private PackageClassLoader classLoader;
@@ -40,6 +46,7 @@ public class DefaultPackage implements Package {
    * Creates a new Labyfy package with the given description loader and the
    * given files.
    *
+   * @param serviceRepository The singleton instance of the {@link ServiceRepository}
    * @param manifestLoader The loader to use for reading the manifest
    * @param jarFile        The java IO file this package should be loaded from, or null if loaded from the classpath
    * @param jar            The java IO jar file this package should be loaded from, must point to the same file as
@@ -47,16 +54,19 @@ public class DefaultPackage implements Package {
    */
   @AssistedInject
   private DefaultPackage(
+          ServiceRepository serviceRepository,
+          PackageLocalizationLoader localizationLoader,
           DefaultPackageManifestLoader manifestLoader,
           @Assisted File jarFile,
           @Assisted JarFile jar) {
+    this.serviceRepository = serviceRepository;
     this.jarFile = jarFile;
 
     if (jar != null) {
       // If the package should be loaded from a jar file, try to retrieve the manifest from it
       if (!manifestLoader.isManifestPresent(jar)) {
-        throw new IllegalArgumentException("The given JAR file " + jarFile.getName() +
-            " does not contain a package manifest");
+        throw new IllegalArgumentException(
+            "The given JAR file " + jarFile.getName() + " does not contain a package manifest");
       }
 
       // Try to load the manifest
@@ -71,68 +81,55 @@ public class DefaultPackage implements Package {
         }
 
         this.packageManifest = manifest;
+
+        // Try to load localizations
+        this.localizationLoader = localizationLoader;
+        if (localizationLoader.isLanguageFolderPresent(jar)) {
+          localizationLoader.loadLocalizations(jar);
+        }
+
       } catch (IOException ignored) {
       }
+
     } else {
-      // The package should not be loaded from a file, thus we don't have a manifest and mark  the package
+      // The package should not be loaded from a file, thus we don't have a manifest and mark  the
+      // package
       // as ready for load
       this.packageState = PackageState.NOT_LOADED;
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PackageManifest getPackageManifest() {
     return this.packageManifest;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getName() {
     return this.packageManifest != null ? this.packageManifest.getName() : jarFile.getName();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getDisplayName() {
-    return this.packageManifest != null
-        ? this.packageManifest.getDisplayName()
-        : jarFile.getName();
+    return this.packageManifest != null ? this.packageManifest.getDisplayName() : jarFile.getName();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getVersion() {
     return this.packageManifest != null ? this.packageManifest.getVersion() : "unknown";
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PackageState getState() {
     return this.packageState;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public File getFile() {
-    return this.jarFile;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setState(PackageState state) {
     if (packageState != PackageState.NOT_LOADED) {
@@ -143,6 +140,14 @@ public class DefaultPackage implements Package {
     }
 
     this.packageState = state;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public File getFile() {
+    return this.jarFile;
   }
 
   /**
@@ -174,41 +179,75 @@ public class DefaultPackage implements Package {
       throw new IllegalStateException("The package has to be in the LOADED state in order to be enabled");
     }
 
-    // Find all autoload providers within the package
-    Set<AutoLoadProvider> autoLoadProviders =
-        ExtendedServiceLoader.get(AutoLoadProvider.class).discover(classLoader.asClassLoader());
-
-    Map<Integer, Multimap<Integer, String>> sortedClasses = new TreeMap<>(Integer::compare);
-
-    TriConsumer<Integer, Integer, String> classAcceptor = (round, priority, name) ->
-        sortedClasses
-            .computeIfAbsent(round, (k) -> MultimapBuilder.treeKeys(Integer::compare).linkedListValues().build())
-            .put(priority, name);
-
-    // Build the map of classes to load
-    autoLoadProviders.iterator().forEachRemaining((provider) -> provider.registerAutoLoad(classAcceptor));
-
-    // Iterate over the classes and register them to the service register
-    sortedClasses.forEach((round, classes) -> {
-      classes.entries().forEach(entry -> {
-        try {
-          EntryPoint.notifyService(Class.forName(entry.getValue(), true, DefaultPackage.class.getClassLoader()));
-        } catch (Exception exception) {
-          throw new RuntimeException("Unreachable condition hit: already loaded class not found: " + entry.getValue(), exception);
-        }
-      });
-
-      InjectionServiceShare.flush();
-
-      try {
-        InjectionHolder.getInjectedInstance(ServiceRepository.class).flushAll();
-      } catch (ServiceNotFoundException exception) {
-        throw new RuntimeException("Unable to discover service during flushAll: " + ServiceRepository.class.getName(), exception);
-      }
-    });
+    try {
+      // Find all services on the classpath and register them to the service repository
+      this.prepareServices();
+      // Flush all registered services that are defined in the PRE_INIT state. This should only be
+      // done if it is really necessary.
+      this.serviceRepository.flushServices(Service.State.PRE_INIT);
+      // Apply all Implementations and AssistedFactories
+      InjectionHolder.getInjectedInstance(InjectionService.class).flush();
+      // Flush all other higher level framework features like Events, Transforms etc.
+      this.serviceRepository.flushServices(Service.State.POST_INIT);
+    } catch (NotFoundException e) {
+      e.printStackTrace();
+    }
 
     // The package is now enabled
     this.packageState = PackageState.ENABLED;
+  }
+
+
+  private void prepareServices() throws NotFoundException {
+    // Find all autoload providers within the package
+    List<AnnotationMeta> annotations = getAnnotationMeta();
+    // Iterate over all annotations
+    for (AnnotationMeta annotationMeta : annotations) {
+      if (annotationMeta.getAnnotation().annotationType().equals(Service.class)) {
+        // if yes go ahead and register it
+        Service annotation = (Service) annotationMeta.getAnnotation();
+        serviceRepository.registerService(
+            annotation.value(),
+            annotation.priority(),
+            annotation.state(),
+            ClassPool.getDefault()
+                .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+        // if not check if it might be multiple services at once. the Javapoet framework sadly seems
+        // to not support Repeatable annotations yet. Maybe this will change sometime.
+      } else if (annotationMeta.getAnnotation().annotationType().equals(Services.class)) {
+        // Iterate over all services and register them
+        for (Service service : ((Services) annotationMeta.getAnnotation()).value()) {
+          serviceRepository.registerService(
+              service.value(),
+              service.priority(),
+              service.state(),
+              ClassPool.getDefault()
+                  .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+        }
+      }
+    }
+
+    // Iterate over all annotations again
+    for (AnnotationMeta annotationMeta : annotations) {
+      // register the annotation
+      serviceRepository.registerAnnotation(annotationMeta);
+    }
+  }
+
+
+  /**
+   * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
+   * on compile time
+   */
+  private List<AnnotationMeta> getAnnotationMeta() {
+    List<AnnotationMeta> annotationMetas = new ArrayList<>();
+
+    Set<DetectableAnnotationProvider> discover =
+        ExtendedServiceLoader.get(DetectableAnnotationProvider.class)
+            .discover(getPackageClassLoader().asClassLoader());
+    discover.forEach(
+        detectableAnnotationProvider -> detectableAnnotationProvider.register(annotationMetas));
+    return annotationMetas;
   }
 
   /**
@@ -217,11 +256,18 @@ public class DefaultPackage implements Package {
   @Override
   public PackageClassLoader getPackageClassLoader() {
     if (packageState != PackageState.LOADED && packageState != PackageState.ENABLED) {
-      throw new IllegalStateException("The package has to be in the LOADED or ENABLED state in order to retrieve " +
-          "the class loader of it");
+      throw new IllegalStateException(
+          "The package has to be in the LOADED or ENABLED state in order to retrieve "
+              + "the class loader of it");
     }
 
     return this.classLoader;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public PackageLocalizationLoader getPackageLocalizationLoader() {
+    return this.localizationLoader;
   }
 
   /**
@@ -230,8 +276,9 @@ public class DefaultPackage implements Package {
   @Override
   public Exception getLoadException() {
     if (packageState != PackageState.ERRORED) {
-      throw new IllegalStateException("The package has to be in the ERRORED state in order to retrieve the exception " +
-          "which caused its loading to fail");
+      throw new IllegalStateException(
+          "The package has to be in the ERRORED state in order to retrieve the exception "
+              + "which caused its loading to fail");
     }
 
     return this.loadException;

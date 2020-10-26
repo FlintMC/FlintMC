@@ -3,7 +3,6 @@ package net.labyfy.internal.component.gamesettings.v1_15_2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.GameSettingsParser;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.transform.hook.Hook;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.util.Map;
 
 @Singleton
-@AutoLoad
 public class VersionedGameSettingsInterceptor {
 
   private final GameSettingsParser gameSettingsParser;

@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.labyfy.component'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+labyfy{
+}

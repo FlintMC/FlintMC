@@ -3,7 +3,6 @@ package net.labyfy.internal.component.tileentity.cache;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.tileentity.TileEntity;
 import net.labyfy.component.world.math.BlockPosition;
 
@@ -19,7 +18,6 @@ import java.util.function.Supplier;
  * given tile entity and its block position.
  */
 @Singleton
-@AutoLoad
 public class TileEntityCache {
 
   private final Map<BlockPosition, TileEntity> tileEntities;

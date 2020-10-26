@@ -6,9 +6,6 @@ findProject(':component:transform:exceptions')?.name = "exceptions"
 include 'component:transform:javassist'
 findProject(':component:transform:javassist')?.name = "javassist"
 
-include 'component:initializer'
-findProject(':component:initializer')?.name = 'initializer'
-
 include 'component:tasks'
 findProject(':component::tasks')?.name = 'tasks'
 
@@ -29,9 +26,6 @@ findProject(':component:transform:asm')?.name = 'asm'
 
 include 'component:gui'
 findProject(':component:gui')?.name = 'gui'
-
-include 'component:gui:juklearmc'
-findProject(':component:gui:juklearmc')?.name = 'juklearmc'
 
 include 'component:transform:hook'
 findProject(':component:transform:hook')?.name = 'hook'
@@ -77,9 +71,6 @@ buildCache {
 include 'component:service'
 findProject(':component:service')?.name = 'service'
 
-include 'component:security'
-findProject('component:security')?.name = 'security'
-
 include 'component:commons'
 findProject(':component:commons')?.name = 'commons'
 
@@ -90,7 +81,13 @@ include ':component:inject-primitive'
 findProject(':component:inject-primitive')?.name = 'inject-primitive'
 
 include 'component:i18n'
-findProject('component:i18n')?.name = 'i18n'
+findProject(':component:i18n')?.name = 'i18n'
+
+include 'component:gui:webgui'
+findProject(':component:gui:webgui')?.name = 'webgui'
+
+include ':component:render'
+findProject(':component:render')?.name = 'render'
 
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
@@ -121,6 +118,9 @@ findProject(':component:render:vbo-rendering')?.name = 'vbo-rendering'
 
 include 'component:nbt'
 findProject(':component:nbt')?.name = "nbt"
+
+include 'component:render:shader'
+findProject(':component:render:shader')?.name = 'shader'
 
 include 'component:session-service'
 findProject(':component:session-service')?.name = 'session-service'

@@ -4,18 +4,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.mojang.authlib.GameProfile;
-import net.labyfy.component.entity.mapper.EntityFoundationMapper;
 import net.labyfy.component.player.network.NetworkPlayerInfo;
 import net.labyfy.component.player.network.NetworkPlayerInfoRegistry;
 import net.labyfy.component.player.serializer.gameprofile.GameProfileSerializer;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
-import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.minecraft.network.play.server.SPlayerListItemPacket;
 
 @Singleton
-@AutoLoad
 public class VersionedClientPlayNetHandlerInterceptor {
 
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;

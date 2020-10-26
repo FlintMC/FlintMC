@@ -2,7 +2,6 @@ package net.labyfy.internal.component.session.launcher;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.session.SessionService;
 import net.labyfy.component.session.launcher.LauncherProfileResolver;
 import net.labyfy.component.session.launcher.LauncherProfiles;
@@ -12,7 +11,6 @@ import net.labyfy.component.tasks.Tasks;
 import java.io.IOException;
 
 @Singleton
-@AutoLoad
 public class InitialLauncherProfileReader {
 
   private final LauncherProfileResolver resolver;

@@ -1,8 +1,7 @@
 package net.labyfy.component.transform.hook;
 
+import com.google.inject.Singleton;
 import net.labyfy.component.commons.resolve.AnnotationResolver;
-
-import javax.inject.Singleton;
 
 @Singleton
 @Deprecated

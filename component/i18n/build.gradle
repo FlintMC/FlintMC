@@ -20,6 +20,8 @@ dependencies {
     v1_15_2AnnotationProcessor project(':component:annotation-processing:autoload')
 
     api project(':component:inject')
+    api project(':component:packages')
+    api project(':component:transform:shadow')
     v1_15_2Implementation project(':component:transform:hook')
 
     labyfy project(':component:inject')

@@ -3,7 +3,6 @@ package net.labyfy.internal.component.world.v1_15_2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.tileentity.TileEntity;
 import net.labyfy.component.tileentity.mapper.TileEntityMapper;
@@ -15,7 +14,6 @@ import net.minecraft.util.math.BlockPos;
  * 1.15.2 implementation nof the world interceptor.
  */
 @Singleton
-@AutoLoad
 public class VersionedWorldInterceptor {
 
   private final World world;

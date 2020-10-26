@@ -25,4 +25,5 @@ dependencies {
     api project(':component:inject')
     api project(':component:minecraft')
     api project(':component:chat')
+    api project(':component:transform:shadow')
 }

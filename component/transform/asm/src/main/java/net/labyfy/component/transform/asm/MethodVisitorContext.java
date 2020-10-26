@@ -69,6 +69,8 @@ public interface MethodVisitorContext {
 
   void svisitMethodInsn(int opcode, String owner, String name, String dest, boolean itf);
 
+  void svisitMethodInsn(int opcode, String owner, String name, String dest);
+
   void visitInsn(int opcode);
 
   void svisitIntInsn(int opcode, int operand);

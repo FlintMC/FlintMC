@@ -3,14 +3,9 @@ package net.labyfy.internal.component.world.v1_15_2.scoreboard.score;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.chat.builder.TextComponentBuilder;
-import net.labyfy.chat.component.ChatComponent;
-import net.labyfy.chat.format.ChatColor;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.scoreboad.score.PlayerTeam;
-import net.labyfy.component.world.scoreboad.type.CollisionType;
-import net.labyfy.component.world.scoreboad.type.VisibleType;
 
 /**
  * 1.15.2 implementation of {@link PlayerTeam.Provider}

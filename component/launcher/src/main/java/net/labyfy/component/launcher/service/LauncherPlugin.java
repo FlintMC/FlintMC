@@ -81,13 +81,14 @@ public interface LauncherPlugin {
     return null;
   }
 
-    /**
-     * Allows the plugin to override where resources can be found.
-     *
-     * @param resourceName the name of the resource to be found
-     * @param suggested    the currently suggested url, may be null
-     * @return the adjusted url or null to indicate no change
-     */
+
+  /**
+   * Allows the plugin to override where resources can be found.
+   *
+   * @param resourceName the name of the resource to be found
+   * @param suggested    the currently suggested url, may be null
+   * @return the adjusted url or null to indicate no change
+   */
   default URL adjustResourceURL(String resourceName, URL suggested) {
     return null;
   }

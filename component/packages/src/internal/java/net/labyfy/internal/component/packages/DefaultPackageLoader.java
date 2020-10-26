@@ -9,8 +9,6 @@ import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.PackageLoader;
 import net.labyfy.component.packages.PackageState;
-import net.labyfy.component.tasks.Task;
-import net.labyfy.component.tasks.Tasks;
 import net.labyfy.internal.component.inject.DefaultLoggingProvider;
 import org.apache.logging.log4j.Logger;
 
@@ -102,11 +100,11 @@ public class DefaultPackageLoader implements PackageLoader {
     }
   }
 
-  @Task(Tasks.INTERNAL_INITIALIZE)
-  private void load() {
+  public void load() {
     if (this.jars.isEmpty()) {
       // We have no files to load, skip it
       this.logger.info("No loadable Packages found in {}...", packageFolder.getAbsolutePath());
+      this.allPackages = Collections.emptySet();
       return;
     }
     this.logger.info("Loading packages from {}...", packageFolder.getAbsolutePath());

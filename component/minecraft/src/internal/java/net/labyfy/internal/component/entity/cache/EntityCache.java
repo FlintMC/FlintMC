@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.entity.Entity;
-import net.labyfy.component.processing.autoload.AutoLoad;
 
 import java.util.Map;
 import java.util.UUID;
@@ -19,7 +18,6 @@ import java.util.function.Supplier;
  * its unique identifier.
  */
 @Singleton
-@AutoLoad
 public class EntityCache {
 
   private final Map<UUID, Entity> entities;

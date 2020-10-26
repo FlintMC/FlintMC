@@ -1,9 +1,11 @@
 package net.labyfy.chat.event;
 
+import net.labyfy.component.eventbus.event.Event;
+
 /**
  * The base event for sending/receiving messages in the chat.
  */
-public interface ChatMessageEvent {
+public interface ChatMessageEvent extends Event {
 
   /**
    * Retrieves the type of this chat message event
