@@ -59,6 +59,7 @@ public class DefaultPackage implements Package {
           DefaultPackageManifestLoader manifestLoader,
           @Assisted File jarFile,
           @Assisted JarFile jar) {
+    this.serviceRepository = serviceRepository;
     this.jarFile = jarFile;
 
     if (jar != null) {
