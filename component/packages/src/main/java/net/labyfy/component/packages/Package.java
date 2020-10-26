@@ -2,6 +2,7 @@ package net.labyfy.component.packages;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.packages.localization.PackageLocalizationLoader;
 
 import java.io.File;
 import java.util.jar.JarFile;
@@ -92,6 +93,8 @@ public interface Package {
    *                               {@link PackageState#ENABLED} state
    */
   PackageClassLoader getPackageClassLoader();
+
+  PackageLocalizationLoader getPackageLocalizationLoader();
 
   /**
    * Retrieves the exception which occurred while loading the package. In order to call this method
