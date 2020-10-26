@@ -12,7 +12,6 @@ import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.launcher.LaunchController;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
@@ -67,12 +66,13 @@ public class InternalMethodBasedClassTransformMeta implements MethodBasedClassTr
           ctClass -> {
             CtClassFilter classFilterAnnotation = ctClassFilter.getAnnotation();
             try {
+              NameResolver classNameResolver =
+                  InjectionHolder.getInjectedInstance(classFilterAnnotation.classNameResolver());
+
               return classFilterAnnotation
                   .value()
-                  .test(
-                      ctClass,
-                      InjectionHolder.getInjectedInstance(classFilterAnnotation.classNameResolver())
-                          .resolve(classFilterAnnotation.className()));
+                  .test(ctClass, classNameResolver.resolve(classFilterAnnotation.className()));
+
             } catch (NotFoundException exception) {
               logger.error(
                   "Exception while discovering service: {}",
@@ -171,11 +171,8 @@ public class InternalMethodBasedClassTransformMeta implements MethodBasedClassTr
   @Override
   public NameResolver getClassNameResolver() {
     if (this.classNameResolver == null) {
-      boolean transformEnabled = LaunchController.getInstance().getRootLoader().isTransformEnabled();
-      LaunchController.getInstance().getRootLoader().setTransformEnabled(false);
       this.classNameResolver =
           InjectionHolder.getInjectedInstance(this.getAnnotation().classNameResolver());
-      LaunchController.getInstance().getRootLoader().setTransformEnabled(transformEnabled);
     }
     return this.classNameResolver;
   }

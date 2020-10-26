@@ -3,28 +3,27 @@ package net.labyfy.component.transform.launchplugin;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.ClassPool;
-import javassist.CtClass;
 import javassist.NotFoundException;
-import net.labyfy.component.commons.util.Pair;
 import net.labyfy.component.inject.InjectionService;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.launcher.LaunchController;
+import net.labyfy.component.packages.PackageLoader;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
 import net.labyfy.component.service.ExtendedServiceLoader;
-import net.labyfy.component.stereotype.ServiceHandlerMeta;
-import net.labyfy.component.stereotype.service.*;
+import net.labyfy.component.stereotype.service.Service;
+import net.labyfy.component.stereotype.service.ServiceRepository;
+import net.labyfy.component.stereotype.service.Services;
 import net.labyfy.component.transform.launchplugin.inject.module.BindConstantModule;
 
-import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Singleton
 public class LabyfyFrameworkInitializer {
-
-  private final Map<CtClass, ServiceHandler> serviceHandlerInstances = new HashMap<>();
-  private final Collection<Pair<AnnotationMeta<?>, CtClass>> discoveredMeta = new HashSet<>();
 
   @Inject
   private LabyfyFrameworkInitializer() {
@@ -51,53 +50,15 @@ public class LabyfyFrameworkInitializer {
       this.prepareServices(serviceRepository);
       // Flush all registered services that are defined in the PRE_INIT state. This should only be
       // done if it is really necessary.
-      this.flushServices(Service.State.PRE_INIT, serviceRepository);
+      serviceRepository.flushServices(Service.State.PRE_INIT);
       // Apply all Implementations and AssistedFactories
       InjectionHolder.getInjectedInstance(InjectionService.class).flush();
       // Flush all other higher level framework features like Events, Transforms etc.
-      this.flushServices(Service.State.POST_INIT, serviceRepository);
+      serviceRepository.flushServices(Service.State.POST_INIT);
 
+      InjectionHolder.getInjectedInstance(PackageLoader.class).load();
     } catch (NotFoundException e) {
       e.printStackTrace();
-    }
-  }
-
-  private void flushServices(Service.State state, ServiceRepository serviceRepository) {
-    List<ServiceHandlerMeta> services = new ArrayList<>();
-    for (ServiceHandlerMeta value : serviceRepository.getServiceHandlers().values()) {
-      if (!value.getState().equals(state)) continue;
-      services.add(value);
-    }
-
-    services.sort(Comparator.comparingInt(ServiceHandlerMeta::getPriority));
-
-    for (ServiceHandlerMeta serviceHandlerMeta : services) {
-      CtClass serviceHandlerClass = serviceHandlerMeta.getServiceHandlerClass();
-      for (Class<? extends Annotation> annotationType : serviceHandlerMeta.getAnnotationTypes()) {
-        for (AnnotationMeta<?> annotationMeta :
-            serviceRepository.getAnnotations().get(annotationType)) {
-          try {
-            Pair<AnnotationMeta<?>, CtClass> serviceMetaPair =
-                new Pair<>(annotationMeta, serviceHandlerClass);
-            if (discoveredMeta.contains(serviceMetaPair)) continue;
-            discoveredMeta.add(serviceMetaPair);
-            if (!serviceHandlerInstances.containsKey(serviceHandlerClass)) {
-              serviceHandlerInstances.put(
-                  serviceHandlerClass,
-                  InjectionHolder.getInjectedInstance(
-                      CtResolver.get(serviceHandlerClass)));
-            }
-            if (!serviceHandlerClass.isFrozen()) {
-              serviceHandlerClass.freeze();
-            }
-            serviceHandlerInstances.get(serviceHandlerClass).discover(annotationMeta);
-            serviceHandlerClass.defrost();
-
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
-      }
     }
   }
 
@@ -115,8 +76,7 @@ public class LabyfyFrameworkInitializer {
             annotation.priority(),
             annotation.state(),
             ClassPool.getDefault()
-                .get(
-                    ((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+                .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
         // if not check if it might be multiple services at once. the Javapoet framework sadly seems
         // to not support Repeatable annotations yet. Maybe this will change sometime.
       } else if (annotationMeta.getAnnotation().annotationType().equals(Services.class)) {
@@ -127,9 +87,7 @@ public class LabyfyFrameworkInitializer {
               service.priority(),
               service.state(),
               ClassPool.getDefault()
-                  .get(
-                      ((ClassIdentifier) (annotationMeta.getIdentifier()))
-                          .getName()));
+                  .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
         }
       }
     }
@@ -143,7 +101,7 @@ public class LabyfyFrameworkInitializer {
 
   /**
    * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
-   * on compile time
+   *     on compile time
    */
   private List<AnnotationMeta> getAnnotationMeta() {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();

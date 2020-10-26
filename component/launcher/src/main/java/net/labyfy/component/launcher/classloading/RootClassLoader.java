@@ -102,20 +102,6 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   }
 
   /**
-   * @return if classes should be transformed.
-   */
-  public boolean isTransformEnabled() {
-    return transformEnabled;
-  }
-
-  /**
-   * @param transformEnabled defines if classes should be transformed.
-   */
-  public void setTransformEnabled(boolean transformEnabled) {
-    this.transformEnabled = transformEnabled;
-  }
-
-  /**
    * Marks a specified set of prefixes as excluded from transformation.
    * For example, {@code "a.b."} would exclude everything in the package a.b and its subpackages.
    *
