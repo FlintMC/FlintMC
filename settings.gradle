@@ -107,6 +107,9 @@ findProject(':component:minecraft')?.name = 'minecraft'
 include 'component:transform:shadow'
 findProject(':component:transform:shadow')?.name = 'shadow'
 
+include 'component:configuration:game-settings'
+findProject(':component:configuration:game-settings')?.name = "game-settings"
+
 include 'component:render:shader'
 findProject(':component:render:shader')?.name = 'shader'
 

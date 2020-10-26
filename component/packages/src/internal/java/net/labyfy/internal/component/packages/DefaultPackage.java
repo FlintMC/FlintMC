@@ -11,6 +11,7 @@ import net.labyfy.component.packages.Package;
 import net.labyfy.component.packages.PackageClassLoader;
 import net.labyfy.component.packages.PackageManifest;
 import net.labyfy.component.packages.PackageState;
+import net.labyfy.component.packages.localization.PackageLocalizationLoader;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
 import net.labyfy.component.processing.autoload.DetectableAnnotationProvider;
 import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
@@ -35,28 +36,29 @@ public class DefaultPackage implements Package {
   private final ServiceRepository serviceRepository;
   private final File jarFile;
 
+  private PackageLocalizationLoader localizationLoader;
   private PackageManifest packageManifest;
   private PackageState packageState;
   private PackageClassLoader classLoader;
   private Exception loadException;
 
   /**
-   * Creates a new Labyfy package with the given description loader and the given files.
+   * Creates a new Labyfy package with the given description loader and the
+   * given files.
    *
    * @param serviceRepository The singleton instance of the {@link ServiceRepository}
    * @param manifestLoader The loader to use for reading the manifest
-   * @param jarFile The java IO file this package should be loaded from, or null if loaded from the
-   *     classpath
-   * @param jar The java IO jar file this package should be loaded from, must point to the same file
-   *     as
+   * @param jarFile        The java IO file this package should be loaded from, or null if loaded from the classpath
+   * @param jar            The java IO jar file this package should be loaded from, must point to the same file as
+   *                       the `file` parameter, or must be null if the package has been loaded from the classpath
    */
   @AssistedInject
   private DefaultPackage(
-      DefaultPackageManifestLoader manifestLoader,
-      ServiceRepository serviceRepository,
-      @Assisted File jarFile,
-      @Assisted JarFile jar) {
-    this.serviceRepository = serviceRepository;
+          ServiceRepository serviceRepository,
+          PackageLocalizationLoader localizationLoader,
+          DefaultPackageManifestLoader manifestLoader,
+          @Assisted File jarFile,
+          @Assisted JarFile jar) {
     this.jarFile = jarFile;
 
     if (jar != null) {
@@ -78,8 +80,16 @@ public class DefaultPackage implements Package {
         }
 
         this.packageManifest = manifest;
+
+        // Try to load localizations
+        this.localizationLoader = localizationLoader;
+        if (localizationLoader.isLanguageFolderPresent(jar)) {
+          localizationLoader.loadLocalizations(jar);
+        }
+
       } catch (IOException ignored) {
       }
+
     } else {
       // The package should not be loaded from a file, thus we don't have a manifest and mark  the
       // package
@@ -125,8 +135,7 @@ public class DefaultPackage implements Package {
       throw new IllegalStateException(
           "The package state can only be changed if the package has not been loaded already");
     } else if (state == PackageState.LOADED) {
-      throw new IllegalArgumentException(
-          "The package state can't be set to LOADED explicitly, use the load() method");
+      throw new IllegalArgumentException("The package state can't be set to LOADED explicitly, use the load() method");
     }
 
     this.packageState = state;
@@ -146,8 +155,7 @@ public class DefaultPackage implements Package {
   @Override
   public PackageState load() {
     if (packageState != PackageState.NOT_LOADED) {
-      throw new IllegalStateException(
-          "The package has to be in the NOT_LOADED state in order to be loaded");
+      throw new IllegalStateException("The package has to be in the NOT_LOADED state in order to be loaded");
     }
 
     try {
@@ -161,12 +169,13 @@ public class DefaultPackage implements Package {
     return this.packageState;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void enable() {
     if (packageState != PackageState.LOADED) {
-      throw new IllegalStateException(
-          "The package has to be in the LOADED state in order to be enabled");
+      throw new IllegalStateException("The package has to be in the LOADED state in order to be enabled");
     }
 
     try {
@@ -255,6 +264,14 @@ public class DefaultPackage implements Package {
   }
 
   /** {@inheritDoc} */
+  @Override
+  public PackageLocalizationLoader getPackageLocalizationLoader() {
+    return this.localizationLoader;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Exception getLoadException() {
     if (packageState != PackageState.ERRORED) {
