@@ -11,6 +11,7 @@ import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.mappings.MethodMapping;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.identifier.MethodIdentifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -103,24 +104,7 @@ public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInje
 
   @Override
   public void discover(AnnotationMeta<MethodVisit> identifierMeta) throws ServiceNotFoundException {
-    this.visitorCandidates.add(identifierMeta.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
+    this.visitorCandidates.add(identifierMeta.<MethodIdentifier>getIdentifier().getLocation());
   }
 
- /* @Override
-  public void discover(IdentifierLegacy.Base property) throws ServiceNotFoundException {
-    MethodVisit methodVisit =
-        property.getProperty().getLocatedIdentifiedAnnotation().getAnnotation();
-    InternalMethodVisitorContext methodVisitorContext = new InternalMethodVisitorContext(methodVisit);
-    Method location = property.getProperty().getLocatedIdentifiedAnnotation().getLocation();
-
-    try {
-      location.invoke(
-          InjectionHolder.getInjectedInstance(location.getDeclaringClass()),
-          methodVisitorContext);
-    } catch (IllegalAccessException | InvocationTargetException exception) {
-      throw new ServiceNotFoundException("error while discovering service: " + location.getDeclaringClass().getName(), exception);
-    }
-
-    this.methodVisitorContexts.add(methodVisitorContext);
-  }*/
 }

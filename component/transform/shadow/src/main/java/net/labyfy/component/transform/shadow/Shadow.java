@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @DetectableAnnotation(metaData = {
     FieldCreate.class,
-    FieldCreates.class,
     FieldGetter.class,
     FieldSetter.class,
     MethodProxy.class

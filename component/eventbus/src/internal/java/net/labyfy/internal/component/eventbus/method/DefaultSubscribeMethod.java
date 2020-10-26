@@ -12,6 +12,8 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.stereotype.service.CtResolver;
 
+import java.util.function.Supplier;
+
 /** A subscribed method in an {@link EventBus}. */
 @Implement(SubscribeMethod.class)
 public class DefaultSubscribeMethod implements SubscribeMethod {
@@ -19,7 +21,8 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
   private final byte priority;
   private final Subscribe.Phase phase;
   private final CtClass ctClass;
-  private final Executor executor;
+  private Executor executor;
+  private final Supplier<Executor> executorSupplier;
   private final CtMethod eventMethod;
 
   private Object instance;
@@ -29,12 +32,12 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
       @Assisted("priority") byte priority,
       @Assisted("phase") Subscribe.Phase phase,
       @Assisted("declaringClass") CtClass ctClass,
-      @Assisted("executor") Executor executor,
+      @Assisted("executorSupplier") Supplier<Executor> executorSupplier,
       @Assisted("eventMethod") CtMethod eventMethod) {
     this.priority = priority;
     this.phase = phase;
     this.ctClass = ctClass;
-    this.executor = executor;
+    this.executorSupplier = executorSupplier;
     this.eventMethod = eventMethod;
   }
 
@@ -62,6 +65,8 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
     if (this.instance == null) {
       this.instance = InjectionHolder.getInjectedInstance(CtResolver.get(this.ctClass));
     }
+    if (this.executor == null)
+      this.executor = this.executorSupplier.get();
     this.executor.invoke(this.instance, event);
   }
 }

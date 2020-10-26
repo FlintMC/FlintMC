@@ -86,6 +86,9 @@ findProject(':component:i18n')?.name = 'i18n'
 include 'component:gui:webgui'
 findProject(':component:gui:webgui')?.name = 'webgui'
 
+include ':component:render'
+findProject(':component:render')?.name = 'render'
+
 include 'component:chat'
 findProject(':component:chat')?.name = 'chat'
 
@@ -104,6 +107,9 @@ findProject(':component:minecraft')?.name = 'minecraft'
 include 'component:transform:shadow'
 findProject(':component:transform:shadow')?.name = 'shadow'
 
+include 'component:configuration:game-settings'
+findProject(':component:configuration:game-settings')?.name = "game-settings"
+
 include 'component:render:shader'
 findProject(':component:render:shader')?.name = 'shader'
 
@@ -113,3 +119,8 @@ findProject(':component:render:vbo-rendering')?.name = 'vbo-rendering'
 include 'component:nbt'
 findProject(':component:nbt')?.name = "nbt"
 
+include 'component:render:shader'
+findProject(':component:render:shader')?.name = 'shader'
+
+include 'component:session-service'
+findProject(':component:session-service')?.name = 'session-service'

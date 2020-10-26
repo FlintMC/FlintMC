@@ -15,6 +15,10 @@ public class CtResolver {
   private static final Map<CtClass, Class<?>> classes = new HashMap<>();
   private static final Map<Integer, Method> methods = new HashMap<>();
 
+  /**
+   * @param ctMethod the {@link CtMethod} to find the reflect representation from
+   * @return the reflect representation of ctMethod
+   */
   public static Method get(CtMethod ctMethod) {
     int hash = hash(ctMethod);
     if (!methods.containsKey(hash)) {
@@ -37,6 +41,10 @@ public class CtResolver {
     return Objects.hash(ctMethod, ctMethod.getDeclaringClass());
   }
 
+  /**
+   * @param ctClass the {@link CtClass} to find the reflect representation from
+   * @return the reflect representation of ctClass
+   */
   public static <T> Class<T> get(CtClass ctClass) {
     if (!classes.containsKey(ctClass)) {
       try {

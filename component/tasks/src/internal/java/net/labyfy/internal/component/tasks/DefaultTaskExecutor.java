@@ -1,7 +1,9 @@
 package net.labyfy.internal.component.tasks;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 import com.google.inject.Key;
+import com.google.inject.Singleton;
 import javassist.CtMethod;
 import net.labyfy.component.inject.InjectedInvocationHelper;
 import net.labyfy.component.inject.implement.Implement;
@@ -12,8 +14,6 @@ import net.labyfy.component.tasks.TaskExecutor;
 import net.labyfy.component.tasks.Tasks;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;

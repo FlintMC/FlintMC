@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Repeatable(FieldCreates.class)
-@DetectableAnnotation
+@DetectableAnnotation(requiresParent = true)
 public @interface FieldCreate {
   String name();
 

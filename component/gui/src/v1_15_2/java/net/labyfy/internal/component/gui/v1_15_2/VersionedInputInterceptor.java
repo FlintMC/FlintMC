@@ -1,5 +1,7 @@
 package net.labyfy.internal.component.gui.v1_15_2;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -14,8 +16,6 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryStack;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.DoubleBuffer;
 
 /**

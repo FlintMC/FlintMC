@@ -29,7 +29,7 @@ public @interface Subscribe {
    *
    * @return The subscribed method phase.
    */
-  Phase phase() default Phase.ANY;
+  Phase phase() default Phase.PRE;
 
   /** An enumeration representing all available phases. */
   enum Phase {

@@ -2,6 +2,7 @@ package net.labyfy.component.transform.minecraft.obfuscate;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import net.labyfy.component.launcher.classloading.RootClassLoader;
 import net.labyfy.component.launcher.classloading.common.ClassInformation;
 import net.labyfy.component.launcher.classloading.common.CommonClassLoaderHelper;
@@ -16,7 +17,6 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
-import javax.inject.Named;
 import java.io.IOException;
 
 /**

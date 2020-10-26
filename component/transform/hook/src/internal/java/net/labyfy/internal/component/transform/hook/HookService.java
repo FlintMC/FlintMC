@@ -2,7 +2,10 @@ package net.labyfy.internal.component.transform.hook;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import com.google.inject.Key;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import javassist.*;
 import net.labyfy.component.commons.resolve.AnnotationResolver;
@@ -11,6 +14,7 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.identifier.MethodIdentifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.type.Type;
@@ -19,9 +23,6 @@ import net.labyfy.component.transform.hook.HookFilter;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -101,13 +102,13 @@ public class HookService implements ServiceHandler<Hook> {
       Hook hook = identifier.getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
-        String className = classMappingProvider.get(classTransformContext.getNameResolver().resolve(hook.className())).getName();
+        String className = classMappingProvider.get(hook.className()).getName();
         if (className != null && className.equals(ctClass.getName())) {
           this.modify(
               entry,
               hook,
               ctClass,
-              identifier.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
+              identifier.<MethodIdentifier>getIdentifier().getLocation());
         }
       } else {
         boolean cancel = false;
@@ -126,7 +127,7 @@ public class HookService implements ServiceHandler<Hook> {
                 entry,
                 hook,
                 ctClass,
-                identifier.<AnnotationMeta.MethodIdentifier>getIdentifier().getLocation());
+                identifier.<MethodIdentifier>getIdentifier().getLocation());
           }
         }
       }

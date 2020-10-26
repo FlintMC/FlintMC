@@ -16,6 +16,9 @@ dependencies {
     api project(':component:service')
     api project(':component:mapping')
     api project(':component:transform:exceptions')
+    api project(':component:tasks')
+    api project(':component:packages')
+
     api 'org.ow2.asm:asm:7.2-beta'
     api 'org.ow2.asm:asm-tree:7.2-beta'
     api 'org.ow2.asm:asm-commons:7.2-beta'

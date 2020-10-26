@@ -6,6 +6,7 @@ import net.labyfy.component.commons.util.Pair;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
@@ -41,7 +42,7 @@ public class InternalWebFileSystemService
       throws ServiceNotFoundException {
 
     CtClass fileSystem =
-        annotationMeta.<AnnotationMeta.ClassIdentifier>getIdentifier().getLocation();
+        annotationMeta.<ClassIdentifier>getIdentifier().getLocation();
 
     try {
       if (Arrays.stream(fileSystem.getInterfaces())
