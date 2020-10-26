@@ -5,9 +5,10 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CtClass;
+import net.flintmc.processing.autoload.DetectableAnnotation;
 import net.labyfy.component.commons.util.Pair;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.ServiceHandlerMeta;
 
 import java.lang.annotation.Annotation;
@@ -29,14 +30,14 @@ public class ServiceRepository {
 
   /**
    * Registers a service handler that can pickup {@link
-   * net.labyfy.component.processing.autoload.DetectableAnnotation}s.
+   * DetectableAnnotation}s.
    *
    * @param annotationTypes     the annotation types the service should handle
    * @param priority            the service priority. Lower priority is called first
    * @param state               the initialization state of the service. see also {@link
    *                            net.labyfy.component.stereotype.service.Service.State} for usage
    * @param serviceHandlerClass the service handler class to handle {@link
-   *                            net.labyfy.component.processing.autoload.DetectableAnnotation}s
+   *                            DetectableAnnotation}s
    */
   public void registerService(
       Class<? extends Annotation>[] annotationTypes,
@@ -50,14 +51,14 @@ public class ServiceRepository {
 
   /**
    * Registers a service handler that can pickup {@link
-   * net.labyfy.component.processing.autoload.DetectableAnnotation}s.
+   * DetectableAnnotation}s.
    *
    * @param annotationType the annotation type the service should handle
    * @param priority the service priority. Lower priority is called first
    * @param state the initialization state of the service. see also {@link
    *     net.labyfy.component.stereotype.service.Service.State} for usage
    * @param serviceHandlerClass the service handler class to handle {@link
-   *     net.labyfy.component.processing.autoload.DetectableAnnotation}s
+   *     DetectableAnnotation}s
    */
   public void registerService(
       Class<? extends Annotation> annotationType,
@@ -70,11 +71,11 @@ public class ServiceRepository {
   }
 
   /**
-   * Registers a {@link net.labyfy.component.processing.autoload.DetectableAnnotation} and provides
+   * Registers a {@link DetectableAnnotation} and provides
    * ot to the service handlers.
    *
    * @param annotationMeta the annotation meta of the {@link
-   *                       net.labyfy.component.processing.autoload.DetectableAnnotation} to register.
+   *                       DetectableAnnotation} to register.
    */
   public void registerAnnotation(AnnotationMeta<?> annotationMeta) {
     this.annotations.put(annotationMeta.getAnnotation().annotationType(), annotationMeta);

@@ -1,0 +1,22 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc.processing'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+
+    api project(':component:commons')
+    api group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    api group: 'com.squareup', name: 'javapoet', version: 'latest.integration'
+    api group: 'commons-io', name: 'commons-io', version: '2.6'
+
+    implementation group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+
+}

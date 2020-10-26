@@ -14,7 +14,7 @@ labyfy{
 }
 
 dependencies {
-    annotationProcessor project(':component:annotation-processing:autoload')
+    annotationProcessor project(':annotation-processing:autoload')
 
     api project(':component:csv')
     api project(':component:inject')

@@ -12,7 +12,7 @@ labyfy{
 }
 
 dependencies {
-    annotationProcessor project(':component:annotation-processing:autoload')
+    annotationProcessor project(':annotation-processing:autoload')
     api project(':component:service')
     api project(':component:mapping')
     api project(':component:transform:exceptions')

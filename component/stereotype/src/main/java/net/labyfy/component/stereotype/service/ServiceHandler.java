@@ -1,6 +1,6 @@
 package net.labyfy.component.stereotype.service;
 
-import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.AnnotationMeta;
 
 import java.lang.annotation.Annotation;
 

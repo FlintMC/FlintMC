@@ -2,8 +2,8 @@ package net.labyfy.internal.component.session.launcher.serializer;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.processing.autoload.AnnotationMeta;
-import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.labyfy.component.session.launcher.LauncherProfileResolver;
 import net.labyfy.component.session.launcher.serializer.ProfileSerializerVersion;
 import net.labyfy.component.stereotype.service.Service;

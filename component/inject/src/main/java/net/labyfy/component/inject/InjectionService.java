@@ -10,8 +10,8 @@ import javassist.CtClass;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.processing.autoload.AnnotationMeta;
-import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.labyfy.component.stereotype.service.*;
 
 import java.lang.annotation.Annotation;

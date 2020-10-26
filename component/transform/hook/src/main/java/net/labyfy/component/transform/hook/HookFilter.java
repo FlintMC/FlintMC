@@ -1,6 +1,6 @@
 package net.labyfy.component.transform.hook;
 
-import net.labyfy.component.processing.autoload.DetectableAnnotation;
+import net.flintmc.processing.autoload.DetectableAnnotation;
 import net.labyfy.component.stereotype.type.Type;
 
 import java.lang.annotation.ElementType;

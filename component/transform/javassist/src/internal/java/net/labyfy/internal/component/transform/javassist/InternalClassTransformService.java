@@ -8,7 +8,7 @@ import javassist.CtClass;
 import javassist.bytecode.ClassFile;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
-import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;

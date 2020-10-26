@@ -14,7 +14,7 @@ import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMapping;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.AnnotationMeta;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.transform.exceptions.ClassTransformException;
 import net.labyfy.component.transform.javassist.ClassTransform;

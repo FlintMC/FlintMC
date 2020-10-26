@@ -2,9 +2,9 @@ package net.labyfy.internal.component.transform.shadow;
 
 import com.google.inject.Singleton;
 import javassist.*;
-import net.labyfy.component.processing.autoload.AnnotationMeta;
-import net.labyfy.component.processing.autoload.identifier.ClassIdentifier;
-import net.labyfy.component.processing.autoload.identifier.MethodIdentifier;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;

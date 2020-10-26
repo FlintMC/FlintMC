@@ -1,7 +1,7 @@
 package net.labyfy.component.transform.shadow;
 
 
-import net.labyfy.component.processing.autoload.DetectableAnnotation;
+import net.flintmc.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

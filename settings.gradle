@@ -42,14 +42,14 @@ findProject(':component:launcher')?.name = 'launcher'
 include 'component:transform:launcher-plugin'
 findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
 
-include 'component:annotation-processing'
-findProject(':component:annotation-processing')?.name = 'annotation-processing'
+include 'annotation-processing'
+findProject(':annotation-processing')?.name = 'annotation-processing'
 
 include 'component:transform:minecraft-obfuscator'
 findProject(':component:transform:minecraft-obfuscator')?.name = 'minecraft-obfuscator'
 
-include ':component:annotation-processing:autoload'
-findProject(':component:annotation-processing:autoload')?.name = 'autoload'
+include 'annotation-processing:autoload'
+findProject(':annotation-processing:autoload')?.name = 'autoload'
 
 ext.isPush = true
 

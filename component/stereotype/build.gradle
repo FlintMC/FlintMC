@@ -14,11 +14,11 @@ labyfy {
 }
 
 dependencies {
-    annotationProcessor project(':component:annotation-processing:autoload')
+    annotationProcessor project(':annotation-processing:autoload')
 
     api project(':component:launcher')
     api project(':component:commons')
-    api project(':component:annotation-processing:autoload')
+    api project(':annotation-processing:autoload')
     api project(':component:inject-primitive')
     api group: 'com.google.guava', name: 'guava', version: '21.0'
     api 'com.google.inject:guice:4.2.0'
@@ -28,7 +28,7 @@ dependencies {
 
     labyfy project(':component:launcher')
     labyfy project(':component:commons')
-    labyfy project(':component:annotation-processing:autoload')
+    labyfy project(':annotation-processing:autoload')
     labyfy project(':component:inject-primitive')
     labyfy group: 'com.google.guava', name: 'guava', version: '21.0'
     labyfy 'com.google.inject:guice:4.2.0'

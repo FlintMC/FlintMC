@@ -5,7 +5,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import net.labyfy.component.commons.resolve.NameResolver;
 import net.labyfy.component.inject.assisted.AssistedFactory;
-import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.AnnotationMeta;
 
 import java.util.Collection;
 import java.util.function.Predicate;

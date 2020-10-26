@@ -15,9 +15,9 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor project(':component:annotation-processing:autoload')
-    internalAnnotationProcessor project(':component:annotation-processing:autoload')
-    v1_15_2AnnotationProcessor project(':component:annotation-processing:autoload')
+    annotationProcessor project(':annotation-processing:autoload')
+    internalAnnotationProcessor project(':annotation-processing:autoload')
+    v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
 
     api project(':component:stereotype')
     api project(':component:inject')
