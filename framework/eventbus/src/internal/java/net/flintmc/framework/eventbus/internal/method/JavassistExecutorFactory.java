@@ -113,12 +113,9 @@ public class JavassistExecutorFactory implements Executor.Factory {
         classTransformContext -> {
           CtClass ctClass = classTransformContext.getCtClass();
           if (!Modifier.isPublic(ctClass.getModifiers())) {
-            //      throw new ExecutorGenerationException("Listener class must be public.");
-            //      /* TODO: allow for modification
             ctClass.setModifiers(
                 (ctClass.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
                     | Modifier.PUBLIC);
-            //      */
           }
           try {
 
@@ -132,12 +129,9 @@ public class JavassistExecutorFactory implements Executor.Factory {
                     ctMethod.getName(), ctClass.getClassPool().get(parameterTypesAsStrings));
 
             if (!Modifier.isPublic(method.getModifiers())) {
-              //      throw new ExecutorGenerationException("Listener method must be public.");
-              //      /* TODO: allow for modification
               method.setModifiers(
                   (method.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
                       | Modifier.PUBLIC);
-              //      */
             }
           } catch (NotFoundException e) {
             logger.error(e);

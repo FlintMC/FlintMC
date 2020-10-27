@@ -37,14 +37,14 @@ public class VersionedPropertyMapSerializer
     PropertyMap properties = this.propertyMapFactory.create();
 
     for (Map.Entry<String, com.mojang.authlib.properties.Property> entry : value.entries()) {
-      properties.put(
-          entry.getKey(),
-          this.propertyFactory.create(
-              entry.getValue().getName(),
-              entry.getValue().getValue(),
-              entry.getValue().getSignature()));
+        properties.put(
+                entry.getKey(),
+                this.propertyFactory.create(
+                        entry.getValue().getName(),
+                        entry.getValue().getValue(),
+                        entry.getValue().getSignature()));
     }
-    return properties;
+      return properties;
   }
 
     /**
@@ -53,16 +53,16 @@ public class VersionedPropertyMapSerializer
      *
      * @param value The properties being serialized
      * @return A serialized {@link com.mojang.authlib.properties.PropertyMap}
-   */
-  @Override
-  public com.mojang.authlib.properties.PropertyMap serialize(PropertyMap value) {
-    com.mojang.authlib.properties.PropertyMap properties =
-        new com.mojang.authlib.properties.PropertyMap();
+     */
+    @Override
+    public com.mojang.authlib.properties.PropertyMap serialize(PropertyMap value) {
+        com.mojang.authlib.properties.PropertyMap properties =
+                new com.mojang.authlib.properties.PropertyMap();
 
-    for (Map.Entry<String, Property> entry : value.entries()) {
-      properties.put(
-          entry.getKey(),
-          new com.mojang.authlib.properties.Property(
+        for (Map.Entry<String, Property> entry : value.entries()) {
+            properties.put(
+                    entry.getKey(),
+                    new com.mojang.authlib.properties.Property(
               entry.getValue().getName(),
               entry.getValue().getValue(),
               entry.getValue().getSignature()));

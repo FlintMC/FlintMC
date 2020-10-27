@@ -31,7 +31,7 @@ public class DefaultTranslationComponent extends DefaultChatComponent
 
     return this
         .translationKey; // TODO translate with the given translationKey (return the translationKey
-                         // if no translation exists)
+    // if no translation exists)
   }
 
   @Override

@@ -19,7 +19,7 @@ public interface EntityMapper {
      * @return The new Flint {@link Entity} or {@code null} if the given entity was invalid.
      * @throws IllegalArgumentException If the given object is no Minecraft entity.
      */
-  Entity fromMinecraftEntity(Object handle);
+    Entity fromMinecraftEntity(Object handle);
 
     /**
      * Creates a new Minecraft entity by using the Flint {@link Entity} as the base.
@@ -27,7 +27,7 @@ public interface EntityMapper {
      * @param entity The non-null Flint {@link Entity}.
      * @return The new Minecraft entity or {@code null} if the given entity was invalid.
      */
-  Object toMinecraftEntity(Entity entity);
+    Object toMinecraftEntity(Entity entity);
 
     /**
      * Creates a new {@link Entity} by using the given Minecraft player entity as the base.
@@ -36,7 +36,7 @@ public interface EntityMapper {
      * @return The new Flint {@link Entity} or {@code null} if the given player entity was invalid.
      * @throws IllegalArgumentException If the given object is no Minecraft player entity.
      */
-  PlayerEntity fromMinecraftPlayerEntity(Object handle);
+    PlayerEntity fromMinecraftPlayerEntity(Object handle);
 
     /**
      * Creates a new Minecraft player entity by using the Flint {@link PlayerEntity} as the base.
@@ -44,7 +44,7 @@ public interface EntityMapper {
      * @param entity The non-null Flint {@link PlayerEntity}.
      * @return The new Minecraft player entity or {@code null} if the given player entity was invalid.
      */
-  Object toMinecraftPlayerEntity(PlayerEntity entity);
+    Object toMinecraftPlayerEntity(PlayerEntity entity);
 
     /**
      * Creates a new {@link LivingEntity} by using the given Minecraft living entity as the base.
@@ -54,7 +54,7 @@ public interface EntityMapper {
      *     invalid.
      * @throws IllegalArgumentException If the given object is no Minecraft living entity.
      */
-  LivingEntity fromMinecraftLivingEntity(Object handle);
+    LivingEntity fromMinecraftLivingEntity(Object handle);
 
     /**
      * Creates a new Minecraft living entity by using the Flint {@link LivingEntity} as the base.
@@ -62,7 +62,7 @@ public interface EntityMapper {
      * @param entity The non-null Flint {@link LivingEntity}.
      * @return The new Minecraft living entity or {@code null} if the given living entity was invalid.
      */
-  Object toMinecraftLivingEntity(LivingEntity entity);
+    Object toMinecraftLivingEntity(LivingEntity entity);
 
     /**
      * Creates a new {@link MobEntity} by using the given Minecraft mob entity as the base.
@@ -71,7 +71,7 @@ public interface EntityMapper {
      * @return The new Flint {@link MobEntity} or {@code null} if the given mob entity was invalid.
      * @throws IllegalArgumentException If the given object is no Minecraft mob entity.
      */
-  MobEntity fromMinecraftMobEntity(Object handle);
+    MobEntity fromMinecraftMobEntity(Object handle);
 
     /**
      * Creates a new Minecraft mob entity by using the Flint {@link MobEntity} as the base.
@@ -79,16 +79,16 @@ public interface EntityMapper {
      * @param entity The non-null Flint {@link MobEntity}.
      * @return The new Minecraft mob entity or {@code null} if the given mob entity was invalid.
      */
-  Object toMinecraftMobEntity(MobEntity entity);
+    Object toMinecraftMobEntity(MobEntity entity);
 
-  /**
-   * Retrieves the item entity mapper.
-   *
-   * @return The item entity mapper.
-   */
-  ItemEntityMapper getItemEntityMapper();
+    /**
+     * Retrieves the item entity mapper.
+     *
+     * @return The item entity mapper.
+     */
+    ItemEntityMapper getItemEntityMapper();
 
-  /**
+    /**
    * Retrieves the passive entity mapper.
    *
    * @return The passive entity mapper.

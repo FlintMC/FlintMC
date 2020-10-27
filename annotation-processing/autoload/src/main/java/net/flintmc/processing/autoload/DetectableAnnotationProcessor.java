@@ -43,33 +43,34 @@ public class DetectableAnnotationProcessor implements Processor {
   /** Template to instantiate AnnotationMeta */
   private static final String ANNOTATION_META_TEMPLATE =
       ""
-          + "new AnnotationMeta(\n"
-          + "   javax.lang.model.element.ElementKind.${ELEMENT_KIND}, \n"
-          + "   ${IDENTIFIER}, \n"
-          + "   ${ANNOTATION}, \n"
-          + "new AnnotationMeta[]{${META_DATA}})";
+              + "new AnnotationMeta(\n"
+              + "   javax.lang.model.element.ElementKind.${ELEMENT_KIND}, \n"
+              + "   ${IDENTIFIER}, \n"
+              + "   ${ANNOTATION}, \n"
+              + "new AnnotationMeta[]{${META_DATA}})";
 
-  /**
-   * Template to instantiate a class identifier
-   */
-  private static final String ANNOTATION_META_CLASS_IDENTIFIER_TEMPLATE =
-          "" + "new net.flintmc.processing.autoload.identifier.ClassIdentifier(\"${TYPE_NAME}\")";
+    /**
+     * Template to instantiate a class identifier
+     */
+    private static final String ANNOTATION_META_CLASS_IDENTIFIER_TEMPLATE =
+            "" + "new net.flintmc.processing.autoload.identifier.ClassIdentifier(\"${TYPE_NAME}\")";
 
     /**
      * Template to instantiate a method identifier
      */
     private static final String ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE =
-            "" + "new net.flintmc.processing.autoload.identifier.MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
+            ""
+                    + "new net.flintmc.processing.autoload.identifier.MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
 
-  private final Collection<String> found;
+    private final Collection<String> found;
 
-  /**
-   * Constructs a new {@link DetectableAnnotationProcessor}, expected to be called by a {@link
-   * java.util.ServiceLoader}
-   */
-  public DetectableAnnotationProcessor() {
-    this.found = new ArrayList<>();
-  }
+    /**
+     * Constructs a new {@link DetectableAnnotationProcessor}, expected to be called by a {@link
+     * java.util.ServiceLoader}
+     */
+    public DetectableAnnotationProcessor() {
+        this.found = new ArrayList<>();
+    }
 
   /** {@inheritDoc} */
   public MethodSpec.Builder createMethod() {
@@ -102,21 +103,21 @@ public class DetectableAnnotationProcessor implements Processor {
   }
 
   private void acceptRepeatableDetectableAnnotation(TypeElement annotationType) {
-    // Get the RepeatingDetectableAnnotation as a type
+      // Get the RepeatingDetectableAnnotation as a type
       TypeElement repeatingDetectableAnnotationType =
               ProcessorState.getInstance()
                       .getProcessingEnvironment()
                       .getElementUtils()
                       .getTypeElement("net.flintmc.processing.autoload.RepeatingDetectableAnnotation");
 
-    // Get the values of the RepeatingDetectableAnnotation at the instance on the annotationType
-    Map<String, AnnotationValue> repeatingDetectableAnnotationValues =
-        AnnotationMirrorUtil.getElementValuesByName(
-            AnnotationMirrorUtil.getAnnotationMirror(
-                annotationType, repeatingDetectableAnnotationType));
+      // Get the values of the RepeatingDetectableAnnotation at the instance on the annotationType
+      Map<String, AnnotationValue> repeatingDetectableAnnotationValues =
+              AnnotationMirrorUtil.getElementValuesByName(
+                      AnnotationMirrorUtil.getAnnotationMirror(
+                              annotationType, repeatingDetectableAnnotationType));
 
-    // Get the annotation type that is repeated by @param annotationType
-    TypeElement repeatedAnnotationType =
+      // Get the annotation type that is repeated by @param annotationType
+      TypeElement repeatedAnnotationType =
         ((TypeElement)
             ((DeclaredType) repeatingDetectableAnnotationValues.get("value").getValue())
                 .asElement());
@@ -152,22 +153,22 @@ public class DetectableAnnotationProcessor implements Processor {
   }
 
   public void acceptDetectableAnnotation(TypeElement annotationType) {
-    // Get the DetectableAnnotation as a type
+      // Get the DetectableAnnotation as a type
       TypeElement detectableAnnotationType =
               ProcessorState.getInstance()
                       .getProcessingEnvironment()
                       .getElementUtils()
                       .getTypeElement("net.flintmc.processing.autoload.DetectableAnnotation");
 
-    // Get the values of the DetectableAnnotation at the instance on the annotationType
-    Map<String, AnnotationValue> detectableAnnotationValues =
-        AnnotationMirrorUtil.getElementValuesByName(
-            AnnotationMirrorUtil.getAnnotationMirror(annotationType, detectableAnnotationType));
+      // Get the values of the DetectableAnnotation at the instance on the annotationType
+      Map<String, AnnotationValue> detectableAnnotationValues =
+              AnnotationMirrorUtil.getElementValuesByName(
+                      AnnotationMirrorUtil.getAnnotationMirror(annotationType, detectableAnnotationType));
 
-    // meta that requires a parent will not be handled standalone
-    if (((boolean) detectableAnnotationValues.get("requiresParent").getValue())) return;
+      // meta that requires a parent will not be handled standalone
+      if (((boolean) detectableAnnotationValues.get("requiresParent").getValue())) return;
 
-    for (Element annotatedElement :
+      for (Element annotatedElement :
         ProcessorState.getInstance()
             .getCurrentRoundEnvironment()
             .getElementsAnnotatedWith(annotationType)) {
@@ -313,10 +314,10 @@ public class DetectableAnnotationProcessor implements Processor {
    * @return the direct metadata for annotationType on annotatedElement
    */
   private Collection<Pair<Element, AnnotationMirror>> getAnnotationMetaMirrors(
-      TypeElement annotationType, Element annotatedElement) {
-    List<Pair<Element, AnnotationMirror>> metaClasses = new ArrayList<>();
+          TypeElement annotationType, Element annotatedElement) {
+      List<Pair<Element, AnnotationMirror>> metaClasses = new ArrayList<>();
 
-    // Get the DetectableAnnotation mirror of annotationType
+      // Get the DetectableAnnotation mirror of annotationType
       AnnotationMirror detectableAnnotationMirror =
               AnnotationMirrorUtil.getAnnotationMirror(
                       annotationType,
@@ -325,15 +326,15 @@ public class DetectableAnnotationProcessor implements Processor {
                               .getElementUtils()
                               .getTypeElement("net.flintmc.processing.autoload.DetectableAnnotation"));
 
-    // Collect all possible meta types
-    Collection<TypeElement> annotationMetaTypes =
-        ((List<AnnotationValue>)
-                AnnotationMirrorUtil.getElementValuesByName(detectableAnnotationMirror)
-                    .get("metaData")
-                    .getValue())
-            .stream()
-                .map(
-                    annotationValue ->
+      // Collect all possible meta types
+      Collection<TypeElement> annotationMetaTypes =
+              ((List<AnnotationValue>)
+                      AnnotationMirrorUtil.getElementValuesByName(detectableAnnotationMirror)
+                              .get("metaData")
+                              .getValue())
+                      .stream()
+                      .map(
+                              annotationValue ->
                         ((TypeElement) ((DeclaredType) annotationValue.getValue()).asElement()))
                 .collect(Collectors.toSet());
 

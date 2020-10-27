@@ -11,5 +11,5 @@ public interface WindowManager {
      *
      * @return All windows of this Flint instance as an immutable collection
      */
-  Collection<Window> allWindows();
+    Collection<Window> allWindows();
 }

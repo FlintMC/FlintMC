@@ -28,19 +28,18 @@ public class VersionedGameProfileSerializer
   }
 
   /**
-   * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Flint {@link
-   * GameProfile}
+   * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Flint {@link GameProfile}
    *
    * @param profile The game profile to deserialize
    * @return A deserialized {@link GameProfile}
    */
   @Override
   public GameProfile deserialize(com.mojang.authlib.GameProfile profile) {
-    return this.profileBuilder
-        .setName(profile.getName())
-        .setUniqueId(profile.getId())
-        .setProperties(this.propertyMapSerializer.deserialize(profile.getProperties()))
-        .build();
+      return this.profileBuilder
+              .setName(profile.getName())
+              .setUniqueId(profile.getId())
+              .setProperties(this.propertyMapSerializer.deserialize(profile.getProperties()))
+              .build();
   }
 
     /**
@@ -48,16 +47,16 @@ public class VersionedGameProfileSerializer
      *
      * @param profile The profile to serialize
      * @return A serialized game profile
-   */
-  @Override
-  public com.mojang.authlib.GameProfile serialize(GameProfile profile) {
-    com.mojang.authlib.GameProfile gameProfile =
-        new com.mojang.authlib.GameProfile(profile.getUniqueId(), profile.getName());
+     */
+    @Override
+    public com.mojang.authlib.GameProfile serialize(GameProfile profile) {
+        com.mojang.authlib.GameProfile gameProfile =
+                new com.mojang.authlib.GameProfile(profile.getUniqueId(), profile.getName());
 
-    PropertyMap properties = this.propertyMapSerializer.serialize(profile.getProperties());
+        PropertyMap properties = this.propertyMapSerializer.serialize(profile.getProperties());
 
-    for (Map.Entry<String, Property> entry : properties.entries()) {
-      gameProfile.getProperties().put(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Property> entry : properties.entries()) {
+            gameProfile.getProperties().put(entry.getKey(), entry.getValue());
     }
     return gameProfile;
   }

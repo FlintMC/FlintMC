@@ -21,7 +21,7 @@ public class VersionedNetworkPlayerInfoSerializer
    */
   @Override
   public NetworkPlayerInfo deserialize(net.minecraft.client.network.play.NetworkPlayerInfo value) {
-    return InjectionHolder.getInjectedInstance(NetworkPlayerInfo.class);
+      return InjectionHolder.getInjectedInstance(NetworkPlayerInfo.class);
   }
 
     /**
@@ -30,10 +30,10 @@ public class VersionedNetworkPlayerInfoSerializer
      *
      * @param value The network player info being serialized
      * @return A serialized {@link net.minecraft.client.network.play.NetworkPlayerInfo}
-   */
-  @Override
-  @Deprecated
-  public net.minecraft.client.network.play.NetworkPlayerInfo serialize(NetworkPlayerInfo value) {
-    throw new UnsupportedOperationException("The method is unsupported.");
-  }
+     */
+    @Override
+    @Deprecated
+    public net.minecraft.client.network.play.NetworkPlayerInfo serialize(NetworkPlayerInfo value) {
+        throw new UnsupportedOperationException("The method is unsupported.");
+    }
 }

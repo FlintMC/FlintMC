@@ -28,8 +28,8 @@ public interface EntityFoundationMapper {
   EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle);
 
   /**
-   * Creates a new Minecraft equipment slot type by using the Flint {@link EquipmentSlotType} as
-   * the base.
+   * Creates a new Minecraft equipment slot type by using the Flint {@link EquipmentSlotType} as the
+   * base.
    *
    * @param equipmentSlotType The non-null Flint {@link EquipmentSlotType}.
    * @return The new Minecraft equipment slot type or {@code null} if the given equipment slot type
