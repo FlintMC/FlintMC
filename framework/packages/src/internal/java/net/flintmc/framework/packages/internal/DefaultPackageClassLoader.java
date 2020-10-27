@@ -109,6 +109,6 @@ public class DefaultPackageClassLoader extends ClassLoader
   /** {@inheritDoc} */
   @Override
   public String getClassloaderName() {
-    return "LabyPackageLoader[" + owner.getName() + "]";
+    return "FlintPackageLoader[" + owner.getName() + "]";
   }
 }

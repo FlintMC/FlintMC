@@ -29,7 +29,7 @@ public class FlintFrameworkInitializer {
   private FlintFrameworkInitializer() {}
 
   /**
-   * Initializes all features of the labyfy framework.
+   * Initializes all features of the Flint framework.
    *
    * @param arguments minecraft launch arguments
    */

@@ -1,7 +1,7 @@
 package net.flintmc.mcapi.player.type.sound;
 
 /**
- * Mapper between the Minecraft sound events, sound categories and Labyfy {@link Sound}, {@link
+ * Mapper between the Minecraft sound events, sound categories and Flint {@link Sound}, {@link
  * SoundCategory}.
  */
 public interface SoundMapper {

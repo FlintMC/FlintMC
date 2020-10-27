@@ -23,13 +23,13 @@ public enum PackageState {
   INVALID_MANIFEST,
 
   /**
-   * The Labyfy environment hosting the package loader is incompatible, possibly due to a version
+   * The Flint environment hosting the package loader is incompatible, possibly due to a version
    * conflict or side problem. Packages in this state may not be interacted with.
    */
   FLINT_NOT_COMPATIBLE,
 
   /**
-   * The Minecraft environment hosting Labyfy is incompatible, possibly due to a version conflict or
+   * The Minecraft environment hosting Flint is incompatible, possibly due to a version conflict or
    * a side problem. Packages in this state may not be interacted with.
    */
   MINECRAFT_NOT_COMPATIBLE,

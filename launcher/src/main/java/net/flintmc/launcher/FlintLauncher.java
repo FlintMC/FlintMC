@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LabyLauncher {
+public class FlintLauncher {
   public static void main(String[] args) throws Exception {
     // Root entry point
     // Switch to the RootClassLoader as soon as possible
@@ -18,7 +18,7 @@ public class LabyLauncher {
 
     // We now are running in the RootClassLoader's context, load our LaunchController
     Class<?> launchControllerClass =
-        rootClassloader.loadClass("net.flintmc.launcher.LaunchController");
+            rootClassloader.loadClass("net.flintmc.launcher.LaunchController");
     Object launchController =
         launchControllerClass.getDeclaredConstructors()[0].newInstance(rootClassloader, args);
 

@@ -164,19 +164,19 @@ public class HookService implements ServiceHandler<Hook> {
 
     executionTime.insert(
         target,
-        "net.labyfy.internal.component.transform.hook.HookService.notify("
-            + "this,"
-            + "net.labyfy.component.transform.hook.Hook.ExecutionTime."
-            + executionTime
-            + ","
-            + hook.getDeclaringClass().getName()
-            + ".class, \""
-            + hook.getName()
-            + "\", "
-            + (stringBuilder.toString().isEmpty()
+        "net.flintmc.transform.hook.internal.HookService.notify("
+                + "this,"
+                + "net.flintmc.transform.hook.Hook.ExecutionTime."
+                + executionTime
+                + ","
+                + hook.getDeclaringClass().getName()
+                + ".class, \""
+                + hook.getName()
+                + "\", "
+                + (stringBuilder.toString().isEmpty()
                 ? "new Class[0]"
                 : "new Class[]{" + stringBuilder.toString() + "}")
-            + ", $args);");
+                + ", $args);");
   }
 
   private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, CtMethod callback)

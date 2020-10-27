@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
- * This cache is used to store all entities ported from Minecraft to Labyfy to save resources.
+ * This cache is used to store all entities ported from Minecraft to Flint to save resources.
  *
  * <p>This cache is cleared when the player leaves the world or server.
  *

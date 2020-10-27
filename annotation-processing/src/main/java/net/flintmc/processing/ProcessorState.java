@@ -27,7 +27,7 @@ public class ProcessorState {
   // Singleton instance
   private static ProcessorState instance;
 
-  // The child processors of the LabyfyAnnotationProcessor, discovered via a ServiceLoader
+  // The child processors of the FlintAnnotationProcessor, discovered via a ServiceLoader
   private final Collection<Processor> processors;
 
   // State of the java processing environment
@@ -128,7 +128,7 @@ public class ProcessorState {
       MethodSpec registerAutoLoadMethod = method.build();
 
       // Create an @Generated annotation and fill it with the full
-      // qualified name of the LabyfyAnnotationProcessor
+      // qualified name of the FlintAnnotationProcessor
       AnnotationSpec generatedAnnotation =
           AnnotationSpec.builder(Generated.class)
               .addMember("value", "$S", FlintAnnotationProcessor.class.getName())
@@ -153,9 +153,9 @@ public class ProcessorState {
               .addMethod(registerAutoLoadMethod)
               .build();
 
-      // Write the class into the net.labyfy.autogen package, the random name should ensure no
+      // Write the class into the net.flintmc.autogen package, the random name should ensure no
       // collisions
-      JavaFile finishedFile = JavaFile.builder("net.labyfy.autogen", generatedType).build();
+      JavaFile finishedFile = JavaFile.builder("net.flintmc.autogen", generatedType).build();
       try {
         finishedFile.writeTo(filer);
       } catch (IOException exception) {

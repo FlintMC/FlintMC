@@ -83,8 +83,8 @@ findProject(':mcapi')?.name = 'mcapi'
 include 'util:i18n'
 findProject(':util:i18n')?.name = 'util-i18n'
 
-include 'render:gui:webgui'
-findProject(':render:gui:webgui')?.name = 'render-webgui'
+include 'render:webgui'
+findProject(':render:webgui')?.name = 'render-webgui'
 
 include 'framework:eventbus'
 findProject(':framework:eventbus')?.name = 'framework-eventbus'

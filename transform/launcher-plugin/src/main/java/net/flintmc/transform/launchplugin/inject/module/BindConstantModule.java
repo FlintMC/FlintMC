@@ -26,15 +26,15 @@ public class BindConstantModule extends AbstractModule {
   }
 
   protected void configure() {
-    this.bindNamedFilePath("labyfyPackageFolder", "./Labyfy/packages");
-    this.bindNamedFilePath("labyfyRoot", "./Labyfy");
-    this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
+    this.bindNamedFilePath("flintPackageFolder", "./flint/packages");
+    this.bindNamedFilePath("flintRoot", "./flint");
+    this.bindNamedFilePath("flintThemesRoot", "./flint/themes");
     this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     boolean obfuscated =
-        ((RootClassLoader) getClass().getClassLoader())
-                .findResource("net/minecraft/client/Minecraft.class")
-            == null;
+            ((RootClassLoader) getClass().getClassLoader())
+                    .findResource("net/minecraft/client/Minecraft.class")
+                    == null;
 
     this.bindNamed("obfuscated", obfuscated);
     this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(this.launchArguments);

@@ -37,7 +37,7 @@ labyfy {
     projectFilter { !["annotation-processing", "autoload"].contains(it.name) }
     publishToken 'NzQzMjZkYTljMmU3NzlmMDU2NDQ3NTkz'
     runs{
-        overrideMainClass 'net.flintmc.launcher.LabyLauncher'
+        overrideMainClass 'net.flintmc.launcher.FlintLauncher'
     }
 }
 

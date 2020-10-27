@@ -50,7 +50,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     ITextComponent component = (ITextComponent) handle;
-    ChatComponent result = this.createLabyComponent(component);
+    ChatComponent result = this.createFlintComponent(component);
 
     if (result == null) {
       return null;
@@ -82,17 +82,17 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     return result;
   }
 
-  private ChatComponent createLabyComponent(ITextComponent component) {
+  private ChatComponent createFlintComponent(ITextComponent component) {
     if (component instanceof KeybindTextComponent) {
 
       return new DefaultKeybindComponentBuilder()
-          .keybind(Keybind.getByKey(((KeybindTextComponent) component).getKeybind()))
-          .build();
+              .keybind(Keybind.getByKey(((KeybindTextComponent) component).getKeybind()))
+              .build();
 
     } else if (component instanceof ScoreTextComponent) {
 
       return new DefaultScoreComponentBuilder()
-          .name(((ScoreTextComponent) component).getName())
+              .name(((ScoreTextComponent) component).getName())
           .objective(((ScoreTextComponent) component).getObjective())
           .build();
 

@@ -11,7 +11,9 @@ import net.flintmc.mcapi.player.type.hand.HandMapper;
 import net.flintmc.mcapi.player.type.sound.SoundMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 
-/** Mapper between Minecraft entity and Labyfy entity. */
+/**
+ * Mapper between Minecraft entity and Flint entity.
+ */
 public interface EntityFoundationMapper {
 
   /**
@@ -19,17 +21,17 @@ public interface EntityFoundationMapper {
    * base.
    *
    * @param handle The non-null Minecraft equipment slot type.
-   * @return The new Labyfy {@link EquipmentSlotType} or {@code null} if the given equipment slot
+   * @return The new Flint {@link EquipmentSlotType} or {@code null} if the given equipment slot
    *     type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft equipment slot type.
    */
   EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle);
 
   /**
-   * Creates a new Minecraft equipment slot type by using the Labyfy {@link EquipmentSlotType} as
+   * Creates a new Minecraft equipment slot type by using the Flint {@link EquipmentSlotType} as
    * the base.
    *
-   * @param equipmentSlotType The non-null Labyfy {@link EquipmentSlotType}.
+   * @param equipmentSlotType The non-null Flint {@link EquipmentSlotType}.
    * @return The new Minecraft equipment slot type or {@code null} if the given equipment slot type
    *     was invalid.
    */
@@ -39,15 +41,15 @@ public interface EntityFoundationMapper {
    * Creates a new {@link GameMode} by using the given Minecraft game type as the base.
    *
    * @param handle The non-null Minecraft game type.
-   * @return The new Labyfy {@link GameMode} or {@code null} if the given game type was invalid.
+   * @return The new Flint {@link GameMode} or {@code null} if the given game type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft game type type.
    */
   GameMode fromMinecraftGameType(Object handle);
 
   /**
-   * Creates a new Minecraft game type by using the Labyfy {@link GameMode} as the base.
+   * Creates a new Minecraft game type by using the Flint {@link GameMode} as the base.
    *
-   * @param mode The non-null Labyfy {@link GameMode}.
+   * @param mode The non-null Flint {@link GameMode}.
    * @return The new Minecraft game type or {@code null} if the given game type was invalid.
    */
   Object toMinecraftGameType(GameMode mode);
@@ -56,15 +58,15 @@ public interface EntityFoundationMapper {
    * Creates a new {@link GameMode} by using the given Minecraft mover type as the base.
    *
    * @param handle The non-null Minecraft mover type.
-   * @return The new Labyfy {@link GameMode} or {@code null} if the given mover type was invalid.
+   * @return The new Flint {@link GameMode} or {@code null} if the given mover type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft mover type type.
    */
   MoverType fromMinecraftMoverType(Object handle);
 
   /**
-   * Creates a new Minecraft mover type by using the Labyfy {@link MoverType} as the base.
+   * Creates a new Minecraft mover type by using the Flint {@link MoverType} as the base.
    *
-   * @param mode The non-null Labyfy {@link MoverType}.
+   * @param mode The non-null Flint {@link MoverType}.
    * @return The new Minecraft mover type or {@code null} if the given mover type was invalid.
    */
   Object toMinecraftMoverType(MoverType mode);
@@ -73,15 +75,15 @@ public interface EntityFoundationMapper {
    * Creates a new {@link EntityPose} by using the given Minecraft entity pose as the base.
    *
    * @param handle The non-null Minecraft entity pose.
-   * @return The new Labyfy {@link EntityPose} or {@code null} if the given entity pose was invalid.
+   * @return The new Flint {@link EntityPose} or {@code null} if the given entity pose was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft entity pose.
    */
   EntityPose fromMinecraftPose(Object handle);
 
   /**
-   * Creates a new Minecraft entity pose by using the Labyfy {@link EntityPose} as the base.
+   * Creates a new Minecraft entity pose by using the Flint {@link EntityPose} as the base.
    *
-   * @param pose The non-null Labyfy {@link EntityPose}.
+   * @param pose The non-null Flint {@link EntityPose}.
    * @return The new Minecraft entity pose or {@code null} if the given entity pose was invalid.
    */
   Object toMinecraftPose(EntityPose pose);

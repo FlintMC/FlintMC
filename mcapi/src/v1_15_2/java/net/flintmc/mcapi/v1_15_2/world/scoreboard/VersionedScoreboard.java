@@ -114,7 +114,7 @@ public class VersionedScoreboard implements Scoreboard {
       throw new IllegalArgumentException("The objective name \"" + name + "\" is too long!");
     } else if (minecraft ? this.hasMinecraftObjective(name) : this.hasObjective(name)) {
 
-      // Checks if it is called by the Labyfy API
+      // Checks if it is called by the Flint API
       if (!minecraft) {
 
         // Checks if the given name is already registered in the Minecraft scoreboard.
@@ -130,13 +130,13 @@ public class VersionedScoreboard implements Scoreboard {
       return null;
     } else {
       Objective objective =
-          this.objectiveProvider.get(this, name, displayName, criteria, renderType);
+              this.objectiveProvider.get(this, name, displayName, criteria, renderType);
       this.scoreObjectiveCriterias
-          .computeIfAbsent(criteria, criteriaAbsent -> new ArrayList<>())
-          .add(objective);
+              .computeIfAbsent(criteria, criteriaAbsent -> new ArrayList<>())
+              .add(objective);
 
-      // Checks if it is called by the Labyfy API.
-      // When is called from the Labyfy API, add the new objective to the Minecraft scoreboard.
+      // Checks if it is called by the Flint API.
+      // When is called from the Flint API, add the new objective to the Minecraft scoreboard.
       if (!minecraft) this.addMinecraftObjective(name, criteria, displayName, renderType);
 
       // Puts the new objective to the key-value system
@@ -314,7 +314,7 @@ public class VersionedScoreboard implements Scoreboard {
       return false;
     } else {
 
-      // Checks if it is called by the Labyfy API
+      // Checks if it is called by the Flint API
       // Removes a team player from a team
       if (!minecraft) {
         ScorePlayerTeam playerTeam =
@@ -374,10 +374,10 @@ public class VersionedScoreboard implements Scoreboard {
 
         // Checks if the registered team from Minecraft null
         // When the registered team is null, creates or retrieves a
-        // Labyfy team and creates a new Minecraft team.
+        // Flint team and creates a new Minecraft team.
         if (team == null) {
 
-          // Retrieves or creates a Labyfy team
+          // Retrieves or creates a Flint team
           PlayerTeam playerTeam = this.retrieveOrCreateTeam(name);
           // Creates a new Minecraft team
           Minecraft.getInstance().world.getScoreboard().createTeam(playerTeam.getName());
@@ -449,7 +449,7 @@ public class VersionedScoreboard implements Scoreboard {
       this.teamMemberships.remove(member);
     }
 
-    // Checks if it is called by the Labyfy API
+    // Checks if it is called by the Flint API
     if (!minecraft) {
       // Removes the team from the Miencraft scoreboard
       Minecraft.getInstance()

@@ -34,11 +34,11 @@ public class DefaultPackageLoader implements PackageLoader {
 
   @Inject
   private DefaultPackageLoader(
-      DefaultLoggingProvider loggingProvider,
-      @Named("labyfyPackageFolder") File packageFolder,
-      DefaultPackageManifestLoader descriptionLoader,
-      Package.Factory packageFactory,
-      @InjectLogger Logger logger) {
+          DefaultLoggingProvider loggingProvider,
+          @Named("flintPackageFolder") File packageFolder,
+          DefaultPackageManifestLoader descriptionLoader,
+          Package.Factory packageFactory,
+          @InjectLogger Logger logger) {
 
     this.packageFactory = packageFactory;
     this.logger = logger;
@@ -129,7 +129,7 @@ public class DefaultPackageLoader implements PackageLoader {
                     return false;
                   }
                 })
-            // TODO: check for Labyfy and Minecraft compatibility
+                // TODO: check for Flint and Minecraft compatibility
             .collect(Collectors.toSet());
 
     Set<Package> loadedPackages = new HashSet<>();

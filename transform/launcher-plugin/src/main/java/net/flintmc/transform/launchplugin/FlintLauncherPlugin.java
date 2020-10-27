@@ -31,7 +31,7 @@ public class FlintLauncherPlugin implements LauncherPlugin {
 
   public FlintLauncherPlugin() {
     if (instance != null) {
-      throw new IllegalStateException("LabyfyLauncherPlugin instantiated already");
+      throw new IllegalStateException("FlintLauncherPlugin instantiated already");
     }
     RootClassLoader rootLoader = LaunchController.getInstance().getRootLoader();
 
@@ -65,7 +65,7 @@ public class FlintLauncherPlugin implements LauncherPlugin {
 
   public static FlintLauncherPlugin getInstance() {
     if (instance == null) {
-      throw new IllegalStateException("LabyfyLauncherPlugin has not been instantiated yet");
+      throw new IllegalStateException("FlintLauncherPlugin has not been instantiated yet");
     }
     return instance;
   }
@@ -73,14 +73,14 @@ public class FlintLauncherPlugin implements LauncherPlugin {
   /** {@inheritDoc} */
   @Override
   public String name() {
-    return "Labyfy";
+    return "Flint";
   }
 
   /** {@inheritDoc} */
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
     classloader.excludeFromModification(
-        "javassist.", "com.google.", "net.labyfy.component.transform.");
+            "javassist.", "com.google.", "net.flintmc.transform.");
   }
 
   /** {@inheritDoc} */
@@ -124,7 +124,7 @@ public class FlintLauncherPlugin implements LauncherPlugin {
   }
 
   /**
-   * Search for manifest.mf entries for labyfy
+   * Search for manifest.mf entries for Flint
    *
    * @param name Name of the requested entry
    * @return Value for requested entry
@@ -137,7 +137,7 @@ public class FlintLauncherPlugin implements LauncherPlugin {
       Manifest manifest = new Manifest(manifestUrl.openStream());
       Attributes mainAttributes = manifest.getMainAttributes();
       String implementationTitle = mainAttributes.getValue("Implementation-Title");
-      if (implementationTitle != null && implementationTitle.equals("labyfy")) {
+      if (implementationTitle != null && implementationTitle.equals("flint")) {
         return mainAttributes.getValue(name);
       }
     }

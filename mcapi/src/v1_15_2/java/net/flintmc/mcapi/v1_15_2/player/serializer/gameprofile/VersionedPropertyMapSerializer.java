@@ -26,7 +26,7 @@ public class VersionedPropertyMapSerializer
   }
 
   /**
-   * Deserializes the Mojang {@link com.mojang.authlib.properties.PropertyMap} to the Labyfy {@link
+   * Deserializes the Mojang {@link com.mojang.authlib.properties.PropertyMap} to the Flint {@link
    * PropertyMap}
    *
    * @param value The properties being deserialized
@@ -47,12 +47,12 @@ public class VersionedPropertyMapSerializer
     return properties;
   }
 
-  /**
-   * Serializes the Labyfy {@link com.mojang.authlib.properties.PropertyMap} to the Mojang {@link
-   * com.mojang.authlib.properties.PropertyMap}
-   *
-   * @param value The properties being serialized
-   * @return A serialized {@link com.mojang.authlib.properties.PropertyMap}
+    /**
+     * Serializes the Flint {@link com.mojang.authlib.properties.PropertyMap} to the Mojang {@link
+     * com.mojang.authlib.properties.PropertyMap}
+     *
+     * @param value The properties being serialized
+     * @return A serialized {@link com.mojang.authlib.properties.PropertyMap}
    */
   @Override
   public com.mojang.authlib.properties.PropertyMap serialize(PropertyMap value) {

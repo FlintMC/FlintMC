@@ -44,7 +44,7 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
   @Override
   public byte[] transform(String className, byte[] classData) throws ClassTransformException {
     if (!obfuscated) return classData;
-    if (!className.startsWith("net.labyfy")) return classData;
+    if (!className.startsWith("net.flintmc")) return classData;
 
     ClassInformation classInformation;
 

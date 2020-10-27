@@ -23,8 +23,8 @@ public class MinecraftTransformerService implements ServiceHandler<MinecraftTran
   @Inject
   private MinecraftTransformerService() {
     LaunchController.getInstance()
-        .getRootLoader()
-        .excludeFromModification("net.labyfy.internal.component.transform.");
+            .getRootLoader()
+            .excludeFromModification("net.flintmc.transform.");
   }
 
   @Override

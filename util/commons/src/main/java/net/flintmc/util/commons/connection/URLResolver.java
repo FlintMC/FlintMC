@@ -10,7 +10,7 @@ public class URLResolver {
   private URLResolver() {}
 
   /**
-   * Opens a {@link HttpURLConnection} and sets the Labyfy User Agent.
+   * Opens a {@link HttpURLConnection} and sets the Flint User Agent.
    *
    * @param url the url to connect to
    * @return the resulting connection
@@ -19,7 +19,7 @@ public class URLResolver {
   public static HttpURLConnection prepare(URL url) throws IOException {
     try {
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestProperty("User-Agent", "Labyfy (+https://www.labymod.net/)");
+      connection.setRequestProperty("User-Agent", "Flint (+https://flintmc.net/)");
       return connection;
     } catch (IOException ex) {
       throw new IOException("Could not establish connection to url " + url, ex);
@@ -27,7 +27,7 @@ public class URLResolver {
   }
 
   /**
-   * Opens and connects a {@link HttpURLConnection} and sets the Labyfy User Agent.
+   * Opens and connects a {@link HttpURLConnection} and sets the Flint User Agent.
    *
    * @param url the url to connect to
    * @return the resulting connection
@@ -44,7 +44,7 @@ public class URLResolver {
   }
 
   /**
-   * Opens an {@link InputStream} to a given url and sets the Labyfy User Agent.
+   * Opens an {@link InputStream} to a given url and sets the Flint User Agent.
    *
    * @param url the url to connect to
    * @return the payload

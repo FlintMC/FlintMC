@@ -106,7 +106,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
         context.getDeclaredMethod(
             "setKeyCallbacks", long.class, GLFWKeyCallbackI.class, GLFWCharModsCallbackI.class);
     setKeyCallbacksMethod.setBody(
-        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptKeyboardCallbacks($$);");
+            "net.flintmc.render.gui.v1_15_2.VersionedInputInterceptor.interceptKeyboardCallbacks($$);");
 
     CtMethod setMouseCallbacksMethod =
         context.getDeclaredMethod(
@@ -115,8 +115,8 @@ public class VersionedInputInterceptor implements InputInterceptor {
             GLFWCursorPosCallbackI.class,
             GLFWMouseButtonCallbackI.class,
             GLFWScrollCallbackI.class);
-    setMouseCallbacksMethod.setBody(
-        "net.labyfy.internal.component.gui.v1_15_2.VersionedInputInterceptor.interceptMouseCallbacks($$);");
+      setMouseCallbacksMethod.setBody(
+              "net.flintmc.render.gui.v1_15_2.VersionedInputInterceptor.interceptMouseCallbacks($$);");
   }
 
   @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.15.2")
@@ -125,58 +125,58 @@ public class VersionedInputInterceptor implements InputInterceptor {
     context
         .getDeclaredMethod("onFramebufferSizeUpdate", long.class, int.class, int.class)
         .insertBefore(
-            "{"
-                + "net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
-                + "   (net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
-                + "   net.labyfy.component.inject.primitive.InjectionHolder.getInjectedInstance("
-                + "     net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
-                + "   );"
-                + "if(callbacks.framebufferSizeCallback($$)) {"
-                + "   return;"
-                + "}"
-                + "}");
+                "{"
+                        + "net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
+                        + "   (net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
+                        + "   net.flintmc.framework.inject.primitive.InjectionHolder.getInjectedInstance("
+                        + "     net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
+                        + "   );"
+                        + "if(callbacks.framebufferSizeCallback($$)) {"
+                        + "   return;"
+                        + "}"
+                        + "}");
 
     context
         .getDeclaredMethod("onWindowPosUpdate", long.class, int.class, int.class)
         .insertBefore(
-            "{"
-                + "net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
-                + "   (net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
-                + "   net.labyfy.component.inject.primitive.InjectionHolder.getInjectedInstance("
-                + "     net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
-                + "   );"
-                + "if(callbacks.windowPosCallback($$)) {"
-                + "   return;"
-                + "}"
-                + "}");
+                "{"
+                        + "net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
+                        + "   (net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
+                        + "   net.flintmc.framework.inject.primitive.InjectionHolder.getInjectedInstance("
+                        + "     net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
+                        + "   );"
+                        + "if(callbacks.windowPosCallback($$)) {"
+                        + "   return;"
+                        + "}"
+                        + "}");
 
     context
         .getDeclaredMethod("onWindowSizeUpdate", long.class, int.class, int.class)
         .insertBefore(
-            "{"
-                + "net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
-                + "   (net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
-                + "   net.labyfy.component.inject.primitive.InjectionHolder.getInjectedInstance("
-                + "     net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
-                + "   );"
-                + "if(callbacks.windowSizeCallback($$)) {"
-                + "   return;"
-                + "}"
-                + "}");
+                "{"
+                        + "net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
+                        + "   (net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
+                        + "   net.flintmc.framework.inject.primitive.InjectionHolder.getInjectedInstance("
+                        + "     net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
+                        + "   );"
+                        + "if(callbacks.windowSizeCallback($$)) {"
+                        + "   return;"
+                        + "}"
+                        + "}");
 
     context
         .getDeclaredMethod("onWindowFocusUpdate", long.class, boolean.class)
         .insertBefore(
-            "{"
-                + "net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
-                + "   (net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
-                + "   net.labyfy.component.inject.primitive.InjectionHolder.getInjectedInstance("
-                + "     net.labyfy.internal.component.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
-                + "   );"
-                + "if(callbacks.windowFocusCallback($$)) {"
-                + "   return;"
-                + "}"
-                + "}");
+                "{"
+                        + "net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
+                        + "   (net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
+                        + "   net.flintmc.framework.inject.primitive.InjectionHolder.getInjectedInstance("
+                        + "     net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
+                        + "   );"
+                        + "if(callbacks.windowFocusCallback($$)) {"
+                        + "   return;"
+                        + "}"
+                        + "}");
   }
 
   /** {@inheritDoc} */

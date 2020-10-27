@@ -9,7 +9,9 @@ import org.lwjgl.glfw.GLFW;
 import java.util.EnumSet;
 import java.util.Set;
 
-/** Utility class to convert GLFW constants to labyfy constants. */
+/**
+ * Utility class to convert GLFW constants to Flint constants.
+ */
 public class VersionedGLFWInputConverter {
   // Static class
   private VersionedGLFWInputConverter() {
@@ -17,7 +19,7 @@ public class VersionedGLFWInputConverter {
   }
 
   /**
-   * Converts a GLFW key constant to a Labyfy key.
+   * Converts a GLFW key constant to a Flint key.
    *
    * @param key The GLFW key constant to convert
    * @return The converted key, or {@link Key#UNKNOWN} if the key is {@link GLFW#GLFW_KEY_UNKNOWN}
@@ -392,35 +394,35 @@ public class VersionedGLFWInputConverter {
   }
 
   /**
-   * Converts a GLFW modifier bitfield to a Labyfy modifier key set.
+   * Converts a GLFW modifier bitfield to a Flint modifier key set.
    *
    * @param modifiers The GLFW bitfield to convert
-   * @return A set containing the Labyfy modifier key equivalents of the GLFW bitfield
+   * @return A set containing the Flint modifier key equivalents of the GLFW bitfield
    */
   public static Set<ModifierKey> glfwModifierToFlintModifier(int modifiers) {
-    Set<ModifierKey> labyfyModifiers = EnumSet.noneOf(ModifierKey.class);
+    Set<ModifierKey> flintModifiers = EnumSet.noneOf(ModifierKey.class);
 
     if ((modifiers & GLFW.GLFW_MOD_SHIFT) != 0) {
-      labyfyModifiers.add(ModifierKey.SHIFT);
+      flintModifiers.add(ModifierKey.SHIFT);
     }
 
     if ((modifiers & GLFW.GLFW_MOD_CONTROL) != 0) {
-      labyfyModifiers.add(ModifierKey.CONTROL);
+      flintModifiers.add(ModifierKey.CONTROL);
     }
 
     if ((modifiers & GLFW.GLFW_MOD_ALT) != 0) {
-      labyfyModifiers.add(ModifierKey.ALT);
+      flintModifiers.add(ModifierKey.ALT);
     }
 
     if ((modifiers & GLFW.GLFW_MOD_SUPER) != 0) {
-      labyfyModifiers.add(ModifierKey.SUPER);
+      flintModifiers.add(ModifierKey.SUPER);
     }
 
-    return labyfyModifiers;
+    return flintModifiers;
   }
 
   /**
-   * Converts a GLFW mouse button constant to a Labyfy mouse button,
+   * Converts a GLFW mouse button constant to a Flint mouse button,
    *
    * @param button The GLFW constant to convert
    * @return The converted mouse button, or {@link MouseButton#UNKNOWN} if the button is not known.
@@ -457,7 +459,7 @@ public class VersionedGLFWInputConverter {
   }
 
   /**
-   * Converts a GLFW action constant to a Labyfy input state.
+   * Converts a GLFW action constant to a Flint input state.
    *
    * @param state The GLFW constant to convert
    * @return The converted mouse input state

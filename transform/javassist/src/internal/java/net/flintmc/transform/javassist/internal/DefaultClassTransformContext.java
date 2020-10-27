@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 @Implement(ClassTransformContext.class)
 public class DefaultClassTransformContext implements ClassTransformContext {
 
-  private final ClassMappingProvider labyClassMappingProvider;
+  private final ClassMappingProvider flintClassMappingProvider;
   private final CtClass ctClass;
 
   @AssistedInject
   private DefaultClassTransformContext(
-      ClassMappingProvider labyClassMappingProvider, @Assisted CtClass ctClass) {
-    this.labyClassMappingProvider = labyClassMappingProvider;
+          ClassMappingProvider flintClassMappingProvider, @Assisted CtClass ctClass) {
+    this.flintClassMappingProvider = flintClassMappingProvider;
     this.ctClass = ctClass;
   }
 
@@ -94,7 +94,7 @@ public class DefaultClassTransformContext implements ClassTransformContext {
 
     return this.getCtClass()
         .getDeclaredMethod(
-            this.labyClassMappingProvider
+                this.flintClassMappingProvider
                 .get(this.ctClass.getName())
                 .getMethod(name, classes)
                 .getName(),

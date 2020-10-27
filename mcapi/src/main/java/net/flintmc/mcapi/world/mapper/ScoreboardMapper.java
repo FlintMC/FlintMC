@@ -6,7 +6,9 @@ import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
-/** Scoreboard mapper between the Minecraft objects and the Labyfy objects. */
+/**
+ * Scoreboard mapper between the Minecraft objects and the Flint objects.
+ */
 public interface ScoreboardMapper {
 
   /**

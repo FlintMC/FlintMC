@@ -41,14 +41,14 @@ public class DefaultPackage implements Package {
   private Exception loadException;
 
   /**
-   * Creates a new Labyfy package with the given description loader and the given files.
+   * Creates a new Flint package with the given description loader and the given files.
    *
    * @param serviceRepository The singleton instance of the {@link ServiceRepository}
-   * @param manifestLoader The loader to use for reading the manifest
-   * @param jarFile The java IO file this package should be loaded from, or null if loaded from the
-   *     classpath
-   * @param jar The java IO jar file this package should be loaded from, must point to the same file
-   *     as the `file` parameter, or must be null if the package has been loaded from the classpath
+   * @param manifestLoader    The loader to use for reading the manifest
+   * @param jarFile           The java IO file this package should be loaded from, or null if loaded from the
+   *                          classpath
+   * @param jar               The java IO jar file this package should be loaded from, must point to the same file
+   *                          as the `file` parameter, or must be null if the package has been loaded from the classpath
    */
   @AssistedInject
   private DefaultPackage(

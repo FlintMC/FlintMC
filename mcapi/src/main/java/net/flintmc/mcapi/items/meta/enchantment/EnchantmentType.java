@@ -18,7 +18,7 @@ public interface EnchantmentType {
 
   /**
    * Retrieves the highest level of this enchantment type that is possible to get in an vanilla
-   * enchanting table. Labyfy ignores this value when an enchantment is created.
+   * enchanting table. Flint ignores this value when an enchantment is created.
    *
    * @return The highest level which is at least 1
    */

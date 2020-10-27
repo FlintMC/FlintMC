@@ -60,7 +60,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     excludeFromModification("java.");
     excludeFromModification("javax.");
     excludeFromModification("com.sun.");
-    excludeFromModification("net.labyfy.component.launcher.");
+    excludeFromModification("net.flintmc.launcher.");
   }
 
   public void addModifiedClass(String name, byte[] byteCode) {
@@ -141,7 +141,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       return RootClassLoader.class;
     } else if (name.equals(LauncherPlugin.class.getName())) {
       return LauncherPlugin.class;
-    } else if (name.startsWith("net.labyfy.component.launcher.classloading.")) {
+    } else if (name.startsWith("net.flintmc.launcher.classloading.")) {
       return Class.forName(name, false, RootClassLoader.class.getClassLoader());
     }
 

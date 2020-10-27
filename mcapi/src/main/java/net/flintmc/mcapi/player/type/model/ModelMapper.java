@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.player.type.model;
 
-/** Mapper between the Minecraft player model part and the Labyfy {@link PlayerClothing}. */
+/**
+ * Mapper between the Minecraft player model part and the Flint {@link PlayerClothing}.
+ */
 public interface ModelMapper {
 
   /**

@@ -5,7 +5,9 @@ import net.flintmc.render.shader.uniformprovider.PartialTickProvider;
 import net.flintmc.render.shader.uniformprovider.ProjectionMatrixProvider;
 import net.flintmc.render.shader.uniformprovider.WorldMatrixProvider;
 
-/** Lists automatic uniform value provider implemented in Labyfy. */
+/**
+ * Lists automatic uniform value provider implemented in Flint.
+ */
 public enum UniformProvider implements ShaderUniformProvider {
   /** Updates a uniform with the current partial tick. */
   PARTIAL_TICKS(InjectionHolder.getInjectedInstance(PartialTickProvider.class)),

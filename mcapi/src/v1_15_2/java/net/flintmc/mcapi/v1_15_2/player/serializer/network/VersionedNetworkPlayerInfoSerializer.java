@@ -14,7 +14,7 @@ public class VersionedNetworkPlayerInfoSerializer
 
   /**
    * Deserializes the Mojang {@link net.minecraft.client.network.play.NetworkPlayerInfo} to the
-   * Labyfy {@link NetworkPlayerInfo}
+   * Flint {@link NetworkPlayerInfo}
    *
    * @param value The network player info being deserialized
    * @return A deserialized {@link NetworkPlayerInfo}
@@ -24,12 +24,12 @@ public class VersionedNetworkPlayerInfoSerializer
     return InjectionHolder.getInjectedInstance(NetworkPlayerInfo.class);
   }
 
-  /**
-   * Serializes the Labyfy {@link NetworkPlayerInfo} to the {@link
-   * net.minecraft.client.network.play.NetworkPlayerInfo}
-   *
-   * @param value The network player info being serialized
-   * @return A serialized {@link net.minecraft.client.network.play.NetworkPlayerInfo}
+    /**
+     * Serializes the Flint {@link NetworkPlayerInfo} to the {@link
+     * net.minecraft.client.network.play.NetworkPlayerInfo}
+     *
+     * @param value The network player info being serialized
+     * @return A serialized {@link net.minecraft.client.network.play.NetworkPlayerInfo}
    */
   @Override
   @Deprecated

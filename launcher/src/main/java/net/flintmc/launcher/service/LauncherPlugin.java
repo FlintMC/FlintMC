@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public interface LauncherPlugin {
   /**
-   * The name of the plugin, should be a short, but meaningful identifier, such as `Labyfy`, `Forge`
+   * The name of the plugin, should be a short, but meaningful identifier, such as `Flint`, `Forge`
    * or `Fabric`.
    *
    * @return the name of the plugin

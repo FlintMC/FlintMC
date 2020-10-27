@@ -94,13 +94,13 @@ public class JavassistExecutorFactory implements Executor.Factory {
   private String executorClassName(
       final CtClass listener, final CtMethod method, final CtClass parameter) {
     return String.format(
-        "%s.%s.%s-%s-%s-%d",
-        "net.labyfy.component.event.asm.generated",
-        this.session,
-        listener.getSimpleName(),
-        method.getName(),
-        parameter.getSimpleName(),
-        this.identifier.incrementAndGet());
+            "%s.%s.%s-%s-%s-%d",
+            "net.flint.component.event.asm.generated",
+            this.session,
+            listener.getSimpleName(),
+            method.getName(),
+            parameter.getSimpleName(),
+            this.identifier.incrementAndGet());
   }
 
   /** {@inheritDoc} */

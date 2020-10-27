@@ -92,12 +92,12 @@ public class VersionedGuiInterceptor {
        */
 
       method.insertBefore(
-          "if(net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.preScreenRenderCallback()) {"
+          "if(net.flintmc.render.gui.v1_15_2.VersionedGuiInterceptor.preScreenRenderCallback()) {"
               + "   return;"
               + "}");
 
       method.insertAfter(
-          "net.labyfy.internal.component.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback();");
+              "net.flintmc.render.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback();");
 
       break;
     }

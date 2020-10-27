@@ -28,7 +28,7 @@ public class VersionedGameProfileSerializer
   }
 
   /**
-   * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Labyfy {@link
+   * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Flint {@link
    * GameProfile}
    *
    * @param profile The game profile to deserialize
@@ -43,11 +43,11 @@ public class VersionedGameProfileSerializer
         .build();
   }
 
-  /**
-   * Serializes the Labyfy {@link GameProfile} to the Mojang {@link com.mojang.authlib.GameProfile}.
-   *
-   * @param profile The profile to serialize
-   * @return A serialized game profile
+    /**
+     * Serializes the Flint {@link GameProfile} to the Mojang {@link com.mojang.authlib.GameProfile}.
+     *
+     * @param profile The profile to serialize
+     * @return A serialized game profile
    */
   @Override
   public com.mojang.authlib.GameProfile serialize(GameProfile profile) {
