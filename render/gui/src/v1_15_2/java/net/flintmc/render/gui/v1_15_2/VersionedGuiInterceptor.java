@@ -97,7 +97,7 @@ public class VersionedGuiInterceptor {
               + "}");
 
       method.insertAfter(
-              "net.flintmc.render.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback();");
+          "net.flintmc.render.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback();");
 
       break;
     }

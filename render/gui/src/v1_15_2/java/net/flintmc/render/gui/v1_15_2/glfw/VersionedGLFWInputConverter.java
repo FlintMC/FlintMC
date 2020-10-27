@@ -9,9 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.EnumSet;
 import java.util.Set;
 
-/**
- * Utility class to convert GLFW constants to Flint constants.
- */
+/** Utility class to convert GLFW constants to Flint constants. */
 public class VersionedGLFWInputConverter {
   // Static class
   private VersionedGLFWInputConverter() {

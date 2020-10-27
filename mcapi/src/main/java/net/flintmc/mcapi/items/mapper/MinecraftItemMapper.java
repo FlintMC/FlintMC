@@ -3,9 +3,7 @@ package net.flintmc.mcapi.items.mapper;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
 
-/**
- * A mapper between the Flint {@link ItemStack} and the Minecraft ItemStack.
- */
+/** A mapper between the Flint {@link ItemStack} and the Minecraft ItemStack. */
 public interface MinecraftItemMapper {
 
   /**

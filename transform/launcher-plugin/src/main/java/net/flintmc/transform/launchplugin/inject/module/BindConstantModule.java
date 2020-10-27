@@ -32,9 +32,9 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     boolean obfuscated =
-            ((RootClassLoader) getClass().getClassLoader())
-                    .findResource("net/minecraft/client/Minecraft.class")
-                    == null;
+        ((RootClassLoader) getClass().getClassLoader())
+                .findResource("net/minecraft/client/Minecraft.class")
+            == null;
 
     this.bindNamed("obfuscated", obfuscated);
     this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(this.launchArguments);

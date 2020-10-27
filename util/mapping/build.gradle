@@ -10,7 +10,7 @@ repositories {
     mavenCentral()
 }
 
-labyfy{
+labyfy {
 }
 
 dependencies {

@@ -130,10 +130,10 @@ public class VersionedScoreboard implements Scoreboard {
       return null;
     } else {
       Objective objective =
-              this.objectiveProvider.get(this, name, displayName, criteria, renderType);
+          this.objectiveProvider.get(this, name, displayName, criteria, renderType);
       this.scoreObjectiveCriterias
-              .computeIfAbsent(criteria, criteriaAbsent -> new ArrayList<>())
-              .add(objective);
+          .computeIfAbsent(criteria, criteriaAbsent -> new ArrayList<>())
+          .add(objective);
 
       // Checks if it is called by the Flint API.
       // When is called from the Flint API, add the new objective to the Minecraft scoreboard.

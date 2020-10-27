@@ -29,23 +29,23 @@ public class VersionedTasks {
   @ClassTransform(value = "net.minecraft.client.Minecraft", version = "1.15.2")
   public void transform(ClassTransformContext classTransformContext) throws CannotCompileException {
     classTransformContext
-            .getCtClass()
-            .getDeclaredConstructors()[0]
-            .insertAfter(
-                    "net.flintmc.framework.tasks.v1_15_2.VersionedTasks.notify(net.flintmc.framework.tasks.Tasks.POST_MINECRAFT_INITIALIZE);");
+        .getCtClass()
+        .getDeclaredConstructors()[0]
+        .insertAfter(
+            "net.flintmc.framework.tasks.v1_15_2.VersionedTasks.notify(net.flintmc.framework.tasks.Tasks.POST_MINECRAFT_INITIALIZE);");
   }
 
   @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.15.2")
   public void transformOpenGlInitialize(ClassTransformContext classTransformContext)
       throws CannotCompileException, NotFoundException {
     classTransformContext
-            .getCtClass()
-            .getDeclaredMethod(
-                    classMappingProvider
-                            .get("net.minecraft.client.MainWindow")
-                            .getMethod("setLogOnGlError")
-                            .getName())
-            .insertAfter(
-                    "net.flintmc.framework.tasks.v1_15_2.VersionedTasks.notify(net.flintmc.framework.tasks.Tasks.POST_OPEN_GL_INITIALIZE);");
+        .getCtClass()
+        .getDeclaredMethod(
+            classMappingProvider
+                .get("net.minecraft.client.MainWindow")
+                .getMethod("setLogOnGlError")
+                .getName())
+        .insertAfter(
+            "net.flintmc.framework.tasks.v1_15_2.VersionedTasks.notify(net.flintmc.framework.tasks.Tasks.POST_OPEN_GL_INITIALIZE);");
   }
 }

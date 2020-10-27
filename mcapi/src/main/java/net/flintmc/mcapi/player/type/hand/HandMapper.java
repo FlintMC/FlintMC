@@ -1,8 +1,6 @@
 package net.flintmc.mcapi.player.type.hand;
 
-/**
- * Mapper between the Minecraft hand, handSide and the Flint {@link Hand}, {@link Hand.Side}.
- */
+/** Mapper between the Minecraft hand, handSide and the Flint {@link Hand}, {@link Hand.Side}. */
 public interface HandMapper {
 
   /**

@@ -2,9 +2,7 @@ package net.flintmc.mcapi.entity.passive;
 
 import net.flintmc.mcapi.entity.passive.farmanimal.PigEntity;
 
-/**
- * Mapper between the Minecraft's passive entities and Flint's passive entities.
- */
+/** Mapper between the Minecraft's passive entities and Flint's passive entities. */
 public interface PassiveEntityMapper {
 
   /**

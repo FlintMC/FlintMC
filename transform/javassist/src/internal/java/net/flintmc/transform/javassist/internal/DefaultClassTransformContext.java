@@ -18,7 +18,7 @@ public class DefaultClassTransformContext implements ClassTransformContext {
 
   @AssistedInject
   private DefaultClassTransformContext(
-          ClassMappingProvider flintClassMappingProvider, @Assisted CtClass ctClass) {
+      ClassMappingProvider flintClassMappingProvider, @Assisted CtClass ctClass) {
     this.flintClassMappingProvider = flintClassMappingProvider;
     this.ctClass = ctClass;
   }
@@ -94,7 +94,7 @@ public class DefaultClassTransformContext implements ClassTransformContext {
 
     return this.getCtClass()
         .getDeclaredMethod(
-                this.flintClassMappingProvider
+            this.flintClassMappingProvider
                 .get(this.ctClass.getName())
                 .getMethod(name, classes)
                 .getName(),

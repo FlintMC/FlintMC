@@ -24,12 +24,12 @@ public class VersionedNetworkPlayerInfoSerializer
     return InjectionHolder.getInjectedInstance(NetworkPlayerInfo.class);
   }
 
-    /**
-     * Serializes the Flint {@link NetworkPlayerInfo} to the {@link
-     * net.minecraft.client.network.play.NetworkPlayerInfo}
-     *
-     * @param value The network player info being serialized
-     * @return A serialized {@link net.minecraft.client.network.play.NetworkPlayerInfo}
+  /**
+   * Serializes the Flint {@link NetworkPlayerInfo} to the {@link
+   * net.minecraft.client.network.play.NetworkPlayerInfo}
+   *
+   * @param value The network player info being serialized
+   * @return A serialized {@link net.minecraft.client.network.play.NetworkPlayerInfo}
    */
   @Override
   @Deprecated

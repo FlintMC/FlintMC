@@ -82,8 +82,8 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     @Override
     public String getDescription() {
       return this.description != null
-              ? this.description
-              : "flint." + this.name + ".packages.generic.description";
+          ? this.description
+          : "flint." + this.name + ".packages.generic.description";
     }
 
     /** {@inheritDoc} */

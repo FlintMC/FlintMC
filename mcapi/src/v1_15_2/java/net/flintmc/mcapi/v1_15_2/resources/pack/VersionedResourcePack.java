@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-/**
- * 1.15.2 implementation of a Flint resource pack
- */
+/** 1.15.2 implementation of a Flint resource pack */
 public class VersionedResourcePack implements ResourcePack {
   private final ClientResourcePackInfo info;
 

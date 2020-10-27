@@ -8,7 +8,7 @@ repositories {
     mavenCentral()
 }
 
-labyfy{
+labyfy {
     minecraftVersions '1.15.2'
 }
 

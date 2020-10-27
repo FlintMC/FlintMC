@@ -86,13 +86,13 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     if (component instanceof KeybindTextComponent) {
 
       return new DefaultKeybindComponentBuilder()
-              .keybind(Keybind.getByKey(((KeybindTextComponent) component).getKeybind()))
-              .build();
+          .keybind(Keybind.getByKey(((KeybindTextComponent) component).getKeybind()))
+          .build();
 
     } else if (component instanceof ScoreTextComponent) {
 
       return new DefaultScoreComponentBuilder()
-              .name(((ScoreTextComponent) component).getName())
+          .name(((ScoreTextComponent) component).getName())
           .objective(((ScoreTextComponent) component).getObjective())
           .build();
 

@@ -18,7 +18,7 @@ public class FlintLauncher {
 
     // We now are running in the RootClassLoader's context, load our LaunchController
     Class<?> launchControllerClass =
-            rootClassloader.loadClass("net.flintmc.launcher.LaunchController");
+        rootClassloader.loadClass("net.flintmc.launcher.LaunchController");
     Object launchController =
         launchControllerClass.getDeclaredConstructors()[0].newInstance(rootClassloader, args);
 

@@ -94,13 +94,13 @@ public class JavassistExecutorFactory implements Executor.Factory {
   private String executorClassName(
       final CtClass listener, final CtMethod method, final CtClass parameter) {
     return String.format(
-            "%s.%s.%s-%s-%s-%d",
-            "net.flint.component.event.asm.generated",
-            this.session,
-            listener.getSimpleName(),
-            method.getName(),
-            parameter.getSimpleName(),
-            this.identifier.incrementAndGet());
+        "%s.%s.%s-%s-%s-%d",
+        "net.flint.component.event.asm.generated",
+        this.session,
+        listener.getSimpleName(),
+        method.getName(),
+        parameter.getSimpleName(),
+        this.identifier.incrementAndGet());
   }
 
   /** {@inheritDoc} */
@@ -113,12 +113,9 @@ public class JavassistExecutorFactory implements Executor.Factory {
         classTransformContext -> {
           CtClass ctClass = classTransformContext.getCtClass();
           if (!Modifier.isPublic(ctClass.getModifiers())) {
-            //      throw new ExecutorGenerationException("Listener class must be public.");
-            //      /* TODO: allow for modification
             ctClass.setModifiers(
                 (ctClass.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
                     | Modifier.PUBLIC);
-            //      */
           }
           try {
 
@@ -132,12 +129,9 @@ public class JavassistExecutorFactory implements Executor.Factory {
                     ctMethod.getName(), ctClass.getClassPool().get(parameterTypesAsStrings));
 
             if (!Modifier.isPublic(method.getModifiers())) {
-              //      throw new ExecutorGenerationException("Listener method must be public.");
-              //      /* TODO: allow for modification
               method.setModifiers(
                   (method.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
                       | Modifier.PUBLIC);
-              //      */
             }
           } catch (NotFoundException e) {
             logger.error(e);

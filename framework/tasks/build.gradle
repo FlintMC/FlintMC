@@ -6,7 +6,7 @@ group 'net.flintmc'
 
 sourceCompatibility = 1.8
 
-labyfy{
+labyfy {
     minecraftVersions '1.15.2'
 }
 

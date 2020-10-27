@@ -3,9 +3,7 @@ package net.flintmc.mcapi.entity.type;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 
-/**
- * Mapper between the Minecraft entity type and Flint entity type.
- */
+/** Mapper between the Minecraft entity type and Flint entity type. */
 public interface EntityTypeMapper {
 
   /**

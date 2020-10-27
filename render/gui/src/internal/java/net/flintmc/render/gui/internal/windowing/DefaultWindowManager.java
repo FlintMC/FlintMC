@@ -15,9 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Default implementation of the Flint {@link WindowManager}.
- */
+/** Default implementation of the Flint {@link WindowManager}. */
 @Singleton
 @Implement(WindowManager.class)
 public class DefaultWindowManager implements WindowManager {

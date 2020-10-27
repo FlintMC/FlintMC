@@ -79,8 +79,7 @@ public class FlintLauncherPlugin implements LauncherPlugin {
   /** {@inheritDoc} */
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
-    classloader.excludeFromModification(
-            "javassist.", "com.google.", "net.flintmc.transform.");
+    classloader.excludeFromModification("javassist.", "com.google.", "net.flintmc.transform.");
   }
 
   /** {@inheritDoc} */

@@ -11,9 +11,7 @@ import net.flintmc.mcapi.player.type.hand.HandMapper;
 import net.flintmc.mcapi.player.type.sound.SoundMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 
-/**
- * Mapper between Minecraft entity and Flint entity.
- */
+/** Mapper between Minecraft entity and Flint entity. */
 public interface EntityFoundationMapper {
 
   /**
@@ -28,8 +26,8 @@ public interface EntityFoundationMapper {
   EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle);
 
   /**
-   * Creates a new Minecraft equipment slot type by using the Flint {@link EquipmentSlotType} as
-   * the base.
+   * Creates a new Minecraft equipment slot type by using the Flint {@link EquipmentSlotType} as the
+   * base.
    *
    * @param equipmentSlotType The non-null Flint {@link EquipmentSlotType}.
    * @return The new Minecraft equipment slot type or {@code null} if the given equipment slot type

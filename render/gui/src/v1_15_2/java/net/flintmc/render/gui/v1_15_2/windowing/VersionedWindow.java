@@ -32,12 +32,12 @@ public class VersionedWindow implements InternalWindow {
    * Creates a new OpenGL window using GLFW. Constructor for assisted factory at {@link
    * Window.Factory#create(String, int, int)}.
    *
-   * @param title           The title of new the window
-   * @param width           The width of new the window
-   * @param height          The height of the new window
+   * @param title The title of new the window
+   * @param width The width of new the window
+   * @param height The height of the new window
    * @param minecraftWindow The main minecraft window, used to derive the context
-   * @param windowManager   The window manager of this Flint instance
-   * @param callbacks       The callbacks to install on the window
+   * @param windowManager The window manager of this Flint instance
+   * @param callbacks The callbacks to install on the window
    */
   @AssistedInject
   public VersionedWindow(
