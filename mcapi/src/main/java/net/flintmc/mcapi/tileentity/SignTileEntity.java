@@ -1,12 +1,10 @@
 package net.flintmc.mcapi.tileentity;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 
-/**
- * Represents the Minecraft sign tile entity.
- */
+/** Represents the Minecraft sign tile entity. */
 public interface SignTileEntity extends TileEntity {
 
   /**
@@ -20,14 +18,12 @@ public interface SignTileEntity extends TileEntity {
   /**
    * Changes the text at the given line.
    *
-   * @param line      The line to change the text.
+   * @param line The line to change the text.
    * @param component The new text for the line.
    */
   void setText(int line, ChatComponent component);
 
-  /**
-   * A factory for the {@link SignTileEntity}.
-   */
+  /** A factory for the {@link SignTileEntity}. */
   @AssistedFactory(SignTileEntity.class)
   interface Factory {
 
@@ -38,7 +34,5 @@ public interface SignTileEntity extends TileEntity {
      * @return A created sign tile entity.
      */
     SignTileEntity create(@Assisted("tileEntity") Object signTileEntity);
-
   }
-
 }

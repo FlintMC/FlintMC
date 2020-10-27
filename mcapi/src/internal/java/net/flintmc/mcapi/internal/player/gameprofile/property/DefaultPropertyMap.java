@@ -9,11 +9,10 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.property.Property;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
-/**
- * An implementation of {@link PropertyMap}
- */
+/** An implementation of {@link PropertyMap} */
 @Implement(PropertyMap.class)
-public class DefaultPropertyMap extends ForwardingMultimap<String, Property> implements PropertyMap {
+public class DefaultPropertyMap extends ForwardingMultimap<String, Property>
+    implements PropertyMap {
 
   private final Multimap<String, Property> properties;
 
@@ -27,12 +26,9 @@ public class DefaultPropertyMap extends ForwardingMultimap<String, Property> imp
     this.properties = properties;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   protected Multimap<String, Property> delegate() {
     return properties;
   }
-
 }

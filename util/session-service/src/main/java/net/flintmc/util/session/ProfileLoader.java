@@ -5,9 +5,7 @@ import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
 import java.util.UUID;
 
-/**
- * The ProfileLoader loads textures and player names for a specified UUID.
- */
+/** The ProfileLoader loads textures and player names for a specified UUID. */
 public interface ProfileLoader {
 
   /**
@@ -25,5 +23,4 @@ public interface ProfileLoader {
    * @return The new non-null profile filled with the UUID, name and properties (textures)
    */
   GameProfile loadProfile(UUID uniqueId);
-
 }

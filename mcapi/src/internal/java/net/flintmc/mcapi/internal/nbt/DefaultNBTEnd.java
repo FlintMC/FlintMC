@@ -9,43 +9,28 @@ import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
 import java.io.IOException;
 
-/**
- * Default implementation the {@link NBTEnd}.
- */
+/** Default implementation the {@link NBTEnd}. */
 @Implement(NBTEnd.class)
 public class DefaultNBTEnd implements NBTEnd {
 
   @AssistedInject
-  private DefaultNBTEnd() {
-  }
+  private DefaultNBTEnd() {}
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTType getIdentifier() {
     return NBTType.TAG_END;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public void readContents(NBTDataInputStream inputStream) throws IOException {
+  public void readContents(NBTDataInputStream inputStream) throws IOException {}
 
-  }
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public void writeContents(NBTDataOutputStream outputStream) throws IOException {
+  public void writeContents(NBTDataOutputStream outputStream) throws IOException {}
 
-  }
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String asString() {
     return "";

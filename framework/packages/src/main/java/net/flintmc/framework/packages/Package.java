@@ -7,9 +7,7 @@ import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
 import java.io.File;
 import java.util.jar.JarFile;
 
-/**
- * Represents a package which has been identified and possibly loaded.
- */
+/** Represents a package which has been identified and possibly loaded. */
 public interface Package {
   /**
    * Retrieves the manifest of this package.
@@ -27,16 +25,18 @@ public interface Package {
   String getName();
 
   /**
-   * Retrieves the display name of this package. This method differs from {@link PackageManifest#getDisplayName()}
-   * as in that it falls back to the name of the file if no manifest is present.
+   * Retrieves the display name of this package. This method differs from {@link
+   * PackageManifest#getDisplayName()} as in that it falls back to the name of the file if no
+   * manifest is present.
    *
    * @return The name of this package as it should be displayed to the user
    */
   String getDisplayName();
 
   /**
-   * Retrieves the version of this package. This method differs from {@link PackageManifest#getVersion()} as in
-   * that it falls back to {@code "unknown"} if no manifest is present.
+   * Retrieves the version of this package. This method differs from {@link
+   * PackageManifest#getVersion()} as in that it falls back to {@code "unknown"} if no manifest is
+   * present.
    *
    * @return The version of this package, or {@code "unknown"}
    */
@@ -50,28 +50,28 @@ public interface Package {
   PackageState getState();
 
   /**
-   * Retrieves the file of the package if it has been loaded from one.
-   *
-   * @return The file this package is loaded from, or null,
-   * if the package has been loaded from the classpath
-   */
-  File getFile();
-
-  /**
-   * Sets the state of the package. The previous state must be {@link PackageState#NOT_LOADED} and the state can't be
-   * explicitly set to {@link PackageState#LOADED}.To set the state to {@link PackageState#LOADED}
-   * call {@link #load()}.
+   * Sets the state of the package. The previous state must be {@link PackageState#NOT_LOADED} and
+   * the state can't be explicitly set to {@link PackageState#LOADED}.To set the state to {@link
+   * PackageState#LOADED} call {@link #load()}.
    *
    * @param state The new state of the package
-   * @throws IllegalArgumentException If the package state is not {@link PackageState#NOT_LOADED} or if
-   *                                  the new state is {@link PackageState#LOADED}
+   * @throws IllegalArgumentException If the package state is not {@link PackageState#NOT_LOADED} or
+   *     if the new state is {@link PackageState#LOADED}
    */
   void setState(PackageState state);
 
   /**
-   * Tries to load this package. Package must be {@link PackageState#NOT_LOADED}. This call should not throw
-   * exceptions caused by a failed load attempt but only exceptions caused by unmet preconditions
-   * (e.g. wrong state).
+   * Retrieves the file of the package if it has been loaded from one.
+   *
+   * @return The file this package is loaded from, or null, if the package has been loaded from the
+   *     classpath
+   */
+  File getFile();
+
+  /**
+   * Tries to load this package. Package must be {@link PackageState#NOT_LOADED}. This call should
+   * not throw exceptions caused by a failed load attempt but only exceptions caused by unmet
+   * preconditions (e.g. wrong state).
    *
    * @return The state of the package after the load attempt
    * @throws IllegalStateException If the package state is not {@link PackageState#NOT_LOADED}
@@ -85,12 +85,12 @@ public interface Package {
   void enable();
 
   /**
-   * Retrieves the class loader the package has been loaded with. In order to call this method
-   * the package has to be in {@link PackageState#LOADED} or {@link PackageState#ENABLED} state.
+   * Retrieves the class loader the package has been loaded with. In order to call this method the
+   * package has to be in {@link PackageState#LOADED} or {@link PackageState#ENABLED} state.
    *
    * @return The class loader used for loading this package
    * @throws IllegalStateException If the package is not in the {@link PackageState#LOADED} or
-   *                               {@link PackageState#ENABLED} state
+   *     {@link PackageState#ENABLED} state
    */
   PackageClassLoader getPackageClassLoader();
 
@@ -121,7 +121,5 @@ public interface Package {
      * @return a Package instance representing the Package
      */
     Package create(@Assisted File file, @Assisted JarFile jarFile);
-
   }
-
 }

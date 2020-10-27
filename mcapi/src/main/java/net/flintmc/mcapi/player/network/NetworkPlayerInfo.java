@@ -1,16 +1,14 @@
 package net.flintmc.mcapi.player.network;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.player.PlayerSkinProfile;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 
-/**
- * Represents the network information of a player.
- */
+/** Represents the network information of a player. */
 public interface NetworkPlayerInfo extends PlayerSkinProfile {
 
   /**
@@ -83,19 +81,16 @@ public interface NetworkPlayerInfo extends PlayerSkinProfile {
    */
   ChatComponent getDisplayName();
 
-  /**
-   * A factory class for the {@link NetworkPlayerInfo}.
-   */
+  /** A factory class for the {@link NetworkPlayerInfo}. */
   @AssistedFactory(NetworkPlayerInfo.class)
   interface Factory {
 
     /**
      * Creates a new {@link NetworkPlayerInfo} with the given parameters.
      *
-     * @param gameProfile            The game profile for the network information.
+     * @param gameProfile The game profile for the network information.
      * @return A created network information.
      */
     NetworkPlayerInfo create(@Assisted("gameProfile") GameProfile gameProfile);
   }
-
 }

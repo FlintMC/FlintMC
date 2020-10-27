@@ -1,15 +1,13 @@
 package net.flintmc.mcapi.internal.entity;
 
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.EntityPredicate;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.MobEntity;
-import net.flintmc.framework.inject.implement.Implement;
 
 import java.util.function.Predicate;
 
-/**
- * Default implementation of the {@link EntityPredicate}.
- */
+/** Default implementation of the {@link EntityPredicate}. */
 @Implement(EntityPredicate.class)
 public class DefaultEntityPredicate implements EntityPredicate {
 
@@ -21,72 +19,56 @@ public class DefaultEntityPredicate implements EntityPredicate {
   private boolean useVisibilityModifier;
   private Predicate<LivingEntity> customPredicate;
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPredicate setDistance(double distance) {
     this.distance = distance;
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPredicate allowInvulnerable() {
     this.allowInvulnerable = true;
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPredicate allowFriendlyFire() {
     this.friendlyFire = true;
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPredicate allowRequireLineOfSight() {
     this.requireLineOfSight = true;
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPredicate allowSkipAttackChecks() {
     this.skipAttackChecks = true;
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPredicate disallowInvisibilityCheck() {
     this.useVisibilityModifier = false;
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPredicate setCustomPredicate(Predicate<LivingEntity> predicate) {
     this.customPredicate = predicate;
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean canTarget(LivingEntity attacker, LivingEntity target) {
     if (attacker == target) {
@@ -117,16 +99,20 @@ public class DefaultEntityPredicate implements EntityPredicate {
         }
 
         if (this.distance > 0) {
-          double visibilityModifier = this.useVisibilityModifier ? target.getVisibilityMultiplier(attacker) : 1.0D;
+          double visibilityModifier =
+              this.useVisibilityModifier ? target.getVisibilityMultiplier(attacker) : 1.0D;
           double maxDistance = this.distance * visibilityModifier;
-          double distanceSq = attacker.getDistanceSq(target.getPosX(), target.getPosY(), target.getPosZ());
+          double distanceSq =
+              attacker.getDistanceSq(target.getPosX(), target.getPosY(), target.getPosZ());
 
           if (distanceSq > maxDistance * maxDistance) {
             return false;
           }
         }
 
-        return this.requireLineOfSight || !(attacker instanceof MobEntity) || ((MobEntity) attacker).getEntitySenses().canSeeEntity(target);
+        return this.requireLineOfSight
+            || !(attacker instanceof MobEntity)
+            || ((MobEntity) attacker).getEntitySenses().canSeeEntity(target);
       }
 
       return true;

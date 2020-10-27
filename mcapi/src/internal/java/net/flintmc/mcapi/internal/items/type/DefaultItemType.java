@@ -1,13 +1,13 @@
 package net.flintmc.mcapi.internal.items.type;
 
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.internal.items.DefaultItemStack;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.items.type.ItemCategory;
 import net.flintmc.mcapi.items.type.ItemType;
 import net.flintmc.mcapi.resources.ResourceLocation;
-import net.flintmc.framework.stereotype.NameSpacedKey;
-import net.flintmc.mcapi.internal.items.DefaultItemStack;
 
 public class DefaultItemType implements ItemType {
 
@@ -20,9 +20,15 @@ public class DefaultItemType implements ItemType {
   private final Class<? extends ItemMeta> metaClass;
   private final ResourceLocation resourceLocation;
 
-  public DefaultItemType(ItemMeta.Factory metaFactory, ItemCategory category, NameSpacedKey registryName,
-                         ChatComponent defaultDisplayName, int maxStackSize, int maxDamage,
-                         Class<? extends ItemMeta> metaClass, ResourceLocation resourceLocation) {
+  public DefaultItemType(
+      ItemMeta.Factory metaFactory,
+      ItemCategory category,
+      NameSpacedKey registryName,
+      ChatComponent defaultDisplayName,
+      int maxStackSize,
+      int maxDamage,
+      Class<? extends ItemMeta> metaClass,
+      ResourceLocation resourceLocation) {
     this.metaFactory = metaFactory;
     this.category = category;
     this.registryName = registryName;
@@ -82,5 +88,4 @@ public class DefaultItemType implements ItemType {
   public ResourceLocation getResourceLocation() {
     return this.resourceLocation;
   }
-
 }

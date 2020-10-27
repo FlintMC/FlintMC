@@ -11,11 +11,11 @@ import java.util.function.Supplier;
 
 /**
  * This cache is used to store all entities ported from Minecraft to Labyfy to save resources.
- * <p>
- * This cache is cleared when the player leaves the world or server.
- * <p>
- * To cache an entity {@link #putIfAbsent(UUID, Supplier)} is used, this will cache the given entity and
- * its unique identifier.
+ *
+ * <p>This cache is cleared when the player leaves the world or server.
+ *
+ * <p>To cache an entity {@link #putIfAbsent(UUID, Supplier)} is used, this will cache the given
+ * entity and its unique identifier.
  */
 @Singleton
 public class EntityCache {
@@ -38,14 +38,14 @@ public class EntityCache {
   }
 
   /**
-   * If the given unique identifier is already associated with an entity, the associated entity is returned. If the
-   * specified unique identifier is not associated with an entity associates the unique identifier with the given
-   * supplied entity.
+   * If the given unique identifier is already associated with an entity, the associated entity is
+   * returned. If the specified unique identifier is not associated with an entity associates the
+   * unique identifier with the given supplied entity.
    *
    * @param uniqueId The unique identifier with the specified entity is to be associated.
    * @param supplier The entity to be associated with the specified unique identifier.
-   * @return The previous entity associated with the specified unique identifier, or a the given supplied entity if
-   * there was not mapping for the unique identifier.
+   * @return The previous entity associated with the specified unique identifier, or a the given
+   *     supplied entity if there was not mapping for the unique identifier.
    */
   public Entity putIfAbsent(UUID uniqueId, Supplier<Entity> supplier) {
     if (this.entities.containsKey(uniqueId)) {
@@ -54,9 +54,7 @@ public class EntityCache {
     return this.entities.put(uniqueId, supplier.get());
   }
 
-  /**
-   * Clears the cache.
-   */
+  /** Clears the cache. */
   public void clear() {
     this.entities.clear();
   }

@@ -1,8 +1,6 @@
 package net.flintmc.render.gui.screen;
 
-/**
- * Service converting class names to screen names.
- */
+/** Service converting class names to screen names. */
 public interface ScreenNameMapper {
   /**
    * Converts the given fully qualified class name to a screen name.
@@ -19,7 +17,7 @@ public interface ScreenNameMapper {
    * @return The converted screen name, or {@code null}, if screen is {@code null}
    */
   default ScreenName fromObject(Object screen) {
-    if(screen == null) {
+    if (screen == null) {
       return null;
     }
 

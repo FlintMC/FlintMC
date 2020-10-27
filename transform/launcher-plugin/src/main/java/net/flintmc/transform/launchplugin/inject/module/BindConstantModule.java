@@ -16,10 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * This class binds constants,
- * so the can be used with @named
- */
+/** This class binds constants, so the can be used with @named */
 public class BindConstantModule extends AbstractModule {
 
   private final Map<String, String> launchArguments;
@@ -34,15 +31,19 @@ public class BindConstantModule extends AbstractModule {
     this.bindNamedFilePath("labyfyThemesRoot", "./Labyfy/themes");
     this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
-    boolean obfuscated = ((RootClassLoader) getClass().getClassLoader()).findResource("net/minecraft/client/Minecraft.class") == null;
+    boolean obfuscated =
+        ((RootClassLoader) getClass().getClassLoader())
+                .findResource("net/minecraft/client/Minecraft.class")
+            == null;
 
-    this.bindNamed(
-        "obfuscated",
-        obfuscated);
+    this.bindNamed("obfuscated", obfuscated);
     this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(this.launchArguments);
-    ContextAwareProvisionListener.bindContextAwareProvider(this.binder(), Key.get(Logger.class, InjectLogger.class), new AnnotatedLoggerTypeListener());
-    ContextAwareProvisionListener.bindContextAwareProvider(this.binder(), Logger.class, new LoggerTypeListener());
-
+    ContextAwareProvisionListener.bindContextAwareProvider(
+        this.binder(),
+        Key.get(Logger.class, InjectLogger.class),
+        new AnnotatedLoggerTypeListener());
+    ContextAwareProvisionListener.bindContextAwareProvider(
+        this.binder(), Logger.class, new LoggerTypeListener());
   }
 
   private void bindNamedFilePath(String name, String path) {

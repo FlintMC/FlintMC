@@ -2,9 +2,7 @@ package net.flintmc.mcapi.gamesettings.configuration;
 
 import net.flintmc.mcapi.gamesettings.settings.*;
 
-/**
- * Represents the graphic configuration.
- */
+/** Represents the graphic configuration. */
 public interface GraphicConfiguration {
 
   /**
@@ -342,5 +340,4 @@ public interface GraphicConfiguration {
    * @param hideGUI The new state.
    */
   void setHideGUI(boolean hideGUI);
-
 }

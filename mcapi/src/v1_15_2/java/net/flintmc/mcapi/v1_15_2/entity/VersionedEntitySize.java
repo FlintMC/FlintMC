@@ -2,12 +2,10 @@ package net.flintmc.mcapi.v1_15_2.entity;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.entity.EntitySize;
 
-/**
- * 1.15.2 implementation of the {@link EntitySize}.
- */
+/** 1.15.2 implementation of the {@link EntitySize}. */
 @Implement(value = EntitySize.class, version = "1.15.2")
 public class VersionedEntitySize implements EntitySize {
 
@@ -17,26 +15,21 @@ public class VersionedEntitySize implements EntitySize {
 
   @AssistedInject
   private VersionedEntitySize(
-          @Assisted("width") float width,
-          @Assisted("height") float height,
-          @Assisted("fixed") boolean fixed
-  ) {
+      @Assisted("width") float width,
+      @Assisted("height") float height,
+      @Assisted("fixed") boolean fixed) {
     this.width = width;
     this.height = height;
     this.fixed = fixed;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntitySize scale(float factor) {
     return this.scale(factor, factor);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntitySize scale(float widthFactor, float heightFactor) {
     if (!this.fixed && (widthFactor != 1.0F || heightFactor != 1.0F)) {
@@ -48,28 +41,21 @@ public class VersionedEntitySize implements EntitySize {
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getWidth() {
     return this.width;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getHeight() {
     return this.height;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isFixed() {
     return this.fixed;
   }
-
 }

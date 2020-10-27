@@ -2,13 +2,13 @@ package net.flintmc.mcapi.internal.items.meta.enchantment;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.meta.enchantment.Enchantment;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentRarity;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
-import net.flintmc.framework.stereotype.NameSpacedKey;
 
 @Implement(EnchantmentType.Builder.class)
 public class DefaultEnchantmentTypeBuilder implements EnchantmentType.Builder {
@@ -22,7 +22,8 @@ public class DefaultEnchantmentTypeBuilder implements EnchantmentType.Builder {
   private EnchantmentRarity rarity = EnchantmentRarity.UNCOMMON;
 
   @Inject
-  public DefaultEnchantmentTypeBuilder(Enchantment.Factory enchantmentFactory, ComponentBuilder.Factory componentFactory) {
+  public DefaultEnchantmentTypeBuilder(
+      Enchantment.Factory enchantmentFactory, ComponentBuilder.Factory componentFactory) {
     this.enchantmentFactory = enchantmentFactory;
     this.componentFactory = componentFactory;
   }
@@ -55,12 +56,18 @@ public class DefaultEnchantmentTypeBuilder implements EnchantmentType.Builder {
   public EnchantmentType build() {
     Preconditions.checkNotNull(this.registryName, "Missing registryName");
     Preconditions.checkNotNull(this.rarity, "Missing rarity");
-    Preconditions.checkArgument(this.highestLevel > 0, "HighestLevel needs to be at least 1, got %d", this.highestLevel);
+    Preconditions.checkArgument(
+        this.highestLevel > 0, "HighestLevel needs to be at least 1, got %d", this.highestLevel);
 
     if (this.displayName == null) {
       this.displayName = this.componentFactory.text().text(this.registryName.getKey()).build();
     }
 
-    return new DefaultEnchantmentType(this.enchantmentFactory, this.registryName, this.highestLevel, this.displayName, this.rarity);
+    return new DefaultEnchantmentType(
+        this.enchantmentFactory,
+        this.registryName,
+        this.highestLevel,
+        this.displayName,
+        this.rarity);
   }
 }

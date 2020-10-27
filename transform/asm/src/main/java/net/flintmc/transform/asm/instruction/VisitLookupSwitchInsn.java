@@ -15,10 +15,7 @@ public interface VisitLookupSwitchInsn {
     private Label[] labels;
 
     private Context(
-        MethodVisitorContext methodVisitorContext,
-        Label dflt,
-        int[] keys,
-        Label... labels) {
+        MethodVisitorContext methodVisitorContext, Label dflt, int[] keys, Label... labels) {
       this.methodVisitorContext = methodVisitorContext;
       this.dflt = dflt;
       this.keys = keys;
@@ -26,10 +23,7 @@ public interface VisitLookupSwitchInsn {
     }
 
     public static Context of(
-        MethodVisitorContext methodVisitorContext,
-        Label dflt,
-        int[] keys,
-        Label... labels) {
+        MethodVisitorContext methodVisitorContext, Label dflt, int[] keys, Label... labels) {
       return new Context(methodVisitorContext, dflt, keys, labels);
     }
 

@@ -22,9 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-/**
- * An executor factory which used ASM to create event executors.
- */
+/** An executor factory which used ASM to create event executors. */
 @Singleton
 @Implement(Executor.Factory.class)
 public class JavassistExecutorFactory implements Executor.Factory {
@@ -38,7 +36,8 @@ public class JavassistExecutorFactory implements Executor.Factory {
   private final ClassTransformService classTransformService;
 
   @Inject
-  private JavassistExecutorFactory(@InjectLogger Logger logger, ClassTransformService classTransformService) {
+  private JavassistExecutorFactory(
+      @InjectLogger Logger logger, ClassTransformService classTransformService) {
     this.logger = logger;
     this.classTransformService = classTransformService;
 
@@ -129,7 +128,8 @@ public class JavassistExecutorFactory implements Executor.Factory {
             }
 
             CtMethod method =
-                ctClass.getDeclaredMethod(ctMethod.getName(), ctClass.getClassPool().get(parameterTypesAsStrings));
+                ctClass.getDeclaredMethod(
+                    ctMethod.getName(), ctClass.getClassPool().get(parameterTypesAsStrings));
 
             if (!Modifier.isPublic(method.getModifiers())) {
               //      throw new ExecutorGenerationException("Listener method must be public.");

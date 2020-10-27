@@ -12,12 +12,12 @@ import net.flintmc.mcapi.chat.component.event.content.JsonHoverContentSerializer
 
 import java.util.UUID;
 
-/**
- * Serializer for {@link HoverEntity}
- */
+/** Serializer for {@link HoverEntity} */
 public class HoverEntitySerializer extends JsonHoverContentSerializer {
   @Override
-  protected HoverContent deserializeJson(JsonElement element, ComponentBuilder.Factory componentFactory, Gson gson) throws JsonParseException {
+  protected HoverContent deserializeJson(
+      JsonElement element, ComponentBuilder.Factory componentFactory, Gson gson)
+      throws JsonParseException {
     if (!element.isJsonObject()) {
       return null;
     }
@@ -36,12 +36,16 @@ public class HoverEntitySerializer extends JsonHoverContentSerializer {
     return new HoverEntity(
         uniqueId,
         object.get("type").getAsString(), // non-null type of the entity
-        object.has("name") ? gson.fromJson(object.get("name"), ChatComponent.class) : null // nullable display name of the entity
-    );
+        object.has("name")
+            ? gson.fromJson(object.get("name"), ChatComponent.class)
+            : null // nullable display name of the entity
+        );
   }
 
   @Override
-  protected JsonElement serializeJson(HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson) throws JsonParseException {
+  protected JsonElement serializeJson(
+      HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson)
+      throws JsonParseException {
     HoverEntity entity = (HoverEntity) content;
 
     JsonObject object = new JsonObject();

@@ -31,7 +31,9 @@ public class VersionedShaderUniform implements ShaderUniform {
 
   @AssistedInject
   private VersionedShaderUniform(
-      @Assisted String name, @Assisted ShaderProgram shaderProgram, @Assisted ShaderUniformProvider uniformProvider) {
+      @Assisted String name,
+      @Assisted ShaderProgram shaderProgram,
+      @Assisted ShaderUniformProvider uniformProvider) {
     this.name = name;
     this.shaderProgram = shaderProgram;
     this.shaderUniformProvider = uniformProvider;

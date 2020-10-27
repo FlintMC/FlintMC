@@ -4,9 +4,7 @@ import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.items.ItemStack;
 
-/**
- * The content of a {@link HoverEvent} which displays an item.
- */
+/** The content of a {@link HoverEvent} which displays an item. */
 public class HoverItem extends HoverContent {
 
   private final ItemStack itemStack;

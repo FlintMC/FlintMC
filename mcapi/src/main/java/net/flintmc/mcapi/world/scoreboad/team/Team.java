@@ -6,9 +6,7 @@ import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 
 import java.util.Collection;
 
-/**
- * Represents a Minecraft team.
- */
+/** Represents a Minecraft team. */
 public interface Team {
 
   /**
@@ -76,5 +74,4 @@ public interface Team {
    * @return The collision rule.
    */
   CollisionType getCollisionType();
-
 }

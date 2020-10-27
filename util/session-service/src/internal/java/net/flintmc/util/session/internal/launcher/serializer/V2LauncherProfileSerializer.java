@@ -15,9 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Serializer for version 2 of the launcher_profiles.json by Mojang.
- */
+/** Serializer for version 2 of the launcher_profiles.json by Mojang. */
 @ProfileSerializerVersion(2)
 public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
 
@@ -31,10 +29,14 @@ public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
   @Override
   public void updateAuthData(Collection<LauncherProfile> profiles, JsonObject authData) {
     for (LauncherProfile profile : profiles) {
-      JsonObject profileObject = authData.has(profile.getProfileId())
+      JsonObject profileObject =
+          authData.has(profile.getProfileId())
               ? authData.get(profile.getProfileId()).getAsJsonObject()
               : new JsonObject();
-      JsonObject gameProfiles = profileObject.has("profiles") ? profileObject.get("profiles").getAsJsonObject() : new JsonObject();
+      JsonObject gameProfiles =
+          profileObject.has("profiles")
+              ? profileObject.get("profiles").getAsJsonObject()
+              : new JsonObject();
 
       for (GameProfile gameProfile : profile.getProfiles()) {
         JsonObject gameProfileObject = new JsonObject();
@@ -77,24 +79,22 @@ public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
         }
 
         try {
-          gameProfiles.add(InjectionHolder.getInjectedInstance(GameProfile.Builder.class)
+          gameProfiles.add(
+              InjectionHolder.getInjectedInstance(GameProfile.Builder.class)
                   .setUniqueId(UUIDTypeAdapter.fromString(id))
                   .setName(displayName.getAsString())
-                  .build()
-          );
+                  .build());
         } catch (IllegalArgumentException ignored) {
           // invalid UUID provided in the file
         }
-
       }
 
       result.put(
-              entry.getKey(),
-              this.profileFactory.create(entry.getKey(), accessToken.getAsString(), gameProfiles.toArray(new GameProfile[0]))
-      );
+          entry.getKey(),
+          this.profileFactory.create(
+              entry.getKey(), accessToken.getAsString(), gameProfiles.toArray(new GameProfile[0])));
     }
 
     return result;
   }
-
 }

@@ -1,8 +1,6 @@
 package net.flintmc.util.i18n;
 
-/**
- * Represents a loader for localizations.
- */
+/** Represents a loader for localizations. */
 public interface LocalizationLoader {
 
   /**
@@ -12,5 +10,4 @@ public interface LocalizationLoader {
    * @param languageCode The language code to load the correct translations.
    */
   void load(Localization localization, String languageCode);
-
 }

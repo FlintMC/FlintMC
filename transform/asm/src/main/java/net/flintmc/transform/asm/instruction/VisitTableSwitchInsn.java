@@ -16,11 +16,7 @@ public interface VisitTableSwitchInsn {
     private Label[] labels;
 
     private Context(
-        MethodVisitorContext methodVisitorContext,
-        int min,
-        int max,
-        Label dflt,
-        Label... labels) {
+        MethodVisitorContext methodVisitorContext, int min, int max, Label dflt, Label... labels) {
       this.methodVisitorContext = methodVisitorContext;
       this.min = min;
       this.max = max;
@@ -29,11 +25,7 @@ public interface VisitTableSwitchInsn {
     }
 
     public static Context of(
-        MethodVisitorContext methodVisitorContext,
-        int min,
-        int max,
-        Label dflt,
-        Label... labels) {
+        MethodVisitorContext methodVisitorContext, int min, int max, Label dflt, Label... labels) {
       return new Context(methodVisitorContext, min, max, dflt, labels);
     }
 

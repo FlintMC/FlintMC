@@ -4,9 +4,7 @@ import net.flintmc.mcapi.chat.controller.ChatController;
 
 import java.util.function.BiConsumer;
 
-/**
- * Implementation of the {@link ChatFilter} which uses a {@link BiConsumer} for easier usage.
- */
+/** Implementation of the {@link ChatFilter} which uses a {@link BiConsumer} for easier usage. */
 public class SimpleChatFilter extends BasicChatFilter {
 
   private final BiConsumer<ChatController, FilterableChatMessage> consumer;
@@ -16,13 +14,14 @@ public class SimpleChatFilter extends BasicChatFilter {
   }
 
   /**
-   * Creates a new {@link ChatFilter} with a random {@code uniqueId} and the given {@code consumer} which will be
-   * applied every time this filter receives a new message.
+   * Creates a new {@link ChatFilter} with a random {@code uniqueId} and the given {@code consumer}
+   * which will be applied every time this filter receives a new message.
    *
    * @param consumer The non-null consumer for filtering the messages
    * @return The new non-null chat filter
    */
-  public static SimpleChatFilter create(BiConsumer<ChatController, FilterableChatMessage> consumer) {
+  public static SimpleChatFilter create(
+      BiConsumer<ChatController, FilterableChatMessage> consumer) {
     return new SimpleChatFilter(consumer);
   }
 

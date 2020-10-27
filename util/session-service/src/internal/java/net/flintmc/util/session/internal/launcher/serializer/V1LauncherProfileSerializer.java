@@ -14,9 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Serializer for version 1 of the launcher_profiles.json by Mojang.
- */
+/** Serializer for version 1 of the launcher_profiles.json by Mojang. */
 @ProfileSerializerVersion(1)
 public class V1LauncherProfileSerializer implements LauncherProfileSerializer {
 
@@ -36,9 +34,10 @@ public class V1LauncherProfileSerializer implements LauncherProfileSerializer {
       }
 
       String existingKey = this.findProfileKey(profile.getProfileId(), authData);
-      JsonObject object = existingKey != null && authData.has(existingKey)
-          ? authData.getAsJsonObject(existingKey)
-          : new JsonObject();
+      JsonObject object =
+          existingKey != null && authData.has(existingKey)
+              ? authData.getAsJsonObject(existingKey)
+              : new JsonObject();
       if (existingKey != null) {
         authData.remove(existingKey);
       }
@@ -48,10 +47,10 @@ public class V1LauncherProfileSerializer implements LauncherProfileSerializer {
       object.addProperty("displayName", gameProfile.getName());
       object.addProperty("uuid", gameProfile.getUniqueId().toString());
 
-      String newKey = existingKey != null ? existingKey : gameProfile.getUniqueId().toString().replace("-", "");
+      String newKey =
+          existingKey != null ? existingKey : gameProfile.getUniqueId().toString().replace("-", "");
       authData.add(newKey, object);
     }
-
   }
 
   private String findProfileKey(String profileId, JsonObject authData) {
@@ -79,19 +78,21 @@ public class V1LauncherProfileSerializer implements LauncherProfileSerializer {
 
       GameProfile profile;
       try {
-        profile = InjectionHolder.getInjectedInstance(GameProfile.Builder.class)
-            .setUniqueId(UUID.fromString(object.get("uuid").getAsString()))
-            .setName(object.get("displayName").getAsString())
-            .build();
+        profile =
+            InjectionHolder.getInjectedInstance(GameProfile.Builder.class)
+                .setUniqueId(UUID.fromString(object.get("uuid").getAsString()))
+                .setName(object.get("displayName").getAsString())
+                .build();
       } catch (IllegalArgumentException ignored) {
         // invalid UUID provided in the file
         continue;
       }
 
-      result.put(profileId, this.profileFactory.create(profileId, accessToken, new GameProfile[]{profile}));
+      result.put(
+          profileId,
+          this.profileFactory.create(profileId, accessToken, new GameProfile[] {profile}));
     }
 
     return result;
   }
-
 }

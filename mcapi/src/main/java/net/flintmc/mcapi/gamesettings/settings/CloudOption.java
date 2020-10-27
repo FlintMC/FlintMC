@@ -1,10 +1,7 @@
 package net.flintmc.mcapi.gamesettings.settings;
 
-/**
- * An enumeration representing options for clouds.
- */
+/** An enumeration representing options for clouds. */
 public enum CloudOption {
-
   OFF("options.off"),
   FAST("options.clouds.fast"),
   FANCY("options.clouds.fancy");

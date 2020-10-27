@@ -9,17 +9,24 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 
 /**
- * A serializer for {@link HoverContent}s which parses the text out of the given {@link TextComponent} into a json on
- * deserialization and the json into a {@link TextComponent} on serialization.
+ * A serializer for {@link HoverContent}s which parses the text out of the given {@link
+ * TextComponent} into a json on deserialization and the json into a {@link TextComponent} on
+ * serialization.
  */
 public abstract class JsonHoverContentSerializer implements HoverContentSerializer {
 
-  protected abstract HoverContent deserializeJson(JsonElement element, ComponentBuilder.Factory componentFactory, Gson gson) throws JsonParseException;
+  protected abstract HoverContent deserializeJson(
+      JsonElement element, ComponentBuilder.Factory componentFactory, Gson gson)
+      throws JsonParseException;
 
-  protected abstract JsonElement serializeJson(HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson) throws JsonParseException;
+  protected abstract JsonElement serializeJson(
+      HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson)
+      throws JsonParseException;
 
   @Override
-  public HoverContent deserialize(ChatComponent component, ComponentBuilder.Factory componentFactory, Gson gson) throws JsonParseException {
+  public HoverContent deserialize(
+      ChatComponent component, ComponentBuilder.Factory componentFactory, Gson gson)
+      throws JsonParseException {
     if (!(component instanceof TextComponent)) {
       return null;
     }
@@ -31,7 +38,12 @@ public abstract class JsonHoverContentSerializer implements HoverContentSerializ
   }
 
   @Override
-  public ChatComponent serialize(HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson) throws JsonParseException {
-    return componentFactory.text().text(this.serializeJson(content, componentFactory, gson).toString()).build();
+  public ChatComponent serialize(
+      HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson)
+      throws JsonParseException {
+    return componentFactory
+        .text()
+        .text(this.serializeJson(content, componentFactory, gson).toString())
+        .build();
   }
 }

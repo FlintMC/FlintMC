@@ -8,34 +8,24 @@ import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
 import java.util.UUID;
 
-/**
- * An implementation of the {@link GameProfile}
- */
+/** An implementation of the {@link GameProfile} */
 @Implement(GameProfile.class)
 public class DefaultGameProfile implements GameProfile {
 
-  /**
-   * The unique identifier of this profile.
-   */
+  /** The unique identifier of this profile. */
   private final UUID uniqueId;
-  /**
-   * The display name of this profile.
-   */
+  /** The display name of this profile. */
   private final String name;
-  /**
-   * The properties of this profile.
-   */
+  /** The properties of this profile. */
   private final PropertyMap properties;
-  /**
-   * If this profile is a legacy.
-   */
+  /** If this profile is a legacy. */
   private boolean legacy;
 
   @AssistedInject
   private DefaultGameProfile(
-          @Assisted("uniqueId") UUID uniqueId,
-          @Assisted("name") String name,
-          @Assisted("properties") PropertyMap properties) {
+      @Assisted("uniqueId") UUID uniqueId,
+      @Assisted("name") String name,
+      @Assisted("properties") PropertyMap properties) {
     if (uniqueId == null && isBlank(name))
       throw new IllegalArgumentException("Name and identifier cannot both be blank");
     this.uniqueId = uniqueId;
@@ -44,8 +34,8 @@ public class DefaultGameProfile implements GameProfile {
   }
 
   /**
-   * Retrieves the unique identifier of this game profile.
-   * This may be null for partial profile data if constructed manually.
+   * Retrieves the unique identifier of this game profile. This may be null for partial profile data
+   * if constructed manually.
    *
    * @return The unique identifier of the profile
    */
@@ -55,8 +45,8 @@ public class DefaultGameProfile implements GameProfile {
   }
 
   /**
-   * Retrieves the display name of this game profile.
-   * This may be null for partial profile data if constructed manually.
+   * Retrieves the display name of this game profile. This may be null for partial profile data if
+   * constructed manually.
    *
    * @return The name of the profile
    */
@@ -76,11 +66,11 @@ public class DefaultGameProfile implements GameProfile {
   }
 
   /**
-   * Whether this profile is complete.
-   * A complete profile has no empty fields. Partial profiles my
+   * Whether this profile is complete. A complete profile has no empty fields. Partial profiles my
    * be constructed manually and used as input to methods.
    *
-   * @return {@code true} if this profile is complete (as opposed to partial), otherwise {@code false}
+   * @return {@code true} if this profile is complete (as opposed to partial), otherwise {@code
+   *     false}
    */
   @Override
   public boolean isComplete() {

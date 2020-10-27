@@ -12,9 +12,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Main API system for the Launcher
- */
+/** Main API system for the Launcher */
 public class LaunchController {
   private static LaunchController instance;
   private final Logger logger;
@@ -25,49 +23,54 @@ public class LaunchController {
   /**
    * Constructs a new {@link LaunchController} instance and sets it as the active one.
    *
-   * @param rootLoader  Class loader to use for loading
+   * @param rootLoader Class loader to use for loading
    * @param commandLine Commandline arguments to pass in
    * @throws IllegalStateException If a {@link LaunchController} instance has been created already
    */
   public LaunchController(RootClassLoader rootLoader, String[] commandLine) {
     if (instance != null) {
-        throw new IllegalStateException("The launcher cannot be instantiated twice in the same environment");
+      throw new IllegalStateException(
+          "The launcher cannot be instantiated twice in the same environment");
     }
 
-      instance = this;
-      this.rootLoader = rootLoader;
-      this.logger = LogManager.getLogger(LaunchController.class);
-      this.commandLine = new ArrayList<>(Arrays.asList(commandLine));
-      this.launchArguments = new LaunchArguments();
+    instance = this;
+    this.rootLoader = rootLoader;
+    this.logger = LogManager.getLogger(LaunchController.class);
+    this.commandLine = new ArrayList<>(Arrays.asList(commandLine));
+    this.launchArguments = new LaunchArguments();
   }
 
-    /**
-     * Retrieves the instance of the launcher the program has been launched with.
-     *
-     * @return Instance of the launcher or null if the program has not been launched with this launcher
-     */
-    public static LaunchController getInstance() {
-        return instance;
-    }
+  /**
+   * Retrieves the instance of the launcher the program has been launched with.
+   *
+   * @return Instance of the launcher or null if the program has not been launched with this
+   *     launcher
+   */
+  public static LaunchController getInstance() {
+    return instance;
+  }
 
-    /**
-     * Executes the launch. This is effectively the new `main` method.
-     * <p>
-     * <b>Called by the {@link LabyLauncher} using reflection</b>
-     */
-    public void run() {
-        logger.info("Initializing LaunchController");
-        logger.info("Java version: {}", System.getProperty("java.version"));
-        logger.info("Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
+  /**
+   * Executes the launch. This is effectively the new `main` method.
+   *
+   * <p><b>Called by the {@link LabyLauncher} using reflection</b>
+   */
+  public void run() {
+    logger.info("Initializing LaunchController");
+    logger.info("Java version: {}", System.getProperty("java.version"));
+    logger.info(
+        "Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
     logger.info("JVM vendor: {}", System.getProperty("java.vendor"));
 
     // Find the first set of plugins by searching the classpath
     logger.trace("About to load plugins");
-    ServiceLoader<LauncherPlugin> serviceLoader = ServiceLoader.load(LauncherPlugin.class, rootLoader);
+    ServiceLoader<LauncherPlugin> serviceLoader =
+        ServiceLoader.load(LauncherPlugin.class, rootLoader);
 
     List<LauncherPlugin> plugins = new ArrayList<>();
     serviceLoader.forEach(plugins::add);
-    logger.info("Loaded {} initial {}.", plugins.size(), plugins.size() != 1 ? "plugins" : "plugin");
+    logger.info(
+        "Loaded {} initial {}.", plugins.size(), plugins.size() != 1 ? "plugins" : "plugin");
     rootLoader.addPlugins(plugins);
 
     int loadingPass = 0;
@@ -108,7 +111,10 @@ public class LaunchController {
 
       // 6.
       rootLoader.addPlugins(extraPlugins);
-      logger.debug("Found {} extra {}", extraPlugins.size(), extraPlugins.size() != 1 ? "plugins" : "plugin");
+      logger.debug(
+          "Found {} extra {}",
+          extraPlugins.size(),
+          extraPlugins.size() != 1 ? "plugins" : "plugin");
     } while (extraPlugins.size() > 0);
 
     // Registering and calling all plugins is done, continue with launch
@@ -117,10 +123,10 @@ public class LaunchController {
         loadingPass,
         loadingPass != 1 ? "passes" : "pass",
         plugins.size(),
-        plugins.size() != 1 ? "plugins" : "plugin"
-    );
+        plugins.size() != 1 ? "plugins" : "plugin");
 
-    logger.trace("Loaded plugins: {}",
+    logger.trace(
+        "Loaded plugins: {}",
         plugins.stream().map(LauncherPlugin::name).collect(Collectors.joining(", ")));
 
     // Prepare to hand control over to the launch target

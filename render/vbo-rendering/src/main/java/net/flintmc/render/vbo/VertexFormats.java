@@ -67,15 +67,15 @@ public enum VertexFormats implements EnumeratedVertexFormat {
 
   private final VertexFormat format;
 
+  VertexFormats() {
+    this.format = createCopy();
+  }
+
   /**
    * @return a copy of the vertex format. Should usually not be called as vertex formats can usually
    *     be reused.
    */
   abstract VertexFormat createCopy();
-
-  VertexFormats() {
-    this.format = createCopy();
-  }
 
   /** {@inheritDoc} */
   @Override

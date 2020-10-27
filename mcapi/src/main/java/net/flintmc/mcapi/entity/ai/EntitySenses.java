@@ -1,18 +1,14 @@
 package net.flintmc.mcapi.entity.ai;
 
 import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.MobEntity;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * Represents the Minecraft entity senses.
- */
+/** Represents the Minecraft entity senses. */
 public interface EntitySenses {
 
-  /**
-   * Clears every tick all lists.
-   */
+  /** Clears every tick all lists. */
   void tick();
 
   /**
@@ -23,9 +19,7 @@ public interface EntitySenses {
    */
   boolean canSeeEntity(Entity entity);
 
-  /**
-   * A factory class for the {@link EntitySenses}.
-   */
+  /** A factory class for the {@link EntitySenses}. */
   @AssistedFactory(EntitySenses.class)
   interface Factory {
 
@@ -36,7 +30,5 @@ public interface EntitySenses {
      * @return A created entity senses.
      */
     EntitySenses create(@Assisted("mobEntity") MobEntity entity);
-
   }
-
 }

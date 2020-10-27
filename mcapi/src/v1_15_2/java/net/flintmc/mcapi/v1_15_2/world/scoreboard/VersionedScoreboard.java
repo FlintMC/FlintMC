@@ -2,9 +2,9 @@ package net.flintmc.mcapi.v1_15_2.world.scoreboard;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.mapper.ScoreboardMapper;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Criteria;
@@ -20,9 +20,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.util.*;
 
-/**
- * 1.15.2 implementation of {@link Scoreboard}
- */
+/** 1.15.2 implementation of {@link Scoreboard} */
 @Singleton
 @Implement(value = Scoreboard.class, version = "1.15.2")
 public class VersionedScoreboard implements Scoreboard {
@@ -38,14 +36,12 @@ public class VersionedScoreboard implements Scoreboard {
   private final Map<String, PlayerTeam> teams;
   private final Map<String, PlayerTeam> teamMemberships;
 
-
   @Inject
   public VersionedScoreboard(
-          ScoreboardMapper scoreboardMapper,
-          MinecraftComponentMapper componentMapper,
-          Objective.Provider objectiveProvider,
-          PlayerTeam.Provider playerTeamProvider
-  ) {
+      ScoreboardMapper scoreboardMapper,
+      MinecraftComponentMapper componentMapper,
+      Objective.Provider objectiveProvider,
+      PlayerTeam.Provider playerTeamProvider) {
     this.scoreboardMapper = scoreboardMapper;
     this.componentMapper = componentMapper;
     this.objectiveProvider = objectiveProvider;
@@ -59,10 +55,7 @@ public class VersionedScoreboard implements Scoreboard {
     this.teamMemberships = new HashMap<>();
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean hasObjective(String name) {
     return this.objectives.containsKey(name);
@@ -78,49 +71,45 @@ public class VersionedScoreboard implements Scoreboard {
     return Minecraft.getInstance().world.getScoreboard().hasObjective(name);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Objective getObjective(String name) {
     Objective objective = this.objectives.get(name);
 
     if (objective == null) {
-      objective = this.scoreboardMapper.fromMinecraftObjective(
-              Minecraft.getInstance().world.getScoreboard().getObjective(name)
-      );
+      objective =
+          this.scoreboardMapper.fromMinecraftObjective(
+              Minecraft.getInstance().world.getScoreboard().getObjective(name));
     }
 
     return objective;
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public Objective addObjective(String name, Criteria criteria, ChatComponent displayName, RenderType renderType) {
+  public Objective addObjective(
+      String name, Criteria criteria, ChatComponent displayName, RenderType renderType) {
     return this.addObjective(name, criteria, displayName, renderType, false);
   }
 
   /**
    * Adds an objective to the scoreboard.
    *
-   * @param name        The registry name of this objective.
-   * @param criteria    The criteria of this objective.
+   * @param name The registry name of this objective.
+   * @param criteria The criteria of this objective.
    * @param displayName The name that is displayed.
-   * @param renderType  The render type of this objective.
-   * @param minecraft   {@code true} if called from Minecraft, otherwise {@code false}
+   * @param renderType The render type of this objective.
+   * @param minecraft {@code true} if called from Minecraft, otherwise {@code false}
    * @return The added objective or {@code null}
-   * @throws IllegalArgumentException If the name length is longer than 16 or the objective is already registered.
+   * @throws IllegalArgumentException If the name length is longer than 16 or the objective is
+   *     already registered.
    */
   private Objective addObjective(
-          String name,
-          Criteria criteria,
-          ChatComponent displayName,
-          RenderType renderType,
-          boolean minecraft
-  ) {
+      String name,
+      Criteria criteria,
+      ChatComponent displayName,
+      RenderType renderType,
+      boolean minecraft) {
     if (name.length() > 16) {
       throw new IllegalArgumentException("The objective name \"" + name + "\" is too long!");
     } else if (minecraft ? this.hasMinecraftObjective(name) : this.hasObjective(name)) {
@@ -131,7 +120,8 @@ public class VersionedScoreboard implements Scoreboard {
         // Checks if the given name is already registered in the Minecraft scoreboard.
         // When the objective is not registered, add the objective to the Minecraft scoreboard
         if (this.hasMinecraftObjective(name)) {
-          throw new IllegalArgumentException("An objective with the name \"" + name + "\" already exists");
+          throw new IllegalArgumentException(
+              "An objective with the name \"" + name + "\" already exists");
         } else {
           this.addMinecraftObjective(name, criteria, displayName, renderType);
         }
@@ -139,13 +129,15 @@ public class VersionedScoreboard implements Scoreboard {
 
       return null;
     } else {
-      Objective objective = this.objectiveProvider.get(this, name, displayName, criteria, renderType);
-      this.scoreObjectiveCriterias.computeIfAbsent(criteria, criteriaAbsent -> new ArrayList<>()).add(objective);
+      Objective objective =
+          this.objectiveProvider.get(this, name, displayName, criteria, renderType);
+      this.scoreObjectiveCriterias
+          .computeIfAbsent(criteria, criteriaAbsent -> new ArrayList<>())
+          .add(objective);
 
       // Checks if it is called by the Labyfy API.
       // When is called from the Labyfy API, add the new objective to the Minecraft scoreboard.
-      if (!minecraft)
-        this.addMinecraftObjective(name, criteria, displayName, renderType);
+      if (!minecraft) this.addMinecraftObjective(name, criteria, displayName, renderType);
 
       // Puts the new objective to the key-value system
       this.objectives.put(name, objective);
@@ -156,75 +148,72 @@ public class VersionedScoreboard implements Scoreboard {
   /**
    * Adds a Minecraft objective.
    *
-   * @param name        The registry name of this objective.
-   * @param criteria    The criteria of this objective.
+   * @param name The registry name of this objective.
+   * @param criteria The criteria of this objective.
    * @param displayName The name that is displayed.
-   * @param renderType  The render type of this objective.
+   * @param renderType The render type of this objective.
    */
-  private void addMinecraftObjective(String name, Criteria criteria, ChatComponent displayName, RenderType renderType) {
-    Minecraft.getInstance().world.getScoreboard().addObjective(
+  private void addMinecraftObjective(
+      String name, Criteria criteria, ChatComponent displayName, RenderType renderType) {
+    Minecraft.getInstance()
+        .world
+        .getScoreboard()
+        .addObjective(
             name,
             (ScoreCriteria) this.scoreboardMapper.toMinecraftCriteria(criteria),
             (ITextComponent) this.componentMapper.toMinecraft(displayName),
-            ScoreCriteria.RenderType.valueOf(this.scoreboardMapper.toMinecraftRenderType(renderType))
-    );
+            ScoreCriteria.RenderType.valueOf(
+                this.scoreboardMapper.toMinecraftRenderType(renderType)));
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Score getOrCreateScore(String username, Objective objective) {
     // Retrieves or create a new Minecraft score
-    net.minecraft.scoreboard.Score minecraftScore = this.getOrCreateMinecraftScore(username, objective);
+    net.minecraft.scoreboard.Score minecraftScore =
+        this.getOrCreateMinecraftScore(username, objective);
     // Computes when the given username is absent
-    Map<Objective, Score> entitiesScoreObjectives = this.entitiesScoreObjectives.computeIfAbsent(username, s -> new HashMap<>());
+    Map<Objective, Score> entitiesScoreObjectives =
+        this.entitiesScoreObjectives.computeIfAbsent(username, s -> new HashMap<>());
 
-    return entitiesScoreObjectives.put(objective, this.scoreboardMapper.fromMinecraftScore(minecraftScore));
+    return entitiesScoreObjectives.put(
+        objective, this.scoreboardMapper.fromMinecraftScore(minecraftScore));
   }
 
   /**
    * Retrieves or creates a new Minecraft score.
    *
-   * @param username  The username to get the key-value system.
+   * @param username The username to get the key-value system.
    * @param objective The objective to set the retrieved or created score.
    * @return A retreived or created score.
    */
-  private net.minecraft.scoreboard.Score getOrCreateMinecraftScore(String username, Objective objective) {
-    return Minecraft.getInstance().world.getScoreboard().getOrCreateScore(
-            username,
-            (ScoreObjective) this.scoreboardMapper.toMinecraftObjective(objective)
-    );
+  private net.minecraft.scoreboard.Score getOrCreateMinecraftScore(
+      String username, Objective objective) {
+    return Minecraft.getInstance()
+        .world
+        .getScoreboard()
+        .getOrCreateScore(
+            username, (ScoreObjective) this.scoreboardMapper.toMinecraftObjective(objective));
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Objective getObjectiveInDisplaySlot(int slot) {
     return this.scoreboardMapper.fromMinecraftObjective(
-            Minecraft.getInstance().world.getScoreboard().getObjectiveInDisplaySlot(slot)
-    );
+        Minecraft.getInstance().world.getScoreboard().getObjectiveInDisplaySlot(slot));
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setObjectiveInDisplaySlot(int slot, Objective objective) {
-    Minecraft.getInstance().world.getScoreboard().setObjectiveInDisplaySlot(
-            slot,
-            (ScoreObjective) this.scoreboardMapper.toMinecraftObjective(objective)
-    );
+    Minecraft.getInstance()
+        .world
+        .getScoreboard()
+        .setObjectiveInDisplaySlot(
+            slot, (ScoreObjective) this.scoreboardMapper.toMinecraftObjective(objective));
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<Score> getSortedScores(Objective objective) {
     // Retrieves the sorted score collection from Minecraft
@@ -243,24 +232,26 @@ public class VersionedScoreboard implements Scoreboard {
     }
 
     // Sorts the list
-    list.sort((firstScore, secondScore) ->
-            firstScore.getScorePoints() > secondScore.getScorePoints() ? 1 :
-                    firstScore.getScorePoints() < secondScore.getScorePoints() ? -1 :
-                            secondScore.getPlayerName().compareToIgnoreCase(firstScore.getPlayerName()));
+    list.sort(
+        (firstScore, secondScore) ->
+            firstScore.getScorePoints() > secondScore.getScorePoints()
+                ? 1
+                : firstScore.getScorePoints() < secondScore.getScorePoints()
+                    ? -1
+                    : secondScore.getPlayerName().compareToIgnoreCase(firstScore.getPlayerName()));
 
     // Returns the sorted list
     return list;
   }
 
   private Collection<net.minecraft.scoreboard.Score> getMinecraftSortedScore(Objective objective) {
-    return Minecraft.getInstance().world.getScoreboard().getSortedScores(
-            (ScoreObjective) this.scoreboardMapper.toMinecraftObjective(objective)
-    );
+    return Minecraft.getInstance()
+        .world
+        .getScoreboard()
+        .getSortedScores((ScoreObjective) this.scoreboardMapper.toMinecraftObjective(objective));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Map<Objective, Score> getObjectivesForEntity(String name) {
     Map<Objective, Score> map = this.entitiesScoreObjectives.get(name);
@@ -273,9 +264,7 @@ public class VersionedScoreboard implements Scoreboard {
     return map;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean addPlayerToTeam(String username, PlayerTeam team) {
     return this.addPlayerToTeam(username, team, false);
@@ -284,8 +273,8 @@ public class VersionedScoreboard implements Scoreboard {
   /**
    * Adds a player to the team.
    *
-   * @param username  The username of the player to be added.
-   * @param team      The team in which the player is to be added.
+   * @param username The username of the player to be added.
+   * @param team The team in which the player is to be added.
    * @param minecraft {@code true} if called from Minecraft, otherwise {@code false}.
    * @return {@code true} if the player was added to the team, otherwise {@code false}.
    */
@@ -301,10 +290,11 @@ public class VersionedScoreboard implements Scoreboard {
       }
 
       if (!minecraft) {
-        Minecraft.getInstance().world.getScoreboard().addPlayerToTeam(
-                username,
-                (ScorePlayerTeam) this.scoreboardMapper.toMinecraftPlayerTeam(team)
-        );
+        Minecraft.getInstance()
+            .world
+            .getScoreboard()
+            .addPlayerToTeam(
+                username, (ScorePlayerTeam) this.scoreboardMapper.toMinecraftPlayerTeam(team));
       }
 
       this.teamMemberships.put(username, team);
@@ -312,9 +302,7 @@ public class VersionedScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean removePlayerFromTeam(String username, PlayerTeam team) {
     return this.removePlayerFromTeam(username, team, false);
@@ -329,13 +317,11 @@ public class VersionedScoreboard implements Scoreboard {
       // Checks if it is called by the Labyfy API
       // Removes a team player from a team
       if (!minecraft) {
-        ScorePlayerTeam playerTeam = (ScorePlayerTeam) this.scoreboardMapper.toMinecraftPlayerTeam(team);
+        ScorePlayerTeam playerTeam =
+            (ScorePlayerTeam) this.scoreboardMapper.toMinecraftPlayerTeam(team);
 
         if (playerTeam != null) {
-          Minecraft.getInstance().world.getScoreboard().removePlayerFromTeam(
-                  username,
-                  playerTeam
-          );
+          Minecraft.getInstance().world.getScoreboard().removePlayerFromTeam(username, playerTeam);
         }
       }
 
@@ -345,30 +331,22 @@ public class VersionedScoreboard implements Scoreboard {
       team.getMembers().remove(username);
       return true;
     }
-
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean removePlayerFromTeams(String username) {
     PlayerTeam team = this.getPlayerTeam(username);
     return team != null && this.removePlayerFromTeam(username, team);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerTeam getPlayerTeam(String username) {
     return this.teamMemberships.get(username);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerTeam createTeam(String name) {
     return this.createTeam(name, false);
@@ -377,7 +355,7 @@ public class VersionedScoreboard implements Scoreboard {
   /**
    * Creates a new {@link PlayerTeam} with the given name.
    *
-   * @param name      The registry name of this team.
+   * @param name The registry name of this team.
    * @param minecraft {@code true} if called from Minecraft, otherwise {@code false}
    * @return A created team or an already registered team.
    * @throws IllegalArgumentException If the name length longer than 16.
@@ -410,7 +388,6 @@ public class VersionedScoreboard implements Scoreboard {
         }
       }
     }
-
   }
 
   /**
@@ -451,9 +428,7 @@ public class VersionedScoreboard implements Scoreboard {
     this.teams.put(playerTeam.getName(), playerTeam);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removeTeam(PlayerTeam team) {
     this.removeTeam(team, false);
@@ -462,7 +437,7 @@ public class VersionedScoreboard implements Scoreboard {
   /**
    * Removes a team.
    *
-   * @param team      The team to be remove
+   * @param team The team to be remove
    * @param minecraft {@code true} if called from Minecraft, otherwise {@code false}
    */
   private void removeTeam(PlayerTeam team, boolean minecraft) {
@@ -477,53 +452,43 @@ public class VersionedScoreboard implements Scoreboard {
     // Checks if it is called by the Labyfy API
     if (!minecraft) {
       // Removes the team from the Miencraft scoreboard
-      Minecraft.getInstance().world.getScoreboard().removeTeam(
-              (ScorePlayerTeam) this.scoreboardMapper.toMinecraftPlayerTeam(team)
-      );
+      Minecraft.getInstance()
+          .world
+          .getScoreboard()
+          .removeTeam((ScorePlayerTeam) this.scoreboardMapper.toMinecraftPlayerTeam(team));
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void addObjective(Objective objective) {
     this.addObjective(
-            objective.getName(),
-            objective.getCriteria(),
-            objective.getDisplayName(),
-            objective.getRenderType(),
-            true
-    );
+        objective.getName(),
+        objective.getCriteria(),
+        objective.getDisplayName(),
+        objective.getRenderType(),
+        true);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void updateObjective(Objective objective) {
     this.objectives.put(objective.getName(), objective);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removeObjective(Objective objective) {
     this.objectives.remove(objective.getName());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void addPlayerTeam(PlayerTeam team) {
     this.createTeam(team.getName(), true);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void updatePlayerTeam(PlayerTeam team) {
     if (this.teams.containsKey(team.getName())) {
@@ -533,44 +498,31 @@ public class VersionedScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removePlayerTeam(PlayerTeam team) {
-    this.removeTeam(
-            team,
-            true
-    );
+    this.removeTeam(team, true);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void attachPlayerToTeam(String username, PlayerTeam team) {
     this.addPlayerToTeam(username, team, true);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void detachPlayerFromTeam(String username, PlayerTeam team) {
     this.removePlayerFromTeam(username, team, true);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removePlayer(String username) {
     this.entitiesScoreObjectives.remove(username);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removeScorePlayer(String username, Objective objective) {
     Map<Objective, Score> map = this.entitiesScoreObjectives.get(username);
@@ -583,14 +535,10 @@ public class VersionedScoreboard implements Scoreboard {
       } else if (score != null) {
         map.remove(objective, score);
       }
-
     }
-
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerTeam getTeam(String name) {
     return this.teams.get(name);
@@ -605,41 +553,31 @@ public class VersionedScoreboard implements Scoreboard {
     return Minecraft.getInstance().world.getScoreboard().getTeam(name);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<String> getTeamNames() {
     return this.teams.keySet();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<PlayerTeam> getTeams() {
     return this.teams.values();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<Objective> getScoreObjectives() {
     return this.objectives.values();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<String> getScoreObjectiveNames() {
     return this.objectives.keySet();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<String> getObjectiveNames() {
     return new ArrayList<>(this.entitiesScoreObjectives.keySet());
@@ -647,9 +585,7 @@ public class VersionedScoreboard implements Scoreboard {
 
   // TODO: 21.09.2020 Is called when the player is logged off the server
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void invalidate() {
     this.objectives.clear();

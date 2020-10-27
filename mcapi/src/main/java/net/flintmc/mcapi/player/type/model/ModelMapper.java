@@ -1,8 +1,6 @@
 package net.flintmc.mcapi.player.type.model;
 
-/**
- * Mapper between the Minecraft player model part and the Labyfy {@link PlayerClothing}.
- */
+/** Mapper between the Minecraft player model part and the Labyfy {@link PlayerClothing}. */
 public interface ModelMapper {
 
   /**
@@ -15,11 +13,10 @@ public interface ModelMapper {
   PlayerClothing fromMinecraftPlayerModelPart(Object playerModelPart);
 
   /**
-   * Retrieves a Minecraft  player model part constant by using the given {@link PlayerClothing}.
+   * Retrieves a Minecraft player model part constant by using the given {@link PlayerClothing}.
    *
    * @param playerClothing The non-null player clothing.
-   * @return The  player model part constant.
+   * @return The player model part constant.
    */
   Object toMinecraftPlayerModelPart(PlayerClothing playerClothing);
-
 }

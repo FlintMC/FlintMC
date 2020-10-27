@@ -9,12 +9,10 @@ import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Map;
 import java.util.jar.JarFile;
 
-/**
- * Default implementation of the {@link PackageLocalizationLoader}.
- */
+/** Default implementation of the {@link PackageLocalizationLoader}. */
 @Implement(PackageLocalizationLoader.class)
 public class DefaultPackageLocalizationLoader implements PackageLocalizationLoader {
 
@@ -31,51 +29,46 @@ public class DefaultPackageLocalizationLoader implements PackageLocalizationLoad
     this.localizations = Maps.newHashMap();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isLanguageFolderPresent(JarFile file) {
     return file.getEntry(LANGUAGE_FOLDER) != null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void loadLocalizations(JarFile file) throws IOException {
-    file.stream().forEach(entry -> {
-      if (entry.getName().startsWith(LANGUAGE_FOLDER)) {
-        if (!entry.getName().equals(LANGUAGE_FOLDER)) {
-          String name = entry.getName().substring(LANGUAGE_FOLDER.length());
+    file.stream()
+        .forEach(
+            entry -> {
+              if (entry.getName().startsWith(LANGUAGE_FOLDER)) {
+                if (!entry.getName().equals(LANGUAGE_FOLDER)) {
+                  String name = entry.getName().substring(LANGUAGE_FOLDER.length());
 
-          if (!name.endsWith(".json")) {
-            return;
-          }
+                  if (!name.endsWith(".json")) {
+                    return;
+                  }
 
-          String[] split = name.split("\\.");
+                  String[] split = name.split("\\.");
 
-          if (split.length == 2) {
-            try {
-              this.localizations.put(split[0],
-                      this.packageLocalizationFactory.create(
+                  if (split.length == 2) {
+                    try {
+                      this.localizations.put(
+                          split[0],
+                          this.packageLocalizationFactory.create(
                               split[0],
-                              this.readLocalization(file.getInputStream(file.getEntry(entry.getName())))
-                      ));
-            } catch (IOException exception) {
-              exception.printStackTrace();
-            }
-          }
-
-        }
-      }
-    });
-
+                              this.readLocalization(
+                                  file.getInputStream(file.getEntry(entry.getName())))));
+                    } catch (IOException exception) {
+                      exception.printStackTrace();
+                    }
+                  }
+                }
+              }
+            });
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Map<String, PackageLocalization> getLocalizations() {
     return this.localizations;
@@ -93,5 +86,4 @@ public class DefaultPackageLocalizationLoader implements PackageLocalizationLoad
 
     return result.toByteArray();
   }
-
 }

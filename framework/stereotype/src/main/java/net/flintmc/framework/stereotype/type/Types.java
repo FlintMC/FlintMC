@@ -4,9 +4,7 @@ import net.flintmc.util.commons.resolve.AnnotationResolver;
 
 import java.lang.annotation.Annotation;
 
-/**
- * Util class to instantiate {@link Type} easily.
- */
+/** Util class to instantiate {@link Type} easily. */
 public class Types {
 
   private Types() {}
@@ -28,7 +26,6 @@ public class Types {
       public Class<? extends Annotation> annotationType() {
         return Type.class;
       }
-
     };
   }
 

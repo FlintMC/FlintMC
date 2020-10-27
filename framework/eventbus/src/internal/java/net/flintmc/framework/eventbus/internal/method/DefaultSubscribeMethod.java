@@ -21,10 +21,9 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
   private final byte priority;
   private final Subscribe.Phase phase;
   private final CtClass ctClass;
-  private Executor executor;
   private final Supplier<Executor> executorSupplier;
   private final CtMethod eventMethod;
-
+  private Executor executor;
   private Object instance;
 
   @AssistedInject
@@ -65,8 +64,7 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
     if (this.instance == null) {
       this.instance = InjectionHolder.getInjectedInstance(CtResolver.get(this.ctClass));
     }
-    if (this.executor == null)
-      this.executor = this.executorSupplier.get();
+    if (this.executor == null) this.executor = this.executorSupplier.get();
     this.executor.invoke(this.instance, event);
   }
 }

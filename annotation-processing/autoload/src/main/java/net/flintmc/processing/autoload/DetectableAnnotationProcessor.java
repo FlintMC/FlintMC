@@ -6,10 +6,10 @@ import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import net.flintmc.util.commons.annotation.AnnotationMirrorUtil;
-import net.flintmc.util.commons.Pair;
 import net.flintmc.processing.Processor;
 import net.flintmc.processing.ProcessorState;
+import net.flintmc.util.commons.Pair;
+import net.flintmc.util.commons.annotation.AnnotationMirrorUtil;
 
 import javax.lang.model.element.*;
 import javax.lang.model.type.ArrayType;
@@ -22,9 +22,7 @@ import java.util.stream.Collectors;
 @AutoService(Processor.class)
 public class DetectableAnnotationProcessor implements Processor {
 
-  /**
-   * Template to instantiate an annotation.
-   */
+  /** Template to instantiate an annotation. */
   private static final String ANNOTATION_TEMPLATE =
       ""
           + "new ${TYPE_NAME}() {\n"
@@ -35,18 +33,14 @@ public class DetectableAnnotationProcessor implements Processor {
           + "    }\n"
           + "}";
 
-  /**
-   * Template to implement an annotation method.
-   */
+  /** Template to implement an annotation method. */
   private static final String ANNOTATION_METHOD_TEMPLATE =
       ""
           + "    public ${RETURN_TYPE_NAME} ${NAME}(){\n"
           + "        return ${RETURN_VALUE}; \n"
           + "    }";
 
-  /**
-   * Template to instantiate AnnotationMeta
-   */
+  /** Template to instantiate AnnotationMeta */
   private static final String ANNOTATION_META_TEMPLATE =
       ""
           + "new AnnotationMeta(\n"
@@ -55,19 +49,13 @@ public class DetectableAnnotationProcessor implements Processor {
           + "   ${ANNOTATION}, \n"
           + "new AnnotationMeta[]{${META_DATA}})";
 
-  /**
-   * Template to instantiate a class identifier
-   */
+  /** Template to instantiate a class identifier */
   private static final String ANNOTATION_META_CLASS_IDENTIFIER_TEMPLATE =
-      ""
-          + "new ClassIdentifier(\"${TYPE_NAME}\")";
+      "" + "new ClassIdentifier(\"${TYPE_NAME}\")";
 
-  /**
-   * Template to instantiate a method identifier
-   */
+  /** Template to instantiate a method identifier */
   private static final String ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE =
-      ""
-          + "new MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
+      "" + "new MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
 
   private final Collection<String> found;
 
@@ -115,8 +103,7 @@ public class DetectableAnnotationProcessor implements Processor {
         ProcessorState.getInstance()
             .getProcessingEnvironment()
             .getElementUtils()
-            .getTypeElement(
-                "RepeatingDetectableAnnotation");
+            .getTypeElement("RepeatingDetectableAnnotation");
 
     // Get the values of the RepeatingDetectableAnnotation at the instance on the annotationType
     Map<String, AnnotationValue> repeatingDetectableAnnotationValues =
@@ -149,9 +136,9 @@ public class DetectableAnnotationProcessor implements Processor {
                 annotatedElement,
                 (Map<ExecutableElement, AnnotationValue>)
                     SimpleAnnotationMirror.of(
-                        repeatedAnnotationType,
-                        AnnotationMirrorUtil.getElementValuesByName(
-                            ((AnnotationMirror) repeatedAnnotation)))
+                            repeatedAnnotationType,
+                            AnnotationMirrorUtil.getElementValuesByName(
+                                ((AnnotationMirror) repeatedAnnotation)))
                         .getElementValues());
         if (parsedAnnotation.isEmpty()) return;
         this.found.add(("list.add(" + parsedAnnotation + ")").replace("$", "$$"));
@@ -199,7 +186,7 @@ public class DetectableAnnotationProcessor implements Processor {
    * Parse a given annotation to java syntax that will instantiate the target annotation with the
    * exact same values.
    *
-   * @param annotationType   the annotation type to look for
+   * @param annotationType the annotation type to look for
    * @param annotatedElement the element to look at for the annotationType
    * @param annotationValues the value of the annotation to write
    * @return the java code to instantiate the annotation
@@ -316,8 +303,8 @@ public class DetectableAnnotationProcessor implements Processor {
    *
    * <p>Currently only metadata that is present on the same element as their parent can be obtained.
    *
-   * @param annotationType   the parent annotation type to look for. Must be annotated with {@link
-   *                         DetectableAnnotation}
+   * @param annotationType the parent annotation type to look for. Must be annotated with {@link
+   *     DetectableAnnotation}
    * @param annotatedElement the location where to look for annotationType
    * @return the direct metadata for annotationType on annotatedElement
    */
@@ -337,14 +324,14 @@ public class DetectableAnnotationProcessor implements Processor {
     // Collect all possible meta types
     Collection<TypeElement> annotationMetaTypes =
         ((List<AnnotationValue>)
-            AnnotationMirrorUtil.getElementValuesByName(detectableAnnotationMirror)
-                .get("metaData")
-                .getValue())
+                AnnotationMirrorUtil.getElementValuesByName(detectableAnnotationMirror)
+                    .get("metaData")
+                    .getValue())
             .stream()
-            .map(
-                annotationValue ->
-                    ((TypeElement) ((DeclaredType) annotationValue.getValue()).asElement()))
-            .collect(Collectors.toSet());
+                .map(
+                    annotationValue ->
+                        ((TypeElement) ((DeclaredType) annotationValue.getValue()).asElement()))
+                .collect(Collectors.toSet());
 
     Collection<Element> potentialElements = new HashSet<>();
 
@@ -365,9 +352,9 @@ public class DetectableAnnotationProcessor implements Processor {
           TypeElement repeatingAnnotationType =
               (TypeElement)
                   ((DeclaredType)
-                      AnnotationMirrorUtil.getElementValuesByName(repeatableAnnotationMirror)
-                          .get("value")
-                          .getValue())
+                          AnnotationMirrorUtil.getElementValuesByName(repeatableAnnotationMirror)
+                              .get("value")
+                              .getValue())
                       .asElement();
           if (repeatingAnnotationType.getAnnotation(RepeatingDetectableAnnotation.class) == null) {
             throw new IllegalStateException(
@@ -505,12 +492,12 @@ public class DetectableAnnotationProcessor implements Processor {
             Map<ExecutableElement, AnnotationValue> classValues =
                 new HashMap<>(
                     SimpleAnnotationMirror.of(
-                        ((TypeElement) a.getAnnotationType().asElement()),
-                        a.getElementValues().entrySet().stream()
-                            .collect(
-                                Collectors.toMap(
-                                    entry -> entry.getKey().getSimpleName().toString(),
-                                    Map.Entry::getValue)))
+                            ((TypeElement) a.getAnnotationType().asElement()),
+                            a.getElementValues().entrySet().stream()
+                                .collect(
+                                    Collectors.toMap(
+                                        entry -> entry.getKey().getSimpleName().toString(),
+                                        Map.Entry::getValue)))
                         .getElementValues());
             Map<ExecutableElement, AnnotationValue> instanceValues =
                 new HashMap<>(a.getElementValues());

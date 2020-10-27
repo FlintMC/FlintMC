@@ -3,9 +3,7 @@ package net.flintmc.mcapi.gamesettings;
 import net.flintmc.mcapi.gamesettings.configuration.*;
 import net.flintmc.mcapi.world.difficulty.Difficulty;
 
-/**
- * Represents the Minecraft game settings
- */
+/** Represents the Minecraft game settings */
 public interface MinecraftConfiguration {
 
   /**
@@ -101,10 +99,10 @@ public interface MinecraftConfiguration {
 
   /**
    * Saves and reload the Minecraft options.
-   * <p>
-   * <b>Note:</b> This is needed to save configurations that have not been changed via the Minecraft settings.
-   * The changes to the configuration will be loaded immediately so that the client can use the changes.
+   *
+   * <p><b>Note:</b> This is needed to save configurations that have not been changed via the
+   * Minecraft settings. The changes to the configuration will be loaded immediately so that the
+   * client can use the changes.
    */
   void saveAndReloadOptions();
-
 }

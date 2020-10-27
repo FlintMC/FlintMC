@@ -3,9 +3,7 @@ package net.flintmc.framework.packages.localization;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * Represents the localization of a package.
- */
+/** Represents the localization of a package. */
 public interface PackageLocalization {
 
   /**
@@ -29,24 +27,20 @@ public interface PackageLocalization {
    */
   byte[] getLocalizationContent();
 
-  /**
-   * A factory class for creating {@link PackageLocalization}'s.
-   */
+  /** A factory class for creating {@link PackageLocalization}'s. */
   @AssistedFactory(PackageLocalization.class)
   interface Factory {
 
     /**
-     * Creates a new {@link PackageLocalization} with the given {@code localizationCode} and {@code localizationContent}.
+     * Creates a new {@link PackageLocalization} with the given {@code localizationCode} and {@code
+     * localizationContent}.
      *
-     * @param localizationCode    The code of the localization.
+     * @param localizationCode The code of the localization.
      * @param localizationContent The content of the localization.
      * @return A created package localization.
      */
     PackageLocalization create(
-            @Assisted("localizationCode") String localizationCode,
-            @Assisted("localizationContent") byte[] localizationContent
-    );
-
+        @Assisted("localizationCode") String localizationCode,
+        @Assisted("localizationContent") byte[] localizationContent);
   }
-
 }

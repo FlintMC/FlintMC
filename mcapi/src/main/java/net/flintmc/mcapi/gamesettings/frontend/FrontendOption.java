@@ -3,9 +3,7 @@ package net.flintmc.mcapi.gamesettings.frontend;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * Represents an option for the settings frontend.
- */
+/** Represents an option for the settings frontend. */
 public interface FrontendOption {
 
   /**
@@ -29,26 +27,21 @@ public interface FrontendOption {
    */
   String getDefaultValue();
 
-  /**
-   * A factory class for {@link FrontendOption}.
-   */
+  /** A factory class for {@link FrontendOption}. */
   @AssistedFactory(FrontendOption.class)
   interface Factory {
 
     /**
      * Creates a new {@link FrontendOption} with the given parameters.
      *
-     * @param name         The configuration name of the option.
-     * @param type         The option type.
+     * @param name The configuration name of the option.
+     * @param type The option type.
      * @param defaultValue The default value for the option.
      * @return A created frontend option.
      */
     FrontendOption create(
-            @Assisted("name") String name,
-            @Assisted("type") Class<?> type,
-            @Assisted("defaultValue") String defaultValue
-    );
-
+        @Assisted("name") String name,
+        @Assisted("type") Class<?> type,
+        @Assisted("defaultValue") String defaultValue);
   }
-
 }

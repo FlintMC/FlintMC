@@ -19,14 +19,11 @@ import static org.lwjgl.opengl.GL20.*;
 @Implement(ShaderProgram.class)
 public class VersionedShaderProgram implements ShaderProgram {
 
+  private final List<ShaderUniform> providedShaderUniforms;
   private int shaderProgram;
-
   private int vertexShader;
   private int fragmentShader;
-
   private boolean linked;
-
-  private final List<ShaderUniform> providedShaderUniforms;
 
   @AssistedInject
   private VersionedShaderProgram() {

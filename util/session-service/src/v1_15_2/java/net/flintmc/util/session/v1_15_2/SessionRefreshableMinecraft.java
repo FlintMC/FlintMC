@@ -10,5 +10,4 @@ public interface SessionRefreshableMinecraft {
 
   @FieldSetter(value = "session", removeFinal = true)
   void setSession(Session session);
-
 }

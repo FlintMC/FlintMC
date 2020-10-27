@@ -17,7 +17,8 @@ public class DefaultRefreshTokenResult implements RefreshTokenResult {
   }
 
   @AssistedInject
-  private DefaultRefreshTokenResult(@Assisted("type") ResultType type, @Assisted("errorMessage") String errorMessage) {
+  private DefaultRefreshTokenResult(
+      @Assisted("type") ResultType type, @Assisted("errorMessage") String errorMessage) {
     this.type = type;
     this.errorMessage = errorMessage;
   }

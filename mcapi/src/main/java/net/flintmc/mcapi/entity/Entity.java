@@ -1,13 +1,13 @@
 package net.flintmc.mcapi.entity;
 
 import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.name.Nameable;
 import net.flintmc.mcapi.entity.reason.MoverType;
 import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityType;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.PlayerEntity;
@@ -22,9 +22,7 @@ import net.flintmc.mcapi.world.scoreboad.team.Team;
 import java.util.*;
 import java.util.stream.Stream;
 
-/**
- * Represents the Minecraft entity.
- */
+/** Represents the Minecraft entity. */
 public interface Entity extends Nameable {
 
   /**
@@ -122,9 +120,7 @@ public interface Entity extends Nameable {
    */
   double getPosZ();
 
-  /**
-   * Removes this entity from the world.
-   */
+  /** Removes this entity from the world. */
   void remove();
 
   /**
@@ -146,10 +142,10 @@ public interface Entity extends Nameable {
   /**
    * Changes the position and rotation of this entity.
    *
-   * @param x     The new `x` position.
-   * @param y     The new `y` position.
-   * @param z     The new `z` position.
-   * @param yaw   The new `yaw` rotation.
+   * @param x The new `x` position.
+   * @param y The new `y` position.
+   * @param z The new `z` position.
+   * @param yaw The new `yaw` rotation.
    * @param pitch The new `pitch` rotation.
    */
   void setPositionAndRotation(double x, double y, double z, float yaw, float pitch);
@@ -157,8 +153,8 @@ public interface Entity extends Nameable {
   /**
    * Moves the entity ot the block position and the angeles.
    *
-   * @param position      The block position for the entity.
-   * @param rotationYaw   The yaw rotation.
+   * @param position The block position for the entity.
+   * @param rotationYaw The yaw rotation.
    * @param rotationPitch The pitch rotation.
    */
   void moveToBlockPosAndAngles(BlockPosition position, float rotationYaw, float rotationPitch);
@@ -166,10 +162,10 @@ public interface Entity extends Nameable {
   /**
    * Changes the location and the angles of this entity.
    *
-   * @param x     The new `x` location.
-   * @param y     The new `y` location.
-   * @param z     The new `z` location.
-   * @param yaw   The new `yaw` angle.
+   * @param x The new `x` location.
+   * @param y The new `y` location.
+   * @param z The new `z` location.
+   * @param yaw The new `yaw` angle.
    * @param pitch The new `pitch` angle.
    */
   void setLocationAndAngles(double x, double y, double z, float yaw, float pitch);
@@ -228,7 +224,7 @@ public interface Entity extends Nameable {
   /**
    * Rotates this entity in a direction.
    *
-   * @param yaw   The `yaw` of this rotation.
+   * @param yaw The `yaw` of this rotation.
    * @param pitch The `pitch` of this rotation.
    */
   void rotateTowards(double yaw, double pitch);
@@ -236,7 +232,8 @@ public interface Entity extends Nameable {
   /**
    * Retrieves the pitch of this entity.
    *
-   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last full tick.
+   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
+   *     full tick.
    * @return The entity pitch.
    */
   float getPitch(float partialTicks);
@@ -258,7 +255,8 @@ public interface Entity extends Nameable {
   /**
    * Retrieves the yaw of this entity.
    *
-   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last full tick.
+   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
+   *     full tick.
    * @return The entity yaw.
    */
   float getYaw(float partialTicks);
@@ -305,22 +303,18 @@ public interface Entity extends Nameable {
    */
   void setFireTimer(int ticks);
 
-  /**
-   * Sets the fire timer to {@code 0}.
-   */
+  /** Sets the fire timer to {@code 0}. */
   void extinguish();
 
-  /**
-   * Resets the position to the bounding box of this entity.
-   */
+  /** Resets the position to the bounding box of this entity. */
   void resetPositionToBB();
 
   /**
    * Plays a sound at the position of this entity.
    *
-   * @param sound  The sound to be played.
+   * @param sound The sound to be played.
    * @param volume The volume of this sound.
-   * @param pitch  The pitch of this sound.
+   * @param pitch The pitch of this sound.
    */
   void playSound(Sound sound, float volume, float pitch);
 
@@ -397,9 +391,7 @@ public interface Entity extends Nameable {
    */
   boolean canSwim();
 
-  /**
-   * Updates the swim state of this entity.
-   */
+  /** Updates the swim state of this entity. */
   void updateSwim();
 
   /**
@@ -409,9 +401,7 @@ public interface Entity extends Nameable {
    */
   boolean handleWaterMovement();
 
-  /**
-   * Spawn running particles at the entity position.
-   */
+  /** Spawn running particles at the entity position. */
   void spawnRunningParticles();
 
   /**
@@ -421,9 +411,7 @@ public interface Entity extends Nameable {
    */
   boolean isInWater();
 
-  /**
-   * Sets the entity in lava.
-   */
+  /** Sets the entity in lava. */
   void setInLava();
 
   /**
@@ -646,19 +634,18 @@ public interface Entity extends Nameable {
   /**
    * Changes the visibility of the custom name of this entity.
    *
-   * @param alwaysRenderNameTag {@code true} if the custom name should be rendered, otherwise {@code false}.
+   * @param alwaysRenderNameTag {@code true} if the custom name should be rendered, otherwise {@code
+   *     false}.
    */
   void setCustomNameVisible(boolean alwaysRenderNameTag);
 
   /**
    * Sends a message to the player chat.
    *
-   * @param component  The component to be sent.
+   * @param component The component to be sent.
    * @param senderUUID The sender unique identifier of this entity.
    */
-  default void sendMessage(ChatComponent component, UUID senderUUID) {
-
-  }
+  default void sendMessage(ChatComponent component, UUID senderUUID) {}
 
   /**
    * Retrieves the eye height of this entity by the given {@link EntityPose}.
@@ -748,17 +735,15 @@ public interface Entity extends Nameable {
    */
   boolean isAlwaysRenderNameTagForRender();
 
-  /**
-   * Recalculates the size of this entity.
-   */
+  /** Recalculates the size of this entity. */
   void recalculateSize();
 
   /**
    * Whether replaces item in the entity inventory.
    *
-   * @param slot      The slot to replaced.
+   * @param slot The slot to replaced.
    * @param itemStack The new item stack.
-   * @return {@code true} if was the item stack replaced, otherwise  {@code false}.
+   * @return {@code true} if was the item stack replaced, otherwise {@code false}.
    */
   boolean replaceItemInInventory(int slot, ItemStack itemStack);
 
@@ -838,7 +823,8 @@ public interface Entity extends Nameable {
    * Whether the entity is riding or being ridden by the given entity.
    *
    * @param entity The entity to be checked.
-   * @return {@code true} if the entity is riding or being ridden by the given entity, otherwise {@code false}.
+   * @return {@code true} if the entity is riding or being ridden by the given entity, otherwise
+   *     {@code false}.
    */
   boolean isRidingOrBeingRiddenBy(Entity entity);
 
@@ -996,14 +982,15 @@ public interface Entity extends Nameable {
    * Moves the entity.
    *
    * @param moverType The type for the move.
-   * @param vector3D  The vector for the move.
+   * @param vector3D The vector for the move.
    */
   void move(MoverType moverType, Vector3D vector3D);
 
   /**
    * Whether the entity is collided horizontally or vertically.
    *
-   * @return {@code true} if the entity is collided horizontally or vertically, otherwise {@code false}.
+   * @return {@code true} if the entity is collided horizontally or vertically, otherwise {@code
+   *     false}.
    */
   default boolean isCollided() {
     return this.isCollidedHorizontally() || this.isCollidedVertically();
@@ -1019,7 +1006,8 @@ public interface Entity extends Nameable {
   /**
    * Changes whether the entity is collided horizontally.
    *
-   * @param horizontally {@code true} if the entity should be collided horizontally, otherwise {@code false}.
+   * @param horizontally {@code true} if the entity should be collided horizontally, otherwise
+   *     {@code false}.
    */
   void setCollidedHorizontally(boolean horizontally);
 
@@ -1033,7 +1021,8 @@ public interface Entity extends Nameable {
   /**
    * Changes whether the entity is collied vertically.
    *
-   * @param vertically {@code true} if the etity should be collided vertically, otherwise {@code false}.
+   * @param vertically {@code true} if the etity should be collided vertically, otherwise {@code
+   *     false}.
    */
   void setCollidedVertically(boolean vertically);
 
@@ -1072,28 +1061,22 @@ public interface Entity extends Nameable {
    */
   void setOnGround(boolean onGround);
 
-  /**
-   * Checks if the entity must be removed.
-   */
-  default void checkDespawn() {
-  }
-
+  /** Checks if the entity must be removed. */
+  default void checkDespawn() {}
 
   /**
    * Reads additional named binary compound tag.
    *
    * @param compound The named binary compound to read.
    */
-  default void readAdditional(NBTCompound compound) {
-  }
+  default void readAdditional(NBTCompound compound) {}
 
   /**
    * Writes additional named binary compound tag.
    *
    * @param compound The named binary compound to write.
    */
-  default void writeAdditional(NBTCompound compound) {
-  }
+  default void writeAdditional(NBTCompound compound) {}
 
   /**
    * Retrieves the random of this entity.
@@ -1109,11 +1092,8 @@ public interface Entity extends Nameable {
    */
   EntityFoundationMapper getEntityFoundationMapper();
 
-  /**
-   * An enumeration representing all classifications for entities.
-   */
+  /** An enumeration representing all classifications for entities. */
   enum Classification {
-
     MONSTER("monster", 70, false, false),
     CREATURE("creature", 10, true, true),
     AMBIENT("ambient", 15, true, false),
@@ -1169,24 +1149,17 @@ public interface Entity extends Nameable {
     }
   }
 
-  /**
-   * A factory class for the {@link Entity}.
-   */
+  /** A factory class for the {@link Entity}. */
   @AssistedFactory(Entity.class)
   interface Factory {
 
     /**
      * Creates an {@link Entity} with the given parameters.
      *
-     * @param entity     The non-null minecraft entity.
+     * @param entity The non-null minecraft entity.
      * @param entityType The type of the entity.
      * @return A created entity.
      */
-    Entity create(
-            @Assisted("entity") Object entity,
-            @Assisted("entityType") EntityType entityType
-    );
-
+    Entity create(@Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
-
 }

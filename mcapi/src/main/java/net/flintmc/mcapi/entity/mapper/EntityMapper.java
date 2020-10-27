@@ -7,9 +7,7 @@ import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
 import net.flintmc.mcapi.player.PlayerEntity;
 
-/**
- * Mapper between Minecraft entity and Labyfy entity.
- */
+/** Mapper between Minecraft entity and Labyfy entity. */
 public interface EntityMapper {
 
   /**
@@ -50,7 +48,8 @@ public interface EntityMapper {
    * Creates a new {@link LivingEntity} by using the given Minecraft living entity as the base.
    *
    * @param handle The non-null Minecraft living entity.
-   * @return The new Labyfy {@link LivingEntity} or {@code null} if the given living entity was invalid.
+   * @return The new Labyfy {@link LivingEntity} or {@code null} if the given living entity was
+   *     invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft living entity.
    */
   LivingEntity fromMinecraftLivingEntity(Object handle);

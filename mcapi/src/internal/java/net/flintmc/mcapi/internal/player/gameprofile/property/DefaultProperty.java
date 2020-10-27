@@ -8,9 +8,7 @@ import net.flintmc.mcapi.player.gameprofile.property.Property;
 import java.security.*;
 import java.util.Base64;
 
-/**
- * An implementation of {@link Property}
- */
+/** An implementation of {@link Property} */
 @Implement(Property.class)
 public class DefaultProperty implements Property {
 
@@ -24,7 +22,10 @@ public class DefaultProperty implements Property {
   }
 
   @AssistedInject
-  private DefaultProperty(@Assisted("name") String name, @Assisted("value") String value, @Assisted("signature") String signature) {
+  private DefaultProperty(
+      @Assisted("name") String name,
+      @Assisted("value") String value,
+      @Assisted("signature") String signature) {
     this.name = name;
     this.value = value;
     this.signature = signature;

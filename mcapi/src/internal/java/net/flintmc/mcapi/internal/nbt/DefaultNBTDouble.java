@@ -10,9 +10,7 @@ import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
 import java.io.IOException;
 
-/**
- * Default implementation the {@link NBTDouble}.
- */
+/** Default implementation the {@link NBTDouble}. */
 @Implement(NBTDouble.class)
 public class DefaultNBTDouble implements NBTDouble {
 
@@ -23,41 +21,31 @@ public class DefaultNBTDouble implements NBTDouble {
     this.value = value;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTType getIdentifier() {
     return NBTType.TAG_DOUBLE;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void readContents(NBTDataInputStream inputStream) throws IOException {
     this.value = inputStream.getDataInputStream().readDouble();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void writeContents(NBTDataOutputStream outputStream) throws IOException {
     outputStream.getDataOutputStream().writeDouble(this.value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String asString() {
     return String.valueOf(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double asDouble() {
     return this.value;

@@ -13,7 +13,8 @@ import java.util.List;
 
 public abstract class DefaultChatComponent implements ChatComponent {
 
-  private final boolean[] formats = new boolean[ChatFormat.values().length]; // all formats sorted by the order in the enum
+  private final boolean[] formats =
+      new boolean[ChatFormat.values().length]; // all formats sorted by the order in the enum
 
   private final List<ChatComponent> extras = new ArrayList<>();
 
@@ -130,12 +131,12 @@ public abstract class DefaultChatComponent implements ChatComponent {
         return false;
       }
     }
-    return this.color == null &&
-        this.insertion == null &&
-        this.clickEvent == null &&
-        this.hoverEvent == null &&
-        this.extras.isEmpty() &&
-        this.isSpecificEmpty();
+    return this.color == null
+        && this.insertion == null
+        && this.clickEvent == null
+        && this.hoverEvent == null
+        && this.extras.isEmpty()
+        && this.isSpecificEmpty();
   }
 
   protected abstract boolean isSpecificEmpty();

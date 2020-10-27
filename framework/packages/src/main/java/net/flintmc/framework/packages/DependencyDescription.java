@@ -2,9 +2,7 @@ package net.flintmc.framework.packages;
 
 import java.util.List;
 
-/**
- * Represents a dependency a package may have.
- */
+/** Represents a dependency a package may have. */
 public interface DependencyDescription {
 
   /**

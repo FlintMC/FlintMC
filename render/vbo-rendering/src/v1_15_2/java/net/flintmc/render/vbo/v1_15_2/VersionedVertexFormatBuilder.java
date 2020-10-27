@@ -15,8 +15,8 @@ import java.util.List;
 @Implement(VertexFormatBuilder.class)
 public class VersionedVertexFormatBuilder implements VertexFormatBuilder {
 
-  private List<VertexAttribute> currentAttributes;
   private final VertexFormat.Factory vertexFormatFactory;
+  private List<VertexAttribute> currentAttributes;
 
   @Inject
   private VersionedVertexFormatBuilder(VertexFormat.Factory vertexFormatFactory) {

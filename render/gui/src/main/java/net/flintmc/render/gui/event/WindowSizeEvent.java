@@ -1,8 +1,6 @@
 package net.flintmc.render.gui.event;
 
-/**
- * Event indicating that the window size has changed.
- */
+/** Event indicating that the window size has changed. */
 public class WindowSizeEvent implements GuiEvent {
   private final int width;
   private final int height;

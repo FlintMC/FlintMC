@@ -11,9 +11,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * 1.15.2 implementation of {@link NetworkPlayerInfoRegistry}
- */
+/** 1.15.2 implementation of {@link NetworkPlayerInfoRegistry} */
 @Singleton
 @Implement(value = NetworkPlayerInfoRegistry.class, version = "1.15.2")
 public class VersionedNetworkPlayerInfoRegistry implements NetworkPlayerInfoRegistry {
@@ -66,5 +64,4 @@ public class VersionedNetworkPlayerInfoRegistry implements NetworkPlayerInfoRegi
   public Map<UUID, NetworkPlayerInfo> getPlayerInfoMap() {
     return this.networkPlayerInfoMap;
   }
-
 }

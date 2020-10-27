@@ -10,19 +10,20 @@ public final class MethodMapping extends BaseMapping {
   /**
    * Construct a method mapping.
    *
-   * @param obfuscated           Whether the current environment is encrypted.
-   * @param classMapping         The class mapping the method belongs to.
+   * @param obfuscated Whether the current environment is encrypted.
+   * @param classMapping The class mapping the method belongs to.
    * @param obfuscatedDescriptor An obfuscated method descriptor.
    * @param obfuscatedIdentifier An obfuscated method identifier.
-   * @param obfuscatedName       An obfuscated name.
-   * @param deobfuscatedName     A deobfuscated name.
+   * @param obfuscatedName An obfuscated name.
+   * @param deobfuscatedName A deobfuscated name.
    */
-  public MethodMapping(final boolean obfuscated,
-                       final ClassMapping classMapping,
-                       final String obfuscatedDescriptor,
-                       final String obfuscatedIdentifier,
-                       final String obfuscatedName,
-                       final String deobfuscatedName) {
+  public MethodMapping(
+      final boolean obfuscated,
+      final ClassMapping classMapping,
+      final String obfuscatedDescriptor,
+      final String obfuscatedIdentifier,
+      final String obfuscatedName,
+      final String deobfuscatedName) {
     super(obfuscated, obfuscatedName, deobfuscatedName);
     this.classMapping = classMapping;
     this.obfuscatedDescriptor = obfuscatedDescriptor;

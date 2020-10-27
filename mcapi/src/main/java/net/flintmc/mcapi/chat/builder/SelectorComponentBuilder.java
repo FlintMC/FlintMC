@@ -6,9 +6,7 @@ import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 
 import java.util.Collection;
 
-/**
- * Builder for {@link SelectorComponent}s.
- */
+/** Builder for {@link SelectorComponent}s. */
 public interface SelectorComponentBuilder extends ComponentBuilder<SelectorComponentBuilder> {
 
   /**
@@ -28,34 +26,35 @@ public interface SelectorComponentBuilder extends ComponentBuilder<SelectorCompo
   EntitySelector selector();
 
   /**
-   * Sets an option for the current component. If the value is {@code null}, the option will be removed.
+   * Sets an option for the current component. If the value is {@code null}, the option will be
+   * removed.
    *
    * @param option The non-null key of the option
-   * @param value  The nullable value of the option
+   * @param value The nullable value of the option
    * @return this
    */
   SelectorComponentBuilder option(String option, String value);
 
   /**
-   * Retrieves an option out of the current component or {@code null}, if the given option has not been set.
+   * Retrieves an option out of the current component or {@code null}, if the given option has not
+   * been set.
    *
-   * @return The non-null values of the current component for the given option, empty if no option with the given key is
-   * set.
+   * @return The non-null values of the current component for the given option, empty if no option
+   *     with the given key is set.
    */
   Collection<String> option(String option);
 
   /**
-   * Parses the selector and all options out of the given string. This method ignores any space in the specified
-   * string.
-   * <br>
+   * Parses the selector and all options out of the given string. This method ignores any space in
+   * the specified string. <br>
    * <br>
    *
    * <p>The allowed format looks like this: selectorShortcut[option1=value1,option2=value2] <br>
    * <br>
    *
    * <p>The option and value are split at the first `=` which means that the options may not contain
-   * an `=`, but it doesn't cause any issues in the values. The available selectorShortcuts can be found in the {@link
-   * EntitySelector} class. <br>
+   * an `=`, but it doesn't cause any issues in the values. The available selectorShortcuts can be
+   * found in the {@link EntitySelector} class. <br>
    * <br>
    *
    * <p>As an example the input could like like this: e[limit=1,r=10]

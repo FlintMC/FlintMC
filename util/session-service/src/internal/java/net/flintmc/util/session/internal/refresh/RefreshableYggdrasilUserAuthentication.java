@@ -9,5 +9,4 @@ public interface RefreshableYggdrasilUserAuthentication {
 
   @FieldSetter("accessToken")
   void setAccessToken(String accessToken);
-
 }

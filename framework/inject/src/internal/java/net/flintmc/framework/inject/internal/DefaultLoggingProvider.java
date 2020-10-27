@@ -14,20 +14,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-/**
- * Default implementation of the {@link LoggingProvider}
- */
+/** Default implementation of the {@link LoggingProvider} */
 @Singleton
 @Implement(LoggingProvider.class)
 public class DefaultLoggingProvider implements LoggingProvider {
   // Default prefix when no other prefix is available
   private static final String FLINT_PREFIX = "Flint";
-
-  // Function to map classes to prefixes
-  private Function<Class<?>, String> prefixProvider = (clazz) -> null;
-
   // Cached loggers to save memory and speed up execution
   private final Map<Class<?>, Logger> loggerCache;
+  // Function to map classes to prefixes
+  private Function<Class<?>, String> prefixProvider = (clazz) -> null;
 
   @Inject
   private DefaultLoggingProvider() {
@@ -35,17 +31,13 @@ public class DefaultLoggingProvider implements LoggingProvider {
     loggerCache = new ConcurrentHashMap<>();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Logger getLogger(Class<?> clazz) {
     return loggerCache.computeIfAbsent(clazz, this::createLogger);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPrefixProvider(Function<Class<?>, String> prefixProvider) {
     this.prefixProvider = prefixProvider;
@@ -58,45 +50,41 @@ public class DefaultLoggingProvider implements LoggingProvider {
    * @return The created logger
    */
   private Logger createLogger(Class<?> clazz) {
-    return LogManager.getLogger(clazz, new AbstractMessageFactory() {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public Message newMessage(Object message) {
-        String prefix = prefixProvider.apply(clazz);
-        if (prefix == null) {
-          return new ParameterizedMessage("[" + FLINT_PREFIX + " ]: {}", message);
-        }
+    return LogManager.getLogger(
+        clazz,
+        new AbstractMessageFactory() {
+          /** {@inheritDoc} */
+          @Override
+          public Message newMessage(Object message) {
+            String prefix = prefixProvider.apply(clazz);
+            if (prefix == null) {
+              return new ParameterizedMessage("[" + FLINT_PREFIX + " ]: {}", message);
+            }
 
-        return new ParameterizedMessage("[" + prefix + "]: {}", message);
-      }
+            return new ParameterizedMessage("[" + prefix + "]: {}", message);
+          }
 
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public Message newMessage(String message) {
-        String prefix = prefixProvider.apply(clazz);
-        if (prefix == null) {
-          return new ParameterizedMessage("[" + FLINT_PREFIX + "]: {}", message);
-        }
+          /** {@inheritDoc} */
+          @Override
+          public Message newMessage(String message) {
+            String prefix = prefixProvider.apply(clazz);
+            if (prefix == null) {
+              return new ParameterizedMessage("[" + FLINT_PREFIX + "]: {}", message);
+            }
 
-        return new ParameterizedMessage("[" + prefix + "]: {}", message);
-      }
+            return new ParameterizedMessage("[" + prefix + "]: {}", message);
+          }
 
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public Message newMessage(String message, Object... params) {
-        String prefix = prefixProvider.apply(clazz);
-        if (prefix == null) {
-          return new ParameterizedMessage("[" + FLINT_PREFIX + "]: " + message, params);
-        }
+          /** {@inheritDoc} */
+          @Override
+          public Message newMessage(String message, Object... params) {
+            String prefix = prefixProvider.apply(clazz);
+            if (prefix == null) {
+              return new ParameterizedMessage("[" + FLINT_PREFIX + "]: " + message, params);
+            }
 
-        return new ParameterizedMessage("[" + prefix + "]: " + message, params);
-      }
-    });
+            return new ParameterizedMessage("[" + prefix + "]: " + message, params);
+          }
+        });
   }
 }

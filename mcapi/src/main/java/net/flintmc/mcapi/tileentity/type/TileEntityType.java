@@ -2,14 +2,10 @@ package net.flintmc.mcapi.tileentity.type;
 
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * Represents a Minecraft tile entity type.
- */
+/** Represents a Minecraft tile entity type. */
 public interface TileEntityType {
 
-  /**
-   * A factory class for the {@link TileEntityType}.
-   */
+  /** A factory class for the {@link TileEntityType}. */
   @AssistedFactory(TileEntityType.class)
   interface Factory {
 
@@ -19,7 +15,5 @@ public interface TileEntityType {
      * @return A created tile entity type.
      */
     TileEntityType create();
-
   }
-
 }

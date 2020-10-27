@@ -5,11 +5,11 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CtClass;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.stereotype.ServiceHandlerMeta;
+import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotation;
 import net.flintmc.util.commons.Pair;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.framework.stereotype.ServiceHandlerMeta;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -29,15 +29,12 @@ public class ServiceRepository {
   }
 
   /**
-   * Registers a service handler that can pickup {@link
-   * DetectableAnnotation}s.
+   * Registers a service handler that can pickup {@link DetectableAnnotation}s.
    *
-   * @param annotationTypes     the annotation types the service should handle
-   * @param priority            the service priority. Lower priority is called first
-   * @param state               the initialization state of the service. see also {@link
-   *                            Service.State} for usage
-   * @param serviceHandlerClass the service handler class to handle {@link
-   *                            DetectableAnnotation}s
+   * @param annotationTypes the annotation types the service should handle
+   * @param priority the service priority. Lower priority is called first
+   * @param state the initialization state of the service. see also {@link Service.State} for usage
+   * @param serviceHandlerClass the service handler class to handle {@link DetectableAnnotation}s
    */
   public void registerService(
       Class<? extends Annotation>[] annotationTypes,
@@ -50,15 +47,12 @@ public class ServiceRepository {
   }
 
   /**
-   * Registers a service handler that can pickup {@link
-   * DetectableAnnotation}s.
+   * Registers a service handler that can pickup {@link DetectableAnnotation}s.
    *
    * @param annotationType the annotation type the service should handle
    * @param priority the service priority. Lower priority is called first
-   * @param state the initialization state of the service. see also {@link
-   *     Service.State} for usage
-   * @param serviceHandlerClass the service handler class to handle {@link
-   *     DetectableAnnotation}s
+   * @param state the initialization state of the service. see also {@link Service.State} for usage
+   * @param serviceHandlerClass the service handler class to handle {@link DetectableAnnotation}s
    */
   public void registerService(
       Class<? extends Annotation> annotationType,
@@ -71,11 +65,9 @@ public class ServiceRepository {
   }
 
   /**
-   * Registers a {@link DetectableAnnotation} and provides
-   * ot to the service handlers.
+   * Registers a {@link DetectableAnnotation} and provides ot to the service handlers.
    *
-   * @param annotationMeta the annotation meta of the {@link
-   *                       DetectableAnnotation} to register.
+   * @param annotationMeta the annotation meta of the {@link DetectableAnnotation} to register.
    */
   public void registerAnnotation(AnnotationMeta<?> annotationMeta) {
     this.annotations.put(annotationMeta.getAnnotation().annotationType(), annotationMeta);
@@ -118,16 +110,12 @@ public class ServiceRepository {
     }
   }
 
-  /**
-   * @return all registered annotations
-   */
+  /** @return all registered annotations */
   public Multimap<Class<? extends Annotation>, AnnotationMeta<?>> getAnnotations() {
     return HashMultimap.create(annotations);
   }
 
-  /**
-   * @return all registered service handlers
-   */
+  /** @return all registered service handlers */
   public Multimap<Class<? extends Annotation>, ServiceHandlerMeta> getServiceHandlers() {
     return HashMultimap.create(serviceHandlers);
   }

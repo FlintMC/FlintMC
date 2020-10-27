@@ -1,10 +1,7 @@
 package net.flintmc.mcapi.gamesettings.settings;
 
-/**
- * An enumeration representing attack indicator statuses.
- */
+/** An enumeration representing attack indicator statuses. */
 public enum AttackIndicatorStatus {
-
   OFF("options.off"),
   CROSSHAIR("options.attack.crosshair"),
   HOTBAR("options.attack.hotbar");

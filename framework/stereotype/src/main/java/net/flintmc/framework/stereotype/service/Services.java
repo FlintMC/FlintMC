@@ -11,5 +11,4 @@ import java.lang.annotation.*;
 public @interface Services {
 
   Service[] value();
-
 }

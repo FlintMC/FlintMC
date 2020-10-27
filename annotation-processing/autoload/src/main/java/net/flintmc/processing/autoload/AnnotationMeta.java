@@ -73,7 +73,7 @@ public class AnnotationMeta<T extends Annotation> {
 
   /**
    * @param clazz the annotation class of the child metadata to look for
-   * @param <K>   the annotation type of the child metadata to look for
+   * @param <K> the annotation type of the child metadata to look for
    * @return all provided child metadata of the type clazz
    */
   public <K extends Annotation> Collection<AnnotationMeta<K>> getMetaData(Class<K> clazz) {
@@ -85,5 +85,4 @@ public class AnnotationMeta<T extends Annotation> {
     }
     return annotationMetas;
   }
-
 }

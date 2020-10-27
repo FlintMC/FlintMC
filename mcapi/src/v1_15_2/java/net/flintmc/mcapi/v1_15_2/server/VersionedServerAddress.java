@@ -20,32 +20,27 @@ public class VersionedServerAddress implements ServerAddress {
 
   @AssistedInject
   public VersionedServerAddress(@Assisted("rawAddress") String rawAddress) {
-    net.minecraft.client.multiplayer.ServerAddress address = net.minecraft.client.multiplayer.ServerAddress.fromString(rawAddress);
+    net.minecraft.client.multiplayer.ServerAddress address =
+        net.minecraft.client.multiplayer.ServerAddress.fromString(rawAddress);
     Preconditions.checkNotNull(address, "address");
 
     this.ip = address.getIP();
     this.port = address.getPort();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getIP() {
     return this.ip;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getPort() {
     return this.port;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return this.ip + ":" + this.port;

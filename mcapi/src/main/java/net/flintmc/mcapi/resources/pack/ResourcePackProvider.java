@@ -2,9 +2,7 @@ package net.flintmc.mcapi.resources.pack;
 
 import java.util.Collection;
 
-/**
- * Service interface for retrieving enable resource packs.
- */
+/** Service interface for retrieving enable resource packs. */
 public interface ResourcePackProvider {
   /**
    * Retrieves a collection of all currently enabled resource packs.

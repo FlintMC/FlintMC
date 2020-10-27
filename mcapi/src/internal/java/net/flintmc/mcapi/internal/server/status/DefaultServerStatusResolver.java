@@ -21,23 +21,26 @@ import java.util.concurrent.ConcurrentHashMap;
 @Implement(value = ServerStatusResolver.class, version = "1.15.2")
 public class DefaultServerStatusResolver implements ServerStatusResolver {
 
-  private final Map<ServerAddress, PendingStatusRequest> pendingRequests = new ConcurrentHashMap<>();
+  private final Map<ServerAddress, PendingStatusRequest> pendingRequests =
+      new ConcurrentHashMap<>();
   private final PendingStatusRequest.Factory statusRequestFactory;
   private final ServerFavicon defaultFavicon;
 
   @Inject
-  public DefaultServerStatusResolver(ResourceLocationProvider resourceLocationProvider,
-                                     PendingStatusRequest.Factory statusRequestFactory,
-                                     ServerFavicon.Factory faviconFactory) {
+  public DefaultServerStatusResolver(
+      ResourceLocationProvider resourceLocationProvider,
+      PendingStatusRequest.Factory statusRequestFactory,
+      ServerFavicon.Factory faviconFactory) {
     this.statusRequestFactory = statusRequestFactory;
-    this.defaultFavicon = faviconFactory.createDefault(resourceLocationProvider.get("textures/misc/unknown_server.png"));
+    this.defaultFavicon =
+        faviconFactory.createDefault(
+            resourceLocationProvider.get("textures/misc/unknown_server.png"));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public CompletableFuture<ServerStatus> resolveStatus(ServerAddress address) throws UnknownHostException {
+  public CompletableFuture<ServerStatus> resolveStatus(ServerAddress address)
+      throws UnknownHostException {
     if (this.pendingRequests.containsKey(address)) {
       PendingStatusRequest request = this.pendingRequests.get(address);
       if (request != null) {
@@ -55,9 +58,7 @@ public class DefaultServerStatusResolver implements ServerStatusResolver {
     return request.getFuture();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<PendingStatusRequest> getPendingRequests() {
     return Collections.unmodifiableCollection(this.pendingRequests.values());

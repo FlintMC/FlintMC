@@ -9,11 +9,10 @@ import net.minecraft.client.Minecraft;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * 1.15.2 implementation of a minecraft resource location.
- */
+/** 1.15.2 implementation of a minecraft resource location. */
 @Implement(value = ResourceLocation.class, version = "1.15.2")
-public class VersionedResourceLocation extends net.minecraft.util.ResourceLocation implements ResourceLocation {
+public class VersionedResourceLocation extends net.minecraft.util.ResourceLocation
+    implements ResourceLocation {
   @AssistedInject
   private VersionedResourceLocation(@Assisted("fullPath") String fullPath) {
     super(fullPath);
@@ -25,17 +24,13 @@ public class VersionedResourceLocation extends net.minecraft.util.ResourceLocati
     super(nameSpace, path);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public <T> T getHandle() {
     return (T) this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public InputStream openInputStream() throws IOException {
     return Minecraft.getInstance().getResourceManager().getResource(this).getInputStream();
   }

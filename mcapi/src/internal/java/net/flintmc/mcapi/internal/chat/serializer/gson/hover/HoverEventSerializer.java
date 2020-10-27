@@ -3,18 +3,17 @@ package net.flintmc.mcapi.internal.chat.serializer.gson.hover;
 import com.google.gson.*;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
-import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
-import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
+import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
+import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
 import org.apache.logging.log4j.Logger;
 
-/**
- * The serializer for HoverEvents in any Minecraft version.
- */
-public abstract class HoverEventSerializer implements JsonSerializer<HoverEvent>, JsonDeserializer<HoverEvent> {
+/** The serializer for HoverEvents in any Minecraft version. */
+public abstract class HoverEventSerializer
+    implements JsonSerializer<HoverEvent>, JsonDeserializer<HoverEvent> {
 
-  private final Logger logger;
   protected final GsonComponentSerializer componentSerializer;
+  private final Logger logger;
 
   public HoverEventSerializer(Logger logger, GsonComponentSerializer componentSerializer) {
     this.logger = logger;
@@ -51,5 +50,4 @@ public abstract class HoverEventSerializer implements JsonSerializer<HoverEvent>
 
     return null;
   }
-
 }

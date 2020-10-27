@@ -13,31 +13,28 @@ public class DefaultServerVersion implements ServerVersion {
   private final boolean compatible;
 
   @AssistedInject
-  public DefaultServerVersion(@Assisted("name") String name, @Assisted("protocolVersion") int protocolVersion, @Assisted("compatible") boolean compatible) {
+  public DefaultServerVersion(
+      @Assisted("name") String name,
+      @Assisted("protocolVersion") int protocolVersion,
+      @Assisted("compatible") boolean compatible) {
     this.name = name;
     this.protocolVersion = protocolVersion;
     this.compatible = compatible;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getProtocolVersion() {
     return this.protocolVersion;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCompatible() {
     return this.compatible;

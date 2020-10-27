@@ -6,9 +6,7 @@ import net.flintmc.mcapi.gamesettings.KeyBinding;
 
 import java.util.List;
 
-/**
- * Represents the key binding configuration.
- */
+/** Represents the key binding configuration. */
 public interface KeyBindingConfiguration {
 
   /**
@@ -37,8 +35,7 @@ public interface KeyBindingConfiguration {
    * Changes the binding of a key.
    *
    * @param keyBinding The key binding to change.
-   * @param code       The new code for key binding.
+   * @param code The new code for key binding.
    */
   void setKeyBindingCode(KeyBinding keyBinding, KeyBindMappings code);
-
 }

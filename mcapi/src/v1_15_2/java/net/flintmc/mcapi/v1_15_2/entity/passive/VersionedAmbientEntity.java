@@ -2,13 +2,13 @@ package net.flintmc.mcapi.v1_15_2.entity.passive;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.flintmc.mcapi.v1_15_2.entity.VersionedMobEntity;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.passive.AmbientEntity;
 import net.flintmc.mcapi.entity.type.EntityType;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.PlayerEntity;
+import net.flintmc.mcapi.v1_15_2.entity.VersionedMobEntity;
 import net.flintmc.mcapi.world.World;
 
 @Implement(value = AmbientEntity.class, version = "1.15.2")
@@ -16,18 +16,15 @@ public class VersionedAmbientEntity extends VersionedMobEntity implements Ambien
 
   @AssistedInject
   public VersionedAmbientEntity(
-          @Assisted("entity") Object entity,
-          @Assisted("entityType") EntityType entityType,
-          World world,
-          EntityFoundationMapper entityFoundationMapper,
-          EntitySenses.Factory entitySensesFactory
-  ) {
+      @Assisted("entity") Object entity,
+      @Assisted("entityType") EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper,
+      EntitySenses.Factory entitySensesFactory) {
     super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean canBeLeashedTo(PlayerEntity playerEntity) {
     return false;

@@ -2,9 +2,7 @@ package net.flintmc.mcapi.chat.event;
 
 import net.flintmc.framework.eventbus.event.Event;
 
-/**
- * The base event for sending/receiving messages in the chat.
- */
+/** The base event for sending/receiving messages in the chat. */
 public interface ChatMessageEvent extends Event {
 
   /**
@@ -14,21 +12,13 @@ public interface ChatMessageEvent extends Event {
    */
   Type getType();
 
-  /**
-   * Types for chat message events.
-   */
+  /** Types for chat message events. */
   enum Type {
 
-    /**
-     * The type when sending a message from the client to the server.
-     */
+    /** The type when sending a message from the client to the server. */
     SEND,
 
-    /**
-     * The type when receiving a message from the server in the client.
-     */
+    /** The type when receiving a message from the server in the client. */
     RECEIVE
-
   }
-
 }

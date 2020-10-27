@@ -1,8 +1,6 @@
 package net.flintmc.mcapi.entity.item;
 
-/**
- * Mapper between the Minecraft item entities and Labyfy entities.
- */
+/** Mapper between the Minecraft item entities and Labyfy entities. */
 public interface ItemEntityMapper {
 
   /**
@@ -21,5 +19,4 @@ public interface ItemEntityMapper {
    * @return The new Minecraft item entity or {@code null} if the given item entity was invalid.
    */
   Object toMinecraftItemEntity(ItemEntity itemEntity);
-
 }

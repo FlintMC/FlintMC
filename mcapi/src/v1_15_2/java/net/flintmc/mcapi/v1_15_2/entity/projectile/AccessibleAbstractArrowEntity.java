@@ -6,9 +6,7 @@ import net.flintmc.transform.shadow.FieldSetter;
 import net.flintmc.transform.shadow.MethodProxy;
 import net.flintmc.transform.shadow.Shadow;
 
-/**
- * A shadow interface for the abstract arrow entity.
- */
+/** A shadow interface for the abstract arrow entity. */
 @Shadow("net.minecraft.entity.projectile.AbstractArrowEntity")
 public interface AccessibleAbstractArrowEntity {
 
@@ -51,5 +49,4 @@ public interface AccessibleAbstractArrowEntity {
    */
   @MethodProxy
   float getWaterDrag();
-
 }

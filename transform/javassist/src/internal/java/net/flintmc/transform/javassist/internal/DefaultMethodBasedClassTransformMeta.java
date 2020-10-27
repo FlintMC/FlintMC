@@ -8,19 +8,19 @@ import com.google.inject.name.Names;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import net.flintmc.util.commons.resolve.NameResolver;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.util.mappings.ClassMapping;
-import net.flintmc.util.mappings.ClassMappingProvider;
-import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.CtClassFilter;
 import net.flintmc.transform.javassist.MethodBasedClassTransformMeta;
+import net.flintmc.util.commons.resolve.NameResolver;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -54,7 +54,8 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
     this.version = (String) launchArguments.get("--game-version");
     this.classMappingProvider = classMappingProvider;
     this.annotationMeta = annotationMeta;
-    this.classNameResolver = InjectionHolder.getInjectedInstance(getAnnotation().classNameResolver());
+    this.classNameResolver =
+        InjectionHolder.getInjectedInstance(getAnnotation().classNameResolver());
 
     this.filters = this.createFilters();
   }
@@ -128,9 +129,9 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
 
       return (annotation.version().isEmpty() || annotation.version().equals(this.version))
           && ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
-          || target.equals(classMapping.getObfuscatedName()))
+              || target.equals(classMapping.getObfuscatedName()))
           && this.getFilters().stream()
-          .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass));
+              .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass));
     }
     return true;
   }

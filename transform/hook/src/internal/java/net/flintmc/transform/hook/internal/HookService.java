@@ -8,20 +8,20 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import javassist.*;
-import net.flintmc.util.commons.resolve.AnnotationResolver;
 import net.flintmc.framework.inject.InjectedInvocationHelper;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.util.mappings.ClassMapping;
-import net.flintmc.util.mappings.ClassMappingProvider;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.type.Type;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.HookFilter;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
+import net.flintmc.util.commons.resolve.AnnotationResolver;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,9 +38,7 @@ public class HookService implements ServiceHandler<Hook> {
 
   @Inject
   private HookService(
-      ClassMappingProvider classMappingProvider,
-      @Named("launchArguments") Map launchArguments
-  ) {
+      ClassMappingProvider classMappingProvider, @Named("launchArguments") Map launchArguments) {
     this.classMappingProvider = classMappingProvider;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--game-version");
@@ -52,7 +50,8 @@ public class HookService implements ServiceHandler<Hook> {
       Class<?> clazz,
       String method,
       Class<?>[] parameters,
-      Object[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+      Object[] args)
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
     Map<Key<?>, Object> availableParameters = Maps.newHashMap();
     availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
     availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
@@ -69,16 +68,14 @@ public class HookService implements ServiceHandler<Hook> {
 
   @Override
   public void discover(AnnotationMeta<Hook> identifierMeta) {
-    Map<AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties = Maps.newHashMap();
+    Map<AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties =
+        Maps.newHashMap();
 
     for (AnnotationMeta<HookFilter> subProperty : identifierMeta.getMetaData(HookFilter.class)) {
       subProperties.put(
           subProperty,
           InjectionHolder.getInjectedInstance(
-              subProperty
-                  .getAnnotation()
-                  .type()
-                  .typeNameResolver()));
+              subProperty.getAnnotation().type().typeNameResolver()));
     }
 
     Hook annotation = identifierMeta.getAnnotation();
@@ -92,7 +89,8 @@ public class HookService implements ServiceHandler<Hook> {
   }
 
   @ClassTransform
-  public void transform(ClassTransformContext classTransformContext) throws NotFoundException, CannotCompileException {
+  public void transform(ClassTransformContext classTransformContext)
+      throws NotFoundException, CannotCompileException {
     CtClass ctClass = classTransformContext.getCtClass();
 
     for (HookEntry entry : hooks) {
@@ -104,29 +102,26 @@ public class HookService implements ServiceHandler<Hook> {
         String className = classMappingProvider.get(hook.className()).getName();
         if (className != null && className.equals(ctClass.getName())) {
           this.modify(
-              entry,
-              hook,
-              ctClass,
-              identifier.<MethodIdentifier>getIdentifier().getLocation());
+              entry, hook, ctClass, identifier.<MethodIdentifier>getIdentifier().getLocation());
         }
       } else {
         boolean cancel = false;
         for (Map.Entry<AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperty :
             entry.subProperties.entrySet()) {
-          HookFilter hookFilter =
-              subProperty.getKey().getAnnotation();
+          HookFilter hookFilter = subProperty.getKey().getAnnotation();
 
           if (!hookFilter
               .value()
-              .test(ctClass, classMappingProvider.get(subProperty.getValue().resolve(hookFilter.type())).getName())) {
+              .test(
+                  ctClass,
+                  classMappingProvider
+                      .get(subProperty.getValue().resolve(hookFilter.type()))
+                      .getName())) {
             cancel = true;
           }
           if (!cancel) {
             this.modify(
-                entry,
-                hook,
-                ctClass,
-                identifier.<MethodIdentifier>getIdentifier().getLocation());
+                entry, hook, ctClass, identifier.<MethodIdentifier>getIdentifier().getLocation());
           }
         }
       }
@@ -144,7 +139,8 @@ public class HookService implements ServiceHandler<Hook> {
     return "";
   }
 
-  private void insert(CtMethod target, Hook.ExecutionTime executionTime, CtMethod hook) throws CannotCompileException {
+  private void insert(CtMethod target, Hook.ExecutionTime executionTime, CtMethod hook)
+      throws CannotCompileException {
     StringBuilder stringBuilder = new StringBuilder();
     try {
       for (CtClass parameterType : hook.getParameterTypes()) {
@@ -178,12 +174,13 @@ public class HookService implements ServiceHandler<Hook> {
             + hook.getName()
             + "\", "
             + (stringBuilder.toString().isEmpty()
-            ? "new Class[0]"
-            : "new Class[]{" + stringBuilder.toString() + "}")
+                ? "new Class[0]"
+                : "new Class[]{" + stringBuilder.toString() + "}")
             + ", $args);");
   }
 
-  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, CtMethod callback) throws NotFoundException, CannotCompileException {
+  private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, CtMethod callback)
+      throws NotFoundException, CannotCompileException {
     CtClass[] parameters = new CtClass[hook.parameters().length];
 
     for (int i = 0; i < hook.parameters().length; i++) {
@@ -194,12 +191,16 @@ public class HookService implements ServiceHandler<Hook> {
         classMapping = new ClassMapping(false, name, name);
       }
 
-      parameters[i] =
-          ClassPool.getDefault()
-              .get(classMapping.getName());
+      parameters[i] = ClassPool.getDefault().get(classMapping.getName());
     }
 
-    CtMethod declaredMethod = ctClass.getDeclaredMethod(classMappingProvider.get(ctClass.getName()).getMethod(hookEntry.methodNameResolver.resolve(hook), parameters).getName(), parameters);
+    CtMethod declaredMethod =
+        ctClass.getDeclaredMethod(
+            classMappingProvider
+                .get(ctClass.getName())
+                .getMethod(hookEntry.methodNameResolver.resolve(hook), parameters)
+                .getName(),
+            parameters);
 
     if (declaredMethod != null) {
       for (Hook.ExecutionTime executionTime : hook.executionTime()) {
@@ -209,10 +210,10 @@ public class HookService implements ServiceHandler<Hook> {
   }
 
   private static class HookEntry {
-    AnnotationMeta<Hook> hook;
-    Map<AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties;
     private final AnnotationResolver<Type, String> parameterTypeNameResolver;
     private final AnnotationResolver<Hook, String> methodNameResolver;
+    AnnotationMeta<Hook> hook;
+    Map<AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties;
 
     private HookEntry(
         AnnotationMeta<Hook> hook,

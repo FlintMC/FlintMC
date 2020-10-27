@@ -5,13 +5,11 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import net.flintmc.util.i18n.Localization;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
+import net.flintmc.util.i18n.Localization;
 
-/**
- * A transformer that adds the {@link Localization} interface to Minecraft locale.
- */
+/** A transformer that adds the {@link Localization} interface to Minecraft locale. */
 @Singleton
 public class LocaleTransformer {
 

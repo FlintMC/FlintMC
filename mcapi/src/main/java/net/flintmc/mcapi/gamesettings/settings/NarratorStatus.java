@@ -1,10 +1,7 @@
 package net.flintmc.mcapi.gamesettings.settings;
 
-/**
- * An enumeration representing narrator statuses.
- */
+/** An enumeration representing narrator statuses. */
 public enum NarratorStatus {
-
   OFF("options.narrator.off"),
   ALL("options.narrator.all"),
   CHAT("options.narrator.chat"),

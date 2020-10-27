@@ -13,15 +13,13 @@ public interface VisitJumpInsn {
     private int opcode;
     private Label label;
 
-    private Context(
-        MethodVisitorContext methodVisitorContext, int opcode, Label label) {
+    private Context(MethodVisitorContext methodVisitorContext, int opcode, Label label) {
       this.methodVisitorContext = methodVisitorContext;
       this.opcode = opcode;
       this.label = label;
     }
 
-    public static Context of(
-        MethodVisitorContext methodVisitorContext, int opcode, Label label) {
+    public static Context of(MethodVisitorContext methodVisitorContext, int opcode, Label label) {
       return new Context(methodVisitorContext, opcode, label);
     }
 

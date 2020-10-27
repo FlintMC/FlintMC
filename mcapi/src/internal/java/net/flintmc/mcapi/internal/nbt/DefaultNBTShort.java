@@ -10,9 +10,7 @@ import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
 import java.io.IOException;
 
-/**
- * Default implementation the {@link NBTShort}.
- */
+/** Default implementation the {@link NBTShort}. */
 @Implement(NBTShort.class)
 public class DefaultNBTShort implements NBTShort {
 
@@ -38,17 +36,13 @@ public class DefaultNBTShort implements NBTShort {
     outputStream.getDataOutputStream().writeShort(this.value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String asString() {
     return String.valueOf(this.value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public short asShort() {
     return this.value;

@@ -10,8 +10,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a {@link LateInjectedTransformer} to be registered
- * and detected automatically by a {@link ServiceHandler}.
+ * Marks a {@link LateInjectedTransformer} to be registered and detected automatically by a {@link
+ * ServiceHandler}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -19,10 +19,10 @@ import java.lang.annotation.Target;
 public @interface MinecraftTransformer {
 
   /**
-   * Defines the priority order in which the {@link LateInjectedTransformer}
-   * will handle class transformations.
-   * <p>
-   * Lowest priority will be called first.
+   * Defines the priority order in which the {@link LateInjectedTransformer} will handle class
+   * transformations.
+   *
+   * <p>Lowest priority will be called first.
    *
    * @return the priority for class transformations
    */

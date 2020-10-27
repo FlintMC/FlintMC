@@ -11,7 +11,8 @@ import net.flintmc.mcapi.internal.chat.component.DefaultTextComponent;
 
 import java.util.function.Supplier;
 
-public abstract class DefaultComponentBuilder<B extends ComponentBuilder<B>, C extends ChatComponent>
+public abstract class DefaultComponentBuilder<
+        B extends ComponentBuilder<B>, C extends ChatComponent>
     implements ComponentBuilder<B> {
 
   private final B builder;

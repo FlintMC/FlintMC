@@ -10,7 +10,8 @@ public class InternalInventoryMapping {
   private final InventoryType inventoryType;
   private final IntFunction<InventoryDimension> dimensionProvider;
 
-  private InternalInventoryMapping(InventoryType inventoryType, IntFunction<InventoryDimension> dimensionProvider) {
+  private InternalInventoryMapping(
+      InventoryType inventoryType, IntFunction<InventoryDimension> dimensionProvider) {
     this.dimensionProvider = dimensionProvider;
     this.inventoryType = inventoryType;
   }
@@ -19,7 +20,8 @@ public class InternalInventoryMapping {
     return create(inventoryType, InventoryDimension::other);
   }
 
-  public static InternalInventoryMapping create(InventoryType inventoryType, IntFunction<InventoryDimension> dimensionProvider) {
+  public static InternalInventoryMapping create(
+      InventoryType inventoryType, IntFunction<InventoryDimension> dimensionProvider) {
     return new InternalInventoryMapping(inventoryType, dimensionProvider);
   }
 

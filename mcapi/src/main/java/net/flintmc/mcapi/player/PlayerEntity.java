@@ -1,12 +1,12 @@
 package net.flintmc.mcapi.player;
 
 import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.item.ItemEntity;
 import net.flintmc.mcapi.entity.type.EntityType;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.nbt.NBTCompound;
@@ -30,9 +30,9 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
   /**
    * Whether block action restricted.
    *
-   * @param world    The world to be checked.
+   * @param world The world to be checked.
    * @param position The block position to be checked.
-   * @param mode     The game mode for the block action restricted
+   * @param mode The game mode for the block action restricted
    * @return {@code true} if the block action restricted, otherwise {@code false}.
    */
   boolean blockActionRestricted(World world, BlockPosition position, GameMode mode);
@@ -47,10 +47,10 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
   /**
    * Plays a sound at the position of this player.
    *
-   * @param sound    The sound to be played.
+   * @param sound The sound to be played.
    * @param category The category for this sound.
-   * @param volume   The volume of this sound.
-   * @param pitch    The pitch of this sound.
+   * @param volume The volume of this sound.
+   * @param pitch The pitch of this sound.
    */
   void playSound(Sound sound, SoundCategory category, float volume, float pitch);
 
@@ -95,10 +95,10 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
   /**
    * Retrieves the dropped item as an entity.
    *
-   * @param itemStack  The dropped item.
-   * @param dropAround If {@code true}, the item will be thrown in a random direction from the entity regardless
-   *                   of which direction the entity is facing.
-   * @param traceItem  {@code true} if the item can be traced, otherwise {@code false}.
+   * @param itemStack The dropped item.
+   * @param dropAround If {@code true}, the item will be thrown in a random direction from the
+   *     entity regardless of which direction the entity is facing.
+   * @param traceItem {@code true} if the item can be traced, otherwise {@code false}.
    * @return The dropped ite mas an entity, or {@code null}.
    */
   ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem);
@@ -150,43 +150,42 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Opens a horse inventory.
    *
    * @param abstractHorseEntity The horse that has an inventory.
-   * @param inventory           Inventory of this horse.
+   * @param inventory Inventory of this horse.
    */
   void openHorseInventory(Object abstractHorseEntity, Inventory inventory);
 
   /**
    * Opens a merchant inventory.
    *
-   * @param merchantOffers  The offers of the merchant
-   * @param container       The container identifier for this merchant
-   * @param levelProgress   The level progress of this merchant.<br>
-   *                        <b>Note:</b><br>
-   *                        1 = Novice<br>
-   *                        2 = Apprentice<br>
-   *                        3 = Journeyman<br>
-   *                        4 = Expert<br>
-   *                        5 = Master
-   * @param experience      The total experience for this villager (Always 0 for the wandering trader)
-   * @param regularVillager {@code true} if this is a regular villager,
-   *                        otherwise {@code false} for the wandering trader. When {@code false},
-   *                        hides the villager level  and some other GUI elements
-   * @param refreshable     {@code true} for regular villagers and {@code false} for the wandering trader.
-   *                        If {@code true}, the "Villagers restock up to two times per day".
+   * @param merchantOffers The offers of the merchant
+   * @param container The container identifier for this merchant
+   * @param levelProgress The level progress of this merchant.<br>
+   *     <b>Note:</b><br>
+   *     1 = Novice<br>
+   *     2 = Apprentice<br>
+   *     3 = Journeyman<br>
+   *     4 = Expert<br>
+   *     5 = Master
+   * @param experience The total experience for this villager (Always 0 for the wandering trader)
+   * @param regularVillager {@code true} if this is a regular villager, otherwise {@code false} for
+   *     the wandering trader. When {@code false}, hides the villager level and some other GUI
+   *     elements
+   * @param refreshable {@code true} for regular villagers and {@code false} for the wandering
+   *     trader. If {@code true}, the "Villagers restock up to two times per day".
    */
   void openMerchantContainer(
-          int container,
-          Object merchantOffers,
-          int levelProgress,
-          int experience,
-          boolean regularVillager,
-          boolean refreshable
-  );
+      int container,
+      Object merchantOffers,
+      int levelProgress,
+      int experience,
+      boolean regularVillager,
+      boolean refreshable);
 
   /**
    * Opens a book.
    *
    * @param stack The item stack which should be a book.
-   * @param hand  The hand of this player.
+   * @param hand The hand of this player.
    */
   void openBook(ItemStack stack, Hand hand);
 
@@ -204,14 +203,10 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    */
   void disableShield(boolean disable);
 
-  /**
-   * Spawns the sweep particles.
-   */
+  /** Spawns the sweep particles. */
   void spawnSweepParticles();
 
-  /**
-   * Sends the client status packet to respawn the player.
-   */
+  /** Sends the client status packet to respawn the player. */
   void respawnPlayer();
 
   /**
@@ -231,8 +226,9 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
   /**
    * Wakes up this player or updates all sleeping players.
    *
-   * @param updateTimer           {@code true} if the sleep timer should be updated, otherwise {@code false}.
-   * @param updateSleepingPlayers {@code true} if all sleeping players should be updated, otherwise {@code false}.
+   * @param updateTimer {@code true} if the sleep timer should be updated, otherwise {@code false}.
+   * @param updateSleepingPlayers {@code true} if all sleeping players should be updated, otherwise
+   *     {@code false}.
    */
   void stopSleepInBed(boolean updateTimer, boolean updateSleepingPlayers);
 
@@ -254,7 +250,8 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Sends a status message to this player.
    *
    * @param component The message for this status.
-   * @param actionbar {@code true} if the status message should be displayed in the action bar, otherwise {@code false}.
+   * @param actionbar {@code true} if the status message should be displayed in the action bar,
+   *     otherwise {@code false}.
    */
   void sendStatusMessage(ChatComponent component, boolean actionbar);
 
@@ -276,7 +273,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Adds a custom stat to this player.
    *
    * @param resourceLocation The resource location for the stat.
-   * @param state            The stat of the stat.
+   * @param state The stat of the stat.
    */
   void addStat(ResourceLocation resourceLocation, int state);
 
@@ -296,14 +293,10 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    */
   boolean tryToStartFallFlying();
 
-  /**
-   * Starts the fall flying of this player.
-   */
+  /** Starts the fall flying of this player. */
   void startFallFlying();
 
-  /**
-   * Stops the fall flying of this player.
-   */
+  /** Stops the fall flying of this player. */
   void stopFallFlying();
 
   /**
@@ -363,9 +356,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    */
   boolean isAllowEdit();
 
-  /**
-   * Sends the abilities of this player to the server.
-   */
+  /** Sends the abilities of this player to the server. */
   void sendPlayerAbilities();
 
   /**
@@ -431,7 +422,8 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
   /**
    * Sets the reduced debug for this player.
    *
-   * @param reducedDebug {@code true} if the reduced should be enabled for this player, otherwise {@code false}.
+   * @param reducedDebug {@code true} if the reduced should be enabled for this player, otherwise
+   *     {@code false}.
    */
   void setReducedDebug(boolean reducedDebug);
 
@@ -457,9 +449,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    */
   float getCooledAttackStrength(float strength);
 
-  /**
-   * Resets the cooldown of the player.
-   */
+  /** Resets the cooldown of the player. */
   void resetCooldown();
 
   /**
@@ -490,26 +480,22 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    */
   NBTCompound getRightShoulderEntity();
 
-  /**
-   * A factory class for the {@link PlayerEntity}.
-   */
+  /** A factory class for the {@link PlayerEntity}. */
   @AssistedFactory(PlayerEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link PlayerEntity} with the given parameters.
      *
-     * @param entity     The non-null Minecraft entity.
+     * @param entity The non-null Minecraft entity.
      * @param entityType The entity type.
      * @return A created {@link PlayerEntity}.
      */
-    PlayerEntity create(@Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
-
+    PlayerEntity create(
+        @Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /**
-   * Service interface for creating {@link PlayerEntity}.
-   */
+  /** Service interface for creating {@link PlayerEntity}. */
   interface Provider {
 
     /**
@@ -519,8 +505,5 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
      * @return A created {@link PlayerEntity}.
      */
     PlayerEntity get(Object entity);
-
   }
-
-
 }

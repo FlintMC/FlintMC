@@ -1,13 +1,11 @@
 package net.flintmc.mcapi.entity;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.world.math.BlockPosition;
 
-/**
- * Represents the Minecraft creature entity.
- */
+/** Represents the Minecraft creature entity. */
 public interface CreatureEntity extends MobEntity {
 
   /**
@@ -25,26 +23,22 @@ public interface CreatureEntity extends MobEntity {
    */
   boolean hasPath();
 
-  /**
-   * A factory class for the {@link CreatureEntity}.
-   */
+  /** A factory class for the {@link CreatureEntity}. */
   @AssistedFactory(CreatureEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link CreatureEntity} with the given parameters.
      *
-     * @param entity     The entity.
+     * @param entity The entity.
      * @param entityType The type of the entity.
      * @return A created creature entity.
      */
-    CreatureEntity create(@Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
-
+    CreatureEntity create(
+        @Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /**
-   * Service interface for creating {@link CreatureEntity}'s.
-   */
+  /** Service interface for creating {@link CreatureEntity}'s. */
   interface Provider {
 
     /**
@@ -54,7 +48,5 @@ public interface CreatureEntity extends MobEntity {
      * @return A created creature entity.
      */
     CreatureEntity get(Object entity);
-
   }
-
 }

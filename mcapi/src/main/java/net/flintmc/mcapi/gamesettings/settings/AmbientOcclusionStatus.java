@@ -1,10 +1,7 @@
 package net.flintmc.mcapi.gamesettings.settings;
 
-/**
- * An enumeration representing ambient occlusion statuses.
- */
+/** An enumeration representing ambient occlusion statuses. */
 public enum AmbientOcclusionStatus {
-
   OFF("options.ao.off"),
   MIN("options.ao.min"),
   MAX("options.ao.max");

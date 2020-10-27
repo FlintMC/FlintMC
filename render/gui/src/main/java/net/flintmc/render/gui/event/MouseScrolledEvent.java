@@ -1,8 +1,6 @@
 package net.flintmc.render.gui.event;
 
-/**
- * Event indicating that the user has done scroll input
- */
+/** Event indicating that the user has done scroll input */
 public class MouseScrolledEvent implements GuiEvent {
   private final double xOffset;
   private final double yOffset;

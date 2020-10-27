@@ -2,18 +2,18 @@ package net.flintmc.render.gui.webgui.internal;
 
 import javassist.CtClass;
 import javassist.NotFoundException;
-import net.flintmc.util.commons.Pair;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.flintmc.render.gui.webgui.WebFileSystem;
 import net.flintmc.render.gui.webgui.WebFileSystemHandler;
 import net.flintmc.render.gui.webgui.WebFileSystemService;
+import net.flintmc.util.commons.Pair;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -41,8 +41,7 @@ public class InternalWebFileSystemService
   public void discover(AnnotationMeta<WebFileSystem> annotationMeta)
       throws ServiceNotFoundException {
 
-    CtClass fileSystem =
-        annotationMeta.<ClassIdentifier>getIdentifier().getLocation();
+    CtClass fileSystem = annotationMeta.<ClassIdentifier>getIdentifier().getLocation();
 
     try {
       if (Arrays.stream(fileSystem.getInterfaces())

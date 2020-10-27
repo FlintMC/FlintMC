@@ -6,9 +6,7 @@ import net.flintmc.render.gui.event.input.ModifierKey;
 
 import java.util.Set;
 
-/**
- * Event indicating that a key state has changed or is still being hold.
- */
+/** Event indicating that a key state has changed or is still being hold. */
 public class KeyEvent extends EventWithModifierKeys {
   private final Key key;
   private final int scancode;
@@ -17,9 +15,9 @@ public class KeyEvent extends EventWithModifierKeys {
   /**
    * Constructs a new {@link KeyEvent} with the given key, scancode, state and modifier keys.
    *
-   * @param key          The key that has changed state
-   * @param scancode     The (system specific) scancode of the key that has changed
-   * @param state        The new state of the key
+   * @param key The key that has changed state
+   * @param scancode The (system specific) scancode of the key that has changed
+   * @param state The new state of the key
    * @param modifierKeys The modifier keys which were active while the event was fired
    */
   public KeyEvent(Key key, int scancode, InputState state, Set<ModifierKey> modifierKeys) {

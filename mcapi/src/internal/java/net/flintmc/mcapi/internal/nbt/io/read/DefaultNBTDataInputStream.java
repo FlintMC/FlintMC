@@ -2,20 +2,18 @@ package net.flintmc.mcapi.internal.nbt.io.read;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.flintmc.util.commons.Pair;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.nbt.NBT;
 import net.flintmc.mcapi.nbt.NBTCreator;
 import net.flintmc.mcapi.nbt.NBTList;
 import net.flintmc.mcapi.nbt.NBTType;
 import net.flintmc.mcapi.nbt.io.read.NBTDataInputStream;
+import net.flintmc.util.commons.Pair;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 
-/**
- * Default implementation of the {@link NBTDataInputStream}.
- */
+/** Default implementation of the {@link NBTDataInputStream}. */
 @Implement(NBTDataInputStream.class)
 public class DefaultNBTDataInputStream implements NBTDataInputStream {
 
@@ -24,16 +22,12 @@ public class DefaultNBTDataInputStream implements NBTDataInputStream {
 
   @AssistedInject
   private DefaultNBTDataInputStream(
-          @Assisted("inputStream") DataInputStream dataInputStream,
-          NBTCreator nbtCreator
-  ) {
+      @Assisted("inputStream") DataInputStream dataInputStream, NBTCreator nbtCreator) {
     this.dataInputStream = dataInputStream;
     this.nbtCreator = nbtCreator;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Pair<String, NBT> readFullyFormedTag() throws IOException {
     int identifier = this.dataInputStream.readByte();
@@ -46,9 +40,7 @@ public class DefaultNBTDataInputStream implements NBTDataInputStream {
     return new Pair<>(name, this.readTag(identifier));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBT readTag(int identifier) throws IOException {
     NBTType type = NBTType.getNbt(identifier);
@@ -92,9 +84,7 @@ public class DefaultNBTDataInputStream implements NBTDataInputStream {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public DataInputStream getDataInputStream() {
     return this.dataInputStream;

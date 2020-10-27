@@ -1,10 +1,7 @@
 package net.flintmc.mcapi.entity.projectile.type;
 
-/**
- * An enumeration for all pickup statuses.
- */
+/** An enumeration for all pickup statuses. */
 public enum PickupStatus {
-
   DISALLOWED(0),
   ALLOWED(1),
   CREATIVE_ONLY(2),

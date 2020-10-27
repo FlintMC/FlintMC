@@ -9,9 +9,7 @@ import net.flintmc.mcapi.nbt.serializer.NBTSerializer;
 
 import java.util.Map;
 
-/**
- * Default implementation of the {@link NBTSerializer}.
- */
+/** Default implementation of the {@link NBTSerializer}. */
 @Singleton
 @Implement(NBTSerializer.class)
 public class DefaultNBTSerializer implements NBTSerializer {
@@ -23,9 +21,7 @@ public class DefaultNBTSerializer implements NBTSerializer {
     this.creator = creator;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public JsonElement serialize(NBT nbt) {
 
@@ -75,9 +71,7 @@ public class DefaultNBTSerializer implements NBTSerializer {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBT deserialize(JsonElement element) {
     if (element instanceof JsonPrimitive) {
@@ -89,7 +83,6 @@ public class DefaultNBTSerializer implements NBTSerializer {
         return this.creator.createNbtByte((byte) (value ? 0 : 1));
       } else if (primitive.isNumber()) {
         Number number = primitive.getAsNumber();
-
 
         if (number instanceof Byte) {
           return this.creator.createNbtByte(number.byteValue());
@@ -131,5 +124,4 @@ public class DefaultNBTSerializer implements NBTSerializer {
 
     throw new AssertionError();
   }
-
 }

@@ -2,21 +2,21 @@ package net.flintmc.mcapi.v1_15_2.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.EntitySelector;
+import net.flintmc.mcapi.chat.Keybind;
+import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.*;
+import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
+import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.exception.ComponentDeserializationException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
+import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.internal.chat.builder.*;
 import net.flintmc.mcapi.internal.chat.component.DefaultKeybindComponent;
-import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.mcapi.chat.EntitySelector;
-import net.flintmc.mcapi.chat.Keybind;
-import net.flintmc.mcapi.chat.MinecraftComponentMapper;
-import net.flintmc.mcapi.chat.component.event.ClickEvent;
-import net.flintmc.mcapi.chat.component.event.content.HoverContent;
-import net.flintmc.framework.inject.implement.Implement;
 import net.minecraft.util.text.*;
 
 import java.util.function.Supplier;
@@ -45,7 +45,8 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
   public ChatComponent fromMinecraft(Object handle) {
     // only the ITextComponents by Minecraft are allowed
     if (!(handle instanceof ITextComponent)) {
-      throw new ComponentDeserializationException(handle.getClass().getName() + " is not an instance of " + ITextComponent.class.getName());
+      throw new ComponentDeserializationException(
+          handle.getClass().getName() + " is not an instance of " + ITextComponent.class.getName());
     }
 
     ITextComponent component = (ITextComponent) handle;
@@ -166,10 +167,12 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     if (style.getHoverEvent() != null) {
-      HoverEvent.Action action = HoverEvent.Action.valueOf(style.getHoverEvent().getAction().name());
+      HoverEvent.Action action =
+          HoverEvent.Action.valueOf(style.getHoverEvent().getAction().name());
       ITextComponent value = style.getHoverEvent().getValue();
 
-      HoverContent content = this.factory.gson().deserializeHoverContent(this.fromMinecraft(value), action);
+      HoverContent content =
+          this.factory.gson().deserializeHoverContent(this.fromMinecraft(value), action);
 
       if (content != null) {
         component.hoverEvent(HoverEvent.of(content));
@@ -259,14 +262,17 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
       HoverContent content = component.hoverEvent().getContents()[0];
 
       try {
-        action = net.minecraft.util.text.event.HoverEvent.Action.valueOf(content.getAction().name());
+        action =
+            net.minecraft.util.text.event.HoverEvent.Action.valueOf(content.getAction().name());
       } catch (IllegalArgumentException ignored) {
       }
 
       if (action != null) {
         ChatComponent value = this.factory.gson().serializeHoverContent(content);
 
-        style.setHoverEvent(new net.minecraft.util.text.event.HoverEvent(action, (ITextComponent) this.toMinecraft(value)));
+        style.setHoverEvent(
+            new net.minecraft.util.text.event.HoverEvent(
+                action, (ITextComponent) this.toMinecraft(value)));
       }
     }
 

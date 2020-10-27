@@ -35,7 +35,11 @@ public interface MethodVisitorContext {
 
   MethodVisitorContext onVisitVarInsn(VisitVarInsn visitVarInsn);
 
-  void svisitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments);
+  void svisitInvokeDynamicInsn(
+      String name,
+      String descriptor,
+      Handle bootstrapMethodHandle,
+      Object... bootstrapMethodArguments);
 
   void svisitTypeInsn(int opcode, String type);
 
@@ -53,9 +57,11 @@ public interface MethodVisitorContext {
 
   void svisitVarInsn(int opcode, int var);
 
-  void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index);
+  void visitLocalVariable(
+      String name, String desc, String signature, Label start, Label end, int index);
 
-  void svisitLocalVariable(String name, String desc, String signature, Label start, Label end, int index);
+  void svisitLocalVariable(
+      String name, String desc, String signature, Label start, Label end, int index);
 
   void visitFieldInsn(int opcode, String owner, String name, String desc);
 
@@ -79,7 +85,11 @@ public interface MethodVisitorContext {
 
   void svisitInsn(int opcode);
 
-  void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments);
+  void visitInvokeDynamicInsn(
+      String name,
+      String descriptor,
+      Handle bootstrapMethodHandle,
+      Object... bootstrapMethodArguments);
 
   void visitTypeInsn(int opcode, String type);
 

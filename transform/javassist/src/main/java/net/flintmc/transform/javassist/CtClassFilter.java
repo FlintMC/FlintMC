@@ -1,8 +1,8 @@
 package net.flintmc.transform.javassist;
 
+import net.flintmc.processing.autoload.DetectableAnnotation;
 import net.flintmc.util.commons.resolve.NameResolver;
 import net.flintmc.util.mappings.DefaultNameResolver;
-import net.flintmc.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,5 +18,4 @@ public @interface CtClassFilter {
   String className();
 
   Class<? extends NameResolver> classNameResolver() default DefaultNameResolver.class;
-
 }

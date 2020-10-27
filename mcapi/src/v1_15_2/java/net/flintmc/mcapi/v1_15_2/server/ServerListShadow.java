@@ -9,7 +9,6 @@ import java.util.List;
 @Shadow("net.minecraft.client.multiplayer.ServerList")
 public interface ServerListShadow {
 
-    @FieldGetter("servers")
-    List<ServerData> getServerDataList();
-
+  @FieldGetter("servers")
+  List<ServerData> getServerDataList();
 }

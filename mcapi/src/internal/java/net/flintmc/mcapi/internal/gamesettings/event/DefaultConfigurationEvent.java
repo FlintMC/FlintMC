@@ -2,15 +2,13 @@ package net.flintmc.mcapi.internal.gamesettings.event;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.flintmc.mcapi.gamesettings.event.ConfigurationEvent;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.gamesettings.event.ConfigurationEvent;
 
 import java.io.File;
 import java.util.Map;
 
-/**
- * Default implementation of the {@link ConfigurationEvent}.
- */
+/** Default implementation of the {@link ConfigurationEvent}. */
 @Implement(ConfigurationEvent.class)
 public class DefaultConfigurationEvent implements ConfigurationEvent {
 
@@ -20,53 +18,41 @@ public class DefaultConfigurationEvent implements ConfigurationEvent {
 
   @AssistedInject
   private DefaultConfigurationEvent(
-          @Assisted("state") State state,
-          @Assisted("optionsFile") File optionsFile,
-          @Assisted("configurations") Map<String, String> configurations
-  ) {
+      @Assisted("state") State state,
+      @Assisted("optionsFile") File optionsFile,
+      @Assisted("configurations") Map<String, String> configurations) {
     this.state = state;
     this.optionsFile = optionsFile;
     this.configurations = configurations;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public State getState() {
     return this.state;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public File getOptionsFile() {
     return this.optionsFile;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setOptionsFile(File optionsFile) {
     this.optionsFile = optionsFile;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Map<String, String> getConfigurations() {
     return this.configurations;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setConfigurations(Map<String, String> configurations) {
     this.configurations = configurations;
   }
-
 }

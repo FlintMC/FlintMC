@@ -5,8 +5,8 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
-import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
+import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
 import org.apache.logging.log4j.Logger;
 
 public class PlainComponentSerializer implements ComponentSerializer {
@@ -115,7 +115,8 @@ public class PlainComponentSerializer implements ComponentSerializer {
       builder.nextComponent();
       builder.color(color);
     } catch (InvalidChatColorException exception) {
-      this.logger.trace("Invalid RGB color received while deserializing plain component", exception);
+      this.logger.trace(
+          "Invalid RGB color received while deserializing plain component", exception);
     }
 
     return true;

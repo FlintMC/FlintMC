@@ -1,15 +1,13 @@
 package net.flintmc.mcapi.entity.item;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.items.ItemStack;
 
 import java.util.UUID;
 
-/**
- * Represents the Minecraft item entity.
- */
+/** Represents the Minecraft item entity. */
 public interface ItemEntity extends Entity {
 
   /**
@@ -61,19 +59,13 @@ public interface ItemEntity extends Entity {
    */
   int getAge();
 
-  /**
-   * Sets that the item entity has a default pickup delay.
-   */
+  /** Sets that the item entity has a default pickup delay. */
   void setDefaultPickupDelay();
 
-  /**
-   * Sets that the item entity has not pickup delay.
-   */
+  /** Sets that the item entity has not pickup delay. */
   void setNoPickupDelay();
 
-  /**
-   * Sets that the item entity has an infinite pickup delay.
-   */
+  /** Sets that the item entity has an infinite pickup delay. */
   void setInfinitePickupDelay();
 
   /**
@@ -90,19 +82,13 @@ public interface ItemEntity extends Entity {
    */
   boolean cannotPickup();
 
-  /**
-   * Sets that the item cannot despawn.
-   */
+  /** Sets that the item cannot despawn. */
   void setNoDespawn();
 
-  /**
-   * Make the entity a fake item.
-   */
+  /** Make the entity a fake item. */
   void makeFakeItem();
 
-  /**
-   * A factory class for the {@link ItemEntity}.
-   */
+  /** A factory class for the {@link ItemEntity}. */
   @AssistedFactory(ItemEntity.class)
   interface Factory {
 
@@ -118,36 +104,32 @@ public interface ItemEntity extends Entity {
      * Creates a new {@link ItemEntity} with the given parameters.
      *
      * @param entity The entity.
-     * @param x      The x position of the entity.
-     * @param y      The y position of the entity.
-     * @param z      The z position of the entity.
+     * @param x The x position of the entity.
+     * @param y The y position of the entity.
+     * @param z The z position of the entity.
      * @return A created item entity.
      */
     ItemEntity create(
-            @Assisted("entity") Object entity,
-            @Assisted("x") double x,
-            @Assisted("y") double y,
-            @Assisted("z") double z
-    );
+        @Assisted("entity") Object entity,
+        @Assisted("x") double x,
+        @Assisted("y") double y,
+        @Assisted("z") double z);
 
     /**
      * Creates a new {@link ItemEntity} with the given parameters.
      *
-     * @param entity    The entity.
-     * @param x         The x position of the entity.
-     * @param y         The y position of the entity.
-     * @param z         The z position of the entity.
+     * @param entity The entity.
+     * @param x The x position of the entity.
+     * @param y The y position of the entity.
+     * @param z The z position of the entity.
      * @param itemStack The item stack for the entity.
      * @return A created item entity.
      */
     ItemEntity create(
-            @Assisted("entity") Object entity,
-            @Assisted("x") double x,
-            @Assisted("y") double y,
-            @Assisted("z") double z,
-            @Assisted("itemStack") ItemStack itemStack
-    );
-
+        @Assisted("entity") Object entity,
+        @Assisted("x") double x,
+        @Assisted("y") double y,
+        @Assisted("z") double z,
+        @Assisted("itemStack") ItemStack itemStack);
   }
-
 }

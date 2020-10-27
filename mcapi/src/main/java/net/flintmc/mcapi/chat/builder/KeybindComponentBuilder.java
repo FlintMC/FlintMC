@@ -3,14 +3,12 @@ package net.flintmc.mcapi.chat.builder;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
 
-/**
- * Builder for {@link KeybindComponent}s.
- */
+/** Builder for {@link KeybindComponent}s. */
 public interface KeybindComponentBuilder extends ComponentBuilder<KeybindComponentBuilder> {
 
   /**
-   * Sets the keybind of the current component. Every component can only have one keybind, so this overrides any calls
-   * that have been done before to this method.
+   * Sets the keybind of the current component. Every component can only have one keybind, so this
+   * overrides any calls that have been done before to this method.
    *
    * @param keybind The new non-null keybind
    * @return this

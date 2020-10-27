@@ -3,9 +3,7 @@ package net.flintmc.mcapi.gamesettings.configuration;
 import net.flintmc.mcapi.gamesettings.settings.ChatVisibility;
 import net.flintmc.mcapi.gamesettings.settings.NarratorStatus;
 
-/**
- * Represents the chat configuration.
- */
+/** Represents the chat configuration. */
 public interface ChatConfiguration {
 
   /**
@@ -107,16 +105,16 @@ public interface ChatConfiguration {
   void setChatLinks(boolean chatLinks);
 
   /**
-   * Whether each time a player clicks on a URL, a prompt is forced to appear on the player's screen to ensure
-   * that they want to leave Minecraft and go to the website.
+   * Whether each time a player clicks on a URL, a prompt is forced to appear on the player's screen
+   * to ensure that they want to leave Minecraft and go to the website.
    *
    * @return {@code true} if forces a prompt, otherwise {@code false}.
    */
   boolean isChatLinksPrompt();
 
   /**
-   * Changes whether to force a prompt on the player screen each time a player clicks a URL to ensure
-   * that they want to leave Minecraft and go to the website.
+   * Changes whether to force a prompt on the player screen each time a player clicks a URL to
+   * ensure that they want to leave Minecraft and go to the website.
    *
    * @param chatLinksPrompt The new state for the links prompt.
    */
@@ -179,7 +177,8 @@ public interface ChatConfiguration {
   void setNarrator(NarratorStatus narrator);
 
   /**
-   * Whether command suggestions show up or not, if off the player has to press tab to bring them up.
+   * Whether command suggestions show up or not, if off the player has to press tab to bring them
+   * up.
    *
    * @return {@code true} if command suggestions show up, otherwise {@code false}.
    */
@@ -211,7 +210,6 @@ public interface ChatConfiguration {
    *
    * @return The opacity of the background.
    */
-
   double getAccessibilityTextBackgroundOpacity();
 
   /**
@@ -248,5 +246,4 @@ public interface ChatConfiguration {
    * @param showSubtitles The new state for subtitles.
    */
   void setShowSubtitles(boolean showSubtitles);
-
 }

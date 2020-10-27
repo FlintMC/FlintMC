@@ -1,21 +1,13 @@
 package net.flintmc.mcapi.player.type.hand;
 
-/**
- * An enumeration of all available hands.
- */
+/** An enumeration of all available hands. */
 public enum Hand {
-  /**
-   * The main-hand of a player
-   */
+  /** The main-hand of a player */
   MAIN_HAND,
-  /**
-   * The off-hand of a player
-   */
+  /** The off-hand of a player */
   OFF_HAND;
 
-  /**
-   * An enumeration of all available hand sides.
-   */
+  /** An enumeration of all available hand sides. */
   public enum Side {
     LEFT,
     RIGHT;
@@ -28,6 +20,5 @@ public enum Hand {
     public Side opposite() {
       return this == LEFT ? RIGHT : LEFT;
     }
-
   }
 }

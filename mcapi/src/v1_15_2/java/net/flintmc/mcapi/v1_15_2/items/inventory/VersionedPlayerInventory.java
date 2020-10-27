@@ -17,8 +17,20 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
 
   private final MinecraftItemMapper itemMapper;
 
-  public VersionedPlayerInventory(ItemRegistry registry, InventoryType type, InventoryDimension dimension, ComponentBuilder.Factory componentFactory, MinecraftItemMapper itemMapper) {
-    super(registry, 0, type, dimension, itemMapper, () -> Minecraft.getInstance().player.container, componentFactory.text().text("Player").build());
+  public VersionedPlayerInventory(
+      ItemRegistry registry,
+      InventoryType type,
+      InventoryDimension dimension,
+      ComponentBuilder.Factory componentFactory,
+      MinecraftItemMapper itemMapper) {
+    super(
+        registry,
+        0,
+        type,
+        dimension,
+        itemMapper,
+        () -> Minecraft.getInstance().player.container,
+        componentFactory.text().text("Player").build());
     this.itemMapper = itemMapper;
   }
 
@@ -83,7 +95,9 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
   @Override
   public ItemStack getCursor() {
     Object item = Minecraft.getInstance().player.inventory.getItemStack();
-    return item == null ? super.registry.getAirType().createStack() : this.itemMapper.fromMinecraft(item);
+    return item == null
+        ? super.registry.getAirType().createStack()
+        : this.itemMapper.fromMinecraft(item);
   }
 
   @Override
@@ -106,5 +120,4 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
       this.setItem(i, contents[i]);
     }
   }
-
 }

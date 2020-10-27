@@ -13,5 +13,6 @@ public interface MappingParser {
    * @return A look-up table mapping obfuscated class names to class mappings.
    * @throws MappingParseException If the mapping cannot be parsed.
    */
-  Map<String, ClassMapping> parse(final Map<String, InputStream> input) throws MappingParseException;
+  Map<String, ClassMapping> parse(final Map<String, InputStream> input)
+      throws MappingParseException;
 }

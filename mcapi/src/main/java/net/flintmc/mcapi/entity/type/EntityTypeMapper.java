@@ -3,9 +3,7 @@ package net.flintmc.mcapi.entity.type;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 
-/**
- * Mapper between the Minecraft entity type and Labyfy entity type.
- */
+/** Mapper between the Minecraft entity type and Labyfy entity type. */
 public interface EntityTypeMapper {
 
   /**
@@ -18,18 +16,22 @@ public interface EntityTypeMapper {
   EntityType fromMinecraftEntityType(Object handle);
 
   /**
-   * Creates a new Minecraft entity classification by using the Labyfy {@link Entity.Classification} as the base.
+   * Creates a new Minecraft entity classification by using the Labyfy {@link Entity.Classification}
+   * as the base.
    *
    * @param classification The non-null Labyfy {@link Entity.Classification}.
-   * @return The new Minecraft entity classification or {@code null} if the given entity classification was invalid.
+   * @return The new Minecraft entity classification or {@code null} if the given entity
+   *     classification was invalid.
    */
   Object toMinecraftEntityClassification(Entity.Classification classification);
 
   /**
-   * Creates a new {@link Entity.Classification} by using the given Minecraft entity classification as the base.
+   * Creates a new {@link Entity.Classification} by using the given Minecraft entity classification
+   * as the base.
    *
    * @param handle The non-null Minecraft entity classification.
-   * @return The new Labyfy {@link Entity.Classification} or {@code null} if the given entity classification was invalid.
+   * @return The new Labyfy {@link Entity.Classification} or {@code null} if the given entity
+   *     classification was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft entity classification.
    */
   Entity.Classification fromMinecraftEntityClassification(Object handle);
@@ -50,5 +52,4 @@ public interface EntityTypeMapper {
    * @throws IllegalArgumentException If the given object is no Minecraft entity size.
    */
   EntitySize fromMinecraftEntitySize(Object handle);
-
 }

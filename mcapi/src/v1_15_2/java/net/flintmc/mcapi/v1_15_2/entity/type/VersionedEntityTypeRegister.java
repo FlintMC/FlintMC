@@ -1,21 +1,19 @@
 package net.flintmc.mcapi.v1_15_2.entity.type;
 
 import com.beust.jcommander.internal.Maps;
-import net.flintmc.mcapi.entity.type.EntityType;
-import net.flintmc.mcapi.entity.type.EntityTypeMapper;
-import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.tasks.Task;
 import net.flintmc.framework.tasks.Tasks;
+import net.flintmc.mcapi.entity.type.EntityType;
+import net.flintmc.mcapi.entity.type.EntityTypeMapper;
+import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.minecraft.util.registry.Registry;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Map;
 
-/**
- * 1.15.2 implementation of the {@link EntityTypeRegister}.
- */
+/** 1.15.2 implementation of the {@link EntityTypeRegister}. */
 @Singleton
 @Implement(value = EntityTypeRegister.class, version = "1.15.2")
 public class VersionedEntityTypeRegister implements EntityTypeRegister {
@@ -36,20 +34,16 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
       this.entityTypes.put(key, this.entityTypeMapper.fromMinecraftEntityType(entityType));
     }
   }
-  /**
-   * {@inheritDoc}
-   */
+
+  /** {@inheritDoc} */
   @Override
   public Map<String, EntityType> getEntityTypes() {
     return this.entityTypes;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityType getEntityType(String key) {
     return this.entityTypes.get(key);
   }
-
 }

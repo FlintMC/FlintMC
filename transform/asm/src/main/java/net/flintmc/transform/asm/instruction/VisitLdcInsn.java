@@ -17,8 +17,7 @@ public interface VisitLdcInsn {
       this.cst = cst;
     }
 
-    public static Context of(
-        MethodVisitorContext methodVisitorContext, Object cst) {
+    public static Context of(MethodVisitorContext methodVisitorContext, Object cst) {
       Preconditions.checkNotNull(methodVisitorContext);
       return new Context(methodVisitorContext, cst);
     }
@@ -27,8 +26,7 @@ public interface VisitLdcInsn {
       return methodVisitorContext;
     }
 
-    public Context setMethodVisitorContext(
-        MethodVisitorContext methodVisitorContext) {
+    public Context setMethodVisitorContext(MethodVisitorContext methodVisitorContext) {
       this.methodVisitorContext = methodVisitorContext;
       return this;
     }
@@ -47,5 +45,4 @@ public interface VisitLdcInsn {
       return this;
     }
   }
-
 }

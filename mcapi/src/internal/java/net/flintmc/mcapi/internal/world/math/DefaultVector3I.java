@@ -5,9 +5,7 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.math.Vector3I;
 
-/**
- * Default implementation of {@link Vector3I}.
- */
+/** Default implementation of {@link Vector3I}. */
 @Implement(Vector3I.class)
 public class DefaultVector3I implements Vector3I {
 
@@ -18,11 +16,10 @@ public class DefaultVector3I implements Vector3I {
 
   @AssistedInject
   protected DefaultVector3I(
-          @Assisted("x") int x,
-          @Assisted("y") int y,
-          @Assisted("z") int z,
-          Vector3I.Factory vector3IFactory
-  ) {
+      @Assisted("x") int x,
+      @Assisted("y") int y,
+      @Assisted("z") int z,
+      Vector3I.Factory vector3IFactory) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -30,51 +27,38 @@ public class DefaultVector3I implements Vector3I {
   }
 
   @AssistedInject
-  protected DefaultVector3I(
-          @Assisted("vector") Vector3I vector,
-          Vector3I.Factory vector3IFactory) {
+  protected DefaultVector3I(@Assisted("vector") Vector3I vector, Vector3I.Factory vector3IFactory) {
     this(vector.getX(), vector.getY(), vector.getZ(), vector3IFactory);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getX() {
     return this.x;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getY() {
     return this.y;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getZ() {
     return this.z;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Vector3I crossProduct(Vector3I vector) {
     return this.vector3IFactory.create(
-            this.getY() * vector.getZ() - this.getZ() * vector.getY(),
-            this.getZ() * vector.getX() - this.getX() * vector.getZ(),
-            this.getX() * vector.getY() - this.getY() * vector.getX()
-    );
+        this.getY() * vector.getZ() - this.getZ() * vector.getY(),
+        this.getZ() * vector.getX() - this.getX() * vector.getZ(),
+        this.getX() * vector.getY() - this.getY() * vector.getX());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double distanceSq(double x, double y, double z, boolean useCenter) {
     double center = useCenter ? 0.5D : 0.0D;
@@ -84,9 +68,7 @@ public class DefaultVector3I implements Vector3I {
     return distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int manhattanDistance(Vector3I vector) {
     float absX = (float) Math.abs(vector.getX() - this.getX());
@@ -104,7 +86,9 @@ public class DefaultVector3I implements Vector3I {
     } else {
       Vector3I vector = (Vector3I) object;
 
-      return this.getX() == vector.getX() && this.getY() == vector.getY() && this.getZ() == vector.getZ();
+      return this.getX() == vector.getX()
+          && this.getY() == vector.getY()
+          && this.getZ() == vector.getZ();
     }
   }
 

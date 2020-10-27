@@ -11,8 +11,6 @@ import java.lang.annotation.*;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface RepeatingDetectableAnnotation {
 
-  /**
-   * @return The repeating type of this annotation
-   */
+  /** @return The repeating type of this annotation */
   Class<? extends Annotation> value() default Annotation.class;
 }

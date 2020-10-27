@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DefaultTranslationComponent extends DefaultChatComponent implements TranslationComponent {
+public class DefaultTranslationComponent extends DefaultChatComponent
+    implements TranslationComponent {
 
   private final List<ChatComponent> arguments = new ArrayList<>();
   private String translationKey;
@@ -28,7 +29,9 @@ public class DefaultTranslationComponent extends DefaultChatComponent implements
       return "null";
     }
 
-    return this.translationKey; // TODO translate with the given translationKey (return the translationKey if no translation exists)
+    return this
+        .translationKey; // TODO translate with the given translationKey (return the translationKey
+                         // if no translation exists)
   }
 
   @Override

@@ -7,9 +7,7 @@ import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 
-/**
- * 1.15.2 implementation of {@link Score.Provider}.
- */
+/** 1.15.2 implementation of {@link Score.Provider}. */
 @Singleton
 @Implement(value = Score.Provider.class, version = "1.15.2")
 public class VersionedScoreProvider implements Score.Provider {
@@ -23,17 +21,13 @@ public class VersionedScoreProvider implements Score.Provider {
     this.scoreFactory = scoreFactory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Score get(Objective objective, String username) {
     return this.scoreFactory.create(scoreboard, objective, username);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Score get(Objective objective, String username, int points) {
     return this.scoreFactory.create(this.scoreboard, objective, username, points);

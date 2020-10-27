@@ -5,9 +5,7 @@ import net.flintmc.framework.stereotype.service.Service;
 
 import java.lang.annotation.Annotation;
 
-/**
- * Class representation of a {@link Service} annotation.
- */
+/** Class representation of a {@link Service} annotation. */
 public class ServiceHandlerMeta {
 
   private final Class<? extends Annotation>[] annotationTypes;
@@ -31,7 +29,8 @@ public class ServiceHandlerMeta {
       int priority,
       Service.State state,
       CtClass serviceHandlerClass) {
-    return new ServiceHandlerMeta(new Class[]{annotationType}, priority, state, serviceHandlerClass);
+    return new ServiceHandlerMeta(
+        new Class[] {annotationType}, priority, state, serviceHandlerClass);
   }
 
   public static ServiceHandlerMeta create(

@@ -12,13 +12,13 @@ import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.framework.packages.PackageManifest;
 import net.flintmc.framework.packages.PackageState;
 import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.DetectableAnnotationProvider;
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.flintmc.framework.service.ExtendedServiceLoader;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceRepository;
 import net.flintmc.framework.stereotype.service.Services;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.DetectableAnnotationProvider;
+import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 
-/**
- * Default implementation of the {@link Package}.
- */
+/** Default implementation of the {@link Package}. */
 @Implement(Package.class)
 public class DefaultPackage implements Package {
 
@@ -43,22 +41,22 @@ public class DefaultPackage implements Package {
   private Exception loadException;
 
   /**
-   * Creates a new Labyfy package with the given description loader and the
-   * given files.
+   * Creates a new Labyfy package with the given description loader and the given files.
    *
    * @param serviceRepository The singleton instance of the {@link ServiceRepository}
    * @param manifestLoader The loader to use for reading the manifest
-   * @param jarFile        The java IO file this package should be loaded from, or null if loaded from the classpath
-   * @param jar            The java IO jar file this package should be loaded from, must point to the same file as
-   *                       the `file` parameter, or must be null if the package has been loaded from the classpath
+   * @param jarFile The java IO file this package should be loaded from, or null if loaded from the
+   *     classpath
+   * @param jar The java IO jar file this package should be loaded from, must point to the same file
+   *     as the `file` parameter, or must be null if the package has been loaded from the classpath
    */
   @AssistedInject
   private DefaultPackage(
-          ServiceRepository serviceRepository,
-          PackageLocalizationLoader localizationLoader,
-          DefaultPackageManifestLoader manifestLoader,
-          @Assisted File jarFile,
-          @Assisted JarFile jar) {
+      ServiceRepository serviceRepository,
+      PackageLocalizationLoader localizationLoader,
+      DefaultPackageManifestLoader manifestLoader,
+      @Assisted File jarFile,
+      @Assisted JarFile jar) {
     this.serviceRepository = serviceRepository;
     this.jarFile = jarFile;
 
@@ -136,27 +134,25 @@ public class DefaultPackage implements Package {
       throw new IllegalStateException(
           "The package state can only be changed if the package has not been loaded already");
     } else if (state == PackageState.LOADED) {
-      throw new IllegalArgumentException("The package state can't be set to LOADED explicitly, use the load() method");
+      throw new IllegalArgumentException(
+          "The package state can't be set to LOADED explicitly, use the load() method");
     }
 
     this.packageState = state;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public File getFile() {
     return this.jarFile;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PackageState load() {
     if (packageState != PackageState.NOT_LOADED) {
-      throw new IllegalStateException("The package has to be in the NOT_LOADED state in order to be loaded");
+      throw new IllegalStateException(
+          "The package has to be in the NOT_LOADED state in order to be loaded");
     }
 
     try {
@@ -170,13 +166,12 @@ public class DefaultPackage implements Package {
     return this.packageState;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void enable() {
     if (packageState != PackageState.LOADED) {
-      throw new IllegalStateException("The package has to be in the LOADED state in order to be enabled");
+      throw new IllegalStateException(
+          "The package has to be in the LOADED state in order to be enabled");
     }
 
     try {
@@ -196,7 +191,6 @@ public class DefaultPackage implements Package {
     // The package is now enabled
     this.packageState = PackageState.ENABLED;
   }
-
 
   private void prepareServices() throws NotFoundException {
     // Find all autoload providers within the package
@@ -234,10 +228,9 @@ public class DefaultPackage implements Package {
     }
   }
 
-
   /**
    * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
-   * on compile time
+   *     on compile time
    */
   private List<AnnotationMeta> getAnnotationMeta() {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();
@@ -250,9 +243,7 @@ public class DefaultPackage implements Package {
     return annotationMetas;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PackageClassLoader getPackageClassLoader() {
     if (packageState != PackageState.LOADED && packageState != PackageState.ENABLED) {
@@ -270,9 +261,7 @@ public class DefaultPackage implements Package {
     return this.localizationLoader;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Exception getLoadException() {
     if (packageState != PackageState.ERRORED) {

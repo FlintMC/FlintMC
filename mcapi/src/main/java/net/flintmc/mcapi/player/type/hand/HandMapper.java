@@ -1,8 +1,6 @@
 package net.flintmc.mcapi.player.type.hand;
 
-/**
- * Mapper between the Minecraft hand, handSide and the Labyfy {@link Hand},  {@link Hand.Side}.
- */
+/** Mapper between the Minecraft hand, handSide and the Labyfy {@link Hand}, {@link Hand.Side}. */
 public interface HandMapper {
 
   /**
@@ -32,11 +30,10 @@ public interface HandMapper {
   Hand.Side fromMinecraftHandSide(Object handSide);
 
   /**
-   * Retrieves a Minecraft hand side constant by using the given  {@link Hand.Side} .
+   * Retrieves a Minecraft hand side constant by using the given {@link Hand.Side} .
    *
    * @param handSide The non-null minecraft hand side.
    * @return The hand side constant.
    */
   Object toMinecraftHandSide(Hand.Side handSide);
-
 }

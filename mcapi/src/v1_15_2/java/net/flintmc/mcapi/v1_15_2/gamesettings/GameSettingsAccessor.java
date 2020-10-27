@@ -5,9 +5,7 @@ import net.flintmc.transform.shadow.Shadow;
 
 import java.io.File;
 
-/**
- * A shadow class for the GameSettings.
- */
+/** A shadow class for the GameSettings. */
 @Shadow("net.minecraft.client.GameSettings")
 public interface GameSettingsAccessor {
 

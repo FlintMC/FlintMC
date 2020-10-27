@@ -5,16 +5,14 @@ import com.google.inject.Singleton;
 
 import java.util.Map;
 
-/**
- * A helper for enumeration constants.
- */
+/** A helper for enumeration constants. */
 @Singleton
 public class EnumConstantHelper {
 
   /**
    * Retrieves the constant name of an enumeration using the specified ordinal number.
    *
-   * @param type    The enumeration class.
+   * @param type The enumeration class.
    * @param ordinal The ordinal number of the constant.
    * @return The constant name through the given ordinal.
    */
@@ -23,10 +21,12 @@ public class EnumConstantHelper {
   }
 
   /**
-   * Retrieves a key-value system that stores the ordinal-constant name of the given enumeration class.
+   * Retrieves a key-value system that stores the ordinal-constant name of the given enumeration
+   * class.
    *
    * @param type The enumeration class.
-   * @return A key value system with the ordinal numbers and constant names or an empty key value system.
+   * @return A key value system with the ordinal numbers and constant names or an empty key value
+   *     system.
    */
   public Map<Integer, String> getConstants(Class<?> type) {
     Map<Integer, String> constants = Maps.newHashMap();
@@ -44,7 +44,7 @@ public class EnumConstantHelper {
   /**
    * Retrieves the ordinal number by the constant name of the enumeration.
    *
-   * @param type  The enumeration class.
+   * @param type The enumeration class.
    * @param value The constant name.
    * @return The ordinal by the given constatn name or {@code -1}.
    */

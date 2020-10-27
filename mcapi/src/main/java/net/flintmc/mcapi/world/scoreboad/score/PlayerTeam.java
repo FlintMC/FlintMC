@@ -1,17 +1,15 @@
 package net.flintmc.mcapi.world.scoreboad.score;
 
 import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 
-/**
- * Represents a Minecraft score player team
- */
+/** Represents a Minecraft score player team */
 public interface PlayerTeam extends Team {
 
   /**
@@ -71,7 +69,7 @@ public interface PlayerTeam extends Team {
   void setColor(ChatColor color);
 
   /**
-   * Changes the allow friendly fire  of this team.
+   * Changes the allow friendly fire of this team.
    *
    * @param friendlyFire {@code true} if friendly fire allowed, otherwise {@code false}
    */
@@ -80,7 +78,8 @@ public interface PlayerTeam extends Team {
   /**
    * Changes the friendly invisible of this team.
    *
-   * @param friendlyInvisible {@code true} if can see friendly invisible members, otherwise {@code false}
+   * @param friendlyInvisible {@code true} if can see friendly invisible members, otherwise {@code
+   *     false}
    */
   void setSeeFriendlyInvisible(boolean friendlyInvisible);
 
@@ -105,31 +104,25 @@ public interface PlayerTeam extends Team {
    */
   void setCollisionType(CollisionType type);
 
-  /**
-   * A factory class for {@link PlayerTeam}
-   */
+  /** A factory class for {@link PlayerTeam} */
   @AssistedFactory(PlayerTeam.class)
   interface Factory {
 
     /**
      * Creates a new {@link PlayerTeam} with the given parameters.
      *
-     * @param scoreboard  The scoreboard for this player team.
-     * @param name        The registry name for this player team.
+     * @param scoreboard The scoreboard for this player team.
+     * @param name The registry name for this player team.
      * @param displayName The name that is displayed.
      * @return A created player team.
      */
     PlayerTeam create(
-            @Assisted("scoreboard") Scoreboard scoreboard,
-            @Assisted("name") String name,
-            @Assisted("chatComponent") ChatComponent displayName
-    );
-
+        @Assisted("scoreboard") Scoreboard scoreboard,
+        @Assisted("name") String name,
+        @Assisted("chatComponent") ChatComponent displayName);
   }
 
-  /**
-   * Represents a service interface for creating {@link PlayerTeam}
-   */
+  /** Represents a service interface for creating {@link PlayerTeam} */
   interface Provider {
 
     /**
@@ -139,7 +132,5 @@ public interface PlayerTeam extends Team {
      * @return A created player team.
      */
     PlayerTeam get(String name);
-
   }
-
 }

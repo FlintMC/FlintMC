@@ -24,15 +24,22 @@ public class DefaultServerFavicon implements ServerFavicon {
   private final byte[] data;
 
   @AssistedInject
-  public DefaultServerFavicon(@InjectLogger Logger logger, @Assisted("resourceLocation") ResourceLocation defaultServerIcon) {
+  public DefaultServerFavicon(
+      @InjectLogger Logger logger,
+      @Assisted("resourceLocation") ResourceLocation defaultServerIcon) {
     this(logger, defaultServerIcon, null);
   }
 
   @AssistedInject
-  public DefaultServerFavicon(@Assisted("base64Data") String base64Data) throws IllegalArgumentException {
-    this(Base64.getDecoder()
-        .decode(base64Data.substring(PREFIX.length()).replaceAll("\n", "").getBytes(Charsets.UTF_8))
-    );
+  public DefaultServerFavicon(@Assisted("base64Data") String base64Data)
+      throws IllegalArgumentException {
+    this(
+        Base64.getDecoder()
+            .decode(
+                base64Data
+                    .substring(PREFIX.length())
+                    .replaceAll("\n", "")
+                    .getBytes(Charsets.UTF_8)));
   }
 
   @AssistedInject
@@ -46,17 +53,13 @@ public class DefaultServerFavicon implements ServerFavicon {
     this.data = data;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCustom() {
     return this.data != null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public InputStream createStream() {
     if (this.data == null) {
@@ -70,5 +73,4 @@ public class DefaultServerFavicon implements ServerFavicon {
 
     return new ByteArrayInputStream(this.data);
   }
-
 }

@@ -2,9 +2,9 @@ package net.flintmc.util.mappings;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.util.csv.lexical.Tokenizer;
 import net.flintmc.util.csv.parsing.NamedCSVParser;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.util.mappings.exceptions.MappingParseException;
 import net.flintmc.util.mappings.utils.IOUtils;
 import net.flintmc.util.mappings.utils.MappingUtils;
@@ -23,8 +23,14 @@ public final class McpMappingParser implements MappingParser {
   private static void updateMethodDescriptors(final Map<String, ClassMapping> classMappings) {
     for (ClassMapping mapping : classMappings.values()) {
       for (MethodMapping methodMapping : mapping.obfuscatedMethods.values()) {
-        String descriptor = MappingUtils.deobfuscateMethodDescriptor(classMappings, methodMapping.obfuscatedDescriptor);
-        String identifier = methodMapping.deobfuscatedName + '(' + descriptor.substring(1, descriptor.lastIndexOf(')')) + ")";
+        String descriptor =
+            MappingUtils.deobfuscateMethodDescriptor(
+                classMappings, methodMapping.obfuscatedDescriptor);
+        String identifier =
+            methodMapping.deobfuscatedName
+                + '('
+                + descriptor.substring(1, descriptor.lastIndexOf(')'))
+                + ")";
 
         methodMapping.deobfuscatedDescriptor = descriptor;
         methodMapping.deobfuscatedIdentifier = identifier;
@@ -34,16 +40,24 @@ public final class McpMappingParser implements MappingParser {
   }
 
   @Override
-  public Map<String, ClassMapping> parse(final Map<String, InputStream> input) throws MappingParseException {
-    boolean obfuscated = InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
+  public Map<String, ClassMapping> parse(final Map<String, InputStream> input)
+      throws MappingParseException {
+    boolean obfuscated =
+        InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
     Map<String, String> fieldLookupTable, methodLookupTable;
     String source;
 
     try {
       Tokenizer tokenizer = new Tokenizer(',');
       NamedCSVParser csvParser = new NamedCSVParser();
-      fieldLookupTable = csvParser.parse(tokenizer.tokenize(IOUtils.readToString(input.get("fields.csv")))).relation("searge", "name");
-      methodLookupTable = csvParser.parse(tokenizer.tokenize(IOUtils.readToString(input.get("methods.csv")))).relation("searge", "name");
+      fieldLookupTable =
+          csvParser
+              .parse(tokenizer.tokenize(IOUtils.readToString(input.get("fields.csv"))))
+              .relation("searge", "name");
+      methodLookupTable =
+          csvParser
+              .parse(tokenizer.tokenize(IOUtils.readToString(input.get("methods.csv"))))
+              .relation("searge", "name");
       source = IOUtils.readToString(input.get("joined.tsrg"));
     } catch (IOException exception) {
       throw new MappingParseException("Cannot read input", exception);
@@ -67,8 +81,10 @@ public final class McpMappingParser implements MappingParser {
 
           if (to == null) to = split[0];
 
-          String identifier = split[0] + "(" + split[1].substring(1, split[1].lastIndexOf(')')) + ")";
-          MethodMapping methodMapping = new MethodMapping(obfuscated, classMapping, split[1], identifier, split[0], to);
+          String identifier =
+              split[0] + "(" + split[1].substring(1, split[1].lastIndexOf(')')) + ")";
+          MethodMapping methodMapping =
+              new MethodMapping(obfuscated, classMapping, split[1], identifier, split[0], to);
           classMapping.obfuscatedMethods.put(identifier, methodMapping);
         } else if (split.length == 2) {
           String to = fieldLookupTable.get(split[1]);
@@ -88,7 +104,8 @@ public final class McpMappingParser implements MappingParser {
           classMappings.put(classMapping.obfuscatedName.replace("/", "."), classMapping);
         }
 
-        classMapping = new ClassMapping(obfuscated, split[0].replace("/", "."), split[1].replace("/", "."));
+        classMapping =
+            new ClassMapping(obfuscated, split[0].replace("/", "."), split[1].replace("/", "."));
       }
     }
 

@@ -1,26 +1,24 @@
 package net.flintmc.mcapi.items.meta.enchantment;
 
-import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
-import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.framework.stereotype.NameSpacedKey;
+import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.items.ItemRegistry;
 
-/**
- * Represents a unique type of an enchantment.
- */
+/** Represents a unique type of an enchantment. */
 public interface EnchantmentType {
 
   /**
-   * Retrieves the name of this type which is being used to identify this type. The name is unique per {@link
-   * ItemRegistry}.
+   * Retrieves the name of this type which is being used to identify this type. The name is unique
+   * per {@link ItemRegistry}.
    *
    * @return The non-null registry name
    */
   NameSpacedKey getRegistryName();
 
   /**
-   * Retrieves the highest level of this enchantment type that is possible to get in an vanilla enchanting table. Labyfy
-   * ignores this value when an enchantment is created.
+   * Retrieves the highest level of this enchantment type that is possible to get in an vanilla
+   * enchanting table. Labyfy ignores this value when an enchantment is created.
    *
    * @return The highest level which is at least 1
    */
@@ -48,9 +46,7 @@ public interface EnchantmentType {
    */
   Enchantment createEnchantment(int level);
 
-  /**
-   * Factory for the {@link Builder} for {@link EnchantmentType}s.
-   */
+  /** Factory for the {@link Builder} for {@link EnchantmentType}s. */
   @AssistedFactory(Builder.class)
   interface Factory {
 
@@ -60,16 +56,14 @@ public interface EnchantmentType {
      * @return The new non-null builder
      */
     Builder newBuilder();
-
   }
 
-  /**
-   * Builder for the {@link EnchantmentType}.
-   */
+  /** Builder for the {@link EnchantmentType}. */
   interface Builder {
 
     /**
-     * Sets the registry name of the result of this builder. This name is unique per {@link ItemRegistry}.
+     * Sets the registry name of the result of this builder. This name is unique per {@link
+     * ItemRegistry}.
      *
      * @param registryName The non-null registry name of the result type
      * @return this
@@ -96,19 +90,21 @@ public interface EnchantmentType {
 
     /**
      * Builds a new {@link EnchantmentType} with the parameters specified in this builder.
-     * <p>
-     * The only necessary parameter to be specified is {@link #registryName(NameSpacedKey)}.
-     * <p>
-     * If no {@link #highestLevel(int)} has been provided, 1 will be used. If no {@link #rarity(EnchantmentRarity)} has
-     * been provided, {@link EnchantmentRarity#UNCOMMON} will be used.
+     *
+     * <p>The only necessary parameter to be specified is {@link #registryName(NameSpacedKey)}.
+     *
+     * <p>If no {@link #highestLevel(int)} has been provided, 1 will be used. If no {@link
+     * #rarity(EnchantmentRarity)} has been provided, {@link EnchantmentRarity#UNCOMMON} will be
+     * used.
      *
      * @return The new non-null type of enchantments
-     * @throws IllegalArgumentException If the specified {@link #highestLevel(int)} is smaller than 1
-     * @throws NullPointerException     If no {@link #registryName(NameSpacedKey)} (or {@code null}) has been provided
-     * @throws NullPointerException     If {@code null} has been provided as the {@link #rarity(EnchantmentRarity)}
+     * @throws IllegalArgumentException If the specified {@link #highestLevel(int)} is smaller than
+     *     1
+     * @throws NullPointerException If no {@link #registryName(NameSpacedKey)} (or {@code null}) has
+     *     been provided
+     * @throws NullPointerException If {@code null} has been provided as the {@link
+     *     #rarity(EnchantmentRarity)}
      */
     EnchantmentType build();
-
   }
-
 }

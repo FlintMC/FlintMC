@@ -1,19 +1,18 @@
 package net.flintmc.util.mappings;
 
-/**
- * A mapping base.
- */
+/** A mapping base. */
 class BaseMapping {
   final String obfuscatedName, deobfuscatedName, name;
 
   /**
    * Construct a base mapping.
    *
-   * @param obfuscated       Whether the current environment is encrypted.
-   * @param obfuscatedName   An obfuscated name.
+   * @param obfuscated Whether the current environment is encrypted.
+   * @param obfuscatedName An obfuscated name.
    * @param deobfuscatedName A deobfuscated name.
    */
-  public BaseMapping(final boolean obfuscated, final String obfuscatedName, final String deobfuscatedName) {
+  public BaseMapping(
+      final boolean obfuscated, final String obfuscatedName, final String deobfuscatedName) {
     this.obfuscatedName = obfuscatedName;
     this.deobfuscatedName = deobfuscatedName;
     this.name = obfuscated ? obfuscatedName : deobfuscatedName;

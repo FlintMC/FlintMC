@@ -7,9 +7,7 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * This interface is used to ping servers and retrieve their status for the server list.
- */
+/** This interface is used to ping servers and retrieve their status for the server list. */
 public interface ServerStatusResolver {
 
   /**
@@ -22,10 +20,10 @@ public interface ServerStatusResolver {
   CompletableFuture<ServerStatus> resolveStatus(ServerAddress address) throws UnknownHostException;
 
   /**
-   * Retrieves an unordered collection of all status requests that haven't received an answer from the server yet.
+   * Retrieves an unordered collection of all status requests that haven't received an answer from
+   * the server yet.
    *
    * @return An unmodifiable collection of all pending requests
    */
   Collection<PendingStatusRequest> getPendingRequests();
-
 }

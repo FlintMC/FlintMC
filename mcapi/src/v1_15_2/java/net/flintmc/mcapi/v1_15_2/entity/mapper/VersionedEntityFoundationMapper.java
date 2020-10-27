@@ -1,11 +1,11 @@
 package net.flintmc.mcapi.v1_15_2.entity.mapper;
 
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.mapper.EntityMapper;
 import net.flintmc.mcapi.entity.reason.MoverType;
 import net.flintmc.mcapi.entity.type.EntityPose;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.flintmc.mcapi.nbt.mapper.NBTMapper;
@@ -19,9 +19,7 @@ import net.minecraft.world.GameType;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * 1.15.2 implementation of the {@link EntityFoundationMapper}.
- */
+/** 1.15.2 implementation of the {@link EntityFoundationMapper}. */
 @Singleton
 @Implement(value = EntityFoundationMapper.class, version = "1.15.2")
 public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
@@ -36,14 +34,13 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
 
   @Inject
   private VersionedEntityFoundationMapper(
-          EntityMapper entityMapper,
-          HandMapper handMapper,
-          MinecraftItemMapper itemMapper,
-          MinecraftComponentMapper componentMapper,
-          NBTMapper nbtMapper,
-          ResourceLocationProvider resourceLocationProvider,
-          SoundMapper soundMapper
-  ) {
+      EntityMapper entityMapper,
+      HandMapper handMapper,
+      MinecraftItemMapper itemMapper,
+      MinecraftComponentMapper componentMapper,
+      NBTMapper nbtMapper,
+      ResourceLocationProvider resourceLocationProvider,
+      SoundMapper soundMapper) {
     this.itemMapper = itemMapper;
     this.componentMapper = componentMapper;
     this.nbtMapper = nbtMapper;
@@ -53,19 +50,20 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     this.entityMapper = entityMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle) {
     if (!(handle instanceof net.minecraft.inventory.EquipmentSlotType)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.inventory.EquipmentSlotType.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.inventory.EquipmentSlotType.class.getName());
     }
 
-    net.minecraft.inventory.EquipmentSlotType equipmentSlotType = (net.minecraft.inventory.EquipmentSlotType) handle;
+    net.minecraft.inventory.EquipmentSlotType equipmentSlotType =
+        (net.minecraft.inventory.EquipmentSlotType) handle;
 
     switch (equipmentSlotType) {
-
       case MAINHAND:
         return EquipmentSlotType.MAIN_HAND;
       case OFFHAND:
@@ -83,9 +81,7 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftEquipmentSlotType(EquipmentSlotType equipmentSlotType) {
     switch (equipmentSlotType) {
@@ -106,13 +102,12 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public GameMode fromMinecraftGameType(Object handle) {
     if (!(handle instanceof GameType)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + GameType.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName() + " is not an instance of " + GameType.class.getName());
     }
 
     GameType gameType = (GameType) handle;
@@ -130,12 +125,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
       default:
         throw new IllegalStateException("Unexpected value: " + gameType);
     }
-
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftGameType(GameMode mode) {
     switch (mode) {
@@ -152,13 +144,14 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public MoverType fromMinecraftMoverType(Object handle) {
     if (!(handle instanceof net.minecraft.entity.MoverType)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.MoverType.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.MoverType.class.getName());
     }
 
     net.minecraft.entity.MoverType moverType = (net.minecraft.entity.MoverType) handle;
@@ -179,9 +172,7 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftMoverType(MoverType mode) {
     switch (mode) {
@@ -198,13 +189,12 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPose fromMinecraftPose(Object handle) {
     if (!(handle instanceof Pose)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + Pose.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName() + " is not an instance of " + Pose.class.getName());
     }
 
     Pose pose = (Pose) handle;
@@ -227,12 +217,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
       default:
         throw new IllegalStateException("Unexpected value: " + pose);
     }
-
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftPose(EntityPose pose) {
     switch (pose) {
@@ -253,60 +240,45 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
       default:
         throw new IllegalStateException("Unexpected value: " + pose);
     }
-
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public HandMapper getHandMapper() {
     return this.handMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public SoundMapper getSoundMapper() {
     return this.soundMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public MinecraftComponentMapper getComponentMapper() {
     return this.componentMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public MinecraftItemMapper getItemMapper() {
     return this.itemMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ResourceLocationProvider getResourceLocationProvider() {
     return this.resourceLocationProvider;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityMapper getEntityMapper() {
     return this.entityMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTMapper getNbtMapper() {
     return this.nbtMapper;

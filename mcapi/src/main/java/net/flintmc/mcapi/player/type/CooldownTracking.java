@@ -1,8 +1,6 @@
 package net.flintmc.mcapi.player.type;
 
-/**
- * Represents a cooldown tracker
- */
+/** Represents a cooldown tracker */
 public interface CooldownTracking {
 
   /**
@@ -17,9 +15,9 @@ public interface CooldownTracking {
   /**
    * Retrieves the cooldown of the given item.
    *
-   * @param item         The item to get the cooldown
-   * @param partialTicks The period of time, in fractions of a tick,
-   *                     that has passed since the last full tick.
+   * @param item The item to get the cooldown
+   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
+   *     full tick.
    * @return The cooldown of this given item.
    */
   // TODO: 05.09.2020 Replaces the Object to Item when the (Item API?) is ready
@@ -28,7 +26,7 @@ public interface CooldownTracking {
   /**
    * Sets the for the cooldown tracking.
    *
-   * @param item  The item for setting the cooldown.
+   * @param item The item for setting the cooldown.
    * @param ticks The ticks, how long the cooldown lasts.
    */
   // TODO: 05.09.2020 Replaces the Object to Item when the (Item API?) is ready
@@ -41,5 +39,4 @@ public interface CooldownTracking {
    */
   // TODO: 05.09.2020 Replaces the Object to Item when the (Item API?) is ready
   void removeCooldown(Object item);
-
 }

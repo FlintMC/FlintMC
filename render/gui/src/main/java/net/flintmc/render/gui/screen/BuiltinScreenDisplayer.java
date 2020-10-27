@@ -1,8 +1,6 @@
 package net.flintmc.render.gui.screen;
 
-/**
- * Interface abstracting the displaying of Minecraft GUI screens
- */
+/** Interface abstracting the displaying of Minecraft GUI screens */
 public interface BuiltinScreenDisplayer {
   /**
    * Tests whether this screen displayer is capable of displaying the given screen
@@ -13,13 +11,13 @@ public interface BuiltinScreenDisplayer {
   boolean supports(ScreenName screenName);
 
   /**
-   * Changes the currently active GUI screen to the given one. This method may only be called
-   * with a screen supported. To test for support, use the {@link #supports(ScreenName)} method.
+   * Changes the currently active GUI screen to the given one. This method may only be called with a
+   * screen supported. To test for support, use the {@link #supports(ScreenName)} method.
    *
    * @param screenName The name of the screen to display
-   * @param args       Parameters to pass to the screen
+   * @param args Parameters to pass to the screen
    * @throws UnsupportedOperationException If the screen given is not supported by this displayer
-   * @throws IllegalArgumentException      If the arguments given are not acceptable for the given screen
+   * @throws IllegalArgumentException If the arguments given are not acceptable for the given screen
    */
   void display(ScreenName screenName, Object... args);
 }

@@ -4,5 +4,4 @@ package net.flintmc.transform.asm;
 public interface AbstractContext {
 
   AbstractContext write();
-
 }

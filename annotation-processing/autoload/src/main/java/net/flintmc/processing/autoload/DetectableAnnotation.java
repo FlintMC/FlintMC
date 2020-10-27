@@ -19,7 +19,7 @@ public @interface DetectableAnnotation {
 
   /**
    * @return if this annotation requires a parent. A parent is defined as an annotation that
-   * includes this annotation type in its {@link #metaData()}
+   *     includes this annotation type in its {@link #metaData()}
    */
   boolean requiresParent() default false;
 }

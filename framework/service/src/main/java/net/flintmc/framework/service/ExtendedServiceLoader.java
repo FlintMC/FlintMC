@@ -8,11 +8,14 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Extends the functionality of the default java {@link ServiceLoader}.
- * The difference to the java {@link ServiceLoader} is the reload and multi classloader capability.
- * <p>
- * example:
- * <blockquote><pre>
+ * Extends the functionality of the default java {@link ServiceLoader}. The difference to the java
+ * {@link ServiceLoader} is the reload and multi classloader capability.
+ *
+ * <p>example:
+ *
+ * <blockquote>
+ *
+ * <pre>
  *
  * package com.example;
  *
@@ -24,33 +27,33 @@ import java.util.concurrent.ConcurrentHashMap;
  *    {@literal @}Override
  *     public void doSomething() {}
  * }
- * </pre></blockquote>
- * <p>
- * Content of "META-INF/services/com.example.Service":
- * {@code com.example.ServiceImpl}
- * <p>
- * To find all implementations:
- * {@code Set<Service> services = ExtendedServiceLoader.get(Service.class).discover(classLoader);}
+ * </pre>
+ *
+ * </blockquote>
+ *
+ * <p>Content of "META-INF/services/com.example.Service": {@code com.example.ServiceImpl}
+ *
+ * <p>To find all implementations: {@code Set<Service> services =
+ * ExtendedServiceLoader.get(Service.class).discover(classLoader);}
  *
  * @see ServiceLoader
  */
 public class ExtendedServiceLoader<T> {
   private static final Map<Class<?>, ExtendedServiceLoader<?>> loaders = new ConcurrentHashMap<>();
+  private final Class<T> targetClass;
+  private final List<String> alreadyDiscovered;
 
   private ExtendedServiceLoader(Class<T> targetClass) {
     this.targetClass = targetClass;
     this.alreadyDiscovered = new ArrayList<>();
   }
 
-  private final Class<T> targetClass;
-  private final List<String> alreadyDiscovered;
-
   /**
-   * Reads the content of all resources with the name of "META-INF/services/targetClass#getName()" (can be multiple files),
-   * and collects all service implementations of those files.
+   * Reads the content of all resources with the name of "META-INF/services/targetClass#getName()"
+   * (can be multiple files), and collects all service implementations of those files.
    *
    * @param targetClass service class to load
-   * @param <T>         type of service to load
+   * @param <T> type of service to load
    * @return ExtendedServiceLoader configured to find services of type T
    */
   @SuppressWarnings("unchecked")
@@ -75,7 +78,8 @@ public class ExtendedServiceLoader<T> {
     try {
       serviceFiles = loader.getResources("META-INF/services/" + targetClass.getName());
     } catch (IOException exception) {
-      throw new ServiceLoadException("Failed to discover services due to IOException while querying ClassLoader", exception);
+      throw new ServiceLoadException(
+          "Failed to discover services due to IOException while querying ClassLoader", exception);
     }
 
     Set<Class<? extends T>> collectedServiceClasses = new HashSet<>();
@@ -86,15 +90,18 @@ public class ExtendedServiceLoader<T> {
     }
 
     Set<T> instances = new HashSet<>();
-    collectedServiceClasses.forEach((clazz) -> {
-      try {
-        instances.add(clazz.newInstance());
-      } catch (InstantiationException exception) {
-        throw new ServiceLoadException("Failed to instantiate " + clazz.getName(), exception);
-      } catch (IllegalAccessException exception) {
-        throw new ServiceLoadException("Failed to instantiate " + clazz.getName() + " due to missing access rights", exception);
-      }
-    });
+    collectedServiceClasses.forEach(
+        (clazz) -> {
+          try {
+            instances.add(clazz.newInstance());
+          } catch (InstantiationException exception) {
+            throw new ServiceLoadException("Failed to instantiate " + clazz.getName(), exception);
+          } catch (IllegalAccessException exception) {
+            throw new ServiceLoadException(
+                "Failed to instantiate " + clazz.getName() + " due to missing access rights",
+                exception);
+          }
+        });
 
     return instances;
   }
@@ -115,16 +122,24 @@ public class ExtendedServiceLoader<T> {
 
         Class<?> loaded = loader.loadClass(line);
         if (!targetClass.isAssignableFrom(loaded)) {
-          throw new ServiceLoadException("Service file " + file.toExternalForm() + " mentioned class " +
-              loaded.getName() + ", but it is not assignable to " + targetClass.getName());
+          throw new ServiceLoadException(
+              "Service file "
+                  + file.toExternalForm()
+                  + " mentioned class "
+                  + loaded.getName()
+                  + ", but it is not assignable to "
+                  + targetClass.getName());
         }
 
         classes.add((Class<? extends T>) loaded);
       }
     } catch (IOException exception) {
-      throw new ServiceLoadException("Failed to read service file " + file.toExternalForm() + " due to IOException", exception);
+      throw new ServiceLoadException(
+          "Failed to read service file " + file.toExternalForm() + " due to IOException",
+          exception);
     } catch (ClassNotFoundException exception) {
-      throw new ServiceLoadException("Service file " + file.toExternalForm() + " mentioned a nonexistent class", exception);
+      throw new ServiceLoadException(
+          "Service file " + file.toExternalForm() + " mentioned a nonexistent class", exception);
     }
 
     return classes;

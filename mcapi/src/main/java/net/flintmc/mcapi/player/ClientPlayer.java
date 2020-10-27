@@ -34,23 +34,19 @@ public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
    */
   void sendChatMessage(String message);
 
-  /**
-   * Closes the screen and drop an item stack.
-   */
+  /** Closes the screen and drop an item stack. */
   void closeScreenAndDropStack();
 
   /**
    * Changes the health of this player.
-   * <p>
-   * This is only on the client side.
+   *
+   * <p>This is only on the client side.
    *
    * @param health The new health.
    */
   void setPlayerSPHealth(float health);
 
-  /**
-   * Sends the horse inventory to the server.
-   */
+  /** Sends the horse inventory to the server. */
   void sendHorseInventory();
 
   /**
@@ -78,8 +74,8 @@ public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
    * Sets the experience stats of this player.
    *
    * @param currentExperience The current experience of this player.
-   * @param maxExperience     The maximal experience of this player.
-   * @param level             The level of this player.
+   * @param maxExperience The maximal experience of this player.
+   * @param level The level of this player.
    */
   void setExperienceStats(float currentExperience, int maxExperience, int level);
 
@@ -93,7 +89,8 @@ public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
   /**
    * Changes the state whether the death screen is displayed.
    *
-   * @param showDeathScreen {@code true} if the death screen should be displayed, otherwise {@code false}.
+   * @param showDeathScreen {@code true} if the death screen should be displayed, otherwise {@code
+   *     false}.
    */
   void setShowDeathScreen(boolean showDeathScreen);
 
@@ -138,7 +135,6 @@ public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
    * @return The tab overlay.
    */
   TabOverlay getTabOverlay();
-
 
   /**
    * Retrieves the render arm yaw of this player entity.
@@ -202,5 +198,4 @@ public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
    * @return Player's current biome name.
    */
   String getBiome();
-
 }

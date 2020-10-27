@@ -17,11 +17,13 @@ public class InventoryDimension {
   }
 
   /**
-   * Creates a new inventory dimension that represents a rectangle inventory like chests and dispensers.
+   * Creates a new inventory dimension that represents a rectangle inventory like chests and
+   * dispensers.
    *
-   * @param width  The width of the inventory in slots
+   * @param width The width of the inventory in slots
    * @param height The height of the inventory in slots
-   * @return The new non-null dimension with the given width and height and width * height and the number of slots
+   * @return The new non-null dimension with the given width and height and width * height and the
+   *     number of slots
    * @throws IllegalArgumentException If the width is zero or lower
    * @throws IllegalArgumentException If the height is zero or lower
    */
@@ -33,7 +35,8 @@ public class InventoryDimension {
   }
 
   /**
-   * Creates a new inventory dimension that represents any inventory like merchants and enchantment tables.
+   * Creates a new inventory dimension that represents any inventory like merchants and enchantment
+   * tables.
    *
    * @param slotCount The number of slots in the inventory
    * @return The new non-null dimension with the given slot count and -1 as the width and height
@@ -46,7 +49,8 @@ public class InventoryDimension {
   }
 
   /**
-   * Retrieves the width of this inventory measured in slots or -1 if this inventory is no rectangle.
+   * Retrieves the width of this inventory measured in slots or -1 if this inventory is no
+   * rectangle.
    *
    * @return The width of this inventory measured in slots
    */
@@ -55,7 +59,8 @@ public class InventoryDimension {
   }
 
   /**
-   * Retrieves the height of this inventory measured in slots or -1 if this inventory is no rectangle.
+   * Retrieves the height of this inventory measured in slots or -1 if this inventory is no
+   * rectangle.
    *
    * @return The height of this inventory measured in slots
    */
@@ -73,8 +78,8 @@ public class InventoryDimension {
   }
 
   /**
-   * Retrieves whether this dimension represents a rectangle or not. For example chests and hoppers are rectangles,
-   * anvils are not.
+   * Retrieves whether this dimension represents a rectangle or not. For example chests and hoppers
+   * are rectangles, anvils are not.
    *
    * @return Whether this dimension is a rectangle or not
    */
@@ -87,9 +92,7 @@ public class InventoryDimension {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     InventoryDimension that = (InventoryDimension) o;
-    return width == that.width &&
-        height == that.height &&
-        slotCount == that.slotCount;
+    return width == that.width && height == that.height && slotCount == that.slotCount;
   }
 
   @Override

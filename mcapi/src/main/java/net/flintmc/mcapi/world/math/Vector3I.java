@@ -3,9 +3,7 @@ package net.flintmc.mcapi.world.math;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * Represents a three-dimensional vector based on {@link Integer}.
- */
+/** Represents a three-dimensional vector based on {@link Integer}. */
 public interface Vector3I extends Comparable<Vector3I> {
 
   /**
@@ -32,7 +30,9 @@ public interface Vector3I extends Comparable<Vector3I> {
   @Override
   default int compareTo(Vector3I compareTo) {
     if (this.getY() == compareTo.getY()) {
-      return this.getZ() == compareTo.getZ() ? this.getX() - compareTo.getX() : this.getZ() - compareTo.getZ();
+      return this.getZ() == compareTo.getZ()
+          ? this.getX() - compareTo.getX()
+          : this.getZ() - compareTo.getZ();
     } else {
       return this.getY() - compareTo.getY();
     }
@@ -49,12 +49,13 @@ public interface Vector3I extends Comparable<Vector3I> {
   /**
    * Whether the given distance is larger than the square vector.
    *
-   * @param vector   The vector to calculate the square distance.
+   * @param vector The vector to calculate the square distance.
    * @param distance The distance.
    * @return {@code true} if the distance larger than the square distance, otherwise {@code false}.
    */
   default boolean withinDistance(Vector3I vector, double distance) {
-    return this.distanceSq(vector.getX(), vector.getY(), vector.getZ(), false) < distance * distance;
+    return this.distanceSq(vector.getX(), vector.getY(), vector.getZ(), false)
+        < distance * distance;
   }
 
   /**
@@ -70,9 +71,9 @@ public interface Vector3I extends Comparable<Vector3I> {
   /**
    * The square of the distance from this {@link Vector3I} to a specified point.
    *
-   * @param x         The X coordinate of the specified point to be measured against this {@link Vector3I}.
-   * @param y         The Y coordinate of the specified point to be measured against this {@link Vector3I}.
-   * @param z         The Z coordinate of the specified point to be measured against this {@link Vector3I}.
+   * @param x The X coordinate of the specified point to be measured against this {@link Vector3I}.
+   * @param y The Y coordinate of the specified point to be measured against this {@link Vector3I}.
+   * @param z The Z coordinate of the specified point to be measured against this {@link Vector3I}.
    * @param useCenter {@code true} if the center should be used, otherwise {@code false}.
    * @return The square of the distance from this {@link Vector3I} to a specified point.
    */
@@ -86,9 +87,7 @@ public interface Vector3I extends Comparable<Vector3I> {
    */
   int manhattanDistance(Vector3I vector);
 
-  /**
-   * A factory class for the {@link Vector3I}.
-   */
+  /** A factory class for the {@link Vector3I}. */
   @AssistedFactory(Vector3I.class)
   interface Factory {
 
@@ -100,11 +99,7 @@ public interface Vector3I extends Comparable<Vector3I> {
      * @param z The z position of the vector.
      * @return A created vector.
      */
-    Vector3I create(
-            @Assisted("x") int x,
-            @Assisted("y") int y,
-            @Assisted("z") int z
-    );
+    Vector3I create(@Assisted("x") int x, @Assisted("y") int y, @Assisted("z") int z);
 
     /**
      * Creates a new {@link Vector3I} with the given vector.
@@ -113,7 +108,5 @@ public interface Vector3I extends Comparable<Vector3I> {
      * @return A created vector.
      */
     Vector3I create(@Assisted("vector") Vector3I vector);
-
   }
-
 }

@@ -11,9 +11,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Optional;
 
-/**
- * 1.15.2 implementation of the {@link SoundMapper}.
- */
+/** 1.15.2 implementation of the {@link SoundMapper}. */
 @Singleton
 @Implement(value = SoundMapper.class, version = "1.15.2")
 public class VersionedSoundMapper implements SoundMapper {
@@ -25,9 +23,7 @@ public class VersionedSoundMapper implements SoundMapper {
     this.soundFactory = soundFactory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Sound fromMinecraftSoundEvent(Object soundEvent) {
     if (!(soundEvent instanceof SoundEvent)) {
@@ -39,25 +35,22 @@ public class VersionedSoundMapper implements SoundMapper {
     return this.soundFactory.create(minecraftSoundEvent.getName().getPath());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftSoundEvent(Sound sound) {
     Optional<SoundEvent> optional = Registry.SOUND_EVENT.getValue(sound.getName().getHandle());
     return optional.orElseGet(() -> new SoundEvent(sound.getName().getHandle()));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public SoundCategory fromMinecraftSoundCategory(Object soundCategory) {
     if (!(soundCategory instanceof net.minecraft.util.SoundCategory)) {
       throw new IllegalArgumentException("");
     }
 
-    net.minecraft.util.SoundCategory minecraftSoundCategory = (net.minecraft.util.SoundCategory) soundCategory;
+    net.minecraft.util.SoundCategory minecraftSoundCategory =
+        (net.minecraft.util.SoundCategory) soundCategory;
 
     switch (minecraftSoundCategory) {
       case MUSIC:
@@ -83,9 +76,7 @@ public class VersionedSoundMapper implements SoundMapper {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftSoundCategory(SoundCategory soundCategory) {
     switch (soundCategory) {

@@ -5,5 +5,5 @@ import net.flintmc.util.csv.lexical.Token;
 import java.util.List;
 
 public interface CSVParser<R> {
-    R parse(final List<Token> tokens);
+  R parse(final List<Token> tokens);
 }

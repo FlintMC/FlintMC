@@ -8,9 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Represents the world of this client.
- */
+/** Represents the world of this client. */
 public interface ClientWorld extends World {
 
   /**
@@ -24,7 +22,8 @@ public interface ClientWorld extends World {
    * Adds a player to the player collection.
    *
    * @param player The player to add
-   * @return {@code true} if this collection changed as a result of the call, otherwise {@code false}
+   * @return {@code true} if this collection changed as a result of the call, otherwise {@code
+   *     false}
    */
   boolean addPlayer(BaseClientPlayer player);
 

@@ -10,9 +10,7 @@ import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
 import java.io.IOException;
 
-/**
- * Default implementation the {@link NBTLong}.
- */
+/** Default implementation the {@link NBTLong}. */
 @Implement(NBTLong.class)
 public class DefaultNBTLong implements NBTLong {
 
@@ -28,33 +26,25 @@ public class DefaultNBTLong implements NBTLong {
     return NBTType.TAG_LONG;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void readContents(NBTDataInputStream inputStream) throws IOException {
     this.value = inputStream.getDataInputStream().readLong();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void writeContents(NBTDataOutputStream outputStream) throws IOException {
     outputStream.getDataOutputStream().writeLong(this.value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String asString() {
     return String.valueOf(this.value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public long asLong() {
     return this.value;

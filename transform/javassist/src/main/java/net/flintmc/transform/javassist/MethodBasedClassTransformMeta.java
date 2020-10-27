@@ -3,9 +3,9 @@ package net.flintmc.transform.javassist;
 import com.google.inject.assistedinject.Assisted;
 import javassist.CtClass;
 import javassist.CtMethod;
-import net.flintmc.util.commons.resolve.NameResolver;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.util.commons.resolve.NameResolver;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -35,6 +35,7 @@ public interface MethodBasedClassTransformMeta extends ClassTransformMeta {
 
   /**
    * Retrieves the transformers instance
+   *
    * @return the transformer instance
    */
   Object getTransformInstance();
@@ -62,7 +63,6 @@ public interface MethodBasedClassTransformMeta extends ClassTransformMeta {
 
   @AssistedFactory(MethodBasedClassTransformMeta.class)
   interface Factory {
-    MethodBasedClassTransformMeta create(
-        @Assisted AnnotationMeta<ClassTransform> annotationMeta);
+    MethodBasedClassTransformMeta create(@Assisted AnnotationMeta<ClassTransform> annotationMeta);
   }
 }

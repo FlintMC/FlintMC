@@ -16,14 +16,21 @@ public class DefaultItemStack implements ItemStack {
   private ItemMeta meta;
 
   @AssistedInject
-  public DefaultItemStack(ItemMeta.Factory metaFactory, @Assisted("type") ItemType type, @Assisted("stackSize") int stackSize) {
+  public DefaultItemStack(
+      ItemMeta.Factory metaFactory,
+      @Assisted("type") ItemType type,
+      @Assisted("stackSize") int stackSize) {
     this.metaFactory = metaFactory;
     this.type = type;
     this.stackSize = stackSize;
   }
 
   @AssistedInject
-  public DefaultItemStack(ItemMeta.Factory metaFactory, @Assisted("type") ItemType type, @Assisted("stackSize") int stackSize, @Assisted("meta") ItemMeta meta) {
+  public DefaultItemStack(
+      ItemMeta.Factory metaFactory,
+      @Assisted("type") ItemType type,
+      @Assisted("stackSize") int stackSize,
+      @Assisted("meta") ItemMeta meta) {
     this.metaFactory = metaFactory;
     this.type = type;
     this.stackSize = stackSize;
@@ -57,5 +64,4 @@ public class DefaultItemStack implements ItemStack {
   public ItemType getType() {
     return this.type;
   }
-
 }

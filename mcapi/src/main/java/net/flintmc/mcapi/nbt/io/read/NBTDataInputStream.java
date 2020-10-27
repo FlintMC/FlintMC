@@ -1,24 +1,24 @@
 package net.flintmc.mcapi.nbt.io.read;
 
 import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.nbt.NBT;
 import net.flintmc.util.commons.Pair;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 
 /**
- * A data input stream lets an application read primitive Java data types and named binary tags from an
- * underlying input stream in a machine-independent way. An application ues a data output stream to write data that can
- * later be read by a data input stream.
+ * A data input stream lets an application read primitive Java data types and named binary tags from
+ * an underlying input stream in a machine-independent way. An application ues a data output stream
+ * to write data that can later be read by a data input stream.
  */
 public interface NBTDataInputStream {
 
   /**
    * Reads a full tag from this input stream.
-   * <p>
-   * (ID, name and value when applicable)
+   *
+   * <p>(ID, name and value when applicable)
    *
    * @return The fully formed tag.
    */
@@ -39,9 +39,7 @@ public interface NBTDataInputStream {
    */
   DataInputStream getDataInputStream();
 
-  /**
-   * A factory class for the {@link NBTDataInputStream}.
-   */
+  /** A factory class for the {@link NBTDataInputStream}. */
   @AssistedFactory(NBTDataInputStream.class)
   interface Factory {
 
@@ -52,7 +50,5 @@ public interface NBTDataInputStream {
      * @return A created input stream.
      */
     NBTDataInputStream create(@Assisted("inputStream") DataInputStream inputStream);
-
   }
-
 }

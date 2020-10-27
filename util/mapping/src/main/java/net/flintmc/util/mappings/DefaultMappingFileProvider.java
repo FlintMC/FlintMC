@@ -23,7 +23,8 @@ public class DefaultMappingFileProvider implements MappingFileProvider {
   private final McpMappingIndexProvider mcpMappingIndexProvider;
 
   @Inject
-  private DefaultMappingFileProvider(@Named("flintRoot") File flintRoot, McpMappingIndexProvider mcpMappingIndexProvider) {
+  private DefaultMappingFileProvider(
+      @Named("flintRoot") File flintRoot, McpMappingIndexProvider mcpMappingIndexProvider) {
     this.flintRoot = flintRoot;
     this.mcpMappingIndexProvider = mcpMappingIndexProvider;
   }
@@ -39,18 +40,24 @@ public class DefaultMappingFileProvider implements MappingFileProvider {
       assetRoot.mkdirs();
       Version.Mapping index = this.mcpMappingIndexProvider.fetch().get(version).getModCoderPack();
 
-      Files.write(methodsFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/methods.csv")));
-      Files.write(fieldsFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/fields.csv")));
-      Files.write(joinedFile.toPath(), IOUtils.toByteArray(new URL("jar:" + index.getConfigDownload() + "!/config/joined.tsrg")));
+      Files.write(
+          methodsFile.toPath(),
+          IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/methods.csv")));
+      Files.write(
+          fieldsFile.toPath(),
+          IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/fields.csv")));
+      Files.write(
+          joinedFile.toPath(),
+          IOUtils.toByteArray(
+              new URL("jar:" + index.getConfigDownload() + "!/config/joined.tsrg")));
     }
 
-    return
-        ImmutableMap.of(
-            "methods.csv",
-            new FileInputStream(methodsFile),
-            "fields.csv",
-            new FileInputStream(fieldsFile),
-            "joined.tsrg",
-            new FileInputStream(joinedFile));
+    return ImmutableMap.of(
+        "methods.csv",
+        new FileInputStream(methodsFile),
+        "fields.csv",
+        new FileInputStream(fieldsFile),
+        "joined.tsrg",
+        new FileInputStream(joinedFile));
   }
 }

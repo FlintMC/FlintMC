@@ -1,17 +1,15 @@
 package net.flintmc.mcapi.entity;
 
 import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.type.EntityType;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.world.math.BlockPosition;
 
-/**
- * Represents the Minecraft mob.
- */
+/** Represents the Minecraft mob. */
 public interface MobEntity extends LivingEntity {
 
   /**
@@ -35,9 +33,7 @@ public interface MobEntity extends LivingEntity {
    */
   void setAttackTarget(LivingEntity entity);
 
-  /**
-   * Eat grass for a bonus.
-   */
+  /** Eat grass for a bonus. */
   void eatGrassBonus();
 
   /**
@@ -47,14 +43,10 @@ public interface MobEntity extends LivingEntity {
    */
   int getTalkInterval();
 
-  /**
-   * Plays ambient sounds at the position of the mob entity.
-   */
+  /** Plays ambient sounds at the position of the mob entity. */
   void playAmbientSound();
 
-  /**
-   * Spawns explosion particle at the position of the mob entity.
-   */
+  /** Spawns explosion particle at the position of the mob entity. */
   void spawnExplosionParticle();
 
   /**
@@ -117,8 +109,8 @@ public interface MobEntity extends LivingEntity {
   /**
    * Lets the face of the mob entity look at the given entity.
    *
-   * @param entity           The entity to look at.
-   * @param maxYawIncrease   The maximum yaw increase.
+   * @param entity The entity to look at.
+   * @param maxYawIncrease The maximum yaw increase.
    * @param maxPitchIncrease The maximum pitch increase.
    */
   void faceEntity(Entity entity, float maxYawIncrease, float maxPitchIncrease);
@@ -145,16 +137,14 @@ public interface MobEntity extends LivingEntity {
    */
   boolean canBeSteered();
 
-  /**
-   * Enables the persistence of this mob entity.
-   */
+  /** Enables the persistence of this mob entity. */
   void enablePersistence();
 
   /**
    * Changes the drop chance of an equipment slot.
    *
    * @param slotType The equipment slot.
-   * @param chance   The new drop chance.
+   * @param chance The new drop chance.
    */
   void setDropChance(EquipmentSlotType slotType, float chance);
 
@@ -182,7 +172,8 @@ public interface MobEntity extends LivingEntity {
   /**
    * Whether the mob entity is within home distance to the current position.
    *
-   * @return {@code true} if the mob entity is within home distance to the current position, otherwise {@code false}.
+   * @return {@code true} if the mob entity is within home distance to the current position,
+   *     otherwise {@code false}.
    */
   boolean isWithinHomeDistanceCurrentPosition();
 
@@ -190,7 +181,8 @@ public interface MobEntity extends LivingEntity {
    * Whether the mob entity is within home distance from the given position.
    *
    * @param position The block position to be checked.
-   * @return {@code true} if the mob entity is within home distance from the given position, otherwise {@code false}.
+   * @return {@code true} if the mob entity is within home distance from the given position,
+   *     otherwise {@code false}.
    */
   boolean isWithinHomeDistanceFromPosition(BlockPosition position);
 
@@ -227,7 +219,7 @@ public interface MobEntity extends LivingEntity {
    * Clears all leads from the mob entity.
    *
    * @param sendPacket {@code true} if the packet should be sent, otherwise {@code false}.
-   * @param dropLead   {@code true} if the lead is dropped, otherwise {@code false}.
+   * @param dropLead {@code true} if the lead is dropped, otherwise {@code false}.
    */
   void clearLeashed(boolean sendPacket, boolean dropLead);
 
@@ -235,7 +227,8 @@ public interface MobEntity extends LivingEntity {
    * Whether the mob entity can be leashed to given {@link PlayerEntity}.
    *
    * @param playerEntity The player entity to be checked.
-   * @return {@code true} if the mob entity can be leashed to given {@link PlayerEntity}, otherwise {@code false}.
+   * @return {@code true} if the mob entity can be leashed to given {@link PlayerEntity}, otherwise
+   *     {@code false}.
    */
   boolean canBeLeashedTo(PlayerEntity playerEntity);
 
@@ -256,7 +249,7 @@ public interface MobEntity extends LivingEntity {
   /**
    * Changes the leash holder of this mob entity.
    *
-   * @param entity      The new leash holder.
+   * @param entity The new leash holder.
    * @param leashHolder {@code true} if the new leash holder, otherwise {@code false}.
    */
   void setLeashHolder(Entity entity, boolean leashHolder);
@@ -271,7 +264,7 @@ public interface MobEntity extends LivingEntity {
   /**
    * Whether the given {@link ItemStack} is in the slot type.
    *
-   * @param slotType  The slot type of the item stack.
+   * @param slotType The slot type of the item stack.
    * @param itemStack The item stack to be checked.
    * @return {@code true} if the given item stack is in the slot type, otherwise {@code false}.
    */
@@ -319,26 +312,22 @@ public interface MobEntity extends LivingEntity {
    */
   void setAggressive(boolean aggressive);
 
-  /**
-   * A factory class for the {@link MobEntity}.
-   */
+  /** A factory class for the {@link MobEntity}. */
   @AssistedFactory(MobEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link MobEntity} with the given entity.
      *
-     * @param entity     The given entity.
+     * @param entity The given entity.
      * @param entityType The type of the entity.
      * @return A created mob entity.
      */
-    MobEntity create(@Assisted("mobEntity") Object entity, @Assisted("entityType") EntityType entityType);
-
+    MobEntity create(
+        @Assisted("mobEntity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /**
-   * Service interface for creating {@link MobEntity}'s.
-   */
+  /** Service interface for creating {@link MobEntity}'s. */
   interface Provider {
 
     /**
@@ -349,7 +338,5 @@ public interface MobEntity extends LivingEntity {
      * @see Factory#create(Object, EntityType)
      */
     MobEntity get(Object entity);
-
   }
-
 }

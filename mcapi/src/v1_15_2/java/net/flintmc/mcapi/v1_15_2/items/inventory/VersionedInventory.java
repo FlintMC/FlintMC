@@ -17,8 +17,14 @@ public abstract class VersionedInventory extends DefaultInventory {
   private final Supplier<Container> containerSupplier;
   private final ChatComponent title;
 
-  public VersionedInventory(ItemRegistry registry, int windowId, InventoryType type, InventoryDimension dimension,
-                            MinecraftItemMapper mapper, Supplier<Container> containerSupplier, ChatComponent title) {
+  public VersionedInventory(
+      ItemRegistry registry,
+      int windowId,
+      InventoryType type,
+      InventoryDimension dimension,
+      MinecraftItemMapper mapper,
+      Supplier<Container> containerSupplier,
+      ChatComponent title) {
     super(registry, windowId, type, dimension);
     this.mapper = mapper;
     this.containerSupplier = containerSupplier;
@@ -36,7 +42,10 @@ public abstract class VersionedInventory extends DefaultInventory {
 
   protected void validateContents(ItemStack[] contents) throws IllegalArgumentException {
     if (contents.length > super.getDimension().getSlotCount()) {
-      throw new IllegalArgumentException(contents.length + " are too many contents for an inventory with a size of " + super.getDimension().getSlotCount());
+      throw new IllegalArgumentException(
+          contents.length
+              + " are too many contents for an inventory with a size of "
+              + super.getDimension().getSlotCount());
     }
   }
 
@@ -46,7 +55,7 @@ public abstract class VersionedInventory extends DefaultInventory {
   }
 
   protected net.minecraft.item.ItemStack mapToVanilla(ItemStack item) {
-    return (net.minecraft.item.ItemStack) this.mapper.toMinecraft(item == null ? this.registry.getAirType().createStack() : item);
+    return (net.minecraft.item.ItemStack)
+        this.mapper.toMinecraft(item == null ? this.registry.getAirType().createStack() : item);
   }
-
 }

@@ -1,10 +1,10 @@
 package net.flintmc.mcapi.internal.chat.builder;
 
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.builder.SelectorComponentBuilder;
 import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
-import net.flintmc.mcapi.chat.EntitySelector;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.internal.chat.component.DefaultSelectorComponent;
 
 import java.util.Collection;

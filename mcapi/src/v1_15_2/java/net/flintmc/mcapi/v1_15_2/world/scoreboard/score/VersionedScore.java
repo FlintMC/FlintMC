@@ -7,9 +7,7 @@ import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 
-/**
- * 1.15.2 implementation of {@link Score}
- */
+/** 1.15.2 implementation of {@link Score} */
 @Implement(value = Score.class, version = "1.15.2")
 public class VersionedScore implements Score {
 
@@ -23,10 +21,9 @@ public class VersionedScore implements Score {
 
   @AssistedInject
   private VersionedScore(
-          @Assisted("scoreboard") Scoreboard scoreboard,
-          @Assisted("objective") Objective objective,
-          @Assisted("username") String username
-  ) {
+      @Assisted("scoreboard") Scoreboard scoreboard,
+      @Assisted("objective") Objective objective,
+      @Assisted("username") String username) {
     this.scoreboard = scoreboard;
     this.objective = objective;
     this.username = username;
@@ -34,36 +31,29 @@ public class VersionedScore implements Score {
 
   @AssistedInject
   private VersionedScore(
-          @Assisted("scoreboard") Scoreboard scoreboard,
-          @Assisted("objective") Objective objective,
-          @Assisted("username") String username,
-          @Assisted("score") int scorePoints
-  ) {
+      @Assisted("scoreboard") Scoreboard scoreboard,
+      @Assisted("objective") Objective objective,
+      @Assisted("username") String username,
+      @Assisted("score") int scorePoints) {
     this.scoreboard = scoreboard;
     this.objective = objective;
     this.username = username;
     this.scorePoints = scorePoints;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getPlayerName() {
     return this.username;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Objective getObjective() {
     return this.objective;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void increaseScore(int amount) {
     if (this.objective.getCriteria().readOnly()) {
@@ -73,25 +63,19 @@ public class VersionedScore implements Score {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void incrementScore() {
     this.increaseScore(1);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getScorePoints() {
     return this.scorePoints;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setScorePoints(int points) {
     if (this.scorePoints != points || this.forceUpdate) {
@@ -99,28 +83,21 @@ public class VersionedScore implements Score {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void reset() {
     this.setScorePoints(0);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean locked() {
     return this.locked;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setLocked(boolean locked) {
     this.locked = locked;
   }
-
 }

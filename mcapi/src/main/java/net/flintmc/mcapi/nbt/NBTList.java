@@ -3,9 +3,7 @@ package net.flintmc.mcapi.nbt;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * A list of tag payloads, without repeated tag ID's or any tag names.
- */
+/** A list of tag payloads, without repeated tag ID's or any tag names. */
 public interface NBTList extends NBT, Iterable<NBT> {
 
   /**
@@ -19,7 +17,7 @@ public interface NBTList extends NBT, Iterable<NBT> {
    * Changes the tag at the given index.
    *
    * @param index The index for the tag.
-   * @param tag   The new tag.
+   * @param tag The new tag.
    */
   void set(int index, NBT tag);
 
@@ -31,19 +29,13 @@ public interface NBTList extends NBT, Iterable<NBT> {
    */
   NBT get(int index);
 
-  /**
-   * Removes all tags from this list.
-   */
+  /** Removes all tags from this list. */
   void clear();
 
-  /**
-   * Retrieves the size of the collection.
-   */
+  /** Retrieves the size of the collection. */
   int size();
 
-  /**
-   * A factory class for the {@link NBTList}.
-   */
+  /** A factory class for the {@link NBTList}. */
   @AssistedFactory(NBTList.class)
   interface Factory {
 
@@ -54,7 +46,5 @@ public interface NBTList extends NBT, Iterable<NBT> {
      * @return A created list named binary tag.
      */
     NBTList create(@Assisted("subtagIdentifier") int subtagIdentifier);
-
   }
-
 }

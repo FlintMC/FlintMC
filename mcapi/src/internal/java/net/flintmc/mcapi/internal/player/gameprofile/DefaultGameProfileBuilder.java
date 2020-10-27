@@ -7,9 +7,7 @@ import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
 import java.util.UUID;
 
-/**
- * An implementation of {@link GameProfile.Builder}
- */
+/** An implementation of {@link GameProfile.Builder} */
 @Implement(GameProfile.Builder.class)
 public class DefaultGameProfileBuilder implements GameProfile.Builder {
 

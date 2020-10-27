@@ -15,9 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Default implementation the {@link NBTList}.
- */
+/** Default implementation the {@link NBTList}. */
 @Implement(NBTList.class)
 public class DefaultNBTList implements NBTList {
 
@@ -30,17 +28,13 @@ public class DefaultNBTList implements NBTList {
     this.subtagIdentifier = subtagIdentifier;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTType getIdentifier() {
     return NBTType.TAG_LIST;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void readContents(NBTDataInputStream inputStream) throws IOException {
     this.clear();
@@ -52,9 +46,7 @@ public class DefaultNBTList implements NBTList {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void writeContents(NBTDataOutputStream outputStream) throws IOException {
     if (this.tags.isEmpty()) {
@@ -71,60 +63,45 @@ public class DefaultNBTList implements NBTList {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String asString() {
     return this.tags.stream().map(NBT::asString).collect(Collectors.joining(","));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Iterator<NBT> iterator() {
     return this.tags.iterator();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void add(NBT tag) {
     this.tags.add(tag);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void set(int index, NBT tag) {
     this.tags.set(index, tag);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBT get(int index) {
     return this.tags.get(index);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void clear() {
     this.tags.clear();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int size() {
     return this.tags.size();
   }
 }
-

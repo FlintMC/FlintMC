@@ -4,9 +4,9 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonParseException;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.internal.server.status.DefaultServerFavicon;
 import net.flintmc.mcapi.internal.server.status.DefaultServerPlayers;
 import net.flintmc.mcapi.internal.server.status.DefaultServerVersion;
@@ -38,10 +38,13 @@ import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
 
 @Implement(value = PendingStatusRequest.class, version = "1.15.2")
-public class VersionedPendingStatusRequest implements PendingStatusRequest, IClientStatusNetHandler {
+public class VersionedPendingStatusRequest
+    implements PendingStatusRequest, IClientStatusNetHandler {
 
-  private static final ServerVersion DEFAULT_VERSION = new DefaultServerVersion("unknown", -1, false);
-  private static final ServerPlayers DEFAULT_PLAYERS = new DefaultServerPlayers(0, 0, new GameProfile[0]);
+  private static final ServerVersion DEFAULT_VERSION =
+      new DefaultServerVersion("unknown", -1, false);
+  private static final ServerPlayers DEFAULT_PLAYERS =
+      new DefaultServerPlayers(0, 0, new GameProfile[0]);
 
   private final Logger logger;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
@@ -62,13 +65,16 @@ public class VersionedPendingStatusRequest implements PendingStatusRequest, ICli
   private long startTimestamp = -1;
 
   @AssistedInject
-  public VersionedPendingStatusRequest(@Assisted("targetAddress") ServerAddress targetAddress,
-                                       @Assisted("defaultFavicon") ServerFavicon defaultFavicon,
-                                       @InjectLogger Logger logger,
-                                       GameProfileSerializer gameProfileSerializer,
-                                       MinecraftComponentMapper componentMapper, ServerStatus.Factory statusFactory,
-                                       ServerFavicon.Factory faviconFactory, ServerPlayers.Factory playersFactory,
-                                       ServerVersion.Factory versionFactory) {
+  public VersionedPendingStatusRequest(
+      @Assisted("targetAddress") ServerAddress targetAddress,
+      @Assisted("defaultFavicon") ServerFavicon defaultFavicon,
+      @InjectLogger Logger logger,
+      GameProfileSerializer gameProfileSerializer,
+      MinecraftComponentMapper componentMapper,
+      ServerStatus.Factory statusFactory,
+      ServerFavicon.Factory faviconFactory,
+      ServerPlayers.Factory playersFactory,
+      ServerVersion.Factory versionFactory) {
     this.logger = logger;
     this.targetAddress = targetAddress;
     this.defaultFavicon = defaultFavicon;
@@ -83,51 +89,46 @@ public class VersionedPendingStatusRequest implements PendingStatusRequest, ICli
     this.state = PendingStatusState.IDLE;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public CompletableFuture<ServerStatus> getFuture() {
     return this.future;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ServerAddress getTargetAddress() {
     return this.targetAddress;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PendingStatusState getState() {
     return this.state;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void start() throws UnknownHostException {
-    Preconditions.checkState(this.state == PendingStatusState.IDLE, "Every request can only be started once");
+    Preconditions.checkState(
+        this.state == PendingStatusState.IDLE, "Every request can only be started once");
 
     this.startTimestamp = System.currentTimeMillis();
 
     this.state = PendingStatusState.CONNECTING;
-    this.networkManager = NetworkManager.createNetworkManagerAndConnect(InetAddress.getByName(this.targetAddress.getIP()), this.targetAddress.getPort(), false);
+    this.networkManager =
+        NetworkManager.createNetworkManagerAndConnect(
+            InetAddress.getByName(this.targetAddress.getIP()), this.targetAddress.getPort(), false);
     this.networkManager.setNetHandler(this);
 
-    this.networkManager.sendPacket(new CHandshakePacket(this.targetAddress.getIP(), this.targetAddress.getPort(), ProtocolType.STATUS));
+    this.networkManager.sendPacket(
+        new CHandshakePacket(
+            this.targetAddress.getIP(), this.targetAddress.getPort(), ProtocolType.STATUS));
     this.networkManager.sendPacket(new CServerQueryPacket());
     this.state = PendingStatusState.RECEIVING;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public long getStartTimestamp() {
     return this.startTimestamp;
@@ -138,7 +139,8 @@ public class VersionedPendingStatusRequest implements PendingStatusRequest, ICli
     try {
       this.response = packet.getResponse();
     } catch (JsonParseException exception) {
-      this.logger.error("Invalid response received from the server @" + this.targetAddress, exception);
+      this.logger.error(
+          "Invalid response received from the server @" + this.targetAddress, exception);
     }
 
     this.state = PendingStatusState.PINGING;
@@ -170,24 +172,31 @@ public class VersionedPendingStatusRequest implements PendingStatusRequest, ICli
 
     ServerStatusResponse.Players players = this.response.getPlayers();
 
-    ServerFavicon favicon = this.response.getFavicon() != null && this.response.getFavicon().startsWith(DefaultServerFavicon.PREFIX)
-        ? this.faviconFactory.createCustom(this.response.getFavicon())
-        : this.defaultFavicon;
+    ServerFavicon favicon =
+        this.response.getFavicon() != null
+                && this.response.getFavicon().startsWith(DefaultServerFavicon.PREFIX)
+            ? this.faviconFactory.createCustom(this.response.getFavicon())
+            : this.defaultFavicon;
 
     int requiredProtocol = SharedConstants.getVersion().getProtocolVersion();
     int protocol = this.response.getVersion().getProtocol();
 
-    ServerStatus status = this.statusFactory.create(
-        this.targetAddress,
-        this.response.getVersion() == null ? DEFAULT_VERSION :
-            this.versionFactory.create(this.response.getVersion().getName(), protocol, protocol == requiredProtocol),
-        this.response.getPlayers() == null ? DEFAULT_PLAYERS :
-            this.playersFactory.create(players.getOnlinePlayerCount(), players.getMaxPlayers(), this.createPlayers()),
-        this.response.getServerDescription() == null ? null :
-            this.componentMapper.fromMinecraft(this.response.getServerDescription()),
-        favicon,
-        ping
-    );
+    ServerStatus status =
+        this.statusFactory.create(
+            this.targetAddress,
+            this.response.getVersion() == null
+                ? DEFAULT_VERSION
+                : this.versionFactory.create(
+                    this.response.getVersion().getName(), protocol, protocol == requiredProtocol),
+            this.response.getPlayers() == null
+                ? DEFAULT_PLAYERS
+                : this.playersFactory.create(
+                    players.getOnlinePlayerCount(), players.getMaxPlayers(), this.createPlayers()),
+            this.response.getServerDescription() == null
+                ? null
+                : this.componentMapper.fromMinecraft(this.response.getServerDescription()),
+            favicon,
+            ping);
 
     this.future.complete(status);
 
@@ -213,5 +222,4 @@ public class VersionedPendingStatusRequest implements PendingStatusRequest, ICli
   public NetworkManager getNetworkManager() {
     return this.networkManager;
   }
-
 }

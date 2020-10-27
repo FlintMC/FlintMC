@@ -33,17 +33,13 @@ public class VersionedTileEntityTypeRegister implements TileEntityTypeRegister {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Map<String, TileEntityType> getTileEntitiesTypes() {
     return this.tileEntityTypes;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public TileEntityType getTileEntityType(String key) {
     return this.tileEntityTypes.get(key);

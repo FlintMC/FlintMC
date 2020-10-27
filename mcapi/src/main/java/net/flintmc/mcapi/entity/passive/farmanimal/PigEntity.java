@@ -1,12 +1,10 @@
 package net.flintmc.mcapi.entity.passive.farmanimal;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.mcapi.entity.passive.AnimalEntity;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.entity.passive.AnimalEntity;
 
-/**
- * Represents the Minecraft pig entity.
- */
+/** Represents the Minecraft pig entity. */
 public interface PigEntity extends AnimalEntity {
 
   /**
@@ -30,9 +28,7 @@ public interface PigEntity extends AnimalEntity {
    */
   boolean boost();
 
-  /**
-   * A factory class for the {@link PigEntity}.
-   */
+  /** A factory class for the {@link PigEntity}. */
   @AssistedFactory(PigEntity.class)
   interface Factory {
 
@@ -43,8 +39,5 @@ public interface PigEntity extends AnimalEntity {
      * @return A created pig entity.
      */
     PigEntity create(@Assisted("entity") Object entity);
-
-
   }
-
 }

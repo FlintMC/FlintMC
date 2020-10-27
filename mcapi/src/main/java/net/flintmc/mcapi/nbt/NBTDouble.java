@@ -3,9 +3,7 @@ package net.flintmc.mcapi.nbt;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * A singed floating point type.
- */
+/** A singed floating point type. */
 public interface NBTDouble extends NBT {
 
   /**
@@ -15,9 +13,7 @@ public interface NBTDouble extends NBT {
    */
   double asDouble();
 
-  /**
-   * A factory class for the {@link NBTDouble}.
-   */
+  /** A factory class for the {@link NBTDouble}. */
   @AssistedFactory(NBTDouble.class)
   interface Factory {
 
@@ -28,7 +24,5 @@ public interface NBTDouble extends NBT {
      * @return A created double named binary tag.
      */
     NBTDouble create(@Assisted("value") double value);
-
   }
-
 }

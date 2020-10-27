@@ -3,13 +3,13 @@ package net.flintmc.mcapi.v1_15_2.tileentity.mapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.internal.tileentity.cache.TileEntityCache;
 import net.flintmc.mcapi.tileentity.SignTileEntity;
 import net.flintmc.mcapi.tileentity.TileEntity;
 import net.flintmc.mcapi.tileentity.mapper.TileEntityMapper;
 import net.flintmc.mcapi.tileentity.type.TileEntityTypeRegister;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
-import net.flintmc.mcapi.internal.tileentity.cache.TileEntityCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -26,11 +26,11 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
 
   @Inject
   private VersionedTileEntityMapper(
-          TileEntityCache tileEntityCache,
-          TileEntity.Factory tileEntityFactory,
-          TileEntityTypeRegister tileEntityTypeRegister,
-          SignTileEntity.Factory signTileEntityFactory,
-          World world) {
+      TileEntityCache tileEntityCache,
+      TileEntity.Factory tileEntityFactory,
+      TileEntityTypeRegister tileEntityTypeRegister,
+      SignTileEntity.Factory signTileEntityFactory,
+      World world) {
     this.tileEntityCache = tileEntityCache;
     this.tileEntityFactory = tileEntityFactory;
     this.tileEntityTypeRegister = tileEntityTypeRegister;
@@ -38,15 +38,14 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
     this.world = world;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftTileEntity(TileEntity tileEntity) {
 
-    for (net.minecraft.tileentity.TileEntity entity : Minecraft.getInstance().world.loadedTileEntityList) {
-      if (entity instanceof net.minecraft.tileentity.SignTileEntity &&
-              equalsBlockPosition(tileEntity.getPosition(), entity.getPos())) {
+    for (net.minecraft.tileentity.TileEntity entity :
+        Minecraft.getInstance().world.loadedTileEntityList) {
+      if (entity instanceof net.minecraft.tileentity.SignTileEntity
+          && equalsBlockPosition(tileEntity.getPosition(), entity.getPos())) {
         return entity;
       }
     }
@@ -54,52 +53,45 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public TileEntity fromMinecraftTileEntity(Object tileEntity) {
     if (!(tileEntity instanceof net.minecraft.tileentity.TileEntity)) {
-      throw new IllegalArgumentException(tileEntity.getClass().getName() + " is not an instance of " + net.minecraft.tileentity.TileEntity.class.getName());
+      throw new IllegalArgumentException(
+          tileEntity.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.tileentity.TileEntity.class.getName());
     }
 
-
-    net.minecraft.tileentity.TileEntity minecraftTileEntity = (net.minecraft.tileentity.TileEntity) tileEntity;
+    net.minecraft.tileentity.TileEntity minecraftTileEntity =
+        (net.minecraft.tileentity.TileEntity) tileEntity;
 
     BlockPosition blockPosition = this.world.fromMinecraftBlockPos(minecraftTileEntity.getPos());
 
     if (minecraftTileEntity instanceof net.minecraft.tileentity.SignTileEntity) {
 
       return this.tileEntityCache.putIfAbsent(
-              blockPosition,
-              () -> fromMinecraftSignTileEntity(minecraftTileEntity)
-      );
+          blockPosition, () -> fromMinecraftSignTileEntity(minecraftTileEntity));
     } else {
 
       return this.tileEntityCache.putIfAbsent(
-              blockPosition,
-              () -> this.tileEntityFactory.create(
-                      minecraftTileEntity,
-                      this.tileEntityTypeRegister.getTileEntityType(
-                              Registry.BLOCK_ENTITY_TYPE.getKey(
-                                      minecraftTileEntity.getType()
-                              ).getPath()
-                      )
-              )
-      );
+          blockPosition,
+          () ->
+              this.tileEntityFactory.create(
+                  minecraftTileEntity,
+                  this.tileEntityTypeRegister.getTileEntityType(
+                      Registry.BLOCK_ENTITY_TYPE.getKey(minecraftTileEntity.getType()).getPath())));
     }
-
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftSignTileEntity(SignTileEntity signTileEntity) {
 
-    for (net.minecraft.tileentity.TileEntity tileEntity : Minecraft.getInstance().world.loadedTileEntityList) {
-      if (tileEntity instanceof net.minecraft.tileentity.SignTileEntity &&
-              equalsBlockPosition(signTileEntity.getPosition(), tileEntity.getPos())) {
+    for (net.minecraft.tileentity.TileEntity tileEntity :
+        Minecraft.getInstance().world.loadedTileEntityList) {
+      if (tileEntity instanceof net.minecraft.tileentity.SignTileEntity
+          && equalsBlockPosition(signTileEntity.getPosition(), tileEntity.getPos())) {
         return tileEntity;
       }
     }
@@ -107,28 +99,30 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public SignTileEntity fromMinecraftSignTileEntity(Object signTileEntity) {
     if (!(signTileEntity instanceof net.minecraft.tileentity.SignTileEntity)) {
-      throw new IllegalArgumentException(signTileEntity.getClass().getName() + " is not an instance of " + net.minecraft.tileentity.SignTileEntity.class.getName());
+      throw new IllegalArgumentException(
+          signTileEntity.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.tileentity.SignTileEntity.class.getName());
     }
 
-    net.minecraft.tileentity.SignTileEntity minecraftSignTileEntity = (net.minecraft.tileentity.SignTileEntity) signTileEntity;
+    net.minecraft.tileentity.SignTileEntity minecraftSignTileEntity =
+        (net.minecraft.tileentity.SignTileEntity) signTileEntity;
 
-    BlockPosition blockPosition = this.world.fromMinecraftBlockPos(minecraftSignTileEntity.getPos());
+    BlockPosition blockPosition =
+        this.world.fromMinecraftBlockPos(minecraftSignTileEntity.getPos());
 
-    return (SignTileEntity) this.tileEntityCache.putIfAbsent(
-            blockPosition,
-            () -> this.signTileEntityFactory.create(minecraftSignTileEntity)
-    );
+    return (SignTileEntity)
+        this.tileEntityCache.putIfAbsent(
+            blockPosition, () -> this.signTileEntityFactory.create(minecraftSignTileEntity));
   }
 
   private boolean equalsBlockPosition(BlockPosition position, BlockPos blockPos) {
-    return position.getX() == blockPos.getX() &&
-            position.getY() == blockPos.getY() &&
-            position.getZ() == blockPos.getZ();
+    return position.getX() == blockPos.getX()
+        && position.getY() == blockPos.getY()
+        && position.getZ() == blockPos.getZ();
   }
 }

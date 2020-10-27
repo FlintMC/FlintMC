@@ -18,8 +18,7 @@ public interface VisitTypeInsn {
       this.type = type;
     }
 
-    public static Context of(
-        MethodVisitorContext methodVisitorContext, int opcode, String type) {
+    public static Context of(MethodVisitorContext methodVisitorContext, int opcode, String type) {
       return new Context(methodVisitorContext, opcode, type);
     }
 

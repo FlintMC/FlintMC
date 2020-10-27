@@ -2,9 +2,10 @@ package net.flintmc.mcapi.v1_15_2.items;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.internal.items.DefaultItemRegistry;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStackSerializer;
@@ -13,7 +14,6 @@ import net.flintmc.mcapi.items.meta.enchantment.EnchantmentRarity;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
 import net.flintmc.mcapi.items.type.ItemCategory;
 import net.flintmc.mcapi.items.type.ItemType;
-import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -28,15 +28,24 @@ import java.util.Map;
 public class VersionedItemRegistry extends DefaultItemRegistry {
 
   @Inject
-  public VersionedItemRegistry(ItemType.Factory itemFactory, EnchantmentType.Factory enchantmentFactory,
-                               ComponentBuilder.Factory componentFactory, ComponentSerializer.Factory componentSerializerFactory,
-                               ItemStackSerializer itemStackSerializer) {
-    super(itemFactory, enchantmentFactory, componentFactory, componentSerializerFactory, itemStackSerializer);
+  public VersionedItemRegistry(
+      ItemType.Factory itemFactory,
+      EnchantmentType.Factory enchantmentFactory,
+      ComponentBuilder.Factory componentFactory,
+      ComponentSerializer.Factory componentSerializerFactory,
+      ItemStackSerializer itemStackSerializer) {
+    super(
+        itemFactory,
+        enchantmentFactory,
+        componentFactory,
+        componentSerializerFactory,
+        itemStackSerializer);
   }
 
   @Override
   protected void registerItems() {
-    Map<NameSpacedKey, Class<? extends ItemMeta>> specialMetaClasses = this.getSpecialItemMetaClasses();
+    Map<NameSpacedKey, Class<? extends ItemMeta>> specialMetaClasses =
+        this.getSpecialItemMetaClasses();
 
     // create one builder for every item
     ItemType.Builder builder = super.itemFactory.newBuilder();
@@ -45,7 +54,8 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
       // name in the registry like minecraft:stone
       ResourceLocation resourceLocation = Registry.ITEM.getKey(item);
 
-      NameSpacedKey registryName = NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
+      NameSpacedKey registryName =
+          NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
 
       // creative mode categories
       ItemCategory category = this.findCategory(registryName, item);
@@ -54,7 +64,8 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
       builder
           .category(category)
           .registryName(registryName)
-          .defaultDisplayName(super.componentFactory.translation().translationKey(item.getTranslationKey()).build())
+          .defaultDisplayName(
+              super.componentFactory.translation().translationKey(item.getTranslationKey()).build())
           .maxDamage(item.getMaxDamage())
           .maxStackSize(item.getMaxStackSize());
 
@@ -73,18 +84,26 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
       // name in the registry like minecraft:sharpness
       ResourceLocation resourceLocation = Registry.ENCHANTMENT.getKey(enchantment);
 
-      NameSpacedKey registryName = NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
+      NameSpacedKey registryName =
+          NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
       Enchantment.Rarity rarity = enchantment.getRarity();
 
-      super.registerEnchantmentType(super.enchantmentFactory.newBuilder()
-          .registryName(registryName)
-          .highestLevel(enchantment.getMaxLevel())
-          .rarity(
-              rarity == Enchantment.Rarity.UNCOMMON ? EnchantmentRarity.UNCOMMON :
-                  rarity == Enchantment.Rarity.COMMON ? EnchantmentRarity.COMMON :
-                      rarity == Enchantment.Rarity.RARE ? EnchantmentRarity.RARE :
-                          rarity == Enchantment.Rarity.VERY_RARE ? EnchantmentRarity.EPIC : null)
-          .build());
+      super.registerEnchantmentType(
+          super.enchantmentFactory
+              .newBuilder()
+              .registryName(registryName)
+              .highestLevel(enchantment.getMaxLevel())
+              .rarity(
+                  rarity == Enchantment.Rarity.UNCOMMON
+                      ? EnchantmentRarity.UNCOMMON
+                      : rarity == Enchantment.Rarity.COMMON
+                          ? EnchantmentRarity.COMMON
+                          : rarity == Enchantment.Rarity.RARE
+                              ? EnchantmentRarity.RARE
+                              : rarity == Enchantment.Rarity.VERY_RARE
+                                  ? EnchantmentRarity.EPIC
+                                  : null)
+              .build());
     }
   }
 
@@ -109,15 +128,18 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
       return category;
     }
 
-    category = ItemCategory.create(registryName,
-        this.componentFactory.translation().translationKey(item.getGroup().getTranslationKey()).build(),
-        () -> super.getType(itemRegistryName),
-        item.getGroup().drawInForegroundOfTab(),
-        item.getGroup().getIndex()
-    );
+    category =
+        ItemCategory.create(
+            registryName,
+            this.componentFactory
+                .translation()
+                .translationKey(item.getGroup().getTranslationKey())
+                .build(),
+            () -> super.getType(itemRegistryName),
+            item.getGroup().drawInForegroundOfTab(),
+            item.getGroup().getIndex());
 
     super.registerCategory(category);
     return category;
   }
-
 }

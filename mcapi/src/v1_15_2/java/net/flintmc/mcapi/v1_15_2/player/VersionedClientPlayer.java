@@ -37,11 +37,10 @@ public class VersionedClientPlayer implements ClientPlayer {
 
   @Inject
   private VersionedClientPlayer(
-          PlayerEntity.Provider playerEntityProvider,
-          NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
-          InventoryController inventoryController,
-          TabOverlay tabOverlay
-  ) {
+      PlayerEntity.Provider playerEntityProvider,
+      NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
+      InventoryController inventoryController,
+      TabOverlay tabOverlay) {
     this.playerEntityProvider = playerEntityProvider;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
     this.inventoryController = inventoryController;
@@ -50,99 +49,76 @@ public class VersionedClientPlayer implements ClientPlayer {
     this.clientPlayerEntity = Minecraft.getInstance().player;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getElytraPitch() {
     return Minecraft.getInstance().player.rotateElytraX;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setElytraPitch(float elytraPitch) {
     Minecraft.getInstance().player.rotateElytraX = elytraPitch;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getElytraYaw() {
     return Minecraft.getInstance().player.rotateElytraY;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setElytraYaw(float elytraYaw) {
     Minecraft.getInstance().player.rotateElytraY = elytraYaw;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getElytraRoll() {
     return Minecraft.getInstance().player.rotateElytraZ;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setElytraRoll(float elytraRoll) {
     Minecraft.getInstance().player.rotateElytraZ = elytraRoll;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSpectator() {
     NetworkPlayerInfo networkPlayerInfo = this.getNetworkPlayerInfo();
     return networkPlayerInfo != null && networkPlayerInfo.getGameMode() == GameMode.SPECTATOR;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCreative() {
     NetworkPlayerInfo networkPlayerInfo = this.getNetworkPlayerInfo();
     return networkPlayerInfo != null && networkPlayerInfo.getGameMode() == GameMode.CREATIVE;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean hasPlayerInfo() {
     return this.getNetworkPlayerInfo() != null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NetworkPlayerInfo getNetworkPlayerInfo() {
-    return this.networkPlayerInfoRegistry.getPlayerInfo(Minecraft.getInstance().player.getGameProfile().getId());
+    return this.networkPlayerInfoRegistry.getPlayerInfo(
+        Minecraft.getInstance().player.getGameProfile().getId());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getFovModifier() {
     return Minecraft.getInstance().player.getFovModifier();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerEntity getEntity() {
 
@@ -158,217 +134,163 @@ public class VersionedClientPlayer implements ClientPlayer {
     return this.playerEntity;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerInventory getInventoryController() {
     return this.inventoryController.getPlayerInventory();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Inventory getOpenInventory() {
     return this.inventoryController.getOpenInventory();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void sendChatMessage(String message) {
     Minecraft.getInstance().player.sendChatMessage(message);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void closeScreenAndDropStack() {
     Minecraft.getInstance().player.closeScreenAndDropStack();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPlayerSPHealth(float health) {
     Minecraft.getInstance().player.setPlayerSPHealth(health);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void sendHorseInventory() {
     Minecraft.getInstance().player.sendHorseInventory();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getServerBrand() {
     return Minecraft.getInstance().player.getServerBrand();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setServerBrand(String serverBrand) {
     Minecraft.getInstance().player.setServerBrand(serverBrand);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPermissionLevel(int level) {
     Minecraft.getInstance().player.setPermissionLevel(level);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setExperienceStats(float currentExperience, int maxExperience, int level) {
     Minecraft.getInstance().player.setXPStats(currentExperience, maxExperience, level);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isShowDeathScreen() {
     return Minecraft.getInstance().player.isShowDeathScreen();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setShowDeathScreen(boolean showDeathScreen) {
     Minecraft.getInstance().player.setShowDeathScreen(showDeathScreen);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isRidingHorse() {
     return Minecraft.getInstance().player.isRidingHorse();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getHorseJumpPower() {
     return Minecraft.getInstance().player.getHorseJumpPower();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isRowingBoat() {
     return Minecraft.getInstance().player.isRowingBoat();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isAutoJumpEnabled() {
     return Minecraft.getInstance().player.isAutoJumpEnabled();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getWaterBrightness() {
     return Minecraft.getInstance().player.getWaterBrightness();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public TabOverlay getTabOverlay() {
     return this.tabOverlay;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getRenderArmYaw() {
     return Minecraft.getInstance().player.renderArmYaw;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setRenderArmYaw(float renderArmYaw) {
     Minecraft.getInstance().player.renderArmYaw = renderArmYaw;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getPreviousRenderArmYaw() {
     return Minecraft.getInstance().player.prevRenderArmYaw;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPreviousArmYaw(float previousRenderArmYaw) {
     Minecraft.getInstance().player.prevRenderArmYaw = previousRenderArmYaw;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getRenderArmPitch() {
     return Minecraft.getInstance().player.renderArmPitch;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setRenderArmPitch(float renderArmPitch) {
     Minecraft.getInstance().player.renderArmPitch = renderArmPitch;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getPreviousRenderArmPitch() {
     return Minecraft.getInstance().player.prevRenderArmPitch;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPreviousRenderArmPitch(float previousRenderArmPitch) {
     Minecraft.getInstance().player.prevRenderArmPitch = previousRenderArmPitch;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getBiome() {
     World world = Minecraft.getInstance().world;
@@ -403,57 +325,43 @@ public class VersionedClientPlayer implements ClientPlayer {
     return UNKNOWN_BIOME;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public SkinModel getSkinModel() {
     return this.getNetworkPlayerInfo().getSkinModel();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ResourceLocation getSkinLocation() {
     return this.getNetworkPlayerInfo().getSkinLocation();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ResourceLocation getCloakLocation() {
     return this.getNetworkPlayerInfo().getCloakLocation();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ResourceLocation getElytraLocation() {
     return this.getNetworkPlayerInfo().getElytraLocation();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean hasSkin() {
     return this.getNetworkPlayerInfo().hasSkin();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean hasCloak() {
     return this.getNetworkPlayerInfo().hasSkin();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean hasElytra() {
     return this.getNetworkPlayerInfo().hasElytra();

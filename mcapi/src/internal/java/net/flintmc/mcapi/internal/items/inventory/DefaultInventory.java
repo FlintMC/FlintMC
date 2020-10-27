@@ -18,7 +18,8 @@ public abstract class DefaultInventory implements Inventory {
   private final InventoryType type;
   private final InventoryDimension dimension;
 
-  public DefaultInventory(ItemRegistry registry, int windowId, InventoryType type, InventoryDimension dimension) {
+  public DefaultInventory(
+      ItemRegistry registry, int windowId, InventoryType type, InventoryDimension dimension) {
     this.registry = registry;
     this.windowId = windowId;
     this.type = type;
@@ -42,7 +43,12 @@ public abstract class DefaultInventory implements Inventory {
 
   protected void validateSlot(int slot) throws IndexOutOfBoundsException {
     if (slot < 0 || slot >= this.dimension.getSlotCount()) {
-      throw new IndexOutOfBoundsException("Slot " + slot + " is out of bounds for " + this.dimension.getSlotCount() + " available slots");
+      throw new IndexOutOfBoundsException(
+          "Slot "
+              + slot
+              + " is out of bounds for "
+              + this.dimension.getSlotCount()
+              + " available slots");
     }
   }
 
@@ -72,5 +78,4 @@ public abstract class DefaultInventory implements Inventory {
 
     return Ints.toArray(slots);
   }
-
 }

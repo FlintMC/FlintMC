@@ -4,12 +4,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.internal.DefaultLoggingProvider;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.framework.packages.PackageLoader;
 import net.flintmc.framework.packages.PackageState;
-import net.flintmc.framework.inject.internal.DefaultLoggingProvider;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -214,17 +214,13 @@ public class DefaultPackageLoader implements PackageLoader {
     return resolvedPackages;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Set<Package> getAllPackages() {
     return Collections.unmodifiableSet(this.allPackages);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Set<Package> getLoadedPackages() {
     return Collections.unmodifiableSet(
@@ -252,9 +248,7 @@ public class DefaultPackageLoader implements PackageLoader {
     }
   }
 
-  /**
-   * Helper class for storing a {@link JarFile} associated with a {@link File}.
-   */
+  /** Helper class for storing a {@link JarFile} associated with a {@link File}. */
   private static class JarTuple {
     private final File file;
     private final JarFile jar;

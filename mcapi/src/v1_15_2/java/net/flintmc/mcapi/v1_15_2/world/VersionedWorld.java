@@ -20,9 +20,7 @@ import net.minecraft.world.dimension.DimensionType;
 import java.util.List;
 import java.util.Random;
 
-/**
- * 1.15.2 implementation of {@link World}.
- */
+/** 1.15.2 implementation of {@link World}. */
 @Singleton
 @Implement(value = World.class, version = "1.15.2")
 public class VersionedWorld implements World {
@@ -36,10 +34,10 @@ public class VersionedWorld implements World {
 
   @Inject
   public VersionedWorld(
-          BlockPosition.Factory blockPositionFactory,
-          DifficultyLocal.Factory difficultyLocalFactory,
-          WorldBorder worldBorder,
-          Scoreboard scoreboard) {
+      BlockPosition.Factory blockPositionFactory,
+      DifficultyLocal.Factory difficultyLocalFactory,
+      WorldBorder worldBorder,
+      Scoreboard scoreboard) {
     this.blockPositionFactory = blockPositionFactory;
     this.difficultyLocalFactory = difficultyLocalFactory;
     this.worldBorder = worldBorder;
@@ -48,49 +46,37 @@ public class VersionedWorld implements World {
     this.loadedTileEntities = Lists.newArrayList();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public long getSeed() {
     return Minecraft.getInstance().world.getSeed();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public BlockPosition getSpawnPoint() {
     return this.fromMinecraftBlockPos(Minecraft.getInstance().world.getSpawnPoint());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getCurrentMoonPhaseFactor() {
     return Minecraft.getInstance().world.getCurrentMoonPhaseFactor();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getCelestialAngle(float partialTicks) {
     return Minecraft.getInstance().world.getCelestialAngle(partialTicks);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getMoonPhase() {
     return Minecraft.getInstance().world.getMoonPhase();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public DifficultyLocal getDifficulty(BlockPosition position) {
     ClientWorld world = Minecraft.getInstance().world;
@@ -104,16 +90,10 @@ public class VersionedWorld implements World {
     }
 
     return this.difficultyLocalFactory.create(
-            this.getDifficulty(),
-            this.getDayTime(),
-            chunkInhabitedTime,
-            moonPhaseFactory
-    );
+        this.getDifficulty(), this.getDayTime(), chunkInhabitedTime, moonPhaseFactory);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Difficulty getDifficulty() {
     net.minecraft.world.Difficulty difficulty = Minecraft.getInstance().world.getDifficulty();
@@ -132,171 +112,127 @@ public class VersionedWorld implements World {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public long getDayTime() {
     return Minecraft.getInstance().world.getDayTime();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public WorldBorder getWorldBorder() {
     return this.worldBorder;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Random getRandom() {
     return Minecraft.getInstance().world.getRandom();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isDayTime() {
     return Minecraft.getInstance().world.isDaytime();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isNightTime() {
     return Minecraft.getInstance().world.isNightTime();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getThunderStrength(float partialTicks) {
     return Minecraft.getInstance().world.getThunderStrength(partialTicks);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setThunderStrength(float strength) {
     Minecraft.getInstance().world.setThunderStrength(strength);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getRainStrength(float partialTicks) {
     return Minecraft.getInstance().world.getRainStrength(partialTicks);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setRainStrength(float strength) {
     Minecraft.getInstance().world.setRainStrength(strength);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isThundering() {
     return Minecraft.getInstance().world.isThundering();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isRainingAt(BlockPosition position) {
-    return Minecraft.getInstance().world.isRainingAt(
-            (BlockPos) this.toMinecraftBlockPos(position)
-    );
+    return Minecraft.getInstance().world.isRainingAt((BlockPos) this.toMinecraftBlockPos(position));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getActualHeight() {
     return Minecraft.getInstance().world.getActualHeight();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getLight(BlockPosition position) {
     return Minecraft.getInstance().world.getLight((BlockPos) this.toMinecraftBlockPos(position));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getLightSubtracted(BlockPosition position, int amount) {
-    return Minecraft.getInstance().world.getLightSubtracted(
-            (BlockPos) this.toMinecraftBlockPos(position),
-            amount
-    );
+    return Minecraft.getInstance()
+        .world
+        .getLightSubtracted((BlockPos) this.toMinecraftBlockPos(position), amount);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getLightValue(BlockPosition position) {
-    return Minecraft.getInstance().world.getLightValue(
-            (BlockPos) this.toMinecraftBlockPos(position)
-    );
+    return Minecraft.getInstance()
+        .world
+        .getLightValue((BlockPos) this.toMinecraftBlockPos(position));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getMaxLightLevel() {
     return Minecraft.getInstance().world.getMaxLightLevel();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getNeighborAwareLightSubtracted(BlockPosition position, int amount) {
-    return Minecraft.getInstance().world.getNeighborAwareLightSubtracted(
-            (BlockPos) this.toMinecraftBlockPos(position),
-            amount
-    );
+    return Minecraft.getInstance()
+        .world
+        .getNeighborAwareLightSubtracted((BlockPos) this.toMinecraftBlockPos(position), amount);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Dimension getDimension() {
     return this.fromMinecraftDimension(Minecraft.getInstance().world.getDimension().getType());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Scoreboard getScoreboard() {
     return this.scoreboard;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public TileEntity getTileEntity(BlockPosition blockPosition) {
     for (TileEntity loadedTileEntity : this.loadedTileEntities) {
@@ -307,25 +243,19 @@ public class VersionedWorld implements World {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public List<TileEntity> getLoadedTileEntities() {
     return this.loadedTileEntities;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftBlockPos(BlockPosition position) {
     return new BlockPos(position.getX(), position.getY(), position.getZ());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public BlockPosition fromMinecraftBlockPos(Object handle) {
     if (!(handle instanceof BlockPos)) return null;
@@ -335,17 +265,13 @@ public class VersionedWorld implements World {
     return this.blockPositionFactory.create(blockPos.getX(), blockPos.getY(), blockPos.getZ());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftDimension(Dimension dimension) {
     return DimensionType.getById(dimension.getId());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Dimension fromMinecraftDimension(Object handle) {
     if (!(handle instanceof DimensionType)) return null;

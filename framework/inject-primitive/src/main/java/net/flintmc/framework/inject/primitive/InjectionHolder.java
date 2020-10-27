@@ -15,13 +15,21 @@ public class InjectionHolder {
   private final Collection<Module> modules;
   private final AtomicReference<Injector> injectorReference;
 
-  private static class Lazy {
-    private static final InjectionHolder INSTANCE = new InjectionHolder();
-  }
-
   private InjectionHolder() {
     this.modules = Sets.newConcurrentHashSet();
     this.injectorReference = new AtomicReference<>(null);
+  }
+
+  public static <T> T getInjectedInstance(Key<T> key) {
+    return getInstance().getInjector().getInstance(key);
+  }
+
+  public static <T> T getInjectedInstance(Class<T> clazz) {
+    return getInjectedInstance(Key.get(clazz));
+  }
+
+  public static InjectionHolder getInstance() {
+    return Lazy.INSTANCE;
   }
 
   public InjectionHolder addModules(Module... modules) {
@@ -47,15 +55,7 @@ public class InjectionHolder {
     return injectorReference;
   }
 
-  public static <T> T getInjectedInstance(Key<T> key) {
-    return getInstance().getInjector().getInstance(key);
-  }
-
-  public static <T> T getInjectedInstance(Class<T> clazz) {
-    return getInjectedInstance(Key.get(clazz));
-  }
-
-  public static InjectionHolder getInstance() {
-    return Lazy.INSTANCE;
+  private static class Lazy {
+    private static final InjectionHolder INSTANCE = new InjectionHolder();
   }
 }

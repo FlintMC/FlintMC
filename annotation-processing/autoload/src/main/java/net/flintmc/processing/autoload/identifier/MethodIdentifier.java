@@ -6,8 +6,7 @@ import javassist.NotFoundException;
 import net.flintmc.processing.autoload.DetectableAnnotation;
 
 /**
- * Implements an {@link Identifier} to locate {@link
- * DetectableAnnotation}s located at method level.
+ * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s located at method level.
  *
  * @see Identifier
  */
@@ -22,9 +21,7 @@ public class MethodIdentifier implements Identifier<CtMethod> {
     this.parameters = parameters;
   }
 
-  /**
-   * @return The class name of the declaring class of the method represented by this identifier
-   */
+  /** @return The class name of the declaring class of the method represented by this identifier */
   public String getOwner() {
     return owner;
   }

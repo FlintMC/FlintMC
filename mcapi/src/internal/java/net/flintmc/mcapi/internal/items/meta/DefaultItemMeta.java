@@ -80,12 +80,12 @@ public abstract class DefaultItemMeta implements ItemMeta {
 
   protected void validateDamage(int damage) {
     if (!this.type.isDamageable()) {
-      throw new IllegalStateException("The type " + this.type.getRegistryName() + " is not damagable");
+      throw new IllegalStateException(
+          "The type " + this.type.getRegistryName() + " is not damagable");
     }
 
     if (damage < 0 || damage > this.type.getMaxDamage()) {
       throw new IllegalArgumentException("Invalid damage provided: " + damage);
     }
   }
-
 }

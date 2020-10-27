@@ -18,5 +18,4 @@ public class DefaultItemMetaFactory implements ItemMeta.Factory {
     }
     return meta;
   }
-
 }

@@ -2,14 +2,10 @@ package net.flintmc.framework.stereotype;
 
 import java.util.Objects;
 
-/**
- * A key with a name space like minecraft:stone.
- */
+/** A key with a name space like minecraft:stone. */
 public class NameSpacedKey {
 
-  /**
-   * The default splitter between the name space and the key.
-   */
+  /** The default splitter between the name space and the key. */
   private static final char DEFAULT_SPLITTER = ':';
 
   private final String nameSpace;
@@ -24,7 +20,7 @@ public class NameSpacedKey {
    * Creates a new namespaced key out of the given namespace and key.
    *
    * @param nameSpace The non-null namespace for the result
-   * @param key       The non-null key for the result
+   * @param key The non-null key for the result
    * @return The new non-null namespaced key
    */
   public static NameSpacedKey of(String nameSpace, String key) {
@@ -33,8 +29,8 @@ public class NameSpacedKey {
 
   /**
    * Creates a new namespaced key with the namespace {@code minecraft} and the given key.
-   * <p>
-   * Similar to {@code #of("minecraft", key)}.
+   *
+   * <p>Similar to {@code #of("minecraft", key)}.
    *
    * @param key The non-null key for the result
    * @return The new non-null namespaced key
@@ -44,8 +40,9 @@ public class NameSpacedKey {
   }
 
   /**
-   * Parses the given text as a namespaced key at the default splitter ({@code :}). If the input doesn't contain a ':',
-   * {@code minecraft} will be used as the namespace and the raw input as the key.
+   * Parses the given text as a namespaced key at the default splitter ({@code :}). If the input
+   * doesn't contain a ':', {@code minecraft} will be used as the namespace and the raw input as the
+   * key.
    *
    * @param in The key with the namespace to be parsed (e.g. minecraft:stone)
    * @return The new non-null namespaced key
@@ -55,10 +52,11 @@ public class NameSpacedKey {
   }
 
   /**
-   * Parses the given text as a namespaced key at the given splitter. If the input doesn't contain the given splitter,
-   * {@code minecraft} will be used as the namespace and the raw input as the key.
+   * Parses the given text as a namespaced key at the given splitter. If the input doesn't contain
+   * the given splitter, {@code minecraft} will be used as the namespace and the raw input as the
+   * key.
    *
-   * @param in       The key with the namespace to be parsed (e.g. minecraft:stone)
+   * @param in The key with the namespace to be parsed (e.g. minecraft:stone)
    * @param splitter The splitter for splitting the namespace and the key in the input (e.g. :)
    * @return The new non-null namespaced key
    */

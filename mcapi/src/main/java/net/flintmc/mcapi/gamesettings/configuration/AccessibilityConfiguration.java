@@ -3,9 +3,7 @@ package net.flintmc.mcapi.gamesettings.configuration;
 import net.flintmc.mcapi.gamesettings.settings.PointOfView;
 import net.flintmc.mcapi.gamesettings.settings.TutorialSteps;
 
-/**
- * Represents the accessibility configuration.
- */
+/** Represents the accessibility configuration. */
 public interface AccessibilityConfiguration {
 
   /**
@@ -231,5 +229,4 @@ public interface AccessibilityConfiguration {
    * @param chunkSyncWrites The new state.
    */
   void setChunkSyncWrites(boolean chunkSyncWrites);
-
 }

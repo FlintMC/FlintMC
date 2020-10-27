@@ -3,11 +3,8 @@ package net.flintmc.mcapi.tileentity.mapper;
 import net.flintmc.mcapi.tileentity.SignTileEntity;
 import net.flintmc.mcapi.tileentity.TileEntity;
 
-/**
- * Mapper between the Minecraft tile entity type and Labyfy tile entity.
- */
+/** Mapper between the Minecraft tile entity type and Labyfy tile entity. */
 public interface TileEntityMapper {
-
 
   /**
    * Retrieves a Minecraft tile entity by using the Labyfy {@link TileEntity} as the base.
@@ -38,9 +35,9 @@ public interface TileEntityMapper {
    * Creates a new {@link SignTileEntity} by using the given Minecraft sign tile entity as the base.
    *
    * @param signTileEntity The non-null Minecraft sign tile entity.
-   * @return The new Labyfy {@link SignTileEntity} or {@code null} if the given sign tile entity was invalid.
+   * @return The new Labyfy {@link SignTileEntity} or {@code null} if the given sign tile entity was
+   *     invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft sign tile entity.
    */
   SignTileEntity fromMinecraftSignTileEntity(Object signTileEntity);
-
 }

@@ -23,7 +23,8 @@ public enum HookFilters {
     }
   };
 
-  private static Collection<CtClass> collectSuperClassesRecursive(CtClass ctClass) throws NotFoundException {
+  private static Collection<CtClass> collectSuperClassesRecursive(CtClass ctClass)
+      throws NotFoundException {
     Collection<CtClass> classes = new HashSet<>();
 
     if (ctClass.getSuperclass() != null) {

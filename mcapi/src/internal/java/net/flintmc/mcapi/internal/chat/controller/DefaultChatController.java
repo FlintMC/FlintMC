@@ -65,7 +65,8 @@ public abstract class DefaultChatController implements ChatController {
   public void addChat(Chat chat) {
     for (Chat registered : this.chats) {
       if (registered.getId() == chat.getId()) {
-        throw new IllegalStateException("Chat with the id " + chat.getId() + " is already registered");
+        throw new IllegalStateException(
+            "Chat with the id " + chat.getId() + " is already registered");
       }
     }
     this.chats.add(chat);

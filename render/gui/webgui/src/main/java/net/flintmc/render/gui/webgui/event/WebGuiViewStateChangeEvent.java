@@ -2,9 +2,7 @@ package net.flintmc.render.gui.webgui.event;
 
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/**
- * Event indicating that a {@link WebGuiView} state has changed.
- */
+/** Event indicating that a {@link WebGuiView} state has changed. */
 public interface WebGuiViewStateChangeEvent extends WebGuiViewEvent {
   /**
    * Retrieves the ID of the frame that sent the event.

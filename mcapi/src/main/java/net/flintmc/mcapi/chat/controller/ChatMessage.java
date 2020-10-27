@@ -5,8 +5,8 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import java.util.UUID;
 
 /**
- * This class defines a message in the chat. If a message consists of multiple lines, it will still be one {@link
- * ChatMessage}.
+ * This class defines a message in the chat. If a message consists of multiple lines, it will still
+ * be one {@link ChatMessage}.
  */
 public interface ChatMessage {
 
@@ -61,8 +61,8 @@ public interface ChatMessage {
   long getTimestamp();
 
   /**
-   * Retrieves the UUID of the sender of this message. If the message has no sender or this client doesn't use 1.16+,
-   * the most- and leastSignificantBits in the UUID will both be 0.
+   * Retrieves the UUID of the sender of this message. If the message has no sender or this client
+   * doesn't use 1.16+, the most- and leastSignificantBits in the UUID will both be 0.
    *
    * <p>This feature is available since Minecraft 1.16.
    *

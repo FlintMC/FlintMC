@@ -4,9 +4,7 @@ import net.flintmc.render.gui.event.input.ModifierKey;
 
 import java.util.Set;
 
-/**
- * Event indicating that the user has typed input
- */
+/** Event indicating that the user has typed input */
 public class UnicodeTypedEvent extends EventWithModifierKeys {
   private final int codepoint;
 

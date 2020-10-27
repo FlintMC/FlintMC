@@ -7,9 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Marks where an appropriate Log4J Logger should be injected.
- */
+/** Marks where an appropriate Log4J Logger should be injected. */
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @BindingAnnotation

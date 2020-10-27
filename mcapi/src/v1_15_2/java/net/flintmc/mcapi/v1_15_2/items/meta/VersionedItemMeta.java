@@ -2,16 +2,16 @@ package net.flintmc.mcapi.v1_15_2.items.meta;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.exception.ComponentDeserializationException;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.internal.items.meta.DefaultItemMeta;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.items.meta.enchantment.Enchantment;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
-import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -33,7 +33,8 @@ public class VersionedItemMeta extends DefaultItemMeta {
   private Map<EnchantmentType, Enchantment> enchantments;
 
   @Inject
-  public VersionedItemMeta(ItemRegistry itemRegistry, ComponentSerializer.Factory componentFactory) {
+  public VersionedItemMeta(
+      ItemRegistry itemRegistry, ComponentSerializer.Factory componentFactory) {
     this.itemRegistry = itemRegistry;
     this.nbt = new CompoundNBT();
     this.componentFactory = componentFactory;
@@ -205,7 +206,8 @@ public class VersionedItemMeta extends DefaultItemMeta {
 
   @Override
   public void addEnchantment(Enchantment enchantment) {
-    if (this.hasEnchantment(enchantment.getType()) && this.getEnchantment(enchantment.getType()).getLevel() == enchantment.getLevel()) {
+    if (this.hasEnchantment(enchantment.getType())
+        && this.getEnchantment(enchantment.getType()).getLevel() == enchantment.getLevel()) {
       return;
     }
 
@@ -231,14 +233,24 @@ public class VersionedItemMeta extends DefaultItemMeta {
 
   @Override
   public void applyNBTFrom(Object source) {
-    Preconditions.checkArgument(source instanceof CompoundNBT, "Provided nbt object " + source.getClass().getName() + " is no instance of " + CompoundNBT.class.getName());
+    Preconditions.checkArgument(
+        source instanceof CompoundNBT,
+        "Provided nbt object "
+            + source.getClass().getName()
+            + " is no instance of "
+            + CompoundNBT.class.getName());
 
     this.move((CompoundNBT) source, this.nbt);
   }
 
   @Override
   public void copyNBTTo(Object target) {
-    Preconditions.checkArgument(target instanceof CompoundNBT, "Provided nbt object " + target.getClass().getName() + " is no instance of " + CompoundNBT.class.getName());
+    Preconditions.checkArgument(
+        target instanceof CompoundNBT,
+        "Provided nbt object "
+            + target.getClass().getName()
+            + " is no instance of "
+            + CompoundNBT.class.getName());
 
     this.move(this.nbt, (CompoundNBT) target);
   }
@@ -278,7 +290,5 @@ public class VersionedItemMeta extends DefaultItemMeta {
     String ENCHANTMENTS = "Enchantments";
     String ENCHANTMENT_ID = "id";
     String ENCHANTMENT_LEVEL = "lvl";
-
   }
-
 }

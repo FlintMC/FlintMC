@@ -12,7 +12,8 @@ public interface VisitMultiANewArrayInsn {
     private String descriptor;
     private int numDimensions;
 
-    private Context(MethodVisitorContext methodVisitorContext, String descriptor, int numDimensions) {
+    private Context(
+        MethodVisitorContext methodVisitorContext, String descriptor, int numDimensions) {
       this.methodVisitorContext = methodVisitorContext;
       this.descriptor = descriptor;
       this.numDimensions = numDimensions;

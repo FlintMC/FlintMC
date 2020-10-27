@@ -1,13 +1,11 @@
 package net.flintmc.render.gui.windowing;
 
 import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.render.gui.event.GuiEvent;
 import net.flintmc.render.gui.event.GuiEventListener;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * A generic, operating system window.
- */
+/** A generic, operating system window. */
 public interface Window {
   /**
    * Retrieves the platform native handle.
@@ -31,8 +29,9 @@ public interface Window {
   float getHeight();
 
   /**
-   * Retrieves the size of the window. This method should be preferred over 2 separate calls to {@link #getWidth()} and
-   * {@link #getHeight()}, as implementations might be able to optimize this call into a single call into native code.
+   * Retrieves the size of the window. This method should be preferred over 2 separate calls to
+   * {@link #getWidth()} and {@link #getHeight()}, as implementations might be able to optimize this
+   * call into a single call into native code.
    *
    * @return The size of the window packaged as an array with the format {@code [width, height]}
    */
@@ -40,14 +39,15 @@ public interface Window {
 
   /**
    * Closes the window and disposed its resources.
-   * <p>
-   * Note that this might or might not take effect immediately, but the window should be considered invalid after this
-   * method has been invoked!
+   *
+   * <p>Note that this might or might not take effect immediately, but the window should be
+   * considered invalid after this method has been invoked!
    */
   void close();
 
   /**
-   * Adds a renderer to this window and enables it. The renderer will be added to the end of the rendering chain.
+   * Adds a renderer to this window and enables it. The renderer will be added to the end of the
+   * rendering chain.
    *
    * @param renderer The renderer to add to this window
    */
@@ -57,7 +57,8 @@ public interface Window {
    * Disables and removes a renderer from this window.
    *
    * @param renderer The renderer to remove
-   * @return {@code true} if the renderer had been added and was removed now, {@code false} otherwise
+   * @return {@code true} if the renderer had been added and was removed now, {@code false}
+   *     otherwise
    */
   boolean removeRenderer(WindowRenderer renderer);
 
@@ -72,7 +73,8 @@ public interface Window {
    * Removes an event listener from this window.
    *
    * @param listener The listener to remove
-   * @return {@code true} if the listener had been added and was removed now, {@code false} otherwise
+   * @return {@code true} if the listener had been added and was removed now, {@code false}
+   *     otherwise
    */
   boolean removeEventListener(GuiEventListener listener);
 
@@ -91,20 +93,21 @@ public interface Window {
    */
   boolean isFocused();
 
-  /**
-   * Factory for {@link Window}s.
-   */
+  /** Factory for {@link Window}s. */
   @AssistedFactory(Window.class)
   interface Factory {
     /**
-     * Creates a new window and displays it. The OpenGL context of the window will a child context of the minecraft
-     * context.
+     * Creates a new window and displays it. The OpenGL context of the window will a child context
+     * of the minecraft context.
      *
-     * @param title  The title of new the window
-     * @param width  The width of new the window
+     * @param title The title of new the window
+     * @param width The width of new the window
      * @param height The height of the new window
      * @return The created window
      */
-    Window create(@Assisted("title") String title, @Assisted("width") int width, @Assisted("height") int height);
+    Window create(
+        @Assisted("title") String title,
+        @Assisted("width") int width,
+        @Assisted("height") int height);
   }
 }

@@ -6,15 +6,15 @@ import javassist.ClassPool;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectionService;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.launcher.LaunchController;
 import net.flintmc.framework.packages.PackageLoader;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.DetectableAnnotationProvider;
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.flintmc.framework.service.ExtendedServiceLoader;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceRepository;
 import net.flintmc.framework.stereotype.service.Services;
+import net.flintmc.launcher.LaunchController;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.DetectableAnnotationProvider;
+import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.flintmc.transform.launchplugin.inject.module.BindConstantModule;
 
 import java.util.ArrayList;
@@ -26,8 +26,7 @@ import java.util.Set;
 public class FlintFrameworkInitializer {
 
   @Inject
-  private FlintFrameworkInitializer() {
-  }
+  private FlintFrameworkInitializer() {}
 
   /**
    * Initializes all features of the labyfy framework.

@@ -4,9 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Represents a {@link NetworkPlayerInfo} registry.
- */
+/** Represents a {@link NetworkPlayerInfo} registry. */
 public interface NetworkPlayerInfoRegistry {
 
   /**

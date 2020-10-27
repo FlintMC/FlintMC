@@ -34,25 +34,19 @@ public class DefaultTaskExecutor implements TaskExecutor {
     this.methods = new ConcurrentHashMap<>();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public final void register(Task task, CtMethod method) {
     List<Pair<Double, CtMethod>> bodies = methods.computeIfAbsent(task, t -> new ArrayList<>());
     bodies.add(Pair.of(task.priority(), method));
     bodies.sort(Map.Entry.comparingByKey());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public void execute(Tasks name) throws TaskExecutionException {
     this.execute(name, Maps.newConcurrentMap());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public void execute(Tasks name, Map<Key<?>, ?> arguments) throws TaskExecutionException {
     for (Map.Entry<Task, List<Pair<Double, CtMethod>>> entry : this.methods.entrySet()) {
       if (!entry.getKey().value().equals(name)) continue;

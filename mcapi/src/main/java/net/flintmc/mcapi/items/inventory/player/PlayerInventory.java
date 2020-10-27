@@ -45,8 +45,8 @@ public interface PlayerInventory extends Inventory {
   ItemStack getCursor();
 
   /**
-   * Closes the currently opened inventory in the client. If no inventory is opened, this method does nothing.
+   * Closes the currently opened inventory in the client. If no inventory is opened, this method
+   * does nothing.
    */
   void closeInventory();
-
 }

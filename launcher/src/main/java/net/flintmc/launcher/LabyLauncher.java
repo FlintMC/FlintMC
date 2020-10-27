@@ -17,8 +17,10 @@ public class LabyLauncher {
     Thread.currentThread().setContextClassLoader(rootClassloader);
 
     // We now are running in the RootClassLoader's context, load our LaunchController
-    Class<?> launchControllerClass = rootClassloader.loadClass("net.flintmc.launcher.LaunchController");
-    Object launchController = launchControllerClass.getDeclaredConstructors()[0].newInstance(rootClassloader, args);
+    Class<?> launchControllerClass =
+        rootClassloader.loadClass("net.flintmc.launcher.LaunchController");
+    Object launchController =
+        launchControllerClass.getDeclaredConstructors()[0].newInstance(rootClassloader, args);
 
     // Hand over to the LaunchController
     launchControllerClass.getMethod("run").invoke(launchController);

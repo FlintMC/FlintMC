@@ -2,14 +2,12 @@ package net.flintmc.mcapi.v1_15_2.entity.type;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.type.EntityType;
-import net.flintmc.framework.inject.implement.Implement;
 
-/**
- * 1.15.2 implementation of the {@link EntityType}.
- */
+/** 1.15.2 implementation of the {@link EntityType}. */
 @Implement(value = EntityType.class, version = "1.15.2")
 public class VersionedEntityType implements EntityType {
 
@@ -22,13 +20,12 @@ public class VersionedEntityType implements EntityType {
 
   @AssistedInject
   private VersionedEntityType(
-          @Assisted("classification") Entity.Classification classification,
-          @Assisted("serializable") boolean serializable,
-          @Assisted("summonable") boolean summonable,
-          @Assisted("immuneToFire") boolean immuneToFire,
-          @Assisted("canSpawnFarFromPlayer") boolean canSpawnFarFromPlayer,
-          @Assisted("entitySize") EntitySize entitySize
-  ) {
+      @Assisted("classification") Entity.Classification classification,
+      @Assisted("serializable") boolean serializable,
+      @Assisted("summonable") boolean summonable,
+      @Assisted("immuneToFire") boolean immuneToFire,
+      @Assisted("canSpawnFarFromPlayer") boolean canSpawnFarFromPlayer,
+      @Assisted("entitySize") EntitySize entitySize) {
     this.classification = classification;
     this.serializable = serializable;
     this.summonable = summonable;
@@ -37,52 +34,39 @@ public class VersionedEntityType implements EntityType {
     this.entitySize = entitySize;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Entity.Classification getClassification() {
     return this.classification;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSerializable() {
     return this.serializable;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSummonable() {
     return this.summonable;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isImmuneToFire() {
     return this.immuneToFire;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean canSpawnFarFromPlayer() {
     return this.canSpawnFarFromPlayer;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntitySize getSize() {
     return this.entitySize;
   }
-
 }

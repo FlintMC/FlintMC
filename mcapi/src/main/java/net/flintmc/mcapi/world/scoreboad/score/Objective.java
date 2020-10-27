@@ -1,14 +1,12 @@
 package net.flintmc.mcapi.world.scoreboad.score;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
-/**
- * Represents a Minecraft score objective
- */
+/** Represents a Minecraft score objective */
 public interface Objective {
 
   /**
@@ -46,49 +44,46 @@ public interface Objective {
    */
   RenderType getRenderType();
 
-  /**
-   * A factory class for {@link Objective}
-   */
+  /** A factory class for {@link Objective} */
   @AssistedFactory(Objective.class)
   interface Factory {
 
     /**
      * Creates a new {@link Objective} with the given parameters.
      *
-     * @param scoreboard  The scoreboard for this objective.
-     * @param name        The registry name for this objective.
+     * @param scoreboard The scoreboard for this objective.
+     * @param name The registry name for this objective.
      * @param displayName The name that is displayed.
-     * @param criteria    The criteria for this objective.
-     * @param type        The render type for this objective.
+     * @param criteria The criteria for this objective.
+     * @param type The render type for this objective.
      * @return A created objective.
      */
     Objective create(
-            @Assisted("scoreboard") Scoreboard scoreboard,
-            @Assisted("name") String name,
-            @Assisted("displayName") ChatComponent displayName,
-            @Assisted("criteria") Criteria criteria,
-            @Assisted("renderType") RenderType type
-    );
-
+        @Assisted("scoreboard") Scoreboard scoreboard,
+        @Assisted("name") String name,
+        @Assisted("displayName") ChatComponent displayName,
+        @Assisted("criteria") Criteria criteria,
+        @Assisted("renderType") RenderType type);
   }
 
-  /**
-   * Represents a service interface for creating {@link Objective}
-   */
+  /** Represents a service interface for creating {@link Objective} */
   interface Provider {
 
     /**
      * Creates a new {@link Objective} with the given parameters.
      *
-     * @param scoreboard  The scoreboard for this objective.
-     * @param name        The registry name for this objective.
+     * @param scoreboard The scoreboard for this objective.
+     * @param name The registry name for this objective.
      * @param displayName The name that is displayed.
-     * @param criteria    The criteria for this objective.
-     * @param type        The render type for this objective.
+     * @param criteria The criteria for this objective.
+     * @param type The render type for this objective.
      * @return A created objective.
      */
-    Objective get(Scoreboard scoreboard, String name, ChatComponent displayName, Criteria criteria, RenderType type);
-
+    Objective get(
+        Scoreboard scoreboard,
+        String name,
+        ChatComponent displayName,
+        Criteria criteria,
+        RenderType type);
   }
-
 }

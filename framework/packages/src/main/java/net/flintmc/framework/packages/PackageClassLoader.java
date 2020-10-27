@@ -2,7 +2,8 @@ package net.flintmc.framework.packages;
 
 /**
  * Represents a {@link ClassLoader} used for loading a package. Note that you should never cast
- * instances of this interface to {@link ClassLoader}, but rather use the {@link #asClassLoader()} method.
+ * instances of this interface to {@link ClassLoader}, but rather use the {@link #asClassLoader()}
+ * method.
  */
 public interface PackageClassLoader {
   /**
@@ -15,8 +16,8 @@ public interface PackageClassLoader {
   Class<?> findClass(String name) throws ClassNotFoundException;
 
   /**
-   * Unwraps the plain Java ClassLoader reference that is used for defining classes within the package
-   * owning this class loader.
+   * Unwraps the plain Java ClassLoader reference that is used for defining classes within the
+   * package owning this class loader.
    *
    * @return The {@link ClassLoader} representation of this {@link PackageClassLoader}
    */
@@ -28,5 +29,4 @@ public interface PackageClassLoader {
    * @return The package owning this class loader
    */
   Package getOwner();
-
 }

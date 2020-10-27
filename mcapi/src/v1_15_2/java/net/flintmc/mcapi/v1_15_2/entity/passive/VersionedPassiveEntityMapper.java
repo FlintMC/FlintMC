@@ -2,12 +2,12 @@ package net.flintmc.mcapi.v1_15_2.entity.passive;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.mcapi.internal.entity.cache.EntityCache;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.passive.AmbientEntity;
 import net.flintmc.mcapi.entity.passive.AnimalEntity;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
 import net.flintmc.mcapi.entity.passive.farmanimal.PigEntity;
-import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.internal.entity.cache.EntityCache;
 import net.minecraft.client.Minecraft;
 
 @Singleton
@@ -21,41 +21,40 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
 
   @Inject
   private VersionedPassiveEntityMapper(
-          AmbientEntity.Provider ambientEntityProvider,
-          AnimalEntity.Provider animalEntityProvider,
-          EntityCache entityCache,
-          PigEntity.Factory pigEntityFactory
-  ) {
+      AmbientEntity.Provider ambientEntityProvider,
+      AnimalEntity.Provider animalEntityProvider,
+      EntityCache entityCache,
+      PigEntity.Factory pigEntityFactory) {
     this.ambientEntityProvider = ambientEntityProvider;
     this.animalEntityProvider = animalEntityProvider;
     this.entityCache = entityCache;
     this.pigEntityFactory = pigEntityFactory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public AmbientEntity fromMinecraftAmbientEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.passive.AmbientEntity)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.passive.AmbientEntity.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.passive.AmbientEntity.class.getName());
     }
 
-    net.minecraft.entity.passive.AmbientEntity ambientEntity = (net.minecraft.entity.passive.AmbientEntity) handle;
+    net.minecraft.entity.passive.AmbientEntity ambientEntity =
+        (net.minecraft.entity.passive.AmbientEntity) handle;
 
-    return (AmbientEntity) this.entityCache.putIfAbsent(
-            ambientEntity.getUniqueID(),
-            () -> this.ambientEntityProvider.get(ambientEntity)
-    );
+    return (AmbientEntity)
+        this.entityCache.putIfAbsent(
+            ambientEntity.getUniqueID(), () -> this.ambientEntityProvider.get(ambientEntity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftAmbientEntity(AmbientEntity ambientEntity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
-      if (allEntity instanceof net.minecraft.entity.passive.AmbientEntity && allEntity.getEntityId() == ambientEntity.getIdentifier()) {
+      if (allEntity instanceof net.minecraft.entity.passive.AmbientEntity
+          && allEntity.getEntityId() == ambientEntity.getIdentifier()) {
         return allEntity;
       }
     }
@@ -63,30 +62,30 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public AnimalEntity fromMinecraftAnimalEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.passive.AnimalEntity)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.passive.AnimalEntity.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.passive.AnimalEntity.class.getName());
     }
 
-    net.minecraft.entity.passive.AnimalEntity animalEntity = (net.minecraft.entity.passive.AnimalEntity) handle;
+    net.minecraft.entity.passive.AnimalEntity animalEntity =
+        (net.minecraft.entity.passive.AnimalEntity) handle;
 
-    return (AnimalEntity) this.entityCache.putIfAbsent(
-            animalEntity.getUniqueID(),
-            () -> this.animalEntityProvider.get(animalEntity)
-    );
+    return (AnimalEntity)
+        this.entityCache.putIfAbsent(
+            animalEntity.getUniqueID(), () -> this.animalEntityProvider.get(animalEntity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftAnimalEntity(AnimalEntity animalEntity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
-      if (allEntity instanceof net.minecraft.entity.passive.AnimalEntity && allEntity.getEntityId() == animalEntity.getIdentifier()) {
+      if (allEntity instanceof net.minecraft.entity.passive.AnimalEntity
+          && allEntity.getEntityId() == animalEntity.getIdentifier()) {
         return allEntity;
       }
     }
@@ -94,30 +93,30 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PigEntity fromMinecraftPigEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.passive.PigEntity)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.passive.PigEntity.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.passive.PigEntity.class.getName());
     }
 
-    net.minecraft.entity.passive.PigEntity pigEntity = (net.minecraft.entity.passive.PigEntity) handle;
+    net.minecraft.entity.passive.PigEntity pigEntity =
+        (net.minecraft.entity.passive.PigEntity) handle;
 
-    return (PigEntity) this.entityCache.putIfAbsent(
-            pigEntity.getUniqueID(),
-            () -> this.pigEntityFactory.create(pigEntity)
-    );
+    return (PigEntity)
+        this.entityCache.putIfAbsent(
+            pigEntity.getUniqueID(), () -> this.pigEntityFactory.create(pigEntity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftPigEntity(PigEntity pigEntity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
-      if (allEntity instanceof net.minecraft.entity.passive.PigEntity && allEntity.getEntityId() == pigEntity.getIdentifier()) {
+      if (allEntity instanceof net.minecraft.entity.passive.PigEntity
+          && allEntity.getEntityId() == pigEntity.getIdentifier()) {
         return allEntity;
       }
     }

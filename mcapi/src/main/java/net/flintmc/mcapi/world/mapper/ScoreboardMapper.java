@@ -6,9 +6,7 @@ import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
-/**
- * Scoreboard mapper between the Minecraft objects and the Labyfy objects.
- */
+/** Scoreboard mapper between the Minecraft objects and the Labyfy objects. */
 public interface ScoreboardMapper {
 
   /**
@@ -91,5 +89,4 @@ public interface ScoreboardMapper {
    * @throws UnsupportedOperationException If thrown when the render type doesn't exist.
    */
   RenderType fromMinecraftRenderType(String value);
-
 }

@@ -28,9 +28,7 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     this.gson = new GsonBuilder().create();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isManifestPresent(JarFile file) {
     // Search the jar file for entry with the name of the manifest file
@@ -38,18 +36,15 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
         .anyMatch(entry -> entry.getName().equals(MANIFEST_NAME));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PackageManifest loadManifest(JarFile file) throws IOException {
     ZipEntry manifest = file.getEntry(MANIFEST_NAME);
-    return this.gson.fromJson(new InputStreamReader(file.getInputStream(manifest)), DefaultPackageManifest.class);
+    return this.gson.fromJson(
+        new InputStreamReader(file.getInputStream(manifest)), DefaultPackageManifest.class);
   }
 
-  /**
-   * Default implementation of a {@link PackageManifest}.
-   */
+  /** Default implementation of a {@link PackageManifest}. */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
   private static class DefaultPackageManifest implements PackageManifest, Serializable {
     private String name;
@@ -59,59 +54,45 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     private String description;
     private Set<DefaultDependencyDescription> dependencies = new HashSet<>();
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getName() {
       return this.name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getDisplayName() {
       return this.displayName != null ? this.displayName : this.name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getVersion() {
       return this.version;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public Set<String> getAuthors() {
       return this.authors;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
       return this.description != null
           ? this.description
-          : "labyfy."+ this.name  +".packages.generic.description";
+          : "labyfy." + this.name + ".packages.generic.description";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public Set<? extends DependencyDescription> getDependencies() {
       return this.dependencies;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean isValid() {
       return this.name != null
@@ -121,33 +102,25 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     }
   }
 
-  /**
-   * Default implementation of a {@link DependencyDescription}.
-   */
+  /** Default implementation of a {@link DependencyDescription}. */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
   private static class DefaultDependencyDescription implements DependencyDescription, Serializable {
     private String name;
     private List<String> versions = new ArrayList<>();
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getName() {
       return this.name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public List<String> getVersions() {
       return this.versions;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean matches(PackageManifest manifest) {
       return this.name.equals(manifest.getName())

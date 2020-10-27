@@ -8,6 +8,4 @@ import net.flintmc.mcapi.player.serializer.Serializer;
  *
  * @param <T> The type to serialize or deserialize
  */
-public interface PropertyMapSerializer<T> extends Serializer<T, PropertyMap> {
-
-}
+public interface PropertyMapSerializer<T> extends Serializer<T, PropertyMap> {}

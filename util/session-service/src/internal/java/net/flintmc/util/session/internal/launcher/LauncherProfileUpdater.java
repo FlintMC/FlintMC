@@ -27,7 +27,8 @@ public class LauncherProfileUpdater {
 
   @PostSubscribe
   public void updateLauncherProfiles(SessionAccountLogInEvent event) throws IOException {
-    // update the token in the launcher_profiles.json on log in since this can also grant a new token
+    // update the token in the launcher_profiles.json on log in since this can also grant a new
+    // token
     this.updateAccessToken(this.sessionService.getAccessToken());
   }
 
@@ -64,5 +65,4 @@ public class LauncherProfileUpdater {
 
     this.resolver.storeProfiles(profiles);
   }
-
 }

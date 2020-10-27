@@ -7,14 +7,14 @@ import com.google.gson.JsonSyntaxException;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
+import net.flintmc.mcapi.chat.component.event.content.HoverContent;
+import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
 import net.flintmc.mcapi.chat.exception.ComponentDeserializationException;
+import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import net.flintmc.mcapi.internal.chat.serializer.gson.hover.LegacyHoverEventSerializer;
 import net.flintmc.mcapi.internal.chat.serializer.gson.hover.ModernHoverEventSerializer;
 import net.flintmc.mcapi.internal.chat.serializer.gson.hover.content.HoverEntitySerializer;
 import net.flintmc.mcapi.internal.chat.serializer.gson.hover.content.HoverTextSerializer;
-import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
-import net.flintmc.mcapi.chat.component.event.content.HoverContent;
-import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
@@ -25,21 +25,29 @@ public class DefaultGsonComponentSerializer implements GsonComponentSerializer {
   private final Gson gson;
   private final ComponentBuilder.Factory componentFactory;
 
-  private final Map<HoverEvent.Action, HoverContentSerializer> hoverContentSerializers = new HashMap<>();
+  private final Map<HoverEvent.Action, HoverContentSerializer> hoverContentSerializers =
+      new HashMap<>();
 
-  public DefaultGsonComponentSerializer(Logger logger, ComponentBuilder.Factory componentFactory, boolean legacyHover) {
+  public DefaultGsonComponentSerializer(
+      Logger logger, ComponentBuilder.Factory componentFactory, boolean legacyHover) {
     this.componentFactory = componentFactory;
 
-    this.gson = new GsonBuilder()
-        .registerTypeHierarchyAdapter(ChatComponent.class, new GsonChatComponentSerializer(logger))
-        .registerTypeAdapter(HoverEvent.class, legacyHover ?
-            new LegacyHoverEventSerializer(logger, componentFactory, this) :
-            new ModernHoverEventSerializer(logger, this, componentFactory))
-        .create();
+    this.gson =
+        new GsonBuilder()
+            .registerTypeHierarchyAdapter(
+                ChatComponent.class, new GsonChatComponentSerializer(logger))
+            .registerTypeAdapter(
+                HoverEvent.class,
+                legacyHover
+                    ? new LegacyHoverEventSerializer(logger, componentFactory, this)
+                    : new ModernHoverEventSerializer(logger, this, componentFactory))
+            .create();
 
     this.registerHoverContentSerializer(HoverEvent.Action.SHOW_TEXT, new HoverTextSerializer());
     this.registerHoverContentSerializer(HoverEvent.Action.SHOW_ENTITY, new HoverEntitySerializer());
-    this.registerHoverContentSerializer(HoverEvent.Action.SHOW_ACHIEVEMENT, this.getHoverContentSerializer(HoverEvent.Action.SHOW_TEXT));
+    this.registerHoverContentSerializer(
+        HoverEvent.Action.SHOW_ACHIEVEMENT,
+        this.getHoverContentSerializer(HoverEvent.Action.SHOW_TEXT));
   }
 
   @Override
@@ -63,17 +71,23 @@ public class DefaultGsonComponentSerializer implements GsonComponentSerializer {
 
   @Override
   public HoverContent deserializeHoverContent(ChatComponent component, HoverEvent.Action action) {
-    return this.getHoverContentSerializer(action).deserialize(component, this.componentFactory, this.gson);
+    return this.getHoverContentSerializer(action)
+        .deserialize(component, this.componentFactory, this.gson);
   }
 
   @Override
   public ChatComponent serializeHoverContent(HoverContent content) {
-    return this.getHoverContentSerializer(content.getAction()).serialize(content, this.componentFactory, this.gson);
+    return this.getHoverContentSerializer(content.getAction())
+        .serialize(content, this.componentFactory, this.gson);
   }
 
   @Override
-  public void registerHoverContentSerializer(HoverEvent.Action action, HoverContentSerializer serializer) {
-    Preconditions.checkArgument(!this.hoverContentSerializers.containsKey(action), "A serializer for the action %s is already registered", action);
+  public void registerHoverContentSerializer(
+      HoverEvent.Action action, HoverContentSerializer serializer) {
+    Preconditions.checkArgument(
+        !this.hoverContentSerializers.containsKey(action),
+        "A serializer for the action %s is already registered",
+        action);
 
     this.hoverContentSerializers.put(action, serializer);
   }

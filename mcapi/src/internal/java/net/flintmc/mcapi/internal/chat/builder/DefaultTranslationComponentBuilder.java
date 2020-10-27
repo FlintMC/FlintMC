@@ -1,9 +1,9 @@
 package net.flintmc.mcapi.internal.chat.builder;
 
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.TranslationComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.internal.chat.component.DefaultTranslationComponent;
 
 @Implement(value = TranslationComponentBuilder.class)

@@ -1,8 +1,6 @@
 package net.flintmc.render.gui.event.input;
 
-/**
- * Known keyboard keys.
- */
+/** Known keyboard keys. */
 public enum Key {
   SPACE,
   APOSTROPHE,

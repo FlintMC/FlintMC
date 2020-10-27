@@ -1,8 +1,6 @@
 package net.flintmc.mcapi.gamesettings.configuration;
 
-/**
- * Represents the debug configuration.
- */
+/** Represents the debug configuration. */
 public interface DebugConfiguration {
 
   /**

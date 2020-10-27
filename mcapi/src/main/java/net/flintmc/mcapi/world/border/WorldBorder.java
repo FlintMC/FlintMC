@@ -2,9 +2,7 @@ package net.flintmc.mcapi.world.border;
 
 import net.flintmc.mcapi.world.math.BlockPosition;
 
-/**
- * Represents the Minecraft world border.
- */
+/** Represents the Minecraft world border. */
 public interface WorldBorder {
 
   /**
@@ -14,10 +12,10 @@ public interface WorldBorder {
    * @return {@code true} if the block position contains, otherwise {@code false}
    */
   default boolean contains(BlockPosition position) {
-    return (double) (position.getX() + 1) > this.minX() &&
-            (double) position.getX() < this.maxX() &&
-            (double) (position.getZ() + 1) > this.minZ() &&
-            (double) position.getZ() < this.maxZ();
+    return (double) (position.getX() + 1) > this.minX()
+        && (double) position.getX() < this.maxX()
+        && (double) (position.getZ() + 1) > this.minZ()
+        && (double) position.getZ() < this.maxZ();
   }
 
   /**
@@ -57,15 +55,7 @@ public interface WorldBorder {
    */
   default double getClosestDistance(double x, double z) {
     return Math.min(
-            Math.min(
-                    Math.min(
-                            x - this.minX(),
-                            this.maxX() - x
-                    ),
-                    z - this.minZ()
-            ),
-            this.maxZ() - z
-    );
+        Math.min(Math.min(x - this.minX(), this.maxX() - x), z - this.minZ()), this.maxZ() - z);
   }
 
   /**
@@ -128,18 +118,11 @@ public interface WorldBorder {
   /**
    * Sets the transition of this border.
    *
-   * @param oldSize  The old size of this border.
-   * @param newSize  The new size of this border.
+   * @param oldSize The old size of this border.
+   * @param newSize The new size of this border.
    * @param duration The duration, how long it takes fro the border to reach the new size.
    */
   void setTransition(double oldSize, double newSize, long duration);
-
-  /**
-   * Changes the size of this border.
-   *
-   * @param size The new size.
-   */
-  void setSize(int size);
 
   /**
    * Retrieves the size of this border.
@@ -147,6 +130,13 @@ public interface WorldBorder {
    * @return The border size.
    */
   int getSize();
+
+  /**
+   * Changes the size of this border.
+   *
+   * @param size The new size.
+   */
+  void setSize(int size);
 
   /**
    * Retrieves the damage buffer of this border.
@@ -196,5 +186,4 @@ public interface WorldBorder {
    * @param warningDistance The new warning distance.
    */
   void setWarningDistance(int warningDistance);
-
 }

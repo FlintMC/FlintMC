@@ -1,8 +1,8 @@
 package net.flintmc.mcapi.entity;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.player.type.hand.Hand;
@@ -13,9 +13,7 @@ import net.flintmc.mcapi.world.math.BlockPosition;
 import java.util.Optional;
 import java.util.Random;
 
-/**
- * Represents the living entity.
- */
+/** Represents the living entity. */
 public interface LivingEntity extends Entity {
 
   /**
@@ -38,7 +36,8 @@ public interface LivingEntity extends Entity {
   /**
    * Retrieves the swim animation of this living entity.
    *
-   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last full tick.
+   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
+   *     full tick.
    * @return The swim animation of this living entity.
    */
   float getSwimAnimation(float partialTicks);
@@ -192,10 +191,10 @@ public interface LivingEntity extends Entity {
   /**
    * Knock back an entity.
    *
-   * @param entity   The entity to knock back.
+   * @param entity The entity to knock back.
    * @param strength The strength of the knock back.
-   * @param xRatio   The x ratio of the knock back.
-   * @param zRatio   The z ratio of the knock back.
+   * @param xRatio The x ratio of the knock back.
+   * @param zRatio The z ratio of the knock back.
    */
   void knockBack(Entity entity, float strength, double xRatio, double zRatio);
 
@@ -266,8 +265,9 @@ public interface LivingEntity extends Entity {
   /**
    * Swings the hand.
    *
-   * @param hand      The living entity hand.
-   * @param sendToAll {@code true}, if the animated hand packet should be sent to itself, otherwise {@code false}
+   * @param hand The living entity hand.
+   * @param sendToAll {@code true}, if the animated hand packet should be sent to itself, otherwise
+   *     {@code false}
    */
   void swing(Hand hand, boolean sendToAll);
 
@@ -282,7 +282,7 @@ public interface LivingEntity extends Entity {
   /**
    * Changes the held item.
    *
-   * @param hand     The living entity hand.
+   * @param hand The living entity hand.
    * @param heldItem The new held item stack.
    */
   void setHeldItem(Hand hand, ItemStack heldItem);
@@ -291,7 +291,8 @@ public interface LivingEntity extends Entity {
    * Whether the living entity has an item at the given slot.
    *
    * @param slotType The slot type to be checked.
-   * @return {@code true} if the living entity has an item at the given slot, otherwise {@code false}.
+   * @return {@code true} if the living entity has an item at the given slot, otherwise {@code
+   *     false}.
    */
   boolean hasItemInSlot(EquipmentSlotType slotType);
 
@@ -356,14 +357,16 @@ public interface LivingEntity extends Entity {
    * Whether the living entity can be seen the given entity.
    *
    * @param entity The entity to be checked.
-   * @return {@code true} if the living entity can be seen the given entity, otherwise {@code false}.
+   * @return {@code true} if the living entity can be seen the given entity, otherwise {@code
+   *     false}.
    */
   boolean canEntityBeSeen(Entity entity);
 
   /**
    * Retrieves the swing progress of this living entity.
    *
-   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last full tick.
+   * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
+   *     full tick.
    * @return The swing progress of this living entity.
    */
   float getSwingProgress(float partialTicks);
@@ -389,14 +392,10 @@ public interface LivingEntity extends Entity {
    */
   void setAbsorptionAmount(float absorptionAmount);
 
-  /**
-   * Sends the combat packet, when the living entity start to fight.
-   */
+  /** Sends the combat packet, when the living entity start to fight. */
   void sendEnterCombat();
 
-  /**
-   * Sends the combat packet, when the living entity stop to fight.
-   */
+  /** Sends the combat packet, when the living entity stop to fight. */
   void sendEndCombat();
 
   /**
@@ -441,14 +440,10 @@ public interface LivingEntity extends Entity {
    */
   int getItemInUseMaxCount();
 
-  /**
-   * Stops the active hand of this living entity.
-   */
+  /** Stops the active hand of this living entity. */
   void stopActiveHand();
 
-  /**
-   * Resets the active hand of this living entity.
-   */
+  /** Resets the active hand of this living entity. */
   void resetActiveHand();
 
   /**
@@ -461,7 +456,8 @@ public interface LivingEntity extends Entity {
   /**
    * Whether the living entity is suppressing sliding down the ladder.
    *
-   * @return {@code true} if the living entity is suppressing sliding down the ladder, otherwise {@code false}.
+   * @return {@code true} if the living entity is suppressing sliding down the ladder, otherwise
+   *     {@code false}.
    */
   boolean isSuppressingSlidingDownLadder();
 
@@ -482,10 +478,11 @@ public interface LivingEntity extends Entity {
   /**
    * Attempts to teleport the living entity.
    *
-   * @param x               The x position where the living entity should be teleported to.
-   * @param y               The y position where the living entity should be teleported to.
-   * @param z               The z position where the living entity should be teleported to.
-   * @param particleEffects {@code true} if particle effects should be displayed, otherwise {@code false}.
+   * @param x The x position where the living entity should be teleported to.
+   * @param y The y position where the living entity should be teleported to.
+   * @param z The z position where the living entity should be teleported to.
+   * @param particleEffects {@code true} if particle effects should be displayed, otherwise {@code
+   *     false}.
    * @return {@code true} if the teleport attempt was successful, otherwise {@code false}.
    */
   boolean attemptTeleport(double x, double y, double z, boolean particleEffects);
@@ -549,7 +546,7 @@ public interface LivingEntity extends Entity {
   /**
    * Changes the state of this entity if it is in party mood.
    *
-   * @param position   The position of this jukebox.
+   * @param position The position of this jukebox.
    * @param isPartying {@code true} if the party should start, otherwise {@code false}.
    */
   void setPartying(BlockPosition position, boolean isPartying);
@@ -558,7 +555,8 @@ public interface LivingEntity extends Entity {
    * Whether the living entity can pick up the given item stack.
    *
    * @param stack The item stack to pick up.
-   * @return {@code true} if the living entity can pick up the given item stack, otherwise {@code false}.
+   * @return {@code true} if the living entity can pick up the given item stack, otherwise {@code
+   *     false}.
    */
   boolean canPickUpItem(ItemStack stack);
 
@@ -576,9 +574,7 @@ public interface LivingEntity extends Entity {
    */
   void setBedPosition(BlockPosition position);
 
-  /**
-   * Clears the bed position of this living entity.
-   */
+  /** Clears the bed position of this living entity. */
   void clearBedPosition();
 
   /**
@@ -595,9 +591,7 @@ public interface LivingEntity extends Entity {
    */
   void startSleeping(BlockPosition position);
 
-  /**
-   * Wakes the living entity up.
-   */
+  /** Wakes the living entity up. */
   void wakeUp();
 
   /**
@@ -622,29 +616,22 @@ public interface LivingEntity extends Entity {
    */
   void sendBreakAnimation(Hand hand);
 
-  /**
-   * A factory class for the {@link LivingEntity}.
-   */
+  /** A factory class for the {@link LivingEntity}. */
   @AssistedFactory(LivingEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link LivingEntity} with the given parameters.
      *
-     * @param entity     The non-null Minecraft entity.
+     * @param entity The non-null Minecraft entity.
      * @param entityType The entity type.
      * @return A created {@link LivingEntity}.
      */
     LivingEntity create(
-            @Assisted("entity") Object entity,
-            @Assisted("entityType") EntityType entityType
-    );
-
+        @Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /**
-   * Service interface for creating {@link LivingEntity}'s.
-   */
+  /** Service interface for creating {@link LivingEntity}'s. */
   interface Provider {
 
     /**
@@ -654,7 +641,5 @@ public interface LivingEntity extends Entity {
      * @return A created {@link LivingEntity}.
      */
     LivingEntity get(Object entity);
-
   }
-
 }

@@ -1,16 +1,16 @@
 package net.flintmc.mcapi.internal.items;
 
 import com.google.common.base.Preconditions;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
+import net.flintmc.mcapi.internal.items.component.HoverItemSerializer;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStackSerializer;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
 import net.flintmc.mcapi.items.type.ItemCategory;
 import net.flintmc.mcapi.items.type.ItemType;
-import net.flintmc.framework.stereotype.NameSpacedKey;
-import net.flintmc.mcapi.internal.items.component.HoverItemSerializer;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,24 +29,38 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
   private final Map<NameSpacedKey, ItemType> itemTypes = new HashMap<>();
   private final Map<NameSpacedKey, EnchantmentType> enchantmentTypes = new HashMap<>();
 
-  public DefaultItemRegistry(ItemType.Factory itemFactory, EnchantmentType.Factory enchantmentFactory,
-                             ComponentBuilder.Factory componentFactory, ComponentSerializer.Factory componentSerializerFactory,
-                             ItemStackSerializer itemStackSerializer) {
+  public DefaultItemRegistry(
+      ItemType.Factory itemFactory,
+      EnchantmentType.Factory enchantmentFactory,
+      ComponentBuilder.Factory componentFactory,
+      ComponentSerializer.Factory componentSerializerFactory,
+      ItemStackSerializer itemStackSerializer) {
     this.itemFactory = itemFactory;
     this.enchantmentFactory = enchantmentFactory;
     this.componentFactory = componentFactory;
 
-    this.airType = itemFactory.newBuilder().category(null).registryName(NameSpacedKey.minecraft("air")).build();
+    this.airType =
+        itemFactory
+            .newBuilder()
+            .category(null)
+            .registryName(NameSpacedKey.minecraft("air"))
+            .build();
     this.registerItems();
 
-    componentSerializerFactory.gson().registerHoverContentSerializer(HoverEvent.Action.SHOW_ITEM, new HoverItemSerializer(itemStackSerializer));
+    componentSerializerFactory
+        .gson()
+        .registerHoverContentSerializer(
+            HoverEvent.Action.SHOW_ITEM, new HoverItemSerializer(itemStackSerializer));
   }
 
   protected abstract void registerItems();
 
   @Override
   public void registerType(ItemType type) {
-    Preconditions.checkArgument(!this.itemTypes.containsKey(type.getRegistryName()), "A type with the name %s is already registered", type.getRegistryName());
+    Preconditions.checkArgument(
+        !this.itemTypes.containsKey(type.getRegistryName()),
+        "A type with the name %s is already registered",
+        type.getRegistryName());
     this.itemTypes.put(type.getRegistryName(), type);
   }
 
@@ -74,7 +88,8 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
 
     for (ItemType type : this.itemTypes.values()) {
       //   no category                                     or  the exact category
-      if ((category == null && type.getCategory() == null) || (type.getCategory() != null && type.getCategory().equals(category))) {
+      if ((category == null && type.getCategory() == null)
+          || (type.getCategory() != null && type.getCategory().equals(category))) {
         types.add(type);
       }
     }
@@ -84,7 +99,10 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
 
   @Override
   public void registerCategory(ItemCategory category) {
-    Preconditions.checkArgument(!this.itemCategories.containsKey(category.getRegistryName()), "A category with the name %s is already registered", category.getRegistryName());
+    Preconditions.checkArgument(
+        !this.itemCategories.containsKey(category.getRegistryName()),
+        "A category with the name %s is already registered",
+        category.getRegistryName());
     this.itemCategories.put(category.getRegistryName(), category);
   }
 
@@ -110,7 +128,10 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
 
   @Override
   public void registerEnchantmentType(EnchantmentType type) {
-    Preconditions.checkArgument(!this.enchantmentTypes.containsKey(type.getRegistryName()), "An enchantment type with the name %s is already registered", type.getRegistryName());
+    Preconditions.checkArgument(
+        !this.enchantmentTypes.containsKey(type.getRegistryName()),
+        "An enchantment type with the name %s is already registered",
+        type.getRegistryName());
     this.enchantmentTypes.put(type.getRegistryName(), type);
   }
 

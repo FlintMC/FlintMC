@@ -12,9 +12,7 @@ import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 
-/**
- * Default implementation of the {@link NBTIntArray}.
- */
+/** Default implementation of the {@link NBTIntArray}. */
 @Implement(NBTIntArray.class)
 public class DefaultNBTIntArray implements NBTIntArray {
 
@@ -25,17 +23,13 @@ public class DefaultNBTIntArray implements NBTIntArray {
     this.value = value;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTType getIdentifier() {
     return NBTType.TAG_INT_ARRAY;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void readContents(NBTDataInputStream inputStream) throws IOException {
     int length = inputStream.getDataInputStream().readInt();
@@ -46,9 +40,7 @@ public class DefaultNBTIntArray implements NBTIntArray {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void writeContents(NBTDataOutputStream outputStream) throws IOException {
     outputStream.getDataOutputStream().writeInt(this.value.length);
@@ -57,17 +49,13 @@ public class DefaultNBTIntArray implements NBTIntArray {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String asString() {
     return Joiner.on(",").join(Collections.singleton(this.value));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int[] asArray() {
     return this.value;

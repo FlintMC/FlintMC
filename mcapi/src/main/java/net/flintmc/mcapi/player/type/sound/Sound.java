@@ -4,9 +4,7 @@ import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.resources.ResourceLocation;
 
-/**
- * Represents a Minecraft sound.
- */
+/** Represents a Minecraft sound. */
 public interface Sound {
 
   /**
@@ -16,9 +14,7 @@ public interface Sound {
    */
   ResourceLocation getName();
 
-  /**
-   * A factory class for {@link Sound}
-   */
+  /** A factory class for {@link Sound} */
   @AssistedFactory(Sound.class)
   interface Factory {
 
@@ -30,5 +26,4 @@ public interface Sound {
      */
     Sound create(@Assisted("path") String path);
   }
-
 }

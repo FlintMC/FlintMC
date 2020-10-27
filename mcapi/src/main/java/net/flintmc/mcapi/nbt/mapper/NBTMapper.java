@@ -2,9 +2,7 @@ package net.flintmc.mcapi.nbt.mapper;
 
 import net.flintmc.mcapi.nbt.NBT;
 
-/**
- * Mapper between the Minecraft NBT and Labyfy NBT.
- */
+/** Mapper between the Minecraft NBT and Labyfy NBT. */
 public interface NBTMapper {
 
   /**
@@ -23,5 +21,4 @@ public interface NBTMapper {
    * @return The new Minecraft nbt or {@code null} if the given component was invalid.
    */
   Object toMinecraftNBT(NBT nbt);
-
 }

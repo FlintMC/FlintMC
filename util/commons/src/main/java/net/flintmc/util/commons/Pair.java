@@ -12,20 +12,20 @@ public class Pair<U, V> {
     this.second = second;
   }
 
-  public void setFirst(U first) {
-    this.first = first;
-  }
-
-  public void setSecond(V second) {
-    this.second = second;
-  }
-
   public U getFirst() {
     return this.first;
   }
 
+  public void setFirst(U first) {
+    this.first = first;
+  }
+
   public V getSecond() {
     return this.second;
+  }
+
+  public void setSecond(V second) {
+    this.second = second;
   }
 
   public Pair<V, U> swap() {
@@ -69,8 +69,7 @@ public class Pair<U, V> {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Pair<?, ?> pair = (Pair<?, ?>) o;
-    return Objects.equals(first, pair.first) &&
-            Objects.equals(second, pair.second);
+    return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
   }
 
   @Override

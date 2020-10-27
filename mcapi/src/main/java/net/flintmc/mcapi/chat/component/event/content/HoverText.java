@@ -3,9 +3,7 @@ package net.flintmc.mcapi.chat.component.event.content;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 
-/**
- * The content of a {@link HoverEvent} which displays a {@link ChatComponent}.
- */
+/** The content of a {@link HoverEvent} which displays a {@link ChatComponent}. */
 public class HoverText extends HoverContent {
 
   private final ChatComponent text;

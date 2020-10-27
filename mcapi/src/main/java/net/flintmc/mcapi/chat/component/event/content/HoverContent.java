@@ -5,9 +5,7 @@ import net.flintmc.mcapi.chat.component.event.HoverEvent;
 
 import java.util.UUID;
 
-/**
- * The content of a {@link HoverEvent}.
- */
+/** The content of a {@link HoverEvent}. */
 public abstract class HoverContent {
 
   /**
@@ -24,7 +22,7 @@ public abstract class HoverContent {
    * Creates a new content for a {@link HoverEvent} which displays an entity.
    *
    * @param uniqueId The non-null uniqueId of the entity
-   * @param type     The non-null type of the entity
+   * @param type The non-null type of the entity
    * @return The new non-null content to be used in a {@link HoverEvent}
    */
   public static HoverContent entity(UUID uniqueId, String type) {
@@ -34,10 +32,10 @@ public abstract class HoverContent {
   /**
    * Creates a new content for a {@link HoverEvent} which displays an entity.
    *
-   * @param uniqueId    The non-null uniqueId of the entity
-   * @param type        The non-null type of the entity
-   * @param displayName The display name of the entity or {@code null} if the entity doesn't have a specific display
-   *                    name
+   * @param uniqueId The non-null uniqueId of the entity
+   * @param type The non-null type of the entity
+   * @param displayName The display name of the entity or {@code null} if the entity doesn't have a
+   *     specific display name
    * @return The new non-null content to be used in a {@link HoverEvent}
    */
   public static HoverContent entity(UUID uniqueId, String type, ChatComponent displayName) {
@@ -50,5 +48,4 @@ public abstract class HoverContent {
    * @return The non-null action of this content
    */
   public abstract HoverEvent.Action getAction();
-
 }

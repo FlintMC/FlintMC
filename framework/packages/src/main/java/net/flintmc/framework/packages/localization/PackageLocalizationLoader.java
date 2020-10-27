@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.jar.JarFile;
 
-/**
- * Represents a loader for {@link PackageLocalization}'s.
- */
+/** Represents a loader for {@link PackageLocalization}'s. */
 public interface PackageLocalizationLoader {
 
   /**
@@ -31,5 +29,4 @@ public interface PackageLocalizationLoader {
    * @return A key-value system with all available languages.
    */
   Map<String, PackageLocalization> getLocalizations();
-
 }

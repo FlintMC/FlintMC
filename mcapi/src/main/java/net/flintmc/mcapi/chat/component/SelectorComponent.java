@@ -5,14 +5,12 @@ import net.flintmc.mcapi.chat.EntitySelector;
 
 import java.util.Collection;
 
-/**
- * A component for the selection of entities.
- */
+/** A component for the selection of entities. */
 public interface SelectorComponent extends ChatComponent {
 
   /**
-   * Retrieves the target selector for the type of target entities of this component or {@code null} if no selector has
-   * been set.
+   * Retrieves the target selector for the type of target entities of this component or {@code null}
+   * if no selector has been set.
    *
    * @return The selector or {@code null} if no selector has been provided
    * @see #selector(EntitySelector)
@@ -42,11 +40,11 @@ public interface SelectorComponent extends ChatComponent {
   void selectorOptions(Multimap<String, String> options);
 
   /**
-   * Adds a specific option to this component. If the specified value is null, the option will be removed out of this
-   * component.
+   * Adds a specific option to this component. If the specified value is null, the option will be
+   * removed out of this component.
    *
    * @param option The non-null key for the option
-   * @param value  The nullable value for the option
+   * @param value The nullable value for the option
    */
   void selectorOption(String option, String value);
 

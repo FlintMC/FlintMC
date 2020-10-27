@@ -44,26 +44,24 @@ public abstract class DefaultSessionService implements SessionService {
 
   protected final RefreshTokenResult.Factory refreshTokenResultFactory;
   protected final AuthenticationResult.Factory authResultFactory;
-
-  protected UserAuthentication authentication;
-  protected String clientToken;
-
   protected final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
-
   protected final EventBus eventBus;
   protected final SessionAccountLogInEvent.Factory logInEventFactory;
   protected final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
-
   protected final Consumer<SessionService> sessionRefresher;
+  protected UserAuthentication authentication;
+  protected String clientToken;
 
-  protected DefaultSessionService(Logger logger, RefreshTokenResult.Factory refreshTokenResultFactory,
-                                  GameProfileSerializer profileSerializer,
-                                  SessionAccountLogInEvent.Factory logInEventFactory,
-                                  SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
-                                  AuthenticationResult.Factory authResultFactory,
-                                  EventBus eventBus,
-                                  Supplier<Proxy> minecraftProxySupplier,
-                                  Consumer<SessionService> sessionRefresher) {
+  protected DefaultSessionService(
+      Logger logger,
+      RefreshTokenResult.Factory refreshTokenResultFactory,
+      GameProfileSerializer profileSerializer,
+      SessionAccountLogInEvent.Factory logInEventFactory,
+      SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
+      AuthenticationResult.Factory authResultFactory,
+      EventBus eventBus,
+      Supplier<Proxy> minecraftProxySupplier,
+      Consumer<SessionService> sessionRefresher) {
     this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
     this.minecraftProxySupplier = minecraftProxySupplier;
@@ -88,7 +86,9 @@ public abstract class DefaultSessionService implements SessionService {
         this.clientToken = UUID.randomUUID().toString().replace("-", "");
       }
 
-      this.authentication = new YggdrasilAuthenticationService(this.minecraftProxySupplier.get(), this.clientToken).createUserAuthentication(Agent.MINECRAFT);
+      this.authentication =
+          new YggdrasilAuthenticationService(this.minecraftProxySupplier.get(), this.clientToken)
+              .createUserAuthentication(Agent.MINECRAFT);
     }
 
     return this.authentication;
@@ -101,18 +101,18 @@ public abstract class DefaultSessionService implements SessionService {
   }
 
   @Override
+  public String getClientToken() {
+    this.ensureAuthenticationAvailable(); // generate the client token if necessary
+    return this.clientToken;
+  }
+
+  @Override
   public void setClientToken(String clientToken) {
     this.clientToken = clientToken;
     // remove the authentication because it gets invalid with a new clientToken
     this.authentication = null;
     // refresh the Session in the Minecraft client
     this.refreshSession();
-  }
-
-  @Override
-  public String getClientToken() {
-    this.ensureAuthenticationAvailable(); // generate the client token if necessary
-    return this.clientToken;
   }
 
   @Override
@@ -147,7 +147,9 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public String getAccessToken() {
-    return this.authentication != null /* never authenticated in this SessionService */ ? this.authentication.getAuthenticatedToken() : null;
+    return this.authentication != null /* never authenticated in this SessionService */
+        ? this.authentication.getAuthenticatedToken()
+        : null;
   }
 
   @Override
@@ -174,17 +176,20 @@ public abstract class DefaultSessionService implements SessionService {
   public RefreshTokenResult refreshToken() {
     String accessToken = this.getAccessToken();
     if (accessToken == null) {
-      return this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.NOT_LOGGED_IN);
+      return this.refreshTokenResultFactory.createUnknown(
+          RefreshTokenResult.ResultType.NOT_LOGGED_IN);
     }
     UserAuthentication authentication = this.ensureAuthenticationAvailable();
 
     if (!(authentication instanceof RefreshableYggdrasilUserAuthentication)) {
       // this can only happen if shadow has failed which basically never happens
-      throw new RuntimeException("Token refreshing not supported, possibly Shadow has failed transforming the UserAuthentication");
+      throw new RuntimeException(
+          "Token refreshing not supported, possibly Shadow has failed transforming the UserAuthentication");
     }
 
     try {
-      RefreshableYggdrasilUserAuthentication refreshable = (RefreshableYggdrasilUserAuthentication) authentication;
+      RefreshableYggdrasilUserAuthentication refreshable =
+          (RefreshableYggdrasilUserAuthentication) authentication;
 
       JsonObject result = this.requestNewToken(accessToken);
 
@@ -197,7 +202,8 @@ public abstract class DefaultSessionService implements SessionService {
 
         // fire the event if enabled
         if (this.tokenRefreshEventFactory != null) {
-          this.eventBus.fireEvent(this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
+          this.eventBus.fireEvent(
+              this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
         }
 
         refreshable.setAccessToken(newToken);
@@ -206,12 +212,14 @@ public abstract class DefaultSessionService implements SessionService {
       }
 
       if (result.has("errorMessage")) {
-        return this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, result.get("errorMessage").getAsString());
+        return this.refreshTokenResultFactory.create(
+            RefreshTokenResult.ResultType.OTHER, result.get("errorMessage").getAsString());
       }
 
       return this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.OTHER);
     } catch (IOException | JsonParseException e) {
-      return this.refreshTokenResultFactory.create(RefreshTokenResult.ResultType.OTHER, e.getMessage());
+      return this.refreshTokenResultFactory.create(
+          RefreshTokenResult.ResultType.OTHER, e.getMessage());
     }
   }
 
@@ -255,7 +263,7 @@ public abstract class DefaultSessionService implements SessionService {
     }
 
     try (InputStream inputStream = connection.getInputStream();
-         Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
       return JsonParser.parseReader(reader).getAsJsonObject();
     }
   }
@@ -292,10 +300,11 @@ public abstract class DefaultSessionService implements SessionService {
   public AuthenticationResult logIn(String accessToken) {
     UserAuthentication authentication = this.ensureAuthenticationAvailable();
 
-    if (!(authentication instanceof RefreshableYggdrasilUserAuthentication) ||
-        !(authentication instanceof RefreshableBaseUserAuthentication)) {
+    if (!(authentication instanceof RefreshableYggdrasilUserAuthentication)
+        || !(authentication instanceof RefreshableBaseUserAuthentication)) {
       // this can only happen if shadow has failed which basically never happens
-      throw new RuntimeException("Token refreshing not supported, possibly Shadow has failed transforming the UserAuthentication");
+      throw new RuntimeException(
+          "Token refreshing not supported, possibly Shadow has failed transforming the UserAuthentication");
     }
 
     GameProfile currentProfile = this.getProfile();
@@ -312,8 +321,7 @@ public abstract class DefaultSessionService implements SessionService {
       this.updateAuthenticationContent(
           UUIDTypeAdapter.fromString(profile.get("id").getAsString()),
           profile.get("name").getAsString(),
-          object.get("accessToken").getAsString()
-      );
+          object.get("accessToken").getAsString());
 
       this.fireLoginEvent(currentProfile);
 
@@ -328,9 +336,10 @@ public abstract class DefaultSessionService implements SessionService {
     GameProfile newProfile = this.getProfile();
 
     if (this.logInEventFactory != null) {
-      SessionAccountLogInEvent event = previousProfile != null ?
-          this.logInEventFactory.create(previousProfile, newProfile) :
-          this.logInEventFactory.create(newProfile);
+      SessionAccountLogInEvent event =
+          previousProfile != null
+              ? this.logInEventFactory.create(previousProfile, newProfile)
+              : this.logInEventFactory.create(newProfile);
       this.eventBus.fireEvent(event, Subscribe.Phase.POST);
     }
 
@@ -346,7 +355,8 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public boolean isMain() {
-    return this.tokenRefreshEventFactory != null && this.logInEventFactory != null && this.sessionRefresher != null;
+    return this.tokenRefreshEventFactory != null
+        && this.logInEventFactory != null
+        && this.sessionRefresher != null;
   }
-
 }

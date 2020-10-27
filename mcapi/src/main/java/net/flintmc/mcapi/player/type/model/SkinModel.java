@@ -3,18 +3,12 @@ package net.flintmc.mcapi.player.type.model;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * An enumeration that shows all available skin models for a player.
- */
+/** An enumeration that shows all available skin models for a player. */
 public enum SkinModel {
 
-  /**
-   * The skin model with 4-pixel large arms
-   */
+  /** The skin model with 4-pixel large arms */
   STEVE("default"),
-  /**
-   * The skin model with 3-pixel large arms
-   */
+  /** The skin model with 3-pixel large arms */
   ALEX("slim");
 
   private static final Map<String, SkinModel> BY_NAME = new HashMap<>();
@@ -54,5 +48,4 @@ public enum SkinModel {
   public String getModel() {
     return model;
   }
-
 }

@@ -6,12 +6,12 @@ import com.google.inject.name.Named;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.classloading.common.ClassInformation;
 import net.flintmc.launcher.classloading.common.CommonClassLoaderHelper;
-import net.flintmc.transform.minecraft.MinecraftTransformer;
-import net.flintmc.transform.minecraft.obfuscate.remap.MinecraftClassRemapper;
-import net.flintmc.util.mappings.ClassMappingProvider;
 import net.flintmc.transform.asm.ASMUtils;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
+import net.flintmc.transform.minecraft.MinecraftTransformer;
+import net.flintmc.transform.minecraft.obfuscate.remap.MinecraftClassRemapper;
+import net.flintmc.util.mappings.ClassMappingProvider;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
@@ -19,9 +19,7 @@ import org.objectweb.asm.tree.ClassNode;
 
 import java.io.IOException;
 
-/**
- * Deobfuscates all minecraft classes for which mappings are provided
- */
+/** Deobfuscates all minecraft classes for which mappings are provided */
 @Singleton
 @MinecraftTransformer(priority = Integer.MIN_VALUE)
 public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
@@ -33,7 +31,9 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
 
   @Inject
   private MinecraftInstructionObfuscator(
-      MinecraftClassRemapper minecraftClassRemapper, ClassMappingProvider classMappingProvider, @Named("obfuscated") boolean obfuscated) {
+      MinecraftClassRemapper minecraftClassRemapper,
+      ClassMappingProvider classMappingProvider,
+      @Named("obfuscated") boolean obfuscated) {
     this.minecraftClassRemapper = minecraftClassRemapper;
     this.classMappingProvider = classMappingProvider;
     this.obfuscated = obfuscated;
@@ -51,7 +51,8 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
     try {
       classInformation = CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, className);
     } catch (IOException exception) {
-      throw new ClassTransformException("Unable to retrieve class metadata: " + className, exception);
+      throw new ClassTransformException(
+          "Unable to retrieve class metadata: " + className, exception);
     }
 
     if (classInformation == null) return classData;

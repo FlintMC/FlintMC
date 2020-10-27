@@ -8,12 +8,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.BiFunction;
 
-/**
- * Provides injection for a {@link Logger}.
- */
+/** Provides injection for a {@link Logger}. */
 public class LoggerTypeListener implements BiFunction<InjectionPoint, Key<Logger>, Logger> {
 
   public Logger apply(InjectionPoint injectionPoint, Key<Logger> loggerKey) {
-    return InjectionHolder.getInjectedInstance(LoggingProvider.class).getLogger(injectionPoint.getDeclaringType().getRawType());
+    return InjectionHolder.getInjectedInstance(LoggingProvider.class)
+        .getLogger(injectionPoint.getDeclaringType().getRawType());
   }
 }

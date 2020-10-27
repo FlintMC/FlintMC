@@ -1,8 +1,8 @@
 package net.flintmc.mcapi.chat.component.event;
 
 /**
- * The implementation of a click event for chat components that will be executed when the player clicks on the
- * component.
+ * The implementation of a click event for chat components that will be executed when the player
+ * clicks on the component.
  *
  * <p>ClickEvents for the chat are available since Minecraft 1.7.10. With Minecraft 1.8 and 1.15
  * some new actions have been added.
@@ -23,7 +23,7 @@ public class ClickEvent {
    * <p>Available since Minecraft 1.7.10.
    *
    * @param action The non-null action of the click event
-   * @param value  The non-null value of the click event
+   * @param value The non-null value of the click event
    * @return The new non-null click event
    * @see Action
    */
@@ -44,8 +44,9 @@ public class ClickEvent {
   }
 
   /**
-   * Creates a new click event which will open a file on the local file system. For security reasons, this is only used
-   * internally to open screenshots in the chat and ignored when the server sends it.
+   * Creates a new click event which will open a file on the local file system. For security
+   * reasons, this is only used internally to open screenshots in the chat and ignored when the
+   * server sends it.
    *
    * <p>Available since Minecraft 1.7.10.
    *
@@ -57,7 +58,8 @@ public class ClickEvent {
   }
 
   /**
-   * Creates a new click event which will send the given command as a normal chat message to the server.
+   * Creates a new click event which will send the given command as a normal chat message to the
+   * server.
    *
    * <p>Available since Minecraft 1.7.10.
    *
@@ -93,8 +95,8 @@ public class ClickEvent {
   }
 
   /**
-   * Creates a new click event which will change the page in the currently opened book, this event has no effect when
-   * used somewhere else than a book.
+   * Creates a new click event which will change the page in the currently opened book, this event
+   * has no effect when used somewhere else than a book.
    *
    * <p>Available since Minecraft 1.8.
    *
@@ -105,16 +107,12 @@ public class ClickEvent {
     return of(Action.CHANGE_PAGE, String.valueOf(page));
   }
 
-  /**
-   * Retrieves the non-null action of this click event.
-   */
+  /** Retrieves the non-null action of this click event. */
   public Action getAction() {
     return this.action;
   }
 
-  /**
-   * Retrieves the non-null value of this click event.
-   */
+  /** Retrieves the non-null value of this click event. */
   public String getValue() {
     return this.value;
   }
@@ -129,8 +127,8 @@ public class ClickEvent {
     OPEN_URL,
 
     /**
-     * Opens a file on the local file system of the player. For security reasons, this is only used internally to open
-     * screenshots in the chat.
+     * Opens a file on the local file system of the player. For security reasons, this is only used
+     * internally to open screenshots in the chat.
      *
      * <p>Available since Minecraft 1.7.10.
      */
@@ -151,7 +149,8 @@ public class ClickEvent {
     SUGGEST_COMMAND,
 
     /**
-     * This action is only available in books, it changes the page of the book to the page defined in the value.
+     * This action is only available in books, it changes the page of the book to the page defined
+     * in the value.
      *
      * <p>Available since Minecraft 1.8
      */

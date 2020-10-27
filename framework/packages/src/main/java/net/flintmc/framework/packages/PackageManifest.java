@@ -2,9 +2,7 @@ package net.flintmc.framework.packages;
 
 import java.util.Set;
 
-/**
- * Represents the metadata of a package.
- */
+/** Represents the metadata of a package. */
 public interface PackageManifest {
 
   /**

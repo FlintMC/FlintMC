@@ -3,9 +3,7 @@ package net.flintmc.mcapi.chat;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.exception.ComponentMappingException;
 
-/**
- * Mapper between the minecraft components and the Labyfy components.
- */
+/** Mapper between the minecraft components and the Labyfy components. */
 public interface MinecraftComponentMapper {
 
   /**

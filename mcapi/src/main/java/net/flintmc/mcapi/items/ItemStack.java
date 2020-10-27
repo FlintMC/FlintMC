@@ -5,9 +5,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.items.type.ItemType;
 
-/**
- * Represents a stack of items in an inventory.
- */
+/** Represents a stack of items in an inventory. */
 public interface ItemStack {
 
   /**
@@ -18,11 +16,13 @@ public interface ItemStack {
   boolean hasItemMeta();
 
   /**
-   * Retrieves the meta of this ItemStack and creates it if this stack doesn't have a meta and allowed.
+   * Retrieves the meta of this ItemStack and creates it if this stack doesn't have a meta and
+   * allowed.
    *
    * @param create Whether this method is allowed to create the ItemMeta if it is not present
-   * @return The ItemMeta of this ItemStack or {@code null}, if no ItemMeta is present and {@code create} has been set
-   * to {@code false}. This will never be {@code null} if {@code create} was set to {@code true}.
+   * @return The ItemMeta of this ItemStack or {@code null}, if no ItemMeta is present and {@code
+   *     create} has been set to {@code false}. This will never be {@code null} if {@code create}
+   *     was set to {@code true}.
    * @see #hasItemMeta()
    */
   ItemMeta getItemMeta(boolean create);
@@ -48,31 +48,31 @@ public interface ItemStack {
    */
   ItemType getType();
 
-  /**
-   * Factory for the {@link ItemStack}.
-   */
+  /** Factory for the {@link ItemStack}. */
   @AssistedFactory(ItemStack.class)
   interface Factory {
 
     /**
      * Creates a new item stack with the given type and stack size.
      *
-     * @param type      The non-null type of the items on the new stack
+     * @param type The non-null type of the items on the new stack
      * @param stackSize The amount of items on the new stack
      * @return The new non-null ItemStack
      */
-    ItemStack createItemStack(@Assisted("type") ItemType type, @Assisted("stackSize") int stackSize);
+    ItemStack createItemStack(
+        @Assisted("type") ItemType type, @Assisted("stackSize") int stackSize);
 
     /**
      * Creates a new item stack with the given type, stack size and metadata.
      *
-     * @param type      The non-null type of the items on the new stack
+     * @param type The non-null type of the items on the new stack
      * @param stackSize The amount of items on the new stack
-     * @param meta      The non-null metadata for the items on the new stack
+     * @param meta The non-null metadata for the items on the new stack
      * @return The new non-null ItemStack
      */
-    ItemStack createItemStack(@Assisted("type") ItemType type, @Assisted("stackSize") int stackSize, @Assisted("meta") ItemMeta meta);
-
+    ItemStack createItemStack(
+        @Assisted("type") ItemType type,
+        @Assisted("stackSize") int stackSize,
+        @Assisted("meta") ItemMeta meta);
   }
-
 }

@@ -1,14 +1,13 @@
 package net.flintmc.mcapi.chat.event;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.Cancellable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /**
  * This event will be fired whenever a message will be sent to the server (e.g. by typing it in the
- * chat box), it supports both PRE and POST {@link
- * Subscribe.Phase}s but the cancellation will be
+ * chat box), it supports both PRE and POST {@link Subscribe.Phase}s but the cancellation will be
  * ignored in the POST phase. If this event has been cancelled in the PRE phase, the message won't
  * be sent to the server anymore.
  */

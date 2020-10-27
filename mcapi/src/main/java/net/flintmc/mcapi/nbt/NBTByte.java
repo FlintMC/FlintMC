@@ -3,9 +3,7 @@ package net.flintmc.mcapi.nbt;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * A singed integral type. Sometimes used for booleans.
- */
+/** A singed integral type. Sometimes used for booleans. */
 public interface NBTByte extends NBT {
 
   /**
@@ -15,9 +13,7 @@ public interface NBTByte extends NBT {
    */
   byte asByte();
 
-  /**
-   * A factory class for the {@link NBTByte}.
-   */
+  /** A factory class for the {@link NBTByte}. */
   @AssistedFactory(NBTByte.class)
   interface Factory {
 
@@ -28,7 +24,5 @@ public interface NBTByte extends NBT {
      * @return A created byte named binary tag.
      */
     NBTByte create(@Assisted("value") byte value);
-
   }
-
 }

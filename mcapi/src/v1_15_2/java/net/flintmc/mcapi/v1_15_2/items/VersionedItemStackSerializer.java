@@ -6,11 +6,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.ItemStackSerializer;
 import net.flintmc.mcapi.items.type.ItemType;
-import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.minecraft.nbt.*;
 
 @Singleton
@@ -42,7 +42,8 @@ public class VersionedItemStackSerializer implements ItemStackSerializer {
       JsonElement tag = object.get("tag");
 
       try {
-        CompoundNBT nbt = JsonToNBT.getTagFromJson(tag.isJsonObject() ? tag.toString() : tag.getAsString());
+        CompoundNBT nbt =
+            JsonToNBT.getTagFromJson(tag.isJsonObject() ? tag.toString() : tag.getAsString());
         stack.getItemMeta(true).applyNBTFrom(nbt);
       } catch (CommandSyntaxException ignored) {
       }
@@ -89,10 +90,8 @@ public class VersionedItemStackSerializer implements ItemStackSerializer {
       JsonArray array = new JsonArray();
       ((ListNBT) nbt).forEach(value -> array.add(this.asJson(value)));
       return array;
-
     }
 
     return JsonNull.INSTANCE;
   }
-
 }

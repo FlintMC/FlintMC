@@ -2,12 +2,10 @@ package net.flintmc.mcapi.internal.gamesettings.frontend;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.flintmc.mcapi.gamesettings.frontend.FrontendOption;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.gamesettings.frontend.FrontendOption;
 
-/**
- * Default implementation of a {@link FrontendOption}.
- */
+/** Default implementation of a {@link FrontendOption}. */
 @Implement(FrontendOption.class)
 public class DefaultFrontendOption implements FrontendOption {
 
@@ -17,37 +15,29 @@ public class DefaultFrontendOption implements FrontendOption {
 
   @AssistedInject
   protected DefaultFrontendOption(
-          @Assisted("name") String name,
-          @Assisted("type") Class<?> type,
-          @Assisted("defaultValue") String defaultValue
-  ) {
+      @Assisted("name") String name,
+      @Assisted("type") Class<?> type,
+      @Assisted("defaultValue") String defaultValue) {
     this.name = name;
     this.type = type;
     this.defaultValue = defaultValue;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getConfigurationName() {
     return this.name;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Class<?> getType() {
     return this.type;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getDefaultValue() {
     return this.defaultValue;
   }
-
 }

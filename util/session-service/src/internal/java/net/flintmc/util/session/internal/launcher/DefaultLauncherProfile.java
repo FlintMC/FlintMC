@@ -17,8 +17,10 @@ public class DefaultLauncherProfile implements LauncherProfile {
   private String accessToken;
 
   @AssistedInject
-  private DefaultLauncherProfile(@Assisted("profileId") String profileId, @Assisted("accessToken") String accessToken,
-                                 @Assisted("profiles") GameProfile[] profiles) {
+  private DefaultLauncherProfile(
+      @Assisted("profileId") String profileId,
+      @Assisted("accessToken") String accessToken,
+      @Assisted("profiles") GameProfile[] profiles) {
     this.profileId = profileId;
     this.accessToken = accessToken;
     this.profiles = profiles;

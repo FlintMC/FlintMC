@@ -1,71 +1,55 @@
 package net.flintmc.mcapi.v1_15_2.gamesettings.configuration;
 
 import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.gamesettings.configuration.GraphicConfiguration;
 import net.flintmc.mcapi.gamesettings.settings.*;
-import net.flintmc.framework.inject.implement.Implement;
 import net.minecraft.client.Minecraft;
 
-/**
- * 1.15.2 implementation of {@link GraphicConfiguration}
- */
+/** 1.15.2 implementation of {@link GraphicConfiguration} */
 @Singleton
 @Implement(value = GraphicConfiguration.class, version = "1.15.2")
 public class VersionedGraphicConfiguration implements GraphicConfiguration {
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getRenderDistanceChunks() {
     return Minecraft.getInstance().gameSettings.renderDistanceChunks;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setRenderDistanceChunks(int renderDistanceChunks) {
     Minecraft.getInstance().gameSettings.renderDistanceChunks = renderDistanceChunks;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getEntityDistanceScaling() {
     return 0;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setEntityDistanceScaling(float entityDistanceScaling) {
     // NO-OP
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getFramerateLimit() {
     return Minecraft.getInstance().gameSettings.framerateLimit;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setFramerateLimit(int framerateLimit) {
     Minecraft.getInstance().gameSettings.framerateLimit = framerateLimit;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public CloudOption getCloudOption() {
     switch (Minecraft.getInstance().gameSettings.cloudOption) {
@@ -76,24 +60,26 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
       case FANCY:
         return CloudOption.FANCY;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.cloudOption);
+        throw new IllegalStateException(
+            "Unexpected value: " + Minecraft.getInstance().gameSettings.cloudOption);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setCloudOption(CloudOption cloudOption) {
     switch (cloudOption) {
       case OFF:
-        Minecraft.getInstance().gameSettings.cloudOption = net.minecraft.client.settings.CloudOption.OFF;
+        Minecraft.getInstance().gameSettings.cloudOption =
+            net.minecraft.client.settings.CloudOption.OFF;
         break;
       case FAST:
-        Minecraft.getInstance().gameSettings.cloudOption = net.minecraft.client.settings.CloudOption.FAST;
+        Minecraft.getInstance().gameSettings.cloudOption =
+            net.minecraft.client.settings.CloudOption.FAST;
         break;
       case FANCY:
-        Minecraft.getInstance().gameSettings.cloudOption = net.minecraft.client.settings.CloudOption.FANCY;
+        Minecraft.getInstance().gameSettings.cloudOption =
+            net.minecraft.client.settings.CloudOption.FANCY;
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + cloudOption);
@@ -101,26 +87,22 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public GraphicsFanciness getGraphicsFanciness() {
-    return Minecraft.getInstance().gameSettings.fancyGraphics ? GraphicsFanciness.FANCY : GraphicsFanciness.FAST;
+    return Minecraft.getInstance().gameSettings.fancyGraphics
+        ? GraphicsFanciness.FANCY
+        : GraphicsFanciness.FAST;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setGraphicsFanciness(GraphicsFanciness fancyGraphics) {
     Minecraft.getInstance().gameSettings.fancyGraphics = fancyGraphics != GraphicsFanciness.FAST;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public AmbientOcclusionStatus getAmbientOcclusionStatus() {
     switch (Minecraft.getInstance().gameSettings.ambientOcclusionStatus) {
@@ -131,24 +113,26 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
       case MAX:
         return AmbientOcclusionStatus.MAX;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.ambientOcclusionStatus);
+        throw new IllegalStateException(
+            "Unexpected value: " + Minecraft.getInstance().gameSettings.ambientOcclusionStatus);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setAmbientOcclusionStatus(AmbientOcclusionStatus ambientOcclusionStatus) {
     switch (ambientOcclusionStatus) {
       case OFF:
-        Minecraft.getInstance().gameSettings.ambientOcclusionStatus = net.minecraft.client.settings.AmbientOcclusionStatus.OFF;
+        Minecraft.getInstance().gameSettings.ambientOcclusionStatus =
+            net.minecraft.client.settings.AmbientOcclusionStatus.OFF;
         break;
       case MIN:
-        Minecraft.getInstance().gameSettings.ambientOcclusionStatus = net.minecraft.client.settings.AmbientOcclusionStatus.MIN;
+        Minecraft.getInstance().gameSettings.ambientOcclusionStatus =
+            net.minecraft.client.settings.AmbientOcclusionStatus.MIN;
         break;
       case MAX:
-        Minecraft.getInstance().gameSettings.ambientOcclusionStatus = net.minecraft.client.settings.AmbientOcclusionStatus.MAX;
+        Minecraft.getInstance().gameSettings.ambientOcclusionStatus =
+            net.minecraft.client.settings.AmbientOcclusionStatus.MAX;
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + ambientOcclusionStatus);
@@ -156,26 +140,20 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getMipmapLevels() {
     return Minecraft.getInstance().gameSettings.mipmapLevels;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setMipmapLevels(int mipmapLevels) {
     Minecraft.getInstance().gameSettings.mipmapLevels = mipmapLevels;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public AttackIndicatorStatus getAttackIndicator() {
     switch (Minecraft.getInstance().gameSettings.attackIndicator) {
@@ -186,24 +164,26 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
       case HOTBAR:
         return AttackIndicatorStatus.HOTBAR;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.attackIndicator);
+        throw new IllegalStateException(
+            "Unexpected value: " + Minecraft.getInstance().gameSettings.attackIndicator);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setAttackIndicator(AttackIndicatorStatus attackIndicator) {
     switch (attackIndicator) {
       case OFF:
-        Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.OFF;
+        Minecraft.getInstance().gameSettings.attackIndicator =
+            net.minecraft.client.settings.AttackIndicatorStatus.OFF;
         break;
       case CROSSHAIR:
-        Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.CROSSHAIR;
+        Minecraft.getInstance().gameSettings.attackIndicator =
+            net.minecraft.client.settings.AttackIndicatorStatus.CROSSHAIR;
         break;
       case HOTBAR:
-        Minecraft.getInstance().gameSettings.attackIndicator = net.minecraft.client.settings.AttackIndicatorStatus.HOTBAR;
+        Minecraft.getInstance().gameSettings.attackIndicator =
+            net.minecraft.client.settings.AttackIndicatorStatus.HOTBAR;
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + attackIndicator);
@@ -211,160 +191,122 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getBiomeBlendRadius() {
     return Minecraft.getInstance().gameSettings.biomeBlendRadius;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setBiomeBlendRadius(int biomeBlendRadius) {
     Minecraft.getInstance().gameSettings.biomeBlendRadius = biomeBlendRadius;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isVsync() {
     return Minecraft.getInstance().gameSettings.vsync;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setVsync(boolean vsync) {
     Minecraft.getInstance().gameSettings.vsync = vsync;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isFullscreen() {
     return Minecraft.getInstance().gameSettings.fullscreen;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setFullscreen(boolean fullscreen) {
     Minecraft.getInstance().gameSettings.fullscreen = fullscreen;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isViewBobbing() {
     return Minecraft.getInstance().gameSettings.viewBobbing;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setViewBobbing(boolean viewBobbing) {
     Minecraft.getInstance().gameSettings.viewBobbing = viewBobbing;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getFov() {
     return Minecraft.getInstance().gameSettings.fov;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setFov(double fov) {
     Minecraft.getInstance().gameSettings.fov = fov;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getScreenEffectScale() {
     return 0;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setScreenEffectScale(float screenEffectScale) {
     // NO-OP
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getFovEffectScale() {
     return 0;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setFovEffectScale(float fovEffectScale) {
     // NO-OP
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getGamma() {
     return Minecraft.getInstance().gameSettings.gamma;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setGamma(double gamma) {
     Minecraft.getInstance().gameSettings.gamma = gamma;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getGuiScale() {
     return Minecraft.getInstance().gameSettings.guiScale;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setGuiScale(int guiScale) {
     Minecraft.getInstance().gameSettings.guiScale = guiScale;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ParticleStatus getParticles() {
     switch (Minecraft.getInstance().gameSettings.particles) {
@@ -375,24 +317,26 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
       case MINIMAL:
         return ParticleStatus.MINIMAL;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.particles);
+        throw new IllegalStateException(
+            "Unexpected value: " + Minecraft.getInstance().gameSettings.particles);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setParticles(ParticleStatus particles) {
     switch (particles) {
       case ALL:
-        Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.ALL;
+        Minecraft.getInstance().gameSettings.particles =
+            net.minecraft.client.settings.ParticleStatus.ALL;
         break;
       case DECREASED:
-        Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.DECREASED;
+        Minecraft.getInstance().gameSettings.particles =
+            net.minecraft.client.settings.ParticleStatus.DECREASED;
         break;
       case MINIMAL:
-        Minecraft.getInstance().gameSettings.particles = net.minecraft.client.settings.ParticleStatus.MINIMAL;
+        Minecraft.getInstance().gameSettings.particles =
+            net.minecraft.client.settings.ParticleStatus.MINIMAL;
         break;
       default:
         throw new IllegalStateException("Unexpected value: " + particles);
@@ -400,106 +344,81 @@ public class VersionedGraphicConfiguration implements GraphicConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isEntityShadows() {
     return Minecraft.getInstance().gameSettings.entityShadows;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setEntityShadows(boolean entityShadows) {
     Minecraft.getInstance().gameSettings.entityShadows = entityShadows;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getFullscreenResolution() {
     return Minecraft.getInstance().gameSettings.fullscreenResolution;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setFullscreenResolution(String fullscreenResolution) {
     Minecraft.getInstance().gameSettings.fullscreenResolution = fullscreenResolution;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getOverrideWidth() {
     return Minecraft.getInstance().gameSettings.overrideWidth;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setOverrideWidth(int overrideWidth) {
     Minecraft.getInstance().gameSettings.overrideWidth = overrideWidth;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getOverrideHeight() {
     return Minecraft.getInstance().gameSettings.overrideHeight;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setOverrideHeight(int overrideHeight) {
     Minecraft.getInstance().gameSettings.overrideHeight = overrideHeight;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isHideGUI() {
     return Minecraft.getInstance().gameSettings.hideGUI;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setHideGUI(boolean hideGUI) {
     Minecraft.getInstance().gameSettings.hideGUI = hideGUI;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isForceUnicodeFont() {
     return Minecraft.getInstance().gameSettings.forceUnicodeFont;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setForceUnicodeFont(boolean forceUnicodeFont) {
     Minecraft.getInstance().gameSettings.forceUnicodeFont = forceUnicodeFont;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
-
 }

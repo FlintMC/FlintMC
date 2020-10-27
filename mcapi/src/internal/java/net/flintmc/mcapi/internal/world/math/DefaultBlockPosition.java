@@ -6,19 +6,16 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Vector3I;
 
-/**
- * Default implementation of {@link BlockPosition}.
- */
+/** Default implementation of {@link BlockPosition}. */
 @Implement(BlockPosition.class)
 public class DefaultBlockPosition extends DefaultVector3I implements BlockPosition {
 
   @AssistedInject
   private DefaultBlockPosition(
-          @Assisted("x") int x,
-          @Assisted("y") int y,
-          @Assisted("z") int z,
-          Vector3I.Factory vector3IFactory
-  ) {
+      @Assisted("x") int x,
+      @Assisted("y") int y,
+      @Assisted("z") int z,
+      Vector3I.Factory vector3IFactory) {
     super(x, y, z, vector3IFactory);
   }
 
@@ -30,7 +27,9 @@ public class DefaultBlockPosition extends DefaultVector3I implements BlockPositi
       return false;
     } else {
       BlockPosition position = (BlockPosition) object;
-      return position.getX() == this.getX() && position.getY() == this.getY() && position.getZ() == this.getZ();
+      return position.getX() == this.getX()
+          && position.getY() == this.getY()
+          && position.getZ() == this.getZ();
     }
   }
 }

@@ -6,12 +6,14 @@ import net.flintmc.mcapi.chat.controller.filter.FilterableChatMessage;
 
 import java.util.UUID;
 
-public class DefaultFilterableChatMessage extends DefaultChatMessage implements FilterableChatMessage {
+public class DefaultFilterableChatMessage extends DefaultChatMessage
+    implements FilterableChatMessage {
 
   private Chat targetChat;
   private boolean allowed = true;
 
-  public DefaultFilterableChatMessage(ChatComponent component, Chat targetChat, UUID senderUniqueId) {
+  public DefaultFilterableChatMessage(
+      ChatComponent component, Chat targetChat, UUID senderUniqueId) {
     super(component, targetChat, senderUniqueId);
     this.targetChat = targetChat;
   }

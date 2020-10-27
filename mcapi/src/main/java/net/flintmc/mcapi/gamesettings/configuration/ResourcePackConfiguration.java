@@ -2,15 +2,14 @@ package net.flintmc.mcapi.gamesettings.configuration;
 
 import java.util.List;
 
-/**
- * Represents the resource pack configuration.
- */
+/** Represents the resource pack configuration. */
 public interface ResourcePackConfiguration {
 
   /**
    * Retrieves a collection with all resource packs.<br>
-   * <b>Note:</b> If you use this method to add a resource pack, the client only knows about it and is temporary
-   * not saved in the options. The next time the options are saved, the added resource packs are also saved.
+   * <b>Note:</b> If you use this method to add a resource pack, the client only knows about it and
+   * is temporary not saved in the options. The next time the options are saved, the added resource
+   * packs are also saved.
    *
    * @return A collection with all resource packs.
    */
@@ -25,9 +24,9 @@ public interface ResourcePackConfiguration {
 
   /**
    * Retrieves a collection with all incompatible resource packs.<br>
-   * <b>Note:</b> If you use this method to add an incompatible resource pack, the client only knows about it and is
-   * temporary not saved in the options. The next time the options are saved, the added  incompatible resource packs
-   * are also saved.
+   * <b>Note:</b> If you use this method to add an incompatible resource pack, the client only knows
+   * about it and is temporary not saved in the options. The next time the options are saved, the
+   * added incompatible resource packs are also saved.
    *
    * @return A collection with all incompatible resource packs.
    */
@@ -39,5 +38,4 @@ public interface ResourcePackConfiguration {
    * @param incompatibleResourcePacks The new incompatible resource pack colleciton.
    */
   void setIncompatibleResourcePacks(List<String> incompatibleResourcePacks);
-
 }

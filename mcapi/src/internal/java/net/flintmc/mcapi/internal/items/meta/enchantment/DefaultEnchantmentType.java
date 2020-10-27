@@ -1,10 +1,10 @@
 package net.flintmc.mcapi.internal.items.meta.enchantment;
 
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.items.meta.enchantment.Enchantment;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentRarity;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
-import net.flintmc.framework.stereotype.NameSpacedKey;
 
 public class DefaultEnchantmentType implements EnchantmentType {
 
@@ -14,7 +14,12 @@ public class DefaultEnchantmentType implements EnchantmentType {
   private final ChatComponent displayName;
   private final EnchantmentRarity rarity;
 
-  public DefaultEnchantmentType(Enchantment.Factory enchantmentFactory, NameSpacedKey registryName, int highestLevel, ChatComponent displayName, EnchantmentRarity rarity) {
+  public DefaultEnchantmentType(
+      Enchantment.Factory enchantmentFactory,
+      NameSpacedKey registryName,
+      int highestLevel,
+      ChatComponent displayName,
+      EnchantmentRarity rarity) {
     this.enchantmentFactory = enchantmentFactory;
     this.registryName = registryName;
     this.highestLevel = highestLevel;

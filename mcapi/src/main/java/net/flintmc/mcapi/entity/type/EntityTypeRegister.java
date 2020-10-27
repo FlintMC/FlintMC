@@ -2,9 +2,7 @@ package net.flintmc.mcapi.entity.type;
 
 import java.util.Map;
 
-/**
- * The register is used to register {@link EntityType}'s or to get {@link EntityType}'s.
- */
+/** The register is used to register {@link EntityType}'s or to get {@link EntityType}'s. */
 public interface EntityTypeRegister {
 
   /**
@@ -21,5 +19,4 @@ public interface EntityTypeRegister {
    * @return An entity type or a default value.
    */
   EntityType getEntityType(String key);
-
 }

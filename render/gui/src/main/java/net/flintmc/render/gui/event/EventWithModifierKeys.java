@@ -5,9 +5,7 @@ import net.flintmc.render.gui.event.input.ModifierKey;
 import java.util.Collections;
 import java.util.Set;
 
-/**
- * Base class for events with key modifiers.
- */
+/** Base class for events with key modifiers. */
 public abstract class EventWithModifierKeys implements GuiEvent {
   protected final Set<ModifierKey> modifierKeys;
 

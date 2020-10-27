@@ -2,9 +2,7 @@ package net.flintmc.mcapi.gamesettings.configuration;
 
 import net.flintmc.mcapi.player.type.sound.SoundCategory;
 
-/**
- * Represents the sound configuration.
- */
+/** Represents the sound configuration. */
 public interface SoundConfiguration {
 
   /**
@@ -19,9 +17,7 @@ public interface SoundConfiguration {
    * Changes the volume of the given sound category.
    *
    * @param soundCategory The sound category to be changed
-   * @param volume        The new sound volume for the category.
+   * @param volume The new sound volume for the category.
    */
   void setSoundVolume(SoundCategory soundCategory, float volume);
-
-
 }

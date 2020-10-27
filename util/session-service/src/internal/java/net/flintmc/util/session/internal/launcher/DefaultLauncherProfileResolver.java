@@ -3,11 +3,11 @@ package net.flintmc.util.session.internal.launcher;
 import com.google.gson.*;
 import javassist.CtClass;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.util.session.launcher.LauncherProfile;
 import net.flintmc.util.session.launcher.LauncherProfileResolver;
-import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 import net.flintmc.util.session.launcher.LauncherProfiles;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,9 +29,11 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
   private final Map<Integer, CtClass> serializerClasses;
   private final Map<Integer, LauncherProfileSerializer> serializers;
 
-  protected DefaultLauncherProfileResolver(LauncherProfiles.Factory profilesFactory, Supplier<Path> minecraftDirSupplier) {
+  protected DefaultLauncherProfileResolver(
+      LauncherProfiles.Factory profilesFactory, Supplier<Path> minecraftDirSupplier) {
     this.profilesFactory = profilesFactory;
-    this.launcherProfilesPathSupplier = () -> minecraftDirSupplier.get().resolve("launcher_profiles.json");
+    this.launcherProfilesPathSupplier =
+        () -> minecraftDirSupplier.get().resolve("launcher_profiles.json");
     this.gson = new GsonBuilder().setPrettyPrinting().create();
     this.serializerClasses = new HashMap<>();
     this.serializers = new HashMap<>();
@@ -40,7 +42,8 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
   @Override
   public void registerSerializer(int version, CtClass serializerClass) {
     if (this.serializerClasses.containsKey(version)) {
-      throw new IllegalArgumentException("A serializer for the version " + version + " is already registered");
+      throw new IllegalArgumentException(
+          "A serializer for the version " + version + " is already registered");
     }
 
     this.serializerClasses.put(version, serializerClass);
@@ -48,8 +51,10 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
 
   @Override
   public LauncherProfileSerializer getSerializer(int version) {
-    if(!this.serializers.containsKey(version)){
-      this.serializers.put(version, InjectionHolder.getInjectedInstance(CtResolver.get(serializerClasses.get(version))));
+    if (!this.serializers.containsKey(version)) {
+      this.serializers.put(
+          version,
+          InjectionHolder.getInjectedInstance(CtResolver.get(serializerClasses.get(version))));
     }
     return this.serializers.get(version);
   }
@@ -66,7 +71,8 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
   }
 
   private int getVersion(JsonObject launcherProfiles, int def) {
-    if (!launcherProfiles.has(LAUNCHER_VERSION) || !launcherProfiles.get(LAUNCHER_VERSION).isJsonObject()) {
+    if (!launcherProfiles.has(LAUNCHER_VERSION)
+        || !launcherProfiles.get(LAUNCHER_VERSION).isJsonObject()) {
       return def;
     }
     JsonObject version = launcherProfiles.get(LAUNCHER_VERSION).getAsJsonObject();
@@ -86,14 +92,15 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     }
 
     try (InputStream inputStream = Files.newInputStream(path);
-         Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
       JsonElement element = JsonParser.parseReader(reader);
       if (!element.isJsonObject()) {
         // invalid file
         return null;
       }
       JsonObject launcherProfiles = element.getAsJsonObject();
-      LauncherProfileSerializer serializer = this.getSerializer(this.getVersion(launcherProfiles, this.getHighestSerializerVersion()));
+      LauncherProfileSerializer serializer =
+          this.getSerializer(this.getVersion(launcherProfiles, this.getHighestSerializerVersion()));
       if (serializer == null) {
         // unknown version
         return null;
@@ -114,7 +121,10 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
         clientToken = clientTokenElement.getAsString();
       }
 
-      return this.profilesFactory.create(clientToken, this.getVersion(launcherProfiles, this.getHighestSerializerVersion()), profiles);
+      return this.profilesFactory.create(
+          clientToken,
+          this.getVersion(launcherProfiles, this.getHighestSerializerVersion()),
+          profiles);
     }
   }
 
@@ -125,7 +135,7 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
 
     if (Files.exists(path)) {
       try (InputStream inputStream = Files.newInputStream(path);
-           Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+          Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
         JsonElement element = JsonParser.parseReader(reader);
         if (element.isJsonObject()) {
           object = element.getAsJsonObject();
@@ -140,7 +150,7 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     }
 
     try (OutputStream outputStream = Files.newOutputStream(path);
-         Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+        Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
       this.gson.toJson(object, writer);
     }
   }
@@ -149,10 +159,13 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     int version = this.getVersion(object, profiles.getPreferredVersion());
     LauncherProfileSerializer serializer = this.getSerializer(version);
     if (serializer == null) {
-      throw new IllegalStateException("Cannot serialize profiles because there is no serializer registered for version " + version);
+      throw new IllegalStateException(
+          "Cannot serialize profiles because there is no serializer registered for version "
+              + version);
     }
 
-    JsonObject authData = object.has(AUTHENTICATION_DATABASE)
+    JsonObject authData =
+        object.has(AUTHENTICATION_DATABASE)
             ? object.get(AUTHENTICATION_DATABASE).getAsJsonObject()
             : new JsonObject();
 
@@ -161,5 +174,4 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     object.add(AUTHENTICATION_DATABASE, authData);
     object.addProperty("clientToken", profiles.getClientToken());
   }
-
 }

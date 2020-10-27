@@ -1,7 +1,6 @@
 package net.flintmc.mcapi.nbt;
 
 public enum NBTType {
-
   TAG_END(0),
   TAG_BYTE(1),
   TAG_SHORT(2),

@@ -20,8 +20,7 @@ public interface VisitIntInsn {
       this.operand = operand;
     }
 
-    public static Context of(
-        MethodVisitorContext methodVisitorContext, int opcode, int operand) {
+    public static Context of(MethodVisitorContext methodVisitorContext, int opcode, int operand) {
       Preconditions.checkNotNull(methodVisitorContext);
       return new Context(methodVisitorContext, opcode, operand);
     }

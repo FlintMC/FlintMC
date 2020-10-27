@@ -22,25 +22,19 @@ public class VersionedServerController implements ServerController {
     this.connectedServer = connectedServer;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isConnected() {
     return this.connectedServer.isConnected();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ConnectedServer getConnectedServer() {
     return this.isConnected() ? this.connectedServer : null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void disconnectFromServer() {
     if (Minecraft.getInstance().world != null) {
@@ -49,18 +43,24 @@ public class VersionedServerController implements ServerController {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void connectToServer(ServerAddress address) {
     // rendering has to be called from Minecraft's main thread
-    Minecraft.getInstance().execute(() -> {
-      this.disconnectNow();
+    Minecraft.getInstance()
+        .execute(
+            () -> {
+              this.disconnectNow();
 
-      Screen currentScreen = Minecraft.getInstance().currentScreen;
-      Minecraft.getInstance().displayGuiScreen(new ConnectingScreen(currentScreen, Minecraft.getInstance(), address.getIP(), address.getPort()));
-    });
+              Screen currentScreen = Minecraft.getInstance().currentScreen;
+              Minecraft.getInstance()
+                  .displayGuiScreen(
+                      new ConnectingScreen(
+                          currentScreen,
+                          Minecraft.getInstance(),
+                          address.getIP(),
+                          address.getPort()));
+            });
   }
 
   private void disconnectNow() {
@@ -73,7 +73,8 @@ public class VersionedServerController implements ServerController {
     Minecraft.getInstance().world.sendQuittingDisconnectingPacket();
 
     if (integrated) {
-      Minecraft.getInstance().unloadWorld(new DirtMessageScreen(new TranslationTextComponent("menu.savingLevel")));
+      Minecraft.getInstance()
+          .unloadWorld(new DirtMessageScreen(new TranslationTextComponent("menu.savingLevel")));
     } else {
       Minecraft.getInstance().unloadWorld();
     }

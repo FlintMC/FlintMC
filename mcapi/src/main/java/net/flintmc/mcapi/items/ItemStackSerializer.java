@@ -3,7 +3,8 @@ package net.flintmc.mcapi.items;
 import com.google.gson.JsonObject;
 
 /**
- * Serializer for the (de-)serialization of an {@link ItemStack} into a json that can be read be vanilla minecraft.
+ * Serializer for the (de-)serialization of an {@link ItemStack} into a json that can be read be
+ * vanilla minecraft.
  */
 public interface ItemStackSerializer {
 
@@ -23,5 +24,4 @@ public interface ItemStackSerializer {
    * @return The new non-null json object out of the given item
    */
   JsonObject toJson(ItemStack itemStack);
-
 }

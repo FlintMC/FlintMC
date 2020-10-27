@@ -6,8 +6,7 @@ import javassist.NotFoundException;
 import net.flintmc.processing.autoload.DetectableAnnotation;
 
 /**
- * Implements an {@link Identifier} to locate {@link
- * DetectableAnnotation}s located at class level.
+ * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s located at class level.
  *
  * @see Identifier
  */
@@ -18,9 +17,7 @@ public class ClassIdentifier implements Identifier<CtClass> {
     this.name = name;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public CtClass getLocation() {
     try {

@@ -7,9 +7,7 @@ import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 
-/**
- * Default implementation of the {@link Sound}.
- */
+/** Default implementation of the {@link Sound}. */
 @Implement(Sound.class)
 public class DefaultSound implements Sound {
 
@@ -17,15 +15,11 @@ public class DefaultSound implements Sound {
 
   @AssistedInject
   private DefaultSound(
-          @Assisted("path") String path,
-          ResourceLocationProvider resourceLocationProvider
-  ) {
+      @Assisted("path") String path, ResourceLocationProvider resourceLocationProvider) {
     this.resourceLocation = resourceLocationProvider.get(path);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ResourceLocation getName() {
     return this.resourceLocation;

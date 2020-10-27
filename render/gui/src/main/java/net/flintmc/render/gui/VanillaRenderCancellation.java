@@ -1,20 +1,17 @@
 package net.flintmc.render.gui;
 
-/**
- * Represents a cancellable execution of rendering.
- */
+/** Represents a cancellable execution of rendering. */
 public class VanillaRenderCancellation {
   private boolean shouldCancel;
 
-  /**
-   * Constructs a new {@link VanillaRenderCancellation} which has not been cancelled.
-   */
+  /** Constructs a new {@link VanillaRenderCancellation} which has not been cancelled. */
   public VanillaRenderCancellation() {
     this.shouldCancel = false;
   }
 
   /**
-   * Constructs a new {@link VanillaRenderCancellation} which cancellation depends on the given parameter.
+   * Constructs a new {@link VanillaRenderCancellation} which cancellation depends on the given
+   * parameter.
    *
    * @param isCancelled Whether the execution has been cancelled already
    */
@@ -22,9 +19,7 @@ public class VanillaRenderCancellation {
     this.shouldCancel = isCancelled;
   }
 
-  /**
-   * Signal the cancellation
-   */
+  /** Signal the cancellation */
   public void cancel() {
     this.shouldCancel = true;
   }

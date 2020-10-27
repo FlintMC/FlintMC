@@ -10,9 +10,7 @@ import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 import java.util.Collection;
 import java.util.Map;
 
-/**
- * Represents a Minecraft scoreboard.
- */
+/** Represents a Minecraft scoreboard. */
 public interface Scoreboard extends ScoreboardHook {
 
   /**
@@ -34,19 +32,21 @@ public interface Scoreboard extends ScoreboardHook {
   /**
    * Adds an {@link Objective} to the scoreboard.
    *
-   * @param name        The registry name of this objective.
-   * @param criteria    The criteria of this objective.
+   * @param name The registry name of this objective.
+   * @param criteria The criteria of this objective.
    * @param displayName The name that is displayed.
-   * @param renderType  The render type of this objective.
+   * @param renderType The render type of this objective.
    * @return The added objective or {@code null}
-   * @throws IllegalArgumentException If the name length is longer than 16 or the objective is already registered.
+   * @throws IllegalArgumentException If the name length is longer than 16 or the objective is
+   *     already registered.
    */
-  Objective addObjective(String name, Criteria criteria, ChatComponent displayName, RenderType renderType);
+  Objective addObjective(
+      String name, Criteria criteria, ChatComponent displayName, RenderType renderType);
 
   /**
    * Retrieves or creates a new score.
    *
-   * @param username  The username to get the key-value system.
+   * @param username The username to get the key-value system.
    * @param objective The objective to set the retrieved or created score.
    * @return A retrieved or created score.
    */
@@ -63,7 +63,7 @@ public interface Scoreboard extends ScoreboardHook {
   /**
    * Changes an {@link Objective} at the given slot.
    *
-   * @param slot      The slot to set the {@link Objective}.
+   * @param slot The slot to set the {@link Objective}.
    * @param objective The {@link Objective} to set.
    */
   void setObjectiveInDisplaySlot(int slot, Objective objective);
@@ -88,7 +88,7 @@ public interface Scoreboard extends ScoreboardHook {
    * Adds a player to the team.
    *
    * @param username The username of the player to be added.
-   * @param team     The team in which the player is to be added.
+   * @param team The team in which the player is to be added.
    * @return {@code true} if the player was added, otherwise {@code false}.
    */
   boolean addPlayerToTeam(String username, PlayerTeam team);
@@ -97,7 +97,7 @@ public interface Scoreboard extends ScoreboardHook {
    * Removes a player from the team.
    *
    * @param username The username of the player to be removed.
-   * @param team     The team in which the player is.
+   * @param team The team in which the player is.
    * @return {@code true} if the player was removed, otherwise {@code false}.
    */
   boolean removePlayerFromTeam(String username, PlayerTeam team);
@@ -176,9 +176,6 @@ public interface Scoreboard extends ScoreboardHook {
    */
   Collection<String> getObjectiveNames();
 
-  /**
-   * Clears all collections.
-   */
+  /** Clears all collections. */
   void invalidate();
-
 }

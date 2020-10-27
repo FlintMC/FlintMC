@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-/**
- * Represents a minecraft resource pack.
- */
+/** Represents a minecraft resource pack. */
 public interface ResourcePack {
   /**
    * Retrieves all namespaces contained in this resource pack.
@@ -25,14 +23,14 @@ public interface ResourcePack {
   String getName();
 
   /**
-   * Opens an input stream to a specific resource location in this resource pack.
-   * Usually {@link ResourceLocation#openInputStream()} should be preferred as it will respect
-   * the currently selected resource pack, which this method does not.
+   * Opens an input stream to a specific resource location in this resource pack. Usually {@link
+   * ResourceLocation#openInputStream()} should be preferred as it will respect the currently
+   * selected resource pack, which this method does not.
    *
    * @param resourceLocation The resource location to open the stream to
    * @return A stream which points to the given resource location
    * @throws java.io.FileNotFoundException If the given resource location can't be found in the pack
-   * @throws IOException                   If an I/O error occurs
+   * @throws IOException If an I/O error occurs
    */
   InputStream getStream(ResourceLocation resourceLocation) throws IOException;
 

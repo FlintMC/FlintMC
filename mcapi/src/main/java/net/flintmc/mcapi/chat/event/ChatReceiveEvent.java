@@ -1,14 +1,14 @@
 package net.flintmc.mcapi.chat.event;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.framework.eventbus.event.Cancellable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 
 /**
- * This event will be fired whenever a message will be displayed in the chat, it supports both PRE and POST {@link
- * Subscribe.Phase}s but the cancellation will be ignored in the POST phase. If this
+ * This event will be fired whenever a message will be displayed in the chat, it supports both PRE
+ * and POST {@link Subscribe.Phase}s but the cancellation will be ignored in the POST phase. If this
  * event has been cancelled in the PRE phase, the message won't be displayed anymore in the chat.
  */
 public interface ChatReceiveEvent extends ChatMessageEvent, Cancellable {
@@ -27,9 +27,7 @@ public interface ChatReceiveEvent extends ChatMessageEvent, Cancellable {
    */
   void setMessage(ChatComponent message);
 
-  /**
-   * Factory for the {@link ChatReceiveEvent}.
-   */
+  /** Factory for the {@link ChatReceiveEvent}. */
   @AssistedFactory(ChatReceiveEvent.class)
   interface Factory {
 
@@ -40,8 +38,5 @@ public interface ChatReceiveEvent extends ChatMessageEvent, Cancellable {
      * @return The new non-null event with the given message
      */
     ChatReceiveEvent create(@Assisted("message") ChatComponent message);
-
   }
-
-
 }

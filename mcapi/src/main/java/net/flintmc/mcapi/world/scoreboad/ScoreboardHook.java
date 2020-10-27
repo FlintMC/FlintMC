@@ -3,9 +3,7 @@ package net.flintmc.mcapi.world.scoreboad;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 
-/**
- * Represents a hook that is hooked in all methods that start with <b>on</b>.
- */
+/** Represents a hook that is hooked in all methods that start with <b>on</b>. */
 public interface ScoreboardHook {
 
   /**
@@ -54,7 +52,7 @@ public interface ScoreboardHook {
    * Is called when a player was attached to the team.
    *
    * @param username The username of the player.
-   * @param team     The team in which the player should be added.
+   * @param team The team in which the player should be added.
    */
   void attachPlayerToTeam(String username, PlayerTeam team);
 
@@ -62,7 +60,7 @@ public interface ScoreboardHook {
    * Is called when a player was detached from the team.
    *
    * @param username The username of the player.
-   * @param team     The team in which teh player should be removed.
+   * @param team The team in which teh player should be removed.
    */
   void detachPlayerFromTeam(String username, PlayerTeam team);
 
@@ -76,10 +74,8 @@ public interface ScoreboardHook {
   /**
    * Is called when a score has been removed by a player.
    *
-   * @param username  The username of the removing player..
+   * @param username The username of the removing player..
    * @param objective The objective for the score.
    */
   void removeScorePlayer(String username, Objective objective);
-
-
 }

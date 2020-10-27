@@ -3,6 +3,7 @@ package net.flintmc.mcapi.v1_15_2.entity;
 import com.google.common.collect.Sets;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
@@ -10,7 +11,6 @@ import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.reason.MoverType;
 import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityType;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.world.World;
@@ -39,183 +39,142 @@ public class VersionedEntity implements Entity {
 
   @AssistedInject
   public VersionedEntity(
-          @Assisted("entity") Object entity,
-          @Assisted("entityType") EntityType entityType,
-          World world,
-          EntityFoundationMapper entityFoundationMapper) {
+      @Assisted("entity") Object entity,
+      @Assisted("entityType") EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper) {
     this.entityType = entityType;
     this.world = world;
     this.entityFoundationMapper = entityFoundationMapper;
 
     if (!(entity instanceof net.minecraft.entity.Entity)) {
-      throw new IllegalArgumentException(entity.getClass().getName() + " is not an instance of " + net.minecraft.entity.Entity.class.getName());
+      throw new IllegalArgumentException(
+          entity.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.Entity.class.getName());
     }
 
     this.random = new Random();
     this.entity = (net.minecraft.entity.Entity) entity;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getTeamColor() {
     return this.entity.getTeamColor();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void detach() {
     this.entity.detach();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPacketCoordinates(double x, double y, double z) {
     this.entity.setPacketCoordinates(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityType getType() {
     return this.entityType;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getIdentifier() {
     return this.entity.getEntityId();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setIdentifier(int identifier) {
     this.entity.setEntityId(identifier);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Set<String> getTags() {
     return this.entity.getTags();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean addTag(String tag) {
     return this.entity.addTag(tag);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean removeTag(String tag) {
     return this.entity.removeTag(tag);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosX() {
     return this.entity.getPosX();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosY() {
     return this.entity.getPosY();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosZ() {
     return this.entity.getPosZ();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void remove() {
     this.entity.remove();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityPose getPose() {
-    return this.entityFoundationMapper.fromMinecraftPose(
-            this.entity.getPose()
-    );
+    return this.entityFoundationMapper.fromMinecraftPose(this.entity.getPose());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPosition(double x, double y, double z) {
     this.entity.setPosition(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPositionAndRotation(double x, double y, double z, float yaw, float pitch) {
     this.entity.setPositionAndRotation(x, y, z, yaw, pitch);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public void moveToBlockPosAndAngles(BlockPosition position, float rotationYaw, float rotationPitch) {
+  public void moveToBlockPosAndAngles(
+      BlockPosition position, float rotationYaw, float rotationPitch) {
     this.entity.moveToBlockPosAndAngles(
-            (BlockPos) this.getWorld().toMinecraftBlockPos(position),
-            rotationYaw,
-            rotationPitch
-    );
+        (BlockPos) this.getWorld().toMinecraftBlockPos(position), rotationYaw, rotationPitch);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setLocationAndAngles(double x, double y, double z, float yaw, float pitch) {
     this.entity.setLocationAndAngles(x, y, z, yaw, pitch);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void forceSetPosition(double x, double y, double z) {
     this.entity.forceSetPosition(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getDistance(Entity entity) {
     float distanceX = (float) (this.getPosX() - entity.getPosX());
@@ -224,616 +183,469 @@ public class VersionedEntity implements Entity {
     return MathHelper.sqrt(distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getDistanceSq(double x, double y, double z) {
     return this.entity.getDistanceSq(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getDistanceSq(Entity entity) {
     return this.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void applyEntityCollision(Entity entity) {
-    this.entity.applyEntityCollision((net.minecraft.entity.Entity) this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
+    this.entity.applyEntityCollision(
+        (net.minecraft.entity.Entity)
+            this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void addVelocity(double x, double y, double z) {
     this.entity.addVelocity(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void rotateTowards(double yaw, double pitch) {
     this.entity.rotateTowards(yaw, pitch);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getPitch(float partialTicks) {
     return this.entity.getPitch(partialTicks);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getPitch() {
     return this.entity.rotationPitch;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPitch(float pitch) {
     this.entity.rotationPitch = pitch;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getYaw(float partialTicks) {
     return this.entity.getYaw(partialTicks);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getYaw() {
     return this.entity.rotationYaw;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setYaw(float yaw) {
     this.entity.rotationYaw = yaw;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getMaxInPortalTime() {
     return this.entity.getMaxInPortalTime();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setFire(int seconds) {
     this.entity.setFire(seconds);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getFireTimer() {
     return this.entity.getFireTimer();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setFireTimer(int ticks) {
     this.entity.setFireTimer(ticks);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void extinguish() {
     this.entity.extinguish();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void resetPositionToBB() {
     this.entity.resetPositionToBB();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void playSound(Sound sound, float volume, float pitch) {
     this.entity.playSound(
-            (SoundEvent) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
-            volume,
-            pitch
-    );
+        (SoundEvent) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+        volume,
+        pitch);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSilent() {
     return this.entity.isSilent();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setSilent(boolean silent) {
     this.entity.setSilent(silent);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean hasNoGravity() {
     return this.entity.hasNoGravity();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setNoGravity(boolean noGravity) {
     this.entity.setNoGravity(noGravity);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isImmuneToFire() {
     return this.entity.isImmuneToFire();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isOffsetPositionInLiquid(double x, double y, double z) {
     return this.entity.isOffsetPositionInLiquid(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isWet() {
     return this.entity.isWet();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInWaterRainOrBubbleColumn() {
     return this.entity.isInWaterRainOrBubbleColumn();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInWaterOrBubbleColumn() {
     return this.entity.isInWaterOrBubbleColumn();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean canSwim() {
     return this.entity.canSwim();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void updateSwim() {
     this.entity.updateSwimming();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean handleWaterMovement() {
     return this.entity.handleWaterMovement();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void spawnRunningParticles() {
     this.entity.spawnRunningParticles();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInWater() {
     return this.entity.isInWater();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setInLava() {
     this.entity.setInLava();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInLava() {
     return this.entity.isInLava();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isBurning() {
     return this.entity.isBurning();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isPassenger() {
     return this.entity.isPassenger();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isBeingRidden() {
     return this.entity.isBeingRidden();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSneaking() {
     return this.entity.isSneaking();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setSneaking(boolean sneaking) {
     this.entity.setSneaking(sneaking);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSteppingCarefully() {
     return this.entity.isSteppingCarefully();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSuppressingBounce() {
     return this.entity.isSuppressingBounce();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isDiscrete() {
     return this.entity.isDiscrete();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isDescending() {
     return this.entity.isDescending();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCrouching() {
     return this.entity.isCrouching();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSprinting() {
     return this.entity.isSprinting();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setSprinting(boolean sprinting) {
     this.entity.setSprinting(sprinting);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isSwimming() {
     return this.entity.isSwimming();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setSwimming(boolean swimming) {
     this.entity.setSwimming(swimming);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isActuallySwimming() {
     return this.entity.isActualySwimming();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isVisuallySwimming() {
     return this.entity.isVisuallySwimming();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isGlowing() {
     return this.entity.isGlowing();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setGlowing(boolean glowing) {
     this.entity.setGlowing(glowing);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInvisible() {
     return this.entity.isInvisible();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInvisibleToPlayer(net.flintmc.mcapi.player.PlayerEntity player) {
     return this.entity.isInvisibleToPlayer((PlayerEntity) player);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean canRenderOnFire() {
     return this.entity.canRenderOnFire();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public UUID getUniqueId() {
     return this.entity.getUniqueID();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setUniqueId(UUID uniqueId) {
     this.entity.setUniqueId(uniqueId);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getCachedUniqueId() {
     return this.entity.getCachedUniqueIdString();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getScoreboardName() {
     return this.entity.getScoreboardName();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCustomNameVisible() {
     return this.entity.isCustomNameVisible();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setCustomNameVisible(boolean alwaysRenderNameTag) {
     this.entity.setCustomNameVisible(alwaysRenderNameTag);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getEyeHeight(EntityPose pose) {
     return this.entity.getEyeHeight((Pose) this.entityFoundationMapper.toMinecraftPose(pose));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getEyeHeight() {
     return this.entity.getEyeHeight();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getBrightness() {
     return this.entity.getBrightness();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public World getWorld() {
     return this.world;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Entity getRidingEntity() {
-    return this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(this.entity.getRidingEntity());
+    return this.entityFoundationMapper
+        .getEntityMapper()
+        .fromMinecraftEntity(this.entity.getRidingEntity());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setMotion(double x, double y, double z) {
     this.entity.setMotion(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void teleportKeepLoaded(double x, double y, double z) {
     this.entity.teleportKeepLoaded(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPositionAndUpdate(double x, double y, double z) {
     this.entity.setPositionAndUpdate(x, y, z);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isAlwaysRenderNameTagForRender() {
     return this.entity.getAlwaysRenderNameTagForRender();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void recalculateSize() {
     this.entity.recalculateSize();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
     return this.entity.replaceItemInInventory(
-            slot,
-            (net.minecraft.item.ItemStack) this.entityFoundationMapper.getItemMapper().toMinecraft(itemStack)
-    );
+        slot,
+        (net.minecraft.item.ItemStack)
+            this.entityFoundationMapper.getItemMapper().toMinecraft(itemStack));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isImmuneToExplosions() {
     return this.entity.isImmuneToExplosions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean ignoreItemEntityData() {
     return this.entity.ignoreItemEntityData();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Entity getControllingPassenger() {
-    return this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(this.entity.getControllingPassenger());
+    return this.entityFoundationMapper
+        .getEntityMapper()
+        .fromMinecraftEntity(this.entity.getControllingPassenger());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public List<Entity> getPassengers() {
     List<Entity> passengers = new ArrayList<>();
@@ -845,17 +657,15 @@ public class VersionedEntity implements Entity {
     return passengers;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isPassenger(Entity entity) {
-    return this.entity.isPassenger((net.minecraft.entity.Entity) this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.entity.isPassenger(
+        (net.minecraft.entity.Entity)
+            this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<Entity> getRecursivePassengers() {
     Set<Entity> entities = Sets.newHashSet();
@@ -866,153 +676,122 @@ public class VersionedEntity implements Entity {
     return entities;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Stream<Entity> getSelfAndPassengers() {
-    return Stream.concat(Stream.of(this), this.getPassengers().stream().flatMap(Entity::getSelfAndPassengers));
+    return Stream.concat(
+        Stream.of(this), this.getPassengers().stream().flatMap(Entity::getSelfAndPassengers));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isOnePlayerRiding() {
     return this.entity.isOnePlayerRiding();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Entity getLowestRidingEntity() {
-    return this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(this.entity.getLowestRidingEntity());
+    return this.entityFoundationMapper
+        .getEntityMapper()
+        .fromMinecraftEntity(this.entity.getLowestRidingEntity());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isRidingSameEntity(Entity entity) {
-    return this.entity.isRidingSameEntity((net.minecraft.entity.Entity) this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.entity.isRidingSameEntity(
+        (net.minecraft.entity.Entity)
+            this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isRidingOrBeingRiddenBy(Entity entity) {
-    return this.entity.isRidingOrBeingRiddenBy((net.minecraft.entity.Entity) this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.entity.isRidingOrBeingRiddenBy(
+        (net.minecraft.entity.Entity)
+            this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean canPassengerSteer() {
     return this.entity.canPassengerSteer();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean hasPermissionLevel(int level) {
     return this.entity.hasPermissionLevel(level);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getWidth() {
     return this.entity.getWidth();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getHeight() {
     return this.entity.getHeight();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntitySize getSize() {
     return this.getType().getSize();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public BlockPosition getPosition() {
     return this.getWorld().fromMinecraftBlockPos(this.entity.getPosition());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosXWidth(double width) {
     return this.entity.getPosXWidth(width);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosXRandom(double factor) {
     return this.entity.getPosXRandom(factor);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosYHeight(double height) {
     return this.entity.getPosYHeight(height);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosYRandom() {
     return this.entity.getPosYRandom();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosYEye() {
     return this.entity.getPosYEye();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosZWidth(double width) {
     return this.entity.getPosZWidth(width);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getPosZRandom(double factor) {
     return this.entity.getPosZRandom(factor);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setRawPosition(double x, double y, double z) {
     this.entity.setRawPosition(x, y, z);
@@ -1023,152 +802,114 @@ public class VersionedEntity implements Entity {
     return this.entity.isInvulnerable();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setInvulnerable(boolean invulnerable) {
     this.entity.setInvulnerable(invulnerable);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Team getTeam() {
     return this.getWorld().getScoreboard().getPlayerTeam(this.getScoreboardName());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInSameTeam(Entity entity) {
     return this.isInScoreboardTeam(entity.getTeam());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInScoreboardTeam(Team team) {
     return this.getTeam() != null && this.getTeam().isSameTeam(team);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isAlive() {
     return this.entity.isAlive();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void move(MoverType moverType, Vector3D vector3D) {
     this.entity.move(
-            (net.minecraft.entity.MoverType) this.entityFoundationMapper.toMinecraftMoverType(moverType),
-            new Vec3d(vector3D.getX(), vector3D.getY(), vector3D.getZ())
-    );
+        (net.minecraft.entity.MoverType)
+            this.entityFoundationMapper.toMinecraftMoverType(moverType),
+        new Vec3d(vector3D.getX(), vector3D.getY(), vector3D.getZ()));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCollidedHorizontally() {
     return this.entity.collidedHorizontally;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setCollidedHorizontally(boolean horizontally) {
     this.entity.collidedHorizontally = horizontally;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCollidedVertically() {
     return this.entity.collidedVertically;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setCollidedVertically(boolean vertically) {
     this.entity.collidedVertically = vertically;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateX() {
     return this.entity.chunkCoordX;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateY() {
     return this.entity.chunkCoordY;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateZ() {
     return this.entity.chunkCoordZ;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isOnGround() {
     return this.entity.onGround;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setOnGround(boolean onGround) {
     this.entity.onGround = onGround;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Random getRandom() {
     return this.random;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityFoundationMapper getEntityFoundationMapper() {
     return this.entityFoundationMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ChatComponent getName() {
-    return this.entityFoundationMapper.getComponentMapper().fromMinecraft(
-            this.entity.getName()
-    );
+    return this.entityFoundationMapper.getComponentMapper().fromMinecraft(this.entity.getName());
   }
 }

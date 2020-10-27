@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-/**
- * 1.15.2 implementation of a labyfy resource pack
- */
+/** 1.15.2 implementation of a labyfy resource pack */
 public class VersionedResourcePack implements ResourcePack {
   private final ClientResourcePackInfo info;
 
@@ -24,39 +22,29 @@ public class VersionedResourcePack implements ResourcePack {
     this.info = info;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public Collection<String> getNameSpaces() {
     return this.info.getResourcePack().getResourceNamespaces(ResourcePackType.CLIENT_RESOURCES);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public InputStream getStream(ResourceLocation resourceLocation) throws IOException {
     return this.info
         .getResourcePack()
         .getResourceStream(ResourcePackType.CLIENT_RESOURCES, resourceLocation.getHandle());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public String getName() {
     return info.getName();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public String getDescription() {
     return info.getDescription().getFormattedText();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public String getTitle() {
     return info.getTitle().getFormattedText();
   }

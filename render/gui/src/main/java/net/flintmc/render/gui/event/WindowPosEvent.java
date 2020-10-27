@@ -1,8 +1,6 @@
 package net.flintmc.render.gui.event;
 
-/**
- * Event indicating that the window position has changed.
- */
+/** Event indicating that the window position has changed. */
 public class WindowPosEvent implements GuiEvent {
   private final int x;
   private final int y;

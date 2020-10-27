@@ -8,17 +8,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.BiFunction;
 
-/**
- * Provides injection for a {@link Logger} annoted with {@link InjectLogger}.
- */
-public class AnnotatedLoggerTypeListener implements BiFunction<InjectionPoint, Key<Logger>, Logger> {
+/** Provides injection for a {@link Logger} annoted with {@link InjectLogger}. */
+public class AnnotatedLoggerTypeListener
+    implements BiFunction<InjectionPoint, Key<Logger>, Logger> {
 
-  public AnnotatedLoggerTypeListener() {
-  }
+  public AnnotatedLoggerTypeListener() {}
 
   public Logger apply(InjectionPoint injectionPoint, Key<Logger> loggerKey) {
     InjectLogger annotation = (InjectLogger) loggerKey.getAnnotation();
-    return InjectionHolder.getInjectedInstance(annotation.provider()).getLogger(injectionPoint.getDeclaringType().getRawType());
+    return InjectionHolder.getInjectedInstance(annotation.provider())
+        .getLogger(injectionPoint.getDeclaringType().getRawType());
   }
-
 }

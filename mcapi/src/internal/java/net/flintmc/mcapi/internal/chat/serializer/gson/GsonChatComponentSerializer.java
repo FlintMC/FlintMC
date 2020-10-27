@@ -1,6 +1,7 @@
 package net.flintmc.mcapi.internal.chat.serializer.gson;
 
 import com.google.gson.*;
+import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.component.*;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
@@ -8,7 +9,6 @@ import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
-import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.internal.chat.builder.DefaultSelectorComponentBuilder;
 import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
 import net.flintmc.mcapi.internal.chat.component.DefaultKeybindComponent;
@@ -29,7 +29,9 @@ public class GsonChatComponentSerializer
   }
 
   // read everything that is the same in any type of component
-  private void deserializeBasic(JsonObject object, ChatComponent component, JsonDeserializationContext context) throws JsonParseException {
+  private void deserializeBasic(
+      JsonObject object, ChatComponent component, JsonDeserializationContext context)
+      throws JsonParseException {
     // the color of the component
     if (object.has("color")) {
       String color = object.get("color").getAsString();
@@ -56,7 +58,8 @@ public class GsonChatComponentSerializer
       try {
         action = ClickEvent.Action.valueOf(actionName);
       } catch (IllegalArgumentException exception) {
-        this.logger.trace("Invalid clickEvent action while deserializing a json component: " + actionName);
+        this.logger.trace(
+            "Invalid clickEvent action while deserializing a json component: " + actionName);
       }
 
       if (action != null) {
@@ -76,7 +79,8 @@ public class GsonChatComponentSerializer
   }
 
   // write everything that is the same in any type of component
-  public void serializeBasic(ChatComponent src, JsonObject object, JsonSerializationContext context) {
+  public void serializeBasic(
+      ChatComponent src, JsonObject object, JsonSerializationContext context) {
     // The default color is white
     if (src.color() != ChatColor.WHITE) {
       object.addProperty("color", src.color().getLowerName());
@@ -112,7 +116,9 @@ public class GsonChatComponentSerializer
   }
 
   @Override
-  public ChatComponent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+  public ChatComponent deserialize(
+      JsonElement json, Type typeOfT, JsonDeserializationContext context)
+      throws JsonParseException {
     if (json.isJsonPrimitive()) {
       return new DefaultTextComponentBuilder().text(json.getAsString()).build();
     }
@@ -176,7 +182,9 @@ public class GsonChatComponentSerializer
             .parse(object.get("selector").getAsString())
             .build();
       } catch (InvalidSelectorException exception) {
-        this.logger.trace("Invalid selector received while parsing a selector component out of the json", exception);
+        this.logger.trace(
+            "Invalid selector received while parsing a selector component out of the json",
+            exception);
         return null;
       }
     } else {
@@ -186,7 +194,8 @@ public class GsonChatComponentSerializer
   }
 
   @Override
-  public JsonElement serialize(ChatComponent src, Type typeOfSrc, JsonSerializationContext context) {
+  public JsonElement serialize(
+      ChatComponent src, Type typeOfSrc, JsonSerializationContext context) {
     JsonObject object = new JsonObject();
     if (!this.serializeSpecific(object, src, context)) {
       return null;
@@ -198,7 +207,8 @@ public class GsonChatComponentSerializer
   }
 
   // define the type of the component in the json
-  private boolean serializeSpecific(JsonObject object, ChatComponent component, JsonSerializationContext context) {
+  private boolean serializeSpecific(
+      JsonObject object, ChatComponent component, JsonSerializationContext context) {
     if (component instanceof TextComponent) {
       String text = ((TextComponent) component).text();
       if (text == null) {

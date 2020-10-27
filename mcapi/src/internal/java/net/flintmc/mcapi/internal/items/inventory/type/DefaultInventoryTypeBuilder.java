@@ -2,12 +2,12 @@ package net.flintmc.mcapi.internal.items.inventory.type;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.inventory.InventoryDimension;
 import net.flintmc.mcapi.items.inventory.InventoryType;
-import net.flintmc.framework.stereotype.NameSpacedKey;
 
 @Implement(InventoryType.Builder.class)
 public class DefaultInventoryTypeBuilder implements InventoryType.Builder {
@@ -54,9 +54,11 @@ public class DefaultInventoryTypeBuilder implements InventoryType.Builder {
     Preconditions.checkNotNull(this.defaultDimension, "Missing dimension");
 
     if (this.defaultTitle == null) {
-      this.defaultTitle = this.componentFactory.translation().translationKey(this.registryName.getKey()).build();
+      this.defaultTitle =
+          this.componentFactory.translation().translationKey(this.registryName.getKey()).build();
     }
 
-    return new DefaultInventoryType(this.registryName, this.defaultTitle, this.defaultDimension, this.customizableDimensions);
+    return new DefaultInventoryType(
+        this.registryName, this.defaultTitle, this.defaultDimension, this.customizableDimensions);
   }
 }

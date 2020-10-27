@@ -1,10 +1,10 @@
 package net.flintmc.render.gui.v1_15_2.windowing;
 
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.WindowRenderer;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.mappings.ClassMappingProvider;
-import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.minecraft.client.Minecraft;
 
 import javax.inject.Inject;
@@ -22,7 +22,8 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
   private final List<WindowRenderer> intrusiveRenderers;
 
   @Inject
-  private VersionedMinecraftWindow(ClassMappingProvider classMappingProvider, DefaultWindowManager windowManager) {
+  private VersionedMinecraftWindow(
+      ClassMappingProvider classMappingProvider, DefaultWindowManager windowManager) {
     super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager);
     this.classMappingProvider = classMappingProvider;
     this.intrusiveRenderers = new ArrayList<>();
@@ -30,13 +31,14 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
   @Override
   public void close() {
-    // The implementation actually destroys the window, for the Minecraft window we only want to mark
+    // The implementation actually destroys the window, for the Minecraft window we only want to
+    // mark
     // to signal the close operation and let the game itself handle the close
     glfwSetWindowShouldClose(ensureHandle(), true);
 
     // Clean up intrusive renderers, the others will be cleaned up by the close method
     glfwMakeContextCurrent(ensureHandle());
-    for(WindowRenderer renderer : intrusiveRenderers) {
+    for (WindowRenderer renderer : intrusiveRenderers) {
       renderer.cleanup();
     }
     close(false);
@@ -44,7 +46,7 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
   @Override
   public void addRenderer(WindowRenderer renderer) {
-    if(renderer.isIntrusive()) {
+    if (renderer.isIntrusive()) {
       intrusiveRenderers.add(renderer);
     } else {
       renderers.add(renderer);
@@ -58,11 +60,12 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
   public boolean removeRenderer(WindowRenderer renderer) {
     List<WindowRenderer> lookupList = renderer.isIntrusive() ? intrusiveRenderers : renderers;
 
-    if(!lookupList.remove(renderer)) {
-      // Slow case: renderer is not found in the correct state list, maybe the intrusive state has changed,
+    if (!lookupList.remove(renderer)) {
+      // Slow case: renderer is not found in the correct state list, maybe the intrusive state has
+      // changed,
       //            check the other list
       lookupList = renderer.isIntrusive() ? renderers : intrusiveRenderers;
-      if(!lookupList.remove(renderer)) {
+      if (!lookupList.remove(renderer)) {
         // Renderer is not attached
         return false;
       }
@@ -74,65 +77,49 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
     return true;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getScaleFactor() {
     return (int) Minecraft.getInstance().getMainWindow().getGuiScaleFactor();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getWidth() {
     return Minecraft.getInstance().getMainWindow().getWidth();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getHeight() {
     return Minecraft.getInstance().getMainWindow().getHeight();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getScaledWidth() {
     return Minecraft.getInstance().getMainWindow().getScaledWidth();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public float getScaledHeight() {
     return Minecraft.getInstance().getMainWindow().getScaledHeight();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getFramebufferWidth() {
     return Minecraft.getInstance().getFramebuffer().framebufferWidth;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getFramebufferHeight() {
     return Minecraft.getInstance().getFramebuffer().framebufferHeight;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
     return this.classMappingProvider
@@ -157,20 +144,21 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
   @Override
   public void render() {
-    if(handle == 0) {
-      // Minecraft might call this method once more time even after the window has been closed already
+    if (handle == 0) {
+      // Minecraft might call this method once more time even after the window has been closed
+      // already
       return;
     }
 
     glfwMakeContextCurrent(ensureHandle());
 
     // Render all intrusive renderers first
-    for(WindowRenderer renderer : intrusiveRenderers) {
+    for (WindowRenderer renderer : intrusiveRenderers) {
       renderer.render();
     }
 
     // Follow with other renderers
-    for(WindowRenderer renderer : renderers) {
+    for (WindowRenderer renderer : renderers) {
       renderer.render();
     }
   }

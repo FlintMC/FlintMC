@@ -1,8 +1,6 @@
 package net.flintmc.mcapi.server;
 
-/**
- * The controller for the currently connected server.
- */
+/** The controller for the currently connected server. */
 public interface ServerController {
 
   /**
@@ -21,17 +19,18 @@ public interface ServerController {
   ConnectedServer getConnectedServer();
 
   /**
-   * Disconnects the client from the currently connected server or does nothing when not connected to any server.
+   * Disconnects the client from the currently connected server or does nothing when not connected
+   * to any server.
    *
    * @see #isConnected()
    */
   void disconnectFromServer();
 
   /**
-   * Connects the client with the given address and disconnects from the server the client is currently connected to.
+   * Connects the client with the given address and disconnects from the server the client is
+   * currently connected to.
    *
    * @param address The non-null address of the target server
    */
   void connectToServer(ServerAddress address);
-
 }

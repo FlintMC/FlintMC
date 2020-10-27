@@ -3,9 +3,7 @@ package net.flintmc.framework.packages;
 import java.io.IOException;
 import java.util.jar.JarFile;
 
-/**
- * Responsible for reading the package manifest out of a given jar file.
- */
+/** Responsible for reading the package manifest out of a given jar file. */
 public interface PackageManifestLoader {
   /**
    * Checks if a package.json manifest is present it the given JarFile, but doesn not guarantee that

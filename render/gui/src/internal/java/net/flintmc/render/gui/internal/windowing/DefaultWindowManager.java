@@ -2,22 +2,20 @@ package net.flintmc.render.gui.internal.windowing;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.tasks.Task;
+import net.flintmc.framework.tasks.Tasks;
 import net.flintmc.render.gui.event.GuiEvent;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.Window;
 import net.flintmc.render.gui.windowing.WindowManager;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.tasks.Task;
-import net.flintmc.framework.tasks.Tasks;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Default implementation of the Labyfy {@link WindowManager}.
- */
+/** Default implementation of the Labyfy {@link WindowManager}. */
 @Singleton
 @Implement(WindowManager.class)
 public class DefaultWindowManager implements WindowManager {
@@ -68,7 +66,7 @@ public class DefaultWindowManager implements WindowManager {
    * Fires an event and automatically select the target window based on the event source handle.
    *
    * @param targetHandle The handle of the window to, or {@code -1} for the minecraft window
-   * @param event        The event to fire
+   * @param event The event to fire
    * @return {@code true} if the event has been handled, {@code false} otherwise
    */
   public boolean fireEvent(long targetHandle, GuiEvent event) {
@@ -85,19 +83,15 @@ public class DefaultWindowManager implements WindowManager {
     return ((InternalWindow) minecraftWindow).isRenderedIntrusively();
   }
 
-  /**
-   * Renders the minecraft window now.
-   */
+  /** Renders the minecraft window now. */
   public void renderMinecraftWindow() {
     ((InternalWindow) minecraftWindow).render();
   }
 
-  /**
-   * Renders all windows except the minecraft window itself.
-   */
+  /** Renders all windows except the minecraft window itself. */
   public void renderSideWindows() {
-    for(InternalWindow window : windows.values()) {
-      if(window == minecraftWindow) {
+    for (InternalWindow window : windows.values()) {
+      if (window == minecraftWindow) {
         // The minecraft window is rendered at another point, skip it
         continue;
       }

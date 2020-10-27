@@ -5,9 +5,7 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.packages.localization.PackageLocalization;
 
-/**
- * Default implementation of the {@link PackageLocalization}.
- */
+/** Default implementation of the {@link PackageLocalization}. */
 @Implement(PackageLocalization.class)
 public class DefaultPackageLocalization implements PackageLocalization {
 
@@ -17,33 +15,26 @@ public class DefaultPackageLocalization implements PackageLocalization {
 
   @AssistedInject
   private DefaultPackageLocalization(
-          @Assisted("localizationCode") String localizationCode,
-          @Assisted("localizationContent") byte[] localizationContent
-  ) {
+      @Assisted("localizationCode") String localizationCode,
+      @Assisted("localizationContent") byte[] localizationContent) {
     this.localizationCode = localizationCode;
     this.localizationContent = localizationContent;
     this.localizationContentAsString = new String(localizationContent);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getLocalizationCode() {
     return this.localizationCode;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getLocalizationContentAsString() {
     return this.localizationContentAsString;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public byte[] getLocalizationContent() {
     return this.localizationContent;

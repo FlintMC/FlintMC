@@ -1,14 +1,11 @@
 package net.flintmc.mcapi.gamesettings.configuration;
 
-
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.model.PlayerClothing;
 
 import java.util.Set;
 
-/**
- * Represents the skin configuration.
- */
+/** Represents the skin configuration. */
 public interface SkinConfiguration {
 
   /**
@@ -36,7 +33,7 @@ public interface SkinConfiguration {
    * Changes the state of the player clothing.
    *
    * @param clothing The player clothing to enable or disable.
-   * @param state    {@code true} if the clothing should be enabled, otherwise {@code false}.
+   * @param state {@code true} if the clothing should be enabled, otherwise {@code false}.
    */
   void setModelClothingEnabled(PlayerClothing clothing, boolean state);
 
@@ -46,5 +43,4 @@ public interface SkinConfiguration {
    * @param clothing The player clothing to switch the state.
    */
   void switchModelClothingEnabled(PlayerClothing clothing);
-
 }

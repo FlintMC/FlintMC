@@ -8,16 +8,28 @@ import java.net.URL;
 import java.util.Enumeration;
 
 /**
- * Represents a location a package can be access with. Currently package sources are
- * considered to be an implementation detail.
+ * Represents a location a package can be access with. Currently package sources are considered to
+ * be an implementation detail.
  */
 public interface PackageSource extends AutoCloseable {
   /**
-   * {@inheritDoc}
+   * Creates a package source matching the given package.
+   *
+   * @param pkg The package to create the source for
+   * @return The created source which can be used to access resources of the package
+   * @throws IOException If the jar file could not be read.
    */
-  @Override
-  default void close() throws IOException {
+  static PackageSource of(Package pkg) throws IOException {
+    if (pkg.getFile() == null) {
+      return new ClasspathSource();
+    } else {
+      return new FileSource(pkg.getFile());
+    }
   }
+
+  /** {@inheritDoc} */
+  @Override
+  default void close() throws IOException {}
 
   /**
    * Locates a resource within the resources accessible with this source.
@@ -44,19 +56,4 @@ public interface PackageSource extends AutoCloseable {
    * @throws URISyntaxException If an URISyntaxException occurred while locating the resource.
    */
   Enumeration<URL> findAllResources() throws IOException, URISyntaxException;
-
-  /**
-   * Creates a package source matching the given package.
-   *
-   * @param pkg The package to create the source for
-   * @return The created source which can be used to access resources of the package
-   * @throws IOException If the jar file could not be read.
-   */
-  static PackageSource of(Package pkg) throws IOException {
-    if (pkg.getFile() == null) {
-      return new ClasspathSource();
-    } else {
-      return new FileSource(pkg.getFile());
-    }
-  }
 }

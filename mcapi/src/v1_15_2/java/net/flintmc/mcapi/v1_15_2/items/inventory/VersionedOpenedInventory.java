@@ -17,7 +17,13 @@ public class VersionedOpenedInventory extends VersionedInventory {
 
   private ItemStack[] contents;
 
-  public VersionedOpenedInventory(ItemRegistry registry, InventoryType type, InventoryDimension dimension, MinecraftItemMapper mapper, Container container, ChatComponent title) {
+  public VersionedOpenedInventory(
+      ItemRegistry registry,
+      InventoryType type,
+      InventoryDimension dimension,
+      MinecraftItemMapper mapper,
+      Container container,
+      ChatComponent title) {
     super(registry, container.windowId, type, dimension, mapper, () -> container, title);
     container.addListener(new ContainerListener());
   }
@@ -29,7 +35,8 @@ public class VersionedOpenedInventory extends VersionedInventory {
     }
 
     List<Slot> slots = this.getContainer().inventorySlots;
-    // the size of the slots list doesn't match the size of this inventory, the player inventory is included in this list
+    // the size of the slots list doesn't match the size of this inventory, the player inventory is
+    // included in this list
     ItemStack[] contents = new ItemStack[super.getDimension().getSlotCount()];
 
     for (int i = 0; i < contents.length; i++) {
@@ -63,19 +70,18 @@ public class VersionedOpenedInventory extends VersionedInventory {
   private class ContainerListener implements IContainerListener {
 
     @Override
-    public void sendAllContents(Container containerToSend, NonNullList<net.minecraft.item.ItemStack> itemsList) {
+    public void sendAllContents(
+        Container containerToSend, NonNullList<net.minecraft.item.ItemStack> itemsList) {
       invalidate();
     }
 
     @Override
-    public void sendSlotContents(Container containerToSend, int slotInd, net.minecraft.item.ItemStack stack) {
+    public void sendSlotContents(
+        Container containerToSend, int slotInd, net.minecraft.item.ItemStack stack) {
       invalidate();
     }
 
     @Override
-    public void sendWindowProperty(Container containerIn, int varToUpdate, int newValue) {
-    }
-
+    public void sendWindowProperty(Container containerIn, int varToUpdate, int newValue) {}
   }
-
 }

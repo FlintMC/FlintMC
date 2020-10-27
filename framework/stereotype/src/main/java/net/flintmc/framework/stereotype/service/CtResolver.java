@@ -27,7 +27,11 @@ public class CtResolver {
         for (int i = 0; i < ctMethod.getParameterTypes().length; i++) {
           parameters[i] = Class.forName(ctMethod.getParameterTypes()[i].getName());
         }
-        Method declaredMethod = LaunchController.getInstance().getRootLoader().loadClass(ctMethod.getDeclaringClass().getName()).getDeclaredMethod(ctMethod.getName(), parameters);
+        Method declaredMethod =
+            LaunchController.getInstance()
+                .getRootLoader()
+                .loadClass(ctMethod.getDeclaringClass().getName())
+                .getDeclaredMethod(ctMethod.getName(), parameters);
         declaredMethod.setAccessible(true);
         methods.put(hash, declaredMethod);
       } catch (ClassNotFoundException | NoSuchMethodException | NotFoundException e) {
@@ -48,12 +52,12 @@ public class CtResolver {
   public static <T> Class<T> get(CtClass ctClass) {
     if (!classes.containsKey(ctClass)) {
       try {
-        classes.put(ctClass, LaunchController.getInstance().getRootLoader().loadClass(ctClass.getName()));
+        classes.put(
+            ctClass, LaunchController.getInstance().getRootLoader().loadClass(ctClass.getName()));
       } catch (ClassNotFoundException e) {
         e.printStackTrace();
       }
     }
     return (Class<T>) classes.get(ctClass);
   }
-
 }

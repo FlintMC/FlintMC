@@ -1,8 +1,8 @@
 package net.flintmc.mcapi.internal.chat.builder;
 
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.component.TextComponent;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.internal.chat.component.DefaultTextComponent;
 
 @Implement(value = TextComponentBuilder.class)

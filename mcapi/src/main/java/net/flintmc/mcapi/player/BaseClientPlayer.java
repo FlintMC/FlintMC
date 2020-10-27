@@ -2,9 +2,7 @@ package net.flintmc.mcapi.player;
 
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
 
-/**
- * Represents the Minecraft abstract client player.
- */
+/** Represents the Minecraft abstract client player. */
 public interface BaseClientPlayer extends PlayerSkinProfile {
 
   /**
@@ -83,5 +81,4 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    * @return The FOV modifier.
    */
   float getFovModifier();
-
 }

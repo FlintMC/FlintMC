@@ -8,8 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation marks a {@link LauncherProfileSerializer} with a version to be automatically registered in the {@link
- * LauncherProfileSerializer}.
+ * This annotation marks a {@link LauncherProfileSerializer} with a version to be automatically
+ * registered in the {@link LauncherProfileSerializer}.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -22,5 +22,4 @@ public @interface ProfileSerializerVersion {
    * @return The version of the serializer
    */
   int value();
-
 }

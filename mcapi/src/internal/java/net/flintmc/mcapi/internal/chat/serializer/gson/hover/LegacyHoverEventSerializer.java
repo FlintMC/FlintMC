@@ -5,27 +5,29 @@ import com.google.gson.*;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
-import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
+import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
 
-/**
- * The serializer for HoverEvents in minecraft versions below 1.16.
- */
+/** The serializer for HoverEvents in minecraft versions below 1.16. */
 public class LegacyHoverEventSerializer extends HoverEventSerializer {
 
   private final ComponentBuilder.Factory componentFactory;
 
-  public LegacyHoverEventSerializer(Logger logger, ComponentBuilder.Factory componentFactory, GsonComponentSerializer componentSerializer) {
+  public LegacyHoverEventSerializer(
+      Logger logger,
+      ComponentBuilder.Factory componentFactory,
+      GsonComponentSerializer componentSerializer) {
     super(logger, componentSerializer);
     this.componentFactory = componentFactory;
   }
 
   @Override
-  public HoverEvent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+  public HoverEvent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+      throws JsonParseException {
     if (!json.isJsonObject()) {
       return null;
     }
@@ -41,7 +43,9 @@ public class LegacyHoverEventSerializer extends HoverEventSerializer {
       return null;
     }
 
-    HoverContent content = serializer.deserialize(component, this.componentFactory, super.componentSerializer.getGson());
+    HoverContent content =
+        serializer.deserialize(
+            component, this.componentFactory, super.componentSerializer.getGson());
     if (content == null) {
       return null;
     }
@@ -50,7 +54,8 @@ public class LegacyHoverEventSerializer extends HoverEventSerializer {
 
   @Override
   public JsonElement serialize(HoverEvent src, Type typeOfSrc, JsonSerializationContext context) {
-    Preconditions.checkArgument(src.getContents().length == 1, "Legacy hover events cannot have multiple contents");
+    Preconditions.checkArgument(
+        src.getContents().length == 1, "Legacy hover events cannot have multiple contents");
 
     HoverContent content = src.getContents()[0];
     HoverEvent.Action action = content.getAction();

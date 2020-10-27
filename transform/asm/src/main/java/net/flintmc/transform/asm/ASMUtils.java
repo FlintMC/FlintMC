@@ -17,7 +17,8 @@ public class ASMUtils {
    * @return
    */
   public static byte[] getNodeBytes(ClassNode cn, boolean useMaxs) {
-    ClassWriter cw = new ClassWriter(useMaxs ? ClassWriter.COMPUTE_MAXS : ClassWriter.COMPUTE_FRAMES);
+    ClassWriter cw =
+        new ClassWriter(useMaxs ? ClassWriter.COMPUTE_MAXS : ClassWriter.COMPUTE_FRAMES);
     cn.accept(cw);
     byte[] b = cw.toByteArray();
     return b;
@@ -52,14 +53,15 @@ public class ASMUtils {
   /**
    * Generates a getter method for the specified field
    *
-   * @param fieldName  the name of the field
-   * @param className  the internal class name
-   * @param fieldDesc  the field descriptor
+   * @param fieldName the name of the field
+   * @param className the internal class name
+   * @param fieldDesc the field descriptor
    * @param methodName the name of the method to create
    * @return the method as a {@link org.objectweb.asm.tree.MethodNode}
    * @author Xerces
    */
-  public static MethodNode generateGetter(String methodName, String fieldName, String className, String fieldDesc) {
+  public static MethodNode generateGetter(
+      String methodName, String fieldName, String className, String fieldDesc) {
     MethodNode methodNode = new MethodNode(ACC_PUBLIC, methodName, "()" + fieldDesc, null, null);
     methodNode.instructions.insert(new VarInsnNode(ALOAD, 0));
     methodNode.instructions.insert(new FieldInsnNode(GETFIELD, className, fieldName, fieldDesc));
@@ -70,15 +72,17 @@ public class ASMUtils {
   /**
    * Generates a setter method for the specified field
    *
-   * @param fieldName  the name of the field
-   * @param className  the internal class name
-   * @param fieldDesc  the field descriptor
+   * @param fieldName the name of the field
+   * @param className the internal class name
+   * @param fieldDesc the field descriptor
    * @param methodName the name of the method to create
    * @return the method as a {@link org.objectweb.asm.tree.MethodNode}
    * @author Xerces
    */
-  public static MethodNode generateSetter(String methodName, String fieldName, String className, String fieldDesc) {
-    MethodNode methodNode = new MethodNode(ACC_PUBLIC, methodName, "(" + fieldDesc + ")V", null, null);
+  public static MethodNode generateSetter(
+      String methodName, String fieldName, String className, String fieldDesc) {
+    MethodNode methodNode =
+        new MethodNode(ACC_PUBLIC, methodName, "(" + fieldDesc + ")V", null, null);
     methodNode.instructions.insert(new VarInsnNode(ALOAD, 0));
     methodNode.instructions.insert(new VarInsnNode(Type.getType(fieldDesc).getOpcode(ILOAD), 1));
     methodNode.instructions.insert(new FieldInsnNode(PUTFIELD, className, fieldName, fieldDesc));
@@ -89,8 +93,7 @@ public class ASMUtils {
   /**
    * Adds interfaces to a class
    *
-   * @param classNode  the {@link org.objectweb.asm.tree.ClassNode} to add the interfaces
-   *                   too
+   * @param classNode the {@link org.objectweb.asm.tree.ClassNode} to add the interfaces too
    * @param interfaces a {@link Class} array of the interfaces to add
    * @author Xerces
    */
@@ -101,5 +104,4 @@ public class ASMUtils {
       }
     }
   }
-
 }

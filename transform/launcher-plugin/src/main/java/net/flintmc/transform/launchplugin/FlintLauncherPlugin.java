@@ -105,7 +105,6 @@ public class FlintLauncherPlugin implements LauncherPlugin {
     }
 
     InjectionHolder.getInjectedInstance(FlintFrameworkInitializer.class).initialize(arguments);
-
   }
 
   public void registerTransformer(int priority, LateInjectedTransformer transformer) {

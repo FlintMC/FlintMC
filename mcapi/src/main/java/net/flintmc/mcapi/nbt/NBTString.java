@@ -3,14 +3,10 @@ package net.flintmc.mcapi.nbt;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * A `UTF-8` string, It has a size, rather than being {@code null} terminated.
- */
+/** A `UTF-8` string, It has a size, rather than being {@code null} terminated. */
 public interface NBTString extends NBT {
 
-  /**
-   * A factory class for the {@link NBTString}.
-   */
+  /** A factory class for the {@link NBTString}. */
   @AssistedFactory(NBTString.class)
   interface Factory {
 
@@ -21,7 +17,5 @@ public interface NBTString extends NBT {
      * @return A created string named binary tag.
      */
     NBTString create(@Assisted("value") String value);
-
   }
-
 }

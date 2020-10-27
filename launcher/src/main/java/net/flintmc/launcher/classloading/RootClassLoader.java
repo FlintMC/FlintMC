@@ -19,9 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
-/**
- * Main class loader for applications launched using a {@link LaunchController}.
- */
+/** Main class loader for applications launched using a {@link LaunchController}. */
 public class RootClassLoader extends URLClassLoader implements CommonClassLoader {
   static {
     ClassLoader.registerAsParallelCapable();
@@ -34,13 +32,12 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   private final Map<String, Class<?>> classCache;
   private final Map<URL, byte[]> resourceDataCache;
   private final Logger logger;
+  private final Map<String, byte[]> modifiedClasses;
   private boolean transformEnabled;
 
-  private final Map<String, byte[]> modifiedClasses;
-
   /**
-   * Constructs a new instance of the root class loader with the specified set
-   * of URL's as the class path.
+   * Constructs a new instance of the root class loader with the specified set of URL's as the class
+   * path.
    *
    * @param urls The new class path of this class loader
    */
@@ -71,8 +68,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   }
 
   /**
-   * Registers new plugins in the root class loader. As soon as a plugin is registered
-   * it will be able to intercept class loading and apply transforms.
+   * Registers new plugins in the root class loader. As soon as a plugin is registered it will be
+   * able to intercept class loading and apply transforms.
    *
    * @param plugins The plugins to register
    */
@@ -90,8 +87,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   }
 
   /**
-   * Prepares this {@link RootClassLoader} for launching. This will call the
-   * {@link LauncherPlugin#configureRootLoader(RootClassLoader)} method on every registered plugin.
+   * Prepares this {@link RootClassLoader} for launching. This will call the {@link
+   * LauncherPlugin#configureRootLoader(RootClassLoader)} method on every registered plugin.
    */
   public void prepare() {
     if (transformEnabled) {
@@ -103,8 +100,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   }
 
   /**
-   * Marks a specified set of prefixes as excluded from transformation.
-   * For example, {@code "a.b."} would exclude everything in the package a.b and its subpackages.
+   * Marks a specified set of prefixes as excluded from transformation. For example, {@code "a.b."}
+   * would exclude everything in the package a.b and its subpackages.
    *
    * @param names The name prefixes of the packages to exclude from transformation
    */
@@ -112,32 +109,29 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     modificationExclusions.addAll(Arrays.asList(names));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Class<?> findClass(String name) throws ClassNotFoundException {
     return findClass(name, null);
   }
 
   /**
-   * Extension of {@link ClassLoader#findClass(String)} providing the same semantics except
-   * allowing another loader to be preferred. The class is guaranteed to be used from the
-   * preferred loader if the following conditions are met:
-   * 1. The class has not been loaded already
-   * 2. The class has not been excluded from transformations
-   * 3. The class is not an internal class
-   * 4. Transformation has been enabled already
-   * 5. The preferred loader is able to find the class
+   * Extension of {@link ClassLoader#findClass(String)} providing the same semantics except allowing
+   * another loader to be preferred. The class is guaranteed to be used from the preferred loader if
+   * the following conditions are met: 1. The class has not been loaded already 2. The class has not
+   * been excluded from transformations 3. The class is not an internal class 4. Transformation has
+   * been enabled already 5. The preferred loader is able to find the class
    *
-   * @param name            The name of the class to find
-   * @param preferredLoader The loader the class should be searched from first,
-   *                        or null if no loader has a preferred role
+   * @param name The name of the class to find
+   * @param preferredLoader The loader the class should be searched from first, or null if no loader
+   *     has a preferred role
    * @return The found class
-   * @throws ClassNotFoundException If the class can't be found or an exception occurs finding the class
-   * @throws IllegalStateException  If the class is being searched already
+   * @throws ClassNotFoundException If the class can't be found or an exception occurs finding the
+   *     class
+   * @throws IllegalStateException If the class is being searched already
    */
-  public Class<?> findClass(String name, ChildClassLoader preferredLoader) throws ClassNotFoundException {
+  public Class<?> findClass(String name, ChildClassLoader preferredLoader)
+      throws ClassNotFoundException {
     if (currentlyLoading.contains(name)) {
       throw new IllegalStateException("Circular load detected: " + name);
     }
@@ -179,7 +173,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       // Search all child loaders until we either:
       // A. found the class
       // B. have no children left to search
-      for (Iterator<ChildClassLoader> it = children.iterator(); information == null && it.hasNext(); ) {
+      for (Iterator<ChildClassLoader> it = children.iterator();
+          information == null && it.hasNext(); ) {
         loader = it.next();
         information = CommonClassLoaderHelper.retrieveClass(loader, name);
       }
@@ -191,13 +186,19 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
 
         if (information == null) {
           // Class not found at all, bail out
-          logger.trace("Failed to find class {} after searching root and the following children: [{}]",
+          logger.trace(
+              "Failed to find class {} after searching root and the following children: [{}]",
               () -> name,
-              () -> children.stream()
-                  .map(CommonClassLoader::getClassloaderName)
-                  .collect(Collectors.joining(", ")));
-          throw new ClassNotFoundException("Class " + name + " not found on classpath (searched root and "
-              + children.size() + " child loaders)");
+              () ->
+                  children.stream()
+                      .map(CommonClassLoader::getClassloaderName)
+                      .collect(Collectors.joining(", ")));
+          throw new ClassNotFoundException(
+              "Class "
+                  + name
+                  + " not found on classpath (searched root and "
+                  + children.size()
+                  + " child loaders)");
         }
       }
       // Retrieve the raw class bytes
@@ -212,36 +213,38 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       }
 
       // Let the used loader define the class and cache the result
-      CodeSource codeSource = new CodeSource(information.getResourceURL(), information.getSigners());
+      CodeSource codeSource =
+          new CodeSource(information.getResourceURL(), information.getSigners());
       Class<?> clazz = loader.commonDefineClass(name, classBytes, 0, classBytes.length, codeSource);
       classCache.put(name, clazz);
 
       return clazz;
     } catch (IOException exception) {
-      throw new ClassNotFoundException("Failed to find class " + name + " due to IOException", exception);
+      throw new ClassNotFoundException(
+          "Failed to find class " + name + " due to IOException", exception);
     } catch (ClassTransformException exception) {
-      throw new ClassNotFoundException("Unable to find class " + name + " due to ClassTransformException", exception);
+      throw new ClassNotFoundException(
+          "Unable to find class " + name + " due to ClassTransformException", exception);
     } finally {
       // Make sure we remove the loading flag from the class
       currentlyLoading.remove(name);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public URL findResource(String name) {
     return findResource(name, true);
   }
 
   /**
-   * Extension of {@link ClassLoader#findResource(String)} allowing to disable
-   * redirects by launch plugins.
+   * Extension of {@link ClassLoader#findResource(String)} allowing to disable redirects by launch
+   * plugins.
    *
-   * @param name          The name of the resource to find
+   * @param name The name of the resource to find
    * @param allowRedirect Wether child plugins should be allowed to redirect the URL to a new one
-   * @return An {@link URL} to the found resource, or {@code null} if the resource could not be found
+   * @return An {@link URL} to the found resource, or {@code null} if the resource could not be
+   *     found
    * @see ClassLoader#findResource(String)
    */
   public URL findResource(String name, boolean allowRedirect) {
@@ -286,7 +289,8 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
             logger.warn("Resources with same name but different content found: ");
             logger.warn("\t{}", first.toExternalForm());
             logger.warn("\t{}", next.toExternalForm());
-            // throw new UnsupportedOperationException("Resources with same name but different content found:\n" +
+            // throw new UnsupportedOperationException("Resources with same name but different
+            // content found:\n" +
             //     "\t" + first.toExternalForm() +"\n\t" + next.toExternalForm());
           }
         }
@@ -299,19 +303,17 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Enumeration<URL> findResources(String name) throws IOException {
     return findResources(name, true);
   }
 
   /**
-   * Extension of {@link ClassLoader#findResources(String)} allowing to disable
-   * redirects by launch plugins.
+   * Extension of {@link ClassLoader#findResources(String)} allowing to disable redirects by launch
+   * plugins.
    *
-   * @param name          The name of the resource to found
+   * @param name The name of the resource to found
    * @param allowRedirect Wether child plugins should be allowed to redirect the URL to a new one
    * @return An enumeration of URL's pointing to resources matching the given name
    * @throws IOException If an I/O error occurs finding the resources
@@ -351,7 +353,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * Searches for all available resources and collects them. Resources include class files.
    *
    * @return An enumeration of all available resources
-   * @throws IOException        If an I/O error occurs while finding the resources
+   * @throws IOException If an I/O error occurs while finding the resources
    * @throws URISyntaxException If an URISyntaxException occurs while finding the resources
    */
   public Enumeration<URL> findAllResources() throws IOException, URISyntaxException {
@@ -371,14 +373,14 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   }
 
   /**
-   * Adds a child classloader which classes will be accessible to the root
-   * class loader.
+   * Adds a child classloader which classes will be accessible to the root class loader.
    *
    * @param childClassloader The child loader to add
    */
   public void registerChild(ChildClassLoader childClassloader) {
     if (!transformEnabled) {
-      throw new IllegalStateException("ChildClassLoader's can only be registered after transformation has been enabled");
+      throw new IllegalStateException(
+          "ChildClassLoader's can only be registered after transformation has been enabled");
     } else if (children.contains(childClassloader)) {
       return;
     }
@@ -386,9 +388,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     children.add(childClassloader);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Package commonDefinePackage(
       String name,
@@ -398,62 +398,48 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       String implTitle,
       String implVersion,
       String implVendor,
-      URL sealBase
-  ) {
-    return definePackage(name, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
+      URL sealBase) {
+    return definePackage(
+        name, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Package commonDefinePackage(String name, Manifest man, URL url) {
     return definePackage(name, man, url);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Class<?> commonDefineClass(String name, byte[] b, int off, int len, CodeSource cs) {
     return defineClass(name, b, off, len, cs);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public URL commonFindResource(String name, boolean forClassLoad) {
     return findResource(name, !forClassLoad);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Enumeration<URL> commonFindResources(String name) throws IOException {
     return findResources(name);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Enumeration<URL> commonFindAllResources() throws IOException, URISyntaxException {
     return findAllResources();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Package commonGetPackage(String name) {
     return getPackage(name);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getClassloaderName() {
     return "RootLoader";

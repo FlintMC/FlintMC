@@ -1,8 +1,6 @@
 package net.flintmc.render.gui.event;
 
-/**
- * Event indicating that the framebuffer size has changed.
- */
+/** Event indicating that the framebuffer size has changed. */
 public class FramebufferSizeEvent implements GuiEvent {
   private final int width;
   private final int height;

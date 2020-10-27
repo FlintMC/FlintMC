@@ -10,19 +10,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * <code>ClassMappingProvider</code> manages class mappings produced by a mapping parser.
- */
+/** <code>ClassMappingProvider</code> manages class mappings produced by a mapping parser. */
 @Singleton
 public final class ClassMappingProvider {
   private final Map<String, ClassMapping> obfuscatedClassMappings;
   private final Map<String, ClassMapping> deobfuscatedClassMappings = new HashMap<>();
 
   @Inject
-  private ClassMappingProvider(final MappingFileProvider mappingFileProvider,
-                               @Named("launchArguments") final Map launchArguments) throws IOException, MappingParseException {
+  private ClassMappingProvider(
+      final MappingFileProvider mappingFileProvider,
+      @Named("launchArguments") final Map launchArguments)
+      throws IOException, MappingParseException {
     McpMappingParser mcpMappingParser = new McpMappingParser();
-    obfuscatedClassMappings = mcpMappingParser.parse(mappingFileProvider.getMappings(launchArguments.get("--game-version").toString()));
+    obfuscatedClassMappings =
+        mcpMappingParser.parse(
+            mappingFileProvider.getMappings(launchArguments.get("--game-version").toString()));
 
     for (ClassMapping classMapping : obfuscatedClassMappings.values()) {
       deobfuscatedClassMappings.put(classMapping.deobfuscatedName, classMapping);

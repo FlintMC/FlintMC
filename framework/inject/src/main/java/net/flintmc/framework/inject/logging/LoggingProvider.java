@@ -4,9 +4,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.Function;
 
-/**
- * Provides Log4J Logger instances.
- */
+/** Provides Log4J Logger instances. */
 public interface LoggingProvider {
 
   /**
@@ -18,8 +16,8 @@ public interface LoggingProvider {
   Logger getLogger(Class<?> clazz);
 
   /**
-   * Sets the package name provide callback which will be used by the logger
-   * to resolve the prefix for a specific class.
+   * Sets the package name provide callback which will be used by the logger to resolve the prefix
+   * for a specific class.
    *
    * @param prefixProvider the prefix provider to be used
    */

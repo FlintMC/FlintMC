@@ -3,9 +3,7 @@ package net.flintmc.mcapi.nbt;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * A signed floating point type.
- */
+/** A signed floating point type. */
 public interface NBTFloat extends NBT {
 
   /**
@@ -15,9 +13,7 @@ public interface NBTFloat extends NBT {
    */
   float asFloat();
 
-  /**
-   * A factory class for the {@link NBTFloat}.
-   */
+  /** A factory class for the {@link NBTFloat}. */
   @AssistedFactory(NBTFloat.class)
   interface Factory {
 
@@ -28,7 +24,5 @@ public interface NBTFloat extends NBT {
      * @return A created float named binary tag.
      */
     NBTFloat create(@Assisted("value") float value);
-
   }
-
 }

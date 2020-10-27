@@ -22,10 +22,9 @@ import java.util.Map;
 
 @Singleton
 @Services({
-    @Service(value = Implement.class, priority = -100000, state = Service.State.PRE_INIT),
-    @Service(value = AssistedFactory.class, priority = -10000, state = Service.State.PRE_INIT)
+  @Service(value = Implement.class, priority = -100000, state = Service.State.PRE_INIT),
+  @Service(value = AssistedFactory.class, priority = -10000, state = Service.State.PRE_INIT)
 })
-
 public class InjectionService implements ServiceHandler<Annotation> {
 
   private final Collection<Class> implementationsFlushed = new HashSet<>();
@@ -52,7 +51,11 @@ public class InjectionService implements ServiceHandler<Annotation> {
   }
 
   private void handleAssistedFactoryAnnotation(AnnotationMeta<AssistedFactory> annotationMeta) {
-    System.out.println("AssistedFactory " + annotationMeta.getAnnotation().value().getName() + " at " + annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName());
+    System.out.println(
+        "AssistedFactory "
+            + annotationMeta.getAnnotation().value().getName()
+            + " at "
+            + annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName());
     AssistedFactory annotation = annotationMeta.getAnnotation();
     assisted.put(annotationMeta.<ClassIdentifier>getIdentifier().getLocation(), annotation);
     ignore.add(annotation.value());
@@ -68,8 +71,15 @@ public class InjectionService implements ServiceHandler<Annotation> {
         || launchArguments.get("--game-version").equals(annotation.version()))) return;
 
     if (implementations.containsKey(annotation.value())) {
-      //todo use String.format :)
-      throw new IllegalStateException("Cannot bind " + annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName() + ". Implementation " + annotation.value() + " already provided by " + implementations.get(annotation.value()).getName() + ".");
+      // todo use String.format :)
+      throw new IllegalStateException(
+          "Cannot bind "
+              + annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName()
+              + ". Implementation "
+              + annotation.value()
+              + " already provided by "
+              + implementations.get(annotation.value()).getName()
+              + ".");
     }
     implementations.put(annotation.value(), location);
   }
@@ -83,8 +93,12 @@ public class InjectionService implements ServiceHandler<Annotation> {
                 implementations.forEach(
                     (superClass, implementation) -> {
                       Class<?> implementationResolved = CtResolver.get(implementation);
-                      if (!ignore.contains(superClass) && !ignore.contains(implementationResolved) && !implementationsFlushed.contains(implementationResolved)) {
-                        this.bind(superClass).toProvider(() -> InjectionHolder.getInjectedInstance(implementationResolved));
+                      if (!ignore.contains(superClass)
+                          && !ignore.contains(implementationResolved)
+                          && !implementationsFlushed.contains(implementationResolved)) {
+                        this.bind(superClass)
+                            .toProvider(
+                                () -> InjectionHolder.getInjectedInstance(implementationResolved));
                         implementationsFlushed.add(implementationResolved);
                       }
                     });
@@ -95,7 +109,10 @@ public class InjectionService implements ServiceHandler<Annotation> {
                       Class<?> resolvedClass = CtResolver.get(clazz);
                       if (!assistedFlushed.contains(resolvedClass)) {
                         FactoryModuleBuilder factoryModuleBuilder = new FactoryModuleBuilder();
-                        implementations.forEach((interfaceClass, implementation) -> factoryModuleBuilder.implement(interfaceClass, CtResolver.get(implementation)));
+                        implementations.forEach(
+                            (interfaceClass, implementation) ->
+                                factoryModuleBuilder.implement(
+                                    interfaceClass, CtResolver.get(implementation)));
                         install(factoryModuleBuilder.build(resolvedClass));
                         assistedFlushed.add(resolvedClass);
                       }

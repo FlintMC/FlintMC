@@ -1,11 +1,11 @@
 package net.flintmc.mcapi.internal.items.inventory;
 
 import com.google.common.base.Preconditions;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.InventoryController;
 import net.flintmc.mcapi.items.inventory.InventoryType;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
-import net.flintmc.framework.stereotype.NameSpacedKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,10 @@ public abstract class DefaultInventoryController implements InventoryController 
 
   @Override
   public void registerType(InventoryType type) {
-    Preconditions.checkArgument(!this.inventoryTypes.containsKey(type.getRegistryName()), "A type with the name %s is already registered", type.getRegistryName());
+    Preconditions.checkArgument(
+        !this.inventoryTypes.containsKey(type.getRegistryName()),
+        "A type with the name %s is already registered",
+        type.getRegistryName());
     this.inventoryTypes.put(type.getRegistryName(), type);
   }
 
@@ -55,5 +58,4 @@ public abstract class DefaultInventoryController implements InventoryController 
   protected abstract boolean isOpened(Inventory inventory);
 
   protected abstract Inventory defineOpenInventory();
-
 }

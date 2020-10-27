@@ -34,7 +34,8 @@ public interface VisitInvokeDynamicInsn {
         String descriptor,
         Handle bootstrapMethodHandle,
         Object... bootstrapMethodArguments) {
-      return new Context(methodVisitorContext, name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
+      return new Context(
+          methodVisitorContext, name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
     }
 
     public String getName() {
@@ -74,7 +75,8 @@ public interface VisitInvokeDynamicInsn {
     }
 
     public Context write() {
-      this.methodVisitorContext.svisitInvokeDynamicInsn(this.name, this.descriptor, this.bootstrapMethodHandle, this.bootstrapMethodArguments);
+      this.methodVisitorContext.svisitInvokeDynamicInsn(
+          this.name, this.descriptor, this.bootstrapMethodHandle, this.bootstrapMethodArguments);
       return this;
     }
   }

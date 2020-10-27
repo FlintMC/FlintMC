@@ -7,18 +7,18 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import javassist.CtMethod;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.util.mappings.ClassMapping;
-import net.flintmc.util.mappings.ClassMappingProvider;
-import net.flintmc.util.mappings.MethodMapping;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.asm.MethodVisit;
 import net.flintmc.transform.asm.MethodVisitorContext;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
+import net.flintmc.util.mappings.MethodMapping;
 import org.objectweb.asm.*;
 
 import java.util.Collection;
@@ -30,7 +30,8 @@ import java.util.HashSet;
 public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInjectedTransformer {
 
   private final Collection<CtMethod> visitorCandidates = new HashSet<>();
-  private final boolean obfuscated = InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
+  private final boolean obfuscated =
+      InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
   private final Collection<DefaultMethodVisitorContext> methodVisitorContexts;
   private final ClassMappingProvider classMappingProvider;
 
@@ -61,30 +62,30 @@ public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInje
                 int access, String name, String desc, String signature, String[] exceptions) {
 
               MethodMapping methodMapping =
-                  classMapping.getMethodByIdentifier(name + desc.substring(0, desc.lastIndexOf(')') + 1));
+                  classMapping.getMethodByIdentifier(
+                      name + desc.substring(0, desc.lastIndexOf(')') + 1));
 
               if (methodMapping != null) {
                 for (DefaultMethodVisitorContext methodVisitorContext : methodVisitorContexts) {
                   if (methodVisitorContext.getMethodVisit().desc().isEmpty()
                       || methodMapping
-                      .getObfuscatedDescriptor()
-                      .equals(methodVisitorContext.getMethodVisit().desc())
+                          .getObfuscatedDescriptor()
+                          .equals(methodVisitorContext.getMethodVisit().desc())
                       || methodMapping
-                      .getDeobfuscatedDescriptor()
-                      .equals(methodVisitorContext.getMethodVisit().desc())) {
+                          .getDeobfuscatedDescriptor()
+                          .equals(methodVisitorContext.getMethodVisit().desc())) {
 
                     if (methodVisitorContext.getMethodVisit().methodName().isEmpty()
                         || methodMapping
-                        .getObfuscatedName()
-                        .equals(methodVisitorContext.getMethodVisit().methodName())
+                            .getObfuscatedName()
+                            .equals(methodVisitorContext.getMethodVisit().methodName())
                         || methodMapping
-                        .getDeobfuscatedName()
-                        .equals(methodVisitorContext.getMethodVisit().methodName())) {
+                            .getDeobfuscatedName()
+                            .equals(methodVisitorContext.getMethodVisit().methodName())) {
                       methodVisitorContext.setMethodVisitor(
                           new MethodVisitor(
                               Opcodes.ASM5,
-                              super.visitMethod(access, name, desc, signature, exceptions)) {
-                          });
+                              super.visitMethod(access, name, desc, signature, exceptions)) {});
                       return methodVisitorContext;
                     }
                   }
@@ -106,5 +107,4 @@ public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInje
   public void discover(AnnotationMeta<MethodVisit> identifierMeta) throws ServiceNotFoundException {
     this.visitorCandidates.add(identifierMeta.<MethodIdentifier>getIdentifier().getLocation());
   }
-
 }

@@ -2,14 +2,13 @@ package net.flintmc.mcapi.internal.gamesettings.frontend;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.flintmc.mcapi.gamesettings.frontend.FrontendSliderOption;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.gamesettings.frontend.FrontendSliderOption;
 
-/**
- * Default implementation of a {@link FrontendSliderOption}.
- */
+/** Default implementation of a {@link FrontendSliderOption}. */
 @Implement(FrontendSliderOption.class)
-public class DefaultFrontendSliderOption extends DefaultFrontendOption implements FrontendSliderOption {
+public class DefaultFrontendSliderOption extends DefaultFrontendOption
+    implements FrontendSliderOption {
 
   private int min;
   private int max;
@@ -19,18 +18,15 @@ public class DefaultFrontendSliderOption extends DefaultFrontendOption implement
 
   @AssistedInject
   protected DefaultFrontendSliderOption(
-          @Assisted("name") String name,
-          @Assisted("type") Class<?> type,
-          @Assisted("defaultValue") String defaultValue
-  ) {
+      @Assisted("name") String name,
+      @Assisted("type") Class<?> type,
+      @Assisted("defaultValue") String defaultValue) {
     super(name, type, defaultValue);
     this.min = this.max = 0;
     this.minVal = this.maxVal = 0D;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public FrontendSliderOption setRange(int min, int max) {
     this.min = min;
@@ -38,25 +34,19 @@ public class DefaultFrontendSliderOption extends DefaultFrontendOption implement
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getMin() {
     return this.min;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getMax() {
     return this.max;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public FrontendSliderOption setRange(double min, double max) {
     this.minVal = min;
@@ -64,17 +54,13 @@ public class DefaultFrontendSliderOption extends DefaultFrontendOption implement
     return this;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getMinValue() {
     return this.minVal;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getMaxValue() {
     return this.maxVal;

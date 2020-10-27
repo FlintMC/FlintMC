@@ -7,23 +7,24 @@ import net.flintmc.util.mappings.ClassMapping;
 import java.util.Map;
 
 /**
- * <code>MappingUtils</code> provides several utilities to parse mappings. It focuses on general purposes things like
- * generating a descriptor but also contains a few extracted methods to tidy up the mapping parser.
+ * <code>MappingUtils</code> provides several utilities to parse mappings. It focuses on general
+ * purposes things like generating a descriptor but also contains a few extracted methods to tidy up
+ * the mapping parser.
  */
 public final class MappingUtils {
-  private MappingUtils() { }
+  private MappingUtils() {}
 
   /**
-   * Deobfuscate a method descriptor. This method is a post-processing step, meaning that the
-   * <code>classMappings</code> parameter is supposed to be complete. Otherwise, the method descriptor cannot be
-   * deobfuscated properly, resulting in a partially/not deobfuscated method descriptor.
+   * Deobfuscate a method descriptor. This method is a post-processing step, meaning that the <code>
+   * classMappings</code> parameter is supposed to be complete. Otherwise, the method descriptor
+   * cannot be deobfuscated properly, resulting in a partially/not deobfuscated method descriptor.
    *
-   * @param classMappings        Class mappings.
+   * @param classMappings Class mappings.
    * @param obfuscatedDescriptor Obfuscated method descriptor.
    * @return A deobfuscated method descriptor.
    */
-  public static String deobfuscateMethodDescriptor(final Map<String, ClassMapping> classMappings,
-                                                   final String obfuscatedDescriptor) {
+  public static String deobfuscateMethodDescriptor(
+      final Map<String, ClassMapping> classMappings, final String obfuscatedDescriptor) {
     StringBuilder descriptor = new StringBuilder(), className = new StringBuilder();
     boolean readClassName = false;
 
@@ -33,7 +34,8 @@ public final class MappingUtils {
           descriptor.append("L");
 
           if (classMappings.containsKey(className.toString())) {
-            descriptor.append(classMappings.get(className.toString()).getDeobfuscatedName().replace(".", "/"));
+            descriptor.append(
+                classMappings.get(className.toString()).getDeobfuscatedName().replace(".", "/"));
           } else {
             descriptor.append(className);
           }

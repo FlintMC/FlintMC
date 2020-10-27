@@ -33,9 +33,9 @@ public class ResourceWebFileSystem implements WebFileSystemHandler {
     return new WebResource() {
 
       private final URL url;
-      private InputStream stream;
-      int size = -1;
       private final List<Byte> data;
+      int size = -1;
+      private InputStream stream;
 
       {
         url = getClass().getResource("/" + path);

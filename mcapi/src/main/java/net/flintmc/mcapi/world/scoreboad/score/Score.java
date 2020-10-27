@@ -4,9 +4,7 @@ import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 
-/**
- * Represents a minecraft score.
- */
+/** Represents a minecraft score. */
 public interface Score {
 
   /**
@@ -30,9 +28,7 @@ public interface Score {
    */
   void increaseScore(int amount);
 
-  /**
-   * Increases the score by one.
-   */
+  /** Increases the score by one. */
   void incrementScore();
 
   /**
@@ -49,9 +45,7 @@ public interface Score {
    */
   void setScorePoints(int points);
 
-  /**
-   * Resets the score points to {@code 0}
-   */
+  /** Resets the score points to {@code 0} */
   void reset();
 
   /**
@@ -68,9 +62,7 @@ public interface Score {
    */
   void setLocked(boolean locked);
 
-  /**
-   * A factory class for {@link Score}
-   */
+  /** A factory class for {@link Score} */
   @AssistedFactory(Score.class)
   interface Factory {
 
@@ -78,44 +70,39 @@ public interface Score {
      * Creates a new {@link Score} with the given parameters.
      *
      * @param scoreboard The scoreboard for this score.
-     * @param objective  The objective for this score.
-     * @param username   The username for this score.
+     * @param objective The objective for this score.
+     * @param username The username for this score.
      * @return A created score.
      */
     Score create(
-            @Assisted("scoreboard") Scoreboard scoreboard,
-            @Assisted("objective") Objective objective,
-            @Assisted("username") String username
-    );
+        @Assisted("scoreboard") Scoreboard scoreboard,
+        @Assisted("objective") Objective objective,
+        @Assisted("username") String username);
 
     /**
      * Creates a new {@link Score} with the given parameters.
      *
-     * @param scoreboard  The score for this score.
-     * @param objective   The objective for this score.
-     * @param username    The username for this score.
+     * @param scoreboard The score for this score.
+     * @param objective The objective for this score.
+     * @param username The username for this score.
      * @param scorePoints The points for this score.
      * @return A created score.
      */
     Score create(
-            @Assisted("scoreboard") Scoreboard scoreboard,
-            @Assisted("objective") Objective objective,
-            @Assisted("username") String username,
-            @Assisted("score") int scorePoints
-    );
-
+        @Assisted("scoreboard") Scoreboard scoreboard,
+        @Assisted("objective") Objective objective,
+        @Assisted("username") String username,
+        @Assisted("score") int scorePoints);
   }
 
-  /**
-   * Represents a service interface for creating {@link Score}
-   */
+  /** Represents a service interface for creating {@link Score} */
   interface Provider {
 
     /**
      * Creates a new {@link Score} with given parameters.
      *
      * @param objective The objective for this score.
-     * @param username  The username for this score.
+     * @param username The username for this score.
      * @return A created score.
      */
     Score get(Objective objective, String username);
@@ -124,12 +111,10 @@ public interface Score {
      * Creates a new {@link Score} with given parameters.
      *
      * @param objective The objective for this score.
-     * @param username  The username for this score.
-     * @param points    The points for this score.
+     * @param username The username for this score.
+     * @param points The points for this score.
      * @return A created score.
      */
     Score get(Objective objective, String username, int points);
-
   }
-
 }

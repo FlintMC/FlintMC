@@ -1,10 +1,7 @@
 package net.flintmc.mcapi.gamesettings.settings;
 
-/**
- * An enumeration representing particle statuses.
- */
+/** An enumeration representing particle statuses. */
 public enum ParticleStatus {
-
   ALL("options.particles.all"),
   DECREASED("options.particles.decreased"),
   MINIMAL("options.particles.minimal");

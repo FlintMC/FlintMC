@@ -4,16 +4,16 @@ import net.flintmc.launcher.classloading.common.CommonClassLoaderHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-/**
- * Represents a jar file as source for a package.
- */
+/** Represents a jar file as source for a package. */
 public class FileSource implements PackageSource {
   private final File file;
   private final JarFile jar;
@@ -29,17 +29,13 @@ public class FileSource implements PackageSource {
     this.jar = new JarFile(file);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void close() throws IOException {
     jar.close();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public URL findResource(String path) {
     JarEntry entry = jar.getJarEntry(path);
@@ -61,9 +57,7 @@ public class FileSource implements PackageSource {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Enumeration<URL> findResources(String name) {
     // There can't be any duplicates in a jar file, just find a single resource
@@ -77,8 +71,8 @@ public class FileSource implements PackageSource {
         /**
          * {@inheritDoc}
          *
-         * @implNote Will return {@code true} as long as {@link #nextElement()} has not been called. After that
-         * this method will always return {@code false}.
+         * @implNote Will return {@code true} as long as {@link #nextElement()} has not been called.
+         *     After that this method will always return {@code false}.
          */
         @Override
         public boolean hasMoreElements() {
@@ -93,7 +87,8 @@ public class FileSource implements PackageSource {
         @Override
         public URL nextElement() {
           if (!hasMoreElements()) {
-            throw new NoSuchElementException("The element if this singleton enumeration has been consumed already");
+            throw new NoSuchElementException(
+                "The element if this singleton enumeration has been consumed already");
           }
 
           // Save and null out the element to indicate that this
@@ -109,9 +104,7 @@ public class FileSource implements PackageSource {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Enumeration<URL> findAllResources() throws IOException, URISyntaxException {
     // Use the CommonClassLoaderHelper to simply scan this jar file

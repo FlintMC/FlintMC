@@ -3,9 +3,7 @@ package net.flintmc.mcapi.gamesettings.frontend;
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/**
- * Represents an option slider for the settings frontend.
- */
+/** Represents an option slider for the settings frontend. */
 public interface FrontendSliderOption extends FrontendOption {
 
   /**
@@ -54,26 +52,21 @@ public interface FrontendSliderOption extends FrontendOption {
    */
   double getMaxValue();
 
-  /**
-   * A factory class for the {@link FrontendSliderOption}.
-   */
+  /** A factory class for the {@link FrontendSliderOption}. */
   @AssistedFactory(FrontendSliderOption.class)
   interface Factory {
 
     /**
      * Creates a new {@link FrontendSliderOption} with the given parameters.
      *
-     * @param name         The configuration name of the option.
-     * @param type         The option type.
+     * @param name The configuration name of the option.
+     * @param type The option type.
      * @param defaultValue The default value for the option.
      * @return A created frontend slider option.
      */
     FrontendSliderOption create(
-            @Assisted("name") String name,
-            @Assisted("type") Class<?> type,
-            @Assisted("defaultValue") String defaultValue
-    );
-
+        @Assisted("name") String name,
+        @Assisted("type") Class<?> type,
+        @Assisted("defaultValue") String defaultValue);
   }
-
 }

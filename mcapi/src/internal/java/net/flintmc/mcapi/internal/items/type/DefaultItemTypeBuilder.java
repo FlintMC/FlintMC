@@ -2,15 +2,15 @@ package net.flintmc.mcapi.internal.items.type;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.items.type.ItemCategory;
 import net.flintmc.mcapi.items.type.ItemType;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
-import net.flintmc.framework.stereotype.NameSpacedKey;
 
 @Implement(ItemType.Builder.class)
 public class DefaultItemTypeBuilder implements ItemType.Builder {
@@ -27,7 +27,10 @@ public class DefaultItemTypeBuilder implements ItemType.Builder {
   private ResourceLocation resourceLocation;
 
   @AssistedInject
-  public DefaultItemTypeBuilder(ComponentBuilder.Factory componentFactory, ItemMeta.Factory metaFactory, ResourceLocationProvider resourceLocationProvider) {
+  public DefaultItemTypeBuilder(
+      ComponentBuilder.Factory componentFactory,
+      ItemMeta.Factory metaFactory,
+      ResourceLocationProvider resourceLocationProvider) {
     this.componentFactory = componentFactory;
     this.metaFactory = metaFactory;
     this.resourceLocationProvider = resourceLocationProvider;
@@ -83,16 +86,27 @@ public class DefaultItemTypeBuilder implements ItemType.Builder {
     Preconditions.checkArgument(this.maxStackSize > 0, "MaxStackSize cannot be zero or smaller");
 
     if (this.defaultDisplayName == null) {
-      this.defaultDisplayName = this.componentFactory.text().text(this.registryName.getKey()).build();
+      this.defaultDisplayName =
+          this.componentFactory.text().text(this.registryName.getKey()).build();
     }
     if (this.maxDamage <= 0) {
       this.maxDamage = -1;
     }
     if (this.resourceLocation == null) {
-      this.resourceLocation = this.resourceLocationProvider.get(this.registryName.getNameSpace(), this.registryName.getKey());
+      this.resourceLocation =
+          this.resourceLocationProvider.get(
+              this.registryName.getNameSpace(), this.registryName.getKey());
     }
 
-    return new DefaultItemType(this.metaFactory, this.category, this.registryName, this.defaultDisplayName, this.maxStackSize, this.maxDamage, this.metaClass, this.resourceLocation);
+    return new DefaultItemType(
+        this.metaFactory,
+        this.category,
+        this.registryName,
+        this.defaultDisplayName,
+        this.maxStackSize,
+        this.maxDamage,
+        this.metaClass,
+        this.resourceLocation);
   }
 
   @Override

@@ -5,26 +5,28 @@ import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
-import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
+import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
 
-/**
- * The serializer for hover events in minecraft versions 1.16 and above.
- */
+/** The serializer for hover events in minecraft versions 1.16 and above. */
 public class ModernHoverEventSerializer extends HoverEventSerializer {
 
   private final ComponentBuilder.Factory componentFactory;
 
-  public ModernHoverEventSerializer(Logger logger, GsonComponentSerializer componentSerializer, ComponentBuilder.Factory componentFactory) {
+  public ModernHoverEventSerializer(
+      Logger logger,
+      GsonComponentSerializer componentSerializer,
+      ComponentBuilder.Factory componentFactory) {
     super(logger, componentSerializer);
     this.componentFactory = componentFactory;
   }
 
   @Override
-  public HoverEvent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+  public HoverEvent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+      throws JsonParseException {
     if (!json.isJsonObject()) {
       return null;
     }
@@ -46,7 +48,7 @@ public class ModernHoverEventSerializer extends HoverEventSerializer {
       }
 
     } else {
-      contents = new HoverContent[]{this.deserialize(serializer, value, context)};
+      contents = new HoverContent[] {this.deserialize(serializer, value, context)};
       if (contents[0] == null) {
         return null;
       }
@@ -55,8 +57,12 @@ public class ModernHoverEventSerializer extends HoverEventSerializer {
     return HoverEvent.of(contents);
   }
 
-  private HoverContent deserialize(HoverContentSerializer serializer, JsonElement element, JsonDeserializationContext context) {
-    return serializer.deserialize(super.asComponent(element, context), this.componentFactory, super.componentSerializer.getGson());
+  private HoverContent deserialize(
+      HoverContentSerializer serializer, JsonElement element, JsonDeserializationContext context) {
+    return serializer.deserialize(
+        super.asComponent(element, context),
+        this.componentFactory,
+        super.componentSerializer.getGson());
   }
 
   @Override
@@ -75,7 +81,8 @@ public class ModernHoverEventSerializer extends HoverEventSerializer {
 
     JsonArray array = new JsonArray();
     for (HoverContent content : src.getContents()) {
-      ChatComponent component = serializer.serialize(content, this.componentFactory, super.componentSerializer.getGson());
+      ChatComponent component =
+          serializer.serialize(content, this.componentFactory, super.componentSerializer.getGson());
       if (component != null) {
         array.add(context.serialize(component));
       }

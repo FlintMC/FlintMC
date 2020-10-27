@@ -1,18 +1,14 @@
 package net.flintmc.framework.packages;
 
-/**
- * Represents the possible states of a package.
- */
+/** Represents the possible states of a package. */
 public enum PackageState {
   /**
-   * The packages classes are available for use through the loader of the package,
-   * but the package has not been enabled yet.
+   * The packages classes are available for use through the loader of the package, but the package
+   * has not been enabled yet.
    */
   LOADED,
 
-  /**
-   * The packages initializers have run and its services have been registered.
-   */
+  /** The packages initializers have run and its services have been registered. */
   ENABLED,
 
   /**
@@ -21,8 +17,8 @@ public enum PackageState {
   NOT_LOADED,
 
   /**
-   * The manifest file (package.json) was invalid and caused the package to not load.
-   * Packages in this state may not be interacted with.
+   * The manifest file (package.json) was invalid and caused the package to not load. Packages in
+   * this state may not be interacted with.
    */
   INVALID_MANIFEST,
 
@@ -33,8 +29,8 @@ public enum PackageState {
   FLINT_NOT_COMPATIBLE,
 
   /**
-   * The Minecraft environment hosting Labyfy is incompatible, possibly due to a version conflict
-   * or a side problem. Packages in this state may not be interacted with.
+   * The Minecraft environment hosting Labyfy is incompatible, possibly due to a version conflict or
+   * a side problem. Packages in this state may not be interacted with.
    */
   MINECRAFT_NOT_COMPATIBLE,
 
@@ -45,15 +41,15 @@ public enum PackageState {
   UNSATISFIABLE_DEPENDENCIES,
 
   /**
-   * The currently running environment has loaded another package which is conflicting with this package.
-   * This could mean that the same package has been attempted to be loaded twice or just that another
-   * package has been declared to be incompatible.
+   * The currently running environment has loaded another package which is conflicting with this
+   * package. This could mean that the same package has been attempted to be loaded twice or just
+   * that another package has been declared to be incompatible.
    */
   CONFLICTING_PACKAGE_LOADED,
 
   /**
-   * An {@link Exception} occurred while loading the package. The {@link Package#getLoadException()} method
-   * can be used to retrieve the exception causing the package to fail loading.
+   * An {@link Exception} occurred while loading the package. The {@link Package#getLoadException()}
+   * method can be used to retrieve the exception causing the package to fail loading.
    */
   ERRORED;
 

@@ -3,9 +3,7 @@ package net.flintmc.launcher.classloading.common;
 import java.net.URL;
 import java.security.CodeSigner;
 
-/**
- * Utility class containing simple information about a class file.
- */
+/** Utility class containing simple information about a class file. */
 public class ClassInformation {
   private final URL resourceURL;
   private final byte[] classBytes;
@@ -15,8 +13,8 @@ public class ClassInformation {
    * Constructs a new {@link ClassInformation} with a given url, content and signers
    *
    * @param resourceURL The {@link URL} the class content has been retrieved from
-   * @param classBytes  The byte content of the class
-   * @param signers     The signer information attached to the class
+   * @param classBytes The byte content of the class
+   * @param signers The signer information attached to the class
    */
   ClassInformation(URL resourceURL, byte[] classBytes, CodeSigner[] signers) {
     this.resourceURL = resourceURL;

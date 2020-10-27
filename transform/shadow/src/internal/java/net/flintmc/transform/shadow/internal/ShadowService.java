@@ -2,12 +2,12 @@ package net.flintmc.transform.shadow.internal;
 
 import com.google.inject.Singleton;
 import javassist.*;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.shadow.*;
@@ -38,9 +38,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
     ClassPool classPool = classTransformContext.getCtClass().getClassPool();
     classTransformContext
         .getCtClass()
-        .addInterface(
-            classPool.get(
-                identifierMeta.<ClassIdentifier>getIdentifier().getName()));
+        .addInterface(classPool.get(identifierMeta.<ClassIdentifier>getIdentifier().getName()));
     handleMethodProxies(identifierMeta, classPool, ctClass);
     handleFieldCreators(identifierMeta, ctClass);
     handleFieldGetters(identifierMeta, ctClass);
@@ -80,8 +78,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
     for (AnnotationMeta<FieldSetter> fieldSetterMeta :
         identifierMeta.getMetaData(FieldSetter.class)) {
       FieldSetter fieldSetter = fieldSetterMeta.getAnnotation();
-      CtMethod method =
-          fieldSetterMeta.<MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method = fieldSetterMeta.<MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 1) {
@@ -135,8 +132,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
     for (AnnotationMeta<FieldGetter> fieldGetterMeta :
         identifierMeta.getMetaData(FieldGetter.class)) {
       FieldGetter fieldGetter = fieldGetterMeta.getAnnotation();
-      CtMethod method =
-          fieldGetterMeta.<MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method = fieldGetterMeta.<MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 0) {
@@ -157,8 +153,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
       throws NotFoundException {
     for (AnnotationMeta<MethodProxy> methodProxyMeta :
         identifierMeta.getMetaData(MethodProxy.class)) {
-      CtMethod method =
-          methodProxyMeta.<MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method = methodProxyMeta.<MethodIdentifier>getIdentifier().getLocation();
 
       CtClass[] parameters = method.getParameterTypes();
       CtClass[] classes = new CtClass[parameters.length];

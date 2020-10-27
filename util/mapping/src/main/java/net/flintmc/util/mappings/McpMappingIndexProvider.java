@@ -13,8 +13,8 @@ import java.util.Map;
 
 @Singleton
 public class McpMappingIndexProvider {
-  private final static String INDEX_URL = "https://dl.labymod.net/mappings/index_new.json";
-  private final static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+  private static final String INDEX_URL = "https://dl.labymod.net/mappings/index_new.json";
+  private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   /**
    * Fetch information about Minecraft mappings.

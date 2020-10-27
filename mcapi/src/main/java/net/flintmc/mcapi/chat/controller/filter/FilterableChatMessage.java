@@ -4,8 +4,8 @@ import net.flintmc.mcapi.chat.controller.Chat;
 import net.flintmc.mcapi.chat.controller.ChatMessage;
 
 /**
- * The message before it is being displayed in the chat. In this message, the {@link Chat} to display the message to can
- * still be modified.
+ * The message before it is being displayed in the chat. In this message, the {@link Chat} to
+ * display the message to can still be modified.
  */
 public interface FilterableChatMessage extends ChatMessage {
 

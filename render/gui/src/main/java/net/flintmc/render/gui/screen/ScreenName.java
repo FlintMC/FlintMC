@@ -2,9 +2,7 @@ package net.flintmc.render.gui.screen;
 
 import java.util.Objects;
 
-/**
- * Abstract representation of a screen class
- */
+/** Abstract representation of a screen class */
 public final class ScreenName {
   public static final String MAIN_MENU = "main_menu";
   public static final String RESOURCE_LOAD = "resource_load";
@@ -27,7 +25,7 @@ public final class ScreenName {
   /**
    * Constructs a screen name with the given type and identifier
    *
-   * @param type       The type indicating where the screen is from
+   * @param type The type indicating where the screen is from
    * @param identifier The unique identifier within the type of this screen
    * @return The constructed screen name
    */
@@ -47,8 +45,8 @@ public final class ScreenName {
   }
 
   /**
-   * Constructs a screen name with an unknown origin (possibly a package). The identifier is assumed to be
-   * the full qualified name of the class the screen.
+   * Constructs a screen name with an unknown origin (possibly a package). The identifier is assumed
+   * to be the full qualified name of the class the screen.
    *
    * @param clazz The full qualified name of the class of the screen
    * @return The constructed screen name
@@ -58,8 +56,8 @@ public final class ScreenName {
   }
 
   /**
-   * Retrieves the within screen names of the same type unique identifier.
-   * This also means that the return value is only meaningful when matched with the type.
+   * Retrieves the within screen names of the same type unique identifier. This also means that the
+   * return value is only meaningful when matched with the type.
    *
    * @return The unique identifier
    */
@@ -76,29 +74,22 @@ public final class ScreenName {
     return type;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ScreenName that = (ScreenName) o;
-    return type == that.type &&
-        Objects.equals(identifier, that.identifier);
+    return type == that.type && Objects.equals(identifier, that.identifier);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return Objects.hash(type, identifier);
   }
 
-  /**
-   * Type indicating where a screen name is from
-   */
+  /** Type indicating where a screen name is from */
   public enum Type {
     /**
      * The screen name is from minecraft. This means the unique identifier is one of the constants
@@ -107,8 +98,8 @@ public final class ScreenName {
     FROM_MINECRAFT,
 
     /**
-     * The screen name has an unknown origin. This means the unique identifier is the fully qualified class name
-     * of the screen class.
+     * The screen name has an unknown origin. This means the unique identifier is the fully
+     * qualified class name of the screen class.
      */
     UNKNOWN
   }

@@ -3,11 +3,8 @@ package net.flintmc.mcapi.gamesettings;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * An enumeration representing some keys from a keyboard or mouse.
- */
+/** An enumeration representing some keys from a keyboard or mouse. */
 public enum KeyBindMappings {
-
   UNKNOWN("key.keyboard.unknown", -1, 0),
   MOUSE_LEFT("key.mouse.left", 0, -100),
   MOUSE_RIGHT("key.mouse.right", 1, -99),
@@ -179,7 +176,9 @@ public enum KeyBindMappings {
    * @return The configuration name or {@link #UNKNOWN#getConfigurationName()}
    */
   public static String getConfigurationName(int scanCode) {
-    return BY_SCAN_CODE.get(scanCode) == null ? UNKNOWN.getConfigurationName() : BY_SCAN_CODE.get(scanCode);
+    return BY_SCAN_CODE.get(scanCode) == null
+        ? UNKNOWN.getConfigurationName()
+        : BY_SCAN_CODE.get(scanCode);
   }
 
   /**
@@ -208,5 +207,4 @@ public enum KeyBindMappings {
   public int getScanCode() {
     return scanCode;
   }
-
 }

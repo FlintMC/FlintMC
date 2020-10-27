@@ -2,7 +2,7 @@ package net.flintmc.mcapi.v1_15_2.entity.mapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.mcapi.internal.entity.cache.EntityCache;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.MobEntity;
@@ -10,7 +10,7 @@ import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.mapper.EntityMapper;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
-import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.internal.entity.cache.EntityCache;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.RemoteClientPlayer;
 import net.minecraft.client.Minecraft;
@@ -39,15 +39,15 @@ public class VersionedEntityMapper implements EntityMapper {
 
   @Inject
   private VersionedEntityMapper(
-          EntityCache entityCache,
-          Entity.Factory entityFactory,
-          EntityTypeMapper entityTypeMapper,
-          ItemEntityMapper itemEntityMapper,
-          LivingEntity.Provider livingEntityProvider,
-          MobEntity.Provider mobEntityProvider,
-          PassiveEntityMapper passiveEntityMapper,
-          PlayerEntity.Provider playerEntityProvider,
-          RemoteClientPlayer.Provider remoteClientPlayerProvider) {
+      EntityCache entityCache,
+      Entity.Factory entityFactory,
+      EntityTypeMapper entityTypeMapper,
+      ItemEntityMapper itemEntityMapper,
+      LivingEntity.Provider livingEntityProvider,
+      MobEntity.Provider mobEntityProvider,
+      PassiveEntityMapper passiveEntityMapper,
+      PlayerEntity.Provider playerEntityProvider,
+      RemoteClientPlayer.Provider remoteClientPlayerProvider) {
     this.entityCache = entityCache;
     this.entityFactory = entityFactory;
     this.livingEntityProvider = livingEntityProvider;
@@ -59,13 +59,14 @@ public class VersionedEntityMapper implements EntityMapper {
     this.remoteClientPlayerProvider = remoteClientPlayerProvider;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Entity fromMinecraftEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.Entity)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.Entity.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.Entity.class.getName());
     }
 
     net.minecraft.entity.Entity minecraftEntity = (net.minecraft.entity.Entity) handle;
@@ -74,36 +75,27 @@ public class VersionedEntityMapper implements EntityMapper {
     if (minecraftEntity instanceof ItemEntity) {
 
       return this.entityCache.putIfAbsent(
-              uniqueId,
-              () -> this.itemEntityMapper.fromMinecraftItemEntity(minecraftEntity)
-      );
+          uniqueId, () -> this.itemEntityMapper.fromMinecraftItemEntity(minecraftEntity));
     } else if (minecraftEntity instanceof PigEntity) {
 
       return this.entityCache.putIfAbsent(
-              uniqueId,
-              () -> this.passiveEntityMapper.fromMinecraftPigEntity(minecraftEntity)
-      );
+          uniqueId, () -> this.passiveEntityMapper.fromMinecraftPigEntity(minecraftEntity));
     } else if (minecraftEntity instanceof RemoteClientPlayerEntity) {
 
       return this.entityCache.putIfAbsent(
-              uniqueId,
-              () -> this.remoteClientPlayerProvider.get(minecraftEntity)
-      );
+          uniqueId, () -> this.remoteClientPlayerProvider.get(minecraftEntity));
     } else {
 
       return this.entityCache.putIfAbsent(
-              uniqueId,
-              () -> this.entityFactory.create(
-                      minecraftEntity,
-                      this.entityTypeMapper.fromMinecraftEntityType(minecraftEntity.getType())
-              )
-      );
+          uniqueId,
+          () ->
+              this.entityFactory.create(
+                  minecraftEntity,
+                  this.entityTypeMapper.fromMinecraftEntityType(minecraftEntity.getType())));
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftEntity(Entity entity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
@@ -115,26 +107,25 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerEntity fromMinecraftPlayerEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.player.PlayerEntity)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.player.PlayerEntity.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.player.PlayerEntity.class.getName());
     }
 
-    net.minecraft.entity.player.PlayerEntity playerEntity = (net.minecraft.entity.player.PlayerEntity) handle;
+    net.minecraft.entity.player.PlayerEntity playerEntity =
+        (net.minecraft.entity.player.PlayerEntity) handle;
 
-    return (PlayerEntity) this.entityCache.putIfAbsent(
-            playerEntity.getUniqueID(),
-            () -> this.playerEntityProvider.get(playerEntity)
-    );
+    return (PlayerEntity)
+        this.entityCache.putIfAbsent(
+            playerEntity.getUniqueID(), () -> this.playerEntityProvider.get(playerEntity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftPlayerEntity(PlayerEntity entity) {
 
@@ -147,31 +138,30 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public LivingEntity fromMinecraftLivingEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.LivingEntity)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.LivingEntity.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.LivingEntity.class.getName());
     }
 
     net.minecraft.entity.LivingEntity livingEntity = (net.minecraft.entity.LivingEntity) handle;
 
-    return (LivingEntity) this.entityCache.putIfAbsent(
-            livingEntity.getUniqueID(),
-            () -> this.livingEntityProvider.get(livingEntity)
-    );
+    return (LivingEntity)
+        this.entityCache.putIfAbsent(
+            livingEntity.getUniqueID(), () -> this.livingEntityProvider.get(livingEntity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftLivingEntity(LivingEntity entity) {
 
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
-      if (allEntity instanceof net.minecraft.entity.LivingEntity && allEntity.getEntityId() == entity.getIdentifier()) {
+      if (allEntity instanceof net.minecraft.entity.LivingEntity
+          && allEntity.getEntityId() == entity.getIdentifier()) {
         return allEntity;
       }
     }
@@ -179,31 +169,30 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public MobEntity fromMinecraftMobEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.MobEntity)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + net.minecraft.entity.MobEntity.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.entity.MobEntity.class.getName());
     }
 
     net.minecraft.entity.MobEntity mobEntity = (net.minecraft.entity.MobEntity) handle;
 
-    return (MobEntity) this.entityCache.putIfAbsent(
-            mobEntity.getUniqueID(),
-            () -> this.mobEntityProvider.get(mobEntity)
-    );
+    return (MobEntity)
+        this.entityCache.putIfAbsent(
+            mobEntity.getUniqueID(), () -> this.mobEntityProvider.get(mobEntity));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftMobEntity(MobEntity entity) {
 
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
-      if (allEntity instanceof net.minecraft.entity.MobEntity && allEntity.getEntityId() == entity.getIdentifier()) {
+      if (allEntity instanceof net.minecraft.entity.MobEntity
+          && allEntity.getEntityId() == entity.getIdentifier()) {
         return allEntity;
       }
     }
@@ -211,20 +200,15 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ItemEntityMapper getItemEntityMapper() {
     return this.itemEntityMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PassiveEntityMapper getPassiveEntityMapper() {
     return this.passiveEntityMapper;
   }
-
 }

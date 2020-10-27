@@ -2,9 +2,7 @@ package net.flintmc.processing.autoload;
 
 import java.util.List;
 
-/**
- * Interface to create auto generated classes from to discover {@link DetectableAnnotation}.
- */
+/** Interface to create auto generated classes from to discover {@link DetectableAnnotation}. */
 public interface DetectableAnnotationProvider {
 
   /**
@@ -12,6 +10,5 @@ public interface DetectableAnnotationProvider {
    *
    * @param list List to add the detected annotation metadata to
    */
-  default void register(List<AnnotationMeta> list) {
-  }
+  default void register(List<AnnotationMeta> list) {}
 }

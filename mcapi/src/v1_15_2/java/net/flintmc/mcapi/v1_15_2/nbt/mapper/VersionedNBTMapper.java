@@ -23,14 +23,13 @@ public class VersionedNBTMapper implements NBTMapper {
     this.creator = creator;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBT fromMinecraftNBT(Object handle) {
     if (handle == null) return null;
     if (!(handle instanceof INBT)) {
-      throw new IllegalArgumentException(handle.getClass().getName() + " is not an instance of " + INBT.class.getName());
+      throw new IllegalArgumentException(
+          handle.getClass().getName() + " is not an instance of " + INBT.class.getName());
     }
 
     INBT nbt = (INBT) handle;
@@ -83,9 +82,7 @@ public class VersionedNBTMapper implements NBTMapper {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftNBT(NBT nbt) {
 

@@ -57,8 +57,12 @@ public class DefaultSelectorComponent extends DefaultChatComponent implements Se
       builder.append('[');
 
       StringBuilder optionBuilder = new StringBuilder();
-      this.options.forEach((key, value) -> optionBuilder.append(key).append('=').append(value).append(','));
-      builder.append(optionBuilder.length() == 0 ? "" : optionBuilder.substring(0, optionBuilder.length() - 1));
+      this.options.forEach(
+          (key, value) -> optionBuilder.append(key).append('=').append(value).append(','));
+      builder.append(
+          optionBuilder.length() == 0
+              ? ""
+              : optionBuilder.substring(0, optionBuilder.length() - 1));
 
       builder.append(']');
     }

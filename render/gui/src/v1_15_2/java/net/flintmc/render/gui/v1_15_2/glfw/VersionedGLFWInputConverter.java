@@ -1,120 +1,95 @@
 package net.flintmc.render.gui.v1_15_2.glfw;
 
-
+import net.flintmc.render.gui.event.input.InputState;
 import net.flintmc.render.gui.event.input.Key;
 import net.flintmc.render.gui.event.input.ModifierKey;
 import net.flintmc.render.gui.event.input.MouseButton;
-import net.flintmc.render.gui.event.input.InputState;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.EnumSet;
 import java.util.Set;
 
-/**
- * Utility class to convert GLFW constants to labyfy constants.
- */
+/** Utility class to convert GLFW constants to labyfy constants. */
 public class VersionedGLFWInputConverter {
   // Static class
   private VersionedGLFWInputConverter() {
     throw new UnsupportedOperationException("GLFWInput converter is a utility class");
-
   }
 
   /**
    * Converts a GLFW key constant to a Labyfy key.
    *
    * @param key The GLFW key constant to convert
-   * @return The converted key, or {@link Key#UNKNOWN} if the key is {@link GLFW#GLFW_KEY_UNKNOWN} or not known
+   * @return The converted key, or {@link Key#UNKNOWN} if the key is {@link GLFW#GLFW_KEY_UNKNOWN}
+   *     or not known
    */
   public static Key glfwKeyToFlintKey(int key) {
-    switch(key) {
+    switch (key) {
       case GLFW.GLFW_KEY_SPACE:
         return Key.SPACE;
-
 
       case GLFW.GLFW_KEY_APOSTROPHE:
         return Key.APOSTROPHE;
 
-
       case GLFW.GLFW_KEY_COMMA:
         return Key.COMMA;
-
 
       case GLFW.GLFW_KEY_MINUS:
         return Key.MINUS;
 
-
       case GLFW.GLFW_KEY_PERIOD:
         return Key.PERIOD;
-
 
       case GLFW.GLFW_KEY_SLASH:
         return Key.SLASH;
 
-
       case GLFW.GLFW_KEY_0:
         return Key.NUM_0;
-
 
       case GLFW.GLFW_KEY_1:
         return Key.NUM_1;
 
-
       case GLFW.GLFW_KEY_2:
         return Key.NUM_2;
-
 
       case GLFW.GLFW_KEY_3:
         return Key.NUM_3;
 
-
       case GLFW.GLFW_KEY_4:
         return Key.NUM_4;
-
 
       case GLFW.GLFW_KEY_5:
         return Key.NUM_5;
 
-
       case GLFW.GLFW_KEY_6:
         return Key.NUM_6;
-
 
       case GLFW.GLFW_KEY_7:
         return Key.NUM_7;
 
-
       case GLFW.GLFW_KEY_8:
         return Key.NUM_8;
-
 
       case GLFW.GLFW_KEY_9:
         return Key.NUM_9;
 
-
       case GLFW.GLFW_KEY_SEMICOLON:
         return Key.SEMICOLON;
-
 
       case GLFW.GLFW_KEY_EQUAL:
         return Key.EQUAL;
 
-
       case GLFW.GLFW_KEY_A:
         return Key.A;
-
 
       case GLFW.GLFW_KEY_B:
         return Key.B;
 
-
       case GLFW.GLFW_KEY_C:
         return Key.C;
 
-
       case GLFW.GLFW_KEY_D:
         return Key.D;
-
 
       case GLFW.GLFW_KEY_E:
         return Key.E;
@@ -413,7 +388,6 @@ public class VersionedGLFWInputConverter {
       case GLFW.GLFW_KEY_UNKNOWN:
       default:
         return Key.UNKNOWN;
-
     }
   }
 
@@ -426,29 +400,23 @@ public class VersionedGLFWInputConverter {
   public static Set<ModifierKey> glfwModifierToFlintModifier(int modifiers) {
     Set<ModifierKey> labyfyModifiers = EnumSet.noneOf(ModifierKey.class);
 
-
-    if((modifiers & GLFW.GLFW_MOD_SHIFT) != 0) {
+    if ((modifiers & GLFW.GLFW_MOD_SHIFT) != 0) {
       labyfyModifiers.add(ModifierKey.SHIFT);
-
     }
 
-    if((modifiers & GLFW.GLFW_MOD_CONTROL) != 0) {
+    if ((modifiers & GLFW.GLFW_MOD_CONTROL) != 0) {
       labyfyModifiers.add(ModifierKey.CONTROL);
-
     }
 
-    if((modifiers & GLFW.GLFW_MOD_ALT) != 0) {
+    if ((modifiers & GLFW.GLFW_MOD_ALT) != 0) {
       labyfyModifiers.add(ModifierKey.ALT);
-
     }
 
-    if((modifiers & GLFW.GLFW_MOD_SUPER) != 0) {
+    if ((modifiers & GLFW.GLFW_MOD_SUPER) != 0) {
       labyfyModifiers.add(ModifierKey.SUPER);
-
     }
 
     return labyfyModifiers;
-
   }
 
   /**
@@ -458,38 +426,30 @@ public class VersionedGLFWInputConverter {
    * @return The converted mouse button, or {@link MouseButton#UNKNOWN} if the button is not known.
    */
   public static MouseButton glfwMouseButtonToFlintMouseButton(int button) {
-    switch(button) {
+    switch (button) {
       case GLFW.GLFW_MOUSE_BUTTON_LEFT:
         return MouseButton.LEFT;
-
 
       case GLFW.GLFW_MOUSE_BUTTON_MIDDLE:
         return MouseButton.MIDDLE;
 
-
       case GLFW.GLFW_MOUSE_BUTTON_RIGHT:
         return MouseButton.RIGHT;
-
 
       case GLFW.GLFW_MOUSE_BUTTON_4:
         return MouseButton.EXTENDED_4;
 
-
       case GLFW.GLFW_MOUSE_BUTTON_5:
         return MouseButton.EXTENDED_5;
-
 
       case GLFW.GLFW_MOUSE_BUTTON_6:
         return MouseButton.EXTENDED_6;
 
-
       case GLFW.GLFW_MOUSE_BUTTON_7:
         return MouseButton.EXTENDED_7;
 
-
       case GLFW.GLFW_MOUSE_BUTTON_8:
         return MouseButton.EXTENDED_8;
-
 
       default:
         return MouseButton.UNKNOWN;
@@ -501,11 +461,11 @@ public class VersionedGLFWInputConverter {
    *
    * @param state The GLFW constant to convert
    * @return The converted mouse input state
-   * @throws IllegalArgumentException If {@code state} is not one of {@link GLFW#GLFW_PRESS}, {@link GLFW#GLFW_RELEASE}
-   *                                  or {@link GLFW#GLFW_REPEAT}
+   * @throws IllegalArgumentException If {@code state} is not one of {@link GLFW#GLFW_PRESS}, {@link
+   *     GLFW#GLFW_RELEASE} or {@link GLFW#GLFW_REPEAT}
    */
   public static InputState glfwActionToFlintInputState(int state) {
-    switch(state) {
+    switch (state) {
       case GLFW.GLFW_PRESS:
         return InputState.PRESS;
 

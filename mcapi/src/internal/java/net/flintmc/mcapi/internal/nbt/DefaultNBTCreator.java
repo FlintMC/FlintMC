@@ -8,9 +8,7 @@ import net.flintmc.mcapi.nbt.array.NBTByteArray;
 import net.flintmc.mcapi.nbt.array.NBTIntArray;
 import net.flintmc.mcapi.nbt.array.NBTLongArray;
 
-/**
- * Default implementation the {@link NBTCreator}.
- */
+/** Default implementation the {@link NBTCreator}. */
 @Singleton
 @Implement(NBTCreator.class)
 public class DefaultNBTCreator implements NBTCreator {
@@ -32,20 +30,19 @@ public class DefaultNBTCreator implements NBTCreator {
 
   @Inject
   private DefaultNBTCreator(
-          NBTByte.Factory nbtByteFactory,
-          NBTCompound.Factory nbtCompoundFactory,
-          NBTDouble.Factory nbtDoubleFactory,
-          NBTEnd.Factory nbtEndFactory,
-          NBTFloat.Factory nbtFloatFactory,
-          NBTInt.Factory nbtIntFactory,
-          NBTList.Factory nbtListFactory,
-          NBTLong.Factory nbtLongFactory,
-          NBTShort.Factory nbtShortFactory,
-          NBTString.Factory nbtStringFactory,
-          NBTByteArray.Factory nbtByteArrayFactory,
-          NBTIntArray.Factory nbtIntArrayFactory,
-          NBTLongArray.Factory nbtLongArrayFactory
-  ) {
+      NBTByte.Factory nbtByteFactory,
+      NBTCompound.Factory nbtCompoundFactory,
+      NBTDouble.Factory nbtDoubleFactory,
+      NBTEnd.Factory nbtEndFactory,
+      NBTFloat.Factory nbtFloatFactory,
+      NBTInt.Factory nbtIntFactory,
+      NBTList.Factory nbtListFactory,
+      NBTLong.Factory nbtLongFactory,
+      NBTShort.Factory nbtShortFactory,
+      NBTString.Factory nbtStringFactory,
+      NBTByteArray.Factory nbtByteArrayFactory,
+      NBTIntArray.Factory nbtIntArrayFactory,
+      NBTLongArray.Factory nbtLongArrayFactory) {
     this.nbtByteFactory = nbtByteFactory;
     this.nbtCompoundFactory = nbtCompoundFactory;
     this.nbtDoubleFactory = nbtDoubleFactory;
@@ -61,105 +58,79 @@ public class DefaultNBTCreator implements NBTCreator {
     this.nbtLongArrayFactory = nbtLongArrayFactory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTByte createNbtByte(byte value) {
     return this.nbtByteFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTCompound createNbtCompound() {
     return this.nbtCompoundFactory.create();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTDouble createNbtDouble(double value) {
     return this.nbtDoubleFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTEnd createNbtEnd() {
     return this.nbtEndFactory.create();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTFloat createNbtFloat(float value) {
     return this.nbtFloatFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTInt createNbtInt(int value) {
     return this.nbtIntFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTList createNbtList(int subtagIdentifier) {
     return this.nbtListFactory.create(subtagIdentifier);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTLong createNbtLong(long value) {
     return this.nbtLongFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTShort createNbtShort(short value) {
     return this.nbtShortFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTString createNbtString(String value) {
     return this.nbtStringFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTByteArray createNbtByteArray(byte[] value) {
     return this.nbtByteArrayFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTIntArray createNbtIntArray(int[] value) {
     return this.nbtIntArrayFactory.create(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTLongArray createNbtLongArray(long[] value) {
     return this.nbtLongArrayFactory.create(value);

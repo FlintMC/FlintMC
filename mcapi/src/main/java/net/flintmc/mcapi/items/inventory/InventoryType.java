@@ -1,13 +1,11 @@
 package net.flintmc.mcapi.items.inventory;
 
-import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.framework.stereotype.NameSpacedKey;
+import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.component.TextComponent;
 
-/**
- * Represents a type for the inventory.
- */
+/** Represents a type for the inventory. */
 public interface InventoryType {
 
   /**
@@ -38,9 +36,7 @@ public interface InventoryType {
    */
   boolean isCustomizableDimensions();
 
-  /**
-   * A builder class for {@link InventoryType}
-   */
+  /** A builder class for {@link InventoryType} */
   interface Builder {
 
     /**
@@ -76,22 +72,19 @@ public interface InventoryType {
 
     /**
      * Builds a new {@link InventoryType} with the parameters specified in this builder.
-     * <p>
-     * The only parameters that must be specified are {@link #registryName(NameSpacedKey)} and {@link
-     * #defaultDimension(InventoryDimension)}.
-     * <p>
-     * If no {@link #defaultTitle(ChatComponent)} has been provided, a new {@link TextComponent} will be used with the
-     * {@link #registryName(NameSpacedKey)}.
+     *
+     * <p>The only parameters that must be specified are {@link #registryName(NameSpacedKey)} and
+     * {@link #defaultDimension(InventoryDimension)}.
+     *
+     * <p>If no {@link #defaultTitle(ChatComponent)} has been provided, a new {@link TextComponent}
+     * will be used with the {@link #registryName(NameSpacedKey)}.
      *
      * @return the built inventory type.
      */
     InventoryType build();
-
   }
 
-  /**
-   * A factory class for {@link Builder}
-   */
+  /** A factory class for {@link Builder} */
   @AssistedFactory(Builder.class)
   interface Factory {
 
@@ -101,7 +94,5 @@ public interface InventoryType {
      * @return the created builder.
      */
     Builder newBuilder();
-
   }
-
 }

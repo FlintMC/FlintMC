@@ -12,7 +12,8 @@ public class DefaultSessionTokenRefreshEvent implements SessionTokenRefreshEvent
   private final String newToken;
 
   @AssistedInject
-  private DefaultSessionTokenRefreshEvent(@Assisted("previousToken") String previousToken, @Assisted("newToken") String newToken) {
+  private DefaultSessionTokenRefreshEvent(
+      @Assisted("previousToken") String previousToken, @Assisted("newToken") String newToken) {
     this.previousToken = previousToken;
     this.newToken = newToken;
   }

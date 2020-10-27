@@ -118,7 +118,10 @@ public class DefaultMethodVisitorContext extends MethodVisitor implements Method
   }
 
   public void svisitInvokeDynamicInsn(
-      String name, String descriptor, Handle bootstrapMethodHandle, Object[] bootstrapMethodArguments) {
+      String name,
+      String descriptor,
+      Handle bootstrapMethodHandle,
+      Object[] bootstrapMethodArguments) {
     super.visitInvokeDynamicInsn(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
   }
 
@@ -130,13 +133,11 @@ public class DefaultMethodVisitorContext extends MethodVisitor implements Method
     super.visitJumpInsn(opcode, label);
   }
 
-  public void svisitTableSwitchInsn(
-      int min, int max, Label dflt, Label[] labels) {
+  public void svisitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
     super.visitTableSwitchInsn(min, max, dflt, labels);
   }
 
-  public void svisitLookupSwitchInsn(
-      Label dflt, int[] keys, Label[] labels) {
+  public void svisitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
     super.visitLookupSwitchInsn(dflt, keys, labels);
   }
 
@@ -242,12 +243,17 @@ public class DefaultMethodVisitorContext extends MethodVisitor implements Method
   }
 
   public void visitInvokeDynamicInsn(
-      String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
+      String name,
+      String descriptor,
+      Handle bootstrapMethodHandle,
+      Object... bootstrapMethodArguments) {
     if (this.visitInvokeDynamicInsn != null) {
       this.visitInvokeDynamicInsn.visitInvokeDynamicInsn(
-          VisitInvokeDynamicInsn.Context.of(this, name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments));
+          VisitInvokeDynamicInsn.Context.of(
+              this, name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments));
     } else {
-      super.visitInvokeDynamicInsn(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
+      super.visitInvokeDynamicInsn(
+          name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
     }
   }
 
@@ -267,8 +273,7 @@ public class DefaultMethodVisitorContext extends MethodVisitor implements Method
     }
   }
 
-  public void visitTableSwitchInsn(
-      int min, int max, Label dflt, Label[] labels) {
+  public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
     if (this.visitTableSwitchInsn != null) {
       this.visitTableSwitchInsn.visitTableSwitchInsn(
           VisitTableSwitchInsn.Context.of(this, min, max, dflt, labels));
@@ -277,8 +282,7 @@ public class DefaultMethodVisitorContext extends MethodVisitor implements Method
     }
   }
 
-  public void visitLookupSwitchInsn(
-      Label dflt, int[] keys, Label[] labels) {
+  public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
     if (this.visitLookupSwitchInsn != null) {
       this.visitLookupSwitchInsn.visitLookupSwitchInsn(
           VisitLookupSwitchInsn.Context.of(this, dflt, keys, labels));
@@ -311,7 +315,6 @@ public class DefaultMethodVisitorContext extends MethodVisitor implements Method
       super.visitCode();
     }
   }
-
 
   public void svisitCode() {
     super.visitCode();

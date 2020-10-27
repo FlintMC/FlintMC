@@ -28,7 +28,8 @@ public class VersionedConnectedServer implements ConnectedServer {
   private final ServerAddress.Factory serverAddressFactory;
 
   @Inject
-  public VersionedConnectedServer(ServerStatusResolver statusResolver, ServerAddress.Factory serverAddressFactory) {
+  public VersionedConnectedServer(
+      ServerStatusResolver statusResolver, ServerAddress.Factory serverAddressFactory) {
     this.statusResolver = statusResolver;
     this.serverAddressFactory = serverAddressFactory;
   }
@@ -38,31 +39,26 @@ public class VersionedConnectedServer implements ConnectedServer {
     return connection != null ? connection.getNetworkManager().getRemoteAddress() : null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ServerAddress getAddress() {
     SocketAddress address = this.getRawAddress();
     if (address instanceof InetSocketAddress) {
       InetSocketAddress inetAddress = (InetSocketAddress) address;
-      return this.serverAddressFactory.create(inetAddress.getAddress().getHostAddress(), inetAddress.getPort());
+      return this.serverAddressFactory.create(
+          inetAddress.getAddress().getHostAddress(), inetAddress.getPort());
     }
 
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isConnected() {
     return this.getRawAddress() instanceof InetSocketAddress;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public CompletableFuture<ServerStatus> resolveStatus() {
     ServerAddress address = this.getAddress();
@@ -75,14 +71,15 @@ public class VersionedConnectedServer implements ConnectedServer {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void sendCustomPayload(String identifier, byte[] payload) {
     ClientPlayNetHandler handler = this.getConnection();
 
-    handler.sendPacket(new CCustomPayloadPacket(ResourceLocation.tryCreate(identifier), new PacketBuffer(Unpooled.wrappedBuffer(payload))));
+    handler.sendPacket(
+        new CCustomPayloadPacket(
+            ResourceLocation.tryCreate(identifier),
+            new PacketBuffer(Unpooled.wrappedBuffer(payload))));
   }
 
   private ClientPlayNetHandler getConnection() {
@@ -90,5 +87,4 @@ public class VersionedConnectedServer implements ConnectedServer {
     Preconditions.checkState(handler != null, "Not connected with any server");
     return handler;
   }
-
 }

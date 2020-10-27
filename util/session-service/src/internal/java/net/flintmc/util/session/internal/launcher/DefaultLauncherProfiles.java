@@ -16,8 +16,10 @@ public class DefaultLauncherProfiles implements LauncherProfiles {
   private final Collection<LauncherProfile> profiles;
 
   @AssistedInject
-  private DefaultLauncherProfiles(@Assisted("clientToken") String clientToken, @Assisted("preferredVersion") int preferredVersion,
-                                 @Assisted("profiles") Collection<LauncherProfile> profiles) {
+  private DefaultLauncherProfiles(
+      @Assisted("clientToken") String clientToken,
+      @Assisted("preferredVersion") int preferredVersion,
+      @Assisted("profiles") Collection<LauncherProfile> profiles) {
     this.clientToken = clientToken;
     this.preferredVersion = preferredVersion;
     this.profiles = profiles;

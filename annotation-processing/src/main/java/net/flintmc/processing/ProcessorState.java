@@ -18,13 +18,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * <p>
- * Representation of the internal state of the {@link FlintAnnotationProcessor} to provide a
- * more convenient interface than the java processing environment.
- * </p>
- * <p>
- * This class is a singleton.
- * </p>
+ * Representation of the internal state of the {@link FlintAnnotationProcessor} to provide a more
+ * convenient interface than the java processing environment.
+ *
+ * <p>This class is a singleton.
  */
 public class ProcessorState {
   // Singleton instance
@@ -38,8 +35,8 @@ public class ProcessorState {
   private RoundEnvironment currentRoundEnvironment;
 
   /**
-   * Constructs a new {@link ProcessorState}, setting the instance field and loading all
-   * available {@link Processor} using a {@link ServiceLoader}
+   * Constructs a new {@link ProcessorState}, setting the instance field and loading all available
+   * {@link Processor} using a {@link ServiceLoader}
    */
   public ProcessorState() {
     this.processors = new HashSet<>();
@@ -57,10 +54,11 @@ public class ProcessorState {
   }
 
   /**
-   * Called by the {@link FlintAnnotationProcessor} to set the {@link ProcessingEnvironment}. May only be
-   * called once.
+   * Called by the {@link FlintAnnotationProcessor} to set the {@link ProcessingEnvironment}. May
+   * only be called once.
    *
-   * @param processingEnvironment The processing environment used for the entire duration of processing
+   * @param processingEnvironment The processing environment used for the entire duration of
+   *     processing
    * @throws IllegalStateException If the processing environment has been set already
    */
   public void init(ProcessingEnvironment processingEnvironment) {
@@ -72,8 +70,8 @@ public class ProcessorState {
   }
 
   /**
-   * Called by the {@link FlintAnnotationProcessor} to begin a new round of processing and update the used
-   * {@link RoundEnvironment} to the new one for this round.
+   * Called by the {@link FlintAnnotationProcessor} to begin a new round of processing and update
+   * the used {@link RoundEnvironment} to the new one for this round.
    *
    * @param environment The environment used for this round
    */
@@ -82,8 +80,8 @@ public class ProcessorState {
   }
 
   /**
-   * Called by the {@link FlintAnnotationProcessor} to signal the child processors to accept the given
-   * annotation.
+   * Called by the {@link FlintAnnotationProcessor} to signal the child processors to accept the
+   * given annotation.
    *
    * @param annotation The annotation found by the {@link FlintAnnotationProcessor}
    */
@@ -92,8 +90,8 @@ public class ProcessorState {
   }
 
   /**
-   * Retrieves the processing environment, this will always be the same one for the
-   * duration of the compiler run.
+   * Retrieves the processing environment, this will always be the same one for the duration of the
+   * compiler run.
    *
    * @return The processing environment
    */
@@ -102,8 +100,8 @@ public class ProcessorState {
   }
 
   /**
-   * Retrieves the current round environment, this will change every once and then, so
-   * <b>cache the result of this method only with caution</b>!
+   * Retrieves the current round environment, this will change every once and then, so <b>cache the
+   * result of this method only with caution</b>!
    *
    * @return The current round environment
    */
@@ -112,8 +110,8 @@ public class ProcessorState {
   }
 
   /**
-   * Called by the {@link FlintAnnotationProcessor} to signal that the last round is running and everything
-   * should be finalized and written to disk.
+   * Called by the {@link FlintAnnotationProcessor} to signal that the last round is running and
+   * everything should be finalized and written to disk.
    */
   public void finish() {
     for (Processor processor : processors) {
@@ -155,12 +153,14 @@ public class ProcessorState {
               .addMethod(registerAutoLoadMethod)
               .build();
 
-      // Write the class into the net.labyfy.autogen package, the random name should ensure no collisions
+      // Write the class into the net.labyfy.autogen package, the random name should ensure no
+      // collisions
       JavaFile finishedFile = JavaFile.builder("net.labyfy.autogen", generatedType).build();
       try {
         finishedFile.writeTo(filer);
       } catch (IOException exception) {
-        throw new ProcessingException("Failed to write to final file due to IOException", exception);
+        throw new ProcessingException(
+            "Failed to write to final file due to IOException", exception);
       }
 
       // We also need to generate the service file for auto loading
@@ -170,7 +170,7 @@ public class ProcessorState {
 
       // Try to get a stream of the existing file to merge it our new class
       try (InputStream stream =
-               filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openInputStream()) {
+          filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile).openInputStream()) {
         services.addAll(IOUtils.readLines(stream, StandardCharsets.UTF_8));
       } catch (IOException ignored) {
         // File does not exist or is not readable, there is no way to check that
@@ -180,9 +180,9 @@ public class ProcessorState {
 
       // Write the merged file back to disk
       try (OutputStream stream =
-               filer
-                   .createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile)
-                   .openOutputStream()) {
+          filer
+              .createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile)
+              .openOutputStream()) {
         IOUtils.writeLines(services, System.lineSeparator(), stream, StandardCharsets.UTF_8);
       } catch (IOException exception) {
         throw new ProcessingException("Failed to update " + resourceFile, exception);

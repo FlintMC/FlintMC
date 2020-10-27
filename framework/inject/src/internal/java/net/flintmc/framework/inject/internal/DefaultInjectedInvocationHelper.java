@@ -16,46 +16,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Default implementation of the {@link InjectedInvocationHelper}.
- */
+/** Default implementation of the {@link InjectedInvocationHelper}. */
 @Singleton
 @Implement(InjectedInvocationHelper.class)
 public class DefaultInjectedInvocationHelper implements InjectedInvocationHelper {
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public <T> T invokeMethod(Method method) throws InvocationTargetException, IllegalAccessException {
+  public <T> T invokeMethod(Method method)
+      throws InvocationTargetException, IllegalAccessException {
     return this.invokeMethod(method, Maps.newHashMap());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public <T> T invokeMethod(Method method, Map<Key<?>, ?> availableArguments) throws InvocationTargetException, IllegalAccessException {
+  public <T> T invokeMethod(Method method, Map<Key<?>, ?> availableArguments)
+      throws InvocationTargetException, IllegalAccessException {
     return this.invokeMethod(
         method,
         InjectionHolder.getInjectedInstance(method.getDeclaringClass()),
         availableArguments);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public <T> T invokeMethod(Method method, Object instance) throws InvocationTargetException, IllegalAccessException {
+  public <T> T invokeMethod(Method method, Object instance)
+      throws InvocationTargetException, IllegalAccessException {
     return this.invokeMethod(method, instance, Maps.newHashMap());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
-  public <T> T invokeMethod(Method method, Object instance, Map<Key<?>, ?> availableArguments) throws InvocationTargetException, IllegalAccessException {
+  public <T> T invokeMethod(Method method, Object instance, Map<Key<?>, ?> availableArguments)
+      throws InvocationTargetException, IllegalAccessException {
     // Retrieves all dependencies required for injecting
     List<Dependency<?>> dependencies =
         InjectionPoint.forMethod(method, TypeLiteral.get(method.getDeclaringClass()))

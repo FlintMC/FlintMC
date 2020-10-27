@@ -4,8 +4,8 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import javassist.*;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.util.mappings.ClassMappingProvider;
 import net.flintmc.transform.javassist.ClassTransformContext;
+import net.flintmc.util.mappings.ClassMappingProvider;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -18,8 +18,7 @@ public class DefaultClassTransformContext implements ClassTransformContext {
 
   @AssistedInject
   private DefaultClassTransformContext(
-      ClassMappingProvider labyClassMappingProvider,
-      @Assisted CtClass ctClass) {
+      ClassMappingProvider labyClassMappingProvider, @Assisted CtClass ctClass) {
     this.labyClassMappingProvider = labyClassMappingProvider;
     this.ctClass = ctClass;
   }
@@ -106,5 +105,4 @@ public class DefaultClassTransformContext implements ClassTransformContext {
   public CtClass getCtClass() {
     return ctClass;
   }
-
 }

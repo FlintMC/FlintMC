@@ -4,33 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Formats for chat components, after a color is displayed in the legacy chat message, all formats will be reset.
+ * Formats for chat components, after a color is displayed in the legacy chat message, all formats
+ * will be reset.
  */
 public enum ChatFormat {
 
-  /**
-   * Defines that a chat component will be displayed bold.
-   */
+  /** Defines that a chat component will be displayed bold. */
   BOLD('l'),
 
-  /**
-   * Defines that a chat component will be displayed italic.
-   */
+  /** Defines that a chat component will be displayed italic. */
   ITALIC('o'),
 
-  /**
-   * Defines that a chat component will be underlined.
-   */
+  /** Defines that a chat component will be underlined. */
   UNDERLINED('n'),
 
-  /**
-   * Defines that a chat component will be crossed out.
-   */
+  /** Defines that a chat component will be crossed out. */
   STRIKETHROUGH('m'),
 
   /**
-   * Defines that a chat component will be displayed obfuscated, that means that no matter what the content of the
-   * message is, it will always display random characters. Only the length of the value matters.
+   * Defines that a chat component will be displayed obfuscated, that means that no matter what the
+   * content of the message is, it will always display random characters. Only the length of the
+   * value matters.
    */
   OBFUSCATED('k');
 

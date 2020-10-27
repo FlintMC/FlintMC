@@ -11,25 +11,27 @@ import net.flintmc.mcapi.player.type.hand.HandMapper;
 import net.flintmc.mcapi.player.type.sound.SoundMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 
-/**
- * Mapper between Minecraft entity and Labyfy entity.
- */
+/** Mapper between Minecraft entity and Labyfy entity. */
 public interface EntityFoundationMapper {
 
   /**
-   * Creates a new {@link EquipmentSlotType} by using the given Minecraft equipment slot type as the base.
+   * Creates a new {@link EquipmentSlotType} by using the given Minecraft equipment slot type as the
+   * base.
    *
    * @param handle The non-null Minecraft equipment slot type.
-   * @return The new Labyfy {@link EquipmentSlotType} or {@code null} if the given equipment slot type was invalid.
+   * @return The new Labyfy {@link EquipmentSlotType} or {@code null} if the given equipment slot
+   *     type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft equipment slot type.
    */
   EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle);
 
   /**
-   * Creates a new Minecraft equipment slot type by using the Labyfy {@link EquipmentSlotType} as the base.
+   * Creates a new Minecraft equipment slot type by using the Labyfy {@link EquipmentSlotType} as
+   * the base.
    *
    * @param equipmentSlotType The non-null Labyfy {@link EquipmentSlotType}.
-   * @return The new Minecraft equipment slot type or {@code null} if the given equipment slot type was invalid.
+   * @return The new Minecraft equipment slot type or {@code null} if the given equipment slot type
+   *     was invalid.
    */
   Object toMinecraftEquipmentSlotType(EquipmentSlotType equipmentSlotType);
 
@@ -132,5 +134,4 @@ public interface EntityFoundationMapper {
    * @return The nbt mapper.
    */
   NBTMapper getNbtMapper();
-
 }

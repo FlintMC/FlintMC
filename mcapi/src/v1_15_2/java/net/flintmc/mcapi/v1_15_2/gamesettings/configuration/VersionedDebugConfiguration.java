@@ -1,83 +1,64 @@
 package net.flintmc.mcapi.v1_15_2.gamesettings.configuration;
 
 import com.google.inject.Singleton;
-import net.flintmc.mcapi.gamesettings.configuration.DebugConfiguration;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.gamesettings.configuration.DebugConfiguration;
 import net.minecraft.client.Minecraft;
 
-/**
- * 1.15.2 implementation of {@link DebugConfiguration}.
- */
+/** 1.15.2 implementation of {@link DebugConfiguration}. */
 @Singleton
 @Implement(value = DebugConfiguration.class, version = "1.15.2")
 public class VersionedDebugConfiguration implements DebugConfiguration {
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getGlDebugVerbosity() {
     return Minecraft.getInstance().gameSettings.glDebugVerbosity;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setGlDebugVerbosity(int glDebugVerbosity) {
     Minecraft.getInstance().gameSettings.glDebugVerbosity = glDebugVerbosity;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isShowDebugInfo() {
     return Minecraft.getInstance().gameSettings.showDebugInfo;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setShowDebugInfo(boolean showDebugInfo) {
     Minecraft.getInstance().gameSettings.showDebugInfo = showDebugInfo;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isShowDebugProfilerChart() {
     return Minecraft.getInstance().gameSettings.showDebugProfilerChart;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setShowDebugProfilerChart(boolean showDebugProfilerChart) {
     Minecraft.getInstance().gameSettings.showDebugProfilerChart = showDebugProfilerChart;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isShowLagometer() {
     return Minecraft.getInstance().gameSettings.showLagometer;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setShowLagometer(boolean showLagometer) {
     Minecraft.getInstance().gameSettings.showLagometer = showLagometer;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
-
 }

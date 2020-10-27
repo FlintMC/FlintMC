@@ -10,9 +10,7 @@ import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
 import java.io.IOException;
 
-/**
- * Default implementation of the {@link NBTByte}.
- */
+/** Default implementation of the {@link NBTByte}. */
 @Implement(NBTByte.class)
 public class DefaultNBTByte implements NBTByte {
 
@@ -23,41 +21,31 @@ public class DefaultNBTByte implements NBTByte {
     this.value = value;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NBTType getIdentifier() {
     return NBTType.TAG_BYTE;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void readContents(NBTDataInputStream inputStream) throws IOException {
     this.value = inputStream.getDataInputStream().readByte();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void writeContents(NBTDataOutputStream outputStream) throws IOException {
     outputStream.getDataOutputStream().writeByte(this.value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String asString() {
     return String.valueOf(value);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public byte asByte() {
     return this.value;

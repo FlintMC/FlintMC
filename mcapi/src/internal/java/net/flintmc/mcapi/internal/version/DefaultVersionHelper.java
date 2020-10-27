@@ -8,9 +8,7 @@ import net.flintmc.mcapi.version.VersionHelper;
 
 import java.util.Map;
 
-/**
- * Default implementation of the {@link VersionHelper}.
- */
+/** Default implementation of the {@link VersionHelper}. */
 @Singleton
 @Implement(value = VersionHelper.class)
 public class DefaultVersionHelper implements VersionHelper {
@@ -26,64 +24,49 @@ public class DefaultVersionHelper implements VersionHelper {
     this.splitVersion();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getMajor() {
     return this.majorVersion;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getMinor() {
     return this.minorVersion;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getPatch() {
     return this.patchVersion;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isUnder(int minor) {
     return this.getMinor() < minor;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isUnder(int minor, int patch) {
     return this.getMinor() < minor && this.getPatch() < patch;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isUnder(int major, int minor, int patch) {
     return this.getMajor() < major && this.getMinor() < major && this.getPatch() < patch;
   }
 
-  /**
-   * Splits up the versioning of the client.
-   */
+  /** Splits up the versioning of the client. */
   private void splitVersion() {
     String version = this.getVersion();
 
     if (!version.contains(".")) {
       throw new IllegalStateException("Not valid version. (" + version + ")");
     }
-
 
     String[] split = this.getVersion().split("\\.");
 
@@ -104,13 +87,9 @@ public class DefaultVersionHelper implements VersionHelper {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getVersion() {
     return this.launchArguments.get("--game-version");
   }
-
-
 }

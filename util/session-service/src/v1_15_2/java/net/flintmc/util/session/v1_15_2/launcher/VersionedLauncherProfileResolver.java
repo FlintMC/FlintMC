@@ -16,5 +16,4 @@ public class VersionedLauncherProfileResolver extends DefaultLauncherProfileReso
   private VersionedLauncherProfileResolver(LauncherProfiles.Factory profilesFactory) {
     super(profilesFactory, () -> Minecraft.getInstance().gameDir.toPath());
   }
-
 }

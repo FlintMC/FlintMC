@@ -8,10 +8,10 @@ import javassist.CtClass;
 import javassist.bytecode.ClassFile;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
+import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.javassist.*;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
@@ -56,7 +56,8 @@ public class DefaultClassTransformService
     this.sortFactories();
   }
 
-  public ClassTransformService addClassTransformation(CtClass ctClass, Consumer<ClassTransformContext> consumer) {
+  public ClassTransformService addClassTransformation(
+      CtClass ctClass, Consumer<ClassTransformContext> consumer) {
     return this.addClassTransformation(ctClass, 0, consumer);
   }
 

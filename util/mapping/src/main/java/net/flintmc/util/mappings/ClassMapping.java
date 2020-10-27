@@ -16,11 +16,12 @@ public final class ClassMapping extends BaseMapping {
   /**
    * Construct a class mapping.
    *
-   * @param obfuscated       Whether the current environment is encrypted.
-   * @param obfuscatedName   An obfuscated name.
+   * @param obfuscated Whether the current environment is encrypted.
+   * @param obfuscatedName An obfuscated name.
    * @param deobfuscatedName A deobfuscated name.
    */
-  public ClassMapping(final boolean obfuscated, final String obfuscatedName, final String deobfuscatedName) {
+  public ClassMapping(
+      final boolean obfuscated, final String obfuscatedName, final String deobfuscatedName) {
     super(obfuscated, obfuscatedName, deobfuscatedName);
   }
 
@@ -88,7 +89,7 @@ public final class ClassMapping extends BaseMapping {
   /**
    * Get a method by name and parameters.
    *
-   * @param name       A method name.
+   * @param name A method name.
    * @param parameters Method parameters.
    * @return A method mapping or null.
    */
@@ -100,7 +101,7 @@ public final class ClassMapping extends BaseMapping {
   /**
    * Get a method by name and parameters.
    *
-   * @param name       A method name.
+   * @param name A method name.
    * @param parameters Method parameters.
    * @return A method mapping or null.
    */
@@ -112,7 +113,8 @@ public final class ClassMapping extends BaseMapping {
   /**
    * Get a metrhod by the explicit identifier
    *
-   * @param identifier the identifier of the method. Must have the format {methodName}({parameter types})
+   * @param identifier the identifier of the method. Must have the format {methodName}({parameter
+   *     types})
    * @return the target method or null
    */
   public MethodMapping getMethodByIdentifier(String identifier) {

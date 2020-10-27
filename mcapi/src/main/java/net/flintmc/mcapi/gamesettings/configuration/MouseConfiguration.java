@@ -1,8 +1,6 @@
 package net.flintmc.mcapi.gamesettings.configuration;
 
-/**
- * Represents the mouse configuration.
- */
+/** Represents the mouse configuration. */
 public interface MouseConfiguration {
 
   /**
@@ -88,5 +86,4 @@ public interface MouseConfiguration {
    * @param touchscreen The new state for the touchscreen mode.
    */
   void setTouchscreen(boolean touchscreen);
-
 }
