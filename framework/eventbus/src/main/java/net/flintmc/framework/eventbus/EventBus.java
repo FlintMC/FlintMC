@@ -3,7 +3,7 @@ package net.flintmc.framework.eventbus;
 import com.google.common.collect.Multimap;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
-import net.labyfy.component.transform.hook.Hook;
+import net.flintmc.transform.hook.Hook;
 
 /** The EventBus manages all methods with the {@link Subscribe} annotation in the project. */
 public interface EventBus {

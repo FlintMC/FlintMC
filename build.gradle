@@ -37,7 +37,7 @@ labyfy {
     projectFilter { !["annotation-processing", "autoload"].contains(it.name) }
     publishToken 'NzQzMjZkYTljMmU3NzlmMDU2NDQ3NTkz'
     runs{
-        overrideMainClass 'net.labyfy.component.launcher.LabyLauncher'
+        overrideMainClass 'net.flintmc.launcher.LabyLauncher'
     }
 }
 
@@ -142,7 +142,7 @@ allprojects {
         jar {
             manifest {
                 attributes(
-                        'Implementation-Title' : 'labyfy',
+                        'Implementation-Title' : 'flint',
                         'Implementation-Version' : fixedVersion,
                         'Implementation-Vendor' : 'labymedia',
                         'Build-Timestamp' : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),

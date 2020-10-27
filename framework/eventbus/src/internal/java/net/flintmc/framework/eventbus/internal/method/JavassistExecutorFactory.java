@@ -10,10 +10,10 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.eventbus.method.Executor;
-import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.logging.InjectLogger;
-import net.labyfy.component.launcher.LaunchController;
-import net.labyfy.component.transform.javassist.ClassTransformService;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.launcher.LaunchController;
+import net.flintmc.transform.javassist.ClassTransformService;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Modifier;

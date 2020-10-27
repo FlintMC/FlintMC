@@ -8,9 +8,9 @@ import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.Executor;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
-import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.stereotype.service.CtResolver;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.stereotype.service.CtResolver;
 
 import java.util.function.Supplier;
 

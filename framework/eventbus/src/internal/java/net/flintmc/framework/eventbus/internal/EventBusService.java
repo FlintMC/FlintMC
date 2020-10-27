@@ -14,9 +14,9 @@ import net.flintmc.framework.eventbus.method.Executor;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.MethodIdentifier;
-import net.labyfy.component.stereotype.service.Service;
-import net.labyfy.component.stereotype.service.ServiceHandler;
-import net.labyfy.component.stereotype.service.ServiceNotFoundException;
+import net.flintmc.framework.stereotype.service.Service;
+import net.flintmc.framework.stereotype.service.ServiceHandler;
+import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;

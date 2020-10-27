@@ -6,7 +6,7 @@ import javassist.CtMethod;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.EventPriority;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.util.function.Supplier;
 
@@ -54,7 +54,7 @@ public interface SubscribeMethod {
      * @param priority The priority of the subscribed method.
      * @param phase The phase of the subscribed method.
      * @param ctClass The owner of the event method.
-     * @param executor The event executor.
+     * @param executorSupplier Supplier for the event executor.
      * @param eventMethod The subscribed method.
      * @return A created subscribed method.
      */

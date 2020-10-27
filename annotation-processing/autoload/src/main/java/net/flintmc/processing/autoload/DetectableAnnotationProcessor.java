@@ -6,8 +6,8 @@ import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import net.labyfy.component.commons.annotation.AnnotationMirrorUtil;
-import net.labyfy.component.commons.util.Pair;
+import net.flintmc.util.commons.annotation.AnnotationMirrorUtil;
+import net.flintmc.util.commons.Pair;
 import net.flintmc.processing.Processor;
 import net.flintmc.processing.ProcessorState;
 

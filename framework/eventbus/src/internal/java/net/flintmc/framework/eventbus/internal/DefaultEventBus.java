@@ -8,8 +8,8 @@ import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
-import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.logging.InjectLogger;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
