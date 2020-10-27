@@ -8,7 +8,6 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    maven { url 'https://libraries.minecraft.net' }
 }
 
 labyfy {
@@ -21,10 +20,12 @@ dependencies {
     internalAnnotationProcessor project(':annotation-processing:autoload')
     v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
 
-    api project(':framework:framework-stereotype')
     api project(':framework:framework-inject')
-    api project(':mcapi')
+    api project(':framework:framework-eventbus')
+    api project(':framework:framework-stereotype')
+    api project(':framework:framework-tasks')
+    api project(':transform:transform-hook')
     api project(':transform:transform-shadow')
 
-    api group: 'com.mojang', name: 'authlib', version: '1.6.25'
+    api "com.google.code.gson:gson:2.8.6"
 }

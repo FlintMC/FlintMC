@@ -30,9 +30,6 @@ findProject(':render:gui')?.name = 'render-gui'
 include 'transform:hook'
 findProject(':transform:hook')?.name = 'transform-hook'
 
-include 'mcapi:resources'
-findProject(':mcapi:resources')?.name = 'mcapi-resources'
-
 include 'framework:packages'
 findProject(':framework:packages')?.name = 'framework-packages'
 
@@ -80,41 +77,26 @@ findProject(':util:csv')?.name = 'util-csv'
 include 'framework:inject-primitive'
 findProject(':framework:inject-primitive')?.name = 'framework-inject-primitive'
 
+include 'mcapi'
+findProject(':mcapi')?.name = 'mcapi'
+
 include 'util:i18n'
 findProject(':util:i18n')?.name = 'util-i18n'
 
 include 'render:gui:webgui'
 findProject(':render:gui:webgui')?.name = 'render-webgui'
 
-include 'mcapi:chat'
-findProject(':mcapi:chat')?.name = 'mcapi-chat'
-
 include 'framework:eventbus'
 findProject(':framework:eventbus')?.name = 'framework-eventbus'
 
-include 'mcapi:server'
-findProject(':mcapi:server')?.name = 'mcapi-server'
-
-include 'mcapi:items'
-findProject(':mcapi:items')?.name = 'mcapi-items'
-
-include 'mcapi:world'
-findProject(':mcapi:world')?.name = 'mcapi-world'
-
 include 'transform:shadow'
 findProject(':transform:shadow')?.name = 'transform-shadow'
-
-include 'mcapi:game-settings'
-findProject(':mcapi:game-settings')?.name = "mcapi-game-settings"
 
 include 'render:shader'
 findProject(':render:shader')?.name = 'render-shader'
 
 include 'render:vbo-rendering'
 findProject(':render:vbo-rendering')?.name = 'render-vbo-rendering'
-
-include 'mcapi:nbt'
-findProject(':mcapi:nbt')?.name = "mcapi-nbt"
 
 include 'util:session-service'
 findProject(':util:session-service')?.name = 'util-session-service'

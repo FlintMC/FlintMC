@@ -22,7 +22,7 @@ dependencies {
 
     api project(':framework:framework-stereotype')
     api project(':framework:framework-inject')
-    api project(':mcapi:mcapi-resources')
+    api project(':mcapi')
     api project(':transform:transform-javassist')
     api project(':transform:transform-hook')
     api project(':render:render-shader')
@@ -32,7 +32,7 @@ dependencies {
 
     labyfy project(':framework:framework-stereotype')
     labyfy project(':framework:framework-inject')
-    labyfy project(':mcapi:mcapi-resources')
+    labyfy project(':mcapi')
     labyfy project(':transform:transform-javassist')
     labyfy project(':transform:transform-hook')
     labyfy project(':render:render-shader')
