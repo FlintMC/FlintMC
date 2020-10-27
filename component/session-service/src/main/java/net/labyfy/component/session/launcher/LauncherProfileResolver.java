@@ -1,5 +1,6 @@
 package net.labyfy.component.session.launcher;
 
+import javassist.CtClass;
 import net.labyfy.component.session.launcher.serializer.LauncherProfileSerializer;
 import net.labyfy.component.session.launcher.serializer.ProfileSerializerVersion;
 
@@ -15,15 +16,15 @@ public interface LauncherProfileResolver {
    * called by {@link #loadProfiles()} and {@link #storeProfiles(LauncherProfiles)} if the version in the {@link
    * LauncherProfiles} matches the version of this serializer.
    *
-   * @param version    The version of the serializer
-   * @param serializer The non-null serializer which should be called
+   * @param version         The version of the serializer
+   * @param serializerClass The non-null class of the serializer which should be called
    * @throws IllegalArgumentException If a serializer for the given version is already registered
    */
-  void registerSerializer(int version, LauncherProfileSerializer serializer);
+  void registerSerializer(int version, CtClass serializerClass);
 
   /**
-   * Retrieves the serializer from the given version which has been registered via {@link #registerSerializer(int,
-   * LauncherProfileSerializer)} or the {@link ProfileSerializerVersion} annotation.
+   * Retrieves the serializer from the given version which has been registered via {@link #registerSerializer(int, CtClass)} )}
+   * or the {@link ProfileSerializerVersion} annotation.
    *
    * @param version The version of the serializer
    * @return The serializer or {@code null} if no serializer for the given version has been registered

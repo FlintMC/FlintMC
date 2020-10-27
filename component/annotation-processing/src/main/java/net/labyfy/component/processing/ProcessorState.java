@@ -138,7 +138,7 @@ public class ProcessorState {
 
       // Generate a class with a random name to avoid collisions
       String generatedClassName =
-          "AutoLoadProvider"
+          processor.getGeneratedClassSuperClass().simpleName()
               + Math.abs(System.nanoTime())
               + "_"
               + System.currentTimeMillis()

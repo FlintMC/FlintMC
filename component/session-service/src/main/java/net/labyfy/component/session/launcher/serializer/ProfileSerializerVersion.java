@@ -1,7 +1,6 @@
 package net.labyfy.component.session.launcher.serializer;
 
-import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,8 +13,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Identifier
-@Transitive
+@DetectableAnnotation
 public @interface ProfileSerializerVersion {
 
   /**

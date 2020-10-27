@@ -1,6 +1,6 @@
 package net.labyfy.component.stereotype.type;
 
-import javax.inject.Singleton;
+import com.google.inject.Singleton;
 
 @Singleton
 public class DefaultTypeNameResolver implements TypeNameResolver {

@@ -96,10 +96,9 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
      */
     @Override
     public String getDescription() {
-      // TODO: Internationalization.
       return this.description != null
           ? this.description
-          : "i18n:labyfy:packages.generic.description";
+          : "labyfy."+ this.name  +".packages.generic.description";
     }
 
     /**

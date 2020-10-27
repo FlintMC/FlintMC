@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.eventbus.EventBus;
-import net.labyfy.component.eventbus.event.filter.EventFilter;
+import net.labyfy.component.eventbus.event.Event;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.method.SubscribeMethod;
 import net.labyfy.component.inject.implement.Implement;
@@ -16,40 +16,33 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Default implementation of the {@link EventBus}.
- */
+/** Default implementation of the {@link EventBus}. */
 @Singleton
 @Implement(EventBus.class)
 public class DefaultEventBus implements EventBus {
 
   private final Logger logger;
-  private final EventFilter eventFilter;
-  private final Multimap<Class<?>, SubscribeMethod> subscribeMethods;
+  private final Multimap<String, SubscribeMethod> subscribeMethods;
 
   @Inject
-  private DefaultEventBus(@InjectLogger Logger logger, EventFilter eventFilter) {
+  private DefaultEventBus(@InjectLogger Logger logger) {
     this.logger = logger;
-    this.eventFilter = eventFilter;
     this.subscribeMethods = HashMultimap.create();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public <E> E fireEvent(E event, Subscribe.Phase phase) {
-    if (event == null) throw new NullPointerException("An error is occurred because the event is null");
+    if (event == null)
+      throw new NullPointerException("An error is occurred because the event is null");
 
     this.postEvent(event, phase);
     return event;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public Multimap<Class<?>, SubscribeMethod> getSubscribeMethods() {
+  public Multimap<String, SubscribeMethod> getSubscribeMethods() {
     return this.subscribeMethods;
   }
 
@@ -63,10 +56,10 @@ public class DefaultEventBus implements EventBus {
     List<SubscribeMethod> methods = new ArrayList<>();
     Class<?> currentClass = eventClass;
 
-    do {
-      this.copyMethods(currentClass, methods);
-      this.searchInterfaces(eventClass, methods);
-    } while ((currentClass = currentClass.getSuperclass()) != Object.class || currentClass.getInterfaces().length != 0);
+    while (Event.class.isAssignableFrom(currentClass)) {
+      this.searchInterfaces(currentClass, methods);
+      currentClass = currentClass.getSuperclass();
+    }
 
     methods.sort(Comparator.comparingInt(SubscribeMethod::getPriority));
 
@@ -74,15 +67,17 @@ public class DefaultEventBus implements EventBus {
   }
 
   private void searchInterfaces(Class<?> interfaceClass, List<SubscribeMethod> targetMethods) {
-    this.copyMethods(interfaceClass, targetMethods);
+    if (Event.class.isAssignableFrom(interfaceClass)) {
+      this.copyMethods(interfaceClass, targetMethods);
 
-    for (Class<?> implemented : interfaceClass.getInterfaces()) {
-      this.searchInterfaces(implemented, targetMethods);
+      for (Class<?> implemented : interfaceClass.getInterfaces()) {
+        this.searchInterfaces(implemented, targetMethods);
+      }
     }
   }
 
   private void copyMethods(Class<?> eventClass, List<SubscribeMethod> targetMethods) {
-    for (SubscribeMethod subscribeMethod : this.subscribeMethods.get(eventClass)) {
+    for (SubscribeMethod subscribeMethod : this.subscribeMethods.get(eventClass.getName())) {
       if (!targetMethods.contains(subscribeMethod)) {
         targetMethods.add(subscribeMethod);
       }
@@ -94,7 +89,7 @@ public class DefaultEventBus implements EventBus {
    *
    * @param event The event to fire.
    * @param phase The phase when the event is fired.
-   * @param <E>   The event type.
+   * @param <E> The event type.
    */
   private <E> void postEvent(E event, Subscribe.Phase phase) {
     List<SubscribeMethod> methods = this.findMethods(event.getClass());
@@ -103,11 +98,8 @@ public class DefaultEventBus implements EventBus {
     }
 
     for (SubscribeMethod method : methods) {
-      if ((method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase()) &&
-              this.eventFilter.matches(event, method)) {
-
+      if (method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase() || phase == Subscribe.Phase.ANY) {
         this.fireLast(event, method);
-
       }
     }
   }
@@ -115,17 +107,20 @@ public class DefaultEventBus implements EventBus {
   /**
    * Invokes the subscribed method.
    *
-   * @param event  The fired event.
+   * @param event The fired event.
    * @param method The subscribed method.
-   * @param <E>    The event type.
+   * @param <E> The event type.
    */
   private <E> void fireLast(E event, SubscribeMethod method) {
     try {
       method.invoke(event);
     } catch (Throwable throwable) {
-      this.logger.error("Error while posting event " + event.getClass().getName()
-          + " to method " + method.getEventMethod(), throwable);
+      this.logger.error(
+          "Error while posting event "
+              + event.getClass().getName()
+              + " to method "
+              + method.getEventMethod(),
+          throwable);
     }
   }
-
 }

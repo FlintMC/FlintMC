@@ -1,6 +1,6 @@
 package net.labyfy.component.world.border;
 
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
 
 /**
  * Represents the Minecraft world border.

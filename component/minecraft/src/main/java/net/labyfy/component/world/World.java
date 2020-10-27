@@ -1,11 +1,14 @@
 package net.labyfy.component.world;
 
+import net.labyfy.component.tileentity.TileEntity;
 import net.labyfy.component.world.border.WorldBorder;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.labyfy.component.world.difficult.DifficultyLocal;
-import net.labyfy.component.world.util.BlockPosition;
+import net.labyfy.component.world.math.BlockPosition;
+import net.labyfy.component.world.scoreboad.Scoreboard;
 import net.labyfy.component.world.util.Dimension;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -201,6 +204,28 @@ public interface World {
    * @return The world dimension.
    */
   Dimension getDimension();
+
+  /**
+   * Retrieves the world scoreboard.
+   *
+   * @return The world scoreboard.
+   */
+  Scoreboard getScoreboard();
+
+  /**
+   * Retrieves a tile entity at the given block position.
+   *
+   * @param blockPosition The block position.
+   * @return A tile entity at the given block position or {@code null}.
+   */
+  TileEntity getTileEntity(BlockPosition blockPosition);
+
+  /**
+   * Retrieves a collection with all loaded tile entities.
+   *
+   * @return A collection with all loaded tile entities.
+   */
+  List<TileEntity> getLoadedTileEntities();
 
   /**
    * Creates a new Minecraft block pos by using the given {@link BlockPosition} as the base.

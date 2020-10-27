@@ -7,32 +7,32 @@ import net.labyfy.chat.component.ChatComponent;
  */
 public interface TabOverlay {
 
-    /**
-     * Retrieves the header of this player.
-     *
-     * @return The header of this player
-     */
-    ChatComponent getHeader() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
+  /**
+   * Retrieves the header of this player.
+   *
+   * @return The header of this player
+   */
+  ChatComponent getHeader();
 
-    /**
-     * Updates the header of this player.
-     *
-     * @param header The new header content
-     */
-    void updateHeader(ChatComponent header);
+  /**
+   * Updates the header of this player.
+   *
+   * @param header The new header content
+   */
+  void updateHeader(ChatComponent header);
 
-    /**
-     * Retrieves the footer of this player.
-     *
-     * @return The footer of this player.
-     */
-    ChatComponent getFooter() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
+  /**
+   * Retrieves the footer of this player.
+   *
+   * @return The footer of this player.
+   */
+  ChatComponent getFooter();
 
-    /**
-     * Updates the footer of this player.
-     *
-     * @param footer The new footer content
-     */
-    void updateFooter(ChatComponent footer);
+  /**
+   * Updates the footer of this player.
+   *
+   * @param footer The new footer content
+   */
+  void updateFooter(ChatComponent footer);
 
 }

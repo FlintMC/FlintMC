@@ -1,25 +1,55 @@
 package net.labyfy.component.player;
 
+import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.entity.type.EntityType;
+import net.labyfy.component.inject.assisted.AssistedFactory;
+
 /**
- * Represents a remote client player
+ * Represents the remote client player.
  */
-public interface RemoteClientPlayer<T> extends Player<T> {
+public interface RemoteClientPlayer extends PlayerEntity, BaseClientPlayer {
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  default boolean isSpectator() {
+    return false;
+  }
+
+  /**
+   * A factory class for the {@link RemoteClientPlayer}.
+   */
+  @AssistedFactory(RemoteClientPlayer.class)
+  interface Factory {
 
     /**
-     * A factory class for {@link RemoteClientPlayer}
+     * Creates a new {@link RemoteClientPlayer} with the given parameters.
      *
-     * @param <T> The type of this player
+     * @param entity     The non-null Minecraft entity.
+     * @param entityType The entity type.
+     * @return A created {@link RemoteClientPlayer}.
      */
-    interface Factory<T> {
+    RemoteClientPlayer create(
+            @Assisted("entity") Object entity,
+            @Assisted("entityType") EntityType entityType
+    );
 
-        /**
-         * Creates a new {@link RemoteClientPlayer} with the given type.
-         *
-         * @param player A type to create this player.
-         * @return A created remote client player
-         */
-        RemoteClientPlayer create(T player);
+  }
 
-    }
+  /**
+   * Service interface for creating {@link RemoteClientPlayer}'s.
+   */
+  interface Provider {
+
+    /**
+     * Creates a new {@link RemoteClientPlayer} with the given parameter.
+     *
+     * @param entity The non-null Minecraft entity.
+     * @return A created {@link RemoteClientPlayer}.
+     */
+    RemoteClientPlayer get(Object entity);
+
+  }
 
 }

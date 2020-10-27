@@ -5,7 +5,7 @@ package net.labyfy.component.gui.screen;
  */
 public interface BuiltinScreenDisplayer {
   /**
-   * Tests wether this screen displayer is capable of displaying the given screen
+   * Tests whether this screen displayer is capable of displaying the given screen
    *
    * @param screenName The name of the screen to display
    * @return {@code true} if the displayer supports the screen, {@code false} otherwise

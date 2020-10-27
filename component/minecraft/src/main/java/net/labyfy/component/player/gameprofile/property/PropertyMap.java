@@ -1,42 +1,45 @@
 package net.labyfy.component.player.gameprofile.property;
 
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
-
-import java.util.Map;
-import java.util.Set;
+import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.inject.assisted.AssistedFactory;
 
 /**
  * Represents the properties of a game profile.
  */
-public interface PropertyMap {
+public interface PropertyMap extends Multimap<String, Property> {
+
+  /**
+   * A json serializer and deserializer of {@link PropertyMap}
+   */
+  interface Serializer extends JsonSerializer<PropertyMap>, JsonDeserializer<PropertyMap> {
+
+  }
+
+  /**
+   * A factory class for the {@link PropertyMap}.
+   */
+  @AssistedFactory(PropertyMap.class)
+  interface Factory {
 
     /**
-     * Associates the specified value with the specified key in this map
+     * Creates a new {@link PropertyMap}.
      *
-     * @param key      The key with which the specified value is to be associated
-     * @param property The property to be associated with the specified key
-     * @return The property to which the specified key is mapped, or {@code null} if this map contains no mapping for the key
+     * @return A created property map.
      */
-    Property put(String key, Property property);
+    PropertyMap create();
 
     /**
-     * Removes all  of this mappings from this map. The map will be empty after this call returns
-     */
-    void clear();
-
-    /**
-     * Retrieves the properties of the game profile
+     * Creates a new {@link PropertyMap} with the given {@link Multimap}.
      *
-     * @return The properties
+     * @param properties The multimap for the property map.
+     * @return A created property map.
      */
-    Map<String, Set<Property>> getProperties();
+    PropertyMap create(@Assisted("properties") Multimap<String, Property> properties);
 
-    /**
-     * A json serializer and deserializer of {@link PropertyMap}
-     */
-    interface Serializer extends JsonSerializer<PropertyMap>, JsonDeserializer<PropertyMap> {
+  }
 
-    }
 
 }

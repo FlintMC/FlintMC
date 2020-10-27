@@ -14,10 +14,9 @@ public class VanillaRenderCancellation {
   }
 
   /**
-   * Constructs a new {@link VanillaRenderCancellation} which cancellation depends on the
-   * given parameter.
+   * Constructs a new {@link VanillaRenderCancellation} which cancellation depends on the given parameter.
    *
-   * @param isCancelled Wether the execution has been cancelled already
+   * @param isCancelled Whether the execution has been cancelled already
    */
   public VanillaRenderCancellation(boolean isCancelled) {
     this.shouldCancel = isCancelled;
@@ -31,7 +30,7 @@ public class VanillaRenderCancellation {
   }
 
   /**
-   * Determines wether the cancellation has been signaled
+   * Determines whether the cancellation has been signaled
    *
    * @return {@code true} if the cancellation has been signaled, {@code false} otherwise
    */

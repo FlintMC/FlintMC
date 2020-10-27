@@ -1,7 +1,7 @@
 package net.labyfy.component.transform.shadow;
 
-import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
+
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,8 +23,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Identifier(requireParent = true)
-@Transitive
+@DetectableAnnotation(requiresParent = true)
 public @interface FieldSetter {
 
   String value();

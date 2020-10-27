@@ -1,12 +1,12 @@
 package net.labyfy.component.render.vbo.v1_15_2;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.render.vbo.VertexAttribute;
 import net.labyfy.component.render.vbo.VertexFormat;
 import net.labyfy.component.render.vbo.VertexFormatBuilder;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -123,6 +123,7 @@ gradle-app.setting
 .idea/modules/
 src/main/resources/
 src/test/
+**/src/main/generated/*
 
 versioned/*/Labyfy
 .idea/intellij-javadocs-4.0.1.xml

@@ -1,8 +1,8 @@
 package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.component.config.annotation.Implemented;
-import net.labyfy.component.player.util.Hand;
-import net.labyfy.component.player.util.PlayerClothing;
+import net.labyfy.component.player.type.hand.Hand;
+import net.labyfy.component.player.type.model.PlayerClothing;
 
 import java.util.Set;
 

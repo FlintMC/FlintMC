@@ -1,15 +1,13 @@
 package net.labyfy.component.transform.shadow;
 
-import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Transitive
-@Identifier(requireParent = true)
 @Repeatable(FieldCreates.class)
+@DetectableAnnotation(requiresParent = true)
 public @interface FieldCreate {
   String name();
 

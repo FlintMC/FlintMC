@@ -11,9 +11,10 @@ repositories {
 dependencies {
     annotationProcessor group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
 
+    api group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
     api project(':component:annotation-processing')
     api project(':component:commons')
-    api group: 'com.squareup', name: 'javapoet', version: '1.12.1'
+    api group: 'com.squareup', name: 'javapoet', version: 'latest.integration'
     api group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     api group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
 }

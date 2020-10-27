@@ -1,12 +1,10 @@
 package net.labyfy.component.world.scoreboad;
 
 import net.labyfy.chat.component.ChatComponent;
-import net.labyfy.component.player.Player;
 import net.labyfy.component.world.scoreboad.score.Criteria;
 import net.labyfy.component.world.scoreboad.score.Objective;
 import net.labyfy.component.world.scoreboad.score.PlayerTeam;
 import net.labyfy.component.world.scoreboad.score.Score;
-import net.labyfy.component.world.scoreboad.team.Team;
 import net.labyfy.component.world.scoreboad.type.RenderType;
 
 import java.util.Collection;

@@ -1,7 +1,10 @@
 package net.labyfy.component.commons.annotation;
 
+import com.google.auto.common.SimpleAnnotationMirror;
+
 import javax.lang.model.element.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for working with annotations.
@@ -27,6 +30,27 @@ public class AnnotationMirrorUtil {
     }
 
     throw new IllegalArgumentException("Type not annotated with requested annotation");
+  }
+
+  /**
+   * Searches the given type element for an annotation of the given
+   * type and returns its {@link AnnotationMirror}.
+   *
+   * @param element   The element to search for the given annotation
+   * @param className The class name of the annotation to find
+   * @return The annotation mirror of the found annotation or null
+   */
+  public static AnnotationMirror getAnnotationMirror(Element element, TypeElement annotationType) {
+    for (AnnotationMirror targetMirror : element.getAnnotationMirrors()) {
+      if (targetMirror.getAnnotationType().asElement().equals(annotationType)) {
+        return SimpleAnnotationMirror.of(annotationType, getElementValuesByName(targetMirror));
+      }
+    }
+    return null;
+  }
+
+  public static Map<String, AnnotationValue> getElementValuesByName(AnnotationMirror annotationMirror) {
+    return annotationMirror.getElementValues().entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getSimpleName().toString(), Map.Entry::getValue));
   }
 
   /**

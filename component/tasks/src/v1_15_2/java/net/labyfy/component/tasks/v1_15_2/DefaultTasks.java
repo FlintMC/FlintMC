@@ -1,21 +1,18 @@
 package net.labyfy.component.tasks.v1_15_2;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.component.mappings.ClassMappingProvider;
-import net.labyfy.component.processing.autoload.AutoLoad;
 import net.labyfy.component.tasks.TaskExecutionException;
 import net.labyfy.component.tasks.TaskExecutor;
 import net.labyfy.component.tasks.Tasks;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 @Singleton
-@AutoLoad
 public class DefaultTasks {
 
   private final ClassMappingProvider classMappingProvider;
