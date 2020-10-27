@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 
-group 'net.labyfy'
+group 'net.flintmc'
 
 buildscript {
     def versionFile = file(".dev-version")

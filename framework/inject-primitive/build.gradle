@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy.component'
+group 'net.flintmc'
 
 repositories {
     mavenCentral()

@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy'
+group 'net.flintmc'
 
 sourceCompatibility = 1.8
 
@@ -17,20 +17,20 @@ dependencies {
     annotationProcessor project(':annotation-processing:autoload')
     internalAnnotationProcessor project(':annotation-processing:autoload')
 
-    api project(':component:commons')
-    api project(':component:stereotype')
-    api project(':component:inject')
-    internalImplementation project(':component:tasks')
-    internalImplementation project(':component:service')
-    internalImplementation project(path: ':component:inject', configuration: 'internal')
-    internalImplementation project(path: ':component:stereotype', configuration: 'internal')
+    api project(':util:util-commons')
+    api project(':framework:framework-stereotype')
+    api project(':framework:framework-inject')
+    internalImplementation project(':framework:framework-tasks')
+    internalImplementation project(':framework:framework-service')
+    internalImplementation project(path: ':framework:framework-inject', configuration: 'internal')
+    internalImplementation project(path: ':framework:framework-stereotype', configuration: 'internal')
     internalImplementation 'com.google.code.gson:gson:2.8.6'
 
-    labyfy project(':component:commons')
-    labyfy project(':component:stereotype')
-    labyfy project(':component:service')
-    labyfy project(':component:inject')
-    labyfy project(path: ':component:inject', configuration: 'internal')
-    labyfy project(path: ':component:stereotype', configuration: 'internal')
+    labyfy project(':util:util-commons')
+    labyfy project(':framework:framework-stereotype')
+    labyfy project(':framework:framework-service')
+    labyfy project(':framework:framework-inject')
+    labyfy project(path: ':framework:framework-inject', configuration: 'internal')
+    labyfy project(path: ':framework:framework-stereotype', configuration: 'internal')
     labyfy 'com.google.code.gson:gson:2.8.6'
 }

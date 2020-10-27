@@ -1,0 +1,44 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc'
+
+repositories {
+    mavenCentral()
+}
+
+labyfy{
+}
+
+dependencies {
+    annotationProcessor project(':annotation-processing:autoload')
+    api project(':framework:framework-service')
+    api project(':util:util-mapping')
+    api project(':transform:transform-exceptions')
+    api project(':framework:framework-tasks')
+    api project(':framework:framework-packages')
+
+    api 'org.ow2.asm:asm:7.2-beta'
+    api 'org.ow2.asm:asm-tree:7.2-beta'
+    api 'org.ow2.asm:asm-commons:7.2-beta'
+    api group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+
+    labyfy project(':framework:framework-service')
+    labyfy project(':util:util-mapping')
+    labyfy project(':transform:transform-exceptions')
+    labyfy 'org.ow2.asm:asm:7.2-beta'
+    labyfy 'org.ow2.asm:asm-tree:7.2-beta'
+    labyfy 'org.ow2.asm:asm-commons:7.2-beta'
+    labyfy group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+}
+
+processResources {
+    doLast {
+        def resourcesDir = new File(sourceSets.main.output.resourcesDir, "META-INF/services")
+        resourcesDir.mkdirs()
+
+        def content = "net.labyfy.component.transform.launchplugin.LabyfyLauncherPlugin"
+        new File(resourcesDir, "net.labyfy.component.launcher.service.LauncherPlugin").text = content
+    }
+}

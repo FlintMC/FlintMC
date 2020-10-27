@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy.component'
+group 'net.flintmc'
 
 repositories {
     mavenCentral()
@@ -12,13 +12,13 @@ labyfy{
 }
 
 dependencies {
-    api project(':component:transform:exceptions')
+    api project(':transform:transform-exceptions')
     api group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
     api group: 'com.beust', name: 'jcommander', version: '1.78'
     api 'io.sentry:sentry-log4j2:1.7.30'
     runtime group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.1'
 
-    labyfy project(':component:transform:exceptions')
+    labyfy project(':transform:transform-exceptions')
     labyfy group: 'org.apache.logging.log4j', name: 'log4j-labyfy', version: '2.8.1'
     labyfy group: 'com.beust', name: 'jcommander', version: '1.78'
     labyfy 'io.sentry:sentry-log4j2:1.7.30'

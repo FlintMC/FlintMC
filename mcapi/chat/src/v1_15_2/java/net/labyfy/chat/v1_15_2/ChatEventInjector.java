@@ -7,7 +7,7 @@ import net.labyfy.chat.MinecraftComponentMapper;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.event.ChatReceiveEvent;
 import net.labyfy.chat.event.ChatSendEvent;
-import net.labyfy.component.eventbus.EventBus;
+import net.flintmc.framework.eventbus.EventBus;
 import net.labyfy.component.stereotype.type.Type;
 import net.labyfy.component.transform.hook.Hook;
 import net.minecraft.util.text.ITextComponent;

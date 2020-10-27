@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy.component'
+group 'net.flintmc'
 
 sourceCompatibility = 1.8
 
@@ -21,9 +21,9 @@ dependencies {
     v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
     v1_16_3AnnotationProcessor project(':annotation-processing:autoload')
 
-    api project(':component:stereotype')
-    api project(':component:inject')
-    api project(':component:minecraft')
-    api project(':component:chat')
-    api project(':component:transform:shadow')
+    api project(':framework:framework-stereotype')
+    api project(':framework:framework-inject')
+    api project(':mcapi:mcapi-world')
+    api project(':mcapi:mcapi-chat')
+    api project(':transform:transform-shadow')
 }

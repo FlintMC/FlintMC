@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy.component'
+group 'net.flintmc'
 
 repositories {
     mavenCentral()
@@ -14,7 +14,7 @@ labyfy{
 dependencies {
     annotationProcessor project(':annotation-processing:autoload')
 
-    api project(':component:inject')
+    api project(':framework:framework-inject')
 
-    labyfy project(':component:inject')
+    labyfy project(':framework:framework-inject')
 }

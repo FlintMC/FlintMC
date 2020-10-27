@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy.component'
+group 'net.flintmc'
 
 sourceCompatibility = 1.8
 
@@ -19,7 +19,7 @@ dependencies {
     annotationProcessor project(':annotation-processing:autoload')
     internalAnnotationProcessor project(':annotation-processing:autoload')
 
-    api project(':component:inject')
-    api project(':component:transform:hook')
+    api project(':framework:framework-inject')
+    api project(':transform:transform-hook')
 
 }

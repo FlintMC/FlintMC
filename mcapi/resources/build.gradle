@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy.component'
+group 'net.flintmc'
 
 sourceCompatibility = 1.8
 
@@ -19,13 +19,13 @@ dependencies {
     internalAnnotationProcessor project(':annotation-processing:autoload')
     v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
 
-    api project(':component:inject')
-    v1_15_2Implementation project(path: ':component:inject', configuration: 'internal')
-    v1_15_2Implementation project(':component:tasks')
+    api project(':framework:framework-inject')
+    v1_15_2Implementation project(path: ':framework:framework-inject', configuration: 'internal')
+    v1_15_2Implementation project(':framework:framework-tasks')
 
-    api project(':component:eventbus')
+    api project(':framework:framework-eventbus')
 
-    labyfy project(':component:inject')
-    labyfy project(path: ':component:inject', configuration: 'internal')
-    labyfy project(':component:tasks')
+    labyfy project(':framework:framework-inject')
+    labyfy project(path: ':framework:framework-inject', configuration: 'internal')
+    labyfy project(':framework:framework-tasks')
 }

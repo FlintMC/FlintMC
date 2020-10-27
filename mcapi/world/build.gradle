@@ -1,0 +1,34 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+labyfy {
+    projectFilter { true }
+    minecraftVersions '1.15.2'
+}
+
+dependencies {
+    annotationProcessor project(':annotation-processing:autoload')
+    internalAnnotationProcessor project(':annotation-processing:autoload')
+    v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
+
+    api project(':mcapi:mcapi-chat')
+    api project(':mcapi:mcapi-items')
+    api project(':framework:framework-inject')
+    api project(':mcapi:mcapi-nbt')
+    api project(':mcapi:mcapi-resources')
+    api project(':framework:framework-stereotype')
+    api project(':framework:framework-tasks')
+    api project(':transform:transform-hook')
+    api project(':transform:transform-shadow')
+
+    api "com.google.code.gson:gson:2.8.6"
+}

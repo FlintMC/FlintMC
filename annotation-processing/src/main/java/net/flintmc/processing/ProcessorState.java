@@ -176,7 +176,7 @@ public class ProcessorState {
         // File does not exist or is not readable, there is no way to check that
       }
 
-      services.add("net.labyfy.autogen." + generatedClassName);
+      services.add("net.flintmc.autogen." + generatedClassName);
 
       // Write the merged file back to disk
       try (OutputStream stream =

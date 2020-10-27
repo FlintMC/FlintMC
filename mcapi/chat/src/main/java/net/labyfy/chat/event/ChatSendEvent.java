@@ -1,13 +1,14 @@
 package net.labyfy.chat.event;
 
 import com.google.inject.assistedinject.Assisted;
-import net.labyfy.component.eventbus.event.Cancellable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.Cancellable;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 /**
  * This event will be fired whenever a message will be sent to the server (e.g. by typing it in the
  * chat box), it supports both PRE and POST {@link
- * net.labyfy.component.eventbus.event.subscribe.Subscribe.Phase}s but the cancellation will be
+ * Subscribe.Phase}s but the cancellation will be
  * ignored in the POST phase. If this event has been cancelled in the PRE phase, the message won't
  * be sent to the server anymore.
  */

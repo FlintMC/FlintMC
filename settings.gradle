@@ -1,52 +1,52 @@
-rootProject.name = 'labyfy'
+rootProject.name = 'flint'
 
-include 'component:transform:exceptions'
-findProject(':component:transform:exceptions')?.name = "exceptions"
+include 'transform:exceptions'
+findProject(':transform:exceptions')?.name = "transform-exceptions"
 
-include 'component:transform:javassist'
-findProject(':component:transform:javassist')?.name = "javassist"
+include 'transform:javassist'
+findProject(':transform:javassist')?.name = "transform-javassist"
 
-include 'component:tasks'
-findProject(':component::tasks')?.name = 'tasks'
+include 'framework:tasks'
+findProject(':framework:tasks')?.name = 'framework-tasks'
 
-include 'component:stereotype'
-findProject(':component:stereotype')?.name = "stereotype"
+include 'framework:stereotype'
+findProject(':framework:stereotype')?.name = "framework-stereotype"
 
-include 'component:transform:minecraft'
-findProject(':component:transform:minecraft')?.name = 'minecraft'
+include 'transform:minecraft'
+findProject(':transform:minecraft')?.name = 'transform-minecraft'
 
-include 'component:mapping'
-findProject(':component:mapping')?.name = 'mapping'
+include 'util:mapping'
+findProject(':util:mapping')?.name = 'util-mapping'
 
-include 'component:inject'
-findProject(':component:inject')?.name = 'inject'
+include 'framework:inject'
+findProject(':framework:inject')?.name = 'framework-inject'
 
-include 'component:transform:asm'
-findProject(':component:transform:asm')?.name = 'asm'
+include 'transform:asm'
+findProject(':transform:asm')?.name = 'transform-asm'
 
-include 'component:gui'
-findProject(':component:gui')?.name = 'gui'
+include 'render:gui'
+findProject(':render:gui')?.name = 'render-gui'
 
-include 'component:transform:hook'
-findProject(':component:transform:hook')?.name = 'hook'
+include 'transform:hook'
+findProject(':transform:hook')?.name = 'transform-hook'
 
-include 'component:resources'
-findProject(':component:resources')?.name = 'resources'
+include 'mcapi:resources'
+findProject(':mcapi:resources')?.name = 'mcapi-resources'
 
-include 'component:packages'
-findProject(':component:packages')?.name = 'packages'
+include 'framework:packages'
+findProject(':framework:packages')?.name = 'framework-packages'
 
-include 'component:launcher'
-findProject(':component:launcher')?.name = 'launcher'
+include 'launcher'
+findProject(':launcher')?.name = 'launcher'
 
-include 'component:transform:launcher-plugin'
-findProject(':component:transform:launch-plugin')?.name = 'launcher-plugin'
+include 'transform:launcher-plugin'
+findProject(':transform:launcher-plugin')?.name = 'transform-launcher-plugin'
 
 include 'annotation-processing'
 findProject(':annotation-processing')?.name = 'annotation-processing'
 
-include 'component:transform:minecraft-obfuscator'
-findProject(':component:transform:minecraft-obfuscator')?.name = 'minecraft-obfuscator'
+include 'transform:minecraft-obfuscator'
+findProject(':transform:minecraft-obfuscator')?.name = 'transform-minecraft-obfuscator'
 
 include 'annotation-processing:autoload'
 findProject(':annotation-processing:autoload')?.name = 'autoload'
@@ -68,59 +68,53 @@ buildCache {
     }
 }
 
-include 'component:service'
-findProject(':component:service')?.name = 'service'
+include 'framework:service'
+findProject(':framework:service')?.name = 'framework-service'
 
-include 'component:commons'
-findProject(':component:commons')?.name = 'commons'
+include 'util:commons'
+findProject(':util:commons')?.name = 'util-commons'
 
-include 'component:csv'
-findProject(':component:csv')?.name = 'csv'
+include 'util:csv'
+findProject(':util:csv')?.name = 'util-csv'
 
-include ':component:inject-primitive'
-findProject(':component:inject-primitive')?.name = 'inject-primitive'
+include 'framework:inject-primitive'
+findProject(':framework:inject-primitive')?.name = 'framework-inject-primitive'
 
-include 'component:i18n'
-findProject(':component:i18n')?.name = 'i18n'
+include 'util:i18n'
+findProject(':util:i18n')?.name = 'util-i18n'
 
-include 'component:gui:webgui'
-findProject(':component:gui:webgui')?.name = 'webgui'
+include 'render:gui:webgui'
+findProject(':render:gui:webgui')?.name = 'render-webgui'
 
-include ':component:render'
-findProject(':component:render')?.name = 'render'
+include 'mcapi:chat'
+findProject(':mcapi:chat')?.name = 'mcapi-chat'
 
-include 'component:chat'
-findProject(':component:chat')?.name = 'chat'
+include 'framework:eventbus'
+findProject(':framework:eventbus')?.name = 'framework-eventbus'
 
-include 'component:eventbus'
-findProject(':component:eventbus')?.name = 'eventbus'
+include 'mcapi:server'
+findProject(':mcapi:server')?.name = 'mcapi-server'
 
-include 'component:server'
-findProject(':component:server')?.name = 'server'
+include 'mcapi:items'
+findProject(':mcapi:items')?.name = 'mcapi-items'
 
-include 'component:items'
-findProject(':component:items')?.name = 'items'
+include 'mcapi:world'
+findProject(':mcapi:world')?.name = 'mcapi-world'
 
-include 'component:minecraft'
-findProject(':component:minecraft')?.name = 'minecraft'
+include 'transform:shadow'
+findProject(':transform:shadow')?.name = 'transform-shadow'
 
-include 'component:transform:shadow'
-findProject(':component:transform:shadow')?.name = 'shadow'
+include 'mcapi:game-settings'
+findProject(':mcapi:game-settings')?.name = "mcapi-game-settings"
 
-include 'component:configuration:game-settings'
-findProject(':component:configuration:game-settings')?.name = "game-settings"
+include 'render:shader'
+findProject(':render:shader')?.name = 'render-shader'
 
-include 'component:render:shader'
-findProject(':component:render:shader')?.name = 'shader'
+include 'render:vbo-rendering'
+findProject(':render:vbo-rendering')?.name = 'render-vbo-rendering'
 
-include 'component:render:vbo-rendering'
-findProject(':component:render:vbo-rendering')?.name = 'vbo-rendering'
+include 'mcapi:nbt'
+findProject(':mcapi:nbt')?.name = "mcapi-nbt"
 
-include 'component:nbt'
-findProject(':component:nbt')?.name = "nbt"
-
-include 'component:render:shader'
-findProject(':component:render:shader')?.name = 'shader'
-
-include 'component:session-service'
-findProject(':component:session-service')?.name = 'session-service'
+include 'util:session-service'
+findProject(':util:session-service')?.name = 'util-session-service'

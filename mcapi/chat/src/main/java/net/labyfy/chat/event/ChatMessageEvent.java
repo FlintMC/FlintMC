@@ -1,6 +1,6 @@
 package net.labyfy.chat.event;
 
-import net.labyfy.component.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.Event;
 
 /**
  * The base event for sending/receiving messages in the chat.

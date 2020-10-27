@@ -2,8 +2,8 @@ package net.labyfy.internal.component.resources.v1_15_2.pack;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.component.eventbus.EventBus;
-import net.labyfy.component.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.resources.pack.ResourcePackReloadEvent;
 import net.labyfy.component.tasks.Task;
 import net.labyfy.component.tasks.Tasks;

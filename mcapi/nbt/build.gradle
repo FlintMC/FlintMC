@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.labyfy.component'
+group 'net.flintmc'
 
 sourceCompatibility = 1.8
 
@@ -20,11 +20,11 @@ dependencies {
     internalAnnotationProcessor project(':annotation-processing:autoload')
     v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
 
-    api project(':component:chat')
-    api project(':component:inject')
-    api project(':component:stereotype')
-    api project(':component:tasks')
-    api project(':component:transform:hook')
+    api project(':mcapi:mcapi-chat')
+    api project(':framework:framework-inject')
+    api project(':framework:framework-stereotype')
+    api project(':framework:framework-tasks')
+    api project(':transform:transform-hook')
 
     api "com.google.code.gson:gson:2.8.6"
 }

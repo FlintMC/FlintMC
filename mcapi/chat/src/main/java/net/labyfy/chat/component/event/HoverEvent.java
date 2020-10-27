@@ -4,7 +4,7 @@ import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.chat.component.event.content.HoverContent;
 import net.labyfy.chat.component.event.content.HoverEntity;
 import net.labyfy.chat.component.event.content.HoverText;
-import net.labyfy.component.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.Event;
 
 import java.util.UUID;
 
