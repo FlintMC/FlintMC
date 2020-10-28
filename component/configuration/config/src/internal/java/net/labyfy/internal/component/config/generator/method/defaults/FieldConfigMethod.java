@@ -7,15 +7,15 @@ import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.internal.component.config.generator.method.DefaultConfigMethod;
 
 public abstract class FieldConfigMethod extends DefaultConfigMethod {
-  public FieldConfigMethod(CtClass declaringClass, String configName, CtClass returnType) {
-    super(declaringClass, configName, returnType);
+  public FieldConfigMethod(GeneratingConfig config, CtClass declaringClass, String configName, CtClass returnType) {
+    super(config, declaringClass, configName, returnType);
   }
 
-  protected CtField generateOrGetField(CtClass target, GeneratingConfig config) throws CannotCompileException {
-    return this.generateOrGetField(target, config, null);
+  protected CtField generateOrGetField(CtClass target) throws CannotCompileException {
+    return this.generateOrGetField(target, null);
   }
 
-  protected CtField generateOrGetField(CtClass target, GeneratingConfig config, String defaultValue) throws CannotCompileException {
+  protected CtField generateOrGetField(CtClass target, String defaultValue) throws CannotCompileException {
     try {
       return target.getDeclaredField(this.configName);
     } catch (NotFoundException ignored) {
@@ -24,7 +24,7 @@ public abstract class FieldConfigMethod extends DefaultConfigMethod {
     String fieldSrc = "private " + this.methodType.getName() + " " + this.configName;
 
     if (defaultValue == null && this.methodType.isInterface() && !super.isSerializableInterface()) {
-      CtClass implementation = config.getGeneratedImplementation(this.methodType.getName());
+      CtClass implementation = super.config.getGeneratedImplementation(this.methodType.getName());
 
       if (implementation != null) {
         fieldSrc += " = new " + implementation.getName() + "(this.config)";
@@ -52,7 +52,25 @@ public abstract class FieldConfigMethod extends DefaultConfigMethod {
   }
 
   protected void insertSaveConfig(CtMethod method) throws CannotCompileException {
-    method.insertAfter("this.configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);");
+    CtClass declaring = method.getDeclaringClass();
+
+    try {
+      declaring.getField("config");
+    } catch (NotFoundException e) {
+      String configInterfaceName = super.getConfig().getBaseClass().getName();
+      String configGetter = super.getConfig().getBaseClass().subclassOf(declaring)
+          ? "this"
+          : InjectionHolder.class.getName() + ".getInjectedInstance(" + configInterfaceName + ".class)";
+
+      declaring.addField(CtField.make("private final transient " + configInterfaceName + " config = " + configGetter + ";", declaring));
+    }
+
+    String src = "this.configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);";
+    if (method.getMethodInfo().getCodeAttribute() != null) {
+      method.insertAfter(src);
+    } else {
+      method.setBody(src);
+    }
   }
 
 }

@@ -3,10 +3,10 @@ package net.labyfy.internal.component.gamesettings.v1_15_2.configuration;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.chat.Keybind;
-import net.labyfy.component.gamesettings.KeyBindMappings;
+import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.gamesettings.KeyBinding;
 import net.labyfy.component.gamesettings.configuration.KeyBindingConfiguration;
-import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.settings.options.keybind.PhysicalKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * 1.15.2 implementation of {@link KeyBindingConfiguration}.
  */
 @Singleton
-@Implement(value = KeyBindingConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = KeyBindingConfiguration.class, version = "1.15.2")
 public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration {
 
   private final KeyBinding.Factory keyBindingFactory;
@@ -128,10 +128,10 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
    * {@inheritDoc}
    */
   @Override
-  public void setKeyBindingCode(KeyBinding bindingCode, KeyBindMappings keyInputName) {
+  public void setKeyBindingCode(KeyBinding bindingCode, PhysicalKey keyInputName) {
     Minecraft.getInstance().gameSettings.setKeyBindingCode(
-            this.toMinecraftObject(bindingCode),
-            InputMappings.getInputByCode(keyInputName.getKey(), keyInputName.getScanCode())
+        this.toMinecraftObject(bindingCode),
+        InputMappings.getInputByCode(keyInputName.getKey(), keyInputName.getScanCode())
     );
   }
 

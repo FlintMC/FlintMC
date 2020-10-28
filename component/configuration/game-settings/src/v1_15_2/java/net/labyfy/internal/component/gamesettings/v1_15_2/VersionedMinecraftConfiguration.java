@@ -2,9 +2,9 @@ package net.labyfy.internal.component.gamesettings.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.gamesettings.MinecraftConfiguration;
 import net.labyfy.component.gamesettings.configuration.*;
-import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.world.difficult.Difficulty;
 import net.minecraft.client.Minecraft;
 
@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
  * 1.15.2 implementation of {@link MinecraftConfiguration}.
  */
 @Singleton
-@Implement(value = MinecraftConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = MinecraftConfiguration.class, version = "1.15.2")
 public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
 
   private final AccessibilityConfiguration accessibilityConfiguration;
@@ -83,10 +83,10 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
   /**
    * {@inheritDoc}
    */
-  @Override
+  /*@Override
   public KeyBindingConfiguration getKeyBindingConfiguration() {
     return this.keyBindingConfiguration;
-  }
+  }*/
 
   /**
    * {@inheritDoc}

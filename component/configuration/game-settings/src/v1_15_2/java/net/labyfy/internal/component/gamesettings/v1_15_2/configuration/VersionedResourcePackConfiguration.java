@@ -1,8 +1,8 @@
 package net.labyfy.internal.component.gamesettings.v1_15_2.configuration;
 
 import com.google.inject.Singleton;
+import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.gamesettings.configuration.ResourcePackConfiguration;
-import net.labyfy.component.inject.implement.Implement;
 import net.minecraft.client.Minecraft;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * 1.15.2 implementation of {@link ResourcePackConfiguration}.
  */
 @Singleton
-@Implement(value = ResourcePackConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = ResourcePackConfiguration.class, version = "1.15.2")
 public class VersionedResourcePackConfiguration implements ResourcePackConfiguration {
 
   /**

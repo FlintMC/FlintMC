@@ -2,9 +2,9 @@ package net.labyfy.internal.component.gamesettings.v1_15_2;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.KeyBinding;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.settings.options.keybind.PhysicalKey;
 import net.minecraft.client.util.InputMappings;
 
 /**
@@ -31,8 +31,8 @@ public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBindin
   }
 
   @Override
-  public void bind(KeyBindMappings keyBind) {
-    this.bind(InputMappings.getInputByName(keyBind.getConfigurationName()));
+  public void bind(PhysicalKey key) {
+    this.bind(InputMappings.getInputByName(key.getConfigurationName()));
   }
 
 }

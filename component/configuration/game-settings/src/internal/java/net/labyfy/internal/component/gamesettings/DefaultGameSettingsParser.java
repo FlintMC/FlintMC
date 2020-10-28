@@ -6,9 +6,9 @@ import com.google.inject.Singleton;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.gamesettings.GameSettingsParser;
-import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.event.ConfigurationEvent;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.settings.options.keybind.PhysicalKey;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -54,7 +54,7 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
     for (Map.Entry<String, String> entry : configurations.entrySet()) {
       if (entry.getKey().startsWith("key")) {
 
-        int key = KeyBindMappings.getScanCode(entry.getValue());
+        int key = PhysicalKey.getScanCode(entry.getValue());
 
         if (key != -1) {
           configurations.put(entry.getKey(), String.valueOf(key));

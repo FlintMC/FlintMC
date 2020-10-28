@@ -1,15 +1,15 @@
 package net.labyfy.internal.component.gamesettings.v1_15_2.configuration;
 
 import com.google.inject.Singleton;
+import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.gamesettings.configuration.DebugConfiguration;
-import net.labyfy.component.inject.implement.Implement;
 import net.minecraft.client.Minecraft;
 
 /**
  * 1.15.2 implementation of {@link DebugConfiguration}.
  */
 @Singleton
-@Implement(value = DebugConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = DebugConfiguration.class, version = "1.15.2")
 public class VersionedDebugConfiguration implements DebugConfiguration {
 
   /**

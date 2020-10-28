@@ -1,11 +1,21 @@
 package net.labyfy.component.gamesettings.configuration;
 
-import net.labyfy.component.config.annotation.Implemented;
+import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
+import net.labyfy.component.settings.annotation.Component;
+import net.labyfy.component.settings.annotation.ui.DefineCategory;
 
 /**
  * Represents the mouse configuration.
  */
-@Implemented
+@DefineCategory(
+    name = "minecraft.settings.mouse",
+    displayName = @Component(value = "minecraft.settings.mouse.display", translate = true),
+    description = @Component(value = "minecraft.settings.mouse.description", translate = true)
+)
+@ImplementedConfig
+
+// TODO add settings annotations
+
 public interface MouseConfiguration {
 
   /**

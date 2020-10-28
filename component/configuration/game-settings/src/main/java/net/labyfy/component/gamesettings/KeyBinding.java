@@ -2,6 +2,7 @@ package net.labyfy.component.gamesettings;
 
 import com.google.inject.assistedinject.Assisted;
 import net.labyfy.component.inject.assisted.AssistedFactory;
+import net.labyfy.component.settings.options.keybind.PhysicalKey;
 
 /**
  * Represents a key binding.
@@ -46,9 +47,9 @@ public interface KeyBinding {
   /**
    * Binds the key binding to a key.
    *
-   * @param keyBind The new key for the binding.
+   * @param key The new key for the binding.
    */
-  void bind(KeyBindMappings keyBind);
+  void bind(PhysicalKey key);
 
   /**
    * Whether the key binding is invalid.

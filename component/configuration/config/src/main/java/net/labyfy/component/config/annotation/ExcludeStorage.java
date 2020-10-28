@@ -1,8 +1,6 @@
 package net.labyfy.component.config.annotation;
 
 import net.labyfy.component.config.storage.ConfigStorage;
-import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,8 +17,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-@Identifier
-@Transitive
 public @interface ExcludeStorage {
 
   /**

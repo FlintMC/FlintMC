@@ -1,15 +1,26 @@
 package net.labyfy.component.gamesettings.configuration;
 
-import net.labyfy.component.config.annotation.Implemented;
+import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.model.PlayerClothing;
+import net.labyfy.component.settings.annotation.Component;
+import net.labyfy.component.settings.annotation.ui.DefineCategory;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Represents the skin configuration.
  */
-@Implemented
+@DefineCategory(
+    name = "minecraft.settings.skin",
+    displayName = @Component(value = "minecraft.settings.skin.display", translate = true),
+    description = @Component(value = "minecraft.settings.skin.description", translate = true)
+)
+@ImplementedConfig
+
+// TODO add settings annotations
+
 public interface SkinConfiguration {
 
   /**
@@ -32,6 +43,9 @@ public interface SkinConfiguration {
    * @return A collection with all player clothing.
    */
   Set<PlayerClothing> getPlayerClothing();
+  // TODO for booleans like the one in setModelClothingEnabled(PlayerClothing,boolean), a set should also work instead of the map below
+
+  Map<PlayerClothing, Boolean> getAllModelClothingEnabled();
 
   /**
    * Changes the state of the player clothing.
@@ -40,6 +54,10 @@ public interface SkinConfiguration {
    * @param state    {@code true} if the clothing should be enabled, otherwise {@code false}.
    */
   void setModelClothingEnabled(PlayerClothing clothing, boolean state);
+
+  void setAllModelClothingEnabled(Map<PlayerClothing, Boolean> map);
+
+  boolean isModelClothingEnabled(PlayerClothing clothing);
 
   /**
    * Switches the state of the given player clothing.

@@ -1,11 +1,11 @@
 package net.labyfy.component.config.annotation;
 
+import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.config.storage.ConfigStorage;
 import net.labyfy.component.config.storage.ConfigStorageProvider;
-import net.labyfy.component.stereotype.annotation.Transitive;
-import net.labyfy.component.stereotype.identifier.Identifier;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,18 +19,18 @@ import java.util.Map;
  * <p> <br>
  * Every config will automatically be read from the {@link ConfigStorageProvider} on start.
  * <p>
- * The implemented configs can always be casted to {@link ParsedConfig} which gains access to all references that will
- * be stored.
+ * The implemented config can always be casted to {@link ParsedConfig} which gains access to all references that will be
+ * stored.
  * <p>
  * The storages can be specified with the {@link IncludeStorage} and {@link ExcludeStorage} annotations, see {@link
  * ConfigObjectReference#appliesTo(ConfigStorage)} for more information.
  *
  * <br> <br>
  * If you don't want a config to be auto-generated and instead use an object from the injector, you can add {@link
- * Implemented @Implemented} to every interface within this config. Then the class that has been bound to the annotated
- * interface in the injector will be modified and methods to write the config on modification will be added. For this to
- * work, all the following methods are REQUIRED and NOT OPTIONAL because it is the only way to get all values to store
- * in the storages.
+ * ImplementedConfig @Implemented} to every interface within this config. Then the class that has been bound to the
+ * annotated interface in the injector will be modified and methods to write the config on modification will be added.
+ * For this to work, all the following methods are REQUIRED and NOT OPTIONAL because it is the only way to get all
+ * values to store in the storages.
  * <p>
  * There are several methods that CAN (any method is optional, if the config is automatically generated, more
  * information in the paragraph above) be used in a config interface:
@@ -81,14 +81,10 @@ import java.util.Map;
  * setters both need to return void.
  * </li>
  * </ul>
- * <p>
- * Any interface that is linked in this config by any of the methods above will be implemented with the {@link
- * ParsedConfig}, even with the {@link Implemented} annotation.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Identifier
-@Transitive
+@DetectableAnnotation
 public @interface Config {
 
 }

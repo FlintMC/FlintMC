@@ -1,13 +1,23 @@
 package net.labyfy.component.gamesettings.configuration;
 
-import net.labyfy.component.config.annotation.Implemented;
+import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
+import net.labyfy.component.settings.annotation.Component;
+import net.labyfy.component.settings.annotation.ui.DefineCategory;
 
 import java.util.List;
 
 /**
  * Represents the resource pack configuration.
  */
-@Implemented
+@DefineCategory(
+    name = "minecraft.settings.resourcepacks",
+    displayName = @Component(value = "minecraft.settings.resourcepacks.display", translate = true),
+    description = @Component(value = "minecraft.settings.resourcepacks.description", translate = true)
+)
+@ImplementedConfig
+
+// TODO add settings annotations
+
 public interface ResourcePackConfiguration {
 
   /**

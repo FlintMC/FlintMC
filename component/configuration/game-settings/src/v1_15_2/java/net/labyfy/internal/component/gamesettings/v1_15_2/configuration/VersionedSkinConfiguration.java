@@ -1,14 +1,16 @@
 package net.labyfy.internal.component.gamesettings.v1_15_2.configuration;
 
 import com.google.inject.Singleton;
+import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.gamesettings.configuration.SkinConfiguration;
-import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.model.PlayerClothing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.util.HandSide;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,8 +18,10 @@ import java.util.stream.Collectors;
  * 1.15.2 implementation of {@link SkinConfiguration}.
  */
 @Singleton
-@Implement(value = SkinConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = SkinConfiguration.class, version = "1.15.2")
 public class VersionedSkinConfiguration implements SkinConfiguration {
+
+  private static final PlayerClothing[] CLOTHINGS = PlayerClothing.values();
 
   /**
    * {@inheritDoc}
@@ -25,10 +29,21 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
   @Override
   public Set<PlayerClothing> getPlayerClothing() {
     return Minecraft.getInstance().gameSettings
-            .getModelParts()
-            .stream()
-            .map(this::fromMinecraftObject)
-            .collect(Collectors.toSet());
+        .getModelParts()
+        .stream()
+        .map(this::fromMinecraftObject)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Map<PlayerClothing, Boolean> getAllModelClothingEnabled() {
+    Map<PlayerClothing, Boolean> map = new HashMap<>();
+
+    for (PlayerClothing clothing : CLOTHINGS) {
+      map.put(clothing, this.isModelClothingEnabled(clothing));
+    }
+
+    return map;
   }
 
   /**
@@ -38,6 +53,23 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
   public void setModelClothingEnabled(PlayerClothing clothing, boolean enable) {
     Minecraft.getInstance().gameSettings.setModelPartEnabled(this.toMinecraftObject(clothing), enable);
     Minecraft.getInstance().gameSettings.saveOptions();
+  }
+
+  @Override
+  public void setAllModelClothingEnabled(Map<PlayerClothing, Boolean> map) {
+    map.forEach(this::setModelClothingEnabled);
+  }
+
+  @Override
+  public boolean isModelClothingEnabled(PlayerClothing clothing) {
+    PlayerModelPart targetPart = this.toMinecraftObject(clothing);
+    for (PlayerModelPart part : Minecraft.getInstance().gameSettings.getModelParts()) {
+      if (part == targetPart) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

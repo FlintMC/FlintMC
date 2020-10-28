@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.gamesettings.GameSettingsParser;
-import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.MinecraftConfiguration;
 import net.labyfy.component.gamesettings.frontend.FrontendOption;
 import net.labyfy.component.gamesettings.frontend.FrontendSliderOption;
@@ -16,6 +15,7 @@ import net.labyfy.component.gamesettings.frontend.OptionsSerializer;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.type.hand.Hand;
+import net.labyfy.component.settings.options.keybind.PhysicalKey;
 import net.labyfy.component.version.VersionHelper;
 import net.labyfy.component.world.difficult.Difficulty;
 
@@ -119,7 +119,7 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
             // When the minor version is under 13 replaces
             // the configuration names to the scan codes
             if (this.versionHelper.isUnder(13)) {
-              value = String.valueOf(KeyBindMappings.getScanCode(value));
+              value = String.valueOf(PhysicalKey.getScanCode(value));
             }
 
             configurations.put("key_key." + elementEntry.getKey(), value);
@@ -418,7 +418,7 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
 
         try {
           int key = Integer.parseInt(entry.getValue());
-          String name = KeyBindMappings.getConfigurationName(key);
+          String name = PhysicalKey.getConfigurationName(key);
           configurations.put(entry.getKey(), name);
         } catch (NumberFormatException ignored) {
 

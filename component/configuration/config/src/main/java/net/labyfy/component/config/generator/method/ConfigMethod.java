@@ -25,6 +25,13 @@ public interface ConfigMethod {
   CtClass getDeclaringClass();
 
   /**
+   * Retrieves the config where this method
+   *
+   * @return
+   */
+  GeneratingConfig getConfig();
+
+  /**
    * Retrieves the name as which this method will be stored in the config (only the ending of it). The prefix to the
    * entry in the config is defined with {@link #getPathPrefix()}. This is parsed from the specific type of method in
    * {@link ConfigMethodResolver#resolveMethods(GeneratingConfig)}, so for example 'getX' would be 'X', see {@link
@@ -83,10 +90,9 @@ public interface ConfigMethod {
    * <p>
    * If the classes are already defined in the {@link GeneratingConfig}, the implementations will be used for the Type.
    *
-   * @param config The non-null config which contains this method
    * @return The non-null type for serialization
    */
-  Type getSerializedType(GeneratingConfig config);
+  Type getSerializedType();
 
   /**
    * Retrieves the path prefix to be used in the config.
@@ -128,22 +134,20 @@ public interface ConfigMethod {
    * generated, but it doesn't affect other methods.
    *
    * @param target The non-null class where the methods and the field should be generated
-   * @param config The non-null config with all information about the implementations
    * @throws CannotCompileException If an internal error occurred while generating the code, should basically never
    *                                happen
    */
-  void generateMethods(CtClass target, GeneratingConfig config) throws CannotCompileException;
+  void generateMethods(CtClass target) throws CannotCompileException;
 
   /**
    * Adds the {@link ConfigStorageProvider#write(ParsedConfig)} call to every setter method.
    *
    * @param target The non-null class where the methods and the field should be generated
-   * @param config The non-null config with all information about the implementations
    * @throws CannotCompileException If an internal error occurred while generating the code, should basically never
    *                                happen
    * @throws NotFoundException      If any of the methods in {@link #getMethodNames()} don't exist, they cannot be
    *                                generated because we don't know the implementation
    */
-  void implementExistingMethods(CtClass target, GeneratingConfig config) throws CannotCompileException, NotFoundException;
+  void implementExistingMethods(CtClass target) throws CannotCompileException, NotFoundException;
 
 }

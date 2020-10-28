@@ -35,20 +35,22 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     // all methods that need to be invoked to get to the actual getter/setter method
     CtMethod[] methodPath;
     CtClass declaringClass;
+    // the class which contains the method.getMethodNames()
+    CtClass mainClass;
+
     try {
       methodPath = this.asMethods(config, method.getPathPrefix());
       declaringClass = methodPath.length == 0 ? method.getDeclaringClass() : methodPath[methodPath.length - 1].getReturnType();
+      mainClass = methodPath.length == 0 ? config.getBaseClass() : methodPath[methodPath.length - 1].getReturnType();
     } catch (NotFoundException e) {
       throw new RuntimeException("Failed to generate the references for the config " + config.getBaseClass().getName(), e);
     }
 
-    // the class which contains the possibleMethodNames
-    CtClass mainClass = methodPath.length > 0 ? methodPath[methodPath.length - 1].getDeclaringClass() : config.getBaseClass();
     // all methods that belong to this group (e.g. setNAME, getNAME, getNAMEAll)
     Collection<CtMethod> allMethods = new HashSet<>(Arrays.asList(methodPath));
 
-    for (String methodName : method.getMethodNames()) {
-      for (CtMethod ctMethod : mainClass.getMethods()) {
+    for (CtMethod ctMethod : mainClass.getMethods()) {
+      for (String methodName : method.getMethodNames()) {
         if (ctMethod.getName().equals(methodName)) {
           allMethods.add(ctMethod);
         }
@@ -67,7 +69,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
         methodPath, allMethods.toArray(new CtMethod[0]),
         getter, setter,
         this.implementationGenerator.getClassLoader(),
-        method.getSerializedType(config)
+        method.getSerializedType()
     );
   }
 

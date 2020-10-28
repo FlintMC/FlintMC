@@ -11,8 +11,8 @@ import java.lang.reflect.Type;
 
 public class ConfigGetterSetter extends FieldConfigMethod {
 
-  public ConfigGetterSetter(CtClass declaringClass, String name, CtClass methodType) {
-    super(declaringClass, name, methodType);
+  public ConfigGetterSetter(GeneratingConfig config, CtClass declaringClass, String name, CtClass methodType) {
+    super(config, declaringClass, name, methodType);
   }
 
   @Override
@@ -39,14 +39,14 @@ public class ConfigGetterSetter extends FieldConfigMethod {
   }
 
   @Override
-  public Type getSerializedType(GeneratingConfig config) {
-    return super.loadImplementationOrDefault(super.getStoredType(), config);
+  public Type getSerializedType() {
+    return super.loadImplementationOrDefault(super.getStoredType());
   }
 
   @Override
-  public void generateMethods(CtClass target, GeneratingConfig config) throws CannotCompileException {
+  public void generateMethods(CtClass target) throws CannotCompileException {
     if (!this.hasMethod(target, this.getGetterName())) {
-      this.insertGetter(target, config);
+      this.insertGetter(target);
     }
 
     if (!this.hasMethod(target, this.getSetterName())) {
@@ -55,16 +55,23 @@ public class ConfigGetterSetter extends FieldConfigMethod {
   }
 
   @Override
-  public void implementExistingMethods(CtClass target, GeneratingConfig config) throws CannotCompileException, NotFoundException {
+  public void implementExistingMethods(CtClass target) throws CannotCompileException, NotFoundException {
     // validate if the methods exist or throw NotFoundException otherwise
     target.getDeclaredMethod(this.getGetterName());
 
     // add the write method to the setter
-    this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
+    try {
+      this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
+    } catch (NotFoundException e) {
+      if (!super.getStoredType().isInterface() && !super.isSerializableInterface()) {
+        // ignore if it is an interface that will never get overridden by anything
+        throw e;
+      }
+    }
   }
 
-  private void insertGetter(CtClass target, GeneratingConfig config) throws CannotCompileException {
-    target.addMethod(CtNewMethod.getter(this.getGetterName(), super.generateOrGetField(target, config)));
+  private void insertGetter(CtClass target) throws CannotCompileException {
+    target.addMethod(CtNewMethod.getter(this.getGetterName(), super.generateOrGetField(target)));
   }
 
   private void insertSetter(CtClass target) throws CannotCompileException {

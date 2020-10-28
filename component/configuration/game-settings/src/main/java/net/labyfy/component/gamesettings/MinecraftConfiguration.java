@@ -2,7 +2,7 @@ package net.labyfy.component.gamesettings;
 
 import net.labyfy.component.config.annotation.Config;
 import net.labyfy.component.config.annotation.ExcludeStorage;
-import net.labyfy.component.config.annotation.Implemented;
+import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.configuration.*;
 import net.labyfy.component.world.difficult.Difficulty;
 
@@ -10,7 +10,7 @@ import net.labyfy.component.world.difficult.Difficulty;
  * Represents the Minecraft game settings
  */
 @Config
-@Implemented
+@ImplementedConfig
 @ExcludeStorage("local")
 public interface MinecraftConfiguration {
 
@@ -47,7 +47,7 @@ public interface MinecraftConfiguration {
    *
    * @return The configuration of key bindings.
    */
-  KeyBindingConfiguration getKeyBindingConfiguration();
+  //KeyBindingConfiguration getKeyBindingConfiguration();
 
   /**
    * Retrieves the mouse configuration.

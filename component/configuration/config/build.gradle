@@ -22,5 +22,7 @@ dependencies {
     api project(':component:inject')
     api project(':component:transform:hook')
 
+    api project(':component:eventbus')
+
     api 'com.google.code.gson:gson:2.8.6'
 }

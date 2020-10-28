@@ -4,14 +4,14 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CannotCompileException;
-import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.labyfy.component.config.annotation.Config;
 import net.labyfy.component.config.generator.ConfigGenerator;
 import net.labyfy.component.inject.primitive.InjectionHolder;
-import net.labyfy.component.stereotype.identifier.Identifier;
-import net.labyfy.component.stereotype.identifier.LocatedIdentifiedAnnotation;
+import net.labyfy.component.processing.autoload.AnnotationMeta;
+import net.labyfy.component.processing.autoload.identifier.Identifier;
+import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
@@ -19,8 +19,8 @@ import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import java.io.IOException;
 
 @Singleton
-@Service(Config.class)
-public class ConfigGenerationService implements ServiceHandler {
+@Service(value = Config.class, priority = 1)
+public class ConfigGenerationService implements ServiceHandler<Config> {
 
   private final ConfigGenerator generator;
 
@@ -30,21 +30,18 @@ public class ConfigGenerationService implements ServiceHandler {
   }
 
   @Override
-  public void discover(Identifier.Base property) throws ServiceNotFoundException {
-
-    LocatedIdentifiedAnnotation annotation = property.getProperty().getLocatedIdentifiedAnnotation();
-    Class<?> locationClass = annotation.getLocation();
-    String name = locationClass.getName();
+  public void discover(AnnotationMeta<Config> meta) throws ServiceNotFoundException {
+    Identifier<CtClass> identifier = meta.getIdentifier();
+    CtClass location = identifier.getLocation();
 
     try {
-      CtClass type = ClassPool.getDefault().get(name);
-
-      Class<?> base = super.getClass().getClassLoader().loadClass(type.getName());
-      Object implementation = this.generator.generateConfigImplementation(type);
+      Object implementation = this.generator.generateConfigImplementation(location);
 
       if (implementation == null) {
         return;
       }
+
+      Class<?> base = CtResolver.get(location);
 
       InjectionHolder.getInstance().addModules(new AbstractModule() {
         @Override
@@ -54,9 +51,7 @@ public class ConfigGenerationService implements ServiceHandler {
       });
 
     } catch (NotFoundException | CannotCompileException | IOException | ReflectiveOperationException e) {
-      throw new ServiceNotFoundException("Cannot generate config for " + name, e);
+      throw new ServiceNotFoundException("Cannot generate config for " + location.getName(), e);
     }
-
   }
-
 }

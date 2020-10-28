@@ -2,7 +2,7 @@ package net.labyfy.internal.component.gamesettings.v1_16_3.configuration;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.labyfy.chat.Keybind;
+import net.labyfy.component.settings.options.keybind.KeyBind;
 import net.labyfy.component.gamesettings.KeyBindMappings;
 import net.labyfy.component.gamesettings.KeyBinding;
 import net.labyfy.component.gamesettings.configuration.KeyBindingConfiguration;

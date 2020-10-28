@@ -1,13 +1,24 @@
 package net.labyfy.component.gamesettings.configuration;
 
-import net.labyfy.component.config.annotation.Implemented;
+import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.settings.ChatVisibility;
 import net.labyfy.component.gamesettings.settings.NarratorStatus;
+import net.labyfy.component.settings.annotation.Component;
+import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.options.BooleanSetting;
+import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
+import net.labyfy.component.settings.options.numeric.Range;
+import net.labyfy.component.settings.options.numeric.SliderSetting;
 
 /**
  * Represents the chat configuration.
  */
-@Implemented
+@DefineCategory(
+    name = "minecraft.settings.chat",
+    displayName = @Component(value = "minecraft.settings.chat.display", translate = true),
+    description = @Component(value = "minecraft.settings.chat.description", translate = true)
+)
+@ImplementedConfig
 public interface ChatConfiguration {
 
   /**
@@ -15,6 +26,8 @@ public interface ChatConfiguration {
    *
    * @return The chat scale.
    */
+  @SliderSetting(@Range(max = 100))
+  // percent
   double getChatScale();
 
   /**
@@ -29,6 +42,8 @@ public interface ChatConfiguration {
    *
    * @return The chat width.
    */
+  @SliderSetting(@Range(min = 40, max = 320))
+  // pixels
   double getChatWidth();
 
   /**
@@ -43,6 +58,8 @@ public interface ChatConfiguration {
    *
    * @return The max height that the chat is allowed to appear normally.
    */
+  @SliderSetting(@Range(min = 20, max = 180))
+  // pixels
   double getChatHeightUnfocused();
 
   /**
@@ -57,6 +74,8 @@ public interface ChatConfiguration {
    *
    * @return The max height that the chat is allowed to appear when in focus.
    */
+  @SliderSetting(@Range(min = 20, max = 180))
+  // pixels
   double getChatHeightFocused();
 
   /**
@@ -85,6 +104,7 @@ public interface ChatConfiguration {
    *
    * @return {@code true} if colors are displayed in the chat, otherwise {@code false}.
    */
+  @BooleanSetting(defaultValue = true)
   boolean isChatColor();
 
   /**
@@ -99,6 +119,7 @@ public interface ChatConfiguration {
    *
    * @return {@code true} if links can be seen in the chat, otherwise {@code false}.
    */
+  @BooleanSetting(defaultValue = true)
   boolean isChatLinks();
 
   /**
@@ -114,6 +135,7 @@ public interface ChatConfiguration {
    *
    * @return {@code true} if forces a prompt, otherwise {@code false}.
    */
+  @BooleanSetting(defaultValue = true)
   boolean isChatLinksPrompt();
 
   /**
@@ -129,6 +151,7 @@ public interface ChatConfiguration {
    *
    * @return The chat visibility.
    */
+  @EnumDropDownSetting(defaultValue = 0 /* FULL */)
   ChatVisibility getChatVisibility();
 
   /**
@@ -143,6 +166,8 @@ public interface ChatConfiguration {
    *
    * @return The chat opacity.
    */
+  @SliderSetting(@Range(min = 10, max = 100))
+  // percent
   double getChatOpacity();
 
   /**
@@ -171,6 +196,7 @@ public interface ChatConfiguration {
    *
    * @return The current narrator status.
    */
+  @EnumDropDownSetting(defaultValue = 0 /* OFF */)
   NarratorStatus getNarrator();
 
   /**
@@ -185,6 +211,7 @@ public interface ChatConfiguration {
    *
    * @return {@code true} if command suggestions show up, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isAutoSuggestCommands();
 
   /**
@@ -199,6 +226,7 @@ public interface ChatConfiguration {
    *
    * @return {@code true} if reduced information should be displayed, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isReducedDebugInfo();
 
   /**
@@ -213,7 +241,8 @@ public interface ChatConfiguration {
    *
    * @return The opacity of the background.
    */
-
+  @SliderSetting(@Range(max = 100))
+  // percent
   double getAccessibilityTextBackgroundOpacity();
 
   /**

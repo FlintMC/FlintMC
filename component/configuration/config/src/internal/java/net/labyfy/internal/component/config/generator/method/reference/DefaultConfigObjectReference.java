@@ -12,17 +12,31 @@ import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.config.storage.ConfigStorage;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.internal.component.config.generator.PrimitiveClassLoader;
+import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Implement(ConfigObjectReference.class)
 public class DefaultConfigObjectReference implements ConfigObjectReference {
+
+  private static final Map<Class<?>, Function<Number, Number>> NUMBER_MAPPINGS = new HashMap<>();
+
+  static {
+    NUMBER_MAPPINGS.put(Float.class, Number::floatValue);
+    NUMBER_MAPPINGS.put(Double.class, Number::doubleValue);
+    NUMBER_MAPPINGS.put(Byte.class, Number::byteValue);
+    NUMBER_MAPPINGS.put(Short.class, Number::shortValue);
+    NUMBER_MAPPINGS.put(Integer.class, Number::intValue);
+    NUMBER_MAPPINGS.put(Long.class, Number::intValue);
+  }
 
   private final ConfigAnnotationCollector annotationCollector;
   private final String key;
@@ -39,6 +53,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private Method getter;
   private Method setter;
   private Method[] correspondingMethods;
+  private Collection<Annotation> allAnnotations;
 
   @AssistedInject
   private DefaultConfigObjectReference(ConfigAnnotationCollector annotationCollector,
@@ -80,6 +95,28 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       return (A) this.lastAnnotations.get(annotationType);
     }
 
+    this.mapCorrespondingMethods();
+
+    A annotation = this.annotationCollector.findLastAnnotation(this.correspondingMethods, annotationType);
+
+    this.lastAnnotations.put(annotationType, annotation);
+
+    return annotation;
+  }
+
+  @Override
+  public Collection<Annotation> findAllAnnotations() {
+    if (this.allAnnotations != null) {
+      return this.allAnnotations;
+    }
+
+    this.mapCorrespondingMethods();
+
+    return this.allAnnotations =
+        Collections.unmodifiableCollection(this.annotationCollector.findAllAnnotations(this.correspondingMethods));
+  }
+
+  private void mapCorrespondingMethods() {
     if (this.correspondingMethods == null) {
       try {
         this.correspondingMethods = this.mapMethods(this.correspondingCtMethods);
@@ -88,12 +125,6 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
             + "' to java reflect methods", e);
       }
     }
-
-    A annotation = this.annotationCollector.findLastAnnotation(this.correspondingMethods, annotationType);
-
-    this.lastAnnotations.put(annotationType, annotation);
-
-    return annotation;
   }
 
   @Override
@@ -162,7 +193,19 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       }
     }
 
-    this.setter.invoke(lastInstance, value);
+    Object castedValue = value;
+    // map e.g. int to double because Java reflections can't handle it
+    if (value instanceof Number) {
+      Class<?> type = this.setter.getParameterTypes()[0];
+      if (type.isPrimitive()) {
+        type = PrimitiveTypeLoader.getPrimitiveClass(type);
+      }
+
+      if (Number.class.isAssignableFrom(type) && NUMBER_MAPPINGS.containsKey(type)) {
+        castedValue = NUMBER_MAPPINGS.get(type).apply((Number) value);
+      }
+    }
+    this.setter.invoke(lastInstance, castedValue);
   }
 
   private Object getLastInstance(Object baseInstance) throws InvocationTargetException, IllegalAccessException {
@@ -210,7 +253,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
     for (int j = 0; j < ctParameters.length; j++) {
       String name = ctParameters[j].getName();
-      parameters[j] = PrimitiveClassLoader.loadClass(this.classLoader, name);
+      parameters[j] = PrimitiveTypeLoader.loadClass(this.classLoader, name);
     }
 
     return declaringClass.getMethod(ctMethod.getName(), parameters);

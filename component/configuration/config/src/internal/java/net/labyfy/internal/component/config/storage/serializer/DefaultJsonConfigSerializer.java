@@ -61,7 +61,8 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
         parent.add(keys[keys.length - 1], value);
 
       } catch (InvocationTargetException | IllegalAccessException e) {
-        this.logger.error("Exception while reading a value out of the config " + config.getClass().getName(), e);
+        this.logger.error("Exception while reading a value ('" + reference.getKey()
+            + "') out of the config " + config.getClass().getName(), e);
       }
     }
   }
@@ -98,7 +99,8 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
       try {
         reference.setValue(config, deserialized);
       } catch (InvocationTargetException | IllegalAccessException e) {
-        this.logger.error("Exception while writing a value into the config " + config.getClass().getName(), e);
+        this.logger.error("Exception while writing a value ('" + reference.getKey()
+            + "') into the config " + config.getClass().getName(), e);
       }
 
     }

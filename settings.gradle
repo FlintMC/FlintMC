@@ -113,6 +113,9 @@ findProject(':component:configuration:game-settings')?.name = 'game-settings'
 include 'component:configuration:config'
 findProject(':component:configuration:config')?.name = 'config'
 
+include 'component:configuration:laby-settings'
+findProject(':component:configuration:laby-settings')?.name = 'laby-settings'
+
 include 'component:render:shader'
 findProject(':component:render:shader')?.name = 'shader'
 

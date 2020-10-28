@@ -44,13 +44,15 @@ public interface ConfigObjectReference {
   Type getSerializedType();
 
   /**
-   * Finds the last annotation, it searches on every method or interface associated with this reference.
+   * Finds the last annotation on every method or interface associated with this reference.
    * <p>
    * Associated methods are methods, that are either in the {@link #getPathKeys()} array, associated interfaces are
    * interfaces, that contain the specified methods or any superinterface.
    * <p>
    * If the given annotation is not applied to any of those, {@code null} will be returned. If any is specified, the
    * last one will be used always.
+   * <p>
+   * Methods have a higher priority than Interfaces.
    *
    * @param annotationType The non-null type of the annotation
    * @param <A>            The annotation which should be searched
@@ -58,6 +60,18 @@ public interface ConfigObjectReference {
    * annotated with it.
    */
   <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType);
+
+  /**
+   * Finds all annotations on every method or interface associated with this reference.
+   * <p>
+   * Associated methods are methods, that are either in the {@link #getPathKeys()} array, associated interfaces are
+   * interfaces, that contain the specified methods or any superinterface.
+   * <p>
+   * If the given annotation is not applied to any of those, an empty collection will be returned.
+   *
+   * @return The non-null collection of all annotations on the associated methods and interfaces
+   */
+  Collection<Annotation> findAllAnnotations();
 
   /**
    * Checks whether the given storage is applied to any of the methods in {@link #getPathKeys()}.
@@ -176,7 +190,7 @@ public interface ConfigObjectReference {
      *                             from the config)
      * @param classLoader          The non-null class loader to load the classes of the CtMethods
      * @param serializedType       The type to for serialization
-     * @return
+     * @return The new non-null {@link ConfigObjectReference}
      */
     ConfigObjectReference create(@Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
                                  @Assisted("correspondingMethods") CtMethod[] correspondingMethods,

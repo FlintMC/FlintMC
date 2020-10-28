@@ -29,10 +29,10 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
 
   @Override
   public void resolveMethods(GeneratingConfig config) throws NotFoundException {
-    this.resolveMethods(config.getBaseClass(), new String[0], config.getAllMethods());
+    this.resolveMethods(config, config.getBaseClass(), new String[0]);
   }
 
-  private void resolveMethods(CtClass type, String[] prefix, Collection<ConfigMethod> methods) throws NotFoundException {
+  private void resolveMethods(GeneratingConfig config, CtClass type, String[] prefix) throws NotFoundException {
     for (CtMethod method : type.getMethods()) {
       if (!method.isEmpty()) { // default implementation in the interface
         continue;
@@ -44,32 +44,50 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
 
       String name = method.getName();
 
-      for (ConfigMethodGroup group : this.groups) {
-        if (name.startsWith(group.getPrefix())) {
-          String entryName = name.substring(group.getPrefix().length());
+      this.tryGroups(config, name, type, prefix, method);
+    }
+  }
 
-          ConfigMethod configMethod = group.resolveMethod(type, entryName, method);
-
-          if (configMethod != null && !this.containsMethod(prefix, configMethod.getConfigName(), methods)) {
-            configMethod.setPathPrefix(prefix);
-
-            methods.add(configMethod);
-
-            for (CtClass subType : configMethod.getTypes()) {
-              if (subType.isInterface() && !configMethod.isSerializableInterface(subType)
-                  && method.getParameterTypes().length == 0) {
-                String[] newPrefix = Arrays.copyOf(prefix, prefix.length + 1);
-                newPrefix[newPrefix.length - 1] = configMethod.getConfigName();
-
-                this.resolveMethods(subType, newPrefix, methods);
-              }
-            }
-
-            break;
+  private void tryGroups(GeneratingConfig config, String name, CtClass type, String[] prefix,
+                         CtMethod method) throws NotFoundException {
+    for (ConfigMethodGroup group : this.groups) {
+      for (String groupPrefix : group.getPrefix()) {
+        if (name.startsWith(groupPrefix)) {
+          String entryName = name.substring(groupPrefix.length());
+          if (this.handleGroup(config, group, type, prefix, entryName, method)) {
+            return;
           }
+
+          break;
         }
       }
     }
+  }
+
+  private boolean handleGroup(GeneratingConfig config, ConfigMethodGroup group, CtClass type, String[] prefix,
+                              String entryName, CtMethod method) throws NotFoundException {
+    Collection<ConfigMethod> methods = config.getAllMethods();
+    ConfigMethod configMethod = group.resolveMethod(config, type, entryName, method);
+
+    if (configMethod != null && !this.containsMethod(prefix, configMethod.getConfigName(), methods)) {
+      configMethod.setPathPrefix(prefix);
+
+      methods.add(configMethod);
+
+      for (CtClass subType : configMethod.getTypes()) {
+        if (subType.isInterface() && !configMethod.isSerializableInterface(subType)
+            && method.getParameterTypes().length == 0) {
+          String[] newPrefix = Arrays.copyOf(prefix, prefix.length + 1);
+          newPrefix[newPrefix.length - 1] = configMethod.getConfigName();
+
+          this.resolveMethods(config, subType, newPrefix);
+        }
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   private boolean containsMethod(String[] prefix, String name, Collection<ConfigMethod> methods) {

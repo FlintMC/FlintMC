@@ -1,5 +1,6 @@
 package net.labyfy.component.config.storage;
 
+import javassist.CtClass;
 import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.IncludeStorage;
 import net.labyfy.component.config.generator.ParsedConfig;
@@ -17,6 +18,18 @@ public interface ConfigStorageProvider extends ConfigStorage {
    * @throws IllegalStateException If a storage with the name inside of this storage already exists
    */
   void registerStorage(ConfigStorage storage) throws IllegalStateException;
+
+  /**
+   * Queues the given type to be registered as a storage. This doesn't register the storage directly, it will be
+   * registered when it is needed by {@link #write(ParsedConfig)} or {@link #read(ParsedConfig)}. The given type needs
+   * to implement {@link ConfigStorage}. Then the class will be loaded and an instance retrieved from the injector.
+   * <p>
+   * The given storage needs to have a {@link StoragePriority} annotation. If the annotation is missing, nothing will
+   * happen.
+   *
+   * @param type The non-null type of the storage to be registered
+   */
+  void registerStorage(CtClass type);
 
   /**
    * Queues the given config to be stored in every storage registered in this provider, this doesn't store the config

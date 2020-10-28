@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.labyfy.component'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+labyfy {
+    projectFilter { true }
+    minecraftVersions '1.15.2'
+}
+
+dependencies {
+    annotationProcessor project(':component:annotation-processing:autoload')
+    internalAnnotationProcessor project(':component:annotation-processing:autoload')
+
+    api project(':component:inject')
+    api project(':component:transform:hook')
+
+    api project(':component:chat')
+
+    api project(':component:configuration:config')
+}

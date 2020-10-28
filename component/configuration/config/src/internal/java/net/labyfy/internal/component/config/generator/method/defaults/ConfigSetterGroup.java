@@ -4,6 +4,7 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.internal.component.config.generator.method.ConfigMethodGroup;
 import net.labyfy.internal.component.config.generator.method.DefaultConfigMethod;
 
@@ -14,12 +15,12 @@ public class ConfigSetterGroup implements ConfigMethodGroup {
   private final ClassPool pool = ClassPool.getDefault();
 
   @Override
-  public String getPrefix() {
-    return "set";
+  public String[] getPrefix() {
+    return new String[]{"set"};
   }
 
   @Override
-  public DefaultConfigMethod resolveMethod(CtClass type, String entryName, CtMethod method) throws NotFoundException {
+  public DefaultConfigMethod resolveMethod(GeneratingConfig config, CtClass type, String entryName, CtMethod method) throws NotFoundException {
     if (!method.getReturnType().equals(CtClass.voidType)) {
       throw new IllegalArgumentException("Setter method " + method.getName() + " in " + type.getName()
           + " doesn't have void as its return type");
@@ -38,11 +39,11 @@ public class ConfigSetterGroup implements ConfigMethodGroup {
         // just ignore it so that it won't get registered as a normal setter
       }
 
-      return new ConfigGetterSetter(type, entryName, parameters[0]);
+      return new ConfigGetterSetter(config, type, entryName, parameters[0]);
     }
 
     if (parameters.length == 2) {
-      return new ConfigMultiGetterSetter(type, entryName, this.pool.get(Map.class.getName()), parameters[0], parameters[1]);
+      return new ConfigMultiGetterSetter(config, type, entryName, this.pool.get(Map.class.getName()), parameters[0], parameters[1]);
     }
 
     throw new IllegalArgumentException("Setter method " + method.getName() + " in " + type.getName()

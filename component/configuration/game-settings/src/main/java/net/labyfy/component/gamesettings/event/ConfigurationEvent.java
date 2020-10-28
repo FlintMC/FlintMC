@@ -5,10 +5,6 @@ import com.google.inject.name.Named;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.io.File;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.Map;
 
 /**
@@ -65,23 +61,6 @@ public interface ConfigurationEvent {
      * When the configuration is saved.
      */
     SAVE
-
-  }
-
-  /**
-   * The {@link EventGroup} annotation to filter {@link ConfigurationEvent}'s by their option state.
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.METHOD)
-  @interface OptionState {
-
-    /**
-     * Retrieves the state of the option file.
-     *
-     * @return The non-null state.
-     */
-    @Named("state")
-    State value();
 
   }
 

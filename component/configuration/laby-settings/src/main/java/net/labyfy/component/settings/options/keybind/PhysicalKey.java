@@ -1,4 +1,4 @@
-package net.labyfy.component.gamesettings;
+package net.labyfy.component.settings.options.keybind;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * An enumeration representing some keys from a keyboard or mouse.
  */
-public enum KeyBindMappings {
+public enum PhysicalKey {
 
   UNKNOWN("key.keyboard.unknown", -1, 0),
   MOUSE_LEFT("key.mouse.left", 0, -100),
@@ -142,7 +142,7 @@ public enum KeyBindMappings {
   private static final Map<Integer, String> BY_SCAN_CODE = new HashMap<>();
 
   static {
-    for (KeyBindMappings value : values()) {
+    for (PhysicalKey value : values()) {
       BY_NAME.put(value.configurationName, value.scanCode);
       BY_SCAN_CODE.put(value.scanCode, value.configurationName);
     }
@@ -152,11 +152,11 @@ public enum KeyBindMappings {
   private final int key;
   private final int scanCode;
 
-  KeyBindMappings(String configurationName, int key) {
+  PhysicalKey(String configurationName, int key) {
     this(configurationName, key, -1);
   }
 
-  KeyBindMappings(String configurationName, int key, int scanCode) {
+  PhysicalKey(String configurationName, int key, int scanCode) {
     this.configurationName = configurationName;
     this.key = key;
     this.scanCode = scanCode;

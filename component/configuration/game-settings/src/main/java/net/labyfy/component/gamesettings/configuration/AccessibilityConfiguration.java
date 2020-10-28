@@ -1,13 +1,22 @@
 package net.labyfy.component.gamesettings.configuration;
 
-import net.labyfy.component.config.annotation.Implemented;
+import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.settings.PointOfView;
 import net.labyfy.component.gamesettings.settings.TutorialSteps;
+import net.labyfy.component.settings.annotation.Component;
+import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.options.BooleanSetting;
+import net.labyfy.component.settings.options.dropdown.CustomDropDownSetting;
 
 /**
  * Represents the accessibility configuration.
  */
-@Implemented
+@DefineCategory(
+    name = "minecraft.settings.accessibility",
+    displayName = @Component(value = "minecraft.settings.accessibility.display", translate = true),
+    description = @Component(value = "minecraft.settings.accessbility.description", translate = true)
+)
+@ImplementedConfig
 public interface AccessibilityConfiguration {
 
   /**
@@ -15,6 +24,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if automatic jumping is activated, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isAutoJump();
 
   /**
@@ -29,6 +39,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if the crouch is toggled, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isToggleCrouch();
 
   /**
@@ -43,6 +54,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if the sprint is toggled, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isToggleSprint();
 
   /**
@@ -57,6 +69,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if the server address is hidden, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isHideServerAddress();
 
   /**
@@ -71,6 +84,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if the advanced item tooltips is activated.
    */
+  @BooleanSetting
   boolean isAdvancedItemTooltips();
 
   /**
@@ -85,6 +99,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if the focus should be lost during the pause, otherwise {@code false}.
    */
+  @BooleanSetting(defaultValue = true)
   boolean isPauseOnLostFocus();
 
   /**
@@ -99,6 +114,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if it is a smooth camera, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isSmoothCamera();
 
   /**
@@ -113,6 +129,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if tooltips for held objects is displayed, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isHeldItemTooltips();
 
   /**
@@ -127,6 +144,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if the native transport can be used, otherwise {@code false}.
    */
+  @BooleanSetting(defaultValue = true)
   boolean isUseNativeTransport();
 
   /**
@@ -155,6 +173,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if the snooper is activated, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isSnooper();
 
   /**
@@ -211,6 +230,13 @@ public interface AccessibilityConfiguration {
    *
    * @return The current language.
    */
+  @DefineCategory(
+      name = "minecraft.settings.language",
+      displayName = @Component(value = "minecraft.settings.language.display", translate = true),
+      description = @Component(value = "minecraft.settings.language.description", translate = true)
+  )
+  @CustomDropDownSetting("")
+  // TODO add provider for the array to get the languages dynamically from the game
   String getLanguage();
 
   /**

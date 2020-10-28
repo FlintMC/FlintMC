@@ -16,8 +16,8 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
   private final CtClass keyType;
   private final CtClass valueType;
 
-  public ConfigMultiGetterSetter(CtClass declaringClass, String name, CtClass methodType, CtClass keyType, CtClass valueType) {
-    super(declaringClass, name, methodType);
+  public ConfigMultiGetterSetter(GeneratingConfig config, CtClass declaringClass, String name, CtClass methodType, CtClass keyType, CtClass valueType) {
+    super(config, declaringClass, name, methodType);
     this.keyType = keyType;
     this.valueType = valueType;
   }
@@ -54,18 +54,18 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
   }
 
   @Override
-  public Type getSerializedType(GeneratingConfig config) {
+  public Type getSerializedType() {
     return TypeToken.getParameterized(
         Map.class,
-        super.loadImplementationOrDefault(this.keyType, config),
-        super.loadImplementationOrDefault(this.valueType, config)
+        super.loadImplementationOrDefault(this.keyType),
+        super.loadImplementationOrDefault(this.valueType)
     ).getType();
   }
 
   @Override
-  public void generateMethods(CtClass target, GeneratingConfig config)
+  public void generateMethods(CtClass target)
       throws CannotCompileException {
-    CtField field = super.generateOrGetField(target, config, "new java.util.HashMap()");
+    CtField field = super.generateOrGetField(target, "new java.util.HashMap()");
 
     if (!this.hasMethod(target, this.getGetterName())) {
       this.insertGetAll(target, field);
@@ -85,14 +85,12 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
   }
 
   @Override
-  public void implementExistingMethods(CtClass target, GeneratingConfig config) throws CannotCompileException, NotFoundException {
+  public void implementExistingMethods(CtClass target) throws CannotCompileException, NotFoundException {
     // validate if the methods exist or throw NotFoundException otherwise
     target.getDeclaredMethod(this.getGetterName());
-    target.getDeclaredMethod(this.getSingleGetterName());
 
     // add the write methods to the setters
     this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
-    this.insertSaveConfig(target.getDeclaredMethod(this.getSingleSetterName()));
   }
 
   private void insertGetAll(CtClass target, CtField field) throws CannotCompileException {

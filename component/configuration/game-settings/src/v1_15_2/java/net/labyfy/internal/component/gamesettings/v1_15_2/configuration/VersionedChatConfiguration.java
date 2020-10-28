@@ -1,17 +1,17 @@
 package net.labyfy.internal.component.gamesettings.v1_15_2.configuration;
 
 import com.google.inject.Singleton;
+import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.gamesettings.configuration.ChatConfiguration;
 import net.labyfy.component.gamesettings.settings.ChatVisibility;
 import net.labyfy.component.gamesettings.settings.NarratorStatus;
-import net.labyfy.component.inject.implement.Implement;
 import net.minecraft.client.Minecraft;
 
 /**
  * 1.15.2 implementation of {@link ChatConfiguration}
  */
 @Singleton
-@Implement(value = ChatConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = ChatConfiguration.class, version = "1.15.2")
 public class VersionedChatConfiguration implements ChatConfiguration {
 
   /**
