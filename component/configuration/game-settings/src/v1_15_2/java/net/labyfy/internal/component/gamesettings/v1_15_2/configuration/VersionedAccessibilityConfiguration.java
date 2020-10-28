@@ -342,4 +342,21 @@ public class VersionedAccessibilityConfiguration implements AccessibilityConfigu
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isShowSubtitles() {
+    return Minecraft.getInstance().gameSettings.showSubtitles;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setShowSubtitles(boolean showSubtitles) {
+    Minecraft.getInstance().gameSettings.showSubtitles = showSubtitles;
+    Minecraft.getInstance().gameSettings.saveOptions();
+  }
+
 }

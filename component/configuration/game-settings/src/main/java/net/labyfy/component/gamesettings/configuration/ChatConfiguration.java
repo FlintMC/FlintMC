@@ -266,18 +266,4 @@ public interface ChatConfiguration {
    */
   void setAccessibilityTextBackground(boolean accessibilityTextBackground);
 
-  /**
-   * Whether subtitles should be displayed.
-   *
-   * @return {@code true} if subtitles should be displayed, otherwise {@code false}.
-   */
-  boolean isShowSubtitles();
-
-  /**
-   * Changes whether subtitles should be displayed.
-   *
-   * @param showSubtitles The new state for subtitles.
-   */
-  void setShowSubtitles(boolean showSubtitles);
-
 }
