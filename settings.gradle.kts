@@ -35,3 +35,25 @@ fun defineModule(path: String) {
     include(path)
     findProject(":$path")?.name = path.replace(":", "-")
 }
+
+
+pluginManagement {
+    repositories {
+        val labymedia_maven_auth_token: String? by settings
+
+        maven {
+            setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
+            name = "Gitlab"
+            credentials(HttpHeaderCredentials::class) {
+                name = "Private-Token"
+                value =
+                    System.getenv().getOrDefault("CI_JOB_TOKEN", labymedia_maven_auth_token) as String?
+            }
+            authentication {
+                create<HttpHeaderAuthentication>("header")
+            }
+        }
+        mavenCentral()
+    }
+
+}
