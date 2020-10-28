@@ -1,7 +1,5 @@
 rootProject.name = "flint"
 
-includeBuild("../flint-gradle-plugin")
-
 //defineModule("annotation-processing:autoload")
 //defineModule("annotation-processing:build.gradle.bak")
 //
