@@ -22,10 +22,7 @@ public class RangedSettingHandler {
       type = PrimitiveTypeLoader.getPrimitiveClass((Class<?>) type);
     }
 
-    boolean intOnly = type.equals(Byte.class) || type.equals(Short.class) || type.equals(Integer.class)
-        || type.equals(Long.class) || this.hasRestriction(range, NumericRestriction.INTEGER_ONLY);
-
-    if (intOnly && d != (long) d) {
+    if (!this.hasRestriction(range, NumericRestriction.ALLOW_DECIMALS) && d != (long) d) {
       return false;
     }
 

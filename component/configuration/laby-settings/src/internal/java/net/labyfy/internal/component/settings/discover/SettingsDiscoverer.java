@@ -11,7 +11,6 @@ import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe.Phase;
 import net.labyfy.component.settings.InvalidSettingsException;
-import net.labyfy.component.settings.SettingsProvider;
 import net.labyfy.component.settings.annotation.ApplicableSetting;
 import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.Category;
@@ -20,6 +19,7 @@ import net.labyfy.component.settings.annotation.ui.Description;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
 import net.labyfy.component.settings.registered.RegisteredCategory;
 import net.labyfy.component.settings.registered.RegisteredSetting;
+import net.labyfy.component.settings.registered.SettingsProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

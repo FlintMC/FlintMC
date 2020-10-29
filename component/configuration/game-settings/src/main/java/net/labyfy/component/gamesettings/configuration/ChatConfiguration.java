@@ -26,7 +26,7 @@ public interface ChatConfiguration {
    *
    * @return The chat scale.
    */
-  @SliderSetting(@Range(max = 100))
+  @SliderSetting(value = @Range(max = 100), defaultValue = 100)
   // percent
   double getChatScale();
 
@@ -42,7 +42,7 @@ public interface ChatConfiguration {
    *
    * @return The chat width.
    */
-  @SliderSetting(@Range(min = 40, max = 320))
+  @SliderSetting(value = @Range(min = 40, max = 320), defaultValue = 320)
   // pixels
   double getChatWidth();
 
@@ -58,7 +58,7 @@ public interface ChatConfiguration {
    *
    * @return The max height that the chat is allowed to appear normally.
    */
-  @SliderSetting(@Range(min = 20, max = 180))
+  @SliderSetting(value = @Range(min = 20, max = 180), defaultValue = 180)
   // pixels
   double getChatHeightUnfocused();
 
@@ -74,7 +74,7 @@ public interface ChatConfiguration {
    *
    * @return The max height that the chat is allowed to appear when in focus.
    */
-  @SliderSetting(@Range(min = 20, max = 180))
+  @SliderSetting(value = @Range(min = 20, max = 180), defaultValue = 180)
   // pixels
   double getChatHeightFocused();
 
@@ -166,7 +166,7 @@ public interface ChatConfiguration {
    *
    * @return The chat opacity.
    */
-  @SliderSetting(@Range(min = 10, max = 100))
+  @SliderSetting(value = @Range(min = 10, max = 100), defaultValue = 100)
   // percent
   double getChatOpacity();
 
@@ -241,8 +241,8 @@ public interface ChatConfiguration {
    *
    * @return The opacity of the background.
    */
-  @SliderSetting(@Range(max = 100))
-  // percent
+  @SliderSetting(value = @Range(max = 100), defaultValue = 100)
+  // pixels
   double getAccessibilityTextBackgroundOpacity();
 
   /**

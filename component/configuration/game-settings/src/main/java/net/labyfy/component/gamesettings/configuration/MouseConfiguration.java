@@ -3,6 +3,10 @@ package net.labyfy.component.gamesettings.configuration;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.options.BooleanSetting;
+import net.labyfy.component.settings.options.numeric.NumericRestriction;
+import net.labyfy.component.settings.options.numeric.Range;
+import net.labyfy.component.settings.options.numeric.SliderSetting;
 
 /**
  * Represents the mouse configuration.
@@ -13,9 +17,6 @@ import net.labyfy.component.settings.annotation.ui.DefineCategory;
     description = @Component(value = "minecraft.settings.mouse.description", translate = true)
 )
 @ImplementedConfig
-
-// TODO add settings annotations
-
 public interface MouseConfiguration {
 
   /**
@@ -23,6 +24,8 @@ public interface MouseConfiguration {
    *
    * @return The mouse sensitivity.
    */
+  @SliderSetting(value = @Range(max = 200), defaultValue = 100)
+  // percent
   double getMouseSensitivity();
 
   /**
@@ -37,6 +40,7 @@ public interface MouseConfiguration {
    *
    * @return The mouse wheel sensitivity.
    */
+  @SliderSetting(value = @Range(min = 0.01, max = 10, value = NumericRestriction.ALLOW_DECIMALS), defaultValue = 1)
   double getMouseWheelSensitivity();
 
   /**
@@ -51,6 +55,7 @@ public interface MouseConfiguration {
    *
    * @return {@code true} if is the raw mouse input, otherwise {@code false}.
    */
+  @BooleanSetting(defaultValue = true)
   boolean isRawMouseInput();
 
   /**
@@ -65,6 +70,7 @@ public interface MouseConfiguration {
    *
    * @return {@code true} if the mouse is inverted, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isInvertMouse();
 
   /**
@@ -79,6 +85,7 @@ public interface MouseConfiguration {
    *
    * @return {@code true} if it is discreet scrolling with the mouse, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isDiscreteMouseScroll();
 
   /**
@@ -93,6 +100,7 @@ public interface MouseConfiguration {
    *
    * @return {@code true} if the touchscreen mode is used, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isTouchscreen();
 
   /**

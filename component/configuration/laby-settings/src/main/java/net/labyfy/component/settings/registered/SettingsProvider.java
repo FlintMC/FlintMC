@@ -1,8 +1,6 @@
-package net.labyfy.component.settings;
+package net.labyfy.component.settings.registered;
 
 import net.labyfy.component.config.generator.ParsedConfig;
-import net.labyfy.component.settings.registered.RegisteredCategory;
-import net.labyfy.component.settings.registered.RegisteredSetting;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;

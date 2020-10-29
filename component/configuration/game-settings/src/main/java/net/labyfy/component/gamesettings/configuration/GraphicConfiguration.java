@@ -4,6 +4,11 @@ import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.options.BooleanSetting;
+import net.labyfy.component.settings.options.dropdown.CustomDropDownSetting;
+import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
+import net.labyfy.component.settings.options.numeric.Range;
+import net.labyfy.component.settings.options.numeric.SliderSetting;
 
 /**
  * Represents the graphic configuration.
@@ -14,9 +19,6 @@ import net.labyfy.component.settings.annotation.ui.DefineCategory;
     description = @Component(value = "minecraft.settings.graphics.description", translate = true)
 )
 @ImplementedConfig
-
-// TODO add settings annotations
-
 public interface GraphicConfiguration {
 
   /**
@@ -52,6 +54,7 @@ public interface GraphicConfiguration {
    *
    * @return The particles status.
    */
+  @EnumDropDownSetting(defaultValue = 0 /* ALL */)
   ParticleStatus getParticles();
 
   /**
@@ -66,6 +69,7 @@ public interface GraphicConfiguration {
    *
    * @return The field of view.
    */
+  @SliderSetting(@Range(min = 30, max = 110))
   double getFov();
 
   /**
@@ -108,6 +112,7 @@ public interface GraphicConfiguration {
    *
    * @return {@code true} if the view is bobbing, otherwise {@code false}.
    */
+  @BooleanSetting(defaultValue = true)
   boolean isViewBobbing();
 
   /**
@@ -122,6 +127,7 @@ public interface GraphicConfiguration {
    *
    * @return {@code true} if the screen is in full screen mode, otherwise {@code false}.
    */
+  @BooleanSetting
   boolean isFullscreen();
 
   /**
@@ -136,6 +142,7 @@ public interface GraphicConfiguration {
    *
    * @return {@code true} if VSync is enabled.
    */
+  @BooleanSetting
   boolean isVsync();
 
   /**
@@ -150,6 +157,7 @@ public interface GraphicConfiguration {
    *
    * @return The biome blend radius.
    */
+  @SliderSetting(@Range(max = 15))
   int getBiomeBlendRadius();
 
   /**
@@ -164,6 +172,7 @@ public interface GraphicConfiguration {
    *
    * @return The attack indicator status.
    */
+  @EnumDropDownSetting(defaultValue = 1 /* CROSSHAIR */)
   AttackIndicatorStatus getAttackIndicator();
 
   /**
@@ -178,6 +187,7 @@ public interface GraphicConfiguration {
    *
    * @return The mipmap levels.
    */
+  @SliderSetting(@Range(max = 4))
   int getMipmapLevels();
 
   /**
@@ -192,6 +202,7 @@ public interface GraphicConfiguration {
    *
    * @return The current cloud option.
    */
+  @EnumDropDownSetting(defaultValue = 2 /* FANCY */)
   CloudOption getCloudOption();
 
   /**
@@ -206,6 +217,7 @@ public interface GraphicConfiguration {
    *
    * @return The current graphic mode.
    */
+  @EnumDropDownSetting(defaultValue = 1 /* FANCY */)
   GraphicsFanciness getGraphicsFanciness();
 
   /**
@@ -234,6 +246,7 @@ public interface GraphicConfiguration {
    *
    * @return The chunks render distance.
    */
+  @SliderSetting(value = @Range(min = 2, max = 32), defaultValue = 8)
   int getRenderDistanceChunks();
 
   /**
@@ -262,6 +275,7 @@ public interface GraphicConfiguration {
    *
    * @return The framerate limit.
    */
+  @SliderSetting(@Range(min = 10, max = 260 /* 260 = unlimited */))
   int getFramerateLimit();
 
   /**
@@ -276,6 +290,8 @@ public interface GraphicConfiguration {
    *
    * @return The full screen resolution.
    */
+  @CustomDropDownSetting("")
+  // TODO add provider for the array to get the resolutions dynamically from the game
   String getFullscreenResolution();
 
   /**
@@ -290,6 +306,7 @@ public interface GraphicConfiguration {
    *
    * @return {@code true} if a shadow is rendered under an entity.
    */
+  @BooleanSetting(defaultValue = true)
   boolean isEntityShadows();
 
   /**

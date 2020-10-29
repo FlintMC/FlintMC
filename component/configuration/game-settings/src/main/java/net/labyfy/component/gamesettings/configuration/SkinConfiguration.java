@@ -5,6 +5,7 @@ import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.model.PlayerClothing;
 import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
 
 import java.util.Map;
 import java.util.Set;
@@ -18,9 +19,6 @@ import java.util.Set;
     description = @Component(value = "minecraft.settings.skin.description", translate = true)
 )
 @ImplementedConfig
-
-// TODO add settings annotations
-
 public interface SkinConfiguration {
 
   /**
@@ -28,6 +26,7 @@ public interface SkinConfiguration {
    *
    * @return The main hand side.
    */
+  @EnumDropDownSetting(defaultValue = 1 /*`RIGHT */)
   Hand.Side getMainHand();
 
   /**

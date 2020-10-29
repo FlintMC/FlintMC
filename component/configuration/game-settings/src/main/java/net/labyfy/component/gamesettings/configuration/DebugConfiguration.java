@@ -13,9 +13,6 @@ import net.labyfy.component.settings.annotation.ui.DefineCategory;
     description = @Component(value = "minecraft.settings.debug.description", translate = true)
 )
 @ImplementedConfig
-
-// TODO add settings annotations
-
 public interface DebugConfiguration {
 
   /**

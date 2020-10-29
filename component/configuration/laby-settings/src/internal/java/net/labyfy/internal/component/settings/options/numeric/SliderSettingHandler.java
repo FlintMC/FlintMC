@@ -20,7 +20,7 @@ public class SliderSettingHandler extends RangedSettingHandler implements Settin
     }
 
     double newValue = (range.max() - range.min()) / 2;
-    if (super.hasRestriction(range, NumericRestriction.INTEGER_ONLY)) {
+    if (!super.hasRestriction(range, NumericRestriction.ALLOW_DECIMALS)) {
       newValue = Math.floor(newValue);
     }
 

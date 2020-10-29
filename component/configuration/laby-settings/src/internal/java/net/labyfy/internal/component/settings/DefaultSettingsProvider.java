@@ -3,9 +3,9 @@ package net.labyfy.internal.component.settings;
 import com.google.inject.Singleton;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.settings.SettingsProvider;
 import net.labyfy.component.settings.registered.RegisteredCategory;
 import net.labyfy.component.settings.registered.RegisteredSetting;
+import net.labyfy.component.settings.registered.SettingsProvider;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
