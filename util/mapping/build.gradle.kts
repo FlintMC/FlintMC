@@ -13,6 +13,9 @@ dependencies {
 
     api(project(":launcher"))
     api(project(":framework:framework-inject"))
+    api(project(":util:util-csv"))
+
     api("org.javassist", "javassist", "3.27.0-GA")
+    api("com.google.code.gson", "gson", "2.8.6")
 
 }

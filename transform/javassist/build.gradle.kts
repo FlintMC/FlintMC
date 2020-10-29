@@ -12,4 +12,7 @@ dependencies {
 
     api(project(":annotation-processing:annotation-processing-autoload"))
     api(project(":util:util-mapping"))
+
+    internalImplementation(project(":transform:transform-launcher-plugin"))
+    internalImplementation(project(":transform:transform-minecraft"))
 }

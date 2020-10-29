@@ -13,4 +13,5 @@ dependencies {
     api(project(":framework:framework-inject"))
     api(project(":util:util-commons"))
     api(project(":util:util-mapping"))
+    api(project(":transform:transform-javassist"))
 }

@@ -17,4 +17,7 @@ dependencies {
     api("org.ow2.asm", "asm-commons", "7.2-beta")
     api("com.google.guava", "guava", "21.0")
 
+    internalImplementation(project(":transform:transform-launcher-plugin"))
+    internalImplementation(project(":transform:transform-minecraft"))
+    internalImplementation(project(":util:util-mapping"))
 }

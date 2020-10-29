@@ -8,7 +8,8 @@ flint.configureNow()
 
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    "internalAnnotationProcessor"(project(":annotation-processing:annotation-processing-autoload"))
+    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
     api(project(":framework:framework-eventbus"))
+    api(project(":render:render-gui"))
 }

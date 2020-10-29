@@ -14,4 +14,5 @@ dependencies {
     api(project(":framework:framework-inject"))
     api(project(":mcapi"))
 
+    internalImplementation("com.mojang", "authlib", "1.6.25")
 }
