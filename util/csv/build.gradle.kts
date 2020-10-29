@@ -3,5 +3,3 @@ plugins {
 }
 
 group = "net.flintmc"
-
-flint.configureNow()
