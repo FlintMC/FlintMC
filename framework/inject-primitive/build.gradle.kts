@@ -4,8 +4,6 @@ plugins {
 
 group = "net.flintmc"
 
-flint.configureNow()
-
 dependencies {
 
     api("com.google.inject", "guice", "4.2.0")
