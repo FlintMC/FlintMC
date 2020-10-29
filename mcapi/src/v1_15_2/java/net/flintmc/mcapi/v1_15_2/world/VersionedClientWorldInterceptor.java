@@ -39,7 +39,7 @@ public class VersionedClientWorldInterceptor {
     this.passiveEntityMapper = passiveEntityMapper;
     this.remoteClientPlayerEntityProvider = remoteClientPlayerEntityProvider;
   }
-
+/*
   @Hook(
       className = "net.minecraft.client.world.ClientWorld",
       methodName = "addEntityImpl",
@@ -105,5 +105,5 @@ public class VersionedClientWorldInterceptor {
       AbstractClientPlayerEntity playerEntity = (AbstractClientPlayerEntity) entity;
       this.clientWorld.removePlayer(playerEntity.getGameProfile().getId());
     }
-  }
+  }*/
 }

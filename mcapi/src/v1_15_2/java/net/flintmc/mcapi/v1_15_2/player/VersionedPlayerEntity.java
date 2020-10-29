@@ -22,6 +22,7 @@ import net.flintmc.mcapi.player.type.model.ModelMapper;
 import net.flintmc.mcapi.player.type.model.PlayerClothing;
 import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.player.type.sound.SoundCategory;
+import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.tileentity.SignTileEntity;
 import net.flintmc.mcapi.tileentity.mapper.TileEntityMapper;
@@ -58,14 +59,14 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
 
   @AssistedInject
   public VersionedPlayerEntity(
-      @Assisted("entity") Object entity,
-      @Assisted("entityType") EntityType entityType,
-      World world,
-      EntityFoundationMapper entityFoundationMapper,
-      GameProfileSerializer gameProfileSerializer,
-      ModelMapper modelMapper,
-      ItemEntityMapper itemEntityMapper,
-      TileEntityMapper tileEntityMapper) {
+          @Assisted("entity") Object entity,
+          @Assisted("entityType") EntityType entityType,
+          World world,
+          EntityFoundationMapper entityFoundationMapper,
+          GameProfileSerializer gameProfileSerializer,
+          ModelMapper modelMapper,
+          ItemEntityMapper itemEntityMapper,
+          TileEntityMapper tileEntityMapper) {
     super(entity, entityType, world, entityFoundationMapper);
     this.gameProfileGameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;

@@ -100,3 +100,6 @@ findProject(':render:vbo-rendering')?.name = 'render-vbo-rendering'
 
 include 'util:session-service'
 findProject(':util:session-service')?.name = 'util-session-service'
+
+include 'util:attribute'
+findProject(':util:attribute')?.name = 'util-attribute'

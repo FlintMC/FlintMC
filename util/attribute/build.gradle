@@ -21,12 +21,6 @@ dependencies {
     v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
 
     api project(':framework:framework-inject')
-    api project(':framework:framework-eventbus')
     api project(':framework:framework-stereotype')
-    api project(':framework:framework-tasks')
-    api project(':transform:transform-hook')
     api project(':transform:transform-shadow')
-    api project(':util:util-attribute')
-
-    api "com.google.code.gson:gson:2.8.6"
 }
