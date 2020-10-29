@@ -1,0 +1,31 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc'
+
+sourceCompatibility = 1.8
+
+labyfy {
+    minecraftVersions '1.15.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor project(':annotation-processing:autoload')
+    internalAnnotationProcessor project(':annotation-processing:autoload')
+    v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
+
+    api project(':framework:framework-stereotype')
+    api project(':framework:framework-inject')
+    api 'org.eclipse.collections:eclipse-collections:8.2.1'
+    v1_15_2Implementation project(':transform:transform-javassist')
+
+    labyfy project(':framework:framework-stereotype')
+    labyfy project(':framework:framework-inject')
+    labyfy 'org.eclipse.collections:eclipse-collections:8.2.1'
+    labyfy project(':transform:transform-javassist')
+}

@@ -1,5 +1,5 @@
-plugins {
-    id("net.flintmc.flint-gradle-plugin") version "2.3.2"
+plugins{
+    id("net.flintmc.flint-gradle-plugin")
 }
 
 fun RepositoryHandler.labymedia() {

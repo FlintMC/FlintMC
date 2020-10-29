@@ -1,0 +1,20 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc'
+
+repositories {
+    mavenCentral()
+}
+
+labyfy {
+}
+
+dependencies {
+    annotationProcessor project(':annotation-processing:autoload')
+
+    api project(':framework:framework-inject')
+
+    labyfy project(':framework:framework-inject')
+}

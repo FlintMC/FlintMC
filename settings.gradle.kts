@@ -1,11 +1,17 @@
 rootProject.name = "flint"
 
+includeBuild("../flint-gradle-plugin")
+
 fun defineModule(path: String) {
     include(path)
     findProject(":$path")?.name = path.replace(":", "-")
 }
 
 pluginManagement {
+
+    plugins {
+        id("net.flintmc.flint-gradle-plugin")
+    }
     repositories {
         val labymediaMavenAuthToken: String? by settings
 
@@ -27,7 +33,10 @@ pluginManagement {
         }
         mavenCentral()
     }
+
+
 }
+
 
 defineModule("annotation-processing:autoload")
 defineModule("annotation-processing:build.gradle.bak")

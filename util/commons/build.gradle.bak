@@ -1,0 +1,18 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc'
+
+labyfy {
+}
+
+dependencies {
+    api 'org.joml:joml:1.9.25'
+    api 'com.google.inject:guice:4.2.0'
+    implementation group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc6'
+}
+
+repositories {
+    mavenCentral()
+}

@@ -1,0 +1,37 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+labyfy {
+}
+
+dependencies {
+    annotationProcessor project(':annotation-processing:autoload')
+
+    api project(':launcher')
+    api project(':util:util-commons')
+    api project(':annotation-processing:autoload')
+    api project(':framework:framework-inject-primitive')
+    api group: 'com.google.guava', name: 'guava', version: '21.0'
+    api 'com.google.inject:guice:4.2.0'
+    api 'org.apache.commons:commons-lang3:3.9'
+    api 'org.codehaus.groovy:groovy-all:3.0.2'
+    api group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+
+    labyfy project(':launcher')
+    labyfy project(':util:util-commons')
+    labyfy project(':annotation-processing:autoload')
+    labyfy project(':framework:framework-inject-primitive')
+    labyfy group: 'com.google.guava', name: 'guava', version: '21.0'
+    labyfy 'com.google.inject:guice:4.2.0'
+    labyfy 'org.apache.commons:commons-lang3:3.9'
+    labyfy 'org.codehaus.groovy:groovy-all:3.0.2'
+}

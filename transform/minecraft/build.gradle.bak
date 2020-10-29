@@ -1,0 +1,26 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+labyfy.configureNow()
+
+dependencies {
+    annotationProcessor project(':annotation-processing:autoload')
+    internalAnnotationProcessor project(':annotation-processing:autoload')
+
+    api project(':framework:framework-stereotype')
+    api project(':framework:framework-tasks')
+    api project(':transform:transform-launcher-plugin')
+
+    labyfy project(':framework:framework-stereotype')
+    labyfy project(':framework:framework-tasks')
+    labyfy project(':transform:transform-launcher-plugin')
+}

@@ -1,6 +1,5 @@
 plugins {
     id("java-library")
-    id("net.flintmc.flint-gradle-plugin")
 }
 
 group = "net.flintmc"

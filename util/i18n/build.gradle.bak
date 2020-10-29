@@ -1,0 +1,29 @@
+plugins {
+    id 'java-library'
+}
+
+group 'net.flintmc'
+
+sourceCompatibility = 1.8
+
+labyfy {
+    minecraftVersions "1.15.2"
+    projectFilter { true }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor project(':annotation-processing:autoload')
+    v1_15_2AnnotationProcessor project(':annotation-processing:autoload')
+
+    api project(':framework:framework-inject')
+    api project(':framework:framework-packages')
+    api project(':transform:transform-shadow')
+    v1_15_2Implementation project(':transform:transform-hook')
+
+    labyfy project(':framework:framework-inject')
+    labyfy project(':transform:transform-hook')
+}
