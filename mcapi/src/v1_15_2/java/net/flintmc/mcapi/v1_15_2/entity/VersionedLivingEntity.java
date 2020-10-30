@@ -45,7 +45,6 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
                       + net.minecraft.entity.LivingEntity.class.getName());
     }
 
-    System.out.println("loaded");
     this.livingEntity = (net.minecraft.entity.LivingEntity) entity;
     this.effects = Lists.newArrayList();
   }

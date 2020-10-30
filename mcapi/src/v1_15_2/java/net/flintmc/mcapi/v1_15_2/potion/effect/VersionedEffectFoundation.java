@@ -7,6 +7,7 @@ import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.mapper.EntityMapper;
 import net.flintmc.mcapi.potion.effect.Effect;
 import net.flintmc.mcapi.potion.effect.EffectFoundation;
+import net.minecraft.potion.EffectInstance;
 
 /**
  * 1.15.2 implementation of the {@link EffectFoundation}.
@@ -14,7 +15,7 @@ import net.flintmc.mcapi.potion.effect.EffectFoundation;
 @Implement(value = EffectFoundation.class, version = "1.15.2")
 public class VersionedEffectFoundation implements EffectFoundation {
 
-  //private final EffectInstance effectInstance;
+  private final EffectInstance effectInstance;
   private final Effect potion;
   private final EntityMapper entityMapper;
   private final int duration;
@@ -43,7 +44,7 @@ public class VersionedEffectFoundation implements EffectFoundation {
     this.showParticles = showParticles;
     this.showIcon = showIcon;
     this.entityMapper = entityMapper;
-/*
+
     if (!(effectInstance instanceof EffectInstance)) {
       throw new IllegalArgumentException(
               effectInstance.getClass().getName()
@@ -51,7 +52,7 @@ public class VersionedEffectFoundation implements EffectFoundation {
                       + net.minecraft.potion.EffectInstance.class.getName());
     }
 
-    this.effectInstance = (EffectInstance) effectInstance;*/
+    this.effectInstance = (EffectInstance) effectInstance;
   }
 
   /**
@@ -107,7 +108,7 @@ public class VersionedEffectFoundation implements EffectFoundation {
    */
   @Override
   public void performEffect(LivingEntity entity) {
-    //this.effectInstance.performEffect((net.minecraft.entity.LivingEntity) this.entityMapper.toMinecraftLivingEntity(entity));
+    this.effectInstance.performEffect((net.minecraft.entity.LivingEntity) this.entityMapper.toMinecraftLivingEntity(entity));
   }
 
   /**

@@ -93,10 +93,10 @@ public class VersionedEffect implements Effect {
    * {@inheritDoc}
    */
   @Override
-  public void affectEntity(Entity source, Entity indirectSource, LivingEntity livingEntity, int amplifier, double health) {
+  public void affectEntity(Entity source, Entity attacker, LivingEntity livingEntity, int amplifier, double health) {
     this.effect.affectEntity(
             (net.minecraft.entity.Entity) this.entityMapper.toMinecraftEntity(source),
-            (net.minecraft.entity.Entity) this.entityMapper.toMinecraftEntity(indirectSource),
+            (net.minecraft.entity.Entity) this.entityMapper.toMinecraftEntity(attacker),
             (net.minecraft.entity.LivingEntity) this.entityMapper.toMinecraftLivingEntity(livingEntity),
             amplifier,
             health

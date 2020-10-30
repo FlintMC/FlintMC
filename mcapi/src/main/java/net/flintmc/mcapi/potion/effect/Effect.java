@@ -54,8 +54,23 @@ public interface Effect {
    */
   boolean isReady(int duration, int amplifier);
 
-  void affectEntity(Entity source, Entity indirectSource, LivingEntity livingEntity, int amplifier, double health);
+  /**
+   * Affects the effect on the given {@code livingEntity}.
+   *
+   * @param source       The effect source.
+   * @param attacker     The attacker who applied the effect.
+   * @param livingEntity The entity to witch the effect is to be affected.
+   * @param amplifier    The amplifier of the effect.
+   * @param health       The health of the effect.
+   */
+  void affectEntity(Entity source, Entity attacker, LivingEntity livingEntity, int amplifier, double health);
 
+  /**
+   * Performs the effect on the given {@code livingEntity} with the {@code amplifier}.
+   *
+   * @param livingEntity The entity to which the effect is to be performed.
+   * @param amplifier    The amplifier of the effect.
+   */
   void performEffect(LivingEntity livingEntity, int amplifier);
 
   /**
