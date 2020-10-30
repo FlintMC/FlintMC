@@ -10,27 +10,33 @@ pluginManagement {
         id("net.flintmc.flint-gradle-plugin") version "2.3.3"
     }
 
-    repositories {
-        val labymediaMavenAuthToken: String? by settings
+    buildscript {
+        dependencies {
+            classpath("net.flintmc", "flint-gradle-plugin", "2.3.3")
+        }
+        repositories {
+            val labymediaMavenAuthToken: String? by settings
 
-        maven {
-            setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
-            name = "Gitlab"
-            credentials(HttpHeaderCredentials::class) {
-                if (System.getenv().containsKey("CI_JOB_TOKEN")) {
-                    name = "Job-Token"
-                    value = System.getenv("CI_JOB_TOKEN")
-                } else {
-                    name = "Private-Token"
-                    value = labymediaMavenAuthToken
+            maven {
+                setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
+                name = "Gitlab"
+                credentials(HttpHeaderCredentials::class) {
+                    if (System.getenv().containsKey("CI_JOB_TOKEN")) {
+                        name = "Job-Token"
+                        value = System.getenv("CI_JOB_TOKEN")
+                    } else {
+                        name = "Private-Token"
+                        value = labymediaMavenAuthToken
+                    }
+                }
+                authentication {
+                    create<HttpHeaderAuthentication>("header")
                 }
             }
-            authentication {
-                create<HttpHeaderAuthentication>("header")
-            }
+            mavenCentral()
         }
-        mavenCentral()
     }
+
 }
 
 

@@ -1,7 +1,6 @@
 plugins {
     id("net.flintmc.flint-gradle-plugin")
     id("project-report")
-
 }
 
 fun RepositoryHandler.labymedia() {

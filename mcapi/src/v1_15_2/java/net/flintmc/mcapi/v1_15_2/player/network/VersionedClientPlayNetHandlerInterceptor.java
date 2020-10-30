@@ -22,7 +22,7 @@ public class VersionedClientPlayNetHandlerInterceptor {
   private VersionedClientPlayNetHandlerInterceptor(
       NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
       NetworkPlayerInfo.Factory networkPlayerInfoFactory,
-      GameProfileSerializer<GameProfile> gameProfileGameProfileSerializer) {
+      GameProfileSerializer gameProfileGameProfileSerializer) {
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
     this.networkPlayerInfoFactory = networkPlayerInfoFactory;
     this.gameProfileGameProfileSerializer = gameProfileGameProfileSerializer;
