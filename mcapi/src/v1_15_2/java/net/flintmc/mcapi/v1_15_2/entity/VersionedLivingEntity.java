@@ -3,9 +3,6 @@ package net.flintmc.mcapi.v1_15_2.entity;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.flintmc.attribute.Attribute;
-import net.flintmc.attribute.AttributeFoundation;
-import net.flintmc.attribute.collect.AttributeMap;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.LivingEntity;
@@ -23,7 +20,6 @@ import net.flintmc.mcapi.world.math.BlockPosition;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Random;
@@ -818,22 +814,8 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   }
 
   @Override
-  public AttributeFoundation getAttribute(Attribute attribute) {
-    return null;
-  }
-
-  @Override
-  public AttributeMap<AttributeFoundation> getAttributes() {
-    return null;
-  }
-
-  @Override
   public Collection<EffectFoundation> getActivePotions() {
-    Collection<EffectFoundation> collection = new ArrayList<>();
-    /*for (EffectInstance activePotionEffect : this.livingEntity.getActivePotionEffects()) {
-      collection.add(this.getEntityFoundationMapper().getPotionMapper().fromMinecraftEffectInstance(activePotionEffect));
-    }*/
-    return collection;
+    return this.effects;
   }
 
   /**

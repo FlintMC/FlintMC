@@ -8,9 +8,6 @@ import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.mapper.EntityMapper;
 import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.transform.hook.Hook;
-import net.minecraft.entity.ai.attributes.AttributeMap;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 
 @Singleton
@@ -38,30 +35,6 @@ public class VersionedLivingEntityHook {
 
     LivingEntity flintLivingEntity = this.entityMapper.fromMinecraftLivingEntity(minecraftLivingEntity);
     flintLivingEntity.getActivePotions().add(this.potionMapper.fromMinecraftEffectInstance(effectInstance));
-  }
-
-  @Hook(
-          className = "net.minecraft.entity.LivingEntity",
-          methodName = "onChangedPotionEffect",
-          parameters = {
-                  @Type(reference = EffectInstance.class),
-                  @Type(reference = boolean.class)
-          }
-  )
-  public void hookOnChangedPotionEffect(@Named("instance") Object instance, @Named("args") Object[] args) {
-    net.minecraft.entity.LivingEntity minecraftLivingEntity = (net.minecraft.entity.LivingEntity) instance;
-    EffectInstance effectInstance = (EffectInstance) args[0];
-    boolean reapply = (boolean) args[1];
-
-    LivingEntity flintLivingEntity = this.entityMapper.fromMinecraftLivingEntity(minecraftLivingEntity);
-
-    if(reapply) {
-      Effect effect = effectInstance.getPotion();
-
-      effect.removeAttributesModifiersFromEntity(minecraftLivingEntity,null, effectInstance.getAmplifier());
-    }
-
-
   }
 
   @Hook(

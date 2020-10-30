@@ -1,9 +1,6 @@
 package net.flintmc.mcapi.entity;
 
 import com.google.inject.assistedinject.Assisted;
-import net.flintmc.attribute.Attribute;
-import net.flintmc.attribute.AttributeFoundation;
-import net.flintmc.attribute.collect.AttributeMap;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
@@ -634,10 +631,6 @@ public interface LivingEntity extends Entity {
    * @param hand The hand for the break animation.
    */
   void sendBreakAnimation(Hand hand);
-
-  AttributeFoundation getAttribute(Attribute attribute);
-
-  AttributeMap<AttributeFoundation> getAttributes();
 
   /**
    * Retrieves a collection with all active potions of the living entity.
