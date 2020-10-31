@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(Enum.class)
+@ApplicableSetting(value = Enum.class, type = "dropdown")
 public @interface EnumDropDownSetting {
 
   // index of enum constants from the return type

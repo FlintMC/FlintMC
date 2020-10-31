@@ -1,10 +1,9 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
-import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.options.BooleanSetting;
-import net.labyfy.component.settings.options.numeric.NumericRestriction;
 import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
 
@@ -40,7 +39,7 @@ public interface MouseConfiguration {
    *
    * @return The mouse wheel sensitivity.
    */
-  @SliderSetting(value = @Range(min = 0.01, max = 10, value = NumericRestriction.ALLOW_DECIMALS), defaultValue = 1)
+  @SliderSetting(value = @Range(min = 0.01, max = 10, decimals = 2), defaultValue = 1)
   double getMouseWheelSensitivity();
 
   /**

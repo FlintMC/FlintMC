@@ -1,6 +1,6 @@
 package net.labyfy.component.settings.annotation.ui;
 
-import net.labyfy.component.settings.annotation.Component;
+import net.labyfy.chat.annotation.Component;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,8 +13,10 @@ public @interface DefineCategory {
 
   String name();
 
-  Component displayName();
+  Component[] displayName();
 
-  Component description();
+  Component[] description();
+
+  Icon icon() default @Icon("");
 
 }

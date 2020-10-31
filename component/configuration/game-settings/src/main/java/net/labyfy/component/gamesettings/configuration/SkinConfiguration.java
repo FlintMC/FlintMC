@@ -1,14 +1,13 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.model.PlayerClothing;
-import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Represents the skin configuration.
@@ -41,7 +40,7 @@ public interface SkinConfiguration {
    *
    * @return A collection with all player clothing.
    */
-  Set<PlayerClothing> getPlayerClothing();
+  //Set<PlayerClothing> getPlayerClothing();
   // TODO for booleans like the one in setModelClothingEnabled(PlayerClothing,boolean), a set should also work instead of the map below
 
   Map<PlayerClothing, Boolean> getAllModelClothingEnabled();

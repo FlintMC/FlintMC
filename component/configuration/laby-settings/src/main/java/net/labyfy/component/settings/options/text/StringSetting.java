@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(String.class)
+@ApplicableSetting(value = String.class, type = "string")
 public @interface StringSetting {
 
   StringRestriction[] value() default {};

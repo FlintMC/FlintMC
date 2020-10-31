@@ -9,8 +9,10 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(String.class)
+@ApplicableSetting(value = String.class, type = "dropdown")
 public @interface CustomDropDownSetting {
+
+  // TODO those should not be strings but rather an array of annotations that contain the registryName (also used for defaultValue() and the value in the config), displayName and maybe a description
 
   // length > 1 (at least two values)
   String[] value();

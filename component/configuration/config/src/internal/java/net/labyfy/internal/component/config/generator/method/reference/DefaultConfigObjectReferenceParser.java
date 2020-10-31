@@ -65,6 +65,11 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     CtMethod getter = this.getMethod(declaringImplementation, method.getGetterName());
     CtMethod setter = this.getMethod(declaringImplementation, method.getSetterName());
 
+    if (getter == null || setter == null) {
+      throw new IllegalArgumentException("Setter/Getter for " + method.getConfigName() + " (" + method.getGetterName() + "/" + method.getSetterName()
+          + ") not found in " + declaringImplementation.getName());
+    }
+
     return this.factory.create(pathKeys.toArray(new String[0]),
         methodPath, allMethods.toArray(new CtMethod[0]),
         getter, setter,

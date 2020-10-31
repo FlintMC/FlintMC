@@ -71,27 +71,26 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     ConfigClassLoader classLoader = this.implementationGenerator.getClassLoader();
     GeneratingConfig config = this.configFactory.create(configInterface);
 
-    CtClass implementation = this.generateImplementation(classLoader, configInterface, config);
+    CtClass implementation = this.generateImplementation(configInterface, config);
     if (implementation == null) {
       return null;
     }
 
     this.configImplementer.implementParsedConfig(implementation, config.getName());
 
-    Collection<ConfigObjectReference> references = this.objectReferenceParser.parseAll(config);
+    for (CtClass generated : config.getGeneratedImplementations()) {
+      classLoader.defineClass(generated.getName(), generated.toBytecode());
+    }
 
     ParsedConfig result = (ParsedConfig) classLoader.loadClass(implementation.getName()).getDeclaredConstructor().newInstance();
-    result.getConfigReferences().addAll(references);
-    this.storageProvider.read(result);
 
-    this.discoveredConfigs.put(configInterface.getName(), result);
-    this.eventBus.fireEvent(this.eventFactory.create(result), Subscribe.Phase.POST);
+    this.bindConfig(config, result);
 
     return result;
   }
 
-  private CtClass generateImplementation(ConfigClassLoader classLoader, CtClass configInterface, GeneratingConfig config)
-      throws NotFoundException, CannotCompileException, IOException {
+  private CtClass generateImplementation(CtClass configInterface, GeneratingConfig config)
+      throws NotFoundException, CannotCompileException {
     CtClass implementation = this.implementationGenerator.implementConfig(configInterface, config);
     if (implementation == null) {
       for (ConfigMethod method : config.getAllMethods()) {
@@ -100,16 +99,26 @@ public class DefaultConfigGenerator implements ConfigGenerator {
       return null;
     }
 
-    for (CtClass generated : config.getGeneratedImplementations()) {
-      classLoader.defineClass(generated.getName(), generated.toBytecode());
-    }
-
     return implementation;
   }
 
   @Override
   public Collection<ParsedConfig> getDiscoveredConfigs() {
     return Collections.unmodifiableCollection(this.discoveredConfigs.values());
+  }
+
+  @Override
+  public void bindConfig(GeneratingConfig generatingConfig, ParsedConfig config) throws IllegalStateException {
+    if (this.discoveredConfigs.containsKey(config.getConfigName())) {
+      throw new IllegalStateException("Config with the name " + config.getConfigName() + " is already registered");
+    }
+
+    Collection<ConfigObjectReference> references = this.objectReferenceParser.parseAll(generatingConfig);
+    config.getConfigReferences().addAll(references);
+
+    this.storageProvider.read(config);
+    this.discoveredConfigs.put(config.getConfigName(), config);
+    this.eventBus.fireEvent(this.eventFactory.create(config), Subscribe.Phase.POST);
   }
 
 }

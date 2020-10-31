@@ -7,9 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+// see NumericDisplay
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting({byte.class, short.class, int.class, long.class, double.class, float.class})
+@ApplicableSetting(value = {byte.class, short.class, int.class, long.class, double.class, float.class}, type = "slider")
 public @interface SliderSetting {
 
   Range value();

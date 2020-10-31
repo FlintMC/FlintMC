@@ -7,10 +7,13 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.IncludeStorage;
+import net.labyfy.component.config.event.ConfigValueUpdateEvent;
 import net.labyfy.component.config.generator.ConfigAnnotationCollector;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.config.storage.ConfigStorage;
+import net.labyfy.component.eventbus.EventBus;
+import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 
@@ -38,6 +41,9 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     NUMBER_MAPPINGS.put(Long.class, Number::intValue);
   }
 
+  private final EventBus eventBus;
+  private final ConfigValueUpdateEvent.Factory eventFactory;
+
   private final ConfigAnnotationCollector annotationCollector;
   private final String key;
   private final String[] pathKeys;
@@ -56,12 +62,15 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private Collection<Annotation> allAnnotations;
 
   @AssistedInject
-  private DefaultConfigObjectReference(ConfigAnnotationCollector annotationCollector,
+  private DefaultConfigObjectReference(EventBus eventBus, ConfigValueUpdateEvent.Factory eventFactory,
+                                       ConfigAnnotationCollector annotationCollector,
                                        @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] ctPath,
                                        @Assisted("correspondingMethods") CtMethod[] correspondingCtMethods,
                                        @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,
                                        @Assisted("classLoader") ClassLoader classLoader,
                                        @Assisted("serializedType") Type serializedType) {
+    this.eventBus = eventBus;
+    this.eventFactory = eventFactory;
     this.annotationCollector = annotationCollector;
     this.pathKeys = pathKeys;
     this.key = String.join(".", pathKeys);
@@ -71,6 +80,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.ctSetter = setter;
     this.classLoader = classLoader;
     this.serializedType = serializedType;
+
     this.lastAnnotations = new HashMap<>();
   }
 
@@ -198,14 +208,20 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     if (value instanceof Number) {
       Class<?> type = this.setter.getParameterTypes()[0];
       if (type.isPrimitive()) {
-        type = PrimitiveTypeLoader.getPrimitiveClass(type);
+        type = PrimitiveTypeLoader.getWrappedClass(type);
       }
 
       if (Number.class.isAssignableFrom(type) && NUMBER_MAPPINGS.containsKey(type)) {
         castedValue = NUMBER_MAPPINGS.get(type).apply((Number) value);
       }
     }
+
+    Object previousValue = this.getValue(config);
+    ConfigValueUpdateEvent event = this.eventFactory.create(this, previousValue, castedValue);
+
+    this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
     this.setter.invoke(lastInstance, castedValue);
+    this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 
   private Object getLastInstance(Object baseInstance) throws InvocationTargetException, IllegalAccessException {

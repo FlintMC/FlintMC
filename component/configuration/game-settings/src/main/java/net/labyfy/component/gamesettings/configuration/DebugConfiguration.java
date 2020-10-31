@@ -1,17 +1,10 @@
 package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
-import net.labyfy.component.settings.annotation.Component;
-import net.labyfy.component.settings.annotation.ui.DefineCategory;
 
 /**
  * Represents the debug configuration.
  */
-@DefineCategory(
-    name = "minecraft.settings.debug",
-    displayName = @Component(value = "minecraft.settings.debug.display", translate = true),
-    description = @Component(value = "minecraft.settings.debug.description", translate = true)
-)
 @ImplementedConfig
 public interface DebugConfiguration {
 

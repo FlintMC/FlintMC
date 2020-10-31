@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 // useful for color support in the chat like in LabyMod 3 the chat symbols
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(TextComponent.class)
+@ApplicableSetting(value = TextComponent.class, type = "component")
 public @interface ComponentSetting {
 
   // parsed with the LegacyComponentSerializer

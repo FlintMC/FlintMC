@@ -11,8 +11,6 @@ import net.minecraft.util.HandSide;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 1.15.2 implementation of {@link SkinConfiguration}.
@@ -26,14 +24,14 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
   /**
    * {@inheritDoc}
    */
-  @Override
+/*  @Override
   public Set<PlayerClothing> getPlayerClothing() {
     return Minecraft.getInstance().gameSettings
         .getModelParts()
         .stream()
         .map(this::fromMinecraftObject)
         .collect(Collectors.toSet());
-  }
+  }*/
 
   @Override
   public Map<PlayerClothing, Boolean> getAllModelClothingEnabled() {

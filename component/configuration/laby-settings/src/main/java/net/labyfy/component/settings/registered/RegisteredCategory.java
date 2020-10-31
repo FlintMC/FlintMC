@@ -4,9 +4,13 @@ import com.google.inject.assistedinject.Assisted;
 import net.labyfy.chat.component.ChatComponent;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
-public interface RegisteredCategory extends DescribedElement {
+public interface RegisteredCategory {
 
   String getRegistryName();
+
+  ChatComponent getDisplayName();
+
+  ChatComponent getDescription();
 
   @AssistedFactory(RegisteredCategory.class)
   interface Factory {

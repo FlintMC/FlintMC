@@ -4,6 +4,7 @@ import net.labyfy.component.config.annotation.Config;
 import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.configuration.*;
+import net.labyfy.component.settings.annotation.ui.NativeSetting;
 import net.labyfy.component.world.difficult.Difficulty;
 
 /**
@@ -12,6 +13,7 @@ import net.labyfy.component.world.difficult.Difficulty;
 @Config
 @ImplementedConfig
 @ExcludeStorage("local")
+@NativeSetting
 public interface MinecraftConfiguration {
 
   /**

@@ -1,10 +1,11 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.settings.PointOfView;
 import net.labyfy.component.gamesettings.settings.TutorialSteps;
-import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.annotation.ui.DisplayName;
 import net.labyfy.component.settings.options.BooleanSetting;
 import net.labyfy.component.settings.options.dropdown.CustomDropDownSetting;
 
@@ -25,6 +26,7 @@ public interface AccessibilityConfiguration {
    * @return {@code true} if automatic jumping is activated, otherwise {@code false}.
    */
   @BooleanSetting
+  @DisplayName(@Component(value = "options.autoJump", translate = true))
   boolean isAutoJump();
 
   /**
@@ -80,30 +82,28 @@ public interface AccessibilityConfiguration {
   void setHideServerAddress(boolean hideServerAddress);
 
   /**
-   * Whether the advanced item tooltips is activated.
+   * Whether the advanced item tooltips is activated. In game this can be toggled with F3 + H.
    *
    * @return {@code true} if the advanced item tooltips is activated.
    */
-  @BooleanSetting
   boolean isAdvancedItemTooltips();
 
   /**
-   * Changes the state for the advanced item tooltips.
+   * Changes the state for the advanced item tooltips. In game this can be toggled with F3 + H.
    *
    * @param advancedItemTooltips The new state for the advanced item tooltips.
    */
   void setAdvancedItemTooltips(boolean advancedItemTooltips);
 
   /**
-   * Whether the focus should be lost during the pause.
+   * Whether the focus should be lost during the pause. In game this can be toggled with F3 + P.
    *
    * @return {@code true} if the focus should be lost during the pause, otherwise {@code false}.
    */
-  @BooleanSetting(defaultValue = true)
   boolean isPauseOnLostFocus();
 
   /**
-   * Changes the state to lost the focus on pause.
+   * Changes the state to lost the focus on pause. In game this can be toggled with F3 + P.
    *
    * @param pauseOnLostFocus The new state for the pause.
    */
@@ -144,7 +144,6 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if the native transport can be used, otherwise {@code false}.
    */
-  @BooleanSetting(defaultValue = true)
   boolean isUseNativeTransport();
 
   /**
@@ -174,6 +173,7 @@ public interface AccessibilityConfiguration {
    * @return {@code true} if the snooper is activated, otherwise {@code false}.
    */
   @BooleanSetting
+  @DisplayName(@Component(value = "options.snooper", translate = true))
   boolean isSnooper();
 
   /**
@@ -235,6 +235,7 @@ public interface AccessibilityConfiguration {
       displayName = @Component(value = "minecraft.settings.language.display", translate = true),
       description = @Component(value = "minecraft.settings.language.description", translate = true)
   )
+  @DisplayName(@Component(value = "options.language", translate = true))
   @CustomDropDownSetting("")
   // TODO add provider for the array to get the languages dynamically from the game
   String getLanguage();
@@ -265,6 +266,7 @@ public interface AccessibilityConfiguration {
    *
    * @return {@code true} if subtitles should be displayed, otherwise {@code false}.
    */
+  @DisplayName(@Component(value = "options.showSubtitles", translate = true))
   boolean isShowSubtitles();
 
   /**

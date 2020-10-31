@@ -1,5 +1,6 @@
 package net.labyfy.internal.component.settings.options.service;
 
+import com.google.gson.JsonObject;
 import com.google.inject.Singleton;
 import javassist.CtClass;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
@@ -10,6 +11,7 @@ import net.labyfy.component.processing.autoload.identifier.Identifier;
 import net.labyfy.component.settings.annotation.ApplicableSetting;
 import net.labyfy.component.settings.mapper.RegisterSettingHandler;
 import net.labyfy.component.settings.mapper.SettingHandler;
+import net.labyfy.component.settings.registered.RegisteredSetting;
 import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
@@ -39,7 +41,7 @@ public class SettingHandlerService implements SettingHandler<Annotation>, Servic
   public Object getDefaultValue(Annotation annotation, ConfigObjectReference reference) {
     this.processPendingHandlers();
 
-    SettingHandler handler = this.handlers.get(annotation.annotationType());
+    SettingHandler<Annotation> handler = this.getHandler(annotation);
     if (handler == null) {
       try {
         return annotation.annotationType().getDeclaredMethod("defaultValue").invoke(annotation);
@@ -53,11 +55,16 @@ public class SettingHandlerService implements SettingHandler<Annotation>, Servic
   }
 
   @Override
+  public JsonObject serialize(Annotation annotation, RegisteredSetting setting) {
+    SettingHandler<Annotation> handler = this.getHandler(annotation);
+    return handler == null ? new JsonObject() : handler.serialize(annotation, setting);
+  }
+
+  @Override
   public boolean isValidInput(Object input, ConfigObjectReference reference, Annotation annotation) {
     this.processPendingHandlers();
 
-    SettingHandler handler = this.handlers.get(annotation.annotationType());
-
+    SettingHandler<Annotation> handler = this.getHandler(annotation);
     return handler == null || handler.isValidInput(input, reference, annotation);
   }
 
@@ -91,4 +98,9 @@ public class SettingHandlerService implements SettingHandler<Annotation>, Servic
 
     this.pendingHandlers.put(annotationType, type);
   }
+
+  private <A extends Annotation> SettingHandler<A> getHandler(A annotation) {
+    return this.handlers.get(annotation.annotationType());
+  }
+
 }

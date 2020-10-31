@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(PhysicalKey.class)
+@ApplicableSetting(value = PhysicalKey.class, type = "keybind")
 public @interface KeyBindSetting {
 
   PhysicalKey defaultValue() default PhysicalKey.UNKNOWN;

@@ -4,7 +4,9 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.labyfy.component.config.annotation.Config;
+import net.labyfy.component.config.event.ConfigDiscoveredEvent;
 import net.labyfy.component.config.generator.method.ConfigObjectReference.Parser;
+import net.labyfy.component.config.storage.ConfigStorageProvider;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -41,5 +43,20 @@ public interface ConfigGenerator {
    * @return An unmodifiable collection of all generated configs
    */
   Collection<ParsedConfig> getDiscoveredConfigs();
+
+  /**
+   * Adds the given config to the {@link #getDiscoveredConfigs()} collection and fills the {@link
+   * ParsedConfig#getConfigReferences()} references} with the references parsed from the given {@link GeneratingConfig}.
+   * Additionally, the config filled with the references will be forwareded to {@link
+   * ConfigStorageProvider#read(ParsedConfig)} to fill the config with values from the storages and the {@link
+   * ConfigDiscoveredEvent} will be fired.
+   *
+   * @param generatingConfig The non-null generating config with all methods to parse the references from to register
+   *                         the config
+   * @param config           The non-null config to be registered
+   * @throws IllegalStateException If a config with the {@link ParsedConfig#getConfigName() given name} is already
+   *                               registered
+   */
+  void bindConfig(GeneratingConfig generatingConfig, ParsedConfig config) throws IllegalStateException;
 
 }

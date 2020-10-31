@@ -18,6 +18,12 @@ public class DefaultConfigImplementer implements ConfigImplementer {
 
   @Override
   public void implementParsedConfig(CtClass implementation, String name) throws NotFoundException, CannotCompileException {
+    for (CtClass anInterface : implementation.getInterfaces()) {
+      if (anInterface.getName().equalsIgnoreCase(ParsedConfig.class.getName())) {
+        return;
+      }
+    }
+
     implementation.addInterface(this.pool.get(ParsedConfig.class.getName()));
 
     CtField referencesField = CtField.make("private final transient java.util.Collection references = new java.util.HashSet();", implementation);

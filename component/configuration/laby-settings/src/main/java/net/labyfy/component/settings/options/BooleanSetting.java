@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(boolean.class)
+@ApplicableSetting(value = boolean.class, type = "boolean")
 public @interface BooleanSetting {
 
   boolean defaultValue() default false;

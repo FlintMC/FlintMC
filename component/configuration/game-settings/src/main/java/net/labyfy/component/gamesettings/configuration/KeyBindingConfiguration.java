@@ -1,9 +1,9 @@
 package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.Keybind;
+import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.KeyBinding;
-import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.options.keybind.PhysicalKey;
 

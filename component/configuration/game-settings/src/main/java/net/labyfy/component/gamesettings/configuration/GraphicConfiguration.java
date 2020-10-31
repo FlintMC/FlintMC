@@ -1,14 +1,16 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.settings.*;
-import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.annotation.ui.DisplayName;
 import net.labyfy.component.settings.options.BooleanSetting;
 import net.labyfy.component.settings.options.dropdown.CustomDropDownSetting;
 import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
 import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
+import net.labyfy.component.settings.options.numeric.display.NumericDisplay;
 
 /**
  * Represents the graphic configuration.
@@ -55,6 +57,7 @@ public interface GraphicConfiguration {
    * @return The particles status.
    */
   @EnumDropDownSetting(defaultValue = 0 /* ALL */)
+  @DisplayName(@Component(value = "options.particles", translate = true))
   ParticleStatus getParticles();
 
   /**
@@ -70,6 +73,9 @@ public interface GraphicConfiguration {
    * @return The field of view.
    */
   @SliderSetting(@Range(min = 30, max = 110))
+  @DisplayName(@Component(value = "options.fov", translate = true))
+  @NumericDisplay(value = 70, display = @Component(value = "options.fov.min", translate = true))
+  @NumericDisplay(value = 110, display = @Component(value = "options.fov.max", translate = true))
   double getFov();
 
   /**
@@ -113,6 +119,7 @@ public interface GraphicConfiguration {
    * @return {@code true} if the view is bobbing, otherwise {@code false}.
    */
   @BooleanSetting(defaultValue = true)
+  @DisplayName(@Component(value = "options.viewBobbing", translate = true))
   boolean isViewBobbing();
 
   /**
@@ -128,6 +135,7 @@ public interface GraphicConfiguration {
    * @return {@code true} if the screen is in full screen mode, otherwise {@code false}.
    */
   @BooleanSetting
+  @DisplayName(@Component(value = "options.fullscreen", translate = true))
   boolean isFullscreen();
 
   /**
@@ -143,6 +151,7 @@ public interface GraphicConfiguration {
    * @return {@code true} if VSync is enabled.
    */
   @BooleanSetting
+  @DisplayName(@Component(value = "options.vsync", translate = true))
   boolean isVsync();
 
   /**
@@ -158,6 +167,7 @@ public interface GraphicConfiguration {
    * @return The biome blend radius.
    */
   @SliderSetting(@Range(max = 15))
+  @DisplayName(@Component(value = "options.biomeBlendRadius", translate = true))
   int getBiomeBlendRadius();
 
   /**
@@ -173,6 +183,7 @@ public interface GraphicConfiguration {
    * @return The attack indicator status.
    */
   @EnumDropDownSetting(defaultValue = 1 /* CROSSHAIR */)
+  @DisplayName(@Component(value = "options.attackIndicator", translate = true))
   AttackIndicatorStatus getAttackIndicator();
 
   /**
@@ -188,6 +199,7 @@ public interface GraphicConfiguration {
    * @return The mipmap levels.
    */
   @SliderSetting(@Range(max = 4))
+  @DisplayName(@Component(value = "options.mipmapLevels", translate = true))
   int getMipmapLevels();
 
   /**
@@ -203,6 +215,7 @@ public interface GraphicConfiguration {
    * @return The current cloud option.
    */
   @EnumDropDownSetting(defaultValue = 2 /* FANCY */)
+  @DisplayName(@Component(value = "options.renderClouds", translate = true))
   CloudOption getCloudOption();
 
   /**
@@ -212,12 +225,14 @@ public interface GraphicConfiguration {
    */
   void setCloudOption(CloudOption cloudOption);
 
+  // TODO replace drop down with the select thingy by MC
   /**
    * Retrieves the graphic mode.
    *
    * @return The current graphic mode.
    */
   @EnumDropDownSetting(defaultValue = 1 /* FANCY */)
+  @DisplayName(@Component(value = "options.graphics", translate = true))
   GraphicsFanciness getGraphicsFanciness();
 
   /**
@@ -247,6 +262,7 @@ public interface GraphicConfiguration {
    * @return The chunks render distance.
    */
   @SliderSetting(value = @Range(min = 2, max = 32), defaultValue = 8)
+  @DisplayName(@Component(value = "options.renderDistance", translate = true))
   int getRenderDistanceChunks();
 
   /**
@@ -276,6 +292,7 @@ public interface GraphicConfiguration {
    * @return The framerate limit.
    */
   @SliderSetting(@Range(min = 10, max = 260 /* 260 = unlimited */))
+  @DisplayName(@Component(value = "options.framerateLimit", translate = true))
   int getFramerateLimit();
 
   /**

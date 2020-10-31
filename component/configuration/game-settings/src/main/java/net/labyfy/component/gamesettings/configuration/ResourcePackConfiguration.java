@@ -1,7 +1,7 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
-import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 
 import java.util.List;

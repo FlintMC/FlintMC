@@ -1,10 +1,11 @@
 package net.labyfy.component.gamesettings.configuration;
 
+import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.settings.ChatVisibility;
 import net.labyfy.component.gamesettings.settings.NarratorStatus;
-import net.labyfy.component.settings.annotation.Component;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.annotation.ui.DisplayName;
 import net.labyfy.component.settings.options.BooleanSetting;
 import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
 import net.labyfy.component.settings.options.numeric.Range;
@@ -26,8 +27,9 @@ public interface ChatConfiguration {
    *
    * @return The chat scale.
    */
-  @SliderSetting(value = @Range(max = 100), defaultValue = 100)
   // percent
+  @SliderSetting(value = @Range(max = 100), defaultValue = 100)
+  @DisplayName(@Component(value = "options.chat.scale", translate = true))
   double getChatScale();
 
   /**
@@ -42,8 +44,9 @@ public interface ChatConfiguration {
    *
    * @return The chat width.
    */
-  @SliderSetting(value = @Range(min = 40, max = 320), defaultValue = 320)
   // pixels
+  @SliderSetting(value = @Range(min = 40, max = 320), defaultValue = 320)
+  @DisplayName(@Component(value = "options.chat.width", translate = true))
   double getChatWidth();
 
   /**
@@ -58,8 +61,9 @@ public interface ChatConfiguration {
    *
    * @return The max height that the chat is allowed to appear normally.
    */
-  @SliderSetting(value = @Range(min = 20, max = 180), defaultValue = 180)
   // pixels
+  @SliderSetting(value = @Range(min = 20, max = 180), defaultValue = 180)
+  @DisplayName(@Component(value = "options.chat.height.unfocused", translate = true))
   double getChatHeightUnfocused();
 
   /**
@@ -74,8 +78,9 @@ public interface ChatConfiguration {
    *
    * @return The max height that the chat is allowed to appear when in focus.
    */
-  @SliderSetting(value = @Range(min = 20, max = 180), defaultValue = 180)
   // pixels
+  @SliderSetting(value = @Range(min = 20, max = 180), defaultValue = 180)
+  @DisplayName(@Component(value = "options.chat.height.focused", translate = true))
   double getChatHeightFocused();
 
   /**
@@ -105,6 +110,7 @@ public interface ChatConfiguration {
    * @return {@code true} if colors are displayed in the chat, otherwise {@code false}.
    */
   @BooleanSetting(defaultValue = true)
+  @DisplayName(@Component(value = "options.chat.color", translate = true))
   boolean isChatColor();
 
   /**
@@ -120,6 +126,7 @@ public interface ChatConfiguration {
    * @return {@code true} if links can be seen in the chat, otherwise {@code false}.
    */
   @BooleanSetting(defaultValue = true)
+  @DisplayName(@Component(value = "options.chat.links", translate = true))
   boolean isChatLinks();
 
   /**
@@ -136,6 +143,7 @@ public interface ChatConfiguration {
    * @return {@code true} if forces a prompt, otherwise {@code false}.
    */
   @BooleanSetting(defaultValue = true)
+  @DisplayName(@Component(value = "options.chat.links.prompt", translate = true))
   boolean isChatLinksPrompt();
 
   /**
@@ -152,6 +160,7 @@ public interface ChatConfiguration {
    * @return The chat visibility.
    */
   @EnumDropDownSetting(defaultValue = 0 /* FULL */)
+  @DisplayName(@Component(value = "options.chat.visibility", translate = true))
   ChatVisibility getChatVisibility();
 
   /**
@@ -166,8 +175,9 @@ public interface ChatConfiguration {
    *
    * @return The chat opacity.
    */
-  @SliderSetting(value = @Range(min = 10, max = 100), defaultValue = 100)
   // percent
+  @SliderSetting(value = @Range(min = 10, max = 100), defaultValue = 100)
+  @DisplayName(@Component(value = "options.chat.opacity", translate = true))
   double getChatOpacity();
 
   /**
@@ -197,6 +207,7 @@ public interface ChatConfiguration {
    * @return The current narrator status.
    */
   @EnumDropDownSetting(defaultValue = 0 /* OFF */)
+  @DisplayName(@Component(value = "options.narrator", translate = true))
   NarratorStatus getNarrator();
 
   /**
@@ -212,6 +223,7 @@ public interface ChatConfiguration {
    * @return {@code true} if command suggestions show up, otherwise {@code false}.
    */
   @BooleanSetting
+  @DisplayName(@Component(value = "options.autoSuggestCommands", translate = true))
   boolean isAutoSuggestCommands();
 
   /**
@@ -227,6 +239,7 @@ public interface ChatConfiguration {
    * @return {@code true} if reduced information should be displayed, otherwise {@code false}.
    */
   @BooleanSetting
+  @DisplayName(@Component(value = "options.reducedDebugInfo", translate = true))
   boolean isReducedDebugInfo();
 
   /**
@@ -241,8 +254,9 @@ public interface ChatConfiguration {
    *
    * @return The opacity of the background.
    */
-  @SliderSetting(value = @Range(max = 100), defaultValue = 100)
   // pixels
+  @SliderSetting(value = @Range(max = 100), defaultValue = 100)
+  @DisplayName(@Component(value = "options.accessibility.text_background_opacity", translate = true))
   double getAccessibilityTextBackgroundOpacity();
 
   /**

@@ -5,6 +5,7 @@ import javassist.NotFoundException;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
+import net.labyfy.component.stereotype.service.CtResolver;
 
 import java.util.Collection;
 import java.util.Map;
@@ -84,17 +85,13 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
   }
 
   protected Class<?> loadImplementationOrDefault(CtClass superClass) {
-    ClassLoader classLoader = this.config.getClassLoader();
     CtClass implementation = this.config.getGeneratedImplementation(superClass.getName());
-    String name = (implementation != null ? implementation : superClass).getName();
 
-    try {
-      return PrimitiveTypeLoader.loadClass(classLoader, name);
-    } catch (ClassNotFoundException e) {
-      String methodName = String.join(".", this.getPathPrefix()) + "." + this.getConfigName();
-      throw new IllegalArgumentException("Failed to load class " + name + " for method " + methodName + " in config "
-          + this.config.getName());
+    Class<?> primitiveType = PrimitiveTypeLoader.getWrappedClass(superClass.getName());
+    if (primitiveType != null) { // primitive classes can't be loaded with the ClassLoader
+      return primitiveType;
     }
+    return CtResolver.get(implementation != null ? implementation : superClass);
   }
 
 }

@@ -9,6 +9,7 @@ import javassist.CtField;
 import javassist.NotFoundException;
 import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
+import net.labyfy.component.config.generator.ConfigImplementer;
 import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.config.storage.ConfigStorageProvider;
 import net.labyfy.component.inject.primitive.InjectionHolder;
@@ -20,7 +21,6 @@ import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -28,19 +28,22 @@ import java.util.Map;
 @Service(value = ConfigImplementation.class, priority = 2 /* needs to be called after the ConfigGenerationService */)
 public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
 
+  private final ConfigImplementer configImplementer;
+
   private final Collection<ConfigMethod> pendingTransforms;
-  private final Map<Class<?>, Class<?>> mappings;
+  private final Collection<TransformedConfigMeta> mappings;
   private final Map<String, String> launchArguments;
 
   @Inject
-  public ConfigTransformer(@Named("launchArguments") Map launchArguments) {
+  public ConfigTransformer(ConfigImplementer configImplementer, @Named("launchArguments") Map launchArguments) {
+    this.configImplementer = configImplementer;
     this.launchArguments = launchArguments;
 
     this.pendingTransforms = new HashSet<>();
-    this.mappings = new HashMap<>();
+    this.mappings = new HashSet<>();
   }
 
-  public Map<Class<?>, Class<?>> getMappings() {
+  public Collection<TransformedConfigMeta> getMappings() {
     return this.mappings;
   }
 
@@ -76,8 +79,19 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
     }
 
     try {
+      TransformedConfigMeta configMeta = new TransformedConfigMeta(annotation.value());
+      this.mappings.add(configMeta);
+
+      // load the class so that the transformer will be called
       Class<?> definedImplementation = ConfigTransformer.class.getClassLoader().loadClass(implementation.getName());
-      this.mappings.put(annotation.value(), definedImplementation);
+      configMeta.setImplementationClass(definedImplementation);
+
+      if (configMeta.getConfig() == null) {
+        return;
+      }
+
+      // bind the implementation in the config to be used by the ConfigObjectReference.Parser
+      configMeta.getConfig().bindGeneratedImplementation(configMeta.getSuperClass().getName(), implementation);
     } catch (ClassNotFoundException e) {
       throw new ServiceNotFoundException("Cannot load transformed config class");
     }
@@ -100,6 +114,17 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
       if (!modified) {
         implementation.addField(CtField.make("private final transient " + ConfigStorageProvider.class.getName() + " configStorageProvider = "
             + InjectionHolder.class.getName() + ".getInjectedInstance(" + ConfigStorageProvider.class.getName() + ".class);", implementation));
+
+        if (method.getDeclaringClass().getName().equals(method.getConfig().getBaseClass().getName())) {
+          // only the base class annotated with @Config should have the ParsedConfig implementation
+          this.configImplementer.implementParsedConfig(implementation, method.getConfig().getName());
+        }
+
+        for (TransformedConfigMeta meta : this.mappings) {
+          if (meta.getConfig() == null && meta.getSuperClass().getName().equals(declaring.getName())) {
+            meta.setConfig(method.getConfig());
+          }
+        }
       }
 
       method.implementExistingMethods(implementation);

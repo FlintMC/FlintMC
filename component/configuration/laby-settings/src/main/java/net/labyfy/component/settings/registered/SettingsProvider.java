@@ -1,11 +1,10 @@
 package net.labyfy.component.settings.registered;
 
 import net.labyfy.component.config.generator.ParsedConfig;
+import net.labyfy.component.config.generator.method.ConfigObjectReference;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-
-// TODO add the possibility to block specific settings ("button grayed out")
 
 public interface SettingsProvider {
 
@@ -22,5 +21,11 @@ public interface SettingsProvider {
   <A extends Annotation> Collection<RegisteredSetting> getSettings(Class<A> annotationType);
 
   Collection<RegisteredSetting> getSettings(ParsedConfig config);
+
+  RegisteredSetting getSetting(ConfigObjectReference reference);
+
+  // the key from the config reference (+ example)
+  // case-sensitive
+  RegisteredSetting getSetting(String key);
 
 }

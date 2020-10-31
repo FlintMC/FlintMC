@@ -1,12 +1,15 @@
 package net.labyfy.component.stereotype;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class PrimitiveTypeLoader {
 
   private static final Map<String, Class<?>> PRIMITIVE_TYPES;
-  private static final Map<Class<?>, Class<?>> PRIMITIVE_MAPPINGS;
+  private static final BiMap<Class<?>, Class<?>> PRIMITIVE_MAPPINGS;
 
   static {
     PRIMITIVE_TYPES = new HashMap<>();
@@ -20,7 +23,7 @@ public class PrimitiveTypeLoader {
     PRIMITIVE_TYPES.put("float", Float.TYPE);
     PRIMITIVE_TYPES.put("void", Void.TYPE);
 
-    PRIMITIVE_MAPPINGS = new HashMap<>();
+    PRIMITIVE_MAPPINGS = HashBiMap.create();
     PRIMITIVE_MAPPINGS.put(Boolean.TYPE, Boolean.class);
     PRIMITIVE_MAPPINGS.put(Byte.TYPE, Byte.class);
     PRIMITIVE_MAPPINGS.put(Character.TYPE, Character.class);
@@ -36,8 +39,17 @@ public class PrimitiveTypeLoader {
     return PRIMITIVE_TYPES.containsKey(name) ? PRIMITIVE_TYPES.get(name) : classLoader.loadClass(name);
   }
 
-  public static Class<?> getPrimitiveClass(Class<?> primitiveType) {
+  public static Class<?> getPrimitiveClass(Class<?> wrappedType) {
+    return PRIMITIVE_MAPPINGS.inverse().get(wrappedType);
+  }
+
+  public static Class<?> getWrappedClass(Class<?> primitiveType) {
     return PRIMITIVE_MAPPINGS.get(primitiveType);
+  }
+
+  public static Class<?> getWrappedClass(String name) {
+    Class<?> type = PRIMITIVE_TYPES.get(name);
+    return type != null ? PRIMITIVE_MAPPINGS.get(type) : null;
   }
 
 }
