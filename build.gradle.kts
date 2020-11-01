@@ -29,16 +29,10 @@ repositories {
     mavenCentral()
 }
 
-flint {
-    projectFilter { !arrayOf("annotation-processing", "autoload").contains(it.name) }
-    minecraftVersions("1.15.2", "1.16.3")
-    runs{
-        overrideMainClass ("net.flintmc.launcher.FlintLauncher")
-    }
-}
 
 subprojects {
     plugins.withId("java") {
+        version = "1.2.3"
         repositories {
             labymedia()
             mavenCentral()
@@ -49,7 +43,7 @@ subprojects {
 allprojects {
     configurations.all {
         resolutionStrategy {
-            force( "org.apache.logging.log4j:log4j-api:2.8.2")
+            force("org.apache.logging.log4j:log4j-api:2.8.2")
             force("com.google.guava:guava:27.0.1-jre")
             force("org.apache.commons:commons-lang3:3.10")
             force("org.apache.logging.log4j:log4j-core:2.8.2")
@@ -61,5 +55,13 @@ allprojects {
             force("commons-codec:commons-codec:1.10")
             force("com.beust:jcommander:1.78")
         }
+    }
+}
+
+flint {
+    projectFilter { true }
+    minecraftVersions("1.15.2", "1.16.3")
+    runs {
+        overrideMainClass("net.flintmc.launcher.FlintLauncher")
     }
 }

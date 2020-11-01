@@ -4,6 +4,10 @@ plugins {
 
 group = "net.flintmc"
 
+flint {
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+}
+
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
@@ -19,12 +23,4 @@ dependencies {
 
     internalImplementation("com.google.code.gson", "gson", "2.8.6")
 
-    flint(project(":framework:framework-inject"))
-    flint(project(":framework:framework-inject", "internal"))
-    flint(project(":framework:framework-service"))
-    flint(project(":framework:framework-stereotype"))
-    flint(project(":framework:framework-stereotype", "internal"))
-    flint(project(":util:util-commons"))
-
-    flint("com.google.code.gson", "gson", "2.8.6")
 }

@@ -4,6 +4,10 @@ plugins {
 
 group = "net.flintmc"
 
+flint {
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+}
+
 dependencies {
     api("org.joml", "joml", "1.9.25")
     api("com.google.inject", "guice", "4.2.0")

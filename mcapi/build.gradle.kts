@@ -4,6 +4,10 @@ plugins {
 
 group = "net.flintmc"
 
+flint {
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+}
+
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
@@ -17,5 +21,4 @@ dependencies {
     api(project(":transform:transform-shadow"))
 
     api("com.google.code.gson", "gson", "2.8.6")
-
 }

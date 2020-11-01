@@ -15,8 +15,9 @@ pluginManagement {
             classpath("net.flintmc", "flint-gradle-plugin", "2.3.3")
         }
         repositories {
+            mavenLocal()
             val labymediaMavenAuthToken: String? by settings
-
+/*
             maven {
                 setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
                 name = "Gitlab"
@@ -32,7 +33,7 @@ pluginManagement {
                 authentication {
                     create<HttpHeaderAuthentication>("header")
                 }
-            }
+            }*/
             mavenCentral()
         }
     }

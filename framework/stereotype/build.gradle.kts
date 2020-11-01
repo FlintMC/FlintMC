@@ -4,6 +4,10 @@ plugins {
 
 group = "net.flintmc"
 
+flint {
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+}
+
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
@@ -19,13 +23,4 @@ dependencies {
     api("org.codehaus.groovy", "groovy-all", "3.0.2")
     api("org.javassist", "javassist", "3.25.0-GA")
 
-    flint(project(":annotation-processing:annotation-processing-autoload"))
-    flint(project(":framework:framework-inject-primitive"))
-    flint(project(":launcher"))
-    flint(project(":util:util-commons"))
-
-    flint("com.google.guava", "guava", "21.0")
-    flint("com.google.inject", "guice", "4.2.0")
-    flint("org.apache.commons", "commons-lang3", "3.9")
-    flint("org.codehaus.groovy", "groovy-all", "3.0.2")
 }

@@ -4,6 +4,10 @@ plugins {
 
 group = "net.flintmc"
 
+flint {
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+}
+
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
@@ -15,10 +19,4 @@ dependencies {
     api("org.eclipse.collections", "eclipse-collections", "8.2.1")
 
     v1_15_2Implementation(project(":transform:transform-javassist"))
-
-    flint(project(":framework:framework-stereotype"))
-    flint(project(":framework:framework-inject"))
-    flint(project(":transform:transform-javassist"))
-
-    flint("org.eclipse.collections", "eclipse-collections", "8.2.1")
 }

@@ -4,6 +4,10 @@ plugins {
 
 group = "net.flintmc"
 
+flint {
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+}
+
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
@@ -14,5 +18,4 @@ dependencies {
     internalImplementation(project(":framework:framework-tasks"))
 
     v1_15_2Implementation(project(":annotation-processing:annotation-processing-autoload"))
-
 }
