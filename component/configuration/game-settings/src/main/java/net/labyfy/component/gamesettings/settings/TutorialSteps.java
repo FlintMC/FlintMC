@@ -14,8 +14,8 @@ public enum TutorialSteps {
 
   private final String name;
 
-  TutorialSteps(String nameIn) {
-    this.name = nameIn;
+  TutorialSteps(String name) {
+    this.name = name;
   }
 
   public String getName() {

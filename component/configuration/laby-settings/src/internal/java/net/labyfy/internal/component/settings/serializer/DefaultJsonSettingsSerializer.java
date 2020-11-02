@@ -43,28 +43,34 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
     JsonArray array = new JsonArray();
 
     for (RegisteredSetting setting : this.provider.getAllSettings()) {
-      JsonObject object = this.handler.serialize(setting.getAnnotation(), setting);
-      array.add(object);
-
-      ApplicableSetting applicableSetting = setting.getAnnotation().annotationType().getAnnotation(ApplicableSetting.class);
-      object.addProperty("type", applicableSetting.type());
-
-      object.addProperty("name", setting.getReference().getKey());
-      object.addProperty("enabled", setting.isEnabled());
-
-      for (RegisteredSettingsSerializer serializer : this.serializers) {
-        Annotation annotation = setting.getReference().findLastAnnotation(serializer.getAnnotationType());
-        serializer.getHandler().append(object, setting, annotation);
-      }
-
-      object.addProperty("category", setting.getCategoryName());
-
-      if (setting.isNative()) {
-        object.addProperty("native", true);
-      }
+      array.add(this.serializeSetting(setting));
     }
 
     return array;
+  }
+
+  @Override
+  public JsonObject serializeSetting(RegisteredSetting setting) {
+    JsonObject object = this.handler.serialize(setting.getAnnotation(), setting);
+
+    ApplicableSetting applicableSetting = setting.getAnnotation().annotationType().getAnnotation(ApplicableSetting.class);
+    object.addProperty("type", applicableSetting.type());
+
+    object.addProperty("name", setting.getReference().getKey());
+    object.addProperty("enabled", setting.isEnabled());
+
+    for (RegisteredSettingsSerializer serializer : this.serializers) {
+      Annotation annotation = setting.getReference().findLastAnnotation(serializer.getAnnotationType());
+      serializer.getHandler().append(object, setting, annotation);
+    }
+
+    object.addProperty("category", setting.getCategoryName());
+
+    if (setting.isNative()) {
+      object.addProperty("native", true);
+    }
+
+    return object;
   }
 
   @Override
@@ -72,16 +78,21 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
     JsonObject result = new JsonObject();
 
     for (RegisteredCategory category : this.provider.getCategories()) {
-      JsonObject object = new JsonObject();
-
-      Gson gson = this.serializerFactory.gson().getGson();
-      object.add("displayName", gson.toJsonTree(category.getDisplayName()));
-      object.add("description", gson.toJsonTree(category.getDescription()));
-
-      result.add(category.getRegistryName(), object);
+      result.add(category.getRegistryName(), this.serializeCategory(category));
     }
 
     return result;
+  }
+
+  @Override
+  public JsonObject serializeCategory(RegisteredCategory category) {
+    JsonObject object = new JsonObject();
+
+    Gson gson = this.serializerFactory.gson().getGson();
+    object.add("displayName", gson.toJsonTree(category.getDisplayName()));
+    object.add("description", gson.toJsonTree(category.getDescription()));
+
+    return object;
   }
 
   @Override

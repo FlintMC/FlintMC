@@ -1,21 +1,20 @@
 package net.labyfy.component.gamesettings.settings;
 
+import net.labyfy.chat.annotation.Component;
+import net.labyfy.component.settings.annotation.ui.DisplayName;
+
 /**
  * An enumeration representing ambient occlusion statuses.
  */
 public enum AmbientOcclusionStatus {
 
-  OFF("options.ao.off"),
-  MIN("options.ao.min"),
-  MAX("options.ao.max");
+  @DisplayName(@Component(value = "options.ao.off", translate = true))
+  OFF(),
 
-  private final String resourceKey;
+  @DisplayName(@Component(value = "options.ao.min", translate = true))
+  MIN(),
 
-  AmbientOcclusionStatus(String resourceKey) {
-    this.resourceKey = resourceKey;
-  }
+  @DisplayName(@Component(value = "options.ao.max", translate = true))
+  MAX()
 
-  public String getResourceKey() {
-    return resourceKey;
-  }
 }

@@ -11,6 +11,7 @@ import net.labyfy.component.config.event.ConfigValueUpdateEvent;
 import net.labyfy.component.config.generator.ConfigAnnotationCollector;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
+import net.labyfy.component.config.modifier.ConfigModifierRegistry;
 import net.labyfy.component.config.storage.ConfigStorage;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
@@ -21,10 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Implement(ConfigObjectReference.class)
@@ -43,6 +41,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   private final EventBus eventBus;
   private final ConfigValueUpdateEvent.Factory eventFactory;
+
+  private final ConfigModifierRegistry modifierRegistry;
 
   private final ConfigAnnotationCollector annotationCollector;
   private final String key;
@@ -63,7 +63,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   @AssistedInject
   private DefaultConfigObjectReference(EventBus eventBus, ConfigValueUpdateEvent.Factory eventFactory,
-                                       ConfigAnnotationCollector annotationCollector,
+                                       ConfigModifierRegistry modifierRegistry, ConfigAnnotationCollector annotationCollector,
                                        @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] ctPath,
                                        @Assisted("correspondingMethods") CtMethod[] correspondingCtMethods,
                                        @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,
@@ -71,6 +71,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
                                        @Assisted("serializedType") Type serializedType) {
     this.eventBus = eventBus;
     this.eventFactory = eventFactory;
+    this.modifierRegistry = modifierRegistry;
     this.annotationCollector = annotationCollector;
     this.pathKeys = pathKeys;
     this.key = String.join(".", pathKeys);
@@ -95,6 +96,12 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   }
 
   @Override
+  public Class<?> getDeclaringClass() {
+    this.ensureGetterAvailable();
+    return this.getter.getDeclaringClass();
+  }
+
+  @Override
   public Type getSerializedType() {
     return this.serializedType;
   }
@@ -102,7 +109,11 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   @Override
   public <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType) {
     if (this.lastAnnotations.containsKey(annotationType)) {
-      return (A) this.lastAnnotations.get(annotationType);
+      Annotation annotation = this.lastAnnotations.get(annotationType);
+      if (annotation != null) {
+        annotation = this.modifierRegistry.modify(this, annotation);
+      }
+      return (A) annotation;
     }
 
     this.mapCorrespondingMethods();
@@ -117,13 +128,27 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   @Override
   public Collection<Annotation> findAllAnnotations() {
     if (this.allAnnotations != null) {
-      return this.allAnnotations;
+      return this.modifyAnnotations(this.allAnnotations);
     }
 
     this.mapCorrespondingMethods();
 
-    return this.allAnnotations =
-        Collections.unmodifiableCollection(this.annotationCollector.findAllAnnotations(this.correspondingMethods));
+    Collection<Annotation> annotations = this.annotationCollector.findAllAnnotations(this.correspondingMethods);
+
+    return this.modifyAnnotations(this.allAnnotations = annotations);
+  }
+
+  private Collection<Annotation> modifyAnnotations(Collection<Annotation> annotations) {
+    if (annotations.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    Collection<Annotation> modifiedAnnotations = new ArrayList<>(annotations.size());
+    for (Annotation annotation : annotations) {
+      modifiedAnnotations.add(this.modifierRegistry.modify(this, annotation));
+    }
+
+    return Collections.unmodifiableCollection(modifiedAnnotations);
   }
 
   private void mapCorrespondingMethods() {
@@ -175,6 +200,12 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       return null;
     }
 
+    this.ensureGetterAvailable();
+
+    return this.getter.invoke(lastInstance);
+  }
+
+  private void ensureGetterAvailable() {
     if (this.getter == null) {
       try {
         this.getter = this.mapMethod(this.ctGetter);
@@ -183,8 +214,6 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
             + "' to java reflect methods", e);
       }
     }
-
-    return this.getter.invoke(lastInstance);
   }
 
   @Override
@@ -194,14 +223,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       return;
     }
 
-    if (this.setter == null) {
-      try {
-        this.setter = this.mapMethod(this.ctSetter);
-      } catch (ClassNotFoundException | NotFoundException | NoSuchMethodException e) {
-        throw new RuntimeException("Failed to map the setter CtMethod of the reference for '" + this.key
-            + "' to java reflect methods", e);
-      }
-    }
+    this.ensureSetterAvailable();
 
     Object castedValue = value;
     // map e.g. int to double because Java reflections can't handle it
@@ -222,6 +244,17 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
     this.setter.invoke(lastInstance, castedValue);
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
+  }
+
+  private void ensureSetterAvailable() {
+    if (this.setter == null) {
+      try {
+        this.setter = this.mapMethod(this.ctSetter);
+      } catch (ClassNotFoundException | NotFoundException | NoSuchMethodException e) {
+        throw new RuntimeException("Failed to map the setter CtMethod of the reference for '" + this.key
+            + "' to java reflect methods", e);
+      }
+    }
   }
 
   private Object getLastInstance(Object baseInstance) throws InvocationTargetException, IllegalAccessException {

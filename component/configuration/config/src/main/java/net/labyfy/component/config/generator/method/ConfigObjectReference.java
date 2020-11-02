@@ -7,6 +7,7 @@ import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.IncludeStorage;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
+import net.labyfy.component.config.modifier.ConfigModifierRegistry;
 import net.labyfy.component.config.storage.ConfigStorage;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
@@ -38,8 +39,15 @@ public interface ConfigObjectReference {
   String[] getPathKeys();
 
   /**
+   * Retrieves the class where the getter/setter are declared.
+   *
+   * @return The non-null class of the getter/setter
+   */
+  Class<?> getDeclaringClass();
+
+  /**
    * @return The non-null type for serialization
-   * @see ConfigMethod#getSerializedType(GeneratingConfig)
+   * @see ConfigMethod#getSerializedType()
    */
   Type getSerializedType();
 
@@ -53,6 +61,8 @@ public interface ConfigObjectReference {
    * last one will be used always.
    * <p>
    * Methods have a higher priority than Interfaces.
+   * <p>
+   * The annotations may be modified by the {@link ConfigModifierRegistry}.
    *
    * @param annotationType The non-null type of the annotation
    * @param <A>            The annotation which should be searched
@@ -68,6 +78,8 @@ public interface ConfigObjectReference {
    * interfaces, that contain the specified methods or any superinterface.
    * <p>
    * If the given annotation is not applied to any of those, an empty collection will be returned.
+   * <p>
+   * The annotations may be modified by the {@link ConfigModifierRegistry}.
    *
    * @return The non-null collection of all annotations on the associated methods and interfaces
    */

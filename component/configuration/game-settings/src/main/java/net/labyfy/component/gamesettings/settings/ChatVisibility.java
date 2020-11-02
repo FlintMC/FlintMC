@@ -8,25 +8,13 @@ import net.labyfy.component.settings.annotation.ui.DisplayName;
  */
 public enum ChatVisibility {
 
-  // TODO use the displayName from enums
-
-
   @DisplayName(@Component(value = "options.chat.visibility.full", translate = true))
-  FULL("options.chat.visibility.full"),
+  FULL(),
 
   @DisplayName(@Component(value = "options.chat.visibility.system", translate = true))
-  SYSTEM("options.chat.visibility.system"),
+  SYSTEM(),
 
   @DisplayName(@Component(value = "options.chat.visibility.hidden", translate = true))
-  HIDDEN("options.chat.visibility.hidden");
+  HIDDEN()
 
-  private final String resourceKey;
-
-  ChatVisibility(String resourceKey) {
-    this.resourceKey = resourceKey;
-  }
-
-  public String getResourceKey() {
-    return resourceKey;
-  }
 }

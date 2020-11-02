@@ -1,5 +1,7 @@
 package net.labyfy.component.i18n;
 
+import java.util.Collection;
+
 /**
  * Represents Minecraft's I18n.
  */
@@ -21,5 +23,7 @@ public interface I18n {
    * @return {@code true} if the given is exists the selected language, otherwise {@code false}.
    */
   boolean hasTranslation(String key);
+
+  Collection<String> getAvailableLanguages();
 
 }

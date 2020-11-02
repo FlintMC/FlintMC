@@ -1,21 +1,20 @@
 package net.labyfy.component.gamesettings.settings;
 
+import net.labyfy.chat.annotation.Component;
+import net.labyfy.component.settings.annotation.ui.DisplayName;
+
 /**
  * An enumeration representing options for clouds.
  */
 public enum CloudOption {
 
-  OFF("options.off"),
-  FAST("options.clouds.fast"),
-  FANCY("options.clouds.fancy");
+  @DisplayName(@Component(value = "options.off", translate = true))
+  OFF(),
 
-  private final String translationKey;
+  @DisplayName(@Component(value = "options.clouds.fast", translate = true))
+  FAST(),
 
-  CloudOption(String translationKey) {
-    this.translationKey = translationKey;
-  }
+  @DisplayName(@Component(value = "options.clouds.fancy", translate = true))
+  FANCY()
 
-  public String getTranslationKey() {
-    return translationKey;
-  }
 }

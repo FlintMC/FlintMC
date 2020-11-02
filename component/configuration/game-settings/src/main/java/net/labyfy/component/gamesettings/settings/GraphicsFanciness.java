@@ -9,21 +9,12 @@ import net.labyfy.component.settings.annotation.ui.DisplayName;
 public enum GraphicsFanciness {
 
   @DisplayName(@Component(value = "options.graphics.fast", translate = true))
-  FAST("options.graphics.fast"),
+  FAST(),
 
   @DisplayName(@Component(value = "options.graphics.fancy", translate = true))
-  FANCY("options.graphics.fancy"),
+  FANCY(),
 
   @DisplayName(@Component(value = "options.graphics.fabulous", translate = true))
-  FABULOUS("options.graphics.fabulous");
+  FABULOUS()
 
-  private final String resourceKey;
-
-  GraphicsFanciness(String resourceKey) {
-    this.resourceKey = resourceKey;
-  }
-
-  public String getResourceKey() {
-    return resourceKey;
-  }
 }

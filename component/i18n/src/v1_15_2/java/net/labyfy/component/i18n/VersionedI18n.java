@@ -1,6 +1,11 @@
 package net.labyfy.component.i18n;
 
 import net.labyfy.component.inject.implement.Implement;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.Language;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * 1.15.2 implementation of the {@link I18n}.
@@ -22,5 +27,16 @@ public class VersionedI18n implements I18n {
   @Override
   public boolean hasTranslation(String key) {
     return net.minecraft.client.resources.I18n.hasKey(key);
+  }
+
+  @Override
+  public Collection<String> getAvailableLanguages() {
+    Collection<String> languages = new HashSet<>();
+
+    for (Language language : Minecraft.getInstance().getLanguageManager().getLanguages()) {
+      languages.add(language.toString());
+    }
+
+    return languages;
   }
 }

@@ -5,7 +5,6 @@ import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.eventbus.event.Event;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
-// only fired in POST phaes
 public interface ConfigValueUpdateEvent extends Event {
 
   ConfigObjectReference getReference();

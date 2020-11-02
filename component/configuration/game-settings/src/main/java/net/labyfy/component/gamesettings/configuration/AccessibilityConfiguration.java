@@ -2,6 +2,7 @@ package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
+import net.labyfy.component.config.modifier.ModifyAnnotations;
 import net.labyfy.component.gamesettings.settings.PointOfView;
 import net.labyfy.component.gamesettings.settings.TutorialSteps;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
@@ -236,8 +237,8 @@ public interface AccessibilityConfiguration {
       description = @Component(value = "minecraft.settings.language.description", translate = true)
   )
   @DisplayName(@Component(value = "options.language", translate = true))
-  @CustomDropDownSetting("")
-  // TODO add provider for the array to get the languages dynamically from the game
+  @CustomDropDownSetting({})
+  @ModifyAnnotations
   String getLanguage();
 
   /**

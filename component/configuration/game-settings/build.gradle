@@ -28,6 +28,7 @@ dependencies {
     api project(':component:transform:shadow')
     api project(':component:minecraft')
     api project(':component:eventbus')
+    api project(':component:i18n')
 
     api project(':component:configuration:config')
     api project(':component:configuration:laby-settings')

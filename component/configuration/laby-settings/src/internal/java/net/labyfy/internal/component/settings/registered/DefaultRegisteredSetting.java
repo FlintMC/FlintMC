@@ -23,7 +23,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   private final Logger logger;
   private final SettingHandler settingHandler;
-  private final Annotation annotation;
+  private final Class<? extends Annotation> annotationType;
   private final ParsedConfig config;
   private final String categoryName;
   private final ConfigObjectReference reference;
@@ -39,19 +39,19 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
                                   SettingHandler settingHandler,
                                   EventBus eventBus,
                                   SettingsUpdateEvent.Factory eventFactory,
-                                  @Assisted Annotation annotation,
+                                  @Assisted Class<? extends Annotation> annotationType,
                                   @Assisted ParsedConfig config,
                                   @Assisted @Nullable String categoryName,
                                   @Assisted ConfigObjectReference reference) {
     this.logger = logger;
     this.settingHandler = settingHandler;
-    this.annotation = annotation;
+    this.annotationType = annotationType;
     this.config = config;
     this.categoryName = categoryName;
     this.reference = reference;
 
     this.nativeSetting = reference.findLastAnnotation(NativeSetting.class) != null;
-    this.defaultValue = settingHandler.getDefaultValue(annotation, reference);
+    this.defaultValue = settingHandler.getDefaultValue(reference.findLastAnnotation(annotationType), reference);
 
     this.enabled = true;
     this.eventBus = eventBus;
@@ -70,7 +70,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   @Override
   public Annotation getAnnotation() {
-    return this.annotation;
+    return this.reference.findLastAnnotation(this.annotationType);
   }
 
   @Override
@@ -90,7 +90,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   @Override
   public boolean setCurrentValue(Object value) {
-    if (!this.settingHandler.isValidInput(value, this.reference, this.annotation)) {
+    if (!this.settingHandler.isValidInput(value, this.reference, this.getAnnotation())) {
       return false;
     }
 

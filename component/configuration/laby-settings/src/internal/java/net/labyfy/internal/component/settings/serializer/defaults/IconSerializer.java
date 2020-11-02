@@ -12,6 +12,14 @@ import net.labyfy.component.settings.serializer.SettingsSerializer;
 public class IconSerializer implements SettingsSerializationHandler<Icon> {
   @Override
   public void append(JsonObject result, RegisteredSetting setting, Icon annotation) {
-    // TODO
+    if (annotation == null) {
+      return;
+    }
+
+    String value = annotation.value();
+    if (value.isEmpty()) {
+      return;
+    }
+    result.addProperty("icon", value);
   }
 }

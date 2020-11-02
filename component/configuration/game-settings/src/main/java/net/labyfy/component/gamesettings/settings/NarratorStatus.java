@@ -9,24 +9,15 @@ import net.labyfy.component.settings.annotation.ui.DisplayName;
 public enum NarratorStatus {
 
   @DisplayName(@Component(value = "options.narrator.off", translate = true))
-  OFF("options.narrator.off"),
+  OFF(),
 
   @DisplayName(@Component(value = "options.narrator.all", translate = true))
-  ALL("options.narrator.all"),
+  ALL(),
 
   @DisplayName(@Component(value = "options.narrator.chat", translate = true))
-  CHAT("options.narrator.chat"),
+  CHAT(),
 
   @DisplayName(@Component(value = "options.narrator.system", translate = true))
-  SYSTEM("options.narrator.system");
+  SYSTEM()
 
-  private final String resourceKey;
-
-  NarratorStatus(String resourceKey) {
-    this.resourceKey = resourceKey;
-  }
-
-  public String getResourceKey() {
-    return resourceKey;
-  }
 }

@@ -18,10 +18,10 @@ public enum PointOfView {
   }
 
   public boolean isFirstPerson() {
-    return firstPerson;
+    return this.firstPerson;
   }
 
   public boolean isMirrored() {
-    return mirrored;
+    return this.mirrored;
   }
 }
