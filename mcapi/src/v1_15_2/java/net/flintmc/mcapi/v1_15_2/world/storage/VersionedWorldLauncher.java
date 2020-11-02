@@ -4,11 +4,15 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
-import net.flintmc.mcapi.world.storage.WorldLauncher;
 import net.flintmc.mcapi.world.storage.WorldConfiguration;
+import net.flintmc.mcapi.world.storage.WorldOverview;
+import net.flintmc.mcapi.world.storage.service.WorldLauncher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.WorldSettings;
 
+/**
+ * 1.15.2 implementation of the {@link WorldLauncher}.
+ */
 @Singleton
 @Implement(value = WorldLauncher.class, version = "1.15.2")
 public class VersionedWorldLauncher implements WorldLauncher {
@@ -18,6 +22,22 @@ public class VersionedWorldLauncher implements WorldLauncher {
   @Inject
   private VersionedWorldLauncher(WorldMapper worldMapper) {
     this.worldMapper = worldMapper;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void launchWorld(WorldOverview worldOverview) {
+    this.launchWorld(worldOverview.getFileName(), worldOverview.getDisplayName());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void launchWorld(WorldOverview worldOverview, WorldConfiguration configuration) {
+    this.launchWorld(worldOverview.getFileName(), worldOverview.getDisplayName(), configuration);
   }
 
   /**

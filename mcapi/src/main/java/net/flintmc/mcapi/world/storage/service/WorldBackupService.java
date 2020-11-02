@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.world.storage;
+package net.flintmc.mcapi.world.storage.service;
 
 import java.io.IOException;
 import java.nio.file.Path;

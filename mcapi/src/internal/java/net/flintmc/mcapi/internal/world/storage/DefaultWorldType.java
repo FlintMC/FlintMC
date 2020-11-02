@@ -3,7 +3,7 @@ package net.flintmc.mcapi.internal.world.storage;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.world.storage.WorldType;
+import net.flintmc.mcapi.world.type.WorldType;
 
 /**
  * Default implementation of the {@link WorldType}.

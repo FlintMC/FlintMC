@@ -1,6 +1,9 @@
-package net.flintmc.mcapi.world.storage;
+package net.flintmc.mcapi.world.storage.service;
 
-import java.util.Collection;
+import net.flintmc.mcapi.world.storage.WorldOverview;
+import net.flintmc.mcapi.world.storage.service.exception.WorldLoadException;
+
+import java.util.List;
 
 /**
  * Represents a loader to load worlds.
@@ -16,8 +19,9 @@ public interface WorldLoader {
    * Retrieves a collection with all loaded worlds.
    *
    * @return A collection with all loaded worlds.
+   * @throws WorldLoadException Will be thrown if the worlds are not loaded.
    */
-  Collection<WorldOverview> getWorlds();
+  List<WorldOverview> getWorlds();
 
   /**
    * Whether the world can be loaded.
@@ -26,5 +30,12 @@ public interface WorldLoader {
    * @return {@code true} if the world can be loaded, otherwise {@code false}.
    */
   boolean canLoadWorld(String fileName);
+
+  /**
+   * Whether the world loader has loaded the worlds.
+   *
+   * @return {@code true} if the world loader has loaded the worlds, otherwise {@code false}.
+   */
+  boolean isLoaded();
 
 }

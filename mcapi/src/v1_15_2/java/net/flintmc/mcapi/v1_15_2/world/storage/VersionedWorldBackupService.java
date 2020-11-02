@@ -2,7 +2,7 @@ package net.flintmc.mcapi.v1_15_2.world.storage;
 
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.world.storage.WorldBackupService;
+import net.flintmc.mcapi.world.storage.service.WorldBackupService;
 import net.minecraft.client.Minecraft;
 
 import java.io.IOException;

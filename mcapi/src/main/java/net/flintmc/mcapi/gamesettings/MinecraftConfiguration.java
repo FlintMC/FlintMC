@@ -1,7 +1,7 @@
 package net.flintmc.mcapi.gamesettings;
 
 import net.flintmc.mcapi.gamesettings.configuration.*;
-import net.flintmc.mcapi.world.difficulty.Difficulty;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 
 /** Represents the Minecraft game settings */
 public interface MinecraftConfiguration {

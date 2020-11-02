@@ -3,8 +3,8 @@ package net.flintmc.mcapi.v1_15_2.world.difficulty;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.world.difficulty.Difficulty;
-import net.flintmc.mcapi.world.difficulty.DifficultyLocal;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
+import net.flintmc.mcapi.world.type.difficulty.DifficultyLocal;
 import net.minecraft.util.math.MathHelper;
 
 /** 1.15.2 implementation of {@link DifficultyLocal}. */

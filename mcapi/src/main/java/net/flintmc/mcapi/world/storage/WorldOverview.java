@@ -114,7 +114,7 @@ public interface WorldOverview extends Comparable<WorldOverview> {
      * @param markWorldInList    {@code true} marks a world in the list, otherwise {@code false}.
      * @param futureWorld        {@code true} if the world in the future, otherwise {@code false}.
      * @param outdatedWorld      {@code true} if the world is outdated, otherwise {@code false}.
-     * @return
+     * @return A created world overview.
      */
     WorldOverview create(
             @Assisted("fileName") String fileName,

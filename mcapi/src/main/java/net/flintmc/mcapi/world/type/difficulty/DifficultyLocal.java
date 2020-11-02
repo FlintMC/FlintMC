@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.world.difficulty;
+package net.flintmc.mcapi.world.type.difficulty;
 
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;

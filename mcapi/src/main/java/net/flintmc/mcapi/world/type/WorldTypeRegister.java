@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.world.storage;
+package net.flintmc.mcapi.world.type;
 
 import java.util.List;
 

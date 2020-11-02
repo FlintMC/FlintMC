@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.world.storage;
+package net.flintmc.mcapi.world.type;
 
 import com.google.inject.assistedinject.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
