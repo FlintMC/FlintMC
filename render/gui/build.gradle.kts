@@ -6,6 +6,7 @@ group = "net.flintmc"
 
 flint {
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+    minecraftVersions("1.15.2")
 }
 
 dependencies {

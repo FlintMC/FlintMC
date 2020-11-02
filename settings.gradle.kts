@@ -17,7 +17,6 @@ pluginManagement {
         repositories {
             mavenLocal()
             val labymediaMavenAuthToken: String? by settings
-/*
             maven {
                 setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
                 name = "Gitlab"
@@ -33,7 +32,7 @@ pluginManagement {
                 authentication {
                     create<HttpHeaderAuthentication>("header")
                 }
-            }*/
+            }
             mavenCentral()
         }
     }
@@ -42,7 +41,6 @@ pluginManagement {
 
 
 defineModule("annotation-processing:autoload")
-defineModule("annotation-processing:build.gradle.bak")
 
 defineModule("framework:eventbus")
 defineModule("framework:inject")

@@ -59,8 +59,14 @@ allprojects {
 }
 
 flint {
-    projectFilter { true }
-    minecraftVersions("1.15.2", "1.16.3")
+    flintVersion = "*"
+
+    projectFilter {
+        !arrayOf(":", ":framework", ":render", ":transform", ":util").contains(it.path)
+    }
+
+    authors = arrayOf("LabyMedia GmbH")
+
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")
     }
