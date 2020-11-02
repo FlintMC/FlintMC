@@ -19,7 +19,7 @@ import java.util.zip.ZipEntry;
 @Singleton
 @Implement(PackageManifestLoader.class)
 public class DefaultPackageManifestLoader implements PackageManifestLoader {
-  public static final String MANIFEST_NAME = "package.json";
+  public static final String MANIFEST_NAME = "manifest.json";
 
   private final Gson gson;
 
@@ -52,6 +52,8 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     private String version;
     private Set<String> authors;
     private String description;
+    private String minecraftVersions;
+    private String flintVersions;
     private Set<DefaultDependencyDescription> dependencies = new HashSet<>();
 
     /** {@inheritDoc} */
@@ -106,7 +108,7 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
   private static class DefaultDependencyDescription implements DependencyDescription, Serializable {
     private String name;
-    private List<String> versions = new ArrayList<>();
+    private String versions;
 
     /** {@inheritDoc} */
     @Override
@@ -117,14 +119,14 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     /** {@inheritDoc} */
     @Override
     public List<String> getVersions() {
-      return this.versions;
+      return Arrays.asList(versions.split(","));
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean matches(PackageManifest manifest) {
       return this.name.equals(manifest.getName())
-          && this.versions.stream().anyMatch(manifest.getVersion()::equals);
+          && this.getVersions().stream().anyMatch(manifest.getVersion()::equals);
     }
   }
 }
