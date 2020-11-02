@@ -51,7 +51,9 @@ public class EntityCache {
     if (this.entities.containsKey(uniqueId)) {
       return this.getEntity(uniqueId);
     }
-    return this.entities.put(uniqueId, supplier.get());
+    Entity suppliedEntity = supplier.get();
+    this.entities.put(uniqueId, suppliedEntity);
+    return suppliedEntity;
   }
 
   /** Clears the cache. */
