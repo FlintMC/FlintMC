@@ -4,9 +4,7 @@ plugins {
 
 group = "net.flintmc"
 
-flint {
-    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
-}
+
 
 dependencies {
     annotationProcessor("com.google.auto.service", "auto-service", "1.0-rc6")

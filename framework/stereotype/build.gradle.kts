@@ -4,8 +4,8 @@ plugins {
 
 group = "net.flintmc"
 
-flint {
-    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+flint{
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.PACKAGE
 }
 
 dependencies {

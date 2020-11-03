@@ -32,7 +32,7 @@ repositories {
 
 subprojects {
     plugins.withId("java") {
-        version = "1.2.3"
+        version = System.getenv().getOrDefault("VERSION", "1.2.300000")
         repositories {
             labymedia()
             mavenCentral()
@@ -66,6 +66,8 @@ flint {
     }
 
     authors = arrayOf("LabyMedia GmbH")
+
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
 
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")
