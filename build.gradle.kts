@@ -50,7 +50,7 @@ subprojects {
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
 
-        version = System.getenv().getOrDefault("VERSION", "1.0.0")
+        version = System.getenv().getOrDefault("VERSION", "1.2.3")
 
         repositories {
             labymedia()
