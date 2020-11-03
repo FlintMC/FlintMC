@@ -40,6 +40,7 @@ fun RepositoryHandler.flintRepository() {
 }
 
 repositories {
+    mavenLocal()
     labymedia()
     mavenCentral()
 }
@@ -98,7 +99,7 @@ flint {
 
     authors = arrayOf("LabyMedia GmbH")
 
-    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+    type = net.flintmc.installer.impl.repository.models.PackageModel.Type.LIBRARY
 
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")
