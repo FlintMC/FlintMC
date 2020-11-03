@@ -32,7 +32,7 @@ repositories {
 
 subprojects {
     plugins.withId("java") {
-        version = System.getenv().getOrDefault("VERSION", "1.2.300000")
+        version = System.getenv().getOrDefault("VERSION", "1.0.0")
         repositories {
             labymedia()
             mavenCentral()
@@ -59,7 +59,7 @@ allprojects {
 }
 
 flint {
-    flintVersion = "*"
+    flintVersion = System.getenv().getOrDefault("VERSION", "1.0.0")
 
     projectFilter {
         !arrayOf(":", ":framework", ":render", ":transform", ":util").contains(it.path)
