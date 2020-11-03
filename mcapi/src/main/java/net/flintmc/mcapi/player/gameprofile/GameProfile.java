@@ -57,6 +57,18 @@ public interface GameProfile {
      *
      * @param uniqueId The unique identifier for this game profile.
      * @param name The username for this game profile.
+     * @return A created game profile.
+     */
+    GameProfile create(
+            @Assisted("uniqueId") UUID uniqueId,
+            @Assisted("name") String name
+    );
+
+    /**
+     * Creates a new {@link GameProfile} with the given parameters.
+     *
+     * @param uniqueId The unique identifier for this game profile.
+     * @param name The username for this game profile.
      * @param properties The properties for this game profile.
      * @return A created game profile.
      */
