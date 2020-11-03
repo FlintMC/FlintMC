@@ -1,6 +1,7 @@
 plugins {
     id("net.flintmc.flint-gradle-plugin")
     id("project-report")
+    id("maven-publish")
 }
 
 fun RepositoryHandler.labymedia() {
@@ -24,6 +25,20 @@ fun RepositoryHandler.labymedia() {
     }
 }
 
+fun RepositoryHandler.flintRepository() {
+    maven {
+        setUrl("http://10.42.1.7:80/api/v1/maven/release")
+        name = "Flint"
+        credentials(HttpHeaderCredentials::class) {
+            name = "Publish-Token"
+            value = "6j2vM60FDmkXxlTu1ZZzFzVkS9VjiONLQvSOd7aSwtqapXw9WVWayiaQibGwVZdN"
+        }
+        authentication {
+            create<HttpHeaderAuthentication>("header")
+        }
+    }
+}
+
 repositories {
     labymedia()
     mavenCentral()
@@ -31,11 +46,27 @@ repositories {
 
 
 subprojects {
+
     plugins.withId("java") {
+        apply<MavenPublishPlugin>()
+
         version = System.getenv().getOrDefault("VERSION", "1.0.0")
+
         repositories {
             labymedia()
             mavenCentral()
+        }
+
+
+        publishing {
+            repositories {
+                flintRepository()
+            }
+            publications {
+                create<MavenPublication>(project.name) {
+                    from(components["java"])
+                }
+            }
         }
     }
 }
