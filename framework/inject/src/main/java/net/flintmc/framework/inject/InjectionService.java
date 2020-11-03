@@ -70,7 +70,7 @@ public class InjectionService implements ServiceHandler<Annotation> {
     if (!(annotation.version().isEmpty()
         || launchArguments.get("--game-version").equals(annotation.version()))) return;
 
-    if (implementations.containsKey(annotation.value())) {
+    if (implementations.containsKey(annotation.value()) && !implementations.get(annotation.value()).equals(location)) {
       // todo use String.format :)
       throw new IllegalStateException(
           "Cannot bind "
