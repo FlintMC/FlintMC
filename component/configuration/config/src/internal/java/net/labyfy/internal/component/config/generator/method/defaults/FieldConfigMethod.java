@@ -57,12 +57,14 @@ public abstract class FieldConfigMethod extends DefaultConfigMethod {
     try {
       declaring.getField("config");
     } catch (NotFoundException e) {
-      String configInterfaceName = super.getConfig().getBaseClass().getName();
-      String configGetter = super.getConfig().getBaseClass().subclassOf(declaring)
-          ? "this"
-          : InjectionHolder.class.getName() + ".getInjectedInstance(" + configInterfaceName + ".class)";
+      String configName = super.getConfig().getBaseClass().getName();
 
-      declaring.addField(CtField.make("private final transient " + configInterfaceName + " config = " + configGetter + ";", declaring));
+      String configGetter = "this";
+      if (!super.getConfig().getBaseClass().subclassOf(declaring)) {
+        configGetter = InjectionHolder.class.getName() + ".getInjectedInstance(" + configName + ".class)";
+      }
+
+      declaring.addField(CtField.make("private final transient " + configName + " config = " + configGetter + ";", declaring));
     }
 
     String src = "this.configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);";

@@ -5,6 +5,8 @@ import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.eventbus.event.Event;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
+import javax.annotation.Nullable;
+
 public interface ConfigValueUpdateEvent extends Event {
 
   ConfigObjectReference getReference();
@@ -17,8 +19,8 @@ public interface ConfigValueUpdateEvent extends Event {
   interface Factory {
 
     ConfigValueUpdateEvent create(@Assisted ConfigObjectReference reference,
-                                  @Assisted("previousValue") Object previousValue,
-                                  @Assisted("newValue") Object newValue);
+                                  @Assisted("previousValue") @Nullable Object previousValue,
+                                  @Assisted("newValue") @Nullable Object newValue);
 
   }
 

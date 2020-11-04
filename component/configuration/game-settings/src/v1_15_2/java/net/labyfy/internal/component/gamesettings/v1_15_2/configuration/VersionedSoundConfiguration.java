@@ -8,17 +8,12 @@ import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.player.type.sound.SoundMapper;
 import net.minecraft.client.Minecraft;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 1.15.2 implementation of {@link SoundConfiguration}.
  */
 @Singleton
 @ConfigImplementation(value = SoundConfiguration.class, version = "1.15.2")
 public class VersionedSoundConfiguration implements SoundConfiguration {
-
-  private static final SoundCategory[] CATEGORIES = SoundCategory.values();
 
   private final SoundMapper soundMapper;
 
@@ -46,19 +41,4 @@ public class VersionedSoundConfiguration implements SoundConfiguration {
     );
   }
 
-  @Override
-  public Map<SoundCategory, Float> getAllSoundVolume() {
-    Map<SoundCategory, Float> volumes = new HashMap<>();
-
-    for (SoundCategory category : CATEGORIES) {
-      volumes.put(category, this.getSoundVolume(category));
-    }
-
-    return volumes;
-  }
-
-  @Override
-  public void setAllSoundVolume(Map<SoundCategory, Float> volumes) {
-    volumes.forEach(this::setSoundVolume);
-  }
 }

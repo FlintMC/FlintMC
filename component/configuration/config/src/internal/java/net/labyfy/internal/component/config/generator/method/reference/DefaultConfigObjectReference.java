@@ -21,9 +21,12 @@ import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
+
+// TODO replace Reflections with Javassist?
 
 @Implement(ConfigObjectReference.class)
 public class DefaultConfigObjectReference implements ConfigObjectReference {
@@ -202,7 +205,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
     this.ensureGetterAvailable();
 
-    return this.getter.invoke(lastInstance);
+    return this.mapProxyMethod(this.getter, lastInstance).invoke(lastInstance);
   }
 
   private void ensureGetterAvailable() {
@@ -242,7 +245,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     ConfigValueUpdateEvent event = this.eventFactory.create(this, previousValue, castedValue);
 
     this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
-    this.setter.invoke(lastInstance, castedValue);
+    this.mapProxyMethod(this.getter, lastInstance).invoke(lastInstance, castedValue);
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 
@@ -278,10 +281,24 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
         return null;
       }
 
-      currentInstance = method.invoke(currentInstance);
+      Method mapped = this.mapProxyMethod(method, currentInstance);
+
+      currentInstance = mapped.invoke(currentInstance);
     }
 
     return currentInstance;
+  }
+
+  private Method mapProxyMethod(Method method, Object instance) {
+    if (Proxy.isProxyClass(instance.getClass()) && !Proxy.isProxyClass(method.getDeclaringClass())) {
+      try {
+        return instance.getClass().getDeclaredMethod(method.getName(), method.getParameterTypes());
+      } catch (NoSuchMethodException e) {
+        throw new RuntimeException("Failed to get method " + method.getName() + " from proxy " + instance.getClass().getName());
+      }
+    }
+
+    return method;
   }
 
   private Method[] mapMethods(CtMethod[] ctMethods) throws ClassNotFoundException, NotFoundException, NoSuchMethodException {

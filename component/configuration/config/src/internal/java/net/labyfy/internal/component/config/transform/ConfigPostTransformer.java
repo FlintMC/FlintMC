@@ -61,7 +61,8 @@ public class ConfigPostTransformer implements ServiceHandler<ConfigImplementatio
 
     // register the configs in the ConfigGenerator after the module has been configured
     for (TransformedConfigMeta meta : pendingConfigs) {
-      this.configGenerator.bindConfig(meta.getConfig(), (ParsedConfig) InjectionHolder.getInjectedInstance(meta.getSuperClass()));
+      ParsedConfig config = (ParsedConfig) InjectionHolder.getInjectedInstance(meta.getSuperClass());
+      this.configGenerator.bindConfig(meta.getConfig(), config);
     }
   }
 }

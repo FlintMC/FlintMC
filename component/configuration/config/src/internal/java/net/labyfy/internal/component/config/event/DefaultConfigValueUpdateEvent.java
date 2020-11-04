@@ -6,6 +6,8 @@ import net.labyfy.component.config.event.ConfigValueUpdateEvent;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.inject.implement.Implement;
 
+import javax.annotation.Nullable;
+
 @Implement(ConfigValueUpdateEvent.class)
 public class DefaultConfigValueUpdateEvent implements ConfigValueUpdateEvent {
 
@@ -15,8 +17,8 @@ public class DefaultConfigValueUpdateEvent implements ConfigValueUpdateEvent {
 
   @AssistedInject
   public DefaultConfigValueUpdateEvent(@Assisted ConfigObjectReference reference,
-                                       @Assisted("previousValue") Object previousValue,
-                                       @Assisted("newValue") Object newValue) {
+                                       @Assisted("previousValue") @Nullable Object previousValue,
+                                       @Assisted("newValue") @Nullable Object newValue) {
     this.reference = reference;
     this.previousValue = previousValue;
     this.newValue = newValue;

@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import javassist.*;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
+import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -86,11 +87,84 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
 
   @Override
   public void implementExistingMethods(CtClass target) throws CannotCompileException, NotFoundException {
+    boolean generatedSetter = false;
+
+    // generate the getter/setter for all values automatically if the key is an enum
+    if (this.keyType.isEnum()) {
+      if (!this.hasMethod(target, this.getGetterName())) {
+        this.insertEnumGetAll(target);
+      }
+
+      if (!this.hasMethod(target, this.getSetterName())) {
+        this.insertEnumSetAll(target);
+        generatedSetter = true;
+      }
+    }
+
     // validate if the methods exist or throw NotFoundException otherwise
     target.getDeclaredMethod(this.getGetterName());
 
     // add the write methods to the setters
-    this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
+    if (!generatedSetter) {
+      // only if the setter hasn't been generated, then the single setters will
+      // be called and the saveConfig method called from there
+      this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
+    }
+    this.insertSaveConfig(target.getDeclaredMethod(this.getSingleSetterName()));
+  }
+
+  private void insertEnumGetAll(CtClass target) throws CannotCompileException {
+    String valueFormat = "%s";
+    if (this.valueType.isPrimitive()) {
+      valueFormat = ((CtPrimitiveType) this.valueType).getWrapperName() + ".valueOf(%s)";
+    }
+
+    StringBuilder operations = new StringBuilder();
+    for (CtField field : this.keyType.getFields()) {
+      if (Modifier.isStatic(field.getModifiers())) {
+        String constant = this.keyType.getName() + "." + field.getName();
+        operations.append("map.put(").append(constant).append(", ")
+            .append(String.format(valueFormat, "this." + this.getSingleGetterName() + "(" + constant + ")")).append(");");
+      }
+    }
+
+    target.addMethod(CtNewMethod.make("public java.util.Map " + this.getGetterName() + "() {" +
+        "java.util.Map map = new java.util.HashMap();" +
+        operations +
+        "return map;" +
+        "}", target));
+  }
+
+  private void insertEnumSetAll(CtClass target) throws CannotCompileException {
+    StringBuilder operations = new StringBuilder();
+    for (CtField field : this.keyType.getFields()) {
+      if (Modifier.isStatic(field.getModifiers())) {
+        String constant = this.keyType.getName() + "." + field.getName();
+
+        String valueName = this.valueType instanceof CtPrimitiveType ? ((CtPrimitiveType) this.valueType).getWrapperName() : this.valueType.getName();
+        String getter = "((" + valueName + ") map.get(" + constant + "))";
+
+        operations.append("if (map.containsKey(").append(constant).append(")) {")
+
+            .append("this.").append(this.getSingleSetterName())
+            .append("(").append(constant).append(", ").append(this.asPrimitive(getter, this.valueType)).append(");")
+
+            .append("}");
+      }
+    }
+
+    target.addMethod(CtNewMethod.make("public void " + this.getSetterName() + "(java.util.Map map) {" +
+        operations +
+        "}", target));
+  }
+
+  private String asPrimitive(String getter, CtClass type) {
+    Class<?> wrappedPrimitive = PrimitiveTypeLoader.getWrappedClass(type.getName());
+    if (wrappedPrimitive != null) {
+      return getter + "." + type.getName() + "Value()";
+    }
+
+    return getter;
   }
 
   private void insertGetAll(CtClass target, CtField field) throws CannotCompileException {
@@ -104,7 +178,7 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
   }
 
   private void insertSetter(CtClass target, CtField field) throws CannotCompileException {
-    String value = this.replacePrimitive(this.valueType, "value");
+    String value = this.removePrimitive(this.valueType, "value");
 
     target.addMethod(CtNewMethod.make(
         "public void " + this.getSingleSetterName() + "(" + this.keyType.getName() + " key, " + this.valueType.getName() + " value) {" +
@@ -122,7 +196,7 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
       defaultValue = "null";
     }
 
-    String getter = this.replacePrimitive(this.valueType, "this." + field.getName() + ".getOrDefault(input, " + defaultValue + ")");
+    String getter = this.removePrimitive(this.valueType, "this." + field.getName() + ".getOrDefault(input, " + defaultValue + ")");
 
     target.addMethod(CtNewMethod.make(
         "public " + this.valueType.getName() + " " + this.getSingleGetterName() + "(" + this.keyType.getName() + " input) {" +
@@ -131,7 +205,7 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
     ));
   }
 
-  private String replacePrimitive(CtClass type, String primitive) {
+  private String removePrimitive(CtClass type, String primitive) {
     if (type.isPrimitive()) {
       return ((CtPrimitiveType) type).getWrapperName() + ".valueOf((" + type.getName() + ") " + primitive + ")";
     }

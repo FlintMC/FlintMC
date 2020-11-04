@@ -73,6 +73,8 @@ public class DefaultConfigGenerator implements ConfigGenerator {
 
     CtClass implementation = this.generateImplementation(configInterface, config);
     if (implementation == null) {
+      // add the ParsedConfig interface to this interface
+      this.transformer.getTransformingConfigInterfaces().add(configInterface.getName());
       return null;
     }
 

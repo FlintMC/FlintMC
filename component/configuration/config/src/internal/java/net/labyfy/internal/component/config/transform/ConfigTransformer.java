@@ -3,13 +3,11 @@ package net.labyfy.internal.component.config.transform;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import javassist.CannotCompileException;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.NotFoundException;
+import javassist.*;
 import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.config.generator.ConfigImplementer;
+import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.config.storage.ConfigStorageProvider;
 import net.labyfy.component.inject.primitive.InjectionHolder;
@@ -28,19 +26,29 @@ import java.util.Map;
 @Service(value = ConfigImplementation.class, priority = 2 /* needs to be called after the ConfigGenerationService */)
 public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
 
+  private final ClassPool pool;
   private final ConfigImplementer configImplementer;
 
   private final Collection<ConfigMethod> pendingTransforms;
   private final Collection<TransformedConfigMeta> mappings;
   private final Map<String, String> launchArguments;
+  private final Collection<String> transformingConfigInterfaces;
 
   @Inject
   public ConfigTransformer(ConfigImplementer configImplementer, @Named("launchArguments") Map launchArguments) {
+    this.pool = ClassPool.getDefault();
+
     this.configImplementer = configImplementer;
     this.launchArguments = launchArguments;
 
     this.pendingTransforms = new HashSet<>();
     this.mappings = new HashSet<>();
+
+    this.transformingConfigInterfaces = new HashSet<>();
+  }
+
+  public Collection<String> getTransformingConfigInterfaces() {
+    return this.transformingConfigInterfaces;
   }
 
   public Collection<TransformedConfigMeta> getMappings() {
@@ -56,6 +64,10 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
     // implement methods in classes of the config (including the class annotated with @Config) that are also half-generated
     CtClass implementation = context.getCtClass();
     if (implementation.isInterface()) {
+      if (this.transformingConfigInterfaces.contains(implementation.getName())) {
+        this.transformingConfigInterfaces.remove(implementation.getName());
+        implementation.addInterface(this.pool.get(ParsedConfig.class.getName()));
+      }
       return;
     }
 
@@ -90,9 +102,12 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
         return;
       }
 
+      // get the new implementation with the changes from the class transformer
+      CtClass newImplementation = ClassPool.getDefault().get(implementation.getName());
+
       // bind the implementation in the config to be used by the ConfigObjectReference.Parser
-      configMeta.getConfig().bindGeneratedImplementation(configMeta.getSuperClass().getName(), implementation);
-    } catch (ClassNotFoundException e) {
+      configMeta.getConfig().bindGeneratedImplementation(configMeta.getSuperClass().getName(), newImplementation);
+    } catch (ClassNotFoundException | NotFoundException e) {
       throw new ServiceNotFoundException("Cannot load transformed config class");
     }
   }

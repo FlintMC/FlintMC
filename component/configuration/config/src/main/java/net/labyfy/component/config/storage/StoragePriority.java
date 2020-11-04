@@ -1,6 +1,7 @@
 package net.labyfy.component.config.storage;
 
 import net.labyfy.component.config.generator.ParsedConfig;
+import net.labyfy.component.processing.autoload.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,6 +16,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@DetectableAnnotation
 public @interface StoragePriority {
 
   /**
