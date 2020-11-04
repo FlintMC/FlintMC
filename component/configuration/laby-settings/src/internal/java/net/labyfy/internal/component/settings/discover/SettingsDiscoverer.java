@@ -8,15 +8,18 @@ import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe.Phase;
+import net.labyfy.component.settings.InvalidSettingsException;
 import net.labyfy.component.settings.annotation.ApplicableSetting;
 import net.labyfy.component.settings.annotation.ui.Category;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.registered.RegisteredCategory;
 import net.labyfy.component.settings.registered.RegisteredSetting;
 import net.labyfy.component.settings.registered.SettingsProvider;
+import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 @Singleton
 public class SettingsDiscoverer {
@@ -52,20 +55,41 @@ public class SettingsDiscoverer {
     ApplicableSetting applicableSetting = annotation.annotationType().getAnnotation(ApplicableSetting.class);
 
     Type type = reference.getSerializedType();
-    /*if (!(type instanceof Class)
-        || Arrays.stream(applicableSetting.value()).noneMatch(required -> required.isAssignableFrom(((Class<?>) type))) {
+    if (!(type instanceof Class)) {
+      this.throwInvalidSetting(reference, annotation, config, type);
+    }
+    Class<?> clazz = (Class<?>) type;
+    if (clazz.isPrimitive()) {
+      clazz = PrimitiveTypeLoader.getWrappedClass(clazz);
+    }
+
+    Class<?> finalClazz = clazz;
+    boolean assignable = Arrays.stream(applicableSetting.value()).anyMatch(required -> {
+      if (required.isPrimitive()) {
+        required = PrimitiveTypeLoader.getWrappedClass(required);
+      }
+      return required.isAssignableFrom(finalClazz);
+    });
+
+    if (!assignable) {
       // we need assignableFrom because for example the EnumDropDown uses Enum.class as the required parameter
       // and can't specify more specific values
       throw new InvalidSettingsException("Cannot register setting on '" + reference.getKey() + "' in config '"
           + config.getConfigName() + "' because none of the allowed types for " + annotation.annotationType().getName()
           + " match " + type.getTypeName());
-    }*/
-    // TODO not working with primitives
+    }
 
     String category = this.findCategoryName(reference);
 
     RegisteredSetting registeredSetting = this.settingFactory.create(annotation.annotationType(), config, category, reference);
     this.settingsProvider.registerSetting(registeredSetting);
+  }
+
+  private void throwInvalidSetting(ConfigObjectReference reference, Annotation annotation, ParsedConfig config,
+                                   Type type) {
+    throw new InvalidSettingsException("Cannot register setting on '" + reference.getKey() + "' in config '"
+        + config.getConfigName() + "' because none of the allowed types for " + annotation.annotationType().getName()
+        + " match " + type.getTypeName());
   }
 
   private String findCategoryName(ConfigObjectReference reference) {

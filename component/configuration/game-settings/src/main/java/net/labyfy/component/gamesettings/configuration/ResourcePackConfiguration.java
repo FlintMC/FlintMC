@@ -49,7 +49,7 @@ public interface ResourcePackConfiguration {
   /**
    * Changes the old incompatible resource pack collection with the new collection.
    *
-   * @param incompatibleResourcePacks The new incompatible resource pack colleciton.
+   * @param incompatibleResourcePacks The new incompatible resource pack collection.
    */
   void setIncompatibleResourcePacks(List<String> incompatibleResourcePacks);
 

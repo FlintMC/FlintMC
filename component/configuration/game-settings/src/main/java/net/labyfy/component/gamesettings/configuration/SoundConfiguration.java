@@ -38,7 +38,7 @@ public interface SoundConfiguration {
 
   // TODO for enums in multi getters, there should be a setting which generates one button per enum constant (e.g. for the key bindings and the sound categories, the data should then be provided on the enum constant)
 
-  Map<SoundCategory, Float> getAllSoundVolume(); // TODO rename to getAllSoundVolumes?
+  Map<SoundCategory, Float> getAllSoundVolume();
 
   void setAllSoundVolume(Map<SoundCategory, Float> volumes);
 

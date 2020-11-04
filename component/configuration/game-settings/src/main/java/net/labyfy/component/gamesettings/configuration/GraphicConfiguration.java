@@ -225,7 +225,7 @@ public interface GraphicConfiguration {
    */
   void setCloudOption(CloudOption cloudOption);
 
-  // TODO replace drop down with the select thingy by MC
+  // TODO replace drop down with the select thingy by MC?
   /**
    * Retrieves the graphic mode.
    *
@@ -307,8 +307,7 @@ public interface GraphicConfiguration {
    *
    * @return The full screen resolution.
    */
-  @CustomDropDownSetting("")
-  // TODO add provider for the array to get the resolutions dynamically from the game
+  @CustomDropDownSetting({})
   String getFullscreenResolution();
 
   /**
