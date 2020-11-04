@@ -22,8 +22,8 @@ import java.util.Map;
 
 @Singleton
 @Services({
-  @Service(value = Implement.class, priority = -100000, state = Service.State.PRE_INIT),
-  @Service(value = AssistedFactory.class, priority = -10000, state = Service.State.PRE_INIT)
+    @Service(value = Implement.class, priority = -100000, state = Service.State.PRE_INIT),
+    @Service(value = AssistedFactory.class, priority = -10000, state = Service.State.PRE_INIT)
 })
 public class InjectionService implements ServiceHandler<Annotation> {
 
@@ -71,15 +71,8 @@ public class InjectionService implements ServiceHandler<Annotation> {
         || launchArguments.get("--game-version").equals(annotation.version()))) return;
 
     if (implementations.containsKey(annotation.value()) && !implementations.get(annotation.value()).equals(location)) {
-      // todo use String.format :)
       throw new IllegalStateException(
-          "Cannot bind "
-              + annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName()
-              + ". Implementation "
-              + annotation.value()
-              + " already provided by "
-              + implementations.get(annotation.value()).getName()
-              + ".");
+          String.format("Cannot bind %s. Implementation %s already provided by %s.", annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName(), annotation.value(), implementations.get(annotation.value()).getName()));
     }
     implementations.put(annotation.value(), location);
   }
