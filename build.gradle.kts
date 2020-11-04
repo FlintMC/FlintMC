@@ -1,7 +1,6 @@
 plugins {
     id("net.flintmc.flint-gradle-plugin")
     id("project-report")
-    id("maven-publish")
 }
 
 fun RepositoryHandler.labymedia() {
@@ -58,17 +57,6 @@ subprojects {
             mavenCentral()
         }
 
-
-        publishing {
-            repositories {
-                flintRepository()
-            }
-            publications {
-                create<MavenPublication>(project.name) {
-                    from(components["java"])
-                }
-            }
-        }
     }
 }
 
