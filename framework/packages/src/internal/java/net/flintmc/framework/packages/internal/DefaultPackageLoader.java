@@ -7,9 +7,8 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.internal.DefaultLoggingProvider;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.PackageClassLoader;
-import net.flintmc.framework.packages.PackageLoader;
-import net.flintmc.framework.packages.PackageState;
+import net.flintmc.framework.packages.*;
+import net.flintmc.launcher.LaunchController;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -28,6 +27,7 @@ public class DefaultPackageLoader implements PackageLoader {
   private final Logger logger;
   private final File packageFolder;
   private final Set<JarTuple> jars;
+  private final DefaultPackageManifestLoader descriptionLoader;
   private final Package.Factory packageFactory;
 
   private Set<Package> allPackages;
@@ -39,6 +39,7 @@ public class DefaultPackageLoader implements PackageLoader {
       DefaultPackageManifestLoader descriptionLoader,
       Package.Factory packageFactory,
       @InjectLogger Logger logger) {
+    this.descriptionLoader = descriptionLoader;
 
     this.packageFactory = packageFactory;
     this.logger = logger;
@@ -114,6 +115,56 @@ public class DefaultPackageLoader implements PackageLoader {
         jars.stream()
             .map(jarTuple -> this.packageFactory.create(jarTuple.getFile(), jarTuple.getJar()))
             .collect(Collectors.toSet());
+
+    List<Package> libraryPackages = new ArrayList<>();
+    int progress = 0;
+    do {
+      progress = 0;
+      outer:
+      for (Package pack : this.allPackages) {
+
+        for (String path : pack.getPackageManifest().getRuntimeClassPath()) {
+          path = path.replace("${FLINT_PACKAGE_DIR}", packageFolder.getAbsolutePath());
+
+          try {
+            File f = new File(path);
+            if (!f.exists()) throw new IOException("Library not found");
+            JarFile additionalJar = new JarFile(f);
+
+            if (this.descriptionLoader.isManifestPresent(additionalJar)) {
+              PackageManifest manifest = this.descriptionLoader.loadManifest(additionalJar);
+
+              if (this.allPackages.stream()
+                      .noneMatch(
+                          availablePack ->
+                              availablePack.getName().equals(manifest.getName())
+                                  && availablePack.getVersion().equals(manifest.getVersion()))
+                  && libraryPackages.stream()
+                      .noneMatch(
+                          availablePack ->
+                              availablePack.getName().equals(manifest.getName())
+                                  && availablePack.getVersion().equals(manifest.getVersion()))) {
+                libraryPackages.add(this.packageFactory.create(f, additionalJar));
+              }
+            } else {
+              LaunchController.getInstance()
+                  .getRootLoader()
+                  .addURLs(Collections.singletonList(f.toURI().toURL()));
+            }
+
+          } catch (IOException e) {
+            this.logger.warn(
+                "Couldn't resolve runtime classpath of package {}. Not loading it.",
+                pack.getName());
+            pack.setState(PackageState.ERRORED);
+            continue outer;
+          }
+        }
+      }
+      progress = libraryPackages.size();
+      this.allPackages.addAll(libraryPackages);
+      libraryPackages.clear();
+    } while (progress > 0);
 
     // Filter out all packages which can be loaded
     Set<Package> loadablePackages =

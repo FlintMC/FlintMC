@@ -34,6 +34,12 @@ public interface PackageManifest {
   Set<String> getAuthors();
 
   /**
+   * @return a set of library/asset paths that should be available in the package's classpath at
+   *     runtime.
+   */
+  Set<String> getRuntimeClassPath();
+
+  /**
    * Retrieves the description of the package. This will always be a human readable string.
    *
    * @return The description of the package
