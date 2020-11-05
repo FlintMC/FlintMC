@@ -1,7 +1,6 @@
 plugins {
     id("net.flintmc.flint-gradle-plugin")
     id("project-report")
-    id("maven-publish")
 }
 
 fun RepositoryHandler.labymedia() {
@@ -51,24 +50,13 @@ subprojects {
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
 
-        version = System.getenv().getOrDefault("VERSION", "1.2.3")
+        version = System.getenv().getOrDefault("VERSION", "1.0.0")
 
         repositories {
             labymedia()
             mavenCentral()
         }
 
-
-        publishing {
-            repositories {
-                flintRepository()
-            }
-            publications {
-                create<MavenPublication>(project.name) {
-                    from(components["java"])
-                }
-            }
-        }
     }
 }
 
