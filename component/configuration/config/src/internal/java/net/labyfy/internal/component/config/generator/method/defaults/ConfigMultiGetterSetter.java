@@ -111,6 +111,26 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
       this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
     }
     this.insertSaveConfig(target.getDeclaredMethod(this.getSingleSetterName()));
+
+    super.implementedMethods = true;
+  }
+
+  @Override
+  public void addInterfaceMethods(CtClass target) throws CannotCompileException {
+
+    if (this.keyType.isEnum()) {
+
+      if (!this.hasMethod(target, this.getGetterName())) {
+        target.addMethod(CtNewMethod.make("java.util.Map " + this.getGetterName() + "();", target));
+      }
+
+      if (!this.hasMethod(target, this.getSetterName())) {
+        target.addMethod(CtNewMethod.make("void " + this.getSetterName() + "(java.util.Map arg);", target));
+      }
+
+    }
+
+    super.addedInterfaceMethods = true;
   }
 
   private void insertEnumGetAll(CtClass target) throws CannotCompileException {
@@ -147,7 +167,7 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
         operations.append("if (map.containsKey(").append(constant).append(")) {")
 
             .append("this.").append(this.getSingleSetterName())
-            .append("(").append(constant).append(", ").append(this.asPrimitive(getter, this.valueType)).append(");")
+            .append("(").append(constant).append(", ").append(PrimitiveTypeLoader.asPrimitiveSource(this.valueType, getter)).append(");")
 
             .append("}");
       }
@@ -156,15 +176,6 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
     target.addMethod(CtNewMethod.make("public void " + this.getSetterName() + "(java.util.Map map) {" +
         operations +
         "}", target));
-  }
-
-  private String asPrimitive(String getter, CtClass type) {
-    Class<?> wrappedPrimitive = PrimitiveTypeLoader.getWrappedClass(type.getName());
-    if (wrappedPrimitive != null) {
-      return getter + "." + type.getName() + "Value()";
-    }
-
-    return getter;
   }
 
   private void insertGetAll(CtClass target, CtField field) throws CannotCompileException {
@@ -178,7 +189,7 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
   }
 
   private void insertSetter(CtClass target, CtField field) throws CannotCompileException {
-    String value = this.removePrimitive(this.valueType, "value");
+    String value = PrimitiveTypeLoader.asWrappedPrimitiveSource(this.valueType, "value");
 
     target.addMethod(CtNewMethod.make(
         "public void " + this.getSingleSetterName() + "(" + this.keyType.getName() + " key, " + this.valueType.getName() + " value) {" +
@@ -196,20 +207,13 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
       defaultValue = "null";
     }
 
-    String getter = this.removePrimitive(this.valueType, "this." + field.getName() + ".getOrDefault(input, " + defaultValue + ")");
+    String getter = PrimitiveTypeLoader.asWrappedPrimitiveSource(this.valueType, "this." + field.getName() + ".getOrDefault(input, " + defaultValue + ")");
 
     target.addMethod(CtNewMethod.make(
         "public " + this.valueType.getName() + " " + this.getSingleGetterName() + "(" + this.keyType.getName() + " input) {" +
             "return (" + this.valueType.getName() + ") " + getter + ";" +
             "}", target
     ));
-  }
-
-  private String removePrimitive(CtClass type, String primitive) {
-    if (type.isPrimitive()) {
-      return ((CtPrimitiveType) type).getWrapperName() + ".valueOf((" + type.getName() + ") " + primitive + ")";
-    }
-    return primitive;
   }
 
 }

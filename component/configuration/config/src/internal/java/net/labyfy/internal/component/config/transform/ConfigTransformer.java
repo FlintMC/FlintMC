@@ -18,6 +18,7 @@ import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 import net.labyfy.component.transform.javassist.ClassTransform;
 import net.labyfy.component.transform.javassist.ClassTransformContext;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -32,7 +33,6 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
   private final Collection<ConfigMethod> pendingTransforms;
   private final Collection<TransformedConfigMeta> mappings;
   private final Map<String, String> launchArguments;
-  private final Collection<String> transformingConfigInterfaces;
 
   @Inject
   public ConfigTransformer(ConfigImplementer configImplementer, @Named("launchArguments") Map launchArguments) {
@@ -43,12 +43,6 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
 
     this.pendingTransforms = new HashSet<>();
     this.mappings = new HashSet<>();
-
-    this.transformingConfigInterfaces = new HashSet<>();
-  }
-
-  public Collection<String> getTransformingConfigInterfaces() {
-    return this.transformingConfigInterfaces;
   }
 
   public Collection<TransformedConfigMeta> getMappings() {
@@ -63,13 +57,6 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
   public void transformConfigImplementation(ClassTransformContext context) throws CannotCompileException, NotFoundException {
     // implement methods in classes of the config (including the class annotated with @Config) that are also half-generated
     CtClass implementation = context.getCtClass();
-    if (implementation.isInterface()) {
-      if (this.transformingConfigInterfaces.contains(implementation.getName())) {
-        this.transformingConfigInterfaces.remove(implementation.getName());
-        implementation.addInterface(this.pool.get(ParsedConfig.class.getName()));
-      }
-      return;
-    }
 
     this.implementMethods(implementation);
   }
@@ -126,24 +113,42 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
         continue;
       }
 
-      if (!modified) {
-        implementation.addField(CtField.make("private final transient " + ConfigStorageProvider.class.getName() + " configStorageProvider = "
-            + InjectionHolder.class.getName() + ".getInjectedInstance(" + ConfigStorageProvider.class.getName() + ".class);", implementation));
+      if (!modified && implementation.isInterface() && implementation.getName().equals(method.getConfig().getBaseClass().getName())) {
+        // add the ParsedConfig interface to the config interface so that guice will also proxy this one and not only the config itself
+        implementation.addInterface(this.pool.get(ParsedConfig.class.getName()));
+      }
 
-        if (method.getDeclaringClass().getName().equals(method.getConfig().getBaseClass().getName())) {
+      if (!implementation.isInterface()) {
+        if (!modified) {
+          implementation.addField(CtField.make("private final transient " + ConfigStorageProvider.class.getName() + " configStorageProvider = "
+              + InjectionHolder.class.getName() + ".getInjectedInstance(" + ConfigStorageProvider.class.getName() + ".class);", implementation));
+
+          for (TransformedConfigMeta meta : this.mappings) {
+            if (meta.getConfig() == null && meta.getSuperClass().getName().equals(declaring.getName())) {
+              meta.setConfig(method.getConfig());
+            }
+          }
+        }
+
+        if (method.getDeclaringClass().getName().equals(method.getConfig().getBaseClass().getName()) &&
+            Arrays.stream(implementation.getInterfaces()).noneMatch(iface -> iface.getName().equals(ParsedConfig.class.getName()))) {
           // only the base class annotated with @Config should have the ParsedConfig implementation
           this.configImplementer.implementParsedConfig(implementation, method.getConfig().getName());
         }
-
-        for (TransformedConfigMeta meta : this.mappings) {
-          if (meta.getConfig() == null && meta.getSuperClass().getName().equals(declaring.getName())) {
-            meta.setConfig(method.getConfig());
-          }
-        }
       }
 
-      method.implementExistingMethods(implementation);
-      this.pendingTransforms.remove(method);
+      if (declaring.isInterface()) {
+        method.addInterfaceMethods(declaring);
+      }
+
+      if (!implementation.isInterface()) {
+        method.implementExistingMethods(implementation);
+      }
+
+      if (method.hasAddedInterfaceMethods() && method.hasImplementedExistingMethods()) {
+        // everything done, remove the method
+        this.pendingTransforms.remove(method);
+      }
 
       modified = true;
     }

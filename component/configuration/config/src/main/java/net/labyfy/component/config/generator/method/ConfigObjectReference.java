@@ -12,7 +12,6 @@ import net.labyfy.component.config.storage.ConfigStorage;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
@@ -131,22 +130,16 @@ public interface ConfigObjectReference {
    *
    * @param config The non-null config to get the value from
    * @return The value from the config, may be {@code null}
-   * @throws InvocationTargetException If the getter method in the implementation of this config throws an exception
-   * @throws IllegalAccessException    If the getter method in the implementation of this config is inaccessible (e.g.
-   *                                   private)
    */
-  Object getValue(ParsedConfig config) throws InvocationTargetException, IllegalAccessException;
+  Object getValue(ParsedConfig config);
 
   /**
    * Changes the value of the method which is linked to this reference in the given instance of a config.
    *
    * @param config The non-null config to get the value from
    * @param value  The value to set in the config, may be {@code null}
-   * @throws InvocationTargetException If the setter method in the implementation of this config throws an exception
-   * @throws IllegalAccessException    If the setter method in the implementation of this config is inaccessible (e.g.
-   *                                   private)
    */
-  void setValue(ParsedConfig config, Object value) throws InvocationTargetException, IllegalAccessException;
+  void setValue(ParsedConfig config, Object value);
 
   /**
    * Parser for one or multiple {@link ConfigObjectReference ConfigObjectReference(s)}.
@@ -188,6 +181,7 @@ public interface ConfigObjectReference {
     /**
      * Creates a new {@link ConfigObjectReference} with the specified values.
      *
+     * @param config               The non-null generating config with all information about the generated config
      * @param pathKeys             The non-null array of keys to the new reference (unique per {@link
      *                             GeneratingConfig})
      * @param path                 The non-null array of methods (matches the {@code pathKeys} array) to the new
@@ -204,7 +198,8 @@ public interface ConfigObjectReference {
      * @param serializedType       The type to for serialization
      * @return The new non-null {@link ConfigObjectReference}
      */
-    ConfigObjectReference create(@Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
+    ConfigObjectReference create(@Assisted("config") GeneratingConfig config,
+                                 @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
                                  @Assisted("correspondingMethods") CtMethod[] correspondingMethods,
                                  @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,
                                  @Assisted("classLoader") ClassLoader classLoader,

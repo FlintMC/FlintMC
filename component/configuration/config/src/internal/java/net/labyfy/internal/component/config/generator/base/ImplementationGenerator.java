@@ -47,8 +47,11 @@ public class ImplementationGenerator {
 
     for (ConfigMethod method : config.getAllMethods()) {
       CtClass declaring = method.getDeclaringClass();
-      if (config.getGeneratedImplementation(declaring.getName()) != null || declaring.hasAnnotation(ImplementedConfig.class)) {
+      if (declaring.hasAnnotation(ImplementedConfig.class)) {
         this.transformer.addPendingTransform(method);
+        continue;
+      }
+      if (config.getGeneratedImplementation(declaring.getName()) != null) {
         continue;
       }
       CtClass implementation = this.generateImplementation(config, declaring);

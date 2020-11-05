@@ -17,6 +17,8 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
   protected final String configName;
   protected final CtClass methodType;
 
+  protected boolean implementedMethods;
+  protected boolean addedInterfaceMethods;
   private String[] pathPrefix;
 
   public DefaultConfigMethod(GeneratingConfig config, CtClass declaringClass, String configName, CtClass methodType) {
@@ -94,4 +96,13 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
     return CtResolver.get(implementation != null ? implementation : superClass);
   }
 
+  @Override
+  public boolean hasImplementedExistingMethods() {
+    return this.implementedMethods;
+  }
+
+  @Override
+  public boolean hasAddedInterfaceMethods() {
+    return this.addedInterfaceMethods;
+  }
 }

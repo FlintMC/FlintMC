@@ -2,6 +2,8 @@ package net.labyfy.component.stereotype;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import javassist.CtClass;
+import javassist.CtPrimitiveType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +52,22 @@ public class PrimitiveTypeLoader {
   public static Class<?> getWrappedClass(String name) {
     Class<?> type = PRIMITIVE_TYPES.get(name);
     return type != null ? PRIMITIVE_MAPPINGS.get(type) : null;
+  }
+
+  public static String asPrimitiveSource(CtClass type, String wrapped) {
+    Class<?> wrappedPrimitive = PrimitiveTypeLoader.getWrappedClass(type.getName());
+    if (wrappedPrimitive != null) {
+      return "((" + wrappedPrimitive.getName() + ") " + wrapped + ")." + type.getName() + "Value()";
+    }
+
+    return wrapped;
+  }
+
+  public static String asWrappedPrimitiveSource(CtClass type, String primitive) {
+    if (type.isPrimitive()) {
+      return ((CtPrimitiveType) type).getWrapperName() + ".valueOf((" + type.getName() + ") " + primitive + ")";
+    }
+    return primitive;
   }
 
 }

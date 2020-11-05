@@ -2,6 +2,7 @@ package net.labyfy.internal.component.config.generator.method.reference;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -9,6 +10,7 @@ import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.IncludeStorage;
 import net.labyfy.component.config.event.ConfigValueUpdateEvent;
 import net.labyfy.component.config.generator.ConfigAnnotationCollector;
+import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.config.modifier.ConfigModifierRegistry;
@@ -17,16 +19,15 @@ import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
+import net.labyfy.internal.component.config.generator.method.reference.asm.ReferenceInvocationGenerator;
+import net.labyfy.internal.component.config.generator.method.reference.asm.ReferenceInvoker;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
-
-// TODO replace Reflections with Javassist?
 
 @Implement(ConfigObjectReference.class)
 public class DefaultConfigObjectReference implements ConfigObjectReference {
@@ -50,40 +51,40 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private final ConfigAnnotationCollector annotationCollector;
   private final String key;
   private final String[] pathKeys;
-  private final CtMethod[] ctPath;
   private final CtMethod[] correspondingCtMethods;
-  private final CtMethod ctGetter;
-  private final CtMethod ctSetter;
   private final Map<Class<? extends Annotation>, Annotation> lastAnnotations;
   private final ClassLoader classLoader;
   private final Type serializedType;
 
-  private Method[] path;
-  private Method getter;
-  private Method setter;
+  private final ReferenceInvoker invoker;
+  private final Class<?> declaringClass;
+
   private Method[] correspondingMethods;
   private Collection<Annotation> allAnnotations;
 
   @AssistedInject
   private DefaultConfigObjectReference(EventBus eventBus, ConfigValueUpdateEvent.Factory eventFactory,
                                        ConfigModifierRegistry modifierRegistry, ConfigAnnotationCollector annotationCollector,
-                                       @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] ctPath,
+                                       ReferenceInvocationGenerator invocationGenerator,
+                                       @Assisted("config") GeneratingConfig config,
+                                       @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
                                        @Assisted("correspondingMethods") CtMethod[] correspondingCtMethods,
                                        @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,
                                        @Assisted("classLoader") ClassLoader classLoader,
-                                       @Assisted("serializedType") Type serializedType) {
+                                       @Assisted("serializedType") Type serializedType)
+      throws ReflectiveOperationException, CannotCompileException, NotFoundException, IOException {
     this.eventBus = eventBus;
     this.eventFactory = eventFactory;
     this.modifierRegistry = modifierRegistry;
     this.annotationCollector = annotationCollector;
     this.pathKeys = pathKeys;
     this.key = String.join(".", pathKeys);
-    this.ctPath = ctPath;
     this.correspondingCtMethods = correspondingCtMethods;
-    this.ctGetter = getter;
-    this.ctSetter = setter;
     this.classLoader = classLoader;
     this.serializedType = serializedType;
+
+    this.declaringClass = classLoader.loadClass(getter.getDeclaringClass().getName());
+    this.invoker = invocationGenerator.generateInvoker(config, path, getter, setter);
 
     this.lastAnnotations = new HashMap<>();
   }
@@ -100,8 +101,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   @Override
   public Class<?> getDeclaringClass() {
-    this.ensureGetterAvailable();
-    return this.getter.getDeclaringClass();
+    return this.declaringClass;
   }
 
   @Override
@@ -197,108 +197,18 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   }
 
   @Override
-  public Object getValue(ParsedConfig config) throws InvocationTargetException, IllegalAccessException {
-    Object lastInstance = this.getLastInstance(config);
-    if (lastInstance == null) {
-      return null;
-    }
-
-    this.ensureGetterAvailable();
-
-    return this.mapProxyMethod(this.getter, lastInstance).invoke(lastInstance);
-  }
-
-  private void ensureGetterAvailable() {
-    if (this.getter == null) {
-      try {
-        this.getter = this.mapMethod(this.ctGetter);
-      } catch (ClassNotFoundException | NotFoundException | NoSuchMethodException e) {
-        throw new RuntimeException("Failed to map the getter CtMethod of the reference for '" + this.key
-            + "' to java reflect methods", e);
-      }
-    }
+  public Object getValue(ParsedConfig config) {
+    return this.invoker.getValue(config);
   }
 
   @Override
-  public void setValue(ParsedConfig config, Object value) throws InvocationTargetException, IllegalAccessException {
-    Object lastInstance = this.getLastInstance(config);
-    if (lastInstance == null) {
-      return;
-    }
-
-    this.ensureSetterAvailable();
-
-    Object castedValue = value;
-    // map e.g. int to double because Java reflections can't handle it
-    if (value instanceof Number) {
-      Class<?> type = this.setter.getParameterTypes()[0];
-      if (type.isPrimitive()) {
-        type = PrimitiveTypeLoader.getWrappedClass(type);
-      }
-
-      if (Number.class.isAssignableFrom(type) && NUMBER_MAPPINGS.containsKey(type)) {
-        castedValue = NUMBER_MAPPINGS.get(type).apply((Number) value);
-      }
-    }
-
+  public void setValue(ParsedConfig config, Object value) {
     Object previousValue = this.getValue(config);
-    ConfigValueUpdateEvent event = this.eventFactory.create(this, previousValue, castedValue);
+    ConfigValueUpdateEvent event = this.eventFactory.create(this, previousValue, value);
 
     this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
-    this.mapProxyMethod(this.getter, lastInstance).invoke(lastInstance, castedValue);
+    this.invoker.setValue(config, value);
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
-  }
-
-  private void ensureSetterAvailable() {
-    if (this.setter == null) {
-      try {
-        this.setter = this.mapMethod(this.ctSetter);
-      } catch (ClassNotFoundException | NotFoundException | NoSuchMethodException e) {
-        throw new RuntimeException("Failed to map the setter CtMethod of the reference for '" + this.key
-            + "' to java reflect methods", e);
-      }
-    }
-  }
-
-  private Object getLastInstance(Object baseInstance) throws InvocationTargetException, IllegalAccessException {
-    if (this.path == null) {
-      try {
-        this.path = this.mapMethods(this.ctPath);
-      } catch (ClassNotFoundException | NotFoundException | NoSuchMethodException e) {
-        throw new RuntimeException("Failed to map the path CtMethods of the reference for '" + this.key
-            + "' to java reflect methods", e);
-      }
-    }
-
-    if (this.path.length == 0) {
-      return baseInstance;
-    }
-
-    Object currentInstance = baseInstance;
-
-    for (Method method : this.path) {
-      if (currentInstance == null) {
-        return null;
-      }
-
-      Method mapped = this.mapProxyMethod(method, currentInstance);
-
-      currentInstance = mapped.invoke(currentInstance);
-    }
-
-    return currentInstance;
-  }
-
-  private Method mapProxyMethod(Method method, Object instance) {
-    if (Proxy.isProxyClass(instance.getClass()) && !Proxy.isProxyClass(method.getDeclaringClass())) {
-      try {
-        return instance.getClass().getDeclaredMethod(method.getName(), method.getParameterTypes());
-      } catch (NoSuchMethodException e) {
-        throw new RuntimeException("Failed to get method " + method.getName() + " from proxy " + instance.getClass().getName());
-      }
-    }
-
-    return method;
   }
 
   private Method[] mapMethods(CtMethod[] ctMethods) throws ClassNotFoundException, NotFoundException, NoSuchMethodException {

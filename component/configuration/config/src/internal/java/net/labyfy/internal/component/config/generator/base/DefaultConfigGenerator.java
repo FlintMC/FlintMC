@@ -11,7 +11,6 @@ import net.labyfy.component.config.generator.ConfigGenerator;
 import net.labyfy.component.config.generator.ConfigImplementer;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
-import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.config.storage.ConfigStorageProvider;
 import net.labyfy.component.eventbus.EventBus;
@@ -71,10 +70,8 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     ConfigClassLoader classLoader = this.implementationGenerator.getClassLoader();
     GeneratingConfig config = this.configFactory.create(configInterface);
 
-    CtClass implementation = this.generateImplementation(configInterface, config);
+    CtClass implementation = this.implementationGenerator.implementConfig(configInterface, config);
     if (implementation == null) {
-      // add the ParsedConfig interface to this interface
-      this.transformer.getTransformingConfigInterfaces().add(configInterface.getName());
       return null;
     }
 
@@ -91,19 +88,6 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     return result;
   }
 
-  private CtClass generateImplementation(CtClass configInterface, GeneratingConfig config)
-      throws NotFoundException, CannotCompileException {
-    CtClass implementation = this.implementationGenerator.implementConfig(configInterface, config);
-    if (implementation == null) {
-      for (ConfigMethod method : config.getAllMethods()) {
-        this.transformer.addPendingTransform(method);
-      }
-      return null;
-    }
-
-    return implementation;
-  }
-
   @Override
   public Collection<ParsedConfig> getDiscoveredConfigs() {
     return Collections.unmodifiableCollection(this.discoveredConfigs.values());
@@ -118,7 +102,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     Collection<ConfigObjectReference> references = this.objectReferenceParser.parseAll(generatingConfig);
     config.getConfigReferences().addAll(references);
 
-    this.storageProvider.read(config);
+    this.storageProvider.read(config); // TODO move to POST_MINECRAFT_INITIALIZE
     this.discoveredConfigs.put(config.getConfigName(), config);
     this.eventBus.fireEvent(this.eventFactory.create(config), Subscribe.Phase.POST);
   }

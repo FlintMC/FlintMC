@@ -9,22 +9,17 @@ import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.config.storage.serializer.JsonConfigSerializer;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.logging.InjectLogger;
-import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.function.Predicate;
 
 @Singleton
 @Implement(JsonConfigSerializer.class)
 public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
 
-  private final Logger logger;
   private final Gson gson;
 
   @Inject
-  public DefaultJsonConfigSerializer(@InjectLogger Logger logger) {
-    this.logger = logger;
+  public DefaultJsonConfigSerializer() {
     this.gson = new Gson();
   }
 
@@ -40,30 +35,23 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
         continue;
       }
 
-      try {
+      JsonElement value = this.gson.toJsonTree(reference.getValue(config));
+      JsonObject parent = object;
 
-        JsonElement value = this.gson.toJsonTree(reference.getValue(config));
-        JsonObject parent = object;
+      for (int i = 0; i < keys.length - 1; i++) {
+        String pathKey = keys[i];
 
-        for (int i = 0; i < keys.length - 1; i++) {
-          String pathKey = keys[i];
+        JsonObject nextParent = parent.getAsJsonObject(pathKey);
 
-          JsonObject nextParent = parent.getAsJsonObject(pathKey);
-
-          if (nextParent == null) {
-            nextParent = new JsonObject();
-            parent.add(pathKey, nextParent);
-          }
-
-          parent = nextParent;
+        if (nextParent == null) {
+          nextParent = new JsonObject();
+          parent.add(pathKey, nextParent);
         }
 
-        parent.add(keys[keys.length - 1], value);
-
-      } catch (InvocationTargetException | IllegalAccessException e) {
-        this.logger.error("Exception while reading a value ('" + reference.getKey()
-            + "') out of the config " + config.getClass().getName(), e);
+        parent = nextParent;
       }
+
+      parent.add(keys[keys.length - 1], value);
     }
   }
 
@@ -96,13 +84,7 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
       }
 
       Object deserialized = this.gson.fromJson(value, reference.getSerializedType());
-      try {
-        reference.setValue(config, deserialized);
-      } catch (InvocationTargetException | IllegalAccessException e) {
-        this.logger.error("Exception while writing a value ('" + reference.getKey()
-            + "') into the config " + config.getClass().getName(), e);
-      }
-
+      reference.setValue(config, deserialized);
     }
   }
 }

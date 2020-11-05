@@ -57,10 +57,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
       }
     }
 
-    CtClass declaringImplementation = config.getGeneratedImplementation(declaringClass.getName());
-    if (declaringImplementation == null) {
-      declaringImplementation = declaringClass;
-    }
+    CtClass declaringImplementation = config.getGeneratedImplementation(declaringClass.getName(), declaringClass);
 
     CtMethod getter = this.getMethod(declaringImplementation, method.getGetterName());
     CtMethod setter = this.getMethod(declaringImplementation, method.getSetterName());
@@ -70,7 +67,9 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
           + ") not found in " + declaringImplementation.getName());
     }
 
-    return this.factory.create(pathKeys.toArray(new String[0]),
+    return this.factory.create(
+        config,
+        pathKeys.toArray(new String[0]),
         methodPath, allMethods.toArray(new CtMethod[0]),
         getter, setter,
         this.implementationGenerator.getClassLoader(),
@@ -102,10 +101,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
       }
 
       methods.add(currentMethod);
-      currentClass = config.getGeneratedImplementation(currentMethod.getReturnType().getName());
-      if (currentClass == null) {
-        currentClass = currentMethod.getReturnType();
-      }
+      currentClass = config.getGeneratedImplementation(currentMethod.getReturnType().getName(), currentMethod.getReturnType());
 
       if (currentClass.equals(CtClass.voidType)) {
         throw new IllegalArgumentException("Cannot have void as a return type of a getter");

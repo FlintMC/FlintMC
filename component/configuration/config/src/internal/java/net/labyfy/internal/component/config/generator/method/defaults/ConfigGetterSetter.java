@@ -13,6 +13,8 @@ public class ConfigGetterSetter extends FieldConfigMethod {
 
   public ConfigGetterSetter(GeneratingConfig config, CtClass declaringClass, String name, CtClass methodType) {
     super(config, declaringClass, name, methodType);
+
+    super.addedInterfaceMethods = true;
   }
 
   @Override
@@ -68,6 +70,13 @@ public class ConfigGetterSetter extends FieldConfigMethod {
         throw e;
       }
     }
+
+    super.implementedMethods = true;
+  }
+
+  @Override
+  public void addInterfaceMethods(CtClass target) {
+    // the methods need to exist
   }
 
   private void insertGetter(CtClass target) throws CannotCompileException {

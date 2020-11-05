@@ -7,21 +7,17 @@ import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.settings.annotation.ui.NativeSetting;
 import net.labyfy.component.settings.event.SettingsUpdateEvent;
 import net.labyfy.component.settings.mapper.SettingHandler;
 import net.labyfy.component.settings.registered.RegisteredSetting;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 
 @Implement(RegisteredSetting.class)
 public class DefaultRegisteredSetting implements RegisteredSetting {
 
-  private final Logger logger;
   private final SettingHandler settingHandler;
   private final Class<? extends Annotation> annotationType;
   private final ParsedConfig config;
@@ -35,15 +31,13 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
   private boolean enabled;
 
   @AssistedInject
-  public DefaultRegisteredSetting(@InjectLogger Logger logger,
-                                  SettingHandler settingHandler,
+  public DefaultRegisteredSetting(SettingHandler settingHandler,
                                   EventBus eventBus,
                                   SettingsUpdateEvent.Factory eventFactory,
                                   @Assisted Class<? extends Annotation> annotationType,
                                   @Assisted ParsedConfig config,
                                   @Assisted @Nullable String categoryName,
                                   @Assisted ConfigObjectReference reference) {
-    this.logger = logger;
     this.settingHandler = settingHandler;
     this.annotationType = annotationType;
     this.config = config;
@@ -75,14 +69,9 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   @Override
   public Object getCurrentValue() {
-    try {
-      Object value = this.reference.getValue(this.config);
-      if (value != null) {
-        return value;
-      }
-    } catch (InvocationTargetException | IllegalAccessException e) {
-      this.logger.error("Failed to get the value from " + this.reference.getKey()
-          + " for setting from config " + this.config.getConfigName(), e);
+    Object value = this.reference.getValue(this.config);
+    if (value != null) {
+      return value;
     }
 
     return this.defaultValue;
@@ -94,16 +83,8 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
       return false;
     }
 
-    try {
-      this.reference.setValue(this.config, value != null ? value : this.defaultValue);
-
-      return true;
-    } catch (InvocationTargetException | IllegalAccessException e) {
-      this.logger.error("Failed to update the value of " + this.reference.getKey()
-          + " for setting from config " + this.config.getConfigName(), e);
-
-      return false;
-    }
+    this.reference.setValue(this.config, value);
+    return true;
   }
 
   @Override

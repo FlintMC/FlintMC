@@ -54,6 +54,11 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
   }
 
   @Override
+  public CtClass getGeneratedImplementation(String baseName, CtClass def) {
+    return this.generatedImplementations.getOrDefault(baseName, def);
+  }
+
+  @Override
   public void bindGeneratedImplementation(String baseName, CtClass implementation) {
     this.generatedImplementations.put(baseName, implementation);
   }
