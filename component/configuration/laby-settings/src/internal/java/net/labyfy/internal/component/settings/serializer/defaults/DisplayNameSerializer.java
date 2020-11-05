@@ -27,22 +27,15 @@ public class DisplayNameSerializer implements SettingsSerializationHandler<Displ
 
   @Override
   public void append(JsonObject result, RegisteredSetting setting, DisplayName annotation) {
-    result.add("displayName", this.serialize(annotation,
-        setting.getReference().getPathKeys()[setting.getReference().getPathKeys().length - 1]));
+    if (annotation == null || annotation.value().length == 0) {
+      return;
+    }
 
-
+    result.add("displayName", this.serialize(annotation));
   }
 
-  private JsonElement serialize(DisplayName annotation, String optional) {
-    ChatComponent component;
-
-    // a displayName is necessary, if no displayName has been provided, we use the last value from the path keys
-    // which is part of the name of the getter/setter
-    if (annotation == null) {
-      component = this.serializerFactory.legacy().deserialize(optional);
-    } else {
-      component = this.annotationSerializer.deserialize(annotation.value());
-    }
+  private JsonElement serialize(DisplayName annotation) {
+    ChatComponent component = this.annotationSerializer.deserialize(annotation.value());
 
     return this.serializerFactory.gson().getGson().toJsonTree(component);
   }

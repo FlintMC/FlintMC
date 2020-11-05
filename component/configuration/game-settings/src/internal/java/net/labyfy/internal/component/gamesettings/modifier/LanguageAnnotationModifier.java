@@ -8,8 +8,10 @@ import net.labyfy.component.gamesettings.configuration.AccessibilityConfiguratio
 import net.labyfy.component.i18n.I18n;
 import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
 import net.labyfy.component.settings.options.dropdown.SelectMenuType;
+import net.labyfy.component.settings.options.dropdown.Selection;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,14 +28,22 @@ public class LanguageAnnotationModifier implements ConfigModificationHandler {
     for (SelectMenuType type : SelectMenuType.values()) {
       CustomSelectSetting setting = new CustomSelectSetting() {
         @Override
-        public String[] value() {
-          return i18n.getAvailableLanguages().toArray(new String[0]);
+        public Selection[] value() {
+          Collection<String> languages = i18n.getAvailableLanguages();
+          Selection[] selections = new Selection[languages.size()];
+
+          int i = 0;
+          for (String language : languages) {
+            selections[i++] = new DefaultSelection(language);
+          }
+
+          return selections;
         }
 
         @Override
         public String defaultValue() {
-          String[] languages = this.value();
-          return languages.length == 0 ? "" : languages[0];
+          Collection<String> languages = i18n.getAvailableLanguages();
+          return languages.isEmpty() ? "" : languages.iterator().next();
         }
 
         @Override

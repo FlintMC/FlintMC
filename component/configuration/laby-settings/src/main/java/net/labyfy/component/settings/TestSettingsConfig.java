@@ -10,6 +10,7 @@ import net.labyfy.component.settings.options.BooleanSetting;
 import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
 import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 import net.labyfy.component.settings.options.dropdown.SelectMenuType;
+import net.labyfy.component.settings.options.dropdown.Selection;
 import net.labyfy.component.settings.options.keybind.KeyBindSetting;
 import net.labyfy.component.settings.options.keybind.PhysicalKey;
 import net.labyfy.component.settings.options.numeric.NumericSetting;
@@ -25,7 +26,12 @@ import net.labyfy.component.settings.options.text.StringSetting;
 @Category("TestSettings")
 public interface TestSettingsConfig {
 
-  @CustomSelectSetting(value = {"val1", "val2", "val3", "val4"}, defaultValue = "val3", type = SelectMenuType.SWITCH)
+  @CustomSelectSetting(value = {
+      @Selection("val1"),
+      @Selection("val2"),
+      @Selection("val3"),
+      @Selection("val4")
+  }, defaultValue = "val3", type = SelectMenuType.SWITCH)
   String getCustomDropDown();
 
   @EnumSelectSetting(defaultValue = 2 /* A3 */, type = SelectMenuType.SWITCH)

@@ -12,10 +12,8 @@ import java.lang.annotation.Target;
 @ApplicableSetting(value = String.class, type = "dropdown")
 public @interface CustomSelectSetting {
 
-  // TODO those should not be strings but rather an array of annotations that contain the registryName (also used for defaultValue() and the value in the config), displayName and maybe a description
-
   // length > 1 (at least two values)
-  String[] value();
+  Selection[] value();
 
   // has to be inside of value(), empty = value()[0]
   String defaultValue() default "";

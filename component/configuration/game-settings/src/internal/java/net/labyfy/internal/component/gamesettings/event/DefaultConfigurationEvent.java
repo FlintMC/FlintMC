@@ -1,6 +1,5 @@
 package net.labyfy.internal.component.gamesettings.event;
 
-import com.google.inject.Singleton;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.gamesettings.event.ConfigurationEvent;

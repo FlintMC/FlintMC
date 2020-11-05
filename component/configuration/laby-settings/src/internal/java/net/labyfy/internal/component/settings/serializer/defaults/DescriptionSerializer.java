@@ -26,7 +26,7 @@ public class DescriptionSerializer implements SettingsSerializationHandler<Descr
 
   @Override
   public void append(JsonObject result, RegisteredSetting setting, Description annotation) {
-    if (annotation == null) {
+    if (annotation == null || annotation.value().length == 0) {
       return;
     }
 

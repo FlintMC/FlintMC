@@ -8,4 +8,10 @@ public interface ComponentAnnotationSerializer {
 
   ChatComponent deserialize(Component[] components);
 
+  // def used if components.length == 0
+  ChatComponent deserialize(Component[] components, ChatComponent def);
+
+  // def used as legacy text if components.length == 0
+  ChatComponent deserialize(Component[] components, String def);
+
 }

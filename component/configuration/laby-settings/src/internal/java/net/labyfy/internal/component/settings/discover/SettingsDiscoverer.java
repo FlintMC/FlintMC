@@ -105,7 +105,7 @@ public class SettingsDiscoverer {
       // all methods inside of it would define a new category)
       if (this.settingsProvider.getCategory(name) == null) {
         this.settingsProvider.registerCategory(this.categoryFactory.create(name,
-            this.annotationSerializer.deserialize(define.displayName()),
+            this.annotationSerializer.deserialize(define.displayName(), define.name()),
             this.annotationSerializer.deserialize(define.description())
         ));
       }

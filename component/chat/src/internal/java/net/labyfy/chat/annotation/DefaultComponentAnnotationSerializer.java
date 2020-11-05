@@ -43,4 +43,22 @@ public class DefaultComponentAnnotationSerializer implements ComponentAnnotation
 
     return builder.build();
   }
+
+  @Override
+  public ChatComponent deserialize(Component[] components, ChatComponent def) {
+    if (components.length == 0) {
+      return def;
+    }
+
+    return this.deserialize(components);
+  }
+
+  @Override
+  public ChatComponent deserialize(Component[] components, String def) {
+    if (components.length == 0) {
+      return this.serializerFactory.legacy().deserialize(def);
+    }
+
+    return this.deserialize(components);
+  }
 }
