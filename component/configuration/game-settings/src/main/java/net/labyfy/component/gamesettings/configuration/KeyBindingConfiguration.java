@@ -3,6 +3,7 @@ package net.labyfy.component.gamesettings.configuration;
 import net.labyfy.chat.Keybind;
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
+import net.labyfy.component.config.annotation.method.ConfigExclude;
 import net.labyfy.component.gamesettings.KeyBinding;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.options.keybind.PhysicalKey;
@@ -36,6 +37,7 @@ public interface KeyBindingConfiguration {
    *
    * @return A collection with all key binding for the hotbar.
    */
+  @ConfigExclude
   List<KeyBinding> getKeyBindsHotbar();
 
   /**
@@ -43,6 +45,7 @@ public interface KeyBindingConfiguration {
    *
    * @return A collection with all registered key bindings.
    */
+  @ConfigExclude
   List<KeyBinding> getKeyBindings();
 
   /**
@@ -51,6 +54,6 @@ public interface KeyBindingConfiguration {
    * @param keyBinding The key binding to change.
    * @param code       The new code for key binding.
    */
-  void setKeyBindingCode(KeyBinding keyBinding, PhysicalKey code);
+  void setKeyBinding(KeyBinding keyBinding, PhysicalKey code);
 
 }

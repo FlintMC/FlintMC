@@ -128,7 +128,7 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
    * {@inheritDoc}
    */
   @Override
-  public void setKeyBindingCode(KeyBinding bindingCode, PhysicalKey keyInputName) {
+  public void setKeyBinding(KeyBinding bindingCode, PhysicalKey keyInputName) {
     Minecraft.getInstance().gameSettings.setKeyBindingCode(
         this.toMinecraftObject(bindingCode),
         InputMappings.getInputByCode(keyInputName.getKey(), keyInputName.getScanCode())
