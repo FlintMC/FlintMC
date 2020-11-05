@@ -1,7 +1,12 @@
 package net.labyfy.component.settings;
 
+import net.labyfy.chat.annotation.Component;
+import net.labyfy.chat.component.TextComponent;
 import net.labyfy.component.config.annotation.Config;
 import net.labyfy.component.settings.annotation.ui.Category;
+import net.labyfy.component.settings.annotation.ui.Description;
+import net.labyfy.component.settings.annotation.ui.DisplayName;
+import net.labyfy.component.settings.options.BooleanSetting;
 import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
 import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 import net.labyfy.component.settings.options.dropdown.SelectMenuType;
@@ -11,9 +16,11 @@ import net.labyfy.component.settings.options.numeric.NumericSetting;
 import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
 import net.labyfy.component.settings.options.text.CharSetting;
+import net.labyfy.component.settings.options.text.ComponentSetting;
 import net.labyfy.component.settings.options.text.StringRestriction;
 import net.labyfy.component.settings.options.text.StringSetting;
 
+// TODO remove
 @Config
 @Category("TestSettings")
 public interface TestSettingsConfig {
@@ -55,13 +62,12 @@ public interface TestSettingsConfig {
 
   }
 
-  /*
   SubSettings getSubSettings();
 
   interface SubSettings {
 
-    @NamedSetting(@Component(value = "labymod.settings.booleanValue", translate = true))
-    @DescribedSetting(@Component("§6Some boolean §cvalue"))
+    @DisplayName(@Component(value = "labymod.settings.booleanValue", translate = true))
+    @Description(@Component("§6Some boolean §cvalue"))
     @BooleanSetting(defaultValue = true)
     boolean isBooleanValue();
 
@@ -71,13 +77,14 @@ public interface TestSettingsConfig {
     @StringSetting(value = StringRestriction.URL_ONLY, defaultValue = "https://labymod.net")
     String getUrl();
 
-    //@ComponentSetting(defaultValue = "§cdefault §7component §avalue")
-    // TODO: this requires custom serializers like those for the Map/Collection: TextComponent getComponent();
+    @ComponentSetting(defaultValue = "§cdefault §7component §avalue")
+    TextComponent getComponent();
 
-    @EnumDropDownSetting(defaultValue = 2) // = A3
+    void setComponent(TextComponent component);
+
+    @EnumSelectSetting(defaultValue = 2 /* A3 */)
     TestEnum getDropDownEnum();
 
   }
-  */
 
 }

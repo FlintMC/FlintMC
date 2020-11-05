@@ -110,25 +110,6 @@ public interface ConfigMethod {
   void setPathPrefix(String[] pathPrefix) throws IllegalStateException;
 
   /**
-   * Retrieves whether the {@link #getStoredType()} is a {@link java.util.Map} or {@link java.util.Collection} or any
-   * sub class.
-   * <p>
-   * Alias for {@link #isSerializableInterface(CtClass)} with {@link #getStoredType()}.
-   *
-   * @return Whether the type is a Map or Collection
-   * @see #isSerializableInterface(CtClass)
-   */
-  boolean isSerializableInterface();
-
-  /**
-   * Retrieves whether the given type is a {@link java.util.Map} or {@link java.util.Collection} or any sub class.
-   *
-   * @param type The non-null type to check for
-   * @return Whether the type is a Map or Collection
-   */
-  boolean isSerializableInterface(CtClass type) throws NotFoundException;
-
-  /**
    * Generates all methods that are necessary like the getters and setters and the necessary field for those
    * setters/getters, this depends on the implementation. If any method already exists, these methods won't be
    * generated, but it doesn't affect other methods.

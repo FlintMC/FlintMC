@@ -6,13 +6,15 @@ import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
+import net.labyfy.component.config.serialization.ConfigSerializationService;
 
 import java.lang.reflect.Type;
 
 public class ConfigGetterSetter extends FieldConfigMethod {
 
-  public ConfigGetterSetter(GeneratingConfig config, CtClass declaringClass, String name, CtClass methodType) {
-    super(config, declaringClass, name, methodType);
+  public ConfigGetterSetter(ConfigSerializationService serializationService, GeneratingConfig config, CtClass declaringClass,
+                            String name, CtClass methodType) {
+    super(serializationService, config, declaringClass, name, methodType);
 
     super.addedInterfaceMethods = true;
   }
@@ -65,7 +67,7 @@ public class ConfigGetterSetter extends FieldConfigMethod {
     try {
       this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
     } catch (NotFoundException e) {
-      if (!super.getStoredType().isInterface() && !super.isSerializableInterface()) {
+      if (!super.getStoredType().isInterface() && !super.serializationService.hasSerializer(super.getStoredType())) {
         // ignore if it is an interface that will never get overridden by anything
         throw e;
       }

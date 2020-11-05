@@ -3,12 +3,18 @@ package net.labyfy.internal.component.config.generator.method.defaults;
 import javassist.*;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
+import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.inject.primitive.InjectionHolder;
 import net.labyfy.internal.component.config.generator.method.DefaultConfigMethod;
 
 public abstract class FieldConfigMethod extends DefaultConfigMethod {
-  public FieldConfigMethod(GeneratingConfig config, CtClass declaringClass, String configName, CtClass returnType) {
+
+  protected final ConfigSerializationService serializationService;
+
+  public FieldConfigMethod(ConfigSerializationService serializationService, GeneratingConfig config, CtClass declaringClass,
+                           String configName, CtClass returnType) {
     super(config, declaringClass, configName, returnType);
+    this.serializationService = serializationService;
   }
 
   protected CtField generateOrGetField(CtClass target) throws CannotCompileException {
@@ -23,7 +29,7 @@ public abstract class FieldConfigMethod extends DefaultConfigMethod {
 
     String fieldSrc = "private " + this.methodType.getName() + " " + this.configName;
 
-    if (defaultValue == null && this.methodType.isInterface() && !super.isSerializableInterface()) {
+    if (defaultValue == null && this.methodType.isInterface() && !this.serializationService.hasSerializer(super.getStoredType())) {
       CtClass implementation = super.config.getGeneratedImplementation(this.methodType.getName());
 
       if (implementation != null) {

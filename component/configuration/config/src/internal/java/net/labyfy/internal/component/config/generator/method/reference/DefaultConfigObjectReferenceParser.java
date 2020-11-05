@@ -8,6 +8,7 @@ import javassist.NotFoundException;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
+import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.internal.component.config.generator.base.ImplementationGenerator;
 
@@ -18,11 +19,14 @@ import java.util.*;
 public class DefaultConfigObjectReferenceParser implements ConfigObjectReference.Parser {
 
   private final ConfigObjectReference.Factory factory;
+  private final ConfigSerializationService serializationService;
   private final ImplementationGenerator implementationGenerator;
 
   @Inject
-  public DefaultConfigObjectReferenceParser(ConfigObjectReference.Factory factory, ImplementationGenerator implementationGenerator) {
+  public DefaultConfigObjectReferenceParser(ConfigObjectReference.Factory factory, ConfigSerializationService serializationService,
+                                            ImplementationGenerator implementationGenerator) {
     this.factory = factory;
+    this.serializationService = serializationService;
     this.implementationGenerator = implementationGenerator;
   }
 
@@ -82,7 +86,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     Collection<ConfigObjectReference> references = new HashSet<>();
 
     for (ConfigMethod method : config.getAllMethods()) {
-      if (!method.getStoredType().isInterface() || method.isSerializableInterface()) {
+      if (!method.getStoredType().isInterface() || this.serializationService.hasSerializer(method.getStoredType())) {
         references.add(this.parse(config, method));
       }
     }

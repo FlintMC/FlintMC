@@ -1,14 +1,10 @@
 package net.labyfy.internal.component.config.generator.method;
 
 import javassist.CtClass;
-import javassist.NotFoundException;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 import net.labyfy.component.stereotype.service.CtResolver;
-
-import java.util.Collection;
-import java.util.Map;
 
 public abstract class DefaultConfigMethod implements ConfigMethod {
 
@@ -59,31 +55,6 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
       throw new IllegalStateException("The pathPrefix cannot be set twice");
     }
     this.pathPrefix = pathPrefix;
-  }
-
-  @Override
-  public boolean isSerializableInterface() {
-    try {
-      return this.isSerializableInterface(this.methodType);
-    } catch (NotFoundException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean isSerializableInterface(CtClass type) throws NotFoundException {
-    if (type.getName().equals(Map.class.getName())
-        || type.getName().equals(Collection.class.getName())) {
-      return true;
-    }
-
-    for (CtClass subType : type.getInterfaces()) {
-      if (this.isSerializableInterface(subType)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   protected Class<?> loadImplementationOrDefault(CtClass superClass) {

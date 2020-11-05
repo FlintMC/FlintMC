@@ -7,6 +7,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
+import net.labyfy.component.config.serialization.ConfigSerializationHandler;
+import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.config.storage.serializer.JsonConfigSerializer;
 import net.labyfy.component.inject.implement.Implement;
 
@@ -17,10 +19,19 @@ import java.util.function.Predicate;
 public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
 
   private final Gson gson;
+  private final ConfigSerializationService serializationService;
 
   @Inject
-  public DefaultJsonConfigSerializer() {
+  public DefaultJsonConfigSerializer(ConfigSerializationService serializationService) {
+    this.serializationService = serializationService;
     this.gson = new Gson();
+  }
+
+  private ConfigSerializationHandler getHandler(ConfigObjectReference reference) {
+    if (reference.getSerializedType() instanceof Class) {
+      return this.serializationService.getSerializer((Class<?>) reference.getSerializedType());
+    }
+    return null;
   }
 
   @Override
@@ -35,7 +46,17 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
         continue;
       }
 
-      JsonElement value = this.gson.toJsonTree(reference.getValue(config));
+      Object rawValue = reference.getValue(config);
+      JsonElement value = null;
+
+      ConfigSerializationHandler handler = this.getHandler(reference);
+      if (handler != null) {
+        value = handler.serialize(rawValue);
+      }
+
+      if (value == null) {
+        value = this.gson.toJsonTree(rawValue);
+      }
       JsonObject parent = object;
 
       for (int i = 0; i < keys.length - 1; i++) {
@@ -83,7 +104,16 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
         continue;
       }
 
-      Object deserialized = this.gson.fromJson(value, reference.getSerializedType());
+      Object deserialized = null;
+      ConfigSerializationHandler handler = this.getHandler(reference);
+      if (handler != null) {
+        deserialized = handler.deserialize(value);
+      }
+
+      if (deserialized == null) {
+        deserialized = this.gson.fromJson(value, reference.getSerializedType());
+      }
+
       reference.setValue(config, deserialized);
     }
   }

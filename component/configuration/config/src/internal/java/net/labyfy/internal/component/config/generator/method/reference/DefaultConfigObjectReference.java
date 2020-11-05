@@ -235,4 +235,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     return declaringClass.getMethod(ctMethod.getName(), parameters);
   }
 
+  @Override
+  public String toString() {
+    return "DefaultConfigObjectReference(" + this.declaringClass + " -> " + this.key + ")";
+  }
 }

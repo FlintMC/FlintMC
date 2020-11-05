@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import javassist.*;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
+import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 
 import java.lang.reflect.Type;
@@ -17,8 +18,9 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
   private final CtClass keyType;
   private final CtClass valueType;
 
-  public ConfigMultiGetterSetter(GeneratingConfig config, CtClass declaringClass, String name, CtClass methodType, CtClass keyType, CtClass valueType) {
-    super(config, declaringClass, name, methodType);
+  public ConfigMultiGetterSetter(ConfigSerializationService serializationService, GeneratingConfig config, CtClass declaringClass,
+                                 String name, CtClass methodType, CtClass keyType, CtClass valueType) {
+    super(serializationService, config, declaringClass, name, methodType);
     this.keyType = keyType;
     this.valueType = valueType;
   }

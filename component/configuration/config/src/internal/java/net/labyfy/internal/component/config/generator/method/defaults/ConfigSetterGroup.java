@@ -5,6 +5,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.config.generator.GeneratingConfig;
+import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.internal.component.config.generator.method.ConfigMethodGroup;
 import net.labyfy.internal.component.config.generator.method.DefaultConfigMethod;
 
@@ -13,6 +14,11 @@ import java.util.Map;
 public class ConfigSetterGroup implements ConfigMethodGroup {
 
   private final ClassPool pool = ClassPool.getDefault();
+  private final ConfigSerializationService serializationService;
+
+  public ConfigSetterGroup(ConfigSerializationService serializationService) {
+    this.serializationService = serializationService;
+  }
 
   @Override
   public String[] getPrefix() {
@@ -39,11 +45,12 @@ public class ConfigSetterGroup implements ConfigMethodGroup {
         // just ignore it so that it won't get registered as a normal setter
       }
 
-      return new ConfigGetterSetter(config, type, entryName, parameters[0]);
+      return new ConfigGetterSetter(this.serializationService, config, type, entryName, parameters[0]);
     }
 
     if (parameters.length == 2) {
-      return new ConfigMultiGetterSetter(config, type, entryName, this.pool.get(Map.class.getName()), parameters[0], parameters[1]);
+      return new ConfigMultiGetterSetter(this.serializationService, config, type, entryName,
+          this.pool.get(Map.class.getName()), parameters[0], parameters[1]);
     }
 
     throw new IllegalArgumentException("Setter method " + method.getName() + " in " + type.getName()

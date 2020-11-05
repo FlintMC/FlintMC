@@ -9,6 +9,7 @@ import net.labyfy.component.config.annotation.method.ConfigMethodName;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.config.generator.method.ConfigMethodResolver;
+import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.internal.component.config.generator.method.defaults.ConfigGetterGroup;
@@ -22,14 +23,16 @@ import java.util.Collection;
 public class DefaultConfigMethodResolver implements ConfigMethodResolver {
 
   private final Logger logger;
+  private final ConfigSerializationService serializationService;
   private final Collection<ConfigMethodGroup> groups;
 
   @Inject
-  public DefaultConfigMethodResolver(@InjectLogger Logger logger) {
+  public DefaultConfigMethodResolver(@InjectLogger Logger logger, ConfigSerializationService serializationService) {
     this.logger = logger;
+    this.serializationService = serializationService;
     this.groups = Arrays.asList(
-        new ConfigGetterGroup(),
-        new ConfigSetterGroup()
+        new ConfigGetterGroup(serializationService),
+        new ConfigSetterGroup(serializationService)
     );
   }
 
@@ -91,7 +94,7 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
       methods.add(configMethod);
 
       for (CtClass subType : configMethod.getTypes()) {
-        if (subType.isInterface() && !configMethod.isSerializableInterface(subType)
+        if (subType.isInterface() && !this.serializationService.hasSerializer(subType)
             && method.getParameterTypes().length == 0) {
           String[] newPrefix = Arrays.copyOf(prefix, prefix.length + 1);
           newPrefix[newPrefix.length - 1] = configMethod.getConfigName();
