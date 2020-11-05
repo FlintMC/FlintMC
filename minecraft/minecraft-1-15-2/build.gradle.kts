@@ -6,6 +6,8 @@ plugins {
     id("java-library")
 }
 
+group = "net.flintmc"
+
 afterEvaluate {
     val minecraftVersion = MinecraftVersionGenerator.generateWithProjectDependencies(
         versionFile = file("version.json"),
