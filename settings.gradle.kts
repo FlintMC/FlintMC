@@ -7,12 +7,12 @@ fun defineModule(path: String) {
 
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle-plugin") version "2.4.2"
+        id("net.flintmc.flint-gradle-plugin") version "2.5.2"
     }
 
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle-plugin", "2.4.2")
+            classpath("net.flintmc", "flint-gradle-plugin", "2.5.2")
         }
         repositories {
             mavenLocal()
@@ -73,3 +73,5 @@ defineModule("util:csv")
 defineModule("util:i18n")
 defineModule("util:mapping")
 defineModule("util:session-service")
+
+defineModule("minecraft:minecraft-1-15-2")
