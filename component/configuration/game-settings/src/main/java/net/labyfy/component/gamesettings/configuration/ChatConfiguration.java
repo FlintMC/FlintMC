@@ -7,7 +7,7 @@ import net.labyfy.component.gamesettings.settings.NarratorStatus;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
 import net.labyfy.component.settings.options.BooleanSetting;
-import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
+import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
 
@@ -159,7 +159,7 @@ public interface ChatConfiguration {
    *
    * @return The chat visibility.
    */
-  @EnumDropDownSetting(defaultValue = 0 /* FULL */)
+  @EnumSelectSetting(defaultValue = 0 /* FULL */)
   @DisplayName(@Component(value = "options.chat.visibility", translate = true))
   ChatVisibility getChatVisibility();
 
@@ -206,7 +206,7 @@ public interface ChatConfiguration {
    *
    * @return The current narrator status.
    */
-  @EnumDropDownSetting(defaultValue = 0 /* OFF */)
+  @EnumSelectSetting(defaultValue = 0 /* OFF */)
   @DisplayName(@Component(value = "options.narrator", translate = true))
   NarratorStatus getNarrator();
 

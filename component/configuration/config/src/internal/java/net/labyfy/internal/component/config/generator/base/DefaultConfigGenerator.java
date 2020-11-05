@@ -6,6 +6,7 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.labyfy.component.config.annotation.Config;
+import net.labyfy.component.config.annotation.PostMinecraftRead;
 import net.labyfy.component.config.event.ConfigDiscoveredEvent;
 import net.labyfy.component.config.generator.ConfigGenerator;
 import net.labyfy.component.config.generator.ConfigImplementer;
@@ -16,7 +17,6 @@ import net.labyfy.component.config.storage.ConfigStorageProvider;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.internal.component.config.transform.ConfigTransformer;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -36,7 +36,6 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   private final ConfigDiscoveredEvent.Factory eventFactory;
 
   private final ImplementationGenerator implementationGenerator;
-  private final ConfigTransformer transformer;
 
   private final Map<String, ParsedConfig> discoveredConfigs;
 
@@ -44,7 +43,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   public DefaultConfigGenerator(ConfigStorageProvider storageProvider, ConfigObjectReference.Parser objectReferenceParser,
                                 GeneratingConfig.Factory configFactory, ConfigImplementer configImplementer,
                                 EventBus eventBus, ConfigDiscoveredEvent.Factory eventFactory,
-                                ImplementationGenerator implementationGenerator, ConfigTransformer transformer) {
+                                ImplementationGenerator implementationGenerator) {
     this.storageProvider = storageProvider;
     this.objectReferenceParser = objectReferenceParser;
     this.configFactory = configFactory;
@@ -52,7 +51,6 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     this.eventBus = eventBus;
     this.eventFactory = eventFactory;
     this.implementationGenerator = implementationGenerator;
-    this.transformer = transformer;
 
     this.discoveredConfigs = new HashMap<>();
   }
@@ -102,7 +100,10 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     Collection<ConfigObjectReference> references = this.objectReferenceParser.parseAll(generatingConfig);
     config.getConfigReferences().addAll(references);
 
-    this.storageProvider.read(config); // TODO move to POST_MINECRAFT_INITIALIZE
+    if (!config.getClass().isAnnotationPresent(PostMinecraftRead.class)) {
+      this.storageProvider.read(config);
+    }
+
     this.discoveredConfigs.put(config.getConfigName(), config);
     this.eventBus.fireEvent(this.eventFactory.create(config), Subscribe.Phase.POST);
   }

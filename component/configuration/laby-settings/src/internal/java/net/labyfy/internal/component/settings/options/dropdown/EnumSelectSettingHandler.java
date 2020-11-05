@@ -10,7 +10,7 @@ import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.settings.InvalidSettingsException;
 import net.labyfy.component.settings.mapper.RegisterSettingHandler;
 import net.labyfy.component.settings.mapper.SettingHandler;
-import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
+import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 import net.labyfy.component.settings.registered.RegisteredSetting;
 import net.labyfy.component.settings.serializer.JsonSettingsSerializer;
 import net.labyfy.component.settings.serializer.SettingsSerializationHandler;
@@ -21,21 +21,21 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 @Singleton
-@RegisterSettingHandler(EnumDropDownSetting.class)
-public class EnumDropDownSettingHandler implements SettingHandler<EnumDropDownSetting> {
+@RegisterSettingHandler(EnumSelectSetting.class)
+public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSetting> {
 
   private final Logger logger;
 
   private final JsonSettingsSerializer serializer;
 
   @Inject
-  public EnumDropDownSettingHandler(@InjectLogger Logger logger, JsonSettingsSerializer serializer) {
+  public EnumSelectSettingHandler(@InjectLogger Logger logger, JsonSettingsSerializer serializer) {
     this.logger = logger;
     this.serializer = serializer;
   }
 
   @Override
-  public Object getDefaultValue(EnumDropDownSetting annotation, ConfigObjectReference reference) {
+  public Object getDefaultValue(EnumSelectSetting annotation, ConfigObjectReference reference) {
     Type type = reference.getSerializedType();
     if (!(type instanceof Class) || !Enum.class.isAssignableFrom((Class<?>) type)) {
       // should never occur because this is already checked in the SettingsDiscoverer
@@ -46,7 +46,7 @@ public class EnumDropDownSettingHandler implements SettingHandler<EnumDropDownSe
   }
 
   @Override
-  public JsonObject serialize(EnumDropDownSetting annotation, RegisteredSetting setting) {
+  public JsonObject serialize(EnumSelectSetting annotation, RegisteredSetting setting) {
     JsonObject object = new JsonObject();
 
     Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) setting.getReference().getSerializedType();
@@ -57,6 +57,8 @@ public class EnumDropDownSettingHandler implements SettingHandler<EnumDropDownSe
     }
 
     object.addProperty("value", ((Enum<?>) setting.getCurrentValue()).name());
+
+    object.addProperty("selectType", annotation.type().name());
 
     return object;
   }
@@ -83,7 +85,7 @@ public class EnumDropDownSettingHandler implements SettingHandler<EnumDropDownSe
   }
 
   @Override
-  public boolean isValidInput(Object input, ConfigObjectReference reference, EnumDropDownSetting annotation) {
+  public boolean isValidInput(Object input, ConfigObjectReference reference, EnumSelectSetting annotation) {
     return input == null || reference.getSerializedType().equals(input.getClass());
   }
 }

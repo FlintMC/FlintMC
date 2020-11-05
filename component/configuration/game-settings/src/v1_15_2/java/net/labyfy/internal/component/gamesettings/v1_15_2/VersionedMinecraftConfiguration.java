@@ -2,6 +2,7 @@ package net.labyfy.internal.component.gamesettings.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.component.config.annotation.PostMinecraftRead;
 import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.gamesettings.MinecraftConfiguration;
 import net.labyfy.component.gamesettings.configuration.*;
@@ -12,6 +13,7 @@ import net.minecraft.client.Minecraft;
  * 1.15.2 implementation of {@link MinecraftConfiguration}.
  */
 @Singleton
+@PostMinecraftRead
 @ConfigImplementation(value = MinecraftConfiguration.class, version = "1.15.2")
 public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
 
@@ -19,7 +21,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
   private final ChatConfiguration chatConfiguration;
   private final DebugConfiguration debugConfiguration;
   private final GraphicConfiguration graphicConfiguration;
-  //private final KeyBindingConfiguration keyBindingConfiguration;
+  // TODO: private final KeyBindingConfiguration keyBindingConfiguration;
   private final MouseConfiguration mouseConfiguration;
   private final ResourcePackConfiguration resourcePackConfiguration;
   private final SkinConfiguration skinConfiguration;

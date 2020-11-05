@@ -10,10 +10,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ApplicableSetting(value = Enum.class, type = "dropdown")
-public @interface EnumDropDownSetting {
+public @interface EnumSelectSetting {
 
   // index of enum constants from the return type
   // -1 = default is null
   int defaultValue() default -1;
+
+  SelectMenuType type() default SelectMenuType.DROPDOWN;
 
 }

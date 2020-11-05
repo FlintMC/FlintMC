@@ -1,10 +1,12 @@
-package net.labyfy.internal.component.config.generator.method.reference.asm;
+package net.labyfy.internal.component.config.generator.method.reference.invoker;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.*;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 import net.labyfy.internal.component.config.generator.base.ConfigClassLoader;
+import net.labyfy.internal.component.config.generator.base.ImplementationGenerator;
 
 import java.io.IOException;
 import java.util.Random;
@@ -18,12 +20,13 @@ public class ReferenceInvocationGenerator {
   private final Random random;
   private final ConfigClassLoader classLoader;
 
-  public ReferenceInvocationGenerator() {
+  @Inject
+  public ReferenceInvocationGenerator(ImplementationGenerator generator) {
     this.pool = ClassPool.getDefault();
     this.idCounter = new AtomicInteger();
     this.random = new Random();
 
-    this.classLoader = new ConfigClassLoader(super.getClass().getClassLoader());
+    this.classLoader = generator.getClassLoader();
   }
 
   public ReferenceInvoker generateInvoker(GeneratingConfig config, CtMethod[] path, CtMethod getter, CtMethod setter) throws CannotCompileException,

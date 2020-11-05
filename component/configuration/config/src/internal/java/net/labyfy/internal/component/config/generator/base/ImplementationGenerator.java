@@ -95,7 +95,7 @@ public class ImplementationGenerator {
     implementation.addField(CtField.make(baseField + ";", implementation));
 
     if (baseClass.getName().equals(type.getName())) {
-      CtConstructor constructor = CtNewConstructor.make("public " + implementation.getName() + "() {}", implementation);
+      CtConstructor constructor = CtNewConstructor.make("public " + implementation.getSimpleName() + "() {}", implementation);
 
       // add inject annotation for Guice
       AnnotationsAttribute attribute = new AnnotationsAttribute(implementation.getClassFile().getConstPool(), AnnotationsAttribute.visibleTag);

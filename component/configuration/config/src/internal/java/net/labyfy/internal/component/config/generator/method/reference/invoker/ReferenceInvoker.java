@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.config.generator.method.reference.asm;
+package net.labyfy.internal.component.config.generator.method.reference.invoker;
 
 public interface ReferenceInvoker {
 

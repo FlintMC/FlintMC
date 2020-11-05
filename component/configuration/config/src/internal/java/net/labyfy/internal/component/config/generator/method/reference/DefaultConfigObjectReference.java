@@ -19,8 +19,8 @@ import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
-import net.labyfy.internal.component.config.generator.method.reference.asm.ReferenceInvocationGenerator;
-import net.labyfy.internal.component.config.generator.method.reference.asm.ReferenceInvoker;
+import net.labyfy.internal.component.config.generator.method.reference.invoker.ReferenceInvocationGenerator;
+import net.labyfy.internal.component.config.generator.method.reference.invoker.ReferenceInvoker;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;

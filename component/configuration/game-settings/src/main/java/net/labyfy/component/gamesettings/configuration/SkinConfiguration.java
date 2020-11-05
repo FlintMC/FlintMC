@@ -5,7 +5,7 @@ import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.model.PlayerClothing;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
-import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
+import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -27,7 +27,7 @@ public interface SkinConfiguration {
    *
    * @return The main hand side.
    */
-  @EnumDropDownSetting(defaultValue = 1 /*`RIGHT */)
+  @EnumSelectSetting(defaultValue = 1 /*`RIGHT */)
   Hand.Side getMainHand();
 
   /**

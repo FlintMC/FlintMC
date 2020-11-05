@@ -8,7 +8,7 @@ import net.labyfy.component.gamesettings.settings.TutorialSteps;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
 import net.labyfy.component.settings.options.BooleanSetting;
-import net.labyfy.component.settings.options.dropdown.CustomDropDownSetting;
+import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
 
 /**
  * Represents the accessibility configuration.
@@ -237,7 +237,7 @@ public interface AccessibilityConfiguration {
       description = @Component(value = "minecraft.settings.language.description", translate = true)
   )
   @DisplayName(@Component(value = "options.language", translate = true))
-  @CustomDropDownSetting({})
+  @CustomSelectSetting({})
   @ModifyAnnotations
   String getLanguage();
 

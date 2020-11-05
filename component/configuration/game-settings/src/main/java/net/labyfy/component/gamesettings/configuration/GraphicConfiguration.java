@@ -6,8 +6,8 @@ import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
 import net.labyfy.component.settings.options.BooleanSetting;
-import net.labyfy.component.settings.options.dropdown.CustomDropDownSetting;
-import net.labyfy.component.settings.options.dropdown.EnumDropDownSetting;
+import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
+import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
 import net.labyfy.component.settings.options.numeric.display.NumericDisplay;
@@ -56,7 +56,7 @@ public interface GraphicConfiguration {
    *
    * @return The particles status.
    */
-  @EnumDropDownSetting(defaultValue = 0 /* ALL */)
+  @EnumSelectSetting(defaultValue = 0 /* ALL */)
   @DisplayName(@Component(value = "options.particles", translate = true))
   ParticleStatus getParticles();
 
@@ -182,7 +182,7 @@ public interface GraphicConfiguration {
    *
    * @return The attack indicator status.
    */
-  @EnumDropDownSetting(defaultValue = 1 /* CROSSHAIR */)
+  @EnumSelectSetting(defaultValue = 1 /* CROSSHAIR */)
   @DisplayName(@Component(value = "options.attackIndicator", translate = true))
   AttackIndicatorStatus getAttackIndicator();
 
@@ -214,7 +214,7 @@ public interface GraphicConfiguration {
    *
    * @return The current cloud option.
    */
-  @EnumDropDownSetting(defaultValue = 2 /* FANCY */)
+  @EnumSelectSetting(defaultValue = 2 /* FANCY */)
   @DisplayName(@Component(value = "options.renderClouds", translate = true))
   CloudOption getCloudOption();
 
@@ -225,13 +225,12 @@ public interface GraphicConfiguration {
    */
   void setCloudOption(CloudOption cloudOption);
 
-  // TODO replace drop down with the select thingy by MC?
   /**
    * Retrieves the graphic mode.
    *
    * @return The current graphic mode.
    */
-  @EnumDropDownSetting(defaultValue = 1 /* FANCY */)
+  @EnumSelectSetting(defaultValue = 1 /* FANCY */)
   @DisplayName(@Component(value = "options.graphics", translate = true))
   GraphicsFanciness getGraphicsFanciness();
 
@@ -307,7 +306,7 @@ public interface GraphicConfiguration {
    *
    * @return The full screen resolution.
    */
-  @CustomDropDownSetting({})
+  @CustomSelectSetting({})
   String getFullscreenResolution();
 
   /**
