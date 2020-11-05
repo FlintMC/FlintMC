@@ -124,7 +124,9 @@ public class DefaultPackageLoader implements PackageLoader {
       for (Package pack : this.allPackages) {
 
         for (String path : pack.getPackageManifest().getRuntimeClassPath()) {
-          path = path.replace("${FLINT_PACKAGE_DIR}", packageFolder.getAbsolutePath());
+          path =
+              path.replace("${FLINT_PACKAGE_DIR}", packageFolder.getAbsolutePath())
+                  .replace("${FLINT_LIBRARY_DIR}", "libraries");
 
           try {
             File f = new File(path);
