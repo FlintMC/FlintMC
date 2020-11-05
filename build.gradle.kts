@@ -82,7 +82,7 @@ flint {
     flintVersion = System.getenv().getOrDefault("VERSION", "1.0.0")
 
     projectFilter {
-        !arrayOf(":", ":framework", ":render", ":transform", ":util").contains(it.path)
+        !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
     }
 
     authors = arrayOf("LabyMedia GmbH")
