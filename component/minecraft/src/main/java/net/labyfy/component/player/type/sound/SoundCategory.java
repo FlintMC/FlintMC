@@ -5,8 +5,6 @@ package net.labyfy.component.player.type.sound;
  */
 public enum SoundCategory {
 
-  // TODO add displayName annotations
-
   /**
    * The master sound category.
    */

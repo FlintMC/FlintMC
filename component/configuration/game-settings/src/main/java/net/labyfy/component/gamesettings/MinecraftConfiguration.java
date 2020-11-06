@@ -7,6 +7,8 @@ import net.labyfy.component.gamesettings.configuration.*;
 import net.labyfy.component.settings.annotation.ui.NativeSetting;
 import net.labyfy.component.world.difficult.Difficulty;
 
+// TODO add some categories
+
 /**
  * Represents the Minecraft game settings
  */

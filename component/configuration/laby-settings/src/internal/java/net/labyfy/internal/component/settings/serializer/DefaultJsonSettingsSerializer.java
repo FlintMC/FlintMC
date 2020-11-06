@@ -10,7 +10,7 @@ import net.labyfy.chat.annotation.ComponentAnnotationSerializer;
 import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.chat.serializer.ComponentSerializer;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.logging.InjectLogger;
+import net.labyfy.component.settings.EnumFieldResolver;
 import net.labyfy.component.settings.annotation.ApplicableSetting;
 import net.labyfy.component.settings.annotation.TranslateKey;
 import net.labyfy.component.settings.annotation.ui.SubCategory;
@@ -20,7 +20,6 @@ import net.labyfy.component.settings.registered.RegisteredSetting;
 import net.labyfy.component.settings.registered.SettingsProvider;
 import net.labyfy.component.settings.serializer.JsonSettingsSerializer;
 import net.labyfy.component.settings.serializer.SettingsSerializationHandler;
-import org.apache.logging.log4j.Logger;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -33,7 +32,7 @@ import java.util.function.Function;
 @Implement(JsonSettingsSerializer.class)
 public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
-  private final Logger logger;
+  private final EnumFieldResolver fieldResolver;
   private final SettingsProvider provider;
   private final SettingHandler<Annotation> handler;
 
@@ -45,10 +44,10 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
   private final Collection<RegisteredSettingsSerializer<?>> serializers;
 
   @Inject
-  public DefaultJsonSettingsSerializer(@InjectLogger Logger logger, SettingsProvider provider,
+  public DefaultJsonSettingsSerializer(EnumFieldResolver fieldResolver, SettingsProvider provider,
                                        SettingHandler handler, ComponentAnnotationSerializer annotationSerializer,
                                        ComponentSerializer.Factory serializerFactory, ComponentBuilder.Factory builderFactory) {
-    this.logger = logger;
+    this.fieldResolver = fieldResolver;
     this.provider = provider;
     this.handler = handler;
     this.annotationSerializer = annotationSerializer;
@@ -93,7 +92,7 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
         String key = this.formatKey(setting, entry.getKey());
         Object value = entry.getValue();
 
-        Field enumConstant = this.resolveEnumConstantField(value);
+        Field enumConstant = value instanceof Enum<?> ? this.fieldResolver.getEnumField((Enum<?>) value) : null;
 
         JsonObject object = this.serializeSettingValue(setting, setting.getReference().getKey() + "#" + key,
             annotationType -> enumConstant != null ? enumConstant.getAnnotation(annotationType) : null, value);
@@ -110,21 +109,6 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
       return array;
     } else {
       return this.serializeSettingValue(setting, setting.getReference().getKey(), null, fullValue);
-    }
-  }
-
-  private Field resolveEnumConstantField(Object value) {
-    if (!(value instanceof Enum<?>)) {
-      return null;
-    }
-
-    try {
-      // TODO caches?
-      return ((Enum<?>) value).getDeclaringClass().getDeclaredField(((Enum<?>) value).name());
-    } catch (NoSuchFieldException e) {
-      this.logger.error("Failed to find enum constant field in "
-          + ((Enum<?>) value).getDeclaringClass().getName() + ": " + ((Enum<?>) value).name(), e);
-      return null;
     }
   }
 

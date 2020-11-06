@@ -6,14 +6,13 @@ import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
-import net.labyfy.component.inject.logging.InjectLogger;
+import net.labyfy.component.settings.EnumFieldResolver;
 import net.labyfy.component.settings.mapper.RegisterSettingHandler;
 import net.labyfy.component.settings.mapper.SettingHandler;
 import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 import net.labyfy.component.settings.registered.RegisteredSetting;
 import net.labyfy.component.settings.serializer.JsonSettingsSerializer;
 import net.labyfy.component.settings.serializer.SettingsSerializationHandler;
-import org.apache.logging.log4j.Logger;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -22,14 +21,13 @@ import java.lang.reflect.Field;
 @RegisterSettingHandler(EnumSelectSetting.class)
 public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSetting> {
 
-  private final Logger logger;
-
   private final JsonSettingsSerializer serializer;
+  private final EnumFieldResolver fieldResolver;
 
   @Inject
-  public EnumSelectSettingHandler(@InjectLogger Logger logger, JsonSettingsSerializer serializer) {
-    this.logger = logger;
+  public EnumSelectSettingHandler(JsonSettingsSerializer serializer, EnumFieldResolver fieldResolver) {
     this.serializer = serializer;
+    this.fieldResolver = fieldResolver;
   }
 
   @Override
@@ -54,18 +52,12 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
     JsonObject object = new JsonObject();
     object.addProperty("name", constant.name());
 
-    try {
-      Field field = constant.getDeclaringClass().getDeclaredField(constant.name());
+    Field field = this.fieldResolver.getEnumField(constant);
 
-      for (Annotation annotation : field.getAnnotations()) {
-        for (SettingsSerializationHandler handler : this.serializer.getHandlers(annotation.annotationType())) {
-          handler.append(object, setting, annotation);
-        }
+    for (Annotation annotation : field.getAnnotations()) {
+      for (SettingsSerializationHandler handler : this.serializer.getHandlers(annotation.annotationType())) {
+        handler.append(object, setting, annotation);
       }
-
-    } catch (NoSuchFieldException e) {
-      // this should not happen because those are enum constants
-      this.logger.error("Cannot find enum constant field '" + constant.name() + "'", e);
     }
 
     return object;

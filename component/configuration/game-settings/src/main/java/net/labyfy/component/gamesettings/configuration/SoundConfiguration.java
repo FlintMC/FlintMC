@@ -18,6 +18,8 @@ import net.labyfy.component.settings.options.numeric.SliderSetting;
 @ImplementedConfig
 public interface SoundConfiguration {
 
+  // TODO add displayNames to the SoundCategories
+
   /**
    * Retrieves an sound volume of the given sound category.
    *
