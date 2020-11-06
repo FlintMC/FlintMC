@@ -1,22 +1,37 @@
 package net.labyfy.internal.component.settings.registered;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.logging.InjectLogger;
+import net.labyfy.component.settings.annotation.ui.SubSettingsFor;
 import net.labyfy.component.settings.registered.RegisteredCategory;
 import net.labyfy.component.settings.registered.RegisteredSetting;
 import net.labyfy.component.settings.registered.SettingsProvider;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Singleton
 @Implement(SettingsProvider.class)
 public class DefaultSettingsProvider implements SettingsProvider {
 
-  private final Collection<RegisteredSetting> settings = new ArrayList<>();
+  private final Logger logger;
+
+  private final Collection<RegisteredSetting> settings = new CopyOnWriteArrayList<>();
   private final Map<String, RegisteredCategory> categories = new HashMap<>();
+
+  @Inject
+  public DefaultSettingsProvider(@InjectLogger Logger logger) {
+    this.logger = logger;
+  }
 
   @Override
   public void registerCategory(RegisteredCategory category) throws IllegalArgumentException {
@@ -38,7 +53,45 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
   @Override
   public void registerSetting(RegisteredSetting setting) {
-    this.settings.add(setting);
+    if (!this.registerSubSettings(setting, false)) {
+      this.settings.add(setting);
+    }
+
+    for (RegisteredSetting registeredSetting : this.settings) {
+      this.registerSubSettings(registeredSetting, true);
+    }
+  }
+
+  private boolean registerSubSettings(RegisteredSetting newSetting, boolean remove) {
+    SubSettingsFor subSettingsFor = newSetting.getReference().findLastAnnotation(SubSettingsFor.class);
+    if (subSettingsFor == null) {
+      return false;
+    }
+
+    Class<?> declaring = newSetting.getReference().getDeclaringClass().getDeclaringClass();
+
+    if (!subSettingsFor.declaring().equals(SubSettingsFor.Dummy.class)) {
+      declaring = subSettingsFor.declaring();
+    }
+
+    if (declaring == null) {
+      this.logger.trace("No declaring class found to map the SubSettings of " + newSetting.getReference().getKey()
+          + " to '" + subSettingsFor.value() + "'");
+      return false;
+    }
+
+    boolean found = false;
+    for (RegisteredSetting setting : this.settings) {
+      if (setting.getReference().getDeclaringClass().equals(declaring) && setting.getReference().getLastName().equals(subSettingsFor.value())) {
+        setting.getSubSettings().add(newSetting);
+        if (remove) {
+          this.settings.remove(newSetting);
+        }
+        found = true;
+      }
+    }
+
+    return found;
   }
 
   @Override

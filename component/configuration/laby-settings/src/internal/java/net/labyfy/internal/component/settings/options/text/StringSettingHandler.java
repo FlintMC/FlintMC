@@ -25,7 +25,9 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
     JsonObject object = new JsonObject();
 
     object.addProperty("value", currentValue == null ? "" : (String) currentValue);
-    object.add("restrictions", this.gson.toJsonTree(annotation.value()));
+    if (annotation.value().length != 0) {
+      object.add("restrictions", this.gson.toJsonTree(annotation.value()));
+    }
     if (annotation.maxLength() != Integer.MAX_VALUE) {
       object.addProperty("maxLength", annotation.maxLength());
     }

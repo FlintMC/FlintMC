@@ -76,6 +76,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
         pathKeys.toArray(new String[0]),
         methodPath, allMethods.toArray(new CtMethod[0]),
         getter, setter,
+        declaringClass.getName(),
         this.implementationGenerator.getClassLoader(),
         method.getSerializedType()
     );

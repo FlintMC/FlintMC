@@ -7,6 +7,7 @@ import net.labyfy.component.config.defval.annotation.*;
 import net.labyfy.component.settings.annotation.ui.Category;
 import net.labyfy.component.settings.annotation.ui.Description;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
+import net.labyfy.component.settings.annotation.ui.SubSettingsFor;
 import net.labyfy.component.settings.options.BooleanSetting;
 import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
 import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
@@ -19,7 +20,7 @@ import net.labyfy.component.settings.options.text.*;
 
 // TODO remove
 
-// TODO add sub categories (@Seperator)
+// TODO add sub categories (@SubCategory)
 
 @Config
 @Category("TestSettings")
@@ -71,15 +72,16 @@ public interface TestSettingsConfig {
 
   }
 
+  @DisplayName(@Component(value = "labymod.settings.booleanValue", translate = true))
+  @Description(@Component("§6Some boolean §cvalue"))
+  @BooleanSetting
+  @DefaultBoolean(true)
+  boolean isBooleanValue();
+
   SubSettings getSubSettings();
 
+  @SubSettingsFor("BooleanValue")
   interface SubSettings {
-
-    @DisplayName(@Component(value = "labymod.settings.booleanValue", translate = true))
-    @Description(@Component("§6Some boolean §cvalue"))
-    @BooleanSetting
-    @DefaultBoolean(true)
-    boolean isBooleanValue();
 
     @StringSetting
     @DefaultString("asdf")

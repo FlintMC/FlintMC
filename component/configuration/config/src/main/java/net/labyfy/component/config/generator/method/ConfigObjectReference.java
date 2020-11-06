@@ -30,6 +30,14 @@ public interface ConfigObjectReference {
   String getKey();
 
   /**
+   * Retrieves the last element in {@link #getPathKeys()}, which is for example for the method 'getX' 'X', see {@link
+   * Config} for more information on how this is parsed.
+   *
+   * @return The non-null name of the last entry of this reference
+   */
+  String getLastName();
+
+  /**
    * Retrieves an array of path entries, this array and its contents are unique per {@link Config} and the length of it
    * is always {@code > 0}.
    *
@@ -209,6 +217,7 @@ public interface ConfigObjectReference {
                                  @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
                                  @Assisted("correspondingMethods") CtMethod[] correspondingMethods,
                                  @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,
+                                 @Assisted("declaringClass") String declaringClass,
                                  @Assisted("classLoader") ClassLoader classLoader,
                                  @Assisted("serializedType") Type serializedType);
 

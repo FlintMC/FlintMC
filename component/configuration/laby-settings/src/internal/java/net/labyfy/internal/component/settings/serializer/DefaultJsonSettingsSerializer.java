@@ -55,9 +55,13 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
   @Override
   public JsonArray serializeSettings() {
+    return this.serializeSettings(this.provider.getAllSettings());
+  }
+
+  private JsonArray serializeSettings(Collection<RegisteredSetting> settings) {
     JsonArray array = new JsonArray();
 
-    for (RegisteredSetting setting : this.provider.getAllSettings()) {
+    for (RegisteredSetting setting : settings) {
       JsonElement element = this.serializeSetting(setting);
       if (element.isJsonArray()) {
         array.addAll(element.getAsJsonArray());
@@ -73,6 +77,9 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
   @Override
   public JsonElement serializeSetting(RegisteredSetting setting) {
     Object fullValue = setting.getCurrentValue();
+    if (fullValue == null) {
+      fullValue = setting.getReference().getDefaultValue();
+    }
 
     if (fullValue instanceof Map) {
       JsonArray array = new JsonArray();
@@ -81,22 +88,10 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
         String key = this.formatKey(setting, entry.getKey());
         Object value = entry.getValue();
 
-        JsonObject object = this.serializeSettingValue(setting, setting.getReference().getKey() + "#" + key, annotationType -> {
-          if (!(value instanceof Enum<?>)) {
-            return null;
-          }
+        Field enumConstant = this.resolveEnumConstantField(value);
 
-          try {
-            // TODO caches?
-            Field field = ((Enum<?>) value).getDeclaringClass().getDeclaredField(((Enum<?>) value).name());
-            return field.getAnnotation(annotationType);
-          } catch (NoSuchFieldException e) {
-            this.logger.error("Failed to find enum constant field in "
-                + ((Enum<?>) value).getDeclaringClass().getName() + ": " + ((Enum<?>) value).name(), e);
-            return null;
-          }
-
-        }, value);
+        JsonObject object = this.serializeSettingValue(setting, setting.getReference().getKey() + "#" + key,
+            annotationType -> enumConstant != null ? enumConstant.getAnnotation(annotationType) : null, value);
 
         if (setting.getReference().findLastAnnotation(TranslateKey.class) != null) {
           object.add("displayName", this.serializerFactory.gson().getGson().toJsonTree(
@@ -110,6 +105,21 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
       return array;
     } else {
       return this.serializeSettingValue(setting, setting.getReference().getKey(), null, fullValue);
+    }
+  }
+
+  private Field resolveEnumConstantField(Object value) {
+    if (!(value instanceof Enum<?>)) {
+      return null;
+    }
+
+    try {
+      // TODO caches?
+      return ((Enum<?>) value).getDeclaringClass().getDeclaredField(((Enum<?>) value).name());
+    } catch (NoSuchFieldException e) {
+      this.logger.error("Failed to find enum constant field in "
+          + ((Enum<?>) value).getDeclaringClass().getName() + ": " + ((Enum<?>) value).name(), e);
+      return null;
     }
   }
 
@@ -151,6 +161,10 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
     if (setting.isNative()) {
       object.addProperty("native", true);
+    }
+
+    if (!setting.getSubSettings().isEmpty()) {
+      object.add("subSettings", this.serializeSettings(setting.getSubSettings()));
     }
 
     return object;

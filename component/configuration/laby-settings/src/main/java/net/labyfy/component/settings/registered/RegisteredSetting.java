@@ -7,6 +7,7 @@ import net.labyfy.component.inject.assisted.AssistedFactory;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 public interface RegisteredSetting {
 
@@ -29,6 +30,8 @@ public interface RegisteredSetting {
   boolean isEnabled();
 
   void setEnabled(boolean enabled);
+
+  Collection<RegisteredSetting> getSubSettings();
 
   @AssistedFactory(RegisteredSetting.class)
   interface Factory {

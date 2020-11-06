@@ -14,6 +14,8 @@ import net.labyfy.component.settings.registered.RegisteredSetting;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.HashSet;
 
 @Implement(RegisteredSetting.class)
 public class DefaultRegisteredSetting implements RegisteredSetting {
@@ -23,6 +25,8 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
   private final ParsedConfig config;
   private final String categoryName;
   private final ConfigObjectReference reference;
+
+  private final Collection<RegisteredSetting> subSettings;
 
   private final boolean nativeSetting;
   private final EventBus eventBus;
@@ -42,6 +46,8 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     this.config = config;
     this.categoryName = categoryName;
     this.reference = reference;
+
+    this.subSettings = new HashSet<>();
 
     this.nativeSetting = reference.findLastAnnotation(NativeSetting.class) != null;
 
@@ -102,4 +108,13 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     this.eventBus.fireEvent(this.updateEvent, Subscribe.Phase.POST);
   }
 
+  @Override
+  public Collection<RegisteredSetting> getSubSettings() {
+    return this.subSettings;
+  }
+
+  @Override
+  public String toString() {
+    return "DefaultRegisteredSetting(" + this.reference + ")";
+  }
 }

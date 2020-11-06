@@ -62,6 +62,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
                                        @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
                                        @Assisted("correspondingMethods") CtMethod[] correspondingCtMethods,
                                        @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,
+                                       @Assisted("declaringClass") String declaringClass,
                                        @Assisted("classLoader") ClassLoader classLoader,
                                        @Assisted("serializedType") Type serializedType)
       throws ReflectiveOperationException, CannotCompileException, NotFoundException, IOException {
@@ -75,7 +76,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.classLoader = classLoader;
     this.serializedType = serializedType;
 
-    this.declaringClass = classLoader.loadClass(getter.getDeclaringClass().getName());
+    this.declaringClass = classLoader.loadClass(declaringClass);
     this.invoker = invocationGenerator.generateInvoker(config, path, getter, setter);
 
     this.lastAnnotations = new HashMap<>();
@@ -95,6 +96,11 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   @Override
   public String getKey() {
     return this.key;
+  }
+
+  @Override
+  public String getLastName() {
+    return this.pathKeys[this.pathKeys.length - 1];
   }
 
   @Override
@@ -245,6 +251,6 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   @Override
   public String toString() {
-    return "DefaultConfigObjectReference(" + this.declaringClass + " -> " + this.key + ")";
+    return "DefaultConfigObjectReference(" + this.declaringClass.getName() + " -> " + this.key + ")";
   }
 }

@@ -79,7 +79,7 @@ public class DefaultConfigModifierRegistry implements ConfigModifierRegistry, Se
     for (ParsedConfig config : this.configGenerator.getDiscoveredConfigs()) {
       for (ConfigObjectReference reference : config.getConfigReferences()) {
         if (modifier.value().isAssignableFrom(reference.getDeclaringClass())
-            && reference.getPathKeys()[reference.getPathKeys().length - 1].equals(modifier.method())) {
+            && reference.getLastName().equals(modifier.method())) {
           this.handlers.put(reference, InjectionHolder.getInjectedInstance(CtResolver.get(handler)));
         }
       }
