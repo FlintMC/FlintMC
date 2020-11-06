@@ -21,10 +21,10 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
   private final Gson gson = new Gson();
 
   @Override
-  public JsonObject serialize(StringSetting annotation, RegisteredSetting setting) {
+  public JsonObject serialize(StringSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
-    object.addProperty("value", (String) setting.getCurrentValue());
+    object.addProperty("value", currentValue == null ? "" : (String) currentValue);
     object.add("restrictions", this.gson.toJsonTree(annotation.value()));
     if (annotation.maxLength() != Integer.MAX_VALUE) {
       object.addProperty("maxLength", annotation.maxLength());

@@ -9,7 +9,7 @@ import java.lang.annotation.Annotation;
 public interface SettingHandler<A extends Annotation> {
 
   // non-null
-  JsonObject serialize(A annotation, RegisteredSetting setting);
+  JsonObject serialize(A annotation, RegisteredSetting setting, Object currentValue);
 
   boolean isValidInput(Object input, ConfigObjectReference reference, A annotation);
 

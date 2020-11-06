@@ -13,10 +13,10 @@ import net.labyfy.component.settings.registered.RegisteredSetting;
 public class BooleanSettingHandler implements SettingHandler<BooleanSetting> {
 
   @Override
-  public JsonObject serialize(BooleanSetting annotation, RegisteredSetting setting) {
+  public JsonObject serialize(BooleanSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
-    object.addProperty("value", (boolean) setting.getCurrentValue());
+    object.addProperty("value", currentValue != null && (boolean) currentValue);
 
     return object;
   }

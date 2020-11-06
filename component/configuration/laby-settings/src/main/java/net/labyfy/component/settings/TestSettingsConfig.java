@@ -19,6 +19,8 @@ import net.labyfy.component.settings.options.text.*;
 
 // TODO remove
 
+// TODO add sub categories (@Seperator)
+
 @Config
 @Category("TestSettings")
 public interface TestSettingsConfig {

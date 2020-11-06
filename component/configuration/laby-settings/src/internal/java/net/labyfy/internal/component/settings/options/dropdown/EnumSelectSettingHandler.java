@@ -33,7 +33,7 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
   }
 
   @Override
-  public JsonObject serialize(EnumSelectSetting annotation, RegisteredSetting setting) {
+  public JsonObject serialize(EnumSelectSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
     Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) setting.getReference().getSerializedType();
@@ -43,7 +43,7 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
       possible.add(this.serialize(setting, constant));
     }
 
-    object.addProperty("value", ((Enum<?>) setting.getCurrentValue()).name());
+    object.addProperty("value", currentValue == null ? "" : ((Enum<?>) currentValue).name());
 
     object.addProperty("selectType", annotation.value().name());
 

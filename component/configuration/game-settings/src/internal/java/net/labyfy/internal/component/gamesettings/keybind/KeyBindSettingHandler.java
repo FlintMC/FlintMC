@@ -23,9 +23,12 @@ public class KeyBindSettingHandler implements SettingHandler<KeyBindSetting> {
   }
 
   @Override
-  public JsonObject serialize(KeyBindSetting annotation, RegisteredSetting setting) {
+  public JsonObject serialize(KeyBindSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
-    PhysicalKey key = (PhysicalKey) setting.getCurrentValue();
+    PhysicalKey key = (PhysicalKey) currentValue;
+    if (key == null) {
+      key = PhysicalKey.UNKNOWN;
+    }
 
     object.addProperty("value", key.name());
     object.addProperty("duplicates", this.configuration.hasDuplicates(key));

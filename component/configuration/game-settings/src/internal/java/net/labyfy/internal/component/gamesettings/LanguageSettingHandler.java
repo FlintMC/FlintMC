@@ -25,11 +25,11 @@ public class LanguageSettingHandler implements SettingHandler<LanguageSetting> {
   }
 
   @Override
-  public JsonObject serialize(LanguageSetting annotation, RegisteredSetting setting) {
+  public JsonObject serialize(LanguageSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
     object.add("languages", this.gson.toJsonTree(this.i18n.getAvailableLanguages()));
-    object.addProperty("selected", (String) setting.getCurrentValue());
+    object.addProperty("selected", (String) currentValue);
 
     return object;
   }

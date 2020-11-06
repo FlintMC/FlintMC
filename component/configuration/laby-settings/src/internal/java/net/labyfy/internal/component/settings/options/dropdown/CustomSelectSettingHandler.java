@@ -27,11 +27,11 @@ public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSe
   }
 
   @Override
-  public JsonObject serialize(CustomSelectSetting annotation, RegisteredSetting setting) {
+  public JsonObject serialize(CustomSelectSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
     object.add("possible", this.serialize(setting, annotation.value()));
 
-    object.addProperty("value", (String) setting.getCurrentValue());
+    object.addProperty("value", currentValue == null ? "" : (String) currentValue);
 
     object.addProperty("selectType", annotation.type().name());
     return object;

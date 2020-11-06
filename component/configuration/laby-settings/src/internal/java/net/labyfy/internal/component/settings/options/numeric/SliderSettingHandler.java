@@ -21,8 +21,8 @@ public class SliderSettingHandler extends RangedSettingHandler implements Settin
   }
 
   @Override
-  public JsonObject serialize(SliderSetting annotation, RegisteredSetting setting) {
-    return super.serialize((Number) setting.getCurrentValue(), annotation.value(), setting);
+  public JsonObject serialize(SliderSetting annotation, RegisteredSetting setting, Object currentValue) {
+    return super.serialize(currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
   }
 
   @Override

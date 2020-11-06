@@ -21,8 +21,8 @@ public class NumericSettingHandler extends RangedSettingHandler implements Setti
   }
 
   @Override
-  public JsonObject serialize(NumericSetting annotation, RegisteredSetting setting) {
-    return super.serialize((Number) setting.getCurrentValue(), annotation.value(), setting);
+  public JsonObject serialize(NumericSetting annotation, RegisteredSetting setting, Object currentValue) {
+    return super.serialize(currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
   }
 
   @Override

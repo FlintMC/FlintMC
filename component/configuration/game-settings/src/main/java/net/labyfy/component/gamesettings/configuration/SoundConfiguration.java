@@ -18,8 +18,6 @@ import net.labyfy.component.settings.options.numeric.SliderSetting;
 @ImplementedConfig
 public interface SoundConfiguration {
 
-  // TODO for enums in multi getters, there should be a setting which generates one button per enum constant (e.g. for the key bindings and the sound categories, the data should then be provided on the enum constant)
-
   /**
    * Retrieves an sound volume of the given sound category.
    *

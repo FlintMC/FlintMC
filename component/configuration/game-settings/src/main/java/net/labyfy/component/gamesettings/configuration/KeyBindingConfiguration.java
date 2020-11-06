@@ -5,6 +5,7 @@ import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.ConfigExclude;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.gamesettings.KeyBinding;
+import net.labyfy.component.gamesettings.keybind.KeyBindSetting;
 import net.labyfy.component.gamesettings.keybind.PhysicalKey;
 import net.labyfy.component.settings.annotation.TranslateKey;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
@@ -21,19 +22,17 @@ import java.util.Map;
     description = @Component(value = "minecraft.settings.controls.description", translate = true)
 )
 @ImplementedConfig
-
-// TODO add settings annotations
-
 public interface KeyBindingConfiguration {
 
   @TranslateKey
-  String getKey(String keyDescription);
+  @KeyBindSetting
+  PhysicalKey getKey(String keyDescription);
 
-  void setKey(String keyDescription, String keyName);
+  void setKey(String keyDescription, PhysicalKey key);
 
-  Map<String, String> getAllKey();
+  Map<String, PhysicalKey> getAllKey();
 
-  void setAllKey(Map<String, String> keys);
+  void setAllKey(Map<String, PhysicalKey> keys);
 
   /**
    * Retrieves whether there are duplicates Minecrafts settings for this keyCode.

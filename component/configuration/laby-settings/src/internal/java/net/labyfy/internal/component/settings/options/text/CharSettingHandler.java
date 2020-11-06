@@ -13,10 +13,10 @@ import net.labyfy.component.settings.registered.RegisteredSetting;
 public class CharSettingHandler implements SettingHandler<CharSetting> {
 
   @Override
-  public JsonObject serialize(CharSetting annotation, RegisteredSetting setting) {
+  public JsonObject serialize(CharSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
-    object.addProperty("value", (char) setting.getCurrentValue());
+    object.addProperty("value", currentValue == null ? ' ' : (char) currentValue);
 
     return object;
   }

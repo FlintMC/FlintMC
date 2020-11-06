@@ -1,6 +1,7 @@
 package net.labyfy.component.settings.serializer;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.labyfy.component.settings.registered.RegisteredCategory;
 import net.labyfy.component.settings.registered.RegisteredSetting;
@@ -12,7 +13,7 @@ public interface JsonSettingsSerializer {
 
   JsonArray serializeSettings();
 
-  JsonObject serializeSetting(RegisteredSetting setting);
+  JsonElement serializeSetting(RegisteredSetting setting);
 
   JsonObject serializeCategories();
 

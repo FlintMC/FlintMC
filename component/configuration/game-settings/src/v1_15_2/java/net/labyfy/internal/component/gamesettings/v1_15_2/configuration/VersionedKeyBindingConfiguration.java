@@ -33,30 +33,30 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   }
 
   @Override
-  public String getKey(String keyDescription) {
+  public PhysicalKey getKey(String keyDescription) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
-    return keyBinding != null ? keyBinding.getDefault().getTranslationKey() : null;
+    return keyBinding != null ? PhysicalKey.getByConfigurationName(keyBinding.getDefault().getTranslationKey()) : null;
   }
 
   @Override
-  public void setKey(String keyDescription, String keyName) {
+  public void setKey(String keyDescription, PhysicalKey key) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
     if (keyBinding != null) {
-      keyBinding.bind(InputMappings.getInputByName(keyName));
+      keyBinding.bind(InputMappings.getInputByName(key.getConfigurationName()));
     }
   }
 
   @Override
-  public Map<String, String> getAllKey() {
-    Map<String, String> keys = new HashMap<>();
+  public Map<String, PhysicalKey> getAllKey() {
+    Map<String, PhysicalKey> keys = new HashMap<>();
     for (net.minecraft.client.settings.KeyBinding keyBinding : Minecraft.getInstance().gameSettings.keyBindings) {
-      keys.put(keyBinding.getKeyDescription(), keyBinding.getDefault().getTranslationKey());
+      keys.put(keyBinding.getKeyDescription(), PhysicalKey.getByConfigurationName(keyBinding.getDefault().getTranslationKey()));
     }
     return keys;
   }
 
   @Override
-  public void setAllKey(Map<String, String> keys) {
+  public void setAllKey(Map<String, PhysicalKey> keys) {
     keys.forEach(this::setKey);
   }
 

@@ -36,15 +36,13 @@ public class SettingHandlerService implements SettingHandler<Annotation>, Servic
   }
 
   @Override
-  public JsonObject serialize(Annotation annotation, RegisteredSetting setting) {
+  public JsonObject serialize(Annotation annotation, RegisteredSetting setting, Object currentValue) {
     SettingHandler<Annotation> handler = this.getHandler(annotation);
-    return handler == null ? new JsonObject() : handler.serialize(annotation, setting);
+    return handler == null ? new JsonObject() : handler.serialize(annotation, setting, currentValue);
   }
 
   @Override
   public boolean isValidInput(Object input, ConfigObjectReference reference, Annotation annotation) {
-    this.processPendingHandlers();
-
     SettingHandler<Annotation> handler = this.getHandler(annotation);
     return handler == null || handler.isValidInput(input, reference, annotation);
   }
@@ -81,6 +79,8 @@ public class SettingHandlerService implements SettingHandler<Annotation>, Servic
   }
 
   private <A extends Annotation> SettingHandler<A> getHandler(A annotation) {
+    this.processPendingHandlers();
+
     return this.handlers.get(annotation.annotationType());
   }
 
