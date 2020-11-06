@@ -26,8 +26,6 @@ object MinecraftVersionGenerator {
 
         val minecraftVersion = objectMapper.readValue(versionFile, MinecraftVersion::class.java)
 
-        minecraftVersion.libraries.clear()
-
         minecraftVersion.libraries.add(
             MinecraftVersion.Library(
                 null,
