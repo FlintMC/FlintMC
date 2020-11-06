@@ -6,12 +6,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.labyfy.chat.annotation.ComponentAnnotationSerializer;
 import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.chat.serializer.ComponentSerializer;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.component.settings.annotation.ApplicableSetting;
 import net.labyfy.component.settings.annotation.TranslateKey;
+import net.labyfy.component.settings.annotation.ui.SubCategory;
 import net.labyfy.component.settings.mapper.SettingHandler;
 import net.labyfy.component.settings.registered.RegisteredCategory;
 import net.labyfy.component.settings.registered.RegisteredSetting;
@@ -35,6 +37,8 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
   private final SettingsProvider provider;
   private final SettingHandler<Annotation> handler;
 
+  private final ComponentAnnotationSerializer annotationSerializer;
+
   private final ComponentSerializer.Factory serializerFactory;
   private final ComponentBuilder.Factory builderFactory;
 
@@ -42,11 +46,12 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
   @Inject
   public DefaultJsonSettingsSerializer(@InjectLogger Logger logger, SettingsProvider provider,
-                                       SettingHandler handler, ComponentSerializer.Factory serializerFactory,
-                                       ComponentBuilder.Factory builderFactory) {
+                                       SettingHandler handler, ComponentAnnotationSerializer annotationSerializer,
+                                       ComponentSerializer.Factory serializerFactory, ComponentBuilder.Factory builderFactory) {
     this.logger = logger;
     this.provider = provider;
     this.handler = handler;
+    this.annotationSerializer = annotationSerializer;
     this.serializerFactory = serializerFactory;
     this.builderFactory = builderFactory;
 
@@ -165,6 +170,13 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
     if (!setting.getSubSettings().isEmpty()) {
       object.add("subSettings", this.serializeSettings(setting.getSubSettings()));
+    }
+
+    SubCategory subCategory = setting.getReference().findLastAnnotation(SubCategory.class);
+    if (subCategory != null) {
+      object.add("subCategory", this.serializerFactory.gson().getGson().toJsonTree(
+          this.annotationSerializer.deserialize(subCategory.value())
+      ));
     }
 
     return object;
