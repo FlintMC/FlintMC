@@ -6,15 +6,14 @@ import com.google.inject.name.Named;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.internal.DefaultLoggingProvider;
 import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.packages.*;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.*;
-import net.flintmc.launcher.LaunchController;
 import net.flintmc.launcher.LaunchController;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -119,9 +118,8 @@ public class DefaultPackageLoader implements PackageLoader {
             .collect(Collectors.toSet());
 
     List<Package> libraryPackages = new ArrayList<>();
-    int progress = 0;
+    int progress;
     do {
-      progress = 0;
       outer:
       for (Package pack : this.allPackages) {
 
@@ -131,29 +129,35 @@ public class DefaultPackageLoader implements PackageLoader {
                   .replace("${FLINT_LIBRARY_DIR}", "libraries");
 
           try {
-            File f = new File(path);
-            if (!f.exists()) throw new IOException("Library not found");
-            JarFile additionalJar = new JarFile(f);
+            if (path.endsWith(".jar")) {
+              File f = new File(path);
+              if (!f.exists()) throw new IOException("Library not found");
+              JarFile additionalJar = new JarFile(f);
 
-            if (this.descriptionLoader.isManifestPresent(additionalJar)) {
-              PackageManifest manifest = this.descriptionLoader.loadManifest(additionalJar);
+              if (this.descriptionLoader.isManifestPresent(additionalJar)) {
+                PackageManifest manifest = this.descriptionLoader.loadManifest(additionalJar);
 
-              if (this.allPackages.stream()
-                  .noneMatch(
-                      availablePack ->
-                          availablePack.getName().equals(manifest.getName())
-                              && availablePack.getVersion().equals(manifest.getVersion()))
-                  && libraryPackages.stream()
-                  .noneMatch(
-                      availablePack ->
-                          availablePack.getName().equals(manifest.getName())
-                              && availablePack.getVersion().equals(manifest.getVersion()))) {
-                libraryPackages.add(this.packageFactory.create(f, additionalJar));
+                if (this.allPackages.stream()
+                        .noneMatch(
+                            availablePack ->
+                                availablePack.getName().equals(manifest.getName())
+                                    && availablePack.getVersion().equals(manifest.getVersion()))
+                    && libraryPackages.stream()
+                        .noneMatch(
+                            availablePack ->
+                                availablePack.getName().equals(manifest.getName())
+                                    && availablePack.getVersion().equals(manifest.getVersion()))) {
+                  libraryPackages.add(this.packageFactory.create(f, additionalJar));
+                }
+              } else {
+                LaunchController.getInstance()
+                    .getRootLoader()
+                    .addURLs(Collections.singletonList(f.toURI().toURL()));
               }
             } else {
               LaunchController.getInstance()
                   .getRootLoader()
-                  .addURLs(Collections.singletonList(f.toURI().toURL()));
+                  .addURLs(Collections.singletonList(new URL(path)));
             }
 
           } catch (IOException e) {
@@ -189,24 +193,39 @@ public class DefaultPackageLoader implements PackageLoader {
     Set<Package> loadedPackages = new HashSet<>();
     List<PackageManifest> classpathManifests = new ArrayList<>();
     try {
-      Collections.list(LaunchController.getInstance().getRootLoader().getResources(DefaultPackageManifestLoader.MANIFEST_NAME)).forEach(manifestUrl -> {
-        try {
-          classpathManifests.add(this.descriptionLoader.loadManifest(manifestUrl));
-        } catch (IOException e) {
-          this.logger.warn("Couldn't read package manifest found on classpath at {}", manifestUrl.toString(), e);
-        }
-      });
+      Collections.list(
+              LaunchController.getInstance()
+                  .getRootLoader()
+                  .getResources(DefaultPackageManifestLoader.MANIFEST_NAME))
+          .forEach(
+              manifestUrl -> {
+                try {
+                  classpathManifests.add(this.descriptionLoader.loadManifest(manifestUrl));
+                } catch (IOException e) {
+                  this.logger.warn(
+                      "Couldn't read package manifest found on classpath at {}",
+                      manifestUrl.toString(),
+                      e);
+                }
+              });
     } catch (IOException e) {
       this.logger.warn("Couldn't scan classpath for additional already loaded packages.", e);
     }
+
     for (Package toLoad : resolveDependencies(loadablePackages, classpathManifests)) {
       // After all dependencies have been resolved, check if their dependencies have been loaded
       if (toLoad.getPackageManifest().getDependencies().stream()
           .allMatch(
               dependency ->
                   loadedPackages.stream()
-                      .anyMatch(loaded -> dependency.matches(loaded.getPackageManifest())) || classpathManifests.stream().anyMatch(manifest ->
-                      dependency.getName().equals(manifest.getName()) && dependency.getVersions().contains(manifest.getVersion())))) {
+                          .anyMatch(loaded -> dependency.matches(loaded.getPackageManifest()))
+                      || classpathManifests.stream()
+                          .anyMatch(
+                              manifest ->
+                                  dependency.getName().equals(manifest.getName())
+                                      && dependency
+                                          .getVersions()
+                                          .contains(manifest.getVersion())))) {
         this.logger.info("Loading package {}...", toLoad.getName());
 
         // Check if the package has been loaded successfully, if not, log the error and continue
@@ -250,7 +269,8 @@ public class DefaultPackageLoader implements PackageLoader {
    * @param packages The set of packages to resolve the load order of
    * @return A linked (ordered) list with a valid order of loading the given packages
    */
-  private LinkedList<Package> resolveDependencies(final Set<Package> packages, List<PackageManifest> classpathManifests) {
+  private LinkedList<Package> resolveDependencies(
+      final Set<Package> packages, List<PackageManifest> classpathManifests) {
     LinkedList<Package> resolvedPackages = new LinkedList<>();
 
     int progress;
@@ -268,10 +288,17 @@ public class DefaultPackageLoader implements PackageLoader {
                       .allMatch(
                           dependency ->
                               resolvedPackages.stream()
-                                  .anyMatch(
-                                      resolvedPackage ->
-                                          dependency.matches(
-                                              resolvedPackage.getPackageManifest())) || classpathManifests.stream().anyMatch(manifest -> dependency.getName().equals(manifest.getName()) && dependency.getVersions().stream().anyMatch(v -> v.equals(manifest.getVersion())))))
+                                      .anyMatch(
+                                          resolvedPackage ->
+                                              dependency.matches(
+                                                  resolvedPackage.getPackageManifest()))
+                                  || classpathManifests.stream()
+                                      .anyMatch(
+                                          manifest ->
+                                              dependency.getName().equals(manifest.getName())
+                                                  && dependency.getVersions().stream()
+                                                      .anyMatch(
+                                                          v -> v.equals(manifest.getVersion())))))
           .forEach(resolvedPackages::add);
 
       progress = resolvedPackages.size() - previousSize;
@@ -281,17 +308,13 @@ public class DefaultPackageLoader implements PackageLoader {
     return resolvedPackages;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Set<Package> getAllPackages() {
     return Collections.unmodifiableSet(this.allPackages);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Set<Package> getLoadedPackages() {
     return Collections.unmodifiableSet(
@@ -306,7 +329,7 @@ public class DefaultPackageLoader implements PackageLoader {
    *
    * @param clazz The clazz to determine the log prefix for
    * @return The log prefix to use for the class or null, if the class has not been loaded from a
-   * package
+   *     package
    * @implNote The log prefix is simply the name of the package the class has been loaded from
    */
   private String getLogPrefix(Class<?> clazz) {
@@ -319,9 +342,7 @@ public class DefaultPackageLoader implements PackageLoader {
     }
   }
 
-  /**
-   * Helper class for storing a {@link JarFile} associated with a {@link File}.
-   */
+  /** Helper class for storing a {@link JarFile} associated with a {@link File}. */
   private static class JarTuple {
     private final File file;
     private final JarFile jar;
@@ -330,8 +351,8 @@ public class DefaultPackageLoader implements PackageLoader {
      * Constructs a new {@link JarTuple}.
      *
      * @param file The jar file representation of file
-     * @param jar  The IO file representation of the jar file, assumed to point to the same file as
-     *             the jar representation
+     * @param jar The IO file representation of the jar file, assumed to point to the same file as
+     *     the jar representation
      */
     public JarTuple(File file, JarFile jar) {
       this.file = file;
