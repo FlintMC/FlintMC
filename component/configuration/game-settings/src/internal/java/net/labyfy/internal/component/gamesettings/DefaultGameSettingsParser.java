@@ -9,6 +9,8 @@ import net.labyfy.component.gamesettings.GameSettingsParser;
 import net.labyfy.component.gamesettings.event.ConfigurationEvent;
 import net.labyfy.component.gamesettings.keybind.PhysicalKey;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.component.inject.logging.InjectLogger;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,13 +27,16 @@ import java.util.*;
 @Implement(GameSettingsParser.class)
 public class DefaultGameSettingsParser implements GameSettingsParser {
 
+  private final Logger logger;
   private final EventBus eventBus;
   private final ConfigurationEvent.Factory configurationEventFactory;
 
   private File optionsFile;
 
   @Inject
-  private DefaultGameSettingsParser(EventBus eventBus, ConfigurationEvent.Factory configurationEventFactory) {
+  private DefaultGameSettingsParser(@InjectLogger Logger logger, EventBus eventBus,
+                                    ConfigurationEvent.Factory configurationEventFactory) {
+    this.logger = logger;
     this.eventBus = eventBus;
     this.configurationEventFactory = configurationEventFactory;
   }
@@ -104,7 +109,7 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
 
       bufferedReader.close();
     } catch (IOException exception) {
-      exception.printStackTrace();
+      this.logger.error("Failed to read the minecraft options from " + optionsFile.getAbsolutePath(), exception);
       return null;
     }
     return configurations;
@@ -158,7 +163,7 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
       Collections.sort(configuration);
       Files.write(optionsFile.toPath(), configuration, Charset.defaultCharset());
     } catch (IOException exception) {
-      exception.printStackTrace();
+      this.logger.error("Failed to write the minecraft options to " + optionsFile.getAbsolutePath(), exception);
     }
   }
 
