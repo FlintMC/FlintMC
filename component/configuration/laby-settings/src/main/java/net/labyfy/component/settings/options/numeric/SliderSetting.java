@@ -15,6 +15,4 @@ public @interface SliderSetting {
 
   Range value();
 
-  double defaultValue() default 0;
-
 }

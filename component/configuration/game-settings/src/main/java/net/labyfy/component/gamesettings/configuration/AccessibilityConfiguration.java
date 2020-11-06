@@ -2,13 +2,12 @@ package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
-import net.labyfy.component.config.modifier.ModifyAnnotations;
+import net.labyfy.component.gamesettings.LanguageSetting;
 import net.labyfy.component.gamesettings.settings.PointOfView;
 import net.labyfy.component.gamesettings.settings.TutorialSteps;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
 import net.labyfy.component.settings.options.BooleanSetting;
-import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
 
 /**
  * Represents the accessibility configuration.
@@ -231,14 +230,8 @@ public interface AccessibilityConfiguration {
    *
    * @return The current language.
    */
-  @DefineCategory(
-      name = "minecraft.settings.language",
-      displayName = @Component(value = "minecraft.settings.language.display", translate = true),
-      description = @Component(value = "minecraft.settings.language.description", translate = true)
-  )
+  @LanguageSetting
   @DisplayName(@Component(value = "options.language", translate = true))
-  @CustomSelectSetting({})
-  @ModifyAnnotations
   String getLanguage();
 
   /**

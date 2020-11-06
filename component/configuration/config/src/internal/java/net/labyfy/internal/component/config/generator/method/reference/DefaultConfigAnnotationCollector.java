@@ -45,6 +45,7 @@ public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollect
       Method method = methods[i];
 
       Collection<Class<?>> subTypes = new HashSet<>();
+      subTypes.add(method.getDeclaringClass());
       this.collectSuperclasses(method.getDeclaringClass(), subTypes);
 
       for (Class<?> subType : subTypes) {

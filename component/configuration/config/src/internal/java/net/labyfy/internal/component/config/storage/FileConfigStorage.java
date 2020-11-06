@@ -55,6 +55,13 @@ public class FileConfigStorage implements ConfigStorage {
 
     File file = this.getFile(config);
 
+    if (object.size() == 0) {
+      if (file.exists() && !file.delete()) {
+        this.logger.trace("Failed to delete file " + file.getAbsolutePath());
+      }
+      return;
+    }
+
     try (OutputStream outputStream = new FileOutputStream(file);
          Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
       this.gson.toJson(object, writer);

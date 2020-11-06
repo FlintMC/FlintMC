@@ -88,7 +88,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
   /*@Override
   public KeyBindingConfiguration getKeyBindingConfiguration() {
     return this.keyBindingConfiguration;
-  }*/
+  }
 
   /**
    * {@inheritDoc}

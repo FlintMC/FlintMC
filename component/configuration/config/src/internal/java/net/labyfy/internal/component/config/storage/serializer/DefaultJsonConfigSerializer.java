@@ -57,6 +57,10 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
       if (value == null) {
         value = this.gson.toJsonTree(rawValue);
       }
+      if (value.isJsonNull()) {
+        continue;
+      }
+
       JsonObject parent = object;
 
       for (int i = 0; i < keys.length - 1; i++) {
@@ -101,6 +105,10 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
 
       JsonElement value = parent.get(keys[keys.length - 1]);
       if (value == null || value.isJsonNull()) {
+        Object defaultValue = reference.getDefaultValue();
+        if (defaultValue != null) {
+          reference.setValue(config, defaultValue);
+        }
         continue;
       }
 

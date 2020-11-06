@@ -12,6 +12,4 @@ import java.lang.annotation.Target;
 @ApplicableSetting(value = boolean.class, type = "boolean")
 public @interface BooleanSetting {
 
-  boolean defaultValue() default false;
-
 }

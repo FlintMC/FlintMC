@@ -7,7 +7,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.inject.logging.InjectLogger;
-import net.labyfy.component.settings.InvalidSettingsException;
 import net.labyfy.component.settings.mapper.RegisterSettingHandler;
 import net.labyfy.component.settings.mapper.SettingHandler;
 import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
@@ -18,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 @Singleton
 @RegisterSettingHandler(EnumSelectSetting.class)
@@ -35,17 +33,6 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
   }
 
   @Override
-  public Object getDefaultValue(EnumSelectSetting annotation, ConfigObjectReference reference) {
-    Type type = reference.getSerializedType();
-    if (!(type instanceof Class) || !Enum.class.isAssignableFrom((Class<?>) type)) {
-      // should never occur because this is already checked in the SettingsDiscoverer
-      throw new InvalidSettingsException("Cannot use EnumDropDownSetting without Enum as the return type, " +
-          "return type was: " + type.getTypeName());
-    }
-    return ((Class<?>) type).getEnumConstants()[annotation.defaultValue()];
-  }
-
-  @Override
   public JsonObject serialize(EnumSelectSetting annotation, RegisteredSetting setting) {
     JsonObject object = new JsonObject();
 
@@ -58,7 +45,7 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
 
     object.addProperty("value", ((Enum<?>) setting.getCurrentValue()).name());
 
-    object.addProperty("selectType", annotation.type().name());
+    object.addProperty("selectType", annotation.value().name());
 
     return object;
   }

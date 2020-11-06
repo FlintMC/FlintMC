@@ -24,7 +24,6 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
   private final String categoryName;
   private final ConfigObjectReference reference;
 
-  private final Object defaultValue;
   private final boolean nativeSetting;
   private final EventBus eventBus;
   private final SettingsUpdateEvent updateEvent;
@@ -45,7 +44,6 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     this.reference = reference;
 
     this.nativeSetting = reference.findLastAnnotation(NativeSetting.class) != null;
-    this.defaultValue = settingHandler.getDefaultValue(reference.findLastAnnotation(annotationType), reference);
 
     this.enabled = true;
     this.eventBus = eventBus;
@@ -69,12 +67,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   @Override
   public Object getCurrentValue() {
-    Object value = this.reference.getValue(this.config);
-    if (value != null) {
-      return value;
-    }
-
-    return this.defaultValue;
+    return this.reference.getValue(this.config);
   }
 
   @Override

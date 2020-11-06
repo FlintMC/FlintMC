@@ -16,10 +16,8 @@ import net.labyfy.component.stereotype.service.CtResolver;
 import net.labyfy.component.stereotype.service.Service;
 import net.labyfy.component.stereotype.service.ServiceHandler;
 import net.labyfy.component.stereotype.service.ServiceNotFoundException;
-import net.labyfy.internal.component.settings.InvalidSettingAnnotationException;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,23 +33,6 @@ public class SettingHandlerService implements SettingHandler<Annotation>, Servic
   public SettingHandlerService() {
     this.handlers = new HashMap<>();
     this.pendingHandlers = new ConcurrentHashMap<>();
-  }
-
-  @Override
-  public Object getDefaultValue(Annotation annotation, ConfigObjectReference reference) {
-    this.processPendingHandlers();
-
-    SettingHandler<Annotation> handler = this.getHandler(annotation);
-    if (handler == null) {
-      try {
-        return annotation.annotationType().getDeclaredMethod("defaultValue").invoke(annotation);
-      } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-        throw new InvalidSettingAnnotationException("Failed to read defaultValue from annotation "
-            + annotation.annotationType().getName() + ", invalid/missing defaultValue() method", e);
-      }
-    }
-
-    return handler.getDefaultValue(annotation, reference);
   }
 
   @Override

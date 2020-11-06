@@ -12,6 +12,4 @@ import java.lang.annotation.Target;
 @ApplicableSetting(value = PhysicalKey.class, type = "keybind")
 public @interface KeyBindSetting {
 
-  PhysicalKey defaultValue() default PhysicalKey.UNKNOWN;
-
 }

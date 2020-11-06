@@ -8,7 +8,6 @@ import net.labyfy.chat.serializer.ComponentSerializer;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.settings.mapper.RegisterSettingHandler;
 import net.labyfy.component.settings.mapper.SettingHandler;
-import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
 import net.labyfy.component.settings.registered.RegisteredSetting;
 
@@ -19,17 +18,6 @@ public class SliderSettingHandler extends RangedSettingHandler implements Settin
   @Inject
   private SliderSettingHandler(ComponentSerializer.Factory serializerFactory, ComponentAnnotationSerializer annotationSerializer) {
     super(serializerFactory, annotationSerializer);
-  }
-
-  @Override
-  public Object getDefaultValue(SliderSetting annotation, ConfigObjectReference reference) {
-    double value = annotation.defaultValue();
-    Range range = annotation.value();
-    if (super.inRange(range, value)) {
-      return value;
-    }
-
-    return range.min();
   }
 
   @Override

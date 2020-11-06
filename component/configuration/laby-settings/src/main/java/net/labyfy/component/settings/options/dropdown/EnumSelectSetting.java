@@ -12,10 +12,6 @@ import java.lang.annotation.Target;
 @ApplicableSetting(value = Enum.class, type = "dropdown")
 public @interface EnumSelectSetting {
 
-  // index of enum constants from the return type
-  // -1 = default is null
-  int defaultValue() default -1;
-
-  SelectMenuType type() default SelectMenuType.DROPDOWN;
+  SelectMenuType value() default SelectMenuType.DROPDOWN;
 
 }

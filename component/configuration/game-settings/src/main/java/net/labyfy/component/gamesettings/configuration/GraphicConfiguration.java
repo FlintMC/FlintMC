@@ -2,6 +2,9 @@ package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
+import net.labyfy.component.config.defval.annotation.DefaultBoolean;
+import net.labyfy.component.config.defval.annotation.DefaultEnum;
+import net.labyfy.component.config.defval.annotation.DefaultNumber;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
@@ -56,8 +59,9 @@ public interface GraphicConfiguration {
    *
    * @return The particles status.
    */
-  @EnumSelectSetting(defaultValue = 0 /* ALL */)
+  @EnumSelectSetting
   @DisplayName(@Component(value = "options.particles", translate = true))
+  @DefaultEnum(0 /* ALL */)
   ParticleStatus getParticles();
 
   /**
@@ -118,8 +122,9 @@ public interface GraphicConfiguration {
    *
    * @return {@code true} if the view is bobbing, otherwise {@code false}.
    */
-  @BooleanSetting(defaultValue = true)
+  @BooleanSetting
   @DisplayName(@Component(value = "options.viewBobbing", translate = true))
+  @DefaultBoolean(true)
   boolean isViewBobbing();
 
   /**
@@ -182,8 +187,9 @@ public interface GraphicConfiguration {
    *
    * @return The attack indicator status.
    */
-  @EnumSelectSetting(defaultValue = 1 /* CROSSHAIR */)
+  @EnumSelectSetting
   @DisplayName(@Component(value = "options.attackIndicator", translate = true))
+  @DefaultEnum(1 /* CROSSHAIR */)
   AttackIndicatorStatus getAttackIndicator();
 
   /**
@@ -214,8 +220,9 @@ public interface GraphicConfiguration {
    *
    * @return The current cloud option.
    */
-  @EnumSelectSetting(defaultValue = 2 /* FANCY */)
+  @EnumSelectSetting
   @DisplayName(@Component(value = "options.renderClouds", translate = true))
+  @DefaultEnum(2 /* FANCY */)
   CloudOption getCloudOption();
 
   /**
@@ -230,8 +237,9 @@ public interface GraphicConfiguration {
    *
    * @return The current graphic mode.
    */
-  @EnumSelectSetting(defaultValue = 1 /* FANCY */)
+  @EnumSelectSetting
   @DisplayName(@Component(value = "options.graphics", translate = true))
+  @DefaultEnum(1 /* FANCY */)
   GraphicsFanciness getGraphicsFanciness();
 
   /**
@@ -260,8 +268,9 @@ public interface GraphicConfiguration {
    *
    * @return The chunks render distance.
    */
-  @SliderSetting(value = @Range(min = 2, max = 32), defaultValue = 8)
+  @SliderSetting(value = @Range(min = 2, max = 32))
   @DisplayName(@Component(value = "options.renderDistance", translate = true))
+  @DefaultNumber(8)
   int getRenderDistanceChunks();
 
   /**
@@ -321,7 +330,8 @@ public interface GraphicConfiguration {
    *
    * @return {@code true} if a shadow is rendered under an entity.
    */
-  @BooleanSetting(defaultValue = true)
+  @BooleanSetting
+  @DefaultBoolean(true)
   boolean isEntityShadows();
 
   /**

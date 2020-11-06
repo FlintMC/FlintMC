@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public enum PhysicalKey {
 
-  UNKNOWN("key.keyboard.unknown", -1, 0),
+  UNKNOWN("key.keyboard.unknown", -1, -1),
   MOUSE_LEFT("key.mouse.left", 0, -100),
   MOUSE_RIGHT("key.mouse.right", 1, -99),
   MOUSE_MIDDLE("key.mouse.middle", 2, -98),
@@ -138,13 +138,15 @@ public enum PhysicalKey {
   WORLD_1("key.keyboard.world.1", 161),
   WORLD_2("key.keyboard.world.2", 162);
 
-  private static final Map<String, Integer> BY_NAME = new HashMap<>();
-  private static final Map<Integer, String> BY_SCAN_CODE = new HashMap<>();
+  private static final Map<String, PhysicalKey> BY_NAME = new HashMap<>();
+  private static final Map<Integer, PhysicalKey> BY_SCAN_CODE = new HashMap<>();
+  private static final Map<Integer, PhysicalKey> BY_KEY_CODE = new HashMap<>();
 
   static {
     for (PhysicalKey value : values()) {
-      BY_NAME.put(value.configurationName, value.scanCode);
-      BY_SCAN_CODE.put(value.scanCode, value.configurationName);
+      BY_NAME.put(value.configurationName, value);
+      BY_SCAN_CODE.put(value.scanCode, value);
+      BY_KEY_CODE.put(value.key, value);
     }
   }
 
@@ -169,7 +171,7 @@ public enum PhysicalKey {
    * @return The scan code of the given configuration name or {@code -1}.
    */
   public static int getScanCode(String name) {
-    return BY_NAME.get(name) == null ? -1 : BY_NAME.get(name);
+    return BY_NAME.getOrDefault(name, UNKNOWN).scanCode;
   }
 
   /**
@@ -179,7 +181,19 @@ public enum PhysicalKey {
    * @return The configuration name or {@link #UNKNOWN#getConfigurationName()}
    */
   public static String getConfigurationName(int scanCode) {
-    return BY_SCAN_CODE.get(scanCode) == null ? UNKNOWN.getConfigurationName() : BY_SCAN_CODE.get(scanCode);
+    return BY_SCAN_CODE.getOrDefault(scanCode, UNKNOWN).getConfigurationName();
+  }
+
+  public static PhysicalKey getByConfigurationName(String configurationName) {
+    return BY_NAME.getOrDefault(configurationName, UNKNOWN);
+  }
+
+  public static PhysicalKey getByScanCode(int scanCode) {
+    return BY_SCAN_CODE.getOrDefault(scanCode, UNKNOWN);
+  }
+
+  public static PhysicalKey getByKeyCode(int keyCode) {
+    return BY_KEY_CODE.getOrDefault(keyCode, UNKNOWN);
   }
 
   /**

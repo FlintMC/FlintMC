@@ -93,7 +93,7 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
       CtClass newImplementation = ClassPool.getDefault().get(implementation.getName());
 
       // bind the implementation in the config to be used by the ConfigObjectReference.Parser
-      configMeta.getConfig().bindGeneratedImplementation(configMeta.getSuperClass().getName(), newImplementation);
+      configMeta.getConfig().bindGeneratedImplementation(this.pool.get(configMeta.getSuperClass().getName()), newImplementation);
     } catch (ClassNotFoundException | NotFoundException e) {
       throw new ServiceNotFoundException("Cannot load transformed config class");
     }
@@ -137,11 +137,9 @@ public class ConfigTransformer implements ServiceHandler<ConfigImplementation> {
         }
       }
 
-      if (declaring.isInterface()) {
-        method.addInterfaceMethods(declaring);
-      }
-
-      if (!implementation.isInterface()) {
+      if (implementation.isInterface()) {
+        method.addInterfaceMethods(implementation);
+      } else {
         method.implementExistingMethods(implementation);
       }
 

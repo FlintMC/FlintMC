@@ -12,6 +12,4 @@ import java.lang.annotation.Target;
 @ApplicableSetting(value = char.class, type = "char")
 public @interface CharSetting {
 
-  char defaultValue() default ' ';
-
 }

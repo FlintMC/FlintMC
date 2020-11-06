@@ -2,6 +2,9 @@ package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
+import net.labyfy.component.config.defval.annotation.DefaultBoolean;
+import net.labyfy.component.config.defval.annotation.DefaultEnum;
+import net.labyfy.component.config.defval.annotation.DefaultNumber;
 import net.labyfy.component.gamesettings.settings.ChatVisibility;
 import net.labyfy.component.gamesettings.settings.NarratorStatus;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
@@ -28,8 +31,9 @@ public interface ChatConfiguration {
    * @return The chat scale.
    */
   // percent
-  @SliderSetting(value = @Range(max = 100), defaultValue = 100)
+  @SliderSetting(value = @Range(max = 100))
   @DisplayName(@Component(value = "options.chat.scale", translate = true))
+  @DefaultNumber(100)
   double getChatScale();
 
   /**
@@ -45,8 +49,9 @@ public interface ChatConfiguration {
    * @return The chat width.
    */
   // pixels
-  @SliderSetting(value = @Range(min = 40, max = 320), defaultValue = 320)
+  @SliderSetting(value = @Range(min = 40, max = 320))
   @DisplayName(@Component(value = "options.chat.width", translate = true))
+  @DefaultNumber(320)
   double getChatWidth();
 
   /**
@@ -62,8 +67,9 @@ public interface ChatConfiguration {
    * @return The max height that the chat is allowed to appear normally.
    */
   // pixels
-  @SliderSetting(value = @Range(min = 20, max = 180), defaultValue = 180)
+  @SliderSetting(value = @Range(min = 20, max = 180))
   @DisplayName(@Component(value = "options.chat.height.unfocused", translate = true))
+  @DefaultNumber(180)
   double getChatHeightUnfocused();
 
   /**
@@ -79,8 +85,9 @@ public interface ChatConfiguration {
    * @return The max height that the chat is allowed to appear when in focus.
    */
   // pixels
-  @SliderSetting(value = @Range(min = 20, max = 180), defaultValue = 180)
+  @SliderSetting(value = @Range(min = 20, max = 180))
   @DisplayName(@Component(value = "options.chat.height.focused", translate = true))
+  @DefaultNumber(180)
   double getChatHeightFocused();
 
   /**
@@ -109,8 +116,9 @@ public interface ChatConfiguration {
    *
    * @return {@code true} if colors are displayed in the chat, otherwise {@code false}.
    */
-  @BooleanSetting(defaultValue = true)
+  @BooleanSetting
   @DisplayName(@Component(value = "options.chat.color", translate = true))
+  @DefaultBoolean(true)
   boolean isChatColor();
 
   /**
@@ -125,8 +133,9 @@ public interface ChatConfiguration {
    *
    * @return {@code true} if links can be seen in the chat, otherwise {@code false}.
    */
-  @BooleanSetting(defaultValue = true)
+  @BooleanSetting
   @DisplayName(@Component(value = "options.chat.links", translate = true))
+  @DefaultBoolean(true)
   boolean isChatLinks();
 
   /**
@@ -142,8 +151,9 @@ public interface ChatConfiguration {
    *
    * @return {@code true} if forces a prompt, otherwise {@code false}.
    */
-  @BooleanSetting(defaultValue = true)
+  @BooleanSetting
   @DisplayName(@Component(value = "options.chat.links.prompt", translate = true))
+  @DefaultBoolean(true)
   boolean isChatLinksPrompt();
 
   /**
@@ -159,8 +169,9 @@ public interface ChatConfiguration {
    *
    * @return The chat visibility.
    */
-  @EnumSelectSetting(defaultValue = 0 /* FULL */)
+  @EnumSelectSetting
   @DisplayName(@Component(value = "options.chat.visibility", translate = true))
+  @DefaultEnum(0 /* FULL */)
   ChatVisibility getChatVisibility();
 
   /**
@@ -176,8 +187,9 @@ public interface ChatConfiguration {
    * @return The chat opacity.
    */
   // percent
-  @SliderSetting(value = @Range(min = 10, max = 100), defaultValue = 100)
+  @SliderSetting(value = @Range(min = 10, max = 100))
   @DisplayName(@Component(value = "options.chat.opacity", translate = true))
+  @DefaultNumber(100)
   double getChatOpacity();
 
   /**
@@ -206,8 +218,9 @@ public interface ChatConfiguration {
    *
    * @return The current narrator status.
    */
-  @EnumSelectSetting(defaultValue = 0 /* OFF */)
+  @EnumSelectSetting
   @DisplayName(@Component(value = "options.narrator", translate = true))
+  @DefaultEnum(0 /* OFF */)
   NarratorStatus getNarrator();
 
   /**
@@ -255,8 +268,9 @@ public interface ChatConfiguration {
    * @return The opacity of the background.
    */
   // pixels
-  @SliderSetting(value = @Range(max = 100), defaultValue = 100)
+  @SliderSetting(value = @Range(max = 100))
   @DisplayName(@Component(value = "options.accessibility.text_background_opacity", translate = true))
+  @DefaultNumber(100)
   double getAccessibilityTextBackgroundOpacity();
 
   /**

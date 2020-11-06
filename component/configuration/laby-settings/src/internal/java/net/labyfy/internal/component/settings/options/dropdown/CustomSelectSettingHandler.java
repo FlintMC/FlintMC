@@ -27,11 +27,6 @@ public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSe
   }
 
   @Override
-  public Object getDefaultValue(CustomSelectSetting annotation, ConfigObjectReference reference) {
-    return annotation.defaultValue();
-  }
-
-  @Override
   public JsonObject serialize(CustomSelectSetting annotation, RegisteredSetting setting) {
     JsonObject object = new JsonObject();
     object.add("possible", this.serialize(setting, annotation.value()));

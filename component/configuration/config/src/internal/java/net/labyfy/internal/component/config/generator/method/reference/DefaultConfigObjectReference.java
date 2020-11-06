@@ -8,6 +8,7 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.IncludeStorage;
+import net.labyfy.component.config.defval.mapper.DefaultAnnotationMapperRegistry;
 import net.labyfy.component.config.event.ConfigValueUpdateEvent;
 import net.labyfy.component.config.generator.ConfigAnnotationCollector;
 import net.labyfy.component.config.generator.GeneratingConfig;
@@ -27,21 +28,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.function.Function;
 
 @Implement(ConfigObjectReference.class)
 public class DefaultConfigObjectReference implements ConfigObjectReference {
-
-  private static final Map<Class<?>, Function<Number, Number>> NUMBER_MAPPINGS = new HashMap<>();
-
-  static {
-    NUMBER_MAPPINGS.put(Float.class, Number::floatValue);
-    NUMBER_MAPPINGS.put(Double.class, Number::doubleValue);
-    NUMBER_MAPPINGS.put(Byte.class, Number::byteValue);
-    NUMBER_MAPPINGS.put(Short.class, Number::shortValue);
-    NUMBER_MAPPINGS.put(Integer.class, Number::intValue);
-    NUMBER_MAPPINGS.put(Long.class, Number::intValue);
-  }
 
   private final EventBus eventBus;
   private final ConfigValueUpdateEvent.Factory eventFactory;
@@ -56,6 +45,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private final ClassLoader classLoader;
   private final Type serializedType;
 
+  private final Object defaultValue;
+
   private final ReferenceInvoker invoker;
   private final Class<?> declaringClass;
 
@@ -66,6 +57,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private DefaultConfigObjectReference(EventBus eventBus, ConfigValueUpdateEvent.Factory eventFactory,
                                        ConfigModifierRegistry modifierRegistry, ConfigAnnotationCollector annotationCollector,
                                        ReferenceInvocationGenerator invocationGenerator,
+                                       DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry,
                                        @Assisted("config") GeneratingConfig config,
                                        @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
                                        @Assisted("correspondingMethods") CtMethod[] correspondingCtMethods,
@@ -87,6 +79,17 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.invoker = invocationGenerator.generateInvoker(config, path, getter, setter);
 
     this.lastAnnotations = new HashMap<>();
+
+    Object defaultValue = null;
+    for (Class<? extends Annotation> annotationType : defaultAnnotationMapperRegistry.getAnnotationTypes()) {
+      Annotation annotation = this.findLastAnnotation(annotationType);
+      if (annotation != null) {
+        defaultValue = defaultAnnotationMapperRegistry.getDefaultValue(this, annotation);
+        break;
+      }
+    }
+
+    this.defaultValue = defaultValue;
   }
 
   @Override
@@ -194,6 +197,11 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     }
 
     return true;
+  }
+
+  @Override
+  public Object getDefaultValue() {
+    return this.defaultValue;
   }
 
   @Override

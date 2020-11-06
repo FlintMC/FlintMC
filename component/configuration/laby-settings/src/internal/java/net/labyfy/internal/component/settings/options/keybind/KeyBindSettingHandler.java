@@ -12,10 +12,6 @@ import net.labyfy.component.settings.registered.RegisteredSetting;
 @Singleton
 @RegisterSettingHandler(KeyBindSetting.class)
 public class KeyBindSettingHandler implements SettingHandler<KeyBindSetting> {
-  @Override
-  public Object getDefaultValue(KeyBindSetting annotation, ConfigObjectReference reference) {
-    return annotation.defaultValue();
-  }
 
   @Override
   public JsonObject serialize(KeyBindSetting annotation, RegisteredSetting setting) {
@@ -23,6 +19,7 @@ public class KeyBindSettingHandler implements SettingHandler<KeyBindSetting> {
     PhysicalKey key = (PhysicalKey) setting.getCurrentValue();
 
     object.addProperty("value", key.name());
+    // TODO add whether the KeyBind has duplicates
 
     return object;
   }

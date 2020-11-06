@@ -68,6 +68,11 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
   }
 
   @Override
+  public void requireNoImplementation() {
+    this.implementedMethods = true;
+  }
+
+  @Override
   public boolean hasImplementedExistingMethods() {
     return this.implementedMethods;
   }

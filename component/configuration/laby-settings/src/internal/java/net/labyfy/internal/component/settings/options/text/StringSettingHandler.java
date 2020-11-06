@@ -21,11 +21,6 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
   private final Gson gson = new Gson();
 
   @Override
-  public Object getDefaultValue(StringSetting annotation, ConfigObjectReference reference) {
-    return annotation.defaultValue();
-  }
-
-  @Override
   public JsonObject serialize(StringSetting annotation, RegisteredSetting setting) {
     JsonObject object = new JsonObject();
 

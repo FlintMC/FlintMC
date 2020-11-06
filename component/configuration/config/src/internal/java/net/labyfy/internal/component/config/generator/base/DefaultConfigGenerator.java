@@ -73,8 +73,15 @@ public class DefaultConfigGenerator implements ConfigGenerator {
       return null;
     }
 
+    // add the ParsedConfig interface to the base implementation (annotated with @Config)
     this.configImplementer.implementParsedConfig(implementation, config.getName());
 
+    // load the interfaces so that the transformers will be applied
+    for (CtClass implementedInterface : config.getImplementedInterfaces()) {
+      this.loadAllClasses(classLoader, implementedInterface);
+    }
+
+    // define the newly generated classes
     for (CtClass generated : config.getGeneratedImplementations()) {
       classLoader.defineClass(generated.getName(), generated.toBytecode());
     }
@@ -84,6 +91,13 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     this.bindConfig(config, result);
 
     return result;
+  }
+
+  private void loadAllClasses(ClassLoader classLoader, CtClass implemented) throws ClassNotFoundException, NotFoundException {
+    for (CtClass declared : implemented.getDeclaredClasses()) {
+      this.loadAllClasses(classLoader, declared);
+    }
+    classLoader.loadClass(implemented.getName());
   }
 
   @Override

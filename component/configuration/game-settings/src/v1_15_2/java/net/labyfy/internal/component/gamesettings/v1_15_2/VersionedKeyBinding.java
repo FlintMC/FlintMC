@@ -13,7 +13,7 @@ import net.minecraft.client.util.InputMappings;
 @Implement(value = KeyBinding.class, version = "1.15.2")
 public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding implements KeyBinding {
 
-  private final int keyCode;
+  private int keyCode;
 
   @AssistedInject
   private VersionedKeyBinding(
@@ -32,7 +32,8 @@ public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBindin
 
   @Override
   public void bind(PhysicalKey key) {
-    this.bind(InputMappings.getInputByName(key.getConfigurationName()));
+    super.bind(InputMappings.getInputByName(key.getConfigurationName()));
+    this.keyCode = key.getKey();
   }
 
 }

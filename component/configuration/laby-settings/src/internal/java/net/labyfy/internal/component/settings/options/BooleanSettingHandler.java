@@ -13,11 +13,6 @@ import net.labyfy.component.settings.registered.RegisteredSetting;
 public class BooleanSettingHandler implements SettingHandler<BooleanSetting> {
 
   @Override
-  public Object getDefaultValue(BooleanSetting annotation, ConfigObjectReference reference) {
-    return annotation.defaultValue();
-  }
-
-  @Override
   public JsonObject serialize(BooleanSetting annotation, RegisteredSetting setting) {
     JsonObject object = new JsonObject();
 

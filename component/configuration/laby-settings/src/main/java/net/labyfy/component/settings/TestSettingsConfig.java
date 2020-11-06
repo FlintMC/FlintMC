@@ -3,6 +3,7 @@ package net.labyfy.component.settings;
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.chat.component.TextComponent;
 import net.labyfy.component.config.annotation.Config;
+import net.labyfy.component.config.defval.annotation.*;
 import net.labyfy.component.settings.annotation.ui.Category;
 import net.labyfy.component.settings.annotation.ui.Description;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
@@ -11,17 +12,18 @@ import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
 import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 import net.labyfy.component.settings.options.dropdown.SelectMenuType;
 import net.labyfy.component.settings.options.dropdown.Selection;
+import net.labyfy.component.settings.options.keybind.DefaultKeyBind;
 import net.labyfy.component.settings.options.keybind.KeyBindSetting;
 import net.labyfy.component.settings.options.keybind.PhysicalKey;
 import net.labyfy.component.settings.options.numeric.NumericSetting;
 import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
-import net.labyfy.component.settings.options.text.CharSetting;
-import net.labyfy.component.settings.options.text.ComponentSetting;
-import net.labyfy.component.settings.options.text.StringRestriction;
-import net.labyfy.component.settings.options.text.StringSetting;
+import net.labyfy.component.settings.options.text.*;
 
 // TODO remove
+
+// TODO move the settings into LabyMod? Problem: We wouldn't be able to use it in the GameSettings module
+
 @Config
 @Category("TestSettings")
 public interface TestSettingsConfig {
@@ -31,28 +33,36 @@ public interface TestSettingsConfig {
       @Selection("val2"),
       @Selection("val3"),
       @Selection("val4")
-  }, defaultValue = "val3", type = SelectMenuType.SWITCH)
+  }, type = SelectMenuType.SWITCH)
+  @DefaultString("val3")
   String getCustomDropDown();
 
-  @EnumSelectSetting(defaultValue = 2 /* A3 */, type = SelectMenuType.SWITCH)
+  @EnumSelectSetting(SelectMenuType.SWITCH)
+  @DefaultEnum(2 /* A3 */)
   TestEnum getEnumDropDown();
 
-  @KeyBindSetting(defaultValue = PhysicalKey.B)
+  @KeyBindSetting
+  @DefaultKeyBind(PhysicalKey.B)
   PhysicalKey getKeyBind();
 
-  @NumericSetting(defaultValue = 10)
+  @NumericSetting
+  @DefaultNumber(10)
   double getNumeric();
 
-  @NumericSetting(defaultValue = 5)
+  @NumericSetting
+  @DefaultNumber(5)
   int getIntNumeric();
 
-  @SliderSetting(defaultValue = 10, value = @Range(min = -20, max = 10))
+  @SliderSetting(@Range(min = -20, max = 10))
+  @DefaultNumber(10)
   int getSlider();
 
-  @CharSetting(defaultValue = 'a')
+  @CharSetting
+  @DefaultChar('a')
   char getChar();
 
-  @StringSetting(defaultValue = "asdf", maxLength = 5)
+  @StringSetting(maxLength = 5)
+  @DefaultString("asdf")
   String getString();
 
   @StringSetting(StringRestriction.URL_ONLY)
@@ -74,21 +84,26 @@ public interface TestSettingsConfig {
 
     @DisplayName(@Component(value = "labymod.settings.booleanValue", translate = true))
     @Description(@Component("§6Some boolean §cvalue"))
-    @BooleanSetting(defaultValue = true)
+    @BooleanSetting
+    @DefaultBoolean(true)
     boolean isBooleanValue();
 
-    @StringSetting(defaultValue = "asdf")
+    @StringSetting
+    @DefaultString("asdf")
     String getAsdf();
 
-    @StringSetting(value = StringRestriction.URL_ONLY, defaultValue = "https://labymod.net")
+    @StringSetting(StringRestriction.URL_ONLY)
+    @DefaultString("https://labymod.net")
     String getUrl();
 
-    @ComponentSetting(defaultValue = "§cdefault §7component §avalue")
+    @ComponentSetting
+    @DefaultComponent(@Component("§cdefault §7component"))
     TextComponent getComponent();
 
     void setComponent(TextComponent component);
 
-    @EnumSelectSetting(defaultValue = 2 /* A3 */)
+    @EnumSelectSetting
+    @DefaultEnum(2 /* A3 */)
     TestEnum getDropDownEnum();
 
   }

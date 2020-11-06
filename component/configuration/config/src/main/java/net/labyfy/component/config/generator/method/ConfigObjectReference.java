@@ -126,6 +126,13 @@ public interface ConfigObjectReference {
   boolean appliesTo(ConfigStorage storage);
 
   /**
+   * Retrieves the default value which has been defined by the user and will be used if no value is set in the config.
+   *
+   * @return The default value or {@code null} if no defaultValue has been set
+   */
+  Object getDefaultValue();
+
+  /**
    * Retrieves the value of the method which is linked to this reference in the instance of a config.
    *
    * @param config The non-null config to get the value from

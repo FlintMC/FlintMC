@@ -35,6 +35,8 @@ public interface GeneratingConfig {
    */
   Collection<ConfigMethod> getAllMethods();
 
+  Collection<CtClass> getImplementedInterfaces();
+
   /**
    * Retrieves a collection with all implementations that have been generated for this config. It also contains
    * interfaces within this config that are necessary for getters/setters to be implemented.
@@ -50,7 +52,7 @@ public interface GeneratingConfig {
    *
    * @param baseName The name of the interface that has been implemented
    * @return The implementation class or {@code null} if there is no implementation for an interface with the given name
-   * @see #bindGeneratedImplementation(String, CtClass)
+   * @see #bindGeneratedImplementation(CtClass, CtClass)
    */
   CtClass getGeneratedImplementation(String baseName);
 
@@ -60,17 +62,17 @@ public interface GeneratingConfig {
    * @param baseName The name of the interface that has been implemented
    * @param def      The value that should be returned if there is no generated implementation available
    * @return The implementation class or {@code def} if there is no implementation for an interface with the given name
-   * @see #bindGeneratedImplementation(String, CtClass)
+   * @see #bindGeneratedImplementation(CtClass, CtClass)
    */
   CtClass getGeneratedImplementation(String baseName, CtClass def);
 
   /**
    * Binds an implementation for the name of a specific interface to be generated for this config.
    *
-   * @param baseName       The non-null name of the implemented interface
+   * @param base           The non-null interface that has been implemented
    * @param implementation The non-null generated implementation to be bound to the given name
    */
-  void bindGeneratedImplementation(String baseName, CtClass implementation);
+  void bindGeneratedImplementation(CtClass base, CtClass implementation);
 
   /**
    * Retrieves the class loader that will be used to define the generated implementations.

@@ -17,6 +17,7 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
   private final String name;
   private final CtClass baseClass;
   private final Collection<ConfigMethod> allMethods;
+  private final Collection<CtClass> implementedInterfaces;
   private final Map<String, CtClass> generatedImplementations;
 
   @AssistedInject
@@ -25,6 +26,7 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
     this.name = baseClass.getName();
     this.baseClass = baseClass;
     this.allMethods = new HashSet<>();
+    this.implementedInterfaces = new HashSet<>();
     this.generatedImplementations = new HashMap<>();
   }
 
@@ -44,6 +46,11 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
   }
 
   @Override
+  public Collection<CtClass> getImplementedInterfaces() {
+    return Collections.unmodifiableCollection(this.implementedInterfaces);
+  }
+
+  @Override
   public Collection<CtClass> getGeneratedImplementations() {
     return Collections.unmodifiableCollection(this.generatedImplementations.values());
   }
@@ -59,8 +66,9 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
   }
 
   @Override
-  public void bindGeneratedImplementation(String baseName, CtClass implementation) {
-    this.generatedImplementations.put(baseName, implementation);
+  public void bindGeneratedImplementation(CtClass base, CtClass implementation) {
+    this.generatedImplementations.put(base.getName(), implementation);
+    this.implementedInterfaces.add(base);
   }
 
   @Override

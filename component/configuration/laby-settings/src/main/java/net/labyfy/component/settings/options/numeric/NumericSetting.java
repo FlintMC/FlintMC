@@ -15,6 +15,4 @@ public @interface NumericSetting {
 
   Range value() default @Range(min = Double.MIN_VALUE, max = Double.MAX_VALUE);
 
-  double defaultValue() default 0;
-
 }

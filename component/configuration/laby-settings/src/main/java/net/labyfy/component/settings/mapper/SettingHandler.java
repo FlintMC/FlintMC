@@ -8,9 +8,6 @@ import java.lang.annotation.Annotation;
 
 public interface SettingHandler<A extends Annotation> {
 
-  // annotation has to have a defaultValue method
-  Object getDefaultValue(A annotation, ConfigObjectReference reference);
-
   // non-null
   JsonObject serialize(A annotation, RegisteredSetting setting);
 

@@ -23,11 +23,6 @@ public class ComponentSettingHandler implements SettingHandler<ComponentSetting>
   }
 
   @Override
-  public Object getDefaultValue(ComponentSetting annotation, ConfigObjectReference reference) {
-    return this.serializerFactory.legacy().deserialize(annotation.defaultValue());
-  }
-
-  @Override
   public JsonObject serialize(ComponentSetting annotation, RegisteredSetting setting) {
     JsonObject object = new JsonObject();
 

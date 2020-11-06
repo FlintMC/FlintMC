@@ -11,10 +11,6 @@ import net.labyfy.component.settings.registered.RegisteredSetting;
 @Singleton
 @RegisterSettingHandler(CharSetting.class)
 public class CharSettingHandler implements SettingHandler<CharSetting> {
-  @Override
-  public Object getDefaultValue(CharSetting annotation, ConfigObjectReference reference) {
-    return annotation.defaultValue();
-  }
 
   @Override
   public JsonObject serialize(CharSetting annotation, RegisteredSetting setting) {

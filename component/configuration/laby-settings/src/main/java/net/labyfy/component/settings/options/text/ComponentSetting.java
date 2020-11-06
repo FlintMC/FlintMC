@@ -14,7 +14,4 @@ import java.lang.annotation.Target;
 @ApplicableSetting(value = TextComponent.class, type = "component")
 public @interface ComponentSetting {
 
-  // parsed with the LegacyComponentSerializer
-  String defaultValue() default "";
-
 }

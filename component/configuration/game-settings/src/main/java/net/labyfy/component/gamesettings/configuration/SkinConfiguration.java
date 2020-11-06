@@ -2,6 +2,7 @@ package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
+import net.labyfy.component.config.defval.annotation.DefaultEnum;
 import net.labyfy.component.player.type.hand.Hand;
 import net.labyfy.component.player.type.model.PlayerClothing;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
@@ -27,7 +28,8 @@ public interface SkinConfiguration {
    *
    * @return The main hand side.
    */
-  @EnumSelectSetting(defaultValue = 1 /*`RIGHT */)
+  @EnumSelectSetting
+  @DefaultEnum(1 /*`RIGHT */)
   Hand.Side getMainHand();
 
   /**

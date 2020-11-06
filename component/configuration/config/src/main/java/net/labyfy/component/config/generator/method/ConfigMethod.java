@@ -144,6 +144,11 @@ public interface ConfigMethod {
   void addInterfaceMethods(CtClass target) throws CannotCompileException, NotFoundException;
 
   /**
+   * Marks this method as it requires no implementation methods by {@link #implementExistingMethods(CtClass)}.
+   */
+  void requireNoImplementation();
+
+  /**
    * Retrieves whether {@link #implementExistingMethods(CtClass)} has already been called.
    *
    * @return {@code true} if it has been called, {@code false} otherwise

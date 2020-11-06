@@ -119,7 +119,6 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
 
   @Override
   public void addInterfaceMethods(CtClass target) throws CannotCompileException {
-
     if (this.keyType.isEnum()) {
 
       if (!this.hasMethod(target, this.getGetterName())) {

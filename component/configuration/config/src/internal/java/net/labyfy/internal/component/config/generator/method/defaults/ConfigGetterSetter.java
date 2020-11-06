@@ -15,8 +15,6 @@ public class ConfigGetterSetter extends FieldConfigMethod {
   public ConfigGetterSetter(ConfigSerializationService serializationService, GeneratingConfig config, CtClass declaringClass,
                             String name, CtClass methodType) {
     super(serializationService, config, declaringClass, name, methodType);
-
-    super.addedInterfaceMethods = true;
   }
 
   @Override
@@ -77,8 +75,16 @@ public class ConfigGetterSetter extends FieldConfigMethod {
   }
 
   @Override
-  public void addInterfaceMethods(CtClass target) {
-    // the methods need to exist
+  public void addInterfaceMethods(CtClass target) throws CannotCompileException {
+    if (!this.hasMethod(target, this.getGetterName())) {
+      target.addMethod(CtNewMethod.make(this.methodType.getName() + " " + this.getGetterName() + "();", target));
+    }
+
+    if (!this.hasMethod(target, this.getSetterName())) {
+      target.addMethod(CtNewMethod.make("void " + this.getSetterName() + "(" + this.methodType.getName() + " arg);", target));
+    }
+
+    super.addedInterfaceMethods = true;
   }
 
   private void insertGetter(CtClass target) throws CannotCompileException {

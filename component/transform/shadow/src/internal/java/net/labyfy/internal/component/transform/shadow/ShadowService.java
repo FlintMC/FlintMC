@@ -142,14 +142,21 @@ public class ShadowService implements ServiceHandler<Shadow> {
       if (parameters.length != 0) {
         throw new IllegalArgumentException("Getter " + method + " must not have arguments.");
       }
-      if (!hasMethod(ctClass, method.getName(), parameters))
+      if (!hasMethod(ctClass, method.getName(), parameters)) {
+        this.setPublic(ctClass.getField(fieldGetter.value()));
+
         ctClass.addMethod(
             CtMethod.make(
                 String.format(
                     "public %s %s(){return this.%s;}",
                     method.getReturnType().getName(), method.getName(), fieldGetter.value()),
                 ctClass));
+      }
     }
+  }
+
+  private void setPublic(CtField field) {
+    field.setModifiers(Modifier.setPublic(field.getModifiers()));
   }
 
   private void handleMethodProxies(

@@ -21,11 +21,6 @@ public class NumericSettingHandler extends RangedSettingHandler implements Setti
   }
 
   @Override
-  public Object getDefaultValue(NumericSetting annotation, ConfigObjectReference reference) {
-    return annotation.defaultValue();
-  }
-
-  @Override
   public JsonObject serialize(NumericSetting annotation, RegisteredSetting setting) {
     return super.serialize((Number) setting.getCurrentValue(), annotation.value(), setting);
   }

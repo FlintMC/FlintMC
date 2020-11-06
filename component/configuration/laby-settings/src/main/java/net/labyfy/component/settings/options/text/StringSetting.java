@@ -14,8 +14,6 @@ public @interface StringSetting {
 
   StringRestriction[] value() default {};
 
-  String defaultValue() default "";
-
   int maxLength() default Integer.MAX_VALUE;
 
   // may be useful for something like "https://youtube.com/c/ YOUR_NAME"

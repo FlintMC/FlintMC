@@ -15,9 +15,6 @@ public @interface CustomSelectSetting {
   // length > 1 (at least two values)
   Selection[] value();
 
-  // has to be inside of value(), empty = value()[0]
-  String defaultValue() default "";
-
   SelectMenuType type() default SelectMenuType.DROPDOWN;
 
 }

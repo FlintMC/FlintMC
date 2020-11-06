@@ -46,16 +46,22 @@ public class ImplementationGenerator {
     this.methodResolver.resolveMethods(config);
 
     for (ConfigMethod method : config.getAllMethods()) {
+      // transform all methods
+      this.transformer.addPendingTransform(method);
+
       CtClass declaring = method.getDeclaringClass();
       if (declaring.hasAnnotation(ImplementedConfig.class)) {
-        this.transformer.addPendingTransform(method);
         continue;
       }
+
+      // generate only the methods in the interface by the transformer (will be added to it below)
+      method.requireNoImplementation();
+
       if (config.getGeneratedImplementation(declaring.getName()) != null) {
         continue;
       }
       CtClass implementation = this.generateImplementation(config, declaring);
-      config.bindGeneratedImplementation(declaring.getName(), implementation);
+      config.bindGeneratedImplementation(declaring, implementation);
     }
 
     for (ConfigMethod method : config.getAllMethods()) {

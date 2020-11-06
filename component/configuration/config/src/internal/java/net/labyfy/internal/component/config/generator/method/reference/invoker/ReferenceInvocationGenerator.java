@@ -34,9 +34,8 @@ public class ReferenceInvocationGenerator {
     CtClass target = this.pool.makeClass("ReferenceInvoker_" + this.idCounter.incrementAndGet() + "_" + this.random.nextInt(Integer.MAX_VALUE));
     target.addInterface(this.pool.get(ReferenceInvoker.class.getName()));
 
-    CtClass baseClass = config.getGeneratedImplementation(config.getBaseClass().getName(), config.getBaseClass());
-    String base = "((" + baseClass.getName() + ") instance)";
-    String lastAccessor = this.buildPathCasts(config, path) + base + this.buildPathGetters(path);
+    String base = "((" + config.getBaseClass().getName() + ") instance)";
+    String lastAccessor = this.buildPathCasts(path) + base + this.buildPathGetters(path);
 
     target.addMethod(this.generateGetter(lastAccessor, target, getter));
     target.addMethod(this.generateSetter(lastAccessor, target, setter));
@@ -50,15 +49,13 @@ public class ReferenceInvocationGenerator {
     return (ReferenceInvoker) generated.getDeclaredConstructor().newInstance();
   }
 
-  private String buildPathCasts(GeneratingConfig config, CtMethod[] path) throws NotFoundException {
+  private String buildPathCasts(CtMethod[] path) throws NotFoundException {
     StringBuilder builder = new StringBuilder();
 
     for (int i = path.length - 1; i >= 0; i--) {
       CtMethod method = path[i];
 
-      CtClass type = config.getGeneratedImplementation(method.getReturnType().getName(), method.getReturnType());
-
-      builder.append("((").append(type.getName()).append(')');
+      builder.append("((").append(method.getReturnType().getName()).append(')');
     }
 
     return builder.toString();
