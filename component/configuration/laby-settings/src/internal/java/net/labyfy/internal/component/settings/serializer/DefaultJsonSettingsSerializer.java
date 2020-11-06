@@ -8,6 +8,7 @@ import com.google.inject.Singleton;
 import net.labyfy.chat.serializer.ComponentSerializer;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.settings.annotation.ApplicableSetting;
+import net.labyfy.component.settings.annotation.TranslateKey;
 import net.labyfy.component.settings.mapper.SettingHandler;
 import net.labyfy.component.settings.registered.RegisteredCategory;
 import net.labyfy.component.settings.registered.RegisteredSetting;
@@ -68,6 +69,10 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
     if (setting.isNative()) {
       object.addProperty("native", true);
+    }
+
+    if (setting.getReference().findLastAnnotation(TranslateKey.class) != null) {
+      // TODO
     }
 
     return object;

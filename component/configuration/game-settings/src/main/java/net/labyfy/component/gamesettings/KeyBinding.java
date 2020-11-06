@@ -1,8 +1,8 @@
 package net.labyfy.component.gamesettings;
 
 import com.google.inject.assistedinject.Assisted;
+import net.labyfy.component.gamesettings.keybind.PhysicalKey;
 import net.labyfy.component.inject.assisted.AssistedFactory;
-import net.labyfy.component.settings.options.keybind.PhysicalKey;
 
 /**
  * Represents a key binding.
@@ -111,9 +111,9 @@ public interface KeyBinding {
      * @return A created key binding.
      */
     KeyBinding create(
-            @Assisted("description") String description,
-            @Assisted("keyCode") int keyCode,
-            @Assisted("category") String category
+        @Assisted("description") String description,
+        @Assisted("keyCode") int keyCode,
+        @Assisted("category") String category
     );
   }
 

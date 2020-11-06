@@ -23,6 +23,7 @@ import net.labyfy.component.stereotype.service.ServiceNotFoundException;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Collections;
 
 @Singleton
 @Implement(ConfigModifierRegistry.class)
@@ -42,7 +43,7 @@ public class DefaultConfigModifierRegistry implements ConfigModifierRegistry, Se
 
   @Override
   public Collection<ConfigModificationHandler> getHandlers() {
-    return this.handlers.values();
+    return Collections.unmodifiableCollection(this.handlers.values());
   }
 
   @Override

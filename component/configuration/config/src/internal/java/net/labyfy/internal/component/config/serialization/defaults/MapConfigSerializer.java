@@ -26,7 +26,7 @@ public class MapConfigSerializer implements ConfigSerializationHandler<Map<?, ?>
   }
 
   @Override
-  public Map<?, ?> deserialize(JsonElement object) {
-    return this.gson.fromJson(object, Map.class);
+  public Map<?, ?> deserialize(JsonElement element) {
+    return this.gson.fromJson(element, Map.class);
   }
 }

@@ -3,8 +3,8 @@ package net.labyfy.internal.component.gamesettings.v1_15_2;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import net.labyfy.component.gamesettings.KeyBinding;
+import net.labyfy.component.gamesettings.keybind.PhysicalKey;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.settings.options.keybind.PhysicalKey;
 import net.minecraft.client.util.InputMappings;
 
 /**

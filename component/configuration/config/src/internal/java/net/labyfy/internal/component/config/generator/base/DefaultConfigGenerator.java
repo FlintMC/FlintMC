@@ -94,9 +94,11 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   }
 
   private void loadAllClasses(ClassLoader classLoader, CtClass implemented) throws ClassNotFoundException, NotFoundException {
+    // load all inner classes first so that they don't get frozen when loading the outer classes
     for (CtClass declared : implemented.getDeclaredClasses()) {
       this.loadAllClasses(classLoader, declared);
     }
+
     classLoader.loadClass(implemented.getName());
   }
 

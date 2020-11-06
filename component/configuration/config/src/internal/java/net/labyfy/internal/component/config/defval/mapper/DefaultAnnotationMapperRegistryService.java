@@ -15,6 +15,7 @@ import net.labyfy.component.stereotype.service.ServiceHandler;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class DefaultAnnotationMapperRegistryService
 
   @Override
   public Collection<Class<? extends Annotation>> getAnnotationTypes() {
-    return this.mappers.keySet();
+    return Collections.unmodifiableCollection(this.mappers.keySet());
   }
 
   @Override

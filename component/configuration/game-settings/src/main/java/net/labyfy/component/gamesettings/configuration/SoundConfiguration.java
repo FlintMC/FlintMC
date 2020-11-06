@@ -4,6 +4,8 @@ import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
 import net.labyfy.component.player.type.sound.SoundCategory;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.options.numeric.Range;
+import net.labyfy.component.settings.options.numeric.SliderSetting;
 
 /**
  * Represents the sound configuration.
@@ -24,6 +26,7 @@ public interface SoundConfiguration {
    * @param soundCategory The sound category to get the volume.
    * @return The sound volume of the sound category.
    */
+  @SliderSetting(@Range(max = 1, decimals = 2))
   float getSoundVolume(SoundCategory soundCategory);
 
   /**

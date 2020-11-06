@@ -1,8 +1,6 @@
 package net.labyfy.component.config.annotation;
 
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
-import net.labyfy.component.config.annotation.method.ConfigExclude;
-import net.labyfy.component.config.annotation.method.ConfigMethodName;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.config.storage.ConfigStorage;
@@ -85,7 +83,7 @@ import java.util.Map;
  * </ul>
  *
  * @see ConfigExclude
- * @see ConfigMethodName
+ * @see PostMinecraftRead
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

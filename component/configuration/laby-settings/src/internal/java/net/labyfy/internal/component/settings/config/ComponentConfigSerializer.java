@@ -26,7 +26,7 @@ public class ComponentConfigSerializer implements ConfigSerializationHandler<Cha
   }
 
   @Override
-  public ChatComponent deserialize(JsonElement object) {
-    return this.serializer.getGson().fromJson(object, ChatComponent.class);
+  public ChatComponent deserialize(JsonElement element) {
+    return this.serializer.getGson().fromJson(element, ChatComponent.class);
   }
 }

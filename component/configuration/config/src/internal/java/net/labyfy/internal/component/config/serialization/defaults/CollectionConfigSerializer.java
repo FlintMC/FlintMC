@@ -26,7 +26,7 @@ public class CollectionConfigSerializer implements ConfigSerializationHandler<Co
   }
 
   @Override
-  public Collection<?> deserialize(JsonElement object) {
-    return this.gson.fromJson(object, Collection.class);
+  public Collection<?> deserialize(JsonElement element) {
+    return this.gson.fromJson(element, Collection.class);
   }
 }

@@ -35,15 +35,18 @@ public interface GeneratingConfig {
    */
   Collection<ConfigMethod> getAllMethods();
 
+  /**
+   * Retrieves a collection of all interfaces that have been implemented in this config.
+   *
+   * @return The non-null immutable collection with all interfaces
+   */
   Collection<CtClass> getImplementedInterfaces();
 
   /**
    * Retrieves a collection with all implementations that have been generated for this config. It also contains
    * interfaces within this config that are necessary for getters/setters to be implemented.
-   * <p>
-   * The collection doesn't support add operations.
    *
-   * @return The non-null collection with all implementations
+   * @return The non-null immutable collection with all implementations
    */
   Collection<CtClass> getGeneratedImplementations();
 

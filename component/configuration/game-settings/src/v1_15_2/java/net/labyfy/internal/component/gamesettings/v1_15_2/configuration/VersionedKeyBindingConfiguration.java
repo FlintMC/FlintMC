@@ -6,12 +6,14 @@ import net.labyfy.chat.Keybind;
 import net.labyfy.component.config.annotation.implemented.ConfigImplementation;
 import net.labyfy.component.gamesettings.KeyBinding;
 import net.labyfy.component.gamesettings.configuration.KeyBindingConfiguration;
-import net.labyfy.component.settings.options.keybind.PhysicalKey;
+import net.labyfy.component.gamesettings.keybind.PhysicalKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @ConfigImplementation(value = KeyBindingConfiguration.class, version = "1.15.2")
 public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration {
 
+  // TODO this needs some changes (e.g. minecraft.KeyBinding#getDefault is being used to get the current key, but this is only the default)
+
   private final KeyBinding.Factory keyBindingFactory;
 
   @Inject
@@ -28,79 +32,74 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     this.keyBindingFactory = keyBindingFactory;
   }
 
+  @Override
+  public String getKey(String keyDescription) {
+    net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
+    return keyBinding != null ? keyBinding.getDefault().getTranslationKey() : null;
+  }
+
+  @Override
+  public void setKey(String keyDescription, String keyName) {
+    net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
+    if (keyBinding != null) {
+      keyBinding.bind(InputMappings.getInputByName(keyName));
+    }
+  }
+
+  @Override
+  public Map<String, String> getAllKey() {
+    Map<String, String> keys = new HashMap<>();
+    for (net.minecraft.client.settings.KeyBinding keyBinding : Minecraft.getInstance().gameSettings.keyBindings) {
+      keys.put(keyBinding.getKeyDescription(), keyBinding.getDefault().getTranslationKey());
+    }
+    return keys;
+  }
+
+  @Override
+  public void setAllKey(Map<String, String> keys) {
+    keys.forEach(this::setKey);
+  }
+
+  @Override
+  public boolean hasDuplicates(PhysicalKey key) {
+    boolean found = false;
+    for (KeyBinding keyBinding : this.getKeyBindings()) {
+      if (keyBinding.getKeyCode() == key.getKey()) {
+        if (found) {
+          return true;
+        }
+        found = true;
+      }
+    }
+    for (KeyBinding keyBinding : this.getKeyBindsHotbar()) {
+      if (keyBinding.getKeyCode() == key.getKey()) {
+        if (found) {
+          return true;
+        }
+
+        found = true;
+      }
+    }
+    return false;
+  }
+
+  private net.minecraft.client.settings.KeyBinding getMinecraftBinding(String keyDescription) {
+    for (net.minecraft.client.settings.KeyBinding keyBinding : Minecraft.getInstance().gameSettings.keyBindings) {
+      if (keyBinding.getKeyDescription().equals(keyDescription)) {
+        return keyBinding;
+      }
+    }
+
+    return null;
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
   public KeyBinding getKeyBinding(Keybind keybind) {
-    switch (keybind) {
-      case SNEAK:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSneak);
-      case SPRINT:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSprint);
-      case LEFT:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindLeft);
-      case RIGHT:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindRight);
-      case BACK:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindBack);
-      case FORWARD:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindForward);
-      case ATTACK:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindAttack);
-      case PICK_ITEM:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindPickBlock);
-      case USE:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindUseItem);
-      case DROP_ITEM:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindDrop);
-      case HOTBAR_1:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[0]);
-      case HOTBAR_2:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[1]);
-      case HOTBAR_3:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[2]);
-      case HOTBAR_4:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[3]);
-      case HOTBAR_5:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[4]);
-      case HOTBAR_6:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[5]);
-      case HOTBAR_7:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[6]);
-      case HOTBAR_8:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[7]);
-      case HOTBAR_9:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindsHotbar[8]);
-      case OPEN_INVENTORY:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindInventory);
-      case SWAP_HANDS:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSwapHands);
-      case LOAD_TOOLBAR:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindLoadToolbar);
-      case SAVE_TOOLBAR:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSaveToolbar);
-      case SHOW_PLAYER_LIST:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindPlayerList);
-      case OPEN_CHAT:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindChat);
-      case OPEN_COMMAND:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindCommand);
-      case ADVANCEMENTS:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindAdvancements);
-      case SPECTATOR_OUTLINES:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSpectatorOutlines);
-      case TAKE_SCREENSHOT:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindScreenshot);
-      case SMOOTH_CAMERA:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindSmoothCamera);
-      case TOGGLE_FULLSCREEN:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindFullscreen);
-      case TOGGLE_PERSPECTIVE:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindTogglePerspective);
-      default:
-        return this.fromMinecraftObject(Minecraft.getInstance().gameSettings.keyBindJump);
-    }
+    net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keybind.getKey());
+    return keyBinding != null ? this.fromMinecraftObject(keyBinding) : null;
   }
 
 
@@ -110,8 +109,8 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   @Override
   public List<KeyBinding> getKeyBindsHotbar() {
     return Arrays
-            .stream(Minecraft.getInstance().gameSettings.keyBindsHotbar)
-            .map(this::fromMinecraftObject).collect(Collectors.toList());
+        .stream(Minecraft.getInstance().gameSettings.keyBindsHotbar)
+        .map(this::fromMinecraftObject).collect(Collectors.toList());
   }
 
   /**
@@ -120,19 +119,20 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   @Override
   public List<KeyBinding> getKeyBindings() {
     return Arrays
-            .stream(Minecraft.getInstance().gameSettings.keyBindings)
-            .map(this::fromMinecraftObject).collect(Collectors.toList());
+        .stream(Minecraft.getInstance().gameSettings.keyBindings)
+        .map(this::fromMinecraftObject).collect(Collectors.toList());
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void setKeyBinding(KeyBinding bindingCode, PhysicalKey keyInputName) {
+  public void setKeyBindingCode(KeyBinding bindingCode, PhysicalKey keyInputName) {
     Minecraft.getInstance().gameSettings.setKeyBindingCode(
         this.toMinecraftObject(bindingCode),
         InputMappings.getInputByCode(keyInputName.getKey(), keyInputName.getScanCode())
     );
+    bindingCode.bind(keyInputName);
   }
 
   private net.minecraft.client.settings.KeyBinding toMinecraftObject(KeyBinding binding) {
@@ -141,9 +141,9 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
 
   private KeyBinding fromMinecraftObject(net.minecraft.client.settings.KeyBinding keyBinding) {
     return this.keyBindingFactory.create(
-            keyBinding.getKeyDescription(),
-            keyBinding.getDefault().getKeyCode(),
-            keyBinding.getKeyCategory()
+        keyBinding.getKeyDescription(),
+        keyBinding.getDefault().getKeyCode(),
+        keyBinding.getKeyCategory()
     );
   }
 

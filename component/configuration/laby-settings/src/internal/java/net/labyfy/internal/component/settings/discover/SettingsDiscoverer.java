@@ -18,8 +18,10 @@ import net.labyfy.component.settings.registered.SettingsProvider;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Map;
 
 @Singleton
 public class SettingsDiscoverer {
@@ -54,10 +56,19 @@ public class SettingsDiscoverer {
     }
     ApplicableSetting applicableSetting = annotation.annotationType().getAnnotation(ApplicableSetting.class);
 
+    // multiple settings on one method (e.g. get(Key key, Value value))
     Type type = reference.getSerializedType();
+    if (type instanceof ParameterizedType) {
+      ParameterizedType parameterized = (ParameterizedType) type;
+      if (parameterized.getRawType().equals(Map.class)) {
+        type = parameterized.getActualTypeArguments()[1]; // value
+      }
+    }
+
     if (!(type instanceof Class)) {
       this.throwInvalidSetting(reference, annotation, config, type);
     }
+
     Class<?> clazz = (Class<?>) type;
     if (clazz.isPrimitive()) {
       clazz = PrimitiveTypeLoader.getWrappedClass(clazz);

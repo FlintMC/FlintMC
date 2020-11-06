@@ -4,17 +4,14 @@ import com.google.inject.Inject;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import net.labyfy.component.config.annotation.method.ConfigExclude;
-import net.labyfy.component.config.annotation.method.ConfigMethodName;
+import net.labyfy.component.config.annotation.ConfigExclude;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.config.generator.method.ConfigMethodResolver;
 import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.inject.logging.InjectLogger;
 import net.labyfy.internal.component.config.generator.method.defaults.ConfigGetterGroup;
 import net.labyfy.internal.component.config.generator.method.defaults.ConfigSetterGroup;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,13 +19,11 @@ import java.util.Collection;
 @Implement(ConfigMethodResolver.class)
 public class DefaultConfigMethodResolver implements ConfigMethodResolver {
 
-  private final Logger logger;
   private final ConfigSerializationService serializationService;
   private final Collection<ConfigMethodGroup> groups;
 
   @Inject
-  public DefaultConfigMethodResolver(@InjectLogger Logger logger, ConfigSerializationService serializationService) {
-    this.logger = logger;
+  public DefaultConfigMethodResolver(ConfigSerializationService serializationService) {
     this.serializationService = serializationService;
     this.groups = Arrays.asList(
         new ConfigGetterGroup(serializationService),
@@ -55,13 +50,6 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
       }
 
       String name = method.getName();
-      if (method.hasAnnotation(ConfigMethodName.class)) {
-        try {
-          name = ((ConfigMethodName) method.getAnnotation(ConfigMethodName.class)).value();
-        } catch (ClassNotFoundException e) {
-          this.logger.error("Failed to find ConfigMethodName on " + method.getDeclaringClass().getName() + "#" + method.getName(), e);
-        }
-      }
 
       this.tryGroups(config, name, type, prefix, method);
     }

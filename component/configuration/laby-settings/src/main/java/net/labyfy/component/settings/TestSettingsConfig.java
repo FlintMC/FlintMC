@@ -12,17 +12,12 @@ import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
 import net.labyfy.component.settings.options.dropdown.EnumSelectSetting;
 import net.labyfy.component.settings.options.dropdown.SelectMenuType;
 import net.labyfy.component.settings.options.dropdown.Selection;
-import net.labyfy.component.settings.options.keybind.DefaultKeyBind;
-import net.labyfy.component.settings.options.keybind.KeyBindSetting;
-import net.labyfy.component.settings.options.keybind.PhysicalKey;
 import net.labyfy.component.settings.options.numeric.NumericSetting;
 import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
 import net.labyfy.component.settings.options.text.*;
 
 // TODO remove
-
-// TODO move the settings into LabyMod? Problem: We wouldn't be able to use it in the GameSettings module
 
 @Config
 @Category("TestSettings")
@@ -40,10 +35,6 @@ public interface TestSettingsConfig {
   @EnumSelectSetting(SelectMenuType.SWITCH)
   @DefaultEnum(2 /* A3 */)
   TestEnum getEnumDropDown();
-
-  @KeyBindSetting
-  @DefaultKeyBind(PhysicalKey.B)
-  PhysicalKey getKeyBind();
 
   @NumericSetting
   @DefaultNumber(10)

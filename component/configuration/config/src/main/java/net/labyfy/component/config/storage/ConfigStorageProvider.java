@@ -3,6 +3,7 @@ package net.labyfy.component.config.storage;
 import javassist.CtClass;
 import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.IncludeStorage;
+import net.labyfy.component.config.event.ConfigStorageEvent;
 import net.labyfy.component.config.generator.ParsedConfig;
 
 /**
@@ -34,6 +35,8 @@ public interface ConfigStorageProvider extends ConfigStorage {
   /**
    * Queues the given config to be stored in every storage registered in this provider, this doesn't store the config
    * instantly so that the config won't be stored multiple times just a few changes.
+   * <p>
+   * This also fires the {@link ConfigStorageEvent}.
    *
    * @param config The non-null config to be stored
    */
@@ -45,6 +48,8 @@ public interface ConfigStorageProvider extends ConfigStorage {
    * with the highest priority (which is {@link Integer#MIN_VALUE}) will be called last so that it overrides the other
    * storages. Only values that aren't ignored with {@link ExcludeStorage} and/or {@link IncludeStorage} for a storage
    * can be ignored.
+   * <p>
+   * This also fires the {@link ConfigStorageEvent}.
    *
    * @param config The non-null config to be read
    */

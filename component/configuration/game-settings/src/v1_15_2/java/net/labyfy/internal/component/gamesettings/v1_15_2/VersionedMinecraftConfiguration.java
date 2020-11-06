@@ -21,7 +21,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
   private final ChatConfiguration chatConfiguration;
   private final DebugConfiguration debugConfiguration;
   private final GraphicConfiguration graphicConfiguration;
-  // TODO: private final KeyBindingConfiguration keyBindingConfiguration;
+  private final KeyBindingConfiguration keyBindingConfiguration;
   private final MouseConfiguration mouseConfiguration;
   private final ResourcePackConfiguration resourcePackConfiguration;
   private final SkinConfiguration skinConfiguration;
@@ -33,7 +33,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
       ChatConfiguration chatConfiguration,
       DebugConfiguration debugConfiguration,
       GraphicConfiguration graphicConfiguration,
-      //KeyBindingConfiguration keyBindingConfiguration,
+      KeyBindingConfiguration keyBindingConfiguration,
       MouseConfiguration mouseConfiguration,
       ResourcePackConfiguration resourcePackConfiguration,
       SkinConfiguration skinConfiguration,
@@ -43,7 +43,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
     this.chatConfiguration = chatConfiguration;
     this.debugConfiguration = debugConfiguration;
     this.graphicConfiguration = graphicConfiguration;
-    //this.keyBindingConfiguration = keyBindingConfiguration;
+    this.keyBindingConfiguration = keyBindingConfiguration;
     this.mouseConfiguration = mouseConfiguration;
     this.resourcePackConfiguration = resourcePackConfiguration;
     this.skinConfiguration = skinConfiguration;
@@ -85,7 +85,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
   /**
    * {@inheritDoc}
    */
-  /*@Override
+  @Override
   public KeyBindingConfiguration getKeyBindingConfiguration() {
     return this.keyBindingConfiguration;
   }

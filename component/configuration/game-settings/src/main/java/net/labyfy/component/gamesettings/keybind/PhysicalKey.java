@@ -1,4 +1,4 @@
-package net.labyfy.component.settings.options.keybind;
+package net.labyfy.component.gamesettings.keybind;
 
 import java.util.HashMap;
 import java.util.Map;

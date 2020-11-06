@@ -1,4 +1,4 @@
-package net.labyfy.component.config.modifier;
+package net.labyfy.component.gamesettings.keybind;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface ModifyAnnotations {
+@Target(ElementType.METHOD)
+public @interface DefaultKeyBind {
+
+  PhysicalKey value();
 
 }

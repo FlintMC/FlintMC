@@ -12,10 +12,10 @@ import net.labyfy.component.gamesettings.MinecraftConfiguration;
 import net.labyfy.component.gamesettings.frontend.FrontendOption;
 import net.labyfy.component.gamesettings.frontend.FrontendSliderOption;
 import net.labyfy.component.gamesettings.frontend.OptionsSerializer;
+import net.labyfy.component.gamesettings.keybind.PhysicalKey;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.player.type.hand.Hand;
-import net.labyfy.component.settings.options.keybind.PhysicalKey;
 import net.labyfy.component.version.VersionHelper;
 import net.labyfy.component.world.difficult.Difficulty;
 

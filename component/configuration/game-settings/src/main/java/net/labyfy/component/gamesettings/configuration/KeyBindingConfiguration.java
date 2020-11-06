@@ -2,13 +2,15 @@ package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.Keybind;
 import net.labyfy.chat.annotation.Component;
+import net.labyfy.component.config.annotation.ConfigExclude;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
-import net.labyfy.component.config.annotation.method.ConfigExclude;
 import net.labyfy.component.gamesettings.KeyBinding;
+import net.labyfy.component.gamesettings.keybind.PhysicalKey;
+import net.labyfy.component.settings.annotation.TranslateKey;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
-import net.labyfy.component.settings.options.keybind.PhysicalKey;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the key binding configuration.
@@ -24,12 +26,30 @@ import java.util.List;
 
 public interface KeyBindingConfiguration {
 
+  @TranslateKey
+  String getKey(String keyDescription);
+
+  void setKey(String keyDescription, String keyName);
+
+  Map<String, String> getAllKey();
+
+  void setAllKey(Map<String, String> keys);
+
+  /**
+   * Retrieves whether there are duplicates Minecrafts settings for this keyCode.
+   *
+   * @return {@code true} if other KeyBindings in Minecraft also use this keyCode, {@code false} otherwise
+   */
+  @ConfigExclude
+  boolean hasDuplicates(PhysicalKey key);
+
   /**
    * Retrieves a key binding by the given {@link Keybind} constant.
    *
    * @param keybind The non-null constant of the {@link Keybind}.
    * @return A key binding by the given constant or the default `jump` key binding.
    */
+  @ConfigExclude
   KeyBinding getKeyBinding(Keybind keybind);
 
   /**
@@ -54,6 +74,7 @@ public interface KeyBindingConfiguration {
    * @param keyBinding The key binding to change.
    * @param code       The new code for key binding.
    */
-  void setKeyBinding(KeyBinding keyBinding, PhysicalKey code);
+  @ConfigExclude
+  void setKeyBindingCode(KeyBinding keyBinding, PhysicalKey code);
 
 }

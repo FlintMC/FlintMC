@@ -7,8 +7,8 @@ import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.gamesettings.GameSettingsParser;
 import net.labyfy.component.gamesettings.event.ConfigurationEvent;
+import net.labyfy.component.gamesettings.keybind.PhysicalKey;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.settings.options.keybind.PhysicalKey;
 
 import java.io.BufferedReader;
 import java.io.File;

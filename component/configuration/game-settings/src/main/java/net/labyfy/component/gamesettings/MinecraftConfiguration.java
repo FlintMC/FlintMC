@@ -49,7 +49,7 @@ public interface MinecraftConfiguration {
    *
    * @return The configuration of key bindings.
    */
-  //KeyBindingConfiguration getKeyBindingConfiguration();
+  KeyBindingConfiguration getKeyBindingConfiguration();
 
   /**
    * Retrieves the mouse configuration.

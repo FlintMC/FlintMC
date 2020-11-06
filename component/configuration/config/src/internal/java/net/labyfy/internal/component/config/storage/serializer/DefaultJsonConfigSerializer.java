@@ -50,7 +50,7 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
       JsonElement value = null;
 
       ConfigSerializationHandler handler = this.getHandler(reference);
-      if (handler != null) {
+      if (handler != null && rawValue != null) {
         value = handler.serialize(rawValue);
       }
 

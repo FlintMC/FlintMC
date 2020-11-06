@@ -1,6 +1,5 @@
-package net.labyfy.component.config.annotation.method;
+package net.labyfy.component.config.annotation;
 
-import net.labyfy.component.config.annotation.Config;
 import net.labyfy.component.config.generator.ParsedConfig;
 
 import java.lang.annotation.ElementType;
