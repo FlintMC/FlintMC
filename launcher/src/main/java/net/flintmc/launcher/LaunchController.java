@@ -74,7 +74,9 @@ public class LaunchController {
     logger.info("JVM vendor: {}", System.getProperty("java.vendor"));
 
 
-    for (File file : new File("flint/packages").listFiles()) {
+    File packages = new File("flint/packages");
+    packages.mkdirs();
+    for (File file : packages.listFiles()) {
       if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("jar")) {
         try {
 

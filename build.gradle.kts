@@ -64,9 +64,8 @@ flint {
         !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
     }
 
-    authors = arrayOf("LabyMedia GmbH")
-
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+    authors = arrayOf("LabyMedia GmbH")
 
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")

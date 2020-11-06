@@ -4,8 +4,6 @@ plugins {
 
 group = "net.flintmc"
 
-
-
 dependencies {
     api("org.joml", "joml", "1.9.25")
     api("com.google.inject", "guice", "4.2.0")

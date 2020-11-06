@@ -41,7 +41,7 @@ object MinecraftVersionGenerator {
         for (resolvedArtifact in project.configurations.getByName("manifest").resolvedConfiguration.resolvedArtifacts) {
             val componentIdentifier = resolvedArtifact.id.componentIdentifier
             if (componentIdentifier is ProjectComponentIdentifier) {
-                val dependencyProject = project.project("componentIdentifier.projectPath")
+                val dependencyProject = project.project(componentIdentifier.projectPath)
                 minecraftVersion.libraries.add(
                     MinecraftVersion.Library(
                         null,

@@ -1,4 +1,3 @@
-import net.flintmc.gradle.extension.FlintGradleExtension.Type
 import net.flintmc.minecraft.version.MinecraftVersionGenerator
 import java.nio.file.Paths
 
@@ -9,7 +8,6 @@ plugins {
 group = "net.flintmc"
 
 flint {
-    type = Type.LIBRARY
     staticFileEntry(
         Paths.get("build/generated/flint/version.json"),
         Paths.get("versions/flint-1.15.2/flint-1.15.2.json"),

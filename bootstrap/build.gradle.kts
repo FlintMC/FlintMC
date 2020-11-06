@@ -1,3 +1,5 @@
+import net.flintmc.gradle.extension.FlintGradleExtension.Type
+
 plugins {
     id("java-library")
 }
@@ -8,8 +10,12 @@ configurations {
     create("manifest")
 }
 
+
 dependencies {
-    /*project.rootProject.subprojects.forEach { subProject ->
+    val manifest = configurations.getByName("manifest")
+    configurations.getByName("implementation").extendsFrom(manifest)
+
+    project.rootProject.subprojects.forEach { subProject ->
         if (!arrayOf(
                 ":",
                 ":framework",
@@ -21,19 +27,13 @@ dependencies {
                 ":bootstrap"
             ).contains(subProject.path)
         ) {
-            runtimeOnly(subProject)
+            manifest(subProject)
             subProject.configurations.getByName("runtimeClasspath")
                 .allDependencies.forEach {
-                    runtimeOnly(it)
+                    manifest(it)
                 }
         }
-    }*/
-
-    runtimeOnly(project(":launcher"))
-    runtimeOnly(project(":transform:transform-launcher-plugin"))
-
-    val manifest = configurations.getByName("manifest")
-    configurations.getByName("implementation").extendsFrom(manifest)
+    }
 
     manifest("net.flintmc.installer", "logic", "1.1.2")
     manifest("net.flintmc.installer", "logic-implementation", "1.1.2")

@@ -4,8 +4,6 @@ plugins {
 
 group = "net.flintmc"
 
-
-
 dependencies {
     annotationProcessor("com.google.auto.service", "auto-service", "1.0-rc6")
 

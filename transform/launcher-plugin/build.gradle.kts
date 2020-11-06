@@ -1,9 +1,10 @@
+import net.flintmc.gradle.extension.FlintGradleExtension.Type
+
 plugins {
     id("java-library")
 }
 
 group = "net.flintmc"
-println(group)
 
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
