@@ -3,8 +3,7 @@ plugins {
 }
 
 group = "net.flintmc"
-
-
+println(group)
 
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))

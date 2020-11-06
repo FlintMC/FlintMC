@@ -7,27 +7,21 @@ fun defineModule(path: String) {
 
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle-plugin") version "2.5.2"
+        id("net.flintmc.flint-gradle-plugin") version "2.5.3"
     }
 
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle-plugin", "2.5.2")
+            classpath("net.flintmc", "flint-gradle-plugin", "2.5.3")
         }
         repositories {
             mavenLocal()
-            val labymediaMavenAuthToken: String? by settings
             maven {
-                setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
-                name = "Gitlab"
+                setUrl("https://dist.labymod.net/api/v1/maven/release")
+                name = "Flint"
                 credentials(HttpHeaderCredentials::class) {
-                    if (System.getenv().containsKey("CI_JOB_TOKEN")) {
-                        name = "Job-Token"
-                        value = System.getenv("CI_JOB_TOKEN")
-                    } else {
-                        name = "Private-Token"
-                        value = labymediaMavenAuthToken
-                    }
+                    name = "Authorization"
+                    value = "Bearer CbtTjzAOuDBr5QXcGnBc1MB3eIHxcZetnyHtdN76VpTNgbwAf87bzWPCntsXwj52"
                 }
                 authentication {
                     create<HttpHeaderAuthentication>("header")
@@ -75,3 +69,4 @@ defineModule("util:mapping")
 defineModule("util:session-service")
 
 defineModule("minecraft:minecraft-1-15-2")
+include("bootstrap")

@@ -73,7 +73,7 @@ public class DefaultPackage implements Package {
 
       try {
         manifest = manifestLoader.loadManifest(jar);
-        jar.close();
+        //jar.close();
 
         if (manifest.isValid()) {
           this.packageState = PackageState.NOT_LOADED;

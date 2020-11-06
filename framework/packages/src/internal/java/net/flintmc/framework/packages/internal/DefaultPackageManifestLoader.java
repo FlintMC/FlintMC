@@ -3,6 +3,7 @@ package net.flintmc.framework.packages.internal;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.packages.DependencyDescription;
 import net.flintmc.framework.packages.PackageManifest;
@@ -11,10 +12,14 @@ import net.flintmc.installer.impl.InstallerModule;
 import net.flintmc.installer.impl.repository.models.DependencyDescriptionModel;
 import net.flintmc.installer.impl.repository.models.ModelSerializer;
 import net.flintmc.installer.impl.repository.models.PackageModel;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -25,14 +30,18 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
   public static final String MANIFEST_NAME = "manifest.json";
 
   private final ModelSerializer manifestLoader;
+  private Logger logger;
 
   @Inject
-  private DefaultPackageManifestLoader() {
+  private DefaultPackageManifestLoader(@InjectLogger Logger logger) {
+    this.logger = logger;
     InjectionHolder.getInstance().addModules(new InstallerModule());
     this.manifestLoader = InjectionHolder.getInjectedInstance(ModelSerializer.class);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isManifestPresent(JarFile file) {
     // Search the jar file for entry with the name of the manifest file
@@ -40,12 +49,19 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
         .anyMatch(entry -> entry.getName().equals(MANIFEST_NAME));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PackageManifest loadManifest(JarFile file) throws IOException {
     ZipEntry manifest = file.getEntry(MANIFEST_NAME);
     return new DefaultPackageManifest(
         this.manifestLoader.fromString(readZipEntry(file, manifest), PackageModel.class));
+  }
+
+  @Override
+  public PackageManifest loadManifest(URL url) throws IOException {
+    return new DefaultPackageManifest(this.manifestLoader.fromString(IOUtils.toString(url, StandardCharsets.UTF_8), PackageModel.class));
   }
 
   private String readZipEntry(JarFile file, ZipEntry entry) throws IOException {
@@ -60,7 +76,9 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     return manifest.toString();
   }
 
-  /** Default implementation of a {@link PackageManifest}. */
+  /**
+   * Default implementation of a {@link PackageManifest}.
+   */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
   private static class DefaultPackageManifest implements PackageManifest, Serializable {
 
@@ -72,25 +90,33 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
       model.getDependencies().forEach(dep -> dependencies.add(new DefaultDependencyDescription(dep)));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
       return this.model.getName();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayName() {
       return this.getName();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getVersion() {
       return this.model.getVersion();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<String> getAuthors() {
       return this.model.getAuthors();
@@ -101,7 +127,9 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
       return this.model.getRuntimeClasspath();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDescription() {
       return this.model.getDescription() != null
@@ -109,13 +137,17 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
           : "flint." + this.getName() + ".packages.generic.description";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<? extends DependencyDescription> getDependencies() {
       return this.dependencies;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid() {
       return this.getName() != null
@@ -125,7 +157,9 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     }
   }
 
-  /** Default implementation of a {@link DependencyDescription}. */
+  /**
+   * Default implementation of a {@link DependencyDescription}.
+   */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
   private static class DefaultDependencyDescription implements DependencyDescription, Serializable {
 
@@ -135,13 +169,17 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
       this.model = model;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
       return this.model.getName();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getVersions() {
       return Arrays.asList(this.model.getVersions().split(","));
@@ -152,7 +190,9 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
       return this.model.getChannel();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean matches(PackageManifest manifest) {
       return this.getName().equals(manifest.getName())

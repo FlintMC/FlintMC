@@ -3,34 +3,13 @@ plugins {
     id("project-report")
 }
 
-fun RepositoryHandler.labymedia() {
-    val labymediaMavenAuthToken: String? by project
-
-    maven {
-        setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
-        name = "Gitlab"
-        credentials(HttpHeaderCredentials::class) {
-            if (System.getenv().containsKey("CI_JOB_TOKEN")) {
-                name = "Job-Token"
-                value = System.getenv("CI_JOB_TOKEN")
-            } else {
-                name = "Private-Token"
-                value = labymediaMavenAuthToken
-            }
-        }
-        authentication {
-            create<HttpHeaderAuthentication>("header")
-        }
-    }
-}
-
 fun RepositoryHandler.flintRepository() {
     maven {
-        setUrl("http://10.42.1.7:80/api/v1/maven/release")
+        setUrl("https://dist.labymod.net/api/v1/maven/release")
         name = "Flint"
         credentials(HttpHeaderCredentials::class) {
-            name = "Publish-Token"
-            value = "6j2vM60FDmkXxlTu1ZZzFzVkS9VjiONLQvSOd7aSwtqapXw9WVWayiaQibGwVZdN"
+            name = "Authorization"
+            value = "Bearer CbtTjzAOuDBr5QXcGnBc1MB3eIHxcZetnyHtdN76VpTNgbwAf87bzWPCntsXwj52"
         }
         authentication {
             create<HttpHeaderAuthentication>("header")
@@ -40,7 +19,7 @@ fun RepositoryHandler.flintRepository() {
 
 repositories {
     mavenLocal()
-    labymedia()
+    flintRepository()
     mavenCentral()
 }
 
@@ -53,7 +32,7 @@ subprojects {
         version = System.getenv().getOrDefault("VERSION", "1.0.0")
 
         repositories {
-            labymedia()
+            flintRepository()
             mavenCentral()
         }
 

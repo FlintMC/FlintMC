@@ -4,15 +4,26 @@ import com.beust.jcommander.JCommander;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.service.LauncherPlugin;
 import net.flintmc.launcher.service.PreLaunchException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
-/** Main API system for the Launcher */
+/**
+ * Main API system for the Launcher
+ */
 public class LaunchController {
   private static LaunchController instance;
   private final Logger logger;
@@ -23,7 +34,7 @@ public class LaunchController {
   /**
    * Constructs a new {@link LaunchController} instance and sets it as the active one.
    *
-   * @param rootLoader Class loader to use for loading
+   * @param rootLoader  Class loader to use for loading
    * @param commandLine Commandline arguments to pass in
    * @throws IllegalStateException If a {@link LaunchController} instance has been created already
    */
@@ -44,7 +55,7 @@ public class LaunchController {
    * Retrieves the instance of the launcher the program has been launched with.
    *
    * @return Instance of the launcher or null if the program has not been launched with this
-   *     launcher
+   * launcher
    */
   public static LaunchController getInstance() {
     return instance;
@@ -61,6 +72,28 @@ public class LaunchController {
     logger.info(
         "Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
     logger.info("JVM vendor: {}", System.getProperty("java.vendor"));
+
+
+    for (File file : new File("flint/packages").listFiles()) {
+      if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("jar")) {
+        try {
+
+          JarFile jarFile = new JarFile(file);
+          Enumeration<JarEntry> entries = jarFile.entries();
+          while (entries.hasMoreElements()){
+            JarEntry jarEntry = entries.nextElement();
+            if(!jarEntry.getName().equals("manifest.json"))continue;
+            String manifest = IOUtils.toString(jarFile.getInputStream(jarEntry), StandardCharsets.UTF_8);
+            System.out.println(manifest);
+            System.out.println();
+          }
+          jarFile.close();
+        } catch (Exception ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+
 
     // Find the first set of plugins by searching the classpath
     logger.trace("About to load plugins");

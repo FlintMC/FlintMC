@@ -1,6 +1,7 @@
 package net.flintmc.framework.packages;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.jar.JarFile;
 
 /** Responsible for reading the package manifest out of a given jar file. */
@@ -24,4 +25,15 @@ public interface PackageManifestLoader {
    * @throws IOException If the file could not be read.
    */
   PackageManifest loadManifest(JarFile file) throws IOException;
+
+  /**
+   * Tries to load the package manifest from the available manifest file at the given url. Will
+   * fail, if the manifest is not present or readable. This method does not check if the manifests
+   * content is valid, use the {@link PackageManifest#isValid()} method for that.
+   *
+   * @param  url The url at which the manifest can be found.
+   * @return A loaded package manifest.
+   * @throws IOException If the file could not be read.
+   */
+  PackageManifest loadManifest(URL url) throws IOException;
 }
