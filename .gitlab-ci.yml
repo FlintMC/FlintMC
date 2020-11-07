@@ -1,100 +1,32 @@
-test-docs:
+build:
+  stage: build
+  script:
+    - sh gradlew build
+
+test:
   stage: test
   script:
-    - sh gradlew
-      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
-      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
-      -Partifactory_contextUrl=$artifactory_contextUrl
-      -Partifactory_password=$artifactory_password
-      -Partifactory_user=$artifactory_user
-      docyfy --stacktrace --refresh-dependencies
-  only:
-    - branches
-  except:
-    - master
+    - sh gradlew test
 
-### PUBLISH
-publish_labyfy_prerel_snapshot:
-  stage: publish
+publish_snapshot:
+  stage: deploy
   script:
-    - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh prerel SNAPSHOT > .dev-version || exit 1
-    - sh gradlew
-      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
-      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
-      -Partifactory_contextUrl=$artifactory_contextUrl
-      -Partifactory_password=$artifactory_password
-      -Partifactory_user=$artifactory_user
-      artifactoryPublish --stacktrace
+    - export VERSION="$(echo -ne $CI_COMMIT_REF_NAME | cut -d"-" -f2)-SNAPSHOT" || exit 1
+    - sh gradlew publish
   environment:
     name: development
   only:
-    - develop
+    - /^release-.*$/
   when: on_success
 
-## only tags
-# publish to artifactory before release to distibutor
-publish_labyfy_release:
-  stage: publish
+publish_release:
+  stage: deploy
   script:
-    - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
-    - sh gradlew
-      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
-      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
-      -Partifactory_contextUrl=$artifactory_contextUrl
-      -Partifactory_password=$artifactory_password
-      -Partifactory_user=$artifactory_user
-      artifactoryPublish --stacktrace
-  environment:
-    name: development
-  only:
-    - tags
-  when: on_success
-
-### RELEASE
-lm_distributor_release:
-  stage: release
-  script:
-    - bash $SCRIPTS_DIR/branchingPreCheck.sh
-    - bash $SCRIPTS_DIR/genSemVer.sh release > .dev-version || exit 1
-    - sh gradlew
-      -Plabyfy_publish_url=$LABYFY_PUBLISH_URL
-      -Partifactory_contextUrl=$artifactory_contextUrl
-      -Partifactory_password=$artifactory_password
-      -Partifactory_user=$artifactory_user
-      -Plabyfy_publish_token=$LABYFY_PUBLISH_TOKEN
-      :versioned:labyfy-1.15.2:publishLabyfyLatestRelease
+    - export VERSION="${CI_COMMIT_TAG}" || exit 1
+    - sh gradlew publishJar
+    - sh gradlew publishManifest
   environment:
     name: production
   only:
     - tags
   when: on_success
-
-### REPLAY
-gitlab_release:
-  stage: replay
-  image: registry.gitlab.com/gitlab-org/release-cli
-  tags:
-    - docker
-  script:
-    - release-cli create --name "v$(cat .dev-version)" --description "$CI_COMMIT_MESSAGE" --tag-name $(cat .dev-version) --ref $CI_COMMIT_SHA
-  only:
-    - tags
-  when: on_success
-
-sentry_release:
-  stage: replay
-  image: getsentry/sentry-cli
-  tags:
-    - docker
-  script:
-    - bash $SCRIPTS_DIR/releseVersionToSentry.sh labyfy "$(cat .dev-version)" ${SENTRY_AUTH_TOKEN} ${SENTRY_URL}
-  only:
-    - tags
-  when: on_success
-
-include:
-  - project: client/labymod4/common-scripts
-    ref: master
-    file: .gitlab-ci-template.yml
