@@ -12,13 +12,10 @@ import net.labyfy.component.settings.options.numeric.SliderSetting;
  */
 @DefineCategory(
     name = "minecraft.settings.sounds",
-    displayName = @Component(value = "minecraft.settings.sounds.display", translate = true),
-    description = @Component(value = "minecraft.settings.sounds.description", translate = true)
+    displayName = @Component(value = "options.sounds", translate = true)
 )
 @ImplementedConfig
 public interface SoundConfiguration {
-
-  // TODO add displayNames to the SoundCategories
 
   /**
    * Retrieves an sound volume of the given sound category.

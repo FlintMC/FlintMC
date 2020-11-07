@@ -17,8 +17,7 @@ import java.util.Set;
  */
 @DefineCategory(
     name = "minecraft.settings.skin",
-    displayName = @Component(value = "minecraft.settings.skin.display", translate = true),
-    description = @Component(value = "minecraft.settings.skin.description", translate = true)
+    displayName = @Component(value = "options.skinCustomisation", translate = true)
 )
 @ImplementedConfig
 public interface SkinConfiguration {

@@ -18,20 +18,44 @@ import java.util.Map;
  */
 @DefineCategory(
     name = "minecraft.settings.controls",
-    displayName = @Component(value = "minecraft.settings.controls.display", translate = true),
-    description = @Component(value = "minecraft.settings.controls.description", translate = true)
+    displayName = @Component(value = "options.controls", translate = true)
 )
 @ImplementedConfig
 public interface KeyBindingConfiguration {
 
-  @TranslateKey
+  /**
+   * Retrieves the physically bound key to a specific description.
+   *
+   * @param keyDescription The non-null description of the key ({@link Keybind#getKey()}
+   * @return The key that is bound to the given description or {@code null} if no key is bound
+   */
   @KeyBindSetting
   PhysicalKey getKey(String keyDescription);
 
+  /**
+   * Binds the physical key to a specific description
+   *
+   * @param keyDescription The non-null description of the key ({@link Keybind#getKey()}
+   * @param key            The key to be bound, {@code null} to disable the binding
+   */
   void setKey(String keyDescription, PhysicalKey key);
 
+  /**
+   * Retrieves a map of all key descriptions with their bound physical key.
+   * <p>
+   * Modification to this map won't have any effect.
+   *
+   * @return The new non-null map containing all key descriptions with their bound keys
+   * @see #getKey(String)
+   */
+  @TranslateKey
   Map<String, PhysicalKey> getAllKey();
 
+  /**
+   * Binds multiple key descriptions to a specific physical key.
+   *
+   * @param keys The non-null map containing all key descriptions with their bound keys
+   */
   void setAllKey(Map<String, PhysicalKey> keys);
 
   /**

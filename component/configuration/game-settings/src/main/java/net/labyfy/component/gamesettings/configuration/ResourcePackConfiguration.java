@@ -10,9 +10,8 @@ import java.util.List;
  * Represents the resource pack configuration.
  */
 @DefineCategory(
-    name = "minecraft.settings.resourcepacks",
-    displayName = @Component(value = "minecraft.settings.resourcepacks.display", translate = true),
-    description = @Component(value = "minecraft.settings.resourcepacks.description", translate = true)
+    name = "minecraft.settings.resourcepack",
+    displayName = @Component(value = "options.resourcepack", translate = true)
 )
 @ImplementedConfig
 

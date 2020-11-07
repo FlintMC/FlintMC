@@ -20,8 +20,7 @@ import net.labyfy.component.settings.options.numeric.display.NumericDisplay;
  */
 @DefineCategory(
     name = "minecraft.settings.graphics",
-    displayName = @Component(value = "minecraft.settings.graphics.display", translate = true),
-    description = @Component(value = "minecraft.settings.graphics.description", translate = true)
+    displayName = @Component(value = "options.video", translate = true)
 )
 @ImplementedConfig
 public interface GraphicConfiguration {

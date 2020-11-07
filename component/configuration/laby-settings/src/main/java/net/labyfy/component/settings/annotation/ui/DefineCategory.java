@@ -49,8 +49,13 @@ public @interface DefineCategory {
    *
    * @return The description of this category
    */
-  Component[] description();
+  Component[] description() default {};
 
-  Icon icon() default @Icon(""); // TODO implement icons
+  /**
+   * Retrieves the icon that should be displayed next to this category.
+   *
+   * @return The icon of this category
+   */
+  Icon icon() default @Icon("");
 
 }

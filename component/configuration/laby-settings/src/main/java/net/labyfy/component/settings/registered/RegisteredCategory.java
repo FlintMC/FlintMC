@@ -12,12 +12,15 @@ public interface RegisteredCategory {
 
   ChatComponent getDescription();
 
+  String getIconUrl();
+
   @AssistedFactory(RegisteredCategory.class)
   interface Factory {
 
-    RegisteredCategory create(@Assisted String registryName,
+    RegisteredCategory create(@Assisted("registryName") String registryName,
                               @Assisted("displayName") ChatComponent displayName,
-                              @Assisted("description") ChatComponent description);
+                              @Assisted("description") ChatComponent description,
+                              @Assisted("iconUrl") String iconUrl);
 
   }
 

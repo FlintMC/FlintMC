@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Icon {
 
+  // TODO implement the icons
+
   // empty = none
   String value();
 

@@ -3,6 +3,7 @@ package net.labyfy.internal.component.settings.discover;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.labyfy.chat.annotation.ComponentAnnotationSerializer;
+import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.component.config.event.ConfigDiscoveredEvent;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
@@ -30,14 +31,17 @@ public class SettingsDiscoverer {
   private final RegisteredCategory.Factory categoryFactory;
   private final RegisteredSetting.Factory settingFactory;
   private final ComponentAnnotationSerializer annotationSerializer;
+  private final ComponentBuilder.Factory builderFactory;
 
   @Inject
   public SettingsDiscoverer(SettingsProvider settingsProvider, RegisteredCategory.Factory categoryFactory,
-                            RegisteredSetting.Factory settingFactory, ComponentAnnotationSerializer annotationSerializer) {
+                            RegisteredSetting.Factory settingFactory, ComponentAnnotationSerializer annotationSerializer,
+                            ComponentBuilder.Factory builderFactory) {
     this.settingsProvider = settingsProvider;
     this.categoryFactory = categoryFactory;
     this.settingFactory = settingFactory;
     this.annotationSerializer = annotationSerializer;
+    this.builderFactory = builderFactory;
   }
 
   @Subscribe(phase = Phase.POST)
@@ -117,7 +121,8 @@ public class SettingsDiscoverer {
       if (this.settingsProvider.getCategory(name) == null) {
         this.settingsProvider.registerCategory(this.categoryFactory.create(name,
             this.annotationSerializer.deserialize(define.displayName(), define.name()),
-            this.annotationSerializer.deserialize(define.description())
+            this.annotationSerializer.deserialize(define.description()),
+            define.icon().value()
         ));
       }
 

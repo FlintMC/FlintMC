@@ -14,8 +14,7 @@ import net.labyfy.component.settings.options.numeric.SliderSetting;
  */
 @DefineCategory(
     name = "minecraft.settings.mouse",
-    displayName = @Component(value = "minecraft.settings.mouse.display", translate = true),
-    description = @Component(value = "minecraft.settings.mouse.description", translate = true)
+    displayName = @Component(value = "options.mouse_settings", translate = true)
 )
 @ImplementedConfig
 public interface MouseConfiguration {

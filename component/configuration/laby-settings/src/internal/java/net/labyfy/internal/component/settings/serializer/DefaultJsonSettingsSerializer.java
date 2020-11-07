@@ -89,10 +89,11 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
       JsonArray array = new JsonArray();
 
       for (Map.Entry<?, ?> entry : ((Map<?, ?>) fullValue).entrySet()) {
-        String key = this.formatKey(setting, entry.getKey());
+        Object rawKey = entry.getKey();
+        String key = this.formatKey(setting, rawKey);
         Object value = entry.getValue();
 
-        Field enumConstant = value instanceof Enum<?> ? this.fieldResolver.getEnumField((Enum<?>) value) : null;
+        Field enumConstant = rawKey instanceof Enum<?> ? this.fieldResolver.getEnumField((Enum<?>) rawKey) : null;
 
         JsonObject object = this.serializeSettingValue(setting, setting.getReference().getKey() + "#" + key,
             annotationType -> enumConstant != null ? enumConstant.getAnnotation(annotationType) : null, value);

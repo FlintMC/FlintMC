@@ -19,8 +19,7 @@ import net.labyfy.component.settings.options.numeric.SliderSetting;
  */
 @DefineCategory(
     name = "minecraft.settings.chat",
-    displayName = @Component(value = "minecraft.settings.chat.display", translate = true),
-    description = @Component(value = "minecraft.settings.chat.description", translate = true)
+    displayName = @Component(value = "options.chat.title", translate = true)
 )
 @ImplementedConfig
 public interface ChatConfiguration {

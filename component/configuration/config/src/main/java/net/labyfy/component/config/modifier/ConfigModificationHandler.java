@@ -7,6 +7,9 @@ import java.lang.annotation.Annotation;
 /**
  * Handler for the modification of annotations in a {@link Config}. To register one, {@link AnnotationModifier} may be
  * used.
+ * <p>
+ * This can be used to dynamically set values on an annotation of a config value, especially useful for the Settings
+ * module.
  *
  * @see AnnotationModifier
  */

@@ -13,9 +13,8 @@ import net.labyfy.component.settings.options.BooleanSetting;
  * Represents the accessibility configuration.
  */
 @DefineCategory(
-    name = "minecraft.settings.accessibility",
-    displayName = @Component(value = "minecraft.settings.accessibility.display", translate = true),
-    description = @Component(value = "minecraft.settings.accessbility.description", translate = true)
+    name = "minecraft.settings.accessiblity",
+    displayName = @Component(value = "options.accessibility.title", translate = true)
 )
 @ImplementedConfig
 public interface AccessibilityConfiguration {

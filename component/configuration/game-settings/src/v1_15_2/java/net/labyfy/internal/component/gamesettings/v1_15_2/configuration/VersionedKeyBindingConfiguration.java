@@ -42,7 +42,7 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   public void setKey(String keyDescription, PhysicalKey key) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
     if (keyBinding != null) {
-      keyBinding.bind(InputMappings.getInputByName(key.getConfigurationName()));
+      keyBinding.bind(key == null ? InputMappings.INPUT_INVALID : InputMappings.getInputByName(key.getConfigurationName()));
     }
   }
 
