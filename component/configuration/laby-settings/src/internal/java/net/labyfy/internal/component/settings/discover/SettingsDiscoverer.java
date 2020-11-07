@@ -2,8 +2,8 @@ package net.labyfy.internal.component.settings.discover;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import net.labyfy.chat.annotation.ComponentAnnotationSerializer;
-import net.labyfy.chat.builder.ComponentBuilder;
 import net.labyfy.component.config.event.ConfigDiscoveredEvent;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
@@ -13,6 +13,8 @@ import net.labyfy.component.settings.InvalidSettingsException;
 import net.labyfy.component.settings.annotation.ApplicableSetting;
 import net.labyfy.component.settings.annotation.ui.Category;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
+import net.labyfy.component.settings.annotation.version.VersionExclude;
+import net.labyfy.component.settings.annotation.version.VersionOnly;
 import net.labyfy.component.settings.registered.RegisteredCategory;
 import net.labyfy.component.settings.registered.RegisteredSetting;
 import net.labyfy.component.settings.registered.SettingsProvider;
@@ -31,17 +33,17 @@ public class SettingsDiscoverer {
   private final RegisteredCategory.Factory categoryFactory;
   private final RegisteredSetting.Factory settingFactory;
   private final ComponentAnnotationSerializer annotationSerializer;
-  private final ComponentBuilder.Factory builderFactory;
+  private final Map<String, String> launchArguments;
 
   @Inject
   public SettingsDiscoverer(SettingsProvider settingsProvider, RegisteredCategory.Factory categoryFactory,
                             RegisteredSetting.Factory settingFactory, ComponentAnnotationSerializer annotationSerializer,
-                            ComponentBuilder.Factory builderFactory) {
+                            @Named("launchArguments") Map launchArguments) {
     this.settingsProvider = settingsProvider;
     this.categoryFactory = categoryFactory;
     this.settingFactory = settingFactory;
     this.annotationSerializer = annotationSerializer;
-    this.builderFactory = builderFactory;
+    this.launchArguments = launchArguments;
   }
 
   @Subscribe(phase = Phase.POST)
@@ -49,6 +51,15 @@ public class SettingsDiscoverer {
     ParsedConfig config = event.getConfig();
 
     for (ConfigObjectReference reference : config.getConfigReferences()) {
+      VersionOnly versionOnly = reference.findLastAnnotation(VersionOnly.class);
+      if (versionOnly != null && Arrays.stream(versionOnly.value()).noneMatch(allowed -> allowed.equals(this.launchArguments.get("--game-version")))) {
+        continue;
+      }
+      VersionExclude versionExclude = reference.findLastAnnotation(VersionExclude.class);
+      if (versionExclude != null && Arrays.stream(versionExclude.value()).anyMatch(blocked -> blocked.equals(this.launchArguments.get("--game-version")))) {
+        continue;
+      }
+
       this.handleSetting(config, reference);
     }
   }

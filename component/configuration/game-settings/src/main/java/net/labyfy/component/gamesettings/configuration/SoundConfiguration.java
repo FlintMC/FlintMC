@@ -24,6 +24,7 @@ public interface SoundConfiguration {
    * @return The sound volume of the sound category.
    */
   @SliderSetting(@Range(max = 1, decimals = 2))
+  // TODO map from 0 - 1 to 0 - 100 (* 100) for the frontend
   float getSoundVolume(SoundCategory soundCategory);
 
   /**
