@@ -7,13 +7,13 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.internal.DefaultLoggingProvider;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.PackageClassLoader;
-import net.flintmc.framework.packages.PackageLoader;
-import net.flintmc.framework.packages.PackageState;
+import net.flintmc.framework.packages.*;
+import net.flintmc.launcher.LaunchController;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -28,6 +28,7 @@ public class DefaultPackageLoader implements PackageLoader {
   private final Logger logger;
   private final File packageFolder;
   private final Set<JarTuple> jars;
+  private DefaultPackageManifestLoader descriptionLoader;
   private final Package.Factory packageFactory;
 
   private Set<Package> allPackages;
@@ -39,6 +40,7 @@ public class DefaultPackageLoader implements PackageLoader {
       DefaultPackageManifestLoader descriptionLoader,
       Package.Factory packageFactory,
       @InjectLogger Logger logger) {
+    this.descriptionLoader = descriptionLoader;
 
     this.packageFactory = packageFactory;
     this.logger = logger;
@@ -115,6 +117,62 @@ public class DefaultPackageLoader implements PackageLoader {
             .map(jarTuple -> this.packageFactory.create(jarTuple.getFile(), jarTuple.getJar()))
             .collect(Collectors.toSet());
 
+    List<Package> libraryPackages = new ArrayList<>();
+    int progress;
+    do {
+      outer:
+      for (Package pack : this.allPackages) {
+
+        for (String path : pack.getPackageManifest().getRuntimeClassPath()) {
+          path =
+              path.replace("${FLINT_PACKAGE_DIR}", packageFolder.getAbsolutePath())
+                  .replace("${FLINT_LIBRARY_DIR}", "libraries");
+
+          try {
+            if (path.endsWith(".jar")) {
+              File f = new File(path);
+              if (!f.exists()) throw new IOException("Library not found");
+              JarFile additionalJar = new JarFile(f);
+
+              if (this.descriptionLoader.isManifestPresent(additionalJar)) {
+                PackageManifest manifest = this.descriptionLoader.loadManifest(additionalJar);
+
+                if (this.allPackages.stream()
+                        .noneMatch(
+                            availablePack ->
+                                availablePack.getName().equals(manifest.getName())
+                                    && availablePack.getVersion().equals(manifest.getVersion()))
+                    && libraryPackages.stream()
+                        .noneMatch(
+                            availablePack ->
+                                availablePack.getName().equals(manifest.getName())
+                                    && availablePack.getVersion().equals(manifest.getVersion()))) {
+                  libraryPackages.add(this.packageFactory.create(f, additionalJar));
+                }
+              } else {
+                LaunchController.getInstance()
+                    .getRootLoader()
+                    .addURLs(Collections.singletonList(f.toURI().toURL()));
+              }
+            } else {
+              LaunchController.getInstance()
+                  .getRootLoader()
+                  .addURLs(Collections.singletonList(new URL(path)));
+            }
+
+          } catch (IOException e) {
+            this.logger.warn(
+                "Couldn't resolve runtime classpath requirement of package {}. It may not work properly.",
+                pack.getName());
+            continue outer;
+          }
+        }
+      }
+      progress = libraryPackages.size();
+      this.allPackages.addAll(libraryPackages);
+      libraryPackages.clear();
+    } while (progress > 0);
+
     // Filter out all packages which can be loaded
     Set<Package> loadablePackages =
         this.allPackages.stream()
@@ -133,13 +191,41 @@ public class DefaultPackageLoader implements PackageLoader {
             .collect(Collectors.toSet());
 
     Set<Package> loadedPackages = new HashSet<>();
-    for (Package toLoad : resolveDependencies(loadablePackages)) {
+    List<PackageManifest> classpathManifests = new ArrayList<>();
+    try {
+      Collections.list(
+              LaunchController.getInstance()
+                  .getRootLoader()
+                  .getResources(DefaultPackageManifestLoader.MANIFEST_NAME))
+          .forEach(
+              manifestUrl -> {
+                try {
+                  classpathManifests.add(this.descriptionLoader.loadManifest(manifestUrl));
+                } catch (IOException e) {
+                  this.logger.warn(
+                      "Couldn't read package manifest found on classpath at {}",
+                      manifestUrl.toString(),
+                      e);
+                }
+              });
+    } catch (IOException e) {
+      this.logger.warn("Couldn't scan classpath for additional already loaded packages.", e);
+    }
+
+    for (Package toLoad : resolveDependencies(loadablePackages, classpathManifests)) {
       // After all dependencies have been resolved, check if their dependencies have been loaded
       if (toLoad.getPackageManifest().getDependencies().stream()
           .allMatch(
               dependency ->
                   loadedPackages.stream()
-                      .anyMatch(loaded -> dependency.matches(loaded.getPackageManifest())))) {
+                          .anyMatch(loaded -> dependency.matches(loaded.getPackageManifest()))
+                      || classpathManifests.stream()
+                          .anyMatch(
+                              manifest ->
+                                  dependency.getName().equals(manifest.getName())
+                                      && dependency
+                                          .getVersions()
+                                          .contains(manifest.getVersion())))) {
         this.logger.info("Loading package {}...", toLoad.getName());
 
         // Check if the package has been loaded successfully, if not, log the error and continue
@@ -183,7 +269,8 @@ public class DefaultPackageLoader implements PackageLoader {
    * @param packages The set of packages to resolve the load order of
    * @return A linked (ordered) list with a valid order of loading the given packages
    */
-  private LinkedList<Package> resolveDependencies(final Set<Package> packages) {
+  private LinkedList<Package> resolveDependencies(
+      final Set<Package> packages, List<PackageManifest> classpathManifests) {
     LinkedList<Package> resolvedPackages = new LinkedList<>();
 
     int progress;
@@ -201,10 +288,17 @@ public class DefaultPackageLoader implements PackageLoader {
                       .allMatch(
                           dependency ->
                               resolvedPackages.stream()
-                                  .anyMatch(
-                                      resolvedPackage ->
-                                          dependency.matches(
-                                              resolvedPackage.getPackageManifest()))))
+                                      .anyMatch(
+                                          resolvedPackage ->
+                                              dependency.matches(
+                                                  resolvedPackage.getPackageManifest()))
+                                  || classpathManifests.stream()
+                                      .anyMatch(
+                                          manifest ->
+                                              dependency.getName().equals(manifest.getName())
+                                                  && dependency.getVersions().stream()
+                                                      .anyMatch(
+                                                          v -> v.equals(manifest.getVersion())))))
           .forEach(resolvedPackages::add);
 
       progress = resolvedPackages.size() - previousSize;

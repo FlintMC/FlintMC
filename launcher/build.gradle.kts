@@ -4,8 +4,6 @@ plugins {
 
 group = "net.flintmc"
 
-
-
 dependencies {
     api(project(":transform:transform-exceptions"))
 
