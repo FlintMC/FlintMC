@@ -119,7 +119,6 @@ public class DetectableAnnotationProcessor implements Processor {
         ((TypeElement)
             ((DeclaredType) repeatingDetectableAnnotationValues.get("value").getValue())
                 .asElement());
-    System.out.println("Repeating " + repeatedAnnotationType + " with " + annotationType);
 
     for (Element annotatedElement :
         ProcessorState.getInstance()
@@ -145,7 +144,6 @@ public class DetectableAnnotationProcessor implements Processor {
                         .getElementValues());
         if (parsedAnnotation.isEmpty()) return;
         this.found.add(("list.add(" + parsedAnnotation + ")").replace("$", "$$"));
-        System.out.println(parsedAnnotation);
       }
     }
   }

@@ -53,11 +53,6 @@ public class InjectionService implements ServiceHandler<Annotation> {
   }
 
   private void handleAssistedFactoryAnnotation(AnnotationMeta<AssistedFactory> annotationMeta) {
-    System.out.println(
-            "AssistedFactory "
-                    + annotationMeta.getAnnotation().value().getName()
-                    + " at "
-                    + annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName());
     AssistedFactory annotation = annotationMeta.getAnnotation();
     assisted.put(annotationMeta.<ClassIdentifier>getIdentifier().getLocation(), annotation);
     try {
@@ -70,8 +65,6 @@ public class InjectionService implements ServiceHandler<Annotation> {
   private void handleImplementAnnotation(AnnotationMeta<Implement> annotationMeta) {
     CtClass location = annotationMeta.<ClassIdentifier>getIdentifier().getLocation();
     Implement annotation = annotationMeta.getAnnotation();
-
-    System.out.println("Implement " + location.getName() + " " + annotation.value().getName());
 
     if (!(annotation.version().isEmpty()
             || launchArguments.get("--game-version").equals(annotation.version()))) return;

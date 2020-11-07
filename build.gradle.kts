@@ -58,6 +58,9 @@ subprojects {
             mavenCentral()
         }
 
+        tasks.withType<JavaCompile> {
+            options.isFork = true
+        }
 
         publishing {
             repositories {
