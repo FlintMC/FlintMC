@@ -54,12 +54,11 @@ run/**
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.idea/kotlinScripting.xml
 
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
-**/gradlew
-**/gradlew.bat
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
