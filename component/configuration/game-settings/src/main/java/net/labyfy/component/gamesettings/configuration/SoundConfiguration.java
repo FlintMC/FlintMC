@@ -18,20 +18,20 @@ import net.labyfy.component.settings.options.numeric.SliderSetting;
 public interface SoundConfiguration {
 
   /**
-   * Retrieves an sound volume of the given sound category.
+   * Retrieves the volume of the given sound category.
    *
    * @param soundCategory The sound category to get the volume.
-   * @return The sound volume of the sound category.
+   * @return The sound volume of the sound category in percent
    */
-  @SliderSetting(@Range(max = 1, decimals = 2))
-  // TODO map from 0 - 1 to 0 - 100 (* 100) for the frontend
+  @SliderSetting(@Range(max = 100))
+  // percent
   float getSoundVolume(SoundCategory soundCategory);
 
   /**
    * Changes the volume of the given sound category.
    *
-   * @param soundCategory The sound category to be changed
-   * @param volume        The new sound volume for the category.
+   * @param soundCategory The sound category to be changed in percent
+   * @param volume        The new sound volume for the category
    */
   void setSoundVolume(SoundCategory soundCategory, float volume);
 
