@@ -1,6 +1,6 @@
 package net.flintmc.framework.packages.localization;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** Represents the localization of a package. */

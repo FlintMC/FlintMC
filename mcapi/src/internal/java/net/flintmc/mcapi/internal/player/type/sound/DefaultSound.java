@@ -1,7 +1,7 @@
 package net.flintmc.mcapi.internal.player.type.sound;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.resources.ResourceLocation;

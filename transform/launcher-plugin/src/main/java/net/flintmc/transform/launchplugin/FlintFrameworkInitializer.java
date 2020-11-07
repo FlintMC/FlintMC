@@ -51,7 +51,11 @@ public class FlintFrameworkInitializer {
       // done if it is really necessary.
       serviceRepository.flushServices(Service.State.PRE_INIT);
       // Apply all Implementations and AssistedFactories
-      InjectionHolder.getInjectedInstance(InjectionService.class).flush();
+      InjectionService service = InjectionHolder.getInjectedInstance(InjectionService.class);
+      service.flushImplementation();
+      serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
+      service.flushAssistedFactory();
+
       // Flush all other higher level framework features like Events, Transforms etc.
       serviceRepository.flushServices(Service.State.POST_INIT);
 

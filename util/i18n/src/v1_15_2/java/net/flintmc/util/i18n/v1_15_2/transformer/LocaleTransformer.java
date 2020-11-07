@@ -22,9 +22,9 @@ public class LocaleTransformer {
     ctClass.addInterface(localization);
 
     ctClass.addMethod(
-        CtMethod.make("public java.util.Map getProperties() {" + "return properties;}", ctClass));
+        CtMethod.make("public java.util.Map getProperties() {" + "return " + context.getField("properties").getName() + ";}", ctClass));
     ctClass.addMethod(
         CtMethod.make(
-            "public void add(String key, String translation) {" + "properties.put($$);}", ctClass));
+            "public void add(String key, String translation) {" +  context.getField("properties").getName() +".put($$);}", ctClass));
   }
 }

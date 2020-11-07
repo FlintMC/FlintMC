@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-@Service(Shadow.class)
+@Service(value = Shadow.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class ShadowService implements ServiceHandler<Shadow> {
 
   private final Map<String, AnnotationMeta<Shadow>> transforms = new HashMap<>();

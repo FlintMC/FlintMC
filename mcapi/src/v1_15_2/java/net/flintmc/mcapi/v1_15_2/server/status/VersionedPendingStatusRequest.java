@@ -2,8 +2,8 @@ package net.flintmc.mcapi.v1_15_2.server.status;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonParseException;
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;

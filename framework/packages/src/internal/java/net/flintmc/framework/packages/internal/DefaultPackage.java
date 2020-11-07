@@ -1,7 +1,7 @@
 package net.flintmc.framework.packages.internal;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectionService;
@@ -181,7 +181,12 @@ public class DefaultPackage implements Package {
       // done if it is really necessary.
       this.serviceRepository.flushServices(Service.State.PRE_INIT);
       // Apply all Implementations and AssistedFactories
-      InjectionHolder.getInjectedInstance(InjectionService.class).flush();
+      InjectionService injectionService = InjectionHolder.getInjectedInstance(InjectionService.class);
+      injectionService.flushImplementation();
+
+      serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
+
+      injectionService.flushAssistedFactory();
       // Flush all other higher level framework features like Events, Transforms etc.
       this.serviceRepository.flushServices(Service.State.POST_INIT);
     } catch (NotFoundException e) {

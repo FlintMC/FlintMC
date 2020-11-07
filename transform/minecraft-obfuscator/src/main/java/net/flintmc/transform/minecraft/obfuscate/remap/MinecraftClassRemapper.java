@@ -11,6 +11,8 @@ import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.flintmc.util.mappings.FieldMapping;
 import net.flintmc.util.mappings.MethodMapping;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -26,6 +28,7 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   private final ClassMappingProvider classMappingProvider;
   private final RootClassLoader rootClassLoader;
+  private Handle lastHandle;
 
   @Inject
   private MinecraftClassRemapper(ClassMappingProvider classMappingProvider) {
@@ -109,10 +112,12 @@ public class MinecraftClassRemapper extends SimpleRemapper {
     }
   }
 
+  @Override
   public String map(String key) {
     return super.map(key);
   }
 
+  @Override
   public String mapMethodName(String owner, String name, String desc) {
 
     String map =
@@ -137,14 +142,42 @@ public class MinecraftClassRemapper extends SimpleRemapper {
     return map != null ? map : super.mapMethodName(owner, name, desc);
   }
 
+  @Override
   public String mapInvokeDynamicMethodName(String name, String desc) {
+    if(lastHandle != null && lastHandle.getName().startsWith("lambda$")){
+      String owner = Type.getReturnType(desc).getInternalName();
+      String descriptor = this.lastHandle.getDesc();
+      String methodName = this.mapMethodName(owner, name, descriptor);
+      lastHandle = null;
+      return methodName;
+    }
+    lastHandle = null;
     return super.mapInvokeDynamicMethodName(name, desc);
   }
 
+  @Override
+  public Object mapValue(Object value) {
+    if(value instanceof Handle){
+      lastHandle = (Handle) value;
+    }
+    return super.mapValue(value);
+  }
+
+  @Override
   public String mapFieldName(String owner, String name, String desc) {
+    if (name.startsWith("$SwitchMap$")) {
+      String switchMap = name.replace("$SwitchMap$", "");
+      switchMap = switchMap.replace('$', '/');
+      switchMap = mapType(switchMap);
+      switchMap = switchMap.replace('/', '$');
+      switchMap = "$SwitchMap$" + switchMap;
+      return switchMap;
+    }
+
     return mapMethodName(owner, name, desc);
   }
 
+  @Override
   public String mapMethodDesc(String desc) {
     return super.mapMethodDesc(desc);
   }

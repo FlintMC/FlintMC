@@ -79,7 +79,9 @@ public final class McpMappingParser implements MappingParser {
         if (split.length == 3) {
           String to = methodLookupTable.get(split[2]);
 
-          if (to == null) to = split[0];
+          if (to == null) {
+            to = split[2];
+          }
 
           String identifier =
               split[0] + "(" + split[1].substring(1, split[1].lastIndexOf(')')) + ")";
@@ -89,7 +91,9 @@ public final class McpMappingParser implements MappingParser {
         } else if (split.length == 2) {
           String to = fieldLookupTable.get(split[1]);
 
-          if (to == null) to = split[0];
+          if (to == null) {
+            to = split[1];
+          }
 
           FieldMapping fieldMapping = new FieldMapping(obfuscated, classMapping, split[0], to);
           classMapping.obfuscatedFields.put(split[0], fieldMapping);

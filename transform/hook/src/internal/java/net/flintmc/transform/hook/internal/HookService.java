@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @Singleton
-@Service(Hook.class)
+@Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class HookService implements ServiceHandler<Hook> {
 
   private final ClassMappingProvider classMappingProvider;

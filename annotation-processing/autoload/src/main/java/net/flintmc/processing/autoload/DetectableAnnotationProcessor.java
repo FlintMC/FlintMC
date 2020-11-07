@@ -54,6 +54,9 @@ public class DetectableAnnotationProcessor implements Processor {
   private static final String ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE =
       "new net.flintmc.processing.autoload.identifier.MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
 
+  private static final String ANNOTATION_META_CONSTRUCTOR_IDENTIFIER_TEMPLATE =
+          "new net.flintmc.processing.autoload.identifier.ConstructorIdentifier(\"${OWNER_NAME}\", new String[]{${PARAMETERS}})";
+
   private final Collection<String> found;
 
   /**
@@ -65,6 +68,7 @@ public class DetectableAnnotationProcessor implements Processor {
   }
 
   /** {@inheritDoc} */
+  @Override
   public MethodSpec.Builder createMethod() {
     ClassName listClass = ClassName.get(List.class);
     ClassName foundAnnotationClass = ClassName.get(AnnotationMeta.class);
@@ -78,11 +82,13 @@ public class DetectableAnnotationProcessor implements Processor {
   }
 
   /** {@inheritDoc} */
+  @Override
   public ClassName getGeneratedClassSuperClass() {
     return ClassName.get(DetectableAnnotationProvider.class);
   }
 
   /** {@inheritDoc} */
+  @Override
   public void accept(TypeElement annotationType) {
 
     // We dont want to discover annotation types without DetectableAnnotation
@@ -144,7 +150,7 @@ public class DetectableAnnotationProcessor implements Processor {
     }
   }
 
-  public void acceptDetectableAnnotation(TypeElement annotationType) {
+  private void acceptDetectableAnnotation(TypeElement annotationType) {
     // Get the DetectableAnnotation as a type
     TypeElement detectableAnnotationType =
         ProcessorState.getInstance()
@@ -235,16 +241,47 @@ public class DetectableAnnotationProcessor implements Processor {
         return createAnnotationMetaClassIdentifier((TypeElement) annotatedElement);
       case METHOD:
         return createAnnotationMetaMethodIdentifier(annotatedElement);
+      case CONSTRUCTOR:
+        return createAnnotationMetaConstructorIdentifier(annotatedElement);
       default:
         throw new IllegalStateException(
             "annotation target type " + annotatedElement.getKind() + " not supported yet.");
     }
   }
 
+  private String createAnnotationMetaConstructorIdentifier(Element annotatedElement) {
+    return handleTemplate(
+            ImmutableMap.<String, String>builder()
+            .put("OWNER_NAME",
+                    ProcessorState.getInstance()
+                            .getProcessingEnvironment()
+                            .getElementUtils()
+                            .getBinaryName((TypeElement) annotatedElement.getEnclosingElement())
+                            .toString())
+                    .put("PARAMETERS", retrieveParameters((ExecutableElement) annotatedElement)).build(),
+            ANNOTATION_META_CONSTRUCTOR_IDENTIFIER_TEMPLATE);
+  }
+
   private String createAnnotationMetaMethodIdentifier(Element annotatedElement) {
+    return handleTemplate(
+        ImmutableMap.<String, String>builder()
+            .put(
+                "OWNER_NAME",
+                ProcessorState.getInstance()
+                    .getProcessingEnvironment()
+                    .getElementUtils()
+                    .getBinaryName((TypeElement) annotatedElement.getEnclosingElement())
+                    .toString())
+            .put("NAME", annotatedElement.getSimpleName().toString())
+            .put("PARAMETERS", retrieveParameters((ExecutableElement) annotatedElement))
+            .build(),
+        ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE);
+  }
+
+  private String retrieveParameters(ExecutableElement annotatedElement) {
     StringBuilder parameters = new StringBuilder();
     boolean semicolon = false;
-    for (VariableElement parameter : ((ExecutableElement) annotatedElement).getParameters()) {
+    for (VariableElement parameter : annotatedElement.getParameters()) {
       if (semicolon) {
         parameters.append(", ");
       }
@@ -264,20 +301,7 @@ public class DetectableAnnotationProcessor implements Processor {
       parameters.append("\"");
       semicolon = true;
     }
-
-    return handleTemplate(
-        ImmutableMap.<String, String>builder()
-            .put(
-                "OWNER_NAME",
-                ProcessorState.getInstance()
-                    .getProcessingEnvironment()
-                    .getElementUtils()
-                    .getBinaryName((TypeElement) annotatedElement.getEnclosingElement())
-                    .toString())
-            .put("NAME", annotatedElement.getSimpleName().toString())
-            .put("PARAMETERS", parameters.toString())
-            .build(),
-        ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE);
+    return parameters.toString();
   }
 
   private String createAnnotationMetaClassIdentifier(TypeElement typeElement) {

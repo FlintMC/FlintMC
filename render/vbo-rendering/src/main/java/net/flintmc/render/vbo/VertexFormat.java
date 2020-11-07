@@ -1,5 +1,6 @@
 package net.flintmc.render.vbo;
 
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.util.List;
@@ -46,6 +47,6 @@ public interface VertexFormat {
      *     format.
      * @return the new {@link VertexFormat}.
      */
-    VertexFormat create(List<VertexAttribute> attributes);
+    VertexFormat create(@Assisted List<VertexAttribute> attributes);
   }
 }
