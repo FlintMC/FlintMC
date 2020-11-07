@@ -1,13 +1,33 @@
 package net.labyfy.component.settings.serializer;
 
 import com.google.gson.JsonObject;
+import net.labyfy.component.settings.annotation.ApplicableSetting;
+import net.labyfy.component.settings.options.text.StringSetting;
 import net.labyfy.component.settings.registered.RegisteredSetting;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Handler for the serialization of annotations that can be applied on a method that is annotated with any {@link
+ * ApplicableSetting} (e.g. {@link StringSetting}).
+ *
+ * @param <A> The type of annotation that can be serialized by this handler
+ */
 public interface SettingsSerializationHandler<A extends Annotation> {
 
-  // should not append 'name', 'enabled' and 'type' because ...
+  /**
+   * Serializes the given {@code annotation} into the given json object.
+   * <p>
+   * This method should not add the following values to the json object because they are already added by the {@link
+   * JsonSettingsSerializer} by default: type, name, enabled, category, native, subSettings, subCategory
+   * <p>
+   * The new contents of the json object depend on the implementation.
+   *
+   * @param result     The non-null json object to serialize the given annotation into
+   * @param setting    The non-null setting where the given annotation has been found
+   * @param annotation The annotation that has been found matching the type that is supported by this handler, may be
+   *                   {@code null} if no annotation with the given type was found
+   */
   void append(JsonObject result, RegisteredSetting setting, A annotation);
 
 }

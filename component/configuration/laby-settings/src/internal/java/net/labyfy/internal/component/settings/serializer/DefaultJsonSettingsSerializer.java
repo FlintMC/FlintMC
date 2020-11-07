@@ -13,6 +13,7 @@ import net.labyfy.component.inject.implement.Implement;
 import net.labyfy.component.settings.EnumFieldResolver;
 import net.labyfy.component.settings.annotation.ApplicableSetting;
 import net.labyfy.component.settings.annotation.TranslateKey;
+import net.labyfy.component.settings.annotation.ui.NativeSetting;
 import net.labyfy.component.settings.annotation.ui.SubCategory;
 import net.labyfy.component.settings.mapper.SettingHandler;
 import net.labyfy.component.settings.registered.RegisteredCategory;
@@ -149,7 +150,7 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
     object.addProperty("category", setting.getCategoryName());
 
-    if (setting.isNative()) {
+    if (setting.getReference().findLastAnnotation(NativeSetting.class) != null) {
       object.addProperty("native", true);
     }
 

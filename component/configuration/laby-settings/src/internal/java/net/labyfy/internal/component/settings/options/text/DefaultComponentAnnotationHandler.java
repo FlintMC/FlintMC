@@ -6,7 +6,7 @@ import net.labyfy.chat.annotation.ComponentAnnotationSerializer;
 import net.labyfy.component.config.defval.mapper.DefaultAnnotationMapper;
 import net.labyfy.component.config.defval.mapper.DefaultAnnotationMapperHandler;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
-import net.labyfy.component.settings.options.text.DefaultComponent;
+import net.labyfy.component.settings.DefaultComponent;
 
 @Singleton
 @DefaultAnnotationMapper(DefaultComponent.class)

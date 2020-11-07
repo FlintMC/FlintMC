@@ -1,4 +1,4 @@
-package net.labyfy.component.settings.options.text;
+package net.labyfy.component.settings;
 
 import net.labyfy.chat.annotation.Component;
 

@@ -114,7 +114,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
   public Collection<RegisteredSetting> getSettings(ParsedConfig config) {
     Collection<RegisteredSetting> filtered = new HashSet<>();
     for (RegisteredSetting setting : this.settings) {
-      if (setting.getConfig() == config) {
+      if (setting.getReference().getConfig() == config) {
         filtered.add(setting);
       }
     }

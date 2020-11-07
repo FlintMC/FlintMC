@@ -2,12 +2,10 @@ package net.labyfy.internal.component.settings.registered;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.component.settings.annotation.ui.NativeSetting;
 import net.labyfy.component.settings.event.SettingsUpdateEvent;
 import net.labyfy.component.settings.mapper.SettingHandler;
 import net.labyfy.component.settings.registered.RegisteredSetting;
@@ -27,7 +25,6 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   private final Collection<RegisteredSetting> subSettings;
 
-  private final boolean nativeSetting;
   private final EventBus eventBus;
   private final SettingsUpdateEvent updateEvent;
   private boolean enabled;
@@ -46,16 +43,9 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
     this.subSettings = new HashSet<>();
 
-    this.nativeSetting = reference.findLastAnnotation(NativeSetting.class) != null;
-
     this.enabled = true;
     this.eventBus = eventBus;
     this.updateEvent = eventFactory.create(this);
-  }
-
-  @Override
-  public ParsedConfig getConfig() {
-    return this.reference.getConfig();
   }
 
   @Override
@@ -89,17 +79,16 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
   }
 
   @Override
-  public boolean isNative() {
-    return this.nativeSetting;
-  }
-
-  @Override
   public boolean isEnabled() {
     return this.enabled;
   }
 
   @Override
   public void setEnabled(boolean enabled) {
+    if (this.enabled == enabled) {
+      return;
+    }
+
     this.eventBus.fireEvent(this.updateEvent, Subscribe.Phase.PRE);
     this.enabled = enabled;
     this.eventBus.fireEvent(this.updateEvent, Subscribe.Phase.POST);

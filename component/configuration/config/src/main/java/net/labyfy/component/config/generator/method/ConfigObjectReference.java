@@ -6,6 +6,7 @@ import javassist.CtMethod;
 import net.labyfy.component.config.annotation.Config;
 import net.labyfy.component.config.annotation.ExcludeStorage;
 import net.labyfy.component.config.annotation.IncludeStorage;
+import net.labyfy.component.config.defval.mapper.DefaultAnnotationMapperRegistry;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.modifier.ConfigModifierRegistry;
@@ -144,6 +145,7 @@ public interface ConfigObjectReference {
 
   /**
    * Retrieves the default value which has been defined by the user and will be used if no value is set in the config.
+   * It is parsed from the {@link DefaultAnnotationMapperRegistry}.
    *
    * @return The default value or {@code null} if no defaultValue has been set
    */

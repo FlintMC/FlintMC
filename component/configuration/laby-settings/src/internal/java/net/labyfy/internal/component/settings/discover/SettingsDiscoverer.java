@@ -100,9 +100,7 @@ public class SettingsDiscoverer {
     if (!assignable) {
       // we need assignableFrom because for example the EnumDropDown uses Enum.class as the required parameter
       // and can't specify more specific values
-      throw new InvalidSettingsException("Cannot register setting on '" + reference.getKey() + "' in config '"
-          + config.getConfigName() + "' because none of the allowed types for " + annotation.annotationType().getName()
-          + " match " + type.getTypeName());
+      this.throwInvalidSetting(reference, annotation, config, type);
     }
 
     String category = this.findCategoryName(reference);

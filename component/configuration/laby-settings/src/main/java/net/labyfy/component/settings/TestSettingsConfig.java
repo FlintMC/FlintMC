@@ -3,7 +3,10 @@ package net.labyfy.component.settings;
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.chat.component.TextComponent;
 import net.labyfy.component.config.annotation.Config;
-import net.labyfy.component.config.defval.annotation.*;
+import net.labyfy.component.config.defval.annotation.DefaultBoolean;
+import net.labyfy.component.config.defval.annotation.DefaultEnum;
+import net.labyfy.component.config.defval.annotation.DefaultNumber;
+import net.labyfy.component.config.defval.annotation.DefaultString;
 import net.labyfy.component.settings.annotation.ui.*;
 import net.labyfy.component.settings.options.BooleanSetting;
 import net.labyfy.component.settings.options.dropdown.CustomSelectSetting;
@@ -13,7 +16,9 @@ import net.labyfy.component.settings.options.dropdown.Selection;
 import net.labyfy.component.settings.options.numeric.NumericSetting;
 import net.labyfy.component.settings.options.numeric.Range;
 import net.labyfy.component.settings.options.numeric.SliderSetting;
-import net.labyfy.component.settings.options.text.*;
+import net.labyfy.component.settings.options.text.ComponentSetting;
+import net.labyfy.component.settings.options.text.StringRestriction;
+import net.labyfy.component.settings.options.text.StringSetting;
 
 // TODO remove
 
@@ -50,10 +55,6 @@ public interface TestSettingsConfig {
     @SliderSetting(@Range(min = -20, max = 10))
     @DefaultNumber(10)
     int getSlider();
-
-    @CharSetting
-    @DefaultChar('a')
-    char getChar();
 
   }
 

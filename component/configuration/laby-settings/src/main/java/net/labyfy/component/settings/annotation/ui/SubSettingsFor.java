@@ -8,9 +8,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// class needs to be declared in the class where the "for" part is declared, if not, set declaring()
-// sub settings in sub settings don't work
-
 /**
  * Defines {@link ApplicableSetting}s in a {@link Config} to be sub settings of another {@link ApplicableSetting}.
  * <p>
@@ -38,6 +35,9 @@ import java.lang.annotation.Target;
  * </pre>
  * <p>
  * This would mark everything in the SubSettings interface as a sub setting of getParent.
+ * <p>
+ * If a setting is already a sub setting of a setting, no other settings can be the sub setting of this setting. Sub
+ * settings cannot have sub settings.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
