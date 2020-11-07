@@ -1,6 +1,7 @@
 package net.labyfy.component.config.generator.method;
 
 import com.google.inject.assistedinject.Assisted;
+import javassist.CtClass;
 import javassist.CtMethod;
 import net.labyfy.component.config.annotation.Config;
 import net.labyfy.component.config.annotation.ExcludeStorage;
@@ -8,6 +9,7 @@ import net.labyfy.component.config.annotation.IncludeStorage;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.modifier.ConfigModifierRegistry;
+import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.config.storage.ConfigStorage;
 import net.labyfy.component.inject.assisted.AssistedFactory;
 
@@ -176,7 +178,7 @@ public interface ConfigObjectReference {
     /**
      * Calls {@link #parse(GeneratingConfig, ConfigMethod)} for every method in the given config ({@link
      * GeneratingConfig#getAllMethods()}) if the stored in type in the specific method is not an interface and not
-     * {@link ConfigMethod#isSerializableInterface()}.
+     * {@link ConfigSerializationService#hasSerializer(CtClass)}.
      *
      * @param config The non-null config to parse the references from
      * @return The new non-null list of the parsed references

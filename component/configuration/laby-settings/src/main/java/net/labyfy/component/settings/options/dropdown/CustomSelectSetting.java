@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(value = String.class, type = "dropdown")
+@ApplicableSetting(types = String.class, name = "dropdown")
 public @interface CustomSelectSetting {
 
   // length > 1 (at least two values)

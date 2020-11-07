@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 // see NumericDisplay
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(value = {byte.class, short.class, int.class, long.class, double.class, float.class}, type = "number")
+@ApplicableSetting(types = {byte.class, short.class, int.class, long.class, double.class, float.class}, name = "number")
 public @interface NumericSetting {
 
   Range value() default @Range(min = Double.MIN_VALUE, max = Double.MAX_VALUE);

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(value = Enum.class, type = "dropdown")
+@ApplicableSetting(types = Enum.class, name = "dropdown")
 public @interface EnumSelectSetting {
 
   SelectMenuType value() default SelectMenuType.DROPDOWN;

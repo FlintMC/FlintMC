@@ -130,7 +130,7 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
     JsonObject object = this.handler.serialize(setting.getAnnotation(), setting, value);
 
     ApplicableSetting applicableSetting = setting.getAnnotation().annotationType().getAnnotation(ApplicableSetting.class);
-    object.addProperty("type", applicableSetting.type());
+    object.addProperty("type", applicableSetting.name());
 
     object.addProperty("name", key);
     object.addProperty("enabled", setting.isEnabled());

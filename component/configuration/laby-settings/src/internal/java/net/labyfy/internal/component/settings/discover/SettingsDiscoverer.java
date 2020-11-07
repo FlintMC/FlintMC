@@ -75,7 +75,7 @@ public class SettingsDiscoverer {
     }
 
     Class<?> finalClazz = clazz;
-    boolean assignable = Arrays.stream(applicableSetting.value()).anyMatch(required -> {
+    boolean assignable = Arrays.stream(applicableSetting.types()).anyMatch(required -> {
       if (required.isPrimitive()) {
         required = PrimitiveTypeLoader.getWrappedClass(required);
       }

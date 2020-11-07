@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(value = char.class, type = "char")
+@ApplicableSetting(types = char.class, name = "char")
 public @interface CharSetting {
 
 }

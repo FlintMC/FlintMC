@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(value = String.class, type = "language")
+@ApplicableSetting(types = String.class, name = "language")
 public @interface LanguageSetting {
 
 }

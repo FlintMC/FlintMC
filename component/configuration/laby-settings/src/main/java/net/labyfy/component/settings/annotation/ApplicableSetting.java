@@ -1,18 +1,38 @@
 package net.labyfy.component.settings.annotation;
 
+import net.labyfy.component.config.annotation.Config;
+import net.labyfy.component.config.generator.method.ConfigObjectReference;
+import net.labyfy.component.settings.options.BooleanSetting;
+import net.labyfy.component.settings.options.numeric.SliderSetting;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Map;
 
-// annotation for all specific settings like BooleanSetting, SliderSetting, ...
+/**
+ * Marks an annotation to be used to define a setting like {@link BooleanSetting}, {@link SliderSetting}, ...
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface ApplicableSetting {
 
-  String type();
+  /**
+   * Retrieves the unique name of this setting to identify it in the serialized version.
+   *
+   * @return The unique name of this setting
+   */
+  String name();
 
-  // ConfigObjectReference#getSerializedType, needs to be assignable to at least one of the required return types
-  Class<?>[] value();
+  /**
+   * Retrieves all applicable types for this setting that can be used as a return type in a {@link Config}.
+   * <p>
+   * {@link ConfigObjectReference#getSerializedType()} (or if it is a {@link Map}, the value type of it) has to be
+   * assignable to at least one of these types.
+   *
+   * @return The types for this setting
+   */
+  Class<?>[] types();
 
 }
