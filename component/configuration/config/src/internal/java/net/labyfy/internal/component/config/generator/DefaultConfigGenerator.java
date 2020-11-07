@@ -1,4 +1,4 @@
-package net.labyfy.internal.component.config.generator.base;
+package net.labyfy.internal.component.config.generator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -17,6 +17,8 @@ import net.labyfy.component.config.storage.ConfigStorageProvider;
 import net.labyfy.component.eventbus.EventBus;
 import net.labyfy.component.eventbus.event.subscribe.Subscribe;
 import net.labyfy.component.inject.implement.Implement;
+import net.labyfy.internal.component.config.generator.base.ConfigClassLoader;
+import net.labyfy.internal.component.config.generator.base.ImplementationGenerator;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -113,15 +115,27 @@ public class DefaultConfigGenerator implements ConfigGenerator {
       throw new IllegalStateException("Config with the name " + config.getConfigName() + " is already registered");
     }
 
-    Collection<ConfigObjectReference> references = this.objectReferenceParser.parseAll(generatingConfig);
+    Collection<ConfigObjectReference> references = this.objectReferenceParser.parseAll(generatingConfig, config);
     config.getConfigReferences().addAll(references);
 
     if (!config.getClass().isAnnotationPresent(PostMinecraftRead.class)) {
-      this.storageProvider.read(config);
+      this.initConfig(config);
     }
 
     this.discoveredConfigs.put(config.getConfigName(), config);
     this.eventBus.fireEvent(this.eventFactory.create(config), Subscribe.Phase.POST);
+  }
+
+  @Override
+  public void initConfig(ParsedConfig config) {
+    for (ConfigObjectReference reference : config.getConfigReferences()) {
+      Object defaultValue = reference.getDefaultValue();
+      if (defaultValue != null) {
+        reference.setValue(defaultValue);
+      }
+    }
+
+    this.storageProvider.read(config);
   }
 
 }

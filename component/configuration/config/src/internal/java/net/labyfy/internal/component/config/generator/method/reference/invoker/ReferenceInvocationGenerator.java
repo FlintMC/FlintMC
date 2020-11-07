@@ -73,7 +73,7 @@ public class ReferenceInvocationGenerator {
 
   private CtMethod generateGetter(String lastAccessor, CtClass declaring, CtMethod getter) throws CannotCompileException, NotFoundException {
     String valueSrc = PrimitiveTypeLoader.asWrappedPrimitiveSource(getter.getReturnType(), lastAccessor + "." + getter.getName() + "()");
-    String src = "public java.lang.Object getValue(java.lang.Object instance) {" +
+    String src = "public Object getValue(Object instance) {" +
         "return " + valueSrc + ";" +
         "}";
 
@@ -83,7 +83,8 @@ public class ReferenceInvocationGenerator {
   private CtMethod generateSetter(String lastAccessor, CtClass declaring, CtMethod setter) throws CannotCompileException, NotFoundException {
     CtClass type = setter.getParameterTypes()[0];
     String valueSrc = "((" + type.getName() + ")" + PrimitiveTypeLoader.asPrimitiveSource(type, "newValue") + ")";
-    String src = "public void setValue(java.lang.Object instance, java.lang.Object newValue) {" +
+
+    String src = "public void setValue(Object instance, Object newValue) {" +
         lastAccessor + "." + setter.getName() + "(" + valueSrc + ");" +
         "}";
 

@@ -32,6 +32,8 @@ import java.util.*;
 @Implement(ConfigObjectReference.class)
 public class DefaultConfigObjectReference implements ConfigObjectReference {
 
+  private final ParsedConfig config;
+
   private final EventBus eventBus;
   private final ConfigValueUpdateEvent.Factory eventFactory;
 
@@ -58,7 +60,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
                                        ConfigModifierRegistry modifierRegistry, ConfigAnnotationCollector annotationCollector,
                                        ReferenceInvocationGenerator invocationGenerator,
                                        DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry,
-                                       @Assisted("config") GeneratingConfig config,
+                                       @Assisted GeneratingConfig generatingConfig, @Assisted ParsedConfig config,
                                        @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
                                        @Assisted("correspondingMethods") CtMethod[] correspondingCtMethods,
                                        @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,
@@ -66,6 +68,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
                                        @Assisted("classLoader") ClassLoader classLoader,
                                        @Assisted("serializedType") Type serializedType)
       throws ReflectiveOperationException, CannotCompileException, NotFoundException, IOException {
+    this.config = config;
     this.eventBus = eventBus;
     this.eventFactory = eventFactory;
     this.modifierRegistry = modifierRegistry;
@@ -77,7 +80,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.serializedType = serializedType;
 
     this.declaringClass = classLoader.loadClass(declaringClass);
-    this.invoker = invocationGenerator.generateInvoker(config, path, getter, setter);
+    this.invoker = invocationGenerator.generateInvoker(generatingConfig, path, getter, setter);
 
     this.lastAnnotations = new HashMap<>();
 
@@ -111,6 +114,11 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   @Override
   public Class<?> getDeclaringClass() {
     return this.declaringClass;
+  }
+
+  @Override
+  public ParsedConfig getConfig() {
+    return this.config;
   }
 
   @Override
@@ -211,17 +219,17 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   }
 
   @Override
-  public Object getValue(ParsedConfig config) {
-    return this.invoker.getValue(config);
+  public Object getValue() {
+    return this.invoker.getValue(this.config);
   }
 
   @Override
-  public void setValue(ParsedConfig config, Object value) {
-    Object previousValue = this.getValue(config);
+  public void setValue(Object value) {
+    Object previousValue = this.getValue();
     ConfigValueUpdateEvent event = this.eventFactory.create(this, previousValue, value);
 
     this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
-    this.invoker.setValue(config, value);
+    this.invoker.setValue(this.config, value);
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 

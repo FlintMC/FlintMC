@@ -7,11 +7,12 @@ import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.stereotype.PrimitiveTypeLoader;
+import net.labyfy.internal.component.config.generator.method.DefaultConfigMethod;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class ConfigMultiGetterSetter extends FieldConfigMethod {
+public class ConfigMultiGetterSetter extends DefaultConfigMethod {
 
   public static final String ALL_PREFIX = "All";
 
@@ -48,7 +49,7 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
 
   @Override
   public String[] getMethodNames() {
-    return new String[]{this.getGetterName(), this.getSingleGetterName(), this.getSetterName()};
+    return new String[]{this.getGetterName(), this.getSingleGetterName(), this.getSetterName(), this.getSingleSetterName()};
   }
 
   @Override
@@ -66,8 +67,7 @@ public class ConfigMultiGetterSetter extends FieldConfigMethod {
   }
 
   @Override
-  public void generateMethods(CtClass target)
-      throws CannotCompileException {
+  public void generateMethods(CtClass target) throws CannotCompileException {
     CtField field = super.generateOrGetField(target, "new java.util.HashMap()");
 
     if (!this.hasMethod(target, this.getGetterName())) {

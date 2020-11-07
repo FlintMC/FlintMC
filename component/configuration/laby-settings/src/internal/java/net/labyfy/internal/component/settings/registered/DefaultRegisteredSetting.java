@@ -22,7 +22,6 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   private final SettingHandler settingHandler;
   private final Class<? extends Annotation> annotationType;
-  private final ParsedConfig config;
   private final String categoryName;
   private final ConfigObjectReference reference;
 
@@ -38,12 +37,10 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
                                   EventBus eventBus,
                                   SettingsUpdateEvent.Factory eventFactory,
                                   @Assisted Class<? extends Annotation> annotationType,
-                                  @Assisted ParsedConfig config,
                                   @Assisted @Nullable String categoryName,
                                   @Assisted ConfigObjectReference reference) {
     this.settingHandler = settingHandler;
     this.annotationType = annotationType;
-    this.config = config;
     this.categoryName = categoryName;
     this.reference = reference;
 
@@ -58,7 +55,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   @Override
   public ParsedConfig getConfig() {
-    return this.config;
+    return this.reference.getConfig();
   }
 
   @Override
@@ -73,7 +70,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   @Override
   public Object getCurrentValue() {
-    return this.reference.getValue(this.config);
+    return this.reference.getValue();
   }
 
   @Override
@@ -82,7 +79,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
       return false;
     }
 
-    this.reference.setValue(this.config, value);
+    this.reference.setValue(value);
     return true;
   }
 

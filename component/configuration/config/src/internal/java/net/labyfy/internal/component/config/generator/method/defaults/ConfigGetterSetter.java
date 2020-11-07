@@ -7,10 +7,11 @@ import javassist.NotFoundException;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.serialization.ConfigSerializationService;
+import net.labyfy.internal.component.config.generator.method.DefaultConfigMethod;
 
 import java.lang.reflect.Type;
 
-public class ConfigGetterSetter extends FieldConfigMethod {
+public class ConfigGetterSetter extends DefaultConfigMethod {
 
   public ConfigGetterSetter(ConfigSerializationService serializationService, GeneratingConfig config, CtClass declaringClass,
                             String name, CtClass methodType) {

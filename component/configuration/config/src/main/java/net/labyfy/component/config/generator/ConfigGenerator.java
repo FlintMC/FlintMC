@@ -59,4 +59,12 @@ public interface ConfigGenerator {
    */
   void bindConfig(GeneratingConfig generatingConfig, ParsedConfig config) throws IllegalStateException;
 
+  /**
+   * Should only be called once per config, and is only intended to be used internally. This method sets all default
+   * values to the config and reads it from the config.
+   *
+   * @param config The non-null config to be initialized
+   */
+  void initConfig(ParsedConfig config);
+
 }

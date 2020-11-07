@@ -55,6 +55,13 @@ public interface ConfigObjectReference {
   Class<?> getDeclaringClass();
 
   /**
+   * Retrieves the config where this reference has been discovered.
+   *
+   * @return The non-null config of this reference
+   */
+  ParsedConfig getConfig();
+
+  /**
    * @return The non-null type for serialization
    * @see ConfigMethod#getSerializedType()
    */
@@ -145,18 +152,17 @@ public interface ConfigObjectReference {
   /**
    * Retrieves the value of the method which is linked to this reference in the instance of a config.
    *
-   * @param config The non-null config to get the value from
    * @return The value from the config, may be {@code null}
    */
-  Object getValue(ParsedConfig config);
+  Object getValue();
 
   /**
    * Changes the value of the method which is linked to this reference in the given instance of a config.
    *
-   * @param config The non-null config to get the value from
-   * @param value  The value to set in the config, may be {@code null}
+   * @param value The value to set in the config, may be {@code null} depending on the implementation. For any primitive
+   *              it should not be null
    */
-  void setValue(ParsedConfig config, Object value);
+  void setValue(Object value);
 
   /**
    * Parser for one or multiple {@link ConfigObjectReference ConfigObjectReference(s)}.
@@ -167,25 +173,27 @@ public interface ConfigObjectReference {
      * Parses a single reference out of the given method with all necessary information for serialization like the
      * getter, setter and serialized type.
      *
-     * @param config The non-null config which contains the given {@code method}
-     * @param method The non-null method to parse the reference for
+     * @param generatingConfig The non-null config which contains the given {@code method}
+     * @param config           The non-null instance of the config that has been generated
+     * @param method           The non-null method to parse the reference from
      * @return The new non-null reference
      * @throws RuntimeException If any of the methods in the path specified in {@link ConfigMethod#getPathPrefix()}
      *                          doesn't exist
      */
-    ConfigObjectReference parse(GeneratingConfig config, ConfigMethod method) throws RuntimeException;
+    ConfigObjectReference parse(GeneratingConfig generatingConfig, ParsedConfig config, ConfigMethod method) throws RuntimeException;
 
     /**
-     * Calls {@link #parse(GeneratingConfig, ConfigMethod)} for every method in the given config ({@link
+     * Calls {@link #parse(GeneratingConfig, ParsedConfig, ConfigMethod)} for every method in the given config ({@link
      * GeneratingConfig#getAllMethods()}) if the stored in type in the specific method is not an interface and not
      * {@link ConfigSerializationService#hasSerializer(CtClass)}.
      *
-     * @param config The non-null config to parse the references from
+     * @param generatingConfig The non-null config to parse the references from
+     * @param config           The non-null instance of the config that has been generated
      * @return The new non-null list of the parsed references
      * @throws RuntimeException If any of the methods in the path specified in {@link ConfigMethod#getPathPrefix()}
      *                          doesn't exist
      */
-    Collection<ConfigObjectReference> parseAll(GeneratingConfig config) throws RuntimeException;
+    Collection<ConfigObjectReference> parseAll(GeneratingConfig generatingConfig, ParsedConfig config) throws RuntimeException;
 
   }
 
@@ -198,7 +206,8 @@ public interface ConfigObjectReference {
     /**
      * Creates a new {@link ConfigObjectReference} with the specified values.
      *
-     * @param config               The non-null generating config with all information about the generated config
+     * @param generatingConfig     The non-null generating config with all information about the generated config
+     * @param config               The non-null instance of the config that has been generated
      * @param pathKeys             The non-null array of keys to the new reference (unique per {@link
      *                             GeneratingConfig})
      * @param path                 The non-null array of methods (matches the {@code pathKeys} array) to the new
@@ -215,7 +224,7 @@ public interface ConfigObjectReference {
      * @param serializedType       The type to for serialization
      * @return The new non-null {@link ConfigObjectReference}
      */
-    ConfigObjectReference create(@Assisted("config") GeneratingConfig config,
+    ConfigObjectReference create(@Assisted GeneratingConfig generatingConfig, @Assisted ParsedConfig config,
                                  @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
                                  @Assisted("correspondingMethods") CtMethod[] correspondingMethods,
                                  @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,

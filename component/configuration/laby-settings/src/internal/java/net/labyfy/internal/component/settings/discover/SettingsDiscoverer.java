@@ -96,7 +96,7 @@ public class SettingsDiscoverer {
 
     String category = this.findCategoryName(reference);
 
-    RegisteredSetting registeredSetting = this.settingFactory.create(annotation.annotationType(), config, category, reference);
+    RegisteredSetting registeredSetting = this.settingFactory.create(annotation.annotationType(), category, reference);
     this.settingsProvider.registerSetting(registeredSetting);
   }
 

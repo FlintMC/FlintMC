@@ -46,7 +46,7 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
         continue;
       }
 
-      Object rawValue = reference.getValue(config);
+      Object rawValue = reference.getValue();
       JsonElement value = null;
 
       ConfigSerializationHandler handler = this.getHandler(reference);
@@ -107,7 +107,7 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
       if (value == null || value.isJsonNull()) {
         Object defaultValue = reference.getDefaultValue();
         if (defaultValue != null) {
-          reference.setValue(config, defaultValue);
+          reference.setValue(defaultValue);
         }
         continue;
       }
@@ -122,7 +122,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
         deserialized = this.gson.fromJson(value, reference.getSerializedType());
       }
 
-      reference.setValue(config, deserialized);
+      if (deserialized != null) {
+        reference.setValue(deserialized);
+      }
     }
   }
 }

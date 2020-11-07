@@ -37,7 +37,6 @@ public interface RegisteredSetting {
   interface Factory {
 
     RegisteredSetting create(@Assisted Class<? extends Annotation> annotationType,
-                             @Assisted ParsedConfig config,
                              @Assisted @Nullable String categoryName,
                              @Assisted ConfigObjectReference reference);
 

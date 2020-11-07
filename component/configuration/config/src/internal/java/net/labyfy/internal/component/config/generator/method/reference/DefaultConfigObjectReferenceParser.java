@@ -6,6 +6,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.config.generator.GeneratingConfig;
+import net.labyfy.component.config.generator.ParsedConfig;
 import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.config.generator.method.ConfigObjectReference;
 import net.labyfy.component.config.serialization.ConfigSerializationService;
@@ -31,7 +32,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
   }
 
   @Override
-  public ConfigObjectReference parse(GeneratingConfig config, ConfigMethod method) {
+  public ConfigObjectReference parse(GeneratingConfig generatingConfig, ParsedConfig config, ConfigMethod method) {
     // keys in the config
     Collection<String> pathKeys = new ArrayList<>(Arrays.asList(method.getPathPrefix()));
     pathKeys.add(method.getConfigName());
@@ -43,11 +44,11 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     CtClass mainClass;
 
     try {
-      methodPath = this.asMethods(config, method.getPathPrefix());
+      methodPath = this.asMethods(generatingConfig, method.getPathPrefix());
       declaringClass = methodPath.length == 0 ? method.getDeclaringClass() : methodPath[methodPath.length - 1].getReturnType();
-      mainClass = methodPath.length == 0 ? config.getBaseClass() : methodPath[methodPath.length - 1].getReturnType();
+      mainClass = methodPath.length == 0 ? generatingConfig.getBaseClass() : methodPath[methodPath.length - 1].getReturnType();
     } catch (NotFoundException e) {
-      throw new RuntimeException("Failed to generate the references for the config " + config.getBaseClass().getName(), e);
+      throw new RuntimeException("Failed to generate the references for the config " + generatingConfig.getBaseClass().getName(), e);
     }
 
     // all methods that belong to this group (e.g. setNAME, getNAME, getNAMEAll)
@@ -61,7 +62,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
       }
     }
 
-    CtClass declaringImplementation = config.getGeneratedImplementation(declaringClass.getName(), declaringClass);
+    CtClass declaringImplementation = generatingConfig.getGeneratedImplementation(declaringClass.getName(), declaringClass);
 
     CtMethod getter = this.getMethod(declaringImplementation, method.getGetterName());
     CtMethod setter = this.getMethod(declaringImplementation, method.getSetterName());
@@ -72,7 +73,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     }
 
     return this.factory.create(
-        config,
+        generatingConfig, config,
         pathKeys.toArray(new String[0]),
         methodPath, allMethods.toArray(new CtMethod[0]),
         getter, setter,
@@ -83,12 +84,12 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
   }
 
   @Override
-  public Collection<ConfigObjectReference> parseAll(GeneratingConfig config) {
+  public Collection<ConfigObjectReference> parseAll(GeneratingConfig generatingConfig, ParsedConfig config) {
     Collection<ConfigObjectReference> references = new HashSet<>();
 
-    for (ConfigMethod method : config.getAllMethods()) {
+    for (ConfigMethod method : generatingConfig.getAllMethods()) {
       if (!method.getStoredType().isInterface() || this.serializationService.hasSerializer(method.getStoredType())) {
-        references.add(this.parse(config, method));
+        references.add(this.parse(generatingConfig, config, method));
       }
     }
 

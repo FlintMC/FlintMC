@@ -57,6 +57,10 @@ public class PrimitiveTypeLoader {
   public static String asPrimitiveSource(CtClass type, String wrapped) {
     Class<?> wrappedPrimitive = PrimitiveTypeLoader.getWrappedClass(type.getName());
     if (wrappedPrimitive != null) {
+      if (Number.class.isAssignableFrom(wrappedPrimitive)) {
+        wrappedPrimitive = Number.class;
+      }
+
       return "((" + wrappedPrimitive.getName() + ") " + wrapped + ")." + type.getName() + "Value()";
     }
 

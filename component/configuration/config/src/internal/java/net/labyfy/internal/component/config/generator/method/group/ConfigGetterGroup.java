@@ -1,27 +1,32 @@
-package net.labyfy.internal.component.config.generator.method.defaults;
+package net.labyfy.internal.component.config.generator.method.group;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.labyfy.component.config.generator.GeneratingConfig;
 import net.labyfy.component.config.serialization.ConfigSerializationService;
-import net.labyfy.internal.component.config.generator.method.ConfigMethodGroup;
 import net.labyfy.internal.component.config.generator.method.DefaultConfigMethod;
+import net.labyfy.internal.component.config.generator.method.defaults.ConfigGetterSetter;
+import net.labyfy.internal.component.config.generator.method.defaults.ConfigMultiGetterSetter;
 
 import java.util.Map;
 
+@Singleton
 public class ConfigGetterGroup implements ConfigMethodGroup {
 
   private final ClassPool pool = ClassPool.getDefault();
   private final ConfigSerializationService serializationService;
 
+  @Inject
   public ConfigGetterGroup(ConfigSerializationService serializationService) {
     this.serializationService = serializationService;
   }
 
   @Override
-  public String[] getPrefix() {
+  public String[] getPossiblePrefixes() {
     return new String[]{"get", "is"};
   }
 

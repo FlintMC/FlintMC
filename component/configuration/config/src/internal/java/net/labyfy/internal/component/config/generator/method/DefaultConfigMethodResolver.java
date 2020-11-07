@@ -10,8 +10,9 @@ import net.labyfy.component.config.generator.method.ConfigMethod;
 import net.labyfy.component.config.generator.method.ConfigMethodResolver;
 import net.labyfy.component.config.serialization.ConfigSerializationService;
 import net.labyfy.component.inject.implement.Implement;
-import net.labyfy.internal.component.config.generator.method.defaults.ConfigGetterGroup;
-import net.labyfy.internal.component.config.generator.method.defaults.ConfigSetterGroup;
+import net.labyfy.internal.component.config.generator.method.group.ConfigGetterGroup;
+import net.labyfy.internal.component.config.generator.method.group.ConfigMethodGroup;
+import net.labyfy.internal.component.config.generator.method.group.ConfigSetterGroup;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,12 +24,10 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
   private final Collection<ConfigMethodGroup> groups;
 
   @Inject
-  public DefaultConfigMethodResolver(ConfigSerializationService serializationService) {
+  public DefaultConfigMethodResolver(ConfigSerializationService serializationService, ConfigGetterGroup getterGroup,
+                                     ConfigSetterGroup setterGroup) {
     this.serializationService = serializationService;
-    this.groups = Arrays.asList(
-        new ConfigGetterGroup(serializationService),
-        new ConfigSetterGroup(serializationService)
-    );
+    this.groups = Arrays.asList(getterGroup, setterGroup);
   }
 
   @Override
@@ -58,7 +57,7 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
   private void tryGroups(GeneratingConfig config, String name, CtClass type, String[] prefix,
                          CtMethod method) throws NotFoundException {
     for (ConfigMethodGroup group : this.groups) {
-      for (String groupPrefix : group.getPrefix()) {
+      for (String groupPrefix : group.getPossiblePrefixes()) {
         if (name.startsWith(groupPrefix)) {
           String entryName = name.substring(groupPrefix.length());
           if (this.handleGroup(config, group, type, prefix, entryName, method)) {
