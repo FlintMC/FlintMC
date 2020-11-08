@@ -18,19 +18,16 @@ import java.nio.file.Files;
 import java.util.Map;
 
 @Singleton
-@Implement(MappingFileProvider.class)
 public class DefaultMappingFileProvider implements MappingFileProvider {
 
   private final File flintRoot;
   private final McpMappingIndexProvider mcpMappingIndexProvider;
-  private final Logger logger;
 
   @Inject
   private DefaultMappingFileProvider(
-      @Named("flintRoot") File flintRoot, McpMappingIndexProvider mcpMappingIndexProvider, @InjectLogger Logger logger) {
+      @Named("flintRoot") File flintRoot, McpMappingIndexProvider mcpMappingIndexProvider) {
     this.flintRoot = flintRoot;
     this.mcpMappingIndexProvider = mcpMappingIndexProvider;
-    this.logger = logger;
   }
 
   @Override
@@ -45,7 +42,6 @@ public class DefaultMappingFileProvider implements MappingFileProvider {
       if (!methodsFile.exists() || !fieldsFile.exists() || !joinedFile.exists()) {
         assetRoot.mkdirs();
         Version.Mapping index = this.mcpMappingIndexProvider.fetch().get(version).getModCoderPack();
-        logger.warn("jar:" + index.getConfigDownload() + "!/config/joined.tsrg");
 
         Files.write(
             methodsFile.toPath(),

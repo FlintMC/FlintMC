@@ -2,6 +2,8 @@ package net.flintmc.transform.minecraft.obfuscate.remap;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import javassist.ClassPool;
+import javassist.CtClass;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.classloading.common.ClassInformation;
 import net.flintmc.launcher.classloading.common.CommonClassLoaderHelper;
@@ -16,6 +18,8 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +40,8 @@ public class MinecraftClassRemapper extends SimpleRemapper {
     this.classMappingProvider = classMappingProvider;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
+    this.rootClassLoader.excludeFromModification("org.objectweb.asm.");
+
   }
 
   private static Map<String, String> collectMappings(ClassMappingProvider classMappingProvider) {
@@ -84,9 +90,14 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   public List<String> getSuperClass(String clazz) {
     try {
+      ClassInformation classInformation = CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, clazz);
+      if(classInformation == null) {
+        // Java internal class
+        return new ArrayList<>();
+      }
+
       ClassNode theClazz =
-          ASMUtils.getNode(
-              CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, clazz).getClassBytes());
+          ASMUtils.getNode(classInformation.getClassBytes());
 
       ClassInformation superClassInformation =
           CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, theClazz.superName);

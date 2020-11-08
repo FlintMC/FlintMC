@@ -1,8 +1,11 @@
 package net.flintmc.util.mappings;
 
+import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.NotFoundException;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.util.mappings.utils.MappingUtils;
+import org.objectweb.asm.Type;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +19,8 @@ public final class ClassMapping extends BaseMapping {
   /**
    * Construct a class mapping.
    *
-   * @param obfuscated Whether the current environment is encrypted.
-   * @param obfuscatedName An obfuscated name.
+   * @param obfuscated       Whether the current environment is encrypted.
+   * @param obfuscatedName   An obfuscated name.
    * @param deobfuscatedName A deobfuscated name.
    */
   public ClassMapping(
@@ -89,7 +92,7 @@ public final class ClassMapping extends BaseMapping {
   /**
    * Get a method by name and parameters.
    *
-   * @param name A method name.
+   * @param name       A method name.
    * @param parameters Method parameters.
    * @return A method mapping or null.
    */
@@ -101,7 +104,7 @@ public final class ClassMapping extends BaseMapping {
   /**
    * Get a method by name and parameters.
    *
-   * @param name A method name.
+   * @param name       A method name.
    * @param parameters Method parameters.
    * @return A method mapping or null.
    */
@@ -114,14 +117,34 @@ public final class ClassMapping extends BaseMapping {
    * Get a metrhod by the explicit identifier
    *
    * @param identifier the identifier of the method. Must have the format {methodName}({parameter
-   *     types})
+   *                   types})
    * @return the target method or null
    */
   public MethodMapping getMethodByIdentifier(String identifier) {
-    if (obfuscatedMethods.containsKey(identifier)) {
-      return obfuscatedMethods.get(identifier);
-    } else if (deobfuscatedMethods.containsKey(identifier)) {
-      return deobfuscatedMethods.get(identifier);
+    String name = identifier.substring(0, identifier.indexOf('('));
+    identifier = identifier.substring(identifier.indexOf('('), identifier.lastIndexOf(')') + 1);
+
+    Type[] argumentTypes = Type.getArgumentTypes(identifier);
+    CtClass[] argumentCtCLasses = new CtClass[argumentTypes.length];
+    for (int i = 0; i < argumentCtCLasses.length; i++) {
+      try {
+        ClassMapping classMapping = MappingUtils.getClassMappingProvider().get(argumentTypes[i].getClassName());
+        if (classMapping != null)
+          argumentCtCLasses[i] = ClassPool.getDefault().get(classMapping.getName());
+        else
+          argumentCtCLasses[i] = ClassPool.getDefault().get(argumentTypes[i].getClassName());
+      } catch (NotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+
+    String obfuscatedIdentifier = String.format("%s(%s)", name, MappingUtils.generateDescriptor(true, argumentCtCLasses));
+    String deObfuscatedIdentifier = String.format("%s(%s)", name, MappingUtils.generateDescriptor(false, argumentCtCLasses));
+
+    if (obfuscatedMethods.containsKey(obfuscatedIdentifier)) {
+      return obfuscatedMethods.get(obfuscatedIdentifier);
+    } else if (deobfuscatedMethods.containsKey(deObfuscatedIdentifier)) {
+      return deobfuscatedMethods.get(deObfuscatedIdentifier);
     }
     return null;
   }
@@ -146,4 +169,5 @@ public final class ClassMapping extends BaseMapping {
   public Class<?> get(ClassLoader classLoader) throws ClassNotFoundException {
     return Class.forName(this.getName(), false, classLoader);
   }
+
 }

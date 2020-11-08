@@ -48,6 +48,7 @@
       }
     ],
     "jvm": [
+      "-agentlib:jdwp=transport=dt_socket,server=n,address=localhost:1356,suspend=y",
       {
         "rules": [
           {

@@ -1,6 +1,7 @@
 package net.flintmc.processing.autoload;
 
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.identifier.ConstructorIdentifier;
 import net.flintmc.processing.autoload.identifier.Identifier;
 import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 
@@ -62,6 +63,14 @@ public class AnnotationMeta<T extends Annotation> {
    */
   public ClassIdentifier getClassIdentifier() {
     return ((ClassIdentifier) this.identifier);
+  }
+
+  /**
+   * @return A constructor Identifier which holds properties of the location where the annotation is
+   *     placed at
+   */
+  public ConstructorIdentifier getConstructorIdentifier() {
+    return ((ConstructorIdentifier) this.identifier);
   }
 
   /**

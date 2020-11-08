@@ -24,8 +24,8 @@ import java.util.Map;
 
 @Singleton
 @Services({
-        @Service(value = Implement.class, priority = -100000, state = Service.State.PRE_INIT),
-        @Service(value = AssistedFactory.class, priority = -10000, state = Service.State.AFTER_IMPLEMENT)
+    @Service(value = Implement.class, priority = -100000, state = Service.State.PRE_INIT),
+    @Service(value = AssistedFactory.class, priority = -10000, state = Service.State.AFTER_IMPLEMENT)
 })
 public class InjectionService implements ServiceHandler<Annotation> {
 
@@ -67,63 +67,69 @@ public class InjectionService implements ServiceHandler<Annotation> {
     Implement annotation = annotationMeta.getAnnotation();
 
     if (!(annotation.version().isEmpty()
-            || launchArguments.get("--game-version").equals(annotation.version()))) return;
+        || launchArguments.get("--game-version").equals(annotation.version()))) return;
 
     if (implementations.containsKey(annotation.value()) && !implementations.get(annotation.value()).equals(location)) {
       throw new IllegalStateException(
-              String.format("Cannot bind %s. Implementation %s already provided by %s.", annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName(), annotation.value(), implementations.get(annotation.value()).getName()));
+          String.format("Cannot bind %s. Implementation %s already provided by %s.", annotationMeta.<ClassIdentifier>getIdentifier().getLocation().getName(), annotation.value(), implementations.get(annotation.value()).getName()));
     }
     implementations.put(annotation.value(), location);
   }
 
   public void flushImplementation() {
     InjectionHolder.getInstance()
-            .addModules(new AbstractModule() {
-              @Override
-              protected void configure() {
-                implementations.forEach(
-                        (superClass, implementation) -> {
-                          try {
-                            if (!ignore.contains(ClassPool.getDefault().get(superClass.getName()))
-                                    && !ignore.contains(implementation)
-                                    && !implementationsFlushed.contains(implementation)) {
-                              this.bind(superClass)
-                                      .toProvider(
-                                              () -> {
-                                                Class<?> implementationResolved = CtResolver.get(implementation);
+        .addModules(new AbstractModule() {
+          @Override
+          protected void configure() {
+            implementations.forEach(
+                (superClass, implementation) -> {
+                  try {
+                    if (!ignore.contains(ClassPool.getDefault().get(superClass.getName()))
+                        && !ignore.contains(implementation)
+                        && !implementationsFlushed.contains(implementation)) {
+                      this.bind(superClass)
+                          .toProvider(
+                              () -> {
+                                try {
 
-                                                return InjectionHolder.getInjectedInstance(implementationResolved);
-                                              }
-                                      );
-                              implementationsFlushed.add(implementation);
-                            }
-                          } catch (NotFoundException exception) {
-                            exception.printStackTrace();
-                          }
-                        });
-              }
-            });
+                                  Class<?> implementationResolved = CtResolver.get(implementation);
+
+                                  return InjectionHolder.getInjectedInstance(implementationResolved);
+                                } catch (Exception ex) {
+                                  ex.printStackTrace();
+                                }
+                                return null;
+                              }
+                          );
+                      implementationsFlushed.add(implementation);
+                    }
+                  } catch (NotFoundException e) {
+                    e.printStackTrace();
+                  }
+                });
+          }
+        });
   }
 
   public void flushAssistedFactory() {
     InjectionHolder.getInstance()
-            .addModules(new AbstractModule() {
-              @Override
-              protected void configure() {
-                assisted.forEach(
-                        (clazz, factory) -> {
-                          Class<?> resolvedClass = CtResolver.get(clazz);
-                          if (!assistedFlushed.contains(resolvedClass)) {
-                            AssistedFactoryModuleBuilder assistedFactoryModuleBuilder = new AssistedFactoryModuleBuilder();
-                            implementations.forEach(
-                                    (interfaceClass, implementation) ->
-                                            assistedFactoryModuleBuilder.implement(
-                                                    interfaceClass, CtResolver.get(implementation)));
-                            install(assistedFactoryModuleBuilder.build(resolvedClass));
-                            assistedFlushed.add(resolvedClass);
-                          }
-                        });
-              }
-            });
+        .addModules(new AbstractModule() {
+          @Override
+          protected void configure() {
+            assisted.forEach(
+                (clazz, factory) -> {
+                  Class<?> resolvedClass = CtResolver.get(clazz);
+                  if (!assistedFlushed.contains(resolvedClass)) {
+                    AssistedFactoryModuleBuilder assistedFactoryModuleBuilder = new AssistedFactoryModuleBuilder();
+                    implementations.forEach(
+                        (interfaceClass, implementation) ->
+                            assistedFactoryModuleBuilder.implement(
+                                interfaceClass, CtResolver.get(implementation)));
+                    install(assistedFactoryModuleBuilder.build(resolvedClass));
+                    assistedFlushed.add(resolvedClass);
+                  }
+                });
+          }
+        });
   }
 }
