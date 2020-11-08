@@ -1,6 +1,7 @@
 package net.flintmc.mcapi.internal.settings.game.annotation;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -12,6 +13,7 @@ import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.game.annotation.ResourcePackSetting;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -34,19 +36,32 @@ public class ResourcePackSettingHandler implements SettingHandler<ResourcePackSe
       ResourcePackSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
-    Collection<String> enabled = (Collection<String>) currentValue;
-    Collection<String> disabled = new HashSet<>();
+    Collection<String> enabledNames = (Collection<String>) currentValue;
+    Collection<ResourcePack> enabled = new ArrayList<>();
+    Collection<ResourcePack> disabled = new ArrayList<>();
     Collection<ResourcePack> available = this.provider.getAvailable();
     for (ResourcePack pack : available) {
-      if (!enabled.contains(pack.getName())) {
-        disabled.add(pack.getName());
-      }
+      (enabledNames.contains(pack.getName()) ? enabled : disabled).add(pack);
     }
 
-    object.add("enabledPacks", this.gson.toJsonTree(enabled));
-    object.add("disabledPacks", this.gson.toJsonTree(disabled));
+    object.add("enabledPacks", this.mapPacks(enabled));
+    object.add("disabledPacks", this.mapPacks(disabled));
 
     return object;
+  }
+
+  private JsonArray mapPacks(Collection<ResourcePack> packs) {
+    JsonArray array = new JsonArray();
+
+    for (ResourcePack pack : packs) {
+      JsonObject object = new JsonObject();
+      array.add(object);
+
+      object.addProperty("name", pack.getName());
+      object.addProperty("description", pack.getDescription());
+    }
+
+    return array;
   }
 
   @Override

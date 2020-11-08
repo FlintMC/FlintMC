@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.settings.game.annotation;
 
+import net.flintmc.mcapi.resources.pack.ResourcePackProvider;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.game.configuration.ResourcePackConfiguration;
@@ -17,10 +18,15 @@ import java.util.Collection;
  * <p>The resulting json for the {@link JsonSettingsSerializer} will contain:
  *
  * <ul>
- *   <li>'enabledPacks' with an array of the names of all enabled resource packs (which is the
- *       stored type of the setting)
- *   <li>'disabledPacks' with an array of the names of all disabled resource packs
+ *   <li>'enabledPacks' with an array of the names and descriptions of all enabled resource packs
+ *       (which is the stored type of the setting)
+ *   <li>'disabledPacks' with an array of the names and descriptions of all disabled resource packs
  * </ul>
+ *
+ * The arrays named above will both contain json objects with 'name' and 'description' being a
+ * string with the name and description of the resource pack.
+ *
+ * <p>Every pack in the value of the setting has to exist in the {@link ResourcePackProvider}.
  *
  * @see ApplicableSetting
  * @see ResourcePackConfiguration#getResourcePacks()
