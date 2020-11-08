@@ -3,15 +3,12 @@ package net.flintmc.mcapi.settings.game.configuration;
 import net.flintmc.framework.config.annotation.ConfigExclude;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.annotation.Component;
-import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.game.annotation.ResourcePackSetting;
 
 import java.util.List;
 
 /** Represents the resource pack configuration. */
-@DefineCategory(
-    name = "minecraft.settings.resourcepack",
-    displayName = @Component(value = "options.resourcepack", translate = true))
 @ImplementedConfig
 public interface ResourcePackConfiguration {
 
@@ -24,6 +21,7 @@ public interface ResourcePackConfiguration {
    * @return A collection with all resource packs.
    */
   @ResourcePackSetting
+  @DisplayName(@Component(value = "options.resourcepack", translate = true))
   List<String> getResourcePacks();
 
   /**
