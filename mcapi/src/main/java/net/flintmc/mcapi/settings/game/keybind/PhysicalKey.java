@@ -3,11 +3,8 @@ package net.flintmc.mcapi.settings.game.keybind;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * An enumeration representing some keys from a keyboard or mouse.
- */
+/** An enumeration representing some keys from a keyboard or mouse. */
 public enum PhysicalKey {
-
   UNKNOWN("key.keyboard.unknown", -1, -1),
   MOUSE_LEFT("key.mouse.left", 0, -100),
   MOUSE_RIGHT("key.mouse.right", 1, -99),
@@ -222,5 +219,4 @@ public enum PhysicalKey {
   public int getScanCode() {
     return scanCode;
   }
-
 }

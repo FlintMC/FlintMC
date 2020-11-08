@@ -30,23 +30,22 @@ public interface RegisteredCategory {
   ChatComponent getDisplayName();
 
   /**
-   * Retrieves the description with all formats/colors as it will be displayed. If no description is set, this will be a
-   * {@link TextComponent} with an empty text.
+   * Retrieves the description with all formats/colors as it will be displayed. If no description is
+   * set, this will be a {@link TextComponent} with an empty text.
    *
    * @return The non-null description of this category
    */
   ChatComponent getDescription();
 
   /**
-   * Retrieves the URL to the icon of this category. If no icon is set, this will be an empty string.
+   * Retrieves the URL to the icon of this category. If no icon is set, this will be an empty
+   * string.
    *
    * @return The non-null URL to the icon of this category
    */
   String getIconUrl();
 
-  /**
-   * Factory for the {@link RegisteredCategory}.
-   */
+  /** Factory for the {@link RegisteredCategory}. */
   @AssistedFactory(RegisteredCategory.class)
   interface Factory {
 
@@ -54,19 +53,19 @@ public interface RegisteredCategory {
      * Creates a new {@link RegisteredCategory} which can be registered with {@link
      * SettingsProvider#registerCategory(RegisteredCategory)}.
      *
-     * @param registryName The non-null name of the new category, unique per {@link SettingsProvider}
-     * @param displayName  The non-null display name of the new category as it will be displayed
-     * @param description  The non-null description of the new category as it will be displayed, if no description is
-     *                     available, this should be a {@link TextComponent} with an empty text
-     * @param iconUrl      The non-null URL to the icon of the new category, if no icon is set, this should be an empty
-     *                     string
+     * @param registryName The non-null name of the new category, unique per {@link
+     *     SettingsProvider}
+     * @param displayName The non-null display name of the new category as it will be displayed
+     * @param description The non-null description of the new category as it will be displayed, if
+     *     no description is available, this should be a {@link TextComponent} with an empty text
+     * @param iconUrl The non-null URL to the icon of the new category, if no icon is set, this
+     *     should be an empty string
      * @return The new non-null {@link RegisteredCategory}
      */
-    RegisteredCategory create(@Assisted("registryName") String registryName,
-                              @Assisted("displayName") ChatComponent displayName,
-                              @Assisted("description") ChatComponent description,
-                              @Assisted("iconUrl") String iconUrl);
-
+    RegisteredCategory create(
+        @Assisted("registryName") String registryName,
+        @Assisted("displayName") ChatComponent displayName,
+        @Assisted("description") ChatComponent description,
+        @Assisted("iconUrl") String iconUrl);
   }
-
 }

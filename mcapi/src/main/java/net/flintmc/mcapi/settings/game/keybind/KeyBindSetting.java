@@ -10,6 +10,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ApplicableSetting(types = PhysicalKey.class, name = "keybind")
-public @interface KeyBindSetting {
-
-}
+public @interface KeyBindSetting {}

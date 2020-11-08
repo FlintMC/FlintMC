@@ -36,7 +36,8 @@ public class DefaultSettingsProvider implements SettingsProvider {
   @Override
   public void registerCategory(RegisteredCategory category) throws IllegalArgumentException {
     if (this.categories.containsKey(category.getRegistryName())) {
-      throw new IllegalArgumentException("A category with the name '" + category.getRegistryName() + "' is already registered");
+      throw new IllegalArgumentException(
+          "A category with the name '" + category.getRegistryName() + "' is already registered");
     }
     this.categories.put(category.getRegistryName(), category);
   }
@@ -63,7 +64,8 @@ public class DefaultSettingsProvider implements SettingsProvider {
   }
 
   private boolean registerSubSettings(RegisteredSetting newSetting, boolean remove) {
-    SubSettingsFor subSettingsFor = newSetting.getReference().findLastAnnotation(SubSettingsFor.class);
+    SubSettingsFor subSettingsFor =
+        newSetting.getReference().findLastAnnotation(SubSettingsFor.class);
     if (subSettingsFor == null) {
       return false;
     }
@@ -75,14 +77,19 @@ public class DefaultSettingsProvider implements SettingsProvider {
     }
 
     if (declaring == null) {
-      this.logger.trace("No declaring class found to map the SubSettings of " + newSetting.getReference().getKey()
-          + " to '" + subSettingsFor.value() + "'");
+      this.logger.trace(
+          "No declaring class found to map the SubSettings of "
+              + newSetting.getReference().getKey()
+              + " to '"
+              + subSettingsFor.value()
+              + "'");
       return false;
     }
 
     boolean found = false;
     for (RegisteredSetting setting : this.settings) {
-      if (setting.getReference().getDeclaringClass().equals(declaring) && setting.getReference().getLastName().equals(subSettingsFor.value())) {
+      if (setting.getReference().getDeclaringClass().equals(declaring)
+          && setting.getReference().getLastName().equals(subSettingsFor.value())) {
         setting.getSubSettings().add(newSetting);
         if (remove) {
           this.settings.remove(newSetting);

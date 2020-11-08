@@ -10,8 +10,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Sets a sub category for an {@link ApplicableSetting} in a {@link Config}. The categories will be identified by the
- * {@link #value() displayName}.
+ * Sets a sub category for an {@link ApplicableSetting} in a {@link Config}. The categories will be
+ * identified by the {@link #value() displayName}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
@@ -23,5 +23,4 @@ public @interface SubCategory {
    * @return The component to be displayed
    */
   Component[] value();
-
 }

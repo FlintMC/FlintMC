@@ -9,7 +9,8 @@ public class RegisteredSettingsSerializer<A extends Annotation> {
   private final Class<A> annotationType;
   private final SettingsSerializationHandler<A> handler;
 
-  public RegisteredSettingsSerializer(Class<A> annotationType, SettingsSerializationHandler<A> handler) {
+  public RegisteredSettingsSerializer(
+      Class<A> annotationType, SettingsSerializationHandler<A> handler) {
     this.annotationType = annotationType;
     this.handler = handler;
   }

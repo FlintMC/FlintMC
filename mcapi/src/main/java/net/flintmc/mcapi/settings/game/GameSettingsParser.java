@@ -3,9 +3,7 @@ package net.flintmc.mcapi.settings.game;
 import java.io.File;
 import java.util.Map;
 
-/**
- * An interface to parse the Minecraft game settings.
- */
+/** An interface to parse the Minecraft game settings. */
 public interface GameSettingsParser {
 
   /**
@@ -15,9 +13,7 @@ public interface GameSettingsParser {
    */
   File getOptionsFile();
 
-  /**
-   * Makes qualified key bindings for the specific version.
-   */
+  /** Makes qualified key bindings for the specific version. */
   void makeQualifiedKeyBinds(File optionsFile, Map<String, String> configurations);
 
   /**
@@ -33,5 +29,4 @@ public interface GameSettingsParser {
    * @param configurations The key-value system to be stored.
    */
   void saveOptions(File optionsFile, Map<String, String> configurations);
-
 }

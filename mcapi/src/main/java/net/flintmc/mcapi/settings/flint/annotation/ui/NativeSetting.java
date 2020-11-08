@@ -9,13 +9,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a method in a {@link Config} with an {@link ApplicableSetting} as native, that means that it is defined by
- * Minecraft itself and not by any FlintMC package. This annotation is only intended to be used internally.
+ * Marks a method in a {@link Config} with an {@link ApplicableSetting} as native, that means that
+ * it is defined by Minecraft itself and not by any FlintMC package. This annotation is only
+ * intended to be used internally.
  *
  * @see Config
  * @see ApplicableSetting
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface NativeSetting {
-}
+public @interface NativeSetting {}

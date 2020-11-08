@@ -25,16 +25,19 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
   private final EnumFieldResolver fieldResolver;
 
   @Inject
-  public EnumSelectSettingHandler(JsonSettingsSerializer serializer, EnumFieldResolver fieldResolver) {
+  public EnumSelectSettingHandler(
+      JsonSettingsSerializer serializer, EnumFieldResolver fieldResolver) {
     this.serializer = serializer;
     this.fieldResolver = fieldResolver;
   }
 
   @Override
-  public JsonObject serialize(EnumSelectSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(
+      EnumSelectSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
-    Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) setting.getReference().getSerializedType();
+    Class<? extends Enum<?>> enumType =
+        (Class<? extends Enum<?>>) setting.getReference().getSerializedType();
     JsonArray possible = new JsonArray();
     object.add("possible", possible);
     for (Enum<?> constant : enumType.getEnumConstants()) {
@@ -55,7 +58,8 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
     Field field = this.fieldResolver.getEnumField(constant);
 
     for (Annotation annotation : field.getAnnotations()) {
-      for (SettingsSerializationHandler handler : this.serializer.getHandlers(annotation.annotationType())) {
+      for (SettingsSerializationHandler handler :
+          this.serializer.getHandlers(annotation.annotationType())) {
         handler.append(object, setting, annotation);
       }
     }
@@ -64,7 +68,8 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
   }
 
   @Override
-  public boolean isValidInput(Object input, ConfigObjectReference reference, EnumSelectSetting annotation) {
+  public boolean isValidInput(
+      Object input, ConfigObjectReference reference, EnumSelectSetting annotation) {
     return input == null || reference.getSerializedType().equals(input.getClass());
   }
 }

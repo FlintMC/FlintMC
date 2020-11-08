@@ -28,8 +28,8 @@ public interface RegisteredSetting {
   ConfigObjectReference getReference();
 
   /**
-   * Retrieves the {@link ApplicableSetting} annotation which marks this setting. This can be for example {@link
-   * StringSetting}.
+   * Retrieves the {@link ApplicableSetting} annotation which marks this setting. This can be for
+   * example {@link StringSetting}.
    *
    * @return The non-null annotation of this setting
    */
@@ -44,7 +44,8 @@ public interface RegisteredSetting {
   Object getCurrentValue();
 
   /**
-   * Checks if the given value can be set on this setting and if it can, it sets the given value to this setting.
+   * Checks if the given value can be set on this setting and if it can, it sets the given value to
+   * this setting.
    *
    * @param value The value to be set, may be {@code null}
    * @return {@code true} if it has been successfully set, {@code false} otherwise
@@ -61,7 +62,8 @@ public interface RegisteredSetting {
   String getCategoryName();
 
   /**
-   * Retrieves whether this setting is currently enabled or not. If is not enabled, the user cannot change it.
+   * Retrieves whether this setting is currently enabled or not. If is not enabled, the user cannot
+   * change it.
    *
    * @return {@code true} if it is enabled, {@code false} otherwise
    * @see #setEnabled(boolean)
@@ -69,8 +71,9 @@ public interface RegisteredSetting {
   boolean isEnabled();
 
   /**
-   * Enables/disables this setting. If it is not enabled, the user cannot change anything on it. If the {@link
-   * #isEnabled() enabled state} is already the same as the given {@code enabled} value, nothing will happen.
+   * Enables/disables this setting. If it is not enabled, the user cannot change anything on it. If
+   * the {@link #isEnabled() enabled state} is already the same as the given {@code enabled} value,
+   * nothing will happen.
    *
    * @param enabled {@code true} if it should be enabled, {@code false} otherwise
    */
@@ -84,25 +87,24 @@ public interface RegisteredSetting {
    */
   Collection<RegisteredSetting> getSubSettings();
 
-  /**
-   * Factory for the {@link RegisteredSetting}.
-   */
+  /** Factory for the {@link RegisteredSetting}. */
   @AssistedFactory(RegisteredSetting.class)
   interface Factory {
 
     /**
      * Creates a new {@link RegisteredSetting} with the given values.
      *
-     * @param annotationType The non-null type of annotation which marks this setting ({@link #getAnnotation()})
-     * @param categoryName   The name of the category the new setting belongs to, or {@code null} if it doesn't belong
-     *                       to any category
-     * @param reference      The non-null reference in a {@link Config} where this setting has been discovered
+     * @param annotationType The non-null type of annotation which marks this setting ({@link
+     *     #getAnnotation()})
+     * @param categoryName The name of the category the new setting belongs to, or {@code null} if
+     *     it doesn't belong to any category
+     * @param reference The non-null reference in a {@link Config} where this setting has been
+     *     discovered
      * @return The new non-null {@link RegisteredSetting}
      */
-    RegisteredSetting create(@Assisted Class<? extends Annotation> annotationType,
-                             @Assisted @Nullable String categoryName,
-                             @Assisted ConfigObjectReference reference);
-
+    RegisteredSetting create(
+        @Assisted Class<? extends Annotation> annotationType,
+        @Assisted @Nullable String categoryName,
+        @Assisted ConfigObjectReference reference);
   }
-
 }

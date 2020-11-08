@@ -16,9 +16,9 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Component {
 
   /**
-   * The text for the component. The {@link ComponentAnnotationSerializer} will use this either for the {@link
-   * ComponentSerializer.Factory#legacy()} or, if {@link #translate()} is {@code true}, use it as a translationKey for a
-   * {@link TranslationComponent}.
+   * The text for the component. The {@link ComponentAnnotationSerializer} will use this either for
+   * the {@link ComponentSerializer.Factory#legacy()} or, if {@link #translate()} is {@code true},
+   * use it as a translationKey for a {@link TranslationComponent}.
    *
    * @return The text for the component
    */
@@ -30,5 +30,4 @@ public @interface Component {
    * @return {@code true} if it should be translated, {@code false} otherwise
    */
   boolean translate() default false;
-
 }

@@ -23,10 +23,7 @@ public class DefaultGameProfile implements GameProfile {
   private boolean legacy;
 
   @AssistedInject
-  private DefaultGameProfile(
-          @Assisted("uniqueId") UUID uniqueId,
-          @Assisted("name") String name
-  ) {
+  private DefaultGameProfile(@Assisted("uniqueId") UUID uniqueId, @Assisted("name") String name) {
     this(uniqueId, name, InjectionHolder.getInjectedInstance(PropertyMap.Factory.class).create());
   }
 

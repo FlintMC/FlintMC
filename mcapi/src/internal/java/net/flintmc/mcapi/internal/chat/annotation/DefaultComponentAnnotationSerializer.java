@@ -18,8 +18,8 @@ public class DefaultComponentAnnotationSerializer implements ComponentAnnotation
   private final ComponentSerializer.Factory serializerFactory;
 
   @Inject
-  private DefaultComponentAnnotationSerializer(ComponentBuilder.Factory builderFactory,
-                                               ComponentSerializer.Factory serializerFactory) {
+  private DefaultComponentAnnotationSerializer(
+      ComponentBuilder.Factory builderFactory, ComponentSerializer.Factory serializerFactory) {
     this.builderFactory = builderFactory;
     this.serializerFactory = serializerFactory;
   }

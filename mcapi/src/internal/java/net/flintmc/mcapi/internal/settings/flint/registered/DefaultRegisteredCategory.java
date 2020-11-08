@@ -15,10 +15,11 @@ public class DefaultRegisteredCategory implements RegisteredCategory {
   private final String iconUrl;
 
   @AssistedInject
-  public DefaultRegisteredCategory(@Assisted("registryName") String registryName,
-                                   @Assisted("displayName") ChatComponent displayName,
-                                   @Assisted("description") ChatComponent description,
-                                   @Assisted("iconUrl") String iconUrl) {
+  public DefaultRegisteredCategory(
+      @Assisted("registryName") String registryName,
+      @Assisted("displayName") ChatComponent displayName,
+      @Assisted("description") ChatComponent description,
+      @Assisted("iconUrl") String iconUrl) {
     this.registryName = registryName;
     this.displayName = displayName;
     this.description = description;

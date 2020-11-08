@@ -10,7 +10,8 @@ import net.flintmc.mcapi.chat.annotation.DefaultComponent;
 
 @Singleton
 @DefaultAnnotationMapper(DefaultComponent.class)
-public class DefaultComponentAnnotationHandler implements DefaultAnnotationMapperHandler<DefaultComponent> {
+public class DefaultComponentAnnotationHandler
+    implements DefaultAnnotationMapperHandler<DefaultComponent> {
 
   private final ComponentAnnotationSerializer annotationSerializer;
 

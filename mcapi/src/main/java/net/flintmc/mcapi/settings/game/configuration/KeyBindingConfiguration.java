@@ -4,22 +4,19 @@ import net.flintmc.framework.config.annotation.ConfigExclude;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.annotation.Component;
+import net.flintmc.mcapi.settings.flint.annotation.TranslateKey;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
 import net.flintmc.mcapi.settings.game.KeyBinding;
 import net.flintmc.mcapi.settings.game.keybind.KeyBindSetting;
 import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
-import net.flintmc.mcapi.settings.flint.annotation.TranslateKey;
-import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * Represents the key binding configuration.
- */
+/** Represents the key binding configuration. */
 @DefineCategory(
     name = "minecraft.settings.controls",
-    displayName = @Component(value = "options.controls", translate = true)
-)
+    displayName = @Component(value = "options.controls", translate = true))
 @ImplementedConfig
 public interface KeyBindingConfiguration {
 
@@ -36,14 +33,14 @@ public interface KeyBindingConfiguration {
    * Binds the physical key to a specific description
    *
    * @param keyDescription The non-null description of the key ({@link Keybind#getKey()}
-   * @param key            The key to be bound, {@code null} to disable the binding
+   * @param key The key to be bound, {@code null} to disable the binding
    */
   void setKey(String keyDescription, PhysicalKey key);
 
   /**
    * Retrieves a map of all key descriptions with their bound physical key.
-   * <p>
-   * Modification to this map won't have any effect.
+   *
+   * <p>Modification to this map won't have any effect.
    *
    * @return The new non-null map containing all key descriptions with their bound keys
    * @see #getKey(String)
@@ -61,7 +58,8 @@ public interface KeyBindingConfiguration {
   /**
    * Retrieves whether there are duplicates Minecrafts settings for this keyCode.
    *
-   * @return {@code true} if other KeyBindings in Minecraft also use this keyCode, {@code false} otherwise
+   * @return {@code true} if other KeyBindings in Minecraft also use this keyCode, {@code false}
+   *     otherwise
    */
   @ConfigExclude
   boolean hasDuplicates(PhysicalKey key);
@@ -95,9 +93,8 @@ public interface KeyBindingConfiguration {
    * Changes the binding of a key.
    *
    * @param keyBinding The key binding to change.
-   * @param code       The new code for key binding.
+   * @param code The new code for key binding.
    */
   @ConfigExclude
   void setKeyBindingCode(KeyBinding keyBinding, PhysicalKey code);
-
 }

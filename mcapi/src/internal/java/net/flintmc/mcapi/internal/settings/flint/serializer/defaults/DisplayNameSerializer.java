@@ -1,6 +1,5 @@
 package net.flintmc.mcapi.internal.settings.flint.serializer.defaults;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -20,7 +19,9 @@ public class DisplayNameSerializer implements SettingsSerializationHandler<Displ
   private final ComponentAnnotationSerializer annotationSerializer;
 
   @Inject
-  public DisplayNameSerializer(ComponentSerializer.Factory serializerFactory, ComponentAnnotationSerializer annotationSerializer) {
+  public DisplayNameSerializer(
+      ComponentSerializer.Factory serializerFactory,
+      ComponentAnnotationSerializer annotationSerializer) {
     this.serializerFactory = serializerFactory;
     this.annotationSerializer = annotationSerializer;
   }
@@ -31,13 +32,8 @@ public class DisplayNameSerializer implements SettingsSerializationHandler<Displ
       return;
     }
 
-    result.add("displayName", this.serialize(annotation));
-  }
-
-  private JsonElement serialize(DisplayName annotation) {
     ChatComponent component = this.annotationSerializer.deserialize(annotation.value());
 
-    return this.serializerFactory.gson().getGson().toJsonTree(component);
+    result.add("displayName", this.serializerFactory.gson().getGson().toJsonTree(component));
   }
-
 }

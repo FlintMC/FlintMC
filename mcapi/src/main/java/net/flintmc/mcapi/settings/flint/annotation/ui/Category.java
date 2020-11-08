@@ -10,12 +10,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Sets a category for a specific {@link ApplicableSetting} in a {@link Config}. It can be used on any method or class
- * that is associated with the given value, see {@link ConfigObjectReference#findLastAnnotation(Class)} for more
- * information.
- * <p>
- * For this to work, a category with the {@link #value() given name} needs to exist, to define one, {@link
- * DefineCategory} may be used.
+ * Sets a category for a specific {@link ApplicableSetting} in a {@link Config}. It can be used on
+ * any method or class that is associated with the given value, see {@link
+ * ConfigObjectReference#findLastAnnotation(Class)} for more information.
+ *
+ * <p>For this to work, a category with the {@link #value() given name} needs to exist, to define
+ * one, {@link DefineCategory} may be used.
  *
  * @see Config
  * @see DefineCategory
@@ -25,10 +25,10 @@ import java.lang.annotation.Target;
 public @interface Category {
 
   /**
-   * Retrieves the name of the category to get the information like the DisplayName and Description from the registry.
+   * Retrieves the name of the category to get the information like the DisplayName and Description
+   * from the registry.
    *
    * @return The name of this category
    */
   String value();
-
 }

@@ -3,11 +3,8 @@ package net.flintmc.mcapi.settings.game.settings;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 
-/**
- * An enumeration representing narrator statuses.
- */
+/** An enumeration representing narrator statuses. */
 public enum NarratorStatus {
-
   @DisplayName(@Component(value = "options.narrator.off", translate = true))
   OFF(),
 
@@ -19,5 +16,4 @@ public enum NarratorStatus {
 
   @DisplayName(@Component(value = "options.narrator.system", translate = true))
   SYSTEM()
-
 }

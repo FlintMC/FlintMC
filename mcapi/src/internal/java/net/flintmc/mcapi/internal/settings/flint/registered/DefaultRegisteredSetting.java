@@ -30,12 +30,13 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
   private boolean enabled;
 
   @AssistedInject
-  public DefaultRegisteredSetting(SettingHandler settingHandler,
-                                  EventBus eventBus,
-                                  SettingsUpdateEvent.Factory eventFactory,
-                                  @Assisted Class<? extends Annotation> annotationType,
-                                  @Assisted @Nullable String categoryName,
-                                  @Assisted ConfigObjectReference reference) {
+  public DefaultRegisteredSetting(
+      SettingHandler settingHandler,
+      EventBus eventBus,
+      SettingsUpdateEvent.Factory eventFactory,
+      @Assisted Class<? extends Annotation> annotationType,
+      @Assisted @Nullable String categoryName,
+      @Assisted ConfigObjectReference reference) {
     this.settingHandler = settingHandler;
     this.annotationType = annotationType;
     this.categoryName = categoryName;

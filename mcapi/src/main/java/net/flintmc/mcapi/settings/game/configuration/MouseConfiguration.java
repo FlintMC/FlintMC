@@ -7,13 +7,10 @@ import net.flintmc.mcapi.settings.flint.options.BooleanSetting;
 import net.flintmc.mcapi.settings.flint.options.numeric.Range;
 import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
 
-/**
- * Represents the mouse configuration.
- */
+/** Represents the mouse configuration. */
 @DefineCategory(
     name = "minecraft.settings.mouse",
-    displayName = @Component(value = "options.mouse_settings", translate = true)
-)
+    displayName = @Component(value = "options.mouse_settings", translate = true))
 @ImplementedConfig
 public interface MouseConfiguration {
 
@@ -107,5 +104,4 @@ public interface MouseConfiguration {
    * @param touchscreen The new state for the touchscreen mode.
    */
   void setTouchscreen(boolean touchscreen);
-
 }

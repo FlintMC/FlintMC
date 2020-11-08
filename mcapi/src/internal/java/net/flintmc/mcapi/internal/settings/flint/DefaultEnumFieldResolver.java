@@ -42,8 +42,9 @@ public class DefaultEnumFieldResolver implements EnumFieldResolver {
       try {
         fields.put(constant.name(), enumClass.getDeclaredField(constant.name()));
       } catch (NoSuchFieldException e) {
-        this.logger.error("Failed to find enum constant field in "
-            + enumClass.getName() + ": " + constant.name(), e);
+        this.logger.error(
+            "Failed to find enum constant field in " + enumClass.getName() + ": " + constant.name(),
+            e);
       }
     }
 

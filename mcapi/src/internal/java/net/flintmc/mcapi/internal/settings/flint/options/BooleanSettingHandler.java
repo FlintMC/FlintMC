@@ -13,7 +13,8 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 public class BooleanSettingHandler implements SettingHandler<BooleanSetting> {
 
   @Override
-  public JsonObject serialize(BooleanSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(
+      BooleanSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
     object.addProperty("value", currentValue != null && (boolean) currentValue);
@@ -22,7 +23,8 @@ public class BooleanSettingHandler implements SettingHandler<BooleanSetting> {
   }
 
   @Override
-  public boolean isValidInput(Object input, ConfigObjectReference reference, BooleanSetting annotation) {
+  public boolean isValidInput(
+      Object input, ConfigObjectReference reference, BooleanSetting annotation) {
     return input instanceof Boolean;
   }
 }

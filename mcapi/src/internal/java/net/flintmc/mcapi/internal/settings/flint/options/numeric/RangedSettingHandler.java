@@ -5,7 +5,7 @@ import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.settings.flint.options.numeric.Range;
 import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplay;
-import net.flintmc.mcapi.settings.flint.options.numeric.display.RepeatableNumericDisplay;
+import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplays;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 public class RangedSettingHandler {
@@ -13,7 +13,9 @@ public class RangedSettingHandler {
   private final ComponentSerializer.Factory serializerFactory;
   private final ComponentAnnotationSerializer annotationSerializer;
 
-  protected RangedSettingHandler(ComponentSerializer.Factory serializerFactory, ComponentAnnotationSerializer annotationSerializer) {
+  protected RangedSettingHandler(
+      ComponentSerializer.Factory serializerFactory,
+      ComponentAnnotationSerializer annotationSerializer) {
     this.serializerFactory = serializerFactory;
     this.annotationSerializer = annotationSerializer;
   }
@@ -55,19 +57,22 @@ public class RangedSettingHandler {
     }
     rangeObject.addProperty("decimals", range.decimals());
 
-    RepeatableNumericDisplay repeatable = setting.getReference().findLastAnnotation(RepeatableNumericDisplay.class);
+    NumericDisplays repeatable =
+        setting.getReference().findLastAnnotation(NumericDisplays.class);
     if (repeatable != null) {
       JsonObject displays = new JsonObject();
       object.add("displays", displays);
 
       for (NumericDisplay display : repeatable.value()) {
-        displays.add(String.valueOf(display.value()),
-            this.serializerFactory.gson().getGson().toJsonTree(this.annotationSerializer.deserialize(display.display()))
-        );
+        displays.add(
+            String.valueOf(display.value()),
+            this.serializerFactory
+                .gson()
+                .getGson()
+                .toJsonTree(this.annotationSerializer.deserialize(display.display())));
       }
     }
 
     return object;
   }
-
 }

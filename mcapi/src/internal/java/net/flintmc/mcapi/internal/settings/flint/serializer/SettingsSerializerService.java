@@ -8,11 +8,11 @@ import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.Identifier;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializer;
+import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.processing.autoload.identifier.Identifier;
 
 @Singleton
 @Service(SettingsSerializer.class)
@@ -30,7 +30,8 @@ public class SettingsSerializerService implements ServiceHandler<SettingsSeriali
     Identifier<CtClass> identifier = meta.getIdentifier();
     CtClass handlerType = identifier.getLocation();
 
-    SettingsSerializationHandler handler = InjectionHolder.getInjectedInstance(CtResolver.get(handlerType));
+    SettingsSerializationHandler handler =
+        InjectionHolder.getInjectedInstance(CtResolver.get(handlerType));
 
     this.serializer.registerHandler(meta.getAnnotation().value(), handler);
   }

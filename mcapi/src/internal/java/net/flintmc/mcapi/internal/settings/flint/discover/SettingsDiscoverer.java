@@ -35,9 +35,12 @@ public class SettingsDiscoverer {
   private final Map<String, String> launchArguments;
 
   @Inject
-  public SettingsDiscoverer(SettingsProvider settingsProvider, RegisteredCategory.Factory categoryFactory,
-                            RegisteredSetting.Factory settingFactory, ComponentAnnotationSerializer annotationSerializer,
-                            @Named("launchArguments") Map launchArguments) {
+  public SettingsDiscoverer(
+      SettingsProvider settingsProvider,
+      RegisteredCategory.Factory categoryFactory,
+      RegisteredSetting.Factory settingFactory,
+      ComponentAnnotationSerializer annotationSerializer,
+      @Named("launchArguments") Map launchArguments) {
     this.settingsProvider = settingsProvider;
     this.categoryFactory = categoryFactory;
     this.settingFactory = settingFactory;
@@ -51,11 +54,15 @@ public class SettingsDiscoverer {
 
     for (ConfigObjectReference reference : config.getConfigReferences()) {
       VersionOnly versionOnly = reference.findLastAnnotation(VersionOnly.class);
-      if (versionOnly != null && Arrays.stream(versionOnly.value()).noneMatch(allowed -> allowed.equals(this.launchArguments.get("--game-version")))) {
+      if (versionOnly != null
+          && Arrays.stream(versionOnly.value())
+              .noneMatch(allowed -> allowed.equals(this.launchArguments.get("--game-version")))) {
         continue;
       }
       VersionExclude versionExclude = reference.findLastAnnotation(VersionExclude.class);
-      if (versionExclude != null && Arrays.stream(versionExclude.value()).anyMatch(blocked -> blocked.equals(this.launchArguments.get("--game-version")))) {
+      if (versionExclude != null
+          && Arrays.stream(versionExclude.value())
+              .anyMatch(blocked -> blocked.equals(this.launchArguments.get("--game-version")))) {
         continue;
       }
 
@@ -68,7 +75,8 @@ public class SettingsDiscoverer {
     if (annotation == null) {
       return;
     }
-    ApplicableSetting applicableSetting = annotation.annotationType().getAnnotation(ApplicableSetting.class);
+    ApplicableSetting applicableSetting =
+        annotation.annotationType().getAnnotation(ApplicableSetting.class);
 
     // multiple settings on one method (e.g. get(Key key, Value value))
     Type type = reference.getSerializedType();
@@ -89,30 +97,41 @@ public class SettingsDiscoverer {
     }
 
     Class<?> finalClazz = clazz;
-    boolean assignable = Arrays.stream(applicableSetting.types()).anyMatch(required -> {
-      if (required.isPrimitive()) {
-        required = PrimitiveTypeLoader.getWrappedClass(required);
-      }
-      return required.isAssignableFrom(finalClazz);
-    });
+    boolean assignable =
+        Arrays.stream(applicableSetting.types())
+            .anyMatch(
+                required -> {
+                  if (required.isPrimitive()) {
+                    required = PrimitiveTypeLoader.getWrappedClass(required);
+                  }
+                  return required.isAssignableFrom(finalClazz);
+                });
 
     if (!assignable) {
-      // we need assignableFrom because for example the EnumDropDown uses Enum.class as the required parameter
+      // we need assignableFrom because for example the EnumDropDown uses Enum.class as the required
+      // parameter
       // and can't specify more specific values
       this.throwInvalidSetting(reference, annotation, config, type);
     }
 
     String category = this.findCategoryName(reference);
 
-    RegisteredSetting registeredSetting = this.settingFactory.create(annotation.annotationType(), category, reference);
+    RegisteredSetting registeredSetting =
+        this.settingFactory.create(annotation.annotationType(), category, reference);
     this.settingsProvider.registerSetting(registeredSetting);
   }
 
-  private void throwInvalidSetting(ConfigObjectReference reference, Annotation annotation, ParsedConfig config,
-                                   Type type) {
-    throw new InvalidSettingsException("Cannot register setting on '" + reference.getKey() + "' in config '"
-        + config.getConfigName() + "' because none of the allowed types for " + annotation.annotationType().getName()
-        + " match " + type.getTypeName());
+  private void throwInvalidSetting(
+      ConfigObjectReference reference, Annotation annotation, ParsedConfig config, Type type) {
+    throw new InvalidSettingsException(
+        "Cannot register setting on '"
+            + reference.getKey()
+            + "' in config '"
+            + config.getConfigName()
+            + "' because none of the allowed types for "
+            + annotation.annotationType().getName()
+            + " match "
+            + type.getTypeName());
   }
 
   private String findCategoryName(ConfigObjectReference reference) {
@@ -124,16 +143,17 @@ public class SettingsDiscoverer {
     if (define != null) {
       name = define.name();
 
-      // define the category if it doesn't exist yet (it may already exist if the annotation is placed on an interface,
+      // define the category if it doesn't exist yet (it may already exist if the annotation is
+      // placed on an interface,
       // all methods inside of it would define a new category)
       if (this.settingsProvider.getCategory(name) == null) {
-        this.settingsProvider.registerCategory(this.categoryFactory.create(name,
-            this.annotationSerializer.deserialize(define.displayName(), define.name()),
-            this.annotationSerializer.deserialize(define.description()),
-            define.icon().value()
-        ));
+        this.settingsProvider.registerCategory(
+            this.categoryFactory.create(
+                name,
+                this.annotationSerializer.deserialize(define.displayName(), define.name()),
+                this.annotationSerializer.deserialize(define.description()),
+                define.icon().value()));
       }
-
     }
 
     if (category != null) {
@@ -152,5 +172,4 @@ public class SettingsDiscoverer {
 
     return null;
   }
-
 }

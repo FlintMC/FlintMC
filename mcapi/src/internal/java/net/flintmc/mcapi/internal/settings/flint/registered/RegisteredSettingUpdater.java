@@ -18,7 +18,8 @@ public class RegisteredSettingUpdater {
   private final SettingsUpdateEvent.Factory eventFactory;
 
   @Inject
-  public RegisteredSettingUpdater(SettingsProvider provider, EventBus eventBus, SettingsUpdateEvent.Factory eventFactory) {
+  public RegisteredSettingUpdater(
+      SettingsProvider provider, EventBus eventBus, SettingsUpdateEvent.Factory eventFactory) {
     this.provider = provider;
     this.eventBus = eventBus;
     this.eventFactory = eventFactory;
@@ -43,5 +44,4 @@ public class RegisteredSettingUpdater {
     SettingsUpdateEvent fired = this.eventFactory.create(setting);
     this.eventBus.fireEvent(fired, phase);
   }
-
 }

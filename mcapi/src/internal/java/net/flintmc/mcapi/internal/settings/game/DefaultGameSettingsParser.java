@@ -20,9 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.*;
 
-/**
- * Default implementation of the {@link GameSettingsParser}.
- */
+/** Default implementation of the {@link GameSettingsParser}. */
 @Singleton
 @Implement(GameSettingsParser.class)
 public class DefaultGameSettingsParser implements GameSettingsParser {
@@ -34,24 +32,22 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
   private File optionsFile;
 
   @Inject
-  private DefaultGameSettingsParser(@InjectLogger Logger logger, EventBus eventBus,
-                                    ConfigurationEvent.Factory configurationEventFactory) {
+  private DefaultGameSettingsParser(
+      @InjectLogger Logger logger,
+      EventBus eventBus,
+      ConfigurationEvent.Factory configurationEventFactory) {
     this.logger = logger;
     this.eventBus = eventBus;
     this.configurationEventFactory = configurationEventFactory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public File getOptionsFile() {
     return this.optionsFile;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void makeQualifiedKeyBinds(File optionsFile, Map<String, String> configurations) {
     boolean savable = false;
@@ -65,7 +61,6 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
           configurations.put(entry.getKey(), String.valueOf(key));
           savable = true;
         }
-
       }
     }
 
@@ -74,9 +69,7 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Map<String, String> readOptions(File optionsFile) {
     this.optionsFile = optionsFile;
@@ -100,24 +93,19 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
 
       this.eventBus.fireEvent(
           this.configurationEventFactory.create(
-              ConfigurationEvent.State.LOAD,
-              optionsFile,
-              configurations
-          ),
-          Subscribe.Phase.PRE
-      );
+              ConfigurationEvent.State.LOAD, optionsFile, configurations),
+          Subscribe.Phase.PRE);
 
       bufferedReader.close();
     } catch (IOException exception) {
-      this.logger.error("Failed to read the minecraft options from " + optionsFile.getAbsolutePath(), exception);
+      this.logger.error(
+          "Failed to read the minecraft options from " + optionsFile.getAbsolutePath(), exception);
       return null;
     }
     return configurations;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void saveOptions(File optionsFile, Map<String, String> configurations) {
     if (configurations == null) {
@@ -140,9 +128,7 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
     this.save(optionsFile, oldConfigurations);
   }
 
-  /**
-   * @see DefaultGameSettingsParser#saveOptions(File, Map)
-   */
+  /** @see DefaultGameSettingsParser#saveOptions(File, Map) */
   private void save(File optionsFile, Map<String, String> configurations) {
     try {
       List<String> configuration = new ArrayList<>();
@@ -153,18 +139,14 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
 
       this.eventBus.fireEvent(
           this.configurationEventFactory.create(
-              ConfigurationEvent.State.SAVE,
-              optionsFile,
-              configurations
-          ),
-          Subscribe.Phase.PRE
-      );
+              ConfigurationEvent.State.SAVE, optionsFile, configurations),
+          Subscribe.Phase.PRE);
 
       Collections.sort(configuration);
       Files.write(optionsFile.toPath(), configuration, Charset.defaultCharset());
     } catch (IOException exception) {
-      this.logger.error("Failed to write the minecraft options to " + optionsFile.getAbsolutePath(), exception);
+      this.logger.error(
+          "Failed to write the minecraft options to " + optionsFile.getAbsolutePath(), exception);
     }
   }
-
 }

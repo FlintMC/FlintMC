@@ -9,9 +9,7 @@ import net.flintmc.mcapi.settings.game.configuration.*;
 import net.flintmc.mcapi.world.difficulty.Difficulty;
 import net.minecraft.client.Minecraft;
 
-/**
- * 1.15.2 implementation of {@link MinecraftConfiguration}.
- */
+/** 1.15.2 implementation of {@link MinecraftConfiguration}. */
 @Singleton
 @PostMinecraftRead
 @ConfigImplementation(value = MinecraftConfiguration.class, version = "1.15.2")
@@ -37,8 +35,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
       MouseConfiguration mouseConfiguration,
       ResourcePackConfiguration resourcePackConfiguration,
       SkinConfiguration skinConfiguration,
-      SoundConfiguration soundConfiguration
-  ) {
+      SoundConfiguration soundConfiguration) {
     this.accessibilityConfiguration = accessibilityConfiguration;
     this.chatConfiguration = chatConfiguration;
     this.debugConfiguration = debugConfiguration;
@@ -50,98 +47,74 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
     this.soundConfiguration = soundConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public AccessibilityConfiguration getAccessibilityConfiguration() {
     return this.accessibilityConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ChatConfiguration getChatConfiguration() {
     return this.chatConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public DebugConfiguration getDebugConfiguration() {
     return this.debugConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public GraphicConfiguration getGraphicConfiguration() {
     return this.graphicConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public KeyBindingConfiguration getKeyBindingConfiguration() {
     return this.keyBindingConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public MouseConfiguration getMouseConfiguration() {
     return this.mouseConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ResourcePackConfiguration getResourcePackConfiguration() {
     return this.resourcePackConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public SkinConfiguration getSkinConfiguration() {
     return this.skinConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public SoundConfiguration getSoundConfiguration() {
     return this.soundConfiguration;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isRealmsNotifications() {
     return Minecraft.getInstance().gameSettings.realmsNotifications;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setRealmsNotifications(boolean realmsNotifications) {
     Minecraft.getInstance().gameSettings.realmsNotifications = realmsNotifications;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Difficulty getDifficulty() {
     switch (Minecraft.getInstance().gameSettings.difficulty) {
@@ -154,13 +127,12 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
       case HARD:
         return Difficulty.HARD;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.difficulty);
+        throw new IllegalStateException(
+            "Unexpected value: " + Minecraft.getInstance().gameSettings.difficulty);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setDifficulty(Difficulty difficulty) {
     switch (difficulty) {
@@ -182,14 +154,10 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void saveAndReloadOptions() {
     Minecraft.getInstance().gameSettings.saveOptions();
     Minecraft.getInstance().gameSettings.loadOptions();
   }
-
-
 }

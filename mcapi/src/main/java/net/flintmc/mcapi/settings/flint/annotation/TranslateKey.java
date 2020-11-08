@@ -9,12 +9,10 @@ import java.lang.annotation.Target;
 import java.util.Map;
 
 /**
- * This annotation can be used on an {@link ApplicableSetting} in a {@link Config} with the return type {@link Map} so
- * that the key of the map will be translated for the displayName. If it is not provided, the raw key of the map will be
- * used as a displayName.
+ * This annotation can be used on an {@link ApplicableSetting} in a {@link Config} with the return
+ * type {@link Map} so that the key of the map will be translated for the displayName. If it is not
+ * provided, the raw key of the map will be used as a displayName.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface TranslateKey {
-
-}
+public @interface TranslateKey {}

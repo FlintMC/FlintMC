@@ -13,20 +13,26 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 @Singleton
 @RegisterSettingHandler(NumericSetting.class)
-public class NumericSettingHandler extends RangedSettingHandler implements SettingHandler<NumericSetting> {
+public class NumericSettingHandler extends RangedSettingHandler
+    implements SettingHandler<NumericSetting> {
 
   @Inject
-  private NumericSettingHandler(ComponentSerializer.Factory serializerFactory, ComponentAnnotationSerializer annotationSerializer) {
+  private NumericSettingHandler(
+      ComponentSerializer.Factory serializerFactory,
+      ComponentAnnotationSerializer annotationSerializer) {
     super(serializerFactory, annotationSerializer);
   }
 
   @Override
-  public JsonObject serialize(NumericSetting annotation, RegisteredSetting setting, Object currentValue) {
-    return super.serialize(currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
+  public JsonObject serialize(
+      NumericSetting annotation, RegisteredSetting setting, Object currentValue) {
+    return super.serialize(
+        currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
   }
 
   @Override
-  public boolean isValidInput(Object input, ConfigObjectReference reference, NumericSetting annotation) {
+  public boolean isValidInput(
+      Object input, ConfigObjectReference reference, NumericSetting annotation) {
     return super.inRange(annotation.value(), input);
   }
 }

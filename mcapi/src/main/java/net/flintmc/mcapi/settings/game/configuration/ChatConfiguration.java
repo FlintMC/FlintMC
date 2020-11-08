@@ -2,22 +2,19 @@ package net.flintmc.mcapi.settings.game.configuration;
 
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.annotation.Component;
-import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
-import net.flintmc.mcapi.settings.game.settings.NarratorStatus;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.flint.options.BooleanSetting;
 import net.flintmc.mcapi.settings.flint.options.dropdown.EnumSelectSetting;
 import net.flintmc.mcapi.settings.flint.options.numeric.Range;
 import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
+import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
+import net.flintmc.mcapi.settings.game.settings.NarratorStatus;
 
-/**
- * Represents the chat configuration.
- */
+/** Represents the chat configuration. */
 @DefineCategory(
     name = "minecraft.settings.chat",
-    displayName = @Component(value = "options.chat.title", translate = true)
-)
+    displayName = @Component(value = "options.chat.title", translate = true))
 @ImplementedConfig
 public interface ChatConfiguration {
 
@@ -136,8 +133,8 @@ public interface ChatConfiguration {
   void setChatLinks(boolean chatLinks);
 
   /**
-   * Whether each time a player clicks on a URL, a prompt is forced to appear on the player's screen to ensure that they
-   * want to leave Minecraft and go to the website.
+   * Whether each time a player clicks on a URL, a prompt is forced to appear on the player's screen
+   * to ensure that they want to leave Minecraft and go to the website.
    *
    * @return {@code true} if forces a prompt, otherwise {@code false}.
    */
@@ -146,8 +143,8 @@ public interface ChatConfiguration {
   boolean isChatLinksPrompt();
 
   /**
-   * Changes whether to force a prompt on the player screen each time a player clicks a URL to ensure that they want to
-   * leave Minecraft and go to the website.
+   * Changes whether to force a prompt on the player screen each time a player clicks a URL to
+   * ensure that they want to leave Minecraft and go to the website.
    *
    * @param chatLinksPrompt The new state for the links prompt.
    */
@@ -217,7 +214,8 @@ public interface ChatConfiguration {
   void setNarrator(NarratorStatus narrator);
 
   /**
-   * Whether command suggestions show up or not, if off the player has to press tab to bring them up.
+   * Whether command suggestions show up or not, if off the player has to press tab to bring them
+   * up.
    *
    * @return {@code true} if command suggestions show up, otherwise {@code false}.
    */
@@ -255,7 +253,8 @@ public interface ChatConfiguration {
    */
   // pixels
   @SliderSetting(value = @Range(max = 100))
-  @DisplayName(@Component(value = "options.accessibility.text_background_opacity", translate = true))
+  @DisplayName(
+      @Component(value = "options.accessibility.text_background_opacity", translate = true))
   double getAccessibilityTextBackgroundOpacity();
 
   /**
@@ -278,5 +277,4 @@ public interface ChatConfiguration {
    * @param accessibilityTextBackground The new background state.
    */
   void setAccessibilityTextBackground(boolean accessibilityTextBackground);
-
 }

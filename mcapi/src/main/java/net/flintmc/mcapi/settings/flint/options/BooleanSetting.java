@@ -11,10 +11,11 @@ import java.lang.annotation.Target;
 
 /**
  * The {@link ApplicableSetting} to define a boolean input, the stored type has to be a boolean.
- * <p>
- * The resulting json for the {@link JsonSettingsSerializer} will contain:
+ *
+ * <p>The resulting json for the {@link JsonSettingsSerializer} will contain:
+ *
  * <ul>
- *   <li>'value' with the value from the setting as a boolean</li>
+ *   <li>'value' with the value from the setting as a boolean
  * </ul>
  *
  * @see ApplicableSetting
@@ -23,6 +24,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ApplicableSetting(types = boolean.class, name = "boolean")
-public @interface BooleanSetting {
-
-}
+public @interface BooleanSetting {}

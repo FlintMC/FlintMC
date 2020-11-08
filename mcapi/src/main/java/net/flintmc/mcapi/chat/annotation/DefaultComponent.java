@@ -8,9 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * This annotation sets the default value of a method in a {@link Config}.
- */
+/** This annotation sets the default value of a method in a {@link Config}. */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface DefaultComponent {
@@ -21,5 +19,4 @@ public @interface DefaultComponent {
    * @return The default value
    */
   Component[] value();
-
 }

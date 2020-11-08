@@ -2,9 +2,9 @@ package net.flintmc.mcapi.v1_15_2.settings.game.configuration;
 
 import com.google.inject.Singleton;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
-import net.flintmc.mcapi.settings.game.configuration.SkinConfiguration;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.model.PlayerClothing;
+import net.flintmc.mcapi.settings.game.configuration.SkinConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.util.HandSide;
@@ -12,19 +12,15 @@ import net.minecraft.util.HandSide;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 1.15.2 implementation of {@link SkinConfiguration}.
- */
+/** 1.15.2 implementation of {@link SkinConfiguration}. */
 @Singleton
 @ConfigImplementation(value = SkinConfiguration.class, version = "1.15.2")
 public class VersionedSkinConfiguration implements SkinConfiguration {
 
   private static final PlayerClothing[] CLOTHINGS = PlayerClothing.values();
 
-  /**
-   * {@inheritDoc}
-   */
-/*  @Override
+  /** {@inheritDoc} */
+  /*  @Override
   public Set<PlayerClothing> getPlayerClothing() {
     return Minecraft.getInstance().gameSettings
         .getModelParts()
@@ -48,12 +44,12 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     map.forEach(this::setModelClothingEnabled);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setModelClothingEnabled(PlayerClothing clothing, boolean enable) {
-    Minecraft.getInstance().gameSettings.setModelPartEnabled(this.toMinecraftObject(clothing), enable);
+    Minecraft.getInstance()
+        .gameSettings
+        .setModelPartEnabled(this.toMinecraftObject(clothing), enable);
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
@@ -69,18 +65,14 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     return false;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void switchModelClothingEnabled(PlayerClothing clothing) {
     Minecraft.getInstance().gameSettings.switchModelPartEnabled(this.toMinecraftObject(clothing));
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Hand.Side getMainHand() {
     switch (Minecraft.getInstance().gameSettings.mainHand) {
@@ -89,13 +81,12 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
       case RIGHT:
         return Hand.Side.RIGHT;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.mainHand);
+        throw new IllegalStateException(
+            "Unexpected value: " + Minecraft.getInstance().gameSettings.mainHand);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setMainHand(Hand.Side mainHand) {
     switch (mainHand) {

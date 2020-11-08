@@ -7,9 +7,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import java.io.File;
 import java.util.Map;
 
-/**
- * Fired when the configuration is loaded or saved.
- */
+/** Fired when the configuration is loaded or saved. */
 public interface ConfigurationEvent {
 
   /**
@@ -48,42 +46,30 @@ public interface ConfigurationEvent {
    */
   void setConfigurations(Map<String, String> configurations);
 
-  /**
-   * An enumeration that representing all states for the configuration.
-   */
+  /** An enumeration that representing all states for the configuration. */
   enum State {
 
-    /**
-     * When the configuration is loaded.
-     */
+    /** When the configuration is loaded. */
     LOAD,
-    /**
-     * When the configuration is saved.
-     */
+    /** When the configuration is saved. */
     SAVE
-
   }
 
-  /**
-   * A factory class for the {@link ConfigurationEvent}.
-   */
+  /** A factory class for the {@link ConfigurationEvent}. */
   @AssistedFactory(ConfigurationEvent.class)
   interface Factory {
 
     /**
      * Creates a new {@link ConfigurationEvent} with the given parameters.
      *
-     * @param state          The state when the event is fired.
-     * @param optionsFile    The options file
+     * @param state The state when the event is fired.
+     * @param optionsFile The options file
      * @param configurations The configuration.
      * @return A created configuration event.
      */
     ConfigurationEvent create(
         @Assisted("state") State state,
         @Assisted("optionsFile") File optionsFile,
-        @Assisted("configurations") Map<String, String> configurations
-    );
-
+        @Assisted("configurations") Map<String, String> configurations);
   }
-
 }

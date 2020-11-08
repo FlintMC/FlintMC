@@ -3,13 +3,11 @@ package net.flintmc.mcapi.settings.game;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.annotation.ExcludeStorage;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
+import net.flintmc.mcapi.settings.flint.annotation.ui.NativeSetting;
 import net.flintmc.mcapi.settings.game.configuration.*;
 import net.flintmc.mcapi.world.difficulty.Difficulty;
-import net.flintmc.mcapi.settings.flint.annotation.ui.NativeSetting;
 
-/**
- * Represents the Minecraft game settings
- */
+/** Represents the Minecraft game settings */
 @Config
 @ImplementedConfig
 @ExcludeStorage("local")
@@ -109,10 +107,10 @@ public interface MinecraftConfiguration {
 
   /**
    * Saves and reload the Minecraft options.
-   * <p>
-   * <b>Note:</b> This is needed to save configurations that have not been changed via the Minecraft settings.
-   * The changes to the configuration will be loaded immediately so that the client can use the changes.
+   *
+   * <p><b>Note:</b> This is needed to save configurations that have not been changed via the
+   * Minecraft settings. The changes to the configuration will be loaded immediately so that the
+   * client can use the changes.
    */
   void saveAndReloadOptions();
-
 }

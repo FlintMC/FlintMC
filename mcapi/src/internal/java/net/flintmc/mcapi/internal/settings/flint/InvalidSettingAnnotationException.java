@@ -5,5 +5,4 @@ public class InvalidSettingAnnotationException extends RuntimeException {
   public InvalidSettingAnnotationException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }

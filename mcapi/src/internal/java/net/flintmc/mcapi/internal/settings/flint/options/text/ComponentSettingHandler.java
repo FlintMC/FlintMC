@@ -21,23 +21,30 @@ public class ComponentSettingHandler implements SettingHandler<ComponentSetting>
   private final ChatComponent emptyComponent;
 
   @Inject
-  public ComponentSettingHandler(ComponentSerializer.Factory serializerFactory, ComponentBuilder.Factory builderFactory) {
+  public ComponentSettingHandler(
+      ComponentSerializer.Factory serializerFactory, ComponentBuilder.Factory builderFactory) {
     this.serializerFactory = serializerFactory;
     this.emptyComponent = builderFactory.text().text("").build();
   }
 
   @Override
-  public JsonObject serialize(ComponentSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(
+      ComponentSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
-    object.add("value", this.serializerFactory.gson().getGson()
-        .toJsonTree(currentValue != null ? currentValue : this.emptyComponent));
+    object.add(
+        "value",
+        this.serializerFactory
+            .gson()
+            .getGson()
+            .toJsonTree(currentValue != null ? currentValue : this.emptyComponent));
 
     return object;
   }
 
   @Override
-  public boolean isValidInput(Object input, ConfigObjectReference reference, ComponentSetting annotation) {
+  public boolean isValidInput(
+      Object input, ConfigObjectReference reference, ComponentSetting annotation) {
     return input instanceof TextComponent;
   }
 }

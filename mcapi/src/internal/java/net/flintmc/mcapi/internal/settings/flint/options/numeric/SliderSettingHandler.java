@@ -13,20 +13,26 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 @Singleton
 @RegisterSettingHandler(SliderSetting.class)
-public class SliderSettingHandler extends RangedSettingHandler implements SettingHandler<SliderSetting> {
+public class SliderSettingHandler extends RangedSettingHandler
+    implements SettingHandler<SliderSetting> {
 
   @Inject
-  private SliderSettingHandler(ComponentSerializer.Factory serializerFactory, ComponentAnnotationSerializer annotationSerializer) {
+  private SliderSettingHandler(
+      ComponentSerializer.Factory serializerFactory,
+      ComponentAnnotationSerializer annotationSerializer) {
     super(serializerFactory, annotationSerializer);
   }
 
   @Override
-  public JsonObject serialize(SliderSetting annotation, RegisteredSetting setting, Object currentValue) {
-    return super.serialize(currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
+  public JsonObject serialize(
+      SliderSetting annotation, RegisteredSetting setting, Object currentValue) {
+    return super.serialize(
+        currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
   }
 
   @Override
-  public boolean isValidInput(Object input, ConfigObjectReference reference, SliderSetting annotation) {
+  public boolean isValidInput(
+      Object input, ConfigObjectReference reference, SliderSetting annotation) {
     return super.inRange(annotation.value(), input);
   }
 }

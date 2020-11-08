@@ -11,17 +11,17 @@ import java.lang.annotation.Target;
 
 /**
  * The {@link ApplicableSetting} to define a string input, the stored type has to be a string.
- * <p>
- * The resulting json for the {@link JsonSettingsSerializer} will contain:
+ *
+ * <p>The resulting json for the {@link JsonSettingsSerializer} will contain:
+ *
  * <ul>
- *   <li>'value' with the value from the setting, empty if it is {@code null}</li>
- *   <li>
- *     'restrictions' (only if {@link #value()} has at least one restriction) with a list of all restrictions from
- *     {@link #value()}
- *   </li>
- *   <li>'maxLength' (only if {@link #maxLength()} is not {@link Integer#MAX_VALUE}) with {@link #maxLength()}</li>
- *   <li>'prefix' (only if {@link #prefix()} is not empty) with {@link #prefix()}</li>
- *   <li>'suffix' (only if {@link #suffix()} is not empty) with {@link #suffix()}</li>
+ *   <li>'value' with the value from the setting, empty if it is {@code null}
+ *   <li>'restrictions' (only if {@link #value()} has at least one restriction) with a list of all
+ *       restrictions from {@link #value()}
+ *   <li>'maxLength' (only if {@link #maxLength()} is not {@link Integer#MAX_VALUE}) with {@link
+ *       #maxLength()}
+ *   <li>'prefix' (only if {@link #prefix()} is not empty) with {@link #prefix()}
+ *   <li>'suffix' (only if {@link #suffix()} is not empty) with {@link #suffix()}
  * </ul>
  *
  * @see ApplicableSetting
@@ -47,18 +47,19 @@ public @interface StringSetting {
   int maxLength() default Integer.MAX_VALUE;
 
   /**
-   * Retrieves the prefix that should be displayed in the text input and which cannot be modified by the user. This may
-   * be useful for something like "https://youtube.com/" to let the user type in their channel name.
+   * Retrieves the prefix that should be displayed in the text input and which cannot be modified by
+   * the user. This may be useful for something like "https://youtube.com/" to let the user type in
+   * their channel name.
    *
    * @return The prefix or an empty string to show no prefix
    */
   String prefix() default "";
 
   /**
-   * Retrieves the suffix that should be displayed in the text input and which cannot be modified by the user.
+   * Retrieves the suffix that should be displayed in the text input and which cannot be modified by
+   * the user.
    *
    * @return The suffix or an empty string to show no suffix
    */
   String suffix() default "";
-
 }

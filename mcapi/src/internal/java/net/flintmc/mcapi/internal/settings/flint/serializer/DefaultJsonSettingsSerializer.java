@@ -45,9 +45,13 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
   private final Collection<RegisteredSettingsSerializer<?>> serializers;
 
   @Inject
-  public DefaultJsonSettingsSerializer(EnumFieldResolver fieldResolver, SettingsProvider provider,
-                                       SettingHandler handler, ComponentAnnotationSerializer annotationSerializer,
-                                       ComponentSerializer.Factory serializerFactory, ComponentBuilder.Factory builderFactory) {
+  public DefaultJsonSettingsSerializer(
+      EnumFieldResolver fieldResolver,
+      SettingsProvider provider,
+      SettingHandler handler,
+      ComponentAnnotationSerializer annotationSerializer,
+      ComponentSerializer.Factory serializerFactory,
+      ComponentBuilder.Factory builderFactory) {
     this.fieldResolver = fieldResolver;
     this.provider = provider;
     this.handler = handler;
@@ -94,15 +98,24 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
         String key = this.formatKey(setting, rawKey);
         Object value = entry.getValue();
 
-        Field enumConstant = rawKey instanceof Enum<?> ? this.fieldResolver.getEnumField((Enum<?>) rawKey) : null;
+        Field enumConstant =
+            rawKey instanceof Enum<?> ? this.fieldResolver.getEnumField((Enum<?>) rawKey) : null;
 
-        JsonObject object = this.serializeSettingValue(setting, setting.getReference().getKey() + "#" + key,
-            annotationType -> enumConstant != null ? enumConstant.getAnnotation(annotationType) : null, value);
+        JsonObject object =
+            this.serializeSettingValue(
+                setting,
+                setting.getReference().getKey() + "#" + key,
+                annotationType ->
+                    enumConstant != null ? enumConstant.getAnnotation(annotationType) : null,
+                value);
 
         if (setting.getReference().findLastAnnotation(TranslateKey.class) != null) {
-          object.add("displayName", this.serializerFactory.gson().getGson().toJsonTree(
-              this.builderFactory.translation().translationKey(key).build()
-          ));
+          object.add(
+              "displayName",
+              this.serializerFactory
+                  .gson()
+                  .getGson()
+                  .toJsonTree(this.builderFactory.translation().translationKey(key).build()));
         }
 
         array.add(object);
@@ -119,26 +132,37 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
       return ((Enum<?>) raw).name();
     }
 
-    if (raw instanceof String || raw instanceof Number || raw instanceof Boolean || raw instanceof Character) {
+    if (raw instanceof String
+        || raw instanceof Number
+        || raw instanceof Boolean
+        || raw instanceof Character) {
       return String.valueOf(raw);
     }
 
-    throw new UnsupportedOperationException("Unsupported key type " + raw.getClass().getName() + " in setting " + setting.getReference().getKey());
+    throw new UnsupportedOperationException(
+        "Unsupported key type "
+            + raw.getClass().getName()
+            + " in setting "
+            + setting.getReference().getKey());
   }
 
-  private JsonObject serializeSettingValue(RegisteredSetting setting, String key,
-                                           Function<Class<? extends Annotation>, Annotation> annotationResolver,
-                                           Object value) {
+  private JsonObject serializeSettingValue(
+      RegisteredSetting setting,
+      String key,
+      Function<Class<? extends Annotation>, Annotation> annotationResolver,
+      Object value) {
     JsonObject object = this.handler.serialize(setting.getAnnotation(), setting, value);
 
-    ApplicableSetting applicableSetting = setting.getAnnotation().annotationType().getAnnotation(ApplicableSetting.class);
+    ApplicableSetting applicableSetting =
+        setting.getAnnotation().annotationType().getAnnotation(ApplicableSetting.class);
     object.addProperty("type", applicableSetting.name());
 
     object.addProperty("name", key);
     object.addProperty("enabled", setting.isEnabled());
 
     for (RegisteredSettingsSerializer serializer : this.serializers) {
-      Annotation annotation = setting.getReference().findLastAnnotation(serializer.getAnnotationType());
+      Annotation annotation =
+          setting.getReference().findLastAnnotation(serializer.getAnnotationType());
       if (annotationResolver != null) {
         Annotation resolved = annotationResolver.apply(serializer.getAnnotationType());
         if (resolved != null) {
@@ -160,9 +184,12 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
     SubCategory subCategory = setting.getReference().findLastAnnotation(SubCategory.class);
     if (subCategory != null) {
-      object.add("subCategory", this.serializerFactory.gson().getGson().toJsonTree(
-          this.annotationSerializer.deserialize(subCategory.value())
-      ));
+      object.add(
+          "subCategory",
+          this.serializerFactory
+              .gson()
+              .getGson()
+              .toJsonTree(this.annotationSerializer.deserialize(subCategory.value())));
     }
 
     return object;
@@ -191,13 +218,15 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
   }
 
   @Override
-  public <A extends Annotation> void registerHandler(Class<A> annotationType, SettingsSerializationHandler<A> handler) {
+  public <A extends Annotation> void registerHandler(
+      Class<A> annotationType, SettingsSerializationHandler<A> handler) {
     this.serializers.add(new RegisteredSettingsSerializer<>(annotationType, handler));
   }
 
   @Override
   public Collection<SettingsSerializationHandler<Annotation>> getHandlers() {
-    Collection<SettingsSerializationHandler<Annotation>> handlers = new HashSet<>(this.serializers.size());
+    Collection<SettingsSerializationHandler<Annotation>> handlers =
+        new HashSet<>(this.serializers.size());
 
     for (RegisteredSettingsSerializer<?> serializer : this.serializers) {
       handlers.add((SettingsSerializationHandler<Annotation>) serializer.getHandler());
@@ -207,7 +236,8 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
   }
 
   @Override
-  public <A extends Annotation> Collection<SettingsSerializationHandler<A>> getHandlers(Class<A> annotationType) {
+  public <A extends Annotation> Collection<SettingsSerializationHandler<A>> getHandlers(
+      Class<A> annotationType) {
     Collection<SettingsSerializationHandler<A>> handlers = new HashSet<>(this.serializers.size());
 
     for (RegisteredSettingsSerializer<?> serializer : this.serializers) {
@@ -218,5 +248,4 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
     return handlers;
   }
-
 }

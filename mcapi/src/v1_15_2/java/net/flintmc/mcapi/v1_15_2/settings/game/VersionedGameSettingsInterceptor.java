@@ -22,31 +22,25 @@ public class VersionedGameSettingsInterceptor {
 
   @Inject
   private VersionedGameSettingsInterceptor(
-      GameSettingsParser gameSettingsParser,
-      VersionHelper versionHelper
-  ) {
+      GameSettingsParser gameSettingsParser, VersionHelper versionHelper) {
     this.gameSettingsParser = gameSettingsParser;
     this.versionHelper = versionHelper;
   }
 
   @Task(Tasks.POST_OPEN_GL_INITIALIZE)
   public void hookLoadOptions() {
-    GameSettingsAccessor gameSettingsAccessor = (GameSettingsAccessor) Minecraft.getInstance().gameSettings;
+    GameSettingsAccessor gameSettingsAccessor =
+        (GameSettingsAccessor) Minecraft.getInstance().gameSettings;
     this.optionsFile = gameSettingsAccessor.getOptionsFile();
     this.configurations = this.gameSettingsParser.readOptions(this.optionsFile);
 
     if (this.configurations != null && (this.versionHelper.isUnder(13))) {
       this.gameSettingsParser.makeQualifiedKeyBinds(this.optionsFile, this.configurations);
     }
-
   }
 
-  @Hook(
-      className = "net.minecraft.client.GameSettings",
-      methodName = "saveOptions"
-  )
+  @Hook(className = "net.minecraft.client.GameSettings", methodName = "saveOptions")
   public void hookSaveOptions() {
     this.gameSettingsParser.saveOptions(this.optionsFile, this.configurations);
   }
-
 }

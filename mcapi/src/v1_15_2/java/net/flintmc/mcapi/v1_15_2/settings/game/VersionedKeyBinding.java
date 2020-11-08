@@ -7,11 +7,10 @@ import net.flintmc.mcapi.settings.game.KeyBinding;
 import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
 import net.minecraft.client.util.InputMappings;
 
-/**
- * 1.15.2 implementation of {@link KeyBinding}.
- */
+/** 1.15.2 implementation of {@link KeyBinding}. */
 @Implement(value = KeyBinding.class, version = "1.15.2")
-public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding implements KeyBinding {
+public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding
+    implements KeyBinding {
 
   private int keyCode;
 
@@ -19,8 +18,7 @@ public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBindin
   private VersionedKeyBinding(
       @Assisted("description") String description,
       @Assisted("keyCode") int keyCode,
-      @Assisted("category") String category
-  ) {
+      @Assisted("category") String category) {
     super(description, keyCode, category);
     this.keyCode = keyCode;
   }
@@ -35,5 +33,4 @@ public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBindin
     super.bind(InputMappings.getInputByName(key.getConfigurationName()));
     this.keyCode = key.getKey();
   }
-
 }

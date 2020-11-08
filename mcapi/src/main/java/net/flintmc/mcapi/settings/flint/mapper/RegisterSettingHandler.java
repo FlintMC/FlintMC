@@ -6,7 +6,8 @@ import net.flintmc.processing.autoload.DetectableAnnotation;
 import java.lang.annotation.*;
 
 /**
- * Registers a {@link SettingHandler}. The annotated class needs to implement {@link SettingHandler}.
+ * Registers a {@link SettingHandler}. The annotated class needs to implement {@link
+ * SettingHandler}.
  *
  * @see SettingHandler
  */
@@ -16,10 +17,10 @@ import java.lang.annotation.*;
 public @interface RegisterSettingHandler {
 
   /**
-   * Retrieves the annotation can be handled by the annotated handler, for example {@link StringSetting}.
+   * Retrieves the annotation can be handled by the annotated handler, for example {@link
+   * StringSetting}.
    *
    * @return The annotation that can be handled by the handler
    */
   Class<? extends Annotation> value();
-
 }

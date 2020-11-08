@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.mcapi.settings.flint.options.text.StringRestriction;
-import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
+import net.flintmc.mcapi.settings.flint.options.text.StringRestriction;
+import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 import java.util.regex.Pattern;
@@ -16,12 +16,14 @@ import java.util.regex.Pattern;
 @RegisterSettingHandler(StringSetting.class)
 public class StringSettingHandler implements SettingHandler<StringSetting> {
 
-  private static final Pattern URL_PATTERN = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+  private static final Pattern URL_PATTERN =
+      Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
 
   private final Gson gson = new Gson();
 
   @Override
-  public JsonObject serialize(StringSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(
+      StringSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
     object.addProperty("value", currentValue == null ? "" : (String) currentValue);
@@ -42,7 +44,8 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
   }
 
   @Override
-  public boolean isValidInput(Object input, ConfigObjectReference reference, StringSetting annotation) {
+  public boolean isValidInput(
+      Object input, ConfigObjectReference reference, StringSetting annotation) {
     if (!(input instanceof String)) {
       return false;
     }

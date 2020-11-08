@@ -7,100 +7,76 @@ import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
 import net.flintmc.mcapi.settings.game.settings.NarratorStatus;
 import net.minecraft.client.Minecraft;
 
-/**
- * 1.15.2 implementation of {@link ChatConfiguration}
- */
+/** 1.15.2 implementation of {@link ChatConfiguration} */
 @Singleton
 @ConfigImplementation(value = ChatConfiguration.class, version = "1.15.2")
 public class VersionedChatConfiguration implements ChatConfiguration {
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getChatScale() {
     return Minecraft.getInstance().gameSettings.chatScale;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatScale(double chatScale) {
     Minecraft.getInstance().gameSettings.chatScale = chatScale;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getChatWidth() {
     return Minecraft.getInstance().gameSettings.chatWidth;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatWidth(double chatWidth) {
     Minecraft.getInstance().gameSettings.chatWidth = chatWidth;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getChatHeightUnfocused() {
     return Minecraft.getInstance().gameSettings.chatHeightUnfocused;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatHeightUnfocused(double chatHeightUnfocused) {
     Minecraft.getInstance().gameSettings.chatHeightUnfocused = chatHeightUnfocused;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getChatHeightFocused() {
     return Minecraft.getInstance().gameSettings.chatHeightFocused;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatHeightFocused(double chatHeightFocused) {
     Minecraft.getInstance().gameSettings.chatHeightFocused = chatHeightFocused;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getChatDelay() {
     return 0;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatDelay(double chatDelay) {
     // NO-OP
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ChatVisibility getChatVisibility() {
     switch (Minecraft.getInstance().gameSettings.chatVisibility) {
@@ -111,116 +87,96 @@ public class VersionedChatConfiguration implements ChatConfiguration {
       case HIDDEN:
         return ChatVisibility.HIDDEN;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.chatVisibility);
+        throw new IllegalStateException(
+            "Unexpected value: " + Minecraft.getInstance().gameSettings.chatVisibility);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatVisibility(ChatVisibility chatVisibility) {
     switch (chatVisibility) {
       case FULL:
-        Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.FULL;
+        Minecraft.getInstance().gameSettings.chatVisibility =
+            net.minecraft.entity.player.ChatVisibility.FULL;
         break;
       case SYSTEM:
-        Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.SYSTEM;
+        Minecraft.getInstance().gameSettings.chatVisibility =
+            net.minecraft.entity.player.ChatVisibility.SYSTEM;
         break;
       case HIDDEN:
-        Minecraft.getInstance().gameSettings.chatVisibility = net.minecraft.entity.player.ChatVisibility.HIDDEN;
+        Minecraft.getInstance().gameSettings.chatVisibility =
+            net.minecraft.entity.player.ChatVisibility.HIDDEN;
         break;
     }
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getChatOpacity() {
     return Minecraft.getInstance().gameSettings.chatOpacity;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatOpacity(double chatOpacity) {
     Minecraft.getInstance().gameSettings.chatOpacity = chatOpacity;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getChatLineSpacing() {
     return 0;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatLineSpacing(double chatLineSpacing) {
     // NO-OP
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isChatColor() {
     return Minecraft.getInstance().gameSettings.chatColor;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatColor(boolean chatColor) {
     Minecraft.getInstance().gameSettings.chatColor = chatColor;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isChatLinks() {
     return Minecraft.getInstance().gameSettings.chatLinks;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatLinks(boolean chatLinks) {
     Minecraft.getInstance().gameSettings.chatLinks = chatLinks;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isChatLinksPrompt() {
     return Minecraft.getInstance().gameSettings.chatLinksPrompt;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setChatLinksPrompt(boolean chatLinksPrompt) {
     Minecraft.getInstance().gameSettings.chatLinksPrompt = chatLinksPrompt;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public NarratorStatus getNarrator() {
     switch (Minecraft.getInstance().gameSettings.narrator) {
@@ -233,30 +189,33 @@ public class VersionedChatConfiguration implements ChatConfiguration {
       case SYSTEM:
         return NarratorStatus.SYSTEM;
       default:
-        throw new IllegalStateException("Unexpected value: " + Minecraft.getInstance().gameSettings.narrator);
+        throw new IllegalStateException(
+            "Unexpected value: " + Minecraft.getInstance().gameSettings.narrator);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setNarrator(NarratorStatus narrator) {
     switch (narrator) {
       case OFF:
-        Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.OFF;
+        Minecraft.getInstance().gameSettings.narrator =
+            net.minecraft.client.settings.NarratorStatus.OFF;
         Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case ALL:
-        Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.ALL;
+        Minecraft.getInstance().gameSettings.narrator =
+            net.minecraft.client.settings.NarratorStatus.ALL;
         Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case CHAT:
-        Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.CHAT;
+        Minecraft.getInstance().gameSettings.narrator =
+            net.minecraft.client.settings.NarratorStatus.CHAT;
         Minecraft.getInstance().gameSettings.saveOptions();
         break;
       case SYSTEM:
-        Minecraft.getInstance().gameSettings.narrator = net.minecraft.client.settings.NarratorStatus.SYSTEM;
+        Minecraft.getInstance().gameSettings.narrator =
+            net.minecraft.client.settings.NarratorStatus.SYSTEM;
         Minecraft.getInstance().gameSettings.saveOptions();
         break;
       default:
@@ -264,72 +223,56 @@ public class VersionedChatConfiguration implements ChatConfiguration {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isAccessibilityTextBackground() {
     return Minecraft.getInstance().gameSettings.accessibilityTextBackground;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setAccessibilityTextBackground(boolean accessibilityTextBackground) {
     Minecraft.getInstance().gameSettings.accessibilityTextBackground = accessibilityTextBackground;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isReducedDebugInfo() {
     return Minecraft.getInstance().gameSettings.reducedDebugInfo;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setReducedDebugInfo(boolean reducedDebugInfo) {
     Minecraft.getInstance().gameSettings.reducedDebugInfo = reducedDebugInfo;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isAutoSuggestCommands() {
     return Minecraft.getInstance().gameSettings.autoSuggestCommands;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setAutoSuggestCommands(boolean autoSuggestCommands) {
     Minecraft.getInstance().gameSettings.autoSuggestCommands = autoSuggestCommands;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public double getAccessibilityTextBackgroundOpacity() {
     return Minecraft.getInstance().gameSettings.accessibilityTextBackgroundOpacity;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setAccessibilityTextBackgroundOpacity(double accessibilityTextBackgroundOpacity) {
-    Minecraft.getInstance().gameSettings.accessibilityTextBackgroundOpacity = accessibilityTextBackgroundOpacity;
+    Minecraft.getInstance().gameSettings.accessibilityTextBackgroundOpacity =
+        accessibilityTextBackgroundOpacity;
     Minecraft.getInstance().gameSettings.saveOptions();
   }
-
 }

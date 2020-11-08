@@ -14,19 +14,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The {@link ApplicableSetting} to define a string input with all pre defined {@link ChatColor colors} and {@link
- * ChatFormat formats}, the stored type has to be a {@link TextComponent}.
- * <p>
- * The resulting json for the {@link JsonSettingsSerializer} will contain:
+ * The {@link ApplicableSetting} to define a string input with all pre defined {@link ChatColor
+ * colors} and {@link ChatFormat formats}, the stored type has to be a {@link TextComponent}.
+ *
+ * <p>The resulting json for the {@link JsonSettingsSerializer} will contain:
+ *
  * <ul>
- *   <li>'value' with the value from the setting, serialized with the {@link GsonComponentSerializer}</li>
+ *   <li>'value' with the value from the setting, serialized with the {@link
+ *       GsonComponentSerializer}
  * </ul>
  *
+ * @see ApplicableSetting
  * @see DefaultComponent
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ApplicableSetting(types = TextComponent.class, name = "component")
-public @interface ComponentSetting {
-
-}
+public @interface ComponentSetting {}

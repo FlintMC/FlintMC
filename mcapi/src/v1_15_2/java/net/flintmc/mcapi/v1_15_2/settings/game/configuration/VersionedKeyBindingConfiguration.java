@@ -16,14 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * 1.15.2 implementation of {@link KeyBindingConfiguration}.
- */
+/** 1.15.2 implementation of {@link KeyBindingConfiguration}. */
 @Singleton
 @ConfigImplementation(value = KeyBindingConfiguration.class, version = "1.15.2")
 public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration {
 
-  // TODO this needs some changes (e.g. minecraft.KeyBinding#getDefault is being used to get the current key, but this is only the default)
+  // TODO this needs some changes (e.g. minecraft.KeyBinding#getDefault is being used to get the
+  // current key, but this is only the default)
 
   private final KeyBinding.Factory keyBindingFactory;
 
@@ -35,22 +34,30 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   @Override
   public PhysicalKey getKey(String keyDescription) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
-    return keyBinding != null ? PhysicalKey.getByConfigurationName(keyBinding.getDefault().getTranslationKey()) : null;
+    return keyBinding != null
+        ? PhysicalKey.getByConfigurationName(keyBinding.getDefault().getTranslationKey())
+        : null;
   }
 
   @Override
   public void setKey(String keyDescription, PhysicalKey key) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
     if (keyBinding != null) {
-      keyBinding.bind(key == null ? InputMappings.INPUT_INVALID : InputMappings.getInputByName(key.getConfigurationName()));
+      keyBinding.bind(
+          key == null
+              ? InputMappings.INPUT_INVALID
+              : InputMappings.getInputByName(key.getConfigurationName()));
     }
   }
 
   @Override
   public Map<String, PhysicalKey> getAllKey() {
     Map<String, PhysicalKey> keys = new HashMap<>();
-    for (net.minecraft.client.settings.KeyBinding keyBinding : Minecraft.getInstance().gameSettings.keyBindings) {
-      keys.put(keyBinding.getKeyDescription(), PhysicalKey.getByConfigurationName(keyBinding.getDefault().getTranslationKey()));
+    for (net.minecraft.client.settings.KeyBinding keyBinding :
+        Minecraft.getInstance().gameSettings.keyBindings) {
+      keys.put(
+          keyBinding.getKeyDescription(),
+          PhysicalKey.getByConfigurationName(keyBinding.getDefault().getTranslationKey()));
     }
     return keys;
   }
@@ -84,7 +91,8 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   }
 
   private net.minecraft.client.settings.KeyBinding getMinecraftBinding(String keyDescription) {
-    for (net.minecraft.client.settings.KeyBinding keyBinding : Minecraft.getInstance().gameSettings.keyBindings) {
+    for (net.minecraft.client.settings.KeyBinding keyBinding :
+        Minecraft.getInstance().gameSettings.keyBindings) {
       if (keyBinding.getKeyDescription().equals(keyDescription)) {
         return keyBinding;
       }
@@ -93,58 +101,50 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public KeyBinding getKeyBinding(Keybind keybind) {
-    net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keybind.getKey());
+    net.minecraft.client.settings.KeyBinding keyBinding =
+        this.getMinecraftBinding(keybind.getKey());
     return keyBinding != null ? this.fromMinecraftObject(keyBinding) : null;
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public List<KeyBinding> getKeyBindsHotbar() {
-    return Arrays
-        .stream(Minecraft.getInstance().gameSettings.keyBindsHotbar)
-        .map(this::fromMinecraftObject).collect(Collectors.toList());
+    return Arrays.stream(Minecraft.getInstance().gameSettings.keyBindsHotbar)
+        .map(this::fromMinecraftObject)
+        .collect(Collectors.toList());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public List<KeyBinding> getKeyBindings() {
-    return Arrays
-        .stream(Minecraft.getInstance().gameSettings.keyBindings)
-        .map(this::fromMinecraftObject).collect(Collectors.toList());
+    return Arrays.stream(Minecraft.getInstance().gameSettings.keyBindings)
+        .map(this::fromMinecraftObject)
+        .collect(Collectors.toList());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setKeyBindingCode(KeyBinding bindingCode, PhysicalKey keyInputName) {
-    Minecraft.getInstance().gameSettings.setKeyBindingCode(
-        this.toMinecraftObject(bindingCode),
-        InputMappings.getInputByCode(keyInputName.getKey(), keyInputName.getScanCode())
-    );
+    Minecraft.getInstance()
+        .gameSettings
+        .setKeyBindingCode(
+            this.toMinecraftObject(bindingCode),
+            InputMappings.getInputByCode(keyInputName.getKey(), keyInputName.getScanCode()));
     bindingCode.bind(keyInputName);
   }
 
   private net.minecraft.client.settings.KeyBinding toMinecraftObject(KeyBinding binding) {
-    return new net.minecraft.client.settings.KeyBinding(binding.getKeyDescription(), binding.getKeyCode(), binding.getKeyCategory());
+    return new net.minecraft.client.settings.KeyBinding(
+        binding.getKeyDescription(), binding.getKeyCode(), binding.getKeyCategory());
   }
 
   private KeyBinding fromMinecraftObject(net.minecraft.client.settings.KeyBinding keyBinding) {
     return this.keyBindingFactory.create(
         keyBinding.getKeyDescription(),
         keyBinding.getDefault().getKeyCode(),
-        keyBinding.getKeyCategory()
-    );
+        keyBinding.getKeyCategory());
   }
-
 }
