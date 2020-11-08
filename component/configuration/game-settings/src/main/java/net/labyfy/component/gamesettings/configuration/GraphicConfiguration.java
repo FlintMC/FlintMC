@@ -2,9 +2,6 @@ package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
-import net.labyfy.component.config.defval.annotation.DefaultBoolean;
-import net.labyfy.component.config.defval.annotation.DefaultEnum;
-import net.labyfy.component.config.defval.annotation.DefaultNumber;
 import net.labyfy.component.gamesettings.settings.*;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.annotation.ui.DisplayName;
@@ -60,7 +57,6 @@ public interface GraphicConfiguration {
    */
   @EnumSelectSetting
   @DisplayName(@Component(value = "options.particles", translate = true))
-  @DefaultEnum(0 /* ALL */)
   ParticleStatus getParticles();
 
   /**
@@ -123,7 +119,6 @@ public interface GraphicConfiguration {
    */
   @BooleanSetting
   @DisplayName(@Component(value = "options.viewBobbing", translate = true))
-  @DefaultBoolean(true)
   boolean isViewBobbing();
 
   /**
@@ -188,7 +183,6 @@ public interface GraphicConfiguration {
    */
   @EnumSelectSetting
   @DisplayName(@Component(value = "options.attackIndicator", translate = true))
-  @DefaultEnum(1 /* CROSSHAIR */)
   AttackIndicatorStatus getAttackIndicator();
 
   /**
@@ -221,7 +215,6 @@ public interface GraphicConfiguration {
    */
   @EnumSelectSetting
   @DisplayName(@Component(value = "options.renderClouds", translate = true))
-  @DefaultEnum(2 /* FANCY */)
   CloudOption getCloudOption();
 
   /**
@@ -238,7 +231,6 @@ public interface GraphicConfiguration {
    */
   @EnumSelectSetting
   @DisplayName(@Component(value = "options.graphics", translate = true))
-  @DefaultEnum(1 /* FANCY */)
   GraphicsFanciness getGraphicsFanciness();
 
   /**
@@ -269,7 +261,6 @@ public interface GraphicConfiguration {
    */
   @SliderSetting(value = @Range(min = 2, max = 32))
   @DisplayName(@Component(value = "options.renderDistance", translate = true))
-  @DefaultNumber(8)
   int getRenderDistanceChunks();
 
   /**
@@ -330,7 +321,6 @@ public interface GraphicConfiguration {
    * @return {@code true} if a shadow is rendered under an entity.
    */
   @BooleanSetting
-  @DefaultBoolean(true)
   boolean isEntityShadows();
 
   /**

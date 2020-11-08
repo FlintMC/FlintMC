@@ -2,8 +2,6 @@ package net.labyfy.component.gamesettings.configuration;
 
 import net.labyfy.chat.annotation.Component;
 import net.labyfy.component.config.annotation.implemented.ImplementedConfig;
-import net.labyfy.component.config.defval.annotation.DefaultBoolean;
-import net.labyfy.component.config.defval.annotation.DefaultNumber;
 import net.labyfy.component.settings.annotation.ui.DefineCategory;
 import net.labyfy.component.settings.options.BooleanSetting;
 import net.labyfy.component.settings.options.numeric.Range;
@@ -25,7 +23,6 @@ public interface MouseConfiguration {
    * @return The mouse sensitivity.
    */
   @SliderSetting(@Range(max = 200)) // percent
-  @DefaultNumber(100)
   double getMouseSensitivity();
 
   /**
@@ -41,7 +38,6 @@ public interface MouseConfiguration {
    * @return The mouse wheel sensitivity.
    */
   @SliderSetting(value = @Range(min = 0.01, max = 10, decimals = 2))
-  @DefaultNumber(1)
   double getMouseWheelSensitivity();
 
   /**
@@ -57,7 +53,6 @@ public interface MouseConfiguration {
    * @return {@code true} if is the raw mouse input, otherwise {@code false}.
    */
   @BooleanSetting
-  @DefaultBoolean(true)
   boolean isRawMouseInput();
 
   /**
