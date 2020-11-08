@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.internal.gamesettings.keybind;
+package net.flintmc.mcapi.internal.settings.game.keybind;
 
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;

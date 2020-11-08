@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.internal.gamesettings;
+package net.flintmc.mcapi.internal.settings.game;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;

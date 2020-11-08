@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.internal.gamesettings.frontend;
+package net.flintmc.mcapi.internal.settings.game.frontend;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

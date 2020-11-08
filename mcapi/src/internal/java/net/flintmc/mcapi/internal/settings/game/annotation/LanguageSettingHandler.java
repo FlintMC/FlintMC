@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.internal.gamesettings;
+package net.flintmc.mcapi.internal.settings.game.annotation;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -8,7 +8,7 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
-import net.flintmc.mcapi.settings.game.LanguageSetting;
+import net.flintmc.mcapi.settings.game.annotation.LanguageSetting;
 import net.flintmc.util.i18n.I18n;
 
 @Singleton

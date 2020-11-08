@@ -18,6 +18,8 @@ import java.util.function.Predicate;
 @Implement(JsonConfigSerializer.class)
 public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
 
+  private static final Predicate<ConfigObjectReference> TRUE = o -> true;
+
   private final Gson gson;
   private final ConfigSerializationService serializationService;
 
@@ -25,6 +27,18 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
   public DefaultJsonConfigSerializer(ConfigSerializationService serializationService) {
     this.serializationService = serializationService;
     this.gson = new Gson();
+  }
+
+  @Override
+  public JsonObject serialize(ParsedConfig config) {
+    JsonObject object = new JsonObject();
+    this.serialize(config, object, TRUE);
+    return object;
+  }
+
+  @Override
+  public void deserialize(JsonObject object, ParsedConfig config) {
+    this.deserialize(object, config, TRUE);
   }
 
   private ConfigSerializationHandler getHandler(ConfigObjectReference reference) {

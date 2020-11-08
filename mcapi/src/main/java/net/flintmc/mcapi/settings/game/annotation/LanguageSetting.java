@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.settings.game;
+package net.flintmc.mcapi.settings.game.annotation;
 
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;

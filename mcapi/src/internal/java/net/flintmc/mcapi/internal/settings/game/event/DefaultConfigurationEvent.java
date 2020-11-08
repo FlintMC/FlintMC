@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.internal.gamesettings.event;
+package net.flintmc.mcapi.internal.settings.game.event;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;

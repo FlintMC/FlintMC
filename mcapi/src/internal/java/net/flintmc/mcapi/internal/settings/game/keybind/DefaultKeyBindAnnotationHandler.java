@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.internal.gamesettings.keybind;
+package net.flintmc.mcapi.internal.settings.game.keybind;
 
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapper;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler;

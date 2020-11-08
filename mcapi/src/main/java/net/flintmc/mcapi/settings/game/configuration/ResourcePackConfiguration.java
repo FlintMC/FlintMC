@@ -1,8 +1,10 @@
 package net.flintmc.mcapi.settings.game.configuration;
 
+import net.flintmc.framework.config.annotation.ConfigExclude;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
+import net.flintmc.mcapi.settings.game.annotation.ResourcePackSetting;
 
 import java.util.List;
 
@@ -11,9 +13,6 @@ import java.util.List;
     name = "minecraft.settings.resourcepack",
     displayName = @Component(value = "options.resourcepack", translate = true))
 @ImplementedConfig
-
-// TODO add settings annotations
-
 public interface ResourcePackConfiguration {
 
   /**
@@ -24,6 +23,7 @@ public interface ResourcePackConfiguration {
    *
    * @return A collection with all resource packs.
    */
+  @ResourcePackSetting
   List<String> getResourcePacks();
 
   /**
@@ -41,6 +41,7 @@ public interface ResourcePackConfiguration {
    *
    * @return A collection with all incompatible resource packs.
    */
+  @ConfigExclude
   List<String> getIncompatibleResourcePacks();
 
   /**
@@ -48,5 +49,6 @@ public interface ResourcePackConfiguration {
    *
    * @param incompatibleResourcePacks The new incompatible resource pack collection.
    */
+  @ConfigExclude
   void setIncompatibleResourcePacks(List<String> incompatibleResourcePacks);
 }
