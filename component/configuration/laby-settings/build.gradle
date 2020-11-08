@@ -22,7 +22,5 @@ dependencies {
     api project(':component:inject')
     api project(':component:transform:hook')
 
-    api project(':component:chat')
-
     api project(':component:configuration:config')
 }

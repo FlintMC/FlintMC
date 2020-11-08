@@ -23,6 +23,7 @@ dependencies {
     api project(':component:transform:hook')
 
     api project(':component:eventbus')
+    api project(':component:chat')
 
     api 'com.google.code.gson:gson:2.8.6'
 }
