@@ -6,6 +6,7 @@ import javassist.*;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
+import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.flintmc.processing.autoload.identifier.MethodIdentifier;
@@ -16,8 +17,6 @@ import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.flintmc.util.mappings.FieldMapping;
 import net.flintmc.util.mappings.MethodMapping;
-import net.flintmc.util.mappings.utils.MappingUtils;
-import org.objectweb.asm.Type;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,14 +41,17 @@ public class ShadowService implements ServiceHandler<Shadow> {
 
   @ClassTransform
   public void transform(ClassTransformContext classTransformContext)
-      throws NotFoundException, CannotCompileException {
-    ClassMapping classMapping = this.classMappingProvider.get(classTransformContext.getCtClass().getName());
-    String name = classMapping != null ? classMapping.getDeobfuscatedName() : classTransformContext.getCtClass().getName();
+      throws NotFoundException, CannotCompileException, ClassNotFoundException {
+    ClassMapping classMapping =
+        this.classMappingProvider.get(classTransformContext.getCtClass().getName());
+    String name =
+        classMapping != null
+            ? classMapping.getDeobfuscatedName()
+            : classTransformContext.getCtClass().getName();
     if (!this.transforms.containsKey(name)) return;
     CtClass ctClass = classTransformContext.getCtClass();
 
-    AnnotationMeta<Shadow> identifierMeta =
-        this.transforms.get(name);
+    AnnotationMeta<Shadow> identifierMeta = this.transforms.get(name);
     ClassPool classPool = classTransformContext.getCtClass().getClassPool();
     classTransformContext
         .getCtClass()
@@ -89,11 +91,11 @@ public class ShadowService implements ServiceHandler<Shadow> {
   }
 
   private void handleFieldSetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass)
-      throws CannotCompileException, NotFoundException {
+          throws CannotCompileException, NotFoundException, ClassNotFoundException {
     for (AnnotationMeta<FieldSetter> fieldSetterMeta :
         identifierMeta.getMetaData(FieldSetter.class)) {
       FieldSetter fieldSetter = fieldSetterMeta.getAnnotation();
-      CtMethod method = fieldSetterMeta.<MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method = getLocation(fieldSetterMeta.getIdentifier());
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 1) {
@@ -108,8 +110,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
       if (classMapping != null) {
         fieldName = classMapping.getField(fieldSetter.value()).getName();
       }
-      if (fieldName == null)
-        fieldName = fieldSetter.value();
+      if (fieldName == null) fieldName = fieldSetter.value();
 
       if (!hasMethod(ctClass, method.getName(), parameters)) {
 
@@ -151,11 +152,11 @@ public class ShadowService implements ServiceHandler<Shadow> {
   }
 
   private void handleFieldGetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass)
-      throws CannotCompileException, NotFoundException {
+          throws CannotCompileException, NotFoundException, ClassNotFoundException {
     for (AnnotationMeta<FieldGetter> fieldGetterMeta :
         identifierMeta.getMetaData(FieldGetter.class)) {
       FieldGetter fieldGetter = fieldGetterMeta.getAnnotation();
-      CtMethod method = fieldGetterMeta.<MethodIdentifier>getIdentifier().getLocation();
+      CtMethod method = getLocation(fieldGetterMeta.getIdentifier());
 
       CtClass[] parameters = method.getParameterTypes();
       if (parameters.length != 0) {
@@ -183,15 +184,16 @@ public class ShadowService implements ServiceHandler<Shadow> {
                 ctClass));
       }
     }
-
   }
 
   private void handleMethodProxies(
-      AnnotationMeta<Shadow> identifierMeta, ClassPool classPool, ClassTransformContext classTransformContext)
-      throws NotFoundException {
+      AnnotationMeta<Shadow> identifierMeta,
+      ClassPool classPool,
+      ClassTransformContext classTransformContext)
+      throws NotFoundException, ClassNotFoundException {
     for (AnnotationMeta<MethodProxy> methodProxyMeta :
         identifierMeta.getMetaData(MethodProxy.class)) {
-      CtMethod proxyMethod = methodProxyMeta.<MethodIdentifier>getIdentifier().getLocation();
+      CtMethod proxyMethod = getLocation(methodProxyMeta.getIdentifier());
 
       CtClass[] parameters = proxyMethod.getParameterTypes();
       CtClass[] classes = new CtClass[parameters.length];
@@ -200,26 +202,48 @@ public class ShadowService implements ServiceHandler<Shadow> {
       }
 
       CtMethod target;
-      ClassMapping classMapping = this.classMappingProvider.get(classTransformContext.getCtClass().getName());
+      ClassMapping classMapping =
+          this.classMappingProvider.get(classTransformContext.getCtClass().getName());
       if (classMapping != null) {
         MethodMapping methodMapping = classMapping.getMethod(proxyMethod.getName(), parameters);
         if (methodMapping != null) {
-          target = classTransformContext.getCtClass().getDeclaredMethod(methodMapping.getName(), classes);
+          target =
+              classTransformContext
+                  .getCtClass()
+                  .getDeclaredMethod(methodMapping.getName(), classes);
           if (!methodMapping.getName().equals(proxyMethod.getName())) {
             try {
-              classTransformContext.getCtClass().addMethod(CtMethod.make(String.format("public %s %s(){return this.%s($$);}", target.getReturnType().getName(), proxyMethod.getName(), target.getName()), classTransformContext.getCtClass()));
+              classTransformContext
+                  .getCtClass()
+                  .addMethod(
+                      CtMethod.make(
+                          String.format(
+                              "public %s %s(){return this.%s($$);}",
+                              target.getReturnType().getName(),
+                              proxyMethod.getName(),
+                              target.getName()),
+                          classTransformContext.getCtClass()));
             } catch (CannotCompileException e) {
               e.printStackTrace();
             }
-            System.out.println("OKAY SHIT WE HAVE TO HANDLE " + proxyMethod + " to " + target);
           }
         } else {
-          target = classTransformContext.getCtClass().getDeclaredMethod(proxyMethod.getName(), classes);
+          target =
+              classTransformContext.getCtClass().getDeclaredMethod(proxyMethod.getName(), classes);
         }
       } else {
-        target = classTransformContext.getCtClass().getDeclaredMethod(proxyMethod.getName(), classes);
+        target =
+            classTransformContext.getCtClass().getDeclaredMethod(proxyMethod.getName(), classes);
       }
       target.setModifiers(Modifier.setPublic(target.getModifiers()));
     }
   }
+
+  private CtMethod getLocation(MethodIdentifier identifier) throws ClassNotFoundException {
+    // we need to load the interface class so parameter and return types get appropriately
+    // remapped before getLocation is called
+    Class.forName(identifier.getOwner(), false, LaunchController.getInstance().getRootLoader());
+    return identifier.getLocation();
+  }
+
 }

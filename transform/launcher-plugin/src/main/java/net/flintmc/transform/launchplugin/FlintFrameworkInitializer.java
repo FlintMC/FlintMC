@@ -132,7 +132,7 @@ public class FlintFrameworkInitializer {
                 if (classMapping == null) return owner;
                 return classMapping.getName();
               })
-              /*.setParametersConverter((methodIdentifier, parameters) -> {
+              .setParametersConverter((methodIdentifier, parameters) -> {
                 String[] transformedParameterTypes = new String[parameters.length];
                 for (int i = 0; i < transformedParameterTypes.length; i++) {
                   ClassMapping classMapping = classMappingProvider.get(parameters[i]);
@@ -143,13 +143,13 @@ public class FlintFrameworkInitializer {
                   transformedParameterTypes[i] = classMapping.getName();
                 }
                 return transformedParameterTypes;
-              })*/
+              })
               .setNameConverter((methodIdentifier, name) -> {
                 ClassMapping classMapping = classMappingProvider.get(name);
                 if (classMapping == null) return name;
                 for (MethodMapping methodMapping : classMapping.getDeobfuscatedMethods().values()) {
                   if (methodMapping.getDeobfuscatedName().equals(name) || methodMapping.getObfuscatedName().equals(name)) {
-                    System.out.println();
+                    return methodMapping.getName();
                   }
                 }
                 return name;
