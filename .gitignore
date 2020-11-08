@@ -54,6 +54,7 @@ run/**
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.idea/kotlinScripting.xml
 
 # Gradle
 .idea/**/gradle.xml
