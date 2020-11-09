@@ -1,9 +1,8 @@
 package net.flintmc.framework.inject.assisted.data;
 
 import com.google.inject.Key;
-import net.flintmc.framework.inject.assisted.factory.AssistedFactoryModuleBuilder;
-
 import java.util.Collection;
+import net.flintmc.framework.inject.assisted.factory.AssistedFactoryModuleBuilder;
 
 /**
  * Represents a binding for a factory created by {@link AssistedFactoryModuleBuilder}.

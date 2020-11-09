@@ -1,7 +1,6 @@
 package net.flintmc.framework.inject.assisted;
 
 import com.google.inject.BindingAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,8 +15,8 @@ import java.lang.annotation.Target;
 public @interface Assisted {
 
   /**
-   * The unique name for this parameter. This is matched to the `@Assisted` constructor parameter wit hthe same
-   * value. Names are not necessary when the parameter types are distinct.
+   * The unique name for this parameter. This is matched to the `@Assisted` constructor parameter
+   * wit hthe same value. Names are not necessary when the parameter types are distinct.
    *
    * @return The unique name for this parameter.
    */

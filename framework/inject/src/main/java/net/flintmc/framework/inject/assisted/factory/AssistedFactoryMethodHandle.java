@@ -8,6 +8,8 @@ import java.lang.reflect.Modifier;
 
 public class AssistedFactoryMethodHandle {
 
+  private static final int MODIFIERS =
+      Modifier.PRIVATE | Modifier.STATIC | Modifier.PUBLIC | Modifier.PROTECTED;
   private final Constructor<MethodHandles.Lookup> lookupConstructor;
 
   /**
@@ -31,10 +33,8 @@ public class AssistedFactoryMethodHandle {
 
     Class<?> declaringClass = method.getDeclaringClass();
 
-    int modifiers = Modifier.PRIVATE | Modifier.STATIC | Modifier.PUBLIC | Modifier.PROTECTED;
-
     try {
-      MethodHandles.Lookup lookup = this.lookupConstructor.newInstance(declaringClass, modifiers);
+      MethodHandles.Lookup lookup = this.lookupConstructor.newInstance(declaringClass, MODIFIERS);
       method.setAccessible(true);
 
       return lookup.unreflectSpecial(method, declaringClass).bindTo(proxy);
@@ -50,7 +50,7 @@ public class AssistedFactoryMethodHandle {
   private Constructor<MethodHandles.Lookup> findConstructorHandlesLookup() {
     try {
       Constructor<MethodHandles.Lookup> constructorLookup =
-              MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+          MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
       constructorLookup.setAccessible(true);
       return constructorLookup;
     } catch (ReflectiveOperationException ignored) {

@@ -6,6 +6,7 @@ public class ThreadLocalProvider extends ThreadLocal<Object> implements Provider
 
   @Override
   protected Object initialValue() {
-    throw new IllegalStateException("Cannot use optimized @Assisted provider outside the scope of the constructor.");
+    throw new IllegalStateException(
+        "Cannot use optimized @Assisted provider outside the scope of the constructor.");
   }
 }

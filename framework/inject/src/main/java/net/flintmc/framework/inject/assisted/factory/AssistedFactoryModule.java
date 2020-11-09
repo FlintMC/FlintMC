@@ -1,11 +1,14 @@
 package net.flintmc.framework.inject.assisted.factory;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
+import com.google.inject.Key;
+import com.google.inject.Scopes;
+import com.google.inject.TypeLiteral;
 import com.google.inject.util.Providers;
-import net.flintmc.framework.inject.assisted.data.AssistData;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import net.flintmc.framework.inject.assisted.data.AssistData;
 
 /**
  * The module configures whether the method should create the constructor for the module.
@@ -25,7 +28,8 @@ public class AssistedFactoryModule extends AbstractModule {
    * @param assistData The assisted data for the module.
    * @param returnKey  The return type of the method.
    */
-  public AssistedFactoryModule(Method method, Object[] arguments, AssistData assistData, Key<?> returnKey) {
+  public AssistedFactoryModule(Method method, Object[] arguments, AssistData assistData,
+      Key<?> returnKey) {
     this.method = method;
     this.arguments = arguments;
     this.assistData = assistData;
@@ -42,11 +46,11 @@ public class AssistedFactoryModule extends AbstractModule {
 
     for (Key<?> parameterType : assistData.getParameterTypes()) {
       binder.bind((Key) parameterType)
-              .toProvider(
-                      optimized ?
-                              assistData.getProviders().get(providerCount++) :
-                              Providers.of(arguments[providerCount++])
-              );
+          .toProvider(
+              optimized ?
+                  assistData.getProviders().get(providerCount++) :
+                  Providers.of(arguments[providerCount++])
+          );
     }
 
     // Retrieves the constructor of the assisted data
@@ -54,8 +58,8 @@ public class AssistedFactoryModule extends AbstractModule {
 
     if (constructor != null) {
       binder.bind(returnKey)
-              .toConstructor(constructor, (TypeLiteral) assistData.getImplementationType())
-              .in(Scopes.NO_SCOPE);
+          .toConstructor(constructor, (TypeLiteral) assistData.getImplementationType())
+          .in(Scopes.NO_SCOPE);
     }
   }
 }

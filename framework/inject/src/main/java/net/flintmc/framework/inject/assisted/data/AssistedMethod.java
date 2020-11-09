@@ -2,7 +2,6 @@ package net.flintmc.framework.inject.assisted.data;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.Dependency;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Set;

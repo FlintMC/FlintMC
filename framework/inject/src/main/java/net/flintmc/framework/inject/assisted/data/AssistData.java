@@ -6,12 +6,11 @@ import com.google.inject.Binding;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.Dependency;
-import net.flintmc.framework.inject.assisted.thread.ThreadLocalProvider;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import net.flintmc.framework.inject.assisted.thread.ThreadLocalProvider;
 
 /**
  * The object stores important information for assisted methods.
@@ -37,18 +36,19 @@ public class AssistData implements AssistedMethod {
    * @param implementationType The implementation type of the assisted data.
    * @param factoryMethod      The factory method of the assisted data.
    * @param dependencies       The dependencies of the assisted ata.
-   * @param optimized          {@code true} if the assisted data is optimized, otherwise {@code false}.
+   * @param optimized          {@code true} if the assisted data is optimized, otherwise {@code
+   *                           false}.
    * @param providers          A collection with all providers of the assisted data.
    */
   public AssistData(
-          Constructor<?> constructor,
-          Key<?> returnType,
-          ImmutableList<Key<?>> parameterTypes,
-          TypeLiteral<?> implementationType,
-          Method factoryMethod,
-          Set<Dependency<?>> dependencies,
-          boolean optimized,
-          List<ThreadLocalProvider> providers) {
+      Constructor<?> constructor,
+      Key<?> returnType,
+      ImmutableList<Key<?>> parameterTypes,
+      TypeLiteral<?> implementationType,
+      Method factoryMethod,
+      Set<Dependency<?>> dependencies,
+      boolean optimized,
+      List<ThreadLocalProvider> providers) {
     this.constructor = constructor;
     this.returnType = returnType;
     this.parameterTypes = parameterTypes;
@@ -62,16 +62,16 @@ public class AssistData implements AssistedMethod {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(getClass())
-            .add("constructor", constructor)
-            .add("return type", returnType)
-            .add("parameter type", parameterTypes)
-            .add("implementation type", implementationType)
-            .add("dependencies", dependencies)
-            .add("factory method", factoryMethod)
-            .add("optimized", optimized)
-            .add("providers", providers)
-            .add("cached binding", cachedBinding)
-            .toString();
+        .add("constructor", constructor)
+        .add("return type", returnType)
+        .add("parameter type", parameterTypes)
+        .add("implementation type", implementationType)
+        .add("dependencies", dependencies)
+        .add("factory method", factoryMethod)
+        .add("optimized", optimized)
+        .add("providers", providers)
+        .add("cached binding", cachedBinding)
+        .toString();
   }
 
   /**

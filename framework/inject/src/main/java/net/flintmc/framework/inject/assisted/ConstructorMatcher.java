@@ -10,7 +10,6 @@ import com.google.inject.internal.Errors;
 import com.google.inject.internal.ErrorsException;
 import com.google.inject.internal.util.Classes;
 import com.google.inject.spi.InjectionPoint;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -20,10 +19,11 @@ import java.util.List;
 public class ConstructorMatcher {
 
   /**
-   * Finds a constructor suitable for the method. If the implementation contained any constructor marked with
-   * {@link AssistedInject}, this requires all {@link Assisted} parameters to exactly match the parameters
-   * (in any order) listed in  the method. Otherwise, if no {@link AssistedInject} constructors exist, this will default
-   * to looking for an {@link Inject} constructor.
+   * Finds a constructor suitable for the method. If the implementation contained any constructor
+   * marked with {@link AssistedInject}, this requires all {@link Assisted} parameters to exactly
+   * match the parameters (in any order) listed in  the method. Otherwise, if no {@link
+   * AssistedInject} constructors exist, this will default to looking for an {@link Inject}
+   * constructor.
    *
    * @param method         The method for an suitable constructor.
    * @param returnType     The return type of the method.
@@ -34,10 +34,10 @@ public class ConstructorMatcher {
    * @throws ErrorsException Will be thrown if an error occurred while finding a constructor.
    */
   public <T> InjectionPoint findMatchingConstructorInjectionPoint(
-          Method method,
-          Key<?> returnType,
-          TypeLiteral<T> implementation,
-          List<Key<?>> parameters) throws ErrorsException {
+      Method method,
+      Key<?> returnType,
+      TypeLiteral<T> implementation,
+      List<Key<?>> parameters) throws ErrorsException {
     Errors errors = new Errors(method);
     if (returnType.getTypeLiteral().equals(implementation)) {
       errors = errors.withSource(implementation);
@@ -48,13 +48,13 @@ public class ConstructorMatcher {
     Class<?> rawType = implementation.getRawType();
     if (Modifier.isInterface(rawType.getModifiers())) {
       errors.addMessage(
-              "%s is an interface, not a concrete class.  Unable to create AssistedInject factory.",
-              implementation);
+          "%s is an interface, not a concrete class.  Unable to create AssistedInject factory.",
+          implementation);
       throw errors.toException();
     } else if (Modifier.isAbstract(rawType.getModifiers())) {
       errors.addMessage(
-              "%s is abstract, not a concrete class.  Unable to create AssistedInject factory.",
-              implementation);
+          "%s is abstract, not a concrete class.  Unable to create AssistedInject factory.",
+          implementation);
       throw errors.toException();
     } else if (Classes.isInnerClass(rawType)) {
       errors.cannotInjectInnerClass(rawType);
@@ -65,16 +65,17 @@ public class ConstructorMatcher {
     boolean anyAssistedInjectConstructors = false;
 
     for (Constructor<?> constructor : rawType.getDeclaredConstructors()) {
-      if (constructor.isAnnotationPresent(net.flintmc.framework.inject.assisted.AssistedInject.class)) {
+      if (constructor.isAnnotationPresent(AssistedInject.class)) {
         anyAssistedInjectConstructors = true;
 
-        if (this.constructorHasMatchingParams(implementation, constructor, parameters, errors)) {
+        if (this
+            .constructorHasMatchingParameters(implementation, constructor, parameters, errors)) {
           if (matchingConstructor != null) {
             errors.addMessage(
-                    "%s has more than one constructor annotated with @AssistedInject"
-                            + " that matches the parameters in method %s.  Unable to create "
-                            + "AssistedInject factory.",
-                    implementation, method);
+                "%s has more than one constructor annotated with @AssistedInject"
+                    + " that matches the parameters in method %s.  Unable to create "
+                    + "AssistedInject factory.",
+                implementation, method);
             throw errors.toException();
           } else {
             matchingConstructor = constructor;
@@ -94,14 +95,14 @@ public class ConstructorMatcher {
       if (matchingConstructor != null) {
         @SuppressWarnings("unchecked")
         InjectionPoint injectionPoint =
-                InjectionPoint.forConstructor(
-                        (Constructor<? super T>) matchingConstructor, implementation);
+            InjectionPoint.forConstructor(
+                (Constructor<? super T>) matchingConstructor, implementation);
         return injectionPoint;
       } else {
         errors.addMessage(
-                "%s has @AssistedInject constructors, but none of them match the"
-                        + " parameters in method %s.  Unable to create AssistedInject factory.",
-                implementation, method);
+            "%s has @AssistedInject constructors, but none of them match the"
+                + " parameters in method %s.  Unable to create AssistedInject factory.",
+            implementation, method);
         throw errors.toException();
       }
     }
@@ -110,34 +111,41 @@ public class ConstructorMatcher {
   /**
    * Matching logic for constructors annotation with {@link AssistedInject}.
    *
-   * @return {@code true} if and only if all {@link Assisted} parameters in the constructor exactly match (in any order)
-   * all {@link Assisted} parameters the method's parameter.
+   * @return {@code true} if and only if all {@link Assisted} parameters in the constructor exactly
+   * match (in any order) all {@link Assisted} parameters the method's parameter.
    */
-  private boolean constructorHasMatchingParams(
-          TypeLiteral<?> type, Constructor<?> constructor, List<Key<?>> parameterList, Errors errors)
-          throws ErrorsException {
+  private boolean constructorHasMatchingParameters(
+      TypeLiteral<?> type, Constructor<?> constructor, List<Key<?>> parameterList, Errors errors)
+      throws ErrorsException {
     List<TypeLiteral<?>> parameters = type.getParameterTypes(constructor);
     Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
-    int providerCount = 0;
+    int parameterCount = 0;
     List<Key<?>> constructorKeys = Lists.newArrayList();
     for (TypeLiteral<?> parameter : parameters) {
-      Key<?> parameterKey = Annotations.getKey(parameter, constructor, parameterAnnotations[providerCount++], errors);
+      Key<?> parameterKey = Annotations
+          .getKey(parameter, constructor, parameterAnnotations[parameterCount++], errors);
       constructorKeys.add(parameterKey);
     }
 
-    for (Key<?> key : parameterList) {
-      if (!constructorKeys.remove(key)) {
-        return false;
-      }
-    }
-
-    for (Key<?> key : constructorKeys) {
-      if (key.getAnnotationType() == Assisted.class) {
-        return false;
-      }
-    }
-
-    return true;
+    return allMatch(constructorKeys, parameterList) && noneMatch(constructorKeys);
   }
 
+  /**
+   * @param constructorKeys A collection with all constructor keys.
+   * @return {@code true} if none of the given keys match with the {@link Assisted} annotation,
+   * otherwise {@code false}.
+   */
+  private boolean noneMatch(List<Key<?>> constructorKeys) {
+    return constructorKeys.stream().noneMatch(key -> key.getAnnotationType() == Assisted.class);
+  }
+
+  /**
+   * @param constructorKeys A collection with all constructor keys.
+   * @param parameterList   A collection with all parameters keys.
+   * @return {@code true} if all parameters match the provided constructor keys predicate, otherwise
+   * {@code false}.
+   */
+  private boolean allMatch(List<Key<?>> constructorKeys, List<Key<?>> parameterList) {
+    return parameterList.stream().allMatch(constructorKeys::remove);
+  }
 }
