@@ -2,8 +2,13 @@ package net.flintmc.transform.minecraft.obfuscate.remap;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.NotFoundException;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.classloading.common.ClassInformation;
 import net.flintmc.launcher.classloading.common.CommonClassLoaderHelper;
@@ -17,11 +22,6 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Loads and provides mappings for a {@link org.objectweb.asm.commons.ClassRemapper}, or in this
@@ -46,52 +46,70 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   private static Map<String, String> collectMappings(ClassMappingProvider classMappingProvider) {
     Map<String, String> mappings = new HashMap<>();
-    mappings.putAll(
-        classMappingProvider.getDeobfuscatedClassMappings().values().stream()
-            .filter(classMapping -> !classMapping.isDefault())
-            .collect(
-                Collectors.toMap(
-                    classMapping -> classMapping.getDeobfuscatedName().replace('.', '/'),
-                    classMapping -> classMapping.getObfuscatedName().replace('.', '/'))));
-
-    List<MethodMapping> methodMappings = new ArrayList<>();
 
     for (ClassMapping classMapping : classMappingProvider.getDeobfuscatedClassMappings().values()) {
-      for (MethodMapping method : classMapping.getObfuscatedMethods().values()) {
-        if (mappings.containsKey(
-            method.getClassMapping().getDeobfuscatedName().replace('.', '/')
-                + "."
-                + method.getDeobfuscatedIdentifier())) {
-          methodMappings.add(method);
-        } else {
-          mappings.put(
-              method.getClassMapping().getDeobfuscatedName().replace('.', '/')
-                  + "."
-                  + method.getDeobfuscatedIdentifier(),
-              method.getObfuscatedName());
+      String name = classMapping.getDeobfuscatedName().replace('.', '/');
+
+      if (!classMapping.isDefault()) {
+        if (mappings.put(name, classMapping.getObfuscatedName().replace('.', '/')) != null) {
+          throw new IllegalStateException("Duplicate key!");
         }
+      }
+
+      addMethodAndFieldMappings(mappings, classMapping, name);
+
+      CtClass ctClass = null;
+
+      try {
+        ctClass = ClassPool.getDefault().get(classMapping.getName());
+      } catch (NotFoundException ignored) {
+        // Can be ignored, because the SRG mapping
+        // contains classes which do not exist in the game.
+      }
+
+      if (ctClass != null) {
+        try {
+          CtClass superClass = ctClass.getSuperclass();
+
+          while (superClass != null && superClass.getPackageName() == null) {
+            ClassMapping superClassMapping = classMappingProvider.get(superClass.getName());
+
+            // Adds all super types methods & fields to the given class
+            addMethodAndFieldMappings(mappings, superClassMapping, name);
+
+            superClass = superClass.getSuperclass();
+          }
+
+        } catch (NotFoundException exception) {
+          // If the exception is thrown, the game is broken.
+          exception.printStackTrace();
+        }
+
       }
     }
 
-    mappings.putAll(
-        classMappingProvider.getDeobfuscatedClassMappings().values().stream()
-            .map(classMapping -> classMapping.getObfuscatedFields().values())
-            .flatMap(Collection::stream)
-            .filter(fieldMapping -> !fieldMapping.isDefault())
-            .collect(
-                Collectors.toMap(
-                    fieldMapping ->
-                        fieldMapping.getClassMapping().getDeobfuscatedName().replace('.', '/')
-                            + "."
-                            + fieldMapping.getDeobfuscatedName(),
-                    FieldMapping::getObfuscatedName)));
     return mappings;
+  }
+
+  private static void addMethodAndFieldMappings(Map<String, String> mappings,
+      ClassMapping classMapping,
+      String name) {
+    for (MethodMapping method : classMapping.getObfuscatedMethods().values()) {
+      mappings.put(name + "." + method.getDeobfuscatedIdentifier(), method.getObfuscatedName());
+    }
+
+    for (FieldMapping value : classMapping.getObfuscatedFields().values()) {
+      if (!value.isDefault()) {
+        mappings.put(name + "." + value.getDeobfuscatedName(), value.getObfuscatedName());
+      }
+    }
   }
 
   public List<String> getSuperClass(String clazz) {
     try {
-      ClassInformation classInformation = CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, clazz);
-      if(classInformation == null) {
+      ClassInformation classInformation = CommonClassLoaderHelper
+          .retrieveClass(this.rootClassLoader, clazz);
+      if (classInformation == null) {
         // Java internal class
         return new ArrayList<>();
       }
@@ -108,7 +126,9 @@ public class MinecraftClassRemapper extends SimpleRemapper {
               : ASMUtils.getNode(superClassInformation.getClassBytes());
 
       ArrayList<String> classes = new ArrayList<>();
-      if (superClass != null) classes.add(superClass.name);
+      if (superClass != null) {
+        classes.add(superClass.name);
+      }
       if (theClazz.interfaces != null) {
         classes.addAll(theClazz.interfaces);
       }
@@ -145,7 +165,9 @@ public class MinecraftClassRemapper extends SimpleRemapper {
                       + "."
                       + name
                       + desc.substring(0, desc.lastIndexOf(')') + 1));
-          if (map != null) return map;
+          if (map != null) {
+            return map;
+          }
         }
       }
     }
@@ -155,7 +177,7 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   @Override
   public String mapInvokeDynamicMethodName(String name, String desc) {
-    if(lastHandle != null && lastHandle.getName().startsWith("lambda$")){
+    if (lastHandle != null && lastHandle.getName().startsWith("lambda$")) {
       String owner = Type.getReturnType(desc).getInternalName();
       String descriptor = this.lastHandle.getDesc();
       String methodName = this.mapMethodName(owner, name, descriptor);
@@ -168,7 +190,7 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   @Override
   public Object mapValue(Object value) {
-    if(value instanceof Handle){
+    if (value instanceof Handle) {
       lastHandle = (Handle) value;
     }
     return super.mapValue(value);
