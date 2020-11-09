@@ -10,10 +10,20 @@ public class AssistedFactoryMethodHandle {
 
   private final Constructor<MethodHandles.Lookup> lookupConstructor;
 
-  public AssistedFactoryMethodHandle() {
+  /**
+   * Constructs a new assisted factory method handle.
+   */
+  protected AssistedFactoryMethodHandle() {
     this.lookupConstructor = this.findConstructorHandlesLookup();
   }
 
+  /**
+   * Creates a {@link MethodHandle} with the given parameters.
+   *
+   * @param method The method to creates a constructor.
+   * @param proxy  The proxy of the method.
+   * @return A created method handle or {@code null}.
+   */
   public MethodHandle createMethodHandle(Method method, Object proxy) {
     if (this.lookupConstructor == null) {
       return null;
@@ -34,6 +44,9 @@ public class AssistedFactoryMethodHandle {
 
   }
 
+  /**
+   * @see MethodHandles.Lookup
+   */
   private Constructor<MethodHandles.Lookup> findConstructorHandlesLookup() {
     try {
       Constructor<MethodHandles.Lookup> constructorLookup =

@@ -31,7 +31,7 @@ public class ConstructorMatcher {
    * @param parameters     The parameters.
    * @param <T>            The type of the method.
    * @return A suitable constructor for the method.
-   * @throws ErrorsException
+   * @throws ErrorsException Will be thrown if an error occurred while finding a constructor.
    */
   public <T> InjectionPoint findMatchingConstructorInjectionPoint(
           Method method,
@@ -114,18 +114,18 @@ public class ConstructorMatcher {
    * all {@link Assisted} parameters the method's parameter.
    */
   private boolean constructorHasMatchingParams(
-          TypeLiteral<?> type, Constructor<?> constructor, List<Key<?>> paramList, Errors errors)
+          TypeLiteral<?> type, Constructor<?> constructor, List<Key<?>> parameterList, Errors errors)
           throws ErrorsException {
-    List<TypeLiteral<?>> params = type.getParameterTypes(constructor);
-    Annotation[][] paramAnnotations = constructor.getParameterAnnotations();
-    int p = 0;
+    List<TypeLiteral<?>> parameters = type.getParameterTypes(constructor);
+    Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+    int providerCount = 0;
     List<Key<?>> constructorKeys = Lists.newArrayList();
-    for (TypeLiteral<?> param : params) {
-      Key<?> paramKey = Annotations.getKey(param, constructor, paramAnnotations[p++], errors);
-      constructorKeys.add(paramKey);
+    for (TypeLiteral<?> parameter : parameters) {
+      Key<?> parameterKey = Annotations.getKey(parameter, constructor, parameterAnnotations[providerCount++], errors);
+      constructorKeys.add(parameterKey);
     }
 
-    for (Key<?> key : paramList) {
+    for (Key<?> key : parameterList) {
       if (!constructorKeys.remove(key)) {
         return false;
       }
