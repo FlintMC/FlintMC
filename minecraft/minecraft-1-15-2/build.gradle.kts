@@ -1,5 +1,6 @@
 import net.flintmc.minecraft.version.MinecraftVersionGenerator
 import java.nio.file.Paths
+import java.net.URL
 
 plugins {
     id("java-library")
@@ -12,6 +13,22 @@ flint {
         Paths.get("build/generated/flint/version.json"),
         Paths.get("versions/flint-1.15.2/flint-1.15.2.json"),
         "version.json"
+    )
+    urlFileEntry(
+        URL("jar:https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_config/1.15.2-20200515.085601/mcp_config-1.15.2-20200515.085601.zip!/config/joined.tsrg"),
+        Paths.get("flint/assets/joined.tsrg")
+    )
+    urlFileEntry(
+        URL("jar:https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_snapshot/20200610-1.15.1/mcp_snapshot-20200610-1.15.1.zip!/fields.csv"),
+        Paths.get("flint/assets/fields.csv")
+    )
+    urlFileEntry(
+        URL("jar:https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_snapshot/20200610-1.15.1/mcp_snapshot-20200610-1.15.1.zip!/params.csv"),
+        Paths.get("flint/assets/params.csv")
+    )
+    urlFileEntry(
+        URL("jar:https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_snapshot/20200610-1.15.1/mcp_snapshot-20200610-1.15.1.zip!/methods.csv"),
+        Paths.get("flint/assets/methods.csv")
     )
 }
 
