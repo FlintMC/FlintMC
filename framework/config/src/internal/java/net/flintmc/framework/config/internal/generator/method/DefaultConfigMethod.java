@@ -21,8 +21,12 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
   protected boolean addedInterfaceMethods;
   private String[] pathPrefix;
 
-  public DefaultConfigMethod(ConfigSerializationService serializationService, GeneratingConfig config,
-                             CtClass declaringClass, String configName, CtClass methodType) {
+  public DefaultConfigMethod(
+      ConfigSerializationService serializationService,
+      GeneratingConfig config,
+      CtClass declaringClass,
+      String configName,
+      CtClass methodType) {
     this.serializationService = serializationService;
     this.config = config;
     this.declaringClass = declaringClass;
@@ -92,7 +96,8 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
     return this.generateOrGetField(target, null);
   }
 
-  protected CtField generateOrGetField(CtClass target, String defaultValue) throws CannotCompileException {
+  protected CtField generateOrGetField(CtClass target, String defaultValue)
+      throws CannotCompileException {
     try {
       return target.getDeclaredField(this.configName);
     } catch (NotFoundException ignored) {
@@ -100,13 +105,20 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
 
     String fieldSrc = "private " + this.methodType.getName() + " " + this.configName;
 
-    if (defaultValue == null && this.methodType.isInterface() && !this.serializationService.hasSerializer(this.getStoredType())) {
+    if (defaultValue == null
+        && this.methodType.isInterface()
+        && !this.serializationService.hasSerializer(this.getStoredType())) {
       CtClass implementation = this.config.getGeneratedImplementation(this.methodType.getName());
 
       if (implementation != null) {
         fieldSrc += " = new " + implementation.getName() + "(this.config)";
       } else {
-        fieldSrc += " = " + InjectionHolder.class.getName() + ".getInjectedInstance(" + this.methodType.getName() + ".class)";
+        fieldSrc +=
+            " = "
+                + InjectionHolder.class.getName()
+                + ".getInjectedInstance("
+                + this.methodType.getName()
+                + ".class)";
       }
     }
 
@@ -138,18 +150,22 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
 
       String configGetter = "this";
       if (!this.config.getBaseClass().subclassOf(declaring)) {
-        configGetter = InjectionHolder.class.getName() + ".getInjectedInstance(" + configName + ".class)";
+        configGetter =
+            InjectionHolder.class.getName() + ".getInjectedInstance(" + configName + ".class)";
       }
 
-      declaring.addField(CtField.make("private final transient " + configName + " config = " + configGetter + ";", declaring));
+      declaring.addField(
+          CtField.make(
+              "private final transient " + configName + " config = " + configGetter + ";",
+              declaring));
     }
 
-    String src = "this.configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);";
+    String src =
+        "this.configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);";
     if (method.getMethodInfo().getCodeAttribute() != null) {
       method.insertAfter(src);
     } else {
       method.setBody(src);
     }
   }
-
 }

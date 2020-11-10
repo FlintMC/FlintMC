@@ -5,5 +5,4 @@ public interface ReferenceInvoker {
   Object getValue(Object instance);
 
   void setValue(Object instance, Object newValue);
-
 }

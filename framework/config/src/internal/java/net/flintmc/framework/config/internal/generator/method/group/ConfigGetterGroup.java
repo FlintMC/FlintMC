@@ -6,10 +6,10 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigGetterSetter;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigMultiGetterSetter;
-import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 
 import java.util.Map;
@@ -27,11 +27,13 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
 
   @Override
   public String[] getPossiblePrefixes() {
-    return new String[]{"get", "is"};
+    return new String[] {"get", "is"};
   }
 
   @Override
-  public DefaultConfigMethod resolveMethod(GeneratingConfig config, CtClass type, String entryName, CtMethod method) throws NotFoundException {
+  public DefaultConfigMethod resolveMethod(
+      GeneratingConfig config, CtClass type, String entryName, CtMethod method)
+      throws NotFoundException {
     CtClass methodType = method.getReturnType();
     if (methodType.equals(CtClass.voidType)) {
       return null;
@@ -39,10 +41,17 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
 
     CtClass[] parameters = method.getParameterTypes();
     if (parameters.length == 0) {
-      if (methodType.getName().equals(Map.class.getName()) && entryName.startsWith(ConfigMultiGetterSetter.ALL_PREFIX)) {
+      if (methodType.getName().equals(Map.class.getName())
+          && entryName.startsWith(ConfigMultiGetterSetter.ALL_PREFIX)) {
         CtClass objectType = this.pool.get(Object.class.getName());
-        return new ConfigMultiGetterSetter(this.serializationService, config, type,
-            entryName.substring(ConfigMultiGetterSetter.ALL_PREFIX.length()), methodType, objectType, objectType);
+        return new ConfigMultiGetterSetter(
+            this.serializationService,
+            config,
+            type,
+            entryName.substring(ConfigMultiGetterSetter.ALL_PREFIX.length()),
+            methodType,
+            objectType,
+            objectType);
       }
 
       return new ConfigGetterSetter(this.serializationService, config, type, entryName, methodType);
@@ -53,8 +62,14 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
         return null;
       }
 
-      return new ConfigMultiGetterSetter(this.serializationService, config, type, entryName,
-          this.pool.get(Map.class.getName()), parameters[0], methodType);
+      return new ConfigMultiGetterSetter(
+          this.serializationService,
+          config,
+          type,
+          entryName,
+          this.pool.get(Map.class.getName()),
+          parameters[0],
+          methodType);
     }
 
     throw new IllegalArgumentException("Getter can only have either no or one parameter");

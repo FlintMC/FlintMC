@@ -11,7 +11,10 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.Identifier;
 
 @Singleton
-@Service(value = StoragePriority.class, priority = 1 /* higher than from the ConfigGenerator so that the configs are available for reading in this service */)
+@Service(
+    value = StoragePriority.class,
+    priority =
+        1 /* higher than from the ConfigGenerator so that the configs are available for reading in this service */)
 public class ConfigStorageService implements ServiceHandler<StoragePriority> {
 
   private final ConfigStorageProvider storageProvider;
@@ -20,7 +23,6 @@ public class ConfigStorageService implements ServiceHandler<StoragePriority> {
   public ConfigStorageService(ConfigStorageProvider storageProvider) {
     this.storageProvider = storageProvider;
   }
-
 
   @Override
   public void discover(AnnotationMeta<StoragePriority> meta) {

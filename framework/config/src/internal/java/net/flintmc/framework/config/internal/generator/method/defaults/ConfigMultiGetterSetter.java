@@ -3,9 +3,9 @@ package net.flintmc.framework.config.internal.generator.method.defaults;
 import com.google.common.base.Defaults;
 import com.google.gson.reflect.TypeToken;
 import javassist.*;
-import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
+import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 
@@ -19,8 +19,14 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
   private final CtClass keyType;
   private final CtClass valueType;
 
-  public ConfigMultiGetterSetter(ConfigSerializationService serializationService, GeneratingConfig config, CtClass declaringClass,
-                                 String name, CtClass methodType, CtClass keyType, CtClass valueType) {
+  public ConfigMultiGetterSetter(
+      ConfigSerializationService serializationService,
+      GeneratingConfig config,
+      CtClass declaringClass,
+      String name,
+      CtClass methodType,
+      CtClass keyType,
+      CtClass valueType) {
     super(serializationService, config, declaringClass, name, methodType);
     this.keyType = keyType;
     this.valueType = valueType;
@@ -34,7 +40,10 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
   private String getSingleGetterName() {
     CtClass type = super.getStoredType();
 
-    String prefix = type.equals(CtClass.booleanType) || type.getName().equals(Boolean.class.getName()) ? "is" : "get";
+    String prefix =
+        type.equals(CtClass.booleanType) || type.getName().equals(Boolean.class.getName())
+            ? "is"
+            : "get";
     return prefix + super.getConfigName();
   }
 
@@ -49,21 +58,26 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
 
   @Override
   public String[] getMethodNames() {
-    return new String[]{this.getGetterName(), this.getSingleGetterName(), this.getSetterName(), this.getSingleSetterName()};
+    return new String[] {
+      this.getGetterName(),
+      this.getSingleGetterName(),
+      this.getSetterName(),
+      this.getSingleSetterName()
+    };
   }
 
   @Override
   public CtClass[] getTypes() {
-    return new CtClass[]{this.keyType, this.getStoredType(), this.valueType};
+    return new CtClass[] {this.keyType, this.getStoredType(), this.valueType};
   }
 
   @Override
   public Type getSerializedType() {
     return TypeToken.getParameterized(
-        Map.class,
-        super.loadImplementationOrDefault(this.keyType),
-        super.loadImplementationOrDefault(this.valueType)
-    ).getType();
+            Map.class,
+            super.loadImplementationOrDefault(this.keyType),
+            super.loadImplementationOrDefault(this.valueType))
+        .getType();
   }
 
   @Override
@@ -88,7 +102,8 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
   }
 
   @Override
-  public void implementExistingMethods(CtClass target) throws CannotCompileException, NotFoundException {
+  public void implementExistingMethods(CtClass target)
+      throws CannotCompileException, NotFoundException {
     boolean generatedSetter = false;
 
     // generate the getter/setter for all values automatically if the key is an enum
@@ -126,9 +141,9 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
       }
 
       if (!this.hasMethod(target, this.getSetterName())) {
-        target.addMethod(CtNewMethod.make("void " + this.getSetterName() + "(java.util.Map arg);", target));
+        target.addMethod(
+            CtNewMethod.make("void " + this.getSetterName() + "(java.util.Map arg);", target));
       }
-
     }
 
     super.addedInterfaceMethods = true;
@@ -144,16 +159,27 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
     for (CtField field : this.keyType.getFields()) {
       if (Modifier.isStatic(field.getModifiers())) {
         String constant = this.keyType.getName() + "." + field.getName();
-        operations.append("map.put(").append(constant).append(", ")
-            .append(String.format(valueFormat, "this." + this.getSingleGetterName() + "(" + constant + ")")).append(");");
+        operations
+            .append("map.put(")
+            .append(constant)
+            .append(", ")
+            .append(
+                String.format(
+                    valueFormat, "this." + this.getSingleGetterName() + "(" + constant + ")"))
+            .append(");");
       }
     }
 
-    target.addMethod(CtNewMethod.make("public java.util.Map " + this.getGetterName() + "() {" +
-        "java.util.Map map = new java.util.HashMap();" +
-        operations +
-        "return map;" +
-        "}", target));
+    target.addMethod(
+        CtNewMethod.make(
+            "public java.util.Map "
+                + this.getGetterName()
+                + "() {"
+                + "java.util.Map map = new java.util.HashMap();"
+                + operations
+                + "return map;"
+                + "}",
+            target));
   }
 
   private void insertEnumSetAll(CtClass target) throws CannotCompileException {
@@ -162,21 +188,31 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
       if (Modifier.isStatic(field.getModifiers())) {
         String constant = this.keyType.getName() + "." + field.getName();
 
-        String valueName = this.valueType instanceof CtPrimitiveType ? ((CtPrimitiveType) this.valueType).getWrapperName() : this.valueType.getName();
+        String valueName =
+            this.valueType instanceof CtPrimitiveType
+                ? ((CtPrimitiveType) this.valueType).getWrapperName()
+                : this.valueType.getName();
         String getter = "((" + valueName + ") map.get(" + constant + "))";
 
-        operations.append("if (map.containsKey(").append(constant).append(")) {")
-
-            .append("this.").append(this.getSingleSetterName())
-            .append("(").append(constant).append(", ").append(PrimitiveTypeLoader.asPrimitiveSource(this.valueType, getter)).append(");")
-
+        operations
+            .append("if (map.containsKey(")
+            .append(constant)
+            .append(")) {")
+            .append("this.")
+            .append(this.getSingleSetterName())
+            .append("(")
+            .append(constant)
+            .append(", ")
+            .append(PrimitiveTypeLoader.asPrimitiveSource(this.valueType, getter))
+            .append(");")
             .append("}");
       }
     }
 
-    target.addMethod(CtNewMethod.make("public void " + this.getSetterName() + "(java.util.Map map) {" +
-        operations +
-        "}", target));
+    target.addMethod(
+        CtNewMethod.make(
+            "public void " + this.getSetterName() + "(java.util.Map map) {" + operations + "}",
+            target));
   }
 
   private void insertGetAll(CtClass target, CtField field) throws CannotCompileException {
@@ -184,37 +220,71 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
   }
 
   private void insertSetAll(CtClass target, CtField field) throws CannotCompileException {
-    target.addMethod(CtNewMethod.make(
-        "public void " + this.getSetterName() + "(java.util.Map map) { this." + field.getName() + " = map; }", target
-    ));
+    target.addMethod(
+        CtNewMethod.make(
+            "public void "
+                + this.getSetterName()
+                + "(java.util.Map map) { this."
+                + field.getName()
+                + " = map; }",
+            target));
   }
 
   private void insertSetter(CtClass target, CtField field) throws CannotCompileException {
     String value = PrimitiveTypeLoader.asWrappedPrimitiveSource(this.valueType, "value");
 
-    target.addMethod(CtNewMethod.make(
-        "public void " + this.getSingleSetterName() + "(" + this.keyType.getName() + " key, " + this.valueType.getName() + " value) {" +
-            "this." + field.getName() + ".put(key, " + value + ");" +
-            "this.configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);" +
-            "}", target
-    ));
+    target.addMethod(
+        CtNewMethod.make(
+            "public void "
+                + this.getSingleSetterName()
+                + "("
+                + this.keyType.getName()
+                + " key, "
+                + this.valueType.getName()
+                + " value) {"
+                + "this."
+                + field.getName()
+                + ".put(key, "
+                + value
+                + ");"
+                + "this.configStorageProvider.write(("
+                + ParsedConfig.class.getName()
+                + ") this.config);"
+                + "}",
+            target));
   }
 
   private void insertGetter(CtClass target, CtField field) throws CannotCompileException {
     String defaultValue;
     try {
-      defaultValue = this.valueType.isPrimitive() ? String.valueOf(Defaults.defaultValue(Class.forName(this.valueType.getName()))) : "null";
+      defaultValue =
+          this.valueType.isPrimitive()
+              ? String.valueOf(Defaults.defaultValue(Class.forName(this.valueType.getName())))
+              : "null";
     } catch (ClassNotFoundException e) {
       defaultValue = "null";
     }
 
-    String getter = PrimitiveTypeLoader.asWrappedPrimitiveSource(this.valueType, "this." + field.getName() + ".getOrDefault(input, " + defaultValue + ")");
+    String getter =
+        PrimitiveTypeLoader.asWrappedPrimitiveSource(
+            this.valueType,
+            "this." + field.getName() + ".getOrDefault(input, " + defaultValue + ")");
 
-    target.addMethod(CtNewMethod.make(
-        "public " + this.valueType.getName() + " " + this.getSingleGetterName() + "(" + this.keyType.getName() + " input) {" +
-            "return (" + this.valueType.getName() + ") " + getter + ";" +
-            "}", target
-    ));
+    target.addMethod(
+        CtNewMethod.make(
+            "public "
+                + this.valueType.getName()
+                + " "
+                + this.getSingleGetterName()
+                + "("
+                + this.keyType.getName()
+                + " input) {"
+                + "return ("
+                + this.valueType.getName()
+                + ") "
+                + getter
+                + ";"
+                + "}",
+            target));
   }
-
 }

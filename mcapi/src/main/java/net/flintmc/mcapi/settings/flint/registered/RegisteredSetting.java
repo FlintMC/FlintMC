@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.settings.flint.registered;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.inject.assisted.AssistedFactory;

@@ -3,9 +3,9 @@ package net.flintmc.framework.config.internal.generator.method.reference.invoker
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.*;
+import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.internal.generator.base.ConfigClassLoader;
 import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
-import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 
 import java.io.IOException;
@@ -29,9 +29,15 @@ public class ReferenceInvocationGenerator {
     this.classLoader = generator.getClassLoader();
   }
 
-  public ReferenceInvoker generateInvoker(GeneratingConfig config, CtMethod[] path, CtMethod getter, CtMethod setter) throws CannotCompileException,
-      NotFoundException, IOException, ReflectiveOperationException {
-    CtClass target = this.pool.makeClass("ReferenceInvoker_" + this.idCounter.incrementAndGet() + "_" + this.random.nextInt(Integer.MAX_VALUE));
+  public ReferenceInvoker generateInvoker(
+      GeneratingConfig config, CtMethod[] path, CtMethod getter, CtMethod setter)
+      throws CannotCompileException, NotFoundException, IOException, ReflectiveOperationException {
+    CtClass target =
+        this.pool.makeClass(
+            "ReferenceInvoker_"
+                + this.idCounter.incrementAndGet()
+                + "_"
+                + this.random.nextInt(Integer.MAX_VALUE));
     target.addInterface(this.pool.get(ReferenceInvoker.class.getName()));
 
     String base = "((" + config.getBaseClass().getName() + ") instance)";
@@ -43,7 +49,8 @@ public class ReferenceInvocationGenerator {
     return this.newInstance(target);
   }
 
-  private ReferenceInvoker newInstance(CtClass target) throws IOException, CannotCompileException, ReflectiveOperationException {
+  private ReferenceInvoker newInstance(CtClass target)
+      throws IOException, CannotCompileException, ReflectiveOperationException {
     Class<?> generated = this.classLoader.defineClass(target.getName(), target.toBytecode());
 
     return (ReferenceInvoker) generated.getDeclaredConstructor().newInstance();
@@ -71,24 +78,32 @@ public class ReferenceInvocationGenerator {
     return builder.toString();
   }
 
-  private CtMethod generateGetter(String lastAccessor, CtClass declaring, CtMethod getter) throws CannotCompileException, NotFoundException {
-    String valueSrc = PrimitiveTypeLoader.asWrappedPrimitiveSource(getter.getReturnType(), lastAccessor + "." + getter.getName() + "()");
-    String src = "public Object getValue(Object instance) {" +
-        "return " + valueSrc + ";" +
-        "}";
+  private CtMethod generateGetter(String lastAccessor, CtClass declaring, CtMethod getter)
+      throws CannotCompileException, NotFoundException {
+    String valueSrc =
+        PrimitiveTypeLoader.asWrappedPrimitiveSource(
+            getter.getReturnType(), lastAccessor + "." + getter.getName() + "()");
+    String src = "public Object getValue(Object instance) {" + "return " + valueSrc + ";" + "}";
 
     return CtNewMethod.make(src, declaring);
   }
 
-  private CtMethod generateSetter(String lastAccessor, CtClass declaring, CtMethod setter) throws CannotCompileException, NotFoundException {
+  private CtMethod generateSetter(String lastAccessor, CtClass declaring, CtMethod setter)
+      throws CannotCompileException, NotFoundException {
     CtClass type = setter.getParameterTypes()[0];
-    String valueSrc = "((" + type.getName() + ")" + PrimitiveTypeLoader.asPrimitiveSource(type, "newValue") + ")";
+    String valueSrc =
+        "((" + type.getName() + ")" + PrimitiveTypeLoader.asPrimitiveSource(type, "newValue") + ")";
 
-    String src = "public void setValue(Object instance, Object newValue) {" +
-        lastAccessor + "." + setter.getName() + "(" + valueSrc + ");" +
-        "}";
+    String src =
+        "public void setValue(Object instance, Object newValue) {"
+            + lastAccessor
+            + "."
+            + setter.getName()
+            + "("
+            + valueSrc
+            + ");"
+            + "}";
 
     return CtNewMethod.make(src, declaring);
   }
-
 }

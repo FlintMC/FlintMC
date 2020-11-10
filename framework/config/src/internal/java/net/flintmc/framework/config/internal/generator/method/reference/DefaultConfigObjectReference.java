@@ -1,7 +1,5 @@
 package net.flintmc.framework.config.internal.generator.method.reference;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -14,13 +12,15 @@ import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvocationGenerator;
+import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvoker;
 import net.flintmc.framework.config.modifier.ConfigModifierRegistry;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvocationGenerator;
-import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvoker;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 
 import java.io.IOException;
@@ -56,17 +56,23 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private Collection<Annotation> allAnnotations;
 
   @AssistedInject
-  private DefaultConfigObjectReference(EventBus eventBus, ConfigValueUpdateEvent.Factory eventFactory,
-                                       ConfigModifierRegistry modifierRegistry, ConfigAnnotationCollector annotationCollector,
-                                       ReferenceInvocationGenerator invocationGenerator,
-                                       DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry,
-                                       @Assisted GeneratingConfig generatingConfig, @Assisted ParsedConfig config,
-                                       @Assisted("pathKeys") String[] pathKeys, @Assisted("path") CtMethod[] path,
-                                       @Assisted("correspondingMethods") CtMethod[] correspondingCtMethods,
-                                       @Assisted("getter") CtMethod getter, @Assisted("setter") CtMethod setter,
-                                       @Assisted("declaringClass") String declaringClass,
-                                       @Assisted("classLoader") ClassLoader classLoader,
-                                       @Assisted("serializedType") Type serializedType)
+  private DefaultConfigObjectReference(
+      EventBus eventBus,
+      ConfigValueUpdateEvent.Factory eventFactory,
+      ConfigModifierRegistry modifierRegistry,
+      ConfigAnnotationCollector annotationCollector,
+      ReferenceInvocationGenerator invocationGenerator,
+      DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry,
+      @Assisted GeneratingConfig generatingConfig,
+      @Assisted ParsedConfig config,
+      @Assisted("pathKeys") String[] pathKeys,
+      @Assisted("path") CtMethod[] path,
+      @Assisted("correspondingMethods") CtMethod[] correspondingCtMethods,
+      @Assisted("getter") CtMethod getter,
+      @Assisted("setter") CtMethod setter,
+      @Assisted("declaringClass") String declaringClass,
+      @Assisted("classLoader") ClassLoader classLoader,
+      @Assisted("serializedType") Type serializedType)
       throws ReflectiveOperationException, CannotCompileException, NotFoundException, IOException {
     this.config = config;
     this.eventBus = eventBus;
@@ -85,7 +91,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.lastAnnotations = new HashMap<>();
 
     Object defaultValue = null;
-    for (Class<? extends Annotation> annotationType : defaultAnnotationMapperRegistry.getAnnotationTypes()) {
+    for (Class<? extends Annotation> annotationType :
+        defaultAnnotationMapperRegistry.getAnnotationTypes()) {
       Annotation annotation = this.findLastAnnotation(annotationType);
       if (annotation != null) {
         defaultValue = defaultAnnotationMapperRegistry.getDefaultValue(this, annotation);
@@ -138,7 +145,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
     this.mapCorrespondingMethods();
 
-    A annotation = this.annotationCollector.findLastAnnotation(this.correspondingMethods, annotationType);
+    A annotation =
+        this.annotationCollector.findLastAnnotation(this.correspondingMethods, annotationType);
 
     this.lastAnnotations.put(annotationType, annotation);
 
@@ -153,7 +161,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
     this.mapCorrespondingMethods();
 
-    Collection<Annotation> annotations = this.annotationCollector.findAllAnnotations(this.correspondingMethods);
+    Collection<Annotation> annotations =
+        this.annotationCollector.findAllAnnotations(this.correspondingMethods);
 
     return this.modifyAnnotations(this.allAnnotations = annotations);
   }
@@ -176,8 +185,11 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       try {
         this.correspondingMethods = this.mapMethods(this.correspondingCtMethods);
       } catch (ClassNotFoundException | NotFoundException | NoSuchMethodException e) {
-        throw new RuntimeException("Failed to map the corresponding CtMethods of the reference for '" + this.key
-            + "' to java reflect methods", e);
+        throw new RuntimeException(
+            "Failed to map the corresponding CtMethods of the reference for '"
+                + this.key
+                + "' to java reflect methods",
+            e);
       }
     }
   }
@@ -233,7 +245,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 
-  private Method[] mapMethods(CtMethod[] ctMethods) throws ClassNotFoundException, NotFoundException, NoSuchMethodException {
+  private Method[] mapMethods(CtMethod[] ctMethods)
+      throws ClassNotFoundException, NotFoundException, NoSuchMethodException {
     Method[] methods = new Method[ctMethods.length];
 
     for (int i = 0; i < ctMethods.length; i++) {
@@ -243,7 +256,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     return methods;
   }
 
-  private Method mapMethod(CtMethod ctMethod) throws ClassNotFoundException, NotFoundException, NoSuchMethodException {
+  private Method mapMethod(CtMethod ctMethod)
+      throws ClassNotFoundException, NotFoundException, NoSuchMethodException {
     Class<?> declaringClass = this.classLoader.loadClass(ctMethod.getDeclaringClass().getName());
 
     CtClass[] ctParameters = ctMethod.getParameterTypes();
@@ -259,6 +273,10 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   @Override
   public String toString() {
-    return "DefaultConfigObjectReference(" + this.declaringClass.getName() + " -> " + this.key + ")";
+    return "DefaultConfigObjectReference("
+        + this.declaringClass.getName()
+        + " -> "
+        + this.key
+        + ")";
   }
 }

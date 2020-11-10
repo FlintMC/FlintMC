@@ -13,7 +13,9 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Service(value = ConfigImplementation.class, priority = 3 /* needs to be called after the ConfigTransformer */)
+@Service(
+    value = ConfigImplementation.class,
+    priority = 3 /* needs to be called after the ConfigTransformer */)
 public class ConfigPostTransformer implements ServiceHandler<ConfigImplementation> {
 
   private final ConfigGenerator configGenerator;
@@ -38,30 +40,33 @@ public class ConfigPostTransformer implements ServiceHandler<ConfigImplementatio
 
     Collection<TransformedConfigMeta> pendingConfigs = new ArrayList<>();
 
-    InjectionHolder.getInstance().addModules(new AbstractModule() {
-      @Override
-      protected void configure() {
-        for (TransformedConfigMeta meta : mappings) {
-          Class<?> superClass = meta.getSuperClass();
-          Class<?> implementation = meta.getImplementationClass();
+    InjectionHolder.getInstance()
+        .addModules(
+            new AbstractModule() {
+              @Override
+              protected void configure() {
+                for (TransformedConfigMeta meta : mappings) {
+                  Class<?> superClass = meta.getSuperClass();
+                  Class<?> implementation = meta.getImplementationClass();
 
-          super.bind((Class) superClass).to(implementation);
+                  super.bind((Class) superClass).to(implementation);
 
-          if (ParsedConfig.class.isAssignableFrom(implementation)) {
-            pendingConfigs.add(meta);
-          }
-        }
+                  if (ParsedConfig.class.isAssignableFrom(implementation)) {
+                    pendingConfigs.add(meta);
+                  }
+                }
 
-        mappings.clear();
-      }
-    });
+                mappings.clear();
+              }
+            });
 
     // load the module so that the pendingConfigs will be filled
     InjectionHolder.getInstance().getInjector();
 
     // register the configs in the ConfigGenerator after the module has been configured
     for (TransformedConfigMeta meta : pendingConfigs) {
-      ParsedConfig config = (ParsedConfig) InjectionHolder.getInjectedInstance(meta.getSuperClass());
+      ParsedConfig config =
+          (ParsedConfig) InjectionHolder.getInjectedInstance(meta.getSuperClass());
       this.configGenerator.bindConfig(meta.getConfig(), config);
     }
   }

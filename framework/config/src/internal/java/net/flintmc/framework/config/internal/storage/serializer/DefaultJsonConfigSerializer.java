@@ -49,7 +49,8 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
   }
 
   @Override
-  public void serialize(ParsedConfig config, JsonObject object, Predicate<ConfigObjectReference> predicate) {
+  public void serialize(
+      ParsedConfig config, JsonObject object, Predicate<ConfigObjectReference> predicate) {
     for (ConfigObjectReference reference : config.getConfigReferences()) {
       if (!predicate.test(reference)) {
         continue;
@@ -95,7 +96,8 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
   }
 
   @Override
-  public void deserialize(JsonObject object, ParsedConfig config, Predicate<ConfigObjectReference> predicate) {
+  public void deserialize(
+      JsonObject object, ParsedConfig config, Predicate<ConfigObjectReference> predicate) {
     for (ConfigObjectReference reference : config.getConfigReferences()) {
       if (!predicate.test(reference)) {
         continue;

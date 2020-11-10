@@ -13,12 +13,12 @@ import net.flintmc.framework.config.generator.ConfigImplementer;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.framework.config.internal.generator.base.ConfigClassLoader;
+import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.config.internal.generator.base.ConfigClassLoader;
-import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -42,10 +42,14 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   private final Map<String, ParsedConfig> discoveredConfigs;
 
   @Inject
-  public DefaultConfigGenerator(ConfigStorageProvider storageProvider, ConfigObjectReference.Parser objectReferenceParser,
-                                GeneratingConfig.Factory configFactory, ConfigImplementer configImplementer,
-                                EventBus eventBus, ConfigDiscoveredEvent.Factory eventFactory,
-                                ImplementationGenerator implementationGenerator) {
+  public DefaultConfigGenerator(
+      ConfigStorageProvider storageProvider,
+      ConfigObjectReference.Parser objectReferenceParser,
+      GeneratingConfig.Factory configFactory,
+      ConfigImplementer configImplementer,
+      EventBus eventBus,
+      ConfigDiscoveredEvent.Factory eventFactory,
+      ImplementationGenerator implementationGenerator) {
     this.storageProvider = storageProvider;
     this.objectReferenceParser = objectReferenceParser;
     this.configFactory = configFactory;
@@ -58,10 +62,13 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   }
 
   @Override
-  public ParsedConfig generateConfigImplementation(CtClass configInterface) throws NotFoundException, CannotCompileException, IOException, ReflectiveOperationException {
+  public ParsedConfig generateConfigImplementation(CtClass configInterface)
+      throws NotFoundException, CannotCompileException, IOException, ReflectiveOperationException {
     if (!configInterface.hasAnnotation(Config.class)) {
-      throw new IllegalArgumentException("Cannot generate config from " + configInterface.getName()
-          + " without it having the @Config annotation");
+      throw new IllegalArgumentException(
+          "Cannot generate config from "
+              + configInterface.getName()
+              + " without it having the @Config annotation");
     }
     if (this.discoveredConfigs.containsKey(configInterface.getName())) {
       return this.discoveredConfigs.get(configInterface.getName());
@@ -88,14 +95,17 @@ public class DefaultConfigGenerator implements ConfigGenerator {
       classLoader.defineClass(generated.getName(), generated.toBytecode());
     }
 
-    ParsedConfig result = (ParsedConfig) classLoader.loadClass(implementation.getName()).getDeclaredConstructor().newInstance();
+    ParsedConfig result =
+        (ParsedConfig)
+            classLoader.loadClass(implementation.getName()).getDeclaredConstructor().newInstance();
 
     this.bindConfig(config, result);
 
     return result;
   }
 
-  private void loadAllClasses(ClassLoader classLoader, CtClass implemented) throws ClassNotFoundException, NotFoundException {
+  private void loadAllClasses(ClassLoader classLoader, CtClass implemented)
+      throws ClassNotFoundException, NotFoundException {
     // load all inner classes first so that they don't get frozen when loading the outer classes
     for (CtClass declared : implemented.getDeclaredClasses()) {
       this.loadAllClasses(classLoader, declared);
@@ -110,12 +120,15 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   }
 
   @Override
-  public void bindConfig(GeneratingConfig generatingConfig, ParsedConfig config) throws IllegalStateException {
+  public void bindConfig(GeneratingConfig generatingConfig, ParsedConfig config)
+      throws IllegalStateException {
     if (this.discoveredConfigs.containsKey(config.getConfigName())) {
-      throw new IllegalStateException("Config with the name " + config.getConfigName() + " is already registered");
+      throw new IllegalStateException(
+          "Config with the name " + config.getConfigName() + " is already registered");
     }
 
-    Collection<ConfigObjectReference> references = this.objectReferenceParser.parseAll(generatingConfig, config);
+    Collection<ConfigObjectReference> references =
+        this.objectReferenceParser.parseAll(generatingConfig, config);
     config.getConfigReferences().addAll(references);
 
     if (!config.getClass().isAnnotationPresent(PostMinecraftRead.class)) {
@@ -137,5 +150,4 @@ public class DefaultConfigGenerator implements ConfigGenerator {
 
     this.storageProvider.read(config);
   }
-
 }

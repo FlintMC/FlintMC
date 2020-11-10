@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.settings.flint.registered;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;

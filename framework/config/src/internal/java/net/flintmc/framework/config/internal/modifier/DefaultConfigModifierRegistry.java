@@ -27,8 +27,11 @@ import java.util.Collections;
 
 @Singleton
 @Implement(ConfigModifierRegistry.class)
-@Service(value = AnnotationModifier.class, priority = 100 /* needs to be called after anything with the configs */)
-public class DefaultConfigModifierRegistry implements ConfigModifierRegistry, ServiceHandler<AnnotationModifier> {
+@Service(
+    value = AnnotationModifier.class,
+    priority = 100 /* needs to be called after anything with the configs */)
+public class DefaultConfigModifierRegistry
+    implements ConfigModifierRegistry, ServiceHandler<AnnotationModifier> {
 
   private final ConfigGenerator configGenerator;
   private final CtClass handlerType;
@@ -70,17 +73,20 @@ public class DefaultConfigModifierRegistry implements ConfigModifierRegistry, Se
 
     try {
       if (!handler.subtypeOf(this.handlerType)) {
-        throw new ServiceNotFoundException("Handler " + handler.getName() + " doesn't implement " + this.handlerType.getName());
+        throw new ServiceNotFoundException(
+            "Handler " + handler.getName() + " doesn't implement " + this.handlerType.getName());
       }
     } catch (NotFoundException e) {
-      throw new ServiceNotFoundException("Failed to check for the sub type of " + handler.getName(), e);
+      throw new ServiceNotFoundException(
+          "Failed to check for the sub type of " + handler.getName(), e);
     }
 
     for (ParsedConfig config : this.configGenerator.getDiscoveredConfigs()) {
       for (ConfigObjectReference reference : config.getConfigReferences()) {
         if (modifier.value().isAssignableFrom(reference.getDeclaringClass())
             && reference.getLastName().equals(modifier.method())) {
-          this.handlers.put(reference, InjectionHolder.getInjectedInstance(CtResolver.get(handler)));
+          this.handlers.put(
+              reference, InjectionHolder.getInjectedInstance(CtResolver.get(handler)));
         }
       }
     }

@@ -1,6 +1,6 @@
 package net.flintmc.framework.config.generator;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import javassist.CtClass;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
 import net.flintmc.framework.config.annotation.Config;

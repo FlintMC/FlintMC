@@ -24,7 +24,8 @@ import java.util.Map;
 @Singleton
 @Service(ConfigSerializer.class) // has to be called before the ConfigGenerationService
 @Implement(ConfigSerializationService.class)
-public class DefaultConfigSerializationService implements ServiceHandler<ConfigSerializer>, ConfigSerializationService {
+public class DefaultConfigSerializationService
+    implements ServiceHandler<ConfigSerializer>, ConfigSerializationService {
 
   private final ClassPool pool;
   private final Logger logger;
@@ -50,8 +51,13 @@ public class DefaultConfigSerializationService implements ServiceHandler<ConfigS
           return true;
         }
       } catch (NotFoundException e) {
-        this.logger.trace("Failed to load CtClass " + entry.getKey().getName() + " to check if a serializer for " +
-            interfaceType.getName() + " exists", e);
+        this.logger.trace(
+            "Failed to load CtClass "
+                + entry.getKey().getName()
+                + " to check if a serializer for "
+                + interfaceType.getName()
+                + " exists",
+            e);
       }
     }
 
@@ -71,7 +77,8 @@ public class DefaultConfigSerializationService implements ServiceHandler<ConfigS
   }
 
   @Override
-  public <T> void registerSerializer(Class<T> interfaceType, ConfigSerializationHandler<T> handler) {
+  public <T> void registerSerializer(
+      Class<T> interfaceType, ConfigSerializationHandler<T> handler) {
     this.handlers.put(interfaceType, handler);
   }
 
@@ -92,6 +99,7 @@ public class DefaultConfigSerializationService implements ServiceHandler<ConfigS
     Class<?> interfaceType = meta.getAnnotation().value();
     CtClass serializerType = (CtClass) meta.getIdentifier().getLocation();
 
-    this.handlers.put(interfaceType, InjectionHolder.getInjectedInstance(CtResolver.get(serializerType)));
+    this.handlers.put(
+        interfaceType, InjectionHolder.getInjectedInstance(CtResolver.get(serializerType)));
   }
 }

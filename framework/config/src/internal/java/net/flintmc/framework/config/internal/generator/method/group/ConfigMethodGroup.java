@@ -10,6 +10,7 @@ public interface ConfigMethodGroup {
 
   String[] getPossiblePrefixes();
 
-  ConfigMethod resolveMethod(GeneratingConfig config, CtClass type, String entryName, CtMethod method) throws NotFoundException;
-
+  ConfigMethod resolveMethod(
+      GeneratingConfig config, CtClass type, String entryName, CtMethod method)
+      throws NotFoundException;
 }

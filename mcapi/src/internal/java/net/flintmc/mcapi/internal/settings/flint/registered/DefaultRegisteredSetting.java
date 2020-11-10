@@ -1,7 +1,7 @@
 package net.flintmc.mcapi.internal.settings.flint.registered;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;

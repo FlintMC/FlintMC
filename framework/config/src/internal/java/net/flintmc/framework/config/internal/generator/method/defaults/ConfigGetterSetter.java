@@ -4,17 +4,21 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
-import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
+import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 
 import java.lang.reflect.Type;
 
 public class ConfigGetterSetter extends DefaultConfigMethod {
 
-  public ConfigGetterSetter(ConfigSerializationService serializationService, GeneratingConfig config, CtClass declaringClass,
-                            String name, CtClass methodType) {
+  public ConfigGetterSetter(
+      ConfigSerializationService serializationService,
+      GeneratingConfig config,
+      CtClass declaringClass,
+      String name,
+      CtClass methodType) {
     super(serializationService, config, declaringClass, name, methodType);
   }
 
@@ -22,7 +26,10 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
   public String getGetterName() {
     CtClass type = super.getStoredType();
 
-    String prefix = type.equals(CtClass.booleanType) || type.getName().equals(Boolean.class.getName()) ? "is" : "get";
+    String prefix =
+        type.equals(CtClass.booleanType) || type.getName().equals(Boolean.class.getName())
+            ? "is"
+            : "get";
     return prefix + super.getConfigName();
   }
 
@@ -33,12 +40,12 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
 
   @Override
   public String[] getMethodNames() {
-    return new String[]{this.getGetterName(), this.getSetterName()};
+    return new String[] {this.getGetterName(), this.getSetterName()};
   }
 
   @Override
   public CtClass[] getTypes() {
-    return new CtClass[]{super.getStoredType()};
+    return new CtClass[] {super.getStoredType()};
   }
 
   @Override
@@ -58,7 +65,8 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
   }
 
   @Override
-  public void implementExistingMethods(CtClass target) throws CannotCompileException, NotFoundException {
+  public void implementExistingMethods(CtClass target)
+      throws CannotCompileException, NotFoundException {
     // validate if the methods exist or throw NotFoundException otherwise
     target.getDeclaredMethod(this.getGetterName());
 
@@ -66,7 +74,8 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
     try {
       this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
     } catch (NotFoundException e) {
-      if (!super.getStoredType().isInterface() && !super.serializationService.hasSerializer(super.getStoredType())) {
+      if (!super.getStoredType().isInterface()
+          && !super.serializationService.hasSerializer(super.getStoredType())) {
         // ignore if it is an interface that will never get overridden by anything
         throw e;
       }
@@ -78,11 +87,14 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
   @Override
   public void addInterfaceMethods(CtClass target) throws CannotCompileException {
     if (!this.hasMethod(target, this.getGetterName())) {
-      target.addMethod(CtNewMethod.make(this.methodType.getName() + " " + this.getGetterName() + "();", target));
+      target.addMethod(
+          CtNewMethod.make(this.methodType.getName() + " " + this.getGetterName() + "();", target));
     }
 
     if (!this.hasMethod(target, this.getSetterName())) {
-      target.addMethod(CtNewMethod.make("void " + this.getSetterName() + "(" + this.methodType.getName() + " arg);", target));
+      target.addMethod(
+          CtNewMethod.make(
+              "void " + this.getSetterName() + "(" + this.methodType.getName() + " arg);", target));
     }
 
     super.addedInterfaceMethods = true;
@@ -93,11 +105,20 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
   }
 
   private void insertSetter(CtClass target) throws CannotCompileException {
-    target.addMethod(CtNewMethod.make(
-        "public void " + this.getSetterName() + "(" + this.methodType.getName() + " arg) { " +
-            "this." + this.configName + " = arg;" +
-            "this.configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);" +
-            "}", target));
+    target.addMethod(
+        CtNewMethod.make(
+            "public void "
+                + this.getSetterName()
+                + "("
+                + this.methodType.getName()
+                + " arg) { "
+                + "this."
+                + this.configName
+                + " = arg;"
+                + "this.configStorageProvider.write(("
+                + ParsedConfig.class.getName()
+                + ") this.config);"
+                + "}",
+            target));
   }
-
 }

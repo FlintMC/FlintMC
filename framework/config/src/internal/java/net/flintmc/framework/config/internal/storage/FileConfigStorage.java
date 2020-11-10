@@ -16,9 +16,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 
-/**
- * The default file storage in the flint/configs directory.
- */
+/** The default file storage in the flint/configs directory. */
 @Singleton
 @StoragePriority
 public class FileConfigStorage implements ConfigStorage {
@@ -33,7 +31,10 @@ public class FileConfigStorage implements ConfigStorage {
   private final Predicate<ConfigObjectReference> filter;
 
   @Inject
-  public FileConfigStorage(@InjectLogger Logger logger, @Named("flintRoot") File rootDirectory, JsonConfigSerializer serializer) {
+  public FileConfigStorage(
+      @InjectLogger Logger logger,
+      @Named("flintRoot") File rootDirectory,
+      JsonConfigSerializer serializer) {
     this.logger = logger;
     this.directory = new File(rootDirectory, "configs");
     this.directory.mkdirs();
@@ -63,7 +64,7 @@ public class FileConfigStorage implements ConfigStorage {
     }
 
     try (OutputStream outputStream = new FileOutputStream(file);
-         Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+        Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
       this.gson.toJson(object, writer);
     } catch (IOException e) {
       this.logger.error("Failed to write a config to " + file, e);
@@ -79,7 +80,7 @@ public class FileConfigStorage implements ConfigStorage {
 
     JsonObject object;
     try (InputStream inputStream = new FileInputStream(file);
-         Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
       JsonElement element = JsonParser.parseReader(reader);
       if (!element.isJsonObject()) {
         return;
@@ -97,5 +98,4 @@ public class FileConfigStorage implements ConfigStorage {
   private File getFile(ParsedConfig config) {
     return new File(this.directory, config.getConfigName() + ".json");
   }
-
 }

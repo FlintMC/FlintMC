@@ -45,6 +45,9 @@ public class DefaultAnnotationMapperRegistryService
 
   @Override
   public void discover(AnnotationMeta<DefaultAnnotationMapper> meta) {
-    this.mappers.put(meta.getAnnotation().value(), InjectionHolder.getInjectedInstance(CtResolver.get(meta.getClassIdentifier().getLocation())));
+    this.mappers.put(
+        meta.getAnnotation().value(),
+        InjectionHolder.getInjectedInstance(
+            CtResolver.get(meta.getClassIdentifier().getLocation())));
   }
 }

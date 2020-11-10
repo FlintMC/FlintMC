@@ -1,6 +1,6 @@
 package net.flintmc.framework.config.event;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.eventbus.event.Event;

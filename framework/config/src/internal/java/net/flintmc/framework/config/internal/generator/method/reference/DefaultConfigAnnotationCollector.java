@@ -16,7 +16,8 @@ import java.util.function.Predicate;
 public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollector {
 
   @Override
-  public <A extends Annotation> A findLastAnnotation(Method[] methods, Class<? extends A> annotationType) {
+  public <A extends Annotation> A findLastAnnotation(
+      Method[] methods, Class<? extends A> annotationType) {
     return this.forEachAnnotations(methods, annotationType, a -> true);
   }
 
@@ -24,15 +25,19 @@ public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollect
   public Collection<Annotation> findAllAnnotations(Method[] methods) {
     Collection<Annotation> annotations = new ArrayList<>();
 
-    this.forEachAnnotations(methods, null, annotation -> {
-      annotations.add(annotation);
-      return false;
-    });
+    this.forEachAnnotations(
+        methods,
+        null,
+        annotation -> {
+          annotations.add(annotation);
+          return false;
+        });
 
     return annotations;
   }
 
-  private <A extends Annotation> A forEachAnnotations(Method[] methods, Class<A> annotationType, Predicate<A> handler) {
+  private <A extends Annotation> A forEachAnnotations(
+      Method[] methods, Class<A> annotationType, Predicate<A> handler) {
     // methods have a higher priority than classes
     for (Method method : methods) {
       A a = this.testAnnotations(annotationType, method.getAnnotations(), handler);
@@ -51,7 +56,8 @@ public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollect
       for (Class<?> subType : subTypes) {
         try {
           // check for methods in the superclass/interface
-          Method subMethod = subType.getDeclaredMethod(method.getName(), method.getParameterTypes());
+          Method subMethod =
+              subType.getDeclaredMethod(method.getName(), method.getParameterTypes());
           A a = this.testAnnotations(annotationType, subMethod.getAnnotations(), handler);
           if (a != null) {
             return a;
@@ -72,7 +78,8 @@ public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollect
   }
 
   @SuppressWarnings("unchecked")
-  private <A extends Annotation> A testAnnotations(Class<A> annotationType, Annotation[] annotations, Predicate<A> handler) {
+  private <A extends Annotation> A testAnnotations(
+      Class<A> annotationType, Annotation[] annotations, Predicate<A> handler) {
     for (Annotation annotation : annotations) {
       if (annotationType == null || annotationType.equals(annotation.annotationType())) {
         A a = (A) annotation;
@@ -96,5 +103,4 @@ public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollect
       this.collectSuperclasses(subType, target);
     }
   }
-
 }

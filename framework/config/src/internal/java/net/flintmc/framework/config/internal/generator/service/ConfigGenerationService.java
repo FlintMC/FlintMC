@@ -43,14 +43,19 @@ public class ConfigGenerationService implements ServiceHandler<Config> {
 
       Class<?> base = CtResolver.get(location);
 
-      InjectionHolder.getInstance().addModules(new AbstractModule() {
-        @Override
-        protected void configure() {
-          super.bind((Class) base).toInstance(implementation);
-        }
-      });
+      InjectionHolder.getInstance()
+          .addModules(
+              new AbstractModule() {
+                @Override
+                protected void configure() {
+                  super.bind((Class) base).toInstance(implementation);
+                }
+              });
 
-    } catch (NotFoundException | CannotCompileException | IOException | ReflectiveOperationException e) {
+    } catch (NotFoundException
+        | CannotCompileException
+        | IOException
+        | ReflectiveOperationException e) {
       throw new ServiceNotFoundException("Cannot generate config for " + location.getName(), e);
     }
   }

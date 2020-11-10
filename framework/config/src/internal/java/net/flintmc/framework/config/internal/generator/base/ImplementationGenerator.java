@@ -5,11 +5,12 @@ import com.google.inject.Singleton;
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.annotation.Annotation;
-import net.flintmc.framework.config.internal.transform.ConfigTransformer;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
 import net.flintmc.framework.config.generator.method.ConfigMethodResolver;
+import net.flintmc.framework.config.internal.transform.ConfigTransformer;
+import net.flintmc.framework.config.internal.transform.PendingTransform;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 
@@ -28,7 +29,8 @@ public class ImplementationGenerator {
   private final ConfigTransformer transformer;
 
   @Inject
-  public ImplementationGenerator(ConfigMethodResolver methodResolver, ConfigTransformer transformer) {
+  public ImplementationGenerator(
+      ConfigMethodResolver methodResolver, ConfigTransformer transformer) {
     this.classLoader = new ConfigClassLoader(ImplementationGenerator.class.getClassLoader());
 
     this.pool = ClassPool.getDefault();
@@ -42,12 +44,13 @@ public class ImplementationGenerator {
     return this.classLoader;
   }
 
-  public CtClass implementConfig(CtClass type, GeneratingConfig config) throws NotFoundException, CannotCompileException {
+  public CtClass implementConfig(CtClass type, GeneratingConfig config)
+      throws NotFoundException, CannotCompileException {
     this.methodResolver.resolveMethods(config);
 
     for (ConfigMethod method : config.getAllMethods()) {
       // transform all methods
-      this.transformer.addPendingTransform(method);
+      this.transformer.getPendingTransforms().add(new PendingTransform(method));
 
       CtClass declaring = method.getDeclaringClass();
       if (declaring.hasAnnotation(ImplementedConfig.class)) {
@@ -65,9 +68,11 @@ public class ImplementationGenerator {
     }
 
     for (ConfigMethod method : config.getAllMethods()) {
-      CtClass implementation = config.getGeneratedImplementation(method.getDeclaringClass().getName());
+      CtClass implementation =
+          config.getGeneratedImplementation(method.getDeclaringClass().getName());
       if (implementation == null) {
-        // the interface is annotated with @Implemented and therefore the implementation already exists
+        // the interface is annotated with @Implemented and therefore the implementation already
+        // exists
         continue;
       }
 
@@ -77,9 +82,15 @@ public class ImplementationGenerator {
     return config.getGeneratedImplementation(type.getName());
   }
 
-  private CtClass generateImplementation(GeneratingConfig config, CtClass type) throws CannotCompileException {
-    CtClass implementation = this.pool.makeClass(type.getSimpleName() + "_" + this.counter.getAndIncrement()
-        + "_" + this.random.nextInt(Integer.MAX_VALUE));
+  private CtClass generateImplementation(GeneratingConfig config, CtClass type)
+      throws CannotCompileException {
+    CtClass implementation =
+        this.pool.makeClass(
+            type.getSimpleName()
+                + "_"
+                + this.counter.getAndIncrement()
+                + "_"
+                + this.random.nextInt(Integer.MAX_VALUE));
     implementation.addInterface(type);
 
     this.addConfigStorageProvider(implementation);
@@ -89,11 +100,20 @@ public class ImplementationGenerator {
   }
 
   public void addConfigStorageProvider(CtClass implementation) throws CannotCompileException {
-    implementation.addField(CtField.make("private final transient " + ConfigStorageProvider.class.getName() + " configStorageProvider = "
-        + InjectionHolder.class.getName() + ".getInjectedInstance(" + ConfigStorageProvider.class.getName() + ".class);", implementation));
+    implementation.addField(
+        CtField.make(
+            "private final transient "
+                + ConfigStorageProvider.class.getName()
+                + " configStorageProvider = "
+                + InjectionHolder.class.getName()
+                + ".getInjectedInstance("
+                + ConfigStorageProvider.class.getName()
+                + ".class);",
+            implementation));
   }
 
-  private void buildConstructor(CtClass implementation, CtClass type, CtClass baseClass) throws CannotCompileException {
+  private void buildConstructor(CtClass implementation, CtClass type, CtClass baseClass)
+      throws CannotCompileException {
     String baseField = "private final transient " + baseClass.getName() + " config";
     if (baseClass.getName().equals(type.getName())) {
       baseField += " = this";
@@ -101,21 +121,29 @@ public class ImplementationGenerator {
     implementation.addField(CtField.make(baseField + ";", implementation));
 
     if (baseClass.getName().equals(type.getName())) {
-      CtConstructor constructor = CtNewConstructor.make("public " + implementation.getSimpleName() + "() {}", implementation);
+      CtConstructor constructor =
+          CtNewConstructor.make(
+              "public " + implementation.getSimpleName() + "() {}", implementation);
 
       // add inject annotation for Guice
-      AnnotationsAttribute attribute = new AnnotationsAttribute(implementation.getClassFile().getConstPool(), AnnotationsAttribute.visibleTag);
-      attribute.addAnnotation(new Annotation(Inject.class.getName(), implementation.getClassFile().getConstPool()));
+      AnnotationsAttribute attribute =
+          new AnnotationsAttribute(
+              implementation.getClassFile().getConstPool(), AnnotationsAttribute.visibleTag);
+      attribute.addAnnotation(
+          new Annotation(Inject.class.getName(), implementation.getClassFile().getConstPool()));
       constructor.getMethodInfo().addAttribute(attribute);
 
       implementation.addConstructor(constructor);
     } else {
-      implementation.addConstructor(CtNewConstructor.make(
-          "public " + implementation.getSimpleName() + "(" + baseClass.getName() + " type)" +
-              " { this.config = type; }",
-          implementation
-      ));
+      implementation.addConstructor(
+          CtNewConstructor.make(
+              "public "
+                  + implementation.getSimpleName()
+                  + "("
+                  + baseClass.getName()
+                  + " type)"
+                  + " { this.config = type; }",
+              implementation));
     }
   }
-
 }

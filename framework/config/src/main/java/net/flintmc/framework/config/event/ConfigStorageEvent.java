@@ -1,6 +1,6 @@
 package net.flintmc.framework.config.event;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;

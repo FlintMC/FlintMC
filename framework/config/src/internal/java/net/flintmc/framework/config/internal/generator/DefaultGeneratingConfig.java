@@ -1,12 +1,12 @@
 package net.flintmc.framework.config.internal.generator;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
 import javassist.CtClass;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 
 import java.util.*;
 
@@ -21,7 +21,8 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
   private final Map<String, CtClass> generatedImplementations;
 
   @AssistedInject
-  private DefaultGeneratingConfig(ImplementationGenerator generator, @Assisted("baseClass") CtClass baseClass) {
+  private DefaultGeneratingConfig(
+      ImplementationGenerator generator, @Assisted("baseClass") CtClass baseClass) {
     this.classLoader = generator.getClassLoader();
     this.name = baseClass.getName();
     this.baseClass = baseClass;
@@ -75,5 +76,4 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
   public ClassLoader getClassLoader() {
     return this.classLoader;
   }
-
 }

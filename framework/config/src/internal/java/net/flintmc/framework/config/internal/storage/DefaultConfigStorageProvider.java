@@ -40,39 +40,46 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
   private final Collection<CtClass> pendingStorages = new CopyOnWriteArrayList<>();
 
   @Inject
-  public DefaultConfigStorageProvider(@InjectLogger Logger logger, ConfigStorageEvent.Factory eventFactory,
-                                      EventBus eventBus, ScheduledExecutorService executorService,
-                                      ConfigGenerator configGenerator) {
+  public DefaultConfigStorageProvider(
+      @InjectLogger Logger logger,
+      ConfigStorageEvent.Factory eventFactory,
+      EventBus eventBus,
+      ScheduledExecutorService executorService,
+      ConfigGenerator configGenerator) {
     this.logger = logger;
     this.eventFactory = eventFactory;
     this.eventBus = eventBus;
     this.configGenerator = configGenerator;
-    executorService.scheduleAtFixedRate(() -> {
-      if (this.pendingWrites.isEmpty()) {
-        return;
-      }
-
-      this.processPendingStorages();
-
-      try {
-        Map<Class<?>, ParsedConfig> copy = new HashMap<>(this.pendingWrites);
-        this.pendingWrites.clear();
-
-        for (ParsedConfig config : copy.values()) {
-          ConfigStorageEvent event = this.eventFactory.create(ConfigStorageEvent.Type.WRITE, config);
-          this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
-
-          for (ConfigStorage storage : this.storages) {
-            storage.write(config);
+    executorService.scheduleAtFixedRate(
+        () -> {
+          if (this.pendingWrites.isEmpty()) {
+            return;
           }
 
-          this.eventBus.fireEvent(event, Subscribe.Phase.POST);
-        }
-      } catch (Throwable throwable) {
-        this.logger.error("Failed to write a config to the storage", throwable);
-      }
+          this.processPendingStorages();
 
-    }, 1, 1, TimeUnit.SECONDS);
+          try {
+            Map<Class<?>, ParsedConfig> copy = new HashMap<>(this.pendingWrites);
+            this.pendingWrites.clear();
+
+            for (ParsedConfig config : copy.values()) {
+              ConfigStorageEvent event =
+                  this.eventFactory.create(ConfigStorageEvent.Type.WRITE, config);
+              this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
+
+              for (ConfigStorage storage : this.storages) {
+                storage.write(config);
+              }
+
+              this.eventBus.fireEvent(event, Subscribe.Phase.POST);
+            }
+          } catch (Throwable throwable) {
+            this.logger.error("Failed to write a config to the storage", throwable);
+          }
+        },
+        1,
+        1,
+        TimeUnit.SECONDS);
   }
 
   @Override
@@ -110,7 +117,8 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
 
     for (ComparableConfigStorage registered : this.storages) {
       if (registered.getName().equals(name)) {
-        throw new IllegalStateException("A storage with the name '" + name + "' is already registered");
+        throw new IllegalStateException(
+            "A storage with the name '" + name + "' is already registered");
       }
     }
 
@@ -141,7 +149,11 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
       try {
         Class<?> configClass = super.getClass().getClassLoader().loadClass(type.getName());
         if (!ConfigStorage.class.isAssignableFrom(configClass)) {
-          this.logger.trace("Failed to load config " + type.getName() + ": Class doesn't implement " + ConfigStorage.class.getName());
+          this.logger.trace(
+              "Failed to load config "
+                  + type.getName()
+                  + ": Class doesn't implement "
+                  + ConfigStorage.class.getName());
           continue;
         }
 
@@ -154,5 +166,4 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
 
     this.pendingStorages.clear();
   }
-
 }
