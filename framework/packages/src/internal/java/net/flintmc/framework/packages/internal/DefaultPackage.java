@@ -1,11 +1,12 @@
 package net.flintmc.framework.packages.internal;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectionService;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageClassLoader;
@@ -16,15 +17,20 @@ import net.flintmc.framework.service.ExtendedServiceLoader;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceRepository;
 import net.flintmc.framework.stereotype.service.Services;
+import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.identifier.ConstructorIdentifier;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
+import net.flintmc.util.mappings.MethodMapping;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarFile;
 
 /** Default implementation of the {@link Package}. */
@@ -32,6 +38,7 @@ import java.util.jar.JarFile;
 public class DefaultPackage implements Package {
 
   private final ServiceRepository serviceRepository;
+  private final Logger logger;
   private final File jarFile;
 
   private PackageLocalizationLoader localizationLoader;
@@ -55,9 +62,11 @@ public class DefaultPackage implements Package {
       ServiceRepository serviceRepository,
       PackageLocalizationLoader localizationLoader,
       DefaultPackageManifestLoader manifestLoader,
+      @InjectLogger Logger logger,
       @Assisted File jarFile,
       @Assisted JarFile jar) {
     this.serviceRepository = serviceRepository;
+    this.logger = logger;
     this.jarFile = jarFile;
 
     if (jar != null) {
@@ -73,6 +82,7 @@ public class DefaultPackage implements Package {
 
       try {
         manifest = manifestLoader.loadManifest(jar);
+        // jar.close();
 
         if (manifest.isValid()) {
           this.packageState = PackageState.NOT_LOADED;
@@ -181,11 +191,17 @@ public class DefaultPackage implements Package {
       // done if it is really necessary.
       this.serviceRepository.flushServices(Service.State.PRE_INIT);
       // Apply all Implementations and AssistedFactories
-      InjectionHolder.getInjectedInstance(InjectionService.class).flush();
+      InjectionService injectionService =
+          InjectionHolder.getInjectedInstance(InjectionService.class);
+      injectionService.flushImplementation();
+
+      serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
+
+      injectionService.flushAssistedFactory();
       // Flush all other higher level framework features like Events, Transforms etc.
       this.serviceRepository.flushServices(Service.State.POST_INIT);
     } catch (NotFoundException e) {
-      e.printStackTrace();
+      this.logger.error("Failed to configure services for package {}", this.getName(), e);
     }
 
     // The package is now enabled
@@ -236,11 +252,86 @@ public class DefaultPackage implements Package {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();
 
     Set<DetectableAnnotationProvider> discover =
-        ExtendedServiceLoader.get(DetectableAnnotationProvider.class)
-            .discover(getPackageClassLoader().asClassLoader());
+            ExtendedServiceLoader.get(DetectableAnnotationProvider.class)
+                    .discover(LaunchController.getInstance().getRootLoader());
+
     discover.forEach(
-        detectableAnnotationProvider -> detectableAnnotationProvider.register(annotationMetas));
+            detectableAnnotationProvider -> detectableAnnotationProvider.register(annotationMetas));
+
+    ClassMappingProvider classMappingProvider = InjectionHolder.getInjectedInstance(ClassMappingProvider.class);
+
+    for (AnnotationMeta parent : annotationMetas) {
+      for (AnnotationMeta annotationMeta : getAnnotationsRecursively(parent)) {
+        if (annotationMeta.getIdentifier() instanceof MethodIdentifier) {
+          annotationMeta.getMethodIdentifier()
+                  .setOwnerConverter((methodIdentifier, owner) -> {
+                    ClassMapping classMapping = classMappingProvider.get(owner);
+                    if (classMapping == null) return owner;
+                    return classMapping.getName();
+                  })
+                  .setParametersConverter((methodIdentifier, parameters) -> {
+                    String[] transformedParameterTypes = new String[parameters.length];
+                    for (int i = 0; i < transformedParameterTypes.length; i++) {
+                      ClassMapping classMapping = classMappingProvider.get(parameters[i]);
+                      if (classMapping == null) {
+                        transformedParameterTypes[i] = parameters[i];
+                        continue;
+                      }
+                      transformedParameterTypes[i] = classMapping.getName();
+                    }
+                    return transformedParameterTypes;
+                  })
+                  .setNameConverter((methodIdentifier, name) -> {
+                    ClassMapping classMapping = classMappingProvider.get(name);
+                    if (classMapping == null) return name;
+                    for (MethodMapping methodMapping : classMapping.getDeobfuscatedMethods().values()) {
+                      if (methodMapping.getDeobfuscatedName().equals(name) || methodMapping.getObfuscatedName().equals(name)) {
+                        return methodMapping.getName();
+                      }
+                    }
+                    return name;
+                  });
+        }
+        if (annotationMeta.getIdentifier() instanceof ClassIdentifier) {
+          annotationMeta.getClassIdentifier().setNameConverter(((classIdentifier, name) -> {
+            ClassMapping classMapping = classMappingProvider.get(name);
+            if (classMapping == null) return name;
+            return classMapping.getName();
+          }));
+        }
+        if (annotationMeta.getIdentifier() instanceof ConstructorIdentifier) {
+          annotationMeta.getConstructorIdentifier()
+                  .setOwnerConverter((constructorIdentifier, name) -> {
+                    ClassMapping classMapping = classMappingProvider.get(name);
+                    if (classMapping == null) return name;
+                    return classMapping.getName();
+                  })
+                  .setParametersConverter((constructorIdentifier, parameters) -> {
+                    String[] transformedParameterTypes = new String[parameters.length];
+                    for (int i = 0; i < transformedParameterTypes.length; i++) {
+                      ClassMapping classMapping = classMappingProvider.get(parameters[i]);
+                      if (classMapping == null) {
+                        transformedParameterTypes[i] = parameters[i];
+                        continue;
+                      }
+                      transformedParameterTypes[i] = classMapping.getName();
+                    }
+                    return transformedParameterTypes;
+                  });
+        }
+      }
+    }
+
     return annotationMetas;
+  }
+
+  private Collection<AnnotationMeta> getAnnotationsRecursively(AnnotationMeta<?> annotationMeta) {
+    Collection<AnnotationMeta> result = new HashSet<>();
+    for (AnnotationMeta<?> metaDatum : annotationMeta.getMetaData()) {
+      result.addAll(this.getAnnotationsRecursively(metaDatum));
+    }
+    result.add(annotationMeta);
+    return result;
   }
 
   /** {@inheritDoc} */

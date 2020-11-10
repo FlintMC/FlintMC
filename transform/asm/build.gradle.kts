@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 plugins {
     id("java-library")
 }

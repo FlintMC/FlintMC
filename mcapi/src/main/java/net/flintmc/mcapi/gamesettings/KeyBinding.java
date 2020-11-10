@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.gamesettings;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** Represents a key binding. */

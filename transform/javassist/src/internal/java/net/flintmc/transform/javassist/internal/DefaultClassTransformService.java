@@ -21,6 +21,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,7 +30,7 @@ import java.util.function.Consumer;
 
 @Singleton
 @MinecraftTransformer
-@Service(ClassTransform.class)
+@Service(value = ClassTransform.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 @Implement(ClassTransformService.class)
 public class DefaultClassTransformService
     implements ServiceHandler<ClassTransform>, LateInjectedTransformer, ClassTransformService {
@@ -92,7 +94,10 @@ public class DefaultClassTransformService
         classTransformMeta.execute(ctClass);
       }
 
-    } catch (IOException exception) {
+      if(className.startsWith("net.minecraft.entity.LivingEntity"))
+      Files.write(Paths.get(ctClass.getName() + ".class"), ctClass.toBytecode());
+
+    } catch (IOException | CannotCompileException exception) {
       throw new ClassTransformException("unable to read class", exception);
     }
 

@@ -4,6 +4,8 @@ plugins {
 
 group = "net.flintmc"
 
+
+
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
@@ -16,15 +18,9 @@ dependencies {
     internalImplementation(project(":framework:framework-service"))
     internalImplementation(project(":framework:framework-stereotype", "internal"))
     internalImplementation(project(":framework:framework-tasks"))
+    internalImplementation(project(":util:util-mapping"))
 
     internalImplementation("com.google.code.gson", "gson", "2.8.6")
-
-    flint(project(":framework:framework-inject"))
-    flint(project(":framework:framework-inject", "internal"))
-    flint(project(":framework:framework-service"))
-    flint(project(":framework:framework-stereotype"))
-    flint(project(":framework:framework-stereotype", "internal"))
-    flint(project(":util:util-commons"))
-
-    flint("com.google.code.gson", "gson", "2.8.6")
+    internalImplementation("net.flintmc.installer", "logic", "1.1.2")
+    internalImplementation("net.flintmc.installer", "logic-implementation", "1.1.2")
 }

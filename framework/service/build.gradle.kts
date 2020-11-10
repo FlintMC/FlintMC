@@ -10,5 +10,4 @@ dependencies {
 
     api(project(":framework:framework-inject"))
 
-    flint(project(":framework:framework-inject"))
 }

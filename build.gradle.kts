@@ -3,20 +3,13 @@ plugins {
     id("project-report")
 }
 
-fun RepositoryHandler.labymedia() {
-    val labymediaMavenAuthToken: String? by project
-
+fun RepositoryHandler.flintRepository() {
     maven {
-        setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
-        name = "Gitlab"
+        setUrl("https://dist.labymod.net/api/v1/maven/release")
+        name = "Flint"
         credentials(HttpHeaderCredentials::class) {
-            if (System.getenv().containsKey("CI_JOB_TOKEN")) {
-                name = "Job-Token"
-                value = System.getenv("CI_JOB_TOKEN")
-            } else {
-                name = "Private-Token"
-                value = labymediaMavenAuthToken
-            }
+            name = "Authorization"
+            value = "Bearer CbtTjzAOuDBr5QXcGnBc1MB3eIHxcZetnyHtdN76VpTNgbwAf87bzWPCntsXwj52"
         }
         authentication {
             create<HttpHeaderAuthentication>("header")
@@ -25,23 +18,37 @@ fun RepositoryHandler.labymedia() {
 }
 
 repositories {
-    labymedia()
+    mavenLocal()
+    flintRepository()
     mavenCentral()
 }
 
-flint {
-    projectFilter { !arrayOf("annotation-processing", "autoload").contains(it.name) }
-    minecraftVersions("1.15.2", "1.16.3")
-    runs{
-        overrideMainClass ("net.flintmc.launcher.FlintLauncher")
-    }
-}
 
 subprojects {
+
     plugins.withId("java") {
+        apply<MavenPublishPlugin>()
+
+        version = System.getenv().getOrDefault("VERSION", "1.0.0")
+
         repositories {
-            labymedia()
+            flintRepository()
             mavenCentral()
+        }
+
+        tasks.withType<JavaCompile> {
+            options.isFork = true
+        }
+
+        publishing {
+            repositories {
+                flintRepository()
+            }
+            publications {
+                create<MavenPublication>(project.name) {
+                    from(components["java"])
+                }
+            }
         }
     }
 }
@@ -49,7 +56,7 @@ subprojects {
 allprojects {
     configurations.all {
         resolutionStrategy {
-            force( "org.apache.logging.log4j:log4j-api:2.8.2")
+            force("org.apache.logging.log4j:log4j-api:2.8.2")
             force("com.google.guava:guava:27.0.1-jre")
             force("org.apache.commons:commons-lang3:3.10")
             force("org.apache.logging.log4j:log4j-core:2.8.2")
@@ -61,5 +68,20 @@ allprojects {
             force("commons-codec:commons-codec:1.10")
             force("com.beust:jcommander:1.78")
         }
+    }
+}
+
+flint {
+    flintVersion = System.getenv().getOrDefault("VERSION", "1.0.0")
+
+    projectFilter {
+        !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
+    }
+
+    type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
+    authors = arrayOf("LabyMedia GmbH")
+
+    runs {
+        overrideMainClass("net.flintmc.launcher.FlintLauncher")
     }
 }

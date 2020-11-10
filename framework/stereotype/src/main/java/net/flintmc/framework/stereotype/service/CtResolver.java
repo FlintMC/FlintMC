@@ -1,10 +1,12 @@
 package net.flintmc.framework.stereotype.service;
 
 import javassist.CtClass;
+import javassist.CtConstructor;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.launcher.LaunchController;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +16,29 @@ public class CtResolver {
 
   private static final Map<CtClass, Class<?>> classes = new HashMap<>();
   private static final Map<Integer, Method> methods = new HashMap<>();
+  private static final Map<Integer, Constructor<?>> constructors = new HashMap<>();
+
+  public static Constructor<?> get(CtConstructor ctConstructor) {
+    int hash = Objects.hash(ctConstructor, ctConstructor.getDeclaringClass());
+    if (!constructors.containsKey(hash)) {
+      try {
+        Class<?>[] parameters = new Class[ctConstructor.getParameterTypes().length];
+        for (int i = 0; i < ctConstructor.getParameterTypes().length; i++) {
+          parameters[i] = Class.forName(ctConstructor.getParameterTypes()[i].getName());
+        }
+        Constructor<?> declaredConstructor =
+                LaunchController.getInstance()
+                        .getRootLoader()
+                        .loadClass(ctConstructor.getDeclaringClass().getName())
+                        .getDeclaredConstructor(parameters);
+        declaredConstructor.setAccessible(true);
+        constructors.put(hash, declaredConstructor);
+      } catch (ClassNotFoundException | NoSuchMethodException | NotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+    return constructors.get(hash);
+  }
 
   /**
    * @param ctMethod the {@link CtMethod} to find the reflect representation from

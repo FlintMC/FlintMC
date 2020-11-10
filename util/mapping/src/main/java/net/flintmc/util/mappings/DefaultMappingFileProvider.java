@@ -5,7 +5,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +18,6 @@ import java.nio.file.Files;
 import java.util.Map;
 
 @Singleton
-@Implement(MappingFileProvider.class)
 public class DefaultMappingFileProvider implements MappingFileProvider {
 
   private final File flintRoot;
@@ -36,22 +37,26 @@ public class DefaultMappingFileProvider implements MappingFileProvider {
     File fieldsFile = new File(assetRoot, "fields.csv").getAbsoluteFile();
     File joinedFile = new File(assetRoot, "joined.tsrg").getAbsoluteFile();
 
-    if (!methodsFile.exists() || !fieldsFile.exists() || !joinedFile.exists()) {
-      assetRoot.mkdirs();
-      Version.Mapping index = this.mcpMappingIndexProvider.fetch().get(version).getModCoderPack();
+    try {
 
-      Files.write(
-          methodsFile.toPath(),
-          IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/methods.csv")));
-      Files.write(
-          fieldsFile.toPath(),
-          IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/fields.csv")));
-      Files.write(
-          joinedFile.toPath(),
-          IOUtils.toByteArray(
-              new URL("jar:" + index.getConfigDownload() + "!/config/joined.tsrg")));
+      if (!methodsFile.exists() || !fieldsFile.exists() || !joinedFile.exists()) {
+        assetRoot.mkdirs();
+        Version.Mapping index = this.mcpMappingIndexProvider.fetch().get(version).getModCoderPack();
+
+        Files.write(
+            methodsFile.toPath(),
+            IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/methods.csv")));
+        Files.write(
+            fieldsFile.toPath(),
+            IOUtils.toByteArray(new URL("jar:" + index.getMappingsDownload() + "!/fields.csv")));
+        Files.write(
+            joinedFile.toPath(),
+            IOUtils.toByteArray(
+                new URL("jar:" + index.getConfigDownload() + "!/config/joined.tsrg")));
+      }
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
-
     return ImmutableMap.of(
         "methods.csv",
         new FileInputStream(methodsFile),

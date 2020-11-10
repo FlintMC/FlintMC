@@ -2,7 +2,9 @@ package net.flintmc.util.mappings.utils;
 
 import javassist.CtClass;
 import javassist.NotFoundException;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
 
 import java.util.Map;
 
@@ -12,14 +14,17 @@ import java.util.Map;
  * the mapping parser.
  */
 public final class MappingUtils {
-  private MappingUtils() {}
+  private static ClassMappingProvider classMappingProvider;
+
+  private MappingUtils() {
+  }
 
   /**
    * Deobfuscate a method descriptor. This method is a post-processing step, meaning that the <code>
    * classMappings</code> parameter is supposed to be complete. Otherwise, the method descriptor
    * cannot be deobfuscated properly, resulting in a partially/not deobfuscated method descriptor.
    *
-   * @param classMappings Class mappings.
+   * @param classMappings        Class mappings.
    * @param obfuscatedDescriptor Obfuscated method descriptor.
    * @return A deobfuscated method descriptor.
    */
@@ -71,6 +76,7 @@ public final class MappingUtils {
 
     return descriptor.toString();
   }
+
 
   /**
    * Generate a descriptor for one class.
@@ -126,6 +132,22 @@ public final class MappingUtils {
   }
 
   /**
+   * Generate a descriptor for specified classes.
+   *
+   * @param classes An array of classes.
+   * @return A descriptor based on specified classes.
+   */
+  public static String generateDescriptor(boolean obfuscated, final CtClass... classes) {
+    StringBuilder descriptor = new StringBuilder();
+
+    for (CtClass clazz : classes) {
+      descriptor.append(generateDescriptor(obfuscated, clazz));
+    }
+
+    return descriptor.toString();
+  }
+
+  /**
    * Generate a descriptor for one class.
    *
    * @param clazz A class.
@@ -153,6 +175,36 @@ public final class MappingUtils {
     return "L" + clazz.getName().replace(".", "/") + ";";
   }
 
+
+  /**
+   * Generate a descriptor for one class.
+   *
+   * @param clazz A class.
+   * @return A descriptor based on the specified class.
+   */
+  public static String generateDescriptor(boolean obfuscated, final CtClass clazz) {
+    if (clazz.isPrimitive()) {
+      if (clazz == CtClass.byteType) return "B";
+      if (clazz == CtClass.charType) return "C";
+      if (clazz == CtClass.doubleType) return "D";
+      if (clazz == CtClass.floatType) return "F";
+      if (clazz == CtClass.intType) return "I";
+      if (clazz == CtClass.longType) return "J";
+      if (clazz == CtClass.shortType) return "S";
+      if (clazz == CtClass.booleanType) return "Z";
+      if (clazz == CtClass.voidType) return "V";
+    } else if (clazz.isArray()) {
+      try {
+        return "[" + generateArrayDescriptor(clazz.getComponentType());
+      } catch (NotFoundException ignored) {
+        throw new RuntimeException("Unreachable condition hit: Array is not an array.");
+      }
+    }
+    ClassMapping classMapping = classMappingProvider.get(clazz.getName());
+    String name = classMapping != null ? (obfuscated ? classMapping.getObfuscatedName() : classMapping.getDeobfuscatedName()) : clazz.getName();
+    return "L" + name.replace(".", "/") + ";";
+  }
+
   /**
    * Generate an array descriptor for one class.
    *
@@ -168,5 +220,11 @@ public final class MappingUtils {
       }
     }
     return generateDescriptor(clazz);
+  }
+
+  public static ClassMappingProvider getClassMappingProvider() {
+    if (classMappingProvider == null)
+      classMappingProvider = InjectionHolder.getInjectedInstance(ClassMappingProvider.class);
+    return classMappingProvider;
   }
 }

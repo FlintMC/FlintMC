@@ -1,5 +1,6 @@
 package net.flintmc.render.vbo;
 
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.util.List;
@@ -67,6 +68,6 @@ public interface VertexBufferObject {
      * @param vertexFormat the {@link VertexFormat} the vertices should be in.
      * @return the new {@link VertexBufferObject}.
      */
-    VertexBufferObject create(VertexFormat vertexFormat);
+    VertexBufferObject create(@Assisted VertexFormat vertexFormat);
   }
 }

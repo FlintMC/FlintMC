@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.world.math;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** Represents the Minecraft BlockPos. */

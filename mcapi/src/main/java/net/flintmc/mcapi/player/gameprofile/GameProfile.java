@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.player.gameprofile;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
@@ -51,6 +51,18 @@ public interface GameProfile {
   /** A factory class for the {@link GameProfile}. */
   @AssistedFactory(GameProfile.class)
   interface Factory {
+
+    /**
+     * Creates a new {@link GameProfile} with the given parameters.
+     *
+     * @param uniqueId The unique identifier for this game profile.
+     * @param name The username for this game profile.
+     * @return A created game profile.
+     */
+    GameProfile create(
+            @Assisted("uniqueId") UUID uniqueId,
+            @Assisted("name") String name
+    );
 
     /**
      * Creates a new {@link GameProfile} with the given parameters.

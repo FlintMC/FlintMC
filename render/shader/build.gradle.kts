@@ -4,6 +4,10 @@ plugins {
 
 group = "net.flintmc"
 
+flint{
+    minecraftVersions("1.15.2")
+}
+
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))

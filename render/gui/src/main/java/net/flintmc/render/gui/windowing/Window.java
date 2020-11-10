@@ -1,6 +1,6 @@
 package net.flintmc.render.gui.windowing;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.render.gui.event.GuiEvent;
 import net.flintmc.render.gui.event.GuiEventListener;

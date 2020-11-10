@@ -1,7 +1,7 @@
 package net.flintmc.mcapi.internal.server;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.ServerData;
@@ -11,7 +11,9 @@ import net.flintmc.mcapi.server.status.ServerStatusResolver;
 import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(ServerData.class)
 public class DefaultServerData implements ServerData {
 
@@ -23,35 +25,43 @@ public class DefaultServerData implements ServerData {
 
   @AssistedInject
   private DefaultServerData(
-      @Assisted String name,
-      @Assisted ServerAddress address,
-      @Assisted ResourceMode resourceMode,
-      ServerStatusResolver serverStatusResolver) {
+          @Assisted String name,
+          @Assisted ServerAddress address,
+          @Assisted ResourceMode resourceMode,
+          ServerStatusResolver serverStatusResolver) {
     this.name = name;
     this.address = address;
     this.resourceMode = resourceMode;
     this.serverStatusResolver = serverStatusResolver;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<ServerStatus> loadStatus() throws UnknownHostException {
     return this.serverStatusResolver.resolveStatus(this.address);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ServerAddress getServerAddress() {
     return this.address;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceMode getResourceMode() {
     return this.resourceMode;

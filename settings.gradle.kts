@@ -7,27 +7,21 @@ fun defineModule(path: String) {
 
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle-plugin") version "2.3.3"
+        id("net.flintmc.flint-gradle-plugin") version "2.5.8"
     }
 
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle-plugin", "2.3.3")
+            classpath("net.flintmc", "flint-gradle-plugin", "2.5.8")
         }
         repositories {
-            val labymediaMavenAuthToken: String? by settings
-
+            mavenLocal()
             maven {
-                setUrl("https://git.laby.tech/api/v4/groups/2/-/packages/maven")
-                name = "Gitlab"
+                setUrl("https://dist.labymod.net/api/v1/maven/release")
+                name = "Flint"
                 credentials(HttpHeaderCredentials::class) {
-                    if (System.getenv().containsKey("CI_JOB_TOKEN")) {
-                        name = "Job-Token"
-                        value = System.getenv("CI_JOB_TOKEN")
-                    } else {
-                        name = "Private-Token"
-                        value = labymediaMavenAuthToken
-                    }
+                    name = "Authorization"
+                    value = "Bearer CbtTjzAOuDBr5QXcGnBc1MB3eIHxcZetnyHtdN76VpTNgbwAf87bzWPCntsXwj52"
                 }
                 authentication {
                     create<HttpHeaderAuthentication>("header")
@@ -41,7 +35,6 @@ pluginManagement {
 
 
 defineModule("annotation-processing:autoload")
-defineModule("annotation-processing:build.gradle.bak")
 
 defineModule("framework:eventbus")
 defineModule("framework:inject")
@@ -74,3 +67,6 @@ defineModule("util:csv")
 defineModule("util:i18n")
 defineModule("util:mapping")
 defineModule("util:session-service")
+
+defineModule("minecraft:minecraft-1-15-2")
+include("bootstrap")
