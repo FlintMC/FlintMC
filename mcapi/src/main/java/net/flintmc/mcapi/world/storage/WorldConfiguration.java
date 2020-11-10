@@ -1,7 +1,7 @@
 package net.flintmc.mcapi.world.storage;
 
 import com.google.gson.JsonElement;
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.type.WorldType;
