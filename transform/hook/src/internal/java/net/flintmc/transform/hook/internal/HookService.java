@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @Singleton
-@Service(Hook.class)
+@Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class HookService implements ServiceHandler<Hook> {
 
   private final ClassMappingProvider classMappingProvider;
@@ -164,19 +164,9 @@ public class HookService implements ServiceHandler<Hook> {
 
     executionTime.insert(
         target,
-        "net.flintmc.transform.hook.internal.HookService.notify("
-            + "this,"
-            + "net.flintmc.transform.hook.Hook.ExecutionTime."
-            + executionTime
-            + ","
-            + hook.getDeclaringClass().getName()
-            + ".class, \""
-            + hook.getName()
-            + "\", "
-            + (stringBuilder.toString().isEmpty()
-                ? "new Class[0]"
-                : "new Class[]{" + stringBuilder.toString() + "}")
-            + ", $args);");
+        String.format("{ net.flintmc.transform.hook.internal.HookService.notify($0, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args); }", executionTime, hook.getDeclaringClass().getName(), hook.getName(), stringBuilder.toString().isEmpty()
+            ? "new Class[0]"
+            : "new Class[]{" + stringBuilder.toString() + "}"));
   }
 
   private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, CtMethod callback)

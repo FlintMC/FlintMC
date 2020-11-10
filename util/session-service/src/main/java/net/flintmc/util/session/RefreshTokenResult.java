@@ -1,6 +1,6 @@
 package net.flintmc.util.session;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** The result of the {@link SessionService#refreshToken()} method. */

@@ -1,5 +1,6 @@
 package net.flintmc.render.vbo;
 
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.nio.IntBuffer;
@@ -69,7 +70,7 @@ public interface VertexArrayObject {
      *     can't be added to the VBO after the VAO is created.
      * @return the new VAO.
      */
-    VertexArrayObject create(VertexBufferObject vbo);
+    VertexArrayObject create(@Assisted VertexBufferObject vbo);
 
     /**
      * Creates a new {@link VertexArrayObject}.
@@ -81,6 +82,6 @@ public interface VertexArrayObject {
      *     to further configure or change the VAO.
      * @return the new VAO.
      */
-    VertexArrayObject create(VertexBufferObject vbo, Runnable bindCallback);
+    VertexArrayObject create(@Assisted VertexBufferObject vbo, @Assisted Runnable bindCallback);
   }
 }

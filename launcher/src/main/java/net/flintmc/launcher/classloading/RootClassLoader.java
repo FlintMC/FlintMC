@@ -19,7 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
-/** Main class loader for applications launched using a {@link LaunchController}. */
+/**
+ * Main class loader for applications launched using a {@link LaunchController}.
+ */
 public class RootClassLoader extends URLClassLoader implements CommonClassLoader {
   static {
     ClassLoader.registerAsParallelCapable();
@@ -109,7 +111,9 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     modificationExclusions.addAll(Arrays.asList(names));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Class<?> findClass(String name) throws ClassNotFoundException {
     return findClass(name, null);
@@ -122,13 +126,13 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * been excluded from transformations 3. The class is not an internal class 4. Transformation has
    * been enabled already 5. The preferred loader is able to find the class
    *
-   * @param name The name of the class to find
+   * @param name            The name of the class to find
    * @param preferredLoader The loader the class should be searched from first, or null if no loader
-   *     has a preferred role
+   *                        has a preferred role
    * @return The found class
    * @throws ClassNotFoundException If the class can't be found or an exception occurs finding the
-   *     class
-   * @throws IllegalStateException If the class is being searched already
+   *                                class
+   * @throws IllegalStateException  If the class is being searched already
    */
   public Class<?> findClass(String name, ChildClassLoader preferredLoader)
       throws ClassNotFoundException {
@@ -174,7 +178,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       // A. found the class
       // B. have no children left to search
       for (Iterator<ChildClassLoader> it = children.iterator();
-          information == null && it.hasNext(); ) {
+           information == null && it.hasNext(); ) {
         loader = it.next();
         information = CommonClassLoaderHelper.retrieveClass(loader, name);
       }
@@ -231,7 +235,9 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public URL findResource(String name) {
     return findResource(name, true);
@@ -241,10 +247,10 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * Extension of {@link ClassLoader#findResource(String)} allowing to disable redirects by launch
    * plugins.
    *
-   * @param name The name of the resource to find
+   * @param name          The name of the resource to find
    * @param allowRedirect Wether child plugins should be allowed to redirect the URL to a new one
    * @return An {@link URL} to the found resource, or {@code null} if the resource could not be
-   *     found
+   * found
    * @see ClassLoader#findResource(String)
    */
   public URL findResource(String name, boolean allowRedirect) {
@@ -258,7 +264,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
 
       // Find the first available resources matching the name
       URL first = allWithName.nextElement();
-      if (allWithName.hasMoreElements()) {
+  /*    if (allWithName.hasMoreElements()) {
         // We have multiple resources with the same name, compare them by comparing their contents
         // Always use the first resource as a reference
         byte[] firstData;
@@ -286,15 +292,15 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
           if (!Arrays.equals(firstData, nextData)) {
             // TODO: Currently, we have classpath conflicts, so this needs to be fixed first,
             //       then re-enable the throw!
-            logger.warn("Resources with same name but different content found: ");
+            *//*logger.warn("Resources with same name but different content found: ");
             logger.warn("\t{}", first.toExternalForm());
-            logger.warn("\t{}", next.toExternalForm());
+            logger.warn("\t{}", next.toExternalForm());*//*
             // throw new UnsupportedOperationException("Resources with same name but different
             // content found:\n" +
             //     "\t" + first.toExternalForm() +"\n\t" + next.toExternalForm());
           }
         }
-      }
+      }*/
 
       return first;
     } catch (IOException exception) {
@@ -303,7 +309,9 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Enumeration<URL> findResources(String name) throws IOException {
     return findResources(name, true);
@@ -313,7 +321,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * Extension of {@link ClassLoader#findResources(String)} allowing to disable redirects by launch
    * plugins.
    *
-   * @param name The name of the resource to found
+   * @param name          The name of the resource to found
    * @param allowRedirect Wether child plugins should be allowed to redirect the URL to a new one
    * @return An enumeration of URL's pointing to resources matching the given name
    * @throws IOException If an I/O error occurs finding the resources
@@ -353,7 +361,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * Searches for all available resources and collects them. Resources include class files.
    *
    * @return An enumeration of all available resources
-   * @throws IOException If an I/O error occurs while finding the resources
+   * @throws IOException        If an I/O error occurs while finding the resources
    * @throws URISyntaxException If an URISyntaxException occurs while finding the resources
    */
   public Enumeration<URL> findAllResources() throws IOException, URISyntaxException {
@@ -388,7 +396,9 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     children.add(childClassloader);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Package commonDefinePackage(
       String name,
@@ -403,43 +413,57 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
         name, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Package commonDefinePackage(String name, Manifest man, URL url) {
     return definePackage(name, man, url);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Class<?> commonDefineClass(String name, byte[] b, int off, int len, CodeSource cs) {
     return defineClass(name, b, off, len, cs);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public URL commonFindResource(String name, boolean forClassLoad) {
     return findResource(name, !forClassLoad);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Enumeration<URL> commonFindResources(String name) throws IOException {
     return findResources(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Enumeration<URL> commonFindAllResources() throws IOException, URISyntaxException {
     return findAllResources();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Package commonGetPackage(String name) {
     return getPackage(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getClassloaderName() {
     return "RootLoader";

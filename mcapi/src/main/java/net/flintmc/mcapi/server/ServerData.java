@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.server;
 
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.server.status.ServerStatus;
 
@@ -47,6 +48,6 @@ public interface ServerData {
      * @param resourceMode the resource mode of the server
      * @return the new {@link ServerData} instance
      */
-    ServerData create(String name, ServerAddress address, ResourceMode resourceMode);
+    ServerData create(@Assisted String name, @Assisted ServerAddress address, @Assisted ResourceMode resourceMode);
   }
 }

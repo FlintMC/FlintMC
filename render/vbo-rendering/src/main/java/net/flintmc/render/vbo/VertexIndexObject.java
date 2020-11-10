@@ -1,5 +1,6 @@
 package net.flintmc.render.vbo;
 
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.util.List;
@@ -62,6 +63,6 @@ public interface VertexIndexObject {
      * @param drawMode the draw mode this index buffer expects to be drawn with.
      * @return the new {@link VertexIndexObject}.
      */
-    VertexIndexObject create(VboDrawMode drawMode);
+    VertexIndexObject create(@Assisted VboDrawMode drawMode);
   }
 }

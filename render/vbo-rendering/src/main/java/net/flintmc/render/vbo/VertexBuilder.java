@@ -1,5 +1,6 @@
 package net.flintmc.render.vbo;
 
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** Represents a vertex to be added to a vertex buffer object. */
@@ -125,6 +126,6 @@ public interface VertexBuilder {
      * @param vbo the vertex buffer object the vertex refers to.
      * @return the new {@link VertexBuilder}.
      */
-    VertexBuilder create(VertexBufferObject vbo);
+    VertexBuilder create(@Assisted VertexBufferObject vbo);
   }
 }

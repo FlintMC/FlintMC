@@ -3,7 +3,7 @@ package net.flintmc.mcapi.player.gameprofile.property;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** Represents the properties of a game profile. */

@@ -1,6 +1,7 @@
 package net.flintmc.transform.javassist;
 
 import javassist.*;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 public interface ClassTransformContext {
@@ -111,7 +112,7 @@ public interface ClassTransformContext {
    */
   CtClass getCtClass();
 
-  @AssistedFactory(ClassTransformContext.class)
+  //@AssistedFactory(ClassTransformContext.class)
   interface Factory {
     ClassTransformContext create(CtClass ctClass);
   }

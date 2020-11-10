@@ -1,7 +1,7 @@
 package net.flintmc.mcapi.internal.items.type;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
