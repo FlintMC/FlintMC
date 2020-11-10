@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.world.util;
+package net.flintmc.mcapi.world.type;
 
 /** An enumeration of all available dimensions. */
 public enum Dimension {

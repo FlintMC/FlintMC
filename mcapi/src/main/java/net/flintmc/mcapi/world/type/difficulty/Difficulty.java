@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.world.difficulty;
+package net.flintmc.mcapi.world.type.difficulty;
 
 /** An enumeration of all available difficulties. */
 public enum Difficulty {

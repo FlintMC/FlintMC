@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.gamesettings.MinecraftConfiguration;
 import net.flintmc.mcapi.gamesettings.configuration.*;
-import net.flintmc.mcapi.world.difficulty.Difficulty;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 import net.minecraft.client.Minecraft;
 
 /** 1.15.2 implementation of {@link MinecraftConfiguration}. */

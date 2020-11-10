@@ -51,7 +51,9 @@ public class TileEntityCache {
     if (this.tileEntities.containsKey(blockPosition)) {
       return this.getTileEntity(blockPosition);
     }
-    return this.tileEntities.put(blockPosition, supplier.get());
+    TileEntity suppliedEntity = supplier.get();
+    this.tileEntities.put(blockPosition, suppliedEntity);
+    return suppliedEntity;
   }
 
   /** Clears the cache. */

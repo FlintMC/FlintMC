@@ -17,7 +17,7 @@ import net.flintmc.mcapi.gamesettings.frontend.OptionsSerializer;
 import net.flintmc.mcapi.gamesettings.settings.*;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.version.VersionHelper;
-import net.flintmc.mcapi.world.difficulty.Difficulty;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 
 import java.util.HashMap;
 import java.util.List;
