@@ -17,7 +17,7 @@ import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
 
 @Singleton
-@Service(value = MinecraftTransformer.class)
+@Service(value = MinecraftTransformer.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class MinecraftTransformerService implements ServiceHandler<MinecraftTransformer> {
 
   @Inject

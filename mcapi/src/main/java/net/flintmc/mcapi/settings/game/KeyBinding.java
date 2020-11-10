@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.settings.game;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
 

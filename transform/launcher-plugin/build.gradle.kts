@@ -15,4 +15,5 @@ dependencies {
     api(project(":framework:framework-inject"))
     api(project(":framework:framework-packages"))
     api(project(":framework:framework-service"))
+    api(project(":util:util-mapping"))
 }

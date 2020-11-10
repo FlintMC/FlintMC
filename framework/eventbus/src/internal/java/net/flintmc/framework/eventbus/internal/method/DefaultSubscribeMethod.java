@@ -1,7 +1,7 @@
 package net.flintmc.framework.eventbus.internal.method;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import javassist.CtClass;
 import javassist.CtMethod;
 import net.flintmc.framework.eventbus.EventBus;

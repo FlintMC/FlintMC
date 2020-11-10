@@ -1,6 +1,6 @@
 package net.flintmc.transform.javassist;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import javassist.CtClass;
 import javassist.CtMethod;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
@@ -61,8 +61,8 @@ public interface MethodBasedClassTransformMeta extends ClassTransformMeta {
    */
   NameResolver getClassNameResolver();
 
-  @AssistedFactory(MethodBasedClassTransformMeta.class)
+  //@AssistedFactory(MethodBasedClassTransformMeta.class)
   interface Factory {
-    MethodBasedClassTransformMeta create(@Assisted AnnotationMeta<ClassTransform> annotationMeta);
+    MethodBasedClassTransformMeta create(AnnotationMeta annotationMeta);
   }
 }

@@ -5,7 +5,7 @@ import net.flintmc.framework.config.annotation.ExcludeStorage;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.settings.flint.annotation.ui.NativeSetting;
 import net.flintmc.mcapi.settings.game.configuration.*;
-import net.flintmc.mcapi.world.difficulty.Difficulty;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 
 /** Represents the Minecraft game settings */
 @Config

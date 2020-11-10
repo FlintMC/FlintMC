@@ -71,7 +71,7 @@ public class Bootstrap {
     inputStream.close();
     return gson.fromJson(new String(data, StandardCharsets.UTF_8), PackageModel.class);
   }
-
+ 
   private void loadDependencies(PackageModel packageModel) throws IOException {
     for (String runtimeClasspathCandidates : packageModel.getRuntimeClasspath()) {
       if (!runtimeClasspathCandidates.toLowerCase().endsWith(".jar")) continue;

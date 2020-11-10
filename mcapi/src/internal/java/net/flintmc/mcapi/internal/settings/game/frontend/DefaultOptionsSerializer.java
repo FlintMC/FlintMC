@@ -17,7 +17,7 @@ import net.flintmc.mcapi.settings.game.frontend.OptionsSerializer;
 import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
 import net.flintmc.mcapi.settings.game.settings.*;
 import net.flintmc.mcapi.version.VersionHelper;
-import net.flintmc.mcapi.world.difficulty.Difficulty;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.settings.game.event;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import com.google.inject.name.Named;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 

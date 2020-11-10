@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.nbt;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** A singed integral type. Sometimes used for booleans. */

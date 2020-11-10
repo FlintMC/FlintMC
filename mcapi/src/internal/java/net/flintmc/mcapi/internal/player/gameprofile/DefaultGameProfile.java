@@ -1,7 +1,7 @@
 package net.flintmc.mcapi.internal.player.gameprofile;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;

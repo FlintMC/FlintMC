@@ -13,4 +13,5 @@ public interface Identifier<T> {
 
   /** @return The object representation ot this {@link Identifier} */
   T getLocation();
+
 }

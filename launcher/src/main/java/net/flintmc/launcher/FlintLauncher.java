@@ -13,8 +13,9 @@ import java.util.List;
 public class FlintLauncher {
 
   public static void main(String[] args) throws Exception {
-    main(args, new URL[0]);
+    main(args, new URL[]{});
   }
+
 
   public static void main(String[] args, URL[] urls) throws Exception {
     // Root entry point

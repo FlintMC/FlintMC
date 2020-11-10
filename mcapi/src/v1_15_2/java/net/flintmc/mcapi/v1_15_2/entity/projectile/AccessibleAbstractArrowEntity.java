@@ -5,6 +5,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.FieldSetter;
 import net.flintmc.transform.shadow.MethodProxy;
 import net.flintmc.transform.shadow.Shadow;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 
 /** A shadow interface for the abstract arrow entity. */
 @Shadow("net.minecraft.entity.projectile.AbstractArrowEntity")
@@ -24,7 +25,7 @@ public interface AccessibleAbstractArrowEntity {
    * @param status The new pickup status.
    */
   @FieldSetter("pickupStatus")
-  void setPickupStatus(Object status);
+  void setPickupStatus(AbstractArrowEntity.PickupStatus status);
 
   /**
    * Retrieves the knockback strength of the arrow entity.

@@ -36,6 +36,20 @@ subprojects {
             mavenCentral()
         }
 
+        tasks.withType<JavaCompile> {
+            options.isFork = true
+        }
+
+        publishing {
+            repositories {
+                flintRepository()
+            }
+            publications {
+                create<MavenPublication>(project.name) {
+                    from(components["java"])
+                }
+            }
+        }
     }
 }
 

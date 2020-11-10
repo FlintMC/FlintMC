@@ -1,6 +1,6 @@
 package net.flintmc.render.shader.v1_15_2;
 
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.shader.ShaderException;
 import net.flintmc.render.shader.ShaderProgram;

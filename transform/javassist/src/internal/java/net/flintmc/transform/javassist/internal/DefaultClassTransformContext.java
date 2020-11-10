@@ -1,31 +1,26 @@
 package net.flintmc.transform.javassist.internal;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
 import javassist.*;
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMappingProvider;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@Implement(ClassTransformContext.class)
 public class DefaultClassTransformContext implements ClassTransformContext {
 
   private final ClassMappingProvider flintClassMappingProvider;
   private final CtClass ctClass;
 
-  @AssistedInject
-  private DefaultClassTransformContext(
-      ClassMappingProvider flintClassMappingProvider, @Assisted CtClass ctClass) {
+  public DefaultClassTransformContext(
+          ClassMappingProvider flintClassMappingProvider, CtClass ctClass) {
     this.flintClassMappingProvider = flintClassMappingProvider;
     this.ctClass = ctClass;
   }
 
   @Override
   public CtField getField(String name) throws NotFoundException {
-    return this.ctClass.getField(name);
+    return this.ctClass.getField(this.flintClassMappingProvider.get(this.ctClass.getName()).getField(name).getName());
   }
 
   @Override

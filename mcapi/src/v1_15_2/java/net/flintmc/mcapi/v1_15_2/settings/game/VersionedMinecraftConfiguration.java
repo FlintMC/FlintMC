@@ -6,7 +6,7 @@ import net.flintmc.framework.config.annotation.PostMinecraftRead;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.mcapi.settings.game.MinecraftConfiguration;
 import net.flintmc.mcapi.settings.game.configuration.*;
-import net.flintmc.mcapi.world.difficulty.Difficulty;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 import net.minecraft.client.Minecraft;
 
 /** 1.15.2 implementation of {@link MinecraftConfiguration}. */

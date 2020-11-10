@@ -2,16 +2,18 @@ package net.flintmc.mcapi.world;
 
 import net.flintmc.mcapi.tileentity.TileEntity;
 import net.flintmc.mcapi.world.border.WorldBorder;
-import net.flintmc.mcapi.world.difficulty.Difficulty;
-import net.flintmc.mcapi.world.difficulty.DifficultyLocal;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
-import net.flintmc.mcapi.world.util.Dimension;
+import net.flintmc.mcapi.world.type.Dimension;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
+import net.flintmc.mcapi.world.type.difficulty.DifficultyLocal;
 
 import java.util.List;
 import java.util.Random;
 
-/** Represents the Minecraft world. */
+/**
+ * Represents the Minecraft world.
+ */
 public interface World {
 
   /**
@@ -39,7 +41,7 @@ public interface World {
    * Retrieves the calculated celestial angle.
    *
    * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
-   *     full tick
+   *                     full tick
    * @return The calculated celestial angle.
    */
   float getCelestialAngle(float partialTicks);
@@ -105,7 +107,7 @@ public interface World {
    * Retrieves the thunder strength of this world.
    *
    * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
-   *     full tick
+   *                     full tick
    * @return The strength of the thunder.
    */
   float getThunderStrength(float partialTicks);
@@ -121,7 +123,7 @@ public interface World {
    * Retrieves the strength of the rain.
    *
    * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
-   *     full tick
+   *                     full tick
    * @return The strength of the rain.
    */
   float getRainStrength(float partialTicks);
@@ -167,7 +169,7 @@ public interface World {
    * Retrieves the subtracted light which is calculated by the given amount for the block position.
    *
    * @param position The block position to get the light.
-   * @param amount The amount to be subtracted.
+   * @param amount   The amount to be subtracted.
    * @return The subtracted light level.
    */
   int getLightSubtracted(BlockPosition position, int amount);
@@ -191,7 +193,7 @@ public interface World {
    * Subtracts the neighborly light by the given {@code amount}.
    *
    * @param position The block position to get the coordinates.
-   * @param amount The amount to be subtracted
+   * @param amount   The amount to be subtracted
    * @return The subtracted neighborly light.
    */
   int getNeighborAwareLightSubtracted(BlockPosition position, int amount);
@@ -219,6 +221,20 @@ public interface World {
   TileEntity getTileEntity(BlockPosition blockPosition);
 
   /**
+   * Adds a tile entity to the {@link #getLoadedTileEntities()} collection.
+   *
+   * @param tileEntity The tile entity to be added.
+   */
+  void addTileEntity(TileEntity tileEntity);
+
+  /**
+   * Removes a tile entity from the {@link #getLoadedTileEntities()} collection.
+   *
+   * @param tileEntity The tile entity to be removed.
+   */
+  void removeTileEntity(TileEntity tileEntity);
+
+  /**
    * Retrieves a collection with all loaded tile entities.
    *
    * @return A collection with all loaded tile entities.
@@ -238,7 +254,7 @@ public interface World {
    *
    * @param handle The non-null block pos.
    * @return The new {@link BlockPosition} or {@code null} if the given Minecraft block pos was
-   *     invalid.
+   * invalid.
    */
   BlockPosition fromMinecraftBlockPos(Object handle);
 
@@ -247,7 +263,7 @@ public interface World {
    *
    * @param dimension The non-null {@link Dimension}.
    * @return The new Minecraft dimension type or {@code null} if the given {@link Dimension} was
-   *     invalid.
+   * invalid.
    */
   Object toMinecraftDimension(Dimension dimension);
 

@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.settings.game.frontend;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** Represents an option slider for the settings frontend. */

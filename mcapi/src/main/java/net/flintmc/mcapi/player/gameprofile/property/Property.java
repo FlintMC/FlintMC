@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.player.gameprofile.property;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.security.PublicKey;

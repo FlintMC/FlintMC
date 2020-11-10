@@ -316,17 +316,6 @@
     {
       "downloads": {
         "artifact": {
-          "path": "com/google/code/gson/gson/2.8.0/gson-2.8.0.jar",
-          "sha1": "c4ba5371a29ac9b2ad6129b1d39ea38750043eff",
-          "size": 231952,
-          "url": "https://libraries.minecraft.net/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar"
-        }
-      },
-      "name": "com.google.code.gson:gson:2.8.0"
-    },
-    {
-      "downloads": {
-        "artifact": {
           "path": "com/mojang/authlib/1.5.25/authlib-1.5.25.jar",
           "sha1": "9834cdf236c22e84b946bba989e2f94ef5897c3c",
           "size": 65621,
