@@ -17,6 +17,7 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.HookFilter;
+import net.flintmc.transform.hook.HookResult;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.commons.resolve.AnnotationResolver;
@@ -27,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Random;
 
 @Singleton
 @Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
@@ -35,6 +37,7 @@ public class HookService implements ServiceHandler<Hook> {
   private final ClassMappingProvider classMappingProvider;
   private final String version;
   private final Collection<HookEntry> hooks;
+  private final Random random;
 
   @Inject
   private HookService(
@@ -42,9 +45,10 @@ public class HookService implements ServiceHandler<Hook> {
     this.classMappingProvider = classMappingProvider;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--game-version");
+    this.random = new Random();
   }
 
-  public static void notify(
+  public static Object notify(
       Object instance,
       Hook.ExecutionTime executionTime,
       Class<?> clazz,
@@ -59,7 +63,7 @@ public class HookService implements ServiceHandler<Hook> {
     availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
 
     Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
-    InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
+    return InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
         .invokeMethod(
             declaredMethod,
             InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
@@ -139,34 +143,81 @@ public class HookService implements ServiceHandler<Hook> {
     return "";
   }
 
-  private void insert(CtMethod target, Hook.ExecutionTime executionTime, CtMethod hook)
-      throws CannotCompileException {
-    StringBuilder stringBuilder = new StringBuilder();
-    try {
-      for (CtClass parameterType : hook.getParameterTypes()) {
-        String className =
-            parameterType.isArray()
-                ? parameterType.getComponentType().getName()
-                : parameterType.getName();
-        if (parameterType.isArray()) {
-          className += arrayClassToString(parameterType);
-        }
+  private String buildParameters(CtClass[] parameters) throws NotFoundException {
+    StringBuilder builder = new StringBuilder();
 
-        if (stringBuilder.toString().isEmpty()) {
-          stringBuilder.append(className).append(".class");
-        } else {
-          stringBuilder.append(", ").append(className).append(".class");
-        }
+    for (CtClass parameterType : parameters) {
+      String className =
+          parameterType.isArray()
+              ? parameterType.getComponentType().getName()
+              : parameterType.getName();
+      if (parameterType.isArray()) {
+        className += arrayClassToString(parameterType);
       }
-    } catch (NotFoundException e) {
-      e.printStackTrace();
+
+      if (builder.toString().isEmpty()) {
+        builder.append(className).append(".class");
+      } else {
+        builder.append(", ").append(className).append(".class");
+      }
     }
 
-    executionTime.insert(
-        target,
-        String.format("{ net.flintmc.transform.hook.internal.HookService.notify($0, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args); }", executionTime, hook.getDeclaringClass().getName(), hook.getName(), stringBuilder.toString().isEmpty()
-            ? "new Class[0]"
-            : "new Class[]{" + stringBuilder.toString() + "}"));
+    return builder.toString();
+  }
+
+  private void insert(CtMethod target, Hook.ExecutionTime executionTime, CtMethod hook)
+      throws CannotCompileException, NotFoundException {
+    String parameters = this.buildParameters(hook.getParameterTypes());
+
+    String notify =
+        String.format(
+            "net.flintmc.transform.hook.internal.HookService.notify($0, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args);",
+            executionTime,
+            hook.getDeclaringClass().getName(),
+            hook.getName(),
+            parameters.isEmpty() ? "new Class[0]" : "new Class[]{" + parameters + "}");
+    String varName = "hookNotifyResult_" + this.random.nextInt(Integer.MAX_VALUE);
+
+    String returnValue = null;
+    CtClass returnType = target.getReturnType();
+    CtClass hookType = hook.getReturnType();
+    boolean hookResult = hookType.getName().equals(HookResult.class.getName());
+
+    if (!hookType.getName().equals("void") && !returnType.getName().equals("void")) {
+      returnValue = varName;
+    }
+
+    if (hookResult) {
+      returnValue = HookValues.getDefaultValue(returnType.getName());
+    }
+
+    if (executionTime == Hook.ExecutionTime.AFTER && returnType.getName().equals("void")) {
+      // nothing to return, the method is already done
+      returnValue = null;
+    }
+
+    if (returnValue == null) { // no values can be returned, no HookResult defined
+      executionTime.insert(target, notify);
+      return;
+    }
+
+    String src = "Object " + varName + " = " + notify;
+    if (hookResult) {
+      // check if the returned type is equal to BREAK
+      String breakCheck =
+          varName + " == " + HookResult.class.getName() + "." + HookResult.BREAK.name();
+
+      src += " if (" + breakCheck + ") { return " + returnValue + "; }";
+    } else {
+      String returnPrefix =
+          returnValue.isEmpty() ? "" : "(" + target.getReturnType().getName() + ")";
+
+      // Avoid VerifyErrors if there is already a return statement in the source, e.g. in a simple
+      // getter
+      src += "if (true) { return " + returnPrefix + " " + returnValue + "; }";
+    }
+
+    executionTime.insert(target, "{ " + src + " }");
   }
 
   private void modify(HookEntry hookEntry, Hook hook, CtClass ctClass, CtMethod callback)
