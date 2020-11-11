@@ -10,6 +10,7 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.event.ChatReceiveEvent;
 import net.flintmc.mcapi.chat.event.ChatSendEvent;
 import net.flintmc.transform.hook.Hook;
+import net.flintmc.transform.hook.HookResult;
 import net.minecraft.util.text.ITextComponent;
 
 @Singleton
@@ -37,15 +38,13 @@ public class ChatEventInjector {
       methodName = "printChatMessageWithOptionalDeletion",
       executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
       parameters = {@Type(reference = ITextComponent.class), @Type(reference = int.class)})
-  public void injectChatReceive(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
+  public HookResult injectChatReceive(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
     ChatComponent component = this.componentMapper.fromMinecraft(args[0]);
     int deletedChatLineId = (int) args[1];
 
     boolean cancelled =
         this.eventBus.fireEvent(this.receiveFactory.create(component), executionTime).isCancelled();
-    if (cancelled) {
-      // TODO: return and modify the component (Hooks don't support this yet)
-    }
+    return cancelled ? HookResult.BREAK : HookResult.CONTINUE;
   }
 
   @Hook(
@@ -53,14 +52,11 @@ public class ChatEventInjector {
       methodName = "sendChatMessage",
       executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
       parameters = @Type(reference = String.class))
-  public void injectChatSend(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
+  public HookResult injectChatSend(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
     String message = (String) args[0];
 
     boolean cancelled =
         this.eventBus.fireEvent(this.sendFactory.create(message), executionTime).isCancelled();
-    if (cancelled) {
-      // TODO: return and modify the message that is being sent to the server (Hooks don't support
-      // this yet)
-    }
+    return cancelled ? HookResult.BREAK : HookResult.CONTINUE;
   }
 }
