@@ -183,11 +183,8 @@ public class HookService implements ServiceHandler<Hook> {
     CtClass hookType = hook.getReturnType();
     boolean hookResult = hookType.getName().equals(HookResult.class.getName());
 
-    if (!hookType.getName().equals("void")) {
+    if (!hookType.getName().equals("void") && !returnType.getName().equals("void")) {
       returnValue = varName;
-    }
-    if (returnType.getName().equals("void")) {
-      returnValue = null;
     }
 
     if (hookResult) {
@@ -206,6 +203,7 @@ public class HookService implements ServiceHandler<Hook> {
 
     String src = "Object " + varName + " = " + notify;
     if (hookResult) {
+      // check if the returned type is equal to BREAK
       String breakCheck =
           varName + " == " + HookResult.class.getName() + "." + HookResult.BREAK.name();
 
