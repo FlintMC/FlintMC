@@ -5,6 +5,7 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.player.RemoteClientPlayer;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
@@ -16,6 +17,7 @@ import net.flintmc.mcapi.player.type.model.SkinModel;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.tileentity.mapper.TileEntityMapper;
 import net.flintmc.mcapi.world.World;
+import net.flintmc.render.model.ModelBox;
 
 /** 1.15.2 implementation of the {@link RemoteClientPlayer}. */
 @Implement(value = RemoteClientPlayer.class, version = "1.15.2")
@@ -35,7 +37,8 @@ public class VersionedRemoteClientPlayer extends VersionedPlayerEntity
       ModelMapper modelMapper,
       NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
       ItemEntityMapper itemEntityMapper,
-      TileEntityMapper tileEntityMapper) {
+      TileEntityMapper tileEntityMapper,
+      EntityRenderContext.Factory entityRenderContextFactory) {
     super(
         entity,
         entityType,
@@ -44,7 +47,9 @@ public class VersionedRemoteClientPlayer extends VersionedPlayerEntity
         gameProfileSerializer,
         modelMapper,
         itemEntityMapper,
-        tileEntityMapper);
+        tileEntityMapper,
+        entityRenderContextFactory
+    );
 
     if (!(entity instanceof net.minecraft.client.entity.player.RemoteClientPlayerEntity)) {
       throw new IllegalArgumentException(

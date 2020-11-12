@@ -6,10 +6,12 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.projectile.ArrowEntity;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.world.World;
+import net.flintmc.render.model.ModelBox;
 import net.minecraft.nbt.CompoundNBT;
 
 @Implement(value = ArrowEntity.class, version = "1.15.2")
@@ -22,8 +24,9 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
       @Assisted("entity") Object entity,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister) {
-    super(entity, world, entityFoundationMapper, entityTypeRegister);
+      EntityTypeRegister entityTypeRegister,
+      EntityRenderContext.Factory entityRenderContextFactory) {
+    super(entity, world, entityFoundationMapper, entityTypeRegister, entityRenderContextFactory);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(
@@ -43,8 +46,9 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
       @Assisted("z") double z,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister) {
-    super(entity, x, y, z, world, entityFoundationMapper, entityTypeRegister);
+      EntityTypeRegister entityTypeRegister,
+      EntityRenderContext.Factory entityRenderContextFactory) {
+    super(entity, x, y, z, world, entityFoundationMapper, entityTypeRegister, entityRenderContextFactory);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(
@@ -62,8 +66,9 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
       @Assisted("shooter") LivingEntity shooter,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister) {
-    super(entity, shooter, world, entityFoundationMapper, entityTypeRegister);
+      EntityTypeRegister entityTypeRegister,
+      EntityRenderContext.Factory entityRenderContextFactory) {
+    super(entity, shooter, world, entityFoundationMapper, entityTypeRegister, entityRenderContextFactory);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(
@@ -75,7 +80,9 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
     this.arrowEntity = (net.minecraft.entity.projectile.ArrowEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPotionEffect(ItemStack itemStack) {
     this.arrowEntity.setPotionEffect(
@@ -83,20 +90,26 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getColor() {
     return this.arrowEntity.getColor();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.arrowEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.arrowEntity.writeAdditional(

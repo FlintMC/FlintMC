@@ -8,6 +8,7 @@ import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.item.ItemEntity;
 import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
@@ -29,6 +30,7 @@ import net.flintmc.mcapi.v1_15_2.entity.VersionedLivingEntity;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
+import net.flintmc.render.model.ModelBox;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.Item;
 import net.minecraft.item.MerchantOffers;
@@ -65,8 +67,9 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
       GameProfileSerializer gameProfileSerializer,
       ModelMapper modelMapper,
       ItemEntityMapper itemEntityMapper,
-      TileEntityMapper tileEntityMapper) {
-    super(entity, entityType, world, entityFoundationMapper);
+      TileEntityMapper tileEntityMapper,
+      EntityRenderContext.Factory entityRenderContextFactory) {
+    super(entity, entityType, world, entityFoundationMapper,entityRenderContextFactory);
     this.gameProfileGameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;
     this.itemEntityMapper = itemEntityMapper;

@@ -6,6 +6,7 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.name.Nameable;
 import net.flintmc.mcapi.entity.reason.MoverType;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
@@ -18,12 +19,13 @@ import net.flintmc.mcapi.world.block.material.PushReaction;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
+import net.flintmc.render.model.RenderContextAware;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 /** Represents the Minecraft entity. */
-public interface Entity extends Nameable {
+public interface Entity extends Nameable, RenderContextAware<EntityRenderContext> {
 
   /**
    * Retrieves the team color as an {@link Integer} of this entity.

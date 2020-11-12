@@ -8,6 +8,7 @@ import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.projectile.ArrowBaseEntity;
 import net.flintmc.mcapi.entity.projectile.type.PickupStatus;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
@@ -20,10 +21,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 
 @Implement(value = ArrowBaseEntity.class, version = "1.15.2")
-public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBaseEntity {
+public class VersionedArrowBaseEntity extends VersionedEntity<AbstractArrowEntity> implements ArrowBaseEntity {
 
   private final AccessibleAbstractArrowEntity accessibleAbstractArrowEntity;
-  private final AbstractArrowEntity arrowBaseEntity;
   private Sound hitSound;
   private PickupStatus pickupStatus;
 
@@ -32,8 +32,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
       @Assisted("entity") Object entity,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister) {
-    super(entity, entityTypeRegister.getEntityType("arrow"), world, entityFoundationMapper);
+      EntityTypeRegister entityTypeRegister,
+      EntityRenderContext.Factory entityRenderContextFactory) {
+    super(entity, entityTypeRegister.getEntityType("arrow"), world, entityFoundationMapper, entityRenderContextFactory);
 
     if (!(entity instanceof net.minecraft.entity.projectile.AbstractArrowEntity)) {
       throw new IllegalArgumentException(
@@ -42,8 +43,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
               + net.minecraft.entity.projectile.AbstractArrowEntity.class.getName());
     }
 
-    this.arrowBaseEntity = (AbstractArrowEntity) entity;
-    this.accessibleAbstractArrowEntity = (AccessibleAbstractArrowEntity) arrowBaseEntity;
+    this.accessibleAbstractArrowEntity = (AccessibleAbstractArrowEntity) this.getHandle();
     this.pickupStatus = PickupStatus.DISALLOWED;
   }
 
@@ -55,8 +55,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
       @Assisted("z") double z,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister) {
-    this(entity, world, entityFoundationMapper, entityTypeRegister);
+      EntityTypeRegister entityTypeRegister,
+      EntityRenderContext.Factory entityRenderContextFactory) {
+    this(entity, world, entityFoundationMapper, entityTypeRegister, entityRenderContextFactory);
     this.setPosition(x, y, z);
   }
 
@@ -66,7 +67,8 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
       @Assisted("shooter") LivingEntity shooter,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister) {
+      EntityTypeRegister entityTypeRegister,
+      EntityRenderContext.Factory entityRenderContextFactory) {
     this(
         entity,
         shooter.getPosX(),
@@ -74,7 +76,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
         shooter.getPosZ(),
         world,
         entityFoundationMapper,
-        entityTypeRegister);
+        entityTypeRegister,
+        entityRenderContextFactory
+    );
     this.setShooter(shooter);
 
     if (shooter instanceof PlayerEntity) {
@@ -82,26 +86,32 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Sound getHitSound() {
     return this.hitSound;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setHitSound(Sound sound) {
     this.hitSound = sound;
-    this.arrowBaseEntity.setHitSound(
+    this.getHandle().setHitSound(
         (SoundEvent)
             this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(this.hitSound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void shoot(
       Entity shooter, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
-    this.arrowBaseEntity.shoot(
+    this.getHandle().shoot(
         (net.minecraft.entity.Entity)
             this.getEntityFoundationMapper().getEntityMapper().fromMinecraftEntity(shooter),
         pitch,
@@ -111,23 +121,29 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
         inaccuracy);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity getShooter() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftEntity(this.arrowBaseEntity.getShooter());
+        .fromMinecraftEntity(this.getHandle().getShooter());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setShooter(Entity shooter) {
-    this.arrowBaseEntity.setShooter(
+    this.getHandle().setShooter(
         (net.minecraft.entity.Entity)
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(shooter));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getArrowStack() {
     return this.getEntityFoundationMapper()
@@ -135,94 +151,124 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
         .fromMinecraft(this.accessibleAbstractArrowEntity.getArrowStack());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public double getDamage() {
-    return this.arrowBaseEntity.getDamage();
+    return this.getHandle().getDamage();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDamage(double damage) {
-    this.arrowBaseEntity.setDamage(damage);
+    this.getHandle().setDamage(damage);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getKnockbackStrength() {
     return this.accessibleAbstractArrowEntity.getKnockbackStrength();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setKnockbackStrength(int knockbackStrength) {
-    this.arrowBaseEntity.setKnockbackStrength(knockbackStrength);
+    this.getHandle().setKnockbackStrength(knockbackStrength);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCritical() {
-    return this.arrowBaseEntity.getIsCritical();
+    return this.getHandle().getIsCritical();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCritical(boolean critical) {
-    this.arrowBaseEntity.setIsCritical(critical);
+    this.getHandle().setIsCritical(critical);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public byte getPierceLevel() {
-    return this.arrowBaseEntity.getPierceLevel();
+    return this.getHandle().getPierceLevel();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPierceLevel(byte level) {
-    this.arrowBaseEntity.setPierceLevel(level);
+    this.getHandle().setPierceLevel(level);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setEnchantmentEffectsFromEntity(LivingEntity entity, float damage) {
-    this.arrowBaseEntity.setEnchantmentEffectsFromEntity(
+    this.getHandle().setEnchantmentEffectsFromEntity(
         (net.minecraft.entity.LivingEntity)
             this.getEntityFoundationMapper().getEntityMapper().fromMinecraftEntity(entity),
         damage);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isNoClip() {
-    return this.arrowBaseEntity.getNoClip();
+    return this.getHandle().getNoClip();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setNoClip(boolean noClip) {
-    this.arrowBaseEntity.setNoClip(noClip);
+    this.getHandle().setNoClip(noClip);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isShotFromCrossbow() {
-    return this.arrowBaseEntity.getShotFromCrossbow();
+    return this.getHandle().getShotFromCrossbow();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setShotFromCrossbow(boolean fromCrossbow) {
-    this.arrowBaseEntity.setShotFromCrossbow(fromCrossbow);
+    this.getHandle().setShotFromCrossbow(fromCrossbow);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getWaterDrag() {
     return this.accessibleAbstractArrowEntity.getWaterDrag();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PickupStatus getPickupStatus() {
     AbstractArrowEntity.PickupStatus pickupStatus =
@@ -235,37 +281,47 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
     return this.pickupStatus;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPickupStatus(PickupStatus pickupStatus) {
     this.pickupStatus = pickupStatus;
     this.accessibleAbstractArrowEntity.setPickupStatus(this.toMinecraftPickupStatus(pickupStatus));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-    this.arrowBaseEntity.shoot(x, y, z, velocity, inaccuracy);
+    this.getHandle().shoot(x, y, z, velocity, inaccuracy);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.arrowBaseEntity.readAdditional(
+    this.getHandle().readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.arrowBaseEntity.writeAdditional(
+    this.getHandle().writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMotion(double x, double y, double z) {
-    this.arrowBaseEntity.setMotion(x, y, z);
+    this.getHandle().setMotion(x, y, z);
   }
 
   protected PickupStatus fromMinecraftPickupStatus(AbstractArrowEntity.PickupStatus pickupStatus) {

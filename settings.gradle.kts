@@ -69,4 +69,5 @@ defineModule("util:mapping")
 defineModule("util:session-service")
 
 defineModule("minecraft:minecraft-1-15-2")
-include("bootstrap")
+defineModule("bootstrap")
+defineModule("render:model-renderer")

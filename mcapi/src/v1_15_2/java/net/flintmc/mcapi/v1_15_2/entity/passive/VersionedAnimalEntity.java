@@ -7,6 +7,7 @@ import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.passive.AnimalEntity;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
@@ -14,6 +15,7 @@ import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.v1_15_2.entity.VersionedAgeableEntity;
 import net.flintmc.mcapi.world.World;
+import net.flintmc.render.model.ModelBox;
 import net.minecraft.nbt.CompoundNBT;
 
 @Implement(value = AnimalEntity.class, version = "1.15.2")
@@ -29,8 +31,9 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
       World world,
       EntityFoundationMapper entityFoundationMapper,
       EntitySenses.Factory entitySensesFactory,
-      PassiveEntityMapper passiveEntityMapper) {
-    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
+      PassiveEntityMapper passiveEntityMapper,
+      EntityRenderContext.Factory entityRenderContextFactory) {
+    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory, entityRenderContextFactory);
     this.passiveEntityMapper = passiveEntityMapper;
 
     if (!(entity instanceof net.minecraft.entity.passive.AnimalEntity)) {

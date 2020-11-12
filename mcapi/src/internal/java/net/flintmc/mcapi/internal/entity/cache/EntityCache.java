@@ -69,4 +69,8 @@ public class EntityCache {
   public int size() {
     return this.entities.size();
   }
+
+  public Map<UUID, Entity> getEntities() {
+    return entities;
+  }
 }
