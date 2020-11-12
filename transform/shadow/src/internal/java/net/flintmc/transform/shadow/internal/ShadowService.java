@@ -175,18 +175,14 @@ public class ShadowService implements ServiceHandler<Shadow> {
     }
   }
 
-  private boolean hasMethod(CtClass ctClass, String name, CtClass[] parameters) {
-    return Arrays.stream(ctClass.getDeclaredMethods())
-        .anyMatch(
-            method -> {
-              try {
-                return method.getName().equals(name)
-                    && Arrays.equals(method.getParameterTypes(), parameters);
-              } catch (NotFoundException e) {
-                e.printStackTrace();
-              }
-              return false;
-            });
+  private boolean hasMethod(CtClass ctClass, String name, CtClass[] parameters) throws NotFoundException {
+    for (CtMethod method : ctClass.getDeclaredMethods()) {
+      if (method.getName().equals(name) && Arrays.equals(method.getParameterTypes(), parameters)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private void handleFieldGetters(AnnotationMeta<Shadow> identifierMeta, CtClass ctClass)
