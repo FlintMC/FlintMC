@@ -45,7 +45,6 @@ public class VersionedItemEntity extends VersionedEntity<net.minecraft.entity.it
       @Assisted("y") double y,
       @Assisted("z") double z,
       EntityRenderContext.Factory entityRenderContextFactory
-
   ) {
     this(entity, entityTypeRegister, world, entityFoundationMapper, entityRenderContextFactory);
     this.setPosition(x, y, z);

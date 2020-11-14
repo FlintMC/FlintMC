@@ -2,22 +2,22 @@ package net.flintmc.render.model;
 
 import java.util.function.Consumer;
 
-public interface Renderable<R extends Renderable<R, T>, T> {
+public interface Renderable<
+    T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+    T_RenderContext extends
+        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target>,
+    T_Renderable extends Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target>,
+    T_Target> {
 
-  T getTarget();
+  T_Target getTarget();
 
-  RenderContext<?, R> getContext();
+  T_RenderContext getContext();
 
-  Renderable<R, T> callBeforeRenderHook();
+  T_Renderable callRenderPreparations();
 
-  Renderable<R, T> callAfterRenderHook();
+  T_Renderable callPropertyHandler();
 
-  Renderable<R, T> callRendererNotSetAction();
+  T_Renderable addRenderPreparation(Consumer<T_Renderable> consumer);
 
-  R addBeforeRenderHook(Consumer<R> consumer);
-
-  R addAfterRenderHook(Consumer<R> consumer);
-
-  R setRendererNotSetAction(Consumer<R> consumer);
-
+  T_Renderable setPropertyHandler(Consumer<T_Renderable> consumer);
 }

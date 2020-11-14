@@ -4,7 +4,7 @@ plugins {
 
 group = "net.flintmc"
 
-flint{
+flint {
     minecraftVersions("1.15.2")
 }
 
@@ -22,4 +22,5 @@ dependencies {
     api(project(":render:render-model-renderer"))
 
     api("com.google.code.gson", "gson", "2.8.6")
+    internalImplementation(project(":render:render-model-renderer", "internal"))
 }

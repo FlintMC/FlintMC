@@ -2,16 +2,20 @@ package net.flintmc.render.model;
 
 import java.util.Map;
 
-public interface RenderContext<O, R extends Renderable<R, ?>> {
+public interface RenderContext<
+    T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+    T_RenderContext extends
+        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target>,
+    T_Renderable extends Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target>,
+    T_Target> {
 
-  O getOwner();
+  T_RenderContextAware getOwner();
 
-  RenderContext<O, R> setRenderer(Renderer<R, RenderContext<O, R>> renderer);
+  Renderer<T_Renderable, T_RenderContext> getRenderer();
 
-  RenderContext<O, R> setRenderer(Class<? extends Renderer<R, RenderContext<O, R>>> rendererType);
+  Map<String, T_Renderable> getRenderables();
 
-  Renderer<R, RenderContext<O, R>> getRenderer();
+  T_RenderContext registerRenderable(String name, T_Renderable renderable);
 
-  Map<String, R> getRenderables();
-
+  T_Renderable getRenderableByTarget(T_Target target);
 }
