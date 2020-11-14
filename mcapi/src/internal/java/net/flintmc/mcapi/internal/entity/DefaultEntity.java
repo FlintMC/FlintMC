@@ -8,7 +8,6 @@ import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.flintmc.render.model.ModelBox;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class DefaultEntity<H> implements Entity {
@@ -18,7 +17,7 @@ public abstract class DefaultEntity<H> implements Entity {
   private final World world;
   private final EntityFoundationMapper entityFoundationMapper;
   private EntityRenderContext.Factory entityRenderContextFactory;
-  private EntityRenderContext entityRenderContext;
+  protected EntityRenderContext entityRenderContext;
 
   protected DefaultEntity(H handle, EntityType entityType, World world, EntityFoundationMapper entityFoundationMapper, EntityRenderContext.Factory entityRenderContextFactory) {
     this.handle = handle;
@@ -28,17 +27,14 @@ public abstract class DefaultEntity<H> implements Entity {
     this.entityRenderContextFactory = entityRenderContextFactory;
   }
 
-  protected abstract Map<String, ModelBox> createModelRenderers();
+  protected abstract Map<String, ModelBox<Entity, EntityRenderContext>> createModelRenderers();
 
   public EntityRenderContext getRenderContext() {
-    if (this.entityRenderContext == null)
-      this.entityRenderContext = this.createRenderContext(this.createModelRenderers());
-
     return this.entityRenderContext;
   }
 
-  protected EntityRenderContext createRenderContext(Map<String, ModelBox> modelBoxes) {
-    return this.entityRenderContextFactory.create(this, modelBoxes);
+  protected EntityRenderContext createRenderContext() {
+    return this.entityRenderContextFactory.create(this);
   }
 
   public H getHandle() {

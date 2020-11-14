@@ -3,7 +3,10 @@ package net.flintmc.render.vbo.v1_15_2;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.render.vbo.*;
+import net.flintmc.render.vbo.VertexAttribute;
+import net.flintmc.render.vbo.VertexAttributes;
+import net.flintmc.render.vbo.VertexBufferObject;
+import net.flintmc.render.vbo.VertexBuilder;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -40,7 +43,7 @@ public class VersionedVertexBuilder implements VertexBuilder {
     this.textureHandler =
         new AttributeValueHandler(attribute -> attribute == VertexAttributes.TEXTURE_UV);
     this.customHandler =
-        new AttributeValueHandler(attribute -> !(attribute instanceof EnumeratedVertexFormat));
+        new AttributeValueHandler(attribute -> true);
   }
 
   /** {@inheritDoc} */
@@ -136,11 +139,8 @@ public class VersionedVertexBuilder implements VertexBuilder {
         this.rgbaHandler.writeFloats(buffer, offset);
       else if (attribute == VertexAttributes.TEXTURE_UV)
         this.textureHandler.writeFloats(buffer, offset);
-      else if (!(attribute instanceof EnumeratedVertexFormat))
-        this.customHandler.writeFloats(buffer, offset);
       else
-        throw new IllegalStateException(
-            "You're not supposed to implement EnumeratedVertexFormat yourself. Go away.");
+        this.customHandler.writeFloats(buffer, offset);
       offset += attribute.getSize();
     }
     return offset - startOffset;

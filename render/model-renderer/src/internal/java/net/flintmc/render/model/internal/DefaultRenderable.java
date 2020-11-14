@@ -1,69 +1,60 @@
 package net.flintmc.render.model.internal;
 
 import net.flintmc.render.model.RenderContext;
-import net.flintmc.render.model.RenderableRepository;
+import net.flintmc.render.model.RenderContextAware;
 import net.flintmc.render.model.Renderable;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-public class DefaultRenderable<R extends Renderable<R, T>, T> implements Renderable<R, T> {
+public class DefaultRenderable<
+    T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+    T_RenderContext extends
+        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target>,
+    T_Renderable extends
+        Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target>,
+    T_Target>
+    implements Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target> {
 
-
-  private final Supplier<RenderContext<?, R>> renderContext;
-  private final T target;
-  private final Collection<Consumer<R>> beforeRenders = new HashSet<>();
-  private final Collection<Consumer<R>> afterRenders = new HashSet<>();
-  private Consumer<R> rendererNotSetAction = renderable -> {
+  private final T_RenderContext renderContext;
+  private final T_Target owner;
+  private final Collection<Consumer<T_Renderable>> renderPreparations = new HashSet<>();
+  private Consumer<T_Renderable> propertyHandler = renderable -> {
   };
 
-  protected DefaultRenderable(Supplier<RenderContext<?, R>> renderContext, RenderableRepository repository, T target) {
+  protected DefaultRenderable(T_RenderContext renderContext, T_Target owner) {
     this.renderContext = renderContext;
-    this.target = target;
-    repository.register(this);
+    this.owner = owner;
   }
 
-  public R addBeforeRenderHook(Consumer<R> consumer) {
-    this.beforeRenders.add(consumer);
-    return (R) this;
+  public T_Renderable addRenderPreparation(Consumer<T_Renderable> consumer) {
+    this.renderPreparations.add(consumer);
+    return (T_Renderable) this;
   }
 
-  public R addAfterRenderHook(Consumer<R> consumer) {
-    this.afterRenders.add(consumer);
-    return (R) this;
+  public T_RenderContext getContext() {
+    return this.renderContext;
   }
 
-  public RenderContext<?, R> getContext() {
-    return this.renderContext.get();
+  public T_Renderable setPropertyHandler(Consumer<T_Renderable> propertyHandler) {
+    this.propertyHandler = propertyHandler;
+    return (T_Renderable) this;
   }
 
-  public Renderable<R, T> callAfterRenderHook() {
-    for (Consumer<R> afterRender : this.afterRenders) {
-      afterRender.accept((R) this);
+  public T_Renderable callPropertyHandler() {
+    this.propertyHandler.accept((T_Renderable) this);
+    return (T_Renderable) this;
+  }
+
+  public T_Renderable callRenderPreparations() {
+    for (Consumer<T_Renderable> preparation : this.renderPreparations) {
+      preparation.accept((T_Renderable) this);
     }
-    return this;
+    return (T_Renderable) this;
   }
 
-  public Renderable<R, T> callRendererNotSetAction() {
-    this.rendererNotSetAction.accept((R) this);
-    return this;
-  }
-
-  public R setRendererNotSetAction(Consumer<R> rendererNotSetAction) {
-    this.rendererNotSetAction = rendererNotSetAction;
-    return (R) this;
-  }
-
-  public Renderable<R, T> callBeforeRenderHook() {
-    for (Consumer<R> beforeRender : this.beforeRenders) {
-      beforeRender.accept((R) this);
-    }
-    return this;
-  }
-
-  public T getTarget() {
-    return this.target;
+  public T_Target getTarget() {
+    return this.owner;
   }
 }

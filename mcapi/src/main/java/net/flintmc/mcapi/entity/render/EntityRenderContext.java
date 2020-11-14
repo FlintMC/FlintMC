@@ -8,10 +8,16 @@ import net.flintmc.render.model.RenderContext;
 
 import java.util.Map;
 
-public interface EntityRenderContext extends RenderContext<Entity, ModelBox> {
+public interface EntityRenderContext
+    extends RenderContext<
+    Entity, EntityRenderContext, ModelBox<Entity, EntityRenderContext>, Object> {
 
   @AssistedFactory(EntityRenderContext.class)
-  interface Factory{
-    EntityRenderContext create(@Assisted Entity owner, @Assisted Map<String, ModelBox> renderers);
+  interface Factory {
+    EntityRenderContext create(@Assisted Entity owner);
+
+    EntityRenderContext create(
+        @Assisted Entity owner,
+        @Assisted Map<String, ModelBox<Entity, EntityRenderContext>> renderables);
   }
 }

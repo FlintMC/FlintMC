@@ -10,10 +10,11 @@ import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
-import net.flintmc.render.model.ModelBox;
 import net.minecraft.util.math.BlockPos;
 
-/** 1.15.2 implementation of the {@link CreatureEntity}. */
+/**
+ * 1.15.2 implementation of the {@link CreatureEntity}.
+ */
 @Implement(value = CreatureEntity.class, version = "1.15.2")
 public class VersionedCreatureEntity extends VersionedMobEntity implements CreatureEntity {
 
@@ -39,14 +40,18 @@ public class VersionedCreatureEntity extends VersionedMobEntity implements Creat
     this.creatureEntity = (net.minecraft.entity.CreatureEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getBlockPathWeight(BlockPosition position) {
     return this.creatureEntity.getBlockPathWeight(
         (BlockPos) this.getWorld().toMinecraftBlockPos(position));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasPath() {
     return this.creatureEntity.hasPath();

@@ -1,43 +1,39 @@
 package net.flintmc.render.model;
 
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
+public interface ModelBox<
+    T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+    T_RenderContext extends
+        RenderContext<
+            T_RenderContextAware,
+            T_RenderContext,
+            ModelBox<T_RenderContextAware, T_RenderContext>,
+            Object>>
+    extends Renderable<
+    T_RenderContextAware,
+    T_RenderContext,
+    ModelBox<T_RenderContextAware, T_RenderContext>,
+    Object> {
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+  ModelBox<T_RenderContextAware, T_RenderContext> set(Property property, float value);
 
-public interface ModelBox extends Renderable<ModelBox, Object> {
+  ModelBox<T_RenderContextAware, T_RenderContext> setMode(Property property, Property.Mode mode);
 
-  float getRotationPointX();
+  float get(Property property);
 
-  float getRotationPointY();
+  Property.Mode getMode(Property property);
 
-  float getRotationPointZ();
+  enum Property {
+    ROTATION_ANGLE_X,
+    ROTATION_ANGLE_Y,
+    ROTATION_ANGLE_Z,
 
-  float getRotationAngleX();
+    ROTATION_POINT_X,
+    ROTATION_POINT_Y,
+    ROTATION_POINT_Z;
 
-  float getRotationAngleY();
-
-  float getRotationAngleZ();
-
-  ModelBox setRotationPointX(float x);
-
-  ModelBox setRotationPointY(float y);
-
-  ModelBox setRotationPointZ(float z);
-
-  ModelBox setRotationPoint(float x, float y, float z);
-
-  ModelBox setRotationAngleX(float x);
-
-  ModelBox setRotationAngleY(float y);
-
-  ModelBox setRotationAngleZ(float z);
-
-  ModelBox setRotationAngle(float x, float y, float z);
-
-  @AssistedFactory(ModelBox.class)
-  interface Factory {
-    ModelBox create(@Assisted Supplier<RenderContext<?, ModelBox>> renderContext, @Assisted Object target);
+    public enum Mode {
+      ABSOLUTE,
+      RELATIVE
+    }
   }
 }

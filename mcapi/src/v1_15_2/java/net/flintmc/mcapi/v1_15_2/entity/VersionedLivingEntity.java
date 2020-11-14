@@ -21,12 +21,8 @@ import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.render.model.ModelBox;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.QuadrupedModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
@@ -58,14 +54,14 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
 
   }
 
-  protected Map<String, ModelBox> createModelRenderers() {
+  protected Map<String, ModelBox<Entity, EntityRenderContext>> createModelRenderers() {
     EntityModel<? extends net.minecraft.entity.LivingEntity> entityModel =
         ((LivingRendererAccessor) Minecraft.getInstance().getRenderManager().getRenderer(this.getHandle())).getEntityModel();
 
     if (entityModel instanceof BipedModel) {
       BipedModel<? extends net.minecraft.entity.LivingEntity> bipedModel = (BipedModel<? extends net.minecraft.entity.LivingEntity>) entityModel;
       return ImmutableMap
-          .<String, ModelBox>builder()
+          .<String, ModelBox<Entity, EntityRenderContext>>builder()
           .put("body", this.createModelBox(bipedModel.bipedBody))
           .put("head", this.createModelBox(bipedModel.bipedHead))
           .put("headWear", this.createModelBox(bipedModel.bipedHeadwear))
@@ -77,7 +73,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
     } else if (entityModel instanceof QuadrupedModelAccessor) {
       QuadrupedModelAccessor quadrupedModelAccessor = (QuadrupedModelAccessor) entityModel;
       return ImmutableMap
-          .<String, ModelBox>builder()
+          .<String, ModelBox<Entity, EntityRenderContext>>builder()
           .put("body", this.createModelBox(quadrupedModelAccessor.getBody()))
           .put("head", this.createModelBox(quadrupedModelAccessor.getHead()))
           .put("legBackLeft", this.createModelBox(quadrupedModelAccessor.getLegBackLeft()))
