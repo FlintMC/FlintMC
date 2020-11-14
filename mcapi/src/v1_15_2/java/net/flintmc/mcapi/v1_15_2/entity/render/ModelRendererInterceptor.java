@@ -137,7 +137,7 @@ public class ModelRendererInterceptor {
       float blue,
       float alpha) {
     if (lastRenderedEntity == null) return false;
-    ModelBox modelBox = lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
+    ModelBox modelBox = lastRenderedEntity.getRenderContext().getRenderableByMeta(instance);
     if (modelBox == null) return false;
     modelBox.callRenderPreparations();
     if (modelBox.getContext().getRenderer() != null) {

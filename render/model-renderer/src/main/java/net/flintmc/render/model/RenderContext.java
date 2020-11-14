@@ -5,9 +5,9 @@ import java.util.Map;
 public interface RenderContext<
     T_RenderContextAware extends RenderContextAware<T_RenderContext>,
     T_RenderContext extends
-        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target>,
-    T_Renderable extends Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_Target>,
-    T_Target> {
+        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+    T_Renderable extends Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+    T_RenderMeta> {
 
   T_RenderContextAware getOwner();
 
@@ -17,5 +17,5 @@ public interface RenderContext<
 
   T_RenderContext registerRenderable(String name, T_Renderable renderable);
 
-  T_Renderable getRenderableByTarget(T_Target target);
+  T_Renderable getRenderableByMeta(T_RenderMeta target);
 }

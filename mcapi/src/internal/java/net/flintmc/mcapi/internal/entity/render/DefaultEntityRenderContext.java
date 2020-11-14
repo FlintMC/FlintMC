@@ -56,7 +56,7 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
     return this.renderables;
   }
 
-  public ModelBox<Entity, EntityRenderContext> getRenderableByTarget(Object target) {
+  public ModelBox<Entity, EntityRenderContext> getRenderableByMeta(Object target) {
     return this.renderablesByTarget.get(target);
   }
 
@@ -67,10 +67,10 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
           String.format("ModelBox with name %s already registered", name));
 
     if (this.renderablesByTarget.containsKey(name))
-      throw new IllegalStateException("Multiple renderables target the same object.");
+      throw new IllegalStateException("Multiple renderables refer to the same meta object.");
 
     this.renderables.put(name, renderable);
-    this.renderablesByTarget.put(renderable.getTarget(), renderable);
+    this.renderablesByTarget.put(renderable.getMeta(), renderable);
     return this;
   }
 }

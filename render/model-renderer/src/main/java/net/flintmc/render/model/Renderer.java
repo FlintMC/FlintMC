@@ -1,6 +1,8 @@
 package net.flintmc.render.model;
 
-public interface Renderer<R extends Renderable<?, ?, R, ?>, C extends RenderContext<?, ?, R, ?>> {
+public interface Renderer<
+    T_Renderable extends Renderable<?, ?, T_Renderable, ?>,
+    T_RenderContext extends RenderContext<?, ?, T_Renderable, ?>> {
 
-  void render(R renderable);
+  void render(T_Renderable renderable);
 }

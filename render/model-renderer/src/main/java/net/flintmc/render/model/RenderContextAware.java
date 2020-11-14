@@ -1,7 +1,7 @@
 package net.flintmc.render.model;
 
-public interface RenderContextAware<C extends RenderContext<?, ?, ?, ?>> {
+public interface RenderContextAware<T_RenderContext extends RenderContext<?, ?, ?, ?>> {
 
-  C getRenderContext();
+  T_RenderContext getRenderContext();
 
 }

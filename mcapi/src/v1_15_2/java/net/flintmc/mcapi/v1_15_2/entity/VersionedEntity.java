@@ -64,29 +64,35 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
             .create(this.getRenderContext(), modelRenderer)
             .addRenderPreparation(
                 modelBox -> {
-                  if (modelBox.getMode(ModelBox.Property.ROTATION_ANGLE_X)
+                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_ANGLE_X)
                       == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotateAngleX = 0;
-                  modelRenderer.rotateAngleX += modelBox.get(ModelBox.Property.ROTATION_ANGLE_X);
+                  modelRenderer.rotateAngleX +=
+                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_ANGLE_X);
 
-                  if (modelBox.getMode(ModelBox.Property.ROTATION_ANGLE_Y)
+                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_ANGLE_Y)
                       == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotateAngleY = 0;
-                  modelRenderer.rotateAngleY += modelBox.get(ModelBox.Property.ROTATION_ANGLE_Y);
+                  modelRenderer.rotateAngleY +=
+                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_ANGLE_Y);
 
-                  if (modelBox.getMode(ModelBox.Property.ROTATION_ANGLE_Z)
+                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_ANGLE_Z)
                       == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotateAngleZ = 0;
-                  modelRenderer.rotateAngleZ += modelBox.get(ModelBox.Property.ROTATION_ANGLE_Z);
+                  modelRenderer.rotateAngleZ +=
+                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_ANGLE_Z);
 
-                  if (modelBox.getMode(ModelBox.Property.ROTATION_POINT_X)
+                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_POINT_X)
                       == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotationPointX = 0;
-                  modelRenderer.rotationPointX += modelBox.get(ModelBox.Property.ROTATION_POINT_X);
+                  modelRenderer.rotationPointX +=
+                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_POINT_X);
 
-                  if (modelBox.getMode(ModelBox.Property.ROTATION_POINT_Y)
+                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_POINT_Y)
                       == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotationPointY = 0;
-                  modelRenderer.rotationPointY += modelBox.get(ModelBox.Property.ROTATION_POINT_Y);
+                  modelRenderer.rotationPointY +=
+                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_POINT_Y);
 
-                  if (modelBox.getMode(ModelBox.Property.ROTATION_POINT_Z)
+                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_POINT_Z)
                       == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotationPointZ = 0;
-                  modelRenderer.rotationPointZ += modelBox.get(ModelBox.Property.ROTATION_POINT_Z);
+                  modelRenderer.rotationPointZ +=
+                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_POINT_Z);
                 });
 
     ((EntityAccessor) this.getHandle()).getFlintRenderables().put(modelRenderer, box);
