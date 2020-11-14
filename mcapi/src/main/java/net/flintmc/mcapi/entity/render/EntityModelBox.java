@@ -11,4 +11,5 @@ public interface EntityModelBox extends ModelBox<Entity, EntityRenderContext> {
   interface Factory {
     EntityModelBox create(@Assisted EntityRenderContext renderContext, @Assisted Object target);
   }
+
 }
