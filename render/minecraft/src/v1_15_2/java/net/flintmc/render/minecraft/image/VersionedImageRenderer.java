@@ -80,7 +80,10 @@ public class VersionedImageRenderer implements ImageRenderer {
       displayWidth = sourceWidth;
     }
 
-    RenderSystem.color4f(r / 255F, g / 255F, b / 255F, a / 255F);
+    boolean colored = r != -1 && g != -1 && b != -1 && a != -1;
+    if (colored) {
+      RenderSystem.color4f(r / 255F, g / 255F, b / 255F, a / 255F);
+    }
 
     boolean scale = sourceHeight != displayHeight || sourceWidth != displayWidth;
 
@@ -106,6 +109,8 @@ public class VersionedImageRenderer implements ImageRenderer {
       RenderSystem.scalef(xScaleFactor, yScaleFactor, 1F);
     }
 
-    RenderSystem.color4f(1F, 1F, 1F, 1F);
+    if (colored) {
+      RenderSystem.color4f(1F, 1F, 1F, 1F);
+    }
   }
 }

@@ -36,10 +36,10 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
     this.y = -1;
     this.displayWidth = -1;
     this.displayHeight = -1;
-    this.r = 255;
-    this.g = 255;
-    this.b = 255;
-    this.a = 255;
+    this.r = -1;
+    this.g = -1;
+    this.b = -1;
+    this.a = -1;
     this.zLevel = 0;
   }
 
@@ -49,7 +49,7 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
     Preconditions.checkArgument(
         this.x >= 0 && this.y >= 0, "X/Y positions not set/set to something < 0");
     Preconditions.checkArgument(
-        this.r >= 0 && this.g >= 0 && this.b >= 0 && this.a >= 0,
+        this.r >= -1 && this.g >= -1 && this.b >= -1 && this.a >= -1,
         "Colors (r, g, b or a) set to something < 0");
     Preconditions.checkArgument(
         this.r <= 255 && this.g <= 255 && this.b <= 255 && this.a <= 255,

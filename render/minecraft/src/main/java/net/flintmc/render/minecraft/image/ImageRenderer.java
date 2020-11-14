@@ -32,10 +32,10 @@ public interface ImageRenderer {
    *     equal to the {@code sourceWidth}, the image will be scaled
    * @param displayHeight The height of the texture to be displayed on the screen, if this is not
    *     equal to the {@code sourceHeight}, the image will be scaled
-   * @param r The red part of the RGBA color from 0 - 255
-   * @param g The green part of the RGBA color from 0 - 255
-   * @param b The blue part of the RGBA color from 0 - 255
-   * @param a The alpha part of the RGBA color from 0 - 255
+   * @param r The red part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param g The green part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param b The blue part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param a The alpha part of the RGBA color from 0 - 255, -1 to disable the colors
    */
   void drawFullImage(
       float screenX,
@@ -70,10 +70,10 @@ public interface ImageRenderer {
    *     equal to the {@code sourceWidth}, the image will be scaled
    * @param displayHeight The height of the texture to be displayed on the screen, if this is not
    *     equal to the {@code sourceHeight}, the image will be scaled
-   * @param r The red part of the RGBA color from 0 - 255
-   * @param g The green part of the RGBA color from 0 - 255
-   * @param b The blue part of the RGBA color from 0 - 255
-   * @param a The alpha part of the RGBA color from 0 - 255
+   * @param r The red part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param g The green part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param b The blue part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param a The alpha part of the RGBA color from 0 - 255, -1 to disable the colors
    */
   void drawPartImage(
       float screenX,

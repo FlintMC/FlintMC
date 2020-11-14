@@ -17,7 +17,7 @@ public interface RectangleRenderer {
    * @param rgba The RGBA value to draw the border in
    * @param borderWidth The width of the border, should be > 0
    */
-  void drawRectBorder(int x, int y, int width, int height, int rgba, int borderWidth);
+  void drawRectBorder(float x, float y, float width, float height, int rgba, float borderWidth);
 
   /**
    * Renders the full rectangle.
@@ -30,5 +30,5 @@ public interface RectangleRenderer {
    *     rectangle
    * @param rgba The RGBA value to draw the rectangle in
    */
-  void drawFilledRect(int x, int y, int width, int height, int rgba);
+  void drawFilledRect(float x, float y, float width, float height, int rgba);
 }
