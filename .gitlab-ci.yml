@@ -23,8 +23,7 @@ publish_release:
   stage: deploy
   script:
     - export VERSION="${CI_COMMIT_TAG}" || exit 1
-    - sh gradlew publishJar
-    - sh gradlew publishManifest
+    - sh gradlew publishFlint
   environment:
     name: production
   only:
