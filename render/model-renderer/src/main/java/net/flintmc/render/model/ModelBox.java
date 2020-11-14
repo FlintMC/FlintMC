@@ -23,6 +23,14 @@ public interface ModelBox<
     ROTATION_POINT_Y,
     ROTATION_POINT_Z;
 
+    public boolean validateValue(Float value) {
+      return value != null;
+    }
+
+    public boolean validateMeta(Property.Mode propertyMeta) {
+      return propertyMeta != null;
+    }
+
     public Mode getDefaultMeta() {
       return Mode.RELATIVE;
     }

@@ -19,14 +19,10 @@ public interface Renderable<
         Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
     T_RenderMeta> {
 
-  /**
-   * @return the metadata attached to this renderable component
-   */
+  /** @return the metadata attached to this renderable component */
   T_RenderMeta getMeta();
 
-  /**
-   * @return the component that coordinates the rendering process
-   */
+  /** @return the component that coordinates the rendering process */
   T_RenderContext getContext();
 
   /**
@@ -39,30 +35,90 @@ public interface Renderable<
   T_Renderable callRenderPreparations();
 
   /**
-   * @return calls the handler that is used only to set properties.
+   * Calls the handler that is used only to set properties.
+   *
+   * @return this
    */
   T_Renderable callPropertyHandler();
 
+  /**
+   * Adds a pre-render hook that can be called - usually by the {@link Renderer} - with {@link
+   * Renderable#callRenderPreparations()} ()}. Should not be used to set any properties before the
+   * render. For this @see {@link Renderable#setPropertyHandler(Consumer)}.
+   *
+   * @param consumer the hook to add
+   * @return this
+   */
   T_Renderable addRenderPreparation(Consumer<T_Renderable> consumer);
 
+  /**
+   * Sets the pre-render hook that can be called - usually by the {@link Renderer} - with {@link
+   * Renderable#callPropertyHandler()}. Should not be used to set anything else than properties
+   * before the render. For this @see {@link Renderable#addRenderPreparation(Consumer)} (Consumer)}.
+   *
+   * @param consumer the new property handler
+   * @return this
+   */
   T_Renderable setPropertyHandler(Consumer<T_Renderable> consumer);
 
-  <T_PropertyType, T_Property_Meta> T_Renderable setPropertyValue(
-      Property<T_PropertyType, T_Property_Meta> property, T_PropertyType propertyValue);
+  /**
+   * @param property         the property to modify on this instance
+   * @param propertyValue    the value to set the property to
+   * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
+   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   * @return this
+   */
+  <T_PropertyType, T_PropertyMeta> T_Renderable setPropertyValue(
+      Property<T_PropertyType, T_PropertyMeta> property, T_PropertyType propertyValue);
 
-  <T_PropertyType, T_Property_Meta> T_Renderable setPropertyMeta(
-      Property<T_PropertyType, T_Property_Meta> property, T_Property_Meta propertyMode);
+  /**
+   * @param property         the property to modify on this instance
+   * @param propertyMode     the mode to set the property to
+   * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
+   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   * @return this
+   */
+  <T_PropertyType, T_PropertyMeta> T_Renderable setPropertyMeta(
+      Property<T_PropertyType, T_PropertyMeta> property, T_PropertyMeta propertyMode);
 
+  /**
+   * @param property         the property to get the value from
+   * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
+   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   * @return the current value of the given property
+   */
   <T_PropertyType, T_PropertyMeta> T_PropertyType getPropertyValue(
       Property<T_PropertyType, T_PropertyMeta> property);
 
+  /**
+   * @param property         the property to get the mode from
+   * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
+   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   * @return the current mode of the given property
+   */
   <T_PropertyType, T_PropertyMeta> T_PropertyMeta getPropertyMeta(
       Property<T_PropertyType, T_PropertyMeta> property);
 
   interface Property<T_PropertyValue, T_PropertyMeta> {
+    boolean validateValue(T_PropertyValue propertyValue);
+
+    boolean validateMeta(T_PropertyMeta propertyMeta);
+
     T_PropertyValue getDefaultValue();
 
     T_PropertyMeta getDefaultMeta();
+  }
+
+  interface StringProperty<T_RenderMeta> extends Property<String, T_RenderMeta> {
+    default String getDefaultValue() {
+      return null;
+    }
+  }
+
+  interface IntProperty<T_RenderMeta> extends Property<Integer, T_RenderMeta> {
+    default Integer getDefaultValue() {
+      return 0;
+    }
   }
 
   interface FloatProperty<T_RenderMeta> extends Property<Float, T_RenderMeta> {

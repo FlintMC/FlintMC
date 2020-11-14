@@ -62,15 +62,19 @@ public class DefaultRenderable<
   }
 
   @SuppressWarnings("unchecked")
-  public <T_PropertyType, T_Property_Meta> T_Renderable setPropertyValue(
-      Property<T_PropertyType, T_Property_Meta> property, T_PropertyType propertyValue) {
+  public <T_PropertyType, T_PropertyMeta> T_Renderable setPropertyValue(
+      Property<T_PropertyType, T_PropertyMeta> property, T_PropertyType propertyValue) {
+    if (!property.validateValue(propertyValue))
+      throw new IllegalArgumentException("provided property value is invalid.");
     this.propertyValues.put(property, propertyValue);
     return (T_Renderable) this;
   }
 
   @SuppressWarnings("unchecked")
-  public <T_PropertyType, T_Property_Meta> T_Renderable setPropertyMeta(
-      Property<T_PropertyType, T_Property_Meta> property, T_Property_Meta propertyMeta) {
+  public <T_PropertyType, T_PropertyMeta> T_Renderable setPropertyMeta(
+      Property<T_PropertyType, T_PropertyMeta> property, T_PropertyMeta propertyMeta) {
+    if (!property.validateMeta(propertyMeta))
+      throw new IllegalArgumentException("provided property meta is invalid.");
     this.propertyMeta.put(property, propertyMeta);
     return (T_Renderable) this;
   }
