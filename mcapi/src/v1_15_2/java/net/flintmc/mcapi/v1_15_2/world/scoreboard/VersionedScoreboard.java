@@ -176,8 +176,13 @@ public class VersionedScoreboard implements Scoreboard {
     Map<Objective, Score> entitiesScoreObjectives =
         this.entitiesScoreObjectives.computeIfAbsent(username, s -> new HashMap<>());
 
-    return entitiesScoreObjectives.put(
-        objective, this.scoreboardMapper.fromMinecraftScore(minecraftScore));
+    if(entitiesScoreObjectives.containsKey(objective)) {
+      return entitiesScoreObjectives.get(objective);
+    } else {
+      Score score = this.scoreboardMapper.fromMinecraftScore(minecraftScore);
+      entitiesScoreObjectives.put(objective, score);
+      return score;
+    }
   }
 
   /**

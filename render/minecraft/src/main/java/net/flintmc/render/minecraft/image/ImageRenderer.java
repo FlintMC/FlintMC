@@ -1,0 +1,94 @@
+package net.flintmc.render.minecraft.image;
+
+import net.flintmc.mcapi.resources.ResourceLocation;
+
+/** Renderer for images. */
+public interface ImageRenderer {
+
+  /**
+   * Binds the given texture location to be used for {@link #drawFullImage(float, float, int, float,
+   * float, float, float, int, int, int, int)} and {@link #drawPartImage(float, float, float, float,
+   * int, float, float, float, float, float, float, int, int, int, int)}.
+   *
+   * <p>Once bound, the texture can be used multiple times for those two methods and doesn't need to
+   * be bound multiple times.
+   *
+   * @param location The non-null texture to be bound
+   */
+  void bindTexture(ResourceLocation location);
+
+  /**
+   * Draws parts of the {@link #bindTexture(ResourceLocation) bound texture} on the screen at the
+   * given position and scales it if necessary. A texture needs to be bound first by using {@link
+   * #bindTexture(ResourceLocation)}.
+   *
+   * @param screenX The x position of the top-left corner on the screen to draw the image at
+   * @param screenY The y position of the top-left corner on the screen to draw the image at the
+   *     screen
+   * @param zLevel The z level on the screen where the image should be drawn
+   * @param sourceWidth The width of the content in the texture to be drawn
+   * @param sourceHeight The height of the content in the texture to be drawn
+   * @param displayWidth The width of the texture to be displayed on the screen, if this is not
+   *     equal to the {@code sourceWidth}, the image will be scaled
+   * @param displayHeight The height of the texture to be displayed on the screen, if this is not
+   *     equal to the {@code sourceHeight}, the image will be scaled
+   * @param r The red part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param g The green part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param b The blue part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param a The alpha part of the RGBA color from 0 - 255, -1 to disable the colors
+   */
+  void drawFullImage(
+      float screenX,
+      float screenY,
+      int zLevel,
+      float sourceWidth,
+      float sourceHeight,
+      float displayWidth,
+      float displayHeight,
+      int r,
+      int g,
+      int b,
+      int a);
+
+  /**
+   * Draws parts of the {@link #bindTexture(ResourceLocation) bound texture} on the screen at the
+   * given position and scales it if necessary. A texture needs to be bound first by using {@link
+   * #bindTexture(ResourceLocation)}.
+   *
+   * @param screenX The x position of the top-left corner on the screen to draw the image at
+   * @param screenY The y position of the top-left corner on the screen to draw the image at
+   * @param sourceX The x position of one pixel above the top-left corner of the content in the
+   *     texture to draw on the screen
+   * @param sourceY The y position of one pixel above the top-left corner of the content in the
+   *     texture to draw on the screen
+   * @param zLevel The z level on the screen where the image should be drawn
+   * @param sourceWidth The width of the content in the texture to be drawn
+   * @param sourceHeight The height of the content in the texture to be drawn
+   * @param fullImageWidth The width of the full texture
+   * @param fullImageHeight The height of the full texture
+   * @param displayWidth The width of the texture to be displayed on the screen, if this is not
+   *     equal to the {@code sourceWidth}, the image will be scaled
+   * @param displayHeight The height of the texture to be displayed on the screen, if this is not
+   *     equal to the {@code sourceHeight}, the image will be scaled
+   * @param r The red part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param g The green part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param b The blue part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param a The alpha part of the RGBA color from 0 - 255, -1 to disable the colors
+   */
+  void drawPartImage(
+      float screenX,
+      float screenY,
+      float sourceX,
+      float sourceY,
+      int zLevel,
+      float sourceWidth,
+      float sourceHeight,
+      float fullImageWidth,
+      float fullImageHeight,
+      float displayWidth,
+      float displayHeight,
+      int r,
+      int g,
+      int b,
+      int a);
+}
