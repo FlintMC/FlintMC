@@ -7,8 +7,8 @@ public enum StringAlignment {
   LEFT,
 
   /**
-   * The given text will be displayed half of its length to the right from the given x and y
-   * coordinates which means that it is centered from the given coordinates.
+   * The given text will be displayed half of its length to the left from the given x and y
+   * coordinates, x being the exact center of the text.
    */
   CENTER,
 

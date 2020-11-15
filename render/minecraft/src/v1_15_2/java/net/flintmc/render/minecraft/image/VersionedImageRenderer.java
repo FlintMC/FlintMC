@@ -6,7 +6,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 @Singleton
 @Implement(value = ImageRenderer.class, version = "1.15.2")
@@ -29,6 +33,7 @@ public class VersionedImageRenderer implements ImageRenderer {
       float screenX,
       float screenY,
       int zLevel,
+      Object matrix,
       float sourceWidth,
       float sourceHeight,
       float displayWidth,
@@ -43,6 +48,7 @@ public class VersionedImageRenderer implements ImageRenderer {
         0F,
         0F,
         zLevel,
+        matrix,
         sourceWidth,
         sourceHeight,
         sourceWidth,
@@ -62,6 +68,7 @@ public class VersionedImageRenderer implements ImageRenderer {
       float sourceX,
       float sourceY,
       int zLevel,
+      Object matrix,
       float sourceWidth,
       float sourceHeight,
       float fullImageWidth,
@@ -94,16 +101,31 @@ public class VersionedImageRenderer implements ImageRenderer {
     float xScaleFactor = scale ? sourceWidth / displayWidth : 1F;
     float yScaleFactor = scale ? sourceHeight / displayHeight : 1F;
 
-    AbstractGui.blit(
-        (int) (screenX * xScaleFactor),
-        (int) (screenY * yScaleFactor),
-        zLevel,
-        sourceX,
-        sourceY,
-        (int) sourceWidth,
-        (int) sourceHeight,
-        (int) fullImageWidth,
-        (int) fullImageHeight);
+    if (matrix == null) {
+      this.blit(
+          null,
+          screenX * xScaleFactor,
+          screenY * yScaleFactor,
+          zLevel,
+          sourceX,
+          sourceY,
+          sourceWidth,
+          sourceHeight,
+          fullImageWidth,
+          fullImageHeight);
+    } else {
+      this.blit(
+          (Matrix4f) matrix,
+          screenX * xScaleFactor,
+          screenY * yScaleFactor,
+          zLevel,
+          sourceX,
+          sourceY,
+          sourceWidth,
+          sourceHeight,
+          fullImageWidth,
+          fullImageHeight);
+    }
 
     if (scale) {
       RenderSystem.scalef(xScaleFactor, yScaleFactor, 1F);
@@ -112,5 +134,98 @@ public class VersionedImageRenderer implements ImageRenderer {
     if (colored) {
       RenderSystem.color4f(1F, 1F, 1F, 1F);
     }
+  }
+
+  /**
+   * Blit method from Minecrafts {@link net.minecraft.client.gui.AbstractGui}, with support for
+   * specifying a {@link Matrix4f} and floats as the coordinates instead of ints.
+   */
+  private void blit(
+      Matrix4f matrix,
+      float x,
+      float y,
+      int zLevel,
+      float sourceX,
+      float sourceY,
+      float sourceWidth,
+      float sourceHeight,
+      float originalWidth,
+      float originalHeight) {
+    innerBlit(
+        matrix,
+        x,
+        x + sourceWidth,
+        y,
+        y + sourceHeight,
+        zLevel,
+        sourceWidth,
+        sourceHeight,
+        sourceX,
+        sourceY,
+        originalHeight,
+        originalWidth);
+  }
+
+  /**
+   * Blit method from Minecrafts {@link net.minecraft.client.gui.AbstractGui}, with support for
+   * specifying a {@link Matrix4f} and floats as the coordinates instead of ints.
+   */
+  private void innerBlit(
+      Matrix4f matrix,
+      float left,
+      float right,
+      float top,
+      float bottom,
+      int zLevel,
+      float sourceWidth,
+      float sourceHeight,
+      float sourceX,
+      float sourceY,
+      float originalHeight,
+      float originalWidth) {
+    innerBlit(
+        matrix,
+        left,
+        right,
+        top,
+        bottom,
+        zLevel,
+        (sourceX + 0.0F) / originalHeight,
+        (sourceX + sourceWidth) / originalHeight,
+        (sourceY + 0.0F) / originalWidth,
+        (sourceY + sourceHeight) / originalWidth);
+  }
+
+  /**
+   * Blit method from Minecrafts {@link net.minecraft.client.gui.AbstractGui}, with support for
+   * specifying a {@link Matrix4f} and floats as the coordinates instead of ints.
+   */
+  private void innerBlit(
+      Matrix4f matrix,
+      float left,
+      float right,
+      float top,
+      float bottom,
+      int zLevel,
+      float u0,
+      float u1,
+      float v0,
+      float v1) {
+    BufferBuilder builder = Tessellator.getInstance().getBuffer();
+    builder.begin(7, DefaultVertexFormats.POSITION_TEX);
+    if (matrix != null) {
+      builder.pos(matrix, left, bottom, (float) zLevel).tex(u0, v1).endVertex();
+      builder.pos(matrix, right, bottom, (float) zLevel).tex(u1, v1).endVertex();
+      builder.pos(matrix, right, top, (float) zLevel).tex(u1, v0).endVertex();
+      builder.pos(matrix, left, top, (float) zLevel).tex(u0, v0).endVertex();
+    } else {
+      builder.pos(left, bottom, (float) zLevel).tex(u0, v1).endVertex();
+      builder.pos(right, bottom, (float) zLevel).tex(u1, v1).endVertex();
+      builder.pos(right, top, (float) zLevel).tex(u1, v0).endVertex();
+      builder.pos(left, top, (float) zLevel).tex(u0, v0).endVertex();
+    }
+    builder.finishDrawing();
+    RenderSystem.enableAlphaTest();
+    WorldVertexBufferUploader.draw(builder);
   }
 }

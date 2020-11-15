@@ -36,9 +36,6 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
     super.validate();
 
     Preconditions.checkArgument(
-            this.sourceX >= 0 && this.sourceY >= 0,
-            "Source positions not set/set to something <= 0");
-    Preconditions.checkArgument(
         this.sourceWidth > 0 && this.sourceHeight > 0, "Source size not set/set to something <= 0");
   }
 
@@ -66,6 +63,7 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
             this.sourceX,
             this.sourceY,
             this.zLevel,
+            this.matrix,
             this.sourceWidth,
             this.sourceHeight,
             this.imageWidth,

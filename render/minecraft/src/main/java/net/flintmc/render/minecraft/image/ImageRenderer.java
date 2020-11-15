@@ -41,6 +41,7 @@ public interface ImageRenderer {
       float screenX,
       float screenY,
       int zLevel,
+      Object matrix,
       float sourceWidth,
       float sourceHeight,
       float displayWidth,
@@ -62,6 +63,7 @@ public interface ImageRenderer {
    * @param sourceY The y position of one pixel above the top-left corner of the content in the
    *     texture to draw on the screen
    * @param zLevel The z level on the screen where the image should be drawn
+   * @param matrix The matrix to be used for rendering the image, null to use no matrix
    * @param sourceWidth The width of the content in the texture to be drawn
    * @param sourceHeight The height of the content in the texture to be drawn
    * @param fullImageWidth The width of the full texture
@@ -81,6 +83,7 @@ public interface ImageRenderer {
       float sourceX,
       float sourceY,
       int zLevel,
+      Object matrix,
       float sourceWidth,
       float sourceHeight,
       float fullImageWidth,
