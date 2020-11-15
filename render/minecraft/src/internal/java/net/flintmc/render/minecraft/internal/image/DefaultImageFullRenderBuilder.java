@@ -1,9 +1,11 @@
-package net.flintmc.render.minecraft.image;
+package net.flintmc.render.minecraft.internal.image;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.render.minecraft.image.ImageFullRenderBuilder;
+import net.flintmc.render.minecraft.image.ImageRenderer;
 
 @Singleton
 @Implement(ImageFullRenderBuilder.class)

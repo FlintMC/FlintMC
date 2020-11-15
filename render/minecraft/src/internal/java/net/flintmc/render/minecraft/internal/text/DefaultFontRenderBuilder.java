@@ -1,4 +1,4 @@
-package net.flintmc.render.minecraft.text;
+package net.flintmc.render.minecraft.internal.text;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;

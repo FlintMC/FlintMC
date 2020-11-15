@@ -1,10 +1,11 @@
-package net.flintmc.render.minecraft.image;
+package net.flintmc.render.minecraft.v1_15_2.image;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocation;
+import net.flintmc.render.minecraft.image.ImageRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Matrix4f;

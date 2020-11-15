@@ -1,4 +1,4 @@
-package net.flintmc.render.minecraft.text;
+package net.flintmc.render.minecraft.internal.text;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -24,7 +24,7 @@ public class DefaultTooltipRenderBuilder implements TooltipRenderBuilder {
 
   private void validate() {
     Preconditions.checkArgument(
-            this.x >= 0 && this.y >= 0, "X/Y positions not set/set to something < 0");
+        this.x >= 0 && this.y >= 0, "X/Y positions not set/set to something < 0");
     Preconditions.checkNotNull(this.text, "Text not set/set to null");
     Preconditions.checkArgument(!this.text.isEmpty(), "Text cannot be empty");
   }

@@ -1,9 +1,11 @@
-package net.flintmc.render.minecraft.image;
+package net.flintmc.render.minecraft.internal.image;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.render.minecraft.image.ImagePartRenderBuilder;
+import net.flintmc.render.minecraft.image.ImageRenderer;
 
 @Singleton
 @Implement(ImagePartRenderBuilder.class)
@@ -58,22 +60,22 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
     this.validate();
 
     this.renderer.drawPartImage(
-            this.x,
-            this.y,
-            this.sourceX,
-            this.sourceY,
-            this.zLevel,
-            this.matrix,
-            this.sourceWidth,
-            this.sourceHeight,
-            this.imageWidth,
-            this.imageHeight,
-            this.displayWidth,
-            this.displayHeight,
-            this.r,
-            this.g,
-            this.b,
-            this.a);
+        this.x,
+        this.y,
+        this.sourceX,
+        this.sourceY,
+        this.zLevel,
+        this.matrix,
+        this.sourceWidth,
+        this.sourceHeight,
+        this.imageWidth,
+        this.imageHeight,
+        this.displayWidth,
+        this.displayHeight,
+        this.r,
+        this.g,
+        this.b,
+        this.a);
 
     this.reset();
   }
