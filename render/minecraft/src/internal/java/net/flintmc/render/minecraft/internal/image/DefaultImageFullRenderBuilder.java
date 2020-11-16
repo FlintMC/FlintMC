@@ -1,9 +1,11 @@
-package net.flintmc.render.minecraft.image;
+package net.flintmc.render.minecraft.internal.image;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.render.minecraft.image.ImageFullRenderBuilder;
+import net.flintmc.render.minecraft.image.ImageRenderer;
 
 @Singleton
 @Implement(ImageFullRenderBuilder.class)
@@ -15,6 +17,7 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
   protected float imageHeight;
   protected float x;
   protected float y;
+  protected Object matrix;
   protected float displayWidth;
   protected float displayHeight;
   protected int r;
@@ -47,8 +50,6 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
     Preconditions.checkArgument(
         this.imageWidth > 0 && this.imageHeight > 0, "Image size not set/set to something <= 0");
     Preconditions.checkArgument(
-        this.x >= 0 && this.y >= 0, "X/Y positions not set/set to something < 0");
-    Preconditions.checkArgument(
         this.r >= -1 && this.g >= -1 && this.b >= -1 && this.a >= -1,
         "Colors (r, g, b or a) set to something < 0");
     Preconditions.checkArgument(
@@ -67,6 +68,12 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
   public ImageFullRenderBuilder at(float x, float y) {
     this.x = x;
     this.y = y;
+    return this;
+  }
+
+  @Override
+  public ImageFullRenderBuilder matrix(Object matrix) {
+    this.matrix = matrix;
     return this;
   }
 
@@ -110,6 +117,7 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
         this.x,
         this.y,
         this.zLevel,
+        this.matrix,
         this.imageWidth,
         this.imageHeight,
         this.displayWidth,

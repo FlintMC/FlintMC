@@ -1,9 +1,11 @@
-package net.flintmc.render.minecraft.image;
+package net.flintmc.render.minecraft.internal.image;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.render.minecraft.image.ImagePartRenderBuilder;
+import net.flintmc.render.minecraft.image.ImageRenderer;
 
 @Singleton
 @Implement(ImagePartRenderBuilder.class)
@@ -36,9 +38,6 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
     super.validate();
 
     Preconditions.checkArgument(
-            this.sourceX >= 0 && this.sourceY >= 0,
-            "Source positions not set/set to something <= 0");
-    Preconditions.checkArgument(
         this.sourceWidth > 0 && this.sourceHeight > 0, "Source size not set/set to something <= 0");
   }
 
@@ -61,21 +60,22 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
     this.validate();
 
     this.renderer.drawPartImage(
-            this.x,
-            this.y,
-            this.sourceX,
-            this.sourceY,
-            this.zLevel,
-            this.sourceWidth,
-            this.sourceHeight,
-            this.imageWidth,
-            this.imageHeight,
-            this.displayWidth,
-            this.displayHeight,
-            this.r,
-            this.g,
-            this.b,
-            this.a);
+        this.x,
+        this.y,
+        this.sourceX,
+        this.sourceY,
+        this.zLevel,
+        this.matrix,
+        this.sourceWidth,
+        this.sourceHeight,
+        this.imageWidth,
+        this.imageHeight,
+        this.displayWidth,
+        this.displayHeight,
+        this.r,
+        this.g,
+        this.b,
+        this.a);
 
     this.reset();
   }
