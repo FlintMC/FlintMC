@@ -1,10 +1,11 @@
-package net.flintmc.render.minecraft.image;
+package net.flintmc.render.minecraft.v1_15_2.image;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocation;
+import net.flintmc.render.minecraft.image.ImageRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 
@@ -19,11 +20,13 @@ public class VersionedImageRenderer implements ImageRenderer {
     this.minecraft = Minecraft.getInstance();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void bindTexture(ResourceLocation location) {
     this.minecraft.getTextureManager().bindTexture(location.getHandle());
   }
 
+  /** {@inheritDoc} */
   @Override
   public void drawFullImage(
       float screenX,
@@ -55,6 +58,7 @@ public class VersionedImageRenderer implements ImageRenderer {
         a);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void drawPartImage(
       float screenX,

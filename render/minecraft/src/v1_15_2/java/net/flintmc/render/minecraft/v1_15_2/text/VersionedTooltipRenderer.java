@@ -1,14 +1,13 @@
-package net.flintmc.render.minecraft.text;
+package net.flintmc.render.minecraft.v1_15_2.text;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.minecraft.text.tooltip.TooltipRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
-
-import java.util.List;
 
 @Singleton
 @Implement(value = TooltipRenderer.class, version = "1.15.2")
@@ -24,6 +23,7 @@ public class VersionedTooltipRenderer implements TooltipRenderer {
     this.screen.init(minecraft, 0, 0);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void renderTooltip(float x, float y, String text) {
     int width = this.minecraft.getMainWindow().getScaledWidth();

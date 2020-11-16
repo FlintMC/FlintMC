@@ -1,16 +1,23 @@
-package net.flintmc.render.minecraft.geometric;
+package net.flintmc.render.minecraft.v1_15_2.geometric;
 
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.flintmc.framework.inject.implement.Implement;
-import net.minecraft.client.renderer.*;
+import net.flintmc.render.minecraft.geometric.RectangleRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 @Singleton
 @Implement(value = RectangleRenderer.class, version = "1.15.2")
 public class VersionedRectangleRenderer implements RectangleRenderer {
+  /** {@inheritDoc} */
   @Override
-  public void drawRectBorder(float x, float y, float width, float height, int rgba, float borderWidth) {
+  public void drawRectBorder(
+      float x, float y, float width, float height, int rgba, float borderWidth) {
     float left = x;
     float top = y;
     float right = left + width;
@@ -22,6 +29,7 @@ public class VersionedRectangleRenderer implements RectangleRenderer {
     this.fill(left, bottom - borderWidth, right, bottom, rgba); // bottom
   }
 
+  /** {@inheritDoc} */
   @Override
   public void drawFilledRect(float x, float y, float width, float height, int rgba) {
     this.fill(x, y, x + width, y + height, rgba);
@@ -31,8 +39,7 @@ public class VersionedRectangleRenderer implements RectangleRenderer {
     this.fill(TransformationMatrix.identity().getMatrix(), left, top, right, bottom, rgba);
   }
 
-  private void fill(
-      Matrix4f matrix, float left, float top, float right, float bottom, int rgba) {
+  private void fill(Matrix4f matrix, float left, float top, float right, float bottom, int rgba) {
     if (left < right) {
       // swap left and right
       float tmp = left;
