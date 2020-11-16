@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.player;
 
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -22,8 +23,6 @@ import net.flintmc.mcapi.tileentity.SignTileEntity;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
-
-import java.util.UUID;
 
 public interface PlayerEntity extends LivingEntity, CooldownTracking {
 
@@ -479,6 +478,49 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @return The right shoulder entity.
    */
   NBTCompound getRightShoulderEntity();
+
+  /**
+   * Adds to the player new food statistics.
+   *
+   * @param foodLevel The new food level for this player.
+   * @param modifier The food saturation modifier for this player.
+   */
+  void addFoodStatistics(int foodLevel, float modifier);
+
+  /**
+   * Retrieves the food level of this player.
+   *
+   * @return The player's food level.
+   */
+  int getFoodLevel();
+
+  /**
+   * Changes the food level of this player.
+   *
+   * @param foodLevel The new food level.
+   */
+  void setFoodLevel(int foodLevel);
+
+  /**
+   * Whether the player needs food.
+   *
+   * @return {@code true} if the player needs food, otherwise {@code false}.
+   */
+  boolean needFood();
+
+  /**
+   * Retrieves the saturation level of this player.
+   *
+   * @return The player's saturation level.
+   */
+  float getSaturationLevel();
+
+  /**
+   * Changes the saturation level of this player.
+   *
+   * @param saturationLevel The new saturation level.
+   */
+  void setSaturationLevel(float saturationLevel);
 
   /** A factory class for the {@link PlayerEntity}. */
   @AssistedFactory(PlayerEntity.class)
