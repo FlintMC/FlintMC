@@ -1,10 +1,14 @@
 package net.flintmc.render.gui.v1_15_2.windowing;
 
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.render.gui.event.GuiEvent;
 import net.flintmc.render.gui.event.GuiEventListener;
+import net.flintmc.render.gui.event.WindowRenderEvent;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.internal.windowing.InternalWindow;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
@@ -22,6 +26,9 @@ import static org.lwjgl.glfw.GLFW.*;
 /** 1.15.2 implementation for {@link Window}. */
 @Implement(Window.class)
 public class VersionedWindow implements InternalWindow {
+
+  private final EventBus eventBus;
+
   protected final List<WindowRenderer> renderers;
   protected final List<GuiEventListener> listeners;
   protected final DefaultWindowManager windowManager;
@@ -46,10 +53,12 @@ public class VersionedWindow implements InternalWindow {
       @Assisted("height") int height,
       MinecraftWindow minecraftWindow,
       DefaultWindowManager windowManager,
-      VersionedGLFWCallbacks callbacks) {
+      VersionedGLFWCallbacks callbacks,
+      EventBus eventBus) {
     this.renderers = new ArrayList<>();
     this.listeners = new ArrayList<>();
     this.windowManager = windowManager;
+    this.eventBus = eventBus;
     this.handle = glfwCreateWindow(width, height, title, 0, minecraftWindow.getHandle());
 
     callbacks.install(handle);
@@ -69,6 +78,7 @@ public class VersionedWindow implements InternalWindow {
     this.listeners = new ArrayList<>();
     this.windowManager = windowManager;
     this.handle = handle;
+    this.eventBus = InjectionHolder.getInjectedInstance(EventBus.class);
   }
 
   @Override
@@ -205,7 +215,10 @@ public class VersionedWindow implements InternalWindow {
   public void render() {
     glfwMakeContextCurrent(ensureHandle());
     for (WindowRenderer renderer : renderers) {
+      WindowRenderEvent windowRenderEvent = () -> renderer;
+      this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.PRE);
       renderer.render();
+      this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.POST);
     }
   }
 }
