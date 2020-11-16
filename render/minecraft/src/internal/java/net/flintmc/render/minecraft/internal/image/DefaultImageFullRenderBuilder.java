@@ -17,6 +17,7 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
   protected float imageHeight;
   protected float x;
   protected float y;
+  protected Object matrix;
   protected float displayWidth;
   protected float displayHeight;
   protected int r;
@@ -49,8 +50,6 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
     Preconditions.checkArgument(
         this.imageWidth > 0 && this.imageHeight > 0, "Image size not set/set to something <= 0");
     Preconditions.checkArgument(
-        this.x >= 0 && this.y >= 0, "X/Y positions not set/set to something < 0");
-    Preconditions.checkArgument(
         this.r >= -1 && this.g >= -1 && this.b >= -1 && this.a >= -1,
         "Colors (r, g, b or a) set to something < 0");
     Preconditions.checkArgument(
@@ -75,6 +74,12 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
   }
 
   /** {@inheritDoc} */
+  @Override
+  public ImageFullRenderBuilder matrix(Object matrix) {
+    this.matrix = matrix;
+    return this;
+  }
+
   @Override
   public ImageFullRenderBuilder displaySize(float width, float height) {
     this.displayWidth = width;
@@ -120,6 +125,7 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
         this.x,
         this.y,
         this.zLevel,
+        this.matrix,
         this.imageWidth,
         this.imageHeight,
         this.displayWidth,

@@ -13,8 +13,8 @@ import net.flintmc.mcapi.resources.ResourceLocation;
  *   <li>{@link #fullImageSize(float, float)}
  * </ul>
  *
- * @see ImageRenderer#drawFullImage(float, float, int, float, float, float, float, int, int, int,
- *     int)
+ * @see ImageRenderer#drawFullImage(float, float, int, Object, float, float, float, float, int, int,
+ *     int, int)
  */
 public interface ImageFullRenderBuilder {
 
@@ -26,6 +26,15 @@ public interface ImageFullRenderBuilder {
    * @return this builder for chaining
    */
   ImageFullRenderBuilder at(float x, float y);
+
+  /**
+   * Defines the matrix to be used for rendering of the image, this is version specific. By default,
+   * no matrix will be used.
+   *
+   * @param matrix The matrix to be used, null to use no matrix
+   * @return this builder for chaining
+   */
+  ImageFullRenderBuilder matrix(Object matrix);
 
   /**
    * Changes the size of the image in the resource location. If {@link #displaySize(float, float)}
@@ -95,10 +104,10 @@ public interface ImageFullRenderBuilder {
    * <p><b>Important</b>: The texture to be drawn needs to be bound first with {@link
    * ImageRenderer#bindTexture(ResourceLocation)}
    *
-   * @throws IllegalArgumentException If no fullImageHeight (or something <= 0), no position (or
-   *     something < 0) and/or color components (r, g, b, a) not >= 0 and <= 255
-   * @see ImageRenderer#drawFullImage(float, float, int, float, float, float, float, int, int, int,
-   *     int)
+   * @throws IllegalArgumentException If no fullImageHeight (or something <= 0) and/or color
+   *     components (r, g, b, a) not >= 0 and <= 255
+   * @see ImageRenderer#drawFullImage(float, float, int, Object, float, float, float, float, int,
+   *     int, int, int)
    */
   void draw() throws IllegalArgumentException;
 }

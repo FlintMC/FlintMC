@@ -32,8 +32,6 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
   }
 
   private void validate() {
-    Preconditions.checkArgument(
-        this.x >= 0 && this.y >= 0, "X/Y positions not set/set to something < 0");
     Preconditions.checkNotNull(this.text, "Text not set/set to null");
     Preconditions.checkArgument(!this.text.isEmpty(), "Text cannot be empty");
     Preconditions.checkNotNull(this.alignment, "Alignment cannot be null");
@@ -71,13 +69,15 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
   /** {@inheritDoc} */
   @Override
   public FontRenderBuilder scale(float factor) {
-    return null;
+    return this.scale(factor, factor);
   }
 
   /** {@inheritDoc} */
   @Override
   public FontRenderBuilder scale(float xFactor, float yFactor) {
-    return null;
+    this.xFactor = xFactor;
+    this.yFactor = yFactor;
+    return this;
   }
 
   /** {@inheritDoc} */

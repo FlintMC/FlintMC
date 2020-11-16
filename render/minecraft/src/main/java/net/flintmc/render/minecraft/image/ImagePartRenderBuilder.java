@@ -15,8 +15,8 @@ import net.flintmc.mcapi.resources.ResourceLocation;
  *   <li>{@link #sourceSize(float, float)}
  * </ul>
  *
- * @see ImageRenderer#drawPartImage(float, float, float, float, int, float, float, float, float,
- *     float, float, int, int, int, int)
+ * @see ImageRenderer#drawPartImage(float, float, float, float, int, Object, float, float, float,
+ *     float, float, float, int, int, int, int)
  */
 public interface ImagePartRenderBuilder extends ImageFullRenderBuilder {
 
@@ -48,10 +48,10 @@ public interface ImagePartRenderBuilder extends ImageFullRenderBuilder {
    * ImageRenderer#bindTexture(ResourceLocation)}
    *
    * @throws IllegalArgumentException If no fullImageHeight (or something <= 0), no position (or
-   *     something < 0), no source position (or something < 0), no source size (or something <= 0)
-   *     and/or color components (r, g, b, a) not >= 0 and <= 255
-   * @see ImageRenderer#drawPartImage(float, float, float, float, int, float, float, float, float,
-   *     float, float, int, int, int, int)
+   *     something < 0), no source size (or something <= 0) and/or color components (r, g, b, a) not
+   *     >= 0 and <= 255
+   * @see ImageRenderer#drawPartImage(float, float, float, float, int, Object, float, float, float,
+   *     float, float, float, int, int, int, int)
    */
   void draw() throws IllegalArgumentException;
 }
