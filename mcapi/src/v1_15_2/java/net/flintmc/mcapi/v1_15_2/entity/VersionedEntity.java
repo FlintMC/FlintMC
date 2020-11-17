@@ -120,6 +120,46 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
 
                   modelBoxHolder.setPropertyValue(ModelBoxHolder.MODEL_BOXES, modelBoxes);
 
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.SHOW_MODEL)) {
+                    modelRenderer.showModel =
+                        modelBoxHolder.getPropertyValue(ModelBoxHolder.SHOW_MODEL);
+                  }
+                  modelBoxHolder.setPropertyValue(
+                      ModelBoxHolder.SHOW_MODEL, modelRenderer.showModel);
+
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.MIRROR)) {
+                    modelRenderer.mirror = modelBoxHolder.getPropertyValue(ModelBoxHolder.MIRROR);
+                  }
+                  modelBoxHolder.setPropertyValue(ModelBoxHolder.MIRROR, modelRenderer.mirror);
+
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.TEXTURE_OFFSET_Y)) {
+                    modelRendererAccessor.setTextureOffsetY(
+                        modelBoxHolder.getPropertyValue(ModelBoxHolder.TEXTURE_OFFSET_Y));
+                  }
+                  modelBoxHolder.setPropertyValue(
+                      ModelBoxHolder.TEXTURE_OFFSET_Y, modelRendererAccessor.getTextureOffsetY());
+
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.TEXTURE_OFFSET_X)) {
+                    modelRendererAccessor.setTextureOffsetX(
+                        modelBoxHolder.getPropertyValue(ModelBoxHolder.TEXTURE_OFFSET_X));
+                  }
+                  modelBoxHolder.setPropertyValue(
+                      ModelBoxHolder.TEXTURE_OFFSET_X, modelRendererAccessor.getTextureOffsetX());
+
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.TEXTURE_WIDTH)) {
+                    modelRendererAccessor.setTextureWidth(
+                        modelBoxHolder.getPropertyValue(ModelBoxHolder.TEXTURE_WIDTH));
+                  }
+                  modelBoxHolder.setPropertyValue(
+                      ModelBoxHolder.TEXTURE_WIDTH, modelRendererAccessor.getTextureWidth());
+
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.TEXTURE_HEIGHT)) {
+                    modelRendererAccessor.setTextureHeight(
+                        modelBoxHolder.getPropertyValue(ModelBoxHolder.TEXTURE_HEIGHT));
+                  }
+                  modelBoxHolder.setPropertyValue(
+                      ModelBoxHolder.TEXTURE_HEIGHT, modelRendererAccessor.getTextureHeight());
+
                   if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_ANGLE_X)
                       == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
                     modelRenderer.rotateAngleX = 0;
