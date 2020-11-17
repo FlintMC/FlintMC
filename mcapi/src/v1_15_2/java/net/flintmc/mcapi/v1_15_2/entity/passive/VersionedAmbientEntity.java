@@ -11,7 +11,6 @@ import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.v1_15_2.entity.VersionedMobEntity;
 import net.flintmc.mcapi.world.World;
-import net.flintmc.render.model.ModelBox;
 
 @Implement(value = AmbientEntity.class, version = "1.15.2")
 public class VersionedAmbientEntity extends VersionedMobEntity implements AmbientEntity {

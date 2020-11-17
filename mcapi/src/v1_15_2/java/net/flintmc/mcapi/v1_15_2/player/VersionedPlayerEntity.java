@@ -30,7 +30,6 @@ import net.flintmc.mcapi.v1_15_2.entity.VersionedLivingEntity;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
-import net.flintmc.render.model.ModelBox;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.Item;
 import net.minecraft.item.MerchantOffers;

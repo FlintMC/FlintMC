@@ -17,7 +17,6 @@ import net.flintmc.mcapi.player.type.model.SkinModel;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.tileentity.mapper.TileEntityMapper;
 import net.flintmc.mcapi.world.World;
-import net.flintmc.render.model.ModelBox;
 
 /** 1.15.2 implementation of the {@link RemoteClientPlayer}. */
 @Implement(value = RemoteClientPlayer.class, version = "1.15.2")

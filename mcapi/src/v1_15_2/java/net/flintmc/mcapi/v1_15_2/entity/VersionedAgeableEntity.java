@@ -12,7 +12,6 @@ import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.world.World;
-import net.flintmc.render.model.ModelBox;
 import net.minecraft.nbt.CompoundNBT;
 
 /** 1.15.2 implementation of the {@link AgeableEntity}. */

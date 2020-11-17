@@ -6,7 +6,7 @@ import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
-import net.flintmc.render.model.ModelBox;
+import net.flintmc.render.model.ModelBoxHolder;
 
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public abstract class DefaultEntity<H> implements Entity {
     this.entityRenderContextFactory = entityRenderContextFactory;
   }
 
-  protected abstract Map<String, ModelBox<Entity, EntityRenderContext>> createModelRenderers();
+  protected abstract Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers();
 
   public EntityRenderContext getRenderContext() {
     return this.entityRenderContext;

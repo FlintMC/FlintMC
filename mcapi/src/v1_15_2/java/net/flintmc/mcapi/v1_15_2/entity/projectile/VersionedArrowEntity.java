@@ -11,7 +11,6 @@ import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.world.World;
-import net.flintmc.render.model.ModelBox;
 import net.minecraft.nbt.CompoundNBT;
 
 @Implement(value = ArrowEntity.class, version = "1.15.2")

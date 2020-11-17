@@ -10,19 +10,20 @@ import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.reason.MoverType;
-import net.flintmc.mcapi.entity.render.EntityModelBox;
+import net.flintmc.mcapi.entity.render.EntityModelBoxHolder;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.internal.entity.DefaultEntity;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.player.type.sound.Sound;
-import net.flintmc.mcapi.v1_15_2.entity.render.EntityAccessor;
+import net.flintmc.mcapi.v1_15_2.entity.render.*;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.flintmc.render.model.ModelBox;
+import net.flintmc.render.model.ModelBoxHolder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +40,10 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
     implements Entity {
 
   private final Random random;
-  private final EntityModelBox.Factory modelBoxFactory;
+  private final EntityModelBoxHolder.Factory modelBoxHolderFactory;
+  private final ModelBox.Factory modelBoxFactory;
+  private final ModelBox.TexturedQuad.Factory texturedQuadFactory;
+  private final ModelBox.TexturedQuad.VertexPosition.Factory vertexPositionFactory;
 
   @AssistedInject
   public VersionedEntity(
@@ -49,57 +53,115 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
       EntityFoundationMapper entityFoundationMapper,
       EntityRenderContext.Factory entityRenderContextFactory) {
     super((E) entity, entityType, world, entityFoundationMapper, entityRenderContextFactory);
-    this.modelBoxFactory = InjectionHolder.getInjectedInstance(EntityModelBox.Factory.class);
+    this.modelBoxHolderFactory =
+        InjectionHolder.getInjectedInstance(EntityModelBoxHolder.Factory.class);
+    this.modelBoxFactory = InjectionHolder.getInjectedInstance(ModelBox.Factory.class);
+    this.texturedQuadFactory =
+        InjectionHolder.getInjectedInstance(ModelBox.TexturedQuad.Factory.class);
+    this.vertexPositionFactory =
+        InjectionHolder.getInjectedInstance(ModelBox.TexturedQuad.VertexPosition.Factory.class);
     this.entityRenderContext = this.createRenderContext();
-    for (Map.Entry<String, ModelBox<Entity, EntityRenderContext>> entry :
+    for (Map.Entry<String, ModelBoxHolder<Entity, EntityRenderContext>> entry :
         this.createModelRenderers().entrySet()) {
       this.entityRenderContext.registerRenderable(entry.getKey(), entry.getValue());
     }
     this.random = new Random();
   }
 
-  protected ModelBox<Entity, EntityRenderContext> createModelBox(ModelRenderer modelRenderer) {
-    ModelBox<Entity, EntityRenderContext> box =
-        this.modelBoxFactory
+  protected ModelBoxHolder<Entity, EntityRenderContext> createModelBox(
+      ModelRenderer modelRenderer) {
+    ModelBoxHolder<Entity, EntityRenderContext> box =
+        this.modelBoxHolderFactory
             .create(this.getRenderContext(), modelRenderer)
             .addRenderPreparation(
-                modelBox -> {
-                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_ANGLE_X)
-                      == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotateAngleX = 0;
+                modelBoxHolder -> {
+                  Set<ModelBox> modelBoxes =
+                      modelBoxHolder.getPropertyValue(ModelBoxHolder.MODEL_BOXES);
+                  modelBoxes.clear();
+                  ModelRendererAccessor modelRendererAccessor =
+                      (ModelRendererAccessor) modelRenderer;
+                  for (ModelRenderer.ModelBox modelBox : modelRendererAccessor.getModelBoxes()) {
+                    ModelBoxAccessor modelBoxAccessor = (ModelBoxAccessor) modelBox;
+                    Collection<ModelBox.TexturedQuad> texturedQuads = new HashSet<>();
+
+                    for (TexturedQuadAccessor quad : modelBoxAccessor.getQuads()) {
+                      ModelBox.TexturedQuad.VertexPosition[] vertexPositions =
+                          new ModelBox.TexturedQuad.VertexPosition
+                              [quad.getVertexPositions().length];
+                      for (int i = 0; i < vertexPositions.length; i++) {
+                        PositionTextureVertexAccessor vertexPosition = quad.getVertexPositions()[i];
+                        vertexPositions[i] =
+                            vertexPositionFactory.create(
+                                vertexPosition.getTextureU(),
+                                vertexPosition.getTextureV(),
+                                vertexPosition.getPosition().getX(),
+                                vertexPosition.getPosition().getY(),
+                                vertexPosition.getPosition().getZ());
+                      }
+                      texturedQuads.add(
+                          texturedQuadFactory.create(
+                              quad.getNormal().getX(),
+                              quad.getNormal().getY(),
+                              quad.getNormal().getZ(),
+                              vertexPositions));
+                    }
+
+                    modelBoxes.add(
+                        modelBoxFactory
+                            .create()
+                            .setPositionX1(modelBox.posX1)
+                            .setPositionX2(modelBox.posX2)
+                            .setPositionY1(modelBox.posY1)
+                            .setPositionY2(modelBox.posY2)
+                            .setPositionZ1(modelBox.posZ1)
+                            .setPositionZ2(modelBox.posZ2)
+                            .setTexturedQuads(texturedQuads));
+                  }
+
+                  modelBoxHolder.setPropertyValue(ModelBoxHolder.MODEL_BOXES, modelBoxes);
+
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_ANGLE_X)
+                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
+                    modelRenderer.rotateAngleX = 0;
                   modelRenderer.rotateAngleX +=
-                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_ANGLE_X);
+                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_ANGLE_X);
 
-                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_ANGLE_Y)
-                      == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotateAngleY = 0;
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_ANGLE_Y)
+                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
+                    modelRenderer.rotateAngleY = 0;
                   modelRenderer.rotateAngleY +=
-                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_ANGLE_Y);
+                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_ANGLE_Y);
 
-                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_ANGLE_Z)
-                      == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotateAngleZ = 0;
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_ANGLE_Z)
+                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
+                    modelRenderer.rotateAngleZ = 0;
                   modelRenderer.rotateAngleZ +=
-                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_ANGLE_Z);
+                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_ANGLE_Z);
 
-                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_POINT_X)
-                      == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotationPointX = 0;
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_POINT_X)
+                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
+                    modelRenderer.rotationPointX = 0;
                   modelRenderer.rotationPointX +=
-                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_POINT_X);
+                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_POINT_X);
 
-                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_POINT_Y)
-                      == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotationPointY = 0;
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_POINT_Y)
+                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
+                    modelRenderer.rotationPointY = 0;
                   modelRenderer.rotationPointY +=
-                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_POINT_Y);
+                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_POINT_Y);
 
-                  if (modelBox.getPropertyMeta(ModelBox.Property.ROTATION_POINT_Z)
-                      == ModelBox.Property.Mode.ABSOLUTE) modelRenderer.rotationPointZ = 0;
+                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_POINT_Z)
+                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
+                    modelRenderer.rotationPointZ = 0;
                   modelRenderer.rotationPointZ +=
-                      modelBox.getPropertyValue(ModelBox.Property.ROTATION_POINT_Z);
+                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_POINT_Z);
                 });
 
     ((EntityAccessor) this.getHandle()).getFlintRenderables().put(modelRenderer, box);
     return box;
   }
 
-  protected Map<String, ModelBox<Entity, EntityRenderContext>> createModelRenderers() {
+  protected Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers() {
     return new HashMap<>();
   }
 

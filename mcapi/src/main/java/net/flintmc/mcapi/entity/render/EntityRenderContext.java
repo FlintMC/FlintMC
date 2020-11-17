@@ -4,13 +4,13 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.render.MinecraftRenderContext;
-import net.flintmc.render.model.ModelBox;
+import net.flintmc.render.model.ModelBoxHolder;
 
 import java.util.Map;
 
 public interface EntityRenderContext
     extends MinecraftRenderContext<
-    Entity, EntityRenderContext, ModelBox<Entity, EntityRenderContext>, Object> {
+    Entity, EntityRenderContext, ModelBoxHolder<Entity, EntityRenderContext>, Object> {
 
   @AssistedFactory(EntityRenderContext.class)
   interface Factory {
@@ -18,6 +18,6 @@ public interface EntityRenderContext
 
     EntityRenderContext create(
         @Assisted Entity owner,
-        @Assisted Map<String, ModelBox<Entity, EntityRenderContext>> renderables);
+        @Assisted Map<String, ModelBoxHolder<Entity, EntityRenderContext>> renderables);
   }
 }

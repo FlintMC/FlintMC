@@ -6,7 +6,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.render.MinecraftRenderMeta;
-import net.flintmc.render.model.ModelBox;
+import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.render.model.Renderer;
 import net.flintmc.render.model.RendererRepository;
 
@@ -18,9 +18,9 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
 
   private final Entity owner;
   private RendererRepository rendererRepository;
-  private final Map<String, ModelBox<Entity, EntityRenderContext>> renderables;
-  private final Map<Object, ModelBox<Entity, EntityRenderContext>> renderablesByTarget;
-  private Renderer<ModelBox<Entity, EntityRenderContext>, EntityRenderContext, MinecraftRenderMeta>
+  private final Map<String, ModelBoxHolder<Entity, EntityRenderContext>> renderables;
+  private final Map<Object, ModelBoxHolder<Entity, EntityRenderContext>> renderablesByTarget;
+  private Renderer<ModelBoxHolder<Entity, EntityRenderContext>, EntityRenderContext, MinecraftRenderMeta>
       renderer;
 
   @SuppressWarnings("BindingAnnotationWithoutInject")
@@ -38,7 +38,7 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
   @AssistedInject
   protected DefaultEntityRenderContext(
       @Assisted Entity owner,
-      @Assisted Map<String, ModelBox<Entity, EntityRenderContext>> renderables,
+      @Assisted Map<String, ModelBoxHolder<Entity, EntityRenderContext>> renderables,
       RendererRepository rendererRepository) {
     this.owner = owner;
     this.renderables = new HashMap<>();
@@ -51,16 +51,16 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
     return this.owner;
   }
 
-  public Renderer<ModelBox<Entity, EntityRenderContext>, EntityRenderContext, MinecraftRenderMeta>
+  public Renderer<ModelBoxHolder<Entity, EntityRenderContext>, EntityRenderContext, MinecraftRenderMeta>
   getRenderer() {
     return this.renderer;
   }
 
-  public Map<String, ModelBox<Entity, EntityRenderContext>> getRenderables() {
+  public Map<String, ModelBoxHolder<Entity, EntityRenderContext>> getRenderables() {
     return this.renderables;
   }
 
-  public ModelBox<Entity, EntityRenderContext> getRenderableByMeta(Object target) {
+  public ModelBoxHolder<Entity, EntityRenderContext> getRenderableByTarget(Object target) {
     return this.renderablesByTarget.get(target);
   }
 
@@ -70,7 +70,7 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
   }
 
   public DefaultEntityRenderContext registerRenderable(
-      String name, ModelBox<Entity, EntityRenderContext> renderable) {
+      String name, ModelBoxHolder<Entity, EntityRenderContext> renderable) {
     if (this.renderables.containsKey(name))
       throw new IllegalStateException(
           String.format("ModelBox with name %s already registered", name));

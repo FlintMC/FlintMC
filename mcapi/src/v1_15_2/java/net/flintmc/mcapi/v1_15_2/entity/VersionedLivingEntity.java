@@ -19,7 +19,7 @@ import net.flintmc.mcapi.v1_15_2.entity.render.LivingRendererAccessor;
 import net.flintmc.mcapi.v1_15_2.entity.render.QuadrupedModelAccessor;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
-import net.flintmc.render.model.ModelBox;
+import net.flintmc.render.model.ModelBoxHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -54,14 +54,14 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
 
   }
 
-  protected Map<String, ModelBox<Entity, EntityRenderContext>> createModelRenderers() {
+  protected Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers() {
     EntityModel<? extends net.minecraft.entity.LivingEntity> entityModel =
         ((LivingRendererAccessor) Minecraft.getInstance().getRenderManager().getRenderer(this.getHandle())).getEntityModel();
 
     if (entityModel instanceof BipedModel) {
       BipedModel<? extends net.minecraft.entity.LivingEntity> bipedModel = (BipedModel<? extends net.minecraft.entity.LivingEntity>) entityModel;
       return ImmutableMap
-          .<String, ModelBox<Entity, EntityRenderContext>>builder()
+          .<String, ModelBoxHolder<Entity, EntityRenderContext>>builder()
           .put("body", this.createModelBox(bipedModel.bipedBody))
           .put("head", this.createModelBox(bipedModel.bipedHead))
           .put("headWear", this.createModelBox(bipedModel.bipedHeadwear))
@@ -73,7 +73,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
     } else if (entityModel instanceof QuadrupedModelAccessor) {
       QuadrupedModelAccessor quadrupedModelAccessor = (QuadrupedModelAccessor) entityModel;
       return ImmutableMap
-          .<String, ModelBox<Entity, EntityRenderContext>>builder()
+          .<String, ModelBoxHolder<Entity, EntityRenderContext>>builder()
           .put("body", this.createModelBox(quadrupedModelAccessor.getBody()))
           .put("head", this.createModelBox(quadrupedModelAccessor.getHead()))
           .put("legBackLeft", this.createModelBox(quadrupedModelAccessor.getLegBackLeft()))

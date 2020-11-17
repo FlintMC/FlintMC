@@ -1,44 +1,83 @@
 package net.flintmc.render.model;
 
-public interface ModelBox<
-    T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-    T_RenderContext extends
-        RenderContext<
-            T_RenderContextAware,
-            T_RenderContext,
-            ModelBox<T_RenderContextAware, T_RenderContext>,
-            ?,
-            Object>>
-    extends Renderable<
-    T_RenderContextAware,
-    T_RenderContext,
-    ModelBox<T_RenderContextAware, T_RenderContext>,
-    Object> {
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-  enum Property implements FloatProperty<Property.Mode> {
-    ROTATION_ANGLE_X,
-    ROTATION_ANGLE_Y,
-    ROTATION_ANGLE_Z,
+import java.util.Collection;
 
-    ROTATION_POINT_X,
-    ROTATION_POINT_Y,
-    ROTATION_POINT_Z;
+public interface ModelBox {
 
-    public boolean validateValue(Float value) {
-      return value != null;
+  float getPositionX1();
+
+  ModelBox setPositionX1(float x1);
+
+  float getPositionX2();
+
+  ModelBox setPositionX2(float x2);
+
+  float getPositionY1();
+
+  ModelBox setPositionY1(float y1);
+
+  float getPositionY2();
+
+  ModelBox setPositionY2(float y2);
+
+  float getPositionZ1();
+
+  ModelBox setPositionZ1(float z1);
+
+  float getPositionZ2();
+
+  ModelBox setPositionZ2(float z2);
+
+  Collection<TexturedQuad> getTexturedQuads();
+
+  ModelBox setTexturedQuads(Collection<TexturedQuad> texturedQuads);
+
+  interface TexturedQuad {
+    float getNormalX();
+
+    float getNormalY();
+
+    float getNormalZ();
+
+    VertexPosition[] getVertexPositions();
+
+    @AssistedFactory(TexturedQuad.class)
+    interface Factory {
+      TexturedQuad create(
+          @Assisted("normalX") float normalX,
+          @Assisted("normalY") float normalY,
+          @Assisted("normalZ") float normalZ,
+          @Assisted VertexPosition[] vertexPositions);
     }
 
-    public boolean validateMeta(Property.Mode propertyMeta) {
-      return propertyMeta != null;
-    }
+    interface VertexPosition {
+      float getTextureU();
 
-    public Mode getDefaultMeta() {
-      return Mode.RELATIVE;
-    }
+      float getTextureV();
 
-    public enum Mode {
-      ABSOLUTE,
-      RELATIVE
+      float getPositionX();
+
+      float getPositionY();
+
+      float getPositionZ();
+
+      @AssistedFactory(VertexPosition.class)
+      interface Factory {
+        VertexPosition create(
+            @Assisted("textureU") float textureU,
+            @Assisted("textureV") float textureV,
+            @Assisted("positionX") float positionX,
+            @Assisted("positionY") float positionY,
+            @Assisted("positionZ") float positionZ);
+      }
     }
+  }
+
+  @AssistedFactory(ModelBox.class)
+  interface Factory {
+    ModelBox create();
   }
 }

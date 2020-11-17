@@ -15,7 +15,6 @@ import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.v1_15_2.entity.passive.VersionedAnimalEntity;
 import net.flintmc.mcapi.world.World;
-import net.flintmc.render.model.ModelBox;
 import net.minecraft.nbt.CompoundNBT;
 
 @Implement(value = PigEntity.class, version = "1.15.2")

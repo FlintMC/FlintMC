@@ -1,5 +1,7 @@
 package net.flintmc.render.model;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -8,7 +10,7 @@ import java.util.function.Consumer;
  * @param <T_RenderContextAware> the component that is the "owner" of the provided render context.
  * @param <T_RenderContext>      the component that coordinates the rendering process.
  * @param <T_Renderable>         the type of this component. Just used here to lock the generic types of the
- *                               system.
+ *                               system to ensure type safety.
  * @param <T_RenderTarget>       the type of metadata that can be attached to the component.
  */
 public interface Renderable<
@@ -91,7 +93,7 @@ public interface Renderable<
       Property<T_PropertyType, T_PropertyMeta> property);
 
   /**
-   * @param property the property to get the mode from
+   * @param property         the property to get the mode from
    * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
    * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
    * @return the current mode of the given property
@@ -99,37 +101,84 @@ public interface Renderable<
   <T_PropertyType, T_PropertyMeta> T_PropertyMeta getPropertyMeta(
       Property<T_PropertyType, T_PropertyMeta> property);
 
+  /**
+   * Defines properties that can be set to {@link Renderable}.
+   *
+   * @param <T_PropertyValue> the type of the properties value
+   * @param <T_PropertyMeta>  the type of the properties metadata. If not required, use {@link Void}.
+   */
   interface Property<T_PropertyValue, T_PropertyMeta> {
+    /**
+     * @param propertyValue the value to check
+     * @return validation if the provided value is suitable for this property
+     */
     boolean validateValue(T_PropertyValue propertyValue);
 
+    /**
+     * @param propertyMeta the meta to check
+     * @return validation if the provided meta is suitable for this property
+     */
     boolean validateMeta(T_PropertyMeta propertyMeta);
 
+    /**
+     * @return the default value of this property
+     */
     T_PropertyValue getDefaultValue();
 
+    /**
+     * @return the default meta of this property
+     */
     T_PropertyMeta getDefaultMeta();
   }
 
+  /**
+   * Default String {@link Property} implementation.
+   *
+   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   */
   interface StringProperty<T_PropertyMeta> extends Property<String, T_PropertyMeta> {
     default String getDefaultValue() {
       return null;
     }
   }
 
+  /**
+   * Default Integer {@link Property} implementation.
+   *
+   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   */
   interface IntProperty<T_PropertyMeta> extends Property<Integer, T_PropertyMeta> {
     default Integer getDefaultValue() {
       return 0;
     }
   }
 
+  /**
+   * Default Float {@link Property} implementation.
+   *
+   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   */
   interface FloatProperty<T_PropertyMeta> extends Property<Float, T_PropertyMeta> {
     default Float getDefaultValue() {
       return 0f;
     }
   }
 
-  interface BooleanProperty extends Property<Boolean, Void> {
+  /**
+   * Default Boolean {@link Property} implementation.
+   *
+   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   */
+  interface BooleanProperty<T_PropertyMeta> extends Property<Boolean, T_PropertyMeta> {
     default Boolean getDefaultValue() {
       return false;
+    }
+  }
+
+  interface SetProperty<T_PropertyValue, T_PropertyMeta>
+      extends Property<Set<T_PropertyValue>, T_PropertyMeta> {
+    default Set<T_PropertyValue> getDefaultValue() {
+      return new HashSet<>();
     }
   }
 }

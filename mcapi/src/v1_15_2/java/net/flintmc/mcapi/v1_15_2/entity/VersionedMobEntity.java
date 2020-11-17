@@ -18,7 +18,6 @@ import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
-import net.flintmc.render.model.ModelBox;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
