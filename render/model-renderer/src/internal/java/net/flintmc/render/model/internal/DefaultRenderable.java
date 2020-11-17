@@ -13,21 +13,21 @@ import java.util.function.Consumer;
 public class DefaultRenderable<
     T_RenderContextAware extends RenderContextAware<T_RenderContext>,
     T_RenderContext extends
-        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, ?, T_RenderTarget>,
     T_Renderable extends
-        Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
-    T_RenderMeta>
-    implements Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta> {
+        Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+    T_RenderTarget>
+    implements Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget> {
 
   private final T_RenderContext renderContext;
-  private final T_RenderMeta meta;
+  private final T_RenderTarget meta;
   private final Collection<Consumer<T_Renderable>> renderPreparations = new HashSet<>();
   private final Map<Property<?, ?>, Object> propertyValues = new HashMap<>();
   private final Map<Property<?, ?>, Object> propertyMeta = new HashMap<>();
   private Consumer<T_Renderable> propertyHandler = renderable -> {
   };
 
-  protected DefaultRenderable(T_RenderContext renderContext, T_RenderMeta meta) {
+  protected DefaultRenderable(T_RenderContext renderContext, T_RenderTarget meta) {
     this.renderContext = renderContext;
     this.meta = meta;
   }
@@ -91,7 +91,7 @@ public class DefaultRenderable<
     return (T_PropertyMeta) this.propertyMeta.getOrDefault(property, property.getDefaultMeta());
   }
 
-  public T_RenderMeta getMeta() {
+  public T_RenderTarget getMeta() {
     return this.meta;
   }
 }

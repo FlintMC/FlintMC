@@ -5,8 +5,11 @@ import com.google.inject.Singleton;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javassist.*;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.internal.entity.cache.EntityCache;
+import net.flintmc.mcapi.render.MinecraftRenderMeta;
 import net.flintmc.render.model.ModelBox;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
@@ -21,6 +24,7 @@ public class ModelRendererInterceptor {
   private final ClassMappingProvider classMappingProvider;
   private final EntityCache entityCache;
   private Entity lastRenderedEntity;
+  private MinecraftRenderMeta alternatingMinecraftRenderMeta;
 
   @Inject
   private ModelRendererInterceptor(
@@ -119,13 +123,14 @@ public class ModelRendererInterceptor {
     Entity flintEntity =
         this.entityCache.getEntity(((net.minecraft.entity.Entity) minecraftEntity).getUniqueID());
     if (flintEntity == null) return;
-    for (ModelBox modelBox : flintEntity.getRenderContext().getRenderables().values()) {
+    for (ModelBox<Entity, EntityRenderContext> modelBox :
+        flintEntity.getRenderContext().getRenderables().values()) {
       modelBox.callPropertyHandler();
     }
     this.lastRenderedEntity = flintEntity;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"ConstantConditions"})
   public boolean render(
       Object instance,
       MatrixStack matrixStackIn,
@@ -137,11 +142,54 @@ public class ModelRendererInterceptor {
       float blue,
       float alpha) {
     if (lastRenderedEntity == null) return false;
-    ModelBox modelBox = lastRenderedEntity.getRenderContext().getRenderableByMeta(instance);
+    ModelBox<Entity, EntityRenderContext> modelBox =
+        lastRenderedEntity.getRenderContext().getRenderableByMeta(instance);
     if (modelBox == null) return false;
     modelBox.callRenderPreparations();
     if (modelBox.getContext().getRenderer() != null) {
-      modelBox.getContext().getRenderer().render(modelBox);
+
+      if (this.alternatingMinecraftRenderMeta == null) {
+        this.alternatingMinecraftRenderMeta =
+            InjectionHolder.getInjectedInstance(MinecraftRenderMeta.Factory.class).create();
+      }
+
+      MatrixStack.Entry lastMatrixStackEntry = matrixStackIn.getLast();
+      Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) lastMatrixStackEntry.getMatrix();
+      Matrix3fAccessor normalMatrix = (Matrix3fAccessor) (Object) lastMatrixStackEntry.getNormal();
+      this.alternatingMinecraftRenderMeta
+          .getWorld()
+          .set(
+              worldMatrix.getM00(),
+              worldMatrix.getM10(),
+              worldMatrix.getM20(),
+              worldMatrix.getM30(),
+              worldMatrix.getM01(),
+              worldMatrix.getM11(),
+              worldMatrix.getM21(),
+              worldMatrix.getM31(),
+              worldMatrix.getM02(),
+              worldMatrix.getM12(),
+              worldMatrix.getM22(),
+              worldMatrix.getM32(),
+              worldMatrix.getM03(),
+              worldMatrix.getM13(),
+              worldMatrix.getM23(),
+              worldMatrix.getM33());
+
+      this.alternatingMinecraftRenderMeta
+          .getNormal()
+          .set(
+              normalMatrix.getM00(),
+              normalMatrix.getM10(),
+              normalMatrix.getM20(),
+              normalMatrix.getM01(),
+              normalMatrix.getM11(),
+              normalMatrix.getM21(),
+              normalMatrix.getM02(),
+              normalMatrix.getM12(),
+              normalMatrix.getM22());
+
+      modelBox.getContext().getRenderer().render(modelBox, this.alternatingMinecraftRenderMeta);
       return true;
     } else {
       return false;

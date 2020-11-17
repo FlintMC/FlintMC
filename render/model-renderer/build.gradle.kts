@@ -14,4 +14,5 @@ dependencies {
     v1_15_2AnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
     api(project(":framework:framework-inject"))
+    api(project(":render:render-vbo-rendering"))
 }

@@ -9,18 +9,18 @@ import java.util.function.Consumer;
  * @param <T_RenderContext>      the component that coordinates the rendering process.
  * @param <T_Renderable>         the type of this component. Just used here to lock the generic types of the
  *                               system.
- * @param <T_RenderMeta>         the type of metadata that can be attached to the component.
+ * @param <T_RenderTarget>       the type of metadata that can be attached to the component.
  */
 public interface Renderable<
     T_RenderContextAware extends RenderContextAware<T_RenderContext>,
     T_RenderContext extends
-        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+        RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, ?, T_RenderTarget>,
     T_Renderable extends
-        Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
-    T_RenderMeta> {
+        Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+    T_RenderTarget> {
 
   /** @return the metadata attached to this renderable component */
-  T_RenderMeta getMeta();
+  T_RenderTarget getMeta();
 
   /** @return the component that coordinates the rendering process */
   T_RenderContext getContext();
@@ -62,8 +62,8 @@ public interface Renderable<
   T_Renderable setPropertyHandler(Consumer<T_Renderable> consumer);
 
   /**
-   * @param property         the property to modify on this instance
-   * @param propertyValue    the value to set the property to
+   * @param property the property to modify on this instance
+   * @param propertyValue the value to set the property to
    * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
    * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
    * @return this
@@ -72,8 +72,8 @@ public interface Renderable<
       Property<T_PropertyType, T_PropertyMeta> property, T_PropertyType propertyValue);
 
   /**
-   * @param property         the property to modify on this instance
-   * @param propertyMode     the mode to set the property to
+   * @param property the property to modify on this instance
+   * @param propertyMode the mode to set the property to
    * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
    * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
    * @return this
@@ -82,7 +82,7 @@ public interface Renderable<
       Property<T_PropertyType, T_PropertyMeta> property, T_PropertyMeta propertyMode);
 
   /**
-   * @param property         the property to get the value from
+   * @param property the property to get the value from
    * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
    * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
    * @return the current value of the given property
@@ -91,7 +91,7 @@ public interface Renderable<
       Property<T_PropertyType, T_PropertyMeta> property);
 
   /**
-   * @param property         the property to get the mode from
+   * @param property the property to get the mode from
    * @param <T_PropertyType> @see {@link Property<T_PropertyType>}
    * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
    * @return the current mode of the given property
@@ -109,19 +109,19 @@ public interface Renderable<
     T_PropertyMeta getDefaultMeta();
   }
 
-  interface StringProperty<T_RenderMeta> extends Property<String, T_RenderMeta> {
+  interface StringProperty<T_PropertyMeta> extends Property<String, T_PropertyMeta> {
     default String getDefaultValue() {
       return null;
     }
   }
 
-  interface IntProperty<T_RenderMeta> extends Property<Integer, T_RenderMeta> {
+  interface IntProperty<T_PropertyMeta> extends Property<Integer, T_PropertyMeta> {
     default Integer getDefaultValue() {
       return 0;
     }
   }
 
-  interface FloatProperty<T_RenderMeta> extends Property<Float, T_RenderMeta> {
+  interface FloatProperty<T_PropertyMeta> extends Property<Float, T_PropertyMeta> {
     default Float getDefaultValue() {
       return 0f;
     }

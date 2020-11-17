@@ -3,13 +3,13 @@ package net.flintmc.mcapi.entity.render;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.render.MinecraftRenderContext;
 import net.flintmc.render.model.ModelBox;
-import net.flintmc.render.model.RenderContext;
 
 import java.util.Map;
 
 public interface EntityRenderContext
-    extends RenderContext<
+    extends MinecraftRenderContext<
     Entity, EntityRenderContext, ModelBox<Entity, EntityRenderContext>, Object> {
 
   @AssistedFactory(EntityRenderContext.class)

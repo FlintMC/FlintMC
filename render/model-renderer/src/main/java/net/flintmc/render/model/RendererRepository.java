@@ -7,57 +7,89 @@ public interface RendererRepository {
   <
       T_RenderContextAware extends RenderContextAware<T_RenderContext>,
       T_RenderContext extends
-          RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+          RenderContext<
+              T_RenderContextAware,
+              T_RenderContext,
+              T_Renderable,
+              T_RenderMeta,
+              T_RenderTarget>,
       T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
-      T_RenderMeta>
-  Renderer<T_Renderable, T_RenderContext> getRenderer(T_RenderContextAware renderContextAware);
+          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+      T_RenderMeta,
+      T_RenderTarget>
+  Renderer<T_Renderable, T_RenderContext, T_RenderMeta> getRenderer(
+      T_RenderContextAware renderContextAware);
 
   <
       T_RenderContextAware extends RenderContextAware<T_RenderContext>,
       T_RenderContext extends
-          RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+          RenderContext<
+              T_RenderContextAware,
+              T_RenderContext,
+              T_Renderable,
+              T_RenderMeta,
+              T_RenderTarget>,
       T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
-      T_RenderMeta>
+          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+      T_RenderMeta,
+      T_RenderTarget>
   RendererRepository setRenderer(
       Class<? extends T_RenderContextAware> renderContextAwareClass,
-      Class<? extends Renderer<T_Renderable, T_RenderContext>> rendererClass);
+      Class<? extends Renderer<T_Renderable, T_RenderContext, T_RenderMeta>> rendererClass);
 
   <
       T_RenderContextAware extends RenderContextAware<T_RenderContext>,
       T_RenderContext extends
-          RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+          RenderContext<
+              T_RenderContextAware,
+              T_RenderContext,
+              T_Renderable,
+              T_RenderMeta,
+              T_RenderTarget>,
       T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
-      T_RenderMeta>
+          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+      T_RenderMeta,
+      T_RenderTarget>
   RendererRepository setRenderer(
       Class<? extends T_RenderContextAware> renderContextAwareClass,
-      Renderer<T_Renderable, T_RenderContext> renderer);
+      Renderer<T_Renderable, T_RenderContext, T_RenderMeta> renderer);
 
   <
       T_RenderContextAware extends RenderContextAware<T_RenderContext>,
       T_RenderContext extends
-          RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+          RenderContext<
+              T_RenderContextAware,
+              T_RenderContext,
+              T_Renderable,
+              T_RenderMeta,
+              T_RenderTarget>,
       T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
-      T_RenderMeta>
+          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+      T_RenderMeta,
+      T_RenderTarget>
   RendererRepository setRenderer(
-      Predicate<RenderContext<?, ?, ?, ?>> renderablePredicate,
-      Class<? extends Renderer<T_Renderable, T_RenderContext>> renderer);
+      Predicate<RenderContext<?, ?, ?, ?, ?>> renderablePredicate,
+      Class<? extends Renderer<T_Renderable, T_RenderContext, T_RenderMeta>> renderer);
 
   <
       T_RenderContextAware extends RenderContextAware<T_RenderContext>,
       T_RenderContext extends
-          RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
+          RenderContext<
+              T_RenderContextAware,
+              T_RenderContext,
+              T_Renderable,
+              T_RenderMeta,
+              T_RenderTarget>,
       T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
-      T_RenderMeta>
+          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+      T_RenderMeta,
+      T_RenderTarget>
   RendererRepository setRenderer(
-      Predicate<RenderContext<?, ?, ?, ?>> renderablePredicate,
-      Renderer<T_Renderable, T_RenderContext> renderer);
+      Predicate<RenderContext<?, ?, ?, ?, ?>> renderablePredicate,
+      Renderer<T_Renderable, T_RenderContext, T_RenderMeta> renderer);
 
-  Renderer<?, ?> getDefaultRenderer();
+  Renderer<?, ?, ?> getDefaultRenderer();
 
-  RendererRepository setDefaultRenderer(Renderer<?, ?> defaultRenderer);
+  RendererRepository setDefaultRenderer(Renderer<?, ?, ?> defaultRenderer);
+
 }

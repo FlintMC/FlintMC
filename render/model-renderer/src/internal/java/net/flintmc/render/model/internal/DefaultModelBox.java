@@ -11,10 +11,11 @@ public class DefaultModelBox<
             T_RenderContextAware,
             T_RenderContext,
             ModelBox<T_RenderContextAware, T_RenderContext>,
+            ?,
             Object>,
     T_Renderable extends
-        DefaultModelBox<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderMeta>,
-    T_RenderMeta>
+        DefaultModelBox<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+    T_RenderTarget>
     extends DefaultRenderable<
     T_RenderContextAware,
     T_RenderContext,

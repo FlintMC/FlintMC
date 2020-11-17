@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 /** Represents the Minecraft entity. */
 public interface Entity extends Nameable, RenderContextAware<EntityRenderContext> {
 
+
   /**
    * Retrieves the team color as an {@link Integer} of this entity.
    *

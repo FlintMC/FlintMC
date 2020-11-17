@@ -7,6 +7,7 @@ public interface ModelBox<
             T_RenderContextAware,
             T_RenderContext,
             ModelBox<T_RenderContextAware, T_RenderContext>,
+            ?,
             Object>>
     extends Renderable<
     T_RenderContextAware,
