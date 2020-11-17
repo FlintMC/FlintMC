@@ -3,6 +3,7 @@ package net.flintmc.render.minecraft.v1_15_2.text;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.List;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.minecraft.text.raw.FontRenderer;
 import net.flintmc.render.minecraft.text.raw.StringAlignment;
@@ -20,22 +21,26 @@ public class VersionedFontRenderer implements FontRenderer {
     this.minecraft = Minecraft.getInstance();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getStringWidth(String text) {
     return this.minecraft.fontRenderer.getStringWidth(text);
   }
 
+  /** {@inheritDoc} */
   @Override
   public float getCharWidth(char c) {
     return this.minecraft.fontRenderer.getCharWidth(c);
   }
 
+  /** {@inheritDoc} */
   @Override
   public float getBoldCharWidth(char c) {
     Font font = ((ShadowFontRenderer) this.minecraft.fontRenderer).getFont();
     return font.findGlyph(c).getAdvance(true);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void drawString(
       float x,
@@ -78,5 +83,23 @@ public class VersionedFontRenderer implements FontRenderer {
     if (scale) {
       RenderSystem.scalef(1F / xFactor, 1F / yFactor, 1F);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<String> listFormattedString(String text, int wrapWidth) {
+    return this.minecraft.fontRenderer.listFormattedStringToWidth(text, wrapWidth);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String wrapFormattedString(String text, int wrapWidth) {
+    return this.minecraft.fontRenderer.wrapFormattedStringToWidth(text, wrapWidth);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int getStringWrappedHeight(String text, int wrapWidth) {
+    return this.minecraft.fontRenderer.getWordWrappedHeight(text, wrapWidth);
   }
 }

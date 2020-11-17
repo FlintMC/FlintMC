@@ -18,6 +18,7 @@ public class DefaultPlayerHeadRenderer implements PlayerHeadRenderer {
     this.imageRenderer = imageRenderer;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void drawPlayerHead(float x, float y, float size, NetworkPlayerInfo info) {
     this.imageRenderer.bindTexture(info.getSkinLocation());

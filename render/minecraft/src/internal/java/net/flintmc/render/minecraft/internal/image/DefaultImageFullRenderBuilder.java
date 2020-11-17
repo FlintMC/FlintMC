@@ -57,6 +57,7 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
         "Colors (r, g, b or a) set to something > 255");
   }
 
+  /** {@inheritDoc} */
   @Override
   public ImageFullRenderBuilder fullImageSize(float width, float height) {
     this.imageWidth = width;
@@ -64,6 +65,7 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ImageFullRenderBuilder at(float x, float y) {
     this.x = x;
@@ -71,6 +73,7 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ImageFullRenderBuilder matrix(Object matrix) {
     this.matrix = matrix;
@@ -84,16 +87,19 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ImageFullRenderBuilder color(int rgba) {
     return this.color((rgba >> 16) & 0xFF, (rgba >> 8) & 0xFF, rgba & 0xFF, (rgba >> 24) & 0xFF);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ImageFullRenderBuilder color(int r, int g, int b) {
     return this.color(r, g, b, 255);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ImageFullRenderBuilder color(int r, int g, int b, int a) {
     this.r = r;
@@ -103,12 +109,14 @@ public class DefaultImageFullRenderBuilder implements ImageFullRenderBuilder {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ImageFullRenderBuilder zLevel(int zLevel) {
     this.zLevel = zLevel;
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void draw() {
     this.validate();

@@ -35,6 +35,7 @@ public class DefaultTooltipRenderBuilder implements TooltipRenderBuilder {
     this.text = null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public TooltipRenderBuilder at(float x, float y) {
     this.x = x;
@@ -42,12 +43,14 @@ public class DefaultTooltipRenderBuilder implements TooltipRenderBuilder {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public TooltipRenderBuilder text(String text) {
     this.text = text;
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void draw() {
     this.validate();

@@ -23,6 +23,9 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
     this.reset();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void reset() {
     super.reset();
@@ -33,6 +36,9 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
     this.sourceHeight = -1;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void validate() {
     super.validate();
@@ -41,6 +47,9 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
         this.sourceWidth > 0 && this.sourceHeight > 0, "Source size not set/set to something <= 0");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ImagePartRenderBuilder sourcePosition(float x, float y) {
     this.sourceX = x;
@@ -48,6 +57,9 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ImagePartRenderBuilder sourceSize(float width, float height) {
     this.sourceWidth = width;
@@ -55,6 +67,9 @@ public class DefaultImagePartRenderBuilder extends DefaultImageFullRenderBuilder
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void draw() {
     this.validate();

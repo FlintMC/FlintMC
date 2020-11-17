@@ -1,5 +1,7 @@
 package net.flintmc.render.minecraft.text.raw;
 
+import java.util.List;
+
 /** Renderer for simple texts in Minecraft. */
 public interface FontRenderer {
 
@@ -63,4 +65,31 @@ public interface FontRenderer {
       boolean shadow,
       float xFactor,
       float yFactor);
+
+  /**
+   * Retrieves a collection with width wrapped strings.
+   *
+   * @param text The non-null text to be wrapped.
+   * @param wrapWidth The width, when the text should be wrapped.
+   * @return A collection with width wrapped strings.
+   */
+  List<String> listFormattedString(String text, int wrapWidth);
+
+  /**
+   * Retrieves a wrapped formatted string.
+   *
+   * @param text The non-null text to be wrapped.
+   * @param wrapWidth The width, when the text should be wrapped.
+   * @return A wrapped formatted string.
+   */
+  String wrapFormattedString(String text, int wrapWidth);
+
+  /**
+   * Retrieves the height of a wrapped string.
+   *
+   * @param text The non-null text to be wrapped.
+   * @param wrapWidth The width, when the text should be wrapped.
+   * @return THe height of the wrapped string.
+   */
+  int getStringWrappedHeight(String text, int wrapWidth);
 }
