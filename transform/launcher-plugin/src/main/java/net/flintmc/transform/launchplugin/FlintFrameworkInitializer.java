@@ -42,7 +42,8 @@ public class FlintFrameworkInitializer {
     try {
       LaunchController.getInstance()
           .getRootLoader()
-          .excludeFromModification("net.flintmc.transform.");
+          .excludeFromModification(
+              "net.flintmc.transform.", "net.flintmc.framework.config.internal.");
 
       // create guice constant module
       InjectionHolder.getInstance().addModules(new BindConstantModule(arguments));

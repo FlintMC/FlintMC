@@ -88,7 +88,9 @@ public class GsonChatComponentSerializer
 
     // All formats of the component
     for (ChatFormat format : ChatFormat.values()) {
-      object.addProperty(format.getLowerName(), src.hasFormat(format));
+      if (src.hasFormat(format)) {
+        object.addProperty(format.getLowerName(), true);
+      }
     }
 
     if (src.insertion() != null) {

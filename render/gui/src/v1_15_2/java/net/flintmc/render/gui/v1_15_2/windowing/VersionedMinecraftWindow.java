@@ -1,6 +1,9 @@
 package net.flintmc.render.gui.v1_15_2.windowing;
 
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.render.gui.event.WindowRenderEvent;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.WindowRenderer;
@@ -23,8 +26,10 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
   @Inject
   private VersionedMinecraftWindow(
-      ClassMappingProvider classMappingProvider, DefaultWindowManager windowManager) {
-    super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager);
+      ClassMappingProvider classMappingProvider,
+      DefaultWindowManager windowManager,
+      EventBus eventBus) {
+    super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager, eventBus);
     this.classMappingProvider = classMappingProvider;
     this.intrusiveRenderers = new ArrayList<>();
   }
@@ -154,12 +159,18 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
     // Render all intrusive renderers first
     for (WindowRenderer renderer : intrusiveRenderers) {
+      WindowRenderEvent windowRenderEvent = () -> renderer;
+      this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.PRE);
       renderer.render();
+      this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.POST);
     }
 
     // Follow with other renderers
     for (WindowRenderer renderer : renderers) {
+      WindowRenderEvent windowRenderEvent = () -> renderer;
+      this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.PRE);
       renderer.render();
+      this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.POST);
     }
   }
 }

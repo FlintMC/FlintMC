@@ -35,8 +35,8 @@ dependencies {
         }
     }
 
-    manifest("net.flintmc.installer", "logic", "1.1.2")
-    manifest("net.flintmc.installer", "logic-implementation", "1.1.2")
+    manifest("net.flintmc.installer", "logic", "1.1.5")
+    manifest("net.flintmc.installer", "logic-implementation", "1.1.5")
     manifest("com.google.code.gson", "gson", "2.8.6")
 
 }
