@@ -22,7 +22,6 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 @Implement(value = MinecraftWindow.class, version = "1.15.2")
 public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
   private final ClassMappingProvider classMappingProvider;
-  private final EventBus eventBus;
   private final List<WindowRenderer> intrusiveRenderers;
 
   @Inject
@@ -30,9 +29,8 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
       ClassMappingProvider classMappingProvider,
       DefaultWindowManager windowManager,
       EventBus eventBus) {
-    super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager);
+    super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager, eventBus);
     this.classMappingProvider = classMappingProvider;
-    this.eventBus = eventBus;
     this.intrusiveRenderers = new ArrayList<>();
   }
 

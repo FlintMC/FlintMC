@@ -27,7 +27,7 @@ import static org.lwjgl.glfw.GLFW.*;
 @Implement(Window.class)
 public class VersionedWindow implements InternalWindow {
 
-  private final EventBus eventBus;
+  protected final EventBus eventBus;
 
   protected final List<WindowRenderer> renderers;
   protected final List<GuiEventListener> listeners;
@@ -73,12 +73,12 @@ public class VersionedWindow implements InternalWindow {
    * @param handle The GLFW handle to wrap
    * @param windowManager The window manager to unregister this window on when it is closed
    */
-  protected VersionedWindow(long handle, DefaultWindowManager windowManager) {
+  protected VersionedWindow(long handle, DefaultWindowManager windowManager, EventBus eventBus) {
     this.renderers = new ArrayList<>();
     this.listeners = new ArrayList<>();
     this.windowManager = windowManager;
     this.handle = handle;
-    this.eventBus = InjectionHolder.getInjectedInstance(EventBus.class);
+    this.eventBus = eventBus;
   }
 
   @Override
