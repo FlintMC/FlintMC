@@ -21,6 +21,6 @@ dependencies {
     internalImplementation(project(":util:util-mapping"))
 
     internalImplementation("com.google.code.gson", "gson", "2.8.6")
-    internalImplementation("net.flintmc.installer", "logic", "1.1.2")
-    internalImplementation("net.flintmc.installer", "logic-implementation", "1.1.2")
+    internalImplementation("net.flintmc.installer", "logic", "1.1.5")
+    internalImplementation("net.flintmc.installer", "logic-implementation", "1.1.5")
 }
