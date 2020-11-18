@@ -12,7 +12,7 @@ publish_snapshot:
   stage: deploy
   script:
     - export VERSION="$(echo -ne $CI_COMMIT_REF_NAME | cut -d"-" -f2)-SNAPSHOT" || exit 1
-    - sh gradlew publish
+    - sh gradlew publishFlint
   environment:
     name: development
   only:
