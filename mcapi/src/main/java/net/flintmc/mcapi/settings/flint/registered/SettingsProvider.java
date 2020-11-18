@@ -3,6 +3,7 @@ package net.flintmc.mcapi.settings.flint.registered;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.framework.packages.Package;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 
@@ -48,11 +49,23 @@ public interface SettingsProvider {
   /**
    * Retrieves a collection of all settings that are registered in this provider, it shouldn't be
    * modified. {@link RegisteredSetting#getSubSettings() Sub settings} of settings aren't contained
-   * in this collection
+   * in this collection.
    *
    * @return The non-null collection of all settings in this provider
    */
   Collection<RegisteredSetting> getAllSettings();
+
+  /**
+   * Retrieves a collection of all settings that are registered in this provider and that are loaded
+   * from the given package. {@link RegisteredSetting#getSubSettings() Sub settings} of settings
+   * aren't contained in this collection.
+   *
+   * @param packageName The non-null name of the package to search settings from
+   * @return The new non-null collection containing all settings, modification to it won't have any
+   *     effect
+   * @see Package#getName()
+   */
+  Collection<RegisteredSetting> getSettings(String packageName);
 
   /**
    * Retrieves a collection of all settings that are registered in this provider and that match the

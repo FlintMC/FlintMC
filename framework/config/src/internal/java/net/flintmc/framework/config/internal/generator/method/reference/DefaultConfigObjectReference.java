@@ -49,6 +49,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   private final Object defaultValue;
 
+  private final Class<?> configBaseClass;
   private final ReferenceInvoker invoker;
   private final Class<?> declaringClass;
 
@@ -85,6 +86,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.classLoader = classLoader;
     this.serializedType = serializedType;
 
+    this.configBaseClass = classLoader.loadClass(generatingConfig.getBaseClass().getName());
     this.declaringClass = classLoader.loadClass(declaringClass);
     this.invoker = invocationGenerator.generateInvoker(generatingConfig, path, getter, setter);
 
@@ -101,6 +103,11 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     }
 
     this.defaultValue = defaultValue;
+  }
+
+  @Override
+  public Class<?> getConfigBaseClass() {
+    return this.configBaseClass;
   }
 
   @Override

@@ -259,7 +259,10 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
     try {
       defaultValue =
           this.valueType.isPrimitive()
-              ? String.valueOf(Defaults.defaultValue(Class.forName(this.valueType.getName())))
+              ? String.valueOf(
+                  Defaults.defaultValue(
+                      PrimitiveTypeLoader.loadClass(
+                          super.getClass().getClassLoader(), this.valueType.getName())))
               : "null";
     } catch (ClassNotFoundException e) {
       defaultValue = "null";

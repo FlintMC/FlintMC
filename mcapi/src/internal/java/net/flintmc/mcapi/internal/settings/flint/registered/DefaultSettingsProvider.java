@@ -6,6 +6,8 @@ import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.packages.Package;
+import net.flintmc.framework.packages.PackageResolver;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubSettingsFor;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
@@ -24,13 +26,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class DefaultSettingsProvider implements SettingsProvider {
 
   private final Logger logger;
+  private final PackageResolver packageResolver;
 
-  private final Collection<RegisteredSetting> settings = new CopyOnWriteArrayList<>();
-  private final Map<String, RegisteredCategory> categories = new HashMap<>();
+  private final Collection<RegisteredSetting> settings;
+  private final Map<String, RegisteredCategory> categories;
 
   @Inject
-  public DefaultSettingsProvider(@InjectLogger Logger logger) {
+  public DefaultSettingsProvider(@InjectLogger Logger logger, PackageResolver packageResolver) {
     this.logger = logger;
+    this.packageResolver = packageResolver;
+
+    this.settings = new CopyOnWriteArrayList<>();
+    this.categories = new HashMap<>();
   }
 
   @Override
@@ -104,6 +111,19 @@ public class DefaultSettingsProvider implements SettingsProvider {
   @Override
   public Collection<RegisteredSetting> getAllSettings() {
     return this.settings;
+  }
+
+  @Override
+  public Collection<RegisteredSetting> getSettings(String packageName) {
+    Collection<RegisteredSetting> settings = new HashSet<>();
+    for (RegisteredSetting setting : this.getAllSettings()) {
+      Package settingPackage = this.packageResolver.resolvePackage(setting.getReference().getConfigBaseClass());
+      if (settingPackage != null && settingPackage.getName().equals(packageName)) {
+        settings.add(setting);
+      }
+    }
+
+    return settings;
   }
 
   @Override
