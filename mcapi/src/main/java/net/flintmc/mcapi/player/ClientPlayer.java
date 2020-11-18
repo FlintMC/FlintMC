@@ -4,14 +4,7 @@ import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
 import net.flintmc.mcapi.player.overlay.TabOverlay;
 
-public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
-
-  /**
-   * Retrieves the player entity.
-   *
-   * @return The client player entity.
-   */
-  PlayerEntity getEntity();
+public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClientPlayer {
 
   /**
    * Retrieves the inventory of this player.
@@ -198,4 +191,9 @@ public interface ClientPlayer extends PlayerSkinProfile, BaseClientPlayer {
    * @return Player's current biome name.
    */
   String getBiome();
+
+  @Override
+  default boolean isSpectator() {
+    return false;
+  }
 }
