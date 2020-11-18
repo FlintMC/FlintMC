@@ -17,8 +17,12 @@ dependencies {
     api(project(":framework:framework-inject"))
     api(project(":framework:framework-stereotype"))
     api(project(":framework:framework-tasks"))
+    api(project(":framework:framework-config"))
+
     api(project(":transform:transform-hook"))
     api(project(":transform:transform-shadow"))
+
+    api(project(":util:util-i18n"))
 
     api("com.google.code.gson", "gson", "2.8.6")
 }
