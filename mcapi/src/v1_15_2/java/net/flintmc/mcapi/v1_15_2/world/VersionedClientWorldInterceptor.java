@@ -57,9 +57,10 @@ public class VersionedClientWorldInterceptor {
       this.clientWorld
           .getEntities()
           .put(entityId, this.passiveEntityMapper.fromMinecraftPigEntity(pigEntity));
-    } else if (!(entity instanceof AbstractClientPlayerEntity
-        || entity instanceof RemoteClientPlayerEntity)) {
+    } else if (entity instanceof RemoteClientPlayerEntity) {
       this.clientWorld.getEntities().put(entityId, this.entityMapper.fromMinecraftEntity(entity));
+    } else if(entity instanceof ClientPlayerEntity) {
+      this.clientWorld.getEntities().put(entityId, clientPlayer);
     }
   }
 
