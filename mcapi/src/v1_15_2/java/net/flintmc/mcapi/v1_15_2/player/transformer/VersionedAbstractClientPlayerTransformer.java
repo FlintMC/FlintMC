@@ -1,9 +1,5 @@
 package net.flintmc.mcapi.v1_15_2.player.transformer;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import javassist.CannotCompileException;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.bytecode.BadBytecode;
@@ -12,13 +8,13 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.CodeIterator;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
+import net.flintmc.mcapi.player.FieldOfViewModifier;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 
 public class VersionedAbstractClientPlayerTransformer {
 
-  private static final String FOV_MODIFIER_CLASS =
-      "net.flintmc.mcapi.player.FieldOfViewModifier";
+  private static final String FOV_MODIFIER_CLASS = FieldOfViewModifier.class.getName();
   private static final int LOCAL_FOV = 1;
 
   @ClassTransform("net.minecraft.client.entity.player.AbstractClientPlayerEntity")
@@ -54,12 +50,6 @@ public class VersionedAbstractClientPlayerTransformer {
       }
 
       lastIndex = index;
-    }
-
-    try {
-      Files.write(Paths.get(context.getCtClass().getName() + ".class"), context.getCtClass().toBytecode());
-    } catch (IOException | CannotCompileException exception) {
-      exception.printStackTrace();
     }
   }
 }
