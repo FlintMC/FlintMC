@@ -20,7 +20,8 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
   private RendererRepository rendererRepository;
   private final Map<String, ModelBoxHolder<Entity, EntityRenderContext>> renderables;
   private final Map<Object, ModelBoxHolder<Entity, EntityRenderContext>> renderablesByTarget;
-  private Renderer<ModelBoxHolder<Entity, EntityRenderContext>, EntityRenderContext, MinecraftRenderMeta>
+  private Renderer<
+      ModelBoxHolder<Entity, EntityRenderContext>, EntityRenderContext, MinecraftRenderMeta>
       renderer;
 
   @SuppressWarnings("BindingAnnotationWithoutInject")
@@ -51,7 +52,8 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
     return this.owner;
   }
 
-  public Renderer<ModelBoxHolder<Entity, EntityRenderContext>, EntityRenderContext, MinecraftRenderMeta>
+  public Renderer<
+      ModelBoxHolder<Entity, EntityRenderContext>, EntityRenderContext, MinecraftRenderMeta>
   getRenderer() {
     return this.renderer;
   }

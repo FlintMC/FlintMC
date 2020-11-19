@@ -73,13 +73,13 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
     ModelBoxHolder<Entity, EntityRenderContext> box =
         this.modelBoxHolderFactory
             .create(this.getRenderContext(), modelRenderer)
-            .addRenderPreparation(
+            .addPropertyPreparation(
                 modelBoxHolder -> {
-                  Set<ModelBox> modelBoxes =
-                      modelBoxHolder.getPropertyValue(ModelBoxHolder.MODEL_BOXES);
-                  modelBoxes.clear();
                   ModelRendererAccessor modelRendererAccessor =
                       (ModelRendererAccessor) modelRenderer;
+
+                  Set<ModelBox> modelBoxes = modelBoxHolder.getBoxes();
+                  modelBoxes.clear();
                   for (ModelRenderer.ModelBox modelBox : modelRendererAccessor.getModelBoxes()) {
                     ModelBoxAccessor modelBoxAccessor = (ModelBoxAccessor) modelBox;
                     Collection<ModelBox.TexturedQuad> texturedQuads = new HashSet<>();
@@ -118,83 +118,79 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
                             .setTexturedQuads(texturedQuads));
                   }
 
-                  modelBoxHolder.setPropertyValue(ModelBoxHolder.MODEL_BOXES, modelBoxes);
+                  modelBoxHolder
+                      .setRotationAngleX(modelRenderer.rotateAngleX)
+                      .setRotationAngleY(modelRenderer.rotateAngleY)
+                      .setRotationAngleZ(modelRenderer.rotateAngleZ)
+                      .setRotationPointX(modelRenderer.rotationPointX)
+                      .setRotationPointY(modelRenderer.rotationPointY)
+                      .setRotationPointZ(modelRenderer.rotationPointZ)
+                      .setMirror(modelRenderer.mirror)
+                      .setShowModel(modelRenderer.showModel)
+                      .setTextureHeight(modelRendererAccessor.getTextureHeight())
+                      .setTextureWidth(modelRendererAccessor.getTextureWidth())
+                      .setTextureOffsetX(modelRendererAccessor.getTextureOffsetX())
+                      .setTextureOffsetY(modelRendererAccessor.getTextureOffsetY())
+                      .setModelBoxes(modelBoxes);
+                })
+            .addRenderPreparation(
+                modelBoxHolder -> {
+                  ModelRendererAccessor modelRendererAccessor =
+                      (ModelRendererAccessor) modelRenderer;
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.SHOW_MODEL)) {
-                    modelRenderer.showModel =
-                        modelBoxHolder.getPropertyValue(ModelBoxHolder.SHOW_MODEL);
-                  }
-                  modelBoxHolder.setPropertyValue(
-                      ModelBoxHolder.SHOW_MODEL, modelRenderer.showModel);
+                  if (modelBoxHolder.getShowModelOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRenderer.showModel = modelBoxHolder.isShowModel();
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.MIRROR)) {
-                    modelRenderer.mirror = modelBoxHolder.getPropertyValue(ModelBoxHolder.MIRROR);
-                  }
-                  modelBoxHolder.setPropertyValue(ModelBoxHolder.MIRROR, modelRenderer.mirror);
+                  if (modelBoxHolder.getMirrorOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRenderer.mirror = modelBoxHolder.isMirror();
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.TEXTURE_OFFSET_Y)) {
-                    modelRendererAccessor.setTextureOffsetY(
-                        modelBoxHolder.getPropertyValue(ModelBoxHolder.TEXTURE_OFFSET_Y));
-                  }
-                  modelBoxHolder.setPropertyValue(
-                      ModelBoxHolder.TEXTURE_OFFSET_Y, modelRendererAccessor.getTextureOffsetY());
+                  if (modelBoxHolder.getTextureOffsetXOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRendererAccessor.setTextureOffsetX(modelBoxHolder.getTextureOffsetX());
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.TEXTURE_OFFSET_X)) {
-                    modelRendererAccessor.setTextureOffsetX(
-                        modelBoxHolder.getPropertyValue(ModelBoxHolder.TEXTURE_OFFSET_X));
-                  }
-                  modelBoxHolder.setPropertyValue(
-                      ModelBoxHolder.TEXTURE_OFFSET_X, modelRendererAccessor.getTextureOffsetX());
+                  if (modelBoxHolder.getTextureOffsetYOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRendererAccessor.setTextureOffsetY(modelBoxHolder.getTextureOffsetY());
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.TEXTURE_WIDTH)) {
-                    modelRendererAccessor.setTextureWidth(
-                        modelBoxHolder.getPropertyValue(ModelBoxHolder.TEXTURE_WIDTH));
-                  }
-                  modelBoxHolder.setPropertyValue(
-                      ModelBoxHolder.TEXTURE_WIDTH, modelRendererAccessor.getTextureWidth());
+                  if (modelBoxHolder.getTextureWidthOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRendererAccessor.setTextureWidth(modelBoxHolder.getTextureWidth());
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.TEXTURE_HEIGHT)) {
-                    modelRendererAccessor.setTextureHeight(
-                        modelBoxHolder.getPropertyValue(ModelBoxHolder.TEXTURE_HEIGHT));
-                  }
-                  modelBoxHolder.setPropertyValue(
-                      ModelBoxHolder.TEXTURE_HEIGHT, modelRendererAccessor.getTextureHeight());
+                  if (modelBoxHolder.getTextureHeightOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRendererAccessor.setTextureHeight(modelBoxHolder.getTextureHeight());
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_ANGLE_X)
-                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
-                    modelRenderer.rotateAngleX = 0;
-                  modelRenderer.rotateAngleX +=
-                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_ANGLE_X);
+                  if (modelBoxHolder.getRotationAngleXMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotateAngleX = 0;
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_ANGLE_Y)
-                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
-                    modelRenderer.rotateAngleY = 0;
-                  modelRenderer.rotateAngleY +=
-                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_ANGLE_Y);
+                  modelRenderer.rotateAngleX += modelBoxHolder.getRotationAngleX();
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_ANGLE_Z)
-                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
-                    modelRenderer.rotateAngleZ = 0;
-                  modelRenderer.rotateAngleZ +=
-                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_ANGLE_Z);
+                  if (modelBoxHolder.getRotationAngleYMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotateAngleY = 0;
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_POINT_X)
-                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
-                    modelRenderer.rotationPointX = 0;
-                  modelRenderer.rotationPointX +=
-                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_POINT_X);
+                  modelRenderer.rotateAngleY += modelBoxHolder.getRotationAngleY();
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_POINT_Y)
-                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
-                    modelRenderer.rotationPointY = 0;
-                  modelRenderer.rotationPointY +=
-                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_POINT_Y);
+                  if (modelBoxHolder.getRotationAngleZMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotateAngleZ = 0;
 
-                  if (modelBoxHolder.getPropertyMeta(ModelBoxHolder.ROTATION_POINT_Z)
-                      == ModelBoxHolder.RotationProperty.Mode.ABSOLUTE)
-                    modelRenderer.rotationPointZ = 0;
-                  modelRenderer.rotationPointZ +=
-                      modelBoxHolder.getPropertyValue(ModelBoxHolder.ROTATION_POINT_Z);
+                  modelRenderer.rotateAngleZ += modelBoxHolder.getRotationAngleZ();
+
+                  if (modelBoxHolder.getRotationPointXMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotationPointX = 0;
+
+                  modelRenderer.rotationPointX += modelBoxHolder.getRotationPointX();
+
+                  if (modelBoxHolder.getRotationPointYMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotationPointY = 0;
+
+                  modelRenderer.rotationPointY += modelBoxHolder.getRotationPointY();
+
+                  if (modelBoxHolder.getRotationPointZMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotationPointZ = 0;
+
+                  modelRenderer.rotationPointZ += modelBoxHolder.getRotationPointZ();
                 });
 
     ((EntityAccessor) this.getHandle()).getFlintRenderables().put(modelRenderer, box);

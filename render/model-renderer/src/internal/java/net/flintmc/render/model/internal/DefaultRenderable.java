@@ -1,13 +1,13 @@
 package net.flintmc.render.model.internal;
 
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.render.model.RenderContext;
 import net.flintmc.render.model.RenderContextAware;
 import net.flintmc.render.model.Renderable;
+import net.flintmc.util.property.PropertyContext;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class DefaultRenderable<
@@ -22,8 +22,9 @@ public class DefaultRenderable<
   private final T_RenderContext renderContext;
   private final T_RenderTarget meta;
   private final Collection<Consumer<T_Renderable>> renderPreparations = new HashSet<>();
-  private final Map<Property<?, ?>, Object> propertyValues = new HashMap<>();
-  private final Map<Property<?, ?>, Object> propertyMeta = new HashMap<>();
+  private final Collection<Consumer<T_Renderable>> propertyPreparations = new HashSet<>();
+  private PropertyContext<T_Renderable> propertyContext;
+
   private Consumer<T_Renderable> propertyHandler = renderable -> {
   };
 
@@ -32,6 +33,16 @@ public class DefaultRenderable<
     this.meta = meta;
   }
 
+  @SuppressWarnings("unchecked")
+  public PropertyContext<T_Renderable> getPropertyContext() {
+    if (this.propertyContext == null)
+      this.propertyContext =
+          InjectionHolder.getInjectedInstance(PropertyContext.Factory.class)
+              .create((T_Renderable) this);
+    return this.propertyContext;
+  }
+
+  @SuppressWarnings("unchecked")
   public T_Renderable addRenderPreparation(Consumer<T_Renderable> consumer) {
     this.renderPreparations.add(consumer);
     return (T_Renderable) this;
@@ -54,6 +65,14 @@ public class DefaultRenderable<
   }
 
   @SuppressWarnings("unchecked")
+  public T_Renderable callPropertyPreparations() {
+    for (Consumer<T_Renderable> propertyPreparation : this.propertyPreparations) {
+      propertyPreparation.accept((T_Renderable) this);
+    }
+    return (T_Renderable) this;
+  }
+
+  @SuppressWarnings("unchecked")
   public T_Renderable callRenderPreparations() {
     for (Consumer<T_Renderable> preparation : this.renderPreparations) {
       preparation.accept((T_Renderable) this);
@@ -62,33 +81,9 @@ public class DefaultRenderable<
   }
 
   @SuppressWarnings("unchecked")
-  public <T_PropertyType, T_PropertyMeta> T_Renderable setPropertyValue(
-      Property<T_PropertyType, T_PropertyMeta> property, T_PropertyType propertyValue) {
-    if (!property.validateValue(propertyValue))
-      throw new IllegalArgumentException("provided property value is invalid.");
-    this.propertyValues.put(property, propertyValue);
+  public T_Renderable addPropertyPreparation(Consumer<T_Renderable> consumer) {
+    this.propertyPreparations.add(consumer);
     return (T_Renderable) this;
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T_PropertyType, T_PropertyMeta> T_Renderable setPropertyMeta(
-      Property<T_PropertyType, T_PropertyMeta> property, T_PropertyMeta propertyMeta) {
-    if (!property.validateMeta(propertyMeta))
-      throw new IllegalArgumentException("provided property meta is invalid.");
-    this.propertyMeta.put(property, propertyMeta);
-    return (T_Renderable) this;
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T_PropertyType, T_PropertyMeta> T_PropertyType getPropertyValue(
-      Property<T_PropertyType, T_PropertyMeta> property) {
-    return (T_PropertyType) this.propertyValues.getOrDefault(property, property.getDefaultValue());
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T_PropertyType, T_PropertyMeta> T_PropertyMeta getPropertyMeta(
-      Property<T_PropertyType, T_PropertyMeta> property) {
-    return (T_PropertyMeta) this.propertyMeta.getOrDefault(property, property.getDefaultMeta());
   }
 
   public T_RenderTarget getMeta() {

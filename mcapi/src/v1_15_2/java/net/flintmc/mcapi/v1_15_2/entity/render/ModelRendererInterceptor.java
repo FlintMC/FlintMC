@@ -9,6 +9,7 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.internal.entity.cache.EntityCache;
+import net.flintmc.mcapi.player.ClientPlayer;
 import net.flintmc.mcapi.render.MinecraftRenderMeta;
 import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.transform.javassist.ClassTransform;
@@ -23,6 +24,7 @@ public class ModelRendererInterceptor {
   private static ModelRendererInterceptor INSTANCE;
   private final ClassMappingProvider classMappingProvider;
   private final EntityCache entityCache;
+  private ClientPlayer clientPlayer;
   private Entity lastRenderedEntity;
   private MinecraftRenderMeta alternatingMinecraftRenderMeta;
 
@@ -122,10 +124,21 @@ public class ModelRendererInterceptor {
   private void rotationAnglesUpdate(Object minecraftEntity) {
     Entity flintEntity =
         this.entityCache.getEntity(((net.minecraft.entity.Entity) minecraftEntity).getUniqueID());
+
+    if (clientPlayer == null)
+      clientPlayer = InjectionHolder.getInjectedInstance(ClientPlayer.class);
+
+    if (flintEntity == null
+        && this.clientPlayer
+        .getEntity()
+        .getUniqueId()
+        .equals(((net.minecraft.entity.Entity) minecraftEntity).getUniqueID())) {
+      flintEntity = this.clientPlayer.getEntity();
+    }
     if (flintEntity == null) return;
     for (ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder :
         flintEntity.getRenderContext().getRenderables().values()) {
-      modelBoxHolder.callPropertyHandler();
+      modelBoxHolder.callPropertyPreparations().callPropertyHandler();
     }
     this.lastRenderedEntity = flintEntity;
   }
@@ -189,8 +202,10 @@ public class ModelRendererInterceptor {
               normalMatrix.getM12(),
               normalMatrix.getM22());
 
-      modelBoxHolder.getContext().getRenderer().render(modelBoxHolder, this.alternatingMinecraftRenderMeta);
-      return true;
+      return modelBoxHolder
+          .getContext()
+          .getRenderer()
+          .render(modelBoxHolder, this.alternatingMinecraftRenderMeta);
     } else {
       return false;
     }

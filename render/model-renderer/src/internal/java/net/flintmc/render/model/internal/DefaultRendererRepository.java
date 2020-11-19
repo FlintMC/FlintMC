@@ -54,6 +54,22 @@ public class DefaultRendererRepository implements RendererRepository {
       return (Renderer<T_Renderable, T_RenderContext, T_RenderMeta>)
           this.classDefinedRenderers.get(renderContextAware.getClass());
 
+    for (Map.Entry<Class<? extends RenderContextAware<?>>, Renderer<?, ?, ?>> classRendererEntry :
+        this.classDefinedRenderers.entrySet()) {
+      if (classRendererEntry.getKey().isInstance(renderContextAware)) {
+        if (renderer != null) {
+          throw new IllegalStateException(
+              String.format(
+                  "Multiple default renderers for render context aware of type %s found.",
+                  renderContextAware.getClass()));
+        }
+        renderer =
+            (Renderer<T_Renderable, T_RenderContext, T_RenderMeta>) classRendererEntry.getValue();
+      }
+    }
+
+    if (renderer != null) return renderer;
+
     return (Renderer<T_Renderable, T_RenderContext, T_RenderMeta>) this.defaultRenderer;
   }
 

@@ -70,6 +70,7 @@ defineModule("util:i18n")
 defineModule("util:mapping")
 defineModule("util:session-service")
 defineModule("util:math")
+defineModule("util:property")
 
 defineModule("minecraft:minecraft-1-15-2")
 defineModule("bootstrap")

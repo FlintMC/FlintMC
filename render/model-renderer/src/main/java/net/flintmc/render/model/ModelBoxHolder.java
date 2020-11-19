@@ -1,5 +1,8 @@
 package net.flintmc.render.model;
 
+import net.flintmc.util.property.Property;
+
+import java.util.HashSet;
 import java.util.Set;
 
 public interface ModelBoxHolder<
@@ -17,113 +20,206 @@ public interface ModelBoxHolder<
     ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
     Object> {
 
-  FloatProperty<RotationProperty.Mode> ROTATION_ANGLE_X = new RotationProperty();
-  FloatProperty<RotationProperty.Mode> ROTATION_ANGLE_Y = new RotationProperty();
-  FloatProperty<RotationProperty.Mode> ROTATION_ANGLE_Z = new RotationProperty();
+  Property<Set<ModelBox>, Void> MODEL_BOXES =
+      Property.builder().<Set<ModelBox>>withValue().withDefaultValue(HashSet::new).build();
+  Property<Float, RotationMode> ROTATION_ANGLE_X =
+      Property.builder()
+          .<Float>withValue()
+          .<RotationMode>withMeta()
+          .withDefaultValue(0f)
+          .withDefaultMeta(RotationMode.ABSOLUTE)
+          .build();
+  Property<Float, RotationMode> ROTATION_ANGLE_Y =
+      Property.builder()
+          .<Float>withValue()
+          .<RotationMode>withMeta()
+          .withDefaultValue(0f)
+          .withDefaultMeta(RotationMode.ABSOLUTE)
+          .build();
+  Property<Float, RotationMode> ROTATION_ANGLE_Z =
+      Property.builder()
+          .<Float>withValue()
+          .<RotationMode>withMeta()
+          .withDefaultValue(0f)
+          .withDefaultMeta(RotationMode.ABSOLUTE)
+          .build();
+  Property<Float, RotationMode> ROTATION_POINT_X =
+      Property.builder()
+          .<Float>withValue()
+          .<RotationMode>withMeta()
+          .withDefaultValue(0f)
+          .withDefaultMeta(RotationMode.ABSOLUTE)
+          .build();
+  Property<Float, RotationMode> ROTATION_POINT_Y =
+      Property.builder()
+          .<Float>withValue()
+          .<RotationMode>withMeta()
+          .withDefaultValue(0f)
+          .withDefaultMeta(RotationMode.ABSOLUTE)
+          .build();
+  Property<Float, RotationMode> ROTATION_POINT_Z =
+      Property.builder()
+          .<Float>withValue()
+          .<RotationMode>withMeta()
+          .withDefaultValue(0f)
+          .withDefaultMeta(RotationMode.ABSOLUTE)
+          .build();
+  Property<Integer, OverridePolicy> TEXTURE_OFFSET_X =
+      Property.builder()
+          .<Integer>withValue()
+          .<OverridePolicy>withMeta()
+          .withDefaultValue(0)
+          .withDefaultMeta(OverridePolicy.INACTIVE)
+          .build();
+  Property<Integer, OverridePolicy> TEXTURE_OFFSET_Y =
+      Property.builder()
+          .<Integer>withValue()
+          .<OverridePolicy>withMeta()
+          .withDefaultValue(0)
+          .withDefaultMeta(OverridePolicy.INACTIVE)
+          .build();
+  Property<Float, OverridePolicy> TEXTURE_WIDTH =
+      Property.builder()
+          .<Float>withValue()
+          .<OverridePolicy>withMeta()
+          .withDefaultValue(0f)
+          .withDefaultMeta(OverridePolicy.INACTIVE)
+          .build();
+  Property<Float, OverridePolicy> TEXTURE_HEIGHT =
+      Property.builder()
+          .<Float>withValue()
+          .<OverridePolicy>withMeta()
+          .withDefaultValue(0f)
+          .withDefaultMeta(OverridePolicy.INACTIVE)
+          .build();
+  Property<Boolean, OverridePolicy> SHOW_MODEL =
+      Property.builder()
+          .<Boolean>withValue()
+          .<OverridePolicy>withMeta()
+          .withDefaultValue(true)
+          .withDefaultMeta(OverridePolicy.INACTIVE)
+          .build();
+  Property<Boolean, OverridePolicy> MIRROR =
+      Property.builder()
+          .<Boolean>withValue()
+          .<OverridePolicy>withMeta()
+          .withDefaultValue(false)
+          .withDefaultMeta(OverridePolicy.INACTIVE)
+          .build();
 
-  FloatProperty<RotationProperty.Mode> ROTATION_POINT_X = new RotationProperty();
-  FloatProperty<RotationProperty.Mode> ROTATION_POINT_Y = new RotationProperty();
-  FloatProperty<RotationProperty.Mode> ROTATION_POINT_Z = new RotationProperty();
+  Set<ModelBox> getBoxes();
 
-  IntProperty<Boolean> TEXTURE_OFFSET_X = new TextureOffsetProperty();
-  IntProperty<Boolean> TEXTURE_OFFSET_Y = new TextureOffsetProperty();
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureWidthPolicy(
+      OverridePolicy overridePolicy);
 
-  FloatProperty<Boolean> TEXTURE_WIDTH = new TextureSizeProperty();
-  FloatProperty<Boolean> TEXTURE_HEIGHT = new TextureSizeProperty();
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureHeightPolicy(
+      OverridePolicy overridePolicy);
 
-  BooleanProperty<Boolean> MIRROR =
-      new BooleanProperty<Boolean>() {
-        public boolean validateValue(Boolean value) {
-          return value != null;
-        }
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setModelBoxes(Set<ModelBox> modelBoxes);
 
-        public boolean validateMeta(Boolean value) {
-          return value != null;
-        }
+  float getRotationPointX();
 
-        public Boolean getDefaultMeta() {
-          return false;
-        }
-      };
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointX(float value);
 
-  SetProperty<ModelBox, Void> MODEL_BOXES =
-      new SetProperty<ModelBox, Void>() {
-        public boolean validateValue(Set<ModelBox> modelBoxes) {
-          return modelBoxes != null;
-        }
+  float getRotationPointY();
 
-        public boolean validateMeta(Void value) {
-          return false;
-        }
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointY(float value);
 
-        public Void getDefaultMeta() {
-          return null;
-        }
-      };
+  float getRotationPointZ();
 
-  BooleanProperty<Boolean> SHOW_MODEL =
-      new BooleanProperty<Boolean>() {
-        public boolean validateValue(Boolean value) {
-          return value != null;
-        }
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointZ(float value);
 
-        public boolean validateMeta(Boolean value) {
-          return value != null;
-        }
+  float getRotationAngleX();
 
-        public Boolean getDefaultMeta() {
-          return false;
-        }
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleX(float value);
 
-        public Boolean getDefaultValue() {
-          return true;
-        }
-      };
+  float getRotationAngleY();
 
-  class TextureSizeProperty implements FloatProperty<Boolean> {
-    public boolean validateValue(Float value) {
-      return value != null;
-    }
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleY(float value);
 
-    public boolean validateMeta(Boolean value) {
-      return value != null;
-    }
+  float getRotationAngleZ();
 
-    public Boolean getDefaultMeta() {
-      return false;
-    }
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleZ(float value);
+
+  boolean isMirror();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setMirror(boolean mirror);
+
+  boolean isShowModel();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setShowModel(boolean showModel);
+
+  int getTextureOffsetX();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureOffsetX(int textureOffsetX);
+
+  int getTextureOffsetY();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureOffsetY(int textureOffsetY);
+
+  float getTextureWidth();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureWidth(float textureWidth);
+
+  float getTextureHeight();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureHeight(float textureHeight);
+
+  RotationMode getRotationPointXMode();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointXMode(RotationMode mode);
+
+  RotationMode getRotationPointYMode();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointYMode(RotationMode mode);
+
+  RotationMode getRotationPointZMode();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointZMode(RotationMode mode);
+
+  RotationMode getRotationAngleXMode();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleXMode(RotationMode mode);
+
+  RotationMode getRotationAngleYMode();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleYMode(RotationMode mode);
+
+  RotationMode getRotationAngleZMode();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleZMode(RotationMode mode);
+
+  OverridePolicy getMirrorOverridePolicy();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setMirrorOverridePolicy(
+      OverridePolicy overridePolicy);
+
+  OverridePolicy getShowModelOverridePolicy();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setShowModelOverridePolicy(
+      OverridePolicy overridePolicy);
+
+  OverridePolicy getTextureOffsetXOverridePolicy();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureOffsetXOverridePolicy(
+      OverridePolicy overridePolicy);
+
+  OverridePolicy getTextureOffsetYOverridePolicy();
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureOffsetYOverridePolicy(
+      OverridePolicy overridePolicy);
+
+  OverridePolicy getTextureWidthOverridePolicy();
+
+  OverridePolicy getTextureHeightOverridePolicy();
+
+  enum OverridePolicy {
+    ACTIVE,
+    INACTIVE
   }
 
-  class TextureOffsetProperty implements IntProperty<Boolean> {
-    public boolean validateValue(Integer integer) {
-      return integer != null;
-    }
-
-    public boolean validateMeta(Boolean value) {
-      return value != null;
-    }
-
-    public Boolean getDefaultMeta() {
-      return false;
-    }
-  }
-
-  class RotationProperty implements FloatProperty<RotationProperty.Mode> {
-    public boolean validateValue(Float value) {
-      return value != null;
-    }
-
-    public boolean validateMeta(RotationProperty.Mode mode) {
-      return mode != null;
-    }
-
-    public RotationProperty.Mode getDefaultMeta() {
-      return RotationProperty.Mode.RELATIVE;
-    }
-
-    public enum Mode {
-      ABSOLUTE,
-      RELATIVE
-    }
+  enum RotationMode {
+    ABSOLUTE,
+    RELATIVE
   }
 }

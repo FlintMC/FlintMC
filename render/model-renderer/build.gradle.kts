@@ -15,4 +15,5 @@ dependencies {
 
     api(project(":framework:framework-inject"))
     api(project(":render:render-vbo-rendering"))
+    api(project(":util:util-property"))
 }
