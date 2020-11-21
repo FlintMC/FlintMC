@@ -12,12 +12,12 @@ import net.flintmc.util.mojang.internal.cache.object.CachedObjectIO;
 
 @Singleton
 @Service(CacheIO.class)
-public class CacheService implements ServiceHandler<CacheIO> {
+public class FileCacheService implements ServiceHandler<CacheIO> {
 
   private final FileCache cache;
 
   @Inject
-  private CacheService(FileCache cache) {
+  private FileCacheService(FileCache cache) {
     this.cache = cache;
   }
 

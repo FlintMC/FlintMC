@@ -9,6 +9,7 @@ import com.google.inject.Singleton;
 import com.mojang.util.UUIDTypeAdapter;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.util.mojang.MojangRateLimitException;
 import net.flintmc.util.mojang.history.NameHistory;
 import net.flintmc.util.mojang.history.NameHistoryEntry;
 import net.flintmc.util.mojang.history.NameHistoryResolver;
@@ -54,48 +55,65 @@ public class DefaultNameHistoryResolver implements NameHistoryResolver {
 
   @Override
   public CompletableFuture<NameHistory> resolveHistory(UUID uniqueId) {
-    return this.cache.get(
-        uniqueId,
-        NameHistory.class,
+    NameHistory cached = this.cache.getCached(NameHistory.class, uniqueId);
+    if (cached != null){
+      return CompletableFuture.completedFuture(cached);
+    }
+
+    return CompletableFuture.supplyAsync(
         () -> {
-          Collection<NameHistoryEntry> entries = new HashSet<>();
+          Collection<NameHistoryEntry> entries = null;
 
           try {
-            HttpURLConnection connection =
-                (HttpURLConnection)
-                    new URL(String.format(NAMES_URL, UUIDTypeAdapter.fromUUID(uniqueId)))
-                        .openConnection();
-            int code = connection.getResponseCode();
-            if (code == 204) {
-              return null;
-            }
-            if (code != 200) {
-              throw new IllegalStateException(
-                  String.format(
-                      "An unknown error occurred while resolving profile with the UUID %s: %d",
-                      uniqueId, code));
-            }
-
-            try (InputStream inputStream = connection.getInputStream();
-                Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-              JsonArray array = JsonParser.parseReader(reader).getAsJsonArray();
-
-              for (JsonElement element : array) {
-                JsonObject object = element.getAsJsonObject();
-                String name = object.get("name").getAsString();
-
-                entries.add(
-                    object.has("changedToAt")
-                        ? this.entryFactory.create(name)
-                        : this.entryFactory.create(name, object.get("changedToAt").getAsLong()));
-              }
-            }
+            entries = this.fillEntries(uniqueId);
           } catch (IOException exception) {
-            this.logger.trace("Failed to resolve profile properties");
+            this.logger.trace("Failed to resolve name history for UUID " + uniqueId, exception);
           }
 
-          return this.historyFactory.create(uniqueId, entries);
-        },
-        VALID_TIME);
+          NameHistory history =
+              entries != null ? this.historyFactory.create(uniqueId, entries) : null;
+
+          this.cache.cache(uniqueId, NameHistory.class, history, VALID_TIME);
+
+          return history;
+        });
+  }
+
+  private Collection<NameHistoryEntry> fillEntries(UUID uniqueId) throws IOException {
+    HttpURLConnection connection =
+        (HttpURLConnection)
+            new URL(String.format(NAMES_URL, UUIDTypeAdapter.fromUUID(uniqueId))).openConnection();
+    int code = connection.getResponseCode();
+    if (code == 204) {
+      return null;
+    }
+    if (code == 429) {
+      throw MojangRateLimitException.INSTANCE;
+    }
+    if (code != 200) {
+      throw new IllegalStateException(
+          String.format(
+              "An unknown error occurred while resolving profile with the UUID %s: %d",
+              uniqueId, code));
+    }
+
+    Collection<NameHistoryEntry> entries = new HashSet<>();
+
+    try (InputStream inputStream = connection.getInputStream();
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+      JsonArray array = JsonParser.parseReader(reader).getAsJsonArray();
+
+      for (JsonElement element : array) {
+        JsonObject object = element.getAsJsonObject();
+        String name = object.get("name").getAsString();
+
+        entries.add(
+            object.has("changedToAt")
+                ? this.entryFactory.create(name, object.get("changedToAt").getAsLong())
+                : this.entryFactory.create(name));
+      }
+    }
+
+    return entries;
   }
 }

@@ -32,4 +32,9 @@ public class DefaultNameHistory implements NameHistory {
   public Collection<NameHistoryEntry> getEntries() {
     return this.entries;
   }
+
+  @Override
+  public String toString() {
+    return "DefaultNameHistory{" + "uniqueId=" + this.uniqueId + ", entries=" + this.entries + '}';
+  }
 }

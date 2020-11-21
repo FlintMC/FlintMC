@@ -5,8 +5,13 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.mojang.history.NameHistoryEntry;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 @Implement(NameHistoryEntry.class)
 public class DefaultNameHistoryEntry implements NameHistoryEntry {
+
+  private static final DateFormat FORMAT = new SimpleDateFormat();
 
   private final String name;
   private final long timestamp;
@@ -35,5 +40,12 @@ public class DefaultNameHistoryEntry implements NameHistoryEntry {
   @Override
   public boolean isFirstEntry() {
     return this.timestamp == -1;
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "NameHistoryEntry{%s; %s}",
+        this.name, this.isFirstEntry() ? "first entry" : FORMAT.format(this.timestamp));
   }
 }

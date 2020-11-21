@@ -16,14 +16,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 @Singleton
 public class FileCache {
+
+  private static final int MAX_SIZE = 1000;
 
   private final Logger logger;
   private final Path path;
@@ -43,9 +44,18 @@ public class FileCache {
     this.path = path.resolve("mojangCache.bin");
 
     this.io = new HashMap<>();
-    this.objects = new HashMap<>();
+    this.objects = new ConcurrentHashMap<>();
 
-    this.readFile();
+    this.init(scheduledService);
+  }
+
+  private void init(ScheduledExecutorService scheduledService) throws IOException {
+    try {
+      this.readFile();
+    } catch (Exception exception) {
+      logger.trace("Failed to read mojangCache.bin", exception);
+      Files.delete(this.path);
+    }
 
     scheduledService.scheduleAtFixedRate(
         () -> {
@@ -61,8 +71,8 @@ public class FileCache {
             this.logger.trace("Failed to write the file cache to " + this.path, exception);
           }
         },
-        1,
-        1,
+        5,
+        5,
         TimeUnit.SECONDS);
   }
 
@@ -70,59 +80,38 @@ public class FileCache {
     this.io.put(targetClass.getSimpleName(), factory);
   }
 
-  public <T> CompletableFuture<T> get(
-      Predicate<T> tester,
-      Class<T> type,
-      Supplier<UUIDMappedValue<T>> optionalSupplier,
-      long validMillis) {
+  @SuppressWarnings("unchecked")
+  public <T> T getCached(Class<T> type, UUID uniqueId) {
+    if (!this.objects.containsKey(uniqueId)) {
+      return null;
+    }
+    CachedObject<?> object = this.objects.get(uniqueId).get(type);
+    return object != null ? (T) object.getValue() : null;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> T getCached(Class<T> type, Predicate<T> tester) {
     for (Map<Class<?>, CachedObject<?>> objects : this.objects.values()) {
       for (CachedObject<?> object : objects.values()) {
-        if (object.getType().equals(type)) {
+        if (object.getValue() != null && object.getType().equals(type)) {
           T t = (T) object.getValue();
           if (tester.test(t)) {
-            return CompletableFuture.completedFuture(t);
+            return t;
           }
         }
       }
     }
 
-    CachedObjectIO<T> io = this.getIO(type);
-    return CompletableFuture.supplyAsync(
-        () -> {
-          UUIDMappedValue<T> value = optionalSupplier.get();
-          if (value == null) {
-            return null;
-          }
-
-          T t = value.getValue();
-
-          Map<Class<?>, CachedObject<?>> objects =
-              this.objects.computeIfAbsent(value.getUniqueId(), uuid -> new HashMap<>());
-          objects.put(
-              type, new CachedObject<>(type, t, io, System.currentTimeMillis() + validMillis));
-
-          return t;
-        });
+    return null;
   }
 
-  @SuppressWarnings("unchecked")
-  public <T> CompletableFuture<T> get(
-      UUID uniqueId, Class<T> type, Supplier<T> optionalSupplier, long validMillis) {
+  public <T> void cache(UUID uniqueId, Class<T> type, T t, long validMillis) {
     Map<Class<?>, CachedObject<?>> objects =
-        this.objects.computeIfAbsent(uniqueId, uuid -> new HashMap<>());
+        this.objects.computeIfAbsent(uniqueId, uuid -> new ConcurrentHashMap<>());
 
-    if (!objects.containsKey(type)) {
-      CachedObjectIO<T> io = this.getIO(type);
-      return CompletableFuture.supplyAsync(
-          () -> {
-            T t = optionalSupplier.get();
-            objects.put(
-                type, new CachedObject<>(type, t, io, System.currentTimeMillis() + validMillis));
-            return t;
-          });
-    }
-
-    return CompletableFuture.completedFuture((T) objects.get(type));
+    CachedObject<T> object =
+        new CachedObject<>(type, t, this.getIO(type), System.currentTimeMillis() + validMillis);
+    objects.put(type, object);
   }
 
   @SuppressWarnings("unchecked")
@@ -143,7 +132,7 @@ public class FileCache {
     for (Map<Class<?>, CachedObject<?>> value : types) {
       Collection<CachedObject<?>> objects = value.values();
 
-      objects.removeIf(object -> !object.isValid());
+      objects.removeIf(object -> objects.size() > MAX_SIZE || !object.isValid());
 
       if (objects.isEmpty()) {
         types.remove(value);
@@ -180,7 +169,7 @@ public class FileCache {
 
       output.writeShort(entry.getValue().size());
       for (CachedObject<?> object : entry.getValue().values()) {
-        output.writeUTF(object.getType().getSimpleName());
+        DataStreamHelper.writeString(output, object.getType().getSimpleName());
         output.writeLong(object.getValidUntil());
 
         CachedObjectIO io = object.getIO();
@@ -188,7 +177,7 @@ public class FileCache {
         Object value = object.getValue();
         output.writeBoolean(value != null);
         if (value != null) {
-          io.write(value, output);
+          io.write(uniqueId, value, output);
         }
       }
     }
@@ -196,16 +185,23 @@ public class FileCache {
 
   public void read(DataInput input) throws IOException {
     int size = input.readShort();
+    if (size < 0) {
+      return;
+    }
     Map<UUID, Map<Class<?>, CachedObject<?>>> target = new HashMap<>(size);
 
     for (int i = 0; i < size; i++) {
       UUID uniqueId = new UUID(input.readLong(), input.readLong());
 
       int entrySize = input.readShort();
-      Map<Class<?>, CachedObject<?>> objects = new HashMap<>(entrySize);
+      if (entrySize < 0) {
+        continue;
+      }
+
+      Map<Class<?>, CachedObject<?>> objects = new ConcurrentHashMap<>(entrySize);
 
       for (int j = 0; j < entrySize; j++) {
-        String objectName = input.readUTF();
+        String objectName = DataStreamHelper.readString(input);
         CachedObjectIO<?> io = this.io.get(objectName);
         if (io == null) {
           this.logger.trace(
@@ -215,7 +211,7 @@ public class FileCache {
 
         long validUntil = input.readLong();
 
-        Object value = input.readBoolean() ? io.read(input) : null;
+        Object value = input.readBoolean() ? io.read(uniqueId, input) : null;
         objects.put(io.getType(), new CachedObject(io.getType(), value, io, validUntil));
       }
 

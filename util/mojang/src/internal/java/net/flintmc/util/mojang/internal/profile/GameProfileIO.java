@@ -5,6 +5,8 @@ import com.google.inject.Singleton;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.property.Property;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
+import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
+import net.flintmc.util.mojang.internal.cache.DataStreamHelper;
 import net.flintmc.util.mojang.internal.cache.object.CacheIO;
 import net.flintmc.util.mojang.internal.cache.object.CachedObjectIO;
 
@@ -32,35 +34,31 @@ public class GameProfileIO implements CachedObjectIO<GameProfile> {
   }
 
   @Override
-  public void write(GameProfile profile, DataOutput output) throws IOException {
-    output.writeLong(profile.getUniqueId().getMostSignificantBits());
-    output.writeLong(profile.getUniqueId().getLeastSignificantBits());
-
-    output.writeUTF(profile.getName());
+  public void write(UUID uniqueId, GameProfile profile, DataOutput output) throws IOException {
+    DataStreamHelper.writeString(output, profile.getName());
 
     PropertyMap properties = profile.getProperties();
     output.writeByte(properties.size());
 
     for (Property property : properties.values()) {
-      output.writeUTF(property.getName());
-      output.writeUTF(property.getValue());
+      DataStreamHelper.writeString(output, property.getName());
+      DataStreamHelper.writeString(output, property.getValue());
       output.writeBoolean(property.hasSignature());
       if (property.hasSignature()) {
-        output.writeUTF(property.getSignature());
+        DataStreamHelper.writeString(output, property.getSignature());
       }
     }
   }
 
   @Override
-  public GameProfile read(DataInput input) throws IOException {
-    GameProfile profile =
-        this.profileFactory.create(new UUID(input.readLong(), input.readLong()), input.readUTF());
+  public GameProfile read(UUID uniqueId, DataInput input) throws IOException {
+    GameProfile profile = this.profileFactory.create(uniqueId, DataStreamHelper.readString(input));
 
     int size = input.readByte();
     for (int i = 0; i < size; i++) {
-      String name = input.readUTF();
-      String value = input.readUTF();
-      String signature = input.readBoolean() ? input.readUTF() : null;
+      String name = DataStreamHelper.readString(input);
+      String value = DataStreamHelper.readString(input);
+      String signature = input.readBoolean() ? DataStreamHelper.readString(input) : null;
       if (signature != null) {
         profile.getProperties().put(name, this.propertyFactory.create(name, value, signature));
       } else {
