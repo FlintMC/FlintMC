@@ -30,6 +30,7 @@ public class FileCache {
   private final Path path;
   private final Map<String, CachedObjectIO<?>> io;
   private final Map<UUID, Map<Class<?>, CachedObject<?>>> objects;
+  private boolean initialized;
 
   @Inject
   private FileCache(
@@ -49,14 +50,7 @@ public class FileCache {
     this.init(scheduledService);
   }
 
-  private void init(ScheduledExecutorService scheduledService) throws IOException {
-    try {
-      this.readFile();
-    } catch (Exception exception) {
-      logger.trace("Failed to read mojangCache.bin", exception);
-      Files.delete(this.path);
-    }
-
+  private void init(ScheduledExecutorService scheduledService) {
     scheduledService.scheduleAtFixedRate(
         () -> {
           this.invalidate();
@@ -76,12 +70,32 @@ public class FileCache {
         TimeUnit.SECONDS);
   }
 
+  private void initFile() {
+    if (this.initialized) {
+      return;
+    }
+
+    try {
+      this.readFile();
+      this.initialized = true;
+    } catch (Exception exception) {
+      this.logger.error("Failed to read mojangCache.bin", exception);
+      try {
+        Files.delete(this.path);
+      } catch (IOException exception1) {
+        this.logger.trace("Failed to delete mojangCache.bin", exception1);
+      }
+    }
+  }
+
   public <T> void registerIO(Class<T> targetClass, CachedObjectIO<T> factory) {
     this.io.put(targetClass.getSimpleName(), factory);
   }
 
   @SuppressWarnings("unchecked")
   public <T> T getCached(Class<T> type, UUID uniqueId) {
+    this.initFile();
+
     if (!this.objects.containsKey(uniqueId)) {
       return null;
     }
@@ -91,6 +105,8 @@ public class FileCache {
 
   @SuppressWarnings("unchecked")
   public <T> T getCached(Class<T> type, Predicate<T> tester) {
+    this.initFile();
+
     for (Map<Class<?>, CachedObject<?>> objects : this.objects.values()) {
       for (CachedObject<?> object : objects.values()) {
         if (object.getValue() != null && object.getType().equals(type)) {
@@ -106,6 +122,8 @@ public class FileCache {
   }
 
   public <T> void cache(UUID uniqueId, Class<T> type, T t, long validMillis) {
+    this.initFile();
+
     Map<Class<?>, CachedObject<?>> objects =
         this.objects.computeIfAbsent(uniqueId, uuid -> new ConcurrentHashMap<>());
 
@@ -147,7 +165,7 @@ public class FileCache {
     }
   }
 
-  private void readFile() throws IOException {
+  private void readFile() throws Exception {
     if (Files.notExists(this.path)) {
       return;
     }

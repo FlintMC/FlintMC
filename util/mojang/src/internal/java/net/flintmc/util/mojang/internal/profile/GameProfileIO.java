@@ -5,7 +5,6 @@ import com.google.inject.Singleton;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.property.Property;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
-import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
 import net.flintmc.util.mojang.internal.cache.DataStreamHelper;
 import net.flintmc.util.mojang.internal.cache.object.CacheIO;
 import net.flintmc.util.mojang.internal.cache.object.CachedObjectIO;
