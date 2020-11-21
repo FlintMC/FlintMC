@@ -24,8 +24,6 @@ import java.util.function.Predicate;
 @Singleton
 public class FileCache {
 
-  private static final int MAX_SIZE = 1000;
-
   private final Logger logger;
   private final Path path;
   private final Map<String, CachedObjectIO<?>> io;
@@ -150,7 +148,7 @@ public class FileCache {
     for (Map<Class<?>, CachedObject<?>> value : types) {
       Collection<CachedObject<?>> objects = value.values();
 
-      objects.removeIf(object -> objects.size() > MAX_SIZE || !object.isValid());
+      objects.removeIf(object -> !object.isValid());
 
       if (objects.isEmpty()) {
         types.remove(value);
