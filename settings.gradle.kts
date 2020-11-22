@@ -69,6 +69,7 @@ defineModule("util:csv")
 defineModule("util:i18n")
 defineModule("util:mapping")
 defineModule("util:session-service")
+defineModule("util:mojang")
 
 defineModule("minecraft:minecraft-1-15-2")
 include("bootstrap")
