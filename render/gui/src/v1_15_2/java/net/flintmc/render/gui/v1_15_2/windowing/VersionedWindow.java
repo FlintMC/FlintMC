@@ -5,16 +5,16 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.render.gui.event.GuiEvent;
-import net.flintmc.render.gui.event.GuiEventListener;
 import net.flintmc.render.gui.event.WindowRenderEvent;
+import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.internal.windowing.InternalWindow;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
+import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWInputConverter;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.Window;
 import net.flintmc.render.gui.windowing.WindowRenderer;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
@@ -30,7 +30,6 @@ public class VersionedWindow implements InternalWindow {
   protected final EventBus eventBus;
 
   protected final List<WindowRenderer> renderers;
-  protected final List<GuiEventListener> listeners;
   protected final DefaultWindowManager windowManager;
 
   protected long handle;
@@ -56,7 +55,6 @@ public class VersionedWindow implements InternalWindow {
       VersionedGLFWCallbacks callbacks,
       EventBus eventBus) {
     this.renderers = new ArrayList<>();
-    this.listeners = new ArrayList<>();
     this.windowManager = windowManager;
     this.eventBus = eventBus;
     this.handle = glfwCreateWindow(width, height, title, 0, minecraftWindow.getHandle());
@@ -75,7 +73,6 @@ public class VersionedWindow implements InternalWindow {
    */
   protected VersionedWindow(long handle, DefaultWindowManager windowManager, EventBus eventBus) {
     this.renderers = new ArrayList<>();
-    this.listeners = new ArrayList<>();
     this.windowManager = windowManager;
     this.handle = handle;
     this.eventBus = eventBus;
@@ -100,30 +97,21 @@ public class VersionedWindow implements InternalWindow {
   }
 
   @Override
-  public void addEventListener(GuiEventListener listener) {
-    this.listeners.add(listener);
-  }
-
-  @Override
-  public boolean removeEventListener(GuiEventListener listener) {
-    return this.listeners.remove(listener);
-  }
-
-  @Override
-  public boolean sendEvent(GuiEvent event) {
-    for (GuiEventListener listener : listeners) {
-      if (listener.handle(event)) {
-        // Event has been handled, cancel chain
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  @Override
   public boolean isFocused() {
     return glfwGetWindowAttrib(ensureHandle(), GLFW_FOCUSED) == GLFW_TRUE;
+  }
+
+  @Override
+  public boolean isKeyPressed(Key key) {
+    int glfwKey = VersionedGLFWInputConverter.flintKeyToGlfwKey(key);
+    if (glfwKey == GLFW.GLFW_KEY_UNKNOWN) {
+      return false;
+    }
+    int glfwAction =
+        key.isMouse()
+            ? GLFW.glfwGetMouseButton(this.getHandle(), glfwKey)
+            : GLFW.glfwGetKey(this.getHandle(), glfwKey);
+    return glfwAction == GLFW.GLFW_PRESS;
   }
 
   @Override
@@ -215,7 +203,7 @@ public class VersionedWindow implements InternalWindow {
   public void render() {
     glfwMakeContextCurrent(ensureHandle());
     for (WindowRenderer renderer : renderers) {
-      WindowRenderEvent windowRenderEvent = () -> renderer;
+      WindowRenderEvent windowRenderEvent = new WindowRenderEvent(this, renderer);
       this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.PRE);
       renderer.render();
       this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.POST);

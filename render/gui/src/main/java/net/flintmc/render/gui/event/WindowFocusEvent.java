@@ -1,15 +1,19 @@
 package net.flintmc.render.gui.event;
 
+import net.flintmc.render.gui.windowing.Window;
+
 /** Event indicating that a window got or lost focus. */
-public class WindowFocusEvent implements GuiEvent {
+public class WindowFocusEvent extends DefaultGuiEvent implements GuiEvent {
   private final boolean isFocused;
 
   /**
    * Constructs a new {@link WindowFocusEvent} with the specified focus state.
    *
+   * @param window The non-null window where this event has happened
    * @param isFocused The new focus state of the window
    */
-  public WindowFocusEvent(boolean isFocused) {
+  public WindowFocusEvent(Window window, boolean isFocused) {
+    super(window);
     this.isFocused = isFocused;
   }
 

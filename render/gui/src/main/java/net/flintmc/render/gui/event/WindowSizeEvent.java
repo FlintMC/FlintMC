@@ -1,17 +1,21 @@
 package net.flintmc.render.gui.event;
 
+import net.flintmc.render.gui.windowing.Window;
+
 /** Event indicating that the window size has changed. */
-public class WindowSizeEvent implements GuiEvent {
+public class WindowSizeEvent extends DefaultGuiEvent implements GuiEvent {
   private final int width;
   private final int height;
 
   /**
    * Constructs a new {@link WindowSizeEvent} with the specified with and height.
    *
+   * @param window The non-null window where this event has happened
    * @param width The new width of the window
    * @param height The new height of the window
    */
-  public WindowSizeEvent(int width, int height) {
+  public WindowSizeEvent(Window window, int width, int height) {
+    super(window);
     this.width = width;
     this.height = height;
   }

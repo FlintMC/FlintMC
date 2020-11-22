@@ -4,7 +4,7 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.settings.game.KeyBinding;
-import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
+import net.flintmc.render.gui.input.Key;
 import net.minecraft.client.util.InputMappings;
 
 /** 1.15.2 implementation of {@link KeyBinding}. */
@@ -29,7 +29,7 @@ public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBindin
   }
 
   @Override
-  public void bind(PhysicalKey key) {
+  public void bind(Key key) {
     super.bind(InputMappings.getInputByName(key.getConfigurationName()));
     this.keyCode = key.getKey();
   }

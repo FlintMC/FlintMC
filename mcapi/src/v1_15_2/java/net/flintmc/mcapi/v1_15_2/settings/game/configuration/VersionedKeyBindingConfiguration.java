@@ -6,7 +6,7 @@ import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.settings.game.KeyBinding;
 import net.flintmc.mcapi.settings.game.configuration.KeyBindingConfiguration;
-import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
+import net.flintmc.render.gui.input.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 
@@ -32,15 +32,15 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   }
 
   @Override
-  public PhysicalKey getKey(String keyDescription) {
+  public Key getKey(String keyDescription) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
     return keyBinding != null
-        ? PhysicalKey.getByConfigurationName(keyBinding.getDefault().getTranslationKey())
+        ? Key.getByConfigurationName(keyBinding.getDefault().getTranslationKey())
         : null;
   }
 
   @Override
-  public void setKey(String keyDescription, PhysicalKey key) {
+  public void setKey(String keyDescription, Key key) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
     if (keyBinding != null) {
       keyBinding.bind(
@@ -51,24 +51,24 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   }
 
   @Override
-  public Map<String, PhysicalKey> getAllKey() {
-    Map<String, PhysicalKey> keys = new HashMap<>();
+  public Map<String, Key> getAllKey() {
+    Map<String, Key> keys = new HashMap<>();
     for (net.minecraft.client.settings.KeyBinding keyBinding :
         Minecraft.getInstance().gameSettings.keyBindings) {
       keys.put(
           keyBinding.getKeyDescription(),
-          PhysicalKey.getByConfigurationName(keyBinding.getDefault().getTranslationKey()));
+          Key.getByConfigurationName(keyBinding.getDefault().getTranslationKey()));
     }
     return keys;
   }
 
   @Override
-  public void setAllKey(Map<String, PhysicalKey> keys) {
+  public void setAllKey(Map<String, Key> keys) {
     keys.forEach(this::setKey);
   }
 
   @Override
-  public boolean hasDuplicates(PhysicalKey key) {
+  public boolean hasDuplicates(Key key) {
     boolean found = false;
     for (KeyBinding keyBinding : this.getKeyBindings()) {
       if (keyBinding.getKeyCode() == key.getKey()) {
@@ -127,7 +127,7 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
 
   /** {@inheritDoc} */
   @Override
-  public void setKeyBindingCode(KeyBinding bindingCode, PhysicalKey keyInputName) {
+  public void setKeyBindingCode(KeyBinding bindingCode, Key keyInputName) {
     Minecraft.getInstance()
         .gameSettings
         .setKeyBindingCode(

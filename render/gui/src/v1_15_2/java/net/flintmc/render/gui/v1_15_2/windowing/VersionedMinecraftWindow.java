@@ -159,7 +159,7 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
     // Render all intrusive renderers first
     for (WindowRenderer renderer : intrusiveRenderers) {
-      WindowRenderEvent windowRenderEvent = () -> renderer;
+      WindowRenderEvent windowRenderEvent = new WindowRenderEvent(this, renderer);
       this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.PRE);
       renderer.render();
       this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.POST);
@@ -167,7 +167,7 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
     // Follow with other renderers
     for (WindowRenderer renderer : renderers) {
-      WindowRenderEvent windowRenderEvent = () -> renderer;
+      WindowRenderEvent windowRenderEvent = new WindowRenderEvent(this, renderer);
       this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.PRE);
       renderer.render();
       this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.POST);

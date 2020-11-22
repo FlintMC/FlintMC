@@ -2,6 +2,8 @@ package net.flintmc.render.gui.internal.windowing;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.tasks.Task;
 import net.flintmc.framework.tasks.Tasks;
@@ -14,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /** Default implementation of the Flint {@link WindowManager}. */
 @Singleton
@@ -21,10 +24,13 @@ import java.util.Map;
 public class DefaultWindowManager implements WindowManager {
   private final Map<Long, InternalWindow> windows;
 
+  private final EventBus eventBus;
   private MinecraftWindow minecraftWindow;
 
   @Inject
-  private DefaultWindowManager() {
+  private DefaultWindowManager(EventBus eventBus) {
+    this.eventBus = eventBus;
+
     this.windows = new HashMap<>();
   }
 
@@ -63,15 +69,30 @@ public class DefaultWindowManager implements WindowManager {
   }
 
   /**
+   * Retrieves the window with a specific handle that should be used for a {@link GuiEvent}.
+   *
+   * @param handle The handle of the window, or {@code -1} for the minecraft window
+   * @return The window or {@code null} if there is no window with the given handle
+   */
+  public Window getTargetWindowForEvent(long handle) {
+    return handle == -1 ? this.minecraftWindow : this.windows.get(handle);
+  }
+
+  /**
    * Fires an event and automatically select the target window based on the event source handle.
    *
-   * @param targetHandle The handle of the window to, or {@code -1} for the minecraft window
-   * @param event The event to fire
+   * @param windowHandle The handle of the window to, or {@code -1} for the minecraft window
+   * @param eventFunction The function to create the event with the window for the given handle
    * @return {@code true} if the event has been handled, {@code false} otherwise
    */
-  public boolean fireEvent(long targetHandle, GuiEvent event) {
-    Window window = targetHandle == -1 ? minecraftWindow : windows.get(targetHandle);
-    return window != null && window.sendEvent(event);
+  public boolean fireEvent(long windowHandle, Function<Window, GuiEvent> eventFunction) {
+    Window window = this.getTargetWindowForEvent(windowHandle);
+    if (window == null) {
+      return false;
+    }
+
+    GuiEvent event = eventFunction.apply(window);
+    return this.eventBus.fireEvent(event, Subscribe.Phase.PRE).isCancelled();
   }
 
   /**

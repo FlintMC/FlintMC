@@ -8,7 +8,7 @@ import net.flintmc.mcapi.settings.flint.annotation.TranslateKey;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
 import net.flintmc.mcapi.settings.game.KeyBinding;
 import net.flintmc.mcapi.settings.game.keybind.KeyBindSetting;
-import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
+import net.flintmc.render.gui.input.Key;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public interface KeyBindingConfiguration {
    * @return The key that is bound to the given description or {@code null} if no key is bound
    */
   @KeyBindSetting
-  PhysicalKey getKey(String keyDescription);
+  Key getKey(String keyDescription);
 
   /**
    * Binds the physical key to a specific description
@@ -35,7 +35,7 @@ public interface KeyBindingConfiguration {
    * @param keyDescription The non-null description of the key ({@link Keybind#getKey()}
    * @param key The key to be bound, {@code null} to disable the binding
    */
-  void setKey(String keyDescription, PhysicalKey key);
+  void setKey(String keyDescription, Key key);
 
   /**
    * Retrieves a map of all key descriptions with their bound physical key.
@@ -46,14 +46,14 @@ public interface KeyBindingConfiguration {
    * @see #getKey(String)
    */
   @TranslateKey
-  Map<String, PhysicalKey> getAllKey();
+  Map<String, Key> getAllKey();
 
   /**
    * Binds multiple key descriptions to a specific physical key.
    *
    * @param keys The non-null map containing all key descriptions with their bound keys
    */
-  void setAllKey(Map<String, PhysicalKey> keys);
+  void setAllKey(Map<String, Key> keys);
 
   /**
    * Retrieves whether there are duplicates Minecrafts settings for this keyCode.
@@ -62,7 +62,7 @@ public interface KeyBindingConfiguration {
    *     otherwise
    */
   @ConfigExclude
-  boolean hasDuplicates(PhysicalKey key);
+  boolean hasDuplicates(Key key);
 
   /**
    * Retrieves a key binding by the given {@link Keybind} constant.
@@ -96,5 +96,5 @@ public interface KeyBindingConfiguration {
    * @param code The new code for key binding.
    */
   @ConfigExclude
-  void setKeyBindingCode(KeyBinding keyBinding, PhysicalKey code);
+  void setKeyBindingCode(KeyBinding keyBinding, Key code);
 }

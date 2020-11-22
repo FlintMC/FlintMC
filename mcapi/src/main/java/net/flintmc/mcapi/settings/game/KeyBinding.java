@@ -2,7 +2,7 @@ package net.flintmc.mcapi.settings.game;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
-import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
+import net.flintmc.render.gui.input.Key;
 
 /** Represents a key binding. */
 public interface KeyBinding {
@@ -47,7 +47,7 @@ public interface KeyBinding {
    *
    * @param key The new key for the binding.
    */
-  void bind(PhysicalKey key);
+  void bind(Key key);
 
   /**
    * Whether the key binding is invalid.
