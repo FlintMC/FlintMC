@@ -1,6 +1,6 @@
 package net.flintmc.render.gui.event;
 
-import net.flintmc.render.gui.event.input.ModifierKey;
+import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.windowing.Window;
 
 import java.util.Set;

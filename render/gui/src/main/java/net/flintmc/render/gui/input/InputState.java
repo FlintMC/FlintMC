@@ -1,4 +1,4 @@
-package net.flintmc.render.gui.event.input;
+package net.flintmc.render.gui.input;
 
 /** Simple representation of possible key/button states */
 public enum InputState {

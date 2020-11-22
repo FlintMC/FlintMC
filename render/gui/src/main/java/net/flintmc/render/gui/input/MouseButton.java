@@ -1,4 +1,4 @@
-package net.flintmc.render.gui.event.input;
+package net.flintmc.render.gui.input;
 
 /** Known mouse buttons. */
 public enum MouseButton {

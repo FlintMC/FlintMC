@@ -2,6 +2,8 @@ package net.flintmc.render.gui.windowing;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.render.gui.input.Key;
+import net.flintmc.render.gui.input.MouseButton;
 
 /** A generic, operating system window. */
 public interface Window {
@@ -66,6 +68,22 @@ public interface Window {
    * @return {@code true} if the window is focused currently, {@code false} otherwise
    */
   boolean isFocused();
+
+  /**
+   * Retrieves whether the given key is currently pressed by the user.
+   *
+   * @param key The non-null key to check for
+   * @return {@code true} if the key is pressed, {@code false otherwise}
+   */
+  boolean isKeyPressed(Key key);
+
+  /**
+   * Retrieves whether the given button is currently pressed by the user.
+   *
+   * @param button The non-null button to check for
+   * @return {@code true} if the button is pressed, {@code false otherwise}
+   */
+  boolean isMouseButtonPressed(MouseButton button);
 
   /** Factory for {@link Window}s. */
   @AssistedFactory(Window.class)

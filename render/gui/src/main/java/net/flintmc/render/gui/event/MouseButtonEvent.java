@@ -1,8 +1,8 @@
 package net.flintmc.render.gui.event;
 
-import net.flintmc.render.gui.event.input.InputState;
-import net.flintmc.render.gui.event.input.ModifierKey;
-import net.flintmc.render.gui.event.input.MouseButton;
+import net.flintmc.render.gui.input.InputState;
+import net.flintmc.render.gui.input.ModifierKey;
+import net.flintmc.render.gui.input.MouseButton;
 import net.flintmc.render.gui.windowing.Window;
 
 import java.util.Set;

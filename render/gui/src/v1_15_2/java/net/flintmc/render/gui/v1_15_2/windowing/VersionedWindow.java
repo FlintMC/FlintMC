@@ -6,12 +6,16 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.event.WindowRenderEvent;
+import net.flintmc.render.gui.input.Key;
+import net.flintmc.render.gui.input.MouseButton;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.internal.windowing.InternalWindow;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
+import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWInputConverter;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.Window;
 import net.flintmc.render.gui.windowing.WindowRenderer;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
@@ -96,6 +100,27 @@ public class VersionedWindow implements InternalWindow {
   @Override
   public boolean isFocused() {
     return glfwGetWindowAttrib(ensureHandle(), GLFW_FOCUSED) == GLFW_TRUE;
+  }
+
+  @Override
+  public boolean isKeyPressed(Key key) {
+    int glfwKey = VersionedGLFWInputConverter.flintKeyToGlfwKey(key);
+    if (glfwKey == GLFW.GLFW_KEY_UNKNOWN) {
+      return false;
+    }
+    int glfwAction = GLFW.glfwGetKey(this.getHandle(), glfwKey);
+    return glfwAction == GLFW.GLFW_PRESS;
+  }
+
+  @Override
+  public boolean isMouseButtonPressed(MouseButton button) {
+    int glfwKey = VersionedGLFWInputConverter.flintMouseButtonToGlfwMouseButton(button);
+    if (glfwKey == GLFW.GLFW_KEY_UNKNOWN) {
+      return false;
+    }
+
+    int glfwAction = GLFW.glfwGetMouseButton(this.getHandle(), glfwKey);
+    return glfwAction == GLFW.GLFW_PRESS;
   }
 
   @Override

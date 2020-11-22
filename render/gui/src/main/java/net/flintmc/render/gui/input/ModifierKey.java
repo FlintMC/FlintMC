@@ -1,4 +1,4 @@
-package net.flintmc.render.gui.event.input;
+package net.flintmc.render.gui.input;
 
 /** Known modifier keys. */
 public enum ModifierKey {
