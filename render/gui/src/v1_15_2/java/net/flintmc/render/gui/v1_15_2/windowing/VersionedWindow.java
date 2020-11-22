@@ -187,7 +187,7 @@ public class VersionedWindow implements InternalWindow {
   public void render() {
     glfwMakeContextCurrent(ensureHandle());
     for (WindowRenderer renderer : renderers) {
-      WindowRenderEvent windowRenderEvent = () -> renderer;
+      WindowRenderEvent windowRenderEvent = new WindowRenderEvent(this, renderer);
       this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.PRE);
       renderer.render();
       this.eventBus.fireEvent(windowRenderEvent, Subscribe.Phase.POST);
