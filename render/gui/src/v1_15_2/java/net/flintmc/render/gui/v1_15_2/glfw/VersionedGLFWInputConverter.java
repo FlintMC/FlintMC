@@ -1,9 +1,8 @@
 package net.flintmc.render.gui.v1_15_2.glfw;
 
 import net.flintmc.render.gui.input.InputState;
-import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.input.ModifierKey;
-import net.flintmc.render.gui.input.MouseButton;
+import net.flintmc.render.gui.input.Key;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.EnumSet;
@@ -44,34 +43,34 @@ public class VersionedGLFWInputConverter {
         return Key.SLASH;
 
       case GLFW.GLFW_KEY_0:
-        return Key.NUM_0;
+        return Key.KEYBOARD_0;
 
       case GLFW.GLFW_KEY_1:
-        return Key.NUM_1;
+        return Key.KEYBOARD_1;
 
       case GLFW.GLFW_KEY_2:
-        return Key.NUM_2;
+        return Key.KEYBOARD_2;
 
       case GLFW.GLFW_KEY_3:
-        return Key.NUM_3;
+        return Key.KEYBOARD_3;
 
       case GLFW.GLFW_KEY_4:
-        return Key.NUM_4;
+        return Key.KEYBOARD_4;
 
       case GLFW.GLFW_KEY_5:
-        return Key.NUM_5;
+        return Key.KEYBOARD_5;
 
       case GLFW.GLFW_KEY_6:
-        return Key.NUM_6;
+        return Key.KEYBOARD_6;
 
       case GLFW.GLFW_KEY_7:
-        return Key.NUM_7;
+        return Key.KEYBOARD_7;
 
       case GLFW.GLFW_KEY_8:
-        return Key.NUM_8;
+        return Key.KEYBOARD_8;
 
       case GLFW.GLFW_KEY_9:
-        return Key.NUM_9;
+        return Key.KEYBOARD_9;
 
       case GLFW.GLFW_KEY_SEMICOLON:
         return Key.SEMICOLON;
@@ -224,7 +223,7 @@ public class VersionedGLFWInputConverter {
         return Key.SCROLL_LOCK;
 
       case GLFW.GLFW_KEY_NUM_LOCK:
-        return Key.NUM_LOCK;
+        return Key.NUMPAD_LOCK;
 
       case GLFW.GLFW_KEY_PRINT_SCREEN:
         return Key.PRINT_SCREEN;
@@ -308,55 +307,55 @@ public class VersionedGLFWInputConverter {
         return Key.F25;
 
       case GLFW.GLFW_KEY_KP_0:
-        return Key.KP_0;
+        return Key.NUMPAD_0;
 
       case GLFW.GLFW_KEY_KP_1:
-        return Key.KP_1;
+        return Key.NUMPAD_1;
 
       case GLFW.GLFW_KEY_KP_2:
-        return Key.KP_2;
+        return Key.NUMPAD_2;
 
       case GLFW.GLFW_KEY_KP_3:
-        return Key.KP_3;
+        return Key.NUMPAD_3;
 
       case GLFW.GLFW_KEY_KP_4:
-        return Key.KP_4;
+        return Key.NUMPAD_4;
 
       case GLFW.GLFW_KEY_KP_5:
-        return Key.KP_5;
+        return Key.NUMPAD_5;
 
       case GLFW.GLFW_KEY_KP_6:
-        return Key.KP_6;
+        return Key.NUMPAD_6;
 
       case GLFW.GLFW_KEY_KP_7:
-        return Key.KP_7;
+        return Key.NUMPAD_7;
 
       case GLFW.GLFW_KEY_KP_8:
-        return Key.KP_8;
+        return Key.NUMPAD_8;
 
       case GLFW.GLFW_KEY_KP_9:
-        return Key.KP_9;
+        return Key.NUMPAD_9;
 
       case GLFW.GLFW_KEY_KP_DECIMAL:
-        return Key.KP_DECIMAL;
+        return Key.NUMPAD_DECIMAL;
 
       case GLFW.GLFW_KEY_KP_DIVIDE:
-        return Key.KP_DIVIDE;
+        return Key.NUMPAD_DIVIDE;
 
       case GLFW.GLFW_KEY_KP_MULTIPLY:
-        return Key.KP_MULTIPLY;
+        return Key.NUMPAD_MULTIPLY;
 
       case GLFW.GLFW_KEY_KP_SUBTRACT:
-        return Key.KP_SUBTRACT;
+        return Key.NUMPAD_SUBTRACT;
 
       case GLFW.GLFW_KEY_KP_ADD:
-        return Key.KP_ADD;
+        return Key.NUMPAD_ADD;
 
       case GLFW.GLFW_KEY_KP_ENTER:
-        return Key.KP_ENTER;
+        return Key.NUMPAD_ENTER;
 
       case GLFW.GLFW_KEY_KP_EQUAL:
-        return Key.KP_EQUAL;
+        return Key.NUMPAD_EQUAL;
 
       case GLFW.GLFW_KEY_LEFT_SHIFT:
         return Key.LEFT_SHIFT;
@@ -368,7 +367,7 @@ public class VersionedGLFWInputConverter {
         return Key.LEFT_ALT;
 
       case GLFW.GLFW_KEY_LEFT_SUPER:
-        return Key.LEFT_SUPER;
+        return Key.LEFT_WIN;
 
       case GLFW.GLFW_KEY_RIGHT_SHIFT:
         return Key.RIGHT_SHIFT;
@@ -380,7 +379,7 @@ public class VersionedGLFWInputConverter {
         return Key.RIGHT_ALT;
 
       case GLFW.GLFW_KEY_RIGHT_SUPER:
-        return Key.RIGHT_SUPER;
+        return Key.RIGHT_WIN;
 
       case GLFW.GLFW_KEY_MENU:
         return Key.MENU;
@@ -423,36 +422,36 @@ public class VersionedGLFWInputConverter {
    * Converts a GLFW mouse button constant to a Flint mouse button,
    *
    * @param button The GLFW constant to convert
-   * @return The converted mouse button, or {@link MouseButton#UNKNOWN} if the button is not known.
+   * @return The converted mouse button, or {@link Key#UNKNOWN} if the button is not known.
    */
-  public static MouseButton glfwMouseButtonToFlintMouseButton(int button) {
+  public static Key glfwMouseButtonToFlintKey(int button) {
     switch (button) {
       case GLFW.GLFW_MOUSE_BUTTON_LEFT:
-        return MouseButton.LEFT;
+        return Key.MOUSE_LEFT;
 
       case GLFW.GLFW_MOUSE_BUTTON_MIDDLE:
-        return MouseButton.MIDDLE;
+        return Key.MOUSE_MIDDLE;
 
       case GLFW.GLFW_MOUSE_BUTTON_RIGHT:
-        return MouseButton.RIGHT;
+        return Key.MOUSE_RIGHT;
 
       case GLFW.GLFW_MOUSE_BUTTON_4:
-        return MouseButton.EXTENDED_4;
+        return Key.MOUSE_4;
 
       case GLFW.GLFW_MOUSE_BUTTON_5:
-        return MouseButton.EXTENDED_5;
+        return Key.MOUSE_5;
 
       case GLFW.GLFW_MOUSE_BUTTON_6:
-        return MouseButton.EXTENDED_6;
+        return Key.MOUSE_6;
 
       case GLFW.GLFW_MOUSE_BUTTON_7:
-        return MouseButton.EXTENDED_7;
+        return Key.MOUSE_7;
 
       case GLFW.GLFW_MOUSE_BUTTON_8:
-        return MouseButton.EXTENDED_8;
+        return Key.MOUSE_8;
 
       default:
-        return MouseButton.UNKNOWN;
+        return Key.UNKNOWN;
     }
   }
 
@@ -501,25 +500,25 @@ public class VersionedGLFWInputConverter {
         return GLFW.GLFW_KEY_PERIOD;
       case SLASH:
         return GLFW.GLFW_KEY_SLASH;
-      case NUM_0:
+      case KEYBOARD_0:
         return GLFW.GLFW_KEY_0;
-      case NUM_1:
+      case KEYBOARD_1:
         return GLFW.GLFW_KEY_1;
-      case NUM_2:
+      case KEYBOARD_2:
         return GLFW.GLFW_KEY_2;
-      case NUM_3:
+      case KEYBOARD_3:
         return GLFW.GLFW_KEY_3;
-      case NUM_4:
+      case KEYBOARD_4:
         return GLFW.GLFW_KEY_4;
-      case NUM_5:
+      case KEYBOARD_5:
         return GLFW.GLFW_KEY_5;
-      case NUM_6:
+      case KEYBOARD_6:
         return GLFW.GLFW_KEY_6;
-      case NUM_7:
+      case KEYBOARD_7:
         return GLFW.GLFW_KEY_7;
-      case NUM_8:
+      case KEYBOARD_8:
         return GLFW.GLFW_KEY_8;
-      case NUM_9:
+      case KEYBOARD_9:
         return GLFW.GLFW_KEY_9;
       case SEMICOLON:
         return GLFW.GLFW_KEY_SEMICOLON;
@@ -621,7 +620,7 @@ public class VersionedGLFWInputConverter {
         return GLFW.GLFW_KEY_CAPS_LOCK;
       case SCROLL_LOCK:
         return GLFW.GLFW_KEY_SCROLL_LOCK;
-      case NUM_LOCK:
+      case NUMPAD_LOCK:
         return GLFW.GLFW_KEY_NUM_LOCK;
       case PRINT_SCREEN:
         return GLFW.GLFW_KEY_PRINT_SCREEN;
@@ -677,39 +676,39 @@ public class VersionedGLFWInputConverter {
         return GLFW.GLFW_KEY_F24;
       case F25:
         return GLFW.GLFW_KEY_F25;
-      case KP_0:
+      case NUMPAD_0:
         return GLFW.GLFW_KEY_KP_0;
-      case KP_1:
+      case NUMPAD_1:
         return GLFW.GLFW_KEY_KP_1;
-      case KP_2:
+      case NUMPAD_2:
         return GLFW.GLFW_KEY_KP_2;
-      case KP_3:
+      case NUMPAD_3:
         return GLFW.GLFW_KEY_KP_3;
-      case KP_4:
+      case NUMPAD_4:
         return GLFW.GLFW_KEY_KP_4;
-      case KP_5:
+      case NUMPAD_5:
         return GLFW.GLFW_KEY_KP_5;
-      case KP_6:
+      case NUMPAD_6:
         return GLFW.GLFW_KEY_KP_6;
-      case KP_7:
+      case NUMPAD_7:
         return GLFW.GLFW_KEY_KP_7;
-      case KP_8:
+      case NUMPAD_8:
         return GLFW.GLFW_KEY_KP_8;
-      case KP_9:
+      case NUMPAD_9:
         return GLFW.GLFW_KEY_KP_9;
-      case KP_DECIMAL:
+      case NUMPAD_DECIMAL:
         return GLFW.GLFW_KEY_KP_DECIMAL;
-      case KP_DIVIDE:
+      case NUMPAD_DIVIDE:
         return GLFW.GLFW_KEY_KP_DIVIDE;
-      case KP_MULTIPLY:
+      case NUMPAD_MULTIPLY:
         return GLFW.GLFW_KEY_KP_MULTIPLY;
-      case KP_SUBTRACT:
+      case NUMPAD_SUBTRACT:
         return GLFW.GLFW_KEY_KP_SUBTRACT;
-      case KP_ADD:
+      case NUMPAD_ADD:
         return GLFW.GLFW_KEY_KP_ADD;
-      case KP_ENTER:
+      case NUMPAD_ENTER:
         return GLFW.GLFW_KEY_KP_ENTER;
-      case KP_EQUAL:
+      case NUMPAD_EQUAL:
         return GLFW.GLFW_KEY_KP_EQUAL;
       case LEFT_SHIFT:
         return GLFW.GLFW_KEY_LEFT_SHIFT;
@@ -717,7 +716,7 @@ public class VersionedGLFWInputConverter {
         return GLFW.GLFW_KEY_LEFT_CONTROL;
       case LEFT_ALT:
         return GLFW.GLFW_KEY_LEFT_ALT;
-      case LEFT_SUPER:
+      case LEFT_WIN:
         return GLFW.GLFW_KEY_LEFT_SUPER;
       case RIGHT_SHIFT:
         return GLFW.GLFW_KEY_RIGHT_SHIFT;
@@ -725,41 +724,26 @@ public class VersionedGLFWInputConverter {
         return GLFW.GLFW_KEY_RIGHT_CONTROL;
       case RIGHT_ALT:
         return GLFW.GLFW_KEY_RIGHT_ALT;
-      case RIGHT_SUPER:
+      case RIGHT_WIN:
         return GLFW.GLFW_KEY_RIGHT_SUPER;
       case MENU:
         return GLFW.GLFW_KEY_MENU;
 
-      case UNKNOWN:
-      default:
-        return GLFW.GLFW_KEY_UNKNOWN;
-    }
-  }
-
-  /**
-   * Converts a GLFW mouse button constant to a Flint mouse button,
-   *
-   * @param button The GLFW constant to convert
-   * @return The converted mouse button, or {@link GLFW#GLFW_KEY_UNKNOWN} if the button is not
-   *     known.
-   */
-  public static int flintMouseButtonToGlfwMouseButton(MouseButton button) {
-    switch (button) {
-      case LEFT:
+      case MOUSE_LEFT:
         return GLFW.GLFW_MOUSE_BUTTON_LEFT;
-      case MIDDLE:
+      case MOUSE_MIDDLE:
         return GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
-      case RIGHT:
+      case MOUSE_RIGHT:
         return GLFW.GLFW_MOUSE_BUTTON_RIGHT;
-      case EXTENDED_4:
+      case MOUSE_4:
         return GLFW.GLFW_MOUSE_BUTTON_4;
-      case EXTENDED_5:
+      case MOUSE_5:
         return GLFW.GLFW_MOUSE_BUTTON_5;
-      case EXTENDED_6:
+      case MOUSE_6:
         return GLFW.GLFW_MOUSE_BUTTON_6;
-      case EXTENDED_7:
+      case MOUSE_7:
         return GLFW.GLFW_MOUSE_BUTTON_7;
-      case EXTENDED_8:
+      case MOUSE_8:
         return GLFW.GLFW_MOUSE_BUTTON_8;
 
       case UNKNOWN:

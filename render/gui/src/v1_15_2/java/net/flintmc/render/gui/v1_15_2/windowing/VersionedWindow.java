@@ -7,7 +7,6 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.event.WindowRenderEvent;
 import net.flintmc.render.gui.input.Key;
-import net.flintmc.render.gui.input.MouseButton;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.internal.windowing.InternalWindow;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
@@ -108,18 +107,10 @@ public class VersionedWindow implements InternalWindow {
     if (glfwKey == GLFW.GLFW_KEY_UNKNOWN) {
       return false;
     }
-    int glfwAction = GLFW.glfwGetKey(this.getHandle(), glfwKey);
-    return glfwAction == GLFW.GLFW_PRESS;
-  }
-
-  @Override
-  public boolean isMouseButtonPressed(MouseButton button) {
-    int glfwKey = VersionedGLFWInputConverter.flintMouseButtonToGlfwMouseButton(button);
-    if (glfwKey == GLFW.GLFW_KEY_UNKNOWN) {
-      return false;
-    }
-
-    int glfwAction = GLFW.glfwGetMouseButton(this.getHandle(), glfwKey);
+    int glfwAction =
+        key.isMouse()
+            ? GLFW.glfwGetMouseButton(this.getHandle(), glfwKey)
+            : GLFW.glfwGetKey(this.getHandle(), glfwKey);
     return glfwAction == GLFW.GLFW_PRESS;
   }
 

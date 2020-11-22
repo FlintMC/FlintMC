@@ -9,7 +9,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.mcapi.settings.game.GameSettingsParser;
 import net.flintmc.mcapi.settings.game.event.ConfigurationEvent;
-import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
+import net.flintmc.render.gui.input.Key;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -55,7 +55,7 @@ public class DefaultGameSettingsParser implements GameSettingsParser {
     for (Map.Entry<String, String> entry : configurations.entrySet()) {
       if (entry.getKey().startsWith("key")) {
 
-        int key = PhysicalKey.getScanCode(entry.getValue());
+        int key = Key.getScanCode(entry.getValue());
 
         if (key != -1) {
           configurations.put(entry.getKey(), String.valueOf(key));

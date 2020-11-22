@@ -14,7 +14,7 @@ import net.flintmc.mcapi.settings.game.MinecraftConfiguration;
 import net.flintmc.mcapi.settings.game.frontend.FrontendOption;
 import net.flintmc.mcapi.settings.game.frontend.FrontendSliderOption;
 import net.flintmc.mcapi.settings.game.frontend.OptionsSerializer;
-import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
+import net.flintmc.render.gui.input.Key;
 import net.flintmc.mcapi.settings.game.settings.*;
 import net.flintmc.mcapi.version.VersionHelper;
 import net.flintmc.mcapi.world.type.difficulty.Difficulty;
@@ -114,7 +114,7 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
             // When the minor version is under 13 replaces
             // the configuration names to the scan codes
             if (this.versionHelper.isUnder(13)) {
-              value = String.valueOf(PhysicalKey.getScanCode(value));
+              value = String.valueOf(Key.getScanCode(value));
             }
 
             configurations.put("key_key." + elementEntry.getKey(), value);
@@ -410,7 +410,7 @@ public class DefaultOptionsSerializer implements OptionsSerializer {
 
         try {
           int key = Integer.parseInt(entry.getValue());
-          String name = PhysicalKey.getConfigurationName(key);
+          String name = Key.getConfigurationName(key);
           configurations.put(entry.getKey(), name);
         } catch (NumberFormatException ignored) {
 

@@ -9,7 +9,7 @@ import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.game.configuration.KeyBindingConfiguration;
 import net.flintmc.mcapi.settings.game.keybind.KeyBindSetting;
-import net.flintmc.mcapi.settings.game.keybind.PhysicalKey;
+import net.flintmc.render.gui.input.Key;
 
 @Singleton
 @RegisterSettingHandler(KeyBindSetting.class)
@@ -26,9 +26,9 @@ public class KeyBindSettingHandler implements SettingHandler<KeyBindSetting> {
   public JsonObject serialize(
       KeyBindSetting annotation, RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
-    PhysicalKey key = (PhysicalKey) currentValue;
+    Key key = (Key) currentValue;
     if (key == null) {
-      key = PhysicalKey.UNKNOWN;
+      key = Key.UNKNOWN;
     }
 
     object.addProperty("value", key.name());
@@ -40,6 +40,6 @@ public class KeyBindSettingHandler implements SettingHandler<KeyBindSetting> {
   @Override
   public boolean isValidInput(
       Object input, ConfigObjectReference reference, KeyBindSetting annotation) {
-    return input == null || input instanceof PhysicalKey;
+    return input == null || input instanceof Key;
   }
 }

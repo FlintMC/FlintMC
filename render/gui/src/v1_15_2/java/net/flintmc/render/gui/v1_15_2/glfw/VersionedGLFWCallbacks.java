@@ -100,7 +100,7 @@ public class VersionedGLFWCallbacks {
 
       return new MouseButtonEvent(
                       window,
-                      VersionedGLFWInputConverter.glfwMouseButtonToFlintMouseButton(button),
+                      VersionedGLFWInputConverter.glfwMouseButtonToFlintKey(button),
                       VersionedGLFWInputConverter.glfwActionToFlintInputState(action),
                       mouseX,
                       mouseY,
