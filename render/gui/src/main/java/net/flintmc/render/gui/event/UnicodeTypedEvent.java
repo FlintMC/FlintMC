@@ -1,6 +1,7 @@
 package net.flintmc.render.gui.event;
 
 import net.flintmc.render.gui.event.input.ModifierKey;
+import net.flintmc.render.gui.windowing.Window;
 
 import java.util.Set;
 
@@ -11,11 +12,12 @@ public class UnicodeTypedEvent extends EventWithModifierKeys {
   /**
    * Constructs a new {@link UnicodeTypedEvent} with the given code point
    *
+   * @param window The non-null window where this event has happened
    * @param codepoint The unicode code point the user has typed
    * @param modifierKeys The modifier keys which were active while the event was fired
    */
-  public UnicodeTypedEvent(int codepoint, Set<ModifierKey> modifierKeys) {
-    super(modifierKeys);
+  public UnicodeTypedEvent(Window window, int codepoint, Set<ModifierKey> modifierKeys) {
+    super(window, modifierKeys);
     this.codepoint = codepoint;
   }
 

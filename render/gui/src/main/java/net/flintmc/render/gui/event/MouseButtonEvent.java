@@ -3,6 +3,7 @@ package net.flintmc.render.gui.event;
 import net.flintmc.render.gui.event.input.InputState;
 import net.flintmc.render.gui.event.input.ModifierKey;
 import net.flintmc.render.gui.event.input.MouseButton;
+import net.flintmc.render.gui.windowing.Window;
 
 import java.util.Set;
 
@@ -16,6 +17,7 @@ public class MouseButtonEvent extends EventWithModifierKeys {
   /**
    * Constructs a new {@link MouseButtonEvent} with the given state, button and modifier keys.
    *
+   * @param window The non-null window where this event has happened
    * @param state The new state the button is in
    * @param button The mouse button that has changed state
    * @param x The x coordinate of the event
@@ -23,8 +25,8 @@ public class MouseButtonEvent extends EventWithModifierKeys {
    * @param modifierKeys The modifier keys which were active while the event was fired
    */
   public MouseButtonEvent(
-      MouseButton button, InputState state, double x, double y, Set<ModifierKey> modifierKeys) {
-    super(modifierKeys);
+          Window window, MouseButton button, InputState state, double x, double y, Set<ModifierKey> modifierKeys) {
+    super(window, modifierKeys);
     this.button = button;
     this.state = state;
     this.x = x;

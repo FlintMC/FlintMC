@@ -2,8 +2,6 @@ package net.flintmc.render.gui.windowing;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
-import net.flintmc.render.gui.event.GuiEvent;
-import net.flintmc.render.gui.event.GuiEventListener;
 
 /** A generic, operating system window. */
 public interface Window {
@@ -61,30 +59,6 @@ public interface Window {
    *     otherwise
    */
   boolean removeRenderer(WindowRenderer renderer);
-
-  /**
-   * Inserts an event listener at the end of the listener chain of this window.
-   *
-   * @param listener The listener to insert
-   */
-  void addEventListener(GuiEventListener listener);
-
-  /**
-   * Removes an event listener from this window.
-   *
-   * @param listener The listener to remove
-   * @return {@code true} if the listener had been added and was removed now, {@code false}
-   *     otherwise
-   */
-  boolean removeEventListener(GuiEventListener listener);
-
-  /**
-   * Sends an event to this window.
-   *
-   * @param event The event to send
-   * @return {@code true} if the event has been handled, {@code false} otherwise
-   */
-  boolean sendEvent(GuiEvent event);
 
   /**
    * Tests whether the window is currently focused.

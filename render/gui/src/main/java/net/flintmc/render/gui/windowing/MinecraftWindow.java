@@ -34,9 +34,9 @@ public interface MinecraftWindow extends Window {
   int getFramebufferWidth();
 
   /**
-   * Retrieves the the height of the framebuffer. This will usually be the same as {@link
-   * #getHeight()}, but may vary for for example upscaled screenshots. If you need the height for
-   * rendering, this method should be used instead of {@link #getHeight()}
+   * Retrieves the height of the framebuffer. This will usually be the same as {@link #getHeight()},
+   * but may vary for for example upscaled screenshots. If you need the height for rendering, this
+   * method should be used instead of {@link #getHeight()}
    *
    * @return The current framebuffer height
    */
@@ -52,5 +52,11 @@ public interface MinecraftWindow extends Window {
    */
   int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
 
+  /**
+   * Retrieves whether the game is currently ingame or not. Ingame means that a world is loaded, for
+   * example being in a SinglePlayer world or on a MultiPlayer server.
+   *
+   * @return {@code true} if the client is ingame, {@code false} otherwise
+   */
   boolean isIngame();
 }

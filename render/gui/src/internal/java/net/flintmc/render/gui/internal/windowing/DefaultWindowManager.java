@@ -2,6 +2,7 @@ package net.flintmc.render.gui.internal.windowing;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.tasks.Task;
 import net.flintmc.framework.tasks.Tasks;
@@ -21,10 +22,13 @@ import java.util.Map;
 public class DefaultWindowManager implements WindowManager {
   private final Map<Long, InternalWindow> windows;
 
+  private final EventBus eventBus;
   private MinecraftWindow minecraftWindow;
 
   @Inject
-  private DefaultWindowManager() {
+  private DefaultWindowManager(EventBus eventBus) {
+    this.eventBus = eventBus;
+
     this.windows = new HashMap<>();
   }
 
@@ -63,15 +67,13 @@ public class DefaultWindowManager implements WindowManager {
   }
 
   /**
-   * Fires an event and automatically select the target window based on the event source handle.
+   * Retrieves the window with a specific handle that should be used for a {@link GuiEvent}.
    *
-   * @param targetHandle The handle of the window to, or {@code -1} for the minecraft window
-   * @param event The event to fire
-   * @return {@code true} if the event has been handled, {@code false} otherwise
+   * @param handle The handle of the window, or {@code -1} for the minecraft window
+   * @return The window or {@code null} if there is no window with the given handle
    */
-  public boolean fireEvent(long targetHandle, GuiEvent event) {
-    Window window = targetHandle == -1 ? minecraftWindow : windows.get(targetHandle);
-    return window != null && window.sendEvent(event);
+  public Window getTargetWindowForEvent(long handle) {
+    return handle == -1 ? this.minecraftWindow : this.windows.get(handle);
   }
 
   /**
