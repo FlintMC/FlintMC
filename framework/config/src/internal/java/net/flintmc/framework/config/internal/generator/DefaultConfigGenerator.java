@@ -7,6 +7,7 @@ import javassist.CtClass;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.annotation.PostMinecraftRead;
+import net.flintmc.framework.config.annotation.PostOpenGLRead;
 import net.flintmc.framework.config.event.ConfigDiscoveredEvent;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.ConfigImplementer;
@@ -131,7 +132,8 @@ public class DefaultConfigGenerator implements ConfigGenerator {
         this.objectReferenceParser.parseAll(generatingConfig, config);
     config.getConfigReferences().addAll(references);
 
-    if (!config.getClass().isAnnotationPresent(PostMinecraftRead.class)) {
+    if (!config.getClass().isAnnotationPresent(PostMinecraftRead.class)
+        && !config.getClass().isAnnotationPresent(PostOpenGLRead.class)) {
       this.initConfig(config);
     }
 

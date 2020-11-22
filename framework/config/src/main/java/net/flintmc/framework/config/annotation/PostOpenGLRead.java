@@ -9,14 +9,14 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation can be used along with {@link Config} so that the config will be read from the storages after the
- * {@link Tasks#POST_MINECRAFT_INITIALIZE} task.
+ * {@link Tasks#POST_OPEN_GL_INITIALIZE} task.
  * <p>
  * If this annotation is not provided, the config will directly be read after it has been discovered.
  *
  * @see Config
- * @see PostOpenGLRead
+ * @see PostMinecraftRead
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface PostMinecraftRead {
+public @interface PostOpenGLRead {
 }
