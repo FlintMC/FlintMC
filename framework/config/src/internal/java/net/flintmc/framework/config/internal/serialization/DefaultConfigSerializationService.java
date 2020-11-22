@@ -1,6 +1,8 @@
 package net.flintmc.framework.config.internal.serialization;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.ClassPool;
@@ -92,6 +94,97 @@ public class DefaultConfigSerializationService
   public <T> T deserialize(Class<T> interfaceType, JsonElement value) {
     ConfigSerializationHandler<T> handler = this.getSerializer(interfaceType);
     return handler != null ? handler.deserialize(value) : null;
+  }
+
+  @Override
+  public JsonElement serializeWithType(Object value) {
+    Class<?> serializable = this.getSerializableType(value);
+    if (serializable == null) {
+      serializable = value.getClass();
+    }
+
+    JsonObject json = new JsonObject();
+    json.addProperty("type", serializable.getName());
+
+    ConfigSerializationHandler serializer = this.getSerializer(serializable);
+    if (serializer == null) {
+      this.logger.trace(
+          "No serializer for " + serializable.getName() + " found while serializing collection");
+      return null;
+    }
+
+    json.add("value", serializer.serialize(value));
+
+    return json;
+  }
+
+  private Class<?> getSerializableType(Object o) {
+    for (Class<?> ifc : o.getClass().getInterfaces()) {
+      Class<?> serializable = this.getSerializableTypeFromInterface(ifc);
+      if (serializable != null) {
+        return serializable;
+      }
+    }
+    return null;
+  }
+
+  private Class<?> getSerializableTypeFromInterface(Class<?> ifc) {
+    for (Class<?> subIfc : ifc.getInterfaces()) {
+      Class<?> serializable = this.getSerializableTypeFromInterface(subIfc);
+      if (serializable != null) {
+        return serializable;
+      }
+    }
+
+    return this.hasSerializer(ifc) ? ifc : null;
+  }
+
+  @Override
+  public Object deserializeWithType(JsonElement value) {
+    if (value.isJsonPrimitive()) {
+      return this.deserializePrimitive(value.getAsJsonPrimitive());
+    }
+
+    if (value.isJsonObject()) {
+      try {
+        return this.deserializeObject(value.getAsJsonObject());
+      } catch (ClassNotFoundException exception) {
+        this.logger.trace("Failed to load a previously defined class for deserializing", exception);
+      }
+    }
+
+    return null;
+  }
+
+  private Object deserializePrimitive(JsonPrimitive primitive) {
+    if (primitive.isBoolean()) {
+      return primitive.getAsBoolean();
+    }
+
+    if (primitive.isNumber()) {
+      return primitive.getAsDouble();
+    }
+
+    if (primitive.isString()) {
+      return primitive.getAsString();
+    }
+
+    return null;
+  }
+
+  private Object deserializeObject(JsonObject object) throws ClassNotFoundException {
+    Class<?> serializable =
+        super.getClass().getClassLoader().loadClass(object.get("type").getAsString());
+    JsonElement element = object.get("value");
+
+    ConfigSerializationHandler<?> serializer = this.getSerializer(serializable);
+    if (serializer == null) {
+      this.logger.trace(
+          "No serializer for " + serializable.getName() + " found while deserializing collection");
+      return null;
+    }
+
+    return serializer.deserialize(element);
   }
 
   @Override
