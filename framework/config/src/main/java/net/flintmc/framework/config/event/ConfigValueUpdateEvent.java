@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 /**
  * This event will be fired whenever the value in a {@link ConfigObjectReference} is being updated via {@link
- * ConfigObjectReference#setValue(ParsedConfig, Object)}. It will not be fired if the value is updated via a setter in
+ * ConfigObjectReference#setValue(Object)}. It will not be fired if the value is updated via a setter in
  * the config itself.
  * <p>
  * This event will be fired in both the {@link Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST} phases.
