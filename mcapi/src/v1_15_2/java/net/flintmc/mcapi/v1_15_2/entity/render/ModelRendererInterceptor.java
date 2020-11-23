@@ -27,6 +27,7 @@ public class ModelRendererInterceptor {
   private ClientPlayer clientPlayer;
   private Entity lastRenderedEntity;
   private MinecraftRenderMeta alternatingMinecraftRenderMeta;
+  private boolean expectRenderCleanup = false;
 
   @Inject
   private ModelRendererInterceptor(
@@ -47,6 +48,20 @@ public class ModelRendererInterceptor {
       float blue,
       float alpha) {
     return INSTANCE.render(
+        instance, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+  }
+
+  public static void interceptRenderCleanup(
+      Object instance,
+      MatrixStack matrixStackIn,
+      IVertexBuilder bufferIn,
+      int packedLightIn,
+      int packedOverlayIn,
+      float red,
+      float green,
+      float blue,
+      float alpha) {
+    INSTANCE.renderCleanup(
         instance, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
   }
 
@@ -85,7 +100,9 @@ public class ModelRendererInterceptor {
                       .getName(),
                   parameters);
       render.insertBefore(
-          "{if(net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.interceptRender($0, $$)){return;}}");
+          "{if(net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.interceptRender($0, $$)){net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.interceptRenderCleanup($0, $$);return;}}");
+      render.insertAfter(
+          "{net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.interceptRenderCleanup($0, $$);}");
     } catch (NotFoundException | CannotCompileException e) {
       e.printStackTrace();
     }
@@ -141,6 +158,26 @@ public class ModelRendererInterceptor {
       modelBoxHolder.callPropertyPreparations().callPropertyHandler();
     }
     this.lastRenderedEntity = flintEntity;
+  }
+
+  private void renderCleanup(
+      Object instance,
+      MatrixStack matrixStackIn,
+      IVertexBuilder bufferIn,
+      int packedLightIn,
+      int packedOverlayIn,
+      float red,
+      float green,
+      float blue,
+      float alpha) {
+
+    if (!expectRenderCleanup) return;
+    if (lastRenderedEntity == null) return;
+    ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder =
+        lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
+    if (modelBoxHolder == null) return;
+    modelBoxHolder.callRenderCleanup();
+    expectRenderCleanup = false;
   }
 
   @SuppressWarnings({"ConstantConditions"})
@@ -202,11 +239,19 @@ public class ModelRendererInterceptor {
               normalMatrix.getM12(),
               normalMatrix.getM22());
 
-      return modelBoxHolder
-          .getContext()
-          .getRenderer()
-          .render(modelBoxHolder, this.alternatingMinecraftRenderMeta);
+      boolean render =
+          modelBoxHolder
+              .getContext()
+              .getRenderer()
+              .render(modelBoxHolder, this.alternatingMinecraftRenderMeta);
+      if (render) {
+        modelBoxHolder.callRenderCleanup();
+      } else {
+        expectRenderCleanup = true;
+      }
+      return render;
     } else {
+      expectRenderCleanup = true;
       return false;
     }
   }

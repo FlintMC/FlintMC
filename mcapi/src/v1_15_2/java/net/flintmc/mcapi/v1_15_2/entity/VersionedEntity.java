@@ -24,6 +24,8 @@ import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.flintmc.render.model.ModelBox;
 import net.flintmc.render.model.ModelBoxHolder;
+import net.flintmc.util.property.Property;
+import net.flintmc.util.property.PropertyContext;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -70,6 +72,43 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
 
   protected ModelBoxHolder<Entity, EntityRenderContext> createModelBox(
       ModelRenderer modelRenderer) {
+
+    Property<Float, Void> ROTATION_ANGLE_X_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_ANGLE_Y_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_ANGLE_Z_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_POINT_X_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_POINT_Y_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_POINT_Z_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Integer, Void> TEXTURE_OFFSET_X_OLD =
+        Property.builder().<Integer>withValue().withDefaultValue(0).build();
+
+    Property<Integer, Void> TEXTURE_OFFSET_Y_OLD =
+        Property.builder().<Integer>withValue().withDefaultValue(0).build();
+
+    Property<Float, Void> TEXTURE_WIDTH_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> TEXTURE_HEIGHT_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Boolean, Void> SHOW_MODEL_OLD =
+        Property.builder().<Boolean>withValue().withDefaultValue(true).build();
+
+    Property<Boolean, Void> MIRROR_OLD =
+        Property.builder().<Boolean>withValue().withDefaultValue(false).build();
+
     ModelBoxHolder<Entity, EntityRenderContext> box =
         this.modelBoxHolderFactory
             .create(this.getRenderContext(), modelRenderer)
@@ -77,6 +116,32 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
                 modelBoxHolder -> {
                   ModelRendererAccessor modelRendererAccessor =
                       (ModelRendererAccessor) modelRenderer;
+
+                  PropertyContext<ModelBoxHolder<Entity, EntityRenderContext>> propertyContext =
+                      modelBoxHolder.getPropertyContext();
+                  System.out.println("RotationPointX " + modelRenderer.rotationPointX);
+                  propertyContext.setPropertyValue(MIRROR_OLD, modelRenderer.mirror);
+                  propertyContext.setPropertyValue(SHOW_MODEL_OLD, modelRenderer.showModel);
+                  propertyContext.setPropertyValue(
+                      ROTATION_ANGLE_X_OLD, modelRenderer.rotateAngleX);
+                  propertyContext.setPropertyValue(
+                      ROTATION_ANGLE_Y_OLD, modelRenderer.rotateAngleY);
+                  propertyContext.setPropertyValue(
+                      ROTATION_ANGLE_Z_OLD, modelRenderer.rotateAngleZ);
+                  propertyContext.setPropertyValue(
+                      ROTATION_POINT_X_OLD, modelRenderer.rotationPointX);
+                  propertyContext.setPropertyValue(
+                      ROTATION_POINT_Y_OLD, modelRenderer.rotationPointY);
+                  propertyContext.setPropertyValue(
+                      ROTATION_POINT_Z_OLD, modelRenderer.rotationPointZ);
+                  propertyContext.setPropertyValue(
+                      TEXTURE_HEIGHT_OLD, modelRendererAccessor.getTextureHeight());
+                  propertyContext.setPropertyValue(
+                      TEXTURE_WIDTH_OLD, modelRendererAccessor.getTextureWidth());
+                  propertyContext.setPropertyValue(
+                      TEXTURE_OFFSET_X_OLD, modelRendererAccessor.getTextureOffsetX());
+                  propertyContext.setPropertyValue(
+                      TEXTURE_OFFSET_Y_OLD, modelRendererAccessor.getTextureOffsetY());
 
                   Set<ModelBox> modelBoxes = modelBoxHolder.getBoxes();
                   modelBoxes.clear();
@@ -191,6 +256,36 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
                       == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotationPointZ = 0;
 
                   modelRenderer.rotationPointZ += modelBoxHolder.getRotationPointZ();
+                })
+            .addRenderCleanup(
+                modelBoxHolder -> {
+                  PropertyContext<ModelBoxHolder<Entity, EntityRenderContext>> propertyContext =
+                      modelBoxHolder.getPropertyContext();
+                  ModelRendererAccessor modelRendererAccessor =
+                      (ModelRendererAccessor) modelRenderer;
+
+                  modelRenderer.showModel = propertyContext.getPropertyValue(SHOW_MODEL_OLD);
+                  modelRenderer.mirror = propertyContext.getPropertyValue(MIRROR_OLD);
+                  modelRenderer.rotationPointX =
+                      propertyContext.getPropertyValue(ROTATION_POINT_X_OLD);
+                  modelRenderer.rotationPointY =
+                      propertyContext.getPropertyValue(ROTATION_POINT_Y_OLD);
+                  modelRenderer.rotationPointZ =
+                      propertyContext.getPropertyValue(ROTATION_POINT_Z_OLD);
+                  modelRenderer.rotateAngleX =
+                      propertyContext.getPropertyValue(ROTATION_ANGLE_X_OLD);
+                  modelRenderer.rotateAngleY =
+                      propertyContext.getPropertyValue(ROTATION_ANGLE_Y_OLD);
+                  modelRenderer.rotateAngleZ =
+                      propertyContext.getPropertyValue(ROTATION_ANGLE_Z_OLD);
+                  modelRendererAccessor.setTextureHeight(
+                      propertyContext.getPropertyValue(TEXTURE_HEIGHT_OLD));
+                  modelRendererAccessor.setTextureWidth(
+                      propertyContext.getPropertyValue(TEXTURE_WIDTH_OLD));
+                  modelRendererAccessor.setTextureOffsetX(
+                      propertyContext.getPropertyValue(TEXTURE_OFFSET_X_OLD));
+                  modelRendererAccessor.setTextureOffsetY(
+                      propertyContext.getPropertyValue(TEXTURE_OFFSET_Y_OLD));
                 });
 
     ((EntityAccessor) this.getHandle()).getFlintRenderables().put(modelRenderer, box);

@@ -46,6 +46,8 @@ public interface Renderable<
 
   T_Renderable callPropertyPreparations();
 
+  T_Renderable callRenderCleanup();
+
   /**
    * Adds a pre-render hook that can be called - usually by the {@link Renderer} - with {@link
    * Renderable#callRenderPreparations()} ()}. Should not be used to set any properties before the
@@ -58,6 +60,7 @@ public interface Renderable<
 
   T_Renderable addPropertyPreparation(Consumer<T_Renderable> consumer);
 
+  T_Renderable addRenderCleanup(Consumer<T_Renderable> consumer);
 
   /**
    * Sets the pre-render hook that can be called - usually by the {@link Renderer} - with {@link

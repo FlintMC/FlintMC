@@ -23,6 +23,7 @@ public class DefaultRenderable<
   private final T_RenderTarget meta;
   private final Collection<Consumer<T_Renderable>> renderPreparations = new HashSet<>();
   private final Collection<Consumer<T_Renderable>> propertyPreparations = new HashSet<>();
+  private final Collection<Consumer<T_Renderable>> renderCleanups = new HashSet<>();
   private PropertyContext<T_Renderable> propertyContext;
 
   private Consumer<T_Renderable> propertyHandler = renderable -> {
@@ -73,6 +74,14 @@ public class DefaultRenderable<
   }
 
   @SuppressWarnings("unchecked")
+  public T_Renderable callRenderCleanup() {
+    for (Consumer<T_Renderable> renderCleanup : this.renderCleanups) {
+      renderCleanup.accept((T_Renderable) this);
+    }
+    return (T_Renderable) this;
+  }
+
+  @SuppressWarnings("unchecked")
   public T_Renderable callRenderPreparations() {
     for (Consumer<T_Renderable> preparation : this.renderPreparations) {
       preparation.accept((T_Renderable) this);
@@ -83,6 +92,12 @@ public class DefaultRenderable<
   @SuppressWarnings("unchecked")
   public T_Renderable addPropertyPreparation(Consumer<T_Renderable> consumer) {
     this.propertyPreparations.add(consumer);
+    return (T_Renderable) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  public T_Renderable addRenderCleanup(Consumer<T_Renderable> consumer) {
+    this.renderCleanups.add(consumer);
     return (T_Renderable) this;
   }
 

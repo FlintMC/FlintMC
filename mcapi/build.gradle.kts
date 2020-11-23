@@ -20,7 +20,7 @@ dependencies {
     api(project(":transform:transform-hook"))
     api(project(":transform:transform-shadow"))
     api(project(":render:render-model-renderer"))
+    api(project(":render:render-model-renderer", "internal"))
 
     api("com.google.code.gson", "gson", "2.8.6")
-    internalImplementation(project(":render:render-model-renderer", "internal"))
 }

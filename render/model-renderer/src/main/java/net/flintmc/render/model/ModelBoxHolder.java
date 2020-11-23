@@ -22,6 +22,7 @@ public interface ModelBoxHolder<
 
   Property<Set<ModelBox>, Void> MODEL_BOXES =
       Property.builder().<Set<ModelBox>>withValue().withDefaultValue(HashSet::new).build();
+
   Property<Float, RotationMode> ROTATION_ANGLE_X =
       Property.builder()
           .<Float>withValue()
@@ -29,6 +30,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
+
   Property<Float, RotationMode> ROTATION_ANGLE_Y =
       Property.builder()
           .<Float>withValue()
@@ -36,6 +38,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
+
   Property<Float, RotationMode> ROTATION_ANGLE_Z =
       Property.builder()
           .<Float>withValue()
@@ -43,6 +46,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
+
   Property<Float, RotationMode> ROTATION_POINT_X =
       Property.builder()
           .<Float>withValue()
@@ -50,6 +54,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
+
   Property<Float, RotationMode> ROTATION_POINT_Y =
       Property.builder()
           .<Float>withValue()
@@ -57,6 +62,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
+
   Property<Float, RotationMode> ROTATION_POINT_Z =
       Property.builder()
           .<Float>withValue()
@@ -64,6 +70,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
+
   Property<Integer, OverridePolicy> TEXTURE_OFFSET_X =
       Property.builder()
           .<Integer>withValue()
@@ -71,6 +78,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
+
   Property<Integer, OverridePolicy> TEXTURE_OFFSET_Y =
       Property.builder()
           .<Integer>withValue()
@@ -78,6 +86,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
+
   Property<Float, OverridePolicy> TEXTURE_WIDTH =
       Property.builder()
           .<Float>withValue()
@@ -85,6 +94,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
+
   Property<Float, OverridePolicy> TEXTURE_HEIGHT =
       Property.builder()
           .<Float>withValue()
@@ -92,6 +102,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
+
   Property<Boolean, OverridePolicy> SHOW_MODEL =
       Property.builder()
           .<Boolean>withValue()
@@ -99,6 +110,7 @@ public interface ModelBoxHolder<
           .withDefaultValue(true)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
+
   Property<Boolean, OverridePolicy> MIRROR =
       Property.builder()
           .<Boolean>withValue()
