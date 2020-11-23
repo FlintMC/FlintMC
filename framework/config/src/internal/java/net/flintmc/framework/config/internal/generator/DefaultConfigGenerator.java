@@ -9,10 +9,7 @@ import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.annotation.PostMinecraftRead;
 import net.flintmc.framework.config.annotation.PostOpenGLRead;
 import net.flintmc.framework.config.event.ConfigDiscoveredEvent;
-import net.flintmc.framework.config.generator.ConfigGenerator;
-import net.flintmc.framework.config.generator.ConfigImplementer;
-import net.flintmc.framework.config.generator.GeneratingConfig;
-import net.flintmc.framework.config.generator.ParsedConfig;
+import net.flintmc.framework.config.generator.*;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.internal.generator.base.ConfigClassLoader;
 import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
@@ -38,6 +35,8 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   private final EventBus eventBus;
   private final ConfigDiscoveredEvent.Factory eventFactory;
 
+  private final ConfigAnnotationCollector annotationCollector;
+
   private final ImplementationGenerator implementationGenerator;
 
   private final Map<String, ParsedConfig> discoveredConfigs;
@@ -50,6 +49,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
       ConfigImplementer configImplementer,
       EventBus eventBus,
       ConfigDiscoveredEvent.Factory eventFactory,
+      ConfigAnnotationCollector annotationCollector,
       ImplementationGenerator implementationGenerator) {
     this.storageProvider = storageProvider;
     this.objectReferenceParser = objectReferenceParser;
@@ -57,6 +57,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     this.configImplementer = configImplementer;
     this.eventBus = eventBus;
     this.eventFactory = eventFactory;
+    this.annotationCollector = annotationCollector;
     this.implementationGenerator = implementationGenerator;
 
     this.discoveredConfigs = new HashMap<>();
@@ -132,8 +133,11 @@ public class DefaultConfigGenerator implements ConfigGenerator {
         this.objectReferenceParser.parseAll(generatingConfig, config);
     config.getConfigReferences().addAll(references);
 
-    if (!config.getClass().isAnnotationPresent(PostMinecraftRead.class)
-        && !config.getClass().isAnnotationPresent(PostOpenGLRead.class)) {
+    Collection<PostMinecraftRead> postMinecraftReads =
+        this.annotationCollector.getAllAnnotations(config.getClass(), PostMinecraftRead.class);
+    Collection<PostOpenGLRead> postOpenGLReads =
+        this.annotationCollector.getAllAnnotations(config.getClass(), PostOpenGLRead.class);
+    if (postMinecraftReads.isEmpty() && postOpenGLReads.isEmpty()) {
       this.initConfig(config);
     }
 

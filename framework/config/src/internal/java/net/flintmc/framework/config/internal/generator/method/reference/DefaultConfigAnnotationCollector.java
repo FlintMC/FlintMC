@@ -36,6 +36,32 @@ public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollect
     return annotations;
   }
 
+  @Override
+  public <A extends Annotation> Collection<A> getAllAnnotations(Class<?> clazz, Class<A> annotationType) {
+    Collection<A> result = new ArrayList<>();
+
+    this.addAllAnnotations(clazz, annotationType, result);
+
+    return result;
+  }
+
+  private <A extends Annotation> void addAllAnnotations(
+      Class<?> clazz, Class<A> annotationType, Collection<A> result) {
+    for (Class<?> ifc : clazz.getInterfaces()) {
+      this.addAllAnnotations(ifc, annotationType, result);
+    }
+
+    Class<?> superClass = clazz.getSuperclass();
+    if (superClass != null && !Object.class.equals(superClass)) {
+      this.addAllAnnotations(superClass, annotationType, result);
+    }
+
+    A annotation = clazz.getAnnotation(annotationType);
+    if (annotation != null) {
+      result.add(annotation);
+    }
+  }
+
   private <A extends Annotation> A forEachAnnotations(
       Method[] methods, Class<A> annotationType, Predicate<A> handler) {
     // methods have a higher priority than classes
