@@ -1,6 +1,5 @@
 package net.flintmc.mcapi.chat.component.event;
 
-import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.component.event.content.HoverEntity;
@@ -16,7 +15,7 @@ import java.util.UUID;
  * <p>HoverEvents for the chat are available since Minecraft 1.7.10. With Minecraft 1.12.2, the
  * {@link Action#SHOW_ACHIEVEMENT} has been removed.
  */
-public class HoverEvent implements Event {
+public class HoverEvent {
 
   private final HoverContent[] contents;
 
