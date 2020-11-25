@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.server;
 
+import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.server.status.ServerStatus;
 import net.flintmc.mcapi.server.status.ServerStatusResolver;
 
@@ -40,5 +41,9 @@ public interface ConnectedServer {
    * @throws IllegalStateException If the client is not connected with any server
    */
   // TODO replace the String with the NamespacedKey
-  void sendCustomPayload(String identifier, byte[] payload) throws IllegalStateException;
+  void sendCustomPayload(ResourceLocation identifier, byte[] payload) throws IllegalStateException;
+
+  void retrieveCustomPayload(String identifier, byte[] payload);
+
 }
+
