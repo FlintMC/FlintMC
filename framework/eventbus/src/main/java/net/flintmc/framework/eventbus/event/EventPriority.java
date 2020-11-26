@@ -1,6 +1,12 @@
 package net.flintmc.framework.eventbus.event;
 
-/** Represents any example priorities for events fired on listener methods. */
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+
+/**
+ * Represents any example priorities for events fired on listener methods.
+ *
+ * @see Subscribe
+ */
 public final class EventPriority {
 
   public static final byte FIRST = Byte.MAX_VALUE;

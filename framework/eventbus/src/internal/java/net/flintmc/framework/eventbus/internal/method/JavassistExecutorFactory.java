@@ -5,33 +5,40 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.Executor;
+import net.flintmc.framework.eventbus.method.ExecutorFactory;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.transform.javassist.ClassTransformService;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-/** An executor factory which used ASM to create event executors. */
+/** An executor factory which uses Javassist to create event executors. */
 @Singleton
-@Implement(Executor.Factory.class)
-public class JavassistExecutorFactory implements Executor.Factory {
+@Implement(ExecutorFactory.class)
+public class JavassistExecutorFactory implements ExecutorFactory {
 
   private static final int INITIAL_CACHE_CAPACITY = 16;
   private final String session = UUID.randomUUID().toString().replace("-", "");
   private final AtomicInteger identifier = new AtomicInteger();
 
-  private final LoadingCache<CtMethod, Class<? extends Executor>> cache;
+  private final LoadingCache<CtMethod, Class<? extends Executor<?>>> cache;
   private final Logger logger;
   private final ClassTransformService classTransformService;
 
@@ -46,41 +53,54 @@ public class JavassistExecutorFactory implements Executor.Factory {
             .initialCapacity(INITIAL_CACHE_CAPACITY)
             .weakValues()
             .build(
-                new CacheLoader<CtMethod, Class<? extends Executor>>() {
+                new CacheLoader<CtMethod, Class<? extends Executor<?>>>() {
                   @Override
-                  public Class<? extends Executor> load(CtMethod method) throws Exception {
-                    Objects.requireNonNull(method, "method");
+                  public Class<? extends Executor<?>> load(CtMethod targetMethod) throws Exception {
+                    Objects.requireNonNull(targetMethod, "targetMethod");
 
-                    CtClass listener = method.getDeclaringClass();
-                    ClassPool cp = listener.getClassPool();
-                    String listenerName =
-                        executorClassName(listener, method, method.getParameterTypes()[0]);
-                    CtClass executor = cp.makeClass(listenerName);
-                    executor.addInterface(cp.get(Executor.class.getName()));
-                    executor.addMethod(
-                        CtMethod.make(
-                            String.format(
-                                "public void invoke(Object listener, Object event) {"
-                                    + "((%s) listener).%s((%s) event);"
-                                    + "}",
-                                listener.getName(),
-                                method.getName(),
-                                method.getParameterTypes()[0].getName()),
-                            executor));
-
-                    byte[] byteCode = executor.toBytecode();
-
-                    @SuppressWarnings("unchecked")
-                    Class<? extends Executor> executorClass =
-                        (Class<? extends Executor>)
-                            LaunchController.getInstance()
-                                .getRootLoader()
-                                .commonDefineClass(
-                                    listenerName, byteCode, 0, byteCode.length, null);
-
-                    return executorClass;
+                    return JavassistExecutorFactory.this.generateExecutor(targetMethod);
                   }
                 });
+  }
+
+  private Class<? extends Executor<?>> generateExecutor(CtMethod targetMethod)
+      throws NotFoundException, CannotCompileException, IOException {
+    CtClass listener = targetMethod.getDeclaringClass();
+    ClassPool cp = listener.getClassPool();
+    String className =
+        executorClassName(listener, targetMethod, targetMethod.getParameterTypes()[0]);
+    CtClass executor = cp.makeClass(className);
+    executor.addInterface(cp.get(Executor.class.getName()));
+
+    executor.addField(
+        CtField.make(
+            String.format(
+                "private final %s listener = (%1$s) %s.getInjectedInstance(%1$s.class);",
+                listener.getName(), InjectionHolder.class.getName()),
+            executor));
+
+    executor.addMethod(
+        CtMethod.make(
+            String.format(
+                "public void invoke(%s event, %s phase) {"
+                    + "((%s) this.listener).%s((%s) event);"
+                    + "}",
+                Event.class.getName(),
+                Subscribe.Phase.class.getName(),
+                listener.getName(),
+                targetMethod.getName(),
+                targetMethod.getParameterTypes()[0].getName()),
+            executor));
+
+    return this.defineClass(className, executor.toBytecode());
+  }
+
+  @SuppressWarnings("unchecked")
+  private Class<? extends Executor<?>> defineClass(String name, byte[] byteCode) {
+    return (Class<? extends Executor<?>>)
+        LaunchController.getInstance()
+            .getRootLoader()
+            .commonDefineClass(name, byteCode, 0, byteCode.length, null);
   }
 
   /**
@@ -95,7 +115,7 @@ public class JavassistExecutorFactory implements Executor.Factory {
       final CtClass listener, final CtMethod method, final CtClass parameter) {
     return String.format(
         "%s.%s.%s-%s-%s-%d",
-        "net.flint.component.event.asm.generated",
+        "net.flintmc.framework.eventbus.asm.generated",
         this.session,
         listener.getSimpleName(),
         method.getName(),
@@ -105,46 +125,56 @@ public class JavassistExecutorFactory implements Executor.Factory {
 
   /** {@inheritDoc} */
   @Override
-  public Supplier<Executor> create(CtClass declaringClass, CtMethod ctMethod)
-      throws IllegalAccessException, InstantiationException {
+  public Supplier<Executor<?>> create(CtMethod targetMethod) {
+    CtClass declaringClass = targetMethod.getDeclaringClass();
 
     this.classTransformService.addClassTransformation(
         declaringClass,
-        classTransformContext -> {
-          CtClass ctClass = classTransformContext.getCtClass();
-          if (!Modifier.isPublic(ctClass.getModifiers())) {
-            ctClass.setModifiers(
-                (ctClass.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
-                    | Modifier.PUBLIC);
-          }
+        context -> {
           try {
-
-            String[] parameterTypesAsStrings = new String[ctMethod.getParameterTypes().length];
-            for (int i = 0; i < parameterTypesAsStrings.length; i++) {
-              parameterTypesAsStrings[i] = ctMethod.getParameterTypes()[i].getName();
-            }
-
-            CtMethod method =
-                ctClass.getDeclaredMethod(
-                    ctMethod.getName(), ctClass.getClassPool().get(parameterTypesAsStrings));
-
-            if (!Modifier.isPublic(method.getModifiers())) {
-              method.setModifiers(
-                  (method.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
-                      | Modifier.PUBLIC);
-            }
-          } catch (NotFoundException e) {
-            logger.error(e);
+            this.transformMethod(context.getCtClass(), targetMethod);
+          } catch (NotFoundException exception) {
+            this.logger.error(
+                String.format(
+                    "Failed to generate event listener for %s#%s",
+                    declaringClass.getName(), targetMethod.getName()),
+                exception);
           }
         });
 
     return () -> {
       try {
-        return cache.getUnchecked(ctMethod).newInstance();
-      } catch (InstantiationException | IllegalAccessException e) {
-        logger.error(e);
+        return cache.getUnchecked(targetMethod).newInstance();
+      } catch (InstantiationException | IllegalAccessException exception) {
+        this.logger.error(
+            String.format(
+                "Failed to create ASM executor for %s#%s",
+                declaringClass.getName(), targetMethod.getName()),
+            exception);
       }
       return null;
     };
+  }
+
+  private void transformMethod(CtClass transforming, CtMethod targetMethod)
+      throws NotFoundException {
+    if (!Modifier.isPublic(transforming.getModifiers())) {
+      transforming.setModifiers(
+          (transforming.getModifiers() & ~Modifier.PRIVATE & ~Modifier.PROTECTED)
+              | Modifier.PUBLIC);
+    }
+
+    String[] parameterTypesAsStrings = new String[targetMethod.getParameterTypes().length];
+    for (int i = 0; i < parameterTypesAsStrings.length; i++) {
+      parameterTypesAsStrings[i] = targetMethod.getParameterTypes()[i].getName();
+    }
+
+    CtMethod method =
+        transforming.getDeclaredMethod(
+            targetMethod.getName(), transforming.getClassPool().get(parameterTypesAsStrings));
+
+    if (!Modifier.isPublic(method.getModifiers())) {
+      method.setModifiers(javassist.Modifier.setPublic(method.getModifiers()));
+    }
   }
 }

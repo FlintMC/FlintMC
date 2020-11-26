@@ -1,21 +1,20 @@
 package net.flintmc.mcapi.settings.game.event;
 
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.inject.assisted.Assisted;
-import com.google.inject.name.Named;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.io.File;
 import java.util.Map;
 
 /** Fired when the configuration is loaded or saved. */
-public interface ConfigurationEvent {
+public interface ConfigurationEvent extends Event {
 
   /**
    * Retrieves the state of this event.
    *
    * @return The current state.
    */
-  @Named("state")
   State getState();
 
   /**

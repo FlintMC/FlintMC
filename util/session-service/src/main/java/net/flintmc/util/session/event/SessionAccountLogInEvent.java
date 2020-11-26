@@ -1,5 +1,6 @@
 package net.flintmc.util.session.event;
 
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
@@ -11,7 +12,7 @@ import net.flintmc.util.session.SessionService;
  *
  * @see SessionService#logIn(String, String)
  */
-public interface SessionAccountLogInEvent {
+public interface SessionAccountLogInEvent extends Event {
 
   /**
    * Retrieves the game profile from before the log in (if the account was switched).

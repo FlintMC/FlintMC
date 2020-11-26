@@ -22,7 +22,7 @@ import java.util.List;
 public class DefaultEventBus implements EventBus {
 
   private final Logger logger;
-  private final Multimap<String, SubscribeMethod> subscribeMethods;
+  private final Multimap<Class<? extends Event>, SubscribeMethod> subscribeMethods;
 
   @Inject
   private DefaultEventBus(@InjectLogger Logger logger) {
@@ -32,9 +32,10 @@ public class DefaultEventBus implements EventBus {
 
   /** {@inheritDoc} */
   @Override
-  public <E> E fireEvent(E event, Subscribe.Phase phase) {
-    if (event == null)
+  public <E extends Event> E fireEvent(E event, Subscribe.Phase phase) {
+    if (event == null) {
       throw new NullPointerException("An error is occurred because the event is null");
+    }
 
     this.postEvent(event, phase);
     return event;
@@ -42,8 +43,26 @@ public class DefaultEventBus implements EventBus {
 
   /** {@inheritDoc} */
   @Override
-  public Multimap<String, SubscribeMethod> getSubscribeMethods() {
+  public Multimap<Class<? extends Event>, SubscribeMethod> getSubscribeMethods() {
     return this.subscribeMethods;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void registerSubscribeMethod(SubscribeMethod method) {
+    this.subscribeMethods.put(method.getEventClass(), method);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void unregisterSubscribeMethod(SubscribeMethod method) {
+    this.subscribeMethods.remove(method.getEventClass(), method);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void unregisterSubscribeMethods(Class<? extends Event> eventClass) {
+    this.subscribeMethods.removeAll(eventClass);
   }
 
   /**
@@ -52,32 +71,37 @@ public class DefaultEventBus implements EventBus {
    * @param eventClass The event class to be searched
    * @return A collection with all subscribed method that listen to the given class.
    */
-  private List<SubscribeMethod> findMethods(Class<?> eventClass) {
+  @SuppressWarnings("unchecked")
+  private List<SubscribeMethod> findMethods(Class<? extends Event> eventClass) {
     List<SubscribeMethod> methods = new ArrayList<>();
     Class<?> currentClass = eventClass;
 
-    while (Event.class.isAssignableFrom(currentClass)) {
-      this.searchInterfaces(currentClass, methods);
-      currentClass = currentClass.getSuperclass();
-    }
+    do {
+      this.searchInterfaces((Class<? extends Event>) currentClass, methods);
+    } while (Event.class.isAssignableFrom(currentClass = currentClass.getSuperclass()));
 
     methods.sort(Comparator.comparingInt(SubscribeMethod::getPriority));
 
     return methods;
   }
 
-  private void searchInterfaces(Class<?> interfaceClass, List<SubscribeMethod> targetMethods) {
+  private void searchInterfaces(
+      Class<? extends Event> interfaceClass, List<SubscribeMethod> targetMethods) {
     if (Event.class.isAssignableFrom(interfaceClass)) {
       this.copyMethods(interfaceClass, targetMethods);
 
       for (Class<?> implemented : interfaceClass.getInterfaces()) {
-        this.searchInterfaces(implemented, targetMethods);
+        if (Event.class.isAssignableFrom(implemented)) {
+          @SuppressWarnings("unchecked")
+          Class<? extends Event> implementedEvent = (Class<? extends Event>) implemented;
+          this.searchInterfaces(implementedEvent, targetMethods);
+        }
       }
     }
   }
 
-  private void copyMethods(Class<?> eventClass, List<SubscribeMethod> targetMethods) {
-    for (SubscribeMethod subscribeMethod : this.subscribeMethods.get(eventClass.getName())) {
+  private void copyMethods(Class<? extends Event> eventClass, List<SubscribeMethod> targetMethods) {
+    for (SubscribeMethod subscribeMethod : this.subscribeMethods.get(eventClass)) {
       if (!targetMethods.contains(subscribeMethod)) {
         targetMethods.add(subscribeMethod);
       }
@@ -91,7 +115,7 @@ public class DefaultEventBus implements EventBus {
    * @param phase The phase when the event is fired.
    * @param <E> The event type.
    */
-  private <E> void postEvent(E event, Subscribe.Phase phase) {
+  private <E extends Event> void postEvent(E event, Subscribe.Phase phase) {
     List<SubscribeMethod> methods = this.findMethods(event.getClass());
     if (methods.isEmpty()) {
       return;
@@ -101,7 +125,7 @@ public class DefaultEventBus implements EventBus {
       if (method.getPhase() == Subscribe.Phase.ANY
           || phase == method.getPhase()
           || phase == Subscribe.Phase.ANY) {
-        this.fireLast(event, method);
+        this.fireLast(event, phase, method);
       }
     }
   }
@@ -113,16 +137,11 @@ public class DefaultEventBus implements EventBus {
    * @param method The subscribed method.
    * @param <E> The event type.
    */
-  private <E> void fireLast(E event, SubscribeMethod method) {
+  private <E extends Event> void fireLast(E event, Subscribe.Phase phase, SubscribeMethod method) {
     try {
-      method.invoke(event);
+      method.invoke(event, phase);
     } catch (Throwable throwable) {
-      this.logger.error(
-          "Error while posting event "
-              + event.getClass().getName()
-              + " to method "
-              + method.getEventMethod(),
-          throwable);
+      this.logger.error("Error while posting event " + event.getClass().getName(), throwable);
     }
   }
 }
