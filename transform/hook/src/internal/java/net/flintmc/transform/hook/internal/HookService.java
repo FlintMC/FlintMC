@@ -58,8 +58,12 @@ public class HookService implements ServiceHandler<Hook> {
       throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
     Map<Key<?>, Object> availableParameters = Maps.newHashMap();
     availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
-    availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
-    availableParameters.put(Key.get(instance.getClass()), instance);
+
+    if (instance != null) { // if the instance is null, the hooked method is a static method
+      availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
+      availableParameters.put(Key.get(instance.getClass()), instance);
+    }
+
     availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
 
     Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
@@ -171,7 +175,8 @@ public class HookService implements ServiceHandler<Hook> {
 
     String notify =
         String.format(
-            "net.flintmc.transform.hook.internal.HookService.notify($0, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args);",
+            "net.flintmc.transform.hook.internal.HookService.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args);",
+            Modifier.isStatic(target.getModifiers()) ? "null" : "$0",
             executionTime,
             hook.getDeclaringClass().getName(),
             hook.getName(),
