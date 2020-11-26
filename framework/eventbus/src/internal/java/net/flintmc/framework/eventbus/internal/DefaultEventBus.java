@@ -33,8 +33,9 @@ public class DefaultEventBus implements EventBus {
   /** {@inheritDoc} */
   @Override
   public <E> E fireEvent(E event, Subscribe.Phase phase) {
-    if (event == null)
+    if (event == null) {
       throw new NullPointerException("An error is occurred because the event is null");
+    }
 
     this.postEvent(event, phase);
     return event;
