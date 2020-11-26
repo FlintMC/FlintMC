@@ -5,11 +5,16 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.NotFoundException;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.flintmc.framework.eventbus.method.ASMExecutorFactory;
 import net.flintmc.framework.eventbus.method.Executor;
+import net.flintmc.framework.eventbus.method.ExecutorFactory;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
@@ -24,10 +29,10 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-/** An executor factory which used ASM to create event executors. */
+/** An executor factory which uses Javassist to create event executors. */
 @Singleton
-@Implement(ASMExecutorFactory.class)
-public class JavassistExecutorFactory implements ASMExecutorFactory {
+@Implement(ExecutorFactory.class)
+public class JavassistExecutorFactory implements ExecutorFactory {
 
   private static final int INITIAL_CACHE_CAPACITY = 16;
   private final String session = UUID.randomUUID().toString().replace("-", "");

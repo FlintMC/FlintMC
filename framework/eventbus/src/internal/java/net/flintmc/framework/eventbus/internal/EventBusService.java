@@ -5,13 +5,12 @@ import com.google.inject.Singleton;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.internal.exception.ExecutorGenerationException;
-import net.flintmc.framework.eventbus.method.ASMExecutorFactory;
 import net.flintmc.framework.eventbus.method.Executor;
+import net.flintmc.framework.eventbus.method.ExecutorFactory;
 import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
@@ -30,18 +29,13 @@ import java.util.function.Supplier;
     priority = -10000)
 public class EventBusService implements ServiceHandler<Annotation> {
 
-  private final ASMExecutorFactory factory;
+  private final ExecutorFactory factory;
   private final SubscribeMethodBuilder.Factory methodBuilderFactory;
-
-  private final EventBus eventBus;
 
   @Inject
   private EventBusService(
-      ASMExecutorFactory executorFactory,
-      SubscribeMethodBuilder.Factory methodBuilderFactory,
-      EventBus eventBus) {
+      ExecutorFactory executorFactory, SubscribeMethodBuilder.Factory methodBuilderFactory) {
     this.methodBuilderFactory = methodBuilderFactory;
-    this.eventBus = eventBus;
     this.factory = executorFactory;
   }
 

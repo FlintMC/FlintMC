@@ -5,7 +5,7 @@ import javassist.CtMethod;
 import java.util.function.Supplier;
 
 /** Factory for {@link Executor}'s that generates code which invokes a specific method. */
-public interface ASMExecutorFactory {
+public interface ExecutorFactory {
 
   /**
    * Creates an {@link Executor}.
