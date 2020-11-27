@@ -22,12 +22,7 @@ public class DefaultInventoryHotkeyPressEvent extends DefaultInventorySlotEvent
       @Assisted("hotkey") int hotkey) {
     super(inventory, slot);
     this.hotkey = hotkey;
-    this.clickedItem =
-        slot < 0 /* outside of any slot */
-            ? null
-            : inventory.getItem(
-                slot); // TODO not working, always the item after the click instead of the clicked
-    // item
+    this.clickedItem = slot < 0 /* outside of any slot */ ? null : inventory.getItem(slot);
   }
 
   @Override

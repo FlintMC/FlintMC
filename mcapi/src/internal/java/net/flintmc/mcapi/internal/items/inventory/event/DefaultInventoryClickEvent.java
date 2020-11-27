@@ -24,7 +24,6 @@ public class DefaultInventoryClickEvent extends DefaultInventoryEvent
       @Assisted("clickType") InventoryClick clickType) {
     super(inventory);
     this.clickedItem = slot < 0 /* outside of any slot */ ? null : inventory.getItem(slot);
-    ;
     this.clickType = clickType;
     this.slot = slot;
   }

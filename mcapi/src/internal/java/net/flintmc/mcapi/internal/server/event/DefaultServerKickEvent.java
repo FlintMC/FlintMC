@@ -8,6 +8,8 @@ import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.event.ServerKickEvent;
 
+import javax.annotation.Nullable;
+
 @Implement(ServerKickEvent.class)
 public class DefaultServerKickEvent extends DefaultServerAddressEvent implements ServerKickEvent {
 
@@ -15,7 +17,7 @@ public class DefaultServerKickEvent extends DefaultServerAddressEvent implements
 
   @AssistedInject
   public DefaultServerKickEvent(
-      @Assisted("address") ServerAddress address, @Assisted("reason") ChatComponent reason) {
+          @Assisted("address") @Nullable ServerAddress address, @Assisted("reason") ChatComponent reason) {
     super(address);
     this.reason = reason;
   }

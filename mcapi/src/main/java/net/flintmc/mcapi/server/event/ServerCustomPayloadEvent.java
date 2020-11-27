@@ -39,6 +39,7 @@ public interface ServerCustomPayloadEvent
   @AssistedFactory(ServerCustomPayloadEvent.class)
   interface Factory {
 
+    // TODO the address is even in Multiplayer null
     /**
      * Creates a new {@link ServerCustomPayloadEvent} with the given address.
      *

@@ -8,6 +8,8 @@ import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.event.ServerCustomPayloadEvent;
 
+import javax.annotation.Nullable;
+
 @Implement(ServerCustomPayloadEvent.class)
 public class DefaultServerCustomPayloadEvent extends DefaultServerAddressEvent
     implements ServerCustomPayloadEvent {
@@ -19,7 +21,7 @@ public class DefaultServerCustomPayloadEvent extends DefaultServerAddressEvent
 
   @AssistedInject
   public DefaultServerCustomPayloadEvent(
-      @Assisted("address") ServerAddress address,
+      @Assisted("address") @Nullable ServerAddress address,
       @Assisted("direction") DirectionalEvent.Direction direction,
       @Assisted("identifier") NameSpacedKey identifier,
       @Assisted("data") byte[] data) {

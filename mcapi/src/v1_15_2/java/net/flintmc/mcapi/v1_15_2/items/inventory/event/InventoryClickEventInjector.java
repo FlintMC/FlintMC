@@ -14,6 +14,7 @@ import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.HookResult;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
 
 @Singleton
 public class InventoryClickEventInjector {
@@ -25,7 +26,7 @@ public class InventoryClickEventInjector {
   private long mergeTimeout = -1;
 
   @Inject
-  public InventoryClickEventInjector(
+  private InventoryClickEventInjector(
       EventBus eventBus,
       InventoryController controller,
       InventoryClickEvent.Factory clickEventFactory,
@@ -38,19 +39,17 @@ public class InventoryClickEventInjector {
 
   @Hook(
       executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
-      className = "net.minecraft.client.multiplayer.PlayerController",
-      methodName = "windowClick",
+      className = "net.minecraft.inventory.container.Container",
+      methodName = "slotClick",
       parameters = {
-        @Type(reference = int.class),
         @Type(reference = int.class),
         @Type(reference = int.class),
         @Type(reference = ClickType.class),
         @Type(reference = PlayerEntity.class)
-      })
-  public HookResult windowClick(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
-    // TODO looks like this method is not being injected
-
-    int windowId = (int) args[0];
+      },
+      defaultValue = "net.minecraft.item.ItemStack.EMPTY")
+  public HookResult slotClick(@Named("instance") Object instance, @Named("args") Object[] args, Hook.ExecutionTime executionTime) {
+    int windowId = ((Container) instance).windowId;
     Inventory inventory =
         this.controller.getPlayerInventory().getWindowId() == windowId
             ? this.controller.getPlayerInventory()
@@ -60,9 +59,9 @@ public class InventoryClickEventInjector {
     if (inventory == null) {
       return HookResult.CONTINUE;
     }
-    int slot = (int) args[1];
-    int button = (int) args[2];
-    ClickType type = (ClickType) args[3];
+    int slot = (int) args[0];
+    int button = (int) args[1];
+    ClickType type = (ClickType) args[2];
 
     InventoryClick click = null;
     switch (type) {
@@ -91,9 +90,7 @@ public class InventoryClickEventInjector {
         break;
 
       case SWAP:
-        return this.performHotkeyPress(inventory, slot, button, executionTime)
-            ? HookResult.BREAK
-            : HookResult.CONTINUE;
+        return this.performHotkeyPress(inventory, slot, button, executionTime);
 
       default:
         return HookResult.CONTINUE;
@@ -110,10 +107,10 @@ public class InventoryClickEventInjector {
         : HookResult.CONTINUE;
   }
 
-  private boolean performHotkeyPress(
+  private HookResult performHotkeyPress(
       Inventory inventory, int slot, int hotkey, Hook.ExecutionTime executionTime) {
     return this.eventBus
         .fireEvent(this.hotkeyEventFactory.create(inventory, slot, hotkey), executionTime)
-        .isCancelled();
+        .isCancelled() ? HookResult.BREAK : HookResult.CONTINUE;
   }
 }

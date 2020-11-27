@@ -7,12 +7,14 @@ import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.event.ServerDisconnectEvent;
 
+import javax.annotation.Nullable;
+
 @Implement(ServerDisconnectEvent.class)
 public class DefaultServerDisconnectEvent extends DefaultServerAddressEvent
     implements ServerDisconnectEvent {
 
   @AssistedInject
-  public DefaultServerDisconnectEvent(@Assisted("address") ServerAddress address) {
+  public DefaultServerDisconnectEvent(@Assisted("address") @Nullable ServerAddress address) {
     super(address);
   }
 
