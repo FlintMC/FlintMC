@@ -119,7 +119,6 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
 
                   PropertyContext<ModelBoxHolder<Entity, EntityRenderContext>> propertyContext =
                       modelBoxHolder.getPropertyContext();
-                  System.out.println("RotationPointX " + modelRenderer.rotationPointX);
                   propertyContext.setPropertyValue(MIRROR_OLD, modelRenderer.mirror);
                   propertyContext.setPropertyValue(SHOW_MODEL_OLD, modelRenderer.showModel);
                   propertyContext.setPropertyValue(
