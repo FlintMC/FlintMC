@@ -1,12 +1,13 @@
 package net.flintmc.mcapi.items.inventory.event;
 
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
 
 // only pre phase
-public interface InventoryUpdateSlotEvent extends InventorySlotEvent, InventoryEvent {
+public interface InventoryUpdateSlotEvent extends Event, InventorySlotEvent, InventoryEvent {
 
   ItemStack getPreviousItem();
 

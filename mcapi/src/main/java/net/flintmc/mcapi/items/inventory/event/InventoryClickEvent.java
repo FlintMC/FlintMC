@@ -1,6 +1,7 @@
 package net.flintmc.mcapi.items.inventory.event;
 
 import net.flintmc.framework.eventbus.event.Cancellable;
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
@@ -16,7 +17,8 @@ import net.flintmc.mcapi.items.inventory.InventoryController;
  *
  * @see Subscribe
  */
-public interface InventoryClickEvent extends InventoryEvent, InventorySlotEvent, Cancellable {
+public interface InventoryClickEvent
+    extends Event, InventoryEvent, InventorySlotEvent, Cancellable {
 
   /**
    * Retrieves the item that has been clicked by the player.

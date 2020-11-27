@@ -1,6 +1,7 @@
 package net.flintmc.mcapi.items.inventory.event;
 
 import net.flintmc.framework.eventbus.event.Cancellable;
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
@@ -18,7 +19,7 @@ import net.flintmc.mcapi.items.inventory.Inventory;
  *
  * @see Subscribe
  */
-public interface InventoryCloseEvent extends InventoryEvent, DirectionalEvent, Cancellable {
+public interface InventoryCloseEvent extends Event, InventoryEvent, DirectionalEvent, Cancellable {
 
   @AssistedFactory(InventoryCloseEvent.class)
   interface Factory {

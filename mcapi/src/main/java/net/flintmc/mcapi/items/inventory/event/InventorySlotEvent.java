@@ -1,6 +1,7 @@
 package net.flintmc.mcapi.items.inventory.event;
 
 import com.google.inject.name.Named;
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
@@ -11,7 +12,7 @@ import net.flintmc.mcapi.items.inventory.Inventory;
  *
  * @see Subscribe
  */
-public interface InventorySlotEvent extends InventoryEvent {
+public interface InventorySlotEvent extends Event, InventoryEvent {
 
   /**
    * Retrieves the slot where this event has happened or {@code -1} if it didn't happen on any slot

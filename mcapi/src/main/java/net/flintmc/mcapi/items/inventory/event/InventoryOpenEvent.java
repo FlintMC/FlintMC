@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.items.inventory.event;
 
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
@@ -20,7 +21,7 @@ import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
  *
  * @see Subscribe
  */
-public interface InventoryOpenEvent extends InventoryEvent, DirectionalEvent {
+public interface InventoryOpenEvent extends Event, InventoryEvent, DirectionalEvent {
 
   /** Factory for the {@link InventoryOpenEvent}. */
   @AssistedFactory(InventoryOpenEvent.class)

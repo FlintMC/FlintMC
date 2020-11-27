@@ -2,6 +2,7 @@ package net.flintmc.mcapi.items.inventory.event;
 
 import com.google.inject.name.Named;
 import net.flintmc.framework.eventbus.event.Cancellable;
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
@@ -16,7 +17,7 @@ import net.flintmc.mcapi.items.inventory.InventoryController;
  *
  * @see Subscribe
  */
-public interface InventoryHotkeyPressEvent extends InventorySlotEvent, Cancellable {
+public interface InventoryHotkeyPressEvent extends Event, InventorySlotEvent, Cancellable {
 
   /**
    * Retrieves the hotkey which has been pressed.
