@@ -6,7 +6,7 @@ import net.flintmc.mcapi.resources.pack.ResourcePack;
 import net.flintmc.mcapi.resources.pack.ResourcePackProvider;
 import net.minecraft.client.Minecraft;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /** 1.15.2 implementation of the {@link ResourcePackProvider} */
@@ -15,9 +15,17 @@ import java.util.stream.Collectors;
 public class VersionedResourcePackProvider implements ResourcePackProvider {
 
   /** {@inheritDoc} */
-  public Collection<ResourcePack> getEnabled() {
+  public List<ResourcePack> getEnabled() {
     return Minecraft.getInstance().getResourcePackList().getEnabledPacks().stream()
         .map(VersionedResourcePack::new)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<ResourcePack> getAvailable() {
+    return Minecraft.getInstance().getResourcePackList().getAllPacks().stream()
+        .map(VersionedResourcePack::new)
+        .collect(Collectors.toList());
   }
 }

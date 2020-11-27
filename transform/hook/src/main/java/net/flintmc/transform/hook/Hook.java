@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 /**
  * Allows for adding code to methods in compiled classes. The annotated method will then be fired
  * whenever the {@link #executionTime() point} in the {@link #methodName() defined method} in the
- * {@link #className() defined class}. <br>
+ * {@link #className() defined class} is fired. <br>
  * <br>
  * If the annotated method has a return type that is not {@code void}, this doesn't just fire the
  * annotated method, but cancels further execution of this method. However, this does only work if
@@ -30,7 +30,18 @@ import java.lang.annotation.Target;
  * method}.
  *
  * <p>If it is {@link HookResult}, see the values in {@link HookResult} for more information about
- * what will happen in the method.
+ * what will happen in the method. <br>
+ *
+ * <p>The annotated method can have any parameters from the Injector, but also the following
+ * parameters:
+ *
+ * <ul>
+ *   <li>{@literal @}Named("instance") Object instance - The instance where the hooked method has
+ *       been fired, if the hooked method is static, this won't be available
+ *   <li>{@literal @}Named("args") Object[] args - An array with all parameters that have been
+ *       passed to the hooked method
+ *   <li>{@link ExecutionTime} time - The execution time when the method has been fired
+ * </ul>
  *
  * @see HookResult
  */

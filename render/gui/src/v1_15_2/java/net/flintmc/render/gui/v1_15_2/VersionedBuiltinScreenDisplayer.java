@@ -6,6 +6,8 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.screen.BuiltinScreenDisplayer;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.v1_15_2.lazy.VersionedBuiltinScreenDisplayInit;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,5 +46,11 @@ public class VersionedBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
     }
 
     supportedScreens.get(screenName).accept(args);
+  }
+
+  @Override
+  public ScreenName getOpenScreen() {
+    Screen screen = Minecraft.getInstance().currentScreen;
+    return screen != null ? ScreenName.unknown(screen.getClass().getName()) : null;
   }
 }

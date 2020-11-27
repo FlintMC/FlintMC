@@ -1,5 +1,7 @@
 package net.flintmc.mcapi.v1_15_2.player;
 
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -43,9 +45,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
-
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 @Implement(value = PlayerEntity.class, version = "1.15.2")
 public class VersionedPlayerEntity extends VersionedLivingEntity implements PlayerEntity {
@@ -509,6 +508,42 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
         this.getEntityFoundationMapper()
             .getNbtMapper()
             .fromMinecraftNBT(this.entity.getRightShoulderEntity());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addFoodStatistics(int foodLevel, float modifier) {
+    this.entity.getFoodStats().addStats(foodLevel, modifier);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int getFoodLevel() {
+    return this.entity.getFoodStats().getFoodLevel();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setFoodLevel(int foodLevel) {
+    this.entity.getFoodStats().setFoodLevel(foodLevel);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean needFood() {
+    return this.entity.getFoodStats().needFood();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public float getSaturationLevel() {
+    return this.entity.getFoodStats().getSaturationLevel();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setSaturationLevel(float saturationLevel) {
+    this.entity.getFoodStats().setFoodSaturationLevel(saturationLevel);
   }
 
   /** {@inheritDoc} */

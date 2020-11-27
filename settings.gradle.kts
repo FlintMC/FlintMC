@@ -43,6 +43,7 @@ defineModule("framework:packages")
 defineModule("framework:service")
 defineModule("framework:stereotype")
 defineModule("framework:tasks")
+defineModule("framework:config")
 
 defineModule(":launcher")
 
@@ -71,6 +72,7 @@ defineModule("util:mapping")
 defineModule("util:session-service")
 defineModule("util:math")
 defineModule("util:property")
+defineModule("util:mojang")
 
 defineModule("minecraft:minecraft-1-15-2")
 defineModule("bootstrap")

@@ -1,16 +1,13 @@
 package net.flintmc.framework.eventbus.internal.method;
 
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedInject;
-import javassist.CtClass;
-import javassist.CtMethod;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.Executor;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.service.CtResolver;
 
 import java.util.function.Supplier;
 
@@ -18,26 +15,28 @@ import java.util.function.Supplier;
 @Implement(SubscribeMethod.class)
 public class DefaultSubscribeMethod implements SubscribeMethod {
 
+  private final Class<? extends Event> eventClass;
   private final byte priority;
   private final Subscribe.Phase phase;
-  private final CtClass ctClass;
-  private final Supplier<Executor> executorSupplier;
-  private final CtMethod eventMethod;
+  private final Supplier<Executor<?>> executorSupplier;
   private Executor executor;
-  private Object instance;
 
   @AssistedInject
   private DefaultSubscribeMethod(
-      @Assisted("priority") byte priority,
-      @Assisted("phase") Subscribe.Phase phase,
-      @Assisted("declaringClass") CtClass ctClass,
-      @Assisted("executorSupplier") Supplier<Executor> executorSupplier,
-      @Assisted("eventMethod") CtMethod eventMethod) {
+      @Assisted Class<? extends Event> eventClass,
+      @Assisted byte priority,
+      @Assisted Subscribe.Phase phase,
+      @Assisted Supplier<Executor<?>> executorSupplier) {
+    this.eventClass = eventClass;
     this.priority = priority;
     this.phase = phase;
-    this.ctClass = ctClass;
     this.executorSupplier = executorSupplier;
-    this.eventMethod = eventMethod;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Class<? extends Event> getEventClass() {
+    return this.eventClass;
   }
 
   /** {@inheritDoc} */
@@ -48,23 +47,16 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
 
   /** {@inheritDoc} */
   @Override
-  public CtMethod getEventMethod() {
-    return this.eventMethod;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Subscribe.Phase getPhase() {
     return this.phase;
   }
 
   /** {@inheritDoc} */
   @Override
-  public void invoke(Object event) throws Throwable {
-    if (this.instance == null) {
-      this.instance = InjectionHolder.getInjectedInstance(CtResolver.get(this.ctClass));
+  public void invoke(Event event, Subscribe.Phase phase) throws Throwable {
+    if (this.executor == null) {
+      this.executor = this.executorSupplier.get();
     }
-    if (this.executor == null) this.executor = this.executorSupplier.get();
-    this.executor.invoke(this.instance, event);
+    this.executor.invoke(event, phase);
   }
 }

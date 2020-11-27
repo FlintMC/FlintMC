@@ -65,7 +65,8 @@ public class DefaultGameProfileBuilder implements GameProfile.Builder {
    */
   @Override
   public GameProfile build() {
-    return this.properties == null ? this.gameProfileFactory.create(this.uniqueId, this.name)
-            : this.gameProfileFactory.create(this.uniqueId, this.name, this.properties);
+    return this.properties == null
+        ? this.gameProfileFactory.create(this.uniqueId, this.name)
+        : this.gameProfileFactory.create(this.uniqueId, this.name, this.properties);
   }
 }

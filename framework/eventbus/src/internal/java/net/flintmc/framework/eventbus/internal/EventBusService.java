@@ -5,13 +5,14 @@ import com.google.inject.Singleton;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.internal.exception.ExecutorGenerationException;
 import net.flintmc.framework.eventbus.method.Executor;
-import net.flintmc.framework.eventbus.method.SubscribeMethod;
+import net.flintmc.framework.eventbus.method.ExecutorFactory;
+import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
+import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
@@ -28,27 +29,21 @@ import java.util.function.Supplier;
     priority = -10000)
 public class EventBusService implements ServiceHandler<Annotation> {
 
-  private final Executor.Factory factory;
-  private final SubscribeMethod.Factory subscribedMethodFactory;
-
-  private final EventBus eventBus;
+  private final ExecutorFactory factory;
+  private final SubscribeMethodBuilder.Factory methodBuilderFactory;
 
   @Inject
   private EventBusService(
-      Executor.Factory executorFactory,
-      SubscribeMethod.Factory subscribedMethodFactory,
-      EventBus eventBus) {
-    this.subscribedMethodFactory = subscribedMethodFactory;
-    this.eventBus = eventBus;
+      ExecutorFactory executorFactory, SubscribeMethodBuilder.Factory methodBuilderFactory) {
+    this.methodBuilderFactory = methodBuilderFactory;
     this.factory = executorFactory;
   }
 
   /** {@inheritDoc} */
   @Override
-  public void discover(AnnotationMeta<Annotation> annotationMeta) throws ServiceNotFoundException {
-
-    Annotation subscribe = annotationMeta.getAnnotation();
-    MethodIdentifier identifier = annotationMeta.getIdentifier();
+  public void discover(AnnotationMeta<Annotation> meta) throws ServiceNotFoundException {
+    Annotation subscribe = meta.getAnnotation();
+    MethodIdentifier identifier = meta.getIdentifier();
     CtMethod method = identifier.getLocation();
 
     if (identifier.getParameters().length != 1) {
@@ -67,10 +62,10 @@ public class EventBusService implements ServiceHandler<Annotation> {
       throw new ServiceNotFoundException("Failed to retrieve CtClass of parameter type.", e);
     }
 
-    Supplier<Executor> executorSupplier;
+    Supplier<Executor<?>> executorSupplier;
 
     try {
-      executorSupplier = this.factory.create(method.getDeclaringClass(), method);
+      executorSupplier = this.factory.create(method);
     } catch (Throwable throwable) {
       throw new ExecutorGenerationException(
           "Encountered an exception while creating an event subscriber for method \""
@@ -95,11 +90,12 @@ public class EventBusService implements ServiceHandler<Annotation> {
           "Unknown subscribe annotation: " + subscribe.annotationType().getName());
     }
 
-    // Initializes a new subscribe method
-    SubscribeMethod subscribeMethod =
-        this.subscribedMethodFactory.create(
-            priority, phase, method.getDeclaringClass(), executorSupplier, method);
+    SubscribeMethodBuilder builder =
+        this.methodBuilderFactory
+            .newBuilder(CtResolver.get(eventClass))
+            .priority(priority)
+            .phaseOnly(phase);
 
-    this.eventBus.getSubscribeMethods().put(eventClass.getName(), subscribeMethod);
+    builder.to(executorSupplier).buildAndRegister();
   }
 }
