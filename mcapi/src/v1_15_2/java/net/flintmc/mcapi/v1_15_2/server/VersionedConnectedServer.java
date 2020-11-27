@@ -35,6 +35,11 @@ public class VersionedConnectedServer implements ConnectedServer {
   }
 
   private SocketAddress getRawAddress() {
+    if (Minecraft.getInstance().currentScreen instanceof ConnectingScreenShadow) {
+      ConnectingScreenShadow screen = (ConnectingScreenShadow) Minecraft.getInstance().currentScreen;
+      return screen.getNetworkManager().getRemoteAddress();
+    }
+
     ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
     return connection != null ? connection.getNetworkManager().getRemoteAddress() : null;
   }

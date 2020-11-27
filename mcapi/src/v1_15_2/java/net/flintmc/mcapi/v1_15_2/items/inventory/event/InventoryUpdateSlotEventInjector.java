@@ -64,7 +64,6 @@ public class InventoryUpdateSlotEventInjector {
     int slot = packet.getSlot();
     ItemStack previousItem = inventory.getItem(slot);
     ItemStack newItem = this.itemMapper.fromMinecraft(packet.getStack());
-    // TODO wrong items
 
     this.eventBus.fireEvent(
             this.eventFactory.create(inventory, slot, previousItem, newItem), phase);

@@ -48,7 +48,10 @@ public class InventoryClickEventInjector {
         @Type(reference = PlayerEntity.class)
       },
       defaultValue = "net.minecraft.item.ItemStack.EMPTY")
-  public HookResult slotClick(@Named("instance") Object instance, @Named("args") Object[] args, Hook.ExecutionTime executionTime) {
+  public HookResult slotClick(
+      @Named("instance") Object instance,
+      @Named("args") Object[] args,
+      Hook.ExecutionTime executionTime) {
     int windowId = ((Container) instance).windowId;
     Inventory inventory =
         this.controller.getPlayerInventory().getWindowId() == windowId
@@ -110,7 +113,9 @@ public class InventoryClickEventInjector {
   private HookResult performHotkeyPress(
       Inventory inventory, int slot, int hotkey, Hook.ExecutionTime executionTime) {
     return this.eventBus
-        .fireEvent(this.hotkeyEventFactory.create(inventory, slot, hotkey), executionTime)
-        .isCancelled() ? HookResult.BREAK : HookResult.CONTINUE;
+            .fireEvent(this.hotkeyEventFactory.create(inventory, slot, hotkey), executionTime)
+            .isCancelled()
+        ? HookResult.BREAK
+        : HookResult.CONTINUE;
   }
 }

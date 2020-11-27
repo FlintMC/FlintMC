@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.event;
 
+import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
@@ -9,7 +10,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
  *
  * @see Subscribe
  */
-public interface TickEvent {
+public interface TickEvent extends Event {
 
   /**
    * Retrieves the type of the tick in this event.
