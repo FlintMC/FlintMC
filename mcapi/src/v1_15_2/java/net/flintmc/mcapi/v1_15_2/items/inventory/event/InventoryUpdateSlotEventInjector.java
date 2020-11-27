@@ -45,7 +45,8 @@ public class InventoryUpdateSlotEventInjector {
 
   private void fireSetSlot(PacketEvent event, Subscribe.Phase phase) {
     if (event.getDirection() != DirectionalEvent.Direction.RECEIVE
-            || !(event.getPacket() instanceof SSetSlotPacket)) {
+        || !(event.getPacket() instanceof SSetSlotPacket)
+        || !this.controller.canOpenInventories()) {
       return;
     }
 

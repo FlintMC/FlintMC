@@ -13,8 +13,8 @@ import javax.annotation.Nullable;
 
 /**
  * This event will be fired whenever a custom payload is being sent to (or received from) the
- * server. It will be fired in both PRE and POST phases, but cancellation only has an effect in the
- * PRE phase.
+ * server. It will be fired in the PRE and POST phases for the {@link Direction#SEND} direction, but
+ * only in the PRE phase for the {@link Direction#RECEIVE} direction.
  *
  * @see Subscribe
  */

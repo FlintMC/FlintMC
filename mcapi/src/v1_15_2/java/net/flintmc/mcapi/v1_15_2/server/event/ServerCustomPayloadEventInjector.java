@@ -35,15 +35,15 @@ public class ServerCustomPayloadEventInjector {
 
   @Subscribe(phase = Subscribe.Phase.PRE)
   public void handlePreCustomPayloadSend(PacketEvent event) {
-    this.firePayloadSendEvent(event, Subscribe.Phase.PRE);
+    this.fireCustomPayload(event, Subscribe.Phase.PRE);
   }
 
   @Subscribe(phase = Subscribe.Phase.POST)
   public void handlePostCustomPayloadSend(PacketEvent event) {
-    this.firePayloadSendEvent(event, Subscribe.Phase.POST);
+    this.fireCustomPayload(event, Subscribe.Phase.POST);
   }
 
-  private void firePayloadSendEvent(PacketEvent event, Subscribe.Phase phase) {
+  private void fireCustomPayload(PacketEvent event, Subscribe.Phase phase) {
     ServerCustomPayloadEvent payloadEvent = null;
 
     if (event.getPacket() instanceof AccessibleCCustomPayloadPacket) {
