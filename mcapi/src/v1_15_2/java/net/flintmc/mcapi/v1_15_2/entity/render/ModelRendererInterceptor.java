@@ -147,10 +147,9 @@ public class ModelRendererInterceptor {
 
     if (flintEntity == null
         && this.clientPlayer
-        .getEntity()
         .getUniqueId()
         .equals(((net.minecraft.entity.Entity) minecraftEntity).getUniqueID())) {
-      flintEntity = this.clientPlayer.getEntity();
+      flintEntity = this.clientPlayer;
     }
     if (flintEntity == null) return;
     for (ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder :
