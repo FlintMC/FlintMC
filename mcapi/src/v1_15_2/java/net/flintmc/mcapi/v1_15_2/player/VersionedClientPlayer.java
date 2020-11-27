@@ -3,14 +3,6 @@ package net.flintmc.mcapi.v1_15_2.player;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Stream;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.EntitySize;
@@ -19,6 +11,7 @@ import net.flintmc.mcapi.entity.item.ItemEntity;
 import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.reason.MoverType;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.items.ItemStack;
@@ -70,6 +63,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 
+import java.util.*;
+import java.util.stream.Stream;
+
 @Singleton
 @Implement(value = ClientPlayer.class, version = "1.15.2")
 public class VersionedClientPlayer extends VersionedPlayerEntity implements ClientPlayer {
@@ -91,6 +87,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
       EntityFoundationMapper entityFoundationMapper,
       GameProfileSerializer gameProfileSerializer,
       ModelMapper modelMapper,
+      EntityRenderContext.Factory entityRenderContextFactory,
       ItemEntityMapper itemEntityMapper,
       TileEntityMapper tileEntityMapper,
       NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
@@ -104,7 +101,8 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
         gameProfileSerializer,
         modelMapper,
         itemEntityMapper,
-        tileEntityMapper);
+        tileEntityMapper,
+        entityRenderContextFactory);
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
     this.inventoryController = inventoryController;
     this.tabOverlay = tabOverlay;
