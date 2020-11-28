@@ -20,7 +20,10 @@ public class VersionedPacketBuffer implements PacketBuffer {
   @AssistedInject
   public VersionedPacketBuffer(@Assisted("packetBuffer") Object buffer) {
     if (!(buffer instanceof net.minecraft.network.PacketBuffer)) {
-      throw new IllegalArgumentException("");
+      throw new IllegalArgumentException(
+          buffer.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.network.PacketBuffer.class.getName());
     }
     this.packetBuffer = (net.minecraft.network.PacketBuffer) buffer;
   }
@@ -32,8 +35,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeByteArray(byte[] data) {
+  public PacketBuffer writeByteArray(byte[] data) {
     this.packetBuffer.writeByteArray(data);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -50,8 +54,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeVarInt(int input) {
+  public PacketBuffer writeVarInt(int input) {
     this.packetBuffer.writeVarInt(input);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -62,8 +67,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeVarLong(long input) {
+  public PacketBuffer writeVarLong(long input) {
     this.packetBuffer.writeVarLong(input);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -74,8 +80,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeUniqueIdentifier(UUID uniqueId) {
+  public PacketBuffer writeUniqueIdentifier(UUID uniqueId) {
     this.packetBuffer.writeUniqueId(uniqueId);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -86,8 +93,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeString(String content) {
+  public PacketBuffer writeString(String content) {
     this.packetBuffer.writeString(content);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -98,8 +106,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeString(String content, int maxLength) {
+  public PacketBuffer writeString(String content, int maxLength) {
     this.packetBuffer.writeString(content, maxLength);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -116,8 +125,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void readerIndex(int readerIndex) {
+  public PacketBuffer readerIndex(int readerIndex) {
     this.packetBuffer.readerIndex(readerIndex);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -128,8 +138,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writerIndex(int writerIndex) {
+  public PacketBuffer writerIndex(int writerIndex) {
     this.packetBuffer.writerIndex(writerIndex);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -140,8 +151,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void capacity(int capacity) {
+  public PacketBuffer capacity(int capacity) {
     this.packetBuffer.capacity(capacity);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -164,14 +176,16 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void ensureWritable(int minimumWritableBytes) {
+  public PacketBuffer ensureWritable(int minimumWritableBytes) {
     this.packetBuffer.ensureWritable(minimumWritableBytes);
+    return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public void writeBoolean(boolean data) {
+  public PacketBuffer writeBoolean(boolean data) {
     this.packetBuffer.writeBoolean(data);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -182,8 +196,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeByte(byte data) {
+  public PacketBuffer writeByte(byte data) {
     this.packetBuffer.writeByte(data);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -194,8 +209,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeShort(short data) {
+  public PacketBuffer writeShort(short data) {
     this.packetBuffer.writeShort(data);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -206,8 +222,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeChar(char data) {
+  public PacketBuffer writeChar(char data) {
     this.packetBuffer.writeChar(data);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -218,8 +235,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeInteger(int data) {
+  public PacketBuffer writeInteger(int data) {
     this.packetBuffer.writeInt(data);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -230,8 +248,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeLong(long data) {
+  public PacketBuffer writeLong(long data) {
     this.packetBuffer.writeLong(data);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -242,8 +261,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeFloat(float data) {
+  public PacketBuffer writeFloat(float data) {
     this.packetBuffer.writeFloat(data);
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -254,8 +274,9 @@ public class VersionedPacketBuffer implements PacketBuffer {
 
   /** {@inheritDoc} */
   @Override
-  public void writeDouble(double data) {
+  public PacketBuffer writeDouble(double data) {
     this.packetBuffer.writeDouble(data);
+    return this;
   }
 
   /** {@inheritDoc} */

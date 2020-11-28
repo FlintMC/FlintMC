@@ -13,7 +13,7 @@ public interface PacketBuffer {
    *
    * @param data The byte array to be written.
    */
-  void writeByteArray(byte[] data);
+  PacketBuffer writeByteArray(byte[] data);
 
   /**
    * Reads a byte array from this buffer.
@@ -35,7 +35,7 @@ public interface PacketBuffer {
    *
    * @param input The input to be written.
    */
-  void writeVarInt(int input);
+  PacketBuffer writeVarInt(int input);
 
   /**
    * Reads a var-int from this buffer.
@@ -49,7 +49,7 @@ public interface PacketBuffer {
    *
    * @param input The input to be written.
    */
-  void writeVarLong(long input);
+  PacketBuffer writeVarLong(long input);
 
   /**
    * Reads a var-long from this buffer.
@@ -63,7 +63,7 @@ public interface PacketBuffer {
    *
    * @param uniqueId The unique identifier to be written.
    */
-  void writeUniqueIdentifier(UUID uniqueId);
+  PacketBuffer writeUniqueIdentifier(UUID uniqueId);
 
   /**
    * Reads an unique identifier from this buffer.
@@ -77,7 +77,7 @@ public interface PacketBuffer {
    *
    * @param content The content to be written.
    */
-  void writeString(String content);
+  PacketBuffer writeString(String content);
 
   /**
    * Reads a string from this buffer.
@@ -93,7 +93,7 @@ public interface PacketBuffer {
    * @param content The content to be written.
    * @param maxLength The maximum length of the content.
    */
-  void writeString(String content, int maxLength);
+  PacketBuffer writeString(String content, int maxLength);
 
   /**
    * Reads a string from this buffer.
@@ -117,7 +117,7 @@ public interface PacketBuffer {
    * @throws IndexOutOfBoundsException If the specified {@code readerIndex} is less than {@code 0}
    *     or greater than {@link #writerIndex()}.
    */
-  void readerIndex(int readerIndex);
+  PacketBuffer readerIndex(int readerIndex);
 
   /**
    * Retrieves the writer index of this buffer.
@@ -133,7 +133,7 @@ public interface PacketBuffer {
    * @throws IndexOutOfBoundsException If the specified {@code writerIndex} is less than {@link
    *     #readerIndex()} or greater than {@link #capacity()}.
    */
-  void writerIndex(int writerIndex);
+  PacketBuffer writerIndex(int writerIndex);
 
   /**
    * Retrieves the number of bytes this buffer can contain.
@@ -145,12 +145,12 @@ public interface PacketBuffer {
   /**
    * Adjusts the capacity of this buffer. If the {@code capacity} is less than the current capacity,
    * the content of this buffer is truncated. If the {@code capacity} is greater thant the current
-   * capacity, ths buffer is appended with unspecified data whose length is ({@code capacity} -
-   * currentCapacity)
+   * capacity, ths buffer is appended with unspecified data whose length is ({@code capacity -
+   * currentCapacity})
    *
    * @param capacity The new capacity.
    */
-  void capacity(int capacity);
+  PacketBuffer capacity(int capacity);
 
   /**
    * Retrieves the maximum allowed capacity of this buffer. If a user attempts to increase the
@@ -184,14 +184,14 @@ public interface PacketBuffer {
    * @throws IndexOutOfBoundsException If {@link #writerIndex()} + {@code minimumWritableBytes} &gt;
    *     {@link #maximumCapacity()}
    */
-  void ensureWritable(int minimumWritableBytes);
+  PacketBuffer ensureWritable(int minimumWritableBytes);
 
   /**
    * Writes a boolean into this buffer.
    *
    * @param data The boolean to be written.
    */
-  void writeBoolean(boolean data);
+  PacketBuffer writeBoolean(boolean data);
 
   /**
    * Reads a boolean from this buffer.
@@ -205,7 +205,7 @@ public interface PacketBuffer {
    *
    * @param data The byte to be written.
    */
-  void writeByte(byte data);
+  PacketBuffer writeByte(byte data);
 
   /**
    * Reads a byte from this buffer.
@@ -219,7 +219,7 @@ public interface PacketBuffer {
    *
    * @param data The short to be written.
    */
-  void writeShort(short data);
+  PacketBuffer writeShort(short data);
 
   /**
    * Reads a short from this buffer.
@@ -233,7 +233,7 @@ public interface PacketBuffer {
    *
    * @param data The char to be written.
    */
-  void writeChar(char data);
+  PacketBuffer writeChar(char data);
 
   /**
    * Reads a char from this buffer.
@@ -247,7 +247,7 @@ public interface PacketBuffer {
    *
    * @param data The integer to be written.
    */
-  void writeInteger(int data);
+  PacketBuffer writeInteger(int data);
 
   /**
    * Reads an integer from this buffer.
@@ -261,7 +261,7 @@ public interface PacketBuffer {
    *
    * @param data The long to be written.
    */
-  void writeLong(long data);
+  PacketBuffer writeLong(long data);
 
   /**
    * Reads a long from this buffer.
@@ -275,7 +275,7 @@ public interface PacketBuffer {
    *
    * @param data The float to be written.
    */
-  void writeFloat(float data);
+  PacketBuffer writeFloat(float data);
 
   /**
    * Reads a float from this buffer.
@@ -289,7 +289,7 @@ public interface PacketBuffer {
    *
    * @param data The double to be written.
    */
-  void writeDouble(double data);
+  PacketBuffer writeDouble(double data);
 
   /**
    * Reads a double from this buffer.

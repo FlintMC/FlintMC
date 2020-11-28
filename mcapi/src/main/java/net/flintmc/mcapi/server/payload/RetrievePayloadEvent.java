@@ -5,7 +5,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.server.buffer.PacketBuffer;
 
-/** Fried when a custom payload message is received from the server. */
+/** Fired when a custom payload message is received from the server. */
 public interface RetrievePayloadEvent extends PayloadEvent {
 
   /** A factory class for {@link RetrievePayloadEvent}. */

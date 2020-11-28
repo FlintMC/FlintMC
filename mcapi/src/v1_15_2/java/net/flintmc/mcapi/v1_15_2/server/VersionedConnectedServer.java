@@ -148,7 +148,7 @@ public class VersionedConnectedServer implements ConnectedServer {
         this.retrievePayloadEventFactory.create(
             resourceLocation, this.packetBufferFactory.create(packetBuffer));
 
-    // Fried the retrieve payload event
+    // Fired the retrieve payload event
     this.eventBus.fireEvent(retrievePayloadEvent, Phase.PRE);
   }
 

@@ -3,6 +3,8 @@ package net.flintmc.mcapi.v1_15_2.server.payload;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.bytecode.BadBytecode;
@@ -16,7 +18,7 @@ import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
-import net.minecraft.network.play.server.SCustomPayloadPlayPacket;
+;
 
 @Singleton
 public class CustomPayloadInterceptor {
@@ -37,7 +39,14 @@ public class CustomPayloadInterceptor {
       throws NotFoundException, BadBytecode, CannotCompileException {
 
     CtMethod handleCustomPayloadMethod =
-        context.getDeclaredMethod("handleCustomPayload", SCustomPayloadPlayPacket.class);
+        context
+            .getCtClass()
+            .getDeclaredMethod(
+                "handleCustomPayload",
+                new CtClass[] {
+                  ClassPool.getDefault()
+                      .get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
+                });
 
     MethodInfo methodInfo = handleCustomPayloadMethod.getMethodInfo();
     CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
@@ -68,12 +77,8 @@ public class CustomPayloadInterceptor {
               PayloadChannelService.class.getName(),
               InjectionHolder.class.getName(),
               PayloadChannelService.class.getName(),
-              this.customPayloadPacketMapping
-                  .getMethod("getChannelName")
-                  .getName(),
-              this.customPayloadPacketMapping
-                  .getMethod("getBufferData")
-                  .getName()));
+              this.customPayloadPacketMapping.getMethod("getChannelName").getName(),
+              this.customPayloadPacketMapping.getMethod("getBufferData").getName()));
       break;
     }
   }

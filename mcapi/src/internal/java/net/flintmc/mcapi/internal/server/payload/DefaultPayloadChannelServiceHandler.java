@@ -24,6 +24,7 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
   private final Logger logger;
   private final PayloadChannelService payloadChannelService;
   private CtClass payloadChannelListenerClass;
+  private boolean registrable = true;
 
   @Inject
   private DefaultPayloadChannelServiceHandler(
@@ -35,13 +36,17 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
       this.payloadChannelListenerClass =
           ClassPool.getDefault().get("net.flintmc.mcapi.server.payload.PayloadChannelListener");
     } catch (NotFoundException exception) {
-      exception.printStackTrace();
+      this.logger.error("The PayloadChannelListener was not found!", exception);
+      this.registrable = false;
     }
   }
 
   @Override
   public void discover(AnnotationMeta<PayloadChannel> annotationMeta)
       throws ServiceNotFoundException {
+    if(!this.registrable) {
+      return;
+    }
 
     PayloadChannel payloadChannel = annotationMeta.getAnnotation();
     MethodIdentifier methodIdentifier = annotationMeta.getMethodIdentifier();
@@ -56,7 +61,9 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
         }
       }
     } catch (NotFoundException exception) {
-      exception.printStackTrace();
+      this.logger.error(
+          "No interfaces were found for the given class {}", declaringClass.getName(), exception);
+      return;
     }
 
     if (!shouldRegister) {
