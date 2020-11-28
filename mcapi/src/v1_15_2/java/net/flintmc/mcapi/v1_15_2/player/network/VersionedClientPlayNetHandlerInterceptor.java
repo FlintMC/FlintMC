@@ -49,7 +49,7 @@ public class VersionedClientPlayNetHandlerInterceptor {
       GameProfile profile = data.getProfile();
       NetworkPlayerInfo info;
 
-      if (profile.getName() != null) {
+      if (packet.getAction() == SPlayerListItemPacket.Action.ADD_PLAYER) {
         info =
             this.networkPlayerInfoFactory.create(
                 this.gameProfileSerializer.deserialize(data.getProfile()));
