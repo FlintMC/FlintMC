@@ -89,6 +89,7 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
   @Override
   public void execute(CtClass ctClass) throws ClassTransformException {
     try {
+      if(ctClass.isFrozen()) ctClass.defrost();
       CtResolver.get(this.getTransformMethod())
           .invoke(this.getTransformInstance(), this.classTransformContextFactory.create(ctClass));
     } catch (IllegalAccessException exception) {

@@ -1,10 +1,10 @@
 package net.flintmc.mcapi.server;
 
+import java.util.concurrent.CompletableFuture;
 import net.flintmc.mcapi.resources.ResourceLocation;
+import net.flintmc.mcapi.server.buffer.PacketBuffer;
 import net.flintmc.mcapi.server.status.ServerStatus;
 import net.flintmc.mcapi.server.status.ServerStatusResolver;
-
-import java.util.concurrent.CompletableFuture;
 
 public interface ConnectedServer {
 
@@ -37,13 +37,26 @@ public interface ConnectedServer {
    * communicate with servers for any extra data in the client.
    *
    * @param identifier The non-null identifier of the payload
+   * @param packetBuffer The non-null packet buffer for the server
+   * @throws IllegalStateException If the client is not connected with any server
+   */
+  void sendCustomPayload(ResourceLocation identifier, PacketBuffer packetBuffer);
+
+  /**
+   * Sends a custom payload message to the currently connected server which can be used to
+   * communicate with servers for any extra data in the client.
+   *
+   * @param identifier The non-null identifier of the payload
    * @param payload The non-null payload for the server
    * @throws IllegalStateException If the client is not connected with any server
    */
-  // TODO replace the String with the NamespacedKey
   void sendCustomPayload(ResourceLocation identifier, byte[] payload) throws IllegalStateException;
 
-  void retrieveCustomPayload(String identifier, byte[] payload);
-
+  /**
+   * Retrieves a custom payload message from the currently connected server.
+   *
+   * @param identifier The non-null identifier of the payload.
+   * @param payloadBuffer The non-null payload buffer from the server.
+   */
+  void retrieveCustomPayload(String identifier, Object payloadBuffer);
 }
-
