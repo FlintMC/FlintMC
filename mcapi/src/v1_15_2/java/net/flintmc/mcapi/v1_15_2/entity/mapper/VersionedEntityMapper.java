@@ -59,6 +59,23 @@ public class VersionedEntityMapper implements EntityMapper {
     this.remoteClientPlayerProvider = remoteClientPlayerProvider;
   }
 
+  @Override
+  public Entity fromAnyMinecraftEntity(Object handle) {
+    if (handle instanceof net.minecraft.entity.player.PlayerEntity) {
+      return this.fromMinecraftPlayerEntity(handle);
+    }
+
+    if (handle instanceof net.minecraft.entity.MobEntity) {
+      return this.fromMinecraftMobEntity(handle);
+    }
+
+    if (handle instanceof net.minecraft.entity.LivingEntity) {
+      return this.fromMinecraftLivingEntity(handle);
+    }
+
+    return this.fromMinecraftEntity(handle);
+  }
+
   /** {@inheritDoc} */
   @Override
   public Entity fromMinecraftEntity(Object handle) {

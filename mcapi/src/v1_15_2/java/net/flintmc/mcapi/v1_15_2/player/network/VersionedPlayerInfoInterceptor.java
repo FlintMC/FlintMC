@@ -15,7 +15,7 @@ import net.minecraft.network.play.server.SPlayerListItemPacket;
 import java.util.UUID;
 
 @Singleton
-public class VersionedClientPlayNetHandlerInterceptor {
+public class VersionedPlayerInfoInterceptor {
 
   private final EventBus eventBus;
   private final PlayerInfoEvent.Factory eventFactory;
@@ -24,7 +24,7 @@ public class VersionedClientPlayNetHandlerInterceptor {
   private final GameProfileSerializer<GameProfile> gameProfileSerializer;
 
   @Inject
-  private VersionedClientPlayNetHandlerInterceptor(
+  private VersionedPlayerInfoInterceptor(
       EventBus eventBus,
       PlayerInfoEvent.Factory eventFactory,
       NetworkPlayerInfoRegistry registry,

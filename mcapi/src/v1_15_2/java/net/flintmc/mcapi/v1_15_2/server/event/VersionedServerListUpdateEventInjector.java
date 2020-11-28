@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.v1_15_2.server.event;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.CtClass;
@@ -13,18 +14,37 @@ import javassist.bytecode.Opcode;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
+import net.flintmc.util.mappings.FieldMapping;
+import net.flintmc.util.mappings.MethodMapping;
 
 @Singleton
-public class ServerListUpdateEventInjector {
+public class VersionedServerListUpdateEventInjector {
+
+  private final ClassMappingProvider mappingProvider;
+
+  @Inject
+  private VersionedServerListUpdateEventInjector(ClassMappingProvider mappingProvider) {
+    this.mappingProvider = mappingProvider;
+  }
 
   @ClassTransform("net.minecraft.client.multiplayer.ServerList")
   public void transformServerList(ClassTransformContext context)
       throws NotFoundException, CannotCompileException, BadBytecode {
     CtClass transforming = context.getCtClass();
-    CtField field = transforming.getDeclaredField("servers");
+    ClassMapping mapping = this.mappingProvider.get(transforming.getName());
+
+    FieldMapping serversMapping = mapping.getField("servers");
+    CtField field =
+        transforming.getDeclaredField(
+            serversMapping != null ? serversMapping.getName() : "servers");
     field.setModifiers(field.getModifiers() & ~Modifier.FINAL);
 
-    CtMethod method = transforming.getDeclaredMethod("loadServerList");
+    MethodMapping listMapping = mapping.getMethod("loadServerList");
+    CtMethod method =
+        transforming.getDeclaredMethod(
+            listMapping != null ? listMapping.getName() : "loadServerList");
 
     String base = String.format("((%s) this.servers).setEnabled(", ModServerList.class.getName());
     String disable = base + "false);";
