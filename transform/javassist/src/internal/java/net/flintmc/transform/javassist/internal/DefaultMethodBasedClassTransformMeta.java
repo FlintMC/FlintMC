@@ -89,6 +89,8 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
   @Override
   public void execute(CtClass ctClass) throws ClassTransformException {
     try {
+      // TODO: 29.11.2020 Can be removed if the hooks do not use reflection anymore
+      if (ctClass.isFrozen()) ctClass.defrost();
       CtResolver.get(this.getTransformMethod())
           .invoke(this.getTransformInstance(), this.classTransformContextFactory.create(ctClass));
     } catch (IllegalAccessException exception) {
