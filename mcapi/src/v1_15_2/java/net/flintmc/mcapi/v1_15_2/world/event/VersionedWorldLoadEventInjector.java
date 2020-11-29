@@ -10,14 +10,14 @@ import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMappingProvider;
 
 @Singleton
-public class WorldLoadEventInjector {
+public class VersionedWorldLoadEventInjector {
 
   private static final String LISTENER = "net.minecraft.world.chunk.listener.IChunkStatusListener";
 
   private final ClassMappingProvider mappingProvider;
 
   @Inject
-  private WorldLoadEventInjector(ClassMappingProvider mappingProvider) {
+  private VersionedWorldLoadEventInjector(ClassMappingProvider mappingProvider) {
     this.mappingProvider = mappingProvider;
   }
 
