@@ -106,7 +106,17 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
       // found the sequence of opcodes that matches the renderString method in the if clause whether
       // the player is sneaking
       int line = method.getMethodInfo().getLineNumber(iterator.next());
-      String matrix = "$3.getLast().getMatrix()";
+
+      ClassMapping matrixStack = this.mappingProvider.get("com.mojang.blaze3d.matrix.MatrixStack");
+      ClassMapping matrixStackEntry =
+          this.mappingProvider.get("com.mojang.blaze3d.matrix.MatrixStack$Entry");
+      // Matrix4f matrix = matrixStack.getLast().getMatrix()
+      String matrix =
+          "$3."
+              + matrixStack.getMethod("getLast").getName()
+              + "()."
+              + matrixStackEntry.getMethod("getMatrix").getName()
+              + "()";
       String y = "\"deadmau5\".equals($2) ? -10 : 0";
 
       // this will be fired whenever the entity will be rendered
@@ -116,7 +126,7 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
 
       // this will only be fired when the entity is not sneaking
       // if the name will not be rendered with the textBackgroundColor being 0,
-      // it will not be shown through walls
+      // it will not be shown through walls and as if the player would be sneaking
       method.insertAt(
           line, String.format("this.eventInjector.renderName($args, %s, %s, true);", matrix, y));
     }
