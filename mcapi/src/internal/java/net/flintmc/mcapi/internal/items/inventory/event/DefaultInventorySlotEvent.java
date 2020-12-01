@@ -6,6 +6,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.event.InventorySlotEvent;
 
+/** {@inheritDoc} */
 @Implement(InventorySlotEvent.class)
 public class DefaultInventorySlotEvent extends DefaultInventoryEvent implements InventorySlotEvent {
 
@@ -18,6 +19,7 @@ public class DefaultInventorySlotEvent extends DefaultInventoryEvent implements 
     this.slot = slot;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getSlot() {
     return this.slot;

@@ -7,6 +7,7 @@ import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.event.InventoryHotkeyPressEvent;
 
+/** {@inheritDoc} */
 @Implement(InventoryHotkeyPressEvent.class)
 public class DefaultInventoryHotkeyPressEvent extends DefaultInventorySlotEvent
     implements InventoryHotkeyPressEvent {
@@ -25,21 +26,25 @@ public class DefaultInventoryHotkeyPressEvent extends DefaultInventorySlotEvent
     this.clickedItem = slot < 0 /* outside of any slot */ ? null : inventory.getItem(slot);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getHotkey() {
     return this.hotkey;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ItemStack getClickedItem() {
     return this.clickedItem;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isCancelled() {
     return this.cancelled;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;

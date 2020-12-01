@@ -21,6 +21,9 @@ import net.flintmc.mcapi.items.inventory.Inventory;
  */
 public interface InventoryCloseEvent extends Event, InventoryEvent, DirectionalEvent, Cancellable {
 
+  /**
+   * Factory for the {@link InventoryCloseEvent}.
+   */
   @AssistedFactory(InventoryCloseEvent.class)
   interface Factory {
 

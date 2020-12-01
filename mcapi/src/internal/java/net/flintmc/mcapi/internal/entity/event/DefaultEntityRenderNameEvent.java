@@ -6,6 +6,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.event.EntityRenderNameEvent;
 
+/** {@inheritDoc} */
 @Implement(EntityRenderNameEvent.class)
 public class DefaultEntityRenderNameEvent implements EntityRenderNameEvent {
 
@@ -38,41 +39,49 @@ public class DefaultEntityRenderNameEvent implements EntityRenderNameEvent {
     this.y = y;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Entity getEntity() {
     return this.entity;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getDisplayName() {
     return this.displayName;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object getMatrix() {
     return this.matrix;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object getBuffer() {
     return this.buffer;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getTextBackgroundColor() {
     return this.textBackgroundColor;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isNotSneaking() {
     return this.notSneaking;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getPackedLight() {
     return this.packedLight;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getY() {
     return this.y;

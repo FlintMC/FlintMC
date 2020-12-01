@@ -8,6 +8,7 @@ import net.flintmc.mcapi.player.type.sound.SoundCategory;
 import net.flintmc.mcapi.world.event.SoundPlayEvent;
 import net.flintmc.mcapi.world.math.Vector3D;
 
+/** {@inheritDoc} */
 @Implement(SoundPlayEvent.class)
 public class DefaultSoundPlayEvent implements SoundPlayEvent {
 
@@ -32,26 +33,31 @@ public class DefaultSoundPlayEvent implements SoundPlayEvent {
     this.pitch = pitch;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Vector3D getPosition() {
     return this.position;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Sound getSound() {
     return this.sound;
   }
 
+  /** {@inheritDoc} */
   @Override
   public SoundCategory getCategory() {
     return this.category;
   }
 
+  /** {@inheritDoc} */
   @Override
   public float getVolume() {
     return this.volume;
   }
 
+  /** {@inheritDoc} */
   @Override
   public float getPitch() {
     return this.pitch;

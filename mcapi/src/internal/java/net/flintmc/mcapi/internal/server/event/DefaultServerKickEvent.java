@@ -4,12 +4,12 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.event.ServerKickEvent;
 
 import javax.annotation.Nullable;
 
+/** {@inheritDoc} */
 @Implement(ServerKickEvent.class)
 public class DefaultServerKickEvent extends DefaultServerAddressEvent implements ServerKickEvent {
 
@@ -22,11 +22,13 @@ public class DefaultServerKickEvent extends DefaultServerAddressEvent implements
     this.reason = reason;
   }
 
+  /** {@inheritDoc} */
   @Override
-  public DirectionalEvent.Direction getDirection() {
-    return DirectionalEvent.Direction.RECEIVE;
+  public Direction getDirection() {
+    return Direction.RECEIVE;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ChatComponent getReason() {
     return this.reason;

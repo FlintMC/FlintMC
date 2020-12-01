@@ -5,6 +5,7 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.event.WorldLoadEvent;
 
+/** {@inheritDoc} */
 @Implement(WorldLoadEvent.class)
 public class DefaultWorldLoadEvent implements WorldLoadEvent {
 
@@ -20,11 +21,13 @@ public class DefaultWorldLoadEvent implements WorldLoadEvent {
     this.processPercentage = processPercentage;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getWorldName() {
     return this.worldName;
   }
 
+  /** {@inheritDoc} */
   @Override
   public State getState() {
     return this.state;
@@ -34,6 +37,7 @@ public class DefaultWorldLoadEvent implements WorldLoadEvent {
     this.state = state;
   }
 
+  /** {@inheritDoc} */
   @Override
   public float getProcessPercentage() {
     return this.processPercentage;

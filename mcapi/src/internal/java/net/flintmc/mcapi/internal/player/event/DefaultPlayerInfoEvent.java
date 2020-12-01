@@ -6,6 +6,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.event.PlayerInfoEvent;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
 
+/** {@inheritDoc} */
 @Implement(PlayerInfoEvent.class)
 public class DefaultPlayerInfoEvent implements PlayerInfoEvent {
 
@@ -18,11 +19,13 @@ public class DefaultPlayerInfoEvent implements PlayerInfoEvent {
     this.playerInfo = playerInfo;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Type getType() {
     return this.type;
   }
 
+  /** {@inheritDoc} */
   @Override
   public NetworkPlayerInfo getPlayerInfo() {
     return this.playerInfo;

@@ -8,6 +8,7 @@ import net.flintmc.mcapi.server.event.ServerAddressEvent;
 
 import javax.annotation.Nullable;
 
+/** {@inheritDoc} */
 @Implement(ServerAddressEvent.class)
 public class DefaultServerAddressEvent implements ServerAddressEvent {
 
@@ -18,6 +19,7 @@ public class DefaultServerAddressEvent implements ServerAddressEvent {
     this.address = address;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ServerAddress getAddress() {
     return this.address;
