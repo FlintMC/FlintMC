@@ -9,17 +9,8 @@ import net.flintmc.mcapi.items.inventory.event.InventoryOpenEvent;
 @Implement(InventoryOpenEvent.class)
 public class DefaultInventoryOpenEvent extends DefaultInventoryEvent implements InventoryOpenEvent {
 
-  private final Direction direction;
-
   @AssistedInject
-  public DefaultInventoryOpenEvent(
-      @Assisted("inventory") Inventory inventory, @Assisted("direction") Direction direction) {
+  public DefaultInventoryOpenEvent(@Assisted("inventory") Inventory inventory) {
     super(inventory);
-    this.direction = direction;
-  }
-
-  @Override
-  public Direction getDirection() {
-    return this.direction;
   }
 }
