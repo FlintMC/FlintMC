@@ -11,8 +11,8 @@ import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
  * This event will be fired whenever an inventory is opened in the client. Tt will only be fired in
  * the POST phase.
  *
- * <p>Note that the client itself can only open a {@link PlayerInventory}, other inventories are all
- * sent by the server.
+ * <p>The client itself can only open a {@link PlayerInventory}, other inventories are all sent by
+ * the server.
  *
  * @see Subscribe
  */
