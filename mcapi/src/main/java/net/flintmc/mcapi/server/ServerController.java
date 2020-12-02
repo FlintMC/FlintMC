@@ -4,16 +4,19 @@ package net.flintmc.mcapi.server;
 public interface ServerController {
 
   /**
-   * Retrieves whether the client is connected to any server (in multiplayer).
+   * Retrieves whether the client is connected or currently connecting to any server (in
+   * multiplayer).
    *
-   * @return {@code true} if the client is connected to a server, {@code false} otherwise
+   * @return {@code true} if the client is connected or currently connecting to a server, {@code
+   *     false} otherwise
    */
   boolean isConnected();
 
   /**
    * Retrieves the currently connected server.
    *
-   * @return The server or {@code null} if the client isn't connected with any server
+   * @return The server or {@code null} if the client isn't connected with or currently connecting
+   *     to any server
    * @see #isConnected()
    */
   ConnectedServer getConnectedServer();
