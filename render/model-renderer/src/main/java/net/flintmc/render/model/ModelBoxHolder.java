@@ -2,23 +2,24 @@ package net.flintmc.render.model;
 
 import net.flintmc.util.property.Property;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
 public interface ModelBoxHolder<
-    T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-    T_RenderContext extends
-        RenderContext<
-            T_RenderContextAware,
-            T_RenderContext,
-            ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
-            ?,
-            Object>>
+        T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+        T_RenderContext extends
+            RenderContext<
+                    T_RenderContextAware,
+                    T_RenderContext,
+                    ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
+                    ?,
+                    Object>>
     extends Renderable<
-    T_RenderContextAware,
-    T_RenderContext,
-    ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
-    Object> {
+        T_RenderContextAware,
+        T_RenderContext,
+        ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
+        Object> {
 
   Property<Set<ModelBox>, Void> MODEL_BOXES =
       Property.builder().<Set<ModelBox>>withValue().withDefaultValue(HashSet::new).build();
@@ -119,6 +120,14 @@ public interface ModelBoxHolder<
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
 
+  Property<Color, OverridePolicy> COLOR =
+      Property.builder()
+          .<Color>withValue()
+          .<OverridePolicy>withMeta()
+          .withDefaultValue(Color.BLACK)
+          .withDefaultMeta(OverridePolicy.INACTIVE)
+          .build();
+
   Set<ModelBox> getBoxes();
 
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureWidthPolicy(
@@ -128,6 +137,10 @@ public interface ModelBoxHolder<
       OverridePolicy overridePolicy);
 
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setModelBoxes(Set<ModelBox> modelBoxes);
+
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setColor(Color color);
+
+  Color getColor();
 
   float getRotationPointX();
 

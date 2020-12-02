@@ -21,20 +21,20 @@ public class DefaultRendererRepository implements RendererRepository {
 
   @SuppressWarnings({"unchecked"})
   public <
-      T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-      T_RenderContext extends
-          RenderContext<
-              T_RenderContextAware,
-              T_RenderContext,
-              T_Renderable,
-              T_RenderMeta,
-              T_RenderTarget>,
-      T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
-      T_RenderMeta,
-      T_RenderTarget>
-  Renderer<T_Renderable, T_RenderContext, T_RenderMeta> getRenderer(
-      T_RenderContextAware renderContextAware) {
+          T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+          T_RenderContext extends
+              RenderContext<
+                      T_RenderContextAware,
+                      T_RenderContext,
+                      T_Renderable,
+                      T_RenderMeta,
+                      T_RenderTarget>,
+          T_Renderable extends
+              Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+          T_RenderMeta,
+          T_RenderTarget>
+      Renderer<T_Renderable, T_RenderContext, T_RenderMeta> getRenderer(
+          T_RenderContextAware renderContextAware) {
     Renderer<T_Renderable, T_RenderContext, T_RenderMeta> renderer = null;
     for (Map.Entry<Predicate<RenderContext<?, ?, ?, ?, ?>>, Renderer<?, ?, ?>> entry :
         this.predicates.entrySet()) {
@@ -74,41 +74,41 @@ public class DefaultRendererRepository implements RendererRepository {
   }
 
   public <
-      T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-      T_RenderContext extends
-          RenderContext<
-              T_RenderContextAware,
-              T_RenderContext,
-              T_Renderable,
-              T_RenderMeta,
-              T_RenderTarget>,
-      T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
-      T_RenderMeta,
-      T_RenderTarget>
-  RendererRepository setRenderer(
-      Class<? extends T_RenderContextAware> renderContextAwareClass,
-      Class<? extends Renderer<T_Renderable, T_RenderContext, T_RenderMeta>> rendererClass) {
+          T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+          T_RenderContext extends
+              RenderContext<
+                      T_RenderContextAware,
+                      T_RenderContext,
+                      T_Renderable,
+                      T_RenderMeta,
+                      T_RenderTarget>,
+          T_Renderable extends
+              Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+          T_RenderMeta,
+          T_RenderTarget>
+      RendererRepository setRenderer(
+          Class<? extends T_RenderContextAware> renderContextAwareClass,
+          Class<? extends Renderer<T_Renderable, T_RenderContext, T_RenderMeta>> rendererClass) {
     return this.setRenderer(
         renderContextAwareClass, InjectionHolder.getInjectedInstance(rendererClass));
   }
 
   public <
-      T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-      T_RenderContext extends
-          RenderContext<
-              T_RenderContextAware,
-              T_RenderContext,
-              T_Renderable,
-              T_RenderMeta,
-              T_RenderTarget>,
-      T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
-      T_RenderMeta,
-      T_RenderTarget>
-  RendererRepository setRenderer(
-      Class<? extends T_RenderContextAware> renderContextAwareClass,
-      Renderer<T_Renderable, T_RenderContext, T_RenderMeta> renderer) {
+          T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+          T_RenderContext extends
+              RenderContext<
+                      T_RenderContextAware,
+                      T_RenderContext,
+                      T_Renderable,
+                      T_RenderMeta,
+                      T_RenderTarget>,
+          T_Renderable extends
+              Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+          T_RenderMeta,
+          T_RenderTarget>
+      RendererRepository setRenderer(
+          Class<? extends T_RenderContextAware> renderContextAwareClass,
+          Renderer<T_Renderable, T_RenderContext, T_RenderMeta> renderer) {
     if (this.classDefinedRenderers.containsKey(renderContextAwareClass))
       throw new IllegalStateException(
           "Renderer for render context aware "
@@ -121,41 +121,86 @@ public class DefaultRendererRepository implements RendererRepository {
   }
 
   public <
-      T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-      T_RenderContext extends
-          RenderContext<
-              T_RenderContextAware,
-              T_RenderContext,
-              T_Renderable,
-              T_RenderMeta,
-              T_RenderTarget>,
-      T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
-      T_RenderMeta,
-      T_RenderTarget>
-  RendererRepository setRenderer(
-      Predicate<RenderContext<?, ?, ?, ?, ?>> renderablePredicate,
-      Class<? extends Renderer<T_Renderable, T_RenderContext, T_RenderMeta>> renderer) {
+          T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+          T_RenderContext extends
+              RenderContext<
+                      T_RenderContextAware,
+                      T_RenderContext,
+                      T_Renderable,
+                      T_RenderMeta,
+                      T_RenderTarget>,
+          T_Renderable extends
+              Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+          T_RenderMeta,
+          T_RenderTarget>
+      RendererRepository setRenderer(
+          Predicate<RenderContext<?, ?, ?, ?, ?>> renderablePredicate,
+          Class<? extends Renderer<T_Renderable, T_RenderContext, T_RenderMeta>> renderer) {
     return this.setRenderer(renderablePredicate, InjectionHolder.getInjectedInstance(renderer));
   }
 
   public <
-      T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-      T_RenderContext extends
-          RenderContext<
-              T_RenderContextAware,
-              T_RenderContext,
-              T_Renderable,
-              T_RenderMeta,
-              T_RenderTarget>,
-      T_Renderable extends
-          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
-      T_RenderMeta,
-      T_RenderTarget>
-  RendererRepository setRenderer(
-      Predicate<RenderContext<?, ?, ?, ?, ?>> renderablePredicate,
-      Renderer<T_Renderable, T_RenderContext, T_RenderMeta> renderer) {
+          T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+          T_RenderContext extends
+              RenderContext<
+                      T_RenderContextAware,
+                      T_RenderContext,
+                      T_Renderable,
+                      T_RenderMeta,
+                      T_RenderTarget>,
+          T_Renderable extends
+              Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+          T_RenderMeta,
+          T_RenderTarget>
+      RendererRepository setRenderer(
+          Predicate<RenderContext<?, ?, ?, ?, ?>> renderablePredicate,
+          Renderer<T_Renderable, T_RenderContext, T_RenderMeta> renderer) {
     this.predicates.put(renderablePredicate, renderer);
+    return this;
+  }
+
+  public <
+          T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+          T_RenderContext extends
+              RenderContext<
+                      T_RenderContextAware,
+                      T_RenderContext,
+                      T_Renderable,
+                      T_RenderMeta,
+                      T_RenderTarget>,
+          T_Renderable extends
+              Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+          T_RenderMeta,
+          T_RenderTarget>
+      RendererRepository appendRenderer(
+          Renderer<T_Renderable, T_RenderContext, T_RenderMeta> target,
+          Renderer<T_Renderable, T_RenderContext, T_RenderMeta> appendix) {
+
+    Renderer<T_Renderable, T_RenderContext, T_RenderMeta> appendedRenderer = new Renderer<T_Renderable, T_RenderContext, T_RenderMeta>() {
+      public void render(T_Renderable renderable, T_RenderMeta renderMeta) {
+        target.render(renderable, renderMeta);
+        appendix.render(renderable, renderMeta);
+      }
+
+      public boolean shouldExecuteNextStage(T_Renderable renderable, T_RenderMeta renderMeta) {
+        return appendix.shouldExecuteNextStage(renderable, renderMeta);
+      }
+    };
+
+    for (Map.Entry<Class<? extends RenderContextAware<?>>, Renderer<?, ?, ?>> classRendererEntry :
+        this.classDefinedRenderers.entrySet()) {
+      if (classRendererEntry.getValue().equals(target)) {
+        this.classDefinedRenderers.put(classRendererEntry.getKey(), appendedRenderer);
+      }
+    }
+
+    if (target.equals(this.defaultRenderer)) this.defaultRenderer = appendedRenderer;
+
+    for (Map.Entry<Predicate<RenderContext<?, ?, ?, ?, ?>>, Renderer<?, ?, ?>>
+        predicateRendererEntry : this.predicates.entrySet()) {
+      this.predicates.put(predicateRendererEntry.getKey(), appendedRenderer);
+    }
+
     return this;
   }
 

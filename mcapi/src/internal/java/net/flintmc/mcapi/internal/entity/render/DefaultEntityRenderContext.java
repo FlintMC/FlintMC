@@ -81,7 +81,7 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
       throw new IllegalStateException("Multiple renderables refer to the same meta object.");
 
     this.renderables.put(name, renderable);
-    this.renderablesByTarget.put(renderable.getMeta(), renderable);
+    this.renderablesByTarget.put(renderable.getTarget(), renderable);
     return this;
   }
 }

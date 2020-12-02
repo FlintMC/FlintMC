@@ -1,5 +1,7 @@
 package net.flintmc.util.property;
 
+import java.util.Map;
+
 public interface PropertyContext<
     T_PropertyContextAware extends PropertyContextAware<T_PropertyContextAware>> {
 
@@ -40,6 +42,8 @@ public interface PropertyContext<
    */
   <T_PropertyValue, T_PropertyMeta> T_PropertyMeta getPropertyMeta(
       Property<T_PropertyValue, T_PropertyMeta> property);
+
+  Map<Property<?, ?>, Object> getProperties();
 
   interface Factory {
     <T_PropertyContextAware extends PropertyContextAware<T_PropertyContextAware>>

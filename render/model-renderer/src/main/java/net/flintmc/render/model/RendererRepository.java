@@ -88,6 +88,23 @@ public interface RendererRepository {
       Predicate<RenderContext<?, ?, ?, ?, ?>> renderablePredicate,
       Renderer<T_Renderable, T_RenderContext, T_RenderMeta> renderer);
 
+  public <
+      T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+      T_RenderContext extends
+          RenderContext<
+              T_RenderContextAware,
+              T_RenderContext,
+              T_Renderable,
+              T_RenderMeta,
+              T_RenderTarget>,
+      T_Renderable extends
+          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+      T_RenderMeta,
+      T_RenderTarget>
+  RendererRepository appendRenderer(
+      Renderer<T_Renderable, T_RenderContext, T_RenderMeta> target,
+      Renderer<T_Renderable, T_RenderContext, T_RenderMeta> appendix);
+
   Renderer<?, ?, ?> getDefaultRenderer();
 
   RendererRepository setDefaultRenderer(Renderer<?, ?, ?> defaultRenderer);

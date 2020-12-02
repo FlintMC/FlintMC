@@ -29,7 +29,7 @@ subprojects {
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
 
-        version = System.getenv().getOrDefault("VERSION", "1.0.0")
+        version = System.getenv().getOrDefault("VERSION", "1.0.9")
 
         repositories {
             flintRepository()
@@ -72,7 +72,7 @@ allprojects {
 }
 
 flint {
-    flintVersion = System.getenv().getOrDefault("VERSION", "1.0.0")
+    flintVersion = System.getenv().getOrDefault("VERSION", "1.0.9")
 
     projectFilter {
         !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)

@@ -146,7 +146,7 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
                   modelBoxes.clear();
                   for (ModelRenderer.ModelBox modelBox : modelRendererAccessor.getModelBoxes()) {
                     ModelBoxAccessor modelBoxAccessor = (ModelBoxAccessor) modelBox;
-                    Collection<ModelBox.TexturedQuad> texturedQuads = new HashSet<>();
+                    List<ModelBox.TexturedQuad> texturedQuads = new ArrayList<>();
 
                     for (TexturedQuadAccessor quad : modelBoxAccessor.getQuads()) {
                       ModelBox.TexturedQuad.VertexPosition[] vertexPositions =
@@ -295,9 +295,7 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
     return new HashMap<>();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getTeamColor() {
     return this.getHandle().getTeamColor();

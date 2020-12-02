@@ -5,26 +5,27 @@ import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.render.model.RenderContext;
 import net.flintmc.render.model.RenderContextAware;
 
+import java.awt.*;
 import java.util.Set;
 
 public class DefaultModelBoxHolder<
-    T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-    T_RenderContext extends
-        RenderContext<
-            T_RenderContextAware,
-            T_RenderContext,
-            ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
-            ?,
-            Object>,
-    T_Renderable extends
-        DefaultModelBoxHolder<
-            T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
-    T_RenderTarget>
+        T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+        T_RenderContext extends
+            RenderContext<
+                    T_RenderContextAware,
+                    T_RenderContext,
+                    ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
+                    ?,
+                    Object>,
+        T_Renderable extends
+            DefaultModelBoxHolder<
+                    T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+        T_RenderTarget>
     extends DefaultRenderable<
-    T_RenderContextAware,
-    T_RenderContext,
-    ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
-    Object>
+        T_RenderContextAware,
+        T_RenderContext,
+        ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
+        Object>
     implements ModelBoxHolder<T_RenderContextAware, T_RenderContext> {
 
   protected DefaultModelBoxHolder(T_RenderContext renderContext, Object meta) {
@@ -194,8 +195,17 @@ public class DefaultModelBoxHolder<
     return this.getPropertyContext().setPropertyMeta(TEXTURE_HEIGHT, overridePolicy);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setModelBoxes(Set<ModelBox> modelBoxes) {
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setModelBoxes(
+      Set<ModelBox> modelBoxes) {
     return this.getPropertyContext().setPropertyValue(MODEL_BOXES, modelBoxes);
+  }
+
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setColor(Color color) {
+    return this.getPropertyContext().setPropertyValue(COLOR, color);
+  }
+
+  public Color getColor() {
+    return this.getPropertyContext().getPropertyValue(COLOR);
   }
 
   public boolean isMirror() {

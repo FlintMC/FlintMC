@@ -13,5 +13,7 @@ public interface Renderer<
     T_RenderContext extends RenderContext<?, ?, T_Renderable, T_RenderMeta, ?>,
     T_RenderMeta> {
 
-  boolean render(T_Renderable renderable, T_RenderMeta renderMeta);
+  void render(T_Renderable renderable, T_RenderMeta renderMeta);
+
+  boolean shouldExecuteNextStage(T_Renderable renderable, T_RenderMeta renderMeta);
 }

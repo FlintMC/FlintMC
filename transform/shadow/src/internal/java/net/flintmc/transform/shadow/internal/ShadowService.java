@@ -154,7 +154,10 @@ public class ShadowService implements ServiceHandler<Shadow> {
       String fieldName = null;
       ClassMapping classMapping = classMappingProvider.get(ctClass.getName());
       if (classMapping != null) {
-        fieldName = classMapping.getField(fieldSetter.value()).getName();
+        FieldMapping field = classMapping.getField(fieldSetter.value());
+        if (field != null) {
+          fieldName = field.getName();
+        }
       }
       if (fieldName == null) fieldName = fieldSetter.value();
 
@@ -175,7 +178,8 @@ public class ShadowService implements ServiceHandler<Shadow> {
     }
   }
 
-  private boolean hasMethod(CtClass ctClass, String name, CtClass[] parameters) throws NotFoundException {
+  private boolean hasMethod(CtClass ctClass, String name, CtClass[] parameters)
+      throws NotFoundException {
     for (CtMethod method : ctClass.getDeclaredMethods()) {
       if (method.getName().equals(name) && Arrays.equals(method.getParameterTypes(), parameters)) {
         return true;

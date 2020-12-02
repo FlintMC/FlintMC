@@ -4,9 +4,14 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.model.ModelBox;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 @Implement(ModelBox.class)
 public class DefaultModelBox implements ModelBox {
@@ -17,10 +22,123 @@ public class DefaultModelBox implements ModelBox {
   private float positionY2;
   private float positionZ1;
   private float positionZ2;
-  private Collection<TexturedQuad> texturedQuads = new HashSet<>();
+  private List<TexturedQuad> texturedQuads = new ArrayList<>();
 
   @AssistedInject
-  private DefaultModelBox() {
+  private DefaultModelBox() {}
+
+  @AssistedInject
+  private DefaultModelBox(
+      @Assisted("textureOffsetX") float textureOffsetX,
+      @Assisted("textureOffsetY") float textureOffsetY,
+      @Assisted("positionX") float positionX,
+      @Assisted("positionY") float positionY,
+      @Assisted("positionZ") float positionZ,
+      @Assisted("width") float width,
+      @Assisted("height") float height,
+      @Assisted("depth") float depth,
+      @Assisted("deltaX") float deltaX,
+      @Assisted("deltaY") float deltaY,
+      @Assisted("deltaZ") float deltaZ,
+      @Assisted("mirror") boolean mirror,
+      @Assisted("textureWidth") float textureWidth,
+      @Assisted("textureHeight") float textureHeight,
+      TexturedQuad.Factory texturedQuadFactory,
+      TexturedQuad.VertexPosition.Factory vertexPositionFactory) {
+
+    this.positionX1 = positionX;
+    this.positionY1 = positionY;
+    this.positionZ1 = positionZ;
+    this.positionX2 = positionX + width;
+    this.positionY2 = positionY + height;
+    this.positionZ2 = positionZ + depth;
+    float f = positionX + width;
+    float f1 = positionY + height;
+    float f2 = positionZ + depth;
+    positionX = positionX - deltaX;
+    positionY = positionY - deltaY;
+    positionZ = positionZ - deltaZ;
+    f = f + deltaX;
+    f1 = f1 + deltaY;
+    f2 = f2 + deltaZ;
+    if (mirror) {
+      float f3 = f;
+      f = positionX;
+      positionX = f3;
+    }
+
+    TexturedQuad.VertexPosition vertex0 =
+        vertexPositionFactory.create(0.0F, 8.0F, f, positionY, positionZ);
+    TexturedQuad.VertexPosition vertex1 =
+        vertexPositionFactory.create(8.0F, 8.0F, f, f1, positionZ);
+    TexturedQuad.VertexPosition vertex2 =
+        vertexPositionFactory.create(8.0F, 0.0F, positionX, f1, positionZ);
+    TexturedQuad.VertexPosition vertex3 =
+        vertexPositionFactory.create(0.0F, 0.0F, positionX, positionY, f2);
+    TexturedQuad.VertexPosition vertex4 =
+        vertexPositionFactory.create(0.0F, 8.0F, f, positionY, f2);
+    TexturedQuad.VertexPosition vertex5 = vertexPositionFactory.create(8.0F, 8.0F, f, f1, f2);
+    TexturedQuad.VertexPosition vertex6 =
+        vertexPositionFactory.create(8.0F, 0.0F, positionX, f1, f2);
+    TexturedQuad.VertexPosition vertex7 =
+        vertexPositionFactory.create(0.0F, 0.0F, positionX, positionY, positionZ);
+
+    float f4 = textureOffsetX;
+    float f5 = textureOffsetX + depth;
+    float f6 = textureOffsetX + depth + width;
+    float f7 = textureOffsetX + depth + width + width;
+    float f8 = textureOffsetX + depth + width + depth;
+    float f9 = textureOffsetX + depth + width + depth + width;
+    float f10 = textureOffsetY;
+    float f11 = textureOffsetY + depth;
+    float f12 = textureOffsetY + depth + height;
+
+    TexturedQuad.VertexPosition[] quad2Vertices = {vertex4, vertex3, vertex7, vertex0},
+        quad3Vertices = {vertex1, vertex2, vertex6, vertex5},
+        quad1Vertices = {vertex7, vertex3, vertex6, vertex2},
+        quad4Vertices = {vertex0, vertex7, vertex2, vertex1},
+        quad0Vertices = {vertex4, vertex0, vertex1, vertex5},
+        quad5Vertices = {vertex3, vertex4, vertex5, vertex6};
+
+    handleTexturedVertices(quad2Vertices, f5, f10, f6, f11, textureWidth, textureHeight, mirror);
+    handleTexturedVertices(quad3Vertices, f6, f11, f7, f10, textureWidth, textureHeight, mirror);
+    handleTexturedVertices(quad1Vertices, f4, f11, f5, f12, textureWidth, textureHeight, mirror);
+    handleTexturedVertices(quad4Vertices, f5, f11, f6, f12, textureWidth, textureHeight, mirror);
+    handleTexturedVertices(quad0Vertices, f6, f11, f8, f12, textureWidth, textureHeight, mirror);
+    handleTexturedVertices(quad5Vertices, f8, f11, f9, f12, textureWidth, textureHeight, mirror);
+
+    this.texturedQuads.set(2, texturedQuadFactory.create(0, -1, 0, quad2Vertices));
+    this.texturedQuads.set(3, texturedQuadFactory.create(0, 1, 0, quad3Vertices));
+    this.texturedQuads.set(1, texturedQuadFactory.create(mirror ? 1 : -1, 0, 0, quad1Vertices));
+    this.texturedQuads.set(4, texturedQuadFactory.create(0, 0, -1, quad4Vertices));
+    this.texturedQuads.set(0, texturedQuadFactory.create(mirror ? -1 : 1, 0, 0, quad0Vertices));
+    this.texturedQuads.set(5, texturedQuadFactory.create(0, 0, 1, quad5Vertices));
+  }
+
+  private void handleTexturedVertices(
+      TexturedQuad.VertexPosition[] vertexPositions,
+      float u1,
+      float v1,
+      float u2,
+      float v2,
+      float texWidth,
+      float texHeight,
+      boolean mirrorIn) {
+    float f = 0.0F / texWidth;
+    float f1 = 0.0F / texHeight;
+    vertexPositions[0] = vertexPositions[0].setTextureUV(u2 / texWidth - f, v1 / texHeight + f1);
+    vertexPositions[1] = vertexPositions[1].setTextureUV(u1 / texWidth + f, v1 / texHeight + f1);
+    vertexPositions[2] = vertexPositions[2].setTextureUV(u1 / texWidth + f, v2 / texHeight - f1);
+    vertexPositions[3] = vertexPositions[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
+    if (mirrorIn) {
+      int i = vertexPositions.length;
+
+      for (int j = 0; j < i / 2; ++j) {
+        TexturedQuad.VertexPosition vertex = vertexPositions[j];
+        vertexPositions[j] = vertexPositions[i - 1 - j];
+        vertexPositions[i - 1 - j] = vertex;
+      }
+    }
   }
 
   public float getPositionX1() {
@@ -77,7 +195,7 @@ public class DefaultModelBox implements ModelBox {
     return this;
   }
 
-  public ModelBox setTexturedQuads(Collection<TexturedQuad> texturedQuads) {
+  public ModelBox setTexturedQuads(List<TexturedQuad> texturedQuads) {
     this.texturedQuads = texturedQuads;
     return this;
   }
@@ -124,11 +242,11 @@ public class DefaultModelBox implements ModelBox {
 
     @Implement(VertexPosition.class)
     public static class DefaultVertexPosition implements VertexPosition {
-      private final float textureU;
-      private final float textureV;
       private final float positionX;
       private final float positionY;
       private final float positionZ;
+      private float textureU;
+      private float textureV;
 
       @AssistedInject
       private DefaultVertexPosition(
@@ -162,6 +280,12 @@ public class DefaultModelBox implements ModelBox {
 
       public float getPositionZ() {
         return positionZ;
+      }
+
+      public VertexPosition setTextureUV(float u, float v) {
+        this.textureU = u;
+        this.textureV = v;
+        return this;
       }
     }
   }

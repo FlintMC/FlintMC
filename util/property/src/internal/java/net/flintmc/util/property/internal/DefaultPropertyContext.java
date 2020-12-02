@@ -5,11 +5,12 @@ import net.flintmc.util.property.Property;
 import net.flintmc.util.property.PropertyContext;
 import net.flintmc.util.property.PropertyContextAware;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultPropertyContext<
-    T_PropertyContextAware extends PropertyContextAware<T_PropertyContextAware>>
+        T_PropertyContextAware extends PropertyContextAware<T_PropertyContextAware>>
     implements PropertyContext<T_PropertyContextAware> {
 
   private final T_PropertyContextAware propertyContextAware;
@@ -48,10 +49,15 @@ public class DefaultPropertyContext<
     return (T_PropertyMeta) this.propertyMeta.getOrDefault(property, property.getDefaultMeta());
   }
 
+  public Map<Property<?, ?>, Object> getProperties() {
+    return Collections.unmodifiableMap(this.propertyValues);
+  }
+
   @Implement(PropertyContext.Factory.class)
   public static class Factory implements PropertyContext.Factory {
     public <T_PropertyContextAware extends PropertyContextAware<T_PropertyContextAware>>
-    PropertyContext<T_PropertyContextAware> create(T_PropertyContextAware propertyContextAware) {
+        PropertyContext<T_PropertyContextAware> create(
+            T_PropertyContextAware propertyContextAware) {
       return new DefaultPropertyContext<T_PropertyContextAware>(propertyContextAware);
     }
   }

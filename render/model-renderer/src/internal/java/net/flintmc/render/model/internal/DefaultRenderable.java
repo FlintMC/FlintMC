@@ -101,7 +101,7 @@ public class DefaultRenderable<
     return (T_Renderable) this;
   }
 
-  public T_RenderTarget getMeta() {
+  public T_RenderTarget getTarget() {
     return this.meta;
   }
 }

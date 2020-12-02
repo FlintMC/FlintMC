@@ -22,8 +22,8 @@ public interface Renderable<
     T_RenderTarget>
     extends PropertyContextAware<T_Renderable> {
 
-  /** @return the metadata attached to this renderable component */
-  T_RenderTarget getMeta();
+  /** @return the target attached to this renderable component */
+  T_RenderTarget getTarget();
 
   /** @return the component that coordinates the rendering process */
   T_RenderContext getContext();
