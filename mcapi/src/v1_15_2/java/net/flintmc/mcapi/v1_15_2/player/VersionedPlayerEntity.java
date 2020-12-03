@@ -1,7 +1,5 @@
 package net.flintmc.mcapi.v1_15_2.player;
 
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -45,12 +43,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
 
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.function.Supplier;
+
 @Implement(value = PlayerEntity.class, version = "1.15.2")
 public class VersionedPlayerEntity extends VersionedLivingEntity implements PlayerEntity {
 
-  private final net.minecraft.entity.player.PlayerEntity entity;
-  private final GameProfileSerializer<com.mojang.authlib.GameProfile>
-      gameProfileGameProfileSerializer;
+  private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
   private final ModelMapper modelMapper;
   private final ItemEntityMapper itemEntityMapper;
   private final TileEntityMapper tileEntityMapper;
@@ -66,10 +66,31 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
       ItemEntityMapper itemEntityMapper,
       TileEntityMapper tileEntityMapper) {
     super(entity, entityType, world, entityFoundationMapper);
-    this.gameProfileGameProfileSerializer = gameProfileSerializer;
+    this.gameProfileSerializer = gameProfileSerializer;
     this.modelMapper = modelMapper;
     this.itemEntityMapper = itemEntityMapper;
     this.tileEntityMapper = tileEntityMapper;
+  }
+
+  public VersionedPlayerEntity(
+      Supplier<Object> entitySupplier,
+      EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper,
+      GameProfileSerializer gameProfileSerializer,
+      ModelMapper modelMapper,
+      ItemEntityMapper itemEntityMapper,
+      TileEntityMapper tileEntityMapper) {
+    super(entitySupplier, entityType, world, entityFoundationMapper);
+    this.gameProfileSerializer = gameProfileSerializer;
+    this.modelMapper = modelMapper;
+    this.itemEntityMapper = itemEntityMapper;
+    this.tileEntityMapper = tileEntityMapper;
+  }
+
+  @Override
+  protected net.minecraft.entity.player.PlayerEntity wrapped() {
+    net.minecraft.entity.Entity entity = super.wrapped();
 
     if (!(entity instanceof net.minecraft.entity.player.PlayerEntity)) {
       throw new IllegalArgumentException(
@@ -78,120 +99,129 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
               + net.minecraft.entity.player.PlayerEntity.class.getName());
     }
 
-    this.entity = (net.minecraft.entity.player.PlayerEntity) entity;
+    return (net.minecraft.entity.player.PlayerEntity) entity;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean blockActionRestricted(World world, BlockPosition position, GameMode mode) {
-    return this.entity.blockActionRestricted(
-        this.entity.world,
-        (BlockPos) this.getWorld().toMinecraftBlockPos(position),
-        (GameType) this.getEntityFoundationMapper().toMinecraftGameType(mode));
+    return this.wrapped()
+        .blockActionRestricted(
+            this.wrapped().world,
+            (BlockPos) this.getWorld().toMinecraftBlockPos(position),
+            (GameType) this.getEntityFoundationMapper().toMinecraftGameType(mode));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSecondaryUseActive() {
-    return this.entity.isSecondaryUseActive();
+    return this.wrapped().isSecondaryUseActive();
   }
 
   /** {@inheritDoc} */
   @Override
   public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
-    this.entity.playSound(
-        (SoundEvent) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
-        (net.minecraft.util.SoundCategory)
-            this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundCategory(category),
-        volume,
-        pitch);
+    this.wrapped()
+        .playSound(
+            (SoundEvent)
+                this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            (net.minecraft.util.SoundCategory)
+                this.getEntityFoundationMapper()
+                    .getSoundMapper()
+                    .toMinecraftSoundCategory(category),
+            volume,
+            pitch);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getScore() {
-    return this.entity.getScore();
+    return this.wrapped().getScore();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setScore(int score) {
-    this.entity.setScore(score);
+    this.wrapped().setScore(score);
   }
 
   /** {@inheritDoc} */
   @Override
   public void addScore(int score) {
-    this.entity.addScore(score);
+    this.wrapped().addScore(score);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean drop(boolean dropEntireStack) {
-    return this.entity.drop(dropEntireStack);
+    return this.wrapped().drop(dropEntireStack);
   }
 
   /** {@inheritDoc} */
   @Override
   public ItemEntity dropItem(ItemStack itemStack, boolean traceItem) {
     return this.itemEntityMapper.fromMinecraftItemEntity(
-        this.entity.dropItem(
-            (net.minecraft.item.ItemStack)
-                this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack),
-            traceItem));
+        this.wrapped()
+            .dropItem(
+                (net.minecraft.item.ItemStack)
+                    this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack),
+                traceItem));
   }
 
   /** {@inheritDoc} */
   @Override
   public ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem) {
     return this.itemEntityMapper.fromMinecraftItemEntity(
-        this.entity.dropItem(
-            (net.minecraft.item.ItemStack)
-                this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack),
-            dropAround,
-            traceItem));
+        this.wrapped()
+            .dropItem(
+                (net.minecraft.item.ItemStack)
+                    this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack),
+                dropAround,
+                traceItem));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canAttackPlayer(PlayerEntity playerEntity) {
-    return this.entity.canAttackPlayer(
-        (net.minecraft.entity.player.PlayerEntity)
-            this.getEntityFoundationMapper()
-                .getEntityMapper()
-                .toMinecraftPlayerEntity(playerEntity));
+    return this.wrapped()
+        .canAttackPlayer(
+            (net.minecraft.entity.player.PlayerEntity)
+                this.getEntityFoundationMapper()
+                    .getEntityMapper()
+                    .toMinecraftPlayerEntity(playerEntity));
   }
 
   /** {@inheritDoc} */
   @Override
   public void openSignEditor(SignTileEntity signTileEntity) {
-    this.entity.openSignEditor(
-        (net.minecraft.tileentity.SignTileEntity)
-            this.tileEntityMapper.toMinecraftSignTileEntity(signTileEntity));
+    this.wrapped()
+        .openSignEditor(
+            (net.minecraft.tileentity.SignTileEntity)
+                this.tileEntityMapper.toMinecraftSignTileEntity(signTileEntity));
   }
 
   /** {@inheritDoc} */
   @Override
   public void openMinecartCommandBlock(Object commandBlockLogic) {
-    this.entity.openMinecartCommandBlock((CommandBlockLogic) commandBlockLogic);
+    this.wrapped().openMinecartCommandBlock((CommandBlockLogic) commandBlockLogic);
   }
 
   /** {@inheritDoc} */
   @Override
   public void openCommandBlock(Object commandBlockTileEntity) {
-    this.entity.openCommandBlock((CommandBlockTileEntity) commandBlockTileEntity);
+    this.wrapped().openCommandBlock((CommandBlockTileEntity) commandBlockTileEntity);
   }
 
   /** {@inheritDoc} */
   @Override
   public void openStructureBlock(Object structureBlockTileEntity) {
-    this.entity.openStructureBlock((StructureBlockTileEntity) structureBlockTileEntity);
+    this.wrapped().openStructureBlock((StructureBlockTileEntity) structureBlockTileEntity);
   }
 
   /** {@inheritDoc} */
   @Override
   public void openJigsaw(Object jigsawTileEntity) {
-    this.entity.openJigsaw((JigsawTileEntity) jigsawTileEntity);
+    this.wrapped().openJigsaw((JigsawTileEntity) jigsawTileEntity);
   }
 
   /** {@inheritDoc} */
@@ -209,205 +239,211 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
       int experience,
       boolean regularVillager,
       boolean refreshable) {
-    this.entity.openMerchantContainer(
-        container,
-        (MerchantOffers) merchantOffers,
-        levelProgress,
-        experience,
-        regularVillager,
-        refreshable);
+    this.wrapped()
+        .openMerchantContainer(
+            container,
+            (MerchantOffers) merchantOffers,
+            levelProgress,
+            experience,
+            regularVillager,
+            refreshable);
   }
 
   /** {@inheritDoc} */
   @Override
   public void openBook(ItemStack stack, Hand hand) {
-    this.entity.openBook(
-        (net.minecraft.item.ItemStack)
-            this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack),
-        (net.minecraft.util.Hand)
-            this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
+    this.wrapped()
+        .openBook(
+            (net.minecraft.item.ItemStack)
+                this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack),
+            (net.minecraft.util.Hand)
+                this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
   }
 
   /** {@inheritDoc} */
   @Override
   public void attackTargetEntityWithCurrentItem(Entity entity) {
-    this.entity.attackTargetEntityWithCurrentItem(
-        (net.minecraft.entity.Entity)
-            this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
+    this.wrapped()
+        .attackTargetEntityWithCurrentItem(
+            (net.minecraft.entity.Entity)
+                this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
   /** {@inheritDoc} */
   @Override
   public void disableShield(boolean disable) {
-    this.entity.disableShield(disable);
+    this.wrapped().disableShield(disable);
   }
 
   /** {@inheritDoc} */
   @Override
   public void spawnSweepParticles() {
-    this.entity.spawnSweepParticles();
+    this.wrapped().spawnSweepParticles();
   }
 
   /** {@inheritDoc} */
   @Override
   public void respawnPlayer() {
-    this.entity.respawnPlayer();
+    this.wrapped().respawnPlayer();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isUser() {
-    return this.entity.isUser();
+    return this.wrapped().isUser();
   }
 
   /** {@inheritDoc} */
   @Override
   public GameProfile getGameProfile() {
-    return this.gameProfileGameProfileSerializer.deserialize(this.entity.getGameProfile());
+    return this.gameProfileSerializer.deserialize(this.wrapped().getGameProfile());
   }
 
   /** {@inheritDoc} */
   @Override
   public void stopSleepInBed(boolean updateTimer, boolean updateSleepingPlayers) {
-    this.entity.stopSleepInBed(updateTimer, updateSleepingPlayers);
+    this.wrapped().stopSleepInBed(updateTimer, updateSleepingPlayers);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isPlayerFullyAsleep() {
-    return this.entity.isPlayerFullyAsleep();
+    return this.wrapped().isPlayerFullyAsleep();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getSleepTimer() {
-    return this.entity.getSleepTimer();
+    return this.wrapped().getSleepTimer();
   }
 
   /** {@inheritDoc} */
   @Override
   public void sendStatusMessage(ChatComponent component, boolean actionbar) {
-    this.entity.sendStatusMessage(
-        (ITextComponent)
-            this.getEntityFoundationMapper().getComponentMapper().toMinecraft(component),
-        actionbar);
+    this.wrapped()
+        .sendStatusMessage(
+            (ITextComponent)
+                this.getEntityFoundationMapper().getComponentMapper().toMinecraft(component),
+            actionbar);
   }
 
   /** {@inheritDoc} */
   @Override
   public BlockPosition getBedLocation() {
-    return this.getWorld().fromMinecraftBlockPos(this.entity.getBedLocation());
+    return this.getWorld().fromMinecraftBlockPos(this.wrapped().getBedLocation());
   }
 
   /** {@inheritDoc} */
   @Override
   public void addStat(ResourceLocation resourceLocation) {
-    this.entity.addStat((net.minecraft.util.ResourceLocation) resourceLocation.getHandle());
+    this.wrapped().addStat((net.minecraft.util.ResourceLocation) resourceLocation.getHandle());
   }
 
   /** {@inheritDoc} */
   @Override
   public void addStat(ResourceLocation resourceLocation, int state) {
-    this.entity.addStat((net.minecraft.util.ResourceLocation) resourceLocation.getHandle(), state);
+    this.wrapped()
+        .addStat((net.minecraft.util.ResourceLocation) resourceLocation.getHandle(), state);
   }
 
   /** {@inheritDoc} */
   @Override
   public void addMovementStat(double x, double y, double z) {
-    this.entity.addMovementStat(x, y, z);
+    this.wrapped().addMovementStat(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean tryToStartFallFlying() {
-    return this.entity.tryToStartFallFlying();
+    return this.wrapped().tryToStartFallFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public void startFallFlying() {
-    this.entity.startFallFlying();
+    this.wrapped().startFallFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public void stopFallFlying() {
-    this.entity.stopFallFlying();
+    this.wrapped().stopFallFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public void giveExperiencePoints(int experiencePoints) {
-    this.entity.giveExperiencePoints(experiencePoints);
+    this.wrapped().giveExperiencePoints(experiencePoints);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getExperienceSeed() {
-    return this.entity.getXPSeed();
+    return this.wrapped().getXPSeed();
   }
 
   /** {@inheritDoc} */
   @Override
   public void addExperienceLevel(int experienceLevel) {
-    this.entity.addExperienceLevel(experienceLevel);
+    this.wrapped().addExperienceLevel(experienceLevel);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getExperienceBarCap() {
-    return this.entity.xpBarCap();
+    return this.wrapped().xpBarCap();
   }
 
   /** {@inheritDoc} */
   @Override
   public void addExhaustion(float exhaustion) {
-    this.entity.addExhaustion(exhaustion);
+    this.wrapped().addExhaustion(exhaustion);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canEat(boolean ignoreHunger) {
-    return this.entity.canEat(ignoreHunger);
+    return this.wrapped().canEat(ignoreHunger);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean shouldHeal() {
-    return this.entity.shouldHeal();
+    return this.wrapped().shouldHeal();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isAllowEdit() {
-    return this.entity.isAllowEdit();
+    return this.wrapped().isAllowEdit();
   }
 
   /** {@inheritDoc} */
   @Override
   public void sendPlayerAbilities() {
-    this.entity.sendPlayerAbilities();
+    this.wrapped().sendPlayerAbilities();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setGameMode(GameMode gameMode) {
-    this.entity.setGameType(
-        (GameType) this.getEntityFoundationMapper().toMinecraftGameType(gameMode));
+    this.wrapped()
+        .setGameType((GameType) this.getEntityFoundationMapper().toMinecraftGameType(gameMode));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean addItemStackToInventory(ItemStack itemStack) {
-    return this.entity.addItemStackToInventory(
-        (net.minecraft.item.ItemStack)
-            this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
+    return this.wrapped()
+        .addItemStackToInventory(
+            (net.minecraft.item.ItemStack)
+                this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCreative() {
-    return this.entity.isCreative();
+    return this.wrapped().isCreative();
   }
 
   /** {@inheritDoc} */
@@ -436,58 +472,59 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   /** {@inheritDoc} */
   @Override
   public boolean isWearing(PlayerClothing clothing) {
-    return this.entity.isWearing(
-        (PlayerModelPart) this.modelMapper.toMinecraftPlayerModelPart(clothing));
+    return this.wrapped()
+        .isWearing((PlayerModelPart) this.modelMapper.toMinecraftPlayerModelPart(clothing));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasReducedDebug() {
-    return this.entity.hasReducedDebug();
+    return this.wrapped().hasReducedDebug();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setReducedDebug(boolean reducedDebug) {
-    this.entity.setReducedDebug(reducedDebug);
+    this.wrapped().setReducedDebug(reducedDebug);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPrimaryHand(Hand.Side primaryHand) {
-    this.entity.setPrimaryHand(
-        (HandSide)
-            this.getEntityFoundationMapper().getHandMapper().toMinecraftHandSide(primaryHand));
+    this.wrapped()
+        .setPrimaryHand(
+            (HandSide)
+                this.getEntityFoundationMapper().getHandMapper().toMinecraftHandSide(primaryHand));
   }
 
   /** {@inheritDoc} */
   @Override
   public float getCooldownPeriod() {
-    return this.entity.getCooldownPeriod();
+    return this.wrapped().getCooldownPeriod();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getCooledAttackStrength(float strength) {
-    return this.entity.getCooledAttackStrength(strength);
+    return this.wrapped().getCooledAttackStrength(strength);
   }
 
   /** {@inheritDoc} */
   @Override
   public void resetCooldown() {
-    this.entity.resetCooldown();
+    this.wrapped().resetCooldown();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getLuck() {
-    return this.entity.getLuck();
+    return this.wrapped().getLuck();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canUseCommandBlock() {
-    return this.entity.canUseCommandBlock();
+    return this.wrapped().canUseCommandBlock();
   }
 
   /** {@inheritDoc} */
@@ -496,7 +533,7 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     return (NBTCompound)
         this.getEntityFoundationMapper()
             .getNbtMapper()
-            .fromMinecraftNBT(this.entity.getLeftShoulderEntity());
+            .fromMinecraftNBT(this.wrapped().getLeftShoulderEntity());
   }
 
   /** {@inheritDoc} */
@@ -505,67 +542,67 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     return (NBTCompound)
         this.getEntityFoundationMapper()
             .getNbtMapper()
-            .fromMinecraftNBT(this.entity.getRightShoulderEntity());
+            .fromMinecraftNBT(this.wrapped().getRightShoulderEntity());
   }
 
   /** {@inheritDoc} */
   @Override
   public void addFoodStatistics(int foodLevel, float modifier) {
-    this.entity.getFoodStats().addStats(foodLevel, modifier);
+    this.wrapped().getFoodStats().addStats(foodLevel, modifier);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getFoodLevel() {
-    return this.entity.getFoodStats().getFoodLevel();
+    return this.wrapped().getFoodStats().getFoodLevel();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setFoodLevel(int foodLevel) {
-    this.entity.getFoodStats().setFoodLevel(foodLevel);
+    this.wrapped().getFoodStats().setFoodLevel(foodLevel);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean needFood() {
-    return this.entity.getFoodStats().needFood();
+    return this.wrapped().getFoodStats().needFood();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getSaturationLevel() {
-    return this.entity.getFoodStats().getSaturationLevel();
+    return this.wrapped().getFoodStats().getSaturationLevel();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSaturationLevel(float saturationLevel) {
-    this.entity.getFoodStats().setFoodSaturationLevel(saturationLevel);
+    this.wrapped().getFoodStats().setFoodSaturationLevel(saturationLevel);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasCooldown(Object item) {
-    return this.entity.getCooldownTracker().hasCooldown((Item) item);
+    return this.wrapped().getCooldownTracker().hasCooldown((Item) item);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getCooldown(Object item, float partialTicks) {
-    return this.entity.getCooldownTracker().getCooldown((Item) item, partialTicks);
+    return this.wrapped().getCooldownTracker().getCooldown((Item) item, partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCooldown(Object item, int ticks) {
-    this.entity.getCooldownTracker().setCooldown((Item) item, ticks);
+    this.wrapped().getCooldownTracker().setCooldown((Item) item, ticks);
   }
 
   /** {@inheritDoc} */
   @Override
   public void removeCooldown(Object item) {
-    this.entity.getCooldownTracker().removeCooldown((Item) item);
+    this.wrapped().getCooldownTracker().removeCooldown((Item) item);
   }
 
   /** {@inheritDoc} */
@@ -574,56 +611,59 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     return this.getEntityFoundationMapper()
         .getItemMapper()
         .fromMinecraft(
-            this.entity.findAmmo(
-                (net.minecraft.item.ItemStack)
-                    this.getEntityFoundationMapper().getItemMapper().toMinecraft(shootable)));
+            this.wrapped()
+                .findAmmo(
+                    (net.minecraft.item.ItemStack)
+                        this.getEntityFoundationMapper().getItemMapper().toMinecraft(shootable)));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canPickUpItem(ItemStack stack) {
-    return this.entity.canPickUpItem(
-        (net.minecraft.item.ItemStack)
-            this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack));
+    return this.wrapped()
+        .canPickUpItem(
+            (net.minecraft.item.ItemStack)
+                this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
-    return this.entity.replaceItemInInventory(
-        slot,
-        (net.minecraft.item.ItemStack)
-            this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
+    return this.wrapped()
+        .replaceItemInInventory(
+            slot,
+            (net.minecraft.item.ItemStack)
+                this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
   /** {@inheritDoc} */
   @Override
   public float getAbsorptionAmount() {
-    return this.entity.getAbsorptionAmount();
+    return this.wrapped().getAbsorptionAmount();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setAbsorptionAmount(float absorptionAmount) {
-    this.entity.setAbsorptionAmount(absorptionAmount);
+    this.wrapped().setAbsorptionAmount(absorptionAmount);
   }
 
   /** {@inheritDoc} */
   @Override
   public String getScoreboardName() {
-    return this.entity.getScoreboardName();
+    return this.wrapped().getScoreboardName();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isPushedByWater() {
-    return this.entity.isPushedByWater();
+    return this.wrapped().isPushedByWater();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSwimming() {
-    return this.entity.isSwimming();
+    return this.wrapped().isSwimming();
   }
 
   /** {@inheritDoc} */
@@ -632,53 +672,56 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
     return this.getEntityFoundationMapper()
         .getItemMapper()
         .fromMinecraft(
-            this.entity.getItemStackFromSlot(
-                (net.minecraft.inventory.EquipmentSlotType)
-                    this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)));
+            this.wrapped()
+                .getItemStackFromSlot(
+                    (net.minecraft.inventory.EquipmentSlotType)
+                        this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)));
   }
 
   /** {@inheritDoc} */
   @Override
   public float getAIMoveSpeed() {
-    return this.entity.getAIMoveSpeed();
+    return this.wrapped().getAIMoveSpeed();
   }
 
   /** {@inheritDoc} */
   @Override
   public void updateSwim() {
-    this.entity.updateSwimming();
+    this.wrapped().updateSwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public void wakeUp() {
-    this.entity.wakeUp();
+    this.wrapped().wakeUp();
   }
 
   /** {@inheritDoc} */
   @Override
   public void startSleeping(BlockPosition position) {
-    this.entity.startSleeping((BlockPos) this.getWorld().toMinecraftBlockPos(position));
+    this.wrapped().startSleeping((BlockPos) this.getWorld().toMinecraftBlockPos(position));
   }
 
   /** {@inheritDoc} */
   @Override
   public void remove() {
-    this.entity.remove();
+    this.wrapped().remove();
   }
 
   /** {@inheritDoc} */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.entity.readAdditional(
-        (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
+    this.wrapped()
+        .readAdditional(
+            (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
   /** {@inheritDoc} */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.entity.writeAdditional(
-        (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
+    this.wrapped()
+        .writeAdditional(
+            (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
   /** {@inheritDoc} */
@@ -690,9 +733,11 @@ public class VersionedPlayerEntity extends VersionedLivingEntity implements Play
   /** {@inheritDoc} */
   @Override
   public void playSound(Sound sound, float volume, float pitch) {
-    this.entity.playSound(
-        (SoundEvent) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
-        volume,
-        pitch);
+    this.wrapped()
+        .playSound(
+            (SoundEvent)
+                this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            volume,
+            pitch);
   }
 }
