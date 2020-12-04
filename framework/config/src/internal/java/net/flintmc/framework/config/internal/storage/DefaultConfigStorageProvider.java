@@ -2,7 +2,10 @@ package net.flintmc.framework.config.internal.storage;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.config.annotation.PostMinecraftRead;
+import net.flintmc.framework.config.annotation.PostOpenGLRead;
 import net.flintmc.framework.config.event.ConfigStorageEvent;
+import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.storage.ConfigStorage;
@@ -33,6 +36,7 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
   private final Logger logger;
   private final EventBus eventBus;
   private final ConfigStorageEvent.Factory eventFactory;
+  private final ConfigAnnotationCollector annotationCollector;
 
   private final ConfigGenerator configGenerator;
 
@@ -40,15 +44,17 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
   private final Map<Class<?>, ParsedConfig> pendingWrites = new ConcurrentHashMap<>();
 
   @Inject
-  public DefaultConfigStorageProvider(
+  private DefaultConfigStorageProvider(
       @InjectLogger Logger logger,
       ConfigStorageEvent.Factory eventFactory,
       EventBus eventBus,
       ScheduledExecutorService executorService,
+      ConfigAnnotationCollector annotationCollector,
       ConfigGenerator configGenerator) {
     this.logger = logger;
     this.eventFactory = eventFactory;
     this.eventBus = eventBus;
+    this.annotationCollector = annotationCollector;
     this.configGenerator = configGenerator;
     executorService.scheduleAtFixedRate(
         () -> {
@@ -126,7 +132,13 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
       // read the configs from the storage
 
       for (ParsedConfig config : configs) {
-        storage.read(config);
+        Collection<PostMinecraftRead> postMinecraftReads =
+            this.annotationCollector.getAllAnnotations(config.getClass(), PostMinecraftRead.class);
+        Collection<PostOpenGLRead> postOpenGLReads =
+            this.annotationCollector.getAllAnnotations(config.getClass(), PostOpenGLRead.class);
+        if (postMinecraftReads.isEmpty() && postOpenGLReads.isEmpty()) {
+          storage.read(config);
+        }
       }
     }
   }
