@@ -62,7 +62,7 @@ public class InternalTaskExecutor implements TaskExecutor {
   }
 
   @Override
-  public void unschedule(Task task) {
+  public void unSchedule(Task task) {
     synchronized (this) {
       this.scheduledTasks.remove(task);
     }

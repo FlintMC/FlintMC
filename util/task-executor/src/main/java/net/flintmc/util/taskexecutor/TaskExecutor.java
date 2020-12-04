@@ -7,7 +7,7 @@ public interface TaskExecutor {
 
   void schedule(Task task);
 
-  void unschedule(Task task);
+  void unSchedule(Task task);
 
   void run(Runnable runnable);
 

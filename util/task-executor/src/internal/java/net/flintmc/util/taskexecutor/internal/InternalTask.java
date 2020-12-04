@@ -52,7 +52,7 @@ public class InternalTask implements Task {
   @Override
   public void cancel() {
     this.scheduled = false;
-    this.taskExecutor.unschedule(this);
+    this.taskExecutor.unSchedule(this);
   }
 
   @Override
