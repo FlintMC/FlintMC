@@ -9,6 +9,7 @@ import net.flintmc.transform.hook.Hook;
 import net.flintmc.util.taskexecutor.GameLoopEvent;
 import net.flintmc.util.taskexecutor.TickEvent;
 
+/** Registers Hooks to fire {@link GameLoopEvent} and {@link TickEvent}. */
 @Singleton
 public class TickHook {
 

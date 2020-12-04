@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/** {@inheritDoc} */
 @Singleton
 @Implement(TaskExecutor.class)
 public class InternalTaskExecutor implements TaskExecutor {
@@ -50,6 +51,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void schedule(Task task) {
     if (task.isAsync() && task.getTicksToStart() == 0 && !task.isRepeating()) {
@@ -61,6 +63,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void unSchedule(Task task) {
     synchronized (this) {
@@ -68,16 +71,19 @@ public class InternalTaskExecutor implements TaskExecutor {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void run(Runnable runnable) {
     this.taskFactory.create(0, 0, false, false, t -> runnable.run()).schedule();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void runAsync(Runnable runnable) {
     this.taskFactory.create(0, 0, true, false, t -> runnable.run()).schedule();
   }
 
+  /** {@inheritDoc} */
   @Override
   public Task scheduleSync(int ticks, Runnable runnable) {
     Task task = this.taskFactory.create(ticks, 0, false, false, t -> runnable.run());
@@ -85,6 +91,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     return task;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Task scheduleSync(int ticks, Consumer<Task> runnable) {
     Task task = this.taskFactory.create(ticks, 0, false, false, runnable);
@@ -92,6 +99,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     return task;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Task scheduleAsync(int ticks, Runnable runnable) {
     Task task = this.taskFactory.create(ticks, 0, true, false, t -> runnable.run());
@@ -99,6 +107,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     return task;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Task scheduleAsync(int ticks, Consumer<Task> runnable) {
     Task task = this.taskFactory.create(ticks, 0, true, false, runnable);
@@ -106,6 +115,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     return task;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Task scheduleSyncRepeating(int ticks, int interval, Runnable runnable) {
     Task task = this.taskFactory.create(ticks, interval, false, true, t -> runnable.run());
@@ -113,6 +123,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     return task;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Task scheduleSyncRepeating(int ticks, int interval, Consumer<Task> runnable) {
     Task task = this.taskFactory.create(ticks, interval, false, true, runnable);
@@ -120,6 +131,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     return task;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Task scheduleAsyncRepeating(int ticks, int interval, Runnable runnable) {
     Task task = this.taskFactory.create(ticks, interval, true, true, t -> runnable.run());
@@ -127,6 +139,7 @@ public class InternalTaskExecutor implements TaskExecutor {
     return task;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Task scheduleAsyncRepeating(int ticks, int interval, Consumer<Task> runnable) {
     Task task = this.taskFactory.create(ticks, interval, true, true, runnable);
@@ -134,26 +147,31 @@ public class InternalTaskExecutor implements TaskExecutor {
     return task;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<Task> getTasks() {
     return this.scheduledTasks;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<Task> getSyncTasks() {
     return this.scheduledTasks.stream().filter(t -> !t.isAsync()).collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<Task> getAsyncTasks() {
     return this.scheduledTasks.stream().filter(Task::isAsync).collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<Task> getRepeatingTasks() {
     return this.scheduledTasks.stream().filter(Task::isRepeating).collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<Task> getSyncRepeatingTasks() {
     return this.scheduledTasks.stream()
@@ -161,6 +179,7 @@ public class InternalTaskExecutor implements TaskExecutor {
         .collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<Task> getAsyncRepeatingTasks() {
     return this.scheduledTasks.stream()

@@ -8,6 +8,7 @@ import net.flintmc.util.taskexecutor.TaskExecutor;
 
 import java.util.function.Consumer;
 
+/** {@inheritDoc} */
 @Implement(Task.class)
 public class InternalTask implements Task {
 
@@ -38,53 +39,63 @@ public class InternalTask implements Task {
     this.scheduled = false;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void schedule() {
     this.scheduled = true;
     this.taskExecutor.schedule(this);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void run() {
     this.runnable.accept(this);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void cancel() {
     this.scheduled = false;
     this.taskExecutor.unSchedule(this);
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isAsync() {
     return this.async;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isRepeating() {
     return this.repeat;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isScheduled() {
     return this.scheduled;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getTicksToStart() {
     return this.ticks;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getInterval() {
     return this.interval;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setTicksToStart(int ticks) {
     this.ticks = ticks;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setInterval(int interval) {
     this.interval = interval;
