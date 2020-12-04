@@ -6,8 +6,10 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import javassist.bytecode.SignatureAttribute;
 import net.flintmc.framework.config.generator.GeneratingConfig;
-import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethod;
+import net.flintmc.framework.config.internal.generator.method.GenericMethodHelper;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigGetterSetter;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigMultiGetterSetter;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
@@ -17,11 +19,15 @@ import java.util.Map;
 @Singleton
 public class ConfigGetterGroup implements ConfigMethodGroup {
 
-  private final ClassPool pool = ClassPool.getDefault();
+  private final ClassPool pool;
+  private final GenericMethodHelper methodHelper;
   private final ConfigSerializationService serializationService;
 
   @Inject
-  public ConfigGetterGroup(ConfigSerializationService serializationService) {
+  private ConfigGetterGroup(
+      GenericMethodHelper methodHelper, ConfigSerializationService serializationService) {
+    this.methodHelper = methodHelper;
+    this.pool = ClassPool.getDefault();
     this.serializationService = serializationService;
   }
 
@@ -31,7 +37,7 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
   }
 
   @Override
-  public DefaultConfigMethod resolveMethod(
+  public ConfigMethod resolveMethod(
       GeneratingConfig config, CtClass type, String entryName, CtMethod method)
       throws NotFoundException {
     CtClass methodType = method.getReturnType();
@@ -43,15 +49,12 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
     if (parameters.length == 0) {
       if (methodType.getName().equals(Map.class.getName())
           && entryName.startsWith(ConfigMultiGetterSetter.ALL_PREFIX)) {
-        CtClass objectType = this.pool.get(Object.class.getName());
-        return new ConfigMultiGetterSetter(
-            this.serializationService,
+        return this.methodHelper.generateMultiGetterSetter(
             config,
             type,
-            entryName.substring(ConfigMultiGetterSetter.ALL_PREFIX.length()),
-            methodType,
-            objectType,
-            objectType);
+            method,
+            signature -> (SignatureAttribute.ClassType) signature.getReturnType(),
+            entryName.substring(ConfigMultiGetterSetter.ALL_PREFIX.length()));
       }
 
       return new ConfigGetterSetter(this.serializationService, config, type, entryName, methodType);
