@@ -5,7 +5,7 @@ import net.flintmc.processing.autoload.identifier.ConstructorIdentifier;
 import net.flintmc.processing.autoload.identifier.Identifier;
 import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 
-import javax.lang.model.element.ElementKind;
+import net.flintmc.processing.autoload.ElementKind;
 import java.lang.annotation.Annotation;
 import java.util.*;
 

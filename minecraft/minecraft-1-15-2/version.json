@@ -382,24 +382,24 @@
     {
       "downloads": {
         "artifact": {
-          "path": "org/apache/logging/log4j/log4j-api/2.8.1/log4j-api-2.8.1.jar",
+          "path": "org/apache/logging/log4j/log4j-api/2.14.0/log4j-api-2.14.0.jar",
           "sha1": "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72",
           "size": 228859,
-          "url": "https://libraries.minecraft.net/org/apache/logging/log4j/log4j-api/2.8.1/log4j-api-2.8.1.jar"
+          "url": "https://libraries.minecraft.net/org/apache/logging/log4j/log4j-api/2.14.0/log4j-api-2.14.0.jar"
         }
       },
-      "name": "org.apache.logging.log4j:log4j-api:2.8.1"
+      "name": "org.apache.logging.log4j:log4j-api:2.14.0"
     },
     {
       "downloads": {
         "artifact": {
-          "path": "org/apache/logging/log4j/log4j-core/2.8.1/log4j-core-2.8.1.jar",
+          "path": "org/apache/logging/log4j/log4j-core/2.14.0/log4j-core-2.14.0.jar",
           "sha1": "4ac28ff2f1ddf05dae3043a190451e8c46b73c31",
           "size": 1402925,
-          "url": "https://libraries.minecraft.net/org/apache/logging/log4j/log4j-core/2.8.1/log4j-core-2.8.1.jar"
+          "url": "https://libraries.minecraft.net/org/apache/logging/log4j/log4j-core/2.14.0/log4j-core-2.14.0.jar"
         }
       },
-      "name": "org.apache.logging.log4j:log4j-core:2.8.1"
+      "name": "org.apache.logging.log4j:log4j-core:2.14.0"
     },
     {
       "downloads": {

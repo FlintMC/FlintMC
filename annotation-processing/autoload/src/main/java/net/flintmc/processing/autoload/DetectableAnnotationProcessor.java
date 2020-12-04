@@ -41,7 +41,7 @@ public class DetectableAnnotationProcessor implements Processor {
   /** Template to instantiate AnnotationMeta */
   private static final String ANNOTATION_META_TEMPLATE =
       "new AnnotationMeta(\n"
-          + "   javax.lang.model.element.ElementKind.${ELEMENT_KIND}, \n"
+          + "   net.flintmc.processing.autoload.ElementKind.${ELEMENT_KIND}, \n"
           + "   ${IDENTIFIER}, \n"
           + "   ${ANNOTATION}, \n"
           + "new AnnotationMeta[]{${META_DATA}})";
