@@ -116,7 +116,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    */
   @Override
   public Class<?> findClass(String name) throws ClassNotFoundException {
-    return findClass(name, null);
+    return findClass(name, (ChildClassLoader) null);
   }
 
   /**

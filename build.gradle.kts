@@ -38,7 +38,10 @@ subprojects {
 
         tasks.withType<JavaCompile> {
             options.isFork = true
-            options.compilerArgs.addAll(arrayOf("--release", "8"))
+
+            sourceCompatibility = "1.8"
+            targetCompatibility = "1.8"
+
         }
 
         publishing {
