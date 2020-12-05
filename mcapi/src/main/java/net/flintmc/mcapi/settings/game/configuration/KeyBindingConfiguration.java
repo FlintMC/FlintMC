@@ -88,13 +88,4 @@ public interface KeyBindingConfiguration {
    */
   @ConfigExclude
   List<KeyBinding> getKeyBindings();
-
-  /**
-   * Changes the binding of a key.
-   *
-   * @param keyBinding The key binding to change.
-   * @param code The new code for key binding.
-   */
-  @ConfigExclude
-  void setKeyBindingCode(KeyBinding keyBinding, Key code);
 }

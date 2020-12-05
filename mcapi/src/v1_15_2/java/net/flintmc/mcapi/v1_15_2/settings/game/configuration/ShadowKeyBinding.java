@@ -8,5 +8,12 @@ import net.minecraft.client.util.InputMappings;
 public interface ShadowKeyBinding {
 
   @FieldGetter("keyCode")
-  InputMappings.Input getKeyCode();
+  InputMappings.Input getRawCode();
+
+  @FieldGetter("keyCodeDefault")
+  InputMappings.Input getDefaultKeyCode();
+
+  default InputMappings.Input getKeyCode() {
+    return this.getRawCode().getKeyCode() == -1 ? this.getDefaultKeyCode() : this.getRawCode();
+  }
 }

@@ -45,6 +45,7 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
           key == null
               ? InputMappings.INPUT_INVALID
               : InputMappings.getInputByName(key.getConfigurationName()));
+      Minecraft.getInstance().gameSettings.saveOptions();
     }
   }
 
@@ -122,22 +123,6 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     return Arrays.stream(Minecraft.getInstance().gameSettings.keyBindings)
         .map(this::fromMinecraftObject)
         .collect(Collectors.toList());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setKeyBindingCode(KeyBinding bindingCode, Key keyInputName) {
-    Minecraft.getInstance()
-        .gameSettings
-        .setKeyBindingCode(
-            this.toMinecraftObject(bindingCode),
-            InputMappings.getInputByCode(keyInputName.getKey(), keyInputName.getScanCode()));
-    bindingCode.bind(keyInputName);
-  }
-
-  private net.minecraft.client.settings.KeyBinding toMinecraftObject(KeyBinding binding) {
-    return new net.minecraft.client.settings.KeyBinding(
-        binding.getKeyDescription(), binding.getKeyCode(), binding.getKeyCategory());
   }
 
   private KeyBinding fromMinecraftObject(net.minecraft.client.settings.KeyBinding keyBinding) {
