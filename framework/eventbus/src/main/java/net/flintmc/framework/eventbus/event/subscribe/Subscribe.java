@@ -12,6 +12,9 @@ import java.lang.annotation.Target;
 /**
  * Marks a method as an event receiver. The method will then be invoked if the given event has been
  * fired. The method needs to declare exactly one parameter which has to be an {@link Event}.
+ *
+ * <p>For simpler modification of the {@link #phase()}, {@link PreSubscribe} and {@link
+ * PostSubscribe} can also be used.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
