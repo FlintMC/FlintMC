@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.player;
 
+import net.flintmc.mcapi.entity.EntityNotLoadedException;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
 import net.flintmc.mcapi.player.overlay.TabOverlay;
@@ -10,6 +11,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the inventory of this player.
    *
    * @return The player's inventory.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   PlayerInventory getInventoryController();
 
@@ -17,6 +20,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the opened inventory of this player.
    *
    * @return The opened inventory.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   Inventory getOpenInventory();
 
@@ -24,10 +29,17 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Prints a message into the player chat.
    *
    * @param message The message to print.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void sendChatMessage(String message);
 
-  /** Closes the screen and drop an item stack. */
+  /**
+   * Closes the screen and drop an item stack.
+   *
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
+   */
   void closeScreenAndDropStack();
 
   /**
@@ -36,16 +48,25 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * <p>This is only on the client side.
    *
    * @param health The new health.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setPlayerSPHealth(float health);
 
-  /** Sends the horse inventory to the server. */
+  /**
+   * Sends the horse inventory to the server.
+   *
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
+   */
   void sendHorseInventory();
 
   /**
    * Retrieves the server brand
    *
    * @return The server brand.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   String getServerBrand();
 
@@ -53,6 +74,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Changes the server brand.
    *
    * @param serverBrand The new server brand.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setServerBrand(String serverBrand);
 
@@ -60,6 +83,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Changes the permission level of this player.
    *
    * @param level The new permission level.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setPermissionLevel(int level);
 
@@ -69,6 +94,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * @param currentExperience The current experience of this player.
    * @param maxExperience The maximal experience of this player.
    * @param level The level of this player.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setExperienceStats(float currentExperience, int maxExperience, int level);
 
@@ -76,6 +103,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Whether the player is show a death screen.
    *
    * @return {@code true} if the player is show a death screen, otherwise {@code false}.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   boolean isShowDeathScreen();
 
@@ -84,6 +113,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    *
    * @param showDeathScreen {@code true} if the death screen should be displayed, otherwise {@code
    *     false}.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setShowDeathScreen(boolean showDeathScreen);
 
@@ -91,6 +122,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Whether the player is riding a horse.
    *
    * @return {@code true} if the player is riding a horse, otherwise {@code false}.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   boolean isRidingHorse();
 
@@ -98,6 +131,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the horse jump power.
    *
    * @return The jump power of the horse.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   float getHorseJumpPower();
 
@@ -105,6 +140,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Whether the player is rowing with a boat.
    *
    * @return {@code true} if the player is rowing with a boat, otherwise {@code false}.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   boolean isRowingBoat();
 
@@ -112,6 +149,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Whether auto jump is enabled.
    *
    * @return {@code true} if the auto jump is enabled, otherwise {@code false}.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   boolean isAutoJumpEnabled();
 
@@ -119,6 +158,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the water brightness of this player.
    *
    * @return The water brightness.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   float getWaterBrightness();
 
@@ -126,6 +167,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the tab overlay of this player.
    *
    * @return The tab overlay.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   TabOverlay getTabOverlay();
 
@@ -133,6 +176,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the render arm yaw of this player entity.
    *
    * @return The player entity render arm yaw.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   float getRenderArmYaw();
 
@@ -140,6 +185,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Changes the render arm yaw of this player entity.
    *
    * @param renderArmYaw The new render arm yaw.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setRenderArmYaw(float renderArmYaw);
 
@@ -147,6 +194,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the previous render arm yaw of this player entity.
    *
    * @return The player entity previous render arm yaw.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   float getPreviousRenderArmYaw();
 
@@ -154,6 +203,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Changes the previous render arm yaw of this player entity.
    *
    * @param previousRenderArmYaw The new previous render arm yaw.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setPreviousArmYaw(float previousRenderArmYaw);
 
@@ -161,6 +212,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the previous render arm pitch of this player entity.
    *
    * @return The player entity previous render arm pitch.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   float getRenderArmPitch();
 
@@ -168,6 +221,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Changes the render arm pitch of this player entity.
    *
    * @param renderArmPitch The new render arm pitch.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setRenderArmPitch(float renderArmPitch);
 
@@ -175,6 +230,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the previous render arm pitch of this player entity.
    *
    * @return The player entity previous render arm pitch.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   float getPreviousRenderArmPitch();
 
@@ -182,6 +239,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Changes the previous render arm pitch of this player entity.
    *
    * @param previousRenderArmPitch The new previous render arm pitch.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setPreviousRenderArmPitch(float previousRenderArmPitch);
 
@@ -189,9 +248,18 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    * Retrieves the current biome name of this player.
    *
    * @return Player's current biome name.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   String getBiome();
 
+  /**
+   * Retrieves whether this player is a spectator.
+   *
+   * @return {@code true} if this player is a spectator, {@code false} otherwise
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
+   */
   @Override
   default boolean isSpectator() {
     return false;
