@@ -6,6 +6,8 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
 
+import javax.annotation.Nullable;
+
 /**
  * This event will be fired when a {@link NetworkPlayerInfo} is added/removed/updated on a
  * Multiplayer server, it will never be fired in Singleplayer and it will only be fired in the
@@ -66,6 +68,6 @@ public interface PlayerInfoEvent extends Event {
      * @param playerInfo The non-null player info that has been updated
      * @return The new non-null {@link PlayerInfoEvent}
      */
-    PlayerInfoEvent create(@Assisted Type type, @Assisted NetworkPlayerInfo playerInfo);
+    PlayerInfoEvent create(@Assisted Type type, @Assisted @Nullable NetworkPlayerInfo playerInfo);
   }
 }
