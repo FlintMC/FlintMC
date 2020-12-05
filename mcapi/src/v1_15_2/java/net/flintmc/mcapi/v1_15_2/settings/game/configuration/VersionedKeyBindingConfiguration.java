@@ -21,9 +21,6 @@ import java.util.stream.Collectors;
 @ConfigImplementation(value = KeyBindingConfiguration.class, version = "1.15.2")
 public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration {
 
-  // TODO this needs some changes (e.g. minecraft.KeyBinding#getDefault is being used to get the
-  // current key, but this is only the default)
-
   private final KeyBinding.Factory keyBindingFactory;
 
   @Inject
@@ -35,7 +32,8 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   public Key getKey(String keyDescription) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
     return keyBinding != null
-        ? Key.getByConfigurationName(keyBinding.getDefault().getTranslationKey())
+        ? Key.getByConfigurationName(
+            ((ShadowKeyBinding) keyBinding).getKeyCode().getTranslationKey())
         : null;
   }
 
@@ -57,7 +55,8 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
         Minecraft.getInstance().gameSettings.keyBindings) {
       keys.put(
           keyBinding.getKeyDescription(),
-          Key.getByConfigurationName(keyBinding.getDefault().getTranslationKey()));
+          Key.getByConfigurationName(
+              ((ShadowKeyBinding) keyBinding).getKeyCode().getTranslationKey()));
     }
     return keys;
   }
@@ -144,7 +143,7 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
   private KeyBinding fromMinecraftObject(net.minecraft.client.settings.KeyBinding keyBinding) {
     return this.keyBindingFactory.create(
         keyBinding.getKeyDescription(),
-        keyBinding.getDefault().getKeyCode(),
+        ((ShadowKeyBinding) keyBinding).getKeyCode().getKeyCode(),
         keyBinding.getKeyCategory());
   }
 }
