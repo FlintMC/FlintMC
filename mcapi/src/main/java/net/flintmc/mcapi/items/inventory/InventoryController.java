@@ -51,7 +51,8 @@ public interface InventoryController {
   void registerType(InventoryType type);
 
   /**
-   * Whether inventories can be opened.
+   * Whether inventories can be opened. For example they cannot be opened when the player is not
+   * ingame.
    *
    * @return {@code true} if inventories can be opened, otherwise {@code false}
    */

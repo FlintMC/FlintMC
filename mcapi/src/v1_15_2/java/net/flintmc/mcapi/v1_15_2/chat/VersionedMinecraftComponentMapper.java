@@ -7,6 +7,7 @@ import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.*;
+import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
@@ -207,9 +208,9 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
         return new SelectorTextComponent(component.getUnformattedText());
       }
 
-    } else if (component instanceof net.flintmc.mcapi.chat.component.TextComponent) {
+    } else if (component instanceof TextComponent) {
 
-      String text = ((net.minecraft.util.text.TextComponent) component).getFormattedText();
+      String text = ((TextComponent) component).text();
       if (text != null) {
         return new StringTextComponent(text);
       }

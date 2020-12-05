@@ -9,39 +9,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.util.HandSide;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /** 1.15.2 implementation of {@link SkinConfiguration}. */
 @Singleton
 @ConfigImplementation(value = SkinConfiguration.class, version = "1.15.2")
 public class VersionedSkinConfiguration implements SkinConfiguration {
 
-  private static final PlayerClothing[] CLOTHINGS = PlayerClothing.values();
-
   /** {@inheritDoc} */
-  /*  @Override
+  @Override
   public Set<PlayerClothing> getPlayerClothing() {
-    return Minecraft.getInstance().gameSettings
-        .getModelParts()
-        .stream()
+    return Minecraft.getInstance().gameSettings.getModelParts().stream()
         .map(this::fromMinecraftObject)
         .collect(Collectors.toSet());
-  }*/
-  @Override
-  public Map<PlayerClothing, Boolean> getAllModelClothingEnabled() {
-    Map<PlayerClothing, Boolean> map = new HashMap<>();
-
-    for (PlayerClothing clothing : CLOTHINGS) {
-      map.put(clothing, this.isModelClothingEnabled(clothing));
-    }
-
-    return map;
-  }
-
-  @Override
-  public void setAllModelClothingEnabled(Map<PlayerClothing, Boolean> map) {
-    map.forEach(this::setModelClothingEnabled);
   }
 
   /** {@inheritDoc} */
@@ -53,6 +34,7 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isModelClothingEnabled(PlayerClothing clothing) {
     PlayerModelPart targetPart = this.toMinecraftObject(clothing);

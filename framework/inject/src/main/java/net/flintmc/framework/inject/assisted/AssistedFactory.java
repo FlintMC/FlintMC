@@ -9,7 +9,7 @@ import net.flintmc.processing.autoload.DetectableAnnotation;
 /**
  * Declares an <b>interface</b> as a factory base for a given class.
  *
- * <p>Factories can by used to instantiate classes which required parameters which can not be
+ * <p>Factories can be used to instantiate classes which required parameters which can not be
  * injected directly. For that methods with the name {@code create} and a signature matching the
  * constructor of the implementation classes can be created, which then will be used to construct
  * the underlying implementations.

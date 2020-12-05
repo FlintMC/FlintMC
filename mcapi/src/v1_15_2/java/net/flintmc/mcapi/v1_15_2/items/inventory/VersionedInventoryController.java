@@ -20,6 +20,7 @@ import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.DispenserContainer;
+import net.minecraft.inventory.container.PlayerContainer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -121,8 +122,8 @@ public class VersionedInventoryController extends DefaultInventoryController {
       return false;
     }
 
-    return inventory instanceof VersionedInventory
-        && ((VersionedInventory) inventory).getContainer().equals(container);
+    return inventory instanceof VersionedOpenedInventory
+        && ((VersionedOpenedInventory) inventory).getContainer().equals(container);
   }
 
   @Override
@@ -134,6 +135,9 @@ public class VersionedInventoryController extends DefaultInventoryController {
     Container container = Minecraft.getInstance().player.openContainer;
     if (container == null) {
       return null;
+    }
+    if (container instanceof PlayerContainer) {
+      return this.getPlayerInventory();
     }
 
     InternalInventoryMapping mapping = this.minecraftMappings.get(container.getClass());

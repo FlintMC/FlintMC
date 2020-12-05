@@ -3,8 +3,11 @@ package net.flintmc.framework.config.internal.storage;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CtClass;
+import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
 import net.flintmc.framework.config.storage.StoragePriority;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
@@ -28,6 +31,8 @@ public class ConfigStorageService implements ServiceHandler<StoragePriority> {
   public void discover(AnnotationMeta<StoragePriority> meta) {
     Identifier<CtClass> identifier = meta.getIdentifier();
 
-    this.storageProvider.registerStorage(identifier.getLocation());
+    ConfigStorage storage =
+        InjectionHolder.getInjectedInstance(CtResolver.get(identifier.getLocation()));
+    this.storageProvider.registerStorage(storage);
   }
 }
