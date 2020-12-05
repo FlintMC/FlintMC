@@ -16,7 +16,12 @@ import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
@@ -123,7 +128,7 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
     }
 
     this.storages.add(ComparableConfigStorage.wrap(storage, priority));
-    this.storages.sort(Collections.reverseOrder());
+    Collections.sort(this.storages); // load the higher priorities last
 
     Collection<ParsedConfig> configs = this.configGenerator.getDiscoveredConfigs();
     if (!configs.isEmpty()) {
