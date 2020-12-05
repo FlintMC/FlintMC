@@ -6,8 +6,10 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import javassist.bytecode.SignatureAttribute.ClassType;
 import net.flintmc.framework.config.generator.GeneratingConfig;
-import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethod;
+import net.flintmc.framework.config.internal.generator.method.GenericMethodHelper;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigGetterSetter;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigMultiGetterSetter;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
@@ -19,10 +21,13 @@ public class ConfigSetterGroup implements ConfigMethodGroup {
 
   private final ClassPool pool = ClassPool.getDefault();
   private final ConfigSerializationService serializationService;
+  private final GenericMethodHelper methodHelper;
 
   @Inject
-  public ConfigSetterGroup(ConfigSerializationService serializationService) {
+  private ConfigSetterGroup(
+      ConfigSerializationService serializationService, GenericMethodHelper methodHelper) {
     this.serializationService = serializationService;
+    this.methodHelper = methodHelper;
   }
 
   @Override
@@ -31,7 +36,7 @@ public class ConfigSetterGroup implements ConfigMethodGroup {
   }
 
   @Override
-  public DefaultConfigMethod resolveMethod(
+  public ConfigMethod resolveMethod(
       GeneratingConfig config, CtClass type, String entryName, CtMethod method)
       throws NotFoundException {
     if (!method.getReturnType().equals(CtClass.voidType)) {
@@ -53,10 +58,12 @@ public class ConfigSetterGroup implements ConfigMethodGroup {
     if (parameters.length == 1) {
       if (parameters[0].getName().equals(Map.class.getName())
           && entryName.startsWith(ConfigMultiGetterSetter.ALL_PREFIX)) {
-        return null;
-        // can't implement this here because we don't know the types that are stored in this map, so
-        // we
-        // just ignore it so that it won't get registered as a normal setter
+        return this.methodHelper.generateMultiGetterSetter(
+            config,
+            type,
+            method,
+            signature -> (ClassType) signature.getParameterTypes()[0],
+            entryName.substring(ConfigMultiGetterSetter.ALL_PREFIX.length()));
       }
 
       return new ConfigGetterSetter(

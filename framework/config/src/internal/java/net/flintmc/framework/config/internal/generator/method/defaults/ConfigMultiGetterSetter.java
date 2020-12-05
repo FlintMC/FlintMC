@@ -38,10 +38,8 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
   }
 
   private String getSingleGetterName() {
-    CtClass type = super.getStoredType();
-
     String prefix =
-        type.equals(CtClass.booleanType) || type.getName().equals(Boolean.class.getName())
+        this.valueType.equals(CtClass.booleanType) || this.valueType.getName().equals(Boolean.class.getName())
             ? "is"
             : "get";
     return prefix + super.getConfigName();
