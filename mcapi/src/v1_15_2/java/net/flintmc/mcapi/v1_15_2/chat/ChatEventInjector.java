@@ -87,7 +87,7 @@ public class ChatEventInjector {
 
     method.insertBefore(
         String.format(
-            "{ $1 = this.chatEventInjector.handleChatSend($1, %s.POST); if ($1 == null) { return; } }",
+            "{ $1 = this.chatEventInjector.handleChatSend($1, %s.PRE); if ($1 == null) { return; } }",
             Subscribe.Phase.class.getName()));
 
     method.insertAfter(
