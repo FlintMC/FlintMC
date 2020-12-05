@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 /** {@inheritDoc} */
 @Implement(Task.class)
-public class InternalTask implements Task {
+public class DefaultTask implements Task {
 
   private int ticks;
   private int interval;
@@ -23,7 +23,7 @@ public class InternalTask implements Task {
   private final TaskExecutor taskExecutor;
 
   @AssistedInject
-  private InternalTask(
+  private DefaultTask(
       @Assisted("ticks") int ticks,
       @Assisted("interval") int interval,
       @Assisted("async") boolean async,

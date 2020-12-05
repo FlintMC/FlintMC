@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.event.TickEvent;
 import net.flintmc.util.taskexecutor.Task;
 import net.flintmc.util.taskexecutor.TaskExecutor;
-import net.flintmc.util.taskexecutor.TickEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /** {@inheritDoc} */
 @Singleton
 @Implement(TaskExecutor.class)
-public class InternalTaskExecutor implements TaskExecutor {
+public class DefaultTaskExecutor implements TaskExecutor {
 
   private final Task.Factory taskFactory;
   private final ExecutorService executorService;
@@ -25,7 +25,7 @@ public class InternalTaskExecutor implements TaskExecutor {
   private final Set<Task> scheduledTasks;
 
   @Inject
-  private InternalTaskExecutor(Task.Factory taskFactory, ExecutorService executorService) {
+  private DefaultTaskExecutor(Task.Factory taskFactory, ExecutorService executorService) {
     this.taskFactory = taskFactory;
     this.executorService = executorService;
     this.scheduledTasks = new HashSet<>();
@@ -33,6 +33,8 @@ public class InternalTaskExecutor implements TaskExecutor {
 
   @Subscribe(phase = Subscribe.Phase.POST)
   public void onTick(TickEvent event) {
+    if (event.getType() != TickEvent.Type.GENERAL) return;
+
     Set<Task> tasks;
     synchronized (this) {
       tasks = new HashSet<>(this.scheduledTasks);
