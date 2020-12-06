@@ -7,8 +7,7 @@ import net.flintmc.framework.config.annotation.PostOpenGLRead;
 import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.ParsedConfig;
-import net.flintmc.framework.tasks.Task;
-import net.flintmc.framework.tasks.Tasks;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 
 import java.util.Collection;
 
@@ -25,8 +24,8 @@ public class PostMinecraftConfigInitializer {
     this.annotationCollector = annotationCollector;
   }
 
-  @Task(Tasks.POST_MINECRAFT_INITIALIZE)
-  public void readMinecraftConfigs() {
+  /*@Subscribe(phase = Subscribe.Phase.POST)
+  public void readMinecraftConfigs(MinecraftInitializeEvent event) { TODO: Add event class to PostMinecraftRead annotation
     for (ParsedConfig config : this.configGenerator.getDiscoveredConfigs()) {
       Collection<PostMinecraftRead> postMinecraftReads =
           this.annotationCollector.getAllAnnotations(config.getClass(), PostMinecraftRead.class);
@@ -34,17 +33,17 @@ public class PostMinecraftConfigInitializer {
         this.configGenerator.initConfig(config);
       }
     }
-  }
+  }*/
 
-  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void readOpenGLConfigs() {
+  /*@Subscribe(phase = Subscribe.Phase.POST)
+  public void readOpenGLConfigs(OpenGLInitializeEvent event) { TODO: Add event class to PostOpenGLRead annotation
     for (ParsedConfig config : this.configGenerator.getDiscoveredConfigs()) {
       Collection<PostOpenGLRead> postOpenGLReads =
-              this.annotationCollector.getAllAnnotations(config.getClass(), PostOpenGLRead.class);
+          this.annotationCollector.getAllAnnotations(config.getClass(), PostOpenGLRead.class);
 
       if (!postOpenGLReads.isEmpty()) {
         this.configGenerator.initConfig(config);
       }
     }
-  }
+  }*/
 }

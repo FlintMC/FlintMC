@@ -50,7 +50,6 @@ defineModule(":launcher")
 defineModule(":mcapi")
 
 defineModule("render:gui")
-defineModule("render:minecraft")
 defineModule("render:shader")
 defineModule("render:vbo-rendering")
 defineModule("render:webgui")

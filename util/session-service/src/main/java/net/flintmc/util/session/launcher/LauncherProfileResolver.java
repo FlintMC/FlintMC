@@ -1,7 +1,8 @@
 package net.flintmc.util.session.launcher;
 
 import javassist.CtClass;
-import net.flintmc.framework.tasks.Tasks;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.mcapi.event.MinecraftInitializeEvent;
 import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 
@@ -42,8 +43,8 @@ public interface LauncherProfileResolver {
   /**
    * Loads all profiles from the launcher_profiles.json by the Minecraft launcher using the
    * serializer with the version that is specified inside of this file. This method may not be
-   * called before the {@link Tasks#POST_MINECRAFT_INITIALIZE} task has been called, otherwise it
-   * may throw unspecified exceptions.
+   * called before the {@link MinecraftInitializeEvent} has been fired in the {@link
+   * Subscribe.Phase#POST} phase, otherwise it may throw unspecified exceptions.
    *
    * @return The launcher profiles or {@code null} if an error occurred (e.g. if the file doesn't
    *     exist, if there is no serializer for the specified version registered)
@@ -54,8 +55,8 @@ public interface LauncherProfileResolver {
   /**
    * Stores all profiles in the given profiles object to the launcher_profiles.json by the Minecraft
    * launcher using the serializer with the version that is specified inside of the given object.
-   * This method may not be called before the {@link Tasks#POST_MINECRAFT_INITIALIZE} task has been
-   * called, otherwise it may throw unspecified exceptions.
+   * This method may not be called before the {@link MinecraftInitializeEvent} has been fired in the
+   * {@link Subscribe.Phase#POST} phase, otherwise it may throw unspecified exceptions.
    *
    * @param profiles The non-null profiles to be written
    * @throws IOException If an I/O error occurred

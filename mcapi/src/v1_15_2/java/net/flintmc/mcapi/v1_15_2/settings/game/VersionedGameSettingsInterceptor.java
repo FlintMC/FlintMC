@@ -4,11 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import net.flintmc.framework.tasks.Task;
-import net.flintmc.framework.tasks.Tasks;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.settings.game.GameSettingsParser;
 import net.flintmc.mcapi.settings.game.MinecraftConfiguration;
 import net.flintmc.mcapi.version.VersionHelper;
+import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.flintmc.transform.hook.Hook;
 import net.minecraft.client.Minecraft;
 
@@ -37,8 +37,8 @@ public class VersionedGameSettingsInterceptor {
     this.versionHelper = versionHelper;
   }
 
-  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void hookLoadOptions() {
+  @Subscribe(phase = Subscribe.Phase.POST)
+  public void hookLoadOptions(OpenGLInitializeEvent event) {
     GameSettingsAccessor gameSettingsAccessor =
         (GameSettingsAccessor) Minecraft.getInstance().gameSettings;
     this.optionsFile = gameSettingsAccessor.getOptionsFile();

@@ -1,6 +1,7 @@
 package net.flintmc.util.session;
 
-import net.flintmc.framework.tasks.Tasks;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.mcapi.event.MinecraftInitializeEvent;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.util.session.event.SessionAccountLogInEvent;
 
@@ -10,7 +11,8 @@ import java.util.UUID;
  * The SessionService can be used to change the minecraft account to be played with, get the current
  * logged in account and to refresh the access token which is used to login on servers.
  *
- * <p>It may not be used before the {@link Tasks#POST_MINECRAFT_INITIALIZE} task has been called.
+ * <p>It may not be used before the {@link MinecraftInitializeEvent} has been fired in the {@link
+ * Subscribe.Phase#POST} phase.
  */
 public interface SessionService {
 
