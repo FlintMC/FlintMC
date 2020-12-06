@@ -1,5 +1,7 @@
 package net.flintmc.framework.config.internal;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.config.EventConfigInitializer;
@@ -11,16 +13,13 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.commons.Pair;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Singleton
 @Implement(EventConfigInitializer.class)
 public class DefaultEventConfigInitializer implements EventConfigInitializer {
 
   private final ConfigGenerator configGenerator;
-  private final Map<Class<? extends Event>, Pair<Subscribe.Phase, ParsedConfig>>
-      pendingConfigInitializations = new HashMap<>();
+  private final Multimap<Class<?>, Pair<Subscribe.Phase, ParsedConfig>>
+      pendingConfigInitializations = HashMultimap.create();
 
   @Inject
   public DefaultEventConfigInitializer(ConfigGenerator configGenerator) {
@@ -44,18 +43,29 @@ public class DefaultEventConfigInitializer implements EventConfigInitializer {
   }
 
   public void readEventConfigs(Event event, Subscribe.Phase phase) {
-    Class<? extends Event> eventClass = event.getClass();
+    Class<?> eventClass = event.getClass();
 
-    if (this.pendingConfigInitializations.containsKey(eventClass)) {
-      Pair<Subscribe.Phase, ParsedConfig> pendingInitialization =
-          this.pendingConfigInitializations.get(eventClass);
+    if (!this.pendingConfigInitializations.isEmpty()) {
+      while (!eventClass.equals(Object.class)) {
+        if (this.pendingConfigInitializations.containsKey(eventClass)) {
+          this.pendingConfigInitializations
+              .get(eventClass)
+              .removeIf(
+                  pendingInitialization -> {
+                    Subscribe.Phase targetPhase = pendingInitialization.getFirst();
+                    ParsedConfig targetConfig = pendingInitialization.getSecond();
 
-      Subscribe.Phase targetPhase = pendingInitialization.getFirst();
-      ParsedConfig targetConfig = pendingInitialization.getSecond();
+                    if (targetPhase.equals(phase)) {
+                      this.configGenerator.initConfig(targetConfig);
+                      return true;
+                    }
 
-      if (targetPhase.equals(phase)) {
-        this.configGenerator.initConfig(targetConfig);
-        this.pendingConfigInitializations.remove(eventClass);
+                    return false;
+                  });
+          break;
+        }
+
+        eventClass = eventClass.getSuperclass();
       }
     }
   }
