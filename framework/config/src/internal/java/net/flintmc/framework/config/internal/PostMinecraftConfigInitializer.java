@@ -20,7 +20,7 @@ public class PostMinecraftConfigInitializer {
 
   @Inject
   public PostMinecraftConfigInitializer(
-          ConfigGenerator configGenerator, ConfigAnnotationCollector annotationCollector) {
+      ConfigGenerator configGenerator, ConfigAnnotationCollector annotationCollector) {
     this.configGenerator = configGenerator;
     this.annotationCollector = annotationCollector;
   }
@@ -29,7 +29,7 @@ public class PostMinecraftConfigInitializer {
   public void readMinecraftConfigs() {
     for (ParsedConfig config : this.configGenerator.getDiscoveredConfigs()) {
       Collection<PostMinecraftRead> postMinecraftReads =
-              this.annotationCollector.getAllAnnotations(config.getClass(), PostMinecraftRead.class);
+          this.annotationCollector.getAllAnnotations(config.getClass(), PostMinecraftRead.class);
       if (!postMinecraftReads.isEmpty()) {
         this.configGenerator.initConfig(config);
       }
