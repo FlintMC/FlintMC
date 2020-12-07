@@ -13,6 +13,8 @@ public interface CreatureEntity extends MobEntity {
    *
    * @param position The block position of the entity.
    * @return The block path weight of the creature entity.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   float getBlockPathWeight(BlockPosition position);
 
@@ -20,6 +22,8 @@ public interface CreatureEntity extends MobEntity {
    * Whether the creature entity has a path.
    *
    * @return {@code true} if the creature entity has a path, otherwise {@code false}.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   boolean hasPath();
 

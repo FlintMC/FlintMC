@@ -1,6 +1,5 @@
 plugins {
     id("net.flintmc.flint-gradle-plugin")
-    id("project-report")
 }
 
 fun RepositoryHandler.flintRepository() {
@@ -42,17 +41,6 @@ subprojects {
             sourceCompatibility = "1.8"
             targetCompatibility = "1.8"
 
-        }
-
-        publishing {
-            repositories {
-                flintRepository()
-            }
-            publications {
-                create<MavenPublication>(project.name) {
-                    from(components["java"])
-                }
-            }
         }
     }
 }

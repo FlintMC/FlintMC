@@ -2,15 +2,20 @@ package net.flintmc.mcapi.v1_15_2.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import javassist.CannotCompileException;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.NotFoundException;
 import net.flintmc.framework.eventbus.EventBus;
-import net.flintmc.framework.stereotype.type.Type;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.event.ChatReceiveEvent;
 import net.flintmc.mcapi.chat.event.ChatSendEvent;
-import net.flintmc.transform.hook.Hook;
-import net.flintmc.transform.hook.HookResult;
+import net.flintmc.transform.javassist.ClassTransform;
+import net.flintmc.transform.javassist.ClassTransformContext;
 import net.minecraft.util.text.ITextComponent;
 
 @Singleton
@@ -33,30 +38,67 @@ public class ChatEventInjector {
     this.receiveFactory = receiveFactory;
   }
 
-  @Hook(
-      className = "net.minecraft.client.gui.NewChatGui",
-      methodName = "printChatMessageWithOptionalDeletion",
-      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
-      parameters = {@Type(reference = ITextComponent.class), @Type(reference = int.class)})
-  public HookResult injectChatReceive(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
-    ChatComponent component = this.componentMapper.fromMinecraft(args[0]);
-    int deletedChatLineId = (int) args[1];
-
-    boolean cancelled =
-        this.eventBus.fireEvent(this.receiveFactory.create(component), executionTime).isCancelled();
-    return cancelled ? HookResult.BREAK : HookResult.CONTINUE;
+  private void addEventInjectorField(CtClass target) throws CannotCompileException {
+    target.addField(
+        CtField.make(
+            String.format(
+                "private final %s chatEventInjector = (%1$s) %s.getInjectedInstance(%1$s.class);",
+                super.getClass().getName(), InjectionHolder.class.getName()),
+            target));
   }
 
-  @Hook(
-      className = "net.minecraft.client.entity.player.ClientPlayerEntity",
-      methodName = "sendChatMessage",
-      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
-      parameters = @Type(reference = String.class))
-  public HookResult injectChatSend(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
-    String message = (String) args[0];
+  @ClassTransform("net.minecraft.client.gui.NewChatGui")
+  public void transformChatGui(ClassTransformContext context)
+      throws NotFoundException, CannotCompileException {
+    CtClass transforming = context.getCtClass();
+    this.addEventInjectorField(transforming);
 
-    boolean cancelled =
-        this.eventBus.fireEvent(this.sendFactory.create(message), executionTime).isCancelled();
-    return cancelled ? HookResult.BREAK : HookResult.CONTINUE;
+    CtMethod method = transforming.getDeclaredMethod("printChatMessageWithOptionalDeletion");
+
+    method.insertBefore(
+        String.format(
+            "{ $1 = this.chatEventInjector.handleChatReceive($1, %s.PRE); if ($1 == null) { return; } }",
+            Subscribe.Phase.class.getName()));
+    method.insertAfter(
+        String.format(
+            "{ this.chatEventInjector.handleChatReceive($1, %s.POST); }",
+            Subscribe.Phase.class.getName()));
+  }
+
+  public ITextComponent handleChatReceive(ITextComponent component, Subscribe.Phase phase) {
+    ChatComponent flintComponent = this.componentMapper.fromMinecraft(component);
+    ChatReceiveEvent event = this.receiveFactory.create(flintComponent);
+    this.eventBus.fireEvent(event, phase);
+
+    if (phase != Subscribe.Phase.PRE || event.isCancelled()) {
+      return null;
+    }
+
+    return (ITextComponent) this.componentMapper.toMinecraft(event.getMessage());
+  }
+
+  @ClassTransform("net.minecraft.client.entity.player.ClientPlayerEntity")
+  public void transformClientPlayerEntity(ClassTransformContext context)
+      throws CannotCompileException, NotFoundException {
+    CtClass transforming = context.getCtClass();
+    this.addEventInjectorField(transforming);
+
+    CtMethod method = transforming.getDeclaredMethod("sendChatMessage");
+
+    method.insertBefore(
+        String.format(
+            "{ $1 = this.chatEventInjector.handleChatSend($1, %s.PRE); if ($1 == null) { return; } }",
+            Subscribe.Phase.class.getName()));
+
+    method.insertAfter(
+        String.format(
+            " { this.chatEventInjector.handleChatSend($1, %s.POST); }",
+            Subscribe.Phase.class.getName()));
+  }
+
+  public String handleChatSend(String message, Subscribe.Phase phase) {
+    ChatSendEvent event = this.sendFactory.create(message);
+    this.eventBus.fireEvent(event, phase);
+    return event.isCancelled() ? null : event.getMessage();
   }
 }

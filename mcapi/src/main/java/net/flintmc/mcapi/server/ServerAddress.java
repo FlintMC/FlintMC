@@ -3,6 +3,8 @@ package net.flintmc.mcapi.server;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
+import java.net.InetSocketAddress;
+
 /** An address of a minecraft server. */
 public interface ServerAddress {
 
@@ -42,5 +44,13 @@ public interface ServerAddress {
      * @return The new non-null address
      */
     ServerAddress create(@Assisted("ip") String ip, @Assisted("port") int port);
+
+    /**
+     * Creates a new address out of the given inet socket address.
+     *
+     * @param address The non-null address to be converted to a {@link ServerAddress}
+     * @return The new non-null address
+     */
+    ServerAddress create(@Assisted("socketAddress") InetSocketAddress address);
   }
 }

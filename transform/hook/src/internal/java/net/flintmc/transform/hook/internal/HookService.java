@@ -7,7 +7,12 @@ import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectedInvocationHelper;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
@@ -169,23 +174,24 @@ public class HookService implements ServiceHandler<Hook> {
     return builder.toString();
   }
 
-  private void insert(CtMethod target, Hook.ExecutionTime executionTime, CtMethod hook)
+  private void insert(
+      CtMethod target, Hook hook, Hook.ExecutionTime executionTime, CtMethod hookMethod)
       throws CannotCompileException, NotFoundException {
-    String parameters = this.buildParameters(hook.getParameterTypes());
+    String parameters = this.buildParameters(hookMethod.getParameterTypes());
 
     String notify =
         String.format(
             "net.flintmc.transform.hook.internal.HookService.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args);",
             Modifier.isStatic(target.getModifiers()) ? "null" : "$0",
             executionTime,
-            hook.getDeclaringClass().getName(),
-            hook.getName(),
+            hookMethod.getDeclaringClass().getName(),
+            hookMethod.getName(),
             parameters.isEmpty() ? "new Class[0]" : "new Class[]{" + parameters + "}");
     String varName = "hookNotifyResult_" + this.random.nextInt(Integer.MAX_VALUE);
 
     String returnValue = null;
     CtClass returnType = target.getReturnType();
-    CtClass hookType = hook.getReturnType();
+    CtClass hookType = hookMethod.getReturnType();
     boolean hookResult = hookType.getName().equals(HookResult.class.getName());
 
     if (!hookType.getName().equals("void") && !returnType.getName().equals("void")) {
@@ -193,7 +199,10 @@ public class HookService implements ServiceHandler<Hook> {
     }
 
     if (hookResult) {
-      returnValue = HookValues.getDefaultValue(returnType.getName());
+      returnValue =
+          hook.defaultValue().isEmpty()
+              ? HookValues.getDefaultValue(returnType.getName())
+              : hook.defaultValue();
     }
 
     if (executionTime == Hook.ExecutionTime.AFTER && returnType.getName().equals("void")) {
@@ -250,7 +259,7 @@ public class HookService implements ServiceHandler<Hook> {
 
     if (declaredMethod != null) {
       for (Hook.ExecutionTime executionTime : hook.executionTime()) {
-        this.insert(declaredMethod, executionTime, callback);
+        this.insert(declaredMethod, hook, executionTime, callback);
       }
     }
   }

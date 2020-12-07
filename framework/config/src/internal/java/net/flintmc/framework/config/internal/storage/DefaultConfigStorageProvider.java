@@ -2,8 +2,10 @@ package net.flintmc.framework.config.internal.storage;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.CtClass;
+import net.flintmc.framework.config.annotation.PostMinecraftRead;
+import net.flintmc.framework.config.annotation.PostOpenGLRead;
 import net.flintmc.framework.config.event.ConfigStorageEvent;
+import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.storage.ConfigStorage;
@@ -13,12 +15,15 @@ import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -31,32 +36,31 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
   private final Logger logger;
   private final EventBus eventBus;
   private final ConfigStorageEvent.Factory eventFactory;
+  private final ConfigAnnotationCollector annotationCollector;
 
   private final ConfigGenerator configGenerator;
 
   private final List<ComparableConfigStorage> storages = new ArrayList<>();
   private final Map<Class<?>, ParsedConfig> pendingWrites = new ConcurrentHashMap<>();
 
-  private final Collection<CtClass> pendingStorages = new CopyOnWriteArrayList<>();
-
   @Inject
-  public DefaultConfigStorageProvider(
+  private DefaultConfigStorageProvider(
       @InjectLogger Logger logger,
       ConfigStorageEvent.Factory eventFactory,
       EventBus eventBus,
       ScheduledExecutorService executorService,
+      ConfigAnnotationCollector annotationCollector,
       ConfigGenerator configGenerator) {
     this.logger = logger;
     this.eventFactory = eventFactory;
     this.eventBus = eventBus;
+    this.annotationCollector = annotationCollector;
     this.configGenerator = configGenerator;
     executorService.scheduleAtFixedRate(
         () -> {
           if (this.pendingWrites.isEmpty()) {
             return;
           }
-
-          this.processPendingStorages();
 
           try {
             Map<Class<?>, ParsedConfig> copy = new HashMap<>(this.pendingWrites);
@@ -94,8 +98,6 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
 
   @Override
   public void read(ParsedConfig config) {
-    this.processPendingStorages();
-
     ConfigStorageEvent event = this.eventFactory.create(ConfigStorageEvent.Type.READ, config);
     this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
 
@@ -123,47 +125,21 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
     }
 
     this.storages.add(ComparableConfigStorage.wrap(storage, priority));
-    this.storages.sort(Collections.reverseOrder());
+    Collections.sort(this.storages); // load the higher priorities last
 
     Collection<ParsedConfig> configs = this.configGenerator.getDiscoveredConfigs();
     if (!configs.isEmpty()) {
       // read the configs from the storage
 
       for (ParsedConfig config : configs) {
-        storage.read(config);
-      }
-    }
-  }
-
-  @Override
-  public void registerStorage(CtClass type) {
-    this.pendingStorages.add(type);
-  }
-
-  private void processPendingStorages() {
-    if (this.pendingStorages.isEmpty()) {
-      return;
-    }
-
-    for (CtClass type : this.pendingStorages) {
-      try {
-        Class<?> configClass = super.getClass().getClassLoader().loadClass(type.getName());
-        if (!ConfigStorage.class.isAssignableFrom(configClass)) {
-          this.logger.trace(
-              "Failed to load config "
-                  + type.getName()
-                  + ": Class doesn't implement "
-                  + ConfigStorage.class.getName());
-          continue;
+        Collection<PostMinecraftRead> postMinecraftReads =
+            this.annotationCollector.getAllAnnotations(config.getClass(), PostMinecraftRead.class);
+        Collection<PostOpenGLRead> postOpenGLReads =
+            this.annotationCollector.getAllAnnotations(config.getClass(), PostOpenGLRead.class);
+        if (postMinecraftReads.isEmpty() && postOpenGLReads.isEmpty()) {
+          storage.read(config);
         }
-
-        ConfigStorage storage = (ConfigStorage) InjectionHolder.getInjectedInstance(configClass);
-        this.registerStorage(storage);
-      } catch (ClassNotFoundException | IllegalStateException e) {
-        this.logger.error("Failed to load config " + type.getName(), e);
       }
     }
-
-    this.pendingStorages.clear();
   }
 }

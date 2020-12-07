@@ -79,6 +79,9 @@ import java.util.Map;
  *       return void.
  * </ul>
  *
+ * If a method in the annotated interface (or any sub interfaces in the config) is already
+ * implemented (default methods), it will just be ignored.
+ *
  * @see ConfigExclude
  * @see PostMinecraftRead
  */

@@ -16,9 +16,11 @@ public interface ConnectedServer {
   ServerAddress getAddress();
 
   /**
-   * Retrieves whether the client is connected to any server (in multiplayer).
+   * Retrieves whether the client is connected or currently connecting to any server (in
+   * multiplayer).
    *
-   * @return {@code true} if the client is connected to a server, {@code false} otherwise
+   * @return {@code true} if the client is connected or currently connecting to a server, {@code
+   *     false} otherwise
    */
   boolean isConnected();
 

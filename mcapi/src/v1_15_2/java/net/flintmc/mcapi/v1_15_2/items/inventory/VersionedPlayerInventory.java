@@ -29,7 +29,7 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
         type,
         dimension,
         itemMapper,
-        () -> Minecraft.getInstance().player.container,
+        () -> Minecraft.getInstance().player.openContainer,
         componentFactory.text().text("Player").build());
     this.itemMapper = itemMapper;
   }
@@ -44,22 +44,6 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
       result[i] = this.itemMapper.fromMinecraft(inventory.get(i));
     }
     return result;
-  }
-
-  @Override
-  public ItemStack getItem(int slot) throws IndexOutOfBoundsException {
-    this.validateSlot(slot);
-
-    if (slot >= 0 && slot <= 35) {
-      return this.getItem(Minecraft.getInstance().player.inventory.mainInventory, slot);
-    }
-    if (slot >= 36 && slot <= 39) {
-      return this.getItem(Minecraft.getInstance().player.inventory.armorInventory, slot - 36);
-    }
-    if (this.getHandSlot(PlayerHand.OFF_HAND) == slot) {
-      return this.getItem(Minecraft.getInstance().player.inventory.offHandInventory, 0);
-    }
-    throw new IndexOutOfBoundsException("Invalid slot provided: " + slot);
   }
 
   @Override

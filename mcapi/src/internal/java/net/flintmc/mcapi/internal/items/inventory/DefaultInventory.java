@@ -41,17 +41,6 @@ public abstract class DefaultInventory implements Inventory {
     return this.dimension;
   }
 
-  protected void validateSlot(int slot) throws IndexOutOfBoundsException {
-    if (slot < 0 || slot >= this.dimension.getSlotCount()) {
-      throw new IndexOutOfBoundsException(
-          "Slot "
-              + slot
-              + " is out of bounds for "
-              + this.dimension.getSlotCount()
-              + " available slots");
-    }
-  }
-
   @Override
   public int countItems(ItemType type) {
     int count = 0;

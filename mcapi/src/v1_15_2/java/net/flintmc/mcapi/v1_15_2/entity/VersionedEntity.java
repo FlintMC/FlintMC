@@ -6,6 +6,7 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.entity.EntityNotLoadedException;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.reason.MoverType;
@@ -24,7 +25,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Implement(value = Entity.class, version = "1.15.2")
@@ -34,7 +41,7 @@ public class VersionedEntity implements Entity {
   private final World world;
   private final EntityFoundationMapper entityFoundationMapper;
 
-  private final net.minecraft.entity.Entity entity;
+  private final Supplier<Object> entitySupplier;
   private final Random random;
 
   @AssistedInject
@@ -43,9 +50,28 @@ public class VersionedEntity implements Entity {
       @Assisted("entityType") EntityType entityType,
       World world,
       EntityFoundationMapper entityFoundationMapper) {
+    this(() -> entity, entityType, world, entityFoundationMapper);
+  }
+
+  protected VersionedEntity(
+      Supplier<Object> entitySupplier,
+      EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper) {
     this.entityType = entityType;
     this.world = world;
     this.entityFoundationMapper = entityFoundationMapper;
+
+    this.random = new Random();
+    this.entitySupplier = entitySupplier;
+  }
+
+  protected net.minecraft.entity.Entity wrapped() {
+    Object entity = this.entitySupplier.get();
+
+    if (entity == null) {
+      throw EntityNotLoadedException.INSTANCE;
+    }
 
     if (!(entity instanceof net.minecraft.entity.Entity)) {
       throw new IllegalArgumentException(
@@ -54,26 +80,25 @@ public class VersionedEntity implements Entity {
               + net.minecraft.entity.Entity.class.getName());
     }
 
-    this.random = new Random();
-    this.entity = (net.minecraft.entity.Entity) entity;
+    return (net.minecraft.entity.Entity) entity;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getTeamColor() {
-    return this.entity.getTeamColor();
+    return this.wrapped().getTeamColor();
   }
 
   /** {@inheritDoc} */
   @Override
   public void detach() {
-    this.entity.detach();
+    this.wrapped().detach();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPacketCoordinates(double x, double y, double z) {
-    this.entity.setPacketCoordinates(x, y, z);
+    this.wrapped().setPacketCoordinates(x, y, z);
   }
 
   /** {@inheritDoc} */
@@ -85,93 +110,94 @@ public class VersionedEntity implements Entity {
   /** {@inheritDoc} */
   @Override
   public int getIdentifier() {
-    return this.entity.getEntityId();
+    return this.wrapped().getEntityId();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setIdentifier(int identifier) {
-    this.entity.setEntityId(identifier);
+    this.wrapped().setEntityId(identifier);
   }
 
   /** {@inheritDoc} */
   @Override
   public Set<String> getTags() {
-    return this.entity.getTags();
+    return this.wrapped().getTags();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean addTag(String tag) {
-    return this.entity.addTag(tag);
+    return this.wrapped().addTag(tag);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean removeTag(String tag) {
-    return this.entity.removeTag(tag);
+    return this.wrapped().removeTag(tag);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosX() {
-    return this.entity.getPosX();
+    return this.wrapped().getPosX();
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosY() {
-    return this.entity.getPosY();
+    return this.wrapped().getPosY();
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosZ() {
-    return this.entity.getPosZ();
+    return this.wrapped().getPosZ();
   }
 
   /** {@inheritDoc} */
   @Override
   public void remove() {
-    this.entity.remove();
+    this.wrapped().remove();
   }
 
   /** {@inheritDoc} */
   @Override
   public EntityPose getPose() {
-    return this.entityFoundationMapper.fromMinecraftPose(this.entity.getPose());
+    return this.entityFoundationMapper.fromMinecraftPose(this.wrapped().getPose());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPosition(double x, double y, double z) {
-    this.entity.setPosition(x, y, z);
+    this.wrapped().setPosition(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPositionAndRotation(double x, double y, double z, float yaw, float pitch) {
-    this.entity.setPositionAndRotation(x, y, z, yaw, pitch);
+    this.wrapped().setPositionAndRotation(x, y, z, yaw, pitch);
   }
 
   /** {@inheritDoc} */
   @Override
   public void moveToBlockPosAndAngles(
       BlockPosition position, float rotationYaw, float rotationPitch) {
-    this.entity.moveToBlockPosAndAngles(
-        (BlockPos) this.getWorld().toMinecraftBlockPos(position), rotationYaw, rotationPitch);
+    this.wrapped()
+        .moveToBlockPosAndAngles(
+            (BlockPos) this.getWorld().toMinecraftBlockPos(position), rotationYaw, rotationPitch);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setLocationAndAngles(double x, double y, double z, float yaw, float pitch) {
-    this.entity.setLocationAndAngles(x, y, z, yaw, pitch);
+    this.wrapped().setLocationAndAngles(x, y, z, yaw, pitch);
   }
 
   /** {@inheritDoc} */
   @Override
   public void forceSetPosition(double x, double y, double z) {
-    this.entity.forceSetPosition(x, y, z);
+    this.wrapped().forceSetPosition(x, y, z);
   }
 
   /** {@inheritDoc} */
@@ -186,7 +212,7 @@ public class VersionedEntity implements Entity {
   /** {@inheritDoc} */
   @Override
   public double getDistanceSq(double x, double y, double z) {
-    return this.entity.getDistanceSq(x, y, z);
+    return this.wrapped().getDistanceSq(x, y, z);
   }
 
   /** {@inheritDoc} */
@@ -198,378 +224,381 @@ public class VersionedEntity implements Entity {
   /** {@inheritDoc} */
   @Override
   public void applyEntityCollision(Entity entity) {
-    this.entity.applyEntityCollision(
-        (net.minecraft.entity.Entity)
-            this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
+    this.wrapped()
+        .applyEntityCollision(
+            (net.minecraft.entity.Entity)
+                this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /** {@inheritDoc} */
   @Override
   public void addVelocity(double x, double y, double z) {
-    this.entity.addVelocity(x, y, z);
+    this.wrapped().addVelocity(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public void rotateTowards(double yaw, double pitch) {
-    this.entity.rotateTowards(yaw, pitch);
+    this.wrapped().rotateTowards(yaw, pitch);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getPitch(float partialTicks) {
-    return this.entity.getPitch(partialTicks);
+    return this.wrapped().getPitch(partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getPitch() {
-    return this.entity.rotationPitch;
+    return this.wrapped().rotationPitch;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPitch(float pitch) {
-    this.entity.rotationPitch = pitch;
+    this.wrapped().rotationPitch = pitch;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getYaw(float partialTicks) {
-    return this.entity.getYaw(partialTicks);
+    return this.wrapped().getYaw(partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getYaw() {
-    return this.entity.rotationYaw;
+    return this.wrapped().rotationYaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setYaw(float yaw) {
-    this.entity.rotationYaw = yaw;
+    this.wrapped().rotationYaw = yaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMaxInPortalTime() {
-    return this.entity.getMaxInPortalTime();
+    return this.wrapped().getMaxInPortalTime();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setFire(int seconds) {
-    this.entity.setFire(seconds);
+    this.wrapped().setFire(seconds);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getFireTimer() {
-    return this.entity.getFireTimer();
+    return this.wrapped().getFireTimer();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setFireTimer(int ticks) {
-    this.entity.setFireTimer(ticks);
+    this.wrapped().setFireTimer(ticks);
   }
 
   /** {@inheritDoc} */
   @Override
   public void extinguish() {
-    this.entity.extinguish();
+    this.wrapped().extinguish();
   }
 
   /** {@inheritDoc} */
   @Override
   public void resetPositionToBB() {
-    this.entity.resetPositionToBB();
+    this.wrapped().resetPositionToBB();
   }
 
   /** {@inheritDoc} */
   @Override
   public void playSound(Sound sound, float volume, float pitch) {
-    this.entity.playSound(
-        (SoundEvent) this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
-        volume,
-        pitch);
+    this.wrapped()
+        .playSound(
+            (SoundEvent)
+                this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(sound),
+            volume,
+            pitch);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSilent() {
-    return this.entity.isSilent();
+    return this.wrapped().isSilent();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSilent(boolean silent) {
-    this.entity.setSilent(silent);
+    this.wrapped().setSilent(silent);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasNoGravity() {
-    return this.entity.hasNoGravity();
+    return this.wrapped().hasNoGravity();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setNoGravity(boolean noGravity) {
-    this.entity.setNoGravity(noGravity);
+    this.wrapped().setNoGravity(noGravity);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isImmuneToFire() {
-    return this.entity.isImmuneToFire();
+    return this.wrapped().isImmuneToFire();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isOffsetPositionInLiquid(double x, double y, double z) {
-    return this.entity.isOffsetPositionInLiquid(x, y, z);
+    return this.wrapped().isOffsetPositionInLiquid(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isWet() {
-    return this.entity.isWet();
+    return this.wrapped().isWet();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInWaterRainOrBubbleColumn() {
-    return this.entity.isInWaterRainOrBubbleColumn();
+    return this.wrapped().isInWaterRainOrBubbleColumn();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInWaterOrBubbleColumn() {
-    return this.entity.isInWaterOrBubbleColumn();
+    return this.wrapped().isInWaterOrBubbleColumn();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canSwim() {
-    return this.entity.canSwim();
+    return this.wrapped().canSwim();
   }
 
   /** {@inheritDoc} */
   @Override
   public void updateSwim() {
-    this.entity.updateSwimming();
+    this.wrapped().updateSwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean handleWaterMovement() {
-    return this.entity.handleWaterMovement();
+    return this.wrapped().handleWaterMovement();
   }
 
   /** {@inheritDoc} */
   @Override
   public void spawnRunningParticles() {
-    this.entity.spawnRunningParticles();
+    this.wrapped().spawnRunningParticles();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInWater() {
-    return this.entity.isInWater();
+    return this.wrapped().isInWater();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setInLava() {
-    this.entity.setInLava();
+    this.wrapped().setInLava();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInLava() {
-    return this.entity.isInLava();
+    return this.wrapped().isInLava();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isBurning() {
-    return this.entity.isBurning();
+    return this.wrapped().isBurning();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isPassenger() {
-    return this.entity.isPassenger();
+    return this.wrapped().isPassenger();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isBeingRidden() {
-    return this.entity.isBeingRidden();
+    return this.wrapped().isBeingRidden();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSneaking() {
-    return this.entity.isSneaking();
+    return this.wrapped().isSneaking();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSneaking(boolean sneaking) {
-    this.entity.setSneaking(sneaking);
+    this.wrapped().setSneaking(sneaking);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSteppingCarefully() {
-    return this.entity.isSteppingCarefully();
+    return this.wrapped().isSteppingCarefully();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSuppressingBounce() {
-    return this.entity.isSuppressingBounce();
+    return this.wrapped().isSuppressingBounce();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isDiscrete() {
-    return this.entity.isDiscrete();
+    return this.wrapped().isDiscrete();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isDescending() {
-    return this.entity.isDescending();
+    return this.wrapped().isDescending();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCrouching() {
-    return this.entity.isCrouching();
+    return this.wrapped().isCrouching();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSprinting() {
-    return this.entity.isSprinting();
+    return this.wrapped().isSprinting();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSprinting(boolean sprinting) {
-    this.entity.setSprinting(sprinting);
+    this.wrapped().setSprinting(sprinting);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSwimming() {
-    return this.entity.isSwimming();
+    return this.wrapped().isSwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSwimming(boolean swimming) {
-    this.entity.setSwimming(swimming);
+    this.wrapped().setSwimming(swimming);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isActuallySwimming() {
-    return this.entity.isActualySwimming();
+    return this.wrapped().isActualySwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isVisuallySwimming() {
-    return this.entity.isVisuallySwimming();
+    return this.wrapped().isVisuallySwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isGlowing() {
-    return this.entity.isGlowing();
+    return this.wrapped().isGlowing();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setGlowing(boolean glowing) {
-    this.entity.setGlowing(glowing);
+    this.wrapped().setGlowing(glowing);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInvisible() {
-    return this.entity.isInvisible();
+    return this.wrapped().isInvisible();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInvisibleToPlayer(net.flintmc.mcapi.player.PlayerEntity player) {
-    return this.entity.isInvisibleToPlayer((PlayerEntity) player);
+    return this.wrapped().isInvisibleToPlayer((PlayerEntity) player);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canRenderOnFire() {
-    return this.entity.canRenderOnFire();
+    return this.wrapped().canRenderOnFire();
   }
 
   /** {@inheritDoc} */
   @Override
   public UUID getUniqueId() {
-    return this.entity.getUniqueID();
+    return this.wrapped().getUniqueID();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setUniqueId(UUID uniqueId) {
-    this.entity.setUniqueId(uniqueId);
+    this.wrapped().setUniqueId(uniqueId);
   }
 
   /** {@inheritDoc} */
   @Override
   public String getCachedUniqueId() {
-    return this.entity.getCachedUniqueIdString();
+    return this.wrapped().getCachedUniqueIdString();
   }
 
   /** {@inheritDoc} */
   @Override
   public String getScoreboardName() {
-    return this.entity.getScoreboardName();
+    return this.wrapped().getScoreboardName();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCustomNameVisible() {
-    return this.entity.isCustomNameVisible();
+    return this.wrapped().isCustomNameVisible();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCustomNameVisible(boolean alwaysRenderNameTag) {
-    this.entity.setCustomNameVisible(alwaysRenderNameTag);
+    this.wrapped().setCustomNameVisible(alwaysRenderNameTag);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getEyeHeight(EntityPose pose) {
-    return this.entity.getEyeHeight((Pose) this.entityFoundationMapper.toMinecraftPose(pose));
+    return this.wrapped().getEyeHeight((Pose) this.entityFoundationMapper.toMinecraftPose(pose));
   }
 
   /** {@inheritDoc} */
   @Override
   public float getEyeHeight() {
-    return this.entity.getEyeHeight();
+    return this.wrapped().getEyeHeight();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getBrightness() {
-    return this.entity.getBrightness();
+    return this.wrapped().getBrightness();
   }
 
   /** {@inheritDoc} */
@@ -583,58 +612,59 @@ public class VersionedEntity implements Entity {
   public Entity getRidingEntity() {
     return this.entityFoundationMapper
         .getEntityMapper()
-        .fromMinecraftEntity(this.entity.getRidingEntity());
+        .fromMinecraftEntity(this.wrapped().getRidingEntity());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMotion(double x, double y, double z) {
-    this.entity.setMotion(x, y, z);
+    this.wrapped().setMotion(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public void teleportKeepLoaded(double x, double y, double z) {
-    this.entity.teleportKeepLoaded(x, y, z);
+    this.wrapped().teleportKeepLoaded(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPositionAndUpdate(double x, double y, double z) {
-    this.entity.setPositionAndUpdate(x, y, z);
+    this.wrapped().setPositionAndUpdate(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isAlwaysRenderNameTagForRender() {
-    return this.entity.getAlwaysRenderNameTagForRender();
+    return this.wrapped().getAlwaysRenderNameTagForRender();
   }
 
   /** {@inheritDoc} */
   @Override
   public void recalculateSize() {
-    this.entity.recalculateSize();
+    this.wrapped().recalculateSize();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
-    return this.entity.replaceItemInInventory(
-        slot,
-        (net.minecraft.item.ItemStack)
-            this.entityFoundationMapper.getItemMapper().toMinecraft(itemStack));
+    return this.wrapped()
+        .replaceItemInInventory(
+            slot,
+            (net.minecraft.item.ItemStack)
+                this.entityFoundationMapper.getItemMapper().toMinecraft(itemStack));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isImmuneToExplosions() {
-    return this.entity.isImmuneToExplosions();
+    return this.wrapped().isImmuneToExplosions();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean ignoreItemEntityData() {
-    return this.entity.ignoreItemEntityData();
+    return this.wrapped().ignoreItemEntityData();
   }
 
   /** {@inheritDoc} */
@@ -642,7 +672,7 @@ public class VersionedEntity implements Entity {
   public Entity getControllingPassenger() {
     return this.entityFoundationMapper
         .getEntityMapper()
-        .fromMinecraftEntity(this.entity.getControllingPassenger());
+        .fromMinecraftEntity(this.wrapped().getControllingPassenger());
   }
 
   /** {@inheritDoc} */
@@ -650,7 +680,7 @@ public class VersionedEntity implements Entity {
   public List<Entity> getPassengers() {
     List<Entity> passengers = new ArrayList<>();
 
-    for (net.minecraft.entity.Entity passenger : this.entity.getPassengers()) {
+    for (net.minecraft.entity.Entity passenger : this.wrapped().getPassengers()) {
       passengers.add(this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(passenger));
     }
 
@@ -660,16 +690,17 @@ public class VersionedEntity implements Entity {
   /** {@inheritDoc} */
   @Override
   public boolean isPassenger(Entity entity) {
-    return this.entity.isPassenger(
-        (net.minecraft.entity.Entity)
-            this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.wrapped()
+        .isPassenger(
+            (net.minecraft.entity.Entity)
+                this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /** {@inheritDoc} */
   @Override
   public Collection<Entity> getRecursivePassengers() {
     Set<Entity> entities = Sets.newHashSet();
-    for (net.minecraft.entity.Entity passenger : this.entity.getPassengers()) {
+    for (net.minecraft.entity.Entity passenger : this.wrapped().getPassengers()) {
       entities.add(this.entityFoundationMapper.getEntityMapper().fromMinecraftEntity(passenger));
     }
 
@@ -686,7 +717,7 @@ public class VersionedEntity implements Entity {
   /** {@inheritDoc} */
   @Override
   public boolean isOnePlayerRiding() {
-    return this.entity.isOnePlayerRiding();
+    return this.wrapped().isOnePlayerRiding();
   }
 
   /** {@inheritDoc} */
@@ -694,47 +725,49 @@ public class VersionedEntity implements Entity {
   public Entity getLowestRidingEntity() {
     return this.entityFoundationMapper
         .getEntityMapper()
-        .fromMinecraftEntity(this.entity.getLowestRidingEntity());
+        .fromMinecraftEntity(this.wrapped().getLowestRidingEntity());
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isRidingSameEntity(Entity entity) {
-    return this.entity.isRidingSameEntity(
-        (net.minecraft.entity.Entity)
-            this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.wrapped()
+        .isRidingSameEntity(
+            (net.minecraft.entity.Entity)
+                this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isRidingOrBeingRiddenBy(Entity entity) {
-    return this.entity.isRidingOrBeingRiddenBy(
-        (net.minecraft.entity.Entity)
-            this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
+    return this.wrapped()
+        .isRidingOrBeingRiddenBy(
+            (net.minecraft.entity.Entity)
+                this.entityFoundationMapper.getEntityMapper().toMinecraftEntity(entity));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canPassengerSteer() {
-    return this.entity.canPassengerSteer();
+    return this.wrapped().canPassengerSteer();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasPermissionLevel(int level) {
-    return this.entity.hasPermissionLevel(level);
+    return this.wrapped().hasPermissionLevel(level);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getWidth() {
-    return this.entity.getWidth();
+    return this.wrapped().getWidth();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getHeight() {
-    return this.entity.getHeight();
+    return this.wrapped().getHeight();
   }
 
   /** {@inheritDoc} */
@@ -746,66 +779,66 @@ public class VersionedEntity implements Entity {
   /** {@inheritDoc} */
   @Override
   public BlockPosition getPosition() {
-    return this.getWorld().fromMinecraftBlockPos(this.entity.getPosition());
+    return this.getWorld().fromMinecraftBlockPos(this.wrapped().getPosition());
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosXWidth(double width) {
-    return this.entity.getPosXWidth(width);
+    return this.wrapped().getPosXWidth(width);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosXRandom(double factor) {
-    return this.entity.getPosXRandom(factor);
+    return this.wrapped().getPosXRandom(factor);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosYHeight(double height) {
-    return this.entity.getPosYHeight(height);
+    return this.wrapped().getPosYHeight(height);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosYRandom() {
-    return this.entity.getPosYRandom();
+    return this.wrapped().getPosYRandom();
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosYEye() {
-    return this.entity.getPosYEye();
+    return this.wrapped().getPosYEye();
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosZWidth(double width) {
-    return this.entity.getPosZWidth(width);
+    return this.wrapped().getPosZWidth(width);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosZRandom(double factor) {
-    return this.entity.getPosZRandom(factor);
+    return this.wrapped().getPosZRandom(factor);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setRawPosition(double x, double y, double z) {
-    this.entity.setRawPosition(x, y, z);
+    this.wrapped().setRawPosition(x, y, z);
   }
 
   @Override
   public boolean isInvulnerable() {
-    return this.entity.isInvulnerable();
+    return this.wrapped().isInvulnerable();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setInvulnerable(boolean invulnerable) {
-    this.entity.setInvulnerable(invulnerable);
+    this.wrapped().setInvulnerable(invulnerable);
   }
 
   /** {@inheritDoc} */
@@ -829,70 +862,71 @@ public class VersionedEntity implements Entity {
   /** {@inheritDoc} */
   @Override
   public boolean isAlive() {
-    return this.entity.isAlive();
+    return this.wrapped().isAlive();
   }
 
   /** {@inheritDoc} */
   @Override
   public void move(MoverType moverType, Vector3D vector3D) {
-    this.entity.move(
-        (net.minecraft.entity.MoverType)
-            this.entityFoundationMapper.toMinecraftMoverType(moverType),
-        new Vec3d(vector3D.getX(), vector3D.getY(), vector3D.getZ()));
+    this.wrapped()
+        .move(
+            (net.minecraft.entity.MoverType)
+                this.entityFoundationMapper.toMinecraftMoverType(moverType),
+            new Vec3d(vector3D.getX(), vector3D.getY(), vector3D.getZ()));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCollidedHorizontally() {
-    return this.entity.collidedHorizontally;
+    return this.wrapped().collidedHorizontally;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCollidedHorizontally(boolean horizontally) {
-    this.entity.collidedHorizontally = horizontally;
+    this.wrapped().collidedHorizontally = horizontally;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCollidedVertically() {
-    return this.entity.collidedVertically;
+    return this.wrapped().collidedVertically;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCollidedVertically(boolean vertically) {
-    this.entity.collidedVertically = vertically;
+    this.wrapped().collidedVertically = vertically;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateX() {
-    return this.entity.chunkCoordX;
+    return this.wrapped().chunkCoordX;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateY() {
-    return this.entity.chunkCoordY;
+    return this.wrapped().chunkCoordY;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateZ() {
-    return this.entity.chunkCoordZ;
+    return this.wrapped().chunkCoordZ;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isOnGround() {
-    return this.entity.onGround;
+    return this.wrapped().onGround;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setOnGround(boolean onGround) {
-    this.entity.onGround = onGround;
+    this.wrapped().onGround = onGround;
   }
 
   /** {@inheritDoc} */
@@ -910,6 +944,6 @@ public class VersionedEntity implements Entity {
   /** {@inheritDoc} */
   @Override
   public ChatComponent getName() {
-    return this.entityFoundationMapper.getComponentMapper().fromMinecraft(this.entity.getName());
+    return this.entityFoundationMapper.getComponentMapper().fromMinecraft(this.wrapped().getName());
   }
 }

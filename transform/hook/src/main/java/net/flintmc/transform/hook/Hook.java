@@ -93,6 +93,19 @@ public @interface Hook {
   String version() default "";
 
   /**
+   * Retrieves the default value that should be returned if the return type of the annotated method
+   * is {@link HookResult}. If this is empty, the return type will be null or the specific value if
+   * it is a primitive. The provided value will be compiled as source code, for example this can be
+   * the link to a constant or another method that should be invoked. It should not end with a
+   * semicolon. Exactly this will be returned and therefore no local variables should be used.
+   *
+   * <p>This method will be ignored if the return type is no {@link HookResult}.
+   *
+   * @return The code to be compiled as the default value that should be returned
+   */
+  String defaultValue() default "";
+
+  /**
    * Retrieves the times where this hook should be executed, if it is empty, it won't be executed.
    *
    * @return All times where this hook should be executed

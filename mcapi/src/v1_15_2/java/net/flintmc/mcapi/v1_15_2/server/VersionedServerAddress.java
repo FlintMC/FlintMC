@@ -6,6 +6,8 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.server.ServerAddress;
 
+import java.net.InetSocketAddress;
+
 @Implement(value = ServerAddress.class, version = "1.15.2")
 public class VersionedServerAddress implements ServerAddress {
 
@@ -26,6 +28,11 @@ public class VersionedServerAddress implements ServerAddress {
 
     this.ip = address.getIP();
     this.port = address.getPort();
+  }
+
+  @AssistedInject
+  public VersionedServerAddress(@Assisted("socketAddress") InetSocketAddress address) {
+    this(address.getAddress().getHostName(), address.getPort());
   }
 
   /** {@inheritDoc} */

@@ -79,6 +79,10 @@ public class JavassistExecutorFactory implements ExecutorFactory {
                 listener.getName(), InjectionHolder.class.getName()),
             executor));
 
+    if (Modifier.isPrivate(targetMethod.getModifiers())) {
+      targetMethod.setModifiers(javassist.Modifier.setPublic(targetMethod.getModifiers()));
+    }
+
     executor.addMethod(
         CtMethod.make(
             String.format(
