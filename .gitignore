@@ -35,6 +35,8 @@ hs_err_pid*
 .idea/**/shelf
 .idea/**/misc.xml
 .idea/codeStyles/
+.idea/discord.xml
+.idea/sonarlint/
 
 # Generated files
 .idea/**/contentModel.xml
