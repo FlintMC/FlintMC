@@ -9,8 +9,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@inheritDoc}
+ */
 public class DefaultPropertyContext<
-        T_PropertyContextAware extends PropertyContextAware<T_PropertyContextAware>>
+    T_PropertyContextAware extends PropertyContextAware<T_PropertyContextAware>>
     implements PropertyContext<T_PropertyContextAware> {
 
   private final T_PropertyContextAware propertyContextAware;
@@ -21,6 +24,10 @@ public class DefaultPropertyContext<
     this.propertyContextAware = propertyContextAware;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public <T_PropertyValue, T_PropertyMeta> T_PropertyContextAware setPropertyValue(
       Property<T_PropertyValue, T_PropertyMeta> property, T_PropertyValue propertyValue) {
     if (!property.validateValue(propertyValue))
@@ -29,6 +36,10 @@ public class DefaultPropertyContext<
     return this.propertyContextAware;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public <T_PropertyValue, T_PropertyMeta> T_PropertyContextAware setPropertyMeta(
       Property<T_PropertyValue, T_PropertyMeta> property, T_PropertyMeta propertyMeta) {
     if (!property.validateMeta(propertyMeta))
@@ -37,27 +48,40 @@ public class DefaultPropertyContext<
     return this.propertyContextAware;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @SuppressWarnings("unchecked")
+  @Override
   public <T_PropertyValue, T_PropertyMeta> T_PropertyValue getPropertyValue(
       Property<T_PropertyValue, T_PropertyMeta> property) {
     return (T_PropertyValue) this.propertyValues.getOrDefault(property, property.getDefaultValue());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @SuppressWarnings("unchecked")
+  @Override
   public <T_PropertyValue, T_PropertyMeta> T_PropertyMeta getPropertyMeta(
       Property<T_PropertyValue, T_PropertyMeta> property) {
     return (T_PropertyMeta) this.propertyMeta.getOrDefault(property, property.getDefaultMeta());
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Map<Property<?, ?>, Object> getProperties() {
     return Collections.unmodifiableMap(this.propertyValues);
   }
 
   @Implement(PropertyContext.Factory.class)
   public static class Factory implements PropertyContext.Factory {
+    @Override
     public <T_PropertyContextAware extends PropertyContextAware<T_PropertyContextAware>>
-        PropertyContext<T_PropertyContextAware> create(
-            T_PropertyContextAware propertyContextAware) {
+    PropertyContext<T_PropertyContextAware> create(
+        T_PropertyContextAware propertyContextAware) {
       return new DefaultPropertyContext<T_PropertyContextAware>(propertyContextAware);
     }
   }

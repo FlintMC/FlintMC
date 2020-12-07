@@ -6,7 +6,7 @@ import java.util.Map;
  * Represents a registry of highly generic property.
  *
  * @param <T_PropertyContextAware> reference to the associated {@link PropertyContextAware}. Just
- *                                 used for generic locking
+ *     used for generic locking
  * @see Property
  * @see PropertyContextAware
  */
@@ -51,6 +51,9 @@ public interface PropertyContext<
   <T_PropertyValue, T_PropertyMeta> T_PropertyMeta getPropertyMeta(
       Property<T_PropertyValue, T_PropertyMeta> property);
 
+  /**
+   * @return all defined properties as a map.
+   */
   Map<Property<?, ?>, Object> getProperties();
 
   /** A factory class for {@link PropertyContext}. */
