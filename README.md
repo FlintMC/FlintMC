@@ -172,7 +172,7 @@ version.
 
 ```java
 @Implement(value = StuffDoer.class, version = "1.15.2")
-public class VersionedStuffDoer {
+public class VersionedStuffDoer implements StuffDoer {
 
   @Override
   public void doStuff() {
@@ -276,7 +276,7 @@ dependencies {
 ```
 
 You will also need the following in Your `settings.gradle.kts`, otherwise
-Gradle won't find out custom Gradle plugin.
+Gradle won't find our custom Gradle plugin.
 
 ```kotlin
 pluginManagement {
@@ -332,7 +332,6 @@ tutorials on how to publish and install Your Mod.
 - For more explanations regarding dependency injection, also refer to the
   [Guice documentation](https://github.com/google/guice/wiki).
 - If You have any questions or feedback, feel free to join our
-  [Discord Server](https://discord.gg/tPb9j3ZBXu) and ask us directly.
+  [Discord Server](https://discord.gg/tPb9j3ZBXu) and talk to us directly.
 - Should You notice any bugs or missing features, You can create an issue right
   here on GitHub.
-
