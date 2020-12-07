@@ -1,6 +1,11 @@
 package net.flintmc.util.math.matrix;
 
-public interface Matrix4x4<T_Number extends Number, T_Matrix4 extends Matrix4x4<T_Number, T_Matrix4>> {
+public interface Matrix4x4<
+    T_Number extends Number, T_Matrix4 extends Matrix4x4<T_Number, T_Matrix4>> {
+
+  T_Matrix4 rotate(float ang, float x, float y, float z);
+
+  T_Matrix4 rotate(float ang, float x, float y, float z, T_Matrix4 target);
 
   T_Matrix4 invert();
 

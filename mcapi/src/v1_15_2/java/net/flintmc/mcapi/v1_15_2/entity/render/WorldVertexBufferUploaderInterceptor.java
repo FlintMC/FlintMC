@@ -50,21 +50,26 @@ public class WorldVertexBufferUploaderInterceptor {
       if (!RenderSystem.isOnRenderThread()) {
         RenderSystem.recordRenderCall(
             () -> {
-              Pair<BufferBuilder.DrawState, ByteBuffer> pair1 = bufferBuilderIn.getNextBuffer();
-              BufferBuilder.DrawState drawState = pair1.getFirst();
-              draw(
-                  pair1,
-                  drawState.getDrawMode(),
-                  drawState.getFormat(),
-                  drawState.getVertexCount());
+              while (!((BufferBuilderAccessor) bufferBuilderIn).getDrawStates().isEmpty()) {
+                Pair<BufferBuilder.DrawState, ByteBuffer> pair1 = bufferBuilderIn.getNextBuffer();
+                BufferBuilder.DrawState drawState = pair1.getFirst();
+                draw(
+                    pair1,
+                    drawState.getDrawMode(),
+                    drawState.getFormat(),
+                    drawState.getVertexCount());
+              }
             });
       } else {
-        Pair<BufferBuilder.DrawState, ByteBuffer> pair = bufferBuilderIn.getNextBuffer();
-        BufferBuilder.DrawState drawState = pair.getFirst();
-        draw(pair, drawState.getDrawMode(), drawState.getFormat(), drawState.getVertexCount());
+        while (!((BufferBuilderAccessor) bufferBuilderIn).getDrawStates().isEmpty()) {
+          Pair<BufferBuilder.DrawState, ByteBuffer> pair = bufferBuilderIn.getNextBuffer();
+          BufferBuilder.DrawState drawState = pair.getFirst();
+          draw(pair, drawState.getDrawMode(), drawState.getFormat(), drawState.getVertexCount());
+        }
       }
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static void draw(
         Pair<BufferBuilder.DrawState, ByteBuffer> pair,
         int modeIn,
@@ -80,8 +85,9 @@ public class WorldVertexBufferUploaderInterceptor {
       }
       DrawStateAccessor drawStateAccessor = (DrawStateAccessor) (Object) pair.getFirst();
       if (drawStateAccessor.getModelBoxHolder() == null) return;
-      ModelBoxHolder<?, ?> modelBoxHolder = drawStateAccessor.getModelBoxHolder();
-
+      ModelBoxHolder modelBoxHolder = drawStateAccessor.getModelBoxHolder();
+      if (modelBoxHolder.getContext().getRenderer() == null) return;
+      modelBoxHolder.getContext().getRenderer().render(modelBoxHolder, drawStateAccessor.getRenderData());
     }
   }
 }

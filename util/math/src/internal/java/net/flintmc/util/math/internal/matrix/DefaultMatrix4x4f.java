@@ -5,11 +5,60 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.math.matrix.Matrix4x4f;
 import org.joml.Math;
 
+import java.nio.FloatBuffer;
+
 @Implement(Matrix4x4f.class)
 public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implements Matrix4x4f {
 
   @AssistedInject
   private DefaultMatrix4x4f() {
+  }
+
+  public Matrix4x4f rotate(float radians, float x, float y, float z) {
+    return this.rotate(radians, x, y, z, this);
+  }
+
+  public Matrix4x4f rotate(float ang, float x, float y, float z, Matrix4x4f target) {
+    float s = Math.sin(ang);
+    float c = Math.cosFromSin(s, ang);
+    float C = 1.0f - c;
+    float xx = x * x, xy = x * y, xz = x * z;
+    float yy = y * y, yz = y * z;
+    float zz = z * z;
+    float rm00 = xx * C + c;
+    float rm01 = xy * C + z * s;
+    float rm02 = xz * C - y * s;
+    float rm10 = xy * C - z * s;
+    float rm11 = yy * C + c;
+    float rm12 = yz * C + x * s;
+    float rm20 = xz * C + y * s;
+    float rm21 = yz * C - x * s;
+    float rm22 = zz * C + c;
+    float nm00 = m00 * rm00 + m10 * rm01 + m20 * rm02;
+    float nm01 = m01 * rm00 + m11 * rm01 + m21 * rm02;
+    float nm02 = m02 * rm00 + m12 * rm01 + m22 * rm02;
+    float nm03 = m03 * rm00 + m13 * rm01 + m23 * rm02;
+    float nm10 = m00 * rm10 + m10 * rm11 + m20 * rm12;
+    float nm11 = m01 * rm10 + m11 * rm11 + m21 * rm12;
+    float nm12 = m02 * rm10 + m12 * rm11 + m22 * rm12;
+    float nm13 = m03 * rm10 + m13 * rm11 + m23 * rm12;
+    return target
+        .setM20(m00 * rm20 + m10 * rm21 + m20 * rm22)
+        .setM21(m01 * rm20 + m11 * rm21 + m21 * rm22)
+        .setM22(m02 * rm20 + m12 * rm21 + m22 * rm22)
+        .setM23(m03 * rm20 + m13 * rm21 + m23 * rm22)
+        .setM00(nm00)
+        .setM01(nm01)
+        .setM02(nm02)
+        .setM03(nm03)
+        .setM10(nm10)
+        .setM11(nm11)
+        .setM12(nm12)
+        .setM13(nm13)
+        .setM30(m30)
+        .setM31(m31)
+        .setM32(m32)
+        .setM33(m33);
   }
 
   @SuppressWarnings("DuplicatedCode")
@@ -189,5 +238,28 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
 
   public Matrix4x4f setIdentity() {
     return this.set(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
+  }
+
+  public Matrix4x4f write(FloatBuffer floatBuffer) {
+    floatBuffer.put(0, this.m00);
+    floatBuffer.put(4, this.m01);
+    floatBuffer.put(8, this.m02);
+    floatBuffer.put(12, this.m03);
+
+    floatBuffer.put(1, this.m10);
+    floatBuffer.put(5, this.m11);
+    floatBuffer.put(9, this.m12);
+    floatBuffer.put(13, this.m13);
+
+    floatBuffer.put(2, this.m20);
+    floatBuffer.put(6, this.m21);
+    floatBuffer.put(10, this.m22);
+    floatBuffer.put(14, this.m23);
+
+    floatBuffer.put(3, this.m30);
+    floatBuffer.put(7, this.m31);
+    floatBuffer.put(11, this.m32);
+    floatBuffer.put(15, this.m33);
+    return this;
   }
 }

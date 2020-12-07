@@ -122,9 +122,7 @@ public class DefaultEventBus implements EventBus {
     }
 
     for (SubscribeMethod method : methods) {
-      if (method.getPhase() == Subscribe.Phase.ANY
-          || phase == method.getPhase()
-          || phase == Subscribe.Phase.ANY) {
+      if (method.getPhase() == Subscribe.Phase.ANY || phase == method.getPhase() || phase == Subscribe.Phase.ANY) {
         this.fireLast(event, phase, method);
       }
     }

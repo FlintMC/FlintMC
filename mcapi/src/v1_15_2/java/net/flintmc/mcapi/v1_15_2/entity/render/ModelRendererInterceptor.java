@@ -20,7 +20,6 @@ import net.flintmc.transform.javassist.CtClassFilters;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -253,38 +252,65 @@ public class ModelRendererInterceptor {
         Object renderMeta) {
 
       if (renderer != null) {
+        Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixStackEntry.getMatrix();
+        Matrix3fAccessor normalMatrix = (Matrix3fAccessor) (Object) matrixStackEntry.getNormal();
+
+        List<BufferBuilder.DrawState> drawStates = ((BufferBuilderAccessor) buffer).getDrawStates();
+        try {
+          BufferBuilder.DrawState drawState;
+
+          Constructor<?> declaredConstructor1 =
+              BufferBuilder.DrawState.class.getDeclaredConstructors()[1];
+          declaredConstructor1.setAccessible(true);
+          drawState =
+              (BufferBuilder.DrawState)
+                  declaredConstructor1.newInstance(
+                      ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
+          DrawStateAccessor drawStateAccessor = (DrawStateAccessor) (Object) drawState;
+          MinecraftRenderMeta minecraftRenderMeta =
+              InjectionHolder.getInjectedInstance(MinecraftRenderMeta.Factory.class).create();
+
+          minecraftRenderMeta
+              .getWorld()
+              .set(
+                  worldMatrix.getM00(),
+                  worldMatrix.getM10(),
+                  worldMatrix.getM20(),
+                  worldMatrix.getM30(),
+                  worldMatrix.getM01(),
+                  worldMatrix.getM11(),
+                  worldMatrix.getM21(),
+                  worldMatrix.getM31(),
+                  worldMatrix.getM02(),
+                  worldMatrix.getM12(),
+                  worldMatrix.getM22(),
+                  worldMatrix.getM32(),
+                  worldMatrix.getM03(),
+                  worldMatrix.getM13(),
+                  worldMatrix.getM23(),
+                  worldMatrix.getM33());
+
+          minecraftRenderMeta
+              .getNormal()
+              .set(
+                  normalMatrix.getM00(),
+                  normalMatrix.getM10(),
+                  normalMatrix.getM20(),
+                  normalMatrix.getM01(),
+                  normalMatrix.getM11(),
+                  normalMatrix.getM21(),
+                  normalMatrix.getM02(),
+                  normalMatrix.getM12(),
+                  normalMatrix.getM22());
+
+          drawStateAccessor.setModelRenderData(minecraftRenderMeta);
+          drawStateAccessor.setModelBoxHolder(modelBoxHolder);
+          drawStates.add(drawState);
+
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+          e.printStackTrace();
+        }
         if (!renderer.shouldExecuteNextStage(modelBoxHolder, renderMeta)) {
-          List<BufferBuilder.DrawState> drawStates =
-              ((BufferBuilderAccessor) buffer).getDrawStates();
-          try {
-
-            Constructor<?> declaredConstructor =
-                Class.forName("net.minecraft.client.renderer.BufferBuilder$DrawState")
-                    .getDeclaredConstructor(VertexFormat.class, int.class, int.class);
-            declaredConstructor.setAccessible(true);
-
-            BufferBuilder.DrawState drawState;
-
-            if (drawStates.isEmpty()) {
-              drawState =
-                  (BufferBuilder.DrawState)
-                      BufferBuilder.DrawState.class.getDeclaredConstructors()[0].newInstance(
-                          ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
-            } else {
-              drawState = drawStates.get(drawStates.size() - 1);
-            }
-            DrawStateAccessor drawStateAccessor = (DrawStateAccessor) (Object) drawState;
-
-            drawStateAccessor.setModelBoxHolder(modelBoxHolder);
-            drawStates.add(drawState);
-
-          } catch (ClassNotFoundException
-              | NoSuchMethodException
-              | IllegalAccessException
-              | InstantiationException
-              | InvocationTargetException e) {
-            e.printStackTrace();
-          }
           return;
         }
       }
@@ -328,31 +354,6 @@ public class ModelRendererInterceptor {
                 f1,
                 f2);
           }
-        }
-      }
-
-      if (renderer != null) {
-        List<BufferBuilder.DrawState> drawStates = ((BufferBuilderAccessor) buffer).getDrawStates();
-        try {
-          BufferBuilder.DrawState drawState;
-
-          if (drawStates.isEmpty()) {
-            drawState =
-                (BufferBuilder.DrawState)
-                    BufferBuilder.DrawState.class.getDeclaredConstructors()[0].newInstance(
-                        ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
-          } else {
-            drawState = drawStates.get(drawStates.size() - 1);
-          }
-
-          DrawStateAccessor drawStateAccessor = (DrawStateAccessor) (Object) drawState;
-
-          drawStateAccessor.setModelBoxHolder(modelBoxHolder);
-
-        } catch (IllegalAccessException
-            | InstantiationException
-            | InvocationTargetException e) {
-          e.printStackTrace();
         }
       }
     }
