@@ -13,6 +13,7 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.commons.Pair;
 
+/** {@inheritDoc} */
 @Singleton
 @Implement(EventConfigInitializer.class)
 public class DefaultEventConfigInitializer implements EventConfigInitializer {
@@ -26,6 +27,7 @@ public class DefaultEventConfigInitializer implements EventConfigInitializer {
     this.configGenerator = configGenerator;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addPendingInitialization(ParsedConfig config, ConfigInit configInit) {
     this.pendingConfigInitializations.put(
