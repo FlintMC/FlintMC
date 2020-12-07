@@ -4,6 +4,7 @@ package net.flintmc.util.property;
  * Represents an owner of a {@link PropertyContext}.
  *
  * @param <T_PropertyContextAware> self reference. Just used for generic locking
+ * @see Property
  * @see PropertyContext
  */
 public interface PropertyContextAware<
