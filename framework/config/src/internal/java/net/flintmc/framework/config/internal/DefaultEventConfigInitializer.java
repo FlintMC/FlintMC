@@ -6,6 +6,7 @@ import net.flintmc.framework.config.EventConfigInitializer;
 import net.flintmc.framework.config.annotation.ConfigInit;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.ParsedConfig;
+import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
 import net.flintmc.framework.inject.implement.Implement;
 
@@ -14,14 +15,18 @@ import net.flintmc.framework.inject.implement.Implement;
 @Implement(EventConfigInitializer.class)
 public class DefaultEventConfigInitializer implements EventConfigInitializer {
 
-  private final ConfigGenerator configGenerator;
+  private final EventBus eventBus;
   private final SubscribeMethodBuilder.Factory subscribeMethodFactory;
+  private final ConfigGenerator configGenerator;
 
   @Inject
   public DefaultEventConfigInitializer(
-      ConfigGenerator configGenerator, SubscribeMethodBuilder.Factory subscribeMethodFactory) {
-    this.configGenerator = configGenerator;
+      SubscribeMethodBuilder.Factory subscribeMethodFactory,
+      EventBus eventBus,
+      ConfigGenerator configGenerator) {
+    this.eventBus = eventBus;
     this.subscribeMethodFactory = subscribeMethodFactory;
+    this.configGenerator = configGenerator;
   }
 
   /** {@inheritDoc} */
@@ -30,7 +35,13 @@ public class DefaultEventConfigInitializer implements EventConfigInitializer {
     this.subscribeMethodFactory
         .newBuilder(configInit.eventClass())
         .phaseOnly(configInit.eventPhase())
-        .to(ignored -> this.configGenerator.initConfig(config))
+        .to(
+            ((event, phase, holderMethod) -> {
+              this.configGenerator.initConfig(config);
+              // we only needed the subscribe method to initialize the config,
+              // we can unregister it now
+              this.eventBus.unregisterSubscribeMethod(holderMethod);
+            }))
         .buildAndRegister();
   }
 }

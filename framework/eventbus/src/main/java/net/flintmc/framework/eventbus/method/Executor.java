@@ -1,10 +1,7 @@
 package net.flintmc.framework.eventbus.method;
 
-import javassist.CtMethod;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-
-import java.util.function.Supplier;
 
 /**
  * An interface that can invoke a defined method on a listener object when an event is fired.
@@ -18,9 +15,8 @@ public interface Executor<E extends Event> {
    *
    * @param event The event.
    * @param phase The phase in which the given event has been fired
+   * @param holderMethod the subscribe method holding this executor
    * @throws Throwable If an exception occurred.
    */
-  void invoke(E event, Subscribe.Phase phase) throws Throwable;
-
-
+  void invoke(E event, Subscribe.Phase phase, SubscribeMethod holderMethod) throws Throwable;
 }

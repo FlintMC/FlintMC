@@ -50,7 +50,7 @@ public class DefaultSubscribeMethodBuilder<E extends Event> implements Subscribe
   /** {@inheritDoc} */
   @Override
   public SubscribeMethodBuilder<E> to(Consumer<E> executor) {
-    return this.to((event, phase) -> executor.accept(event));
+    return this.to((event, phase, holderMethod) -> executor.accept(event));
   }
 
   /** {@inheritDoc} */
