@@ -12,6 +12,7 @@ import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/** {@inheritDoc} */
 public class DefaultSubscribeMethodBuilder<E extends Event> implements SubscribeMethodBuilder<E> {
 
   private final SubscribeMethod.Factory methodFactory;

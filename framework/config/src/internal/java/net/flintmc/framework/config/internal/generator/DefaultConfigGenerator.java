@@ -151,7 +151,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
       this.initConfig(config);
     } else {
       // registering the config for later initialization after the configured event is fired
-      this.eventConfigInitializer.addPendingInitialization(config, configInits.get(0));
+      this.eventConfigInitializer.registerPendingInitialization(config, configInits.get(0));
     }
 
     this.discoveredConfigs.put(config.getConfigName(), config);

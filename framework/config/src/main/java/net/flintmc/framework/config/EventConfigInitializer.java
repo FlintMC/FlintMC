@@ -15,5 +15,5 @@ public interface EventConfigInitializer {
    * @param config the config which will be initialized later
    * @param configInit the initialization properties, containing event class and phase
    */
-  void addPendingInitialization(ParsedConfig config, ConfigInit configInit);
+  void registerPendingInitialization(ParsedConfig config, ConfigInit configInit);
 }
