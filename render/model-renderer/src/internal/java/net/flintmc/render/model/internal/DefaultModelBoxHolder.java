@@ -36,105 +36,105 @@ public class DefaultModelBoxHolder<
     return this.getPropertyContext().getPropertyValue(ModelBoxHolder.MODEL_BOXES);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleX(float value) {
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationX(float value) {
     return this.getPropertyContext().setPropertyValue(ROTATION_ANGLE_X, value);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleY(float value) {
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationY(float value) {
     return this.getPropertyContext().setPropertyValue(ROTATION_ANGLE_Y, value);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleZ(float value) {
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationZ(float value) {
     return this.getPropertyContext().setPropertyValue(ROTATION_ANGLE_Z, value);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleXMode(
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationXMode(
       RotationMode mode) {
     return this.getPropertyContext().setPropertyMeta(ROTATION_ANGLE_X, mode);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleYMode(
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationYMode(
       RotationMode mode) {
     return this.getPropertyContext().setPropertyMeta(ROTATION_ANGLE_Y, mode);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleZMode(
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationZMode(
       RotationMode mode) {
     return this.getPropertyContext().setPropertyMeta(ROTATION_ANGLE_Z, mode);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointX(float value) {
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationX(float value) {
     return this.getPropertyContext().setPropertyValue(ROTATION_POINT_X, value);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointY(float value) {
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationY(float value) {
     return this.getPropertyContext().setPropertyValue(ROTATION_POINT_Y, value);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointZ(float value) {
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationZ(float value) {
     return this.getPropertyContext().setPropertyValue(ROTATION_POINT_Z, value);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointXMode(
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationXMode(
       RotationMode mode) {
     return this.getPropertyContext().setPropertyMeta(ROTATION_POINT_X, mode);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointYMode(
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationYMode(
       RotationMode mode) {
     return this.getPropertyContext().setPropertyMeta(ROTATION_POINT_Y, mode);
   }
 
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointZMode(
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationZMode(
       RotationMode mode) {
     return this.getPropertyContext().setPropertyMeta(ROTATION_POINT_Z, mode);
   }
 
-  public float getRotationPointX() {
+  public float getTranslationX() {
     return this.getPropertyContext().getPropertyValue(ROTATION_POINT_X);
   }
 
-  public float getRotationPointY() {
+  public float getTranslationY() {
     return this.getPropertyContext().getPropertyValue(ROTATION_POINT_Y);
   }
 
-  public float getRotationPointZ() {
+  public float getTranslationZ() {
     return this.getPropertyContext().getPropertyValue(ROTATION_POINT_Z);
   }
 
-  public float getRotationAngleX() {
+  public float getRotationX() {
     return this.getPropertyContext().getPropertyValue(ROTATION_ANGLE_X);
   }
 
-  public float getRotationAngleY() {
+  public float getRotationY() {
     return this.getPropertyContext().getPropertyValue(ROTATION_ANGLE_Y);
   }
 
-  public float getRotationAngleZ() {
+  public float getRotationZ() {
     return this.getPropertyContext().getPropertyValue(ROTATION_ANGLE_Z);
   }
 
-  public RotationMode getRotationPointXMode() {
+  public RotationMode getTranslationXMode() {
     return this.getPropertyContext().getPropertyMeta(ROTATION_POINT_X);
   }
 
-  public RotationMode getRotationPointYMode() {
+  public RotationMode getTranslationYMode() {
     return this.getPropertyContext().getPropertyMeta(ROTATION_POINT_Y);
   }
 
-  public RotationMode getRotationPointZMode() {
+  public RotationMode getTranslationZMode() {
     return this.getPropertyContext().getPropertyMeta(ROTATION_POINT_Z);
   }
 
-  public RotationMode getRotationAngleXMode() {
+  public RotationMode getRotationXMode() {
     return this.getPropertyContext().getPropertyMeta(ROTATION_ANGLE_X);
   }
 
-  public RotationMode getRotationAngleYMode() {
+  public RotationMode getRotationYMode() {
     return this.getPropertyContext().getPropertyMeta(ROTATION_ANGLE_Y);
   }
 
-  public RotationMode getRotationAngleZMode() {
+  public RotationMode getRotationZMode() {
     return this.getPropertyContext().getPropertyMeta(ROTATION_ANGLE_Z);
   }
 

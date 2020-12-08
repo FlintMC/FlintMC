@@ -6,24 +6,29 @@ import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents the well known vanilla MinecraftRenderer.
+ *
+ * @param <T_RenderContextAware> the
+ * @param <T_RenderContext>
+ */
 public interface ModelBoxHolder<
-        T_RenderContextAware extends RenderContextAware<T_RenderContext>,
-        T_RenderContext extends
-            RenderContext<
-                    T_RenderContextAware,
-                    T_RenderContext,
-                    ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
-                    ?,
-                    Object>>
+    T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+    T_RenderContext extends
+        RenderContext<
+            T_RenderContextAware,
+            T_RenderContext,
+            ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
+            ?,
+            Object>>
     extends Renderable<
-        T_RenderContextAware,
-        T_RenderContext,
-        ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
-        Object> {
+    T_RenderContextAware,
+    T_RenderContext,
+    ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
+    Object> {
 
   Property<Set<ModelBox>, Void> MODEL_BOXES =
       Property.builder().<Set<ModelBox>>withValue().withDefaultValue(HashSet::new).build();
-
   Property<Float, RotationMode> ROTATION_ANGLE_X =
       Property.builder()
           .<Float>withValue()
@@ -31,7 +36,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
-
   Property<Float, RotationMode> ROTATION_ANGLE_Y =
       Property.builder()
           .<Float>withValue()
@@ -39,7 +43,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
-
   Property<Float, RotationMode> ROTATION_ANGLE_Z =
       Property.builder()
           .<Float>withValue()
@@ -47,7 +50,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
-
   Property<Float, RotationMode> ROTATION_POINT_X =
       Property.builder()
           .<Float>withValue()
@@ -55,7 +57,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
-
   Property<Float, RotationMode> ROTATION_POINT_Y =
       Property.builder()
           .<Float>withValue()
@@ -63,7 +64,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
-
   Property<Float, RotationMode> ROTATION_POINT_Z =
       Property.builder()
           .<Float>withValue()
@@ -71,7 +71,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(RotationMode.ABSOLUTE)
           .build();
-
   Property<Integer, OverridePolicy> TEXTURE_OFFSET_X =
       Property.builder()
           .<Integer>withValue()
@@ -79,7 +78,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
-
   Property<Integer, OverridePolicy> TEXTURE_OFFSET_Y =
       Property.builder()
           .<Integer>withValue()
@@ -87,7 +85,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
-
   Property<Float, OverridePolicy> TEXTURE_WIDTH =
       Property.builder()
           .<Float>withValue()
@@ -95,7 +92,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
-
   Property<Float, OverridePolicy> TEXTURE_HEIGHT =
       Property.builder()
           .<Float>withValue()
@@ -103,7 +99,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(0f)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
-
   Property<Boolean, OverridePolicy> SHOW_MODEL =
       Property.builder()
           .<Boolean>withValue()
@@ -111,7 +106,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(true)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
-
   Property<Boolean, OverridePolicy> MIRROR =
       Property.builder()
           .<Boolean>withValue()
@@ -119,7 +113,6 @@ public interface ModelBoxHolder<
           .withDefaultValue(false)
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
-
   Property<Color, OverridePolicy> COLOR =
       Property.builder()
           .<Color>withValue()
@@ -128,119 +121,357 @@ public interface ModelBoxHolder<
           .withDefaultMeta(OverridePolicy.INACTIVE)
           .build();
 
+  /**
+   * @return all registered boxes
+   */
   Set<ModelBox> getBoxes();
 
+  /**
+   * Set the texture width override policy.
+   *
+   * @param overridePolicy the override policy to set
+   * @return this
+   * @see OverridePolicy
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureWidthPolicy(
       OverridePolicy overridePolicy);
 
+  /**
+   * Set the texture height override policy.
+   *
+   * @param overridePolicy the override policy to set
+   * @return this
+   * @see OverridePolicy
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureHeightPolicy(
       OverridePolicy overridePolicy);
 
+  /**
+   * Set all model boxes
+   *
+   * @param modelBoxes the model boxes to set
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setModelBoxes(Set<ModelBox> modelBoxes);
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setColor(Color color);
-
+  /**
+   * @return the vertex color
+   */
   Color getColor();
 
-  float getRotationPointX();
+  /**
+   * Set the vertex color.
+   *
+   * @param color the color to set
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setColor(Color color);
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointX(float value);
+  /**
+   * @return the x translation
+   */
+  float getTranslationX();
 
-  float getRotationPointY();
+  /**
+   * Set the x translation.
+   *
+   * @param value the x translation to set
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationX(float value);
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointY(float value);
+  /**
+   * @return the y translation
+   */
+  float getTranslationY();
 
-  float getRotationPointZ();
+  /**
+   * Set the y translation.
+   *
+   * @param value the y translation to set
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationY(float value);
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointZ(float value);
+  /**
+   * @return the z translation
+   */
+  float getTranslationZ();
 
-  float getRotationAngleX();
+  /**
+   * Set the z translation.
+   *
+   * @param value the z translation to set
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationZ(float value);
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleX(float value);
+  /**
+   * @return the x rotation
+   */
+  float getRotationX();
 
-  float getRotationAngleY();
+  /**
+   * Set the x rotation.
+   *
+   * @param value the x rotation to set
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationX(float value);
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleY(float value);
+  /**
+   * @return the y rotation
+   */
+  float getRotationY();
 
-  float getRotationAngleZ();
+  /**
+   * Set the y rotation.
+   *
+   * @param value the y rotation to set
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationY(float value);
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleZ(float value);
+  /**
+   * @return the z rotation
+   */
+  float getRotationZ();
 
+  /**
+   * Set the z rotation.
+   *
+   * @param value the z rotation to set
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationZ(float value);
+
+  /**
+   * @return if the rendering should be mirrored at the x axis.
+   */
   boolean isMirror();
 
+  /**
+   * Sets if the rendering should be mirrored at the x axis.
+   *
+   * @param mirror new mirror value
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setMirror(boolean mirror);
 
+  /**
+   * @return if the model should be rendered
+   */
   boolean isShowModel();
 
+  /**
+   * Sets if the model should be rendered.
+   *
+   * @param showModel new value for showModel
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setShowModel(boolean showModel);
 
+  /**
+   * @return the texture x-offset
+   */
   int getTextureOffsetX();
 
+  /**
+   * Sets the texture x-offset
+   *
+   * @param textureOffsetX the new x-offset
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureOffsetX(int textureOffsetX);
 
+  /**
+   * @return the texture y-offset
+   */
   int getTextureOffsetY();
 
+  /**
+   * Sets the texture y-offset
+   *
+   * @param textureOffsetY the new y-offset
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureOffsetY(int textureOffsetY);
 
+  /**
+   * @return the texture width
+   */
   float getTextureWidth();
 
+  /**
+   * Sets the texture width.
+   *
+   * @param textureWidth the new texture width.
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureWidth(float textureWidth);
 
+  /**
+   * @return the texture height
+   */
   float getTextureHeight();
 
+  /**
+   * Sets the texture height.
+   *
+   * @param textureHeight the new texture height.
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureHeight(float textureHeight);
 
-  RotationMode getRotationPointXMode();
+  /**
+   * @return the x translation mode
+   */
+  RotationMode getTranslationXMode();
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointXMode(RotationMode mode);
+  /**
+   * Sets the x translation mode.
+   *
+   * @param mode the new x translation mode
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationXMode(RotationMode mode);
 
-  RotationMode getRotationPointYMode();
+  /**
+   * @return the y translation mode
+   */
+  RotationMode getTranslationYMode();
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointYMode(RotationMode mode);
+  /**
+   * Sets the y translation mode.
+   *
+   * @param mode the new y translation mode
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationYMode(RotationMode mode);
 
-  RotationMode getRotationPointZMode();
+  /**
+   * @return the z translation mode
+   */
+  RotationMode getTranslationZMode();
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationPointZMode(RotationMode mode);
+  /**
+   * Sets the z translation mode.
+   *
+   * @param mode the new z translation mode
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTranslationZMode(RotationMode mode);
 
-  RotationMode getRotationAngleXMode();
+  /**
+   * @return the x rotation mode
+   */
+  RotationMode getRotationXMode();
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleXMode(RotationMode mode);
+  /**
+   * Sets the x rotation mode
+   *
+   * @param mode the new x rotation mode
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationXMode(RotationMode mode);
 
-  RotationMode getRotationAngleYMode();
+  /**
+   * @return the y rotation mode
+   */
+  RotationMode getRotationYMode();
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleYMode(RotationMode mode);
+  /**
+   * Sets the y rotation mode
+   *
+   * @param mode the new y rotation mode
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationYMode(RotationMode mode);
 
-  RotationMode getRotationAngleZMode();
+  /**
+   * @return the z rotation mode
+   */
+  RotationMode getRotationZMode();
 
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationAngleZMode(RotationMode mode);
+  /**
+   * Sets the z rotation mode
+   *
+   * @param mode the new z rotation mode
+   * @return this
+   */
+  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setRotationZMode(RotationMode mode);
 
+  /**
+   * @return the mirror override policy
+   */
   OverridePolicy getMirrorOverridePolicy();
 
+  /**
+   * Set the mirror override policy
+   *
+   * @param overridePolicy the new mirror override policy
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setMirrorOverridePolicy(
       OverridePolicy overridePolicy);
 
+  /**
+   * @return the showModel override policy
+   */
   OverridePolicy getShowModelOverridePolicy();
 
+  /**
+   * Set the showModel override policy
+   *
+   * @param overridePolicy the new showModel override policy
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setShowModelOverridePolicy(
       OverridePolicy overridePolicy);
 
+  /**
+   * @return the texture x offset override policy
+   */
   OverridePolicy getTextureOffsetXOverridePolicy();
 
+  /**
+   * Set the texture x offset override policy
+   *
+   * @param overridePolicy the new texture x offset override policy
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureOffsetXOverridePolicy(
       OverridePolicy overridePolicy);
 
+  /**
+   * @return the texture y offset override policy
+   */
   OverridePolicy getTextureOffsetYOverridePolicy();
 
+  /**
+   * Set the texture y offset override policy
+   *
+   * @param overridePolicy the new texture y offset override policy
+   * @return this
+   */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureOffsetYOverridePolicy(
       OverridePolicy overridePolicy);
 
+  /**
+   * @return the texture width override policy
+   */
   OverridePolicy getTextureWidthOverridePolicy();
 
+  /**
+   * @return the texture height override policy
+   */
   OverridePolicy getTextureHeightOverridePolicy();
+
 
   enum OverridePolicy {
     ACTIVE,
     INACTIVE
+
   }
 
   enum RotationMode {

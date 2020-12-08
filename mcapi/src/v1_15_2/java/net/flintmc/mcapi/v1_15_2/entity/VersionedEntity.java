@@ -183,12 +183,12 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
                   }
 
                   modelBoxHolder
-                      .setRotationAngleX(modelRenderer.rotateAngleX)
-                      .setRotationAngleY(modelRenderer.rotateAngleY)
-                      .setRotationAngleZ(modelRenderer.rotateAngleZ)
-                      .setRotationPointX(modelRenderer.rotationPointX)
-                      .setRotationPointY(modelRenderer.rotationPointY)
-                      .setRotationPointZ(modelRenderer.rotationPointZ)
+                      .setRotationX(modelRenderer.rotateAngleX)
+                      .setRotationY(modelRenderer.rotateAngleY)
+                      .setRotationZ(modelRenderer.rotateAngleZ)
+                      .setTranslationX(modelRenderer.rotationPointX)
+                      .setTranslationY(modelRenderer.rotationPointY)
+                      .setTranslationZ(modelRenderer.rotationPointZ)
                       .setMirror(modelRenderer.mirror)
                       .setShowModel(modelRenderer.showModel)
                       .setTextureHeight(modelRendererAccessor.getTextureHeight())
@@ -226,35 +226,35 @@ public class VersionedEntity<E extends net.minecraft.entity.Entity> extends Defa
                       == ModelBoxHolder.OverridePolicy.ACTIVE)
                     modelRendererAccessor.setTextureHeight(modelBoxHolder.getTextureHeight());
 
-                  if (modelBoxHolder.getRotationAngleXMode()
+                  if (modelBoxHolder.getRotationXMode()
                       == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotateAngleX = 0;
 
-                  modelRenderer.rotateAngleX += modelBoxHolder.getRotationAngleX();
+                  modelRenderer.rotateAngleX += modelBoxHolder.getRotationX();
 
-                  if (modelBoxHolder.getRotationAngleYMode()
+                  if (modelBoxHolder.getRotationYMode()
                       == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotateAngleY = 0;
 
-                  modelRenderer.rotateAngleY += modelBoxHolder.getRotationAngleY();
+                  modelRenderer.rotateAngleY += modelBoxHolder.getRotationY();
 
-                  if (modelBoxHolder.getRotationAngleZMode()
+                  if (modelBoxHolder.getRotationZMode()
                       == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotateAngleZ = 0;
 
-                  modelRenderer.rotateAngleZ += modelBoxHolder.getRotationAngleZ();
+                  modelRenderer.rotateAngleZ += modelBoxHolder.getRotationZ();
 
-                  if (modelBoxHolder.getRotationPointXMode()
+                  if (modelBoxHolder.getTranslationXMode()
                       == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotationPointX = 0;
 
-                  modelRenderer.rotationPointX += modelBoxHolder.getRotationPointX();
+                  modelRenderer.rotationPointX += modelBoxHolder.getTranslationX();
 
-                  if (modelBoxHolder.getRotationPointYMode()
+                  if (modelBoxHolder.getTranslationYMode()
                       == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotationPointY = 0;
 
-                  modelRenderer.rotationPointY += modelBoxHolder.getRotationPointY();
+                  modelRenderer.rotationPointY += modelBoxHolder.getTranslationY();
 
-                  if (modelBoxHolder.getRotationPointZMode()
+                  if (modelBoxHolder.getTranslationZMode()
                       == ModelBoxHolder.RotationMode.ABSOLUTE) modelRenderer.rotationPointZ = 0;
 
-                  modelRenderer.rotationPointZ += modelBoxHolder.getRotationPointZ();
+                  modelRenderer.rotationPointZ += modelBoxHolder.getTranslationZ();
                 })
             .addRenderCleanup(
                 modelBoxHolder -> {
