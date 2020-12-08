@@ -16,10 +16,15 @@ public abstract class DefaultEntity<H> implements Entity {
   private final EntityType entityType;
   private final World world;
   private final EntityFoundationMapper entityFoundationMapper;
-  private EntityRenderContext.Factory entityRenderContextFactory;
+  private final EntityRenderContext.Factory entityRenderContextFactory;
   protected EntityRenderContext entityRenderContext;
 
-  protected DefaultEntity(H handle, EntityType entityType, World world, EntityFoundationMapper entityFoundationMapper, EntityRenderContext.Factory entityRenderContextFactory) {
+  protected DefaultEntity(
+      H handle,
+      EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper,
+      EntityRenderContext.Factory entityRenderContextFactory) {
     this.handle = handle;
     this.entityType = entityType;
     this.world = world;
@@ -27,8 +32,13 @@ public abstract class DefaultEntity<H> implements Entity {
     this.entityRenderContextFactory = entityRenderContextFactory;
   }
 
-  protected abstract Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers();
+  protected abstract Map<String, ModelBoxHolder<Entity, EntityRenderContext>>
+  createModelRenderers();
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public EntityRenderContext getRenderContext() {
     return this.entityRenderContext;
   }
@@ -41,26 +51,19 @@ public abstract class DefaultEntity<H> implements Entity {
     return handle;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EntityType getType() {
     return this.entityType;
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public World getWorld() {
     return this.world;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isInSameTeam(Entity entity) {
     return this.isInScoreboardTeam(entity.getTeam());
@@ -74,6 +77,10 @@ public abstract class DefaultEntity<H> implements Entity {
     return this.getTeam() != null && this.getTeam().isSameTeam(team);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public EntityFoundationMapper getEntityFoundationMapper() {
     return this.entityFoundationMapper;
   }
