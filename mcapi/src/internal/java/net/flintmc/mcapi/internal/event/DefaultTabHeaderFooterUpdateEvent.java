@@ -8,6 +8,7 @@ import net.flintmc.mcapi.event.TabHeaderFooterUpdateEvent;
 
 import javax.annotation.Nullable;
 
+/** {@inheritDoc} */
 @Implement(TabHeaderFooterUpdateEvent.class)
 public class DefaultTabHeaderFooterUpdateEvent implements TabHeaderFooterUpdateEvent {
 
@@ -22,21 +23,25 @@ public class DefaultTabHeaderFooterUpdateEvent implements TabHeaderFooterUpdateE
     this.type = type;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ChatComponent getNewValue() {
     return this.newValue;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Type getType() {
     return this.type;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isCancelled() {
     return this.cancelled;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;
