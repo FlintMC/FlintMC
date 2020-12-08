@@ -33,7 +33,7 @@ public class DefaultEventConfigInitializer implements EventConfigInitializer {
   @Override
   public void registerPendingInitialization(ParsedConfig config, ConfigInit configInit) {
     this.subscribeMethodFactory
-        .newBuilder(configInit.eventClass())
+        .newBuilder(configInit.value())
         .phaseOnly(configInit.eventPhase())
         .to(
             ((event, phase, holderMethod) -> {
