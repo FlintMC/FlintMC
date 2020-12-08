@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.render.minecraft.text.raw.FontRenderer;
 import net.flintmc.render.minecraft.text.raw.StringAlignment;
 import net.minecraft.client.Minecraft;
@@ -37,6 +38,10 @@ public class VersionedFontRenderer implements FontRenderer {
   /** {@inheritDoc} */
   @Override
   public float getBoldCharWidth(char c) {
+    if (c == ChatColor.PREFIX_CHAR) {
+      return 0;
+    }
+
     Font font = ((ShadowFontRenderer) this.minecraft.fontRenderer).getFont();
     return font.findGlyph(c).getAdvance(true);
   }

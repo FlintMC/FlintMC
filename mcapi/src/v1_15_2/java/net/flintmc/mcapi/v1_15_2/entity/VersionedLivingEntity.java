@@ -6,7 +6,6 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
@@ -14,35 +13,38 @@ import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.resources.ResourceLocation;
-import net.flintmc.mcapi.v1_15_2.entity.render.LivingRendererAccessor;
-import net.flintmc.mcapi.v1_15_2.entity.render.QuadrupedModelAccessor;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
-import net.flintmc.render.model.ModelBoxHolder;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Supplier;
 
 @Implement(value = LivingEntity.class, version = "1.15.2")
-public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.LivingEntity>
-    implements LivingEntity {
+public class VersionedLivingEntity extends VersionedEntity implements LivingEntity {
 
   @AssistedInject
   public VersionedLivingEntity(
       @Assisted("entity") Object entity,
       @Assisted("entityType") EntityType entityType,
       World world,
-      EntityFoundationMapper entityFoundationMapper,
-      EntityRenderContext.Factory entityRenderContextFactory) {
-    super(entity, entityType, world, entityFoundationMapper, entityRenderContextFactory);
+      EntityFoundationMapper entityFoundationMapper) {
+    super(entity, entityType, world, entityFoundationMapper);
+  }
+
+  protected VersionedLivingEntity(
+      Supplier<Object> entitySupplier,
+      EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper) {
+    super(entitySupplier, entityType, world, entityFoundationMapper);
+  }
+
+  @Override
+  protected net.minecraft.entity.LivingEntity wrapped() {
+    net.minecraft.entity.Entity entity = super.wrapped();
 
     if (!(entity instanceof net.minecraft.entity.LivingEntity)) {
       throw new IllegalArgumentException(
@@ -50,83 +52,32 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
               + " is not an instance of "
               + net.minecraft.entity.LivingEntity.class.getName());
     }
+
+    return (net.minecraft.entity.LivingEntity) entity;
   }
 
-  protected Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers() {
-    EntityModel<? extends net.minecraft.entity.LivingEntity> entityModel =
-        ((LivingRendererAccessor)
-            Minecraft.getInstance().getRenderManager().getRenderer(this.getHandle()))
-            .getEntityModel();
-
-    Map<String, ModelBoxHolder<Entity, EntityRenderContext>> modelBoxHolders = new HashMap<>();
-
-    if (entityModel instanceof BipedModel) {
-      BipedModel<? extends net.minecraft.entity.LivingEntity> bipedModel =
-          (BipedModel<? extends net.minecraft.entity.LivingEntity>) entityModel;
-      modelBoxHolders.put("body", this.createModelBox(bipedModel.bipedBody));
-      modelBoxHolders.put("head", this.createModelBox(bipedModel.bipedHead));
-      modelBoxHolders.put("headWear", this.createModelBox(bipedModel.bipedHeadwear));
-      modelBoxHolders.put("leftArm", this.createModelBox(bipedModel.bipedLeftArm));
-      modelBoxHolders.put("rightArm", this.createModelBox(bipedModel.bipedRightArm));
-      modelBoxHolders.put("rightLeg", this.createModelBox(bipedModel.bipedRightLeg));
-      modelBoxHolders.put("leftLeg", this.createModelBox(bipedModel.bipedLeftLeg));
-    }
-
-    if (entityModel instanceof PlayerModel) {
-      modelBoxHolders.put(
-          "leftArmWear", this.createModelBox(((PlayerModel<?>) entityModel).bipedLeftArmwear));
-      modelBoxHolders.put(
-          "rightArmWear",
-          this.createModelBox(((PlayerModel<?>) entityModel).bipedRightArmwear));
-      modelBoxHolders.put(
-          "leftLegWear", this.createModelBox(((PlayerModel<?>) entityModel).bipedLeftLegwear));
-      modelBoxHolders.put(
-          "rightLegWear",
-          this.createModelBox(((PlayerModel<?>) entityModel).bipedRightLegwear));
-      modelBoxHolders.put(
-          "bodyWear", this.createModelBox(((PlayerModel<?>) entityModel).bipedBodyWear));
-    }
-
-    if (entityModel instanceof QuadrupedModelAccessor) {
-      QuadrupedModelAccessor quadrupedModelAccessor = (QuadrupedModelAccessor) entityModel;
-      modelBoxHolders.put("body", this.createModelBox(quadrupedModelAccessor.getBody()));
-      modelBoxHolders.put("head", this.createModelBox(quadrupedModelAccessor.getHead()));
-      modelBoxHolders.put(
-          "legBackLeft", this.createModelBox(quadrupedModelAccessor.getLegBackLeft()));
-      modelBoxHolders.put(
-          "legBackRight", this.createModelBox(quadrupedModelAccessor.getLegBackRight()));
-      modelBoxHolders.put(
-          "legFrontRight", this.createModelBox(quadrupedModelAccessor.getLegFrontRight()));
-      modelBoxHolders.put(
-          "legFrontLeft", this.createModelBox(quadrupedModelAccessor.getLegFrontLeft()));
-    }
-    return modelBoxHolders;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean canBreathUnderwater() {
-    return this.getHandle().canBreatheUnderwater();
+    return this.wrapped().canBreatheUnderwater();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getSwimAnimation(float partialTicks) {
-    return this.getHandle().getSwimAnimation(partialTicks);
+    return this.wrapped().getSwimAnimation(partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getRenderScale() {
-    return this.getHandle().getRenderScale();
+    return this.wrapped().getRenderScale();
   }
 
   /** {@inheritDoc} */
   @Override
   public Random getRandom() {
-    return this.getHandle().getRNG();
+    return this.wrapped().getRNG();
   }
 
   /** {@inheritDoc} */
@@ -134,13 +85,13 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   public LivingEntity getRevengeTarget() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftLivingEntity(this.getHandle().getRevengeTarget());
+        .fromMinecraftLivingEntity(this.wrapped().getRevengeTarget());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setRevengeTarget(LivingEntity entity) {
-    this.getHandle()
+    this.wrapped()
         .setRevengeTarget(
             (net.minecraft.entity.LivingEntity)
                 this.getEntityFoundationMapper().getEntityMapper().toMinecraftLivingEntity(entity));
@@ -149,7 +100,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public int getRevengeTimer() {
-    return this.getHandle().getRevengeTimer();
+    return this.wrapped().getRevengeTimer();
   }
 
   /** {@inheritDoc} */
@@ -157,13 +108,13 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   public LivingEntity getLastAttackedEntity() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftLivingEntity(this.getHandle().getRevengeTarget());
+        .fromMinecraftLivingEntity(this.wrapped().getRevengeTarget());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setLastAttackedEntity(Entity entity) {
-    this.getHandle()
+    this.wrapped()
         .setLastAttackedEntity(
             (net.minecraft.entity.Entity)
                 this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
@@ -172,25 +123,25 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public int getLastAttackedEntityTime() {
-    return this.getHandle().getLastAttackedEntityTime();
+    return this.wrapped().getLastAttackedEntityTime();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getIdleTime() {
-    return this.getHandle().getIdleTime();
+    return this.wrapped().getIdleTime();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setIdleTime(int idleTime) {
-    this.getHandle().setIdleTime(idleTime);
+    this.wrapped().setIdleTime(idleTime);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getVisibilityMultiplier(Entity entity) {
-    return this.getHandle()
+    return this.wrapped()
         .getVisibilityMultiplier(
             (net.minecraft.entity.Entity)
                 this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
@@ -199,7 +150,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public boolean canAttack(LivingEntity entity) {
-    return this.getHandle()
+    return this.wrapped()
         .canAttack(
             (net.minecraft.entity.EntityType<?>)
                 this.getEntityFoundationMapper().getEntityMapper().toMinecraftLivingEntity(entity));
@@ -208,31 +159,31 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public boolean clearActivePotions() {
-    return this.getHandle().clearActivePotions();
+    return this.wrapped().clearActivePotions();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isEntityUndead() {
-    return this.getHandle().isEntityUndead();
+    return this.wrapped().isEntityUndead();
   }
 
   /** {@inheritDoc} */
   @Override
   public void heal(float health) {
-    this.getHandle().heal(health);
+    this.wrapped().heal(health);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getHealth() {
-    return this.getHandle().getHealth();
+    return this.wrapped().getHealth();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setHealth(float health) {
-    this.getHandle().setHealth(health);
+    this.wrapped().setHealth(health);
   }
 
   /** {@inheritDoc} */
@@ -241,14 +192,14 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
     return this.getEntityFoundationMapper()
         .getResourceLocationProvider()
         .get(
-            this.getHandle().getLootTableResourceLocation().getPath(),
-            this.getHandle().getLootTableResourceLocation().getNamespace());
+            this.wrapped().getLootTableResourceLocation().getPath(),
+            this.wrapped().getLootTableResourceLocation().getNamespace());
   }
 
   /** {@inheritDoc} */
   @Override
   public void knockBack(Entity entity, float strength, double xRatio, double zRatio) {
-    this.getHandle()
+    this.wrapped()
         .knockBack(
             (net.minecraft.entity.Entity)
                 this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity),
@@ -262,7 +213,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
     return this.getEntityFoundationMapper()
         .getSoundMapper()
         .fromMinecraftSoundEvent(
-            this.getHandle()
+            this.wrapped()
                 .getEatSound(
                     (net.minecraft.item.ItemStack)
                         this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack)));
@@ -271,48 +222,48 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public boolean isOnLadder() {
-    return this.getHandle().isOnLadder();
+    return this.wrapped().isOnLadder();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getTotalArmorValue() {
-    return this.getHandle().getTotalArmorValue();
+    return this.wrapped().getTotalArmorValue();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getMaxHealth() {
-    return this.getHandle().getMaxHealth();
+    return this.wrapped().getMaxHealth();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getArrowCountInEntity() {
-    return this.getHandle().getArrowCountInEntity();
+    return this.wrapped().getArrowCountInEntity();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setArrowCountInEntity(int count) {
-    this.getHandle().setArrowCountInEntity(count);
+    this.wrapped().setArrowCountInEntity(count);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getBeeStingCount() {
-    return this.getHandle().getBeeStingCount();
+    return this.wrapped().getBeeStingCount();
   }
 
   @Override
   public void setBeeStingCount(int stingCount) {
-    this.getHandle().setBeeStingCount(stingCount);
+    this.wrapped().setBeeStingCount(stingCount);
   }
 
   /** {@inheritDoc} */
   @Override
   public void swingArm(Hand hand) {
-    this.getHandle()
+    this.wrapped()
         .swingArm(
             (net.minecraft.util.Hand)
                 this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
@@ -321,7 +272,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public void swing(Hand hand, boolean sendToAll) {
-    this.getHandle()
+    this.wrapped()
         .swing(
             (net.minecraft.util.Hand)
                 this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand),
@@ -334,7 +285,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
     return this.getEntityFoundationMapper()
         .getItemMapper()
         .fromMinecraft(
-            this.getHandle()
+            this.wrapped()
                 .getHeldItem(
                     (net.minecraft.util.Hand)
                         this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand)));
@@ -343,7 +294,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public void setHeldItem(Hand hand, ItemStack heldItem) {
-    this.getHandle()
+    this.wrapped()
         .setHeldItem(
             (net.minecraft.util.Hand)
                 this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand),
@@ -354,7 +305,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public boolean hasItemInSlot(EquipmentSlotType slotType) {
-    return this.getHandle()
+    return this.wrapped()
         .hasItemInSlot(
             (net.minecraft.inventory.EquipmentSlotType)
                 this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType));
@@ -366,7 +317,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
     return this.getEntityFoundationMapper()
         .getItemMapper()
         .fromMinecraft(
-            this.getHandle()
+            this.wrapped()
                 .getItemStackFromSlot(
                     (net.minecraft.inventory.EquipmentSlotType)
                         this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)));
@@ -375,25 +326,25 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public float getArmorCoverPercentage() {
-    return this.getHandle().getArmorCoverPercentage();
+    return this.wrapped().getArmorCoverPercentage();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getAIMoveSpeed() {
-    return this.getHandle().getAIMoveSpeed();
+    return this.wrapped().getAIMoveSpeed();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setAIMoveSpeed(float speed) {
-    this.getHandle().setAIMoveSpeed(speed);
+    this.wrapped().setAIMoveSpeed(speed);
   }
 
   /** {@inheritDoc} */
   @Override
   public void applyEntityCollision(Entity entity) {
-    this.getHandle()
+    this.wrapped()
         .applyEntityCollision(
             (net.minecraft.entity.Entity)
                 this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
@@ -402,13 +353,13 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public float getYaw(float partialTicks) {
-    return this.getHandle().getYaw(partialTicks);
+    return this.wrapped().getYaw(partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public void attackEntityAsMob(Entity entity) {
-    this.getHandle()
+    this.wrapped()
         .attackEntityAsMob(
             (net.minecraft.entity.Entity)
                 this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
@@ -417,37 +368,37 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public void setSprinting(boolean sprinting) {
-    this.getHandle().setSprinting(sprinting);
+    this.wrapped().setSprinting(sprinting);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isActuallySwimming() {
-    return this.getHandle().isActualySwimming();
+    return this.wrapped().isActualySwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public void startSpinAttack(int duration) {
-    this.getHandle().startSpinAttack(duration);
+    this.wrapped().startSpinAttack(duration);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSpinAttacking() {
-    return this.getHandle().isSpinAttacking();
+    return this.wrapped().isSpinAttacking();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setJumping(boolean jumping) {
-    this.getHandle().setJumping(jumping);
+    this.wrapped().setJumping(jumping);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canEntityBeSeen(Entity entity) {
-    return this.getHandle()
+    return this.wrapped()
         .canEntityBeSeen(
             (net.minecraft.entity.Entity)
                 this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
@@ -456,37 +407,37 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public float getSwingProgress(float partialTicks) {
-    return this.getHandle().getSwingProgress(partialTicks);
+    return this.wrapped().getSwingProgress(partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isServerWorld() {
-    return this.getHandle().isServerWorld();
+    return this.wrapped().isServerWorld();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getAbsorptionAmount() {
-    return this.getHandle().getAbsorptionAmount();
+    return this.wrapped().getAbsorptionAmount();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setAbsorptionAmount(float absorptionAmount) {
-    this.getHandle().setAbsorptionAmount(absorptionAmount);
+    this.wrapped().setAbsorptionAmount(absorptionAmount);
   }
 
   /** {@inheritDoc} */
   @Override
   public void sendEnterCombat() {
-    this.getHandle().sendEnterCombat();
+    this.wrapped().sendEnterCombat();
   }
 
   /** {@inheritDoc} */
   @Override
   public void sendEndCombat() {
-    this.getHandle().sendEndCombat();
+    this.wrapped().sendEndCombat();
   }
 
   /** {@inheritDoc} */
@@ -494,7 +445,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   public Hand.Side getPrimaryHand() {
     return this.getEntityFoundationMapper()
         .getHandMapper()
-        .fromMinecraftHandSide(this.getHandle().getPrimaryHand());
+        .fromMinecraftHandSide(this.wrapped().getPrimaryHand());
   }
 
   /** {@inheritDoc} */
@@ -502,13 +453,13 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   public Hand getActiveHand() {
     return this.getEntityFoundationMapper()
         .getHandMapper()
-        .fromMinecraftHand(this.getHandle().getActiveHand());
+        .fromMinecraftHand(this.wrapped().getActiveHand());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setActiveHand(Hand hand) {
-    this.getHandle()
+    this.wrapped()
         .setActiveHand(
             (net.minecraft.util.Hand)
                 this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
@@ -519,67 +470,67 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   public ItemStack getActiveItemStack() {
     return this.getEntityFoundationMapper()
         .getItemMapper()
-        .fromMinecraft(this.getHandle().getActiveItemStack());
+        .fromMinecraft(this.wrapped().getActiveItemStack());
   }
 
   /** {@inheritDoc} */
   @Override
   public int getItemInUseCount() {
-    return this.getHandle().getItemInUseCount();
+    return this.wrapped().getItemInUseCount();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getItemInUseMaxCount() {
-    return this.getHandle().getItemInUseMaxCount();
+    return this.wrapped().getItemInUseMaxCount();
   }
 
   /** {@inheritDoc} */
   @Override
   public void stopActiveHand() {
-    this.getHandle().stopActiveHand();
+    this.wrapped().stopActiveHand();
   }
 
   /** {@inheritDoc} */
   @Override
   public void resetActiveHand() {
-    this.getHandle().resetActiveHand();
+    this.wrapped().resetActiveHand();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isActiveItemStackBlocking() {
-    return this.getHandle().isActiveItemStackBlocking();
+    return this.wrapped().isActiveItemStackBlocking();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSuppressingSlidingDownLadder() {
-    return this.getHandle().isSuppressingSlidingDownLadder();
+    return this.wrapped().isSuppressingSlidingDownLadder();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isElytraFlying() {
-    return this.getHandle().isElytraFlying();
+    return this.wrapped().isElytraFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getTicksElytraFlying() {
-    return this.getHandle().getTicksElytraFlying();
+    return this.wrapped().getTicksElytraFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean attemptTeleport(double x, double y, double z, boolean particleEffects) {
-    return this.getHandle().attemptTeleport(x, y, z, particleEffects);
+    return this.wrapped().attemptTeleport(x, y, z, particleEffects);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canBeHitWithPotion() {
-    return this.getHandle().canBeHitWithPotion();
+    return this.wrapped().canBeHitWithPotion();
   }
 
   /** {@inheritDoc} */
@@ -591,56 +542,56 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public boolean attackable() {
-    return this.getHandle().attackable();
+    return this.wrapped().attackable();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getMoveStrafing() {
-    return this.getHandle().moveStrafing;
+    return this.wrapped().moveStrafing;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMoveStrafing(float moveStrafing) {
-    this.getHandle().moveStrafing = moveStrafing;
+    this.wrapped().moveStrafing = moveStrafing;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getMoveVertical() {
-    return this.getHandle().moveVertical;
+    return this.wrapped().moveVertical;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMoveVertical(float moveVertical) {
-    this.getHandle().moveVertical = moveVertical;
+    this.wrapped().moveVertical = moveVertical;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getMoveForward() {
-    return this.getHandle().moveForward;
+    return this.wrapped().moveForward;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMoveForward(float moveForward) {
-    this.getHandle().moveForward = moveForward;
+    this.wrapped().moveForward = moveForward;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPartying(BlockPosition position, boolean isPartying) {
-    this.getHandle()
+    this.wrapped()
         .setPartying((BlockPos) this.getWorld().toMinecraftBlockPos(position), isPartying);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canPickUpItem(ItemStack stack) {
-    return this.getHandle()
+    return this.wrapped()
         .canPickUpItem(
             (net.minecraft.item.ItemStack)
                 this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack));
@@ -651,10 +602,9 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   public Optional<BlockPosition> getBedPosition() {
     Optional<BlockPosition> optional = Optional.empty();
 
-    if (this.getHandle().getBedPosition().isPresent()) {
+    if (this.wrapped().getBedPosition().isPresent()) {
       optional =
-          Optional.of(
-              this.getWorld().fromMinecraftBlockPos(this.getHandle().getBedPosition().get()));
+          Optional.of(this.getWorld().fromMinecraftBlockPos(this.wrapped().getBedPosition().get()));
     }
 
     return optional;
@@ -663,31 +613,31 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public void setBedPosition(BlockPosition position) {
-    this.getHandle().setBedPosition((BlockPos) this.getWorld().toMinecraftBlockPos(position));
+    this.wrapped().setBedPosition((BlockPos) this.getWorld().toMinecraftBlockPos(position));
   }
 
   /** {@inheritDoc} */
   @Override
   public void clearBedPosition() {
-    this.getHandle().clearBedPosition();
+    this.wrapped().clearBedPosition();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSleeping() {
-    return this.getHandle().isSleeping();
+    return this.wrapped().isSleeping();
   }
 
   /** {@inheritDoc} */
   @Override
   public void startSleeping(BlockPosition position) {
-    this.getHandle().startSleeping((BlockPos) this.getWorld().toMinecraftBlockPos(position));
+    this.wrapped().startSleeping((BlockPos) this.getWorld().toMinecraftBlockPos(position));
   }
 
   /** {@inheritDoc} */
   @Override
   public void wakeUp() {
-    this.getHandle().wakeUp();
+    this.wrapped().wakeUp();
   }
 
   /** {@inheritDoc} */
@@ -696,7 +646,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
     return this.getEntityFoundationMapper()
         .getItemMapper()
         .fromMinecraft(
-            this.getHandle()
+            this.wrapped()
                 .findAmmo(
                     (net.minecraft.item.ItemStack)
                         this.getEntityFoundationMapper().getItemMapper().toMinecraft(shootable)));
@@ -705,7 +655,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public void sendBreakAnimation(EquipmentSlotType slotType) {
-    this.getHandle()
+    this.wrapped()
         .sendBreakAnimation(
             (net.minecraft.inventory.EquipmentSlotType)
                 this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType));
@@ -714,7 +664,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public void sendBreakAnimation(Hand hand) {
-    this.getHandle()
+    this.wrapped()
         .sendBreakAnimation(
             (net.minecraft.util.Hand)
                 this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
@@ -723,7 +673,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.getHandle()
+    this.wrapped()
         .readAdditional(
             (CompoundNBT)
                 this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
@@ -732,7 +682,7 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.getHandle()
+    this.wrapped()
         .writeAdditional(
             (CompoundNBT)
                 this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
@@ -741,6 +691,6 @@ public class VersionedLivingEntity extends VersionedEntity<net.minecraft.entity.
   /** {@inheritDoc} */
   @Override
   public boolean isAlive() {
-    return this.getHandle().isAlive();
+    return this.wrapped().isAlive();
   }
 }

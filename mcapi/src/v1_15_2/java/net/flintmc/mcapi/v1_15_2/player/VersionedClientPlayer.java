@@ -5,13 +5,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.entity.EntityNotLoadedException;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.item.ItemEntity;
 import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.reason.MoverType;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.items.ItemStack;
@@ -63,7 +63,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Singleton
@@ -77,74 +83,80 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   private final TabOverlay tabOverlay;
   private final TileEntityMapper tileEntityMapper;
   private final ModelMapper modelMapper;
-  private final GameProfileSerializer<com.mojang.authlib.GameProfile>
-      gameProfileGameProfileSerializer;
+  private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
 
   @Inject
-  public VersionedClientPlayer(
+  private VersionedClientPlayer(
       EntityTypeRegister entityTypeRegister,
       net.flintmc.mcapi.world.World world,
       EntityFoundationMapper entityFoundationMapper,
       GameProfileSerializer gameProfileSerializer,
       ModelMapper modelMapper,
-      EntityRenderContext.Factory entityRenderContextFactory,
       ItemEntityMapper itemEntityMapper,
       TileEntityMapper tileEntityMapper,
       NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
       InventoryController inventoryController,
       TabOverlay tabOverlay) {
     super(
-        Minecraft.getInstance().player,
+        () -> Minecraft.getInstance().player,
         entityTypeRegister.getEntityType("player"),
         world,
         entityFoundationMapper,
         gameProfileSerializer,
         modelMapper,
         itemEntityMapper,
-        tileEntityMapper,
-        entityRenderContextFactory);
+        tileEntityMapper);
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;
     this.inventoryController = inventoryController;
     this.tabOverlay = tabOverlay;
     this.tileEntityMapper = tileEntityMapper;
     this.modelMapper = modelMapper;
-    this.gameProfileGameProfileSerializer = gameProfileSerializer;
+    this.gameProfileSerializer = gameProfileSerializer;
+  }
+
+  @Override
+  protected ClientPlayerEntity wrapped() {
+    ClientPlayerEntity entity = Minecraft.getInstance().player;
+    if (entity == null) {
+      throw EntityNotLoadedException.INSTANCE;
+    }
+    return entity;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getElytraPitch() {
-    return Minecraft.getInstance().player.rotateElytraX;
+    return this.wrapped().rotateElytraX;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setElytraPitch(float elytraPitch) {
-    Minecraft.getInstance().player.rotateElytraX = elytraPitch;
+    this.wrapped().rotateElytraX = elytraPitch;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getElytraYaw() {
-    return Minecraft.getInstance().player.rotateElytraY;
+    return this.wrapped().rotateElytraY;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setElytraYaw(float elytraYaw) {
-    Minecraft.getInstance().player.rotateElytraY = elytraYaw;
+    this.wrapped().rotateElytraY = elytraYaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getElytraRoll() {
-    return Minecraft.getInstance().player.rotateElytraZ;
+    return this.wrapped().rotateElytraZ;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setElytraRoll(float elytraRoll) {
-    Minecraft.getInstance().player.rotateElytraZ = elytraRoll;
+    this.wrapped().rotateElytraZ = elytraRoll;
   }
 
   /** {@inheritDoc} */
@@ -170,14 +182,13 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public NetworkPlayerInfo getNetworkPlayerInfo() {
-    return this.networkPlayerInfoRegistry.getPlayerInfo(
-        Minecraft.getInstance().player.getGameProfile().getId());
+    return this.networkPlayerInfoRegistry.getPlayerInfo(this.wrapped().getGameProfile().getId());
   }
 
   /** {@inheritDoc} */
   @Override
   public float getFovModifier() {
-    return Minecraft.getInstance().player.getFovModifier();
+    return this.wrapped().getFovModifier();
   }
 
   /** {@inheritDoc} */
@@ -195,91 +206,91 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void sendChatMessage(String message) {
-    Minecraft.getInstance().player.sendChatMessage(message);
+    this.wrapped().sendChatMessage(message);
   }
 
   /** {@inheritDoc} */
   @Override
   public void closeScreenAndDropStack() {
-    Minecraft.getInstance().player.closeScreenAndDropStack();
+    this.wrapped().closeScreenAndDropStack();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPlayerSPHealth(float health) {
-    Minecraft.getInstance().player.setPlayerSPHealth(health);
+    this.wrapped().setPlayerSPHealth(health);
   }
 
   /** {@inheritDoc} */
   @Override
   public void sendHorseInventory() {
-    Minecraft.getInstance().player.sendHorseInventory();
+    this.wrapped().sendHorseInventory();
   }
 
   /** {@inheritDoc} */
   @Override
   public String getServerBrand() {
-    return Minecraft.getInstance().player.getServerBrand();
+    return this.wrapped().getServerBrand();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setServerBrand(String serverBrand) {
-    Minecraft.getInstance().player.setServerBrand(serverBrand);
+    this.wrapped().setServerBrand(serverBrand);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPermissionLevel(int level) {
-    Minecraft.getInstance().player.setPermissionLevel(level);
+    this.wrapped().setPermissionLevel(level);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setExperienceStats(float currentExperience, int maxExperience, int level) {
-    Minecraft.getInstance().player.setXPStats(currentExperience, maxExperience, level);
+    this.wrapped().setXPStats(currentExperience, maxExperience, level);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isShowDeathScreen() {
-    return Minecraft.getInstance().player.isShowDeathScreen();
+    return this.wrapped().isShowDeathScreen();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setShowDeathScreen(boolean showDeathScreen) {
-    Minecraft.getInstance().player.setShowDeathScreen(showDeathScreen);
+    this.wrapped().setShowDeathScreen(showDeathScreen);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isRidingHorse() {
-    return Minecraft.getInstance().player.isRidingHorse();
+    return this.wrapped().isRidingHorse();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getHorseJumpPower() {
-    return Minecraft.getInstance().player.getHorseJumpPower();
+    return this.wrapped().getHorseJumpPower();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isRowingBoat() {
-    return Minecraft.getInstance().player.isRowingBoat();
+    return this.wrapped().isRowingBoat();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isAutoJumpEnabled() {
-    return Minecraft.getInstance().player.isAutoJumpEnabled();
+    return this.wrapped().isAutoJumpEnabled();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getWaterBrightness() {
-    return Minecraft.getInstance().player.getWaterBrightness();
+    return this.wrapped().getWaterBrightness();
   }
 
   /** {@inheritDoc} */
@@ -291,49 +302,49 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public float getRenderArmYaw() {
-    return Minecraft.getInstance().player.renderArmYaw;
+    return this.wrapped().renderArmYaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setRenderArmYaw(float renderArmYaw) {
-    Minecraft.getInstance().player.renderArmYaw = renderArmYaw;
+    this.wrapped().renderArmYaw = renderArmYaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getPreviousRenderArmYaw() {
-    return Minecraft.getInstance().player.prevRenderArmYaw;
+    return this.wrapped().prevRenderArmYaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPreviousArmYaw(float previousRenderArmYaw) {
-    Minecraft.getInstance().player.prevRenderArmYaw = previousRenderArmYaw;
+    this.wrapped().prevRenderArmYaw = previousRenderArmYaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getRenderArmPitch() {
-    return Minecraft.getInstance().player.renderArmPitch;
+    return this.wrapped().renderArmPitch;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setRenderArmPitch(float renderArmPitch) {
-    Minecraft.getInstance().player.renderArmPitch = renderArmPitch;
+    this.wrapped().renderArmPitch = renderArmPitch;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getPreviousRenderArmPitch() {
-    return Minecraft.getInstance().player.prevRenderArmPitch;
+    return this.wrapped().prevRenderArmPitch;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPreviousRenderArmPitch(float previousRenderArmPitch) {
-    Minecraft.getInstance().player.prevRenderArmPitch = previousRenderArmPitch;
+    this.wrapped().prevRenderArmPitch = previousRenderArmPitch;
   }
 
   /** {@inheritDoc} */
@@ -420,7 +431,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
     return Minecraft.getInstance()
         .player
         .blockActionRestricted(
-            Minecraft.getInstance().player.world,
+            this.wrapped().world,
             (BlockPos) this.getWorld().toMinecraftBlockPos(position),
             (GameType) this.getEntityFoundationMapper().toMinecraftGameType(mode));
   }
@@ -428,7 +439,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean isSecondaryUseActive() {
-    return Minecraft.getInstance().player.isSecondaryUseActive();
+    return this.wrapped().isSecondaryUseActive();
   }
 
   /** {@inheritDoc} */
@@ -450,25 +461,25 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public int getScore() {
-    return Minecraft.getInstance().player.getScore();
+    return this.wrapped().getScore();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setScore(int score) {
-    Minecraft.getInstance().player.setScore(score);
+    this.wrapped().setScore(score);
   }
 
   /** {@inheritDoc} */
   @Override
   public void addScore(int score) {
-    Minecraft.getInstance().player.addScore(score);
+    this.wrapped().addScore(score);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean drop(boolean dropEntireStack) {
-    return Minecraft.getInstance().player.drop(dropEntireStack);
+    return this.wrapped().drop(dropEntireStack);
   }
 
   /** {@inheritDoc} */
@@ -527,7 +538,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void openMinecartCommandBlock(Object commandBlockLogic) {
-    Minecraft.getInstance().player.openMinecartCommandBlock((CommandBlockLogic) commandBlockLogic);
+    this.wrapped().openMinecartCommandBlock((CommandBlockLogic) commandBlockLogic);
   }
 
   /** {@inheritDoc} */
@@ -549,7 +560,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void openJigsaw(Object jigsawTileEntity) {
-    Minecraft.getInstance().player.openJigsaw((JigsawTileEntity) jigsawTileEntity);
+    this.wrapped().openJigsaw((JigsawTileEntity) jigsawTileEntity);
   }
 
   /** {@inheritDoc} */
@@ -603,50 +614,54 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void disableShield(boolean disable) {
-    Minecraft.getInstance().player.disableShield(disable);
+    this.wrapped().disableShield(disable);
   }
 
   /** {@inheritDoc} */
   @Override
   public void spawnSweepParticles() {
-    Minecraft.getInstance().player.spawnSweepParticles();
+    this.wrapped().spawnSweepParticles();
   }
 
   /** {@inheritDoc} */
   @Override
   public void respawnPlayer() {
-    Minecraft.getInstance().player.respawnPlayer();
+    this.wrapped().respawnPlayer();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isUser() {
-    return Minecraft.getInstance().player.isUser();
+    return this.wrapped().isUser();
   }
 
   /** {@inheritDoc} */
   @Override
   public GameProfile getGameProfile() {
-    return this.gameProfileGameProfileSerializer.deserialize(
-        Minecraft.getInstance().player.getGameProfile());
+    try {
+      return super.getGameProfile();
+    } catch (EntityNotLoadedException ignored) {
+      return this.gameProfileSerializer.deserialize(
+          Minecraft.getInstance().getSession().getProfile());
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void stopSleepInBed(boolean updateTimer, boolean updateSleepingPlayers) {
-    Minecraft.getInstance().player.stopSleepInBed(updateTimer, updateSleepingPlayers);
+    this.wrapped().stopSleepInBed(updateTimer, updateSleepingPlayers);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isPlayerFullyAsleep() {
-    return Minecraft.getInstance().player.isPlayerFullyAsleep();
+    return this.wrapped().isPlayerFullyAsleep();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getSleepTimer() {
-    return Minecraft.getInstance().player.getSleepTimer();
+    return this.wrapped().getSleepTimer();
   }
 
   /** {@inheritDoc} */
@@ -663,7 +678,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public BlockPosition getBedLocation() {
-    return this.getWorld().fromMinecraftBlockPos(Minecraft.getInstance().player.getBedLocation());
+    return this.getWorld().fromMinecraftBlockPos(this.wrapped().getBedLocation());
   }
 
   /** {@inheritDoc} */
@@ -685,79 +700,79 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void addMovementStat(double x, double y, double z) {
-    Minecraft.getInstance().player.addMovementStat(x, y, z);
+    this.wrapped().addMovementStat(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean tryToStartFallFlying() {
-    return Minecraft.getInstance().player.tryToStartFallFlying();
+    return this.wrapped().tryToStartFallFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public void startFallFlying() {
-    Minecraft.getInstance().player.startFallFlying();
+    this.wrapped().startFallFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public void stopFallFlying() {
-    Minecraft.getInstance().player.stopFallFlying();
+    this.wrapped().stopFallFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public void giveExperiencePoints(int experiencePoints) {
-    Minecraft.getInstance().player.giveExperiencePoints(experiencePoints);
+    this.wrapped().giveExperiencePoints(experiencePoints);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getExperienceSeed() {
-    return Minecraft.getInstance().player.getXPSeed();
+    return this.wrapped().getXPSeed();
   }
 
   /** {@inheritDoc} */
   @Override
   public void addExperienceLevel(int experienceLevel) {
-    Minecraft.getInstance().player.addExperienceLevel(experienceLevel);
+    this.wrapped().addExperienceLevel(experienceLevel);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getExperienceBarCap() {
-    return Minecraft.getInstance().player.xpBarCap();
+    return this.wrapped().xpBarCap();
   }
 
   /** {@inheritDoc} */
   @Override
   public void addExhaustion(float exhaustion) {
-    Minecraft.getInstance().player.addExhaustion(exhaustion);
+    this.wrapped().addExhaustion(exhaustion);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canEat(boolean ignoreHunger) {
-    return Minecraft.getInstance().player.canEat(ignoreHunger);
+    return this.wrapped().canEat(ignoreHunger);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean shouldHeal() {
-    return Minecraft.getInstance().player.shouldHeal();
+    return this.wrapped().shouldHeal();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isAllowEdit() {
-    return Minecraft.getInstance().player.isAllowEdit();
+    return this.wrapped().isAllowEdit();
   }
 
   /** {@inheritDoc} */
   @Override
   public void sendPlayerAbilities() {
-    Minecraft.getInstance().player.sendPlayerAbilities();
+    this.wrapped().sendPlayerAbilities();
   }
 
   /** {@inheritDoc} */
@@ -781,7 +796,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public UUID getUniqueId(GameProfile profile) {
-    return ClientPlayerEntity.getUUID(this.gameProfileGameProfileSerializer.serialize(profile));
+    return ClientPlayerEntity.getUUID(this.gameProfileSerializer.serialize(profile));
   }
 
   /** {@inheritDoc} */
@@ -801,43 +816,43 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean hasReducedDebug() {
-    return Minecraft.getInstance().player.hasReducedDebug();
+    return this.wrapped().hasReducedDebug();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setReducedDebug(boolean reducedDebug) {
-    Minecraft.getInstance().player.setReducedDebug(reducedDebug);
+    this.wrapped().setReducedDebug(reducedDebug);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getCooldownPeriod() {
-    return Minecraft.getInstance().player.getCooldownPeriod();
+    return this.wrapped().getCooldownPeriod();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getCooledAttackStrength(float strength) {
-    return Minecraft.getInstance().player.getCooledAttackStrength(strength);
+    return this.wrapped().getCooledAttackStrength(strength);
   }
 
   /** {@inheritDoc} */
   @Override
   public void resetCooldown() {
-    Minecraft.getInstance().player.resetCooldown();
+    this.wrapped().resetCooldown();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getLuck() {
-    return Minecraft.getInstance().player.getLuck();
+    return this.wrapped().getLuck();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canUseCommandBlock() {
-    return Minecraft.getInstance().player.canUseCommandBlock();
+    return this.wrapped().canUseCommandBlock();
   }
 
   /** {@inheritDoc} */
@@ -846,7 +861,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
     return (NBTCompound)
         this.getEntityFoundationMapper()
             .getNbtMapper()
-            .fromMinecraftNBT(Minecraft.getInstance().player.getLeftShoulderEntity());
+            .fromMinecraftNBT(this.wrapped().getLeftShoulderEntity());
   }
 
   /** {@inheritDoc} */
@@ -855,13 +870,13 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
     return (NBTCompound)
         this.getEntityFoundationMapper()
             .getNbtMapper()
-            .fromMinecraftNBT(Minecraft.getInstance().player.getRightShoulderEntity());
+            .fromMinecraftNBT(this.wrapped().getRightShoulderEntity());
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasCooldown(Object item) {
-    return Minecraft.getInstance().player.getCooldownTracker().hasCooldown((Item) item);
+    return this.wrapped().getCooldownTracker().hasCooldown((Item) item);
   }
 
   /** {@inheritDoc} */
@@ -876,13 +891,13 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void setCooldown(Object item, int ticks) {
-    Minecraft.getInstance().player.getCooldownTracker().setCooldown((Item) item, ticks);
+    this.wrapped().getCooldownTracker().setCooldown((Item) item, ticks);
   }
 
   /** {@inheritDoc} */
   @Override
   public void removeCooldown(Object item) {
-    Minecraft.getInstance().player.getCooldownTracker().removeCooldown((Item) item);
+    this.wrapped().getCooldownTracker().removeCooldown((Item) item);
   }
 
   /** {@inheritDoc} */
@@ -922,37 +937,37 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public float getAbsorptionAmount() {
-    return Minecraft.getInstance().player.getAbsorptionAmount();
+    return this.wrapped().getAbsorptionAmount();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setAbsorptionAmount(float absorptionAmount) {
-    Minecraft.getInstance().player.setAbsorptionAmount(absorptionAmount);
+    this.wrapped().setAbsorptionAmount(absorptionAmount);
   }
 
   /** {@inheritDoc} */
   @Override
   public String getScoreboardName() {
-    return Minecraft.getInstance().player.getScoreboardName();
+    return this.wrapped().getScoreboardName();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isPushedByWater() {
-    return Minecraft.getInstance().player.isPushedByWater();
+    return this.wrapped().isPushedByWater();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSwimming() {
-    return Minecraft.getInstance().player.isSwimming();
+    return this.wrapped().isSwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSwimming(boolean swimming) {
-    Minecraft.getInstance().player.setSwimming(swimming);
+    this.wrapped().setSwimming(swimming);
   }
 
   /** {@inheritDoc} */
@@ -971,25 +986,25 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public float getAIMoveSpeed() {
-    return Minecraft.getInstance().player.getAIMoveSpeed();
+    return this.wrapped().getAIMoveSpeed();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setAIMoveSpeed(float speed) {
-    Minecraft.getInstance().player.setAIMoveSpeed(speed);
+    this.wrapped().setAIMoveSpeed(speed);
   }
 
   /** {@inheritDoc} */
   @Override
   public void updateSwim() {
-    Minecraft.getInstance().player.updateSwimming();
+    this.wrapped().updateSwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public void wakeUp() {
-    Minecraft.getInstance().player.wakeUp();
+    this.wrapped().wakeUp();
   }
 
   /** {@inheritDoc} */
@@ -1003,7 +1018,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void remove() {
-    Minecraft.getInstance().player.remove();
+    this.wrapped().remove();
   }
 
   /** {@inheritDoc} */
@@ -1039,25 +1054,25 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean canBreathUnderwater() {
-    return Minecraft.getInstance().player.canBreatheUnderwater();
+    return this.wrapped().canBreatheUnderwater();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getSwimAnimation(float partialTicks) {
-    return Minecraft.getInstance().player.getSwimAnimation(partialTicks);
+    return this.wrapped().getSwimAnimation(partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getRenderScale() {
-    return Minecraft.getInstance().player.getRenderScale();
+    return this.wrapped().getRenderScale();
   }
 
   /** {@inheritDoc} */
   @Override
   public Random getRandom() {
-    return Minecraft.getInstance().player.getRNG();
+    return this.wrapped().getRNG();
   }
 
   /** {@inheritDoc} */
@@ -1065,7 +1080,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public LivingEntity getRevengeTarget() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftLivingEntity(Minecraft.getInstance().player.getRevengeTarget());
+        .fromMinecraftLivingEntity(this.wrapped().getRevengeTarget());
   }
 
   /** {@inheritDoc} */
@@ -1081,7 +1096,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public int getRevengeTimer() {
-    return Minecraft.getInstance().player.getRevengeTimer();
+    return this.wrapped().getRevengeTimer();
   }
 
   /** {@inheritDoc} */
@@ -1089,7 +1104,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public LivingEntity getLastAttackedEntity() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftLivingEntity(Minecraft.getInstance().player.getLastAttackedEntity());
+        .fromMinecraftLivingEntity(this.wrapped().getLastAttackedEntity());
   }
 
   /** {@inheritDoc} */
@@ -1104,19 +1119,19 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public int getLastAttackedEntityTime() {
-    return Minecraft.getInstance().player.getLastAttackedEntityTime();
+    return this.wrapped().getLastAttackedEntityTime();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getIdleTime() {
-    return Minecraft.getInstance().player.getIdleTime();
+    return this.wrapped().getIdleTime();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setIdleTime(int idleTime) {
-    Minecraft.getInstance().player.setIdleTime(idleTime);
+    this.wrapped().setIdleTime(idleTime);
   }
 
   /** {@inheritDoc} */
@@ -1141,31 +1156,31 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean clearActivePotions() {
-    return Minecraft.getInstance().player.clearActivePotions();
+    return this.wrapped().clearActivePotions();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isEntityUndead() {
-    return Minecraft.getInstance().player.isEntityUndead();
+    return this.wrapped().isEntityUndead();
   }
 
   /** {@inheritDoc} */
   @Override
   public void heal(float health) {
-    Minecraft.getInstance().player.heal(health);
+    this.wrapped().heal(health);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getHealth() {
-    return Minecraft.getInstance().player.getHealth();
+    return this.wrapped().getHealth();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setHealth(float health) {
-    Minecraft.getInstance().player.setHealth(health);
+    this.wrapped().setHealth(health);
   }
 
   /** {@inheritDoc} */
@@ -1173,7 +1188,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public ResourceLocation getLootTableResourceLocation() {
     return this.getEntityFoundationMapper()
         .getResourceLocationProvider()
-        .get(Minecraft.getInstance().player.getLootTableResourceLocation().getPath());
+        .get(this.wrapped().getLootTableResourceLocation().getPath());
   }
 
   /** {@inheritDoc} */
@@ -1205,43 +1220,43 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean isOnLadder() {
-    return Minecraft.getInstance().player.isOnLadder();
+    return this.wrapped().isOnLadder();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getTotalArmorValue() {
-    return Minecraft.getInstance().player.getTotalArmorValue();
+    return this.wrapped().getTotalArmorValue();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getMaxHealth() {
-    return Minecraft.getInstance().player.getMaxHealth();
+    return this.wrapped().getMaxHealth();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getArrowCountInEntity() {
-    return Minecraft.getInstance().player.getArrowCountInEntity();
+    return this.wrapped().getArrowCountInEntity();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setArrowCountInEntity(int count) {
-    Minecraft.getInstance().player.setArrowCountInEntity(count);
+    this.wrapped().setArrowCountInEntity(count);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getBeeStingCount() {
-    return Minecraft.getInstance().player.getBeeStingCount();
+    return this.wrapped().getBeeStingCount();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setBeeStingCount(int stingCount) {
-    Minecraft.getInstance().player.setBeeStingCount(stingCount);
+    this.wrapped().setBeeStingCount(stingCount);
   }
 
   /** {@inheritDoc} */
@@ -1303,7 +1318,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public float getArmorCoverPercentage() {
-    return Minecraft.getInstance().player.getArmorCoverPercentage();
+    return this.wrapped().getArmorCoverPercentage();
   }
 
   /** {@inheritDoc} */
@@ -1318,7 +1333,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public float getYaw(float partialTicks) {
-    return Minecraft.getInstance().player.getYaw(partialTicks);
+    return this.wrapped().getYaw(partialTicks);
   }
 
   /** {@inheritDoc} */
@@ -1333,25 +1348,25 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean isActuallySwimming() {
-    return Minecraft.getInstance().player.isActualySwimming();
+    return this.wrapped().isActualySwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public void startSpinAttack(int duration) {
-    Minecraft.getInstance().player.startSpinAttack(duration);
+    this.wrapped().startSpinAttack(duration);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSpinAttacking() {
-    return Minecraft.getInstance().player.isSpinAttacking();
+    return this.wrapped().isSpinAttacking();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setJumping(boolean jumping) {
-    Minecraft.getInstance().player.setJumping(jumping);
+    this.wrapped().setJumping(jumping);
   }
 
   /** {@inheritDoc} */
@@ -1366,25 +1381,25 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public float getSwingProgress(float partialTicks) {
-    return Minecraft.getInstance().player.getSwingProgress(partialTicks);
+    return this.wrapped().getSwingProgress(partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isServerWorld() {
-    return Minecraft.getInstance().player.isServerWorld();
+    return this.wrapped().isServerWorld();
   }
 
   /** {@inheritDoc} */
   @Override
   public void sendEnterCombat() {
-    Minecraft.getInstance().player.sendEnterCombat();
+    this.wrapped().sendEnterCombat();
   }
 
   /** {@inheritDoc} */
   @Override
   public void sendEndCombat() {
-    Minecraft.getInstance().player.sendEndCombat();
+    this.wrapped().sendEndCombat();
   }
 
   /** {@inheritDoc} */
@@ -1392,7 +1407,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public Side getPrimaryHand() {
     return this.getEntityFoundationMapper()
         .getHandMapper()
-        .fromMinecraftHandSide(Minecraft.getInstance().player.getPrimaryHand());
+        .fromMinecraftHandSide(this.wrapped().getPrimaryHand());
   }
 
   /** {@inheritDoc} */
@@ -1410,7 +1425,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public Hand getActiveHand() {
     return this.getEntityFoundationMapper()
         .getHandMapper()
-        .fromMinecraftHand(Minecraft.getInstance().player.getActiveHand());
+        .fromMinecraftHand(this.wrapped().getActiveHand());
   }
 
   /** {@inheritDoc} */
@@ -1428,115 +1443,115 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public ItemStack getActiveItemStack() {
     return this.getEntityFoundationMapper()
         .getItemMapper()
-        .fromMinecraft(Minecraft.getInstance().player.getActiveItemStack());
+        .fromMinecraft(this.wrapped().getActiveItemStack());
   }
 
   /** {@inheritDoc} */
   @Override
   public int getItemInUseCount() {
-    return Minecraft.getInstance().player.getItemInUseCount();
+    return this.wrapped().getItemInUseCount();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getItemInUseMaxCount() {
-    return Minecraft.getInstance().player.getItemInUseMaxCount();
+    return this.wrapped().getItemInUseMaxCount();
   }
 
   /** {@inheritDoc} */
   @Override
   public void stopActiveHand() {
-    Minecraft.getInstance().player.stopActiveHand();
+    this.wrapped().stopActiveHand();
   }
 
   /** {@inheritDoc} */
   @Override
   public void resetActiveHand() {
-    Minecraft.getInstance().player.resetActiveHand();
+    this.wrapped().resetActiveHand();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isActiveItemStackBlocking() {
-    return Minecraft.getInstance().player.isActiveItemStackBlocking();
+    return this.wrapped().isActiveItemStackBlocking();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSuppressingSlidingDownLadder() {
-    return Minecraft.getInstance().player.isSuppressingSlidingDownLadder();
+    return this.wrapped().isSuppressingSlidingDownLadder();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isElytraFlying() {
-    return Minecraft.getInstance().player.isElytraFlying();
+    return this.wrapped().isElytraFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getTicksElytraFlying() {
-    return Minecraft.getInstance().player.getTicksElytraFlying();
+    return this.wrapped().getTicksElytraFlying();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean attemptTeleport(double x, double y, double z, boolean particleEffects) {
-    return Minecraft.getInstance().player.attemptTeleport(x, y, z, particleEffects);
+    return this.wrapped().attemptTeleport(x, y, z, particleEffects);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canBeHitWithPotion() {
-    return Minecraft.getInstance().player.canBeHitWithPotion();
+    return this.wrapped().canBeHitWithPotion();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canBeRiddenInWater() {
-    return Minecraft.getInstance().player.canBeRiddenInWater();
+    return this.wrapped().canBeRiddenInWater();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean attackable() {
-    return Minecraft.getInstance().player.attackable();
+    return this.wrapped().attackable();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getMoveStrafing() {
-    return Minecraft.getInstance().player.moveStrafing;
+    return this.wrapped().moveStrafing;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMoveStrafing(float moveStrafing) {
-    Minecraft.getInstance().player.moveStrafing = moveStrafing;
+    this.wrapped().moveStrafing = moveStrafing;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getMoveVertical() {
-    return Minecraft.getInstance().player.moveVertical;
+    return this.wrapped().moveVertical;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMoveVertical(float moveVertical) {
-    Minecraft.getInstance().player.moveVertical = moveVertical;
+    this.wrapped().moveVertical = moveVertical;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getMoveForward() {
-    return Minecraft.getInstance().player.moveForward;
+    return this.wrapped().moveForward;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMoveForward(float moveForward) {
-    Minecraft.getInstance().player.moveForward = moveForward;
+    this.wrapped().moveForward = moveForward;
   }
 
   /** {@inheritDoc} */
@@ -1552,11 +1567,9 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public Optional<BlockPosition> getBedPosition() {
     Optional<BlockPosition> optional = Optional.empty();
 
-    if (Minecraft.getInstance().player.getBedPosition().isPresent()) {
+    if (this.wrapped().getBedPosition().isPresent()) {
       optional =
-          Optional.of(
-              this.getWorld()
-                  .fromMinecraftBlockPos(Minecraft.getInstance().player.getBedPosition().get()));
+          Optional.of(this.getWorld().fromMinecraftBlockPos(this.wrapped().getBedPosition().get()));
     }
 
     return optional;
@@ -1573,13 +1586,13 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void clearBedPosition() {
-    Minecraft.getInstance().player.clearBedPosition();
+    this.wrapped().clearBedPosition();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSleeping() {
-    return Minecraft.getInstance().player.isSleeping();
+    return this.wrapped().isSleeping();
   }
 
   /** {@inheritDoc} */
@@ -1605,7 +1618,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean isAlive() {
-    return Minecraft.getInstance().player.isAlive();
+    return this.wrapped().isAlive();
   }
 
   /** {@inheritDoc} */
@@ -1617,86 +1630,85 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public int getTeamColor() {
-    return Minecraft.getInstance().player.getTeamColor();
+    return this.wrapped().getTeamColor();
   }
 
   /** {@inheritDoc} */
   @Override
   public void detach() {
-    Minecraft.getInstance().player.detach();
+    this.wrapped().detach();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPacketCoordinates(double x, double y, double z) {
-    Minecraft.getInstance().player.setPacketCoordinates(x, y, z);
+    this.wrapped().setPacketCoordinates(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getIdentifier() {
-    return Minecraft.getInstance().player.getEntityId();
+    return this.wrapped().getEntityId();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setIdentifier(int identifier) {
-    Minecraft.getInstance().player.setEntityId(identifier);
+    this.wrapped().setEntityId(identifier);
   }
 
   /** {@inheritDoc} */
   @Override
   public Set<String> getTags() {
-    return Minecraft.getInstance().player.getTags();
+    return this.wrapped().getTags();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean addTag(String tag) {
-    return Minecraft.getInstance().player.addTag(tag);
+    return this.wrapped().addTag(tag);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean removeTag(String tag) {
-    return Minecraft.getInstance().player.removeTag(tag);
+    return this.wrapped().removeTag(tag);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosX() {
-    return Minecraft.getInstance().player.getPosX();
+    return this.wrapped().getPosX();
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosY() {
-    return Minecraft.getInstance().player.getPosY();
+    return this.wrapped().getPosY();
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosZ() {
-    return Minecraft.getInstance().player.getPosZ();
+    return this.wrapped().getPosZ();
   }
 
   /** {@inheritDoc} */
   @Override
   public EntityPose getPose() {
-    return this.getEntityFoundationMapper()
-        .fromMinecraftPose(Minecraft.getInstance().player.getPose());
+    return this.getEntityFoundationMapper().fromMinecraftPose(this.wrapped().getPose());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPosition(double x, double y, double z) {
-    Minecraft.getInstance().player.setPosition(x, y, z);
+    this.wrapped().setPosition(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPositionAndRotation(double x, double y, double z, float yaw, float pitch) {
-    Minecraft.getInstance().player.setPositionAndRotation(x, y, z, yaw, pitch);
+    this.wrapped().setPositionAndRotation(x, y, z, yaw, pitch);
   }
 
   /** {@inheritDoc} */
@@ -1712,13 +1724,13 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void setLocationAndAngles(double x, double y, double z, float yaw, float pitch) {
-    Minecraft.getInstance().player.setLocationAndAngles(x, y, z, yaw, pitch);
+    this.wrapped().setLocationAndAngles(x, y, z, yaw, pitch);
   }
 
   /** {@inheritDoc} */
   @Override
   public void forceSetPosition(double x, double y, double z) {
-    Minecraft.getInstance().player.forceSetPosition(x, y, z);
+    this.wrapped().forceSetPosition(x, y, z);
   }
 
   /** {@inheritDoc} */
@@ -1733,7 +1745,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public double getDistanceSq(double x, double y, double z) {
-    return Minecraft.getInstance().player.getDistanceSq(x, y, z);
+    return this.wrapped().getDistanceSq(x, y, z);
   }
 
   /** {@inheritDoc} */
@@ -1748,265 +1760,265 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void addVelocity(double x, double y, double z) {
-    Minecraft.getInstance().player.addVelocity(x, y, z);
+    this.wrapped().addVelocity(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public void rotateTowards(double yaw, double pitch) {
-    Minecraft.getInstance().player.rotateTowards(yaw, pitch);
+    this.wrapped().rotateTowards(yaw, pitch);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getPitch(float partialTicks) {
-    return Minecraft.getInstance().player.getPitch(partialTicks);
+    return this.wrapped().getPitch(partialTicks);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getPitch() {
-    return Minecraft.getInstance().player.rotationPitch;
+    return this.wrapped().rotationPitch;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPitch(float pitch) {
-    Minecraft.getInstance().player.rotationPitch = pitch;
+    this.wrapped().rotationPitch = pitch;
   }
 
   /** {@inheritDoc} */
   @Override
   public float getYaw() {
-    return Minecraft.getInstance().player.rotationYaw;
+    return this.wrapped().rotationYaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setYaw(float yaw) {
-    Minecraft.getInstance().player.rotationYaw = yaw;
+    this.wrapped().rotationYaw = yaw;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMaxInPortalTime() {
-    return Minecraft.getInstance().player.getMaxInPortalTime();
+    return this.wrapped().getMaxInPortalTime();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setFire(int seconds) {
-    Minecraft.getInstance().player.setFire(seconds);
+    this.wrapped().setFire(seconds);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getFireTimer() {
-    return Minecraft.getInstance().player.getFireTimer();
+    return this.wrapped().getFireTimer();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setFireTimer(int ticks) {
-    Minecraft.getInstance().player.setFireTimer(ticks);
+    this.wrapped().setFireTimer(ticks);
   }
 
   /** {@inheritDoc} */
   @Override
   public void extinguish() {
-    Minecraft.getInstance().player.extinguish();
+    this.wrapped().extinguish();
   }
 
   /** {@inheritDoc} */
   @Override
   public void resetPositionToBB() {
-    Minecraft.getInstance().player.resetPositionToBB();
+    this.wrapped().resetPositionToBB();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSilent() {
-    return Minecraft.getInstance().player.isSilent();
+    return this.wrapped().isSilent();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSilent(boolean silent) {
-    Minecraft.getInstance().player.setSilent(silent);
+    this.wrapped().setSilent(silent);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasNoGravity() {
-    return Minecraft.getInstance().player.hasNoGravity();
+    return this.wrapped().hasNoGravity();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setNoGravity(boolean noGravity) {
-    Minecraft.getInstance().player.setNoGravity(noGravity);
+    this.wrapped().setNoGravity(noGravity);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isImmuneToFire() {
-    return Minecraft.getInstance().player.isImmuneToFire();
+    return this.wrapped().isImmuneToFire();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isOffsetPositionInLiquid(double x, double y, double z) {
-    return Minecraft.getInstance().player.isOffsetPositionInLiquid(x, y, z);
+    return this.wrapped().isOffsetPositionInLiquid(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isWet() {
-    return Minecraft.getInstance().player.isWet();
+    return this.wrapped().isWet();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInWaterRainOrBubbleColumn() {
-    return Minecraft.getInstance().player.isInWaterRainOrBubbleColumn();
+    return this.wrapped().isInWaterRainOrBubbleColumn();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInWaterOrBubbleColumn() {
-    return Minecraft.getInstance().player.isInWaterOrBubbleColumn();
+    return this.wrapped().isInWaterOrBubbleColumn();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean canSwim() {
-    return Minecraft.getInstance().player.canSwim();
+    return this.wrapped().canSwim();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean handleWaterMovement() {
-    return Minecraft.getInstance().player.handleWaterMovement();
+    return this.wrapped().handleWaterMovement();
   }
 
   /** {@inheritDoc} */
   @Override
   public void spawnRunningParticles() {
-    Minecraft.getInstance().player.spawnRunningParticles();
+    this.wrapped().spawnRunningParticles();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInWater() {
-    return Minecraft.getInstance().player.isInWater();
+    return this.wrapped().isInWater();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setInLava() {
-    Minecraft.getInstance().player.setInLava();
+    this.wrapped().setInLava();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInLava() {
-    return Minecraft.getInstance().player.isInLava();
+    return this.wrapped().isInLava();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isBurning() {
-    return Minecraft.getInstance().player.isBurning();
+    return this.wrapped().isBurning();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isPassenger() {
-    return Minecraft.getInstance().player.isPassenger();
+    return this.wrapped().isPassenger();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isBeingRidden() {
-    return Minecraft.getInstance().player.isBeingRidden();
+    return this.wrapped().isBeingRidden();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSneaking() {
-    return Minecraft.getInstance().player.isSneaking();
+    return this.wrapped().isSneaking();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSneaking(boolean sneaking) {
-    Minecraft.getInstance().player.setSneaking(sneaking);
+    this.wrapped().setSneaking(sneaking);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSteppingCarefully() {
-    return Minecraft.getInstance().player.isSteppingCarefully();
+    return this.wrapped().isSteppingCarefully();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSuppressingBounce() {
-    return Minecraft.getInstance().player.isSuppressingBounce();
+    return this.wrapped().isSuppressingBounce();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isDiscrete() {
-    return Minecraft.getInstance().player.isDiscrete();
+    return this.wrapped().isDiscrete();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isDescending() {
-    return Minecraft.getInstance().player.isDescending();
+    return this.wrapped().isDescending();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCrouching() {
-    return Minecraft.getInstance().player.isCrouching();
+    return this.wrapped().isCrouching();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isSprinting() {
-    return Minecraft.getInstance().player.isSprinting();
+    return this.wrapped().isSprinting();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSprinting(boolean sprinting) {
-    Minecraft.getInstance().player.setSprinting(sprinting);
+    this.wrapped().setSprinting(sprinting);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isVisuallySwimming() {
-    return Minecraft.getInstance().player.isVisuallySwimming();
+    return this.wrapped().isVisuallySwimming();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isGlowing() {
-    return Minecraft.getInstance().player.isGlowing();
+    return this.wrapped().isGlowing();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setGlowing(boolean glowing) {
-    Minecraft.getInstance().player.setGlowing(glowing);
+    this.wrapped().setGlowing(glowing);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInvisible() {
-    return Minecraft.getInstance().player.isInvisible();
+    return this.wrapped().isInvisible();
   }
 
   /** {@inheritDoc} */
@@ -2022,37 +2034,37 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean canRenderOnFire() {
-    return Minecraft.getInstance().player.canRenderOnFire();
+    return this.wrapped().canRenderOnFire();
   }
 
   /** {@inheritDoc} */
   @Override
   public UUID getUniqueId() {
-    return Minecraft.getInstance().player.getUniqueID();
+    return this.wrapped().getUniqueID();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setUniqueId(UUID uniqueId) {
-    Minecraft.getInstance().player.setUniqueId(uniqueId);
+    this.wrapped().setUniqueId(uniqueId);
   }
 
   /** {@inheritDoc} */
   @Override
   public String getCachedUniqueId() {
-    return Minecraft.getInstance().player.getCachedUniqueIdString();
+    return this.wrapped().getCachedUniqueIdString();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCustomNameVisible() {
-    return Minecraft.getInstance().player.isCustomNameVisible();
+    return this.wrapped().isCustomNameVisible();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCustomNameVisible(boolean alwaysRenderNameTag) {
-    Minecraft.getInstance().player.setCustomNameVisible(alwaysRenderNameTag);
+    this.wrapped().setCustomNameVisible(alwaysRenderNameTag);
   }
 
   /** {@inheritDoc} */
@@ -2066,13 +2078,13 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public float getEyeHeight() {
-    return Minecraft.getInstance().player.getEyeHeight();
+    return this.wrapped().getEyeHeight();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getBrightness() {
-    return Minecraft.getInstance().player.getBrightness();
+    return this.wrapped().getBrightness();
   }
 
   /** {@inheritDoc} */
@@ -2080,49 +2092,49 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public net.flintmc.mcapi.entity.Entity getRidingEntity() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftEntity(Minecraft.getInstance().player.getRidingEntity());
+        .fromMinecraftEntity(this.wrapped().getRidingEntity());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMotion(double x, double y, double z) {
-    Minecraft.getInstance().player.setMotion(x, y, z);
+    this.wrapped().setMotion(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public void teleportKeepLoaded(double x, double y, double z) {
-    Minecraft.getInstance().player.teleportKeepLoaded(x, y, z);
+    this.wrapped().teleportKeepLoaded(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPositionAndUpdate(double x, double y, double z) {
-    Minecraft.getInstance().player.setPositionAndUpdate(x, y, z);
+    this.wrapped().setPositionAndUpdate(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isAlwaysRenderNameTagForRender() {
-    return Minecraft.getInstance().player.getAlwaysRenderNameTagForRender();
+    return this.wrapped().getAlwaysRenderNameTagForRender();
   }
 
   /** {@inheritDoc} */
   @Override
   public void recalculateSize() {
-    Minecraft.getInstance().player.recalculateSize();
+    this.wrapped().recalculateSize();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isImmuneToExplosions() {
-    return Minecraft.getInstance().player.isImmuneToExplosions();
+    return this.wrapped().isImmuneToExplosions();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean ignoreItemEntityData() {
-    return Minecraft.getInstance().player.ignoreItemEntityData();
+    return this.wrapped().ignoreItemEntityData();
   }
 
   /** {@inheritDoc} */
@@ -2130,7 +2142,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public net.flintmc.mcapi.entity.Entity getControllingPassenger() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftEntity(Minecraft.getInstance().player.getControllingPassenger());
+        .fromMinecraftEntity(this.wrapped().getControllingPassenger());
   }
 
   /** {@inheritDoc} */
@@ -2138,7 +2150,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public List<net.flintmc.mcapi.entity.Entity> getPassengers() {
     List<net.flintmc.mcapi.entity.Entity> passengers = new ArrayList<>();
 
-    for (net.minecraft.entity.Entity passenger : Minecraft.getInstance().player.getPassengers()) {
+    for (net.minecraft.entity.Entity passenger : this.wrapped().getPassengers()) {
       passengers.add(
           this.getEntityFoundationMapper().getEntityMapper().fromMinecraftEntity(passenger));
     }
@@ -2159,7 +2171,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   @Override
   public Collection<net.flintmc.mcapi.entity.Entity> getRecursivePassengers() {
     Set<net.flintmc.mcapi.entity.Entity> entities = Sets.newHashSet();
-    for (net.minecraft.entity.Entity passenger : Minecraft.getInstance().player.getPassengers()) {
+    for (net.minecraft.entity.Entity passenger : this.wrapped().getPassengers()) {
       entities.add(
           this.getEntityFoundationMapper().getEntityMapper().fromMinecraftEntity(passenger));
     }
@@ -2179,7 +2191,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean isOnePlayerRiding() {
-    return Minecraft.getInstance().player.isOnePlayerRiding();
+    return this.wrapped().isOnePlayerRiding();
   }
 
   /** {@inheritDoc} */
@@ -2187,7 +2199,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public net.flintmc.mcapi.entity.Entity getLowestRidingEntity() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftEntity(Minecraft.getInstance().player.getLowestRidingEntity());
+        .fromMinecraftEntity(this.wrapped().getLowestRidingEntity());
   }
 
   /** {@inheritDoc} */
@@ -2211,25 +2223,25 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean canPassengerSteer() {
-    return Minecraft.getInstance().player.canPassengerSteer();
+    return this.wrapped().canPassengerSteer();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasPermissionLevel(int level) {
-    return Minecraft.getInstance().player.hasPermissionLevel(level);
+    return this.wrapped().hasPermissionLevel(level);
   }
 
   /** {@inheritDoc} */
   @Override
   public float getWidth() {
-    return Minecraft.getInstance().player.getWidth();
+    return this.wrapped().getWidth();
   }
 
   /** {@inheritDoc} */
   @Override
   public float getHeight() {
-    return Minecraft.getInstance().player.getHeight();
+    return this.wrapped().getHeight();
   }
 
   /** {@inheritDoc} */
@@ -2241,67 +2253,67 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public BlockPosition getPosition() {
-    return this.getWorld().fromMinecraftBlockPos(Minecraft.getInstance().player.getPosition());
+    return this.getWorld().fromMinecraftBlockPos(this.wrapped().getPosition());
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosXWidth(double width) {
-    return Minecraft.getInstance().player.getPosXWidth(width);
+    return this.wrapped().getPosXWidth(width);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosXRandom(double factor) {
-    return Minecraft.getInstance().player.getPosXRandom(factor);
+    return this.wrapped().getPosXRandom(factor);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosYHeight(double height) {
-    return Minecraft.getInstance().player.getPosYHeight(height);
+    return this.wrapped().getPosYHeight(height);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosYRandom() {
-    return Minecraft.getInstance().player.getPosYRandom();
+    return this.wrapped().getPosYRandom();
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosYEye() {
-    return Minecraft.getInstance().player.getPosYEye();
+    return this.wrapped().getPosYEye();
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosZWidth(double width) {
-    return Minecraft.getInstance().player.getPosZWidth(width);
+    return this.wrapped().getPosZWidth(width);
   }
 
   /** {@inheritDoc} */
   @Override
   public double getPosZRandom(double factor) {
-    return Minecraft.getInstance().player.getPosZRandom(factor);
+    return this.wrapped().getPosZRandom(factor);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setRawPosition(double x, double y, double z) {
-    Minecraft.getInstance().player.setRawPosition(x, y, z);
+    this.wrapped().setRawPosition(x, y, z);
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isInvulnerable() {
-    return Minecraft.getInstance().player.isInvulnerable();
+    return this.wrapped().isInvulnerable();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setInvulnerable(boolean invulnerable) {
-    Minecraft.getInstance().player.setInvulnerable(invulnerable);
+    this.wrapped().setInvulnerable(invulnerable);
   }
 
   /** {@inheritDoc} */
@@ -2336,56 +2348,56 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public boolean isCollidedHorizontally() {
-    return Minecraft.getInstance().player.collidedHorizontally;
+    return this.wrapped().collidedHorizontally;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCollidedHorizontally(boolean horizontally) {
-    Minecraft.getInstance().player.collidedHorizontally = horizontally;
+    this.wrapped().collidedHorizontally = horizontally;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCollidedVertically() {
-    return Minecraft.getInstance().player.collidedVertically;
+    return this.wrapped().collidedVertically;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCollidedVertically(boolean vertically) {
 
-    Minecraft.getInstance().player.collidedVertically = vertically;
+    this.wrapped().collidedVertically = vertically;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateX() {
-    return Minecraft.getInstance().player.chunkCoordX;
+    return this.wrapped().chunkCoordX;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateY() {
-    return Minecraft.getInstance().player.chunkCoordY;
+    return this.wrapped().chunkCoordY;
   }
 
   /** {@inheritDoc} */
   @Override
   public int getChunkCoordinateZ() {
-    return Minecraft.getInstance().player.chunkCoordZ;
+    return this.wrapped().chunkCoordZ;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isOnGround() {
-    return Minecraft.getInstance().player.onGround;
+    return this.wrapped().onGround;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setOnGround(boolean onGround) {
-    Minecraft.getInstance().player.onGround = onGround;
+    this.wrapped().onGround = onGround;
   }
 
   /** {@inheritDoc} */
@@ -2393,7 +2405,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public ChatComponent getName() {
     return this.getEntityFoundationMapper()
         .getComponentMapper()
-        .fromMinecraft(Minecraft.getInstance().player.getName());
+        .fromMinecraft(this.wrapped().getName());
   }
 
   /** {@inheritDoc} */
@@ -2421,13 +2433,13 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   /** {@inheritDoc} */
   @Override
   public void checkDespawn() {
-    Minecraft.getInstance().player.checkDespawn();
+    this.wrapped().checkDespawn();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasCustomName() {
-    return Minecraft.getInstance().player.hasCustomName();
+    return this.wrapped().hasCustomName();
   }
 
   /** {@inheritDoc} */
@@ -2435,7 +2447,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public ChatComponent getDisplayName() {
     return this.getEntityFoundationMapper()
         .getComponentMapper()
-        .fromMinecraft(Minecraft.getInstance().player.getDisplayName());
+        .fromMinecraft(this.wrapped().getDisplayName());
   }
 
   /** {@inheritDoc} */
@@ -2443,6 +2455,6 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   public ChatComponent getCustomName() {
     return this.getEntityFoundationMapper()
         .getComponentMapper()
-        .fromMinecraft(Minecraft.getInstance().player.getCustomName());
+        .fromMinecraft(this.wrapped().getCustomName());
   }
 }

@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.settings.game.configuration;
 
+import net.flintmc.framework.config.annotation.ConfigExclude;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.player.type.hand.Hand;
@@ -7,8 +8,6 @@ import net.flintmc.mcapi.player.type.model.PlayerClothing;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
 import net.flintmc.mcapi.settings.flint.options.dropdown.EnumSelectSetting;
 
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /** Represents the skin configuration. */
@@ -38,32 +37,8 @@ public interface SkinConfiguration {
    *
    * @return A collection with all enabled player clothing.
    */
-  default Set<PlayerClothing> getPlayerClothing() {
-    Set<PlayerClothing> set = new HashSet<>();
-    this.getAllModelClothingEnabled()
-        .forEach(
-            (clothing, value) -> {
-              if (value) {
-                set.add(clothing);
-              }
-            });
-    return set;
-  }
-
-  /**
-   * Retrieves a map with all player clothing and whether they are enabled or not.
-   *
-   * @return A map with all player clothing
-   */
-  Map<PlayerClothing, Boolean> getAllModelClothingEnabled();
-
-  /**
-   * Sets all player clothing enabled/disabled. If a clothing is not available in the map, it is the
-   * same as if the value would be false.
-   *
-   * @param map The map containing all clothing and their value
-   */
-  void setAllModelClothingEnabled(Map<PlayerClothing, Boolean> map);
+  @ConfigExclude
+  Set<PlayerClothing> getPlayerClothing();
 
   /**
    * Changes the state of the player clothing.

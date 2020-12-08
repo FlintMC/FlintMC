@@ -1,8 +1,5 @@
 package net.flintmc.framework.inject.assisted.factory;
 
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.getOnlyElement;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -12,7 +9,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -29,7 +25,17 @@ import com.google.inject.spi.InjectionPoint;
 import com.google.inject.spi.Message;
 import com.google.inject.spi.ProviderInstanceBinding;
 import com.google.inject.spi.ProviderWithExtensionVisitor;
-import com.google.inject.spi.Toolable;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.assisted.ConstructorMatcher;
+import net.flintmc.framework.inject.assisted.binding.BindingCollector;
+import net.flintmc.framework.inject.assisted.data.AssistData;
+import net.flintmc.framework.inject.assisted.data.AssistedInjectBinding;
+import net.flintmc.framework.inject.assisted.data.AssistedInjectTargetVisitor;
+import net.flintmc.framework.inject.assisted.data.AssistedMethod;
+import net.flintmc.framework.inject.assisted.thread.ThreadLocalProvider;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
+
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
@@ -45,48 +51,58 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedInject;
-import net.flintmc.framework.inject.assisted.ConstructorMatcher;
-import net.flintmc.framework.inject.assisted.binding.BindingCollector;
-import net.flintmc.framework.inject.assisted.data.AssistData;
-import net.flintmc.framework.inject.assisted.data.AssistedInjectBinding;
-import net.flintmc.framework.inject.assisted.data.AssistedInjectTargetVisitor;
-import net.flintmc.framework.inject.assisted.data.AssistedMethod;
-import net.flintmc.framework.inject.assisted.thread.ThreadLocalProvider;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
 
-public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWithExtensionVisitor<F>,
-    AssistedInjectBinding<F>, InvocationHandler {
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.getOnlyElement;
+
+public class AssistedFactoryProvider<F>
+    implements HasDependencies,
+        ProviderWithExtensionVisitor<F>,
+        AssistedInjectBinding<F>,
+        InvocationHandler {
 
   // Initializes a default annotation.
-  private static final Assisted DEFAULT_ANNOTATION = new Assisted() {
-    @Override
-    public Class<? extends Annotation> annotationType() {
-      return Assisted.class;
-    }
+  private static final Assisted DEFAULT_ANNOTATION =
+      new Assisted() {
+        @Override
+        public Class<? extends Annotation> annotationType() {
+          return Assisted.class;
+        }
 
-    @Override
-    public String value() {
-      return "";
-    }
-  };
+        @Override
+        public String value() {
+          return "";
+        }
+      };
 
   private static final Annotation RETURN_ANNOTATION = UniqueAnnotations.create();
 
-  private final ImmutableMap<Method, AssistData> assistData;
-  private final ImmutableMap<Method, MethodHandle> methodHandles;
   private final Key<F> factoryKey;
-  private final F factory;
+  private final BindingCollector collector;
 
-  private Injector injector;
+  private ImmutableMap<Method, AssistData> assistData;
+  private ImmutableMap<Method, MethodHandle> methodHandles;
+  private F factory;
+  private boolean generated;
 
   /**
    * @param factoryKey A key for a Java interface that defines one or more create methods.
-   * @param collector  Binding configuration that maps method return types to implementation types.
+   * @param collector Binding configuration that maps method return types to implementation types.
    */
   public AssistedFactoryProvider(Key<F> factoryKey, BindingCollector collector) {
     this.factoryKey = factoryKey;
+    this.collector = collector;
+  }
+
+  /**
+   * Generate the assisted factory implementation when it is required, not when creating the
+   * provider so that there won't be any problems with missing dependencies for the factory.
+   */
+  private void generate() {
+    if (this.generated) {
+      return;
+    }
+    this.generated = true;
 
     AssistedFactoryMethodHandle assistedFactoryMethodHandle = new AssistedFactoryMethodHandle();
     ConstructorMatcher constructorMatcher = new ConstructorMatcher();
@@ -143,13 +159,12 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
         List<Key<?>> keys = Lists.newArrayList();
 
         for (TypeLiteral<?> parameter : parameters) {
+          Key<?> parameterKey =
+              Annotations.getKey(parameter, method, parameterAnnotations[providerCount++], errors);
+          Class<?> underlyingType = parameterKey.getTypeLiteral().getRawType();
 
-          Key<?> parameterKey = Annotations
-              .getKey(parameter, method, parameterAnnotations[providerCount++], errors);
-          Class<?> underlylingType = parameterKey.getTypeLiteral().getRawType();
-
-          if (underlylingType.equals(Provider.class) || underlylingType
-              .equals(javax.inject.Provider.class)) {
+          if (underlyingType.equals(Provider.class)
+              || underlyingType.equals(javax.inject.Provider.class)) {
             errors.addMessage(
                 "A Provider may not be a type in a factory method of an AssistedInject."
                     + "\n  Offending instance is parameter [%s] with key [%s] on method [%s]",
@@ -166,8 +181,8 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
           implementation = returnType.getTypeLiteral();
         }
 
-        Class<? extends Annotation> scope = Annotations
-            .findScopeAnnotation(errors, implementation.getRawType());
+        Class<? extends Annotation> scope =
+            Annotations.findScopeAnnotation(errors, implementation.getRawType());
         if (scope != null) {
           errors.addMessage(
               "Found scope annotation [%s] on implementation class "
@@ -178,11 +193,9 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
 
         InjectionPoint constructorInjectionPoint;
         try {
-          constructorInjectionPoint = constructorMatcher.findMatchingConstructorInjectionPoint(
-              method,
-              returnType,
-              implementation,
-              immutableParamList);
+          constructorInjectionPoint =
+              constructorMatcher.findMatchingConstructorInjectionPoint(
+                  method, returnType, implementation, immutableParamList);
         } catch (ErrorsException errorsException) {
           errors.merge(errorsException.getErrors());
           continue;
@@ -190,8 +203,8 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
 
         Constructor<?> constructor = (Constructor<?>) constructorInjectionPoint.getMember();
         List<ThreadLocalProvider> providers = Collections.emptyList();
-        Set<Dependency<?>> dependencies = getDependencies(constructorInjectionPoint,
-            implementation);
+        Set<Dependency<?>> dependencies =
+            getDependencies(constructorInjectionPoint, implementation);
 
         boolean optimized = false;
 
@@ -218,26 +231,24 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
       }
 
       this.factory =
-          factoryRawType.cast(Proxy.newProxyInstance(
-              factoryRawType.getClassLoader(),
-              new Class[]{factoryRawType},
-              this
-          ));
+          factoryRawType.cast(
+              Proxy.newProxyInstance(
+                  factoryRawType.getClassLoader(), new Class[] {factoryRawType}, this));
 
       Map<Method, AssistData> dataSoFactory = assistDataBuilder.build();
       ImmutableMap.Builder<Method, MethodHandle> methodHandleBuilder = ImmutableMap.builder();
 
       for (Map.Entry<String, Method> entry : defaultMethods.entries()) {
         Method defaultMethod = entry.getValue();
-        MethodHandle handle = assistedFactoryMethodHandle
-            .createMethodHandle(defaultMethod, this.factory);
+        MethodHandle handle =
+            assistedFactoryMethodHandle.createMethodHandle(defaultMethod, this.factory);
         if (handle != null) {
           methodHandleBuilder.put(defaultMethod, handle);
         } else {
           boolean foundMatch = false;
           for (Method otherMethod : otherMethods.get(defaultMethod.getName())) {
-            if (dataSoFactory.containsKey(otherMethod) && isCompatible(defaultMethod,
-                otherMethod)) {
+            if (dataSoFactory.containsKey(otherMethod)
+                && isCompatible(defaultMethod, otherMethod)) {
               if (foundMatch) {
                 errors.addMessage(
                     "Generated default method %s with parameters %s is"
@@ -263,6 +274,21 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
 
       this.assistData = assistDataBuilder.build();
       this.methodHandles = methodHandleBuilder.build();
+
+      for (Map.Entry<Method, AssistData> entry : this.assistData.entrySet()) {
+        Method method = entry.getKey();
+        AssistData data = entry.getValue();
+
+        Object[] arguments;
+        if (!data.isOptimized()) {
+          arguments = new Object[method.getParameterTypes().length];
+          Arrays.fill(arguments, "dummy object for validating Factories");
+        } else {
+          arguments = null;
+        }
+
+        this.getBindingFromNewInjector(method, arguments, data);
+      }
     } catch (ErrorsException exception) {
       throw new ConfigurationException(exception.getErrors().getMessages());
     }
@@ -279,24 +305,23 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
     }
     Class<?>[] sourceParameters = source.getParameterTypes();
     Class<?>[] destinationParameters = destination.getParameterTypes();
-    return sourceParameters.length == destinationParameters.length &&
-        IntStream.range(0, sourceParameters.length)
+    return sourceParameters.length == destinationParameters.length
+        && IntStream.range(0, sourceParameters.length)
             .allMatch(i -> sourceParameters[i].isAssignableFrom(destinationParameters[i]));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public F get() {
-    return factory;
+    this.generate();
+    return this.factory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Set<Dependency<?>> getDependencies() {
+    this.generate();
+
     Set<Dependency<?>> combinedDeps = new HashSet<>();
     for (AssistData data : assistData.values()) {
       combinedDeps.addAll(data.getDependencies());
@@ -304,38 +329,34 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
     return ImmutableSet.copyOf(combinedDeps);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Key<F> getKey() {
-    return factoryKey;
+    return this.factoryKey;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings("unchecked")
   public Collection<AssistedMethod> getAssistedMethods() {
-    return (Collection<AssistedMethod>) (Collection<?>) assistData.values();
+    this.generate();
+
+    return (Collection<AssistedMethod>) (Collection<?>) this.assistData.values();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings("unchecked")
   public <T, V> V acceptExtensionVisitor(
       BindingTargetVisitor<T, V> visitor, ProviderInstanceBinding<? extends T> binding) {
-    return visitor instanceof AssistedInjectTargetVisitor ?
-        ((AssistedInjectTargetVisitor<T, V>) visitor).visit((AssistedInjectBinding<T>) this) :
-        visitor.visit(binding);
+    return visitor instanceof AssistedInjectTargetVisitor
+        ? ((AssistedInjectTargetVisitor<T, V>) visitor).visit((AssistedInjectBinding<T>) this)
+        : visitor.visit(binding);
   }
 
   private void validateFactoryReturnType(Errors errors, Class<?> returnType, Class<?> factoryType) {
-    if (Modifier.isPublic(factoryType.getModifiers()) && !Modifier
-        .isPublic(returnType.getModifiers())) {
+    if (Modifier.isPublic(factoryType.getModifiers())
+        && !Modifier.isPublic(returnType.getModifiers())) {
       errors.addMessage(
           "%s is public, but has a method that returns a non-public type: %s. "
               + "Due to limitations with java.lang.reflect.Proxy, this is not allowed. "
@@ -346,20 +367,15 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
 
   /**
    * @return {@code true} if the {@link ConfigurationException} is due to an error of {@link
-   * TypeLiteral} not being fully specified.
+   *     TypeLiteral} not being fully specified.
    */
-  private boolean isTypeNotSpecified(TypeLiteral<?> typeLiteral,
-      ConfigurationException configurationException) {
+  private boolean isTypeNotSpecified(
+      TypeLiteral<?> typeLiteral, ConfigurationException configurationException) {
     Collection<Message> messages = configurationException.getErrorMessages();
-    return messages.size() == 1 && getOnlyElement(
-        new Errors()
-            .keyNotFullySpecified(typeLiteral)
-            .getMessages())
-        .getMessage()
-        .equals(
-            getOnlyElement(messages)
-                .getMessage()
-        );
+    return messages.size() == 1
+        && getOnlyElement(new Errors().keyNotFullySpecified(typeLiteral).getMessages())
+            .getMessage()
+            .equals(getOnlyElement(messages).getMessage());
   }
 
   /**
@@ -372,8 +388,8 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
     ImmutableSet.Builder<Dependency<?>> builder = ImmutableSet.builder();
     builder.addAll(ctorPoint.getDependencies());
     if (!implementation.getRawType().isInterface()) {
-      for (InjectionPoint injectionPoint : InjectionPoint
-          .forInstanceMethodsAndFields(implementation)) {
+      for (InjectionPoint injectionPoint :
+          InjectionPoint.forInstanceMethodsAndFields(implementation)) {
         builder.addAll(injectionPoint.getDependencies());
       }
     }
@@ -398,10 +414,10 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
 
   /**
    * @return {@code true} if all dependencies are suitable for the optimized version of {@link
-   * AssistedInject}. The optimized version caches the binding & uses a {@link ThreadLocalProvider},
-   * so can only be applied if the assisted bindings are immediately provided. This looks for hints
-   * that the values may be lazily retrieved, by looking for injections of Injector or a Provider
-   * for the assisted values.
+   *     AssistedInject}. The optimized version caches the binding & uses a {@link
+   *     ThreadLocalProvider}, so can only be applied if the assisted bindings are immediately
+   *     provided. This looks for hints that the values may be lazily retrieved, by looking for
+   *     injections of Injector or a Provider for the assisted values.
    */
   private boolean isValidForOptimizedAssistedInject(Set<Dependency<?>> dependencies) {
     Set<Dependency<?>> badDependencies = null; // optimization: create lazily
@@ -427,14 +443,16 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
         .getKey()
         .getTypeLiteral()
         .getRawType()
-        .equals((annotationType != null && annotationType.equals(Assisted.class)) ? Provider.class
-            : Injector.class);
+        .equals(
+            (annotationType != null && annotationType.equals(Assisted.class))
+                ? Provider.class
+                : Injector.class);
   }
 
   /**
    * @return A key similar to {@code key}, but with an {@link Assisted} binding annotation. This
-   * fails if another binding annotation is clobbered in the process. If the key already has the
-   * {@link Assisted} annotation, it is returned as-is to preserve any String value.
+   *     fails if another binding annotation is clobbered in the process. If the key already has the
+   *     {@link Assisted} annotation, it is returned as-is to preserve any String value.
    */
   private <T> Key<T> assistKey(Method method, Key<T> key, Errors errors) throws ErrorsException {
     if (key.getAnnotationType() == null) {
@@ -451,65 +469,23 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
     }
   }
 
-
-  /**
-   * At injector-creation time, we initialize the invocation handler. At this time we make sure all
-   * factory methods will be able to build the target types.
-   *
-   * @param injector The injector.
-   */
-  @Inject
-  @Toolable
-  private void initialize(Injector injector) {
-
-    if (this.injector != null) {
-      throw new ConfigurationException(
-          ImmutableList.of(
-              new Message(
-                  AssistedFactoryProvider.class,
-                  "Factories.create() factories may only be used in one Injector!"
-              )
-          )
-      );
-    }
-
-    this.injector = injector;
-
-    for (Map.Entry<Method, AssistData> entry : this.assistData.entrySet()) {
-      Method method = entry.getKey();
-      AssistData data = entry.getValue();
-
-      Object[] arguments;
-      if (!data.isOptimized()) {
-        arguments = new Object[method.getParameterTypes().length];
-        Arrays.fill(arguments, "dummy object for validating Factories");
-      } else {
-        arguments = null;
-      }
-
-      this.getBindingFromNewInjector(method, arguments, data);
-    }
-
-  }
-
   /**
    * Creates a child injector that binds the {@code arguments}, and returns the binding for the
    * {@code method}'s result.
    *
-   * @param method    The method, which should be binding.
+   * @param method The method, which should be binding.
    * @param arguments The arguments, which should be binding.
-   * @param data      The assisted data.
+   * @param data The assisted data.
    * @return The binding for the method's result.
    */
   public Binding<?> getBindingFromNewInjector(Method method, Object[] arguments, AssistData data) {
-    checkState(this.injector != null,
-        "Factories.create() factories cannot be used until they're initialized by Guice.");
-
     final Key<?> returnType = data.getReturnType();
     final Key<?> returnKey = Key.get(returnType.getTypeLiteral(), RETURN_ANNOTATION);
 
-    Injector childInjector = injector
-        .createChildInjector(new AssistedFactoryModule(method, arguments, data, returnKey));
+    Injector childInjector =
+        InjectionHolder.getInstance()
+            .getInjector()
+            .createChildInjector(new AssistedFactoryModule(method, arguments, data, returnKey));
     Binding<?> binding = childInjector.getBinding(returnKey);
 
     if (data.isOptimized()) {
@@ -518,9 +494,7 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
     return binding;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     if (this.methodHandles.containsKey(method)) {
@@ -539,13 +513,10 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
 
     AssistData data = this.assistData.get(method);
     checkState(data != null, "No data for method: %s", method);
-    Provider<?> provider = data.getCachedBinding() != null ?
-        data.getCachedBinding().getProvider() :
-        getBindingFromNewInjector(
-            method,
-            args,
-            data
-        ).getProvider();
+    Provider<?> provider =
+        data.getCachedBinding() != null
+            ? data.getCachedBinding().getProvider()
+            : getBindingFromNewInjector(method, args, data).getProvider();
     try {
       int providerCount = 0;
       for (ThreadLocalProvider threadLocalProvider : data.getProviders()) {
@@ -573,8 +544,8 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
    * @see #isAnErrorOrRuntimeException(Throwable)
    */
   private boolean canRethrow(Method invokedMethod, Throwable throwable) {
-    return isAnErrorOrRuntimeException(throwable) && isDeclaredClassThrowable(invokedMethod,
-        throwable);
+    return isAnErrorOrRuntimeException(throwable)
+        && isDeclaredClassThrowable(invokedMethod, throwable);
   }
 
   /**
@@ -582,9 +553,9 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
    * throwable}.
    *
    * @param invokedMethod The invoked method, to retrieves the exception types.
-   * @param throwable     The throwable to be checked.
+   * @param throwable The throwable to be checked.
    * @return {@code true} if the exception types of the invoked method are instances of the given
-   * throwable, otherwise {@code false}.
+   *     throwable, otherwise {@code false}.
    */
   private boolean isDeclaredClassThrowable(Method invokedMethod, Throwable throwable) {
     for (Class<?> declaredType : invokedMethod.getExceptionTypes()) {
@@ -600,7 +571,7 @@ public class AssistedFactoryProvider<F> implements HasDependencies, ProviderWith
    *
    * @param throwable The throwable to be checked.
    * @return {@code true} if the throwable is an {@link Error} or {@link RuntimeException},
-   * otherwise {@code false}.
+   *     otherwise {@code false}.
    */
   private boolean isAnErrorOrRuntimeException(Throwable throwable) {
     return throwable instanceof Error || throwable instanceof RuntimeException;

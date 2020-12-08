@@ -15,6 +15,8 @@ public interface AgeableEntity extends CreatureEntity {
    * @param entity The player entity that interacts.
    * @param hand The hand that interacts.
    * @return {@code true} if the entity can process interactively, otherwise {@code false}.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   boolean processInteract(PlayerEntity entity, Hand hand);
 
@@ -22,6 +24,8 @@ public interface AgeableEntity extends CreatureEntity {
    * Retrieves the growing age of this ageable entity.
    *
    * @return The growing age.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   int getGrowingAge();
 
@@ -29,6 +33,8 @@ public interface AgeableEntity extends CreatureEntity {
    * Changes the growing age of this ageable entity.
    *
    * @param age The new age.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void setGrowingAge(int age);
 
@@ -37,6 +43,8 @@ public interface AgeableEntity extends CreatureEntity {
    *
    * @param growth The growth in seconds.
    * @param updateForcedAge {@code true} to update the forced age, otherwise {@code false}.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void ageUp(int growth, boolean updateForcedAge);
 
@@ -44,6 +52,8 @@ public interface AgeableEntity extends CreatureEntity {
    * Adds growth to the ageable entity.
    *
    * @param growth The growth to be added.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *     client
    */
   void addGrowth(int growth);
 

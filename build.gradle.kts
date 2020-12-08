@@ -1,6 +1,5 @@
 plugins {
     id("net.flintmc.flint-gradle-plugin")
-    id("project-report")
 }
 
 fun RepositoryHandler.flintRepository() {
@@ -38,17 +37,6 @@ subprojects {
 
         tasks.withType<JavaCompile> {
             options.isFork = true
-        }
-
-        publishing {
-            repositories {
-                flintRepository()
-            }
-            publications {
-                create<MavenPublication>(project.name) {
-                    from(components["java"])
-                }
-            }
         }
     }
 }
