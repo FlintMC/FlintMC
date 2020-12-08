@@ -3,11 +3,9 @@ package net.flintmc.transform.hook.internal;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import com.google.inject.name.Names;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -15,14 +13,12 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
-import net.flintmc.framework.inject.InjectedInvocationHelper;
 import net.flintmc.framework.inject.InjectionUtils;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.HookFilter;
 import net.flintmc.transform.hook.HookResult;
@@ -32,11 +28,8 @@ import net.flintmc.util.commons.resolve.AnnotationResolver;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Random;
 
 @Singleton
 @Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
@@ -47,7 +40,6 @@ public class HookService implements ServiceHandler<Hook> {
 
   private final String version;
   private final Collection<HookEntry> hooks;
-  private final Random random;
 
   @Inject
   private HookService(
@@ -58,33 +50,6 @@ public class HookService implements ServiceHandler<Hook> {
     this.injectionUtils = injectionUtils;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--game-version");
-    this.random = new Random();
-  }
-
-  public Object notify(
-      Object instance,
-      Hook.ExecutionTime executionTime,
-      Class<?> clazz,
-      String method,
-      Class<?>[] parameters,
-      Object[] args)
-      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-    Map<Key<?>, Object> availableParameters = Maps.newHashMap();
-    availableParameters.put(Key.get(Hook.ExecutionTime.class), executionTime);
-
-    if (instance != null) { // if the instance is null, the hooked method is a static method
-      availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
-      availableParameters.put(Key.get(instance.getClass()), instance);
-    }
-
-    availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
-
-    Method declaredMethod = clazz.getDeclaredMethod(method, parameters);
-    return InjectionHolder.getInjectedInstance(InjectedInvocationHelper.class)
-        .invokeMethod(
-            declaredMethod,
-            InjectionHolder.getInjectedInstance(declaredMethod.getDeclaringClass()),
-            availableParameters);
   }
 
   @Override
@@ -122,8 +87,7 @@ public class HookService implements ServiceHandler<Hook> {
       if (!hook.className().isEmpty()) {
         String className = this.mappingProvider.get(hook.className()).getName();
         if (className != null && className.equals(ctClass.getName())) {
-          this.modify(
-              entry, hook, ctClass, identifier.<MethodIdentifier>getIdentifier().getLocation());
+          this.modify(entry, hook, ctClass, identifier.getMethodIdentifier().getLocation());
         }
       } else {
         boolean cancel = false;
@@ -141,65 +105,52 @@ public class HookService implements ServiceHandler<Hook> {
             cancel = true;
           }
           if (!cancel) {
-            this.modify(
-                entry, hook, ctClass, identifier.<MethodIdentifier>getIdentifier().getLocation());
+            this.modify(entry, hook, ctClass, identifier.getMethodIdentifier().getLocation());
           }
         }
       }
     }
   }
 
-  private String arrayClassToString(CtClass clazz) {
-    if (clazz.isArray()) {
-      try {
-        return "[]" + arrayClassToString(clazz.getComponentType());
-      } catch (NotFoundException e) {
-        e.printStackTrace();
-      }
-    }
-    return "";
-  }
-
-  private String buildParameters(CtClass[] parameters) throws NotFoundException {
-    StringBuilder builder = new StringBuilder();
-
-    for (CtClass parameterType : parameters) {
-      String className =
-          parameterType.isArray()
-              ? parameterType.getComponentType().getName()
-              : parameterType.getName();
-      if (parameterType.isArray()) {
-        className += arrayClassToString(parameterType);
-      }
-
-      if (builder.toString().isEmpty()) {
-        builder.append(className).append(".class");
-      } else {
-        builder.append(", ").append(className).append(".class");
-      }
-    }
-
-    return builder.toString();
-  }
-
   private void insert(
       CtMethod target, Hook hook, Hook.ExecutionTime executionTime, CtMethod hookMethod)
       throws CannotCompileException, NotFoundException {
-    CtField injectedService =
-        this.injectionUtils.get().addInjectedField(target.getDeclaringClass(), super.getClass());
+    InjectionUtils injectionUtils = this.injectionUtils.get();
 
-    String parameters = this.buildParameters(hookMethod.getParameterTypes());
+    CtField notifier =
+        injectionUtils.addInjectedField(
+            target.getDeclaringClass(), "net.flintmc.transform.hook.internal.HookServiceNotifier");
+    CtField injectedFactory =
+        injectionUtils.addInjectedField(
+            target.getDeclaringClass(),
+            "net.flintmc.framework.inject.OptimizedMethodInjector$ASMFactory");
+
+    String injectorName = injectionUtils.generateInjectedFieldName();
+    target
+        .getDeclaringClass()
+        .addField(
+            CtField.make(
+                String.format(
+                    "private static %s %s;",
+                    "net.flintmc.framework.inject.OptimizedMethodInjector", injectorName),
+                target.getDeclaringClass()));
+
+    String prefix =
+        String.format(
+            "if (%s == null) { %1$s = %s.generate(\"%s\", \"%s\"); }",
+            injectorName,
+            injectedFactory.getName(),
+            hookMethod.getDeclaringClass().getName(),
+            hookMethod.getName());
 
     String notify =
         String.format(
-            "%s.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args);",
-            injectedService.getName(),
+            "%s.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s, $args);",
+            notifier.getName(),
             Modifier.isStatic(target.getModifiers()) ? "null" : "$0",
             executionTime,
-            hookMethod.getDeclaringClass().getName(),
-            hookMethod.getName(),
-            parameters.isEmpty() ? "new Class[0]" : "new Class[]{" + parameters + "}");
-    String varName = "hookNotifyResult_" + this.random.nextInt(Integer.MAX_VALUE);
+            injectorName);
+    String varName = "hookNotifyResult";
 
     String returnValue = null;
     CtClass returnType = target.getReturnType();
@@ -223,11 +174,11 @@ public class HookService implements ServiceHandler<Hook> {
     }
 
     if (returnValue == null) { // no values can be returned, no HookResult defined
-      executionTime.insert(target, notify);
+      executionTime.insert(target, prefix + notify);
       return;
     }
 
-    String src = "Object " + varName + " = " + notify;
+    String src = prefix + "Object " + varName + " = " + notify;
     if (hookResult) {
       // check if the returned type is equal to BREAK
       String breakCheck =
@@ -235,8 +186,7 @@ public class HookService implements ServiceHandler<Hook> {
 
       src += " if (" + breakCheck + ") { return " + returnValue + "; }";
     } else {
-      String returnPrefix =
-          returnValue.isEmpty() ? "" : "(" + target.getReturnType().getName() + ")";
+      String returnPrefix = "(" + target.getReturnType().getName() + ")";
 
       // Avoid VerifyErrors if there is already a return statement in the source, e.g. in a simple
       // getter

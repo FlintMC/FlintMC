@@ -1,5 +1,6 @@
 package net.flintmc.framework.inject.internal;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.CtClass;
@@ -9,15 +10,28 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 @Implement(InjectionUtils.class)
 public class DefaultInjectionUtils implements InjectionUtils {
+
+  private final AtomicInteger idCounter;
+
+  @Inject
+  private DefaultInjectionUtils() {
+    this.idCounter = new AtomicInteger();
+  }
+
+  @Override
+  public String generateInjectedFieldName() {
+    return "injected_" + this.idCounter.get() + "_" + UUID.randomUUID().toString().replace("-", "");
+  }
+
   @Override
   public CtField addInjectedField(CtClass declaringClass, String injectedTypeName)
       throws CannotCompileException {
-    String fieldName = "injected_" + UUID.randomUUID().toString().replace('-', '_');
-
+    String fieldName = this.generateInjectedFieldName();
     return this.addInjectedField(declaringClass, fieldName, injectedTypeName);
   }
 

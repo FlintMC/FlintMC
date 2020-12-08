@@ -6,6 +6,8 @@ import javassist.CtField;
 
 public interface InjectionUtils {
 
+  String generateInjectedFieldName();
+
   // field will be final
 
   CtField addInjectedField(CtClass declaringClass, String injectedTypeName)

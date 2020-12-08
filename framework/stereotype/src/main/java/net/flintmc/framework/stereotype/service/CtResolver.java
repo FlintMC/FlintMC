@@ -1,11 +1,13 @@
 package net.flintmc.framework.stereotype.service;
 
+import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.launcher.LaunchController;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -14,7 +16,6 @@ import java.util.Objects;
 
 public class CtResolver {
 
-  private static final Map<CtClass, Class<?>> classes = new HashMap<>();
   private static final Map<Integer, Method> methods = new HashMap<>();
   private static final Map<Integer, Constructor<?>> constructors = new HashMap<>();
 
@@ -22,18 +23,12 @@ public class CtResolver {
     int hash = Objects.hash(ctConstructor, ctConstructor.getDeclaringClass());
     if (!constructors.containsKey(hash)) {
       try {
-        Class<?>[] parameters = new Class[ctConstructor.getParameterTypes().length];
-        for (int i = 0; i < ctConstructor.getParameterTypes().length; i++) {
-          parameters[i] = Class.forName(ctConstructor.getParameterTypes()[i].getName());
-        }
         Constructor<?> declaredConstructor =
-                LaunchController.getInstance()
-                        .getRootLoader()
-                        .loadClass(ctConstructor.getDeclaringClass().getName())
-                        .getDeclaredConstructor(parameters);
+            get(ctConstructor.getDeclaringClass())
+                .getDeclaredConstructor(getParameters(ctConstructor));
         declaredConstructor.setAccessible(true);
         constructors.put(hash, declaredConstructor);
-      } catch (ClassNotFoundException | NoSuchMethodException | NotFoundException e) {
+      } catch (NoSuchMethodException | NotFoundException e) {
         e.printStackTrace();
       }
     }
@@ -48,22 +43,25 @@ public class CtResolver {
     int hash = hash(ctMethod);
     if (!methods.containsKey(hash)) {
       try {
-        Class<?>[] parameters = new Class[ctMethod.getParameterTypes().length];
-        for (int i = 0; i < ctMethod.getParameterTypes().length; i++) {
-          parameters[i] = Class.forName(ctMethod.getParameterTypes()[i].getName());
-        }
         Method declaredMethod =
-            LaunchController.getInstance()
-                .getRootLoader()
-                .loadClass(ctMethod.getDeclaringClass().getName())
-                .getDeclaredMethod(ctMethod.getName(), parameters);
+            get(ctMethod.getDeclaringClass())
+                .getDeclaredMethod(ctMethod.getName(), getParameters(ctMethod));
         declaredMethod.setAccessible(true);
         methods.put(hash, declaredMethod);
-      } catch (ClassNotFoundException | NoSuchMethodException | NotFoundException e) {
+      } catch (NoSuchMethodException | NotFoundException e) {
         e.printStackTrace();
       }
     }
     return methods.get(hash);
+  }
+
+  private static Class<?>[] getParameters(CtBehavior behavior) throws NotFoundException {
+    CtClass[] ctParameters = behavior.getParameterTypes();
+    Class<?>[] parameters = new Class[ctParameters.length];
+    for (int i = 0; i < ctParameters.length; i++) {
+      parameters[i] = get(ctParameters[i]);
+    }
+    return parameters;
   }
 
   private static int hash(CtMethod ctMethod) {
@@ -75,14 +73,25 @@ public class CtResolver {
    * @return the reflect representation of ctClass
    */
   public static <T> Class<T> get(CtClass ctClass) {
-    if (!classes.containsKey(ctClass)) {
-      try {
-        classes.put(
-            ctClass, LaunchController.getInstance().getRootLoader().loadClass(ctClass.getName()));
-      } catch (ClassNotFoundException e) {
-        e.printStackTrace();
+    try {
+      int dimensions = 0;
+
+      while (ctClass.isArray()) {
+        ctClass = ctClass.getComponentType();
+        ++dimensions;
       }
+
+      Class<?> clazz = LaunchController.getInstance().getRootLoader().loadClass(ctClass.getName());
+      if (dimensions != 0) {
+        for (int i = 0; i < dimensions; i++) {
+          clazz = Array.newInstance(clazz, 0).getClass();
+        }
+      }
+
+      return (Class<T>) clazz;
+    } catch (ClassNotFoundException | NotFoundException e) {
+      e.printStackTrace();
+      return null;
     }
-    return (Class<T>) classes.get(ctClass);
   }
 }
