@@ -7,6 +7,9 @@ import org.joml.Math;
 
 import java.nio.FloatBuffer;
 
+/**
+ * {@inheritDoc}
+ */
 @Implement(Matrix4x4f.class)
 public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implements Matrix4x4f {
 
@@ -14,10 +17,14 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
   private DefaultMatrix4x4f() {
   }
 
+  /** {@inheritDoc} */
+  @Override
   public Matrix4x4f rotate(float radians, float x, float y, float z) {
     return this.rotate(radians, x, y, z, this);
   }
 
+  /** {@inheritDoc} */
+  @Override
   public Matrix4x4f rotate(float ang, float x, float y, float z, Matrix4x4f target) {
     float s = Math.sin(ang);
     float c = Math.cosFromSin(s, ang);
@@ -62,6 +69,8 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
   }
 
   @SuppressWarnings("DuplicatedCode")
+  /** {@inheritDoc} */
+  @Override
   public Matrix4x4f invert(Matrix4x4f target) {
     float a = m00 * m11 - m01 * m10;
     float b = m00 * m12 - m02 * m10;
@@ -96,12 +105,20 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         .setM33(Math.fma(m20, d, Math.fma(-m21, b, m22 * a)) * det);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public synchronized Matrix4x4f transpose(Matrix4x4f target) {
     return target.set(
         this.m00, this.m10, this.m20, this.m30, this.m01, this.m11, this.m21, this.m31, this.m02,
         this.m12, this.m22, this.m32, this.m03, this.m13, this.m23, this.m33);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public synchronized Matrix4x4f copy(Matrix4x4f target) {
     return target.set(
         this.m00, this.m01, this.m02, this.m03, this.m10, this.m11, this.m12, this.m13, this.m20,
@@ -109,6 +126,8 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
   }
 
   @SuppressWarnings("DuplicatedCode")
+  /** {@inheritDoc} */
+  @Override
   public synchronized Matrix4x4f mul(Matrix4x4f right, Matrix4x4f target) {
     float nm00 =
         Math.fma(
@@ -195,6 +214,10 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         nm33);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public synchronized Matrix4x4f scale(
       Float factorX, Float factorY, Float factorZ, Matrix4x4f target) {
     return target.set(
@@ -216,6 +239,10 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         this.m33);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Matrix4x4f translate(Float x, Float y, Float z, Matrix4x4f target) {
     return target.set(
         this.m00,
@@ -236,29 +263,37 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         Math.fma(m03, x, Math.fma(m13, y, Math.fma(m23, z, m33))));
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Matrix4x4f setIdentity() {
     return this.set(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Matrix4x4f write(FloatBuffer floatBuffer) {
     floatBuffer.put(0, this.m00);
-    floatBuffer.put(4, this.m01);
-    floatBuffer.put(8, this.m02);
-    floatBuffer.put(12, this.m03);
+    floatBuffer.put(1, this.m01);
+    floatBuffer.put(2, this.m02);
+    floatBuffer.put(3, this.m03);
 
-    floatBuffer.put(1, this.m10);
+    floatBuffer.put(4, this.m10);
     floatBuffer.put(5, this.m11);
-    floatBuffer.put(9, this.m12);
-    floatBuffer.put(13, this.m13);
+    floatBuffer.put(6, this.m12);
+    floatBuffer.put(7, this.m13);
 
-    floatBuffer.put(2, this.m20);
-    floatBuffer.put(6, this.m21);
+    floatBuffer.put(8, this.m20);
+    floatBuffer.put(9, this.m21);
     floatBuffer.put(10, this.m22);
-    floatBuffer.put(14, this.m23);
+    floatBuffer.put(11, this.m23);
 
-    floatBuffer.put(3, this.m30);
-    floatBuffer.put(7, this.m31);
-    floatBuffer.put(11, this.m32);
+    floatBuffer.put(12, this.m30);
+    floatBuffer.put(13, this.m31);
+    floatBuffer.put(14, this.m32);
     floatBuffer.put(15, this.m33);
     return this;
   }
