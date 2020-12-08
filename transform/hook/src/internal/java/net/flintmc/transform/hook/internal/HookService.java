@@ -4,16 +4,19 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Key;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectedInvocationHelper;
+import net.flintmc.framework.inject.InjectionUtils;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
@@ -39,21 +42,26 @@ import java.util.Random;
 @Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class HookService implements ServiceHandler<Hook> {
 
-  private final ClassMappingProvider classMappingProvider;
+  private final ClassMappingProvider mappingProvider;
+  private final Provider<InjectionUtils> injectionUtils;
+
   private final String version;
   private final Collection<HookEntry> hooks;
   private final Random random;
 
   @Inject
   private HookService(
-      ClassMappingProvider classMappingProvider, @Named("launchArguments") Map launchArguments) {
-    this.classMappingProvider = classMappingProvider;
+      ClassMappingProvider mappingProvider,
+      Provider<InjectionUtils> injectionUtils,
+      @Named("launchArguments") Map launchArguments) {
+    this.mappingProvider = mappingProvider;
+    this.injectionUtils = injectionUtils;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--game-version");
     this.random = new Random();
   }
 
-  public static Object notify(
+  public Object notify(
       Object instance,
       Hook.ExecutionTime executionTime,
       Class<?> clazz,
@@ -80,31 +88,31 @@ public class HookService implements ServiceHandler<Hook> {
   }
 
   @Override
-  public void discover(AnnotationMeta<Hook> identifierMeta) {
+  public void discover(AnnotationMeta<Hook> meta) {
     Map<AnnotationMeta<HookFilter>, AnnotationResolver<Type, String>> subProperties =
         Maps.newHashMap();
 
-    for (AnnotationMeta<HookFilter> subProperty : identifierMeta.getMetaData(HookFilter.class)) {
+    for (AnnotationMeta<HookFilter> subProperty : meta.getMetaData(HookFilter.class)) {
       subProperties.put(
           subProperty,
           InjectionHolder.getInjectedInstance(
               subProperty.getAnnotation().type().typeNameResolver()));
     }
 
-    Hook annotation = identifierMeta.getAnnotation();
+    Hook annotation = meta.getAnnotation();
 
     this.hooks.add(
         new HookEntry(
-            identifierMeta,
+            meta,
             subProperties,
             InjectionHolder.getInjectedInstance(annotation.parameterTypeNameResolver()),
             InjectionHolder.getInjectedInstance(annotation.methodNameResolver())));
   }
 
   @ClassTransform
-  public void transform(ClassTransformContext classTransformContext)
+  public void transform(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
-    CtClass ctClass = classTransformContext.getCtClass();
+    CtClass ctClass = context.getCtClass();
 
     for (HookEntry entry : hooks) {
       AnnotationMeta<Hook> identifier = entry.hook;
@@ -112,7 +120,7 @@ public class HookService implements ServiceHandler<Hook> {
       Hook hook = identifier.getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
-        String className = classMappingProvider.get(hook.className()).getName();
+        String className = this.mappingProvider.get(hook.className()).getName();
         if (className != null && className.equals(ctClass.getName())) {
           this.modify(
               entry, hook, ctClass, identifier.<MethodIdentifier>getIdentifier().getLocation());
@@ -127,7 +135,7 @@ public class HookService implements ServiceHandler<Hook> {
               .value()
               .test(
                   ctClass,
-                  classMappingProvider
+                  this.mappingProvider
                       .get(subProperty.getValue().resolve(hookFilter.type()))
                       .getName())) {
             cancel = true;
@@ -177,11 +185,15 @@ public class HookService implements ServiceHandler<Hook> {
   private void insert(
       CtMethod target, Hook hook, Hook.ExecutionTime executionTime, CtMethod hookMethod)
       throws CannotCompileException, NotFoundException {
+    CtField injectedService =
+        this.injectionUtils.get().addInjectedField(target.getDeclaringClass(), super.getClass());
+
     String parameters = this.buildParameters(hookMethod.getParameterTypes());
 
     String notify =
         String.format(
-            "net.flintmc.transform.hook.internal.HookService.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args);",
+            "%s.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s.class, \"%s\", %s, $args);",
+            injectedService.getName(),
             Modifier.isStatic(target.getModifiers()) ? "null" : "$0",
             executionTime,
             hookMethod.getDeclaringClass().getName(),
@@ -240,7 +252,7 @@ public class HookService implements ServiceHandler<Hook> {
 
     for (int i = 0; i < hook.parameters().length; i++) {
       String name = hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i]);
-      ClassMapping classMapping = classMappingProvider.get(name);
+      ClassMapping classMapping = this.mappingProvider.get(name);
 
       if (classMapping == null) {
         classMapping = new ClassMapping(false, name, name);
@@ -251,7 +263,7 @@ public class HookService implements ServiceHandler<Hook> {
 
     CtMethod declaredMethod =
         ctClass.getDeclaredMethod(
-            classMappingProvider
+            this.mappingProvider
                 .get(ctClass.getName())
                 .getMethod(hookEntry.methodNameResolver.resolve(hook), parameters)
                 .getName(),

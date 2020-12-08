@@ -115,7 +115,7 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
                 + "this."
                 + this.configName
                 + " = arg;"
-                + "this.configStorageProvider.write(("
+                + "configStorageProvider.write(("
                 + ParsedConfig.class.getName()
                 + ") this.config);"
                 + "}",

@@ -2,7 +2,13 @@ package net.flintmc.framework.config.internal.generator.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtNewConstructor;
+import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.annotation.Annotation;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
@@ -12,7 +18,7 @@ import net.flintmc.framework.config.generator.method.ConfigMethodResolver;
 import net.flintmc.framework.config.internal.transform.ConfigTransformer;
 import net.flintmc.framework.config.internal.transform.PendingTransform;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.inject.InjectionUtils;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,12 +31,16 @@ public class ImplementationGenerator {
   private final Random random;
   private final ConfigMethodResolver methodResolver;
 
+  private final InjectionUtils injectionUtils;
   private final ConfigClassLoader classLoader;
   private final ConfigTransformer transformer;
 
   @Inject
   public ImplementationGenerator(
-      ConfigMethodResolver methodResolver, ConfigTransformer transformer) {
+      ConfigMethodResolver methodResolver,
+      InjectionUtils injectionUtils,
+      ConfigTransformer transformer) {
+    this.injectionUtils = injectionUtils;
     this.classLoader = new ConfigClassLoader(ImplementationGenerator.class.getClassLoader());
 
     this.pool = ClassPool.getDefault();
@@ -100,16 +110,8 @@ public class ImplementationGenerator {
   }
 
   public void addConfigStorageProvider(CtClass implementation) throws CannotCompileException {
-    implementation.addField(
-        CtField.make(
-            "private final transient "
-                + ConfigStorageProvider.class.getName()
-                + " configStorageProvider = "
-                + InjectionHolder.class.getName()
-                + ".getInjectedInstance("
-                + ConfigStorageProvider.class.getName()
-                + ".class);",
-            implementation));
+    this.injectionUtils.addInjectedField(
+        implementation, "configStorageProvider", ConfigStorageProvider.class);
   }
 
   private void buildConstructor(CtClass implementation, CtClass type, CtClass baseClass)

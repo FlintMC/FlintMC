@@ -15,9 +15,9 @@ import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.Executor;
 import net.flintmc.framework.eventbus.method.ExecutorFactory;
+import net.flintmc.framework.inject.InjectionUtils;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.transform.javassist.ClassTransformService;
 import org.apache.logging.log4j.Logger;
@@ -40,12 +40,16 @@ public class JavassistExecutorFactory implements ExecutorFactory {
 
   private final LoadingCache<CtMethod, Class<? extends Executor<?>>> cache;
   private final Logger logger;
+  private final InjectionUtils injectionUtils;
   private final ClassTransformService classTransformService;
 
   @Inject
   private JavassistExecutorFactory(
-      @InjectLogger Logger logger, ClassTransformService classTransformService) {
+      @InjectLogger Logger logger,
+      InjectionUtils injectionUtils,
+      ClassTransformService classTransformService) {
     this.logger = logger;
+    this.injectionUtils = injectionUtils;
     this.classTransformService = classTransformService;
 
     this.cache =
@@ -72,12 +76,7 @@ public class JavassistExecutorFactory implements ExecutorFactory {
     CtClass executor = cp.makeClass(className);
     executor.addInterface(cp.get(Executor.class.getName()));
 
-    executor.addField(
-        CtField.make(
-            String.format(
-                "private final %s listener = (%1$s) %s.getInjectedInstance(%1$s.class);",
-                listener.getName(), InjectionHolder.class.getName()),
-            executor));
+    CtField injectedListener = this.injectionUtils.addInjectedField(executor, listener);
 
     if (Modifier.isPrivate(targetMethod.getModifiers())) {
       targetMethod.setModifiers(javassist.Modifier.setPublic(targetMethod.getModifiers()));
@@ -86,12 +85,10 @@ public class JavassistExecutorFactory implements ExecutorFactory {
     executor.addMethod(
         CtMethod.make(
             String.format(
-                "public void invoke(%s event, %s phase) {"
-                    + "((%s) this.listener).%s((%s) event);"
-                    + "}",
+                "public void invoke(%s event, %s phase) { %s.%s((%s) event); }",
                 Event.class.getName(),
                 Subscribe.Phase.class.getName(),
-                listener.getName(),
+                injectedListener.getName(),
                 targetMethod.getName(),
                 targetMethod.getParameterTypes()[0].getName()),
             executor));
@@ -148,7 +145,7 @@ public class JavassistExecutorFactory implements ExecutorFactory {
 
     return () -> {
       try {
-        return cache.getUnchecked(targetMethod).newInstance();
+        return this.cache.getUnchecked(targetMethod).newInstance();
       } catch (InstantiationException | IllegalAccessException exception) {
         this.logger.error(
             String.format(
