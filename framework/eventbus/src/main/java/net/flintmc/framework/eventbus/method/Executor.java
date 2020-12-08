@@ -15,7 +15,7 @@ public interface Executor<E extends Event> {
    *
    * @param event The event.
    * @param phase The phase in which the given event has been fired
-   * @param holderMethod the subscribe method holding this executor
+   * @param holderMethod The subscribe method holding this executor
    * @throws Throwable If an exception occurred.
    */
   void invoke(E event, Subscribe.Phase phase, SubscribeMethod holderMethod) throws Throwable;

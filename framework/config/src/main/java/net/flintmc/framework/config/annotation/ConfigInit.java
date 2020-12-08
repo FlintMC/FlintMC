@@ -22,16 +22,16 @@ import java.lang.annotation.Target;
 public @interface ConfigInit {
 
   /**
-   * The class of the event that triggers the config load
+   * The class of the event that triggers the config initialization.
    *
-   * @return the non-null class of the event
+   * @return The non-null class of the event
    */
   Class<? extends Event> eventClass();
 
   /**
-   * The phase of the event that triggers the config load
+   * The event phase that triggers the config initialization.
    *
-   * @return the non-null phase
+   * @return The non-null phase
    */
   Subscribe.Phase eventPhase();
 }
