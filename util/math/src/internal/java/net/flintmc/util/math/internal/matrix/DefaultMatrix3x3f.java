@@ -5,6 +5,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.math.matrix.Matrix3x3f;
 import org.joml.Math;
 
+/**
+ * {@inheritDoc}
+ */
 @Implement(Matrix3x3f.class)
 public class DefaultMatrix3x3f extends BaseMatrix3x3<Float, Matrix3x3f> implements Matrix3x3f {
 
@@ -12,6 +15,8 @@ public class DefaultMatrix3x3f extends BaseMatrix3x3<Float, Matrix3x3f> implemen
   private DefaultMatrix3x3f() {
   }
 
+  /** {@inheritDoc} */
+  @Override
   public synchronized Matrix3x3f invert(Matrix3x3f target) {
     float a = Math.fma(m00, m11, -m01 * m10);
     float b = Math.fma(m02, m10, -m00 * m12);
@@ -34,14 +39,26 @@ public class DefaultMatrix3x3f extends BaseMatrix3x3<Float, Matrix3x3f> implemen
     return target.set(newM00, newM01, newM02, newM10, newM11, newM12, newM20, newM21, newM22);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public synchronized Matrix3x3f transpose(Matrix3x3f target) {
     return target.set(m00, m10, m20, m01, m11, m21, m02, m12, m22);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public synchronized Matrix3x3f copy(Matrix3x3f target) {
     return target.set(m00, m01, m02, m10, m11, m12, m20, m21, m22);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public synchronized Matrix3x3f mul(Matrix3x3f right, Matrix3x3f target) {
     float newM00 =
         Math.fma(m00, right.getM00(), Math.fma(m10, right.getM01(), m20 * right.getM02()));
@@ -65,6 +82,10 @@ public class DefaultMatrix3x3f extends BaseMatrix3x3<Float, Matrix3x3f> implemen
     return target.set(newM00, newM01, newM02, newM10, newM11, newM12, newM20, newM21, newM22);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public synchronized Matrix3x3f scale(Float factorX, Float factorY, Float factorZ, Matrix3x3f target) {
     return target.set(
         m00 * factorX,
@@ -78,6 +99,10 @@ public class DefaultMatrix3x3f extends BaseMatrix3x3<Float, Matrix3x3f> implemen
         m22 * factorZ);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Matrix3x3f setIdentity() {
     return this.set(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f);
   }
