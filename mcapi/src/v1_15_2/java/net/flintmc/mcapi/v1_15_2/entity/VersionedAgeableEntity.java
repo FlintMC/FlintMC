@@ -6,7 +6,6 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.AgeableEntity;
 import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.PlayerEntity;
@@ -26,9 +25,8 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
       @Assisted("entityType") EntityType entityType,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntitySenses.Factory entitySensesFactory,
-      EntityRenderContext.Factory entityRenderContextFactory) {
-    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory, entityRenderContextFactory);
+      EntitySenses.Factory entitySensesFactory) {
+    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
 
     if (!(entity instanceof net.minecraft.entity.AgeableEntity)) {
       throw new IllegalArgumentException(

@@ -6,7 +6,6 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.item.ItemEntity;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
@@ -17,22 +16,19 @@ import net.minecraft.nbt.CompoundNBT;
 import java.util.UUID;
 
 @Implement(value = ItemEntity.class, version = "1.15.2")
-public class VersionedItemEntity extends VersionedEntity<net.minecraft.entity.item.ItemEntity> implements ItemEntity {
+public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
 
   @AssistedInject
   private VersionedItemEntity(
       @Assisted("entity") Object entity,
       EntityTypeRegister entityTypeRegister,
       World world,
-      EntityFoundationMapper entityFoundationMapper,
-      EntityRenderContext.Factory entityRenderContextFactory
-  ) {
-    super(entity, entityTypeRegister.getEntityType("item"), world, entityFoundationMapper, entityRenderContextFactory);
+      EntityFoundationMapper entityFoundationMapper) {
+    super(entity, entityTypeRegister.getEntityType("item"), world, entityFoundationMapper);
 
     if (!(entity instanceof net.minecraft.entity.item.ItemEntity)) {
       throw new IllegalArgumentException("");
     }
-
   }
 
   @AssistedInject
@@ -43,10 +39,8 @@ public class VersionedItemEntity extends VersionedEntity<net.minecraft.entity.it
       EntityFoundationMapper entityFoundationMapper,
       @Assisted("x") double x,
       @Assisted("y") double y,
-      @Assisted("z") double z,
-      EntityRenderContext.Factory entityRenderContextFactory
-  ) {
-    this(entity, entityTypeRegister, world, entityFoundationMapper, entityRenderContextFactory);
+      @Assisted("z") double z) {
+    this(entity, entityTypeRegister, world, entityFoundationMapper);
     this.setPosition(x, y, z);
     this.setYaw(this.getRandom().nextFloat() * 360.0F);
     this.setMotion(
@@ -64,11 +58,21 @@ public class VersionedItemEntity extends VersionedEntity<net.minecraft.entity.it
       @Assisted("x") double x,
       @Assisted("y") double y,
       @Assisted("z") double z,
-      @Assisted("itemStack") ItemStack itemStack,
-      EntityRenderContext.Factory entityRenderContextFactory
-  ) {
-    this(entity, entityTypeRegister, world, entityFoundationMapper, x, y, z, entityRenderContextFactory);
+      @Assisted("itemStack") ItemStack itemStack) {
+    this(
+        entity,
+        entityTypeRegister,
+        world,
+        entityFoundationMapper,
+        x,
+        y,
+        z);
     this.setItemStack(itemStack);
+  }
+
+  @Override
+  protected net.minecraft.entity.item.ItemEntity wrapped() {
+    return (net.minecraft.entity.item.ItemEntity) super.wrapped();
   }
 
   /**
@@ -78,7 +82,7 @@ public class VersionedItemEntity extends VersionedEntity<net.minecraft.entity.it
   public ItemStack getItemStack() {
     return this.getEntityFoundationMapper()
         .getItemMapper()
-        .fromMinecraft(this.getHandle().getItem());
+        .fromMinecraft(this.wrapped().getItem());
   }
 
   /**
@@ -86,132 +90,105 @@ public class VersionedItemEntity extends VersionedEntity<net.minecraft.entity.it
    */
   @Override
   public void setItemStack(ItemStack itemStack) {
-    this.getHandle().setItem(
-        (net.minecraft.item.ItemStack)
-            this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
+    this.wrapped()
+        .setItem(
+            (net.minecraft.item.ItemStack)
+                this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public UUID getOwnerIdentifier() {
-    return this.getHandle().getOwnerId();
+    return this.wrapped().getOwnerId();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setOwnerIdentifier(UUID ownerIdentifier) {
-    this.getHandle().setOwnerId(ownerIdentifier);
+    this.wrapped().setOwnerId(ownerIdentifier);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public UUID getThrowerIdentifier() {
-    return this.getHandle().getThrowerId();
+    return this.wrapped().getThrowerId();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setThrowerIdentifier(UUID throwerIdentifier) {
-    this.getHandle().setThrowerId(throwerIdentifier);
+    this.wrapped().setThrowerId(throwerIdentifier);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int getAge() {
-    return this.getHandle().getAge();
+    return this.wrapped().getAge();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setDefaultPickupDelay() {
-    this.getHandle().setDefaultPickupDelay();
+    this.wrapped().setDefaultPickupDelay();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setNoPickupDelay() {
-    this.getHandle().setNoPickupDelay();
+    this.wrapped().setNoPickupDelay();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setInfinitePickupDelay() {
-    this.getHandle().setInfinitePickupDelay();
+    this.wrapped().setInfinitePickupDelay();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setPickupDelay(int ticks) {
-    this.getHandle().setPickupDelay(ticks);
+    this.wrapped().setPickupDelay(ticks);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean cannotPickup() {
-    return this.getHandle().cannotPickup();
+    return this.wrapped().cannotPickup();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setNoDespawn() {
-    this.getHandle().setNoDespawn();
+    this.wrapped().setNoDespawn();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void makeFakeItem() {
-    this.getHandle().makeFakeItem();
+    this.wrapped().makeFakeItem();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.getHandle().readAdditional(
-        (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
+    this.wrapped()
+        .readAdditional(
+            (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.getHandle().writeAdditional(
-        (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
+    this.wrapped()
+        .writeAdditional(
+            (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public ChatComponent getName() {
     return this.getEntityFoundationMapper()
         .getComponentMapper()
-        .fromMinecraft(this.getHandle().getName());
+        .fromMinecraft(this.wrapped().getName());
   }
 }

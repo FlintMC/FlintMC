@@ -23,9 +23,8 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
       @Assisted("entity") Object entity,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister,
-      EntityRenderContext.Factory entityRenderContextFactory) {
-    super(entity, world, entityFoundationMapper, entityTypeRegister, entityRenderContextFactory);
+      EntityTypeRegister entityTypeRegister) {
+    super(entity, world, entityFoundationMapper, entityTypeRegister);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(
@@ -47,7 +46,7 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
       EntityFoundationMapper entityFoundationMapper,
       EntityTypeRegister entityTypeRegister,
       EntityRenderContext.Factory entityRenderContextFactory) {
-    super(entity, x, y, z, world, entityFoundationMapper, entityTypeRegister, entityRenderContextFactory);
+    super(entity, x, y, z, world, entityFoundationMapper, entityTypeRegister);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(
@@ -67,7 +66,7 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
       EntityFoundationMapper entityFoundationMapper,
       EntityTypeRegister entityTypeRegister,
       EntityRenderContext.Factory entityRenderContextFactory) {
-    super(entity, shooter, world, entityFoundationMapper, entityTypeRegister, entityRenderContextFactory);
+    super(entity, shooter, world, entityFoundationMapper, entityTypeRegister);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
       throw new IllegalArgumentException(

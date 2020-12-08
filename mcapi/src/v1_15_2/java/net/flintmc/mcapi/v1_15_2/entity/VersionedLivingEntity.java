@@ -6,6 +6,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
@@ -13,11 +14,20 @@ import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.resources.ResourceLocation;
+import net.flintmc.mcapi.v1_15_2.entity.render.LivingRendererAccessor;
+import net.flintmc.mcapi.v1_15_2.entity.render.QuadrupedModelAccessor;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
+import net.flintmc.render.model.ModelBoxHolder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -40,6 +50,55 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
       World world,
       EntityFoundationMapper entityFoundationMapper) {
     super(entitySupplier, entityType, world, entityFoundationMapper);
+  }
+
+  protected Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers() {
+    EntityModel<? extends net.minecraft.entity.LivingEntity> entityModel =
+        ((LivingRendererAccessor)
+            Minecraft.getInstance().getRenderManager().getRenderer(this.wrapped()))
+            .getEntityModel();
+
+    Map<String, ModelBoxHolder<Entity, EntityRenderContext>> modelBoxHolders = new HashMap<>();
+
+    if (entityModel instanceof BipedModel) {
+      BipedModel<? extends net.minecraft.entity.LivingEntity> bipedModel =
+          (BipedModel<? extends net.minecraft.entity.LivingEntity>) entityModel;
+      modelBoxHolders.put("body", this.createModelBox(bipedModel.bipedBody));
+      modelBoxHolders.put("head", this.createModelBox(bipedModel.bipedHead));
+      modelBoxHolders.put("headWear", this.createModelBox(bipedModel.bipedHeadwear));
+      modelBoxHolders.put("leftArm", this.createModelBox(bipedModel.bipedLeftArm));
+      modelBoxHolders.put("rightArm", this.createModelBox(bipedModel.bipedRightArm));
+      modelBoxHolders.put("rightLeg", this.createModelBox(bipedModel.bipedRightLeg));
+      modelBoxHolders.put("leftLeg", this.createModelBox(bipedModel.bipedLeftLeg));
+    }
+
+    if (entityModel instanceof PlayerModel) {
+      modelBoxHolders.put(
+          "leftArmWear", this.createModelBox(((PlayerModel<?>) entityModel).bipedLeftArmwear));
+      modelBoxHolders.put(
+          "rightArmWear", this.createModelBox(((PlayerModel<?>) entityModel).bipedRightArmwear));
+      modelBoxHolders.put(
+          "leftLegWear", this.createModelBox(((PlayerModel<?>) entityModel).bipedLeftLegwear));
+      modelBoxHolders.put(
+          "rightLegWear", this.createModelBox(((PlayerModel<?>) entityModel).bipedRightLegwear));
+      modelBoxHolders.put(
+          "bodyWear", this.createModelBox(((PlayerModel<?>) entityModel).bipedBodyWear));
+    }
+
+    if (entityModel instanceof QuadrupedModelAccessor) {
+      QuadrupedModelAccessor quadrupedModelAccessor = (QuadrupedModelAccessor) entityModel;
+      modelBoxHolders.put("body", this.createModelBox(quadrupedModelAccessor.getBody()));
+      modelBoxHolders.put("head", this.createModelBox(quadrupedModelAccessor.getHead()));
+      modelBoxHolders.put(
+          "legBackLeft", this.createModelBox(quadrupedModelAccessor.getLegBackLeft()));
+      modelBoxHolders.put(
+          "legBackRight", this.createModelBox(quadrupedModelAccessor.getLegBackRight()));
+      modelBoxHolders.put(
+          "legFrontRight", this.createModelBox(quadrupedModelAccessor.getLegFrontRight()));
+      modelBoxHolders.put(
+          "legFrontLeft", this.createModelBox(quadrupedModelAccessor.getLegFrontLeft()));
+    }
+    return modelBoxHolders;
   }
 
   @Override

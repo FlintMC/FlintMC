@@ -7,7 +7,6 @@ import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.projectile.ThrowableEntity;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.v1_15_2.entity.VersionedEntity;
@@ -15,16 +14,15 @@ import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
 
 @Implement(value = ThrowableEntity.class, version = "1.15.2")
-public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.entity.projectile.ThrowableEntity> implements ThrowableEntity {
+public class VersionedThrowableEntity extends VersionedEntity implements ThrowableEntity {
 
   @AssistedInject
   public VersionedThrowableEntity(
       @Assisted("entity") Object entity,
       @Assisted("entityType") EntityType entityType,
       World world,
-      EntityFoundationMapper entityFoundationMapper,
-      EntityRenderContext.Factory entityRenderContextFactory) {
-    super(entity, entityType, world, entityFoundationMapper, entityRenderContextFactory);
+      EntityFoundationMapper entityFoundationMapper) {
+    super(entity, entityType, world, entityFoundationMapper);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ThrowableEntity)) {
       throw new IllegalArgumentException(
@@ -43,9 +41,8 @@ public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.enti
       @Assisted("y") double y,
       @Assisted("z") double z,
       World world,
-      EntityFoundationMapper entityFoundationMapper,
-      EntityRenderContext.Factory entityRenderContextFactory) {
-    this(entity, entityType, world, entityFoundationMapper, entityRenderContextFactory);
+      EntityFoundationMapper entityFoundationMapper) {
+    this(entity, entityType, world, entityFoundationMapper);
     this.setPosition(x, y, z);
   }
 
@@ -55,10 +52,14 @@ public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.enti
       @Assisted("entityType") EntityType entityType,
       @Assisted("thrower") LivingEntity thrower,
       World world,
-      EntityFoundationMapper entityFoundationMapper,
-      EntityRenderContext.Factory entityRenderContextFactory) {
-    this(entity, entityType, world, entityFoundationMapper, entityRenderContextFactory);
+      EntityFoundationMapper entityFoundationMapper) {
+    this(entity, entityType, world, entityFoundationMapper);
     this.setPosition(thrower.getPosX(), thrower.getPosYEye() - 0.1D, thrower.getPosZ());
+  }
+
+  @Override
+  protected net.minecraft.entity.projectile.ThrowableEntity wrapped() {
+    return (net.minecraft.entity.projectile.ThrowableEntity) super.wrapped();
   }
 
   /**
@@ -67,7 +68,7 @@ public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.enti
   @Override
   public void shoot(
       Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
-    this.getHandle().shoot(
+    this.wrapped().shoot(
         (net.minecraft.entity.Entity)
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(thrower),
         pitch,
@@ -84,7 +85,7 @@ public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.enti
   public LivingEntity getThrower() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftLivingEntity(this.getHandle());
+        .fromMinecraftLivingEntity(this.wrapped());
   }
 
   /**
@@ -92,7 +93,7 @@ public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.enti
    */
   @Override
   public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-    this.getHandle().shoot(x, y, z, velocity, inaccuracy);
+    this.wrapped().shoot(x, y, z, velocity, inaccuracy);
   }
 
   /**
@@ -100,7 +101,7 @@ public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.enti
    */
   @Override
   public void setMotion(double x, double y, double z) {
-    this.getHandle().setMotion(x, y, z);
+    this.wrapped().setMotion(x, y, z);
   }
 
   /**
@@ -108,7 +109,7 @@ public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.enti
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.getHandle().readAdditional(
+    this.wrapped().readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
@@ -117,7 +118,7 @@ public class VersionedThrowableEntity extends VersionedEntity<net.minecraft.enti
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.getHandle().writeAdditional(
+    this.wrapped().writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 }

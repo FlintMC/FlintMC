@@ -7,7 +7,6 @@ import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
 import net.flintmc.mcapi.entity.passive.farmanimal.PigEntity;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
@@ -29,16 +28,14 @@ public class VersionedPigEntity extends VersionedAnimalEntity implements PigEnti
       World world,
       EntityFoundationMapper entityFoundationMapper,
       EntitySenses.Factory entitySensesFactory,
-      PassiveEntityMapper passiveEntityMapper,
-      EntityRenderContext.Factory entityRenderContextFactory) {
+      PassiveEntityMapper passiveEntityMapper) {
     super(
         entity,
         entityTypeRegister.getEntityType("pig"),
         world,
         entityFoundationMapper,
         entitySensesFactory,
-        passiveEntityMapper,
-        entityRenderContextFactory
+        passiveEntityMapper
     );
 
     if (!(entity instanceof net.minecraft.entity.passive.PigEntity)) {

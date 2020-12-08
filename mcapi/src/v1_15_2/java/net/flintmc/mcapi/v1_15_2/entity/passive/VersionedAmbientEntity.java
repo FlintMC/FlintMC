@@ -6,7 +6,6 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.passive.AmbientEntity;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.v1_15_2.entity.VersionedMobEntity;
@@ -21,9 +20,8 @@ public class VersionedAmbientEntity extends VersionedMobEntity implements Ambien
       @Assisted("entityType") EntityType entityType,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntitySenses.Factory entitySensesFactory,
-      EntityRenderContext.Factory entityRenderContextFactory) {
-    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory, entityRenderContextFactory);
+      EntitySenses.Factory entitySensesFactory) {
+    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
   }
 
   /**

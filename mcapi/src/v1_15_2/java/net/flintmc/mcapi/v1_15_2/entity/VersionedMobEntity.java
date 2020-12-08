@@ -8,7 +8,6 @@ import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.MobEntity;
 import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
@@ -33,10 +32,8 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
       @Assisted("entityType") EntityType entityType,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntitySenses.Factory entitySensesFactory,
-      EntityRenderContext.Factory entityRenderContextFactory
-  ) {
-    super(entity, entityType, world, entityFoundationMapper, entityRenderContextFactory);
+      EntitySenses.Factory entitySensesFactory) {
+    super(entity, entityType, world, entityFoundationMapper);
     this.entitySensesFactory = entitySensesFactory;
 
     if (!(entity instanceof net.minecraft.entity.MobEntity)) {

@@ -7,7 +7,6 @@ import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.passive.AnimalEntity;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
@@ -30,9 +29,8 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
       World world,
       EntityFoundationMapper entityFoundationMapper,
       EntitySenses.Factory entitySensesFactory,
-      PassiveEntityMapper passiveEntityMapper,
-      EntityRenderContext.Factory entityRenderContextFactory) {
-    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory, entityRenderContextFactory);
+      PassiveEntityMapper passiveEntityMapper) {
+    super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
     this.passiveEntityMapper = passiveEntityMapper;
 
     if (!(entity instanceof net.minecraft.entity.passive.AnimalEntity)) {
