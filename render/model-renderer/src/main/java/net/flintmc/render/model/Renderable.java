@@ -19,7 +19,7 @@ public interface Renderable<
         RenderContext<T_RenderContextAware, T_RenderContext, T_Renderable, ?, T_RenderTarget>,
     T_Renderable extends
         Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
-    T_RenderTarget>
+        T_RenderTarget>
     extends PropertyContextAware<T_Renderable> {
 
   /** @return the target attached to this renderable component */
@@ -44,13 +44,23 @@ public interface Renderable<
    */
   T_Renderable callPropertyHandler();
 
+  /**
+   * Calls the handler that is used to prepare the property default values.
+   *
+   * @return this
+   */
   T_Renderable callPropertyPreparations();
 
+  /**
+   * Calls the handler that is used to cleanup the state after the render
+   *
+   * @return this
+   */
   T_Renderable callRenderCleanup();
 
   /**
    * Adds a pre-render hook that can be called - usually by the {@link Renderer} - with {@link
-   * Renderable#callRenderPreparations()} ()}. Should not be used to set any properties before the
+   * Renderable#callRenderPreparations()}. Should not be used to set any properties before the
    * render. For this @see {@link Renderable#setPropertyHandler(Consumer)}.
    *
    * @param consumer the hook to add
@@ -58,8 +68,22 @@ public interface Renderable<
    */
   T_Renderable addRenderPreparation(Consumer<T_Renderable> consumer);
 
+  /**
+   * Adds a pre-property-handler hook that can be called - usually by the {@link Renderer} - with
+   * {@link Renderable#callPropertyPreparations()}.
+   *
+   * @param consumer the hook to add
+   * @return this
+   */
   T_Renderable addPropertyPreparation(Consumer<T_Renderable> consumer);
 
+  /**
+   * Adds a post-render hook that can be called - usually by the {@link Renderer} - with {@link
+   * Renderable#callRenderCleanup()} ()}.
+   *
+   * @param consumer the hook to add
+   * @return this
+   */
   T_Renderable addRenderCleanup(Consumer<T_Renderable> consumer);
 
   /**
