@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 
 /** 1.15.2 implementation of {@link MinecraftConfiguration}. */
 @Singleton
-@ConfigInit(eventClass = MinecraftInitializeEvent.class, eventPhase = Subscribe.Phase.POST)
+@ConfigInit(value = MinecraftInitializeEvent.class, eventPhase = Subscribe.Phase.POST)
 @ConfigImplementation(value = MinecraftConfiguration.class, version = "1.15.2")
 public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
 

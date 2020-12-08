@@ -26,12 +26,12 @@ public @interface ConfigInit {
    *
    * @return The non-null class of the event
    */
-  Class<? extends Event> eventClass();
+  Class<? extends Event> value();
 
   /**
    * The event phase that triggers the config initialization.
    *
    * @return The non-null phase
    */
-  Subscribe.Phase eventPhase();
+  Subscribe.Phase eventPhase() default Subscribe.Phase.ANY;
 }
