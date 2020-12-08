@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-/** 1.15.2 implementation of {@link NetworkPlayerInfoRegistry} */
+/** Default implementation of {@link NetworkPlayerInfoRegistry} */
 @Singleton
 @Implement(value = NetworkPlayerInfoRegistry.class, version = "1.15.2")
 public class DefaultNetworkPlayerInfoRegistry implements NetworkPlayerInfoRegistry {
