@@ -42,7 +42,6 @@ defineModule("framework:inject-primitive")
 defineModule("framework:packages")
 defineModule("framework:service")
 defineModule("framework:stereotype")
-defineModule("framework:tasks")
 defineModule("framework:config")
 
 defineModule(":launcher")
