@@ -13,13 +13,12 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.CodeIterator;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
-import net.flintmc.framework.inject.InjectionUtils;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.mcapi.server.payload.PayloadChannelService;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
-
 ;
 
 @Singleton
@@ -29,14 +28,14 @@ public class CustomPayloadInterceptor {
       new int[] {Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
 
   private final ClassMapping customPayloadPacketMapping;
-  private final InjectionUtils injectionUtils;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
 
   @Inject
   private CustomPayloadInterceptor(
-      ClassMappingProvider classMappingProvider, InjectionUtils injectionUtils) {
+      ClassMappingProvider classMappingProvider, InjectedFieldBuilder.Factory fieldBuilderFactory) {
     this.customPayloadPacketMapping =
         classMappingProvider.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket");
-    this.injectionUtils = injectionUtils;
+    this.fieldBuilderFactory = fieldBuilderFactory;
   }
 
   @ClassTransform("net.minecraft.client.network.play.ClientPlayNetHandler")
@@ -76,8 +75,11 @@ public class CustomPayloadInterceptor {
       int line = methodInfo.getLineNumber(index);
 
       CtField injectedService =
-          this.injectionUtils.addInjectedField(
-              method.getDeclaringClass(), PayloadChannelService.class);
+          this.fieldBuilderFactory
+              .create()
+              .target(method.getDeclaringClass())
+              .inject(PayloadChannelService.class)
+              .generate();
 
       method.insertAt(
           line,

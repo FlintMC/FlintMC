@@ -18,7 +18,7 @@ import net.flintmc.framework.config.generator.method.ConfigMethodResolver;
 import net.flintmc.framework.config.internal.transform.ConfigTransformer;
 import net.flintmc.framework.config.internal.transform.PendingTransform;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import net.flintmc.framework.inject.InjectionUtils;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,16 +31,16 @@ public class ImplementationGenerator {
   private final Random random;
   private final ConfigMethodResolver methodResolver;
 
-  private final InjectionUtils injectionUtils;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final ConfigClassLoader classLoader;
   private final ConfigTransformer transformer;
 
   @Inject
   public ImplementationGenerator(
       ConfigMethodResolver methodResolver,
-      InjectionUtils injectionUtils,
+      InjectedFieldBuilder.Factory fieldBuilderFactory,
       ConfigTransformer transformer) {
-    this.injectionUtils = injectionUtils;
+    this.fieldBuilderFactory = fieldBuilderFactory;
     this.classLoader = new ConfigClassLoader(ImplementationGenerator.class.getClassLoader());
 
     this.pool = ClassPool.getDefault();
@@ -110,8 +110,12 @@ public class ImplementationGenerator {
   }
 
   public void addConfigStorageProvider(CtClass implementation) throws CannotCompileException {
-    this.injectionUtils.addInjectedField(
-        implementation, "configStorageProvider", ConfigStorageProvider.class);
+    this.fieldBuilderFactory
+        .create()
+        .target(implementation)
+        .fieldName("configStorageProvider")
+        .inject(ConfigStorageProvider.class)
+        .generate();
   }
 
   private void buildConstructor(CtClass implementation, CtClass type, CtClass baseClass)

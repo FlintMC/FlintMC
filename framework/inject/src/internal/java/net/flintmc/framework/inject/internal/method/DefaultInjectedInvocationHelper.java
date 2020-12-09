@@ -1,4 +1,4 @@
-package net.flintmc.framework.inject.internal;
+package net.flintmc.framework.inject.internal.method;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Key;
@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.Dependency;
 import com.google.inject.spi.InjectionPoint;
-import net.flintmc.framework.inject.InjectedInvocationHelper;
+import net.flintmc.framework.inject.method.InjectedInvocationHelper;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 

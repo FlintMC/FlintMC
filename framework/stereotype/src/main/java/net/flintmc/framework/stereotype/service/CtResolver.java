@@ -16,6 +16,7 @@ import java.util.Objects;
 
 public class CtResolver {
 
+  private static final Map<CtClass, Class<?>> classes = new HashMap<>();
   private static final Map<Integer, Method> methods = new HashMap<>();
   private static final Map<Integer, Constructor<?>> constructors = new HashMap<>();
 
@@ -64,7 +65,7 @@ public class CtResolver {
     return parameters;
   }
 
-  private static int hash(CtMethod ctMethod) {
+  public static int hash(CtMethod ctMethod) {
     return Objects.hash(ctMethod, ctMethod.getDeclaringClass());
   }
 
@@ -73,7 +74,12 @@ public class CtResolver {
    * @return the reflect representation of ctClass
    */
   public static <T> Class<T> get(CtClass ctClass) {
+    if (classes.containsKey(ctClass)) {
+      return (Class<T>) classes.get(ctClass);
+    }
+
     try {
+      CtClass baseClass = ctClass;
       int dimensions = 0;
 
       while (ctClass.isArray()) {
@@ -82,10 +88,14 @@ public class CtResolver {
       }
 
       Class<?> clazz = LaunchController.getInstance().getRootLoader().loadClass(ctClass.getName());
+      classes.put(ctClass, clazz);
+
       if (dimensions != 0) {
         for (int i = 0; i < dimensions; i++) {
           clazz = Array.newInstance(clazz, 0).getClass();
         }
+
+        classes.put(baseClass, clazz);
       }
 
       return (Class<T>) clazz;

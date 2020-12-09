@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import javassist.CtMethod;
-import net.flintmc.framework.inject.InjectedInvocationHelper;
+import net.flintmc.framework.inject.method.InjectedInvocationHelper;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
@@ -23,7 +23,6 @@ import net.flintmc.util.mappings.MethodMapping;
 import org.objectweb.asm.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;

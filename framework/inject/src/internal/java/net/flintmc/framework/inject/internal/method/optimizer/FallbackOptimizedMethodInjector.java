@@ -1,12 +1,14 @@
-package net.flintmc.framework.inject.internal.optimizer;
+package net.flintmc.framework.inject.internal.method.optimizer;
 
 import com.google.inject.Key;
-import net.flintmc.framework.inject.InjectedInvocationHelper;
-import net.flintmc.framework.inject.OptimizedMethodInjector;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.inject.method.InjectedInvocationHelper;
+import net.flintmc.framework.inject.method.OptimizedMethodInjector;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,13 +17,17 @@ import java.util.Map;
 public class FallbackOptimizedMethodInjector
     implements InternalOptimizedMethodInjector, OptimizedMethodInjector {
 
+  private final Logger logger;
   private final InjectedInvocationHelper invocationHelper;
   private final Method method;
   private Object instance;
 
   @AssistedInject
   private FallbackOptimizedMethodInjector(
-      InjectedInvocationHelper invocationHelper, @Assisted Method method) {
+      @InjectLogger Logger logger,
+      InjectedInvocationHelper invocationHelper,
+      @Assisted Method method) {
+    this.logger = logger;
     this.invocationHelper = invocationHelper;
     this.method = method;
   }
@@ -38,16 +44,23 @@ public class FallbackOptimizedMethodInjector
   @Override
   public Object invoke(Map<Key<?>, ?> availableArguments) {
     try {
-      return this.invocationHelper.invokeMethod(this.method, this.getInstance(), availableArguments);
+      return this.invocationHelper.invokeMethod(
+          this.method, this.getInstance(), availableArguments);
     } catch (InvocationTargetException | IllegalAccessException exception) {
-      exception.printStackTrace(); // TODO replace with logger call
+      this.logger.error(
+          String.format(
+              "Failed to invoke method %s.%s using fallback injector",
+              this.method.getDeclaringClass().getName(), this.method.getName()),
+          exception);
       return null;
     }
   }
 
   @Override
-  public void init(Method method) {
-  }
+  public void init() {}
+
+  @Override
+  public void setMethod(Method method) {}
 
   @Override
   public void setInstance(Object instance) {

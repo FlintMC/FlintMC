@@ -5,72 +5,77 @@ import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtField;
+import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectionUtils;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
+import org.apache.logging.log4j.Logger;
 
-import java.util.UUID;
+import java.lang.reflect.Modifier;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 @Implement(InjectionUtils.class)
 public class DefaultInjectionUtils implements InjectionUtils {
 
+  private final Logger logger;
   private final AtomicInteger idCounter;
+  private final Random random;
 
   @Inject
-  private DefaultInjectionUtils() {
+  private DefaultInjectionUtils(@InjectLogger Logger logger) {
+    this.logger = logger;
     this.idCounter = new AtomicInteger();
+    this.random = new Random();
   }
 
   @Override
   public String generateInjectedFieldName() {
-    return "injected_" + this.idCounter.get() + "_" + UUID.randomUUID().toString().replace("-", "");
+    return "injected_" + this.idCounter.getAndIncrement() + "_" + this.random.nextInt(99999);
   }
 
   @Override
-  public CtField addInjectedField(CtClass declaringClass, String injectedTypeName)
+  public CtField addInjectedField(
+      CtClass declaringClass,
+      String fieldName,
+      String injectedTypeName,
+      boolean singletonInstance,
+      boolean staticField)
       throws CannotCompileException {
-    String fieldName = this.generateInjectedFieldName();
-    return this.addInjectedField(declaringClass, fieldName, injectedTypeName);
-  }
+    if (!singletonInstance) {
+      for (CtField field : declaringClass.getDeclaredFields()) {
+        try {
+          if (!field.getType().getName().equals(injectedTypeName)) {
+            continue;
+          }
+        } catch (NotFoundException exception) {
+          this.logger.trace(
+              String.format(
+                  "Failed to find type of field %s.%s", declaringClass.getName(), field.getName()),
+              exception);
+          continue;
+        }
 
-  @Override
-  public CtField addInjectedField(CtClass declaringClass, Class<?> injectedType)
-      throws CannotCompileException {
-    return this.addInjectedField(declaringClass, injectedType.getName());
-  }
+        if (Modifier.isStatic(field.getModifiers()) == staticField) {
+          return field;
+        }
+      }
+    }
 
-  @Override
-  public CtField addInjectedField(CtClass declaringClass, CtClass injectedType)
-      throws CannotCompileException {
-    return this.addInjectedField(declaringClass, injectedType.getName());
-  }
-
-  @Override
-  public CtField addInjectedField(CtClass declaringClass, String fieldName, String injectedTypeName)
-      throws CannotCompileException {
     CtField field =
         CtField.make(
             String.format(
-                "private static final %s %s = (%1$s) %s.getInjectedInstance(%1$s.class);",
-                injectedTypeName, fieldName, InjectionHolder.class.getName()),
+                "private %s final %s %s = (%2$s) %s.getInjectedInstance(%2$s.class);",
+                staticField ? "static" : "",
+                injectedTypeName,
+                fieldName,
+                InjectionHolder.class.getName()),
             declaringClass);
 
     declaringClass.addField(field);
 
     return field;
-  }
-
-  @Override
-  public CtField addInjectedField(CtClass declaringClass, String fieldName, Class<?> injectedType)
-      throws CannotCompileException {
-    return this.addInjectedField(declaringClass, fieldName, injectedType.getName());
-  }
-
-  @Override
-  public CtField addInjectedField(CtClass declaringClass, String fieldName, CtClass injectedType)
-      throws CannotCompileException {
-    return this.addInjectedField(declaringClass, fieldName, injectedType.getName());
   }
 }

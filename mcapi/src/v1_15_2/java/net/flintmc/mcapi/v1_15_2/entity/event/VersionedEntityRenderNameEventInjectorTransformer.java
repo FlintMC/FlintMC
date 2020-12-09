@@ -11,7 +11,7 @@ import javassist.NotFoundException;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.CodeIterator;
-import net.flintmc.framework.inject.InjectionUtils;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMapping;
@@ -45,12 +45,12 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
 
   private final ClassPool pool;
   private final ClassMappingProvider mappingProvider;
-  private final InjectionUtils injectionUtils;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
 
   @Inject
   private VersionedEntityRenderNameEventInjectorTransformer(
-      ClassMappingProvider mappingProvider, InjectionUtils injectionUtils) {
-    this.injectionUtils = injectionUtils;
+      ClassMappingProvider mappingProvider, InjectedFieldBuilder.Factory fieldBuilderFactory) {
+    this.fieldBuilderFactory = fieldBuilderFactory;
     this.pool = ClassPool.getDefault();
     this.mappingProvider = mappingProvider;
   }
@@ -75,8 +75,12 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
     ClassMapping mapping = this.mappingProvider.get(transforming.getName());
     MethodMapping methodMapping = mapping != null ? mapping.getMethod("renderName", params) : null;
 
-    CtField injected = this.injectionUtils.addInjectedField(
-        transforming, VersionedEntityRenderNameEventInjector.class);
+    CtField injected =
+        this.fieldBuilderFactory
+            .create()
+            .target(transforming)
+            .inject(VersionedEntityRenderNameEventInjector.class)
+            .generate();
 
     CtMethod method =
         transforming.getDeclaredMethod(
@@ -121,8 +125,7 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
       // this will be fired whenever the entity will be rendered
       method.insertAt(
           line - 2,
-          String.format(
-              "%s.renderName($args, %s, %s, false);", injected.getName(), matrix, y));
+          String.format("%s.renderName($args, %s, %s, false);", injected.getName(), matrix, y));
 
       // this will only be fired when the entity is not sneaking
       // if the name will not be rendered with the textBackgroundColor being 0,

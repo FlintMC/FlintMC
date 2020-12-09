@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import net.flintmc.framework.inject.OptimizedMethodInjector;
+import net.flintmc.framework.inject.method.OptimizedMethodInjector;
 import net.flintmc.transform.hook.Hook.ExecutionTime;
 
 import java.util.Map;
@@ -12,20 +12,23 @@ import java.util.Map;
 @Singleton
 public class HookServiceNotifier {
 
+  private static final Key<ExecutionTime> EXECUTION_TIME_KEY = Key.get(ExecutionTime.class);
+  private static final Key<Object> INSTANCE_KEY = Key.get(Object.class, Names.named("instance"));
+  private static final Key<Object[]> ARGS_KEY = Key.get(Object[].class, Names.named("args"));
+
   public Object notify(
       Object instance,
       ExecutionTime executionTime,
       OptimizedMethodInjector injector,
       Object[] args) {
     Map<Key<?>, Object> availableParameters = Maps.newHashMap();
-    availableParameters.put(Key.get(ExecutionTime.class), executionTime);
+    availableParameters.put(EXECUTION_TIME_KEY, executionTime);
 
     if (instance != null) { // if the instance is null, the hooked method is a static method
-      availableParameters.put(Key.get(Object.class, Names.named("instance")), instance);
-      availableParameters.put(Key.get(instance.getClass()), instance);
+      availableParameters.put(INSTANCE_KEY, instance);
     }
 
-    availableParameters.put(Key.get(Object[].class, Names.named("args")), args);
+    availableParameters.put(ARGS_KEY, args);
 
     return injector.invoke(availableParameters);
   }

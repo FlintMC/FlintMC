@@ -1,4 +1,4 @@
-package net.flintmc.framework.inject;
+package net.flintmc.framework.inject.method;
 
 import com.google.inject.Key;
 
@@ -10,7 +10,7 @@ public interface OptimizedMethodInjector {
 
   Object invoke(Map<Key<?>, ?> availableArguments);
 
-  interface ASMFactory {
+  interface Factory {
 
     OptimizedMethodInjector generate(String targetClass, String methodName);
 

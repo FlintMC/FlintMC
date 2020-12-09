@@ -8,23 +8,13 @@ public interface InjectionUtils {
 
   String generateInjectedFieldName();
 
-  // field will be final
+  // field MAY be final
 
-  CtField addInjectedField(CtClass declaringClass, String injectedTypeName)
-      throws CannotCompileException;
-
-  CtField addInjectedField(CtClass declaringClass, Class<?> injectedType)
-      throws CannotCompileException;
-
-  CtField addInjectedField(CtClass declaringClass, CtClass injectedType)
-      throws CannotCompileException;
-
-  CtField addInjectedField(CtClass declaringClass, String fieldName, String injectedTypeName)
-      throws CannotCompileException;
-
-  CtField addInjectedField(CtClass declaringClass, String fieldName, Class<?> injectedType)
-      throws CannotCompileException;
-
-  CtField addInjectedField(CtClass declaringClass, String fieldName, CtClass injectedType)
+  CtField addInjectedField(
+      CtClass declaringClass,
+      String fieldName,
+      String injectedTypeName,
+      boolean multipleInstances,
+      boolean staticField)
       throws CannotCompileException;
 }

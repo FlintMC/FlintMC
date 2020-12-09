@@ -9,7 +9,7 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.flintmc.framework.inject.InjectionUtils;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.event.ChatReceiveEvent;
@@ -22,7 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 public class ChatEventInjector {
 
   private final EventBus eventBus;
-  private final InjectionUtils injectionUtils;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final MinecraftComponentMapper componentMapper;
 
   private final ChatSendEvent.Factory sendFactory;
@@ -31,12 +31,12 @@ public class ChatEventInjector {
   @Inject
   private ChatEventInjector(
       EventBus eventBus,
-      InjectionUtils injectionUtils,
+      InjectedFieldBuilder.Factory fieldBuilderFactory,
       MinecraftComponentMapper componentMapper,
       ChatSendEvent.Factory sendFactory,
       ChatReceiveEvent.Factory receiveFactory) {
     this.eventBus = eventBus;
-    this.injectionUtils = injectionUtils;
+    this.fieldBuilderFactory = fieldBuilderFactory;
     this.componentMapper = componentMapper;
     this.sendFactory = sendFactory;
     this.receiveFactory = receiveFactory;
@@ -46,7 +46,8 @@ public class ChatEventInjector {
   public void transformChatGui(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtClass transforming = context.getCtClass();
-    CtField injectedField = this.injectionUtils.addInjectedField(transforming, super.getClass());
+    CtField injectedField =
+        this.fieldBuilderFactory.create().target(transforming).inject(super.getClass()).generate();
 
     CtMethod method = transforming.getDeclaredMethod("printChatMessageWithOptionalDeletion");
 
@@ -76,7 +77,8 @@ public class ChatEventInjector {
   public void transformClientPlayerEntity(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     CtClass transforming = context.getCtClass();
-    CtField injectedField = this.injectionUtils.addInjectedField(transforming, super.getClass());
+    CtField injectedField =
+        this.fieldBuilderFactory.create().target(transforming).inject(super.getClass()).generate();
 
     CtMethod method = transforming.getDeclaredMethod("sendChatMessage");
 

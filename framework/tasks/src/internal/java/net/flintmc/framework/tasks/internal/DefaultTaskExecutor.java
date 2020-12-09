@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import javassist.CtMethod;
-import net.flintmc.framework.inject.InjectedInvocationHelper;
+import net.flintmc.framework.inject.method.InjectedInvocationHelper;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.tasks.Task;

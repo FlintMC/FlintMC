@@ -13,7 +13,8 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
-import net.flintmc.framework.inject.InjectionUtils;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
+import net.flintmc.framework.inject.method.MethodInjectionUtils;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
@@ -35,8 +36,11 @@ import java.util.Map;
 @Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class HookService implements ServiceHandler<Hook> {
 
+  private static final String NOTIFIER_NAME =
+      "net.flintmc.transform.hook.internal.HookServiceNotifier";
+
   private final ClassMappingProvider mappingProvider;
-  private final Provider<InjectionUtils> injectionUtils;
+  private final Provider<MethodInjectionUtils> methodInjectionUtils;
 
   private final String version;
   private final Collection<HookEntry> hooks;
@@ -44,10 +48,10 @@ public class HookService implements ServiceHandler<Hook> {
   @Inject
   private HookService(
       ClassMappingProvider mappingProvider,
-      Provider<InjectionUtils> injectionUtils,
+      Provider<MethodInjectionUtils> methodInjectionUtils,
       @Named("launchArguments") Map launchArguments) {
     this.mappingProvider = mappingProvider;
-    this.injectionUtils = injectionUtils;
+    this.methodInjectionUtils = methodInjectionUtils;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--game-version");
   }
@@ -115,41 +119,25 @@ public class HookService implements ServiceHandler<Hook> {
   private void insert(
       CtMethod target, Hook hook, Hook.ExecutionTime executionTime, CtMethod hookMethod)
       throws CannotCompileException, NotFoundException {
-    InjectionUtils injectionUtils = this.injectionUtils.get();
-
     CtField notifier =
-        injectionUtils.addInjectedField(
-            target.getDeclaringClass(), "net.flintmc.transform.hook.internal.HookServiceNotifier");
-    CtField injectedFactory =
-        injectionUtils.addInjectedField(
-            target.getDeclaringClass(),
-            "net.flintmc.framework.inject.OptimizedMethodInjector$ASMFactory");
+        InjectionHolder.getInjectedInstance(InjectedFieldBuilder.Factory.class)
+            .create()
+            .target(target.getDeclaringClass())
+            .inject(NOTIFIER_NAME)
+            .generate();
 
-    String injectorName = injectionUtils.generateInjectedFieldName();
-    target
-        .getDeclaringClass()
-        .addField(
-            CtField.make(
-                String.format(
-                    "private static %s %s;",
-                    "net.flintmc.framework.inject.OptimizedMethodInjector", injectorName),
-                target.getDeclaringClass()));
-
-    String prefix =
-        String.format(
-            "if (%s == null) { %1$s = %s.generate(\"%s\", \"%s\"); }",
-            injectorName,
-            injectedFactory.getName(),
-            hookMethod.getDeclaringClass().getName(),
-            hookMethod.getName());
+    CtMethod getter =
+        this.methodInjectionUtils
+            .get()
+            .generateOptimizedInjector(target.getDeclaringClass(), hookMethod);
 
     String notify =
         String.format(
-            "%s.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s, $args);",
+            "%s.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s(), $args);",
             notifier.getName(),
             Modifier.isStatic(target.getModifiers()) ? "null" : "$0",
             executionTime,
-            injectorName);
+            getter.getName());
     String varName = "hookNotifyResult";
 
     String returnValue = null;
@@ -174,11 +162,11 @@ public class HookService implements ServiceHandler<Hook> {
     }
 
     if (returnValue == null) { // no values can be returned, no HookResult defined
-      executionTime.insert(target, prefix + notify);
+      executionTime.insert(target, notify);
       return;
     }
 
-    String src = prefix + "Object " + varName + " = " + notify;
+    String src = "Object " + varName + " = " + notify;
     if (hookResult) {
       // check if the returned type is equal to BREAK
       String breakCheck =

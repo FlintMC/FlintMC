@@ -6,7 +6,7 @@ import javassist.CannotCompileException;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import net.flintmc.framework.inject.InjectionUtils;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.InputInterceptor;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
@@ -22,7 +22,6 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 import org.lwjgl.system.MemoryStack;
 
-import java.lang.reflect.Modifier;
 import java.nio.DoubleBuffer;
 
 /** 1.15.2 implementation of the input interceptor */
@@ -30,14 +29,14 @@ import java.nio.DoubleBuffer;
 @Implement(InputInterceptor.class)
 public class VersionedInputInterceptor implements InputInterceptor {
 
-  private final InjectionUtils injectionUtils;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final VersionedGLFWCallbacks callbacks;
   private GLFWCursorPosCallbackI cursorPosCallback;
 
   @Inject
   private VersionedInputInterceptor(
-      InjectionUtils injectionUtils, VersionedGLFWCallbacks callbacks) {
-    this.injectionUtils = injectionUtils;
+      InjectedFieldBuilder.Factory fieldBuilderFactory, VersionedGLFWCallbacks callbacks) {
+    this.fieldBuilderFactory = fieldBuilderFactory;
     this.callbacks = callbacks;
   }
 
@@ -109,7 +108,11 @@ public class VersionedInputInterceptor implements InputInterceptor {
   public void transformInputMappings(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     CtField injectedField =
-        this.injectionUtils.addInjectedField(context.getCtClass(), VersionedInputInterceptor.class);
+        this.fieldBuilderFactory
+            .create()
+            .target(context.getCtClass())
+            .inject(super.getClass())
+            .generate();
 
     String fieldName = injectedField.getName();
 
@@ -132,7 +135,11 @@ public class VersionedInputInterceptor implements InputInterceptor {
   public void hookMainWindowConstructor(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtField injectedField =
-        this.injectionUtils.addInjectedField(context.getCtClass(), VersionedGLFWCallbacks.class);
+        this.fieldBuilderFactory
+            .create()
+            .target(context.getCtClass())
+            .inject(VersionedGLFWCallbacks.class)
+            .generate();
     String fieldName = injectedField.getName();
 
     context

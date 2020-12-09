@@ -1,4 +1,4 @@
-package net.flintmc.framework.inject;
+package net.flintmc.framework.inject.method;
 
 import com.google.inject.Key;
 
@@ -6,7 +6,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-/** Helper service to invoke methods using Guice injection. */
+/**
+ * Helper service to invoke methods using Guice injection. Since this class uses reflections, for
+ * cases where performance is important, this class shouldn't be used and should be replaced with an
+ * {@link OptimizedMethodInjector}.
+ *
+ * @see OptimizedMethodInjector
+ */
 public interface InjectedInvocationHelper {
   /**
    * Invokes the given method on an instance of the declaring class fetched using Guice.

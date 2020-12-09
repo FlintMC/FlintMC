@@ -1,4 +1,4 @@
-package net.flintmc.framework.inject.internal.optimizer;
+package net.flintmc.framework.inject.internal.method.optimizer;
 
 import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
@@ -15,32 +15,40 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
-import net.flintmc.framework.inject.OptimizedMethodInjector;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.inject.method.OptimizedMethodInjector;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.launcher.classloading.RootClassLoader;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
-@Implement(OptimizedMethodInjector.ASMFactory.class)
-public class ASMOptimizedMethodInjectorFactory implements OptimizedMethodInjector.ASMFactory {
+@Implement(OptimizedMethodInjector.Factory.class)
+public class OptimizedMethodInjectorFactory implements OptimizedMethodInjector.Factory {
 
+  private final Logger logger;
   private final FallbackOptimizedMethodInjector.BackupFactory backupFactory;
   private final AtomicInteger idCounter;
+  private final Map<String, OptimizedMethodInjector> injectorCache;
 
   @Inject
-  private ASMOptimizedMethodInjectorFactory(
-      FallbackOptimizedMethodInjector.BackupFactory backupFactory) {
+  private OptimizedMethodInjectorFactory(
+          @InjectLogger Logger logger, FallbackOptimizedMethodInjector.BackupFactory backupFactory) {
+    this.logger = logger;
     this.backupFactory = backupFactory;
+
     this.idCounter = new AtomicInteger();
+    this.injectorCache = new HashMap<>();
   }
 
   private InternalOptimizedMethodInjector finalize(CtClass generated)
@@ -60,6 +68,11 @@ public class ASMOptimizedMethodInjectorFactory implements OptimizedMethodInjecto
 
   @Override
   public OptimizedMethodInjector generate(Object instance, String targetClass, String methodName) {
+    String key = targetClass + "." + methodName;
+    if (this.injectorCache.containsKey(key)) {
+      return this.injectorCache.get(key);
+    }
+
     InternalOptimizedMethodInjector injector = this.generateInternal(targetClass, methodName);
     injector.setInstance(instance);
     return injector;
@@ -69,7 +82,10 @@ public class ASMOptimizedMethodInjectorFactory implements OptimizedMethodInjecto
     try {
       return this.generateInternal0(targetClass, methodName);
     } catch (CannotCompileException | IOException | NotFoundException exception) {
-      exception.printStackTrace(); // TODO replace with logger
+      this.logger.trace(
+          String.format(
+              "Failed to compile optimized method injector for %s.%s", targetClass, methodName),
+          exception);
 
       try {
         return this.backupFactory.create(
@@ -105,12 +121,16 @@ public class ASMOptimizedMethodInjectorFactory implements OptimizedMethodInjecto
         CtField.make(
             "private boolean fullyOptimized;",
             generated)); // only bindings that are available in the injector
+    CtField methodField = CtField.make("private java.lang.reflect.Method method;", generated);
+    generated.addField(methodField);
+
+    generated.addMethod(CtNewMethod.setter("setMethod", methodField));
 
     generated.addMethod(
         CtNewMethod.make(
             String.format(
-                "public void init(java.lang.reflect.Method method) {"
-                    + "this.dependencies = %s.generateDependencies(method);"
+                "public void init() {"
+                    + "this.dependencies = %s.generateDependencies(this.method);"
                     + "this.index = %1$s.generateIndex(this.dependencies);"
                     + "this.fullyOptimized = %1$s.isFullyOptimized(this.index);"
                     + "}",
@@ -142,6 +162,7 @@ public class ASMOptimizedMethodInjectorFactory implements OptimizedMethodInjecto
 
     String src =
         "public Object invoke(java.util.Map availableArguments) {"
+            + "if (this.index == null) { this.init(); }"
             + "Object[] args = this.index;"
             + "if (!this.fullyOptimized) {"
             + String.format(
@@ -175,7 +196,7 @@ public class ASMOptimizedMethodInjectorFactory implements OptimizedMethodInjecto
     generated.addMethod(CtNewMethod.make(src, generated));
 
     InternalOptimizedMethodInjector injector = this.finalize(generated);
-    injector.init(CtResolver.get(method));
+    injector.setMethod(CtResolver.get(method));
     return injector;
   }
 
@@ -186,6 +207,7 @@ public class ASMOptimizedMethodInjectorFactory implements OptimizedMethodInjecto
 
     for (int i = 0; i < index.length; i++) {
       if (index[i] != null) {
+        // was already defined previously when the index has been generated
         continue;
       }
 

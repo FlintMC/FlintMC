@@ -15,7 +15,7 @@ import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.Executor;
 import net.flintmc.framework.eventbus.method.ExecutorFactory;
-import net.flintmc.framework.inject.InjectionUtils;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.launcher.LaunchController;
@@ -40,16 +40,16 @@ public class JavassistExecutorFactory implements ExecutorFactory {
 
   private final LoadingCache<CtMethod, Class<? extends Executor<?>>> cache;
   private final Logger logger;
-  private final InjectionUtils injectionUtils;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final ClassTransformService classTransformService;
 
   @Inject
   private JavassistExecutorFactory(
       @InjectLogger Logger logger,
-      InjectionUtils injectionUtils,
+      InjectedFieldBuilder.Factory fieldBuilderFactory,
       ClassTransformService classTransformService) {
     this.logger = logger;
-    this.injectionUtils = injectionUtils;
+    this.fieldBuilderFactory = fieldBuilderFactory;
     this.classTransformService = classTransformService;
 
     this.cache =
@@ -76,7 +76,8 @@ public class JavassistExecutorFactory implements ExecutorFactory {
     CtClass executor = cp.makeClass(className);
     executor.addInterface(cp.get(Executor.class.getName()));
 
-    CtField injectedListener = this.injectionUtils.addInjectedField(executor, listener);
+    CtField injectedListener =
+        this.fieldBuilderFactory.create().target(executor).inject(listener).generate();
 
     if (Modifier.isPrivate(targetMethod.getModifiers())) {
       targetMethod.setModifiers(javassist.Modifier.setPublic(targetMethod.getModifiers()));
