@@ -1,6 +1,5 @@
 package net.flintmc.mcapi.internal.settings.game.annotation;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
@@ -15,7 +14,6 @@ import net.flintmc.mcapi.settings.game.annotation.ResourcePackSetting;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -23,12 +21,10 @@ import java.util.stream.Collectors;
 public class ResourcePackSettingHandler implements SettingHandler<ResourcePackSetting> {
 
   private final ResourcePackProvider provider;
-  private final Gson gson;
 
   @Inject
   public ResourcePackSettingHandler(ResourcePackProvider provider) {
     this.provider = provider;
-    this.gson = new Gson();
   }
 
   @Override
