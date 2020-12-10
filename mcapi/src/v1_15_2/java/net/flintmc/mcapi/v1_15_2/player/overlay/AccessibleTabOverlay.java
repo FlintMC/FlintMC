@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.player.overlay;
+package net.flintmc.mcapi.v1_15_2.player.overlay;
 
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;

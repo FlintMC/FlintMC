@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.v1_15_2.player.network;
+package net.flintmc.mcapi.internal.player.network;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -11,15 +11,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-/** 1.15.2 implementation of {@link NetworkPlayerInfoRegistry} */
+/** Default implementation of {@link NetworkPlayerInfoRegistry} */
 @Singleton
 @Implement(value = NetworkPlayerInfoRegistry.class, version = "1.15.2")
-public class VersionedNetworkPlayerInfoRegistry implements NetworkPlayerInfoRegistry {
+public class DefaultNetworkPlayerInfoRegistry implements NetworkPlayerInfoRegistry {
 
   private final Map<UUID, NetworkPlayerInfo> networkPlayerInfoMap;
 
   @Inject
-  private VersionedNetworkPlayerInfoRegistry() {
+  private DefaultNetworkPlayerInfoRegistry() {
     this.networkPlayerInfoMap = Maps.newHashMap();
   }
 

@@ -5,7 +5,6 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.mcapi.player.overlay.AccessibleTabOverlay;
 import net.flintmc.mcapi.player.overlay.TabOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
@@ -44,7 +43,10 @@ public class VersionedTabOverlay implements TabOverlay {
     Minecraft.getInstance()
         .ingameGUI
         .getTabList()
-        .setFooter((ITextComponent) this.minecraftComponentMapper.toMinecraft(header));
+        .setFooter(
+            header == null
+                ? null
+                : (ITextComponent) this.minecraftComponentMapper.toMinecraft(header));
   }
 
   /**
@@ -69,6 +71,9 @@ public class VersionedTabOverlay implements TabOverlay {
     Minecraft.getInstance()
         .ingameGUI
         .getTabList()
-        .setFooter((ITextComponent) this.minecraftComponentMapper.toMinecraft(footer));
+        .setFooter(
+            footer == null
+                ? null
+                : (ITextComponent) this.minecraftComponentMapper.toMinecraft(footer));
   }
 }
