@@ -2,8 +2,8 @@ package net.flintmc.framework.config.internal.storage;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.config.annotation.PostMinecraftRead;
-import net.flintmc.framework.config.annotation.PostOpenGLRead;
+import net.flintmc.framework.config.EventConfigInitializer;
+import net.flintmc.framework.config.annotation.ConfigInit;
 import net.flintmc.framework.config.event.ConfigStorageEvent;
 import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
 import net.flintmc.framework.config.generator.ConfigGenerator;
@@ -43,6 +43,8 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
   private final List<ComparableConfigStorage> storages = new ArrayList<>();
   private final Map<Class<?>, ParsedConfig> pendingWrites = new ConcurrentHashMap<>();
 
+  private final EventConfigInitializer eventConfigInitializer;
+
   @Inject
   private DefaultConfigStorageProvider(
       @InjectLogger Logger logger,
@@ -50,12 +52,14 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
       EventBus eventBus,
       ScheduledExecutorService executorService,
       ConfigAnnotationCollector annotationCollector,
-      ConfigGenerator configGenerator) {
+      ConfigGenerator configGenerator,
+      EventConfigInitializer eventConfigInitializer) {
     this.logger = logger;
     this.eventFactory = eventFactory;
     this.eventBus = eventBus;
     this.annotationCollector = annotationCollector;
     this.configGenerator = configGenerator;
+    this.eventConfigInitializer = eventConfigInitializer;
     executorService.scheduleAtFixedRate(
         () -> {
           if (this.pendingWrites.isEmpty()) {
@@ -132,12 +136,15 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
       // read the configs from the storage
 
       for (ParsedConfig config : configs) {
-        Collection<PostMinecraftRead> postMinecraftReads =
-            this.annotationCollector.getAllAnnotations(config.getClass(), PostMinecraftRead.class);
-        Collection<PostOpenGLRead> postOpenGLReads =
-            this.annotationCollector.getAllAnnotations(config.getClass(), PostOpenGLRead.class);
-        if (postMinecraftReads.isEmpty() && postOpenGLReads.isEmpty()) {
+        List<ConfigInit> configInits =
+            new ArrayList<>(
+                this.annotationCollector.getAllAnnotations(config.getClass(), ConfigInit.class));
+        if (configInits.isEmpty()) {
+          // no initialization conditions are given, we can initialize now
           storage.read(config);
+        } else {
+          // registering the config for later initialization after the configured event is fired
+          this.eventConfigInitializer.registerPendingInitialization(config, configInits.get(0));
         }
       }
     }

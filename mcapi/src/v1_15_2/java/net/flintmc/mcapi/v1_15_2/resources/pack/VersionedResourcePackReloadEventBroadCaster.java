@@ -4,9 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.flintmc.framework.tasks.Task;
-import net.flintmc.framework.tasks.Tasks;
 import net.flintmc.mcapi.resources.pack.ResourcePackReloadEvent;
+import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.resources.SimpleReloadableResourceManager;
@@ -24,8 +23,8 @@ public class VersionedResourcePackReloadEventBroadCaster {
     this.resourcePackReloadEvent = resourcePackReloadEvent;
   }
 
-  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void init() {
+  @Subscribe(phase = Subscribe.Phase.POST)
+  public void init(OpenGLInitializeEvent event) {
     // Install a hook on the minecraft resource manager
     ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager())
         .addReloadListener(

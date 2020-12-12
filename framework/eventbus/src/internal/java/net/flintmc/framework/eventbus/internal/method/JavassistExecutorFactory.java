@@ -5,6 +5,12 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -15,19 +21,13 @@ import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.Executor;
 import net.flintmc.framework.eventbus.method.ExecutorFactory;
+import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.transform.javassist.ClassTransformService;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 /** An executor factory which uses Javassist to create event executors. */
 @Singleton
@@ -86,9 +86,12 @@ public class JavassistExecutorFactory implements ExecutorFactory {
     executor.addMethod(
         CtMethod.make(
             String.format(
-                "public void invoke(%s event, %s phase) { %s.%s((%s) event); }",
+                "public void invoke(%s event, %s phase, %s holderMethod) {"
+                    + "%s.%s((%s) event);"
+                    + "}",
                 Event.class.getName(),
                 Subscribe.Phase.class.getName(),
+                SubscribeMethod.class.getName(),
                 injectedListener.getName(),
                 targetMethod.getName(),
                 targetMethod.getParameterTypes()[0].getName()),

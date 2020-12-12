@@ -3,11 +3,11 @@ package net.flintmc.mcapi.v1_15_2.tileentity.type;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.tasks.Task;
-import net.flintmc.framework.tasks.Tasks;
 import net.flintmc.mcapi.tileentity.type.TileEntityType;
 import net.flintmc.mcapi.tileentity.type.TileEntityTypeRegister;
+import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Map;
@@ -25,8 +25,8 @@ public class VersionedTileEntityTypeRegister implements TileEntityTypeRegister {
     this.tileEntityTypes = Maps.newHashMap();
   }
 
-  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void convertTileEntityTypes() {
+  @Subscribe(phase = Subscribe.Phase.POST)
+  public void convertTileEntityTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.tileentity.TileEntityType<?> tileEntityType : Registry.BLOCK_ENTITY_TYPE) {
       String key = Registry.BLOCK_ENTITY_TYPE.getKey(tileEntityType).getPath();
       this.tileEntityTypes.put(key, this.tileEntityTypeFactory.create());

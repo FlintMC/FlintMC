@@ -2,12 +2,12 @@ package net.flintmc.mcapi.v1_15_2.world.storage;
 
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.tasks.Task;
-import net.flintmc.framework.tasks.Tasks;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegister;
+import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 
 import java.util.List;
 
@@ -23,8 +23,8 @@ public class VersionedWorldTypeRegister implements WorldTypeRegister {
     this.worldTypes = Lists.newArrayList();
   }
 
-  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  public void loadWorldTypes() {
+  @Subscribe(phase = Subscribe.Phase.POST)
+  public void loadWorldTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.world.WorldType worldType : net.minecraft.world.WorldType.WORLD_TYPES) {
       if (worldType != null) {
         this.worldTypes.add(this.worldMapper.fromMinecraftWorldType(worldType));
@@ -32,9 +32,7 @@ public class VersionedWorldTypeRegister implements WorldTypeRegister {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public List<WorldType> getWorldTypes() {
     return this.worldTypes;

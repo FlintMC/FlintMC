@@ -57,6 +57,6 @@ public class DefaultSubscribeMethod implements SubscribeMethod {
     if (this.executor == null) {
       this.executor = this.executorSupplier.get();
     }
-    this.executor.invoke(event, phase);
+    this.executor.invoke(event, phase, this);
   }
 }

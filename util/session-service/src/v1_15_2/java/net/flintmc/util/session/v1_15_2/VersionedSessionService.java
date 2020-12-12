@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.util.UUIDTypeAdapter;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.tasks.Task;
-import net.flintmc.framework.tasks.Tasks;
+import net.flintmc.mcapi.event.MinecraftInitializeEvent;
 import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
 import net.flintmc.util.session.AuthenticationResult;
 import net.flintmc.util.session.RefreshTokenResult;
@@ -103,8 +103,8 @@ public class VersionedSessionService extends DefaultSessionService {
         this.resolver);
   }
 
-  @Task(Tasks.POST_MINECRAFT_INITIALIZE)
-  public void initSession() throws IOException {
+  @Subscribe(phase = Subscribe.Phase.POST)
+  public void initSession(MinecraftInitializeEvent event) throws IOException {
     // load the session that has been given to the client by the launcher
     Session session = Minecraft.getInstance().getSession();
     if (session.getToken().equals("0")) {

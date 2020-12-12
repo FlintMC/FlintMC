@@ -2,16 +2,26 @@ package net.flintmc.mcapi.v1_15_2.settings.game;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.config.annotation.PostMinecraftRead;
+import net.flintmc.framework.config.annotation.ConfigInit;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.mcapi.event.MinecraftInitializeEvent;
 import net.flintmc.mcapi.settings.game.MinecraftConfiguration;
-import net.flintmc.mcapi.settings.game.configuration.*;
+import net.flintmc.mcapi.settings.game.configuration.AccessibilityConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.ChatConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.DebugConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.GraphicConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.KeyBindingConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.MouseConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.ResourcePackConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.SkinConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.SoundConfiguration;
 import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 import net.minecraft.client.Minecraft;
 
 /** 1.15.2 implementation of {@link MinecraftConfiguration}. */
 @Singleton
-@PostMinecraftRead
+@ConfigInit(value = MinecraftInitializeEvent.class, eventPhase = Subscribe.Phase.POST)
 @ConfigImplementation(value = MinecraftConfiguration.class, version = "1.15.2")
 public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
 
