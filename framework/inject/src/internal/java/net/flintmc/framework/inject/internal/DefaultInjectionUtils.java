@@ -44,6 +44,11 @@ public class DefaultInjectionUtils implements InjectionUtils {
       boolean singletonInstance,
       boolean staticField)
       throws CannotCompileException {
+    if (declaringClass.isInterface()) {
+      throw new IllegalArgumentException(
+          "Cannot add fields to an interface: " + declaringClass.getName());
+    }
+
     if (!singletonInstance) {
       for (CtField field : declaringClass.getDeclaredFields()) {
         try {

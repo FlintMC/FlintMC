@@ -53,7 +53,7 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
       throws CannotCompileException {
     boolean moved = false;
 
-    if (target.isInterface()) {
+    if (target == null || target.isInterface()) {
       // cannot add fields to an interface
 
       target =

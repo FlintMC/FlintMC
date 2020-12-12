@@ -54,8 +54,8 @@ public class DefaultInjectedFieldBuilder implements InjectedFieldBuilder {
   }
 
   @Override
-  public InjectedFieldBuilder singletonInstance() {
-    this.singletonInstance = true;
+  public InjectedFieldBuilder multipleInstances() {
+    this.singletonInstance = false;
     return this;
   }
 

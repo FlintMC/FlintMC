@@ -28,13 +28,13 @@ public class DefaultLoggingProvider implements LoggingProvider {
   @Inject
   private DefaultLoggingProvider() {
     // The cache needs to be concurrent
-    loggerCache = new ConcurrentHashMap<>();
+    this.loggerCache = new ConcurrentHashMap<>();
   }
 
   /** {@inheritDoc} */
   @Override
   public Logger getLogger(Class<?> clazz) {
-    return loggerCache.computeIfAbsent(clazz, this::createLogger);
+    return this.loggerCache.computeIfAbsent(clazz, this::createLogger);
   }
 
   /** {@inheritDoc} */
