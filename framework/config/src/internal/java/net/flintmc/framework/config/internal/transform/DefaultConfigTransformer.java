@@ -3,7 +3,11 @@ package net.flintmc.framework.config.internal.transform;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.NotFoundException;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.ConfigImplementer;
@@ -18,7 +22,6 @@ import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,10 +43,11 @@ public class DefaultConfigTransformer
   private final Map<String, String> launchArguments;
 
   @Inject
-  public DefaultConfigTransformer(
-      ConfigImplementer configImplementer, @Named("launchArguments") Map launchArguments) {
-    this.pool = ClassPool.getDefault();
-
+  private DefaultConfigTransformer(
+      ClassPool pool,
+      ConfigImplementer configImplementer,
+      @Named("launchArguments") Map launchArguments) {
+    this.pool = pool;
     this.configImplementer = configImplementer;
     this.launchArguments = launchArguments;
 
@@ -103,7 +107,7 @@ public class DefaultConfigTransformer
       }
 
       // get the new implementation with the changes from the class transformer
-      CtClass newImplementation = ClassPool.getDefault().get(implementation.getName());
+      CtClass newImplementation = this.pool.get(implementation.getName());
 
       // bind the implementation in the config to be used by the ConfigObjectReference.Parser
       configMeta

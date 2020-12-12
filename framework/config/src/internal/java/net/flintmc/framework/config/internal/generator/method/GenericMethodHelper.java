@@ -29,10 +29,12 @@ public class GenericMethodHelper {
 
   @Inject
   private GenericMethodHelper(
-      @InjectLogger Logger logger, ConfigSerializationService serializationService) {
+      @InjectLogger Logger logger,
+      ClassPool pool,
+      ConfigSerializationService serializationService) {
     this.logger = logger;
+    this.pool = pool;
     this.serializationService = serializationService;
-    this.pool = ClassPool.getDefault();
   }
 
   public ConfigMethod generateMultiGetterSetter(

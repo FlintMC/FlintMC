@@ -47,8 +47,9 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
   private final ClassMappingProvider mappingProvider;
 
   @Inject
-  private VersionedEntityRenderNameEventInjectorTransformer(ClassMappingProvider mappingProvider) {
-    this.pool = ClassPool.getDefault();
+  private VersionedEntityRenderNameEventInjectorTransformer(
+      ClassPool pool, ClassMappingProvider mappingProvider) {
+    this.pool = pool;
     this.mappingProvider = mappingProvider;
   }
 

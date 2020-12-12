@@ -40,15 +40,19 @@ import java.util.Random;
 @Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class HookService implements ServiceHandler<Hook> {
 
-  private final ClassMappingProvider classMappingProvider;
+  private final ClassPool pool;
+  private final ClassMappingProvider mappingProvider;
   private final String version;
   private final Collection<HookEntry> hooks;
   private final Random random;
 
   @Inject
   private HookService(
-      ClassMappingProvider classMappingProvider, @Named("launchArguments") Map launchArguments) {
-    this.classMappingProvider = classMappingProvider;
+      ClassPool pool,
+      ClassMappingProvider mappingProvider,
+      @Named("launchArguments") Map launchArguments) {
+    this.pool = pool;
+    this.mappingProvider = mappingProvider;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--game-version");
     this.random = new Random();
@@ -113,7 +117,7 @@ public class HookService implements ServiceHandler<Hook> {
       Hook hook = identifier.getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
-        String className = classMappingProvider.get(hook.className()).getName();
+        String className = mappingProvider.get(hook.className()).getName();
         if (className != null && className.equals(ctClass.getName())) {
           this.modify(
               entry, hook, ctClass, identifier.<MethodIdentifier>getIdentifier().getLocation());
@@ -128,7 +132,7 @@ public class HookService implements ServiceHandler<Hook> {
               .value()
               .test(
                   ctClass,
-                  classMappingProvider
+                  mappingProvider
                       .get(subProperty.getValue().resolve(hookFilter.type()))
                       .getName())) {
             cancel = true;
@@ -241,13 +245,13 @@ public class HookService implements ServiceHandler<Hook> {
 
     for (int i = 0; i < hook.parameters().length; i++) {
       String name = hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i]);
-      ClassMapping classMapping = classMappingProvider.get(name);
+      ClassMapping classMapping = mappingProvider.get(name);
 
       if (classMapping == null) {
         classMapping = new ClassMapping(false, name, name);
       }
 
-      parameters[i] = ClassPool.getDefault().get(classMapping.getName());
+      parameters[i] = this.pool.get(classMapping.getName());
     }
 
     boolean constructor = hook.methodName().equals("<init>");
@@ -256,7 +260,7 @@ public class HookService implements ServiceHandler<Hook> {
         constructor
             ? ctClass.getDeclaredConstructor(parameters)
             : ctClass.getDeclaredMethod(
-                classMappingProvider
+                mappingProvider
                     .get(ctClass.getName())
                     .getMethod(hookEntry.methodNameResolver.resolve(hook), parameters)
                     .getName(),

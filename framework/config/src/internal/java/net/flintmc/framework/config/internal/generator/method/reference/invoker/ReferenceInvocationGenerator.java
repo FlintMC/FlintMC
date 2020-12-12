@@ -2,7 +2,12 @@ package net.flintmc.framework.config.internal.generator.method.reference.invoker
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
+import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.internal.generator.base.ConfigClassLoader;
 import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
@@ -21,8 +26,8 @@ public class ReferenceInvocationGenerator {
   private final ConfigClassLoader classLoader;
 
   @Inject
-  public ReferenceInvocationGenerator(ImplementationGenerator generator) {
-    this.pool = ClassPool.getDefault();
+  private ReferenceInvocationGenerator(ImplementationGenerator generator, ClassPool pool) {
+    this.pool = pool;
     this.idCounter = new AtomicInteger();
     this.random = new Random();
 

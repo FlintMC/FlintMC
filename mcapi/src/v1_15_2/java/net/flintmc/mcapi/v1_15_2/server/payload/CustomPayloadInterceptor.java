@@ -26,10 +26,12 @@ public class CustomPayloadInterceptor {
   private static final int[] LOGGER_WARN_SEQUENCE =
       new int[] {Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
 
+  private final ClassPool pool;
   private final ClassMapping customPayloadPacketMapping;
 
   @Inject
-  private CustomPayloadInterceptor(ClassMappingProvider classMappingProvider) {
+  private CustomPayloadInterceptor(ClassPool pool, ClassMappingProvider classMappingProvider) {
+    this.pool = pool;
     this.customPayloadPacketMapping =
         classMappingProvider.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket");
   }
@@ -44,8 +46,7 @@ public class CustomPayloadInterceptor {
             .getDeclaredMethod(
                 "handleCustomPayload",
                 new CtClass[] {
-                  ClassPool.getDefault()
-                      .get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
+                  this.pool.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
                 });
 
     MethodInfo methodInfo = handleCustomPayloadMethod.getMethodInfo();

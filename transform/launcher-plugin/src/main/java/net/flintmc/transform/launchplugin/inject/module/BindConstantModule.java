@@ -3,6 +3,7 @@ package net.flintmc.transform.launchplugin.inject.module;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import javassist.ClassPool;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.util.ContextAwareProvisionListener;
 import net.flintmc.launcher.LaunchController;
@@ -36,6 +37,8 @@ public class BindConstantModule extends AbstractModule {
 
     this.bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
     this.bind(ScheduledExecutorService.class).toInstance(Executors.newScheduledThreadPool(SCHEDULED_POOL_SIZE));
+
+    super.bind(ClassPool.class).toInstance(ClassPool.getDefault());
 
     boolean obfuscated =
         ((RootClassLoader) getClass().getClassLoader())
