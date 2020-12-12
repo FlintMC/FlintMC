@@ -6,9 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Marks an injected parameter or field whose value comes from an argument to a factory method.
- */
+/** Marks an injected parameter or field whose value comes from an argument to a factory method. */
 @BindingAnnotation
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -21,5 +19,4 @@ public @interface Assisted {
    * @return The unique name for this parameter.
    */
   String value() default "";
-
 }

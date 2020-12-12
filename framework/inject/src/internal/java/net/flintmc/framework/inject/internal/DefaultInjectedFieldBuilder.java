@@ -9,6 +9,7 @@ import net.flintmc.framework.inject.InjectionUtils;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 
+/** {@inheritDoc} */
 @Implement(InjectedFieldBuilder.class)
 public class DefaultInjectedFieldBuilder implements InjectedFieldBuilder {
 
@@ -25,46 +26,54 @@ public class DefaultInjectedFieldBuilder implements InjectedFieldBuilder {
     this.injectionUtils = injectionUtils;
   }
 
+  /** {@inheritDoc} */
   @Override
   public InjectedFieldBuilder target(CtClass target) {
     this.target = target;
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public InjectedFieldBuilder inject(Class<?> type) {
     return this.inject(type.getName());
   }
 
+  /** {@inheritDoc} */
   @Override
   public InjectedFieldBuilder inject(CtClass type) {
     return this.inject(type.getName());
   }
 
+  /** {@inheritDoc} */
   @Override
   public InjectedFieldBuilder inject(String typeName) {
     this.injectedTypeName = typeName;
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public InjectedFieldBuilder fieldName(String fieldName) {
     this.fieldName = fieldName;
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public InjectedFieldBuilder multipleInstances() {
     this.singletonInstance = false;
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public InjectedFieldBuilder notStatic() {
     this.notStatic = true;
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtField generate() throws CannotCompileException {
     Preconditions.checkNotNull(this.target, "No target defined");

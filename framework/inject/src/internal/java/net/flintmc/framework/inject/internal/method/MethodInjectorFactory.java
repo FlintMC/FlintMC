@@ -1,4 +1,4 @@
-package net.flintmc.framework.inject.internal.method.optimizer;
+package net.flintmc.framework.inject.internal.method;
 
 import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
@@ -8,6 +8,13 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.Dependency;
 import com.google.inject.spi.InjectionPoint;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -28,14 +35,7 @@ import net.flintmc.launcher.LaunchController;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-
+/** {@inheritDoc} */
 @Singleton
 @Implement(MethodInjector.Factory.class)
 public class MethodInjectorFactory implements MethodInjector.Factory {
@@ -53,11 +53,13 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
     this.injectorCache = new HashMap<>();
   }
 
+  /** {@inheritDoc} */
   @Override
   public <T> T generate(CtMethod targetMethod, Class<T> ifc) {
     return this.generateAndCache(targetMethod, ifc);
   }
 
+  /** {@inheritDoc} */
   @Override
   public <T> T generate(Object instance, CtMethod targetMethod, Class<T> ifc) {
     T t = this.generateAndCache(targetMethod, ifc);

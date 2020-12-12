@@ -1,4 +1,4 @@
-package net.flintmc.framework.inject.internal.method.optimizer;
+package net.flintmc.framework.inject.internal.method;
 
 public class InjectionSource {
 

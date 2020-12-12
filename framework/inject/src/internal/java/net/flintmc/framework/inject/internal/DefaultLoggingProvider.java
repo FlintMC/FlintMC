@@ -2,6 +2,9 @@ package net.flintmc.framework.inject.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.LoggingProvider;
 import org.apache.logging.log4j.LogManager;
@@ -9,10 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.AbstractMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /** Default implementation of the {@link LoggingProvider} */
 @Singleton

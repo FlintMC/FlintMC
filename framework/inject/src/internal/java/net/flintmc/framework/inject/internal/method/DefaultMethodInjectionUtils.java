@@ -2,6 +2,9 @@ package net.flintmc.framework.inject.internal.method;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -15,10 +18,7 @@ import net.flintmc.framework.inject.method.MethodInjectionUtils;
 import net.flintmc.framework.inject.method.MethodInjectorGenerationException;
 import net.flintmc.launcher.LaunchController;
 
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-
+/** {@inheritDoc} */
 @Singleton
 @Implement(MethodInjectionUtils.class)
 public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
@@ -40,6 +40,7 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
     this.idCounter = new AtomicInteger();
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtMethod generateInjector(CtClass target, CtMethod targetMethod, Class<?> ifc)
       throws CannotCompileException {
@@ -47,6 +48,7 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
         target, targetMethod.getDeclaringClass().getName(), targetMethod.getName(), ifc);
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtMethod generateInjector(
       CtClass target, String targetClass, String methodName, Class<?> ifc)
@@ -79,7 +81,7 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
     String generate =
         String.format(
             "if (%s == null) { %1$s = %s.generate(%s.getDefault().getMethod(\"%s\", \"%s\"), %s.class); }",
-            injectorField.getDeclaringClass().getName()+"."+injectorName,
+            injectorField.getDeclaringClass().getName() + "." + injectorName,
             injectedFactory.getName(),
             ClassPool.class.getName(),
             targetClass,
@@ -99,7 +101,8 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
               IllegalStateException.class.getName(), targetClass, methodName),
           this.pool.get(NotFoundException.class.getName()));
     } catch (NotFoundException exception) {
-      throw new MethodInjectorGenerationException("Class " + NotFoundException.class.getName() + " not found");
+      throw new MethodInjectorGenerationException(
+          "Class " + NotFoundException.class.getName() + " not found");
     }
     target.addMethod(getter);
 

@@ -2,6 +2,9 @@ package net.flintmc.framework.inject.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.reflect.Modifier;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtField;
@@ -12,10 +15,7 @@ import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Modifier;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-
+/** {@inheritDoc} */
 @Singleton
 @Implement(InjectionUtils.class)
 public class DefaultInjectionUtils implements InjectionUtils {
@@ -31,11 +31,13 @@ public class DefaultInjectionUtils implements InjectionUtils {
     this.random = new Random();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String generateInjectedFieldName() {
     return "injected_" + this.idCounter.getAndIncrement() + "_" + this.random.nextInt(99999);
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtField addInjectedField(
       CtClass declaringClass,
