@@ -9,13 +9,12 @@ import com.google.inject.name.Named;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
-import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.method.MethodInjectionUtils;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.stereotype.DefaultValues;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.type.Type;
@@ -35,9 +34,6 @@ import java.util.Map;
 @Singleton
 @Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class HookService implements ServiceHandler<Hook> {
-
-  private static final String NOTIFIER_NAME =
-      "net.flintmc.transform.hook.internal.HookServiceNotifier";
 
   private final ClassMappingProvider mappingProvider;
   private final Provider<MethodInjectionUtils> methodInjectionUtils;
@@ -119,25 +115,19 @@ public class HookService implements ServiceHandler<Hook> {
   private void insert(
       CtMethod target, Hook hook, Hook.ExecutionTime executionTime, CtMethod hookMethod)
       throws CannotCompileException, NotFoundException {
-    CtField notifier =
-        InjectionHolder.getInjectedInstance(InjectedFieldBuilder.Factory.class)
-            .create()
-            .target(target.getDeclaringClass())
-            .inject(NOTIFIER_NAME)
-            .generate();
-
     CtMethod getter =
         this.methodInjectionUtils
             .get()
-            .generateOptimizedInjector(target.getDeclaringClass(), hookMethod);
+            .generateInjector(target.getDeclaringClass(), hookMethod, HookInjector.class);
 
+    // getMethodInjector().notifyHook(instance, args, executionTime)
     String notify =
         String.format(
-            "%s.notify(%s, net.flintmc.transform.hook.Hook.ExecutionTime.%s, %s(), $args);",
-            notifier.getName(),
+            "%s.%s().notifyHook(%s, $args, net.flintmc.transform.hook.Hook.ExecutionTime.%s);",
+            getter.getDeclaringClass().getName(),
+            getter.getName(),
             Modifier.isStatic(target.getModifiers()) ? "null" : "$0",
-            executionTime,
-            getter.getName());
+            executionTime);
     String varName = "hookNotifyResult";
 
     String returnValue = null;
@@ -152,7 +142,7 @@ public class HookService implements ServiceHandler<Hook> {
     if (hookResult) {
       returnValue =
           hook.defaultValue().isEmpty()
-              ? HookValues.getDefaultValue(returnType.getName())
+              ? DefaultValues.getDefaultValue(returnType.getName())
               : hook.defaultValue();
     }
 

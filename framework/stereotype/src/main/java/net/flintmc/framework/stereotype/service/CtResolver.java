@@ -4,7 +4,9 @@ import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
+import javassist.CtPrimitiveType;
 import javassist.NotFoundException;
+import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 import net.flintmc.launcher.LaunchController;
 
 import java.lang.reflect.Array;
@@ -76,6 +78,12 @@ public class CtResolver {
   public static <T> Class<T> get(CtClass ctClass) {
     if (classes.containsKey(ctClass)) {
       return (Class<T>) classes.get(ctClass);
+    }
+
+    if (ctClass instanceof CtPrimitiveType){
+      Class<T> clazz = (Class<T>) PrimitiveTypeLoader.getPrimitiveClass(ctClass.getName());
+      classes.put(ctClass, clazz);
+      return clazz;
     }
 
     try {

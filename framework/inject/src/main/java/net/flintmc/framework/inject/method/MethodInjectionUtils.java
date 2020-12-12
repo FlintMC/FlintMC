@@ -6,9 +6,11 @@ import javassist.CtMethod;
 
 public interface MethodInjectionUtils {
 
-  CtMethod generateOptimizedInjector(CtClass target, CtMethod targetMethod)
+  // getter may not be in the same class as target
+
+  CtMethod generateInjector(CtClass target, CtMethod targetMethod, Class<?> ifc)
       throws CannotCompileException;
 
-  CtMethod generateOptimizedInjector(CtClass target, String targetClass, String methodName)
+  CtMethod generateInjector(CtClass target, String targetClass, String methodName, Class<?> ifc)
       throws CannotCompileException;
 }

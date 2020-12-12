@@ -13,6 +13,7 @@ import java.util.Map;
  *
  * @see MethodInjector
  */
+// TODO remove this class when the tasks are removed
 public interface InjectedInvocationHelper {
   /**
    * Invokes the given method on an instance of the declaring class fetched using Guice.

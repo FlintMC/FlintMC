@@ -1,28 +1,17 @@
 package net.flintmc.framework.inject.method;
 
-import com.google.inject.Key;
 import javassist.CtMethod;
-
-import java.util.Map;
 
 public interface MethodInjector {
 
   Object getInstance();
 
-  Object invoke(Map<Key<?>, ?> availableArguments);
+  void setInstance(Object instance);
 
   interface Factory {
 
-    default MethodInjector generate(CtMethod method) {
-      return this.generate(method.getDeclaringClass().getName(), method.getName());
-    }
+    <T> T generate(CtMethod targetMethod, Class<T> ifc) throws MethodInjectorGenerationException;
 
-    default MethodInjector generate(Object instance, CtMethod method) {
-      return this.generate(instance, method.getDeclaringClass().getName(), method.getName());
-    }
-
-    MethodInjector generate(String targetClass, String methodName);
-
-    MethodInjector generate(Object instance, String targetClass, String methodName);
+    <T> T generate(Object instance, CtMethod targetMethod, Class<T> ifc) throws MethodInjectorGenerationException;
   }
 }
