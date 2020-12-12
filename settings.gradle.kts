@@ -44,6 +44,7 @@ defineModule("framework:service")
 defineModule("framework:stereotype")
 defineModule("framework:tasks")
 defineModule("framework:config")
+defineModule("framework:code-generation")
 
 defineModule(":launcher")
 
