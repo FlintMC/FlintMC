@@ -2,10 +2,6 @@ package net.flintmc.transform.minecraft.obfuscate.remap;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -22,6 +18,10 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Loads and provides mappings for a {@link org.objectweb.asm.commons.ClassRemapper}, or in this
@@ -30,21 +30,20 @@ import org.objectweb.asm.tree.ClassNode;
 @Singleton
 public class MinecraftClassRemapper extends SimpleRemapper {
 
-  private final ClassMappingProvider classMappingProvider;
+  private final ClassPool pool;
   private final RootClassLoader rootClassLoader;
   private Handle lastHandle;
 
   @Inject
-  private MinecraftClassRemapper(ClassMappingProvider classMappingProvider) {
-    super(collectMappings(classMappingProvider));
-    this.classMappingProvider = classMappingProvider;
+  private MinecraftClassRemapper(ClassPool pool, ClassMappingProvider mappingProvider) {
+    super(collectMappings(pool, mappingProvider));
+    this.pool = pool;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
     this.rootClassLoader.excludeFromModification("org.objectweb.asm.");
-
   }
 
-  private static Map<String, String> collectMappings(ClassMappingProvider classMappingProvider) {
+  private static Map<String, String> collectMappings(ClassPool pool, ClassMappingProvider classMappingProvider) {
     Map<String, String> mappings = new HashMap<>();
 
     for (ClassMapping classMapping : classMappingProvider.getDeobfuscatedClassMappings().values()) {
@@ -61,7 +60,7 @@ public class MinecraftClassRemapper extends SimpleRemapper {
       CtClass ctClass = null;
 
       try {
-        ctClass = ClassPool.getDefault().get(classMapping.getName());
+        ctClass = pool.get(classMapping.getName());
       } catch (NotFoundException ignored) {
         // Can be ignored, because the SRG mapping
         // contains classes which do not exist in the game.
@@ -84,16 +83,14 @@ public class MinecraftClassRemapper extends SimpleRemapper {
           // If the exception is thrown, the game is broken.
           exception.printStackTrace();
         }
-
       }
     }
 
     return mappings;
   }
 
-  private static void addMethodAndFieldMappings(Map<String, String> mappings,
-      ClassMapping classMapping,
-      String name) {
+  private static void addMethodAndFieldMappings(
+      Map<String, String> mappings, ClassMapping classMapping, String name) {
     for (MethodMapping method : classMapping.getObfuscatedMethods().values()) {
       mappings.put(name + "." + method.getDeobfuscatedIdentifier(), method.getObfuscatedName());
     }
@@ -107,15 +104,14 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   public List<String> getSuperClass(String clazz) {
     try {
-      ClassInformation classInformation = CommonClassLoaderHelper
-          .retrieveClass(this.rootClassLoader, clazz);
+      ClassInformation classInformation =
+          CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, clazz);
       if (classInformation == null) {
         // Java internal class
         return new ArrayList<>();
       }
 
-      ClassNode theClazz =
-          ASMUtils.getNode(classInformation.getClassBytes());
+      ClassNode theClazz = ASMUtils.getNode(classInformation.getClassBytes());
 
       ClassInformation superClassInformation =
           CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, theClazz.superName);

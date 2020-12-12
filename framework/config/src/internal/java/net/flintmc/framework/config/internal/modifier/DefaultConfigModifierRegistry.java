@@ -20,7 +20,6 @@ import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.processing.autoload.AnnotationMeta;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,9 +37,10 @@ public class DefaultConfigModifierRegistry
   private final Multimap<ConfigObjectReference, ConfigModificationHandler> handlers;
 
   @Inject
-  public DefaultConfigModifierRegistry(ConfigGenerator configGenerator) throws NotFoundException {
+  private DefaultConfigModifierRegistry(ClassPool pool, ConfigGenerator configGenerator)
+      throws NotFoundException {
     this.configGenerator = configGenerator;
-    this.handlerType = ClassPool.getDefault().get(ConfigModificationHandler.class.getName());
+    this.handlerType = pool.get(ConfigModificationHandler.class.getName());
     this.handlers = HashMultimap.create();
   }
 
