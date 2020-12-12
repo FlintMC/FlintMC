@@ -48,8 +48,10 @@ public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInje
 
   @Override
   public byte[] transform(String s, byte[] bytes) {
-    ClassMapping classMapping = classMappingProvider.get(s);
-    if (classMapping == null) return bytes;
+    ClassMapping classMapping = this.classMappingProvider.get(s);
+    if (classMapping == null) {
+      return bytes;
+    }
 
     this.methodVisitorContexts.forEach((methodVisitorContext, ctMethod) -> {
       if (!this.registeredContexts.contains(methodVisitorContext)) {
@@ -71,7 +73,9 @@ public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInje
       String className = methodVisit.className();
 
       if (!(className.equals(classMapping.getObfuscatedName())
-          || className.equals(classMapping.getDeobfuscatedName()))) continue;
+          || className.equals(classMapping.getDeobfuscatedName()))) {
+        continue;
+      }
 
       ClassReader classReader = new ClassReader(bytes);
       ClassWriter classWriter = new ClassWriter(classReader, 3);

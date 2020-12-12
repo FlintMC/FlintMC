@@ -1,10 +1,10 @@
 package net.flintmc.framework.inject.internal.method.optimizer;
 
-import net.flintmc.framework.inject.method.OptimizedMethodInjector;
+import net.flintmc.framework.inject.method.MethodInjector;
 
 import java.lang.reflect.Method;
 
-public interface InternalOptimizedMethodInjector extends OptimizedMethodInjector {
+public interface InternalMethodInjector extends MethodInjector {
 
   void init();
 

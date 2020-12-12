@@ -6,7 +6,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.method.InjectedInvocationHelper;
-import net.flintmc.framework.inject.method.OptimizedMethodInjector;
+import net.flintmc.framework.inject.method.MethodInjector;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class FallbackOptimizedMethodInjector
-    implements InternalOptimizedMethodInjector, OptimizedMethodInjector {
+public class FallbackMethodInjector
+    implements InternalMethodInjector, MethodInjector {
 
   private final Logger logger;
   private final InjectedInvocationHelper invocationHelper;
@@ -23,7 +23,7 @@ public class FallbackOptimizedMethodInjector
   private Object instance;
 
   @AssistedInject
-  private FallbackOptimizedMethodInjector(
+  private FallbackMethodInjector(
       @InjectLogger Logger logger,
       InjectedInvocationHelper invocationHelper,
       @Assisted Method method) {
@@ -67,8 +67,8 @@ public class FallbackOptimizedMethodInjector
     this.instance = instance;
   }
 
-  @AssistedFactory(FallbackOptimizedMethodInjector.class)
+  @AssistedFactory(FallbackMethodInjector.class)
   public interface BackupFactory {
-    FallbackOptimizedMethodInjector create(@Assisted Method method);
+    FallbackMethodInjector create(@Assisted Method method);
   }
 }

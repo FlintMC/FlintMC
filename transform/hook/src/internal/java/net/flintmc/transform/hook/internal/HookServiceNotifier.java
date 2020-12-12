@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import net.flintmc.framework.inject.method.OptimizedMethodInjector;
+import net.flintmc.framework.inject.method.MethodInjector;
 import net.flintmc.transform.hook.Hook.ExecutionTime;
 
 import java.util.Map;
@@ -19,7 +19,7 @@ public class HookServiceNotifier {
   public Object notify(
       Object instance,
       ExecutionTime executionTime,
-      OptimizedMethodInjector injector,
+      MethodInjector injector,
       Object[] args) {
     Map<Key<?>, Object> availableParameters = Maps.newHashMap();
     availableParameters.put(EXECUTION_TIME_KEY, executionTime);

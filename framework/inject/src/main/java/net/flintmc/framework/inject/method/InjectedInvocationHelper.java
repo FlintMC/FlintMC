@@ -9,9 +9,9 @@ import java.util.Map;
 /**
  * Helper service to invoke methods using Guice injection. Since this class uses reflections, for
  * cases where performance is important, this class shouldn't be used and should be replaced with an
- * {@link OptimizedMethodInjector}.
+ * {@link MethodInjector}.
  *
- * @see OptimizedMethodInjector
+ * @see MethodInjector
  */
 public interface InjectedInvocationHelper {
   /**

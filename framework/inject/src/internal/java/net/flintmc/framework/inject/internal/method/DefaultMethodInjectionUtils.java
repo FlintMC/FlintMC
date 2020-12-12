@@ -10,11 +10,6 @@ import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.InjectionUtils;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.method.MethodInjectionUtils;
-import net.flintmc.framework.inject.method.OptimizedMethodInjector;
-import net.flintmc.framework.stereotype.service.CtResolver;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 @Implement(MethodInjectionUtils.class)
@@ -27,50 +22,12 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
 
   private final InjectionUtils injectionUtils;
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
-  private final OptimizedMethodInjector.Factory injectorFactory;
-
-  private final Map<Integer, OptimizedMethodInjector> optimizedInjectorCache;
 
   @Inject
   private DefaultMethodInjectionUtils(
-      InjectionUtils injectionUtils,
-      InjectedFieldBuilder.Factory fieldBuilderFactory,
-      OptimizedMethodInjector.Factory injectorFactory) {
+      InjectionUtils injectionUtils, InjectedFieldBuilder.Factory fieldBuilderFactory) {
     this.injectionUtils = injectionUtils;
     this.fieldBuilderFactory = fieldBuilderFactory;
-    this.injectorFactory = injectorFactory;
-
-    this.optimizedInjectorCache = new HashMap<>();
-  }
-
-  @Override
-  public OptimizedMethodInjector getOptimizedInjector(CtMethod method) {
-    int hash = CtResolver.hash(method);
-    if (this.optimizedInjectorCache.containsKey(hash)) {
-      return this.optimizedInjectorCache.get(hash);
-    }
-
-    return this.cacheInjector(
-        hash,
-        this.injectorFactory.generate(method.getDeclaringClass().getName(), method.getName()));
-  }
-
-  @Override
-  public OptimizedMethodInjector getOptimizedInjector(Object instance, CtMethod method) {
-    int hash = CtResolver.hash(method);
-    if (this.optimizedInjectorCache.containsKey(hash)) {
-      return this.optimizedInjectorCache.get(hash);
-    }
-
-    return this.cacheInjector(
-        hash,
-        this.injectorFactory.generate(
-            instance, method.getDeclaringClass().getName(), method.getName()));
-  }
-
-  private OptimizedMethodInjector cacheInjector(int hash, OptimizedMethodInjector injector) {
-    this.optimizedInjectorCache.put(hash, injector);
-    return injector;
   }
 
   @Override

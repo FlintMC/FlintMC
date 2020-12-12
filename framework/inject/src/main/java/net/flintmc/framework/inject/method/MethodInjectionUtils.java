@@ -6,12 +6,6 @@ import javassist.CtMethod;
 
 public interface MethodInjectionUtils {
 
-  // cached
-  OptimizedMethodInjector getOptimizedInjector(CtMethod method);
-
-  // cached
-  OptimizedMethodInjector getOptimizedInjector(Object instance, CtMethod method);
-
   CtMethod generateOptimizedInjector(CtClass target, CtMethod targetMethod)
       throws CannotCompileException;
 

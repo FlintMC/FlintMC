@@ -17,7 +17,7 @@ import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.inject.method.OptimizedMethodInjector;
+import net.flintmc.framework.inject.method.MethodInjector;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.launcher.LaunchController;
@@ -33,17 +33,17 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
-@Implement(OptimizedMethodInjector.Factory.class)
-public class OptimizedMethodInjectorFactory implements OptimizedMethodInjector.Factory {
+@Implement(MethodInjector.Factory.class)
+public class MethodInjectorFactory implements MethodInjector.Factory {
 
   private final Logger logger;
-  private final FallbackOptimizedMethodInjector.BackupFactory backupFactory;
+  private final FallbackMethodInjector.BackupFactory backupFactory;
   private final AtomicInteger idCounter;
-  private final Map<String, OptimizedMethodInjector> injectorCache;
+  private final Map<String, MethodInjector> injectorCache;
 
   @Inject
-  private OptimizedMethodInjectorFactory(
-          @InjectLogger Logger logger, FallbackOptimizedMethodInjector.BackupFactory backupFactory) {
+  private MethodInjectorFactory(
+      @InjectLogger Logger logger, FallbackMethodInjector.BackupFactory backupFactory) {
     this.logger = logger;
     this.backupFactory = backupFactory;
 
@@ -51,34 +51,37 @@ public class OptimizedMethodInjectorFactory implements OptimizedMethodInjector.F
     this.injectorCache = new HashMap<>();
   }
 
-  private InternalOptimizedMethodInjector finalize(CtClass generated)
+  private InternalMethodInjector finalize(CtClass generated)
       throws IOException, CannotCompileException {
     RootClassLoader loader = LaunchController.getInstance().getRootLoader();
 
     byte[] bytes = generated.toBytecode();
     Class<?> resolved = loader.commonDefineClass(generated.getName(), bytes, 0, bytes.length, null);
 
-    return (InternalOptimizedMethodInjector) InjectionHolder.getInjectedInstance(resolved);
+    return (InternalMethodInjector) InjectionHolder.getInjectedInstance(resolved);
   }
 
   @Override
-  public OptimizedMethodInjector generate(String targetClass, String methodName) {
+  public MethodInjector generate(String targetClass, String methodName) {
     return this.generateInternal(targetClass, methodName);
   }
 
   @Override
-  public OptimizedMethodInjector generate(Object instance, String targetClass, String methodName) {
+  public MethodInjector generate(Object instance, String targetClass, String methodName) {
     String key = targetClass + "." + methodName;
     if (this.injectorCache.containsKey(key)) {
       return this.injectorCache.get(key);
     }
 
-    InternalOptimizedMethodInjector injector = this.generateInternal(targetClass, methodName);
+    InternalMethodInjector injector = this.generateInternal(targetClass, methodName);
+
     injector.setInstance(instance);
+    this.injectorCache.put(key, injector);
+
     return injector;
   }
 
-  private InternalOptimizedMethodInjector generateInternal(String targetClass, String methodName) {
+  private InternalMethodInjector generateInternal(String targetClass, String methodName) {
     try {
       return this.generateInternal0(targetClass, methodName);
     } catch (CannotCompileException | IOException | NotFoundException exception) {
@@ -97,7 +100,7 @@ public class OptimizedMethodInjectorFactory implements OptimizedMethodInjector.F
     }
   }
 
-  private InternalOptimizedMethodInjector generateInternal0(String targetClass, String methodName)
+  private InternalMethodInjector generateInternal0(String targetClass, String methodName)
       throws CannotCompileException, IOException, NotFoundException {
     CtMethod method = ClassPool.getDefault().getMethod(targetClass, methodName);
     CtClass generated =
@@ -108,9 +111,8 @@ public class OptimizedMethodInjectorFactory implements OptimizedMethodInjector.F
                     + "_"
                     + UUID.randomUUID().toString().replace("-", ""));
 
-    generated.addInterface(ClassPool.getDefault().get(OptimizedMethodInjector.class.getName()));
-    generated.addInterface(
-        ClassPool.getDefault().get(InternalOptimizedMethodInjector.class.getName()));
+    generated.addInterface(ClassPool.getDefault().get(MethodInjector.class.getName()));
+    generated.addInterface(ClassPool.getDefault().get(InternalMethodInjector.class.getName()));
 
     generated.addField(CtField.make("private Object[] index;", generated));
     generated.addField(CtField.make("private java.util.List dependencies;", generated));
@@ -164,7 +166,7 @@ public class OptimizedMethodInjectorFactory implements OptimizedMethodInjector.F
         "public Object invoke(java.util.Map availableArguments) {"
             + "if (this.index == null) { this.init(); }"
             + "Object[] args = this.index;"
-            + "if (!this.fullyOptimized) {"
+            + "if (!this.fullyOptimized && availableArguments != null && !availableArguments.isEmpty()) {"
             + String.format(
                 "args = %s.generateArgs(this.index, this.dependencies, availableArguments);",
                 super.getClass().getName())
@@ -195,7 +197,7 @@ public class OptimizedMethodInjectorFactory implements OptimizedMethodInjector.F
 
     generated.addMethod(CtNewMethod.make(src, generated));
 
-    InternalOptimizedMethodInjector injector = this.finalize(generated);
+    InternalMethodInjector injector = this.finalize(generated);
     injector.setMethod(CtResolver.get(method));
     return injector;
   }
