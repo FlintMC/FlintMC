@@ -26,18 +26,58 @@ guidelines first. We would also love to chat with You about Flint on our
 
 ### Table of Contents
 
-1. [Examples](#examples) \
-    1.1. [Listen on Events](#listen-on-events-provided-by-the-framework) \
-    1.2. [Use Javassist to transform a Class](#use-javassist-to-transform-a-minecraft-class) \
-    1.3. [Access private fields](#access-private-fields) \
-    1.4. [Hook into Methods](#hook-into-arbitrary-methods)
-2. [Architecture](#architecture) \
-    2.1. [Dependency Injection](#dependency-injection) \
-    2.2. [Binding Implementations](#binding-implementations) \
-    2.3. [Separating version-specific Code](#separating-version-specific-code)
-3. [Building  Flint](#building-flint)
-4. [Creating a simple Mod](#creating-a-simple-mod)
-5. [Further Resources](#further-resources)
+1. [Motivation](#motivation)
+2. [Examples](#examples) \
+    2.1. [Listen on Events](#listen-on-events-provided-by-the-framework) \
+    2.2. [Use Javassist to transform a Class](#use-javassist-to-transform-a-minecraft-class) \
+    2.3. [Access private fields](#access-private-fields) \
+    2.4. [Hook into Methods](#hook-into-arbitrary-methods)
+3. [Architecture](#architecture) \
+    3.1. [Dependency Injection](#dependency-injection) \
+    3.2. [Binding Implementations](#binding-implementations) \
+    3.3. [Separating version-specific Code](#separating-version-specific-code)
+4. [Building  Flint](#building-flint)
+5. [Creating a simple Mod](#creating-a-simple-mod)
+6. [Further Resources](#further-resources)
+
+## Motivation
+
+Creating Minecraft modifications is often not as easy as it could be due to
+several challenges.
+
+- Version Independence is difficult to achieve.
+- Modding APIs are not stable and do not provide enough features to implement
+  the mod.
+- Patching Minecraft directly leads to incompatibilities with other mods and is
+  often not EULA compliant.
+- Bytecode manipulation is difficult and results in code strongly coupled with
+  the Minecraft version it was developed against, meaning it is tedious to port
+  to other Minecraft versions.
+- Distributing a mod with all its dependencies quickly results in a non-trivial
+  installation process and tends to brick when the wrong version of the used
+  modding framework is installed or dependency conflicts appear.
+
+We learned from older projects and tried to approach these issues to make Your
+life as a mod creator as easy as possible.
+
+- Flint helps You to encapsulate version-specific code properly and is able to
+  bundle multiple implementations for different Minecraft versions into a
+  single JAR file. Flint will then automatically load the correct
+  implementation at runtime.
+- Flint does not patch Minecraft directly and doesn't provide a way for You to
+  do that. Instead, it is completely build using byte code manipulation at
+  runtime.
+- Bytecode manipulation with flint is easy. The annotation based class 
+  transformers help You to use Your favourite manipulation library while
+  eradicating the need to worry about obfuscation. At the same time, Flint's
+  architecture encourages You to properly encapsulate those class 
+  transformations and reimplement them for each supported version.
+- Flint's installer helps You to automatically resolve and install
+  dependencies. Flint also makes sure Your mod and all its dependencies are
+  actually compatible with the given environment. As third-party maven
+  dependencies aren't shaded into Your JAR file, issues with libraries loaded
+  more than once won't appear.
+
 
 ## Examples
 
@@ -70,7 +110,7 @@ performed by annotating an appropriate Method with `@ClassTransform`.
 public void transformMinecraft(ClassTransformContext ctx) throws CannotCompileException {
   CtClass mcClass = ctx.getCtClass();
   mcClass.addMethod(CtMethod.make(
-      "public void helloWorld() { System.out.println(\\\"Hello World!\\\"); }", mcClass));
+      "public void helloWorld() { System.out.println(\"Hello World!\"); }", mcClass));
 }
 ```
 
@@ -249,7 +289,7 @@ repositories {
     mavenCentral()
 }
 
-group = "you.group"
+group = "your.group"
 version = "1.0.0"
 
 var depFlintVersion = "1.1.0" // enter the newest Flint version here
@@ -281,11 +321,11 @@ Gradle won't find our custom Gradle plugin.
 ```kotlin
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle-plugin") version "2.5.8" // make sure to use the newest version
+        id("net.flintmc.flint-gradle-plugin") version "2.6.0" // make sure to use the newest version
     }
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle-plugin", "2.5.8")         
+            classpath("net.flintmc", "flint-gradle-plugin", "2.6.0")         
         }
         repositories {
             maven {
@@ -335,3 +375,7 @@ tutorials on how to publish and install Your Mod.
   [Discord Server](https://discord.gg/tPb9j3ZBXu) and talk to us directly.
 - Should You notice any bugs or missing features, You can create an issue right
   here on GitHub.
+  
+---
+
+NOT OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG.
