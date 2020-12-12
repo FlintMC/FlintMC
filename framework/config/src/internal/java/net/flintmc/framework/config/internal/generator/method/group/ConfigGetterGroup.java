@@ -25,9 +25,11 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
 
   @Inject
   private ConfigGetterGroup(
-      GenericMethodHelper methodHelper, ConfigSerializationService serializationService) {
+      ClassPool pool,
+      GenericMethodHelper methodHelper,
+      ConfigSerializationService serializationService) {
+    this.pool = pool;
     this.methodHelper = methodHelper;
-    this.pool = ClassPool.getDefault();
     this.serializationService = serializationService;
   }
 

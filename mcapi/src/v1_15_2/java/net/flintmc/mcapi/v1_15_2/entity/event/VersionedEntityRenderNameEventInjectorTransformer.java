@@ -49,9 +49,11 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
 
   @Inject
   private VersionedEntityRenderNameEventInjectorTransformer(
-      ClassMappingProvider mappingProvider, InjectedFieldBuilder.Factory fieldBuilderFactory) {
+          ClassPool pool,
+          ClassMappingProvider mappingProvider,
+          InjectedFieldBuilder.Factory fieldBuilderFactory) {
     this.fieldBuilderFactory = fieldBuilderFactory;
-    this.pool = ClassPool.getDefault();
+    this.pool = pool;
     this.mappingProvider = mappingProvider;
   }
 

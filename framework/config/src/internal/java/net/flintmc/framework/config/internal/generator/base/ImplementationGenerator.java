@@ -37,13 +37,14 @@ public class ImplementationGenerator {
 
   @Inject
   public ImplementationGenerator(
-      ConfigMethodResolver methodResolver,
+          ClassPool pool,
+          ConfigMethodResolver methodResolver,
       InjectedFieldBuilder.Factory fieldBuilderFactory,
       ConfigTransformer transformer) {
     this.fieldBuilderFactory = fieldBuilderFactory;
     this.classLoader = new ConfigClassLoader(ImplementationGenerator.class.getClassLoader());
 
-    this.pool = ClassPool.getDefault();
+    this.pool = pool;
     this.counter = new AtomicInteger();
     this.random = new Random();
     this.methodResolver = methodResolver;

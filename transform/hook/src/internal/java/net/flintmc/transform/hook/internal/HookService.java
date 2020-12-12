@@ -35,17 +35,19 @@ import java.util.Map;
 @Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class HookService implements ServiceHandler<Hook> {
 
+  private final ClassPool pool;
   private final ClassMappingProvider mappingProvider;
   private final Provider<MethodInjectionUtils> methodInjectionUtils;
-
   private final String version;
   private final Collection<HookEntry> hooks;
 
   @Inject
   private HookService(
+          ClassPool pool,
       ClassMappingProvider mappingProvider,
       Provider<MethodInjectionUtils> methodInjectionUtils,
       @Named("launchArguments") Map launchArguments) {
+    this.pool = pool;
     this.mappingProvider = mappingProvider;
     this.methodInjectionUtils = methodInjectionUtils;
     this.hooks = Sets.newHashSet();
@@ -186,7 +188,7 @@ public class HookService implements ServiceHandler<Hook> {
         classMapping = new ClassMapping(false, name, name);
       }
 
-      parameters[i] = ClassPool.getDefault().get(classMapping.getName());
+      parameters[i] = this.pool.get(classMapping.getName());
     }
 
     CtMethod declaredMethod =

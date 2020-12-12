@@ -18,7 +18,6 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,18 +30,20 @@ import java.util.Map;
 @Singleton
 public class MinecraftClassRemapper extends SimpleRemapper {
 
+  private final ClassPool pool;
   private final RootClassLoader rootClassLoader;
   private Handle lastHandle;
 
   @Inject
-  private MinecraftClassRemapper(ClassMappingProvider classMappingProvider) {
-    super(collectMappings(classMappingProvider));
+  private MinecraftClassRemapper(ClassPool pool, ClassMappingProvider classMappingProvider) {
+    super(collectMappings(pool, classMappingProvider));
+    this.pool = pool;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
     this.rootClassLoader.excludeFromModification("org.objectweb.asm.");
   }
 
-  private static Map<String, String> collectMappings(ClassMappingProvider classMappingProvider) {
+  private static Map<String, String> collectMappings(ClassPool pool, ClassMappingProvider classMappingProvider) {
     Map<String, String> mappings = new HashMap<>();
 
     for (ClassMapping classMapping : classMappingProvider.getDeobfuscatedClassMappings().values()) {
@@ -59,7 +60,7 @@ public class MinecraftClassRemapper extends SimpleRemapper {
       CtClass ctClass = null;
 
       try {
-        ctClass = ClassPool.getDefault().get(classMapping.getName());
+        ctClass = pool.get(classMapping.getName());
       } catch (NotFoundException ignored) {
         // Can be ignored, because the SRG mapping
         // contains classes which do not exist in the game.
