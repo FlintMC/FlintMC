@@ -9,7 +9,7 @@ import java.util.Collection;
 
 /**
  * Parses interface methods of the data- and factory interface to gain information about the wanted
- * {@link DataField}s.
+ * {@link DataField}s and methods which should be implemented.
  */
 public interface DataMethodParser {
 
