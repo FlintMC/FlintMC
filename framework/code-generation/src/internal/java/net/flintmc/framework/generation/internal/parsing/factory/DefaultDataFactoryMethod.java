@@ -1,8 +1,5 @@
-package net.flintmc.framework.generation.internal.parsing.creator;
+package net.flintmc.framework.generation.internal.parsing.factory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -11,16 +8,20 @@ import javassist.NotFoundException;
 import net.flintmc.framework.generation.annotation.TargetDataField;
 import net.flintmc.framework.generation.internal.parsing.DefaultDataField;
 import net.flintmc.framework.generation.parsing.DataField;
-import net.flintmc.framework.generation.parsing.creator.DataCreatorMethod;
+import net.flintmc.framework.generation.parsing.factory.DataFactoryMethod;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /** {@inheritDoc} */
-public class DefaultDataCreatorMethod implements DataCreatorMethod {
+public class DefaultDataFactoryMethod implements DataFactoryMethod {
 
   private final CtMethod interfaceMethod;
 
   private final Collection<DataField> targetDataFields;
 
-  public DefaultDataCreatorMethod(CtMethod interfaceMethod)
+  public DefaultDataFactoryMethod(CtMethod interfaceMethod)
       throws ClassNotFoundException, NotFoundException {
     this.interfaceMethod = interfaceMethod;
     this.targetDataFields = this.parseDataFields();
@@ -56,6 +57,12 @@ public class DefaultDataCreatorMethod implements DataCreatorMethod {
             dataImplementationName,
             fieldInitialization),
         implementationClass);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public CtMethod getInterfaceMethod() {
+    return this.interfaceMethod;
   }
 
   /** {@inheritDoc} */

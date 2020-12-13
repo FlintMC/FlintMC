@@ -1,8 +1,11 @@
 package net.flintmc.framework.generation.internal.parsing;
 
-import java.util.Objects;
+import javassist.CannotCompileException;
 import javassist.CtClass;
+import javassist.CtField;
 import net.flintmc.framework.generation.parsing.DataField;
+
+import java.util.Objects;
 
 /** {@inheritDoc} */
 public class DefaultDataField implements DataField {
@@ -27,6 +30,14 @@ public class DefaultDataField implements DataField {
   @Override
   public int hashCode() {
     return Objects.hash(this.name);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public CtField generate(CtClass implementationClass) throws CannotCompileException {
+    return CtField.make(
+        String.format("public %s %s;", this.getType().getName(), this.getName()),
+        implementationClass);
   }
 
   /** {@inheritDoc} */

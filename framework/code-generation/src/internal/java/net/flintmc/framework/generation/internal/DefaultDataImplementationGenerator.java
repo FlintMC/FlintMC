@@ -7,15 +7,15 @@ import java.util.UUID;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.CtNewConstructor;
 import javassist.NotFoundException;
 import net.flintmc.framework.generation.DataImplementationGenerator;
 import net.flintmc.framework.generation.parsing.DataField;
-import net.flintmc.framework.generation.parsing.creator.DataCreatorMethod;
 import net.flintmc.framework.generation.parsing.data.DataFieldMethod;
+import net.flintmc.framework.generation.parsing.factory.DataFactoryMethod;
 import net.flintmc.framework.inject.implement.Implement;
 
+/** {@inheritDoc} */
 @Singleton
 @Implement(DataImplementationGenerator.class)
 public class DefaultDataImplementationGenerator implements DataImplementationGenerator {
@@ -25,31 +25,6 @@ public class DefaultDataImplementationGenerator implements DataImplementationGen
   @Inject
   public DefaultDataImplementationGenerator(ClassPool classPool) {
     this.classPool = classPool;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public CtClass generateCreatorImplementationClass(
-      CtClass creatorInterface,
-      Collection<DataCreatorMethod> dataCreatorMethods,
-      String dataImplementationName)
-      throws CannotCompileException, NotFoundException {
-    CtClass creatorImplementationClass =
-        this.classPool.makeClass(
-            "Default"
-                + creatorInterface.getSimpleName()
-                + UUID.randomUUID().toString().replaceAll("-", ""));
-    creatorImplementationClass.addInterface(creatorInterface);
-    creatorImplementationClass.addConstructor(
-        CtNewConstructor.defaultConstructor(creatorImplementationClass));
-
-    for (DataCreatorMethod dataCreatorMethod : dataCreatorMethods) {
-      creatorImplementationClass.addMethod(
-          dataCreatorMethod.generateImplementation(
-              creatorImplementationClass, dataImplementationName));
-    }
-
-    return creatorImplementationClass;
   }
 
   /** {@inheritDoc} */
@@ -65,19 +40,42 @@ public class DefaultDataImplementationGenerator implements DataImplementationGen
     dataImplementationClass.addConstructor(
         CtNewConstructor.defaultConstructor(dataImplementationClass));
 
+    // adding all parsed data fields
     for (DataField targetDataField : targetDataFields) {
-      dataImplementationClass.addField(
-          CtField.make(
-              String.format(
-                  "public %s %s;", targetDataField.getType().getName(), targetDataField.getName()),
-              dataImplementationClass));
+      dataImplementationClass.addField(targetDataField.generate(dataImplementationClass));
     }
 
+    // implementing all methods in the data interface
     for (DataFieldMethod dataFieldMethod : dataFieldMethods) {
       dataImplementationClass.addMethod(
           dataFieldMethod.generateImplementation(dataImplementationClass));
     }
 
     return dataImplementationClass;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public CtClass generateFactoryImplementationClass(
+      CtClass factoryInterface,
+      Collection<DataFactoryMethod> dataFactoryMethods,
+      String dataImplementationName)
+      throws CannotCompileException, NotFoundException {
+    CtClass factoryImplementationClass =
+        this.classPool.makeClass(
+            "Default"
+                + factoryInterface.getSimpleName()
+                + UUID.randomUUID().toString().replaceAll("-", ""));
+    factoryImplementationClass.addInterface(factoryInterface);
+    factoryImplementationClass.addConstructor(
+        CtNewConstructor.defaultConstructor(factoryImplementationClass));
+
+    for (DataFactoryMethod dataFactoryMethod : dataFactoryMethods) {
+      factoryImplementationClass.addMethod(
+          dataFactoryMethod.generateImplementation(
+              factoryImplementationClass, dataImplementationName));
+    }
+
+    return factoryImplementationClass;
   }
 }

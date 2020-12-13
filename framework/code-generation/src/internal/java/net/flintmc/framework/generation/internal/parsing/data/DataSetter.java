@@ -36,4 +36,16 @@ public class DataSetter implements DataFieldMethod {
             this.returnSelf ? "return this;" : ""),
         implementationClass);
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public CtMethod getInterfaceMethod() {
+    return this.interfaceMethod;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public DataField getTargetDataField() {
+    return this.targetDataField;
+  }
 }

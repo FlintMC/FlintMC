@@ -31,4 +31,16 @@ public class DataGetter implements DataFieldMethod {
             this.targetDataField.getName()),
         implementationClass);
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public CtMethod getInterfaceMethod() {
+    return this.interfaceMethod;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public DataField getTargetDataField() {
+    return this.targetDataField;
+  }
 }

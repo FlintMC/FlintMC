@@ -7,13 +7,13 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.generation.annotation.TargetDataField;
-import net.flintmc.framework.generation.internal.parsing.creator.DefaultDataCreatorMethod;
 import net.flintmc.framework.generation.internal.parsing.data.DataGetter;
 import net.flintmc.framework.generation.internal.parsing.data.DataSetter;
+import net.flintmc.framework.generation.internal.parsing.factory.DefaultDataFactoryMethod;
 import net.flintmc.framework.generation.parsing.DataField;
 import net.flintmc.framework.generation.parsing.DataMethodParser;
-import net.flintmc.framework.generation.parsing.creator.DataCreatorMethod;
 import net.flintmc.framework.generation.parsing.data.DataFieldMethod;
+import net.flintmc.framework.generation.parsing.factory.DataFactoryMethod;
 import net.flintmc.framework.inject.implement.Implement;
 
 /** {@inheritDoc} */
@@ -23,28 +23,28 @@ public class DefaultDataMethodParser implements DataMethodParser {
 
   /** {@inheritDoc} */
   @Override
-  public Collection<DataCreatorMethod> parseCreatorMethods(
-      CtClass creatorInterface, CtClass dataInterface)
+  public Collection<DataFactoryMethod> parseFactoryMethods(
+      CtClass factoryInterface, CtClass dataInterface)
       throws NotFoundException, ClassNotFoundException {
-    this.checkIsInterface(creatorInterface, dataInterface);
+    this.checkIsInterface(factoryInterface, dataInterface);
 
-    Collection<DataCreatorMethod> methods = new HashSet<>();
+    Collection<DataFactoryMethod> methods = new HashSet<>();
 
-    for (CtMethod interfaceMethod : creatorInterface.getDeclaredMethods()) {
+    for (CtMethod interfaceMethod : factoryInterface.getDeclaredMethods()) {
       if (!interfaceMethod.isEmpty()) {
         // default method in interface
         continue;
       }
 
-      // all methods in the creator should return an instance of the data interface
+      // all methods in the factory should return an instance of the data interface
       if (!interfaceMethod.getReturnType().equals(dataInterface)) {
         throw new IllegalStateException(
             String.format(
-                "Method %s in data creator interface %s does not return an instance of the data interface!",
-                interfaceMethod.getName(), creatorInterface.getName()));
+                "Method %s in data factory interface %s does not return an instance of the data interface!",
+                interfaceMethod.getName(), factoryInterface.getName()));
       }
 
-      methods.add(new DefaultDataCreatorMethod(interfaceMethod));
+      methods.add(new DefaultDataFactoryMethod(interfaceMethod));
     }
 
     return methods;
@@ -53,7 +53,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
   /** {@inheritDoc} */
   @Override
   public Collection<DataFieldMethod> parseDataMethods(
-      CtClass dataInterface, Collection<DataField> targetDataFieldsFields)
+      CtClass dataInterface, Collection<DataField> targetDataFields)
       throws NotFoundException, ClassNotFoundException {
     this.checkIsInterface(dataInterface);
 
@@ -65,7 +65,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
         continue;
       }
 
-      DataField targetDataField = this.getTargetDataField(interfaceMethod, targetDataFieldsFields);
+      DataField targetDataField = this.getTargetDataField(interfaceMethod, targetDataFields);
 
       CtClass returnType = interfaceMethod.getReturnType();
 
@@ -153,7 +153,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
       if (!anInterface.isInterface()) {
         throw new IllegalStateException(
             String.format(
-                "Data class or creator data class %s is not an interface!", anInterface.getName()));
+                "Data class or factory class %s is not an interface!", anInterface.getName()));
       }
     }
   }
