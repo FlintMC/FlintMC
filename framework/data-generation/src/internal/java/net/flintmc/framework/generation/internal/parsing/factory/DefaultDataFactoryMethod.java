@@ -1,5 +1,8 @@
 package net.flintmc.framework.generation.internal.parsing.factory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -9,10 +12,6 @@ import net.flintmc.framework.generation.annotation.TargetDataField;
 import net.flintmc.framework.generation.internal.parsing.DefaultDataField;
 import net.flintmc.framework.generation.parsing.DataField;
 import net.flintmc.framework.generation.parsing.factory.DataFactoryMethod;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 /** {@inheritDoc} */
 public class DefaultDataFactoryMethod implements DataFactoryMethod {
@@ -74,11 +73,12 @@ public class DefaultDataFactoryMethod implements DataFactoryMethod {
   private Collection<DataField> parseDataFields() throws ClassNotFoundException, NotFoundException {
     Collection<DataField> dataFields = new ArrayList<>();
 
+    Object[][] allParameterAnnotations = this.interfaceMethod.getParameterAnnotations();
+
     for (int parameterIndex = 0;
-        parameterIndex < this.interfaceMethod.getParameterAnnotations().length;
+        parameterIndex < allParameterAnnotations.length;
         parameterIndex++) {
-      Object[] parameterAnnotations =
-          this.interfaceMethod.getParameterAnnotations()[parameterIndex];
+      Object[] parameterAnnotations = allParameterAnnotations[parameterIndex];
 
       for (Object parameterAnnotation : parameterAnnotations) {
         if (parameterAnnotation instanceof TargetDataField) {
@@ -88,6 +88,13 @@ public class DefaultDataFactoryMethod implements DataFactoryMethod {
           dataFields.add(new DefaultDataField(targetDataField.value(), parameterType));
         }
       }
+    }
+
+    if (dataFields.size() < allParameterAnnotations.length) {
+      throw new IllegalStateException(
+          String.format(
+              "Not all parameters of create method %s in factory interface %s target a data field!",
+              this.interfaceMethod.getName(), this.interfaceMethod.getDeclaringClass().getName()));
     }
 
     return dataFields;

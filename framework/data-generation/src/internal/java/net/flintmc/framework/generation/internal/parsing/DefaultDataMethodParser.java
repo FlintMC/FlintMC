@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import javassist.CtClass;
 import javassist.CtMethod;
+import javassist.Modifier;
 import javassist.NotFoundException;
 import net.flintmc.framework.generation.annotation.TargetDataField;
 import net.flintmc.framework.generation.internal.parsing.data.DataGetter;
@@ -31,8 +32,8 @@ public class DefaultDataMethodParser implements DataMethodParser {
     Collection<DataFactoryMethod> methods = new HashSet<>();
 
     for (CtMethod interfaceMethod : factoryInterface.getDeclaredMethods()) {
-      if (!interfaceMethod.isEmpty()) {
-        // default method in interface
+      if (this.isDefault(interfaceMethod)) {
+        // already implemented methods are ignored
         continue;
       }
 
@@ -60,8 +61,8 @@ public class DefaultDataMethodParser implements DataMethodParser {
     Collection<DataFieldMethod> methods = new HashSet<>();
 
     for (CtMethod interfaceMethod : dataInterface.getDeclaredMethods()) {
-      if (!interfaceMethod.isEmpty()) {
-        // default method in interface
+      if (this.isDefault(interfaceMethod)) {
+        // already implemented methods are ignored
         continue;
       }
 
@@ -95,6 +96,21 @@ public class DefaultDataMethodParser implements DataMethodParser {
     }
 
     return methods;
+  }
+
+  private void checkIsInterface(CtClass... interfaces) {
+    for (CtClass anInterface : interfaces) {
+      if (!anInterface.isInterface()) {
+        throw new IllegalStateException(
+            String.format(
+                "Data class or factory class %s is not an interface!", anInterface.getName()));
+      }
+    }
+  }
+
+  private boolean isDefault(CtMethod method) {
+    return (method.getModifiers() & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC))
+        == Modifier.PUBLIC;
   }
 
   private DataField getTargetDataField(
@@ -145,16 +161,6 @@ public class DefaultDataMethodParser implements DataMethodParser {
               dataInterface.getName(),
               targetDataField.getName(),
               targetDataField.getType().getName()));
-    }
-  }
-
-  private void checkIsInterface(CtClass... interfaces) {
-    for (CtClass anInterface : interfaces) {
-      if (!anInterface.isInterface()) {
-        throw new IllegalStateException(
-            String.format(
-                "Data class or factory class %s is not an interface!", anInterface.getName()));
-      }
     }
   }
 }
