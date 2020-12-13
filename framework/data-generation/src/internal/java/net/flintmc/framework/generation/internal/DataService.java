@@ -3,6 +3,9 @@ package net.flintmc.framework.generation.internal;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 import javassist.ClassPool;
 import javassist.CtClass;
 import net.flintmc.framework.generation.DataImplementationGenerator;
@@ -19,12 +22,8 @@ import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
-
 @Singleton
-@Service({DataFactory.class})
+@Service(DataFactory.class)
 public class DataService implements ServiceHandler<DataFactory> {
 
   private final DataMethodParser dataMethodParser;

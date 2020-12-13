@@ -7,7 +7,6 @@ import java.util.UUID;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtNewConstructor;
 import javassist.NotFoundException;
 import net.flintmc.framework.generation.DataImplementationGenerator;
 import net.flintmc.framework.generation.parsing.DataField;
@@ -37,15 +36,13 @@ public class DefaultDataImplementationGenerator implements DataImplementationGen
       throws CannotCompileException, NotFoundException {
     CtClass dataImplementationClass = this.classPool.makeClass(dataImplementationName);
     dataImplementationClass.addInterface(dataInterface);
-    dataImplementationClass.addConstructor(
-        CtNewConstructor.defaultConstructor(dataImplementationClass));
 
     // adding all parsed data fields
     for (DataField targetDataField : targetDataFields) {
       dataImplementationClass.addField(targetDataField.generate(dataImplementationClass));
     }
 
-    // implementing all methods in the data interface
+    // implementing all methods from the data interface
     for (DataFieldMethod dataFieldMethod : dataFieldMethods) {
       dataImplementationClass.addMethod(
           dataFieldMethod.generateImplementation(dataImplementationClass));
@@ -67,9 +64,8 @@ public class DefaultDataImplementationGenerator implements DataImplementationGen
                 + factoryInterface.getSimpleName()
                 + UUID.randomUUID().toString().replaceAll("-", ""));
     factoryImplementationClass.addInterface(factoryInterface);
-    factoryImplementationClass.addConstructor(
-        CtNewConstructor.defaultConstructor(factoryImplementationClass));
 
+    // implementing all create methods from the factory interface
     for (DataFactoryMethod dataFactoryMethod : dataFactoryMethods) {
       factoryImplementationClass.addMethod(
           dataFactoryMethod.generateImplementation(
