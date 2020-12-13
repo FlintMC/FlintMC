@@ -1,6 +1,5 @@
 package net.flintmc.framework.inject.internal.method;
 
-import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -10,6 +9,8 @@ import com.google.inject.spi.Dependency;
 import com.google.inject.spi.InjectionPoint;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +110,13 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
 
   private MethodInjector generateInternal0(CtMethod targetMethod, Class<?> ifc)
       throws CannotCompileException, IOException, NotFoundException, ReflectiveOperationException {
+    Method[] methods = ifc.getDeclaredMethods();
+    if (methods.length != 1) {
+      throw new IllegalArgumentException(
+          "Cannot generate MethodInjector for an interface " + "with more or less than 1 method");
+    }
+    Method method = methods[0];
+
     CtClass generated = this.makeNewClass();
 
     if (!targetMethod.getDeclaringClass().isFrozen()) {
@@ -126,16 +134,13 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
 
     Method resolvedTargetMethod = CtResolver.get(targetMethod);
     List<Dependency<?>> targetDependencies = this.generateDependencies(resolvedTargetMethod);
+    InjectionSource[] args = this.buildArgs(targetDependencies, resolvedTargetMethod, method);
 
-    Object[] constantArgs = this.generateIndex(targetDependencies);
+    CtMethod generatedMethod =
+        this.generateImplementation(generated, args, resolvedTargetMethod, method);
+    generated.addMethod(generatedMethod);
 
-    for (Method method : ifc.getDeclaredMethods()) {
-      CtMethod generatedMethod =
-          this.generateImplementation(generated, targetDependencies, resolvedTargetMethod, method);
-      generated.addMethod(generatedMethod);
-    }
-
-    return this.finalize(generated, constantArgs);
+    return this.finalize(generated, args);
   }
 
   private void addBase(CtClass generated, Class<?> ifc, String targetClass)
@@ -145,15 +150,18 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
     generated.addInterface(this.pool.get(ifc.getName()));
 
     // fields
+    generated.addField(
+        CtField.make(
+            String.format("private final %s[] args;", InjectionSource.class.getName()), generated));
     generated.addField(CtField.make(String.format("private %s instance;", targetClass), generated));
-    generated.addField(CtField.make("private final Object[] constantArgs;", generated));
+    generated.addField(CtField.make("private Object[] constantArgs;", generated));
 
     // constructor
     generated.addConstructor(
         CtNewConstructor.make(
             String.format(
-                "public %s(Object[] constantArgs) { this.constantArgs = constantArgs; }",
-                generated.getName()),
+                "public %s(%s[] args) { this.args = args; }",
+                generated.getName(), InjectionSource.class.getName()),
             generated));
 
     // methods
@@ -182,11 +190,15 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
   }
 
   private CtMethod generateImplementation(
-      CtClass declaring, List<Dependency<?>> targetDependencies, Method targetMethod, Method method)
+      CtClass declaring, InjectionSource[] args, Method targetMethod, Method method)
       throws CannotCompileException {
-    InjectionSource[] args = this.buildArgs(targetDependencies, targetMethod, method);
-
     StringBuilder body = new StringBuilder();
+
+    body.append(
+        String.format(
+            "if (this.constantArgs == null) { this.constantArgs = %s.generateConstantArgs(this.args); }",
+            super.getClass().getName()));
+
     boolean targetReturn = !targetMethod.getReturnType().equals(Void.TYPE);
     boolean sourceReturn = !method.getReturnType().equals(Void.TYPE);
     if (targetReturn && sourceReturn) {
@@ -234,19 +246,54 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
       int sourceIndex = this.getIndex(dependencies, key);
       Class<?> type = targetParameters[targetIndex];
 
-      args[targetIndex] = new InjectionSource(sourceIndex, type);
+      args[targetIndex] = new InjectionSource(sourceIndex, key, type);
     }
 
     return args;
   }
 
+  /**
+   * Searches for the given key in the given dependencies list and retrieves the index of the key in
+   * the list. Also includes super classes and interfaces from the given key.
+   */
   private int getIndex(List<Dependency<?>> dependencies, Key<?> key) {
+    int baseIndex = this.findRawIndex(dependencies, key);
+    if (baseIndex != -1) {
+      return baseIndex;
+    }
+
+    Collection<Class<?>> superClasses = new ArrayList<>();
+    this.addSuperClasses(superClasses, key.getTypeLiteral().getRawType());
+
+    for (Class<?> superClass : superClasses) {
+      int i = this.findRawIndex(dependencies, key.ofType(superClass));
+      if (i != -1) {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  private int findRawIndex(List<Dependency<?>> dependencies, Key<?> key) {
     for (int i = 0; i < dependencies.size(); i++) {
       if (dependencies.get(i).getKey().equals(key)) {
         return i;
       }
     }
     return -1;
+  }
+
+  private void addSuperClasses(Collection<Class<?>> target, Class<?> clazz) {
+    Class<?> current = clazz;
+    do {
+      target.add(current);
+
+      for (Class<?> ifc : current.getInterfaces()) {
+        this.addSuperClasses(target, ifc);
+        target.add(ifc);
+      }
+    } while ((current = clazz.getSuperclass()) != null && current != Object.class);
   }
 
   private CtMethod buildWrappedMethod(Method wrapped, String body, CtClass declaring)
@@ -290,24 +337,24 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
         .getDependencies();
   }
 
-  private Object[] generateIndex(List<Dependency<?>> dependencies) {
-    Object[] index = new Object[dependencies.size()];
+  /** Called from generated code, see above. */
+  public static Object[] generateConstantArgs(InjectionSource[] args) {
+    Object[] constantArgs = new Object[args.length];
     Injector injector = InjectionHolder.getInstance().getInjector();
 
-    for (int i = 0; i < index.length; i++) {
-      Dependency<?> dependency = dependencies.get(i);
-
-      try {
-        index[i] = injector.getInstance(dependency.getKey());
-      } catch (ConfigurationException ignored) {
-        // the instance is not bound and should probably be taken from the parameters of the method
+    for (int i = 0; i < constantArgs.length; i++) {
+      if (!args[i].isFromInjector()) {
+        // the argument has already been found in the parameters of the method
+        continue;
       }
+
+      constantArgs[i] = injector.getInstance(args[i].getKey());
     }
 
-    return index;
+    return constantArgs;
   }
 
-  private MethodInjector finalize(CtClass generated, Object[] args)
+  private MethodInjector finalize(CtClass generated, InjectionSource[] args)
       throws IOException, CannotCompileException, ReflectiveOperationException {
     RootClassLoader loader = LaunchController.getInstance().getRootLoader();
 
@@ -315,6 +362,6 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
     Class<?> resolved = loader.commonDefineClass(generated.getName(), bytes, 0, bytes.length, null);
 
     return (MethodInjector)
-        resolved.getDeclaredConstructor(Object[].class).newInstance(new Object[] {args});
+        resolved.getDeclaredConstructor(InjectionSource[].class).newInstance(new Object[] {args});
   }
 }

@@ -50,7 +50,8 @@ public interface MethodInjector {
 
     /**
      * Generates a new {@link MethodInjector} implementing the given interface. If an injector for
-     * the given method has already been created, it will be used from the cache.
+     * the given method has already been created, it will be used from the cache. The given
+     * interface must have ONE method.
      *
      * @param targetMethod The non-null method to be invoked by the new injector (needs to be
      *     non-static)
@@ -64,7 +65,8 @@ public interface MethodInjector {
 
     /**
      * Generates a new {@link MethodInjector} implementing the given interface. If an injector for
-     * the given method has already been created, it will be used from the cache.
+     * the given method has already been created, it will be used from the cache. The given
+     * interface must have ONE method.
      *
      * @param instance The instance that should be used to invoke the given method, if {@code null}
      *     is provided, the instance from the Injector will be used.

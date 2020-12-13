@@ -1,11 +1,11 @@
 package net.flintmc.framework.eventbus.internal.exception;
 
-import net.flintmc.framework.eventbus.method.Executor;
+import net.flintmc.framework.eventbus.method.EventExecutor;
 
 import java.lang.reflect.Method;
 
 /**
- * Exception thrown when an {@link Executor} cannot be generated for a {@link Method} at runtime.
+ * Exception thrown when an {@link EventExecutor} cannot be generated for a {@link Method} at runtime.
  */
 public class ExecutorGenerationException extends RuntimeException {
 
