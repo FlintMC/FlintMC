@@ -285,15 +285,25 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
   }
 
   private void addSuperClasses(Collection<Class<?>> target, Class<?> clazz) {
-    Class<?> current = clazz;
     do {
-      target.add(current);
-
-      for (Class<?> ifc : current.getInterfaces()) {
-        this.addSuperClasses(target, ifc);
-        target.add(ifc);
+      if (target.contains(clazz)) {
+        continue;
       }
-    } while ((current = clazz.getSuperclass()) != null && current != Object.class);
+
+      target.add(clazz);
+      this.addInterfaces(target, clazz);
+    } while ((clazz = clazz.getSuperclass()) != null && clazz != Object.class);
+  }
+
+  private void addInterfaces(Collection<Class<?>> target, Class<?> clazz) {
+    for (Class<?> ifc : clazz.getInterfaces()) {
+      if (target.contains(ifc)) {
+        continue;
+      }
+
+      this.addInterfaces(target, ifc);
+      target.add(ifc);
+    }
   }
 
   private CtMethod buildWrappedMethod(Method wrapped, String body, CtClass declaring)
