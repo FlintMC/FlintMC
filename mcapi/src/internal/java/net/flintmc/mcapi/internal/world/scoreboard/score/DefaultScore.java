@@ -1,17 +1,15 @@
-package net.flintmc.mcapi.v1_15_2.world.scoreboard.score;
+package net.flintmc.mcapi.internal.world.scoreboard.score;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 
-/** 1.15.2 implementation of {@link Score} */
-@Implement(value = Score.class, version = "1.15.2")
-public class VersionedScore implements Score {
+@Implement(Score.class)
+public class DefaultScore implements Score {
 
-  private final Scoreboard scoreboard;
   private final Objective objective;
   private final String username;
 
@@ -20,22 +18,16 @@ public class VersionedScore implements Score {
   private boolean forceUpdate;
 
   @AssistedInject
-  private VersionedScore(
-      @Assisted("scoreboard") Scoreboard scoreboard,
-      @Assisted("objective") Objective objective,
-      @Assisted("username") String username) {
-    this.scoreboard = scoreboard;
-    this.objective = objective;
-    this.username = username;
+  private DefaultScore(
+      @Assisted("objective") @Nullable Objective objective, @Assisted("username") String username) {
+    this(objective, username, 0);
   }
 
   @AssistedInject
-  private VersionedScore(
-      @Assisted("scoreboard") Scoreboard scoreboard,
-      @Assisted("objective") Objective objective,
+  private DefaultScore(
+      @Assisted("objective") @Nullable Objective objective,
       @Assisted("username") String username,
       @Assisted("score") int scorePoints) {
-    this.scoreboard = scoreboard;
     this.objective = objective;
     this.username = username;
     this.scorePoints = scorePoints;
@@ -78,7 +70,10 @@ public class VersionedScore implements Score {
   /** {@inheritDoc} */
   @Override
   public void setScorePoints(int points) {
-    if (this.scorePoints != points || this.forceUpdate) {
+    int sPoints = this.scorePoints;
+    this.scorePoints = points;
+
+    if (sPoints != points || this.forceUpdate) {
       this.forceUpdate = false;
     }
   }

@@ -5,9 +5,9 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.world.mapper.ScoreboardMapper;
-import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Criteria;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
+import net.flintmc.mcapi.world.scoreboad.score.Objective.Factory;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
@@ -16,68 +16,78 @@ import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 
-/** 1.15.2 implementation of {@link ScoreboardMapper}. */
+/**
+ * 1.15.2 implementation of {@link ScoreboardMapper}.
+ */
 @Singleton
 @Implement(value = ScoreboardMapper.class, version = "1.15.2")
 public class VersionedScoreboardMapper implements ScoreboardMapper {
 
-  private final Scoreboard scoreboard;
-  private final Criteria.Provider criteriaProvider;
+  private final Criteria.Factory criteriaFactory;
   private final MinecraftComponentMapper minecraftComponentMapper;
-  private final Objective.Provider objectiveProvider;
-  private final PlayerTeam.Provider playerTeamProvider;
-  private final Score.Provider scoreProvider;
+  private final Objective.Factory objectiveFactory;
+  private final PlayerTeam.Factory playerTeamFactory;
+  private final Score.Factory scoreFactory;
 
   @Inject
   public VersionedScoreboardMapper(
-      Scoreboard scoreboard,
-      Criteria.Provider criteriaProvider,
+      Criteria.Factory criteriaFactory,
       MinecraftComponentMapper minecraftComponentMapper,
-      Objective.Provider objectiveProvider,
-      PlayerTeam.Provider playerTeamProvider,
-      Score.Provider scoreProvider) {
-    this.scoreboard = scoreboard;
-    this.criteriaProvider = criteriaProvider;
+      Factory objectiveFactory,
+      PlayerTeam.Factory playerTeamFactory,
+      Score.Factory scoreFactory) {
+    this.criteriaFactory = criteriaFactory;
     this.minecraftComponentMapper = minecraftComponentMapper;
-    this.objectiveProvider = objectiveProvider;
-    this.playerTeamProvider = playerTeamProvider;
-    this.scoreProvider = scoreProvider;
+    this.objectiveFactory = objectiveFactory;
+    this.playerTeamFactory = playerTeamFactory;
+    this.scoreFactory = scoreFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PlayerTeam fromMinecraftPlayerTeam(Object team) {
     ScorePlayerTeam scorePlayerTeam = (ScorePlayerTeam) team;
-    return this.playerTeamProvider.get(scorePlayerTeam.getName());
+    return this.playerTeamFactory.create(scorePlayerTeam.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPlayerTeam(PlayerTeam team) {
     return Minecraft.getInstance().world.getScoreboard().getTeam(team.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftObjective(Objective objective) {
     return Minecraft.getInstance().world.getScoreboard().getObjective(objective.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Objective fromMinecraftObjective(Object objective) {
-    if (!(objective instanceof ScoreObjective)) return null;
+    if (!(objective instanceof ScoreObjective)) {
+      return null;
+    }
 
     ScoreObjective scoreObjective = (ScoreObjective) objective;
-    return this.objectiveProvider.get(
-        this.scoreboard,
+    return this.objectiveFactory.create(
         scoreObjective.getName(),
         this.minecraftComponentMapper.fromMinecraft(scoreObjective.getDisplayName()),
         this.fromMinecraftCriteria(scoreObjective.getCriteria()),
         this.fromMinecraftRenderType(scoreObjective.getRenderType().name()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftScore(Score score) {
     return Minecraft.getInstance()
@@ -88,58 +98,79 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
             (ScoreObjective) this.toMinecraftObjective(score.getObjective()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Score fromMinecraftScore(Object score) {
-    if (!(score instanceof net.minecraft.scoreboard.Score)) return null;
+    if (!(score instanceof net.minecraft.scoreboard.Score)) {
+      return null;
+    }
 
     net.minecraft.scoreboard.Score minecraftScore = (net.minecraft.scoreboard.Score) score;
-    return this.scoreProvider.get(
+    return this.scoreFactory.create(
         this.fromMinecraftObjective(minecraftScore.getObjective()),
         minecraftScore.getPlayerName(),
         minecraftScore.getScorePoints());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftCriteria(Criteria criteria) {
     return Minecraft.getInstance().world.getScoreboard().getObjective(criteria.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Criteria fromMinecraftCriteria(Object criteria) {
-    if (!(criteria instanceof ScoreCriteria)) return null;
+    if (!(criteria instanceof ScoreCriteria)) {
+      return null;
+    }
 
     ScoreCriteria scoreCriteria = (ScoreCriteria) criteria;
 
-    return this.criteriaProvider.get(
+    return this.criteriaFactory.create(
         scoreCriteria.getName(),
         scoreCriteria.isReadOnly(),
         this.fromMinecraftRenderType(scoreCriteria.getRenderType().name()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public String toMinecraftRenderType(RenderType renderType) {
+  public Object toMinecraftRenderType(RenderType renderType) {
     switch (renderType) {
       case INTEGER:
+        return ScoreCriteria.RenderType.INTEGER;
       case HEARTS:
-        return renderType.name();
+        return ScoreCriteria.RenderType.HEARTS;
       default:
         throw new IllegalStateException("Unexpected value: " + renderType);
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public RenderType fromMinecraftRenderType(String value) {
-    if (value.equalsIgnoreCase("INTEGER")) {
-      return RenderType.INTEGER;
-    } else if (value.equalsIgnoreCase("HEARTS")) {
-      return RenderType.HEARTS;
-    } else {
-      throw new IllegalStateException("Unexpected value: " + value);
+  public RenderType fromMinecraftRenderType(Object value) {
+    if (!(value instanceof ScoreCriteria.RenderType)) {
+      return null;
+    }
+
+    ScoreCriteria.RenderType renderType = (ScoreCriteria.RenderType) value;
+
+    switch (renderType) {
+      case HEARTS:
+        return RenderType.HEARTS;
+      case INTEGER:
+      default:
+        return RenderType.INTEGER;
     }
   }
 }

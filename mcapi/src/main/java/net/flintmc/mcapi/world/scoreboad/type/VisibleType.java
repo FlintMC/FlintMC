@@ -1,5 +1,9 @@
 package net.flintmc.mcapi.world.scoreboad.type;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /** An enumeration of all available visibility types. */
 public enum VisibleType {
 
@@ -12,12 +16,20 @@ public enum VisibleType {
   /** The members of the own team cannot see it, but other teams can see it. */
   HIDE_FOR_OWN_TEAMS("hideForOwnTeam", 3);
 
+  private static final Map<String, VisibleType> VISIBLE_TYPES =
+      Arrays.stream(values())
+          .collect(Collectors.toMap(function -> function.internalName, function -> function));
+
   private final String internalName;
   private final int id;
 
   VisibleType(String internalName, int id) {
     this.internalName = internalName;
     this.id = id;
+  }
+
+  public static VisibleType getByName(String name) {
+    return VISIBLE_TYPES.get(name);
   }
 
   /**

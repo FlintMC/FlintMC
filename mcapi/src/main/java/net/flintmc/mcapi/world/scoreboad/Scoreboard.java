@@ -1,5 +1,8 @@
 package net.flintmc.mcapi.world.scoreboad;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.world.scoreboad.score.Criteria;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
@@ -7,11 +10,8 @@ import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
-import java.util.Collection;
-import java.util.Map;
-
 /** Represents a Minecraft scoreboard. */
-public interface Scoreboard extends ScoreboardHook {
+public interface Scoreboard {
 
   /**
    * Whether an objective is registered.
@@ -60,6 +60,8 @@ public interface Scoreboard extends ScoreboardHook {
    */
   Objective getObjectiveInDisplaySlot(int slot);
 
+  void removeObjective(Objective objective);
+
   /**
    * Changes an {@link Objective} at the given slot.
    *
@@ -75,6 +77,8 @@ public interface Scoreboard extends ScoreboardHook {
    * @return A sorted score collection.
    */
   Collection<Score> getSortedScores(Objective objective);
+
+  void removeObjectiveFromEntity(String name, Objective objective);
 
   /**
    * Retrieves a key-value system from the given name.
@@ -100,7 +104,7 @@ public interface Scoreboard extends ScoreboardHook {
    * @param team The team in which the player is.
    * @return {@code true} if the player was removed, otherwise {@code false}.
    */
-  boolean removePlayerFromTeam(String username, PlayerTeam team);
+  void removePlayerFromTeam(String username, PlayerTeam team);
 
   /**
    * Removes a player from teams.

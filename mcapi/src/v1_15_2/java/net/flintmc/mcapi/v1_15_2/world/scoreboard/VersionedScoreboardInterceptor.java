@@ -5,108 +5,154 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
+import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.world.mapper.ScoreboardMapper;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
+import net.flintmc.mcapi.world.scoreboad.score.Criterias;
+import net.flintmc.mcapi.world.scoreboad.score.Objective;
+import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
+import net.flintmc.mcapi.world.scoreboad.score.Score;
+import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
+import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 import net.flintmc.transform.hook.Hook;
-import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.network.play.server.SDisplayObjectivePacket;
+import net.minecraft.network.play.server.SScoreboardObjectivePacket;
+import net.minecraft.network.play.server.STeamsPacket;
+import net.minecraft.network.play.server.SUpdateScorePacket;
 
-/** 1.15.2 implementation of the scoreboard interceptor. */
+/**
+ * 1.15.2 implementation of the scoreboard interceptor.
+ */
 @Singleton
 public class VersionedScoreboardInterceptor {
 
   private final Scoreboard scoreboard;
   private final ScoreboardMapper scoreboardMapper;
 
+  private final MinecraftComponentMapper componentMapper;
+
   @Inject
   public VersionedScoreboardInterceptor(
       Scoreboard scoreboard,
       ScoreboardMapper scoreboardMapper,
-      MinecraftComponentMapper minecraftComponentMapper) {
+      MinecraftComponentMapper componentMapper) {
     this.scoreboard = scoreboard;
     this.scoreboardMapper = scoreboardMapper;
+    this.componentMapper = componentMapper;
   }
 
   @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "addPlayerToTeam",
-      parameters = {@Type(reference = String.class), @Type(reference = ScorePlayerTeam.class)})
-  public void hookAfterAddPlayerToTeam(@Named("args") Object[] args) {
-    this.scoreboard.attachPlayerToTeam(
-        (String) args[0], this.scoreboardMapper.fromMinecraftPlayerTeam(args[1]));
+      className = "net.minecraft.client.network.play.ClientPlayNetHandler",
+      methodName = "handleScoreboardObjective",
+      parameters = {@Type(reference = SScoreboardObjectivePacket.class)})
+  public void hookHandleScoreboardObjective(@Named("args") Object[] args) {
+    SScoreboardObjectivePacket packet = (SScoreboardObjectivePacket) args[0];
+
+    String objectiveName = packet.getObjectiveName();
+    int action = packet.getAction();
+
+    if (action == 0) {
+      this.scoreboard.addObjective(
+          objectiveName,
+          Criterias.DUMMY,
+          this.componentMapper.fromMinecraft(packet.getDisplayName()),
+          this.scoreboardMapper.fromMinecraftRenderType(packet.getRenderType()));
+    } else if (this.scoreboard.hasObjective(objectiveName)) {
+      Objective objective = this.scoreboard.getObjective(objectiveName);
+
+      if (action == 1) {
+        this.scoreboard.removeObjective(objective);
+      } else if (action == 2) {
+        objective.setRenderType(
+            this.scoreboardMapper.fromMinecraftRenderType(packet.getRenderType()));
+        objective.setDisplayName(this.componentMapper.fromMinecraft(packet.getDisplayName()));
+      }
+    }
   }
 
   @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "removePlayerFromTeam",
-      parameters = {@Type(reference = String.class), @Type(reference = ScorePlayerTeam.class)})
-  public void hookAfterRemovePlayerFromTeam(@Named("args") Object[] args) {
-    this.scoreboard.detachPlayerFromTeam(
-        (String) args[0], this.scoreboardMapper.fromMinecraftPlayerTeam(args[1]));
+      className = "net.minecraft.client.network.play.ClientPlayNetHandler",
+      methodName = "handleUpdateScore",
+      parameters = {@Type(reference = SUpdateScorePacket.class)})
+  public void hookHandleUpdateScore(@Named("args") Object[] args) {
+    SUpdateScorePacket packet = (SUpdateScorePacket) args[0];
+
+    String objectiveName = packet.getObjectiveName();
+
+    switch (packet.getAction()) {
+      case CHANGE:
+        Objective objective = this.scoreboard.getObjective(objectiveName);
+        Score score = this.scoreboard.getOrCreateScore(packet.getPlayerName(), objective);
+        score.setScorePoints(packet.getScoreValue());
+        break;
+      case REMOVE:
+        this.scoreboard.removeObjectiveFromEntity(
+            packet.getPlayerName(), this.scoreboard.getObjective(objectiveName));
+        break;
+    }
   }
 
   @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "onObjectiveAdded",
-      parameters = {@Type(reference = ScoreObjective.class)})
-  public void hookAfterObjectiveAdded(@Named("args") Object[] args) {
-    this.scoreboard.addObjective(this.scoreboardMapper.fromMinecraftObjective(args[0]));
+      className = "net.minecraft.client.network.play.ClientPlayNetHandler",
+      methodName = "handleDisplayObjective",
+      parameters = {@Type(reference = SDisplayObjectivePacket.class)})
+  public void hookHandleDisplayObjective(@Named("args") Object[] args) {
+    SDisplayObjectivePacket packet = (SDisplayObjectivePacket) args[0];
+    String name = packet.getName();
+
+    Objective objective = name == null ? null : this.scoreboard.getObjective(name);
+    this.scoreboard.setObjectiveInDisplaySlot(packet.getPosition(), objective);
   }
 
   @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "onObjectiveChanged",
-      parameters = {@Type(reference = ScoreObjective.class)})
-  public void hookAfterObjectiveChanged(@Named("args") Object[] args) {
-    this.scoreboard.updateObjective(this.scoreboardMapper.fromMinecraftObjective(args[0]));
-  }
+      className = "net.minecraft.client.network.play.ClientPlayNetHandler",
+      methodName = "handleTeams",
+      parameters = {@Type(reference = STeamsPacket.class)})
+  public void hookHandleTeams(@Named("args") Object[] args) {
+    STeamsPacket packet = (STeamsPacket) args[0];
 
-  @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "onObjectiveRemoved",
-      parameters = {@Type(reference = ScoreObjective.class)})
-  public void hookAfterObjectiveRemoved(@Named("args") Object[] args) {
-    this.scoreboard.removeObjective(this.scoreboardMapper.fromMinecraftObjective(args[0]));
-  }
+    int action = packet.getAction();
+    PlayerTeam playerTeam;
 
-  @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "onTeamAdded",
-      parameters = {@Type(reference = ScorePlayerTeam.class)})
-  public void hookAfterTeamAdded(@Named("args") Object[] args) {
-    this.scoreboard.addPlayerTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
-  }
+    playerTeam = action == 0 ? this.scoreboard.createTeam(packet.getName())
+        : this.scoreboard.getTeam(packet.getName());
 
-  @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "onTeamChanged",
-      parameters = {@Type(reference = ScorePlayerTeam.class)})
-  public void hookAfterTeamChanged(@Named("args") Object[] args) {
-    this.scoreboard.updatePlayerTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
-  }
+    if (action == 0 || action == 2) {
+      playerTeam.setDisplayName(this.componentMapper.fromMinecraft(packet.getDisplayName()));
+      playerTeam.setColor(ChatColor.getByChar((char) packet.getColor().getColorIndex()));
+      playerTeam.setFriendlyFlags(packet.getFriendlyFlags());
 
-  @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "onTeamRemoved",
-      parameters = {@Type(reference = ScorePlayerTeam.class)})
-  public void hookAfterTeamRemoved(@Named("args") Object[] args) {
-    this.scoreboard.removePlayerTeam(this.scoreboardMapper.fromMinecraftPlayerTeam(args[0]));
-  }
+      VisibleType teamVisibility = VisibleType.getByName(packet.getNameTagVisibility());
 
-  @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "onPlayerRemoved",
-      parameters = {@Type(reference = String.class)})
-  public void hookAfterPlayerRemoved(@Named("args") Object[] args) {
-    this.scoreboard.removePlayer((String) args[0]);
-  }
+      if (teamVisibility != null) {
+        playerTeam.setNameTagVisibility(teamVisibility);
+      }
 
-  @Hook(
-      className = "net.minecraft.scoreboard.Scoreboard",
-      methodName = "onPlayerScoreRemoved",
-      parameters = {@Type(reference = String.class), @Type(reference = ScoreObjective.class)})
-  public void hookAfterPlayerScoreRemoved(@Named("args") Object[] args) {
-    this.scoreboard.removeScorePlayer(
-        (String) args[0], this.scoreboardMapper.fromMinecraftObjective(args[1]));
+      CollisionType collisionType = CollisionType.getByName(packet.getCollisionRule());
+
+      if (collisionType != null) {
+        playerTeam.setCollisionType(collisionType);
+      }
+
+      playerTeam.setPrefix(this.componentMapper.fromMinecraft(packet.getPrefix()));
+      playerTeam.setSuffix(this.componentMapper.fromMinecraft(packet.getSuffix()));
+    }
+
+    if (action == 0 || action == 3) {
+      for (String player : packet.getPlayers()) {
+        this.scoreboard.addPlayerToTeam(player, playerTeam);
+      }
+    }
+
+    if (action == 4) {
+      for (String player : packet.getPlayers()) {
+        this.scoreboard.removePlayerFromTeam(player, playerTeam);
+      }
+    }
+
+    // Removes a team from the scoreboard
+    if (action == 1) {
+      this.scoreboard.removeTeam(playerTeam);
+    }
   }
 }

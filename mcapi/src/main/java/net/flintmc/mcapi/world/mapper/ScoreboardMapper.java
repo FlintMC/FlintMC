@@ -77,16 +77,16 @@ public interface ScoreboardMapper {
    * Retrieves a {@link String} by the given {@link RenderType}.
    *
    * @param renderType The type to get the name.
-   * @return The name of the render type.
+   * @return The minecraft non-null render type.
    */
-  String toMinecraftRenderType(RenderType renderType);
+  Object toMinecraftRenderType(RenderType renderType);
 
   /**
    * Retrieves a {@link RenderType} by the given value.
    *
-   * @param value The name of the render type.
+   * @param value The non-null Minecraft render type.
    * @return A {@link RenderType}.
    * @throws UnsupportedOperationException If thrown when the render type doesn't exist.
    */
-  RenderType fromMinecraftRenderType(String value);
+  RenderType fromMinecraftRenderType(Object value);
 }

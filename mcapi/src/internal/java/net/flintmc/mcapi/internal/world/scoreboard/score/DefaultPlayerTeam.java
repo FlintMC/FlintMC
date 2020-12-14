@@ -1,48 +1,48 @@
-package net.flintmc.mcapi.v1_15_2.world.scoreboard.score;
+package net.flintmc.mcapi.internal.world.scoreboard.score;
 
+import com.beust.jcommander.internal.Sets;
+import java.util.Collection;
+import java.util.Set;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+@Implement(PlayerTeam.class)
+public class DefaultPlayerTeam implements PlayerTeam {
 
-/** 1.15.2 implementation of {@link PlayerTeam}. */
-@Implement(value = PlayerTeam.class, version = "1.15.2")
-public class VersionedPlayerTeam implements PlayerTeam {
-
-  private final Set<String> members = new HashSet<>();
-
-  private final Scoreboard scoreboard;
   private final String name;
-
-  private boolean allowFriendlyFire;
-  private boolean canSeeFriendlyInvisible;
-
+  private final Set<String> members;
   private ChatComponent displayName;
   private ChatComponent prefix;
   private ChatComponent suffix;
-
+  private boolean allowFriendlyFire;
+  private boolean canSeeFriendlyInvisible;
   private VisibleType nameTagVisibility;
   private VisibleType deathMessageVisibility;
-  private ChatColor color;
+  private ChatColor chatColor;
   private CollisionType collisionType;
 
   @AssistedInject
-  private VersionedPlayerTeam(
-      @Assisted("scoreboard") Scoreboard scoreboard,
-      @Assisted("name") String name,
-      @Assisted("chatComponent") ChatComponent displayName) {
-    this.scoreboard = scoreboard;
+  public DefaultPlayerTeam(
+      TextComponentBuilder textComponentBuilder, @Assisted("name") String name) {
+    this.members = Sets.newHashSet();
     this.name = name;
-    this.displayName = displayName;
+    this.displayName = textComponentBuilder.text(name).build();
+    this.prefix = textComponentBuilder.text("").build();
+    this.suffix = textComponentBuilder.text("").build();
+
+    this.allowFriendlyFire = true;
+    this.canSeeFriendlyInvisible = true;
+    this.nameTagVisibility = VisibleType.ALWAYS;
+    this.deathMessageVisibility = VisibleType.ALWAYS;
+    this.chatColor = ChatColor.WHITE;
+    this.collisionType = CollisionType.ALWAYS;
   }
 
   /** {@inheritDoc} */
@@ -97,10 +97,16 @@ public class VersionedPlayerTeam implements PlayerTeam {
     return flag;
   }
 
+  @Override
+  public void setFriendlyFlags(int flags) {
+    this.setAllowFriendlyFire((flags & 1) > 0);
+    this.setSeeFriendlyInvisible((flags & 2) > 0);
+  }
+
   /** {@inheritDoc} */
   @Override
   public void setColor(ChatColor color) {
-    this.color = color;
+    this.chatColor = color;
   }
 
   /** {@inheritDoc} */
@@ -130,7 +136,7 @@ public class VersionedPlayerTeam implements PlayerTeam {
   /** {@inheritDoc} */
   @Override
   public ChatColor getTeamColor() {
-    return this.color;
+    return this.chatColor;
   }
 
   /** {@inheritDoc} */

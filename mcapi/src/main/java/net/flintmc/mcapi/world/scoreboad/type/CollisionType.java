@@ -1,5 +1,9 @@
 package net.flintmc.mcapi.world.scoreboad.type;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /** An enumeration of all available collision rules. */
 public enum CollisionType {
 
@@ -12,12 +16,20 @@ public enum CollisionType {
   /** The members of the team can only move objects of the same team. */
   PUSH_OWN_TEAM("pushOwnTeam", 3);
 
+  private static final Map<String, CollisionType> COLLISION_TYPES =
+      Arrays.stream(values())
+          .collect(Collectors.toMap(function -> function.internalName, function -> function));
+
   private final String internalName;
   private final int identifier;
 
   CollisionType(String internalName, int identifier) {
     this.internalName = internalName;
     this.identifier = identifier;
+  }
+
+  public static CollisionType getByName(String name) {
+    return COLLISION_TYPES.get(name);
   }
 
   /**

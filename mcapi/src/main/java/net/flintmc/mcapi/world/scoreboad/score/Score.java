@@ -69,52 +69,26 @@ public interface Score {
     /**
      * Creates a new {@link Score} with the given parameters.
      *
-     * @param scoreboard The scoreboard for this score.
      * @param objective The objective for this score.
      * @param username The username for this score.
      * @return A created score.
      */
     Score create(
-        @Assisted("scoreboard") Scoreboard scoreboard,
         @Assisted("objective") Objective objective,
         @Assisted("username") String username);
 
     /**
      * Creates a new {@link Score} with the given parameters.
      *
-     * @param scoreboard The score for this score.
      * @param objective The objective for this score.
      * @param username The username for this score.
      * @param scorePoints The points for this score.
      * @return A created score.
      */
     Score create(
-        @Assisted("scoreboard") Scoreboard scoreboard,
         @Assisted("objective") Objective objective,
         @Assisted("username") String username,
         @Assisted("score") int scorePoints);
   }
 
-  /** Represents a service interface for creating {@link Score} */
-  interface Provider {
-
-    /**
-     * Creates a new {@link Score} with given parameters.
-     *
-     * @param objective The objective for this score.
-     * @param username The username for this score.
-     * @return A created score.
-     */
-    Score get(Objective objective, String username);
-
-    /**
-     * Creates a new {@link Score} with given parameters.
-     *
-     * @param objective The objective for this score.
-     * @param username The username for this score.
-     * @param points The points for this score.
-     * @return A created score.
-     */
-    Score get(Objective objective, String username, int points);
-  }
 }
