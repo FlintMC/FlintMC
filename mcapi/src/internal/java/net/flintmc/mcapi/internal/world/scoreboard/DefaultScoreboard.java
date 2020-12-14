@@ -60,25 +60,19 @@ public class DefaultScoreboard implements Scoreboard {
     this.displayObjectives = new Objective[DISPLAY_LIMIT];
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean hasObjective(String name) {
     return this.objectives.containsKey(name);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Objective getObjective(String name) {
     return this.objectives.get(name);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Objective addObjective(
       String name, Criteria criteria, ChatComponent displayName, RenderType renderType) {
@@ -99,9 +93,7 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Score getOrCreateScore(String username, Objective objective) {
     if (username.length() > 40) {
@@ -115,17 +107,13 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Objective getObjectiveInDisplaySlot(int slot) {
     return this.displayObjectives[slot];
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removeObjective(Objective objective) {
     this.objectives.remove(objective.getName());
@@ -147,17 +135,13 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void setObjectiveInDisplaySlot(int slot, Objective objective) {
     this.displayObjectives[slot] = objective;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<Score> getSortedScores(Objective objective) {
     List<Score> scores = Lists.newArrayList();
@@ -174,9 +158,7 @@ public class DefaultScoreboard implements Scoreboard {
     return scores;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removeObjectiveFromEntity(String name, Objective objective) {
     if (objective == null) {
@@ -193,9 +175,7 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Map<Objective, Score> getObjectivesForEntity(String name) {
     Map<Objective, Score> objectiveScores = this.entitiesScores.get(name);
@@ -207,9 +187,7 @@ public class DefaultScoreboard implements Scoreboard {
     return objectiveScores;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean addPlayerToTeam(String username, PlayerTeam team) {
     if (username.length() > 40) {
@@ -224,9 +202,7 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removePlayerFromTeam(String username, PlayerTeam team) {
     if (this.getPlayerTeam(username) != team) {
@@ -240,9 +216,7 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean removePlayerFromTeams(String username) {
     PlayerTeam playerTeam = this.getPlayerTeam(username);
@@ -255,17 +229,13 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerTeam getPlayerTeam(String username) {
     return this.teamMembers.get(username);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerTeam createTeam(String name) {
     if (name.length() > 16) {
@@ -284,9 +254,7 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void removeTeam(PlayerTeam team) {
     this.teams.remove(team.getName());
@@ -296,57 +264,43 @@ public class DefaultScoreboard implements Scoreboard {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerTeam getTeam(String name) {
     return this.teams.get(name);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<String> getTeamNames() {
     return this.teams.keySet();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<PlayerTeam> getTeams() {
     return this.teams.values();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<Objective> getScoreObjectives() {
     return this.objectives.values();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<String> getScoreObjectiveNames() {
     return this.objectives.keySet();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Collection<String> getObjectiveNames() {
     return new ArrayList<>(this.entitiesScores.keySet());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void invalidate() {
     this.objectives.clear();

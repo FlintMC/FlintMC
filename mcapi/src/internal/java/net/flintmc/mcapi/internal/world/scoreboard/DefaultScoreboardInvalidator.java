@@ -20,5 +20,4 @@ public class DefaultScoreboardInvalidator {
   public void worldUnload(WorldUnloadEvent event) {
     this.scoreboard.invalidate();
   }
-
 }

@@ -53,5 +53,4 @@ public interface Criteria {
         @Assisted("readOnly") boolean readOnly,
         @Assisted("renderType") RenderType renderType);
   }
-
 }

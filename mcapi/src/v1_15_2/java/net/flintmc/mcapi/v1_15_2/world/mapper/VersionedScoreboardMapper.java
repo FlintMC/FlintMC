@@ -16,9 +16,7 @@ import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 
-/**
- * 1.15.2 implementation of {@link ScoreboardMapper}.
- */
+/** 1.15.2 implementation of {@link ScoreboardMapper}. */
 @Singleton
 @Implement(value = ScoreboardMapper.class, version = "1.15.2")
 public class VersionedScoreboardMapper implements ScoreboardMapper {
@@ -43,34 +41,26 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
     this.scoreFactory = scoreFactory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PlayerTeam fromMinecraftPlayerTeam(Object team) {
     ScorePlayerTeam scorePlayerTeam = (ScorePlayerTeam) team;
     return this.playerTeamFactory.create(scorePlayerTeam.getName());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftPlayerTeam(PlayerTeam team) {
     return Minecraft.getInstance().world.getScoreboard().getTeam(team.getName());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftObjective(Objective objective) {
     return Minecraft.getInstance().world.getScoreboard().getObjective(objective.getName());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Objective fromMinecraftObjective(Object objective) {
     if (!(objective instanceof ScoreObjective)) {
@@ -85,9 +75,7 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
         this.fromMinecraftRenderType(scoreObjective.getRenderType().name()));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftScore(Score score) {
     return Minecraft.getInstance()
@@ -98,9 +86,7 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
             (ScoreObjective) this.toMinecraftObjective(score.getObjective()));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Score fromMinecraftScore(Object score) {
     if (!(score instanceof net.minecraft.scoreboard.Score)) {
@@ -114,17 +100,13 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
         minecraftScore.getScorePoints());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftCriteria(Criteria criteria) {
     return Minecraft.getInstance().world.getScoreboard().getObjective(criteria.getName());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Criteria fromMinecraftCriteria(Object criteria) {
     if (!(criteria instanceof ScoreCriteria)) {
@@ -139,9 +121,7 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
         this.fromMinecraftRenderType(scoreCriteria.getRenderType().name()));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftRenderType(RenderType renderType) {
     switch (renderType) {
@@ -154,9 +134,7 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public RenderType fromMinecraftRenderType(Object value) {
     if (!(value instanceof ScoreCriteria.RenderType)) {

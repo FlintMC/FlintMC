@@ -2,7 +2,6 @@ package net.flintmc.mcapi.world.scoreboad;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.world.scoreboad.score.Criteria;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;

@@ -2,7 +2,6 @@ package net.flintmc.mcapi.world.scoreboad.score;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
-import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 
 /** Represents a minecraft score. */
 public interface Score {
@@ -73,9 +72,7 @@ public interface Score {
      * @param username The username for this score.
      * @return A created score.
      */
-    Score create(
-        @Assisted("objective") Objective objective,
-        @Assisted("username") String username);
+    Score create(@Assisted("objective") Objective objective, @Assisted("username") String username);
 
     /**
      * Creates a new {@link Score} with the given parameters.
@@ -90,5 +87,4 @@ public interface Score {
         @Assisted("username") String username,
         @Assisted("score") int scorePoints);
   }
-
 }
