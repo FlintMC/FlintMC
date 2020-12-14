@@ -9,6 +9,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.format.ChatColor;
+import net.flintmc.mcapi.internal.world.scoreboard.listener.PlayerTeamChangeListener;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
@@ -16,6 +17,7 @@ import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 @Implement(PlayerTeam.class)
 public class DefaultPlayerTeam implements PlayerTeam {
 
+  private final PlayerTeamChangeListener playerTeamChangeListener;
   private final String name;
   private final Set<String> members;
   private ChatComponent displayName;
@@ -30,7 +32,10 @@ public class DefaultPlayerTeam implements PlayerTeam {
 
   @AssistedInject
   public DefaultPlayerTeam(
-      TextComponentBuilder textComponentBuilder, @Assisted("name") String name) {
+      PlayerTeamChangeListener playerTeamChangeListener,
+      TextComponentBuilder textComponentBuilder,
+      @Assisted("name") String name) {
+    this.playerTeamChangeListener = playerTeamChangeListener;
     this.members = Sets.newHashSet();
     this.name = name;
     this.displayName = textComponentBuilder.text(name).build();
@@ -55,6 +60,7 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @Override
   public void setDisplayName(ChatComponent displayName) {
     this.displayName = displayName;
+    this.playerTeamChangeListener.changeDisplayName(this, displayName);
   }
 
   /** {@inheritDoc} */
@@ -67,6 +73,7 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @Override
   public void setPrefix(ChatComponent prefix) {
     this.prefix = prefix;
+    this.playerTeamChangeListener.changePrefix(this, prefix);
   }
 
   /** {@inheritDoc} */
@@ -79,6 +86,7 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @Override
   public void setSuffix(ChatComponent suffix) {
     this.suffix = suffix;
+    this.playerTeamChangeListener.changeSuffix(this, suffix);
   }
 
   /** {@inheritDoc} */
@@ -107,18 +115,21 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @Override
   public void setColor(ChatColor color) {
     this.chatColor = color;
+    this.playerTeamChangeListener.changeColor(this, color);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setAllowFriendlyFire(boolean friendlyFire) {
     this.allowFriendlyFire = friendlyFire;
+    this.playerTeamChangeListener.changeAllowFriendlyFire(this, friendlyFire);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSeeFriendlyInvisible(boolean friendlyInvisible) {
     this.canSeeFriendlyInvisible = friendlyInvisible;
+    this.playerTeamChangeListener.changeSeeFriendlyInvisible(this, friendlyInvisible);
   }
 
   /** {@inheritDoc} */
@@ -161,6 +172,7 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @Override
   public void setNameTagVisibility(VisibleType visibility) {
     this.nameTagVisibility = visibility;
+    this.playerTeamChangeListener.changeNameTagVisibility(this, visibility);
   }
 
   /** {@inheritDoc} */
@@ -173,6 +185,7 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @Override
   public void setDeathMessageVisibility(VisibleType visibility) {
     this.deathMessageVisibility = visibility;
+    this.playerTeamChangeListener.changeDeathMessageVisibility(this, visibility);
   }
 
   /** {@inheritDoc} */
@@ -185,5 +198,6 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @Override
   public void setCollisionType(CollisionType type) {
     this.collisionType = type;
+    this.playerTeamChangeListener.changeCollisionType(this, type);
   }
 }

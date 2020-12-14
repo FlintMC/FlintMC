@@ -4,7 +4,9 @@ import net.flintmc.mcapi.world.scoreboad.score.Criteria;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
+import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
+import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 
 /** Scoreboard mapper between the Minecraft objects and the Flint objects. */
 public interface ScoreboardMapper {
@@ -80,6 +82,38 @@ public interface ScoreboardMapper {
    * @return The minecraft non-null render type.
    */
   Object toMinecraftRenderType(RenderType renderType);
+
+  /**
+   * Retrieves a {@link VisibleType} by using the given Minecraft visible as the base.
+   *
+   * @param handle The non-null Minecraft visible.
+   * @return A visible type or {@code null}.
+   */
+  VisibleType fromMinecraftVisible(Object handle);
+
+  /**
+   * Retrieves a Minecraft visible by using the given {@link VisibleType} as the base.
+   *
+   * @param visibleType The non-null visible type.
+   * @return A visible type or {@code null}.
+   */
+  Object toMinecraftVisible(VisibleType visibleType);
+
+  /**
+   * Retrieves a {@link CollisionType} by using the given Minecraft collision rule as the base.
+   *
+   * @param handle The non-null Minecraft collision rule.
+   * @return A collision type or {@code null}.
+   */
+  CollisionType fromMinecraftCollisionRule(Object handle);
+
+  /**
+   * Retrieves a Minecraft collision rule by using the given {@link CollisionType} as the base.
+   *
+   * @param collisionType The non-null collision type.
+   * @return A collision rule.
+   */
+  Object toMinecraftCollisionRule(CollisionType collisionType);
 
   /**
    * Retrieves a {@link RenderType} by the given value.

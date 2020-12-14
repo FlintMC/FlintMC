@@ -77,6 +77,12 @@ public interface Scoreboard {
    */
   Collection<Score> getSortedScores(Objective objective);
 
+  /**
+   * Removes an objective from an entity.
+   *
+   * @param name The name of the entity.
+   * @param objective The objective to be removed.
+   */
   void removeObjectiveFromEntity(String name, Objective objective);
 
   /**

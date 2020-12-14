@@ -20,9 +20,7 @@ import net.minecraft.network.play.server.SScoreboardObjectivePacket;
 import net.minecraft.network.play.server.STeamsPacket;
 import net.minecraft.network.play.server.SUpdateScorePacket;
 
-/**
- * 1.15.2 implementation of the scoreboard interceptor.
- */
+/** 1.15.2 implementation of the scoreboard interceptor. */
 @Singleton
 public class VersionedScoreboardInterceptor {
 
@@ -114,12 +112,14 @@ public class VersionedScoreboardInterceptor {
     int action = packet.getAction();
     PlayerTeam playerTeam;
 
-    playerTeam = action == 0 ? this.scoreboard.createTeam(packet.getName())
-        : this.scoreboard.getTeam(packet.getName());
+    playerTeam =
+        action == 0
+            ? this.scoreboard.createTeam(packet.getName())
+            : this.scoreboard.getTeam(packet.getName());
 
     if (action == 0 || action == 2) {
       playerTeam.setDisplayName(this.componentMapper.fromMinecraft(packet.getDisplayName()));
-      playerTeam.setColor(ChatColor.getByChar((char) packet.getColor().getColorIndex()));
+      playerTeam.setColor(ChatColor.getByName(packet.getColor().getFriendlyName().toUpperCase()));
       playerTeam.setFriendlyFlags(packet.getFriendlyFlags());
 
       VisibleType teamVisibility = VisibleType.getByName(packet.getNameTagVisibility());

@@ -1,15 +1,16 @@
 package net.flintmc.mcapi.internal.world.scoreboard.score;
 
-import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.internal.world.scoreboard.listener.ScoreChangeListener;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 
 @Implement(Score.class)
 public class DefaultScore implements Score {
 
+  private final ScoreChangeListener scoreChangeListener;
   private final Objective objective;
   private final String username;
 
@@ -19,15 +20,19 @@ public class DefaultScore implements Score {
 
   @AssistedInject
   private DefaultScore(
-      @Assisted("objective") @Nullable Objective objective, @Assisted("username") String username) {
-    this(objective, username, 0);
+      @Assisted("objective") Objective objective,
+      @Assisted("username") String username,
+      ScoreChangeListener scoreChangeListener) {
+    this(scoreChangeListener, objective, username, 0);
   }
 
   @AssistedInject
   private DefaultScore(
-      @Assisted("objective") @Nullable Objective objective,
+      ScoreChangeListener scoreChangeListener,
+      @Assisted("objective") Objective objective,
       @Assisted("username") String username,
       @Assisted("score") int scorePoints) {
+    this.scoreChangeListener = scoreChangeListener;
     this.objective = objective;
     this.username = username;
     this.scorePoints = scorePoints;
@@ -76,6 +81,8 @@ public class DefaultScore implements Score {
     if (sPoints != points || this.forceUpdate) {
       this.forceUpdate = false;
     }
+
+    this.scoreChangeListener.changeScorePoints(this, points);
   }
 
   /** {@inheritDoc} */
@@ -94,5 +101,6 @@ public class DefaultScore implements Score {
   @Override
   public void setLocked(boolean locked) {
     this.locked = locked;
+    this.scoreChangeListener.changeLocked(this, locked);
   }
 }

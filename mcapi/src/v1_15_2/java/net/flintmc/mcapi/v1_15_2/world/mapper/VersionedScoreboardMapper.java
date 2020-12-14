@@ -10,11 +10,15 @@ import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.score.Objective.Factory;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
+import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
+import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Team.CollisionRule;
+import net.minecraft.scoreboard.Team.Visible;
 
 /** 1.15.2 implementation of {@link ScoreboardMapper}. */
 @Singleton
@@ -131,6 +135,77 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
         return ScoreCriteria.RenderType.HEARTS;
       default:
         throw new IllegalStateException("Unexpected value: " + renderType);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public VisibleType fromMinecraftVisible(Object handle) {
+    if (!(handle instanceof Visible)) {
+      return null;
+    }
+
+    Visible visible = (Visible) handle;
+
+    switch (visible) {
+      case NEVER:
+        return VisibleType.NEVER;
+      case HIDE_FOR_OTHER_TEAMS:
+        return VisibleType.HIDE_FOR_OTHER_TEAMS;
+      case HIDE_FOR_OWN_TEAM:
+        return VisibleType.HIDE_FOR_OWN_TEAMS;
+      default:
+        return VisibleType.ALWAYS;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object toMinecraftVisible(VisibleType visibleType) {
+    switch (visibleType) {
+      case NEVER:
+        return Visible.NEVER;
+      case HIDE_FOR_OTHER_TEAMS:
+        return Visible.HIDE_FOR_OTHER_TEAMS;
+      case HIDE_FOR_OWN_TEAMS:
+        return Visible.HIDE_FOR_OWN_TEAM;
+      default:
+        return Visible.ALWAYS;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public CollisionType fromMinecraftCollisionRule(Object handle) {
+    if (!(handle instanceof CollisionRule)) {
+      return null;
+    }
+    CollisionRule collisionRule = (CollisionRule) handle;
+
+    switch (collisionRule) {
+      case NEVER:
+        return CollisionType.NEVER;
+      case PUSH_OTHER_TEAMS:
+        return CollisionType.PUSH_OTHER_TEAMS;
+      case PUSH_OWN_TEAM:
+        return CollisionType.PUSH_OWN_TEAM;
+      default:
+        return CollisionType.ALWAYS;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object toMinecraftCollisionRule(CollisionType collisionType) {
+    switch (collisionType) {
+      case NEVER:
+        return CollisionRule.NEVER;
+      case PUSH_OTHER_TEAMS:
+        return CollisionRule.PUSH_OTHER_TEAMS;
+      case PUSH_OWN_TEAM:
+        return CollisionRule.PUSH_OWN_TEAM;
+      default:
+        return CollisionRule.ALWAYS;
     }
   }
 
