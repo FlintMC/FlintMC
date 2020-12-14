@@ -1,7 +1,13 @@
 package net.flintmc.framework.config.internal.generator.base;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtNewMethod;
+import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.ConfigImplementer;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.inject.implement.Implement;
@@ -12,8 +18,9 @@ public class DefaultConfigImplementer implements ConfigImplementer {
 
   private final ClassPool pool;
 
-  public DefaultConfigImplementer() {
-    this.pool = ClassPool.getDefault();
+  @Inject
+  private DefaultConfigImplementer(ClassPool pool) {
+    this.pool = pool;
   }
 
   @Override

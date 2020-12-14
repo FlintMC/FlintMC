@@ -9,6 +9,7 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
+import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.Modifier;
@@ -39,15 +40,19 @@ import java.util.Random;
 @Service(value = Hook.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 public class HookService implements ServiceHandler<Hook> {
 
-  private final ClassMappingProvider classMappingProvider;
+  private final ClassPool pool;
+  private final ClassMappingProvider mappingProvider;
   private final String version;
   private final Collection<HookEntry> hooks;
   private final Random random;
 
   @Inject
   private HookService(
-      ClassMappingProvider classMappingProvider, @Named("launchArguments") Map launchArguments) {
-    this.classMappingProvider = classMappingProvider;
+      ClassPool pool,
+      ClassMappingProvider mappingProvider,
+      @Named("launchArguments") Map launchArguments) {
+    this.pool = pool;
+    this.mappingProvider = mappingProvider;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--game-version");
     this.random = new Random();
@@ -112,7 +117,7 @@ public class HookService implements ServiceHandler<Hook> {
       Hook hook = identifier.getAnnotation();
       if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
-        String className = classMappingProvider.get(hook.className()).getName();
+        String className = mappingProvider.get(hook.className()).getName();
         if (className != null && className.equals(ctClass.getName())) {
           this.modify(
               entry, hook, ctClass, identifier.<MethodIdentifier>getIdentifier().getLocation());
@@ -127,7 +132,7 @@ public class HookService implements ServiceHandler<Hook> {
               .value()
               .test(
                   ctClass,
-                  classMappingProvider
+                  mappingProvider
                       .get(subProperty.getValue().resolve(hookFilter.type()))
                       .getName())) {
             cancel = true;
@@ -175,7 +180,7 @@ public class HookService implements ServiceHandler<Hook> {
   }
 
   private void insert(
-      CtMethod target, Hook hook, Hook.ExecutionTime executionTime, CtMethod hookMethod)
+      CtBehavior target, Hook hook, Hook.ExecutionTime executionTime, CtMethod hookMethod)
       throws CannotCompileException, NotFoundException {
     String parameters = this.buildParameters(hookMethod.getParameterTypes());
 
@@ -190,22 +195,23 @@ public class HookService implements ServiceHandler<Hook> {
     String varName = "hookNotifyResult_" + this.random.nextInt(Integer.MAX_VALUE);
 
     String returnValue = null;
-    CtClass returnType = target.getReturnType();
+    String returnTypeName =
+        target instanceof CtMethod ? ((CtMethod) target).getReturnType().getName() : "void";
     CtClass hookType = hookMethod.getReturnType();
     boolean hookResult = hookType.getName().equals(HookResult.class.getName());
 
-    if (!hookType.getName().equals("void") && !returnType.getName().equals("void")) {
+    if (!hookType.getName().equals("void") && !returnTypeName.equals("void")) {
       returnValue = varName;
     }
 
     if (hookResult) {
       returnValue =
           hook.defaultValue().isEmpty()
-              ? HookValues.getDefaultValue(returnType.getName())
+              ? HookValues.getDefaultValue(returnTypeName)
               : hook.defaultValue();
     }
 
-    if (executionTime == Hook.ExecutionTime.AFTER && returnType.getName().equals("void")) {
+    if (executionTime == Hook.ExecutionTime.AFTER && returnTypeName.equals("void")) {
       // nothing to return, the method is already done
       returnValue = null;
     }
@@ -223,8 +229,7 @@ public class HookService implements ServiceHandler<Hook> {
 
       src += " if (" + breakCheck + ") { return " + returnValue + "; }";
     } else {
-      String returnPrefix =
-          returnValue.isEmpty() ? "" : "(" + target.getReturnType().getName() + ")";
+      String returnPrefix = returnValue.isEmpty() ? "" : "(" + returnTypeName + ")";
 
       // Avoid VerifyErrors if there is already a return statement in the source, e.g. in a simple
       // getter
@@ -240,22 +245,26 @@ public class HookService implements ServiceHandler<Hook> {
 
     for (int i = 0; i < hook.parameters().length; i++) {
       String name = hookEntry.parameterTypeNameResolver.resolve(hook.parameters()[i]);
-      ClassMapping classMapping = classMappingProvider.get(name);
+      ClassMapping classMapping = mappingProvider.get(name);
 
       if (classMapping == null) {
         classMapping = new ClassMapping(false, name, name);
       }
 
-      parameters[i] = ClassPool.getDefault().get(classMapping.getName());
+      parameters[i] = this.pool.get(classMapping.getName());
     }
 
-    CtMethod declaredMethod =
-        ctClass.getDeclaredMethod(
-            classMappingProvider
-                .get(ctClass.getName())
-                .getMethod(hookEntry.methodNameResolver.resolve(hook), parameters)
-                .getName(),
-            parameters);
+    boolean constructor = hook.methodName().equals("<init>");
+
+    CtBehavior declaredMethod =
+        constructor
+            ? ctClass.getDeclaredConstructor(parameters)
+            : ctClass.getDeclaredMethod(
+                mappingProvider
+                    .get(ctClass.getName())
+                    .getMethod(hookEntry.methodNameResolver.resolve(hook), parameters)
+                    .getName(),
+                parameters);
 
     if (declaredMethod != null) {
       for (Hook.ExecutionTime executionTime : hook.executionTime()) {

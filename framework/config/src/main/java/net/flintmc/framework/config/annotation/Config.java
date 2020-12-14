@@ -83,7 +83,7 @@ import java.util.Map;
  * implemented (default methods), it will just be ignored.
  *
  * @see ConfigExclude
- * @see PostMinecraftRead
+ * @see ConfigInit
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

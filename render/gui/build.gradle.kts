@@ -15,7 +15,5 @@ dependencies {
 
     api(project(":framework:framework-eventbus"))
 
-    internalImplementation(project(":framework:framework-tasks"))
-
     v1_15_2Implementation(project(":annotation-processing:annotation-processing-autoload"))
 }

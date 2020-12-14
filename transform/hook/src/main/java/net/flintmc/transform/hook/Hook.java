@@ -1,7 +1,8 @@
 package net.flintmc.transform.hook;
 
 import javassist.CannotCompileException;
-import javassist.CtMethod;
+import javassist.CtBehavior;
+import javassist.CtConstructor;
 import net.flintmc.framework.stereotype.type.DefaultTypeNameResolver;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.processing.autoload.DetectableAnnotation;
@@ -68,6 +69,7 @@ public @interface Hook {
   /**
    * Retrieves the name of the method which should be hooked, this has to exist in the defined
    * {@link #className() class}. This will then be mapped by the {@link #methodNameResolver()}.
+   * {@literal <}init{@literal >} as method name can be used to hook a constructor.
    *
    * @return The name of the method to be hooked
    * @see #className()
@@ -144,15 +146,19 @@ public @interface Hook {
      * This time defines that the hook should be fired before anything else in the hooked method.
      */
     BEFORE {
-      public void insert(CtMethod ctMethod, String source) throws CannotCompileException {
-        ctMethod.insertBefore(source);
+      public void insert(CtBehavior ctBehavior, String source) throws CannotCompileException {
+        if (ctBehavior instanceof CtConstructor) {
+          ((CtConstructor) ctBehavior).insertBeforeBody(source);
+        } else {
+          ctBehavior.insertBefore(source);
+        }
       }
     },
 
     /** This time defines that the hook should be fired after anything else in the hooked method. */
     AFTER {
-      public void insert(CtMethod ctMethod, String source) throws CannotCompileException {
-        ctMethod.insertAfter(source);
+      public void insert(CtBehavior ctBehavior, String source) throws CannotCompileException {
+        ctBehavior.insertAfter(source);
       }
     };
 
@@ -160,10 +166,10 @@ public @interface Hook {
      * Inserts the given source code at the position that is defined by this time into the given
      * method.
      *
-     * @param ctMethod The non-null method to insert the source code
+     * @param ctBehavior The non-null method or constructor to insert the source code
      * @param source The non-null source code to be inserted
      * @throws CannotCompileException If the given source code cannot be compiled by Javassist
      */
-    public abstract void insert(CtMethod ctMethod, String source) throws CannotCompileException;
+    public abstract void insert(CtBehavior ctBehavior, String source) throws CannotCompileException;
   }
 }

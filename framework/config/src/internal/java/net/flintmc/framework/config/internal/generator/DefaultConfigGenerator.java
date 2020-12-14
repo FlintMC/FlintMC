@@ -5,11 +5,15 @@ import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
+import net.flintmc.framework.config.EventConfigInitializer;
 import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.framework.config.annotation.PostMinecraftRead;
-import net.flintmc.framework.config.annotation.PostOpenGLRead;
+import net.flintmc.framework.config.annotation.ConfigInit;
 import net.flintmc.framework.config.event.ConfigDiscoveredEvent;
-import net.flintmc.framework.config.generator.*;
+import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
+import net.flintmc.framework.config.generator.ConfigGenerator;
+import net.flintmc.framework.config.generator.ConfigImplementer;
+import net.flintmc.framework.config.generator.GeneratingConfig;
+import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.internal.generator.base.ConfigClassLoader;
 import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
@@ -19,9 +23,11 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -41,6 +47,8 @@ public class DefaultConfigGenerator implements ConfigGenerator {
 
   private final Map<String, ParsedConfig> discoveredConfigs;
 
+  private final EventConfigInitializer eventConfigInitializer;
+
   @Inject
   public DefaultConfigGenerator(
       ConfigStorageProvider storageProvider,
@@ -50,7 +58,8 @@ public class DefaultConfigGenerator implements ConfigGenerator {
       EventBus eventBus,
       ConfigDiscoveredEvent.Factory eventFactory,
       ConfigAnnotationCollector annotationCollector,
-      ImplementationGenerator implementationGenerator) {
+      ImplementationGenerator implementationGenerator,
+      EventConfigInitializer eventConfigInitializer) {
     this.storageProvider = storageProvider;
     this.objectReferenceParser = objectReferenceParser;
     this.configFactory = configFactory;
@@ -59,6 +68,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     this.eventFactory = eventFactory;
     this.annotationCollector = annotationCollector;
     this.implementationGenerator = implementationGenerator;
+    this.eventConfigInitializer = eventConfigInitializer;
 
     this.discoveredConfigs = new HashMap<>();
   }
@@ -133,12 +143,15 @@ public class DefaultConfigGenerator implements ConfigGenerator {
         this.objectReferenceParser.parseAll(generatingConfig, config);
     config.getConfigReferences().addAll(references);
 
-    Collection<PostMinecraftRead> postMinecraftReads =
-        this.annotationCollector.getAllAnnotations(config.getClass(), PostMinecraftRead.class);
-    Collection<PostOpenGLRead> postOpenGLReads =
-        this.annotationCollector.getAllAnnotations(config.getClass(), PostOpenGLRead.class);
-    if (postMinecraftReads.isEmpty() && postOpenGLReads.isEmpty()) {
+    List<ConfigInit> configInits =
+        new ArrayList<>(
+            this.annotationCollector.getAllAnnotations(config.getClass(), ConfigInit.class));
+    if (configInits.isEmpty()) {
+      // no initialization conditions are given, we can initialize now
       this.initConfig(config);
+    } else {
+      // registering the config for later initialization after the configured event is fired
+      this.eventConfigInitializer.registerPendingInitialization(config, configInits.get(0));
     }
 
     this.discoveredConfigs.put(config.getConfigName(), config);

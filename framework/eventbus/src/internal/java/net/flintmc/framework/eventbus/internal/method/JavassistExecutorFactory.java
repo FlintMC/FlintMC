@@ -15,6 +15,7 @@ import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.Executor;
 import net.flintmc.framework.eventbus.method.ExecutorFactory;
+import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
@@ -86,11 +87,12 @@ public class JavassistExecutorFactory implements ExecutorFactory {
     executor.addMethod(
         CtMethod.make(
             String.format(
-                "public void invoke(%s event, %s phase) {"
+                "public void invoke(%s event, %s phase, %s holderMethod) {"
                     + "((%s) this.listener).%s((%s) event);"
                     + "}",
                 Event.class.getName(),
                 Subscribe.Phase.class.getName(),
+                SubscribeMethod.class.getName(),
                 listener.getName(),
                 targetMethod.getName(),
                 targetMethod.getParameterTypes()[0].getName()),
