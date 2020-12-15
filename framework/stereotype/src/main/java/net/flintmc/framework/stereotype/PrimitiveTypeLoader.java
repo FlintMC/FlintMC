@@ -37,6 +37,10 @@ public class PrimitiveTypeLoader {
     PRIMITIVE_MAPPINGS.put(Void.TYPE, Void.class);
   }
 
+  public static Class<?> getPrimitiveClass(String name) {
+    return PRIMITIVE_TYPES.get(name);
+  }
+
   public static Class<?> loadClass(ClassLoader classLoader, String name) throws ClassNotFoundException {
     return PRIMITIVE_TYPES.containsKey(name) ? PRIMITIVE_TYPES.get(name) : classLoader.loadClass(name);
   }

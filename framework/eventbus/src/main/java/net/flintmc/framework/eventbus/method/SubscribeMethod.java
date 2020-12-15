@@ -7,8 +7,6 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-import java.util.function.Supplier;
-
 /**
  * A subscribed method in an {@link EventBus}.
  *
@@ -57,13 +55,13 @@ public interface SubscribeMethod {
      * @param eventClass The non-null class of the event to which this method is subscribed
      * @param priority The priority of the subscribed method.
      * @param phase The phase of the subscribed method.
-     * @param executorSupplier The non-null supplier for the event executor.
+     * @param executor The non-null supplier for the event executor.
      * @return A created subscribed method.
      */
     SubscribeMethod create(
         @Assisted Class<? extends Event> eventClass,
         @Assisted byte priority,
         @Assisted Subscribe.Phase phase,
-        @Assisted Supplier<Executor<?>> executorSupplier);
+        @Assisted EventExecutor<?> executor);
   }
 }

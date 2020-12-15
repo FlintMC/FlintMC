@@ -9,7 +9,7 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.event.ChatReceiveEvent;
@@ -22,47 +22,43 @@ import net.minecraft.util.text.ITextComponent;
 public class ChatEventInjector {
 
   private final EventBus eventBus;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final MinecraftComponentMapper componentMapper;
+
   private final ChatSendEvent.Factory sendFactory;
   private final ChatReceiveEvent.Factory receiveFactory;
 
   @Inject
   private ChatEventInjector(
       EventBus eventBus,
+      InjectedFieldBuilder.Factory fieldBuilderFactory,
       MinecraftComponentMapper componentMapper,
       ChatSendEvent.Factory sendFactory,
       ChatReceiveEvent.Factory receiveFactory) {
     this.eventBus = eventBus;
+    this.fieldBuilderFactory = fieldBuilderFactory;
     this.componentMapper = componentMapper;
     this.sendFactory = sendFactory;
     this.receiveFactory = receiveFactory;
-  }
-
-  private void addEventInjectorField(CtClass target) throws CannotCompileException {
-    target.addField(
-        CtField.make(
-            String.format(
-                "private final %s chatEventInjector = (%1$s) %s.getInjectedInstance(%1$s.class);",
-                super.getClass().getName(), InjectionHolder.class.getName()),
-            target));
   }
 
   @ClassTransform("net.minecraft.client.gui.NewChatGui")
   public void transformChatGui(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtClass transforming = context.getCtClass();
-    this.addEventInjectorField(transforming);
+    CtField injectedField =
+        this.fieldBuilderFactory.create().target(transforming).inject(super.getClass()).generate();
 
     CtMethod method = transforming.getDeclaredMethod("printChatMessageWithOptionalDeletion");
 
     method.insertBefore(
         String.format(
-            "{ $1 = this.chatEventInjector.handleChatReceive($1, %s.PRE); if ($1 == null) { return; } }",
-            Subscribe.Phase.class.getName()));
+            "{ $1 = %s.handleChatReceive($1, %s.PRE); if ($1 == null) { return; } }",
+            injectedField.getName(), Subscribe.Phase.class.getName()));
     method.insertAfter(
         String.format(
-            "{ this.chatEventInjector.handleChatReceive($1, %s.POST); }",
-            Subscribe.Phase.class.getName()));
+            "{ %s.handleChatReceive($1, %s.POST); }",
+            injectedField.getName(), Subscribe.Phase.class.getName()));
   }
 
   public ITextComponent handleChatReceive(ITextComponent component, Subscribe.Phase phase) {
@@ -81,19 +77,20 @@ public class ChatEventInjector {
   public void transformClientPlayerEntity(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     CtClass transforming = context.getCtClass();
-    this.addEventInjectorField(transforming);
+    CtField injectedField =
+        this.fieldBuilderFactory.create().target(transforming).inject(super.getClass()).generate();
 
     CtMethod method = transforming.getDeclaredMethod("sendChatMessage");
 
     method.insertBefore(
         String.format(
-            "{ $1 = this.chatEventInjector.handleChatSend($1, %s.PRE); if ($1 == null) { return; } }",
-            Subscribe.Phase.class.getName()));
+            "{ $1 = %s.handleChatSend($1, %s.PRE); if ($1 == null) { return; } }",
+            injectedField.getName(), Subscribe.Phase.class.getName()));
 
     method.insertAfter(
         String.format(
-            " { this.chatEventInjector.handleChatSend($1, %s.POST); }",
-            Subscribe.Phase.class.getName()));
+            " { %s.handleChatSend($1, %s.POST); }",
+            injectedField.getName(), Subscribe.Phase.class.getName()));
   }
 
   public String handleChatSend(String message, Subscribe.Phase phase) {

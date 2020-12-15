@@ -42,15 +42,14 @@ defineModule("framework:inject-primitive")
 defineModule("framework:packages")
 defineModule("framework:service")
 defineModule("framework:stereotype")
-defineModule("framework:tasks")
 defineModule("framework:config")
+defineModule("framework:data-generation")
 
 defineModule(":launcher")
 
 defineModule(":mcapi")
 
 defineModule("render:gui")
-defineModule("render:minecraft")
 defineModule("render:shader")
 defineModule("render:vbo-rendering")
 defineModule("render:webgui")

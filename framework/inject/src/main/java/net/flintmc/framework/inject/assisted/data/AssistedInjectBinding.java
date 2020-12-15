@@ -24,5 +24,4 @@ public interface AssistedInjectBinding<T> {
    * @return An {@link AssistedMethod} for each method in the factory.
    */
   Collection<AssistedMethod> getAssistedMethods();
-
 }

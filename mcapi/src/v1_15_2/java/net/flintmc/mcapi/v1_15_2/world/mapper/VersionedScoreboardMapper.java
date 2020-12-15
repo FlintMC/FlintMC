@@ -5,50 +5,51 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.world.mapper.ScoreboardMapper;
-import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Criteria;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
+import net.flintmc.mcapi.world.scoreboad.score.Objective.Factory;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
+import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
+import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Team.CollisionRule;
+import net.minecraft.scoreboard.Team.Visible;
 
 /** 1.15.2 implementation of {@link ScoreboardMapper}. */
 @Singleton
 @Implement(value = ScoreboardMapper.class, version = "1.15.2")
 public class VersionedScoreboardMapper implements ScoreboardMapper {
 
-  private final Scoreboard scoreboard;
-  private final Criteria.Provider criteriaProvider;
+  private final Criteria.Factory criteriaFactory;
   private final MinecraftComponentMapper minecraftComponentMapper;
-  private final Objective.Provider objectiveProvider;
-  private final PlayerTeam.Provider playerTeamProvider;
-  private final Score.Provider scoreProvider;
+  private final Objective.Factory objectiveFactory;
+  private final PlayerTeam.Factory playerTeamFactory;
+  private final Score.Factory scoreFactory;
 
   @Inject
   public VersionedScoreboardMapper(
-      Scoreboard scoreboard,
-      Criteria.Provider criteriaProvider,
+      Criteria.Factory criteriaFactory,
       MinecraftComponentMapper minecraftComponentMapper,
-      Objective.Provider objectiveProvider,
-      PlayerTeam.Provider playerTeamProvider,
-      Score.Provider scoreProvider) {
-    this.scoreboard = scoreboard;
-    this.criteriaProvider = criteriaProvider;
+      Factory objectiveFactory,
+      PlayerTeam.Factory playerTeamFactory,
+      Score.Factory scoreFactory) {
+    this.criteriaFactory = criteriaFactory;
     this.minecraftComponentMapper = minecraftComponentMapper;
-    this.objectiveProvider = objectiveProvider;
-    this.playerTeamProvider = playerTeamProvider;
-    this.scoreProvider = scoreProvider;
+    this.objectiveFactory = objectiveFactory;
+    this.playerTeamFactory = playerTeamFactory;
+    this.scoreFactory = scoreFactory;
   }
 
   /** {@inheritDoc} */
   @Override
   public PlayerTeam fromMinecraftPlayerTeam(Object team) {
     ScorePlayerTeam scorePlayerTeam = (ScorePlayerTeam) team;
-    return this.playerTeamProvider.get(scorePlayerTeam.getName());
+    return this.playerTeamFactory.create(scorePlayerTeam.getName());
   }
 
   /** {@inheritDoc} */
@@ -66,11 +67,12 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
   /** {@inheritDoc} */
   @Override
   public Objective fromMinecraftObjective(Object objective) {
-    if (!(objective instanceof ScoreObjective)) return null;
+    if (!(objective instanceof ScoreObjective)) {
+      return null;
+    }
 
     ScoreObjective scoreObjective = (ScoreObjective) objective;
-    return this.objectiveProvider.get(
-        this.scoreboard,
+    return this.objectiveFactory.create(
         scoreObjective.getName(),
         this.minecraftComponentMapper.fromMinecraft(scoreObjective.getDisplayName()),
         this.fromMinecraftCriteria(scoreObjective.getCriteria()),
@@ -91,10 +93,12 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
   /** {@inheritDoc} */
   @Override
   public Score fromMinecraftScore(Object score) {
-    if (!(score instanceof net.minecraft.scoreboard.Score)) return null;
+    if (!(score instanceof net.minecraft.scoreboard.Score)) {
+      return null;
+    }
 
     net.minecraft.scoreboard.Score minecraftScore = (net.minecraft.scoreboard.Score) score;
-    return this.scoreProvider.get(
+    return this.scoreFactory.create(
         this.fromMinecraftObjective(minecraftScore.getObjective()),
         minecraftScore.getPlayerName(),
         minecraftScore.getScorePoints());
@@ -109,11 +113,13 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
   /** {@inheritDoc} */
   @Override
   public Criteria fromMinecraftCriteria(Object criteria) {
-    if (!(criteria instanceof ScoreCriteria)) return null;
+    if (!(criteria instanceof ScoreCriteria)) {
+      return null;
+    }
 
     ScoreCriteria scoreCriteria = (ScoreCriteria) criteria;
 
-    return this.criteriaProvider.get(
+    return this.criteriaFactory.create(
         scoreCriteria.getName(),
         scoreCriteria.isReadOnly(),
         this.fromMinecraftRenderType(scoreCriteria.getRenderType().name()));
@@ -121,11 +127,12 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
 
   /** {@inheritDoc} */
   @Override
-  public String toMinecraftRenderType(RenderType renderType) {
+  public Object toMinecraftRenderType(RenderType renderType) {
     switch (renderType) {
       case INTEGER:
+        return ScoreCriteria.RenderType.INTEGER;
       case HEARTS:
-        return renderType.name();
+        return ScoreCriteria.RenderType.HEARTS;
       default:
         throw new IllegalStateException("Unexpected value: " + renderType);
     }
@@ -133,13 +140,90 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
 
   /** {@inheritDoc} */
   @Override
-  public RenderType fromMinecraftRenderType(String value) {
-    if (value.equalsIgnoreCase("INTEGER")) {
-      return RenderType.INTEGER;
-    } else if (value.equalsIgnoreCase("HEARTS")) {
-      return RenderType.HEARTS;
-    } else {
-      throw new IllegalStateException("Unexpected value: " + value);
+  public VisibleType fromMinecraftVisible(Object handle) {
+    if (!(handle instanceof Visible)) {
+      return null;
+    }
+
+    Visible visible = (Visible) handle;
+
+    switch (visible) {
+      case NEVER:
+        return VisibleType.NEVER;
+      case HIDE_FOR_OTHER_TEAMS:
+        return VisibleType.HIDE_FOR_OTHER_TEAMS;
+      case HIDE_FOR_OWN_TEAM:
+        return VisibleType.HIDE_FOR_OWN_TEAMS;
+      default:
+        return VisibleType.ALWAYS;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object toMinecraftVisible(VisibleType visibleType) {
+    switch (visibleType) {
+      case NEVER:
+        return Visible.NEVER;
+      case HIDE_FOR_OTHER_TEAMS:
+        return Visible.HIDE_FOR_OTHER_TEAMS;
+      case HIDE_FOR_OWN_TEAMS:
+        return Visible.HIDE_FOR_OWN_TEAM;
+      default:
+        return Visible.ALWAYS;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public CollisionType fromMinecraftCollisionRule(Object handle) {
+    if (!(handle instanceof CollisionRule)) {
+      return null;
+    }
+    CollisionRule collisionRule = (CollisionRule) handle;
+
+    switch (collisionRule) {
+      case NEVER:
+        return CollisionType.NEVER;
+      case PUSH_OTHER_TEAMS:
+        return CollisionType.PUSH_OTHER_TEAMS;
+      case PUSH_OWN_TEAM:
+        return CollisionType.PUSH_OWN_TEAM;
+      default:
+        return CollisionType.ALWAYS;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object toMinecraftCollisionRule(CollisionType collisionType) {
+    switch (collisionType) {
+      case NEVER:
+        return CollisionRule.NEVER;
+      case PUSH_OTHER_TEAMS:
+        return CollisionRule.PUSH_OTHER_TEAMS;
+      case PUSH_OWN_TEAM:
+        return CollisionRule.PUSH_OWN_TEAM;
+      default:
+        return CollisionRule.ALWAYS;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public RenderType fromMinecraftRenderType(Object value) {
+    if (!(value instanceof ScoreCriteria.RenderType)) {
+      return null;
+    }
+
+    ScoreCriteria.RenderType renderType = (ScoreCriteria.RenderType) value;
+
+    switch (renderType) {
+      case HEARTS:
+        return RenderType.HEARTS;
+      case INTEGER:
+      default:
+        return RenderType.INTEGER;
     }
   }
 }

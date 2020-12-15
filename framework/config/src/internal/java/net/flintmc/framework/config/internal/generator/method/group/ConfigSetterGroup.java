@@ -19,13 +19,16 @@ import java.util.Map;
 @Singleton
 public class ConfigSetterGroup implements ConfigMethodGroup {
 
-  private final ClassPool pool = ClassPool.getDefault();
+  private final ClassPool pool;
   private final ConfigSerializationService serializationService;
   private final GenericMethodHelper methodHelper;
 
   @Inject
   private ConfigSetterGroup(
-      ConfigSerializationService serializationService, GenericMethodHelper methodHelper) {
+      ClassPool pool,
+      ConfigSerializationService serializationService,
+      GenericMethodHelper methodHelper) {
+    this.pool = pool;
     this.serializationService = serializationService;
     this.methodHelper = methodHelper;
   }

@@ -21,23 +21,21 @@ public class ConstructorMatcher {
   /**
    * Finds a constructor suitable for the method. If the implementation contained any constructor
    * marked with {@link AssistedInject}, this requires all {@link Assisted} parameters to exactly
-   * match the parameters (in any order) listed in  the method. Otherwise, if no {@link
+   * match the parameters (in any order) listed in the method. Otherwise, if no {@link
    * AssistedInject} constructors exist, this will default to looking for an {@link Inject}
    * constructor.
    *
-   * @param method         The method for an suitable constructor.
-   * @param returnType     The return type of the method.
+   * @param method The method for an suitable constructor.
+   * @param returnType The return type of the method.
    * @param implementation The implementation.
-   * @param parameters     The parameters.
-   * @param <T>            The type of the method.
+   * @param parameters The parameters.
+   * @param <T> The type of the method.
    * @return A suitable constructor for the method.
    * @throws ErrorsException Will be thrown if an error occurred while finding a constructor.
    */
   public <T> InjectionPoint findMatchingConstructorInjectionPoint(
-      Method method,
-      Key<?> returnType,
-      TypeLiteral<T> implementation,
-      List<Key<?>> parameters) throws ErrorsException {
+      Method method, Key<?> returnType, TypeLiteral<T> implementation, List<Key<?>> parameters)
+      throws ErrorsException {
     Errors errors = new Errors(method);
     if (returnType.getTypeLiteral().equals(implementation)) {
       errors = errors.withSource(implementation);
@@ -68,8 +66,8 @@ public class ConstructorMatcher {
       if (constructor.isAnnotationPresent(AssistedInject.class)) {
         anyAssistedInjectConstructors = true;
 
-        if (this
-            .constructorHasMatchingParameters(implementation, constructor, parameters, errors)) {
+        if (this.constructorHasMatchingParameters(
+            implementation, constructor, parameters, errors)) {
           if (matchingConstructor != null) {
             errors.addMessage(
                 "%s has more than one constructor annotated with @AssistedInject"
@@ -112,7 +110,7 @@ public class ConstructorMatcher {
    * Matching logic for constructors annotation with {@link AssistedInject}.
    *
    * @return {@code true} if and only if all {@link Assisted} parameters in the constructor exactly
-   * match (in any order) all {@link Assisted} parameters the method's parameter.
+   *     match (in any order) all {@link Assisted} parameters the method's parameter.
    */
   private boolean constructorHasMatchingParameters(
       TypeLiteral<?> type, Constructor<?> constructor, List<Key<?>> parameterList, Errors errors)
@@ -122,8 +120,9 @@ public class ConstructorMatcher {
     int parameterCount = 0;
     List<Key<?>> constructorKeys = Lists.newArrayList();
     for (TypeLiteral<?> parameter : parameters) {
-      Key<?> parameterKey = Annotations
-          .getKey(parameter, constructor, parameterAnnotations[parameterCount++], errors);
+      Key<?> parameterKey =
+          Annotations.getKey(
+              parameter, constructor, parameterAnnotations[parameterCount++], errors);
       constructorKeys.add(parameterKey);
     }
 
@@ -133,7 +132,7 @@ public class ConstructorMatcher {
   /**
    * @param constructorKeys A collection with all constructor keys.
    * @return {@code true} if none of the given keys match with the {@link Assisted} annotation,
-   * otherwise {@code false}.
+   *     otherwise {@code false}.
    */
   private boolean noneMatch(List<Key<?>> constructorKeys) {
     return constructorKeys.stream().noneMatch(key -> key.getAnnotationType() == Assisted.class);
@@ -141,9 +140,9 @@ public class ConstructorMatcher {
 
   /**
    * @param constructorKeys A collection with all constructor keys.
-   * @param parameterList   A collection with all parameters keys.
+   * @param parameterList A collection with all parameters keys.
    * @return {@code true} if all parameters match the provided constructor keys predicate, otherwise
-   * {@code false}.
+   *     {@code false}.
    */
   private boolean allMatch(List<Key<?>> constructorKeys, List<Key<?>> parameterList) {
     return parameterList.stream().allMatch(constructorKeys::remove);

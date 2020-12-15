@@ -28,13 +28,13 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
 
   @Inject
   private DefaultPayloadChannelServiceHandler(
-      @InjectLogger Logger logger, PayloadChannelService payloadChannelService) {
+      @InjectLogger Logger logger, ClassPool pool, PayloadChannelService payloadChannelService) {
     this.logger = logger;
     this.payloadChannelService = payloadChannelService;
 
     try {
       this.payloadChannelListenerClass =
-          ClassPool.getDefault().get("net.flintmc.mcapi.server.payload.PayloadChannelListener");
+          pool.get("net.flintmc.mcapi.server.payload.PayloadChannelListener");
     } catch (NotFoundException exception) {
       this.logger.error("The PayloadChannelListener was not found!", exception);
       this.registrable = false;
@@ -44,7 +44,7 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
   @Override
   public void discover(AnnotationMeta<PayloadChannel> annotationMeta)
       throws ServiceNotFoundException {
-    if(!this.registrable) {
+    if (!this.registrable) {
       return;
     }
 

@@ -5,8 +5,6 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.tasks.Task;
-import net.flintmc.framework.tasks.Tasks;
 import net.flintmc.render.gui.event.GuiEvent;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.Window;
@@ -25,7 +23,7 @@ public class DefaultWindowManager implements WindowManager {
   private final Map<Long, InternalWindow> windows;
 
   private final EventBus eventBus;
-  private MinecraftWindow minecraftWindow;
+  protected MinecraftWindow minecraftWindow;
 
   @Inject
   private DefaultWindowManager(EventBus eventBus) {
@@ -55,17 +53,6 @@ public class DefaultWindowManager implements WindowManager {
    */
   public void unregisterWindow(InternalWindow window) {
     windows.remove(window.getHandle(), window);
-  }
-
-  /**
-   * Registers the minecraft window after it has been initialized with OpenGL.
-   *
-   * @param window The main minecraft window
-   */
-  @Task(Tasks.POST_OPEN_GL_INITIALIZE)
-  private void postOpenGLInitialize(MinecraftWindow window) {
-    this.minecraftWindow = window;
-    registerWindow((InternalWindow) window);
   }
 
   /**

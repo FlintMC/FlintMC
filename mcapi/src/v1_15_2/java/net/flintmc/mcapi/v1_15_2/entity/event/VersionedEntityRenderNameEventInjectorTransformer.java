@@ -11,7 +11,7 @@ import javassist.NotFoundException;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.CodeIterator;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMapping;
@@ -45,10 +45,15 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
 
   private final ClassPool pool;
   private final ClassMappingProvider mappingProvider;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
 
   @Inject
-  private VersionedEntityRenderNameEventInjectorTransformer(ClassMappingProvider mappingProvider) {
-    this.pool = ClassPool.getDefault();
+  private VersionedEntityRenderNameEventInjectorTransformer(
+          ClassPool pool,
+          ClassMappingProvider mappingProvider,
+          InjectedFieldBuilder.Factory fieldBuilderFactory) {
+    this.fieldBuilderFactory = fieldBuilderFactory;
+    this.pool = pool;
     this.mappingProvider = mappingProvider;
   }
 
@@ -72,22 +77,22 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
     ClassMapping mapping = this.mappingProvider.get(transforming.getName());
     MethodMapping methodMapping = mapping != null ? mapping.getMethod("renderName", params) : null;
 
-    String injectorName = VersionedEntityRenderNameEventInjector.class.getName();
-    transforming.addField(
-        CtField.make(
-            String.format(
-                "private final %s eventInjector = (%1$s) %s.getInjectedInstance(%1$s.class);",
-                injectorName, InjectionHolder.class.getName()),
-            transforming));
+    CtField injected =
+        this.fieldBuilderFactory
+            .create()
+            .target(transforming)
+            .inject(VersionedEntityRenderNameEventInjector.class)
+            .generate();
 
     CtMethod method =
         transforming.getDeclaredMethod(
             methodMapping != null ? methodMapping.getName() : "renderName", params);
 
-    this.insert(method);
+    this.insert(method, injected);
   }
 
-  private void insert(CtMethod method) throws BadBytecode, CannotCompileException {
+  private void insert(CtMethod method, CtField injected)
+      throws BadBytecode, CannotCompileException {
     int i = 0;
 
     CodeIterator iterator = method.getMethodInfo().getCodeAttribute().iterator();
@@ -122,13 +127,14 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
       // this will be fired whenever the entity will be rendered
       method.insertAt(
           line - 2,
-          String.format("this.eventInjector.renderName($args, %s, %s, false);", matrix, y));
+          String.format("%s.renderName($args, %s, %s, false);", injected.getName(), matrix, y));
 
       // this will only be fired when the entity is not sneaking
       // if the name will not be rendered with the textBackgroundColor being 0,
       // it will not be shown through walls and as if the player would be sneaking
       method.insertAt(
-          line, String.format("this.eventInjector.renderName($args, %s, %s, true);", matrix, y));
+          line,
+          String.format("this.%s.renderName($args, %s, %s, true);", injected.getName(), matrix, y));
     }
   }
 }

@@ -17,7 +17,6 @@ dependencies {
     internalImplementation(project(":framework:framework-inject", "internal"))
     internalImplementation(project(":framework:framework-service"))
     internalImplementation(project(":framework:framework-stereotype", "internal"))
-    internalImplementation(project(":framework:framework-tasks"))
     internalImplementation(project(":util:util-mapping"))
 
     internalImplementation("com.google.code.gson", "gson", "2.8.6")

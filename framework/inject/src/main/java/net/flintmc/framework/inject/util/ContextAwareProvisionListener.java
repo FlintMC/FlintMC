@@ -9,7 +9,6 @@ import com.google.inject.matcher.Matcher;
 import com.google.inject.spi.DependencyAndSource;
 import com.google.inject.spi.InjectionPoint;
 import com.google.inject.spi.ProvisionListener;
-
 import java.util.List;
 import java.util.function.BiFunction;
 
