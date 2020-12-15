@@ -43,6 +43,7 @@ defineModule("framework:packages")
 defineModule("framework:service")
 defineModule("framework:stereotype")
 defineModule("framework:config")
+defineModule("framework:data-generation")
 
 defineModule(":launcher")
 
