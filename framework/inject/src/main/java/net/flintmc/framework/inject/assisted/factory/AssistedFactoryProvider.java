@@ -1,5 +1,8 @@
 package net.flintmc.framework.inject.assisted.factory;
 
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.getOnlyElement;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -25,17 +28,6 @@ import com.google.inject.spi.InjectionPoint;
 import com.google.inject.spi.Message;
 import com.google.inject.spi.ProviderInstanceBinding;
 import com.google.inject.spi.ProviderWithExtensionVisitor;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedInject;
-import net.flintmc.framework.inject.assisted.ConstructorMatcher;
-import net.flintmc.framework.inject.assisted.binding.BindingCollector;
-import net.flintmc.framework.inject.assisted.data.AssistData;
-import net.flintmc.framework.inject.assisted.data.AssistedInjectBinding;
-import net.flintmc.framework.inject.assisted.data.AssistedInjectTargetVisitor;
-import net.flintmc.framework.inject.assisted.data.AssistedMethod;
-import net.flintmc.framework.inject.assisted.thread.ThreadLocalProvider;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
-
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
@@ -51,9 +43,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
-
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.getOnlyElement;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.assisted.ConstructorMatcher;
+import net.flintmc.framework.inject.assisted.binding.BindingCollector;
+import net.flintmc.framework.inject.assisted.data.AssistData;
+import net.flintmc.framework.inject.assisted.data.AssistedInjectBinding;
+import net.flintmc.framework.inject.assisted.data.AssistedInjectTargetVisitor;
+import net.flintmc.framework.inject.assisted.data.AssistedMethod;
+import net.flintmc.framework.inject.assisted.thread.ThreadLocalProvider;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 
 public class AssistedFactoryProvider<F>
     implements HasDependencies,

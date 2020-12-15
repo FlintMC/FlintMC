@@ -8,7 +8,7 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
  *
  * @param <E> The type of the event that can be executed by this executor
  */
-public interface Executor<E extends Event> {
+public interface EventExecutor<E extends Event> {
 
   /**
    * Invokes the appropriate method on the given listener to handle the event.

@@ -1,17 +1,15 @@
 package net.flintmc.framework.eventbus.method;
 
+import java.util.function.Consumer;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.EventPriority;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 /**
  * Builder for {@link SubscribeMethod}s.
  *
- * <p>The only necessary value before {@link #build()} can be used is one of the to methods.
+ * <p>The only necessary value before {@link #build()} can be used is one of the {@code to} methods.
  *
  * @param <E> The type of the event that is handled by the generating method.
  * @see Factory
@@ -52,17 +50,7 @@ public interface SubscribeMethodBuilder<E extends Event> {
    * @param executor The non-null executor to invoke
    * @return this builder for chaining
    */
-  SubscribeMethodBuilder<E> to(Executor<E> executor);
-
-  /**
-   * Sets the executor that will be invoked when the event is fired. This overrides any other 'to'
-   * method in this builder when called.
-   *
-   * @param executorSupplier The non-null supplier to get the executor to be invoked from 6when an
-   *     event will be fired
-   * @return this builder for chaining
-   */
-  SubscribeMethodBuilder<E> to(Supplier<Executor<E>> executorSupplier);
+  SubscribeMethodBuilder<E> to(EventExecutor<E> executor);
 
   /**
    * Builds the method with all values that have been set in this builder.

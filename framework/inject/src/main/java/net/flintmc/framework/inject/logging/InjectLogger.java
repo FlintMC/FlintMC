@@ -1,7 +1,6 @@
 package net.flintmc.framework.inject.logging;
 
 import com.google.inject.BindingAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -18,7 +18,8 @@ import net.flintmc.framework.config.generator.method.ConfigMethodResolver;
 import net.flintmc.framework.config.internal.transform.ConfigTransformer;
 import net.flintmc.framework.config.internal.transform.PendingTransform;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
+
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,12 +31,17 @@ public class ImplementationGenerator {
   private final Random random;
   private final ConfigMethodResolver methodResolver;
 
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final ConfigClassLoader classLoader;
   private final ConfigTransformer transformer;
 
   @Inject
-  private ImplementationGenerator(
-      ClassPool pool, ConfigMethodResolver methodResolver, ConfigTransformer transformer) {
+  public ImplementationGenerator(
+          ClassPool pool,
+          ConfigMethodResolver methodResolver,
+      InjectedFieldBuilder.Factory fieldBuilderFactory,
+      ConfigTransformer transformer) {
+    this.fieldBuilderFactory = fieldBuilderFactory;
     this.classLoader = new ConfigClassLoader(ImplementationGenerator.class.getClassLoader());
 
     this.pool = pool;
@@ -105,16 +111,12 @@ public class ImplementationGenerator {
   }
 
   public void addConfigStorageProvider(CtClass implementation) throws CannotCompileException {
-    implementation.addField(
-        CtField.make(
-            "private final transient "
-                + ConfigStorageProvider.class.getName()
-                + " configStorageProvider = "
-                + InjectionHolder.class.getName()
-                + ".getInjectedInstance("
-                + ConfigStorageProvider.class.getName()
-                + ".class);",
-            implementation));
+    this.fieldBuilderFactory
+        .create()
+        .target(implementation)
+        .fieldName("configStorageProvider")
+        .inject(ConfigStorageProvider.class)
+        .generate();
   }
 
   private void buildConstructor(CtClass implementation, CtClass type, CtClass baseClass)

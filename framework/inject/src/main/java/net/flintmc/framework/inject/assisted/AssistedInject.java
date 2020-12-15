@@ -20,6 +20,4 @@ import net.flintmc.processing.autoload.DetectableAnnotation;
 @Target(ElementType.CONSTRUCTOR)
 @Retention(RetentionPolicy.RUNTIME)
 @DetectableAnnotation
-public @interface AssistedInject {
-
-}
+public @interface AssistedInject {}

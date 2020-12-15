@@ -9,9 +9,7 @@ import com.google.inject.spi.Message;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * A collector for collecting factory bindings.
- */
+/** A collector for collecting factory bindings. */
 public class BindingCollector {
 
   private final Map<Key<?>, TypeLiteral<?>> bindings = Maps.newHashMap();
@@ -19,7 +17,7 @@ public class BindingCollector {
   /**
    * Adds a {@code target} to the given {@code key}.
    *
-   * @param key    The key with which teh specified {@code target} is to be associated.
+   * @param key The key with which teh specified {@code target} is to be associated.
    * @param target The target to be associated with the specified {@code key}.
    * @return The collector, for chaining.
    */
@@ -43,21 +41,16 @@ public class BindingCollector {
     return Collections.unmodifiableMap(bindings);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return bindings.hashCode();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean equals(Object object) {
-    return (object instanceof BindingCollector) && bindings
-        .equals(((BindingCollector) object).bindings);
+    return (object instanceof BindingCollector)
+        && bindings.equals(((BindingCollector) object).bindings);
   }
-
 }

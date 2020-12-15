@@ -160,8 +160,7 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
               declaring));
     }
 
-    String src =
-        "this.configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);";
+    String src = "configStorageProvider.write((" + ParsedConfig.class.getName() + ") this.config);";
     if (method.getMethodInfo().getCodeAttribute() != null) {
       method.insertAfter(src);
     } else {

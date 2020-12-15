@@ -2,17 +2,14 @@ package net.flintmc.framework.eventbus.method;
 
 import javassist.CtMethod;
 
-import java.util.function.Supplier;
-
-/** Factory for {@link Executor}'s that generates code which invokes a specific method. */
+/** Factory for {@link EventExecutor}'s that generates code which invokes a specific method. */
 public interface ExecutorFactory {
 
   /**
-   * Creates an {@link Executor}.
+   * Creates an {@link EventExecutor} or if present uses the cached one.
    *
-   * @param method The method to invoke when an event is fired with exactly one parameter which is
-   *     the event that has been fired.
-   * @return An created executor.
+   * @param method The method to invoke when an event is fired
+   * @return A created executor.
    */
-  Supplier<Executor<?>> create(CtMethod method);
+  EventExecutor<?> create(CtMethod method);
 }

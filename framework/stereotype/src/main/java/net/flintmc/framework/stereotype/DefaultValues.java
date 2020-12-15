@@ -1,9 +1,9 @@
-package net.flintmc.transform.hook.internal;
+package net.flintmc.framework.stereotype;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class HookValues {
+public class DefaultValues {
 
   private static final Map<String, String> DEFAULT_VALUES = new HashMap<>();
 

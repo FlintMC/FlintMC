@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.bytecode.BadBytecode;
@@ -12,7 +13,7 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.CodeIterator;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.mcapi.server.payload.PayloadChannelService;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
@@ -28,19 +29,22 @@ public class CustomPayloadInterceptor {
 
   private final ClassPool pool;
   private final ClassMapping customPayloadPacketMapping;
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
 
   @Inject
-  private CustomPayloadInterceptor(ClassPool pool, ClassMappingProvider classMappingProvider) {
+  private CustomPayloadInterceptor(
+          ClassPool pool, ClassMappingProvider classMappingProvider, InjectedFieldBuilder.Factory fieldBuilderFactory) {
     this.pool = pool;
     this.customPayloadPacketMapping =
         classMappingProvider.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket");
+    this.fieldBuilderFactory = fieldBuilderFactory;
   }
 
   @ClassTransform("net.minecraft.client.network.play.ClientPlayNetHandler")
   public void transform(ClassTransformContext context)
       throws NotFoundException, BadBytecode, CannotCompileException {
 
-    CtMethod handleCustomPayloadMethod =
+    CtMethod method =
         context
             .getCtClass()
             .getDeclaredMethod(
@@ -49,7 +53,7 @@ public class CustomPayloadInterceptor {
                   this.pool.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
                 });
 
-    MethodInfo methodInfo = handleCustomPayloadMethod.getMethodInfo();
+    MethodInfo methodInfo = method.getMethodInfo();
     CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
     CodeIterator codeIterator = codeAttribute.iterator();
 
@@ -71,13 +75,18 @@ public class CustomPayloadInterceptor {
 
       int line = methodInfo.getLineNumber(index);
 
-      handleCustomPayloadMethod.insertAt(
+      CtField injectedService =
+          this.fieldBuilderFactory
+              .create()
+              .target(method.getDeclaringClass())
+              .inject(PayloadChannelService.class)
+              .generate();
+
+      method.insertAt(
           line,
           String.format(
-              "if(((%s)%s.getInjectedInstance(%s.class)).shouldListen($1.%s().toString(), $1.%s())) {return;}",
-              PayloadChannelService.class.getName(),
-              InjectionHolder.class.getName(),
-              PayloadChannelService.class.getName(),
+              "if (%s.shouldListen($1.%s().toString(), $1.%s())) {return;}",
+              injectedService.getName(),
               this.customPayloadPacketMapping.getMethod("getChannelName").getName(),
               this.customPayloadPacketMapping.getMethod("getBufferData").getName()));
       break;
