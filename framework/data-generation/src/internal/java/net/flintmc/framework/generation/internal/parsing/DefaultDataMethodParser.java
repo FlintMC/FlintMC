@@ -41,7 +41,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
       if (!interfaceMethod.getReturnType().equals(dataInterface)) {
         throw new IllegalStateException(
             String.format(
-                "Method %s in data factory interface %s does not return an instance of the data interface!",
+                "Method %s in data factory interface %s does not return an instance of the data interface",
                 interfaceMethod.getName(), factoryInterface.getName()));
       }
 
@@ -90,7 +90,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
       } else {
         throw new IllegalStateException(
             String.format(
-                "Method %s in data interface %s is neither a setter nor a getter but targets a data field!",
+                "Method %s in data interface %s is neither a setter nor a getter but targets a data field",
                 interfaceMethod.getName(), dataInterface.getName()));
       }
     }
@@ -103,7 +103,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
       if (!anInterface.isInterface()) {
         throw new IllegalStateException(
             String.format(
-                "Data class or factory class %s is not an interface!", anInterface.getName()));
+                "Data class or factory class %s is not an interface", anInterface.getName()));
       }
     }
   }
@@ -119,7 +119,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
     if (!interfaceMethod.hasAnnotation(TargetDataField.class)) {
       throw new IllegalStateException(
           String.format(
-              "Method %s in data interface %s does not target a valid data field!",
+              "Method %s in data interface %s does not target a valid data field",
               interfaceMethod.getName(), interfaceMethod.getDeclaringClass().getName()));
     }
 
@@ -138,7 +138,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
     if (targetDataField == null) {
       throw new IllegalStateException(
           String.format(
-              "Method %s in data interface %s does not target a valid data field!",
+              "Method %s in data interface %s does not target a valid data field",
               interfaceMethod.getName(), interfaceMethod.getDeclaringClass().getName()));
     }
 
@@ -154,7 +154,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
     if (!methodType.equals(targetDataField.getType())) {
       throw new IllegalStateException(
           String.format(
-              "The type (%s) of %s %s in data interface %s is not compatible with the type of the target data field %s (%s)!",
+              "The type (%s) of %s %s in data interface %s is not compatible with the type of the target data field %s (%s)",
               methodType.getName(),
               methodDescription,
               interfaceMethod.getName(),

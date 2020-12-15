@@ -101,7 +101,7 @@ public class DataService implements ServiceHandler<DataFactory> {
     } catch (Exception exception) {
       throw new ServiceNotFoundException(
           String.format(
-              "Unable to create an implementation of factory interface %s!",
+              "Unable to create an implementation of factory interface %s",
               factoryInterface.getName()),
           exception);
     }

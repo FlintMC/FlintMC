@@ -93,7 +93,7 @@ public class DefaultDataFactoryMethod implements DataFactoryMethod {
     if (dataFields.size() < allParameterAnnotations.length) {
       throw new IllegalStateException(
           String.format(
-              "Not all parameters of create method %s in factory interface %s target a data field!",
+              "Not all parameters of create method %s in factory interface %s target a data field",
               this.interfaceMethod.getName(), this.interfaceMethod.getDeclaringClass().getName()));
     }
 
