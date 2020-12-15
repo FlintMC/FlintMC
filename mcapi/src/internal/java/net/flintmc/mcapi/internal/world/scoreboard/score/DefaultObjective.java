@@ -1,32 +1,35 @@
-package net.flintmc.mcapi.v1_15_2.world.scoreboard.score;
+package net.flintmc.mcapi.internal.world.scoreboard.score;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.internal.world.scoreboard.listener.ObjectiveChangeListener;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Criteria;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
-/** 1.15.2 implementation of {@link Objective}. */
-@Implement(value = Objective.class, version = "1.15.2")
-public class VersionedObjective implements Objective {
+@Implement(Objective.class)
+public class DefaultObjective implements Objective {
 
   private final Scoreboard scoreboard;
+  private final ObjectiveChangeListener objectiveChangeListener;
   private final String name;
-  private final ChatComponent displayName;
   private final Criteria criteria;
-  private final RenderType renderType;
+  private ChatComponent displayName;
+  private RenderType renderType;
 
   @AssistedInject
-  private VersionedObjective(
-      @Assisted("scoreboard") Scoreboard scoreboard,
+  public DefaultObjective(
+      Scoreboard scoreboard,
+      ObjectiveChangeListener objectiveChangeListener,
       @Assisted("name") String name,
       @Assisted("displayName") ChatComponent displayName,
       @Assisted("criteria") Criteria criteria,
       @Assisted("renderType") RenderType renderType) {
     this.scoreboard = scoreboard;
+    this.objectiveChangeListener = objectiveChangeListener;
     this.name = name;
     this.displayName = displayName;
     this.criteria = criteria;
@@ -53,6 +56,13 @@ public class VersionedObjective implements Objective {
 
   /** {@inheritDoc} */
   @Override
+  public void setDisplayName(ChatComponent displayName) {
+    this.displayName = displayName;
+    this.objectiveChangeListener.changeDisplayName(this, displayName);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public Criteria getCriteria() {
     return this.criteria;
   }
@@ -61,5 +71,12 @@ public class VersionedObjective implements Objective {
   @Override
   public RenderType getRenderType() {
     return this.renderType;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setRenderType(RenderType renderType) {
+    this.renderType = renderType;
+    this.objectiveChangeListener.changeRenderType(this, renderType);
   }
 }

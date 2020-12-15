@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.v1_15_2.world.scoreboard.score;
+package net.flintmc.mcapi.internal.world.scoreboard.score;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
@@ -6,21 +6,20 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.scoreboad.score.Criteria;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
-/** 1.15.2 implementation of {@link Criteria} */
-@Implement(value = Criteria.class, version = "1.15.2")
-public class VersionedCriteria implements Criteria {
+@Implement(Criteria.class)
+public class DefaultCriteria implements Criteria {
 
   private final String name;
   private final boolean readOnly;
   private final RenderType renderType;
 
   @AssistedInject
-  private VersionedCriteria(@Assisted("name") String name) {
+  private DefaultCriteria(@Assisted("name") String name) {
     this(name, false, RenderType.INTEGER);
   }
 
   @AssistedInject
-  private VersionedCriteria(
+  private DefaultCriteria(
       @Assisted("name") String name,
       @Assisted("readOnly") boolean readOnly,
       @Assisted("renderType") RenderType renderType) {
