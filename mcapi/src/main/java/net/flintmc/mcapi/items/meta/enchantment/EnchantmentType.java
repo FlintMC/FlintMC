@@ -5,7 +5,9 @@ import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.items.ItemRegistry;
 
-/** Represents a unique type of an enchantment. */
+/**
+ * Represents a unique type of an enchantment.
+ */
 public interface EnchantmentType {
 
   /**
@@ -46,7 +48,9 @@ public interface EnchantmentType {
    */
   Enchantment createEnchantment(int level);
 
-  /** Factory for the {@link Builder} for {@link EnchantmentType}s. */
+  /**
+   * Factory for the {@link Builder} for {@link EnchantmentType}s.
+   */
   @AssistedFactory(Builder.class)
   interface Factory {
 
@@ -58,7 +62,9 @@ public interface EnchantmentType {
     Builder newBuilder();
   }
 
-  /** Builder for the {@link EnchantmentType}. */
+  /**
+   * Builder for the {@link EnchantmentType}.
+   */
   interface Builder {
 
     /**
@@ -99,11 +105,11 @@ public interface EnchantmentType {
      *
      * @return The new non-null type of enchantments
      * @throws IllegalArgumentException If the specified {@link #highestLevel(int)} is smaller than
-     *     1
-     * @throws NullPointerException If no {@link #registryName(NameSpacedKey)} (or {@code null}) has
-     *     been provided
-     * @throws NullPointerException If {@code null} has been provided as the {@link
-     *     #rarity(EnchantmentRarity)}
+     *                                  1
+     * @throws NullPointerException     If no {@link #registryName(NameSpacedKey)} (or {@code null})
+     *                                  has been provided
+     * @throws NullPointerException     If {@code null} has been provided as the {@link
+     *                                  #rarity(EnchantmentRarity)}
      */
     EnchantmentType build();
   }

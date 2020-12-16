@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 class CSV<K, V> {
+
   protected final Map<K, List<V>> data;
 
   CSV(Map<K, List<V>> data) {

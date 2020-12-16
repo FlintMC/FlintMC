@@ -2,13 +2,12 @@ package net.flintmc.util.session.internal.launcher;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.event.MinecraftInitializeEvent;
 import net.flintmc.util.session.SessionService;
 import net.flintmc.util.session.launcher.LauncherProfileResolver;
 import net.flintmc.util.session.launcher.LauncherProfiles;
-
-import java.io.IOException;
 
 @Singleton
 public class InitialLauncherProfileReader {

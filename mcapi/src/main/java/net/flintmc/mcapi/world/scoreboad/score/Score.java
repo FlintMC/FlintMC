@@ -3,7 +3,9 @@ package net.flintmc.mcapi.world.scoreboad.score;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents a minecraft score. */
+/**
+ * Represents a minecraft score.
+ */
 public interface Score {
 
   /**
@@ -27,7 +29,9 @@ public interface Score {
    */
   void increaseScore(int amount);
 
-  /** Increases the score by one. */
+  /**
+   * Increases the score by one.
+   */
   void incrementScore();
 
   /**
@@ -44,7 +48,9 @@ public interface Score {
    */
   void setScorePoints(int points);
 
-  /** Resets the score points to {@code 0} */
+  /**
+   * Resets the score points to {@code 0}
+   */
   void reset();
 
   /**
@@ -61,7 +67,9 @@ public interface Score {
    */
   void setLocked(boolean locked);
 
-  /** A factory class for {@link Score} */
+  /**
+   * A factory class for {@link Score}
+   */
   @AssistedFactory(Score.class)
   interface Factory {
 
@@ -69,7 +77,7 @@ public interface Score {
      * Creates a new {@link Score} with the given parameters.
      *
      * @param objective The objective for this score.
-     * @param username The username for this score.
+     * @param username  The username for this score.
      * @return A created score.
      */
     Score create(@Assisted("objective") Objective objective, @Assisted("username") String username);
@@ -77,8 +85,8 @@ public interface Score {
     /**
      * Creates a new {@link Score} with the given parameters.
      *
-     * @param objective The objective for this score.
-     * @param username The username for this score.
+     * @param objective   The objective for this score.
+     * @param username    The username for this score.
      * @param scorePoints The points for this score.
      * @return A created score.
      */

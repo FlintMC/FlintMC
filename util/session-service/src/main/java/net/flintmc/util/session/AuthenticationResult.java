@@ -4,7 +4,9 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 
-/** The result of the {@link SessionService#logIn(String, String)} method. */
+/**
+ * The result of the {@link SessionService#logIn(String, String)} method.
+ */
 public interface AuthenticationResult {
 
   /**
@@ -18,16 +20,22 @@ public interface AuthenticationResult {
    * Retrieves the new profile of the new account.
    *
    * @return The profile of the new account or {@code null} if an error occurred while logging in
-   *     (and therefore the {@link #getType()} must not be {@link Type#SUCCESS})
+   * (and therefore the {@link #getType()} must not be {@link Type#SUCCESS})
    */
   GameProfile getProfile();
 
-  /** Types of results for the {@link AuthenticationResult}. */
+  /**
+   * Types of results for the {@link AuthenticationResult}.
+   */
   enum Type {
 
-    /** Specifies that the log in has successfully been completed. */
+    /**
+     * Specifies that the log in has successfully been completed.
+     */
     SUCCESS,
-    /** Specifies that the email and/or password provided to this method are invalid. */
+    /**
+     * Specifies that the email and/or password provided to this method are invalid.
+     */
     INVALID_CREDENTIALS,
     /**
      * If this result is returned, the mojang auth server is offline and therefore no login is
@@ -41,7 +49,9 @@ public interface AuthenticationResult {
     UNKNOWN_ERROR
   }
 
-  /** Factory for the {@link AuthenticationResult}. */
+  /**
+   * Factory for the {@link AuthenticationResult}.
+   */
   @AssistedFactory(AuthenticationResult.class)
   interface Factory {
 

@@ -1,8 +1,11 @@
 package net.flintmc.util.commons.resolve;
 
-/** Generic type for resolving/mapping strings. */
+/**
+ * Generic type for resolving/mapping strings.
+ */
 @FunctionalInterface
 public interface NameResolver extends Resolver<String, String> {
+
   /**
    * Resolves/maps one string to another.
    *

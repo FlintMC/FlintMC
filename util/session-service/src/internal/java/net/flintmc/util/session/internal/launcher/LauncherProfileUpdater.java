@@ -2,6 +2,7 @@ package net.flintmc.util.session.internal.launcher;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.util.session.SessionService;
@@ -10,8 +11,6 @@ import net.flintmc.util.session.event.SessionTokenRefreshEvent;
 import net.flintmc.util.session.launcher.LauncherProfile;
 import net.flintmc.util.session.launcher.LauncherProfileResolver;
 import net.flintmc.util.session.launcher.LauncherProfiles;
-
-import java.io.IOException;
 
 @Singleton
 public class LauncherProfileUpdater {

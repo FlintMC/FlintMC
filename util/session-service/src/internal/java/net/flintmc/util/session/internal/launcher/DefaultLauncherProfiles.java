@@ -1,12 +1,11 @@
 package net.flintmc.util.session.internal.launcher;
 
+import java.util.Collection;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.session.launcher.LauncherProfile;
 import net.flintmc.util.session.launcher.LauncherProfiles;
-
-import java.util.Collection;
 
 @Implement(LauncherProfiles.class)
 public class DefaultLauncherProfiles implements LauncherProfiles {

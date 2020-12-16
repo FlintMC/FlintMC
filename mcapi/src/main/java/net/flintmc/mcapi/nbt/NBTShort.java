@@ -3,7 +3,9 @@ package net.flintmc.mcapi.nbt;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** A singed integral type. */
+/**
+ * A singed integral type.
+ */
 public interface NBTShort extends NBT {
 
   /**
@@ -13,7 +15,9 @@ public interface NBTShort extends NBT {
    */
   short asShort();
 
-  /** A factory class for the {@link NBTShort}. */
+  /**
+   * A factory class for the {@link NBTShort}.
+   */
   @AssistedFactory(NBTShort.class)
   interface Factory {
 

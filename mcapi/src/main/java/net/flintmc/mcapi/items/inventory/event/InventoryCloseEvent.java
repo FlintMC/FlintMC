@@ -32,7 +32,8 @@ public interface InventoryCloseEvent extends Event, InventoryEvent, DirectionalE
      *
      * @param inventory The non-null inventory that has been closed
      * @param direction How the event has been invoked, {@link Direction#SEND} means that the client
-     *     has closed the inventory and {@link Direction#RECEIVE} that the server has closed it
+     *                  has closed the inventory and {@link Direction#RECEIVE} that the server has
+     *                  closed it
      * @return The new event
      */
     InventoryCloseEvent create(

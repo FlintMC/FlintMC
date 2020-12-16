@@ -43,7 +43,9 @@ public class GzipCompression {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
 
       int len;
-      while ((len = gis.read(buffer)) > 0) out.write(buffer, 0, len);
+      while ((len = gis.read(buffer)) > 0) {
+        out.write(buffer, 0, len);
+      }
 
       gis.close();
       out.close();

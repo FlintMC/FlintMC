@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.items.inventory;
 
-/** An enumeration of all inventory clicks. */
+/**
+ * An enumeration of all inventory clicks.
+ */
 public enum InventoryClick {
 
   /**

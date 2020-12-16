@@ -1,12 +1,13 @@
 package net.flintmc.mcapi.chat.builder;
 
+import java.util.Collection;
 import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 
-import java.util.Collection;
-
-/** Builder for {@link SelectorComponent}s. */
+/**
+ * Builder for {@link SelectorComponent}s.
+ */
 public interface SelectorComponentBuilder extends ComponentBuilder<SelectorComponentBuilder> {
 
   /**
@@ -30,7 +31,7 @@ public interface SelectorComponentBuilder extends ComponentBuilder<SelectorCompo
    * removed.
    *
    * @param option The non-null key of the option
-   * @param value The nullable value of the option
+   * @param value  The nullable value of the option
    * @return this
    */
   SelectorComponentBuilder option(String option, String value);
@@ -40,7 +41,7 @@ public interface SelectorComponentBuilder extends ComponentBuilder<SelectorCompo
    * been set.
    *
    * @return The non-null values of the current component for the given option, empty if no option
-   *     with the given key is set.
+   * with the given key is set.
    */
   Collection<String> option(String option);
 
@@ -52,7 +53,8 @@ public interface SelectorComponentBuilder extends ComponentBuilder<SelectorCompo
    * <p>The allowed format looks like this: selectorShortcut[option1=value1,option2=value2] <br>
    * <br>
    *
-   * <p>The option and value are split at the first `=` which means that the options may not contain
+   * <p>The option and value are split at the first `=` which means that the options may not
+   * contain
    * an `=`, but it doesn't cause any issues in the values. The available selectorShortcuts can be
    * found in the {@link EntitySelector} class. <br>
    * <br>

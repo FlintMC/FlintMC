@@ -3,7 +3,9 @@ package net.flintmc.mcapi.world.math;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents a three-dimensional vector based on {@link Integer}. */
+/**
+ * Represents a three-dimensional vector based on {@link Integer}.
+ */
 public interface Vector3I extends Comparable<Vector3I> {
 
   /**
@@ -49,7 +51,7 @@ public interface Vector3I extends Comparable<Vector3I> {
   /**
    * Whether the given distance is larger than the square vector.
    *
-   * @param vector The vector to calculate the square distance.
+   * @param vector   The vector to calculate the square distance.
    * @param distance The distance.
    * @return {@code true} if the distance larger than the square distance, otherwise {@code false}.
    */
@@ -71,9 +73,12 @@ public interface Vector3I extends Comparable<Vector3I> {
   /**
    * The square of the distance from this {@link Vector3I} to a specified point.
    *
-   * @param x The X coordinate of the specified point to be measured against this {@link Vector3I}.
-   * @param y The Y coordinate of the specified point to be measured against this {@link Vector3I}.
-   * @param z The Z coordinate of the specified point to be measured against this {@link Vector3I}.
+   * @param x         The X coordinate of the specified point to be measured against this {@link
+   *                  Vector3I}.
+   * @param y         The Y coordinate of the specified point to be measured against this {@link
+   *                  Vector3I}.
+   * @param z         The Z coordinate of the specified point to be measured against this {@link
+   *                  Vector3I}.
    * @param useCenter {@code true} if the center should be used, otherwise {@code false}.
    * @return The square of the distance from this {@link Vector3I} to a specified point.
    */
@@ -87,7 +92,9 @@ public interface Vector3I extends Comparable<Vector3I> {
    */
   int manhattanDistance(Vector3I vector);
 
-  /** A factory class for the {@link Vector3I}. */
+  /**
+   * A factory class for the {@link Vector3I}.
+   */
   @AssistedFactory(Vector3I.class)
   interface Factory {
 

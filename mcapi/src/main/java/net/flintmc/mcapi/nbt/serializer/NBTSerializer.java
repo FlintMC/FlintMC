@@ -14,8 +14,8 @@ public interface NBTSerializer {
    *
    * @param nbt The named binary tag to serialize.
    * @return The serialized nbt as a {@link JsonElement}.
-   * @throws AssertionError If thrown when a terminated named binary tag comes, should not be
-   *     encountered.
+   * @throws AssertionError                If thrown when a terminated named binary tag comes,
+   *                                       should not be encountered.
    * @throws UnsupportedOperationException If thrown when a new NBT class is made.
    */
   JsonElement serialize(NBT nbt);

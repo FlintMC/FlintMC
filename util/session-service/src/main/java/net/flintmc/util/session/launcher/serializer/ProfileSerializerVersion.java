@@ -1,11 +1,10 @@
 package net.flintmc.util.session.launcher.serializer;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.processing.autoload.DetectableAnnotation;
 
 /**
  * This annotation marks a {@link LauncherProfileSerializer} with a version to be automatically

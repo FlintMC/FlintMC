@@ -1,17 +1,22 @@
 package net.flintmc.util.taskexecutor;
 
+import java.util.function.Consumer;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-import java.util.function.Consumer;
-
-/** Represents a task that can be scheduled and executed (sync or async). */
+/**
+ * Represents a task that can be scheduled and executed (sync or async).
+ */
 public interface Task extends Runnable {
 
-  /** Schedules this task for execution. */
+  /**
+   * Schedules this task for execution.
+   */
   void schedule();
 
-  /** Executes this task. */
+  /**
+   * Executes this task.
+   */
   void run();
 
   /**
@@ -22,22 +27,28 @@ public interface Task extends Runnable {
 
   /**
    * @return true, if this task shall be executed async to Minecraft's game loop/render thread,
-   *     false if not
+   * false if not
    */
   boolean isAsync();
 
-  /** @return true, if this task should execute repeatedly, false if not */
+  /**
+   * @return true, if this task should execute repeatedly, false if not
+   */
   boolean isRepeating();
 
-  /** @return true if this task is currently scheduled, false if not */
+  /**
+   * @return true if this task is currently scheduled, false if not
+   */
   boolean isScheduled();
 
-  /** @return the current ticks that need to pass until this task shall execute */
+  /**
+   * @return the current ticks that need to pass until this task shall execute
+   */
   int getTicksToStart();
 
   /**
    * @return the the amount of ticks that should pass between executions if this task is a repeating
-   *     task
+   * task
    */
   int getInterval();
 
@@ -61,13 +72,14 @@ public interface Task extends Runnable {
     /**
      * Creates a new task, but does not automatically schedule it.
      *
-     * @param ticks amount of ticks that should pass before the task executes
+     * @param ticks    amount of ticks that should pass before the task executes
      * @param interval interval in ticks between executions if repeat is true
-     * @param async whether this task should execute async to Minecraft's game loop/render thread
-     * @param repeat whether this task should be executed repeatedly
+     * @param async    whether this task should execute async to Minecraft's game loop/render
+     *                 thread
+     * @param repeat   whether this task should be executed repeatedly
      * @param runnable the runnable that will be called if the task is executed. The {@link Task}
-     *     parameter will be the Task that owns the Consumer and can be used to cancel a repeating
-     *     task (e.g.).
+     *                 parameter will be the Task that owns the Consumer and can be used to cancel a
+     *                 repeating task (e.g.).
      * @return the new {@link Task}
      */
     Task create(

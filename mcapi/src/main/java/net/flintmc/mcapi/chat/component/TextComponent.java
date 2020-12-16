@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.chat.component;
 
-/** A component for displaying normal text in the chat. */
+/**
+ * A component for displaying normal text in the chat.
+ */
 public interface TextComponent extends ChatComponent {
 
   /**
