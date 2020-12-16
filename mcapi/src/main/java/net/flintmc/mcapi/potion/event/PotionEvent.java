@@ -1,13 +1,11 @@
 package net.flintmc.mcapi.potion.event;
 
 import net.flintmc.framework.eventbus.event.Event;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.LivingEntity;
-import net.flintmc.mcapi.potion.effect.StatusEffect;
-import net.flintmc.mcapi.potion.effect.StatusEffectInstance;
 
-/** Base event for the {@link PotionAddEvent} and {@link PotionRemoveEvent}. */
+/**
+ * Base event for the {@link PotionAddEvent} and {@link PotionRemoveEvent}.
+ */
 public interface PotionEvent extends Event {
 
   /**

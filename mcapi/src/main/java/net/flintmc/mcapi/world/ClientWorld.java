@@ -4,11 +4,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import net.flintmc.mcapi.entity.Entity;
-import net.flintmc.mcapi.player.BaseClientPlayer;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 
-/** Represents the world of this client. */
+/**
+ * Represents the world of this client.
+ */
 public interface ClientWorld extends World {
 
   /**
@@ -31,7 +32,7 @@ public interface ClientWorld extends World {
    *
    * @param player The player to add
    * @return {@code true} if this collection changed as a result of the call, otherwise {@code
-   *     false}
+   * false}
    */
   boolean addPlayer(PlayerEntity player);
 

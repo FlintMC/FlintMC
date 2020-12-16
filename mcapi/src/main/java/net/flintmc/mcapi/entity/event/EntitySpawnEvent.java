@@ -42,7 +42,7 @@ public interface EntitySpawnEvent extends Event {
      * Creates a new {@link EntitySpawnEvent} for the given entity.
      *
      * @param identifier The identifier of the non-null entity that has been spawned.
-     * @param entity The non-null entity that has been spawned.
+     * @param entity     The non-null entity that has been spawned.
      * @return The new non-null {@link EntitySpawnEvent}
      */
     EntitySpawnEvent create(@Assisted int identifier, @Assisted Entity entity);

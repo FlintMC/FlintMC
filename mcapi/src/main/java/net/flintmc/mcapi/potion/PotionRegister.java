@@ -4,14 +4,16 @@ import java.util.Map;
 import net.flintmc.mcapi.potion.effect.StatusEffect;
 import net.flintmc.mcapi.resources.ResourceLocation;
 
-/** Represents a potion register to registers potions or effects. */
+/**
+ * Represents a potion register to registers potions or effects.
+ */
 public interface PotionRegister {
 
   /**
    * Adds a new {@link StatusEffect} to the register.
    *
    * @param location The location of the status effect.
-   * @param effect The status effect to be added.
+   * @param effect   The status effect to be added.
    */
   void addEffect(ResourceLocation location, StatusEffect effect);
 
@@ -26,7 +28,7 @@ public interface PotionRegister {
    * Removes a status effect from the register.
    *
    * @param location The location of the status effect.
-   * @param effect The effect to be removed.
+   * @param effect   The effect to be removed.
    */
   void removeEffect(ResourceLocation location, StatusEffect effect);
 
@@ -49,7 +51,7 @@ public interface PotionRegister {
    * Adds a new {@link Potion} to the register.
    *
    * @param location The location of the potion.
-   * @param potion The potion to be added.
+   * @param potion   The potion to be added.
    */
   void addPotion(ResourceLocation location, Potion potion);
 
@@ -64,7 +66,7 @@ public interface PotionRegister {
    * Removes a potion from the register.
    *
    * @param location The location of the potion.
-   * @param potion The potion to be removed.
+   * @param potion   The potion to be removed.
    */
   void removePotion(ResourceLocation location, Potion potion);
 

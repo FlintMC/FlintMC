@@ -20,7 +20,9 @@ public interface PotionUpdateEvent extends Event {
    */
   LivingEntity getLivingEntity();
 
-  /** Factory for {@link PotionUpdateEvent}. */
+  /**
+   * Factory for {@link PotionUpdateEvent}.
+   */
   @AssistedFactory(PotionUpdateEvent.class)
   interface Factory {
 

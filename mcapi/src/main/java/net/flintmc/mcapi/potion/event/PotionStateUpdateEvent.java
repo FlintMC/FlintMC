@@ -37,14 +37,18 @@ public interface PotionStateUpdateEvent extends Event {
    */
   State getState();
 
-  /** An enumeration that representing all available states of the potion update event. */
+  /**
+   * An enumeration that representing all available states of the potion update event.
+   */
   enum State {
     NEW,
     CHANGED,
     FINISHED
   }
 
-  /** Factory for {@link PotionStateUpdateEvent}. */
+  /**
+   * Factory for {@link PotionStateUpdateEvent}.
+   */
   @AssistedFactory(PotionStateUpdateEvent.class)
   interface Factory {
 
@@ -52,8 +56,8 @@ public interface PotionStateUpdateEvent extends Event {
      * Creates a new {@link PotionStateUpdateEvent} with the given
      *
      * @param livingEntity The living entity for the potion state update event.
-     * @param effect The effect which is updated.
-     * @param state The state of the potion update event.
+     * @param effect       The effect which is updated.
+     * @param state        The state of the potion update event.
      * @return A created potion state update event.
      */
     PotionStateUpdateEvent create(
