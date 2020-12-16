@@ -28,7 +28,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle and publish to distributor
-        run: ./gradlew clean build publish
+        run: ./gradlew clean build publish --full-stacktrace
         env:
           VERSION: ${{ github.event.ref }}
           FLINT_DISTRIBUTOR_PUBLISH_TOKEN: ${{ secrets.FLINT_DISTRIBUTOR_PUBLISH_TOKEN }}
