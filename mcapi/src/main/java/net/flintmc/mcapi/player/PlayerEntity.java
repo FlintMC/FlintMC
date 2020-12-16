@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.player;
 
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -24,19 +25,17 @@ import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 
-import java.util.UUID;
-
 public interface PlayerEntity extends LivingEntity, CooldownTracking {
 
   /**
    * Whether block action restricted.
    *
-   * @param world The world to be checked.
+   * @param world    The world to be checked.
    * @param position The block position to be checked.
-   * @param mode The game mode for the block action restricted
+   * @param mode     The game mode for the block action restricted
    * @return {@code true} if the block action restricted, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean blockActionRestricted(World world, BlockPosition position, GameMode mode);
 
@@ -45,19 +44,19 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the secondary use is active, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isSecondaryUseActive();
 
   /**
    * Plays a sound at the position of this player.
    *
-   * @param sound The sound to be played.
+   * @param sound    The sound to be played.
    * @param category The category for this sound.
-   * @param volume The volume of this sound.
-   * @param pitch The pitch of this sound.
+   * @param volume   The volume of this sound.
+   * @param pitch    The pitch of this sound.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void playSound(Sound sound, SoundCategory category, float volume, float pitch);
 
@@ -66,7 +65,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The score of this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getScore();
 
@@ -75,7 +74,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param score The new score.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setScore(int score);
 
@@ -84,7 +83,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param score The score to be added.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void addScore(int score);
 
@@ -94,7 +93,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param dropEntireStack Whether the entries stack can eb dropped.
    * @return {@code true} if the selected item can be dropped, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean drop(boolean dropEntireStack);
 
@@ -105,20 +104,20 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param traceItem {@code true} if the item can be traced, otherwise {@code false}.
    * @return The dropped item as an entity, or {@code null}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   ItemEntity dropItem(ItemStack itemStack, boolean traceItem);
 
   /**
    * Retrieves the dropped item as an entity.
    *
-   * @param itemStack The dropped item.
+   * @param itemStack  The dropped item.
    * @param dropAround If {@code true}, the item will be thrown in a random direction from the
-   *     entity regardless of which direction the entity is facing.
-   * @param traceItem {@code true} if the item can be traced, otherwise {@code false}.
+   *                   entity regardless of which direction the entity is facing.
+   * @param traceItem  {@code true} if the item can be traced, otherwise {@code false}.
    * @return The dropped ite mas an entity, or {@code null}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   ItemEntity dropItem(ItemStack itemStack, boolean dropAround, boolean traceItem);
 
@@ -128,7 +127,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param playerEntity The player to be attacked.
    * @return {@code true} if can the player be attacked, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean canAttackPlayer(PlayerEntity playerEntity);
 
@@ -137,7 +136,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param signTileEntity The sign to be edited.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void openSignEditor(SignTileEntity signTileEntity);
 
@@ -146,7 +145,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param commandBlockLogic The minecart command block to be opened.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void openMinecartCommandBlock(Object commandBlockLogic);
 
@@ -155,7 +154,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param commandBlockTileEntity The command block to be opened.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void openCommandBlock(Object commandBlockTileEntity);
 
@@ -164,7 +163,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param structureBlockTileEntity The structure block to be opened.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void openStructureBlock(Object structureBlockTileEntity);
 
@@ -173,7 +172,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param jigsawTileEntity The jigsaw to be opened.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void openJigsaw(Object jigsawTileEntity);
 
@@ -181,32 +180,31 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Opens a horse inventory.
    *
    * @param abstractHorseEntity The horse that has an inventory.
-   * @param inventory Inventory of this horse.
+   * @param inventory           Inventory of this horse.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void openHorseInventory(Object abstractHorseEntity, Inventory inventory);
 
   /**
    * Opens a merchant inventory.
    *
-   * @param merchantOffers The offers of the merchant
-   * @param container The container identifier for this merchant
-   * @param levelProgress The level progress of this merchant.<br>
-   *     <b>Note:</b><br>
-   *     1 = Novice<br>
-   *     2 = Apprentice<br>
-   *     3 = Journeyman<br>
-   *     4 = Expert<br>
-   *     5 = Master
-   * @param experience The total experience for this villager (Always 0 for the wandering trader)
+   * @param merchantOffers  The offers of the merchant
+   * @param container       The container identifier for this merchant
+   * @param levelProgress   The level progress of this merchant.<br>
+   *                        <b>Note:</b><br>
+   *                        1 = Novice<br> 2 = Apprentice<br> 3 = Journeyman<br> 4 = Expert<br> 5 =
+   *                        Master
+   * @param experience      The total experience for this villager (Always 0 for the wandering
+   *                        trader)
    * @param regularVillager {@code true} if this is a regular villager, otherwise {@code false} for
-   *     the wandering trader. When {@code false}, hides the villager level and some other GUI
-   *     elements
-   * @param refreshable {@code true} for regular villagers and {@code false} for the wandering
-   *     trader. If {@code true}, the "Villagers restock up to two times per day".
+   *                        the wandering trader. When {@code false}, hides the villager level and
+   *                        some other GUI elements
+   * @param refreshable     {@code true} for regular villagers and {@code false} for the wandering
+   *                        trader. If {@code true}, the "Villagers restock up to two times per
+   *                        day".
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void openMerchantContainer(
       int container,
@@ -220,9 +218,9 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Opens a book.
    *
    * @param stack The item stack which should be a book.
-   * @param hand The hand of this player.
+   * @param hand  The hand of this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void openBook(ItemStack stack, Hand hand);
 
@@ -231,7 +229,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param entity The entity to be attacked.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void attackTargetEntityWithCurrentItem(Entity entity);
 
@@ -240,7 +238,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param disable {@code true} if the shield should be deactivated, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void disableShield(boolean disable);
 
@@ -248,7 +246,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Spawns the sweep particles.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void spawnSweepParticles();
 
@@ -256,7 +254,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Sends the client status packet to respawn the player.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void respawnPlayer();
 
@@ -265,7 +263,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the player is an user, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isUser();
 
@@ -274,18 +272,19 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The game player profile of this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   GameProfile getGameProfile();
 
   /**
    * Wakes up this player or updates all sleeping players.
    *
-   * @param updateTimer {@code true} if the sleep timer should be updated, otherwise {@code false}.
+   * @param updateTimer           {@code true} if the sleep timer should be updated, otherwise
+   *                              {@code false}.
    * @param updateSleepingPlayers {@code true} if all sleeping players should be updated, otherwise
-   *     {@code false}.
+   *                              {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void stopSleepInBed(boolean updateTimer, boolean updateSleepingPlayers);
 
@@ -294,7 +293,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the player is fully asleep, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isPlayerFullyAsleep();
 
@@ -303,7 +302,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The sleep timer of this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getSleepTimer();
 
@@ -312,9 +311,9 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param component The message for this status.
    * @param actionbar {@code true} if the status message should be displayed in the action bar,
-   *     otherwise {@code false}.
+   *                  otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void sendStatusMessage(ChatComponent component, boolean actionbar);
 
@@ -323,7 +322,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The player's bed location.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   BlockPosition getBedLocation();
 
@@ -332,7 +331,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param resourceLocation The resource location for the stat.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void addStat(ResourceLocation resourceLocation);
 
@@ -340,9 +339,9 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Adds a custom stat to this player.
    *
    * @param resourceLocation The resource location for the stat.
-   * @param state The stat of the stat.
+   * @param state            The stat of the stat.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void addStat(ResourceLocation resourceLocation, int state);
 
@@ -353,7 +352,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param y The `y` position to be added.
    * @param z The `z` position to be added.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void addMovementStat(double x, double y, double z);
 
@@ -362,7 +361,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if can be tried to start the fall flying, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean tryToStartFallFlying();
 
@@ -370,7 +369,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Starts the fall flying of this player.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void startFallFlying();
 
@@ -378,7 +377,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Stops the fall flying of this player.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void stopFallFlying();
 
@@ -387,7 +386,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param experiencePoints The points to be assigned.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void giveExperiencePoints(int experiencePoints);
 
@@ -396,7 +395,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The experience seed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getExperienceSeed();
 
@@ -405,7 +404,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param experienceLevel The levels to be added.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void addExperienceLevel(int experienceLevel);
 
@@ -414,7 +413,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The experience bar cap of this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getExperienceBarCap();
 
@@ -423,7 +422,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param exhaustion The exhaustion to be added.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void addExhaustion(float exhaustion);
 
@@ -433,7 +432,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param ignoreHunger Whether hunger should be ignored.
    * @return {@code true} if the player can eat, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean canEat(boolean ignoreHunger);
 
@@ -442,7 +441,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the player should heal, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean shouldHeal();
 
@@ -451,7 +450,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the player is allowed to edit, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isAllowEdit();
 
@@ -459,7 +458,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Sends the abilities of this player to the server.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void sendPlayerAbilities();
 
@@ -468,7 +467,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param gameMode The new game mode.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setGameMode(GameMode gameMode);
 
@@ -478,7 +477,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param itemStack The item stack to be added.
    * @return {@code true} if was the item stack added.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean addItemStackToInventory(ItemStack itemStack);
 
@@ -487,7 +486,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the player is in the creative mode, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isCreative();
 
@@ -496,7 +495,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The player's scoreboard.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   Scoreboard getScoreboard();
 
@@ -506,7 +505,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param profile The game profile of this player.
    * @return The unique identifier of the given game profile.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   UUID getUniqueId(GameProfile profile);
 
@@ -516,7 +515,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param username The username of this player.
    * @return THe offline unique identifier.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   UUID getOfflineUniqueId(String username);
 
@@ -526,7 +525,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param clothing The clothing that should be worn.
    * @return {@code true} if the player is wearing the clothing, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isWearing(PlayerClothing clothing);
 
@@ -535,7 +534,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the player has reduced debug, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean hasReducedDebug();
 
@@ -543,9 +542,9 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Sets the reduced debug for this player.
    *
    * @param reducedDebug {@code true} if the reduced should be enabled for this player, otherwise
-   *     {@code false}.
+   *                     {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setReducedDebug(boolean reducedDebug);
 
@@ -554,7 +553,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param primaryHand The new primary hand of this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setPrimaryHand(Hand.Side primaryHand);
 
@@ -563,7 +562,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The cooldown period of this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getCooldownPeriod();
 
@@ -573,7 +572,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * @param strength the ticks to adjust the cooled strength of the attack.
    * @return The cooled attack strength of this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getCooledAttackStrength(float strength);
 
@@ -581,7 +580,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Resets the cooldown of the player.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void resetCooldown();
 
@@ -590,7 +589,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The luck of the player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getLuck();
 
@@ -599,7 +598,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the player can use a command block, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean canUseCommandBlock();
 
@@ -608,7 +607,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The left shoulder entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   NBTCompound getLeftShoulderEntity();
 
@@ -617,7 +616,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The right shoulder entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   NBTCompound getRightShoulderEntity();
 
@@ -625,9 +624,9 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    * Adds to the player new food statistics.
    *
    * @param foodLevel The new food level for this player.
-   * @param modifier The food saturation modifier for this player.
+   * @param modifier  The food saturation modifier for this player.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void addFoodStatistics(int foodLevel, float modifier);
 
@@ -636,7 +635,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The player's food level.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getFoodLevel();
 
@@ -645,7 +644,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param foodLevel The new food level.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setFoodLevel(int foodLevel);
 
@@ -654,7 +653,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return {@code true} if the player needs food, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean needFood();
 
@@ -663,7 +662,7 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @return The player's saturation level.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getSaturationLevel();
 
@@ -672,18 +671,20 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
    *
    * @param saturationLevel The new saturation level.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setSaturationLevel(float saturationLevel);
 
-  /** A factory class for the {@link PlayerEntity}. */
+  /**
+   * A factory class for the {@link PlayerEntity}.
+   */
   @AssistedFactory(PlayerEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link PlayerEntity} with the given parameters.
      *
-     * @param entity The non-null Minecraft entity.
+     * @param entity     The non-null Minecraft entity.
      * @param entityType The entity type.
      * @return A created {@link PlayerEntity}.
      */
@@ -691,7 +692,9 @@ public interface PlayerEntity extends LivingEntity, CooldownTracking {
         @Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /** Service interface for creating {@link PlayerEntity}. */
+  /**
+   * Service interface for creating {@link PlayerEntity}.
+   */
   interface Provider {
 
     /**

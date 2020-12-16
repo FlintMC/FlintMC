@@ -6,7 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.flintmc.processing.autoload.DetectableAnnotation;
 
-/** Marks a method as a payload channel receiver. */
+/**
+ * Marks a method as a payload channel receiver.
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @DetectableAnnotation

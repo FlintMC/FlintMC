@@ -3,7 +3,9 @@ package net.flintmc.mcapi.entity.type;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 
-/** Mapper between the Minecraft entity type and Flint entity type. */
+/**
+ * Mapper between the Minecraft entity type and Flint entity type.
+ */
 public interface EntityTypeMapper {
 
   /**
@@ -21,7 +23,7 @@ public interface EntityTypeMapper {
    *
    * @param classification The non-null Flint {@link Entity.Classification}.
    * @return The new Minecraft entity classification or {@code null} if the given entity
-   *     classification was invalid.
+   * classification was invalid.
    */
   Object toMinecraftEntityClassification(Entity.Classification classification);
 
@@ -31,7 +33,7 @@ public interface EntityTypeMapper {
    *
    * @param handle The non-null Minecraft entity classification.
    * @return The new Flint {@link Entity.Classification} or {@code null} if the given entity
-   *     classification was invalid.
+   * classification was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft entity classification.
    */
   Entity.Classification fromMinecraftEntityClassification(Object handle);

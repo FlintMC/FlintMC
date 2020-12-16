@@ -20,7 +20,9 @@ import net.minecraft.network.play.server.SScoreboardObjectivePacket;
 import net.minecraft.network.play.server.STeamsPacket;
 import net.minecraft.network.play.server.SUpdateScorePacket;
 
-/** 1.15.2 implementation of the scoreboard interceptor. */
+/**
+ * 1.15.2 implementation of the scoreboard interceptor.
+ */
 @Singleton
 public class VersionedScoreboardInterceptor {
 

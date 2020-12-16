@@ -8,9 +8,11 @@ import net.flintmc.mcapi.render.text.raw.FontRenderBuilder;
 /**
  * This event will be fired whenever the screen is rendered. It will be fired in both {@link
  * Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST} phases and it will always be fired on the
- * render thread by Minecraft, which means that in this event for example the {@link FontRenderBuilder} and {@link
- * ImageFullRenderBuilder} can be used to draw objects.
+ * render thread by Minecraft, which means that in this event for example the {@link
+ * FontRenderBuilder} and {@link ImageFullRenderBuilder} can be used to draw objects.
  *
  * @see Subscribe
  */
-public interface ScreenRenderEvent extends Event {}
+public interface ScreenRenderEvent extends Event {
+
+}

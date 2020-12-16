@@ -1,11 +1,12 @@
 package net.flintmc.mcapi.server;
 
+import java.net.InetSocketAddress;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-import java.net.InetSocketAddress;
-
-/** An address of a minecraft server. */
+/**
+ * An address of a minecraft server.
+ */
 public interface ServerAddress {
 
   /**
@@ -22,7 +23,9 @@ public interface ServerAddress {
    */
   int getPort();
 
-  /** Factory for the {@link ServerAddress}. */
+  /**
+   * Factory for the {@link ServerAddress}.
+   */
   @AssistedFactory(ServerAddress.class)
   interface Factory {
 
@@ -39,7 +42,7 @@ public interface ServerAddress {
     /**
      * Creates a new address out of the given IP and port.
      *
-     * @param ip The non-null IP of the new address.
+     * @param ip   The non-null IP of the new address.
      * @param port The non-null port of the new address in the range from 0 - 65535
      * @return The new non-null address
      */

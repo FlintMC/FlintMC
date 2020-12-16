@@ -3,6 +3,9 @@ package net.flintmc.mcapi.settings.flint.serializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Map;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
@@ -13,10 +16,6 @@ import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Json serializer for {@link RegisteredSetting RegisteredSettings} and {@link RegisteredCategory
@@ -109,9 +108,11 @@ public interface JsonSettingsSerializer {
    * Registers a new handler for the serialization of annotations that can be used on settings (e.g.
    * {@link DisplayName}).
    *
-   * @param annotationType The non-null type of annotations that can be handled by the given handler
-   * @param handler The non-null handler for the serialization of annotations of the given type
-   * @param <A> The type of annotations that can be serialized by the given handler
+   * @param annotationType The non-null type of annotations that can be handled by the given
+   *                       handler
+   * @param handler        The non-null handler for the serialization of annotations of the given
+   *                       type
+   * @param <A>            The type of annotations that can be serialized by the given handler
    */
   <A extends Annotation> void registerHandler(
       Class<A> annotationType, SettingsSerializationHandler<A> handler);
@@ -130,10 +131,10 @@ public interface JsonSettingsSerializer {
    * serialization of annotations from the given {@code annotationType}.
    *
    * @param annotationType The non-null type of annotations that should be handled by the retrieved
-   *     handlers
-   * @param <A> The type of annotations that should be handled by the retrieved handlers
+   *                       handlers
+   * @param <A>            The type of annotations that should be handled by the retrieved handlers
    * @return The new non-null collection of handlers that is able to serialize the given type of
-   *     annotations
+   * annotations
    */
   <A extends Annotation> Collection<SettingsSerializationHandler<A>> getHandlers(
       Class<A> annotationType);

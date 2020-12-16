@@ -10,9 +10,15 @@ import net.flintmc.mcapi.settings.flint.options.dropdown.EnumSelectSetting;
 import net.flintmc.mcapi.settings.flint.options.numeric.Range;
 import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
 import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplay;
-import net.flintmc.mcapi.settings.game.settings.*;
+import net.flintmc.mcapi.settings.game.settings.AmbientOcclusionStatus;
+import net.flintmc.mcapi.settings.game.settings.AttackIndicatorStatus;
+import net.flintmc.mcapi.settings.game.settings.CloudOption;
+import net.flintmc.mcapi.settings.game.settings.GraphicsFanciness;
+import net.flintmc.mcapi.settings.game.settings.ParticleStatus;
 
-/** Represents the graphic configuration. */
+/**
+ * Represents the graphic configuration.
+ */
 @DefineCategory(
     name = "minecraft.settings.graphics",
     displayName = @Component(value = "options.video", translate = true))

@@ -25,7 +25,9 @@ public interface EntitySpawnEvent extends Event {
    */
   Entity getEntity();
 
-  /** Factory for the {@link EntitySpawnEvent}. */
+  /**
+   * Factory for the {@link EntitySpawnEvent}.
+   */
   @AssistedFactory(EntitySpawnEvent.class)
   interface Factory {
 

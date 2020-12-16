@@ -32,7 +32,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
     this.componentMapper = componentMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changeDisplayName(PlayerTeam playerTeam, ChatComponent displayName) {
     this.getPlayerTeam(playerTeam)
@@ -42,7 +44,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
             });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changePrefix(PlayerTeam playerTeam, ChatComponent prefix) {
     this.getPlayerTeam(playerTeam)
@@ -52,7 +56,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
             });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changeSuffix(PlayerTeam playerTeam, ChatComponent suffix) {
     this.getPlayerTeam(playerTeam)
@@ -62,7 +68,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
             });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changeColor(PlayerTeam playerTeam, ChatColor chatColor) {
     this.getPlayerTeam(playerTeam)
@@ -72,7 +80,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
             });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changeAllowFriendlyFire(PlayerTeam playerTeam, boolean friendlyFire) {
     this.getPlayerTeam(playerTeam)
@@ -82,7 +92,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
             });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changeSeeFriendlyInvisible(PlayerTeam playerTeam, boolean friendlyInvisible) {
     this.getPlayerTeam(playerTeam)
@@ -92,7 +104,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
             });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changeNameTagVisibility(PlayerTeam playerTeam, VisibleType visibleType) {
     this.getPlayerTeam(playerTeam)
@@ -103,7 +117,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
             });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changeDeathMessageVisibility(PlayerTeam playerTeam, VisibleType visibleType) {
     this.getPlayerTeam(playerTeam)
@@ -114,7 +130,9 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
             });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void changeCollisionType(PlayerTeam playerTeam, CollisionType collisionType) {
     this.getPlayerTeam(playerTeam)
@@ -128,6 +146,7 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
   private Optional<ScorePlayerTeam> getPlayerTeam(PlayerTeam name) {
     Scoreboard scoreboard = Minecraft.getInstance().world.getScoreboard();
 
-    return scoreboard == null ? Optional.empty() : Optional.ofNullable(scoreboard.getTeam(name.getName()));
+    return scoreboard == null ? Optional.empty()
+        : Optional.ofNullable(scoreboard.getTeam(name.getName()));
   }
 }

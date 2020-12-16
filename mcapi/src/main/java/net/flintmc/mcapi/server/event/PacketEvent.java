@@ -53,23 +53,29 @@ public interface PacketEvent extends Event, DirectionalEvent, Cancellable {
      */
     LOGIN,
 
-    /** The mainly used phase in the protocol with everything after the login was success. */
+    /**
+     * The mainly used phase in the protocol with everything after the login was success.
+     */
     PLAY,
 
-    /** The phase when the client requests a {@link ServerStatus}. */
+    /**
+     * The phase when the client requests a {@link ServerStatus}.
+     */
     STATUS
   }
 
-  /** Factory for the {@link PacketEvent}. */
+  /**
+   * Factory for the {@link PacketEvent}.
+   */
   @AssistedFactory(PacketEvent.class)
   interface Factory {
 
     /**
      * Creates a new {@link PacketEvent}.
      *
-     * @param packet The non-null packet of the new event
-     * @param phase The non-null phase in which the given packet has been or is about to be
-     *     sent/received
+     * @param packet    The non-null packet of the new event
+     * @param phase     The non-null phase in which the given packet has been or is about to be
+     *                  sent/received
      * @param direction The non-null direction in which the packet is being transported
      * @return The new non-null {@link PacketEvent}
      */

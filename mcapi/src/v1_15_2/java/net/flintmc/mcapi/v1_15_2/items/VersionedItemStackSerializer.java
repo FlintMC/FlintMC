@@ -1,7 +1,11 @@
 package net.flintmc.mcapi.v1_15_2.items;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -11,7 +15,13 @@ import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.ItemStackSerializer;
 import net.flintmc.mcapi.items.type.ItemType;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CollectionNBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NumberNBT;
+import net.minecraft.nbt.StringNBT;
 
 @Singleton
 @Implement(ItemStackSerializer.class)

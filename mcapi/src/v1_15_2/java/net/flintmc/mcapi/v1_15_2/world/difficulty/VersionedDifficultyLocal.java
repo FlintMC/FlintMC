@@ -7,7 +7,9 @@ import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 import net.flintmc.mcapi.world.type.difficulty.DifficultyLocal;
 import net.minecraft.util.math.MathHelper;
 
-/** 1.15.2 implementation of {@link DifficultyLocal}. */
+/**
+ * 1.15.2 implementation of {@link DifficultyLocal}.
+ */
 @Implement(value = DifficultyLocal.class, version = "1.15.2")
 public class VersionedDifficultyLocal implements DifficultyLocal {
 
@@ -26,25 +28,33 @@ public class VersionedDifficultyLocal implements DifficultyLocal {
             worldDifficulty, worldTime, chunkInhabitedTime, moonPhaseFactor);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Difficulty getDifficulty() {
     return this.worldDifficulty;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getAdditionalDifficulty() {
     return this.additionalDifficulty;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isHarderThan(float difficulty) {
     return this.additionalDifficulty > difficulty;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getClampedAdditionalDifficulty() {
     if (this.additionalDifficulty < 2.0F) {
@@ -54,7 +64,9 @@ public class VersionedDifficultyLocal implements DifficultyLocal {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float calculateAdditionalDifficulty(
       Difficulty difficulty, long worldTime, long chunkInhabitedTime, float moonPhaseFactor) {
@@ -75,7 +87,7 @@ public class VersionedDifficultyLocal implements DifficultyLocal {
       clampedFactor =
           clampedFactor
               + MathHelper.clamp((float) chunkInhabitedTime / 3600000.0F, 0.0F, 1.0F)
-                  * (isHard ? 1.0F : 0.75F);
+              * (isHard ? 1.0F : 0.75F);
       clampedFactor = clampedFactor + MathHelper.clamp(moonPhaseFactor * 0.25F, 0.0F, clampedWorld);
 
       // Checks if the given difficulty EASY

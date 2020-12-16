@@ -1,10 +1,13 @@
 package net.flintmc.mcapi.settings.flint.options.numeric.display;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.settings.flint.options.numeric.NumericSetting;
 import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
-
-import java.lang.annotation.*;
 
 /**
  * Represents a {@link Component} mapped to an integer

@@ -1,12 +1,11 @@
 package net.flintmc.mcapi.settings.flint.annotation.ui;
 
-import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 
 /**
  * Defines {@link ApplicableSetting}s in a {@link Config} to be sub settings of another {@link
@@ -60,8 +59,12 @@ public @interface SubSettingsFor {
    */
   Class<?> declaring() default Dummy.class;
 
-  /** Dummy for {@link #declaring()} to mark that no class is defined. */
+  /**
+   * Dummy for {@link #declaring()} to mark that no class is defined.
+   */
   final class Dummy {
-    private Dummy() {}
+
+    private Dummy() {
+    }
   }
 }

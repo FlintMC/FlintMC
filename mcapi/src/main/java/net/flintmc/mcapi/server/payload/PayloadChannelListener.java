@@ -2,7 +2,9 @@ package net.flintmc.mcapi.server.payload;
 
 import net.flintmc.mcapi.server.buffer.PacketBuffer;
 
-/** Represents a listener that listens to payload channels. */
+/**
+ * Represents a listener that listens to payload channels.
+ */
 public interface PayloadChannelListener {
 
   /**
@@ -12,7 +14,9 @@ public interface PayloadChannelListener {
    */
   void listen(PacketBuffer buffer);
 
-  /** A factory class for {@link PayloadChannelListener}. */
+  /**
+   * A factory class for {@link PayloadChannelListener}.
+   */
   interface Factory {
 
     /**

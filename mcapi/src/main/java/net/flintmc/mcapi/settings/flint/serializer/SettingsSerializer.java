@@ -1,9 +1,12 @@
 package net.flintmc.mcapi.settings.flint.serializer;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.processing.autoload.DetectableAnnotation;
-
-import java.lang.annotation.*;
 
 /**
  * Marks a {@link SettingsSerializationHandler} to be registered in the {@link

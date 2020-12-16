@@ -7,7 +7,9 @@ import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.player.PlayerEntity;
 
-/** Represents the Minecraft animal entity. */
+/**
+ * Represents the Minecraft animal entity.
+ */
 public interface AnimalEntity extends AgeableEntity {
 
   /**
@@ -15,7 +17,7 @@ public interface AnimalEntity extends AgeableEntity {
    *
    * @param breedingItem The breeding item to be checked.
    * @return {@code true} if the given item stack is the breeding item for this animal entity,
-   *     otherwise {@code false}.
+   * otherwise {@code false}.
    */
   boolean isBreedingItem(ItemStack breedingItem);
 
@@ -47,7 +49,9 @@ public interface AnimalEntity extends AgeableEntity {
    */
   void setInLove(PlayerEntity player);
 
-  /** Resets the love of the animal entity. */
+  /**
+   * Resets the love of the animal entity.
+   */
   void resetInLove();
 
   /**
@@ -55,18 +59,20 @@ public interface AnimalEntity extends AgeableEntity {
    *
    * @param entity The animal to be checked.
    * @return {@code true} if this animal entity can mate with the given animal, otherwise {@code
-   *     false}.
+   * false}.
    */
   boolean canMateWith(AnimalEntity entity);
 
-  /** A factory class for the {@link AnimalEntity}. */
+  /**
+   * A factory class for the {@link AnimalEntity}.
+   */
   @AssistedFactory(AnimalEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link AnimalEntity} with the given parameters.
      *
-     * @param entity The entity.
+     * @param entity     The entity.
      * @param entityType The type of the entity.
      * @return A created animal entity.
      */
@@ -74,7 +80,9 @@ public interface AnimalEntity extends AgeableEntity {
         @Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /** Service interface for creating {@link AnimalEntity}'s. */
+  /**
+   * Service interface for creating {@link AnimalEntity}'s.
+   */
   interface Provider {
 
     /**

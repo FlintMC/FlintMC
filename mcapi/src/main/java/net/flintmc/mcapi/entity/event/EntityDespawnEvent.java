@@ -27,7 +27,9 @@ public interface EntityDespawnEvent extends Event {
    */
   Entity getEntity();
 
-  /** Factory for the {@link EntityDespawnEvent}. */
+  /**
+   * Factory for the {@link EntityDespawnEvent}.
+   */
   @AssistedFactory(EntityDespawnEvent.class)
   interface Factory {
 
