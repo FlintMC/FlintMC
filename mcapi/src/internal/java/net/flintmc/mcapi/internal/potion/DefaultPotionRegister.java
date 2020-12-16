@@ -16,7 +16,7 @@ public class DefaultPotionRegister implements PotionRegister {
   private final Map<ResourceLocation, StatusEffect> effects;
   private final Map<ResourceLocation, Potion> potions;
 
-  public DefaultPotionRegister() {
+  private DefaultPotionRegister() {
     this.effects = new HashMap<>();
     this.potions = new HashMap<>();
   }
