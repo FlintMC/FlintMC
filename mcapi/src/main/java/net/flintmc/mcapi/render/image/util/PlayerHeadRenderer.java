@@ -1,4 +1,4 @@
-package net.flintmc.mcapi.render.image.head;
+package net.flintmc.mcapi.render.image.util;
 
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
 
