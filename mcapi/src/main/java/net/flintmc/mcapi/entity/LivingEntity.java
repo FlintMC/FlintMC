@@ -1,5 +1,9 @@
 package net.flintmc.mcapi.entity;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.type.EntityType;
@@ -7,11 +11,10 @@ import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.sound.Sound;
+import net.flintmc.mcapi.potion.effect.StatusEffect;
+import net.flintmc.mcapi.potion.effect.StatusEffectInstance;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.world.math.BlockPosition;
-
-import java.util.Optional;
-import java.util.Random;
 
 /** Represents the living entity. */
 public interface LivingEntity extends Entity {
@@ -801,6 +804,36 @@ public interface LivingEntity extends Entity {
    *     client
    */
   void sendBreakAnimation(Hand hand);
+
+  /**
+   * Retrieves a collection with all active potion effects.
+   *
+   * @return A collection with all act<ive potion effects.
+   */
+  Collection<StatusEffectInstance> getActivePotionEffects();
+
+  /**
+   * Retrieves a map with all active potion effects of this living entity.
+   *
+   * @return A map with all active potion effects.
+   */
+  Map<StatusEffect, StatusEffectInstance> getActivePotions();
+
+  /**
+   * Adds a new {@link StatusEffectInstance} to the living entity.
+   *
+   * @param instance The status effect instance to be added.
+   * @return {@code true} if the status effect instance was added, otherwise {@code false}.
+   */
+  boolean addPotionEffect(StatusEffectInstance instance);
+
+  /**
+   * Removes a {@link StatusEffectInstance} from the living entity.
+   *
+   * @param effect The status effect instance to be removed.
+   * @return {@code true} if the status effect instance has been removed, otherwise {@code false}.
+   */
+  boolean removePotionEffect(StatusEffect effect);
 
   /** A factory class for the {@link LivingEntity}. */
   @AssistedFactory(LivingEntity.class)
