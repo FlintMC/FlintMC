@@ -1,11 +1,11 @@
-package net.flintmc.mcapi.internal.render.image;
+package net.flintmc.mcapi.internal.render.image.util;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
 import net.flintmc.mcapi.render.image.ImageRenderer;
-import net.flintmc.mcapi.render.image.head.PlayerHeadRenderer;
+import net.flintmc.mcapi.render.image.util.PlayerHeadRenderer;
 
 @Singleton
 @Implement(PlayerHeadRenderer.class)
