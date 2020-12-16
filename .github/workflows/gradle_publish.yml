@@ -1,8 +1,9 @@
 name: Java CI with Gradle
 
 on:
-  create: [tags]
-
+  push:
+    tags:        
+      - '**' 
 jobs:
   build:
     runs-on: ubuntu-latest
