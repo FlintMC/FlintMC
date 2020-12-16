@@ -1,8 +1,9 @@
 name: Java CI with Gradle
 
 on:
-  create: [tags]
-
+  push:
+    tags:        
+      - '**' 
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,4 +22,6 @@ jobs:
     - name: Build with Gradle and publish to distributor
       run: ./gradlew clean build publish
       env: 
-        VERSION: ${{ github.event.ref }} 
+        VERSION: ${{ github.event.ref }}
+        FLINT_DISTRIBUTOR_PUBLISH_TOKEN: ${{ secrets.FLINT_DISTRIBUTOR_PUBLISH_TOKEN }}
+        FLINT_DISTRIBUTOR_URL: ${{ secrets.FLINT_DISTRIBUTOR_URL }}
