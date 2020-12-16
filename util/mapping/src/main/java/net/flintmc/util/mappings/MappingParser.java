@@ -1,11 +1,11 @@
 package net.flintmc.util.mappings;
 
-import net.flintmc.util.mappings.exceptions.MappingParseException;
-
 import java.io.InputStream;
 import java.util.Map;
+import net.flintmc.util.mappings.exceptions.MappingParseException;
 
 public interface MappingParser {
+
   /**
    * Parse mappings.
    *

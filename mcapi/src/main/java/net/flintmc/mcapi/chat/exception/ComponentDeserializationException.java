@@ -7,6 +7,7 @@ import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
  * deserializing a string into a chat component.
  */
 public class ComponentDeserializationException extends RuntimeException {
+
   public ComponentDeserializationException(String message) {
     super(message);
   }

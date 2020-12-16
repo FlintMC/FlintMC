@@ -1,10 +1,9 @@
 package net.flintmc.util.session.launcher.serializer;
 
 import com.google.gson.JsonObject;
-import net.flintmc.util.session.launcher.LauncherProfile;
-
 import java.util.Collection;
 import java.util.Map;
+import net.flintmc.util.session.launcher.LauncherProfile;
 
 /**
  * Serializer for the {@link LauncherProfile}.

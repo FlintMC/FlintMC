@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.chat.component;
 
-/** A component for displaying the text of a translation in the language selected by the client. */
+/**
+ * A component for displaying the text of a translation in the language selected by the client.
+ */
 public interface TranslationComponent extends ChatComponent {
 
   /**
@@ -52,8 +54,8 @@ public interface TranslationComponent extends ChatComponent {
    * {@link TranslationComponent}.
    *
    * @return A non-null array of all arguments. Modifications to this array will have no effect on
-   *     this component, however modifications to the components in this array will have an effect
-   *     on this component
+   * this component, however modifications to the components in this array will have an effect on
+   * this component
    */
   ChatComponent[] arguments();
 }

@@ -1,12 +1,11 @@
 package net.flintmc.util.i18n.v1_15_2;
 
+import java.util.Collection;
+import java.util.HashSet;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.i18n.I18n;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.Language;
-
-import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * 1.15.2 implementation of the {@link I18n}.

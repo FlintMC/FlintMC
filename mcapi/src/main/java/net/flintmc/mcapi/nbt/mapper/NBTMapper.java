@@ -2,7 +2,9 @@ package net.flintmc.mcapi.nbt.mapper;
 
 import net.flintmc.mcapi.nbt.NBT;
 
-/** Mapper between the Minecraft NBT and Flint NBT. */
+/**
+ * Mapper between the Minecraft NBT and Flint NBT.
+ */
 public interface NBTMapper {
 
   /**

@@ -1,9 +1,13 @@
 package net.flintmc.mcapi.world.type.difficulty;
 
-/** An enumeration of all available difficulties. */
+/**
+ * An enumeration of all available difficulties.
+ */
 public enum Difficulty {
 
-  /** Everything lives in harmony and peace with each other and world hunger was defeated. */
+  /**
+   * Everything lives in harmony and peace with each other and world hunger was defeated.
+   */
   PEACEFUL,
   /**
    * Hostile mobs spawn, but they deal less damage than on {@link #NORMAL} difficulty. The hunger

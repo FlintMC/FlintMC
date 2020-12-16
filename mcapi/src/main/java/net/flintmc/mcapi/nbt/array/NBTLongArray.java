@@ -4,7 +4,9 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.nbt.NBT;
 
-/** An array of long's payloads. */
+/**
+ * An array of long's payloads.
+ */
 public interface NBTLongArray extends NBT {
 
   /**
@@ -14,7 +16,9 @@ public interface NBTLongArray extends NBT {
    */
   long[] asArray();
 
-  /** A factory class for the {@link NBTLongArray}. */
+  /**
+   * A factory class for the {@link NBTLongArray}.
+   */
   @AssistedFactory(NBTLongArray.class)
   interface Factory {
 

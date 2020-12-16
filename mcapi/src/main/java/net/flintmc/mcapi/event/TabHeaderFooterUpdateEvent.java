@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.event;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
@@ -7,8 +8,6 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.player.overlay.TabOverlay;
-
-import javax.annotation.Nullable;
 
 /**
  * This event will be fired when the tab header/footer is updated or reset (e.g. via {@link
@@ -40,13 +39,19 @@ public interface TabHeaderFooterUpdateEvent extends Event, Cancellable {
    * TabHeaderFooterUpdateEvent}.
    */
   enum Type {
-    /** The header in the tab list has been updated. */
+    /**
+     * The header in the tab list has been updated.
+     */
     HEADER,
-    /** The footer in the tab list has been updated. */
+    /**
+     * The footer in the tab list has been updated.
+     */
     FOOTER
   }
 
-  /** Factory for the {@link TabHeaderFooterUpdateEvent}. */
+  /**
+   * Factory for the {@link TabHeaderFooterUpdateEvent}.
+   */
   @AssistedFactory(TabHeaderFooterUpdateEvent.class)
   interface Factory {
 
@@ -54,7 +59,7 @@ public interface TabHeaderFooterUpdateEvent extends Event, Cancellable {
      * Creates a new {@link TabHeaderFooterUpdateEvent}.
      *
      * @param newValue The component that has been updated or {@code null} if it has been reset
-     * @param type The non-null type of the component that has been updated
+     * @param type     The non-null type of the component that has been updated
      * @return The new non-null {@link TabHeaderFooterUpdateEvent}.
      */
     TabHeaderFooterUpdateEvent create(

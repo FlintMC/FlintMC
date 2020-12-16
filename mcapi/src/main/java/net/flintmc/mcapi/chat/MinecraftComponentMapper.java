@@ -3,7 +3,9 @@ package net.flintmc.mcapi.chat;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.exception.ComponentMappingException;
 
-/** Mapper between the minecraft components and the flint components. */
+/**
+ * Mapper between the minecraft components and the flint components.
+ */
 public interface MinecraftComponentMapper {
 
   /**

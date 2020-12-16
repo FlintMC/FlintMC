@@ -3,7 +3,9 @@ package net.flintmc.mcapi.chat.builder;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
 
-/** Builder for {@link KeybindComponent}s. */
+/**
+ * Builder for {@link KeybindComponent}s.
+ */
 public interface KeybindComponentBuilder extends ComponentBuilder<KeybindComponentBuilder> {
 
   /**

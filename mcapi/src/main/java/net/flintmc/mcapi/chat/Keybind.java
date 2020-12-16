@@ -1,11 +1,12 @@
 package net.flintmc.mcapi.chat;
 
-import net.flintmc.mcapi.chat.component.KeybindComponent;
-
 import java.util.HashMap;
 import java.util.Map;
+import net.flintmc.mcapi.chat.component.KeybindComponent;
 
-/** All available keybindings for the {@link KeybindComponent}. */
+/**
+ * All available keybindings for the {@link KeybindComponent}.
+ */
 public enum Keybind {
   JUMP("key.jump"),
   SNEAK("key.sneak"),

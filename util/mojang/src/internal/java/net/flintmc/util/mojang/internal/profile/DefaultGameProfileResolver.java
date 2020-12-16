@@ -1,19 +1,18 @@
 package net.flintmc.util.mojang.internal.profile;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.util.UUIDTypeAdapter;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.mcapi.player.gameprofile.GameProfile;
-import net.flintmc.mcapi.player.gameprofile.property.Property;
-import net.flintmc.util.mojang.MojangRateLimitException;
-import net.flintmc.util.mojang.internal.cache.FileCache;
-import net.flintmc.util.mojang.profile.GameProfileResolver;
-import org.apache.logging.log4j.Logger;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +22,14 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.mcapi.player.gameprofile.GameProfile;
+import net.flintmc.mcapi.player.gameprofile.property.Property;
+import net.flintmc.util.mojang.MojangRateLimitException;
+import net.flintmc.util.mojang.internal.cache.FileCache;
+import net.flintmc.util.mojang.profile.GameProfileResolver;
+import org.apache.logging.log4j.Logger;
 
 @Singleton
 @Implement(GameProfileResolver.class)

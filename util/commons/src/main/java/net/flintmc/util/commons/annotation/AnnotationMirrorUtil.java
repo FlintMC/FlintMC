@@ -1,24 +1,35 @@
 package net.flintmc.util.commons.annotation;
 
 import com.google.auto.common.SimpleAnnotationMirror;
-
-import javax.lang.model.element.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 import java.util.stream.Collectors;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 
-/** Utility class for working with annotations. */
+/**
+ * Utility class for working with annotations.
+ */
 public class AnnotationMirrorUtil {
-  private AnnotationMirrorUtil() {}
+
+  private AnnotationMirrorUtil() {
+  }
 
   /**
    * Transitively searches the given type element for an annotation of the given type and returns
    * its {@link AnnotationMirror}.
    *
    * @param typeElement The element to transitively search for the given annotation
-   * @param className The class name of the annotation to find
+   * @param className   The class name of the annotation to find
    * @return The annotation mirror of the found annotation
    * @throws IllegalArgumentException If the given element is not annotated with the requested
-   *     annotation
+   *                                  annotation
    */
   public static AnnotationMirror getTransitiveAnnotationMirror(
       TypeElement typeElement, String className) {
@@ -35,7 +46,7 @@ public class AnnotationMirrorUtil {
    * Searches the given type element for an annotation of the given type and returns its {@link
    * AnnotationMirror}.
    *
-   * @param element The element to search for the given annotation
+   * @param element        The element to search for the given annotation
    * @param annotationType The type of the annotation to find
    * @return The annotation mirror of the found annotation or null
    */
@@ -61,8 +72,8 @@ public class AnnotationMirrorUtil {
    * found.
    *
    * @param annotationMirror The annotation mirror to retrieve the value from
-   * @param key The key to use to retrieve the value from the annotation mirror
-   * @param defaultValue The value to return if the given key does not exist
+   * @param key              The key to use to retrieve the value from the annotation mirror
+   * @param defaultValue     The value to return if the given key does not exist
    * @return The found value or the default value if the requested value was not found
    */
   public static AnnotationValue getAnnotationValue(
@@ -96,7 +107,7 @@ public class AnnotationMirrorUtil {
    * </pre>
    *
    * </blockquote>
-   *
+   * <p>
    * Calling {@code collectTransitiveAnnotations} on the {@link TypeElement} of {@code SomeClass}
    * would yield {@code [TransitiveAnnotation, BaseAnnotation]}.
    *
@@ -122,7 +133,9 @@ public class AnnotationMirrorUtil {
                         .equals(
                             ((TypeElement) annotationMirror.getAnnotationType().asElement())
                                 .getQualifiedName()
-                                .toString()))) continue;
+                                .toString()))) {
+          continue;
+        }
 
         // Add the annotation to be checked and collect its mirror
         queue.add(annotationMirror);

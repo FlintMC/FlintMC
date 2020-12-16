@@ -3,7 +3,9 @@ package net.flintmc.mcapi.world.type.difficulty;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents the local difficulty of the Minecraft world. */
+/**
+ * Represents the local difficulty of the Minecraft world.
+ */
 public interface DifficultyLocal {
 
   /**
@@ -25,7 +27,7 @@ public interface DifficultyLocal {
    *
    * @param difficulty The difficulty to be checked.
    * @return {@code true} if the current difficulty more difficult than the given difficulty,
-   *     otherwise {@code false}.
+   * otherwise {@code false}.
    */
   boolean isHarderThan(float difficulty);
 
@@ -39,26 +41,28 @@ public interface DifficultyLocal {
   /**
    * Calculates the additional difficulty of this world.
    *
-   * @param difficulty The world difficulty.
-   * @param worldTime The current world time.
+   * @param difficulty         The world difficulty.
+   * @param worldTime          The current world time.
    * @param chunkInhabitedTime The chunk inhabited time.
-   * @param moonPhaseFactor The factor of the moon phase.
+   * @param moonPhaseFactor    The factor of the moon phase.
    * @return The calculated additional difficulty.
    */
   float calculateAdditionalDifficulty(
       Difficulty difficulty, long worldTime, long chunkInhabitedTime, float moonPhaseFactor);
 
-  /** A factory class for {@link DifficultyLocal}. */
+  /**
+   * A factory class for {@link DifficultyLocal}.
+   */
   @AssistedFactory(DifficultyLocal.class)
   interface Factory {
 
     /**
      * Creates a new {@link DifficultyLocal} with the given parameters.
      *
-     * @param difficulty The world difficulty.
-     * @param worldTime The current world time.
+     * @param difficulty         The world difficulty.
+     * @param worldTime          The current world time.
      * @param chunkInhabitedTime The chunk inhabited time.
-     * @param moonPhaseFactor The factory of the moon phase.
+     * @param moonPhaseFactor    The factory of the moon phase.
      * @return A created difficulty local.
      */
     DifficultyLocal create(

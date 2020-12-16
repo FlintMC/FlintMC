@@ -5,7 +5,9 @@ import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 
-/** Represents a Minecraft team. */
+/**
+ * Represents a Minecraft team.
+ */
 public interface Team {
 
   /**
