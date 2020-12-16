@@ -106,10 +106,13 @@ public interface WorldOverview extends Comparable<WorldOverview> {
      * @param displayName        The display name of the world overview.
      * @param lastTimePlayed     The last time played timestamp of the world overview.
      * @param sizeOnDisk         The size on the disk of the world.
-     * @param requiresConversion {@code true} if the world requires a conversion, otherwise {@code false}.
+     * @param requiresConversion {@code true} if the world requires a conversion, otherwise {@code
+     *                           false}.
      * @param gameMode           The game mode of the world.
-     * @param hardcoreMode       {@code true} if the hardcore mode is enabled in the world, otherwise {@code false}.
-     * @param cheats             {@code true} if the cheats are enabled in the world, otherwise {@code false}.
+     * @param hardcoreMode       {@code true} if the hardcore mode is enabled in the world,
+     *                           otherwise {@code false}.
+     * @param cheats             {@code true} if the cheats are enabled in the world, otherwise
+     *                           {@code false}.
      * @param askToOpenWorld     {@code true} asks a world to open, otherwise {@code false}.
      * @param markWorldInList    {@code true} marks a world in the list, otherwise {@code false}.
      * @param futureWorld        {@code true} if the world in the future, otherwise {@code false}.
@@ -117,18 +120,18 @@ public interface WorldOverview extends Comparable<WorldOverview> {
      * @return A created world overview.
      */
     WorldOverview create(
-            @Assisted("fileName") String fileName,
-            @Assisted("displayName") String displayName,
-            @Assisted("lastTimePlayed") long lastTimePlayed,
-            @Assisted("sizeOnDisk") long sizeOnDisk,
-            @Assisted("requiresConversion") boolean requiresConversion,
-            @Assisted("gameMode") GameMode gameMode,
-            @Assisted("hardcoreMode") boolean hardcoreMode,
-            @Assisted("cheats") boolean cheats,
-            @Assisted("askToOpenWorld") boolean askToOpenWorld,
-            @Assisted("markWorldInList") boolean markWorldInList,
-            @Assisted("futureWorld") boolean futureWorld,
-            @Assisted("outdatedWorld") boolean outdatedWorld);
+        @Assisted("fileName") String fileName,
+        @Assisted("displayName") String displayName,
+        @Assisted("lastTimePlayed") long lastTimePlayed,
+        @Assisted("sizeOnDisk") long sizeOnDisk,
+        @Assisted("requiresConversion") boolean requiresConversion,
+        @Assisted("gameMode") GameMode gameMode,
+        @Assisted("hardcoreMode") boolean hardcoreMode,
+        @Assisted("cheats") boolean cheats,
+        @Assisted("askToOpenWorld") boolean askToOpenWorld,
+        @Assisted("markWorldInList") boolean markWorldInList,
+        @Assisted("futureWorld") boolean futureWorld,
+        @Assisted("outdatedWorld") boolean outdatedWorld);
 
   }
 

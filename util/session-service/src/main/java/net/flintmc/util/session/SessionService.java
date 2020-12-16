@@ -1,11 +1,10 @@
 package net.flintmc.util.session;
 
+import java.util.UUID;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.event.MinecraftInitializeEvent;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.util.session.event.SessionAccountLogInEvent;
-
-import java.util.UUID;
 
 /**
  * The SessionService can be used to change the minecraft account to be played with, get the current
@@ -47,7 +46,8 @@ public interface SessionService {
 
   /**
    * Changes the client token for this session service. This method also "logs out" (the accessToken
-   * will stay valid, but this SessionService won't use it anymore) from the account (if logged in).
+   * will stay valid, but this SessionService won't use it anymore) from the account (if logged
+   * in).
    *
    * <p>After calling this method, you should also {@link #logIn(String, String) log in} again.
    *
@@ -71,7 +71,7 @@ public interface SessionService {
    * #refreshToken()}.
    *
    * @return {@code true} if the access token is valid or {@code false} if either the access token
-   *     is invalid or the {@link SessionService} is not logged into an account6
+   * is invalid or the {@link SessionService} is not logged into an account6
    */
   boolean isAccessTokenValid();
 
@@ -95,7 +95,7 @@ public interface SessionService {
    * of the email is provided, an {@link AuthenticationResult} with the type {@link
    * AuthenticationResult.Type#INVALID_CREDENTIALS} will be returned.
    *
-   * @param email The non-null email of the account
+   * @param email    The non-null email of the account
    * @param password The non-null password of the account
    * @return The non-null result of the log in
    */
@@ -111,7 +111,9 @@ public interface SessionService {
    */
   AuthenticationResult logIn(String accessToken);
 
-  /** Logs this SessionService out of the given account or does nothing if it is not logged in. */
+  /**
+   * Logs this SessionService out of the given account or does nothing if it is not logged in.
+   */
   void logOut();
 
   /**
@@ -121,7 +123,7 @@ public interface SessionService {
    * has been created with {@link #newSessionService()}.
    *
    * @return {@code true} if this instance is the main {@link SessionService}, {@code false}
-   *     otherwise
+   * otherwise
    */
   boolean isMain();
 

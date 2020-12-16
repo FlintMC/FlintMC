@@ -14,7 +14,7 @@ import net.flintmc.mcapi.entity.Entity;
  * <p>When leaving a world in Singleplayer (not in Multiplayer), this event will also be fired for
  * the player himself, but not for other entities in the world.
  *
- * <p>It will only be fired in the {@link Subscribe.Phase#POST} phase.
+ * <p>It will only be fired in the {@link Subscribe.Phase#PRE} phase.
  *
  * @see Subscribe
  */

@@ -27,7 +27,9 @@ public interface SessionTokenRefreshEvent extends Event {
    */
   String getNewAccessToken();
 
-  /** Factory for the {@link SessionTokenRefreshEvent}. */
+  /**
+   * Factory for the {@link SessionTokenRefreshEvent}.
+   */
   @AssistedFactory(SessionTokenRefreshEvent.class)
   interface Factory {
 
@@ -35,8 +37,8 @@ public interface SessionTokenRefreshEvent extends Event {
      * Creates a new {@link SessionTokenRefreshEvent} with the given tokens.
      *
      * @param previousToken The non-null token from before it has been refreshed (this is always
-     *     given because the token cannot be refreshed without having a token)
-     * @param newToken The non-null token after it has been refreshed
+     *                      given because the token cannot be refreshed without having a token)
+     * @param newToken      The non-null token after it has been refreshed
      * @return The new non-null {@link SessionTokenRefreshEvent}
      */
     SessionTokenRefreshEvent create(

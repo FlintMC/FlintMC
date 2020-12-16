@@ -4,7 +4,9 @@ import net.flintmc.mcapi.nbt.array.NBTByteArray;
 import net.flintmc.mcapi.nbt.array.NBTIntArray;
 import net.flintmc.mcapi.nbt.array.NBTLongArray;
 
-/** An interface for creating various named binary tags. */
+/**
+ * An interface for creating various named binary tags.
+ */
 public interface NBTCreator {
 
   /**

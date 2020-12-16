@@ -14,7 +14,9 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
  */
 public interface IngameMenuOpenEvent extends Event, Cancellable {
 
-  /** Factory for the {@link IngameMenuOpenEvent}. */
+  /**
+   * Factory for the {@link IngameMenuOpenEvent}.
+   */
   @AssistedFactory(IngameMenuOpenEvent.class)
   interface Factory {
 

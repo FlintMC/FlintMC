@@ -4,18 +4,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.mojang.util.UUIDTypeAdapter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.util.session.launcher.LauncherProfile;
 import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-/** Serializer for version 2 of the launcher_profiles.json by Mojang. */
+/**
+ * Serializer for version 2 of the launcher_profiles.json by Mojang.
+ */
 @ProfileSerializerVersion(2)
 public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
 

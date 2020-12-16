@@ -27,7 +27,8 @@ public interface I18n {
   /**
    * Retrieves a collection of all available languages in the format "Name (Region)"..
    *
-   * @return A non-null collection of all available languages, modification to it won't have any effect
+   * @return A non-null collection of all available languages, modification to it won't have any
+   * effect
    */
   Collection<String> getAvailableLanguages();
 

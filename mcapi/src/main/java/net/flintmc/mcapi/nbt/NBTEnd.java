@@ -8,7 +8,9 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
  */
 public interface NBTEnd extends NBT {
 
-  /** A factory class for the {@link NBTEnd}. */
+  /**
+   * A factory class for the {@link NBTEnd}.
+   */
   @AssistedFactory(NBTEnd.class)
   interface Factory {
 

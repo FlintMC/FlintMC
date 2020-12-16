@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.chat.component;
 
-/** A component that allows to display the numeric value of an entry in the scoreboard. */
+/**
+ * A component that allows to display the numeric value of an entry in the scoreboard.
+ */
 public interface ScoreComponent extends ChatComponent {
 
   /**

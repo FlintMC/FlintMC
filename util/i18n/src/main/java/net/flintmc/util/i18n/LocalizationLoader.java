@@ -1,6 +1,8 @@
 package net.flintmc.util.i18n;
 
-/** Represents a loader for localizations. */
+/**
+ * Represents a loader for localizations.
+ */
 public interface LocalizationLoader {
 
   /**

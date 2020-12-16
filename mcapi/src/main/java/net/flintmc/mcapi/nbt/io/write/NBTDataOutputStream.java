@@ -1,11 +1,10 @@
 package net.flintmc.mcapi.nbt.io.write;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.nbt.NBT;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 /**
  * A data output stream lets an application write primitive Java data types and named binary tags to
@@ -20,7 +19,7 @@ public interface NBTDataOutputStream {
    * <p>(ID, name and value when applicable)
    *
    * @param name The name from the tag.
-   * @param nbt The named binary tag.
+   * @param nbt  The named binary tag.
    * @throws IOException If an error occurred during writing.
    */
   void writeFullyFormedTag(String name, NBT nbt) throws IOException;
@@ -39,7 +38,9 @@ public interface NBTDataOutputStream {
    */
   DataOutputStream getDataOutputStream();
 
-  /** A factory class for the {@link NBTDataOutputStream}. */
+  /**
+   * A factory class for the {@link NBTDataOutputStream}.
+   */
   @AssistedFactory(NBTDataOutputStream.class)
   interface Factory {
 

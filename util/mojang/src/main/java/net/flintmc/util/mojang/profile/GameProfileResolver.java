@@ -1,12 +1,13 @@
 package net.flintmc.util.mojang.profile;
 
-import net.flintmc.mcapi.player.gameprofile.GameProfile;
-
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import net.flintmc.mcapi.player.gameprofile.GameProfile;
 
-/** Resolver for {@link GameProfile}s by Mojang with the Name or UUID including their textures. */
+/**
+ * Resolver for {@link GameProfile}s by Mojang with the Name or UUID including their textures.
+ */
 public interface GameProfileResolver {
 
   /**
@@ -26,9 +27,9 @@ public interface GameProfileResolver {
    * <p>If there is no profile with the given name on Mojang or an error with Mojang occurred, the
    * future will contain {@code null}.
    *
-   * @param name The non-null case-insensitive name to resolve the UUID (and textures) for
+   * @param name     The non-null case-insensitive name to resolve the UUID (and textures) for
    * @param textures {@code true} to also resolve the textures, {@code false} to only resolve the
-   *     UUID
+   *                 UUID
    * @return The non-null future with the profile containing the name and textures of the given UUID
    */
   CompletableFuture<GameProfile> resolveProfile(String name, boolean textures);
@@ -41,10 +42,10 @@ public interface GameProfileResolver {
    * occurred, the collection will not contain it.
    *
    * @param names The non-null varargs of all non-null names that should be resolved, this array
-   *     cannot be larger than 10 elements. Each name needs to be non-empty and with a max length of
-   *     25 characters
+   *              cannot be larger than 10 elements. Each name needs to be non-empty and with a max
+   *              length of 25 characters
    * @return The non-null future with the profiles, each containing the name and UUID that have been
-   *     resolved
+   * resolved
    */
   CompletableFuture<Collection<GameProfile>> resolveAll(String... names);
 }

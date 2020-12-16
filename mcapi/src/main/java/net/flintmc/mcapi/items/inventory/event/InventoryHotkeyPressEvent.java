@@ -35,7 +35,9 @@ public interface InventoryHotkeyPressEvent extends Event, InventorySlotEvent, Ca
    */
   ItemStack getClickedItem();
 
-  /** Factory for the {@link InventoryHotkeyPressEvent}. */
+  /**
+   * Factory for the {@link InventoryHotkeyPressEvent}.
+   */
   @AssistedFactory(InventoryHotkeyPressEvent.class)
   interface Factory {
 
@@ -43,9 +45,10 @@ public interface InventoryHotkeyPressEvent extends Event, InventorySlotEvent, Ca
      * Creates a new {@link InventoryHotkeyPressEvent} with the given values.
      *
      * @param inventory The non-null inventory where the press has happened
-     * @param slot The slot in the inventory where the press has happened (if the user performs this
-     *     action, it will be the slot where the mouse is located at when pressing the hotkey)
-     * @param hotkey The hotkey which has been pressed for this event in the range from 0 - 8
+     * @param slot      The slot in the inventory where the press has happened (if the user performs
+     *                  this action, it will be the slot where the mouse is located at when pressing
+     *                  the hotkey)
+     * @param hotkey    The hotkey which has been pressed for this event in the range from 0 - 8
      * @return The new non-null event
      */
     InventoryHotkeyPressEvent create(

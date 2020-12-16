@@ -1,10 +1,9 @@
 package net.flintmc.util.session.launcher;
 
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
-
-import java.util.UUID;
 
 /**
  * Represents an account from the launcher_profiles.json.
@@ -18,7 +17,7 @@ public interface LauncherProfile {
    *
    * @param uniqueId The non-null uniqueId of the profile
    * @return The {@link GameProfile} with the given {@code uniqueId} or {@code null} if there is no
-   *     {@link GameProfile} with the given {@code uniqueId} in {@link #getProfiles() the profiles}
+   * {@link GameProfile} with the given {@code uniqueId} in {@link #getProfiles() the profiles}
    */
   GameProfile getProfile(UUID uniqueId);
 
@@ -52,17 +51,20 @@ public interface LauncherProfile {
    */
   void setAccessToken(String accessToken);
 
-  /** Factory for the {@link LauncherProfile}. */
+  /**
+   * Factory for the {@link LauncherProfile}.
+   */
   @AssistedFactory(LauncherProfile.class)
   interface Factory {
 
     /**
      * Creates an new {@link LauncherProfile} with the given parameters.
      *
-     * @param profileId The non-null profileId of this profile
+     * @param profileId   The non-null profileId of this profile
      * @param accessToken The non-null accessToken which should be used with the clientToken from
-     *     {@link LauncherProfiles#getClientToken()} to authenticate with a mojang account
-     * @param profiles The non-null array of non-null profiles
+     *                    {@link LauncherProfiles#getClientToken()} to authenticate with a mojang
+     *                    account
+     * @param profiles    The non-null array of non-null profiles
      * @return The new non-null {@link LauncherProfile}
      */
     LauncherProfile create(

@@ -12,6 +12,7 @@ import net.flintmc.mcapi.nbt.mapper.NBTMapper;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.player.type.hand.HandMapper;
 import net.flintmc.mcapi.player.type.sound.SoundMapper;
+import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.minecraft.entity.Pose;
 import net.minecraft.world.GameType;
@@ -28,21 +29,24 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
   private final HandMapper handMapper;
   private final MinecraftItemMapper itemMapper;
   private final MinecraftComponentMapper componentMapper;
+  private final PotionMapper potionMapper;
   private final NBTMapper nbtMapper;
   private final ResourceLocationProvider resourceLocationProvider;
   private final SoundMapper soundMapper;
 
   @Inject
   private VersionedEntityFoundationMapper(
-      EntityMapper entityMapper,
-      HandMapper handMapper,
-      MinecraftItemMapper itemMapper,
-      MinecraftComponentMapper componentMapper,
-      NBTMapper nbtMapper,
-      ResourceLocationProvider resourceLocationProvider,
-      SoundMapper soundMapper) {
+          EntityMapper entityMapper,
+          HandMapper handMapper,
+          MinecraftItemMapper itemMapper,
+          MinecraftComponentMapper componentMapper,
+          PotionMapper potionMapper,
+          NBTMapper nbtMapper,
+          ResourceLocationProvider resourceLocationProvider,
+          SoundMapper soundMapper) {
     this.itemMapper = itemMapper;
     this.componentMapper = componentMapper;
+    this.potionMapper = potionMapper;
     this.nbtMapper = nbtMapper;
     this.resourceLocationProvider = resourceLocationProvider;
     this.soundMapper = soundMapper;
@@ -276,6 +280,14 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
   @Override
   public EntityMapper getEntityMapper() {
     return this.entityMapper;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PotionMapper getPotionMapper() {
+    return this.potionMapper;
   }
 
   /** {@inheritDoc} */

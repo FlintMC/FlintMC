@@ -7,7 +7,8 @@ import java.net.URL;
 
 public class URLResolver {
 
-  private URLResolver() {}
+  private URLResolver() {
+  }
 
   /**
    * Opens a {@link HttpURLConnection} and sets the Flint User Agent.

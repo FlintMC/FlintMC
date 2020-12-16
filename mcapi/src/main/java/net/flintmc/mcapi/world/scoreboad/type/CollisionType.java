@@ -4,16 +4,26 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/** An enumeration of all available collision rules. */
+/**
+ * An enumeration of all available collision rules.
+ */
 public enum CollisionType {
 
-  /** The members of the team can push all objects and can be pushed by all objects. */
+  /**
+   * The members of the team can push all objects and can be pushed by all objects.
+   */
   ALWAYS("always", 0),
-  /** The members of the team cannot push an object, but they cannot be pushed either. */
+  /**
+   * The members of the team cannot push an object, but they cannot be pushed either.
+   */
   NEVER("never", 1),
-  /** The members of the team can push objects of other teams, but team mates cannot. */
+  /**
+   * The members of the team can push objects of other teams, but team mates cannot.
+   */
   PUSH_OTHER_TEAMS("pushOtherTeams", 2),
-  /** The members of the team can only move objects of the same team. */
+  /**
+   * The members of the team can only move objects of the same team.
+   */
   PUSH_OWN_TEAM("pushOwnTeam", 3);
 
   private static final Map<String, CollisionType> COLLISION_TYPES =

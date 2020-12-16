@@ -1,5 +1,11 @@
 package net.flintmc.mcapi.v1_15_2.entity;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.function.Supplier;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -12,18 +18,18 @@ import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.sound.Sound;
+import net.flintmc.mcapi.potion.effect.StatusEffect;
+import net.flintmc.mcapi.potion.effect.StatusEffectInstance;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.Supplier;
-
 @Implement(value = LivingEntity.class, version = "1.15.2")
 public class VersionedLivingEntity extends VersionedEntity implements LivingEntity {
+
+  private final Map<StatusEffect, StatusEffectInstance> activePotions;
 
   @AssistedInject
   public VersionedLivingEntity(
@@ -32,6 +38,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
       World world,
       EntityFoundationMapper entityFoundationMapper) {
     super(entity, entityType, world, entityFoundationMapper);
+    this.activePotions = new HashMap<>();
   }
 
   protected VersionedLivingEntity(
@@ -40,6 +47,7 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
       World world,
       EntityFoundationMapper entityFoundationMapper) {
     super(entitySupplier, entityType, world, entityFoundationMapper);
+    this.activePotions = new HashMap<>();
   }
 
   @Override
@@ -668,6 +676,43 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
         .sendBreakAnimation(
             (net.minecraft.util.Hand)
                 this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Collection<StatusEffectInstance> getActivePotionEffects() {
+    return this.activePotions.values();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Map<StatusEffect, StatusEffectInstance> getActivePotions() {
+    return this.activePotions;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean addPotionEffect(StatusEffectInstance instance) {
+    if (instance == null) {
+      return false;
+    }
+
+    if (!this.activePotions.containsKey(instance.getPotion())) {
+      this.activePotions.put(instance.getPotion(), instance);
+      return true;
+    }
+
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean removePotionEffect(StatusEffect effect) {
+    if (effect == null) {
+      return false;
+    }
+
+    return this.activePotions.remove(effect) != null;
   }
 
   /** {@inheritDoc} */
