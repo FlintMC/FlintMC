@@ -4,7 +4,9 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.nbt.NBT;
 
-/** An array of bytes. */
+/**
+ * An array of bytes.
+ */
 public interface NBTByteArray extends NBT {
 
   /**
@@ -14,7 +16,9 @@ public interface NBTByteArray extends NBT {
    */
   byte[] asArray();
 
-  /** A factory for {@link NBTByteArray}. */
+  /**
+   * A factory for {@link NBTByteArray}.
+   */
   @AssistedFactory(NBTByteArray.class)
   interface Factory {
 

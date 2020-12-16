@@ -1,11 +1,17 @@
 package net.flintmc.mcapi.world.scoreboad.type;
 
-/** An enumeration of all available render types. */
+/**
+ * An enumeration of all available render types.
+ */
 public enum RenderType {
 
-  /** The type renders integers. */
+  /**
+   * The type renders integers.
+   */
   INTEGER,
-  /** The type renders hearts. */
+  /**
+   * The type renders hearts.
+   */
   HEARTS;
 
   /**

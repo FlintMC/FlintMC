@@ -2,7 +2,9 @@ package net.flintmc.mcapi.chat.builder;
 
 import net.flintmc.mcapi.chat.component.TextComponent;
 
-/** Builder for {@link TextComponent}s. */
+/**
+ * Builder for {@link TextComponent}s.
+ */
 public interface TextComponentBuilder extends ComponentBuilder<TextComponentBuilder> {
 
   /**

@@ -35,7 +35,7 @@ public interface ChatComponent {
    * Enables/Disables the given format in this component. If the component is already in the given
    * state, this method will have no effect.
    *
-   * @param format The format to enable/disable
+   * @param format  The format to enable/disable
    * @param enabled Whether the format should be enabled or not
    */
   void toggleFormat(ChatFormat format, boolean enabled);

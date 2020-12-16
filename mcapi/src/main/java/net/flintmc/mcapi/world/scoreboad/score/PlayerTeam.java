@@ -8,7 +8,9 @@ import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 
-/** Represents a Minecraft score player team */
+/**
+ * Represents a Minecraft score player team
+ */
 public interface PlayerTeam extends Team {
 
   /**
@@ -85,7 +87,7 @@ public interface PlayerTeam extends Team {
    * Changes the friendly invisible of this team.
    *
    * @param friendlyInvisible {@code true} if can see friendly invisible members, otherwise {@code
-   *     false}
+   *                          false}
    */
   void setSeeFriendlyInvisible(boolean friendlyInvisible);
 
@@ -110,7 +112,9 @@ public interface PlayerTeam extends Team {
    */
   void setCollisionType(CollisionType type);
 
-  /** A factory class for {@link PlayerTeam} */
+  /**
+   * A factory class for {@link PlayerTeam}
+   */
   @AssistedFactory(PlayerTeam.class)
   interface Factory {
 

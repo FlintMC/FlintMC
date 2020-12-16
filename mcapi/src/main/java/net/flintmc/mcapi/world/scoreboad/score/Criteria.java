@@ -4,7 +4,9 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
-/** Represents a Minecraft score criteria. */
+/**
+ * Represents a Minecraft score criteria.
+ */
 public interface Criteria {
 
   /**
@@ -28,7 +30,9 @@ public interface Criteria {
    */
   RenderType getRenderType();
 
-  /** A factory class for {@link Criteria} */
+  /**
+   * A factory class for {@link Criteria}
+   */
   @AssistedFactory(Criteria.class)
   interface Factory {
 
@@ -43,8 +47,8 @@ public interface Criteria {
     /**
      * Creates a new {@link Criteria} with the given parameters.
      *
-     * @param name The name of the criteria.
-     * @param readOnly {@code true} if the criteria read only, otherwise {@code false}.
+     * @param name       The name of the criteria.
+     * @param readOnly   {@code true} if the criteria read only, otherwise {@code false}.
      * @param renderType The render type of the criteria.
      * @return A created criteria.
      */

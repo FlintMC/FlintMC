@@ -6,7 +6,9 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
-/** Represents a Minecraft score objective */
+/**
+ * Represents a Minecraft score objective
+ */
 public interface Objective {
 
   /**
@@ -58,17 +60,19 @@ public interface Objective {
    */
   void setRenderType(RenderType renderType);
 
-  /** A factory class for {@link Objective} */
+  /**
+   * A factory class for {@link Objective}
+   */
   @AssistedFactory(Objective.class)
   interface Factory {
 
     /**
      * Creates a new {@link Objective} with the given parameters.
      *
-     * @param name The registry name for this objective.
+     * @param name        The registry name for this objective.
      * @param displayName The name that is displayed.
-     * @param criteria The criteria for this objective.
-     * @param type The render type for this objective.
+     * @param criteria    The criteria for this objective.
+     * @param type        The render type for this objective.
      * @return A created objective.
      */
     Objective create(

@@ -9,7 +9,9 @@ import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.i18n.Localization;
 
-/** A transformer that adds the {@link Localization} interface to Minecraft locale. */
+/**
+ * A transformer that adds the {@link Localization} interface to Minecraft locale.
+ */
 @Singleton
 public class LocaleTransformer {
 
@@ -22,9 +24,12 @@ public class LocaleTransformer {
     ctClass.addInterface(localization);
 
     ctClass.addMethod(
-        CtMethod.make("public java.util.Map getProperties() {" + "return " + context.getField("properties").getName() + ";}", ctClass));
+        CtMethod.make(
+            "public java.util.Map getProperties() {" + "return " + context.getField("properties")
+                .getName() + ";}", ctClass));
     ctClass.addMethod(
         CtMethod.make(
-            "public void add(String key, String translation) {" +  context.getField("properties").getName() +".put($$);}", ctClass));
+            "public void add(String key, String translation) {" + context.getField("properties")
+                .getName() + ".put($$);}", ctClass));
   }
 }

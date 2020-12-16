@@ -2,7 +2,9 @@ package net.flintmc.mcapi.world.border;
 
 import net.flintmc.mcapi.world.math.BlockPosition;
 
-/** Represents the Minecraft world border. */
+/**
+ * Represents the Minecraft world border.
+ */
 public interface WorldBorder {
 
   /**
@@ -118,8 +120,8 @@ public interface WorldBorder {
   /**
    * Sets the transition of this border.
    *
-   * @param oldSize The old size of this border.
-   * @param newSize The new size of this border.
+   * @param oldSize  The old size of this border.
+   * @param newSize  The new size of this border.
    * @param duration The duration, how long it takes fro the border to reach the new size.
    */
   void setTransition(double oldSize, double newSize, long duration);

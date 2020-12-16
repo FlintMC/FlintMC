@@ -18,7 +18,7 @@ public interface SessionAccountLogInEvent extends Event {
    * Retrieves the game profile from before the log in (if the account was switched).
    *
    * @return The profile of the previous account or {@code null} if the client was not logged in
-   *     when changing the account
+   * when changing the account
    */
   GameProfile getPreviousProfile();
 
@@ -29,7 +29,9 @@ public interface SessionAccountLogInEvent extends Event {
    */
   GameProfile getNewProfile();
 
-  /** Factory for the {@link SessionAccountLogInEvent}. */
+  /**
+   * Factory for the {@link SessionAccountLogInEvent}.
+   */
   @AssistedFactory(SessionAccountLogInEvent.class)
   interface Factory {
 
@@ -37,8 +39,8 @@ public interface SessionAccountLogInEvent extends Event {
      * Creates a new {@link SessionAccountLogInEvent} with the given profiles.
      *
      * @param previousProfile The non-null profile before the login, if there was no profile before
-     *     the login, use {@link #create(GameProfile)} instead
-     * @param newProfile The non-null profile after the login
+     *                        the login, use {@link #create(GameProfile)} instead
+     * @param newProfile      The non-null profile after the login
      * @return The new non-null {@link SessionAccountLogInEvent}
      */
     SessionAccountLogInEvent create(

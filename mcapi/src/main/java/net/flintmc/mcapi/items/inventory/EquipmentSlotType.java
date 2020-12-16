@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.items.inventory;
 
-/** An enumeration of all available slot types. */
+/**
+ * An enumeration of all available slot types.
+ */
 public enum EquipmentSlotType {
   MAIN_HAND(Group.HAND, 0, 0),
   OFF_HAND(Group.HAND, 1, 5),
@@ -46,7 +48,9 @@ public enum EquipmentSlotType {
     return slotIndex;
   }
 
-  /** An enumeration of all availables groups. */
+  /**
+   * An enumeration of all availables groups.
+   */
   enum Group {
     ARMOR,
     HAND

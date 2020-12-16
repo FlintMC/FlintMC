@@ -19,10 +19,14 @@ public interface TickEvent extends Event {
    */
   Type getType();
 
-  /** An enumeration of the states in the tick. */
+  /**
+   * An enumeration of the states in the tick.
+   */
   enum Type {
 
-    /** This type will be fired at the beginning and the ending of one full tick. */
+    /**
+     * This type will be fired at the beginning and the ending of one full tick.
+     */
     GENERAL,
     /**
      * This type will be fired at the beginning and the ending of one game render tick, which means
@@ -37,7 +41,9 @@ public interface TickEvent extends Event {
     WORLD_RENDER
   }
 
-  /** Factory for the {@link TickEvent}. */
+  /**
+   * Factory for the {@link TickEvent}.
+   */
   @AssistedFactory(TickEvent.class)
   interface Factory {
 

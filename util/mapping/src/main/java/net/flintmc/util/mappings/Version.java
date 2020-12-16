@@ -1,6 +1,7 @@
 package net.flintmc.util.mappings;
 
 public final class Version {
+
   private Mapping modCoderPack;
 
   /**
@@ -13,6 +14,7 @@ public final class Version {
   }
 
   public static class Mapping {
+
     private String configVersion;
     private String configDownload;
     private String mappingsVersion;

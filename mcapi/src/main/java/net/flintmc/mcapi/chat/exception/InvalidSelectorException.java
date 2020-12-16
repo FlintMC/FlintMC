@@ -7,6 +7,7 @@ import net.flintmc.mcapi.chat.builder.SelectorComponentBuilder;
  * has been provided.
  */
 public class InvalidSelectorException extends RuntimeException {
+
   public InvalidSelectorException(String message) {
     super(message);
   }

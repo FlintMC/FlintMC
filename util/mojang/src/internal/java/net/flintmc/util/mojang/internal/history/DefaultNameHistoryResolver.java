@@ -7,15 +7,6 @@ import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.util.UUIDTypeAdapter;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.util.mojang.MojangRateLimitException;
-import net.flintmc.util.mojang.history.NameHistory;
-import net.flintmc.util.mojang.history.NameHistoryEntry;
-import net.flintmc.util.mojang.history.NameHistoryResolver;
-import net.flintmc.util.mojang.internal.cache.FileCache;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +19,14 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.util.mojang.MojangRateLimitException;
+import net.flintmc.util.mojang.history.NameHistory;
+import net.flintmc.util.mojang.history.NameHistoryEntry;
+import net.flintmc.util.mojang.history.NameHistoryResolver;
+import net.flintmc.util.mojang.internal.cache.FileCache;
+import org.apache.logging.log4j.Logger;
 
 @Singleton
 @Implement(NameHistoryResolver.class)
@@ -56,7 +55,7 @@ public class DefaultNameHistoryResolver implements NameHistoryResolver {
   @Override
   public CompletableFuture<NameHistory> resolveHistory(UUID uniqueId) {
     NameHistory cached = this.cache.getCached(NameHistory.class, uniqueId);
-    if (cached != null){
+    if (cached != null) {
       return CompletableFuture.completedFuture(cached);
     }
 

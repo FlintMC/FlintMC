@@ -10,6 +10,7 @@ import java.lang.annotation.Annotation;
  */
 @FunctionalInterface
 public interface AnnotationResolver<A extends Annotation, R> extends Resolver<A, R> {
+
   /**
    * Resolves the given annotation to a value.
    *

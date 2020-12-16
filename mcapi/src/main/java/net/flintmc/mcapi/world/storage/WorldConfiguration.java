@@ -84,11 +84,11 @@ public interface WorldConfiguration {
      * @return A created world configuration.
      */
     WorldConfiguration create(
-            @Assisted("seed") long seed,
-            @Assisted("gameMode") GameMode gameMode,
-            @Assisted("mapFeaturesEnabled") boolean mapFeaturesEnabled,
-            @Assisted("hardcoreMode") boolean hardcoreMode,
-            @Assisted("terrainType") WorldType terrainType);
+        @Assisted("seed") long seed,
+        @Assisted("gameMode") GameMode gameMode,
+        @Assisted("mapFeaturesEnabled") boolean mapFeaturesEnabled,
+        @Assisted("hardcoreMode") boolean hardcoreMode,
+        @Assisted("terrainType") WorldType terrainType);
 
     /**
      * Creates a new {@link WorldConfiguration} with the given parameters.
@@ -99,19 +99,20 @@ public interface WorldConfiguration {
      * @param hardcoreMode       {@code true} if hardcore mode enabled, otherwise {@code false}.
      * @param terrainType        The terrain type for the world configuration.
      * @param commandsAllowed    {@code true} are commands allowed, otherwise {@code false}.
-     * @param bonusChest         {@code true} if the bonus chest is enabled, otherwise {@code false}.
+     * @param bonusChest         {@code true} if the bonus chest is enabled, otherwise {@code
+     *                           false}.
      * @param generationOptions  A json of the generator options.
      * @return A created world configuration.
      */
     WorldConfiguration create(
-            @Assisted("seed") long seed,
-            @Assisted("gameMode") GameMode gameMode,
-            @Assisted("mapFeaturesEnabled") boolean mapFeaturesEnabled,
-            @Assisted("hardcoreMode") boolean hardcoreMode,
-            @Assisted("terrainType") WorldType terrainType,
-            @Assisted("commandsAllowed") boolean commandsAllowed,
-            @Assisted("bonusChest") boolean bonusChest,
-            @Assisted("generationOptions") JsonElement generationOptions);
+        @Assisted("seed") long seed,
+        @Assisted("gameMode") GameMode gameMode,
+        @Assisted("mapFeaturesEnabled") boolean mapFeaturesEnabled,
+        @Assisted("hardcoreMode") boolean hardcoreMode,
+        @Assisted("terrainType") WorldType terrainType,
+        @Assisted("commandsAllowed") boolean commandsAllowed,
+        @Assisted("bonusChest") boolean bonusChest,
+        @Assisted("generationOptions") JsonElement generationOptions);
 
   }
 
