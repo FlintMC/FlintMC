@@ -1,5 +1,7 @@
 package net.flintmc.mcapi.world;
 
+import java.util.List;
+import java.util.Random;
 import net.flintmc.mcapi.tileentity.TileEntity;
 import net.flintmc.mcapi.world.border.WorldBorder;
 import net.flintmc.mcapi.world.math.BlockPosition;
@@ -7,9 +9,6 @@ import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.type.Dimension;
 import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 import net.flintmc.mcapi.world.type.difficulty.DifficultyLocal;
-
-import java.util.List;
-import java.util.Random;
 
 /**
  * Represents the Minecraft world.

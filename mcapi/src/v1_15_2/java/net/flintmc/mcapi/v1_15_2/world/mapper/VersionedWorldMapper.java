@@ -24,9 +24,9 @@ public class VersionedWorldMapper implements WorldMapper {
 
   @Inject
   private VersionedWorldMapper(
-          WorldConfiguration.Factory worldConfigurationFactory,
-          WorldType.Factory worldTypeFactory,
-          WorldOverview.Factory worldOverviewFactory) {
+      WorldConfiguration.Factory worldConfigurationFactory,
+      WorldType.Factory worldTypeFactory,
+      WorldOverview.Factory worldOverviewFactory) {
     this.worldConfigurationFactory = worldConfigurationFactory;
     this.worldTypeFactory = worldTypeFactory;
     this.worldOverviewFactory = worldOverviewFactory;
@@ -38,11 +38,11 @@ public class VersionedWorldMapper implements WorldMapper {
   @Override
   public Object toMinecraftWorldSettings(WorldConfiguration configuration) {
     return new WorldSettings(
-            configuration.getSeed(),
-            GameType.getByName(configuration.getGameMode().getName()),
-            configuration.isMapFeaturesEnabled(),
-            configuration.isHardcoreMode(),
-            (net.minecraft.world.WorldType) this.toMinecraftWorldType(configuration.getWorldType())
+        configuration.getSeed(),
+        GameType.getByName(configuration.getGameMode().getName()),
+        configuration.isMapFeaturesEnabled(),
+        configuration.isHardcoreMode(),
+        (net.minecraft.world.WorldType) this.toMinecraftWorldType(configuration.getWorldType())
     );
   }
 
@@ -54,22 +54,22 @@ public class VersionedWorldMapper implements WorldMapper {
 
     if (!(handle instanceof WorldSettings)) {
       throw new IllegalStateException(
-              handle.getClass().getName()
-                      + " is not an instance of "
-                      + WorldSettings.class.getName());
+          handle.getClass().getName()
+              + " is not an instance of "
+              + WorldSettings.class.getName());
     }
 
     WorldSettings worldSettings = (WorldSettings) handle;
 
     return this.worldConfigurationFactory.create(
-            worldSettings.getSeed(),
-            GameMode.valueOf(worldSettings.getGameType().name()),
-            worldSettings.isMapFeaturesEnabled(),
-            worldSettings.getHardcoreEnabled(),
-            this.fromMinecraftWorldType(worldSettings.getGameType()),
-            worldSettings.isBonusChestEnabled(),
-            worldSettings.areCommandsAllowed(),
-            worldSettings.getGeneratorOptions()
+        worldSettings.getSeed(),
+        GameMode.valueOf(worldSettings.getGameType().name()),
+        worldSettings.isMapFeaturesEnabled(),
+        worldSettings.getHardcoreEnabled(),
+        this.fromMinecraftWorldType(worldSettings.getGameType()),
+        worldSettings.isBonusChestEnabled(),
+        worldSettings.areCommandsAllowed(),
+        worldSettings.getGeneratorOptions()
     );
   }
 
@@ -89,22 +89,22 @@ public class VersionedWorldMapper implements WorldMapper {
 
     if (!(handle instanceof net.minecraft.world.WorldType)) {
       throw new IllegalStateException(
-              handle.getClass().getName()
-                      + " is not an instance of "
-                      + net.minecraft.world.WorldType.class.getName());
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.world.WorldType.class.getName());
     }
 
     net.minecraft.world.WorldType worldType = (net.minecraft.world.WorldType) handle;
 
     return this.worldTypeFactory.create(
-            worldType.getId(),
-            worldType.getName(),
-            worldType.getSerialization(),
-            worldType.getVersion(),
-            worldType.canBeCreated(),
-            worldType.isVersioned(),
-            worldType.hasInfoNotice(),
-            worldType.hasCustomOptions()
+        worldType.getId(),
+        worldType.getName(),
+        worldType.getSerialization(),
+        worldType.getVersion(),
+        worldType.canBeCreated(),
+        worldType.isVersioned(),
+        worldType.hasInfoNotice(),
+        worldType.hasCustomOptions()
     );
   }
 
@@ -113,15 +113,16 @@ public class VersionedWorldMapper implements WorldMapper {
    */
   @Override
   public Object toMinecraftWorldSummary(WorldOverview worldOverview) {
-    WorldInfo worldInfo = Minecraft.getInstance().getSaveLoader().getWorldInfo(worldOverview.getFileName());
+    WorldInfo worldInfo = Minecraft.getInstance().getSaveLoader()
+        .getWorldInfo(worldOverview.getFileName());
 
     if (worldInfo != null) {
       return new WorldSummary(
-              worldInfo,
-              worldOverview.getFileName(),
-              worldOverview.getDisplayName(),
-              worldOverview.getSizeOnDisk(),
-              worldOverview.requiresConversion()
+          worldInfo,
+          worldOverview.getFileName(),
+          worldOverview.getDisplayName(),
+          worldOverview.getSizeOnDisk(),
+          worldOverview.requiresConversion()
       );
     }
 
@@ -136,26 +137,26 @@ public class VersionedWorldMapper implements WorldMapper {
 
     if (!(handle instanceof WorldSummary)) {
       throw new IllegalStateException(
-              handle.getClass().getName()
-                      + " is not an instance of "
-                      + WorldInfo.class.getName());
+          handle.getClass().getName()
+              + " is not an instance of "
+              + WorldInfo.class.getName());
     }
 
     WorldSummary worldSummary = (WorldSummary) handle;
 
     return this.worldOverviewFactory.create(
-            worldSummary.getFileName(),
-            worldSummary.getDisplayName(),
-            worldSummary.getLastTimePlayed(),
-            worldSummary.getSizeOnDisk(),
-            worldSummary.requiresConversion(),
-            GameMode.valueOf(worldSummary.getEnumGameType().name()),
-            worldSummary.isHardcoreModeEnabled(),
-            worldSummary.getCheatsEnabled(),
-            worldSummary.askToOpenWorld(),
-            worldSummary.markVersionInList(),
-            worldSummary.func_202842_n(),
-            worldSummary.func_197731_n()
+        worldSummary.getFileName(),
+        worldSummary.getDisplayName(),
+        worldSummary.getLastTimePlayed(),
+        worldSummary.getSizeOnDisk(),
+        worldSummary.requiresConversion(),
+        GameMode.valueOf(worldSummary.getEnumGameType().name()),
+        worldSummary.isHardcoreModeEnabled(),
+        worldSummary.getCheatsEnabled(),
+        worldSummary.askToOpenWorld(),
+        worldSummary.markVersionInList(),
+        worldSummary.func_202842_n(),
+        worldSummary.func_197731_n()
     );
   }
 }

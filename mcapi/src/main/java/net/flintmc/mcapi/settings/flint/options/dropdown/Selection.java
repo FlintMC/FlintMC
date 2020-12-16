@@ -1,11 +1,10 @@
 package net.flintmc.mcapi.settings.flint.options.dropdown;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Icon;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * Represents a selection entry in a {@link CustomSelectSetting}.

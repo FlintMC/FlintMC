@@ -2,7 +2,9 @@ package net.flintmc.mcapi.settings.game.configuration;
 
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 
-/** Represents the debug configuration. */
+/**
+ * Represents the debug configuration.
+ */
 @ImplementedConfig
 public interface DebugConfiguration {
 

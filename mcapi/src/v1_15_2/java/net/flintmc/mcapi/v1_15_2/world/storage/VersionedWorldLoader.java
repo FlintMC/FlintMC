@@ -3,6 +3,9 @@ package net.flintmc.mcapi.v1_15_2.world.storage;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
 import net.flintmc.mcapi.world.storage.WorldOverview;
@@ -12,10 +15,6 @@ import net.minecraft.client.AnvilConverterException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.storage.SaveFormat;
 import net.minecraft.world.storage.WorldSummary;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 @Implement(value = WorldLoader.class, version = "1.15.2")
@@ -77,8 +76,8 @@ public class VersionedWorldLoader implements WorldLoader {
     SaveFormat saveFormat = Minecraft.getInstance().getSaveLoader();
     for (WorldSummary worldSummary : saveFormat.getSaveList()) {
       this.worldOverviews.put(
-              worldSummary.getFileName(),
-              this.worldMapper.fromMinecraftWorldSummary(worldSummary)
+          worldSummary.getFileName(),
+          this.worldMapper.fromMinecraftWorldSummary(worldSummary)
       );
     }
   }

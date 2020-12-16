@@ -4,7 +4,9 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.render.gui.input.Key;
 
-/** Represents a key binding. */
+/**
+ * Represents a key binding.
+ */
 public interface KeyBinding {
 
   /**
@@ -59,7 +61,7 @@ public interface KeyBinding {
   /**
    * Checks if the given parameters match the values in the key binding.
    *
-   * @param keyCode The key code.
+   * @param keyCode  The key code.
    * @param scanCode The scan code.
    * @return {@code true} if the given parameters match the values, otherwise {@code false}.
    */
@@ -94,7 +96,9 @@ public interface KeyBinding {
    */
   String getTranslationKey();
 
-  /** A factory class for the {@link KeyBinding}. */
+  /**
+   * A factory class for the {@link KeyBinding}.
+   */
   @AssistedFactory(KeyBinding.class)
   interface Factory {
 
@@ -102,8 +106,8 @@ public interface KeyBinding {
      * Creates a new {@link KeyBinding} with the given parameters.
      *
      * @param description The key binding description.
-     * @param keyCode The code of the key binding.
-     * @param category The category of the key binding.
+     * @param keyCode     The code of the key binding.
+     * @param category    The category of the key binding.
      * @return A created key binding.
      */
     KeyBinding create(

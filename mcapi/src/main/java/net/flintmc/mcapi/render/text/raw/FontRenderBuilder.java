@@ -12,7 +12,7 @@ package net.flintmc.mcapi.render.text.raw;
  * </ul>
  *
  * @see FontRenderer#drawString(float, float, String, int, StringAlignment, int, boolean, float,
- *     float)
+ * float)
  */
 public interface FontRenderBuilder {
 
@@ -127,10 +127,10 @@ public interface FontRenderBuilder {
    * Draws the values that have been set in this builder on the screen and resets this builder to be
    * re-used for the next rendering.
    *
-   * @throws NullPointerException If no text/null or null as the alignment has been set
+   * @throws NullPointerException     If no text/null or null as the alignment has been set
    * @throws IllegalArgumentException If a maxLineLength < 0 and/or an empty text has been set
    * @see FontRenderer#drawString(float, float, String, int, StringAlignment, int, boolean, float,
-   *     float)
+   * float)
    */
   void draw() throws NullPointerException, IllegalArgumentException;
 }

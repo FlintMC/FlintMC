@@ -5,7 +5,10 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 // TODO: 26.11.2020 Add more logic to the packet buffer
-/** Represents a random and sequential accessible sequence of zero or more bytes. */
+
+/**
+ * Represents a random and sequential accessible sequence of zero or more bytes.
+ */
 public interface PacketBuffer {
 
   /**
@@ -90,7 +93,7 @@ public interface PacketBuffer {
   /**
    * Writes a string into this buffer.
    *
-   * @param content The content to be written.
+   * @param content   The content to be written.
    * @param maxLength The maximum length of the content.
    */
   PacketBuffer writeString(String content, int maxLength);
@@ -115,7 +118,7 @@ public interface PacketBuffer {
    *
    * @param readerIndex The new reader index.
    * @throws IndexOutOfBoundsException If the specified {@code readerIndex} is less than {@code 0}
-   *     or greater than {@link #writerIndex()}.
+   *                                   or greater than {@link #writerIndex()}.
    */
   PacketBuffer readerIndex(int readerIndex);
 
@@ -131,7 +134,7 @@ public interface PacketBuffer {
    *
    * @param writerIndex The new writer index.
    * @throws IndexOutOfBoundsException If the specified {@code writerIndex} is less than {@link
-   *     #readerIndex()} or greater than {@link #capacity()}.
+   *                                   #readerIndex()} or greater than {@link #capacity()}.
    */
   PacketBuffer writerIndex(int writerIndex);
 
@@ -182,7 +185,7 @@ public interface PacketBuffer {
    *
    * @param minimumWritableBytes The expected minimum number of writeable bytes.
    * @throws IndexOutOfBoundsException If {@link #writerIndex()} + {@code minimumWritableBytes} &gt;
-   *     {@link #maximumCapacity()}
+   *                                   {@link #maximumCapacity()}
    */
   PacketBuffer ensureWritable(int minimumWritableBytes);
 
@@ -306,7 +309,9 @@ public interface PacketBuffer {
    */
   byte[] array();
 
-  /** A factory class for the {@link PacketBuffer}. */
+  /**
+   * A factory class for the {@link PacketBuffer}.
+   */
   @AssistedFactory(PacketBuffer.class)
   interface Factory {
 

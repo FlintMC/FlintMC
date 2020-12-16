@@ -2,7 +2,9 @@ package net.flintmc.mcapi.entity;
 
 import java.util.function.Predicate;
 
-/** Represents an entity predicate. */
+/**
+ * Represents an entity predicate.
+ */
 public interface EntityPredicate {
 
   /**
@@ -58,9 +60,9 @@ public interface EntityPredicate {
    * Whether the {@code attacker} can attack the {@code target} entity.
    *
    * @param attacker The entity which wants to attack.
-   * @param target The target which is to be attacked.
+   * @param target   The target which is to be attacked.
    * @return {@code true} if the {@code attacker} can attack the {@code target} entity, otherwise
-   *     {@code false}.
+   * {@code false}.
    */
   boolean canTarget(LivingEntity attacker, LivingEntity target);
 }

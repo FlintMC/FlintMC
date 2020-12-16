@@ -8,7 +8,9 @@ import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 
-/** Represents the network information of a player. */
+/**
+ * Represents the network information of a player.
+ */
 public interface NetworkPlayerInfo extends PlayerSkinProfile {
 
   /**
@@ -81,7 +83,9 @@ public interface NetworkPlayerInfo extends PlayerSkinProfile {
    */
   ChatComponent getDisplayName();
 
-  /** A factory class for the {@link NetworkPlayerInfo}. */
+  /**
+   * A factory class for the {@link NetworkPlayerInfo}.
+   */
   @AssistedFactory(NetworkPlayerInfo.class)
   interface Factory {
 

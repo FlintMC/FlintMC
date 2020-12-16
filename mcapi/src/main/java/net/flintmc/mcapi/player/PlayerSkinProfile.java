@@ -3,7 +3,9 @@ package net.flintmc.mcapi.player;
 import net.flintmc.mcapi.player.type.model.SkinModel;
 import net.flintmc.mcapi.resources.ResourceLocation;
 
-/** Represents all skin-related things of a player. */
+/**
+ * Represents all skin-related things of a player.
+ */
 public interface PlayerSkinProfile {
 
   /**

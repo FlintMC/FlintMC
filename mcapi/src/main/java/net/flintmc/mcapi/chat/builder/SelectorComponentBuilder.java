@@ -54,9 +54,8 @@ public interface SelectorComponentBuilder extends ComponentBuilder<SelectorCompo
    * <br>
    *
    * <p>The option and value are split at the first `=` which means that the options may not
-   * contain
-   * an `=`, but it doesn't cause any issues in the values. The available selectorShortcuts can be
-   * found in the {@link EntitySelector} class. <br>
+   * contain an `=`, but it doesn't cause any issues in the values. The available selectorShortcuts
+   * can be found in the {@link EntitySelector} class. <br>
    * <br>
    *
    * <p>As an example the input could like like this: e[limit=1,r=10]

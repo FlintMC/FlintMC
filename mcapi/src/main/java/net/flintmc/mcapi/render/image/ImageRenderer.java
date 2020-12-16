@@ -2,7 +2,9 @@ package net.flintmc.mcapi.render.image;
 
 import net.flintmc.mcapi.resources.ResourceLocation;
 
-/** Renderer for images. */
+/**
+ * Renderer for images.
+ */
 public interface ImageRenderer {
 
   /**
@@ -10,7 +12,8 @@ public interface ImageRenderer {
    * float, float, float, int, int, int, int)} and {@link #drawPartImage(float, float, float, float,
    * int, float, float, float, float, float, float, int, int, int, int)}.
    *
-   * <p>Once bound, the texture can be used multiple times for those two methods and doesn't need to
+   * <p>Once bound, the texture can be used multiple times for those two methods and doesn't need
+   * to
    * be bound multiple times.
    *
    * @param location The non-null texture to be bound
@@ -22,20 +25,20 @@ public interface ImageRenderer {
    * given position and scales it if necessary. A texture needs to be bound first by using {@link
    * #bindTexture(ResourceLocation)}.
    *
-   * @param screenX The x position of the top-left corner on the screen to draw the image at
-   * @param screenY The y position of the top-left corner on the screen to draw the image at the
-   *     screen
-   * @param zLevel The z level on the screen where the image should be drawn
-   * @param sourceWidth The width of the content in the texture to be drawn
-   * @param sourceHeight The height of the content in the texture to be drawn
-   * @param displayWidth The width of the texture to be displayed on the screen, if this is not
-   *     equal to the {@code sourceWidth}, the image will be scaled
+   * @param screenX       The x position of the top-left corner on the screen to draw the image at
+   * @param screenY       The y position of the top-left corner on the screen to draw the image at
+   *                      the screen
+   * @param zLevel        The z level on the screen where the image should be drawn
+   * @param sourceWidth   The width of the content in the texture to be drawn
+   * @param sourceHeight  The height of the content in the texture to be drawn
+   * @param displayWidth  The width of the texture to be displayed on the screen, if this is not
+   *                      equal to the {@code sourceWidth}, the image will be scaled
    * @param displayHeight The height of the texture to be displayed on the screen, if this is not
-   *     equal to the {@code sourceHeight}, the image will be scaled
-   * @param r The red part of the RGBA color from 0 - 255, -1 to disable the colors
-   * @param g The green part of the RGBA color from 0 - 255, -1 to disable the colors
-   * @param b The blue part of the RGBA color from 0 - 255, -1 to disable the colors
-   * @param a The alpha part of the RGBA color from 0 - 255, -1 to disable the colors
+   *                      equal to the {@code sourceHeight}, the image will be scaled
+   * @param r             The red part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param g             The green part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param b             The blue part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param a             The alpha part of the RGBA color from 0 - 255, -1 to disable the colors
    */
   void drawFullImage(
       float screenX,
@@ -56,26 +59,28 @@ public interface ImageRenderer {
    * given position and scales it if necessary. A texture needs to be bound first by using {@link
    * #bindTexture(ResourceLocation)}.
    *
-   * @param screenX The x position of the top-left corner on the screen to draw the image at
-   * @param screenY The y position of the top-left corner on the screen to draw the image at
-   * @param sourceX The x position of one pixel above the top-left corner of the content in the
-   *     texture to draw on the screen
-   * @param sourceY The y position of one pixel above the top-left corner of the content in the
-   *     texture to draw on the screen
-   * @param zLevel The z level on the screen where the image should be drawn
-   * @param matrix The matrix to be used for rendering the image, null to use no matrix
-   * @param sourceWidth The width of the content in the texture to be drawn
-   * @param sourceHeight The height of the content in the texture to be drawn
-   * @param fullImageWidth The width of the full texture
+   * @param screenX         The x position of the top-left corner on the screen to draw the image
+   *                        at
+   * @param screenY         The y position of the top-left corner on the screen to draw the image
+   *                        at
+   * @param sourceX         The x position of one pixel above the top-left corner of the content in
+   *                        the texture to draw on the screen
+   * @param sourceY         The y position of one pixel above the top-left corner of the content in
+   *                        the texture to draw on the screen
+   * @param zLevel          The z level on the screen where the image should be drawn
+   * @param matrix          The matrix to be used for rendering the image, null to use no matrix
+   * @param sourceWidth     The width of the content in the texture to be drawn
+   * @param sourceHeight    The height of the content in the texture to be drawn
+   * @param fullImageWidth  The width of the full texture
    * @param fullImageHeight The height of the full texture
-   * @param displayWidth The width of the texture to be displayed on the screen, if this is not
-   *     equal to the {@code sourceWidth}, the image will be scaled
-   * @param displayHeight The height of the texture to be displayed on the screen, if this is not
-   *     equal to the {@code sourceHeight}, the image will be scaled
-   * @param r The red part of the RGBA color from 0 - 255, -1 to disable the colors
-   * @param g The green part of the RGBA color from 0 - 255, -1 to disable the colors
-   * @param b The blue part of the RGBA color from 0 - 255, -1 to disable the colors
-   * @param a The alpha part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param displayWidth    The width of the texture to be displayed on the screen, if this is not
+   *                        equal to the {@code sourceWidth}, the image will be scaled
+   * @param displayHeight   The height of the texture to be displayed on the screen, if this is not
+   *                        equal to the {@code sourceHeight}, the image will be scaled
+   * @param r               The red part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param g               The green part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param b               The blue part of the RGBA color from 0 - 255, -1 to disable the colors
+   * @param a               The alpha part of the RGBA color from 0 - 255, -1 to disable the colors
    */
   void drawPartImage(
       float screenX,

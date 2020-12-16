@@ -5,17 +5,21 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.MobEntity;
 import net.flintmc.mcapi.entity.type.EntityType;
 
-/** Represents a Minecraft ambient entity. */
+/**
+ * Represents a Minecraft ambient entity.
+ */
 public interface AmbientEntity extends MobEntity {
 
-  /** A factory class for the {@link AmbientEntity}. */
+  /**
+   * A factory class for the {@link AmbientEntity}.
+   */
   @AssistedFactory(AmbientEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link AmbientEntity} with the given parameters.
      *
-     * @param entity The entity.
+     * @param entity     The entity.
      * @param entityType The type of the entity.
      * @return A created ambient entity.
      */
@@ -23,7 +27,9 @@ public interface AmbientEntity extends MobEntity {
         @Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /** Service interface for creating {@link AmbientEntity}'s. */
+  /**
+   * Service interface for creating {@link AmbientEntity}'s.
+   */
   interface Provider {
 
     /**

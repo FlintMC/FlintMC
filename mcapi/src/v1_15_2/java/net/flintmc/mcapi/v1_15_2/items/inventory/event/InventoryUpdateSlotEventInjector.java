@@ -53,11 +53,11 @@ public class InventoryUpdateSlotEventInjector {
     SSetSlotPacket packet = (SSetSlotPacket) event.getPacket();
 
     Inventory inventory =
-            packet.getWindowId() == this.controller.getPlayerInventory().getWindowId()
-                    ? this.controller.getPlayerInventory()
-                    : packet.getWindowId() == this.controller.getOpenInventory().getWindowId()
-                    ? this.controller.getOpenInventory()
-                    : null;
+        packet.getWindowId() == this.controller.getPlayerInventory().getWindowId()
+            ? this.controller.getPlayerInventory()
+            : packet.getWindowId() == this.controller.getOpenInventory().getWindowId()
+                ? this.controller.getOpenInventory()
+                : null;
     if (inventory == null) {
       return;
     }
@@ -67,6 +67,6 @@ public class InventoryUpdateSlotEventInjector {
     ItemStack newItem = this.itemMapper.fromMinecraft(packet.getStack());
 
     this.eventBus.fireEvent(
-            this.eventFactory.create(inventory, slot, previousItem, newItem), phase);
+        this.eventFactory.create(inventory, slot, previousItem, newItem), phase);
   }
 }

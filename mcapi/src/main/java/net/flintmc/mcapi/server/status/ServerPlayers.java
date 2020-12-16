@@ -4,7 +4,9 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 
-/** The players on a server in the {@link ServerStatus}. */
+/**
+ * The players on a server in the {@link ServerStatus}.
+ */
 public interface ServerPlayers {
 
   /**
@@ -30,15 +32,17 @@ public interface ServerPlayers {
    */
   GameProfile[] getOnlinePlayers();
 
-  /** Factory for the {@link ServerPlayers}. */
+  /**
+   * Factory for the {@link ServerPlayers}.
+   */
   @AssistedFactory(ServerPlayers.class)
   interface Factory {
 
     /**
      * Creates a new players object with the given values.
      *
-     * @param online The amount of online players on the server
-     * @param max The amount of max players that are allowed on the server
+     * @param online  The amount of online players on the server
+     * @param max     The amount of max players that are allowed on the server
      * @param players A non-null array of players that are on the server
      * @return The new non-null players object
      */

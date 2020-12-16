@@ -1,17 +1,16 @@
 package net.flintmc.mcapi.settings.flint.registered;
 
-import net.flintmc.framework.inject.assisted.Assisted;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import javax.annotation.Nullable;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubSettingsFor;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
-
-import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
-import java.util.Collection;
 
 /**
  * Represents a setting in the {@link SettingsProvider}.
@@ -87,7 +86,9 @@ public interface RegisteredSetting {
    */
   Collection<RegisteredSetting> getSubSettings();
 
-  /** Factory for the {@link RegisteredSetting}. */
+  /**
+   * Factory for the {@link RegisteredSetting}.
+   */
   @AssistedFactory(RegisteredSetting.class)
   interface Factory {
 
@@ -95,11 +96,11 @@ public interface RegisteredSetting {
      * Creates a new {@link RegisteredSetting} with the given values.
      *
      * @param annotationType The non-null type of annotation which marks this setting ({@link
-     *     #getAnnotation()})
-     * @param categoryName The name of the category the new setting belongs to, or {@code null} if
-     *     it doesn't belong to any category
-     * @param reference The non-null reference in a {@link Config} where this setting has been
-     *     discovered
+     *                       #getAnnotation()})
+     * @param categoryName   The name of the category the new setting belongs to, or {@code null} if
+     *                       it doesn't belong to any category
+     * @param reference      The non-null reference in a {@link Config} where this setting has been
+     *                       discovered
      * @return The new non-null {@link RegisteredSetting}
      */
     RegisteredSetting create(

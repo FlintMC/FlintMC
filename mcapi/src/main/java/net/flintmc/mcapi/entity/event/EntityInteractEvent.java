@@ -32,7 +32,9 @@ public interface EntityInteractEvent extends Event {
    */
   PlayerHand getHand();
 
-  /** Factory for the {@link EntityInteractEvent}. */
+  /**
+   * Factory for the {@link EntityInteractEvent}.
+   */
   @AssistedFactory(EntityInteractEvent.class)
   interface Factory {
 
@@ -41,7 +43,7 @@ public interface EntityInteractEvent extends Event {
      * given hand.
      *
      * @param interacted The non-null entity that has been interacted with
-     * @param hand The non-null hand that has been used for the interaction
+     * @param hand       The non-null hand that has been used for the interaction
      * @return The new non-null {@link EntityInteractEvent}
      */
     EntityInteractEvent create(@Assisted Entity interacted, @Assisted PlayerHand hand);

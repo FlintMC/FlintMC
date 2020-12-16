@@ -129,8 +129,7 @@ public class HoverEvent {
      * displays it. This can also display statistics.
      *
      * <p>Available since Minecraft 1.7.10 until Minecraft 1.12.2. Since 1.13, Minecraft uses
-     * {@link
-     * #SHOW_TEXT} to display advancements.
+     * {@link #SHOW_TEXT} to display advancements.
      */
     @Deprecated
     SHOW_ACHIEVEMENT;

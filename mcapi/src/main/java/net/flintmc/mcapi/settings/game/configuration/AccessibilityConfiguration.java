@@ -9,7 +9,9 @@ import net.flintmc.mcapi.settings.game.annotation.LanguageSetting;
 import net.flintmc.mcapi.settings.game.settings.PointOfView;
 import net.flintmc.mcapi.settings.game.settings.TutorialSteps;
 
-/** Represents the accessibility configuration. */
+/**
+ * Represents the accessibility configuration.
+ */
 @DefineCategory(
     name = "minecraft.settings.accessiblity",
     displayName = @Component(value = "options.accessibility.title", translate = true))

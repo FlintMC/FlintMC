@@ -37,14 +37,14 @@ public class VersionedSoundPlayEventInjector {
       className = "net.minecraft.client.world.ClientWorld",
       methodName = "playSound",
       parameters = {
-        @Type(reference = double.class), // x
-        @Type(reference = double.class), // y
-        @Type(reference = double.class), // z
-        @Type(typeName = "net.minecraft.util.SoundEvent"),
-        @Type(typeName = "net.minecraft.util.SoundCategory"),
-        @Type(reference = float.class), // volume
-        @Type(reference = float.class), // pitch
-        @Type(reference = boolean.class) // distanceDelay
+          @Type(reference = double.class), // x
+          @Type(reference = double.class), // y
+          @Type(reference = double.class), // z
+          @Type(typeName = "net.minecraft.util.SoundEvent"),
+          @Type(typeName = "net.minecraft.util.SoundCategory"),
+          @Type(reference = float.class), // volume
+          @Type(reference = float.class), // pitch
+          @Type(reference = boolean.class) // distanceDelay
       },
       executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER})
   public void playSound(@Named("args") Object[] args, ExecutionTime executionTime) {

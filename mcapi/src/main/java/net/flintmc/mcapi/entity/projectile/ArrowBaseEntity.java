@@ -9,7 +9,9 @@ import net.flintmc.mcapi.entity.projectile.type.Projectile;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.player.type.sound.Sound;
 
-/** Represents the Minecraft arrow entity. */
+/**
+ * Represents the Minecraft arrow entity.
+ */
 public interface ArrowBaseEntity extends Entity, Projectile {
 
   /**
@@ -29,12 +31,12 @@ public interface ArrowBaseEntity extends Entity, Projectile {
   /**
    * Shoots the arrow.
    *
-   * @param shooter The shooter of the arrow.
-   * @param pitch The pitch for the arrow.
-   * @param yaw The yaw for the arrow.
+   * @param shooter     The shooter of the arrow.
+   * @param pitch       The pitch for the arrow.
+   * @param yaw         The yaw for the arrow.
    * @param pitchOffset The pitch offset for the arrow.
-   * @param velocity The velocity for the arrow.
-   * @param inaccuracy The inaccuracy for the arrow.
+   * @param velocity    The velocity for the arrow.
+   * @param inaccuracy  The inaccuracy for the arrow.
    * @see Projectile#shoot(double, double, double, float, float)
    */
   void shoot(
@@ -150,7 +152,7 @@ public interface ArrowBaseEntity extends Entity, Projectile {
    * Changes whether the arrow is shot from the crossbow.
    *
    * @param fromCrossbow {@code true} if the arrow should be shot from the crossbow, otherwise
-   *     {@code false}.
+   *                     {@code false}.
    */
   void setShotFromCrossbow(boolean fromCrossbow);
 
@@ -175,7 +177,9 @@ public interface ArrowBaseEntity extends Entity, Projectile {
    */
   void setPickupStatus(PickupStatus pickupStatus);
 
-  /** A factory class for the {@link ArrowBaseEntity}. */
+  /**
+   * A factory class for the {@link ArrowBaseEntity}.
+   */
   @AssistedFactory(ArrowBaseEntity.class)
   interface Factory {
 
@@ -191,9 +195,9 @@ public interface ArrowBaseEntity extends Entity, Projectile {
      * Creates a new {@link ArrowBaseEntity} with the given parameters.
      *
      * @param entity The entity.
-     * @param x The x position.
-     * @param y The y position.
-     * @param z The z position.
+     * @param x      The x position.
+     * @param y      The y position.
+     * @param z      The z position.
      * @return A created arrow base entity.
      */
     ArrowBaseEntity create(
@@ -205,7 +209,7 @@ public interface ArrowBaseEntity extends Entity, Projectile {
     /**
      * Creates a new {@link ArrowBaseEntity} with the given parameters.
      *
-     * @param entity The entity.
+     * @param entity  The entity.
      * @param shooter The shooter of the arrow.
      * @return A created arrow base entity.
      */

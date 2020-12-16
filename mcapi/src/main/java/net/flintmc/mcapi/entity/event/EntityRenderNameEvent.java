@@ -36,7 +36,7 @@ public interface EntityRenderNameEvent extends Event {
    * rendering something it should be applied to the renderer if possible.
    *
    * @return The matrix of this event, or {@code null} if the version doesn't use a matrix for
-   *     rendering
+   * rendering
    */
   Object getMatrix();
 
@@ -45,7 +45,7 @@ public interface EntityRenderNameEvent extends Event {
    * rendering something it should be applied to the renderer if possible.
    *
    * @return The buffer of this event, or {@code null} if the version doesn't use a buffer for
-   *     rendering
+   * rendering
    */
   Object getBuffer();
 
@@ -55,7 +55,7 @@ public interface EntityRenderNameEvent extends Event {
    * should be rendered as if the player is sneaking.
    *
    * @return {@code true} if the name should be rendered as if the player is not sneaking, {@code
-   *     false} otherwise
+   * false} otherwise
    */
   boolean isNotSneaking();
 
@@ -81,24 +81,26 @@ public interface EntityRenderNameEvent extends Event {
    */
   int getY();
 
-  /** Factory for the {@link EntityRenderNameEvent}. */
+  /**
+   * Factory for the {@link EntityRenderNameEvent}.
+   */
   @AssistedFactory(EntityRenderNameEvent.class)
   interface Factory {
 
     /**
      * Creates a new {@link EntityRenderNameEvent}.
      *
-     * @param entity The non-null entity that is being rendered
-     * @param displayName The non-null display name of the entity
-     * @param matrix The matrix of this event, or {@code null} if the version doesn't use a matrix
-     *     for rendering
-     * @param buffer The buffer of this event, or {@code null} if the version doesn't use a buffer
-     *     for rendering
-     * @param notSneaking {@code true} if the name should be rendered as if the player is not
-     *     sneaking, {@code false} otherwise
+     * @param entity              The non-null entity that is being rendered
+     * @param displayName         The non-null display name of the entity
+     * @param matrix              The matrix of this event, or {@code null} if the version doesn't
+     *                            use a matrix for rendering
+     * @param buffer              The buffer of this event, or {@code null} if the version doesn't
+     *                            use a buffer for rendering
+     * @param notSneaking         {@code true} if the name should be rendered as if the player is
+     *                            not sneaking, {@code false} otherwise
      * @param textBackgroundColor The text background color of this event
-     * @param packedLight The packed light to be rendered
-     * @param y The Y coordinate where the name should be rendered
+     * @param packedLight         The packed light to be rendered
+     * @param y                   The Y coordinate where the name should be rendered
      * @return The new non-null {@link EntityRenderNameEvent}
      */
     EntityRenderNameEvent create(

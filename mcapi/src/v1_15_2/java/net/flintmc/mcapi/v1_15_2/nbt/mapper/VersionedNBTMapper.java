@@ -2,15 +2,36 @@ package net.flintmc.mcapi.v1_15_2.nbt.mapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.nbt.*;
+import net.flintmc.mcapi.nbt.NBT;
+import net.flintmc.mcapi.nbt.NBTByte;
+import net.flintmc.mcapi.nbt.NBTCompound;
+import net.flintmc.mcapi.nbt.NBTCreator;
+import net.flintmc.mcapi.nbt.NBTDouble;
+import net.flintmc.mcapi.nbt.NBTFloat;
+import net.flintmc.mcapi.nbt.NBTInt;
+import net.flintmc.mcapi.nbt.NBTList;
+import net.flintmc.mcapi.nbt.NBTLong;
+import net.flintmc.mcapi.nbt.NBTShort;
+import net.flintmc.mcapi.nbt.NBTString;
 import net.flintmc.mcapi.nbt.array.NBTByteArray;
 import net.flintmc.mcapi.nbt.array.NBTIntArray;
 import net.flintmc.mcapi.nbt.array.NBTLongArray;
 import net.flintmc.mcapi.nbt.mapper.NBTMapper;
-import net.minecraft.nbt.*;
-
-import java.util.Map;
+import net.minecraft.nbt.ByteArrayNBT;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.DoubleNBT;
+import net.minecraft.nbt.FloatNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.IntArrayNBT;
+import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.LongArrayNBT;
+import net.minecraft.nbt.LongNBT;
+import net.minecraft.nbt.ShortNBT;
+import net.minecraft.nbt.StringNBT;
 
 @Singleton
 @Implement(value = NBTMapper.class, version = "1.15.2")
@@ -23,10 +44,14 @@ public class VersionedNBTMapper implements NBTMapper {
     this.creator = creator;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NBT fromMinecraftNBT(Object handle) {
-    if (handle == null) return null;
+    if (handle == null) {
+      return null;
+    }
     if (!(handle instanceof INBT)) {
       throw new IllegalArgumentException(
           handle.getClass().getName() + " is not an instance of " + INBT.class.getName());
@@ -82,7 +107,9 @@ public class VersionedNBTMapper implements NBTMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftNBT(NBT nbt) {
 

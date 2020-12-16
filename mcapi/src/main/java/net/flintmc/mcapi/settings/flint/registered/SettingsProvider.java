@@ -1,5 +1,7 @@
 package net.flintmc.mcapi.settings.flint.registered;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
@@ -7,18 +9,17 @@ import net.flintmc.framework.packages.Package;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-
-/** Provider which contains every {@link RegisteredSetting} and {@link RegisteredCategory}. */
+/**
+ * Provider which contains every {@link RegisteredSetting} and {@link RegisteredCategory}.
+ */
 public interface SettingsProvider {
 
   /**
    * Registers a new category in this provider.
    *
    * @param category The non-null category to be registered
-   * @throws IllegalArgumentException If a category with the {@link
-   *     RegisteredCategory#getRegistryName() name} already exists
+   * @throws IllegalArgumentException If a category with the {@link RegisteredCategory#getRegistryName()
+   *                                  name} already exists
    */
   void registerCategory(RegisteredCategory category) throws IllegalArgumentException;
 
@@ -34,7 +35,7 @@ public interface SettingsProvider {
    *
    * @param name The non-null case-sensitive name of the category to get
    * @return The category with the given name or {@code null} if there is no category with the given
-   *     name
+   * name
    */
   RegisteredCategory getCategory(String name);
 
@@ -62,7 +63,7 @@ public interface SettingsProvider {
    *
    * @param packageName The non-null name of the package to search settings from
    * @return The new non-null collection containing all settings, modification to it won't have any
-   *     effect
+   * effect
    * @see Package#getName()
    */
   Collection<RegisteredSetting> getSettings(String packageName);
@@ -72,10 +73,10 @@ public interface SettingsProvider {
    * given annotation type.
    *
    * @param annotationType The type of annotations of the settings to be retrieved (e.g. {@link
-   *     StringSetting})
-   * @param <A> The type of annotations of the settings
+   *                       StringSetting})
+   * @param <A>            The type of annotations of the settings
    * @return The new non-null collection of all settings in this provider with the given annotation
-   *     type, modification to this collection won't have any effect.
+   * type, modification to this collection won't have any effect.
    * @see RegisteredSetting#getAnnotation()
    */
   <A extends Annotation> Collection<RegisteredSetting> getSettings(Class<A> annotationType);
@@ -85,7 +86,7 @@ public interface SettingsProvider {
    *
    * @param config The non-null config to get all settings from
    * @return The new non-null collection of all settings in this provider that match the given
-   *     config
+   * config
    */
   Collection<RegisteredSetting> getSettings(ParsedConfig config);
 
@@ -94,7 +95,7 @@ public interface SettingsProvider {
    *
    * @param reference The non-null reference to match the setting
    * @return The setting to match the given reference or {@code null} if the given reference doesn't
-   *     match any setting
+   * match any setting
    */
   RegisteredSetting getSetting(ConfigObjectReference reference);
 
@@ -102,9 +103,9 @@ public interface SettingsProvider {
    * Retrieves the setting that matches the given {@link ConfigObjectReference#getKey() key}.
    *
    * @param key The non-null case-sensitive key to match the setting (see {@link
-   *     ConfigObjectReference#getKey()})
+   *            ConfigObjectReference#getKey()})
    * @return The setting to match the given key or {@code null} if the given key doesn't match any
-   *     setting
+   * setting
    */
   RegisteredSetting getSetting(String key);
 }

@@ -3,7 +3,9 @@ package net.flintmc.mcapi.settings.flint;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-/** Resolver to map enum constants to their {@link Field}. */
+/**
+ * Resolver to map enum constants to their {@link Field}.
+ */
 public interface EnumFieldResolver {
 
   /**

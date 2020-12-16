@@ -4,7 +4,9 @@ import net.flintmc.mcapi.potion.Potion;
 import net.flintmc.mcapi.potion.effect.StatusEffect;
 import net.flintmc.mcapi.potion.effect.StatusEffectInstance;
 
-/** Mapper between Minecraft potion and Flint potion. */
+/**
+ * Mapper between Minecraft potion and Flint potion.
+ */
 public interface PotionMapper {
 
   /**
@@ -72,7 +74,7 @@ public interface PotionMapper {
    *
    * @param handle The non-null Minecraft effect instance.
    * @return The new Flint {@link StatusEffectInstance} or {@code null} if the given effect instance
-   *     was invalid.
+   * was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft effect instance.
    */
   StatusEffectInstance fromMinecraftEffectInstance(Object handle);

@@ -5,7 +5,9 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.potion.effect.StatusEffectInstance;
 
-/** Represents a Minecraft potion. */
+/**
+ * Represents a Minecraft potion.
+ */
 public interface Potion {
 
   /**
@@ -29,7 +31,9 @@ public interface Potion {
    */
   boolean hasInstantly();
 
-  /** A factory class for creating {@link Potion}'s. */
+  /**
+   * A factory class for creating {@link Potion}'s.
+   */
   @AssistedFactory(Potion.class)
   interface Factory {
 
@@ -44,7 +48,7 @@ public interface Potion {
     /**
      * Creates a new {@link Potion} with the given {@code name} and {@code effects}.
      *
-     * @param name The name of the potion.
+     * @param name    The name of the potion.
      * @param effects An array of effects for the potion.
      * @return A created potion.
      */

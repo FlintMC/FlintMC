@@ -20,7 +20,9 @@ import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Team.CollisionRule;
 import net.minecraft.scoreboard.Team.Visible;
 
-/** 1.15.2 implementation of {@link ScoreboardMapper}. */
+/**
+ * 1.15.2 implementation of {@link ScoreboardMapper}.
+ */
 @Singleton
 @Implement(value = ScoreboardMapper.class, version = "1.15.2")
 public class VersionedScoreboardMapper implements ScoreboardMapper {
@@ -45,26 +47,34 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
     this.scoreFactory = scoreFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PlayerTeam fromMinecraftPlayerTeam(Object team) {
     ScorePlayerTeam scorePlayerTeam = (ScorePlayerTeam) team;
     return this.playerTeamFactory.create(scorePlayerTeam.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPlayerTeam(PlayerTeam team) {
     return Minecraft.getInstance().world.getScoreboard().getTeam(team.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftObjective(Objective objective) {
     return Minecraft.getInstance().world.getScoreboard().getObjective(objective.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Objective fromMinecraftObjective(Object objective) {
     if (!(objective instanceof ScoreObjective)) {
@@ -79,7 +89,9 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
         this.fromMinecraftRenderType(scoreObjective.getRenderType().name()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftScore(Score score) {
     return Minecraft.getInstance()
@@ -90,7 +102,9 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
             (ScoreObjective) this.toMinecraftObjective(score.getObjective()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Score fromMinecraftScore(Object score) {
     if (!(score instanceof net.minecraft.scoreboard.Score)) {
@@ -104,13 +118,17 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
         minecraftScore.getScorePoints());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftCriteria(Criteria criteria) {
     return Minecraft.getInstance().world.getScoreboard().getObjective(criteria.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Criteria fromMinecraftCriteria(Object criteria) {
     if (!(criteria instanceof ScoreCriteria)) {
@@ -125,7 +143,9 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
         this.fromMinecraftRenderType(scoreCriteria.getRenderType().name()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftRenderType(RenderType renderType) {
     switch (renderType) {
@@ -138,7 +158,9 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VisibleType fromMinecraftVisible(Object handle) {
     if (!(handle instanceof Visible)) {
@@ -159,7 +181,9 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftVisible(VisibleType visibleType) {
     switch (visibleType) {
@@ -174,7 +198,9 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CollisionType fromMinecraftCollisionRule(Object handle) {
     if (!(handle instanceof CollisionRule)) {
@@ -194,7 +220,9 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftCollisionRule(CollisionType collisionType) {
     switch (collisionType) {
@@ -209,7 +237,9 @@ public class VersionedScoreboardMapper implements ScoreboardMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RenderType fromMinecraftRenderType(Object value) {
     if (!(value instanceof ScoreCriteria.RenderType)) {

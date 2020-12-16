@@ -22,7 +22,9 @@ public interface PotionAddEvent extends PotionEvent {
    */
   StatusEffectInstance getStatusEffectInstance();
 
-  /** Factory for {@link PotionAddEvent} */
+  /**
+   * Factory for {@link PotionAddEvent}
+   */
   @AssistedFactory(PotionAddEvent.class)
   interface Factory {
 
@@ -30,7 +32,7 @@ public interface PotionAddEvent extends PotionEvent {
      * Creates a new {@link PotionAddEvent} with the given {@code livingEntity} and the {@code
      * statusEffectInstance}.
      *
-     * @param livingEntity The living entity for which the status effect is to be added.
+     * @param livingEntity         The living entity for which the status effect is to be added.
      * @param statusEffectInstance The status effect instance to be added.
      * @return A created potion add event.
      */

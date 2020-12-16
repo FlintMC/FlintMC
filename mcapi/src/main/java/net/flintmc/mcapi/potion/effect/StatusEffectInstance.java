@@ -3,7 +3,9 @@ package net.flintmc.mcapi.potion.effect;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents the Minecraft effect instance. */
+/**
+ * Represents the Minecraft effect instance.
+ */
 public interface StatusEffectInstance {
 
   /**
@@ -59,7 +61,7 @@ public interface StatusEffectInstance {
    * Whether the duration of the effect foundation is maximal.
    *
    * @return {@code true} if the duration of the effect foundation is maximal, otherwise {@code
-   *     false}.
+   * false}.
    */
   boolean isDurationMaximum();
 
@@ -67,7 +69,7 @@ public interface StatusEffectInstance {
    * Changes whether the duration of the effect foundation is maximal.
    *
    * @param maxDuration {@code true} if the duration of the effect foundation should be maximum,
-   *     otherwise {@code false}.
+   *                    otherwise {@code false}.
    */
   void setDurationMaximum(boolean maxDuration);
 
@@ -75,26 +77,28 @@ public interface StatusEffectInstance {
    * Updates the duration of the status effect.
    *
    * @return {@code true} if the duration of the status effect is greater than {@code 0}, otherwise
-   *     {@code false}.
+   * {@code false}.
    */
   boolean update();
 
-  /** A factory class for creating {@link StatusEffectInstance}'s. */
+  /**
+   * A factory class for creating {@link StatusEffectInstance}'s.
+   */
   @AssistedFactory(StatusEffectInstance.class)
   interface Factory {
 
     /**
      * Creates a new {@link StatusEffectInstance} with the given parameters.
      *
-     * @param potion The potion effect of the foundation.
-     * @param duration The duration of the foundation.
-     * @param amplifier The amplifier of the foundation.
-     * @param ambient {@code true} if the foundation ambient, otherwise {@code false}.
+     * @param potion          The potion effect of the foundation.
+     * @param duration        The duration of the foundation.
+     * @param amplifier       The amplifier of the foundation.
+     * @param ambient         {@code true} if the foundation ambient, otherwise {@code false}.
      * @param durationMaximum {@code true} if the duration maximum, otherwise {@code false}.
-     * @param showParticles {@code true} if the foundation should be show particles, otherwise
-     *     {@code false}.
-     * @param showIcon {@code true} if the foundation should be show an icon, otherwise {@code
-     *     false}.
+     * @param showParticles   {@code true} if the foundation should be show particles, otherwise
+     *                        {@code false}.
+     * @param showIcon        {@code true} if the foundation should be show an icon, otherwise
+     *                        {@code false}.
      * @return A created effect foundation.
      */
     StatusEffectInstance create(

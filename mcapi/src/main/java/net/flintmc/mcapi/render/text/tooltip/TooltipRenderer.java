@@ -15,8 +15,8 @@ public interface TooltipRenderer {
    * position the tooltip so that it fits on the screen with this coordinate being just a hint on
    * where it should be rendered.
    *
-   * @param x The x position on the screen where the tooltip should be rendered
-   * @param y The y position on the screen where the tooltip should be rendered
+   * @param x    The x position on the screen where the tooltip should be rendered
+   * @param y    The y position on the screen where the tooltip should be rendered
    * @param text The non-null text to be rendered
    */
   void renderTooltip(float x, float y, String text);

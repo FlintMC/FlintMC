@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.player.type;
 
-/** An enumeration of all available game modes */
+/**
+ * An enumeration of all available game modes
+ */
 public enum GameMode {
 
   /**

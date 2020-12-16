@@ -1,13 +1,12 @@
 package net.flintmc.mcapi.server.event;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.server.ServerAddress;
-
-import javax.annotation.Nullable;
 
 /**
  * This event will be fired whenever the user gets kicked from a server. Note that this event will
@@ -25,7 +24,9 @@ public interface ServerKickEvent extends Event, ServerAddressEvent, ServerDiscon
    */
   ChatComponent getReason();
 
-  /** Factory for the {@link ServerKickEvent}. */
+  /**
+   * Factory for the {@link ServerKickEvent}.
+   */
   @AssistedFactory(ServerKickEvent.class)
   interface Factory {
 
@@ -33,8 +34,8 @@ public interface ServerKickEvent extends Event, ServerAddressEvent, ServerDiscon
      * Creates a new {@link ServerKickEvent} with the given address and reason.
      *
      * @param address The address for the new event, may be {@code null} if the event happened in
-     *     singleplayer
-     * @param reason The non-null reason for the kick
+     *                singleplayer
+     * @param reason  The non-null reason for the kick
      * @return The new event
      */
     ServerKickEvent create(

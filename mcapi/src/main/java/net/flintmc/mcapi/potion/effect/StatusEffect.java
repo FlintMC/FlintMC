@@ -3,7 +3,9 @@ package net.flintmc.mcapi.potion.effect;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents a Minecraft effect. */
+/**
+ * Represents a Minecraft effect.
+ */
 public interface StatusEffect {
 
   /**
@@ -42,14 +44,18 @@ public interface StatusEffect {
    */
   boolean isInstant();
 
-  /** An enumeration of all available effect types. */
+  /**
+   * An enumeration of all available effect types.
+   */
   enum Type {
     BENEFICIAL,
     HARMFUL,
     NEUTRAL
   }
 
-  /** A factory class for creating {@link StatusEffect}'s. */
+  /**
+   * A factory class for creating {@link StatusEffect}'s.
+   */
   @AssistedFactory(StatusEffect.class)
   interface Factory {
 
@@ -57,9 +63,9 @@ public interface StatusEffect {
      * Creates a new {@link StatusEffect} with the given {@code effectType} and the {@code
      * liquidColor}
      *
-     * @param name The name of the status effect.
-     * @param instant {@code true} if the effect instant, otherwise {@code false}.
-     * @param effectType The type of the effect.
+     * @param name        The name of the status effect.
+     * @param instant     {@code true} if the effect instant, otherwise {@code false}.
+     * @param effectType  The type of the effect.
      * @param liquidColor The liquid color for the effect.
      * @return A created effect.
      */

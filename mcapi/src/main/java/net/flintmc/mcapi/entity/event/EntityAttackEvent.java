@@ -7,11 +7,11 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.Entity;
 
 /**
- * This event will be fired when the user attacks (left click) another entity. This entity can be anything, for
- * example another player, zombie, ... It will also be fired when the attack is not successful,
- * which can for example happen when the user is attacking a player who is in creative mode. The
- * gamemode of the client doesn't matter, it will also be fired in spetator mode. It will only be
- * fired in the {@link Subscribe.Phase#PRE} phase.
+ * This event will be fired when the user attacks (left click) another entity. This entity can be
+ * anything, for example another player, zombie, ... It will also be fired when the attack is not
+ * successful, which can for example happen when the user is attacking a player who is in creative
+ * mode. The gamemode of the client doesn't matter, it will also be fired in spetator mode. It will
+ * only be fired in the {@link Subscribe.Phase#PRE} phase.
  *
  * @see Subscribe
  */
@@ -24,7 +24,9 @@ public interface EntityAttackEvent extends Event {
    */
   Entity getAttacked();
 
-  /** Factory for the {@link EntityAttackEvent}. */
+  /**
+   * Factory for the {@link EntityAttackEvent}.
+   */
   @AssistedFactory(EntityAttackEvent.class)
   interface Factory {
 
