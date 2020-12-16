@@ -12,6 +12,7 @@ import net.flintmc.mcapi.resources.pack.ResourcePackReloadEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
+/** {@inheritDoc} */
 @Singleton
 @Implement(value = ItemRenderer.class, version = "1.15.2")
 public class VersionedItemRenderer implements ItemRenderer {
@@ -33,11 +34,13 @@ public class VersionedItemRenderer implements ItemRenderer {
     this.initialized = true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void drawItemStack(float x, float y, ItemStack item) {
     this.drawRawItemStack(x, y, this.itemMapper.toMinecraft(item));
   }
 
+  /** {@inheritDoc} */
   @Override
   public void drawRawItemStack(float x, float y, Object minecraftItem) {
     if (!this.initialized) {
