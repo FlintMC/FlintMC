@@ -15,6 +15,7 @@ public interface ItemRenderer {
    * @param x The x coordinate on the screen
    * @param y The y coordinate on the screen
    * @param item The non-null item to be rendered
+   * @see #drawItemStack(float, float, ItemStack)
    */
   void drawItemStack(float x, float y, ItemStack item);
 
@@ -29,6 +30,7 @@ public interface ItemRenderer {
    * @throws IllegalArgumentException If {@code minecraftItem} is not an instance of the Minecraft
    *     ItemStack
    * @see MinecraftItemMapper#toMinecraft(ItemStack)
+   * @see #drawItemStack(float, float, ItemStack)
    */
   void drawRawItemStack(float x, float y, Object minecraftItem);
 }
