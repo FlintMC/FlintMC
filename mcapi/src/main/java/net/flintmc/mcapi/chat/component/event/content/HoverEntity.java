@@ -1,11 +1,12 @@
 package net.flintmc.mcapi.chat.component.event.content;
 
+import java.util.UUID;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 
-import java.util.UUID;
-
-/** The content of a {@link HoverEvent} which displays an entity. */
+/**
+ * The content of a {@link HoverEvent} which displays an entity.
+ */
 public class HoverEntity extends HoverContent {
 
   private final UUID uniqueId;
@@ -15,10 +16,10 @@ public class HoverEntity extends HoverContent {
   /**
    * Creates a new content for a {@link HoverEvent} which displays an entity.
    *
-   * @param uniqueId The non-null uniqueId of the entity
-   * @param type The non-null type of the entity
+   * @param uniqueId    The non-null uniqueId of the entity
+   * @param type        The non-null type of the entity
    * @param displayName The display name of the entity or {@code null} if the entity doesn't have a
-   *     specific display name
+   *                    specific display name
    */
   public HoverEntity(UUID uniqueId, String type, ChatComponent displayName) {
     this.uniqueId = uniqueId;

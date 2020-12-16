@@ -1,11 +1,12 @@
 package net.flintmc.mcapi.chat.component;
 
 import com.google.common.collect.Multimap;
+import java.util.Collection;
 import net.flintmc.mcapi.chat.EntitySelector;
 
-import java.util.Collection;
-
-/** A component for the selection of entities. */
+/**
+ * A component for the selection of entities.
+ */
 public interface SelectorComponent extends ChatComponent {
 
   /**
@@ -44,7 +45,7 @@ public interface SelectorComponent extends ChatComponent {
    * removed out of this component.
    *
    * @param option The non-null key for the option
-   * @param value The nullable value for the option
+   * @param value  The nullable value for the option
    */
   void selectorOption(String option, String value);
 

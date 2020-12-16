@@ -34,7 +34,9 @@ public interface AttributeMap {
    */
   Attribute[] sharedValues();
 
-  /** A factory for the {@link AttributeMap}. */
+  /**
+   * A factory for the {@link AttributeMap}.
+   */
   @AssistedFactory(AttributeMap.class)
   interface Factory {
 

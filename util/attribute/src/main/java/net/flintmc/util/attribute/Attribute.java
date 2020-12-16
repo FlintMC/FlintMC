@@ -3,7 +3,9 @@ package net.flintmc.util.attribute;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents an attribute for entities. */
+/**
+ * Represents an attribute for entities.
+ */
 public interface Attribute {
 
   /**
@@ -41,7 +43,7 @@ public interface Attribute {
      * Creates a new {@link Attribute} wit the {@code key}, {@code defaultValue} and the {@code
      * maximumValue}.
      *
-     * @param key The registry key for this attribute.
+     * @param key          The registry key for this attribute.
      * @param defaultValue The default value for this attribute.
      * @param maximumValue The maximum value for this attribute.
      * @return A created attribute.
@@ -55,11 +57,11 @@ public interface Attribute {
      * Creates a new {@link Attribute} with the {@code key}, {@code defaultValue}, {@code
      * maximumValue} and {@code shared} if this attribute is to be used by the client.
      *
-     * @param key The registry key for this attribute.
+     * @param key          The registry key for this attribute.
      * @param defaultValue The default value for this attribute.
      * @param maximumValue The maximum value for this attribute.
-     * @param shared {@code true} if this attribute is to be used by the client, otherwise {@code
-     *     false}.
+     * @param shared       {@code true} if this attribute is to be used by the client, otherwise
+     *                     {@code false}.
      * @return A created attribute.
      */
     Attribute create(

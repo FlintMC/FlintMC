@@ -1,12 +1,11 @@
 package net.flintmc.util.mojang.internal.history;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.mojang.history.NameHistoryEntry;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 @Implement(NameHistoryEntry.class)
 public class DefaultNameHistoryEntry implements NameHistoryEntry {

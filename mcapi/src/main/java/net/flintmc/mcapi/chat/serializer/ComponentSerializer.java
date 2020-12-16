@@ -10,7 +10,7 @@ public interface ComponentSerializer {
    *
    * @param component The non-null component to be serialized
    * @return The serialized text or {@code null} if an invalid component has been provided (e.g. no
-   *     text in the text component)
+   * text in the text component)
    */
   String serialize(ChatComponent component);
 
@@ -23,7 +23,9 @@ public interface ComponentSerializer {
    */
   ChatComponent deserialize(String serialized);
 
-  /** Singleton factory for the {@link ComponentSerializer}. */
+  /**
+   * Singleton factory for the {@link ComponentSerializer}.
+   */
   interface Factory {
 
     /**
@@ -34,7 +36,8 @@ public interface ComponentSerializer {
     ComponentSerializer legacy();
 
     /**
-     * Legacy serializer which serializes the text of the components without any formats and colors.
+     * Legacy serializer which serializes the text of the components without any formats and
+     * colors.
      *
      * @return The non-null singleton instance of the serializer
      */

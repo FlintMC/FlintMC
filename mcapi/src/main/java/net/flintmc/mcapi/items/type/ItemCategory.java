@@ -1,12 +1,13 @@
 package net.flintmc.mcapi.items.type;
 
+import java.util.function.Supplier;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.items.ItemRegistry;
 
-import java.util.function.Supplier;
-
-/** A category containing multiple items in the creative menu. */
+/**
+ * A category containing multiple items in the creative menu.
+ */
 public class ItemCategory {
 
   private final NameSpacedKey registryName;
@@ -32,11 +33,12 @@ public class ItemCategory {
    * Creates a new category without any items to be registered in an {@link ItemRegistry}.
    *
    * @param registryName The non-null key in the registry, unique per {@link ItemRegistry}
-   * @param displayName The non-null display name of the category in the client
+   * @param displayName  The non-null display name of the category in the client
    * @param iconSupplier The non-null supplier to retrieve the icon to be displayed in the creative
-   *     menu in the client, the type retrieved by the supplier also needs to be non-null
-   * @param showTitle Whether the title should be drawn by the client or not
-   * @param index The index of the category for sorting in the creative menu
+   *                     menu in the client, the type retrieved by the supplier also needs to be
+   *                     non-null
+   * @param showTitle    Whether the title should be drawn by the client or not
+   * @param index        The index of the category for sorting in the creative menu
    * @return The new non-null category for items
    * @see ItemRegistry#registerCategory(ItemCategory)
    */

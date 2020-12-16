@@ -3,7 +3,9 @@ package net.flintmc.util.attribute;
 import java.util.HashMap;
 import java.util.Map;
 
-/** An enumeration that representing all attribute operations. */
+/**
+ * An enumeration that representing all attribute operations.
+ */
 public enum AttributeOperation {
   ADDITION(0),
   MULTIPLY_BASE(1),

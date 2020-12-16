@@ -1,11 +1,11 @@
 package net.flintmc.util.csv.lexical;
 
-import net.flintmc.util.csv.utils.Pointer;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.flintmc.util.csv.utils.Pointer;
 
 public final class Tokenizer {
+
   private final char separator;
 
   /**
@@ -85,7 +85,9 @@ public final class Tokenizer {
     }
 
     // TODO: Throw custom exception here.
-    if (isAtEnd(current.value, input)) throw new RuntimeException("Unterminated string");
+    if (isAtEnd(current.value, input)) {
+      throw new RuntimeException("Unterminated string");
+    }
 
     tokens.add(new Token(TokenType.VALUE, builder.toString()));
     current.value++;

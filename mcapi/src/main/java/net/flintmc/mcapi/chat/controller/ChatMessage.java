@@ -1,8 +1,7 @@
 package net.flintmc.mcapi.chat.controller;
 
-import net.flintmc.mcapi.chat.component.ChatComponent;
-
 import java.util.UUID;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 
 /**
  * This class defines a message in the chat. If a message consists of multiple lines, it will still

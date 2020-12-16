@@ -7,6 +7,7 @@ import net.flintmc.mcapi.chat.format.ChatColor;
  * parsing.
  */
 public class InvalidChatColorException extends RuntimeException {
+
   public InvalidChatColorException(String message) {
     super(message);
   }

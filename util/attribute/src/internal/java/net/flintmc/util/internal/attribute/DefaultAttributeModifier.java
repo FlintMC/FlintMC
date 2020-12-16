@@ -35,25 +35,33 @@ public class DefaultAttributeModifier implements AttributeModifier {
     this.operation = operation;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getUniqueId() {
     return this.uniqueId;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getAmount() {
     return this.amount;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AttributeOperation getOperation() {
     return this.operation;

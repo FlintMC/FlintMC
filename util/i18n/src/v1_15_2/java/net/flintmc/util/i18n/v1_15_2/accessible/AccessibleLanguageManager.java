@@ -4,7 +4,9 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.resources.Locale;
 
-/** A shadow interface for the Minecraft LanguageManager. */
+/**
+ * A shadow interface for the Minecraft LanguageManager.
+ */
 @Shadow("net.minecraft.client.resources.LanguageManager")
 public interface AccessibleLanguageManager {
 

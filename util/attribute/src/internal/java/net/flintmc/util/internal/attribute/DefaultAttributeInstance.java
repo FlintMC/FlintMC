@@ -35,25 +35,33 @@ public class DefaultAttributeInstance implements AttributeInstance {
     this.dirty = true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Attribute getAttribute() {
     return this.attribute;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getBaseValue() {
     return this.baseValue;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setBaseValue(float value) {
     this.baseValue = value;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addModifier(AttributeModifier modifier) {
     if (this.modifiers.putIfAbsent(modifier.getUniqueId(), modifier) == null) {
@@ -61,7 +69,9 @@ public class DefaultAttributeInstance implements AttributeInstance {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removeModifier(AttributeModifier modifier) {
     if (this.modifiers.remove(modifier.getUniqueId()) != null) {
@@ -69,13 +79,17 @@ public class DefaultAttributeInstance implements AttributeInstance {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<AttributeModifier> getModifiers() {
     return this.modifiers.values();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getValue() {
     if (this.dirty) {

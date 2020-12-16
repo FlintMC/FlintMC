@@ -5,7 +5,9 @@ import java.util.function.Consumer;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents an instance of an attribute and its modifiers. */
+/**
+ * Represents an instance of an attribute and its modifiers.
+ */
 public interface AttributeInstance {
 
   /**
@@ -65,7 +67,7 @@ public interface AttributeInstance {
      * Creates a new {@link AttributeInstance} with the {@code attribute} and the {@code
      * propertyChangeListener}.
      *
-     * @param attribute The attribute for the instance.
+     * @param attribute              The attribute for the instance.
      * @param propertyChangeListener The property change listener for the instance.
      * @return A created attribute instance.
      */

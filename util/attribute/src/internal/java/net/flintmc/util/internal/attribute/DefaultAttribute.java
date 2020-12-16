@@ -37,25 +37,33 @@ public class DefaultAttribute implements Attribute {
     this.shared = shared;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getKey() {
     return this.key;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getDefaultValue() {
     return this.defaultValue;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getMaximumValue() {
     return this.maximumValue;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isShared() {
     return this.shared;

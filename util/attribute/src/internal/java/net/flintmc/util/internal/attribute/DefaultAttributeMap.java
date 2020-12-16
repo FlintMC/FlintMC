@@ -17,26 +17,34 @@ public class DefaultAttributeMap implements AttributeMap {
     this.attributes = new HashMap<>();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AttributeMap register(Attribute attribute) {
     this.attributes.put(attribute.getKey(), attribute);
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Attribute get(String key) {
     return this.attributes.get(key);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Attribute[] values() {
     return this.attributes.values().toArray(new Attribute[0]);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Attribute[] sharedValues() {
     return this.attributes.values().stream().filter(Attribute::isShared).toArray(Attribute[]::new);

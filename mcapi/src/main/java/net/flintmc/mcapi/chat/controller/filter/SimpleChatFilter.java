@@ -1,10 +1,11 @@
 package net.flintmc.mcapi.chat.controller.filter;
 
+import java.util.function.BiConsumer;
 import net.flintmc.mcapi.chat.controller.ChatController;
 
-import java.util.function.BiConsumer;
-
-/** Implementation of the {@link ChatFilter} which uses a {@link BiConsumer} for easier usage. */
+/**
+ * Implementation of the {@link ChatFilter} which uses a {@link BiConsumer} for easier usage.
+ */
 public class SimpleChatFilter extends BasicChatFilter {
 
   private final BiConsumer<ChatController, FilterableChatMessage> consumer;

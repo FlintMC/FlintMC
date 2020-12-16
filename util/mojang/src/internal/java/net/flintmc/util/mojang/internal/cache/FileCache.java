@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.util.mojang.internal.cache.object.CachedObject;
-import net.flintmc.util.mojang.internal.cache.object.CachedObjectIO;
-import org.apache.logging.log4j.Logger;
-
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -20,6 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.util.mojang.internal.cache.object.CachedObject;
+import net.flintmc.util.mojang.internal.cache.object.CachedObjectIO;
+import org.apache.logging.log4j.Logger;
 
 @Singleton
 public class FileCache {

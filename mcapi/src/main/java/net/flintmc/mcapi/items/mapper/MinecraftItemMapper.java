@@ -3,7 +3,9 @@ package net.flintmc.mcapi.items.mapper;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
 
-/** A mapper between the Flint {@link ItemStack} and the Minecraft ItemStack. */
+/**
+ * A mapper between the Flint {@link ItemStack} and the Minecraft ItemStack.
+ */
 public interface MinecraftItemMapper {
 
   /**
@@ -13,7 +15,7 @@ public interface MinecraftItemMapper {
    * @return The new non-null Flint ItemStack
    * @throws ItemMappingException If the given object is not an instance of the minecraft ItemStack
    * @throws ItemMappingException If no item matching the given stack exists in the {@link
-   *     ItemRegistry}.
+   *                              ItemRegistry}.
    */
   ItemStack fromMinecraft(Object handle) throws ItemMappingException;
 
@@ -23,7 +25,7 @@ public interface MinecraftItemMapper {
    * @param stack The non-null Flint {@link ItemStack}
    * @return The new non-null minecraft ItemStack
    * @throws ItemMappingException If no item matching the given stack exists in the Item registry in
-   *     minecraft.
+   *                              minecraft.
    */
   Object toMinecraft(ItemStack stack) throws ItemMappingException;
 }

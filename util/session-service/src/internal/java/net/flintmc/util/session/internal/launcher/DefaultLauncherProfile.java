@@ -1,12 +1,11 @@
 package net.flintmc.util.session.internal.launcher;
 
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.util.session.launcher.LauncherProfile;
-
-import java.util.UUID;
 
 @Implement(LauncherProfile.class)
 public class DefaultLauncherProfile implements LauncherProfile {

@@ -3,6 +3,10 @@ package net.flintmc.util.session.v1_15_2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.util.UUIDTypeAdapter;
+import java.io.IOException;
+import java.net.Proxy;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
@@ -19,11 +23,6 @@ import net.flintmc.util.session.launcher.LauncherProfileResolver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.net.Proxy;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 @Singleton
 @Implement(value = SessionService.class, version = "1.15.2")
