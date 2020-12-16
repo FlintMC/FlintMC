@@ -1,5 +1,7 @@
 package net.flintmc.mcapi.entity;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -9,12 +11,12 @@ import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.sound.Sound;
+import net.flintmc.mcapi.potion.effect.StatusEffect;
+import net.flintmc.mcapi.potion.effect.StatusEffectInstance;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.world.math.BlockPosition;
 
-/**
- * Represents the living entity.
- */
+/** Represents the living entity. */
 public interface LivingEntity extends Entity {
 
   /**
@@ -23,7 +25,7 @@ public interface LivingEntity extends Entity {
    * @param entityType The entity type to attack.
    * @return {@code true} if the living entity can attack the given type, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   default boolean canAttack(EntityType entityType) {
     return true;
@@ -34,7 +36,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity can breath underwater, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean canBreathUnderwater();
 
@@ -42,10 +44,10 @@ public interface LivingEntity extends Entity {
    * Retrieves the swim animation of this living entity.
    *
    * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
-   *                     full tick.
+   *     full tick.
    * @return The swim animation of this living entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getSwimAnimation(float partialTicks);
 
@@ -54,7 +56,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is a child, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   default boolean isChild() {
     return true;
@@ -65,7 +67,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The living entity render scale.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getRenderScale();
 
@@ -74,7 +76,7 @@ public interface LivingEntity extends Entity {
    *
    * @return A random of this living entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   Random getRandom();
 
@@ -83,7 +85,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The living entity revenge target.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   LivingEntity getRevengeTarget();
 
@@ -92,7 +94,7 @@ public interface LivingEntity extends Entity {
    *
    * @param entity The new revenge target.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setRevengeTarget(LivingEntity entity);
 
@@ -101,7 +103,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The living entity revenge timer.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getRevengeTimer();
 
@@ -110,7 +112,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The living entity last attacked entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   LivingEntity getLastAttackedEntity();
 
@@ -119,7 +121,7 @@ public interface LivingEntity extends Entity {
    *
    * @param entity The new last attacked entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setLastAttackedEntity(Entity entity);
 
@@ -128,7 +130,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The living entity last attacked entity time.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getLastAttackedEntityTime();
 
@@ -137,7 +139,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The idle time of this living entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getIdleTime();
 
@@ -146,7 +148,7 @@ public interface LivingEntity extends Entity {
    *
    * @param idleTime The new idle time.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setIdleTime(int idleTime);
 
@@ -156,7 +158,7 @@ public interface LivingEntity extends Entity {
    * @param entity The entity to be get the visibility multiplier.
    * @return The visibility multiplier of the given entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   double getVisibilityMultiplier(Entity entity);
 
@@ -165,7 +167,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is a player, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   default boolean isPlayer() {
     return false;
@@ -177,7 +179,7 @@ public interface LivingEntity extends Entity {
    * @param entity The entity to be attack.
    * @return {@code true} if the living entity can attack the given entity, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean canAttack(LivingEntity entity);
 
@@ -186,7 +188,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the active was cleared, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean clearActivePotions();
 
@@ -195,7 +197,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is undead, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean isEntityUndead();
 
@@ -204,7 +206,7 @@ public interface LivingEntity extends Entity {
    *
    * @param health The health to be add.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void heal(float health);
 
@@ -213,7 +215,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The living entity health.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getHealth();
 
@@ -222,7 +224,7 @@ public interface LivingEntity extends Entity {
    *
    * @param health The new health.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setHealth(float health);
 
@@ -231,19 +233,19 @@ public interface LivingEntity extends Entity {
    *
    * @return The loot table resource location.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   ResourceLocation getLootTableResourceLocation();
 
   /**
    * Knock back an entity.
    *
-   * @param entity   The entity to knock back.
+   * @param entity The entity to knock back.
    * @param strength The strength of the knock back.
-   * @param xRatio   The x ratio of the knock back.
-   * @param zRatio   The z ratio of the knock back.
+   * @param xRatio The x ratio of the knock back.
+   * @param zRatio The z ratio of the knock back.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void knockBack(Entity entity, float strength, double xRatio, double zRatio);
 
@@ -253,7 +255,7 @@ public interface LivingEntity extends Entity {
    * @param itemStack The item stack to get the sound.
    * @return The eat sound of the given item stack.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   Sound getEatSound(ItemStack itemStack);
 
@@ -262,7 +264,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is on a ladder, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean isOnLadder();
 
@@ -271,7 +273,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The living entity total armor value.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getTotalArmorValue();
 
@@ -280,7 +282,7 @@ public interface LivingEntity extends Entity {
    *
    * @return the maximal living entity health.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getMaxHealth();
 
@@ -289,7 +291,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The living entity arrow count.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getArrowCountInEntity();
 
@@ -298,7 +300,7 @@ public interface LivingEntity extends Entity {
    *
    * @param count The new arrow count.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setArrowCountInEntity(int count);
 
@@ -307,7 +309,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The bee sting count.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getBeeStingCount();
 
@@ -316,7 +318,7 @@ public interface LivingEntity extends Entity {
    *
    * @param stingCount The new sting count.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setBeeStingCount(int stingCount);
 
@@ -325,18 +327,18 @@ public interface LivingEntity extends Entity {
    *
    * @param hand The hand to swing.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void swingArm(Hand hand);
 
   /**
    * Swings the hand.
    *
-   * @param hand      The living entity hand.
+   * @param hand The living entity hand.
    * @param sendToAll {@code true}, if the animated hand packet should be sent to itself, otherwise
-   *                  {@code false}
+   *     {@code false}
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void swing(Hand hand, boolean sendToAll);
 
@@ -346,17 +348,17 @@ public interface LivingEntity extends Entity {
    * @param hand The hand to get the item stack.
    * @return An item stack or an empty item stack.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   ItemStack getHeldItem(Hand hand);
 
   /**
    * Changes the held item.
    *
-   * @param hand     The living entity hand.
+   * @param hand The living entity hand.
    * @param heldItem The new held item stack.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setHeldItem(Hand hand, ItemStack heldItem);
 
@@ -365,9 +367,9 @@ public interface LivingEntity extends Entity {
    *
    * @param slotType The slot type to be checked.
    * @return {@code true} if the living entity has an item at the given slot, otherwise {@code
-   * false}.
+   *     false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean hasItemInSlot(EquipmentSlotType slotType);
 
@@ -377,7 +379,7 @@ public interface LivingEntity extends Entity {
    * @param slotType The slot type to get the item stack.
    * @return An item stack or an empty item stack.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   ItemStack getItemStackFromSlot(EquipmentSlotType slotType);
 
@@ -386,7 +388,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The armor cover percentage.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getArmorCoverPercentage();
 
@@ -395,7 +397,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The AI move speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getAIMoveSpeed();
 
@@ -404,7 +406,7 @@ public interface LivingEntity extends Entity {
    *
    * @param speed The new AI move speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setAIMoveSpeed(float speed);
 
@@ -413,7 +415,7 @@ public interface LivingEntity extends Entity {
    *
    * @param entity The entity to be attacked.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void attackEntityAsMob(Entity entity);
 
@@ -422,7 +424,7 @@ public interface LivingEntity extends Entity {
    *
    * @param duration The duration how long take the spin attack.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void startSpinAttack(int duration);
 
@@ -431,7 +433,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is spin attacking, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean isSpinAttacking();
 
@@ -440,7 +442,7 @@ public interface LivingEntity extends Entity {
    *
    * @param jumping {@code true} if the living entity is jumping, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setJumping(boolean jumping);
 
@@ -449,9 +451,9 @@ public interface LivingEntity extends Entity {
    *
    * @param entity The entity to be checked.
    * @return {@code true} if the living entity can be seen the given entity, otherwise {@code
-   * false}.
+   *     false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean canEntityBeSeen(Entity entity);
 
@@ -459,10 +461,10 @@ public interface LivingEntity extends Entity {
    * Retrieves the swing progress of this living entity.
    *
    * @param partialTicks The period of time, in fractions of a tick, that has passed since the last
-   *                     full tick.
+   *     full tick.
    * @return The swing progress of this living entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getSwingProgress(float partialTicks);
 
@@ -471,7 +473,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the world a server world, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean isServerWorld();
 
@@ -480,7 +482,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The absorption amount.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getAbsorptionAmount();
 
@@ -489,7 +491,7 @@ public interface LivingEntity extends Entity {
    *
    * @param absorptionAmount The new absorption amount.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setAbsorptionAmount(float absorptionAmount);
 
@@ -497,7 +499,7 @@ public interface LivingEntity extends Entity {
    * Sends the combat packet, when the living entity start to fight.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void sendEnterCombat();
 
@@ -505,7 +507,7 @@ public interface LivingEntity extends Entity {
    * Sends the combat packet, when the living entity stop to fight.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void sendEndCombat();
 
@@ -514,7 +516,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The primary hand.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   Hand.Side getPrimaryHand();
 
@@ -523,7 +525,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The active hand.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   Hand getActiveHand();
 
@@ -532,7 +534,7 @@ public interface LivingEntity extends Entity {
    *
    * @param hand The new active hand.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setActiveHand(Hand hand);
 
@@ -541,7 +543,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The active item stack of this living entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   ItemStack getActiveItemStack();
 
@@ -550,7 +552,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The item in use count.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getItemInUseCount();
 
@@ -559,7 +561,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The ite in maximal use count.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getItemInUseMaxCount();
 
@@ -567,7 +569,7 @@ public interface LivingEntity extends Entity {
    * Stops the active hand of this living entity.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void stopActiveHand();
 
@@ -575,7 +577,7 @@ public interface LivingEntity extends Entity {
    * Resets the active hand of this living entity.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void resetActiveHand();
 
@@ -584,7 +586,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is active block with an item stack.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean isActiveItemStackBlocking();
 
@@ -592,9 +594,9 @@ public interface LivingEntity extends Entity {
    * Whether the living entity is suppressing sliding down the ladder.
    *
    * @return {@code true} if the living entity is suppressing sliding down the ladder, otherwise
-   * {@code false}.
+   *     {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean isSuppressingSlidingDownLadder();
 
@@ -603,7 +605,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is flying with an elytra, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean isElytraFlying();
 
@@ -612,21 +614,21 @@ public interface LivingEntity extends Entity {
    *
    * @return The ticks how long the living entity is flying with an elytra.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   int getTicksElytraFlying();
 
   /**
    * Attempts to teleport the living entity.
    *
-   * @param x               The x position where the living entity should be teleported to.
-   * @param y               The y position where the living entity should be teleported to.
-   * @param z               The z position where the living entity should be teleported to.
+   * @param x The x position where the living entity should be teleported to.
+   * @param y The y position where the living entity should be teleported to.
+   * @param z The z position where the living entity should be teleported to.
    * @param particleEffects {@code true} if particle effects should be displayed, otherwise {@code
-   *                        false}.
+   *     false}.
    * @return {@code true} if the teleport attempt was successful, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean attemptTeleport(double x, double y, double z, boolean particleEffects);
 
@@ -635,7 +637,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity can be hit with a potion, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean canBeHitWithPotion();
 
@@ -644,7 +646,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is attackable, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean attackable();
 
@@ -653,7 +655,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The move strafing speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getMoveStrafing();
 
@@ -662,7 +664,7 @@ public interface LivingEntity extends Entity {
    *
    * @param moveStrafing The new move strafing speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setMoveStrafing(float moveStrafing);
 
@@ -671,7 +673,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The move vertical speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getMoveVertical();
 
@@ -680,7 +682,7 @@ public interface LivingEntity extends Entity {
    *
    * @param moveVertical The new move vertical speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setMoveVertical(float moveVertical);
 
@@ -689,7 +691,7 @@ public interface LivingEntity extends Entity {
    *
    * @return The move forward speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   float getMoveForward();
 
@@ -698,17 +700,17 @@ public interface LivingEntity extends Entity {
    *
    * @param moveForward The new move forward speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setMoveForward(float moveForward);
 
   /**
    * Changes the state of this entity if it is in party mood.
    *
-   * @param position   The position of this jukebox.
+   * @param position The position of this jukebox.
    * @param isPartying {@code true} if the party should start, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setPartying(BlockPosition position, boolean isPartying);
 
@@ -717,9 +719,9 @@ public interface LivingEntity extends Entity {
    *
    * @param stack The item stack to pick up.
    * @return {@code true} if the living entity can pick up the given item stack, otherwise {@code
-   * false}.
+   *     false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean canPickUpItem(ItemStack stack);
 
@@ -728,7 +730,7 @@ public interface LivingEntity extends Entity {
    *
    * @return An optional bed position.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   Optional<BlockPosition> getBedPosition();
 
@@ -737,7 +739,7 @@ public interface LivingEntity extends Entity {
    *
    * @param position The new block position of the bed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void setBedPosition(BlockPosition position);
 
@@ -745,7 +747,7 @@ public interface LivingEntity extends Entity {
    * Clears the bed position of this living entity.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void clearBedPosition();
 
@@ -754,7 +756,7 @@ public interface LivingEntity extends Entity {
    *
    * @return {@code true} if the living entity is sleeping, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   boolean isSleeping();
 
@@ -763,7 +765,7 @@ public interface LivingEntity extends Entity {
    *
    * @param position The block position to sleep.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void startSleeping(BlockPosition position);
 
@@ -771,7 +773,7 @@ public interface LivingEntity extends Entity {
    * Wakes the living entity up.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void wakeUp();
 
@@ -781,7 +783,7 @@ public interface LivingEntity extends Entity {
    * @param shootable The shootable item stack.
    * @return An item stack or {@code null}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   ItemStack findAmmo(ItemStack shootable);
 
@@ -790,7 +792,7 @@ public interface LivingEntity extends Entity {
    *
    * @param slotType The equipment slot for the break animation.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void sendBreakAnimation(EquipmentSlotType slotType);
 
@@ -799,20 +801,48 @@ public interface LivingEntity extends Entity {
    *
    * @param hand The hand for the break animation.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *                                  client
+   *     client
    */
   void sendBreakAnimation(Hand hand);
 
   /**
-   * A factory class for the {@link LivingEntity}.
+   * Retrieves a collection with all active potion effects.
+   *
+   * @return A collection with all act<ive potion effects.
    */
+  Collection<StatusEffectInstance> getActivePotionEffects();
+
+  /**
+   * Retrieves a map with all active potion effects of this living entity.
+   *
+   * @return A map with all active potion effects.
+   */
+  Map<StatusEffect, StatusEffectInstance> getActivePotions();
+
+  /**
+   * Adds a new {@link StatusEffectInstance} to the living entity.
+   *
+   * @param instance The status effect instance to be added.
+   * @return {@code true} if the status effect instance was added, otherwise {@code false}.
+   */
+  boolean addPotionEffect(StatusEffectInstance instance);
+
+  /**
+   * Removes a {@link StatusEffectInstance} from the living entity.
+   *
+   * @param effect The status effect instance to be removed.
+   * @return {@code true} if the status effect instance has been removed, otherwise {@code false}.
+   */
+  boolean removePotionEffect(StatusEffect effect);
+
+  /** A factory class for the {@link LivingEntity}. */
   @AssistedFactory(LivingEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link LivingEntity} with the given parameters.
      *
-     * @param entity     The non-null Minecraft entity.
+     * @param entity The non-null Minecraft entity.
      * @param entityType The entity type.
      * @return A created {@link LivingEntity}.
      */
@@ -820,9 +850,7 @@ public interface LivingEntity extends Entity {
         @Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /**
-   * Service interface for creating {@link LivingEntity}'s.
-   */
+  /** Service interface for creating {@link LivingEntity}'s. */
   interface Provider {
 
     /**

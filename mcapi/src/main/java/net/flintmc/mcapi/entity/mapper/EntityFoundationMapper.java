@@ -9,6 +9,7 @@ import net.flintmc.mcapi.nbt.mapper.NBTMapper;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.player.type.hand.HandMapper;
 import net.flintmc.mcapi.player.type.sound.SoundMapper;
+import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 
 /**
@@ -129,6 +130,13 @@ public interface EntityFoundationMapper {
    * @return The entity mapper.
    */
   EntityMapper getEntityMapper();
+
+  /**
+   * Retrieves the potion mapper.
+   *
+   * @return The potion mapper.
+   */
+  PotionMapper getPotionMapper();
 
   /**
    * Retrieves the nbt mapper.
