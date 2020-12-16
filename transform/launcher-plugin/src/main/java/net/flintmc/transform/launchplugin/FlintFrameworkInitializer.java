@@ -15,18 +15,23 @@ import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.identifier.ConstructorIdentifier;
+import net.flintmc.processing.autoload.identifier.Identifier;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.launchplugin.inject.module.BindConstantModule;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
+import net.flintmc.util.mappings.MethodMapping;
+import net.flintmc.util.mappings.utils.MappingUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Singleton
 public class FlintFrameworkInitializer {
 
   @Inject
-  private FlintFrameworkInitializer() {}
+  private FlintFrameworkInitializer() {
+  }
 
   /**
    * Initializes all features of the Flint framework.
@@ -37,7 +42,8 @@ public class FlintFrameworkInitializer {
     try {
       LaunchController.getInstance()
           .getRootLoader()
-          .excludeFromModification("net.flintmc.transform.");
+          .excludeFromModification(
+              "net.flintmc.transform.", "net.flintmc.framework.config.internal.");
 
       // create guice constant module
       InjectionHolder.getInstance().addModules(new BindConstantModule(arguments));
@@ -51,7 +57,11 @@ public class FlintFrameworkInitializer {
       // done if it is really necessary.
       serviceRepository.flushServices(Service.State.PRE_INIT);
       // Apply all Implementations and AssistedFactories
-      InjectionHolder.getInjectedInstance(InjectionService.class).flush();
+      InjectionService service = InjectionHolder.getInjectedInstance(InjectionService.class);
+      service.flushImplementation();
+      serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
+      service.flushAssistedFactory();
+
       // Flush all other higher level framework features like Events, Transforms etc.
       serviceRepository.flushServices(Service.State.POST_INIT);
 
@@ -100,7 +110,7 @@ public class FlintFrameworkInitializer {
 
   /**
    * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
-   *     on compile time
+   * on compile time
    */
   private List<AnnotationMeta> getAnnotationMeta() {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();
@@ -108,8 +118,83 @@ public class FlintFrameworkInitializer {
     Set<DetectableAnnotationProvider> discover =
         ExtendedServiceLoader.get(DetectableAnnotationProvider.class)
             .discover(LaunchController.getInstance().getRootLoader());
+
     discover.forEach(
         detectableAnnotationProvider -> detectableAnnotationProvider.register(annotationMetas));
+
+    ClassMappingProvider classMappingProvider = InjectionHolder.getInjectedInstance(ClassMappingProvider.class);
+
+    for (AnnotationMeta parent : annotationMetas) {
+      for (AnnotationMeta annotationMeta : getAnnotationsRecursively(parent)) {
+        if (annotationMeta.getIdentifier() instanceof MethodIdentifier) {
+          annotationMeta.getMethodIdentifier()
+              .setOwnerConverter((methodIdentifier, owner) -> {
+                ClassMapping classMapping = classMappingProvider.get(owner);
+                if (classMapping == null) return owner;
+                return classMapping.getName();
+              })
+              .setParametersConverter((methodIdentifier, parameters) -> {
+                String[] transformedParameterTypes = new String[parameters.length];
+                for (int i = 0; i < transformedParameterTypes.length; i++) {
+                  ClassMapping classMapping = classMappingProvider.get(parameters[i]);
+                  if (classMapping == null) {
+                    transformedParameterTypes[i] = parameters[i];
+                    continue;
+                  }
+                  transformedParameterTypes[i] = classMapping.getName();
+                }
+                return transformedParameterTypes;
+              })
+              .setNameConverter((methodIdentifier, name) -> {
+                ClassMapping classMapping = classMappingProvider.get(name);
+                if (classMapping == null) return name;
+                for (MethodMapping methodMapping : classMapping.getDeobfuscatedMethods().values()) {
+                  if (methodMapping.getDeobfuscatedName().equals(name) || methodMapping.getObfuscatedName().equals(name)) {
+                    return methodMapping.getName();
+                  }
+                }
+                return name;
+              });
+        }
+        if (annotationMeta.getIdentifier() instanceof ClassIdentifier) {
+          annotationMeta.getClassIdentifier().setNameConverter(((classIdentifier, name) -> {
+            ClassMapping classMapping = classMappingProvider.get(name);
+            if (classMapping == null) return name;
+            return classMapping.getName();
+          }));
+        }
+        if (annotationMeta.getIdentifier() instanceof ConstructorIdentifier) {
+          annotationMeta.getConstructorIdentifier()
+              .setOwnerConverter((constructorIdentifier, name) -> {
+                ClassMapping classMapping = classMappingProvider.get(name);
+                if (classMapping == null) return name;
+                return classMapping.getName();
+              })
+              .setParametersConverter((constructorIdentifier, parameters) -> {
+                String[] transformedParameterTypes = new String[parameters.length];
+                for (int i = 0; i < transformedParameterTypes.length; i++) {
+                  ClassMapping classMapping = classMappingProvider.get(parameters[i]);
+                  if (classMapping == null) {
+                    transformedParameterTypes[i] = parameters[i];
+                    continue;
+                  }
+                  transformedParameterTypes[i] = classMapping.getName();
+                }
+                return transformedParameterTypes;
+              });
+        }
+      }
+    }
+
     return annotationMetas;
+  }
+
+  private Collection<AnnotationMeta> getAnnotationsRecursively(AnnotationMeta<?> annotationMeta) {
+    Collection<AnnotationMeta> result = new HashSet<>();
+    for (AnnotationMeta<?> metaDatum : annotationMeta.getMetaData()) {
+      result.addAll(this.getAnnotationsRecursively(metaDatum));
+    }
+    result.add(annotationMeta);
+    return result;
   }
 }

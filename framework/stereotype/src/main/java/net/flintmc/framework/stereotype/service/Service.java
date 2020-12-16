@@ -24,6 +24,7 @@ public @interface Service {
 
   enum State {
     PRE_INIT,
+    AFTER_IMPLEMENT,
     POST_INIT
   }
 }

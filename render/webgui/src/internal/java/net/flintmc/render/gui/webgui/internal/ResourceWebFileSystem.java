@@ -7,11 +7,9 @@ import net.flintmc.render.gui.webgui.WebResource;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,11 +52,7 @@ public class ResourceWebFileSystem implements WebFileSystemHandler {
       /** {@inheritDoc} */
       @Override
       public String getMimeType() {
-        try {
-          return Files.probeContentType(Paths.get(url.toURI()));
-        } catch (IOException | URISyntaxException e) {
-          throw new RuntimeException("What?", e);
-        }
+        return URLConnection.guessContentTypeFromName(url.toString());
       }
 
       /** {@inheritDoc} */

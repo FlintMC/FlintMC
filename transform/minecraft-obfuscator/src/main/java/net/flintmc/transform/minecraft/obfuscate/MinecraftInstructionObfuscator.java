@@ -11,7 +11,6 @@ import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
 import net.flintmc.transform.minecraft.obfuscate.remap.MinecraftClassRemapper;
-import net.flintmc.util.mappings.ClassMappingProvider;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
@@ -26,16 +25,12 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
 
   private final MinecraftClassRemapper minecraftClassRemapper;
   private final RootClassLoader rootClassLoader;
-  private final ClassMappingProvider classMappingProvider;
   private final boolean obfuscated;
 
   @Inject
   private MinecraftInstructionObfuscator(
-      MinecraftClassRemapper minecraftClassRemapper,
-      ClassMappingProvider classMappingProvider,
-      @Named("obfuscated") boolean obfuscated) {
+      MinecraftClassRemapper minecraftClassRemapper, @Named("obfuscated") boolean obfuscated) {
     this.minecraftClassRemapper = minecraftClassRemapper;
-    this.classMappingProvider = classMappingProvider;
     this.obfuscated = obfuscated;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();

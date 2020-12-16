@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.entity.passive.farmanimal;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.passive.AnimalEntity;
 

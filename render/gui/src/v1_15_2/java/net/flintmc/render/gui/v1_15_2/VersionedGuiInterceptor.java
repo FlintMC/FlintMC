@@ -110,7 +110,10 @@ public class VersionedGuiInterceptor {
       executionTime = Hook.ExecutionTime.AFTER,
       version = "1.15.2")
   public void hookScreenChanged() {
-    windowManager.fireEvent(
-        -1, new ScreenChangedEvent(nameMapper.fromObject(Minecraft.getInstance().currentScreen)));
+    this.windowManager.fireEvent(
+        -1,
+        window ->
+            new ScreenChangedEvent(
+                window, nameMapper.fromObject(Minecraft.getInstance().currentScreen)));
   }
 }

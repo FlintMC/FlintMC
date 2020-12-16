@@ -35,12 +35,10 @@ public class VersionedWorldInterceptor {
       net.minecraft.tileentity.SignTileEntity signTileEntity =
           (net.minecraft.tileentity.SignTileEntity) minecraftTileEntity;
       this.world
-          .getLoadedTileEntities()
-          .add(this.tileEntityMapper.fromMinecraftSignTileEntity(signTileEntity));
+          .addTileEntity(this.tileEntityMapper.fromMinecraftSignTileEntity(signTileEntity));
     } else {
       this.world
-          .getLoadedTileEntities()
-          .add(this.tileEntityMapper.fromMinecraftTileEntity(minecraftTileEntity));
+          .addTileEntity(this.tileEntityMapper.fromMinecraftTileEntity(minecraftTileEntity));
     }
   }
 
@@ -53,7 +51,7 @@ public class VersionedWorldInterceptor {
     TileEntity tileEntity = this.world.getTileEntity(this.world.fromMinecraftBlockPos(blockPos));
 
     if (tileEntity != null) {
-      this.world.getLoadedTileEntities().remove(tileEntity);
+      this.world.removeTileEntity(tileEntity);
     }
   }
 }

@@ -1,9 +1,10 @@
 package net.flintmc.mcapi.server;
 
+import java.util.concurrent.CompletableFuture;
+import net.flintmc.mcapi.resources.ResourceLocation;
+import net.flintmc.mcapi.server.buffer.PacketBuffer;
 import net.flintmc.mcapi.server.status.ServerStatus;
 import net.flintmc.mcapi.server.status.ServerStatusResolver;
-
-import java.util.concurrent.CompletableFuture;
 
 public interface ConnectedServer {
 
@@ -15,9 +16,11 @@ public interface ConnectedServer {
   ServerAddress getAddress();
 
   /**
-   * Retrieves whether the client is connected to any server (in multiplayer).
+   * Retrieves whether the client is connected or currently connecting to any server (in
+   * multiplayer).
    *
-   * @return {@code true} if the client is connected to a server, {@code false} otherwise
+   * @return {@code true} if the client is connected or currently connecting to a server, {@code
+   *     false} otherwise
    */
   boolean isConnected();
 
@@ -36,9 +39,26 @@ public interface ConnectedServer {
    * communicate with servers for any extra data in the client.
    *
    * @param identifier The non-null identifier of the payload
+   * @param packetBuffer The non-null packet buffer for the server
+   * @throws IllegalStateException If the client is not connected with any server
+   */
+  void sendCustomPayload(ResourceLocation identifier, PacketBuffer packetBuffer);
+
+  /**
+   * Sends a custom payload message to the currently connected server which can be used to
+   * communicate with servers for any extra data in the client.
+   *
+   * @param identifier The non-null identifier of the payload
    * @param payload The non-null payload for the server
    * @throws IllegalStateException If the client is not connected with any server
    */
-  // TODO replace the String with the NamespacedKey
-  void sendCustomPayload(String identifier, byte[] payload) throws IllegalStateException;
+  void sendCustomPayload(ResourceLocation identifier, byte[] payload) throws IllegalStateException;
+
+  /**
+   * Retrieves a custom payload message from the currently connected server.
+   *
+   * @param identifier The non-null identifier of the payload.
+   * @param payloadBuffer The non-null payload buffer from the server.
+   */
+  void retrieveCustomPayload(String identifier, Object payloadBuffer);
 }

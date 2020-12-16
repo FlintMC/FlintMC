@@ -1,6 +1,6 @@
 package net.flintmc.util.session.launcher;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 

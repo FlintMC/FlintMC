@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.world.scoreboad.score;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
 
@@ -52,27 +52,5 @@ public interface Criteria {
         @Assisted("name") String name,
         @Assisted("readOnly") boolean readOnly,
         @Assisted("renderType") RenderType renderType);
-  }
-
-  /** Represents a service interface for creating {@link Criteria}. */
-  interface Provider {
-
-    /**
-     * Creates a new {@link Criteria} with the given name.
-     *
-     * @param name The name of the criteria.
-     * @return A created criteria.
-     */
-    Criteria get(String name);
-
-    /**
-     * Creates a new {@link Criteria} with the given parameters.
-     *
-     * @param name The name of the criteria.
-     * @param readOnly {@code true} if the criteria read only, otherwise {@code false}.
-     * @param renderType The render type of the criteria.
-     * @return A created criteria.
-     */
-    Criteria get(String name, boolean readOnly, RenderType renderType);
   }
 }

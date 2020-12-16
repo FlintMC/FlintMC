@@ -2,7 +2,10 @@ package net.flintmc.util.mappings;
 
 /** A mapping base. */
 class BaseMapping {
-  final String obfuscatedName, deobfuscatedName, name;
+  private boolean obfuscated;
+  final String obfuscatedName;
+  final String deobfuscatedName;
+  final String name;
 
   /**
    * Construct a base mapping.
@@ -13,6 +16,7 @@ class BaseMapping {
    */
   public BaseMapping(
       final boolean obfuscated, final String obfuscatedName, final String deobfuscatedName) {
+    this.obfuscated = obfuscated;
     this.obfuscatedName = obfuscatedName;
     this.deobfuscatedName = deobfuscatedName;
     this.name = obfuscated ? obfuscatedName : deobfuscatedName;
@@ -47,5 +51,9 @@ class BaseMapping {
 
   public boolean isDefault() {
     return obfuscatedName.equals(deobfuscatedName);
+  }
+
+  public boolean isObfuscated() {
+    return obfuscated;
   }
 }

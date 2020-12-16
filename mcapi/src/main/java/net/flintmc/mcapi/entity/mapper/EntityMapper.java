@@ -11,6 +11,17 @@ import net.flintmc.mcapi.player.PlayerEntity;
 public interface EntityMapper {
 
   /**
+   * Creates a new {@link Entity} by using the given Minecraft entity as the base. This method
+   * checks whether the entity is a {@link LivingEntity}, {@link PlayerEntity} or {@link MobEntity}
+   * and if it is, retrieves one of those.
+   *
+   * @param handle The non-null Minecraft entity
+   * @return The new Flint {@link Entity} or {@code null} if the given entity was invalid.
+   * @throws IllegalArgumentException If the given object is no Minecraft entity.
+   */
+  Entity fromAnyMinecraftEntity(Object handle);
+
+  /**
    * Creates a new {@link Entity} by using the given Minecraft entity as the base.
    *
    * @param handle The non-null Minecraft entity.

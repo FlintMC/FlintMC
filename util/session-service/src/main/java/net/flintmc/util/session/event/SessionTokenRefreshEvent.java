@@ -1,6 +1,7 @@
 package net.flintmc.util.session.event;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.util.session.SessionService;
 
@@ -10,7 +11,7 @@ import net.flintmc.util.session.SessionService;
  *
  * @see SessionService#refreshToken()
  */
-public interface SessionTokenRefreshEvent {
+public interface SessionTokenRefreshEvent extends Event {
 
   /**
    * Retrieves the access token that has been used before the token has been refreshed.

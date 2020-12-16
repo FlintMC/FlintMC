@@ -3,17 +3,23 @@ package net.flintmc.render.gui.v1_15_2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CannotCompileException;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.render.gui.InputInterceptor;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.*;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCharModsCallbackI;
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
+import org.lwjgl.glfw.GLFWScrollCallbackI;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.DoubleBuffer;
@@ -22,24 +28,28 @@ import java.nio.DoubleBuffer;
 @Singleton
 @Implement(InputInterceptor.class)
 public class VersionedInputInterceptor implements InputInterceptor {
+
+  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
+  private final VersionedGLFWCallbacks callbacks;
   private GLFWCursorPosCallbackI cursorPosCallback;
 
   @Inject
-  private VersionedInputInterceptor() {}
+  private VersionedInputInterceptor(
+      InjectedFieldBuilder.Factory fieldBuilderFactory, VersionedGLFWCallbacks callbacks) {
+    this.fieldBuilderFactory = fieldBuilderFactory;
+    this.callbacks = callbacks;
+  }
 
-  /** Called from injected code, see above. The parameters match the hooked function */
-  public static void interceptKeyboardCallbacks(
+  /** Called from injected code, see below. The parameters match the hooked function */
+  public void interceptKeyboardCallbacks(
       long minecraftWindowHandle,
       GLFWKeyCallbackI keyCallback,
       GLFWCharModsCallbackI charModsCallback) {
-    VersionedGLFWCallbacks callbacks =
-        InjectionHolder.getInjectedInstance(VersionedGLFWCallbacks.class);
-
     VersionedGLFWCallbacks.overrideCallback(
         GLFW::glfwSetKeyCallback,
         minecraftWindowHandle,
         (window, key, scancode, action, mods) -> {
-          if (!callbacks.keyCallback(window, key, scancode, action, mods)) {
+          if (!this.callbacks.keyCallback(window, key, scancode, action, mods)) {
             // The window manager has not handled the event, pass it on to the original callback
             keyCallback.invoke(window, key, scancode, action, mods);
           }
@@ -49,40 +59,35 @@ public class VersionedInputInterceptor implements InputInterceptor {
         GLFW::glfwSetCharModsCallback,
         minecraftWindowHandle,
         (window, codepoint, mods) -> {
-          if (!callbacks.charModsCallback(window, codepoint, mods)) {
+          if (!this.callbacks.charModsCallback(window, codepoint, mods)) {
             // The window manager has not handled the event, pass it on to the original callback
             charModsCallback.invoke(window, codepoint, mods);
           }
         });
   }
 
-  /** Called from injected code, see above. The parameters match the hooked function. */
-  public static void interceptMouseCallbacks(
+  /** Called from injected code, see below. The parameters match the hooked function. */
+  public void interceptMouseCallbacks(
       long minecraftWindowHandle,
       GLFWCursorPosCallbackI cursorPosCallback,
       GLFWMouseButtonCallbackI mouseButtonCallback,
       GLFWScrollCallbackI scrollCallback) {
-    VersionedGLFWCallbacks callbacks =
-        InjectionHolder.getInjectedInstance(VersionedGLFWCallbacks.class);
-    VersionedInputInterceptor inputInterceptor =
-        InjectionHolder.getInjectedInstance(VersionedInputInterceptor.class);
-
-    inputInterceptor.cursorPosCallback =
+    this.cursorPosCallback =
         (window, x, y) -> {
-          if (!callbacks.cursorPosCallback(window, x, y)) {
+          if (!this.callbacks.cursorPosCallback(window, x, y)) {
             // The window manager has not handled the event, pass it on to the original callback
             cursorPosCallback.invoke(window, x, y);
           }
         };
 
     VersionedGLFWCallbacks.overrideCallback(
-        GLFW::glfwSetCursorPosCallback, minecraftWindowHandle, inputInterceptor.cursorPosCallback);
+        GLFW::glfwSetCursorPosCallback, minecraftWindowHandle, this.cursorPosCallback);
 
     VersionedGLFWCallbacks.overrideCallback(
         GLFW::glfwSetMouseButtonCallback,
         minecraftWindowHandle,
         (window, button, action, mods) -> {
-          if (!callbacks.mouseButtonCallback(window, button, action, mods)) {
+          if (!this.callbacks.mouseButtonCallback(window, button, action, mods)) {
             // The window manager has not handled the event, pass it on to the original callback
             mouseButtonCallback.invoke(window, button, action, mods);
           }
@@ -92,7 +97,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
         GLFW::glfwSetScrollCallback,
         minecraftWindowHandle,
         (window, x, y) -> {
-          if (!callbacks.scrollCallback(window, x, y)) {
+          if (!this.callbacks.scrollCallback(window, x, y)) {
             // The window manager has not handled the event, pass it on to the original callback
             scrollCallback.invoke(window, x, y);
           }
@@ -102,11 +107,19 @@ public class VersionedInputInterceptor implements InputInterceptor {
   @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
   public void transformInputMappings(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
+    CtField injectedField =
+        this.fieldBuilderFactory
+            .create()
+            .target(context.getCtClass())
+            .inject(super.getClass())
+            .generate();
+
+    String fieldName = injectedField.getName();
+
     CtMethod setKeyCallbacksMethod =
         context.getDeclaredMethod(
             "setKeyCallbacks", long.class, GLFWKeyCallbackI.class, GLFWCharModsCallbackI.class);
-    setKeyCallbacksMethod.setBody(
-        "net.flintmc.render.gui.v1_15_2.VersionedInputInterceptor.interceptKeyboardCallbacks($$);");
+    setKeyCallbacksMethod.setBody(String.format("%s.interceptKeyboardCallbacks($$);", fieldName));
 
     CtMethod setMouseCallbacksMethod =
         context.getDeclaredMethod(
@@ -115,68 +128,35 @@ public class VersionedInputInterceptor implements InputInterceptor {
             GLFWCursorPosCallbackI.class,
             GLFWMouseButtonCallbackI.class,
             GLFWScrollCallbackI.class);
-    setMouseCallbacksMethod.setBody(
-        "net.flintmc.render.gui.v1_15_2.VersionedInputInterceptor.interceptMouseCallbacks($$);");
+    setMouseCallbacksMethod.setBody(String.format("%s.interceptMouseCallbacks($$);", fieldName));
   }
 
   @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.15.2")
   public void hookMainWindowConstructor(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
+    CtField injectedField =
+        this.fieldBuilderFactory
+            .create()
+            .target(context.getCtClass())
+            .inject(VersionedGLFWCallbacks.class)
+            .generate();
+    String fieldName = injectedField.getName();
+
     context
         .getDeclaredMethod("onFramebufferSizeUpdate", long.class, int.class, int.class)
-        .insertBefore(
-            "{"
-                + "net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
-                + "   (net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
-                + "   net.flintmc.framework.inject.primitive.InjectionHolder.getInjectedInstance("
-                + "     net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
-                + "   );"
-                + "if(callbacks.framebufferSizeCallback($$)) {"
-                + "   return;"
-                + "}"
-                + "}");
+        .insertBefore(String.format("if (%s.framebufferSizeCallback($$)) { return; }", fieldName));
 
     context
         .getDeclaredMethod("onWindowPosUpdate", long.class, int.class, int.class)
-        .insertBefore(
-            "{"
-                + "net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
-                + "   (net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
-                + "   net.flintmc.framework.inject.primitive.InjectionHolder.getInjectedInstance("
-                + "     net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
-                + "   );"
-                + "if(callbacks.windowPosCallback($$)) {"
-                + "   return;"
-                + "}"
-                + "}");
+        .insertBefore(String.format("if (%s.windowPosCallback($$)) { return; }", fieldName));
 
     context
         .getDeclaredMethod("onWindowSizeUpdate", long.class, int.class, int.class)
-        .insertBefore(
-            "{"
-                + "net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
-                + "   (net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
-                + "   net.flintmc.framework.inject.primitive.InjectionHolder.getInjectedInstance("
-                + "     net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
-                + "   );"
-                + "if(callbacks.windowSizeCallback($$)) {"
-                + "   return;"
-                + "}"
-                + "}");
+        .insertBefore(String.format("if (%s.windowSizeCallback($$)) { return; }", fieldName));
 
     context
         .getDeclaredMethod("onWindowFocusUpdate", long.class, boolean.class)
-        .insertBefore(
-            "{"
-                + "net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks callbacks = "
-                + "   (net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks)"
-                + "   net.flintmc.framework.inject.primitive.InjectionHolder.getInjectedInstance("
-                + "     net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks.class"
-                + "   );"
-                + "if(callbacks.windowFocusCallback($$)) {"
-                + "   return;"
-                + "}"
-                + "}");
+        .insertBefore(String.format("if (%s.windowFocusCallback($$)) { return; }", fieldName));
   }
 
   /** {@inheritDoc} */
@@ -197,6 +177,6 @@ public class VersionedInputInterceptor implements InputInterceptor {
       cursorY = cursorYPointer.get(0);
     }
 
-    cursorPosCallback.invoke(window.getHandle(), cursorX, cursorY);
+    this.cursorPosCallback.invoke(window.getHandle(), cursorX, cursorY);
   }
 }

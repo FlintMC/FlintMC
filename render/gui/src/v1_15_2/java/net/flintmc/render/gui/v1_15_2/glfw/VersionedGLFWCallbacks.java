@@ -15,6 +15,7 @@ import java.util.function.BiFunction;
 /** Utility class holding GLFW callbacks. */
 @Singleton
 public class VersionedGLFWCallbacks {
+
   private final DefaultWindowManager windowManager;
 
   @Inject
@@ -56,88 +57,76 @@ public class VersionedGLFWCallbacks {
     overrideCallback(GLFW::glfwSetWindowSizeCallback, handle, this::windowSizeCallback);
   }
 
-  public boolean keyCallback(long window, int key, int scancode, int action, int mods) {
-    KeyEvent event =
-        new KeyEvent(
+  public boolean keyCallback(long windowHandle, int key, int scancode, int action, int mods) {
+    return this.windowManager.fireEvent(windowHandle, window -> new KeyEvent(
+            window,
             VersionedGLFWInputConverter.glfwKeyToFlintKey(key),
             scancode,
             VersionedGLFWInputConverter.glfwActionToFlintInputState(action),
-            VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods));
-
-    return windowManager.fireEvent(window, event);
+            VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods)));
   }
 
-  public boolean charModsCallback(long window, int codepoint, int mods) {
-    UnicodeTypedEvent event =
-        new UnicodeTypedEvent(
-            codepoint, VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods));
-
-    return windowManager.fireEvent(window, event);
+  public boolean charModsCallback(long windowHandle, int codepoint, int mods) {
+    return this.windowManager.fireEvent(
+        windowHandle,
+        window ->
+            new UnicodeTypedEvent(
+                window, codepoint, VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods)));
   }
 
-  public boolean cursorPosCallback(long window, double x, double y) {
-    CursorPosChangedEvent event = new CursorPosChangedEvent(x, y);
-
-    return windowManager.fireEvent(window, event);
+  public boolean cursorPosCallback(long windowHandle, double x, double y) {
+    return this.windowManager.fireEvent(windowHandle, window -> new CursorPosChangedEvent(window, x, y));
   }
 
-  public boolean mouseButtonCallback(long window, int button, int action, int mods) {
-    // GLFW does not supply mouse coordinates for click events, but they tend to be very useful
-    double mouseX;
-    double mouseY;
+  public boolean mouseButtonCallback(long windowHandle, int button, int action, int mods) {
+    return this.windowManager.fireEvent(windowHandle, window -> {
+      // GLFW does not supply mouse coordinates for click events, but they tend to be very useful
+      double mouseX;
+      double mouseY;
 
-    try (MemoryStack stack = MemoryStack.stackPush()) {
-      DoubleBuffer buffer = stack.callocDouble(2);
+      try (MemoryStack stack = MemoryStack.stackPush()) {
+        DoubleBuffer buffer = stack.callocDouble(2);
 
-      // Request mouse position
-      GLFW.glfwGetCursorPos(
-          window,
-          (DoubleBuffer) buffer.slice().position(0),
-          (DoubleBuffer) buffer.slice().position(1));
+        // Request mouse position
+        GLFW.glfwGetCursorPos(
+                windowHandle,
+                (DoubleBuffer) buffer.slice().position(0),
+                (DoubleBuffer) buffer.slice().position(1));
 
-      // Extract x and y
-      mouseX = buffer.get(0);
-      mouseY = buffer.get(1);
-    }
+        // Extract x and y
+        mouseX = buffer.get(0);
+        mouseY = buffer.get(1);
+      }
 
-    MouseButtonEvent event =
-        new MouseButtonEvent(
-            VersionedGLFWInputConverter.glfwMouseButtonToFlintMouseButton(button),
-            VersionedGLFWInputConverter.glfwActionToFlintInputState(action),
-            mouseX,
-            mouseY,
-            VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods));
-
-    return windowManager.fireEvent(window, event);
+      return new MouseButtonEvent(
+                      window,
+                      VersionedGLFWInputConverter.glfwMouseButtonToFlintKey(button),
+                      VersionedGLFWInputConverter.glfwActionToFlintInputState(action),
+                      mouseX,
+                      mouseY,
+                      VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods));
+    });
   }
 
-  public boolean scrollCallback(long window, double x, double y) {
-    MouseScrolledEvent event = new MouseScrolledEvent(x, y);
-
-    return windowManager.fireEvent(window, event);
+  public boolean scrollCallback(long windowHandle, double x, double y) {
+    return this.windowManager.fireEvent(windowHandle, window -> new MouseScrolledEvent(window, x, y));
   }
 
-  public boolean windowFocusCallback(long window, boolean isFocused) {
-    WindowFocusEvent event = new WindowFocusEvent(isFocused);
-
-    return windowManager.fireEvent(window, event);
+  public boolean windowFocusCallback(long windowHandle, boolean isFocused) {
+    return this.windowManager.fireEvent(windowHandle, window -> new WindowFocusEvent(window, isFocused));
   }
 
-  public boolean framebufferSizeCallback(long window, int width, int height) {
-    FramebufferSizeEvent event = new FramebufferSizeEvent(width, height);
-
-    return windowManager.fireEvent(window, event);
+  public boolean framebufferSizeCallback(long windowHandle, int width, int height) {
+    return this.windowManager.fireEvent(windowHandle, window -> new FramebufferSizeEvent(window, width, height));
   }
 
-  public boolean windowPosCallback(long window, int x, int y) {
-    WindowPosEvent event = new WindowPosEvent(x, y);
-
-    return windowManager.fireEvent(window, event);
+  public boolean windowPosCallback(long windowHandle, int x, int y) {
+    return this.windowManager.fireEvent(windowHandle, window -> new WindowPosEvent(window, x, y));
   }
 
-  public boolean windowSizeCallback(long window, int width, int height) {
-    WindowSizeEvent event = new WindowSizeEvent(width, height);
-
-    return windowManager.fireEvent(window, event);
+  public boolean windowSizeCallback(long windowHandle, int width, int height) {
+    return this.windowManager.fireEvent(windowHandle, window -> new WindowSizeEvent(window, width, height));
   }
+
+
 }

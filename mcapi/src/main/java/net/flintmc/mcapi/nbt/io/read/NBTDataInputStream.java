@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.nbt.io.read;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.nbt.NBT;
 import net.flintmc.util.commons.Pair;

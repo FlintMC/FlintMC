@@ -1,9 +1,8 @@
 package net.flintmc.render.gui.windowing;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
-import net.flintmc.render.gui.event.GuiEvent;
-import net.flintmc.render.gui.event.GuiEventListener;
+import net.flintmc.render.gui.input.Key;
 
 /** A generic, operating system window. */
 public interface Window {
@@ -63,35 +62,19 @@ public interface Window {
   boolean removeRenderer(WindowRenderer renderer);
 
   /**
-   * Inserts an event listener at the end of the listener chain of this window.
-   *
-   * @param listener The listener to insert
-   */
-  void addEventListener(GuiEventListener listener);
-
-  /**
-   * Removes an event listener from this window.
-   *
-   * @param listener The listener to remove
-   * @return {@code true} if the listener had been added and was removed now, {@code false}
-   *     otherwise
-   */
-  boolean removeEventListener(GuiEventListener listener);
-
-  /**
-   * Sends an event to this window.
-   *
-   * @param event The event to send
-   * @return {@code true} if the event has been handled, {@code false} otherwise
-   */
-  boolean sendEvent(GuiEvent event);
-
-  /**
    * Tests whether the window is currently focused.
    *
    * @return {@code true} if the window is focused currently, {@code false} otherwise
    */
   boolean isFocused();
+
+  /**
+   * Retrieves whether the given key is currently pressed by the user.
+   *
+   * @param key The non-null key to check for
+   * @return {@code true} if the key is pressed, {@code false otherwise}
+   */
+  boolean isKeyPressed(Key key);
 
   /** Factory for {@link Window}s. */
   @AssistedFactory(Window.class)

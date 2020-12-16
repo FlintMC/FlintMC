@@ -1,5 +1,6 @@
 package net.flintmc.render.shader;
 
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 import java.nio.FloatBuffer;
@@ -89,7 +90,7 @@ public interface ShaderUniform {
      * @param shaderProgram the shader program this uniform refers to
      * @return a new uniform
      */
-    ShaderUniform create(String name, ShaderProgram shaderProgram);
+    ShaderUniform create(@Assisted String name, @Assisted ShaderProgram shaderProgram);
 
     /**
      * Creates a new shader uniform.
@@ -101,6 +102,6 @@ public interface ShaderUniform {
      * @return a new uniform that gets updated automatically
      */
     ShaderUniform create(
-        String name, ShaderProgram shaderProgram, ShaderUniformProvider valueProvider);
+            @Assisted String name, @Assisted ShaderProgram shaderProgram, @Assisted ShaderUniformProvider valueProvider);
   }
 }

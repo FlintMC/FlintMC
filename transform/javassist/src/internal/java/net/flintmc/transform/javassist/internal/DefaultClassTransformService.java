@@ -7,17 +7,19 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.bytecode.ClassFile;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
-import net.flintmc.transform.javassist.*;
+import net.flintmc.transform.javassist.ClassTransform;
+import net.flintmc.transform.javassist.ClassTransformContext;
+import net.flintmc.transform.javassist.ClassTransformMeta;
+import net.flintmc.transform.javassist.ClassTransformService;
+import net.flintmc.transform.javassist.ConsumerBasedClassTransformMeta;
+import net.flintmc.transform.javassist.MethodBasedClassTransformMeta;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -28,22 +30,22 @@ import java.util.function.Consumer;
 
 @Singleton
 @MinecraftTransformer
-@Service(ClassTransform.class)
+@Service(value = ClassTransform.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
 @Implement(ClassTransformService.class)
 public class DefaultClassTransformService
     implements ServiceHandler<ClassTransform>, LateInjectedTransformer, ClassTransformService {
 
-  private final Logger logger;
+  private final ClassPool pool;
   private final MethodBasedClassTransformMeta.Factory methodBasedClassTransformMetaFactory;
   private final ConsumerBasedClassTransformMeta.Factory consumerBasedClassTransformMetaFactory;
   private final List<ClassTransformMeta> classTransformMetas;
 
   @Inject
   private DefaultClassTransformService(
-      @InjectLogger Logger logger,
+      ClassPool pool,
       MethodBasedClassTransformMeta.Factory methodBasedClassTransformMetaFactory,
       ConsumerBasedClassTransformMeta.Factory consumerBasedClassTransformMetaFactory) {
-    this.logger = logger;
+    this.pool = pool;
     this.methodBasedClassTransformMetaFactory = methodBasedClassTransformMetaFactory;
     this.consumerBasedClassTransformMetaFactory = consumerBasedClassTransformMetaFactory;
     this.classTransformMetas = new ArrayList<>();
@@ -79,12 +81,11 @@ public class DefaultClassTransformService
 
   @Override
   public byte[] transform(String className, byte[] bytes) throws ClassTransformException {
-    ClassPool classPool = ClassPool.getDefault();
     CtClass ctClass;
 
     try {
       ctClass =
-          classPool.makeClass(
+          this.pool.makeClass(
               new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), true);
 
       for (ClassTransformMeta classTransformMeta : this.classTransformMetas) {

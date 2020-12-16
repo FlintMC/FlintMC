@@ -19,6 +19,9 @@ public interface DependencyDescription {
    */
   List<String> getVersions();
 
+  /** @return the repository channel this dependency was published in. */
+  String getChannel();
+
   /**
    * Checks if a package satisfies this dependency.
    *

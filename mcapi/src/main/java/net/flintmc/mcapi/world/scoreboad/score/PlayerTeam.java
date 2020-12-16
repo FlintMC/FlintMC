@@ -1,10 +1,9 @@
 package net.flintmc.mcapi.world.scoreboad.score;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
@@ -62,6 +61,13 @@ public interface PlayerTeam extends Team {
   int getFriendlyFlags();
 
   /**
+   * Changes the friendly flags of this team.
+   *
+   * @param flags The new friendly flags.
+   */
+  void setFriendlyFlags(int flags);
+
+  /**
    * Sets the color of this team.
    *
    * @param color The new color for this team
@@ -111,26 +117,9 @@ public interface PlayerTeam extends Team {
     /**
      * Creates a new {@link PlayerTeam} with the given parameters.
      *
-     * @param scoreboard The scoreboard for this player team.
-     * @param name The registry name for this player team.
-     * @param displayName The name that is displayed.
-     * @return A created player team.
-     */
-    PlayerTeam create(
-        @Assisted("scoreboard") Scoreboard scoreboard,
-        @Assisted("name") String name,
-        @Assisted("chatComponent") ChatComponent displayName);
-  }
-
-  /** Represents a service interface for creating {@link PlayerTeam} */
-  interface Provider {
-
-    /**
-     * Creates a new {@link PlayerTeam} with the given name.
-     *
      * @param name The registry name for this player team.
      * @return A created player team.
      */
-    PlayerTeam get(String name);
+    PlayerTeam create(@Assisted("name") String name);
   }
 }

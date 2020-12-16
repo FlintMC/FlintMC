@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.server.status;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /** The version of the server in the {@link ServerStatus}. */

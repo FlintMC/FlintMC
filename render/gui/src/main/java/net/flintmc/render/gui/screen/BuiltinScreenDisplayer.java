@@ -20,4 +20,14 @@ public interface BuiltinScreenDisplayer {
    * @throws IllegalArgumentException If the arguments given are not acceptable for the given screen
    */
   void display(ScreenName screenName, Object... args);
+
+  /**
+   * Retrieves the currently active GUI screen, this will never return a screen name of the type
+   * {@link ScreenName.Type#FROM_MINECRAFT} and may not be {@link #supports(ScreenName) supported by
+   * this displayer}.
+   *
+   * @return The currently open screen or {@code null} if there is currently no screen opened (e.g.
+   *     the ingame screen without the chat opened)
+   */
+  ScreenName getOpenScreen();
 }

@@ -1,8 +1,8 @@
 package net.flintmc.mcapi.internal.nbt;
 
 import com.google.common.collect.Lists;
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.nbt.NBT;
 import net.flintmc.mcapi.nbt.NBTList;
@@ -41,7 +41,6 @@ public class DefaultNBTList implements NBTList {
     int length = inputStream.getDataInputStream().readInt();
     for (int i = 0; i < length; i++) {
       NBT tag = inputStream.readTag(this.subtagIdentifier);
-      System.out.println(tag.asString());
       this.tags.add(tag);
     }
   }

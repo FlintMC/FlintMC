@@ -7,13 +7,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FlintLauncher {
+
   public static void main(String[] args) throws Exception {
+    main(args, new URL[]{});
+  }
+
+
+  public static void main(String[] args, URL[] urls) throws Exception {
     // Root entry point
     // Switch to the RootClassLoader as soon as possible
-    RootClassLoader rootClassloader = new RootClassLoader(getClasspath().toArray(new URL[0]));
+    List<URL> classpath = getClasspath();
+    classpath.addAll(Arrays.asList(urls));
+
+    RootClassLoader rootClassloader = new RootClassLoader(classpath.toArray(new URL[]{}));
     Thread.currentThread().setContextClassLoader(rootClassloader);
 
     // We now are running in the RootClassLoader's context, load our LaunchController

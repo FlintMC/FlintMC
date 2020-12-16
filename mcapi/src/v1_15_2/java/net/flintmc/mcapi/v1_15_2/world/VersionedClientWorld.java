@@ -9,7 +9,7 @@ import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.player.BaseClientPlayer;
 import net.flintmc.mcapi.world.ClientWorld;
 import net.flintmc.mcapi.world.border.WorldBorder;
-import net.flintmc.mcapi.world.difficulty.DifficultyLocal;
+import net.flintmc.mcapi.world.type.difficulty.DifficultyLocal;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.minecraft.client.Minecraft;

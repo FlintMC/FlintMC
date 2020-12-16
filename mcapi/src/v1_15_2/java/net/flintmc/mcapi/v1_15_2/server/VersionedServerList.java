@@ -2,9 +2,12 @@ package net.flintmc.mcapi.v1_15_2.server;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.ServerData;
+import net.flintmc.mcapi.server.event.ServerListUpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerList;
 
@@ -16,14 +19,20 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
   private final ServerList mcServerList;
   private final ServerData.Factory serverDataFactory;
   private final ServerAddress.Factory serverAddressFactory;
+  private final EventBus eventBus;
+  private final ServerListUpdateEvent.Factory updateEventFactory;
 
   @Inject
   private VersionedServerList(
-      ServerData.Factory serverDataFactory, ServerAddress.Factory serverAddressFactory) {
+      ServerData.Factory serverDataFactory,
+      ServerAddress.Factory serverAddressFactory,
+      EventBus eventBus,
+      ServerListUpdateEvent.Factory updateEventFactory) {
     this.serverDataFactory = serverDataFactory;
     this.serverAddressFactory = serverAddressFactory;
+    this.eventBus = eventBus;
+    this.updateEventFactory = updateEventFactory;
     this.mcServerList = new ServerList(Minecraft.getInstance());
-    this.mcServerList.loadServerList();
   }
 
   /** {@inheritDoc} */
@@ -51,12 +60,20 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
   /** {@inheritDoc} */
   @Override
   public void updateServerData(int index, ServerData server) {
+    ServerListUpdateEvent event =
+        this.updateEventFactory.create(index, server, ServerListUpdateEvent.Type.UPDATE);
+    if (this.eventBus.fireEvent(event, Subscribe.Phase.PRE).isCancelled()) {
+      return;
+    }
+
     net.minecraft.client.multiplayer.ServerData data = this.mcServerList.getServerData(index);
     data.serverIP = server.getServerAddress().getIP() + ":" + server.getServerAddress().getPort();
     data.serverName = server.getName();
     data.setResourceMode(
         net.minecraft.client.multiplayer.ServerData.ServerResourceMode.valueOf(
             server.getResourceMode().name()));
+
+    this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 
   /** {@inheritDoc} */

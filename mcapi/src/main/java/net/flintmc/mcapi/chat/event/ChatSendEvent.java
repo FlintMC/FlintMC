@@ -1,6 +1,6 @@
 package net.flintmc.mcapi.chat.event;
 
-import com.google.inject.assistedinject.Assisted;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.AssistedFactory;

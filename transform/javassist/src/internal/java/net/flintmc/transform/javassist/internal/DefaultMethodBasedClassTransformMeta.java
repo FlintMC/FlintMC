@@ -1,8 +1,8 @@
 package net.flintmc.transform.javassist.internal;
 
 import com.google.inject.Key;
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import javassist.CtClass;
@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Predicate;
 
-@Implement(MethodBasedClassTransformMeta.class)
 public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTransformMeta {
 
   private final ClassTransformContext.Factory classTransformContextFactory;
@@ -42,16 +41,16 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
   private final NameResolver classNameResolver;
   private Object transformInstance;
 
-  @AssistedInject
-  private DefaultMethodBasedClassTransformMeta(
-      ClassTransformContext.Factory classTransformContextFactory,
-      ClassMappingProvider classMappingProvider,
-      @InjectLogger Logger logger,
-      @Assisted AnnotationMeta<ClassTransform> annotationMeta,
-      @Named("launchArguments") Map launchArguments) {
+
+  public DefaultMethodBasedClassTransformMeta(
+          ClassTransformContext.Factory classTransformContextFactory,
+          ClassMappingProvider classMappingProvider,
+          Logger logger,
+          AnnotationMeta<ClassTransform> annotationMeta,
+          Map<String, String> launchArguments) {
     this.classTransformContextFactory = classTransformContextFactory;
     this.logger = logger;
-    this.version = (String) launchArguments.get("--game-version");
+    this.version = launchArguments.get("--game-version");
     this.classMappingProvider = classMappingProvider;
     this.annotationMeta = annotationMeta;
     this.classNameResolver =
@@ -90,6 +89,8 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
   @Override
   public void execute(CtClass ctClass) throws ClassTransformException {
     try {
+      // TODO: 29.11.2020 Can be removed if the hooks do not use reflection anymore
+      if (ctClass.isFrozen()) ctClass.defrost();
       CtResolver.get(this.getTransformMethod())
           .invoke(this.getTransformInstance(), this.classTransformContextFactory.create(ctClass));
     } catch (IllegalAccessException exception) {

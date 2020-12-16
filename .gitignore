@@ -35,6 +35,8 @@ hs_err_pid*
 .idea/**/shelf
 .idea/**/misc.xml
 .idea/codeStyles/
+.idea/**/discord.xml
+.idea/sonarlint/
 
 # Generated files
 .idea/**/contentModel.xml
@@ -52,8 +54,8 @@ run/**
 .idea/**/dataSources.local.xml
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.idea/kotlinScripting.xml
 
 # Gradle
 .idea/**/gradle.xml
