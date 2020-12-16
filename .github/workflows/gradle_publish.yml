@@ -14,6 +14,7 @@ jobs:
         with:
           path: |
             ~/.gradle/caches/flint-gradle
+            ./**/build/flint
           key: jdk-8-flint-gradle
 
       - uses: actions/checkout@v2
