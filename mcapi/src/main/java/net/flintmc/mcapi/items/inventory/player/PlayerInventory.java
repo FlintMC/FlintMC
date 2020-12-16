@@ -25,10 +25,10 @@ public interface PlayerInventory extends Inventory {
    * Retrieves an item in a specific slot in this inventory.
    *
    * @param slot The slot to get the item from. Slots from 36 to 44 are hotbar slots. Slots from 6
-   *     to 35 are the main inventory. Slots from 0 to 4 are the crafting inventory.
+   *             to 35 are the main inventory. Slots from 0 to 4 are the crafting inventory.
    * @return The non-null item out of this slot
    * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
-   *     the highest possible slot in this inventory
+   *                                   the highest possible slot in this inventory
    */
   @Override
   ItemStack getItem(int slot) throws IndexOutOfBoundsException;

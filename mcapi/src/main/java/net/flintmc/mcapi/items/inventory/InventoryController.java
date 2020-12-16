@@ -3,7 +3,9 @@ package net.flintmc.mcapi.items.inventory;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
 
-/** Represents a controller for inventories. */
+/**
+ * Represents a controller for inventories.
+ */
 public interface InventoryController {
 
   /**
@@ -62,7 +64,7 @@ public interface InventoryController {
    * Sends a click in this inventory in the given slot to the server.
    *
    * @param click The non-null type of click to be sent to the server
-   * @param slot The slot to be clicked or -1 to simulate a click outside of the inventory
+   * @param slot  The slot to be clicked or -1 to simulate a click outside of the inventory
    * @throws IllegalArgumentException If currently no inventory is opened to be clicked
    */
   void performClick(InventoryClick click, int slot);
@@ -72,11 +74,11 @@ public interface InventoryController {
    * between two slots.
    *
    * @param hotkey The hotkey from 0 - 8 to be pressed
-   * @param slot The target slot to simulate the hotkey press
+   * @param slot   The target slot to simulate the hotkey press
    * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
-   *     the highest possible slot in this inventory
-   * @throws IllegalArgumentException If the given hotkey is not in the range from 0 - 8
-   * @throws IllegalArgumentException If currently no inventory is opened to be clicked
+   *                                   the highest possible slot in this inventory
+   * @throws IllegalArgumentException  If the given hotkey is not in the range from 0 - 8
+   * @throws IllegalArgumentException  If currently no inventory is opened to be clicked
    */
   void performHotkeyPress(int hotkey, int slot) throws IndexOutOfBoundsException;
 }

@@ -1,10 +1,9 @@
 package net.flintmc.mcapi.chat.format;
 
-import net.flintmc.framework.stereotype.MathHelper;
-import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
-
 import java.util.HashMap;
 import java.util.Map;
+import net.flintmc.framework.stereotype.MathHelper;
+import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 
 /**
  * Colors that can be used by chat components. Since Minecraft 1.16, RGB colors can be used. This
@@ -73,9 +72,9 @@ public class ChatColor {
   /**
    * Creates a new color for the given values.
    *
-   * @param name The non-null name of the new color
+   * @param name      The non-null name of the new color
    * @param colorChar The character which defines the color in legacy chat messages
-   * @param rgb The rgb value of the new color
+   * @param rgb       The rgb value of the new color
    * @return The new non-null color
    */
   public static ChatColor of(String name, char colorChar, int rgb) {
@@ -106,8 +105,8 @@ public class ChatColor {
    * Parses the given {@code rawColor} either as a hex color or as a Minecraft default color
    *
    * @param rawColor The 1, 6 or 7 characters long text containing either the RGB value in the
-   *     hexadecimal format (with or without the `#` prefix) or the Minecraft color codes like `4`
-   *     for {@link #DARK_RED}.
+   *                 hexadecimal format (with or without the `#` prefix) or the Minecraft color
+   *                 codes like `4` for {@link #DARK_RED}.
    * @return The result or {@code null} if no color with the 1 length char exists
    * @throws InvalidChatColorException If the length of the input doesn't match
    * @throws InvalidChatColorException If the given hex value is no valid hexadecimal integer
@@ -128,7 +127,7 @@ public class ChatColor {
    * value.
    *
    * @param rgbHex The 6 (or with a `#` as a prefix 7) characters long text containing the RGB value
-   *     in the hexadecimal format
+   *               in the hexadecimal format
    * @return The non-null result
    * @throws InvalidChatColorException If the length of the input doesn't match
    * @throws InvalidChatColorException If the input is no valid hexadecimal integer
@@ -180,7 +179,9 @@ public class ChatColor {
     return ChatColor.rgbSupport;
   }
 
-  /** Enables/Disables the RGB support for colors */
+  /**
+   * Enables/Disables the RGB support for colors
+   */
   public static void setRgbSupport(boolean rgbSupport) {
     ChatColor.rgbSupport = rgbSupport;
   }
@@ -236,7 +237,9 @@ public class ChatColor {
     return this.colorCode;
   }
 
-  /** Retrieves the rgb value of this color. */
+  /**
+   * Retrieves the rgb value of this color.
+   */
   public int getRgb() {
     return this.rgb;
   }
@@ -307,7 +310,9 @@ public class ChatColor {
     return PREFIX_CHAR + this.colorCode;
   }
 
-  /** @see #toPlainText() */
+  /**
+   * @see #toPlainText()
+   */
   @Override
   public String toString() {
     return this.toPlainText();

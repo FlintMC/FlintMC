@@ -32,7 +32,9 @@ public class VersionedWorldTypeRegister implements WorldTypeRegister {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<WorldType> getWorldTypes() {
     return this.worldTypes;

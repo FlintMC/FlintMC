@@ -1,11 +1,10 @@
 package net.flintmc.mcapi.chat.annotation;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * This annotation can be used to declare a {@link ChatComponent} in an annotation.

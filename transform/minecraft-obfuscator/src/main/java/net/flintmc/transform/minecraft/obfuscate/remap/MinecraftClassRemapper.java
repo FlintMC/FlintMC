@@ -35,8 +35,8 @@ public class MinecraftClassRemapper extends SimpleRemapper {
   private Handle lastHandle;
 
   @Inject
-  private MinecraftClassRemapper(ClassPool pool, ClassMappingProvider mappingProvider) {
-    super(collectMappings(pool, mappingProvider));
+  private MinecraftClassRemapper(ClassPool pool, ClassMappingProvider classMappingProvider) {
+    super(collectMappings(pool, classMappingProvider));
     this.pool = pool;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();

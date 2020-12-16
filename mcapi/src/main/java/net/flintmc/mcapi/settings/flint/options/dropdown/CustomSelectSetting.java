@@ -1,16 +1,15 @@
 package net.flintmc.mcapi.settings.flint.options.dropdown;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.flintmc.framework.config.defval.annotation.DefaultString;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Icon;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * The {@link ApplicableSetting} to define a dropdown or the minecraft selection menu (like the

@@ -2,7 +2,13 @@ package net.flintmc.framework.config.internal.generator.method.defaults;
 
 import com.google.common.base.Defaults;
 import com.google.gson.reflect.TypeToken;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtNewMethod;
+import javassist.CtPrimitiveType;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
@@ -39,7 +45,8 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
 
   private String getSingleGetterName() {
     String prefix =
-        this.valueType.equals(CtClass.booleanType) || this.valueType.getName().equals(Boolean.class.getName())
+        this.valueType.equals(CtClass.booleanType)
+                || this.valueType.getName().equals(Boolean.class.getName())
             ? "is"
             : "get";
     return prefix + super.getConfigName();
@@ -245,7 +252,7 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
                 + ".put(key, "
                 + value
                 + ");"
-                + "this.configStorageProvider.write(("
+                + "configStorageProvider.write(("
                 + ParsedConfig.class.getName()
                 + ") this.config);"
                 + "}",

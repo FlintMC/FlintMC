@@ -3,7 +3,9 @@ package net.flintmc.mcapi.world.math;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents a three-dimensional vector based on {@link Double}. */
+/**
+ * Represents a three-dimensional vector based on {@link Double}.
+ */
 public interface Vector3D {
 
   /**
@@ -38,7 +40,7 @@ public interface Vector3D {
   /**
    * Whether the given distance is larger than the square vector.
    *
-   * @param vector The vector to calculate the square distance.
+   * @param vector   The vector to calculate the square distance.
    * @param distance The distance.
    * @return {@code true} if the distance larger than the square distance, otherwise {@code false}.
    */
@@ -60,9 +62,12 @@ public interface Vector3D {
   /**
    * The square of the distance from this {@link Vector3D} to a specified point.
    *
-   * @param x The X coordinate of the specified point to be measured against this {@link Vector3D}.
-   * @param y The Y coordinate of the specified point to be measured against this {@link Vector3D}.
-   * @param z The Z coordinate of the specified point to be measured against this {@link Vector3D}.
+   * @param x         The X coordinate of the specified point to be measured against this {@link
+   *                  Vector3D}.
+   * @param y         The Y coordinate of the specified point to be measured against this {@link
+   *                  Vector3D}.
+   * @param z         The Z coordinate of the specified point to be measured against this {@link
+   *                  Vector3D}.
    * @param useCenter {@code true} if the center should be used, otherwise {@code false}.
    * @return The square of the distance from this {@link Vector3D} to a specified point.
    */
@@ -94,7 +99,9 @@ public interface Vector3D {
    */
   Vector3D multiply(double factorX, double factorY, double factorZ);
 
-  /** A factory class for the {@link Vector3D}. */
+  /**
+   * A factory class for the {@link Vector3D}.
+   */
   @AssistedFactory(Vector3D.class)
   interface Factory {
 

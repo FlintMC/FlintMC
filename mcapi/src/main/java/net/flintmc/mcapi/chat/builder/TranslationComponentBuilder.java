@@ -3,7 +3,9 @@ package net.flintmc.mcapi.chat.builder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
 
-/** Builder for {@link TranslationComponent}s. */
+/**
+ * Builder for {@link TranslationComponent}s.
+ */
 public interface TranslationComponentBuilder extends ComponentBuilder<TranslationComponentBuilder> {
 
   /**
@@ -20,7 +22,7 @@ public interface TranslationComponentBuilder extends ComponentBuilder<Translatio
    * set.
    *
    * @return The key for translations of the current component or {@code null} if no translation key
-   *     has been provided
+   * has been provided
    * @see #translationKey(String)
    */
   String translationKey();
@@ -53,7 +55,7 @@ public interface TranslationComponentBuilder extends ComponentBuilder<Translatio
    * the {@link TranslationComponent}.
    *
    * @return A non-null array of all arguments. Modifications to this array will have no effect on
-   *     the current component
+   * the current component
    */
   ChatComponent[] arguments();
 }

@@ -31,7 +31,7 @@ public interface InventoryClickEvent
    * POST phase and air in the PRE phase.
    *
    * @return The clicked item or {@code null} if no slot has been clicked (e.g. outside of the
-   *     inventory when {@link #getClickType()} == {@link InventoryClick#DROP}
+   * inventory when {@link #getClickType()} == {@link InventoryClick#DROP}
    */
   ItemStack getClickedItem();
 
@@ -42,7 +42,9 @@ public interface InventoryClickEvent
    */
   InventoryClick getClickType();
 
-  /** Factory for the {@link InventoryClickEvent}. */
+  /**
+   * Factory for the {@link InventoryClickEvent}.
+   */
   @AssistedFactory(InventoryClickEvent.class)
   interface Factory {
 
@@ -50,9 +52,9 @@ public interface InventoryClickEvent
      * Creates a new {@link InventoryClickEvent} with the given values.
      *
      * @param inventory The non-null inventory where the click has happened
-     * @param slot The slot in the inventory where the click has happened or {@code -1} if no slot
-     *     has been clicked (e.g. outside of the inventory when the clickType is {@link
-     *     InventoryClick#DROP})
+     * @param slot      The slot in the inventory where the click has happened or {@code -1} if no
+     *                  slot has been clicked (e.g. outside of the inventory when the clickType is
+     *                  {@link InventoryClick#DROP})
      * @param clickType The non-null type of click performed by the player
      * @return The new non-null event
      */

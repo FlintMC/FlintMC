@@ -2,7 +2,9 @@ package net.flintmc.mcapi.render.text.raw;
 
 import java.util.List;
 
-/** Renderer for simple texts in Minecraft. */
+/**
+ * Renderer for simple texts in Minecraft.
+ */
 public interface FontRenderer {
 
   /**
@@ -41,18 +43,19 @@ public interface FontRenderer {
    * included and also change the color of the text. If no color is set, the given rgba value will
    * be used.
    *
-   * @param x The x position on the screen, may be modified by {@link StringAlignment}.
-   * @param y The y position on the screen
-   * @param text The non-null text to be rendered
-   * @param rgba The rgba value for the text, -1 means white, this may be overridden by color codes
-   *     in the text like "§a"
-   * @param alignment The non-null alignment of the text on the screen
+   * @param x             The x position on the screen, may be modified by {@link StringAlignment}.
+   * @param y             The y position on the screen
+   * @param text          The non-null text to be rendered
+   * @param rgba          The rgba value for the text, -1 means white, this may be overridden by
+   *                      color codes in the text like "§a"
+   * @param alignment     The non-null alignment of the text on the screen
    * @param maxLineLength The max length per line (has to be >= 0), if not 0, the text may be split
-   *     into multiple lines, but Minecraft will try to split it at line breaks/spaces if possible.
-   * @param shadow Whether a shadow should be drawn or not, if {@code maxLineLength} is not 0, this
-   *     will be ignored and a shadow will be drawn
-   * @param xFactor The factor to scale the text on the x-axis, 1 to disable scaling
-   * @param yFactor The factor to scale the text on the y-axis, 1 to disable scaling
+   *                      into multiple lines, but Minecraft will try to split it at line
+   *                      breaks/spaces if possible.
+   * @param shadow        Whether a shadow should be drawn or not, if {@code maxLineLength} is not
+   *                      0, this will be ignored and a shadow will be drawn
+   * @param xFactor       The factor to scale the text on the x-axis, 1 to disable scaling
+   * @param yFactor       The factor to scale the text on the y-axis, 1 to disable scaling
    * @see StringAlignment
    */
   void drawString(
@@ -69,7 +72,7 @@ public interface FontRenderer {
   /**
    * Retrieves a collection with width wrapped strings.
    *
-   * @param text The non-null text to be wrapped.
+   * @param text      The non-null text to be wrapped.
    * @param wrapWidth The width, when the text should be wrapped.
    * @return A collection with width wrapped strings.
    */
@@ -78,7 +81,7 @@ public interface FontRenderer {
   /**
    * Retrieves a wrapped formatted string.
    *
-   * @param text The non-null text to be wrapped.
+   * @param text      The non-null text to be wrapped.
    * @param wrapWidth The width, when the text should be wrapped.
    * @return A wrapped formatted string.
    */
@@ -87,7 +90,7 @@ public interface FontRenderer {
   /**
    * Retrieves the height of a wrapped string.
    *
-   * @param text The non-null text to be wrapped.
+   * @param text      The non-null text to be wrapped.
    * @param wrapWidth The width, when the text should be wrapped.
    * @return THe height of the wrapped string.
    */

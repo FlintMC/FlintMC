@@ -23,7 +23,9 @@ public interface SettingsUpdateEvent extends Event {
    */
   RegisteredSetting getSetting();
 
-  /** Factory for the {@link SettingsUpdateEvent}. */
+  /**
+   * Factory for the {@link SettingsUpdateEvent}.
+   */
   @AssistedFactory(SettingsUpdateEvent.class)
   interface Factory {
 

@@ -1,5 +1,7 @@
 package net.flintmc.util.mappings;
 
+import java.util.HashMap;
+import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -7,10 +9,8 @@ import net.flintmc.launcher.LaunchController;
 import net.flintmc.util.mappings.utils.MappingUtils;
 import org.objectweb.asm.Type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public final class ClassMapping extends BaseMapping {
+
   final Map<String, FieldMapping> obfuscatedFields = new HashMap<>();
   final Map<String, FieldMapping> deobfuscatedFields = new HashMap<>();
   final Map<String, MethodMapping> obfuscatedMethods = new HashMap<>();
@@ -128,18 +128,22 @@ public final class ClassMapping extends BaseMapping {
     CtClass[] argumentCtCLasses = new CtClass[argumentTypes.length];
     for (int i = 0; i < argumentCtCLasses.length; i++) {
       try {
-        ClassMapping classMapping = MappingUtils.getClassMappingProvider().get(argumentTypes[i].getClassName());
-        if (classMapping != null)
+        ClassMapping classMapping = MappingUtils.getClassMappingProvider()
+            .get(argumentTypes[i].getClassName());
+        if (classMapping != null) {
           argumentCtCLasses[i] = ClassPool.getDefault().get(classMapping.getName());
-        else
+        } else {
           argumentCtCLasses[i] = ClassPool.getDefault().get(argumentTypes[i].getClassName());
+        }
       } catch (NotFoundException e) {
         e.printStackTrace();
       }
     }
 
-    String obfuscatedIdentifier = String.format("%s(%s)", name, MappingUtils.generateDescriptor(true, argumentCtCLasses));
-    String deObfuscatedIdentifier = String.format("%s(%s)", name, MappingUtils.generateDescriptor(false, argumentCtCLasses));
+    String obfuscatedIdentifier = String
+        .format("%s(%s)", name, MappingUtils.generateDescriptor(true, argumentCtCLasses));
+    String deObfuscatedIdentifier = String
+        .format("%s(%s)", name, MappingUtils.generateDescriptor(false, argumentCtCLasses));
 
     if (obfuscatedMethods.containsKey(obfuscatedIdentifier)) {
       return obfuscatedMethods.get(obfuscatedIdentifier);

@@ -5,13 +5,12 @@ import com.google.inject.Singleton;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import java.net.Proxy;
+import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
 import net.flintmc.util.session.ProfileLoader;
-
-import java.net.Proxy;
-import java.util.UUID;
 
 @Singleton
 @Implement(ProfileLoader.class)

@@ -17,12 +17,18 @@ public interface DirectionalEvent {
    */
   Direction getDirection();
 
-  /** An enumeration with all possible directions for the {@link DirectionalEvent}. */
+  /**
+   * An enumeration with all possible directions for the {@link DirectionalEvent}.
+   */
   enum Direction {
 
-    /** The direction for receiving something from somewhere else (e.g. a server). */
+    /**
+     * The direction for receiving something from somewhere else (e.g. a server).
+     */
     RECEIVE,
-    /** The direction for sending something to somewhere else (e.g. a server). */
+    /**
+     * The direction for sending something to somewhere else (e.g. a server).
+     */
     SEND
   }
 }

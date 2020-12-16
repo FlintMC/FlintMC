@@ -55,9 +55,10 @@ public class VersionedWorldLauncher implements WorldLauncher {
   public void launchWorld(String fileName, String displayName, WorldConfiguration configuration) {
     if (Minecraft.getInstance().getSaveLoader().canLoadWorld(fileName)) {
       Minecraft.getInstance().launchIntegratedServer(
-              fileName,
-              displayName,
-              configuration == null ? null : (WorldSettings) this.worldMapper.toMinecraftWorldSettings(configuration)
+          fileName,
+          displayName,
+          configuration == null ? null
+              : (WorldSettings) this.worldMapper.toMinecraftWorldSettings(configuration)
       );
     }
   }

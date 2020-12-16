@@ -1,18 +1,17 @@
 package net.flintmc.util.mojang.internal.history;
 
 import com.google.inject.Inject;
-import net.flintmc.util.mojang.history.NameHistory;
-import net.flintmc.util.mojang.history.NameHistoryEntry;
-import net.flintmc.util.mojang.internal.cache.DataStreamHelper;
-import net.flintmc.util.mojang.internal.cache.object.CacheIO;
-import net.flintmc.util.mojang.internal.cache.object.CachedObjectIO;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
+import net.flintmc.util.mojang.history.NameHistory;
+import net.flintmc.util.mojang.history.NameHistoryEntry;
+import net.flintmc.util.mojang.internal.cache.DataStreamHelper;
+import net.flintmc.util.mojang.internal.cache.object.CacheIO;
+import net.flintmc.util.mojang.internal.cache.object.CachedObjectIO;
 
 @CacheIO
 public class NameHistoryIO implements CachedObjectIO<NameHistory> {

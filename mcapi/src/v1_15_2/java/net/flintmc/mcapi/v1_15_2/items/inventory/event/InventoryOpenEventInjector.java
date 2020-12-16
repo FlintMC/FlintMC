@@ -19,7 +19,8 @@ public class InventoryOpenEventInjector {
   private final InventoryOpenEvent.Factory eventFactory;
 
   @Inject
-  public InventoryOpenEventInjector(EventBus eventBus, InventoryController controller, InventoryOpenEvent.Factory eventFactory) {
+  public InventoryOpenEventInjector(EventBus eventBus, InventoryController controller,
+      InventoryOpenEvent.Factory eventFactory) {
     this.eventBus = eventBus;
     this.controller = controller;
     this.eventFactory = eventFactory;
@@ -29,10 +30,10 @@ public class InventoryOpenEventInjector {
       className = "net.minecraft.client.gui.ScreenManager$IScreenFactory",
       methodName = "createScreen",
       parameters = {
-        @Type(typeName = "net.minecraft.util.text.ITextComponent"),
-        @Type(typeName = "net.minecraft.inventory.container.ContainerType"),
-        @Type(typeName = "net.minecraft.client.Minecraft"),
-        @Type(reference = int.class)
+          @Type(typeName = "net.minecraft.util.text.ITextComponent"),
+          @Type(typeName = "net.minecraft.inventory.container.ContainerType"),
+          @Type(typeName = "net.minecraft.client.Minecraft"),
+          @Type(reference = int.class)
       })
   public void createScreen() {
     InventoryOpenEvent event = this.eventFactory.create(this.controller.getOpenInventory());
@@ -40,11 +41,11 @@ public class InventoryOpenEventInjector {
   }
 
   @Hook(
-          className = "net.minecraft.client.Minecraft",
-          methodName = "displayGuiScreen",
-          parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
-          executionTime = Hook.ExecutionTime.AFTER,
-          version = "1.15.2")
+      className = "net.minecraft.client.Minecraft",
+      methodName = "displayGuiScreen",
+      parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
+      executionTime = Hook.ExecutionTime.AFTER,
+      version = "1.15.2")
   public void displayGuiScreen(@Named("args") Object[] args) {
     if (!(args[0] instanceof InventoryScreen)) {
       return;

@@ -28,7 +28,9 @@ public interface ChunkLoadEvent extends Event {
    */
   int getZ();
 
-  /** Factory for the {@link ChunkLoadEvent}. */
+  /**
+   * Factory for the {@link ChunkLoadEvent}.
+   */
   @AssistedFactory(ChunkLoadEvent.class)
   interface Factory {
 

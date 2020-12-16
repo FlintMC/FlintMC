@@ -11,12 +11,16 @@ import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
  */
 public class InvalidSettingsException extends RuntimeException {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public InvalidSettingsException(String message) {
     super(message);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public InvalidSettingsException(String message, Throwable cause) {
     super(message, cause);
   }

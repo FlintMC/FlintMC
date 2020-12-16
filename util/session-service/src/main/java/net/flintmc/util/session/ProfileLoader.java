@@ -1,11 +1,12 @@
 package net.flintmc.util.session;
 
+import java.util.UUID;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
-import java.util.UUID;
-
-/** The ProfileLoader loads textures and player names for a specified UUID. */
+/**
+ * The ProfileLoader loads textures and player names for a specified UUID.
+ */
 public interface ProfileLoader {
 
   /**

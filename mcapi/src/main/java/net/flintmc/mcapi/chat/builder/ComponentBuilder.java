@@ -1,6 +1,11 @@
 package net.flintmc.mcapi.chat.builder;
 
-import net.flintmc.mcapi.chat.component.*;
+import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.component.KeybindComponent;
+import net.flintmc.mcapi.chat.component.ScoreComponent;
+import net.flintmc.mcapi.chat.component.SelectorComponent;
+import net.flintmc.mcapi.chat.component.TextComponent;
+import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.format.ChatColor;
@@ -85,7 +90,7 @@ public interface ComponentBuilder<B extends ComponentBuilder<B>> {
    * so this overrides any calls that have been done before to this method.
    *
    * @param event The non-null event that will be displayed when the player hovers over the
-   *     component
+   *              component
    * @return this
    */
   B hoverEvent(HoverEvent event);

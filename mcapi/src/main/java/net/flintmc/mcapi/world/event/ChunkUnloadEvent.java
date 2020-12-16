@@ -28,7 +28,9 @@ public interface ChunkUnloadEvent extends Event {
    */
   int getZ();
 
-  /** Factory for the {@link ChunkUnloadEvent}. */
+  /**
+   * Factory for the {@link ChunkUnloadEvent}.
+   */
   @AssistedFactory(ChunkUnloadEvent.class)
   interface Factory {
 

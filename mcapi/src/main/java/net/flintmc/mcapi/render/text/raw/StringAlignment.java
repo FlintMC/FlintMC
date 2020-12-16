@@ -1,9 +1,13 @@
 package net.flintmc.mcapi.render.text.raw;
 
-/** Alignment of the text in the {@link FontRenderer}. */
+/**
+ * Alignment of the text in the {@link FontRenderer}.
+ */
 public enum StringAlignment {
 
-  /** The given text will be displayed directly on the given x and y coordinates. */
+  /**
+   * The given text will be displayed directly on the given x and y coordinates.
+   */
   LEFT,
 
   /**

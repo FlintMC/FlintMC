@@ -45,7 +45,9 @@ public class VersionedEntitySpawnEventInjector {
       return;
     }
 
-    EntitySpawnEvent event = this.spawnEventFactory.create(entity);
+    int entityIdentifier = (int) args[0];
+
+    EntitySpawnEvent event = this.spawnEventFactory.create(entityIdentifier, entity);
     this.eventBus.fireEvent(event, Phase.PRE);
   }
 

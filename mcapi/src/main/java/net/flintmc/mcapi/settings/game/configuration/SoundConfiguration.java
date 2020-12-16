@@ -7,7 +7,9 @@ import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
 import net.flintmc.mcapi.settings.flint.options.numeric.Range;
 import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
 
-/** Represents the sound configuration. */
+/**
+ * Represents the sound configuration.
+ */
 @DefineCategory(
     name = "minecraft.settings.sounds",
     displayName = @Component(value = "options.sounds", translate = true))
@@ -28,7 +30,7 @@ public interface SoundConfiguration {
    * Changes the volume of the given sound category.
    *
    * @param soundCategory The sound category to be changed in percent
-   * @param volume The new sound volume for the category
+   * @param volume        The new sound volume for the category
    */
   void setSoundVolume(SoundCategory soundCategory, float volume);
 }

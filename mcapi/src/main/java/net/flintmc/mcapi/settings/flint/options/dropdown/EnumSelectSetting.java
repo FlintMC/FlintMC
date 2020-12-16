@@ -1,12 +1,11 @@
 package net.flintmc.mcapi.settings.flint.options.dropdown;
 
-import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 
 /**
  * The same as {@link CustomSelectSetting}, but things like the {@link DisplayName} aren't got from

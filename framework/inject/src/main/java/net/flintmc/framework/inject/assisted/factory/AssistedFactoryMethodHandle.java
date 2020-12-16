@@ -12,9 +12,7 @@ public class AssistedFactoryMethodHandle {
       Modifier.PRIVATE | Modifier.STATIC | Modifier.PUBLIC | Modifier.PROTECTED;
   private final Constructor<MethodHandles.Lookup> lookupConstructor;
 
-  /**
-   * Constructs a new assisted factory method handle.
-   */
+  /** Constructs a new assisted factory method handle. */
   protected AssistedFactoryMethodHandle() {
     this.lookupConstructor = this.findConstructorHandlesLookup();
   }
@@ -23,7 +21,7 @@ public class AssistedFactoryMethodHandle {
    * Creates a {@link MethodHandle} with the given parameters.
    *
    * @param method The method to creates a constructor.
-   * @param proxy  The proxy of the method.
+   * @param proxy The proxy of the method.
    * @return A created method handle or {@code null}.
    */
   public MethodHandle createMethodHandle(Method method, Object proxy) {
@@ -41,12 +39,9 @@ public class AssistedFactoryMethodHandle {
     } catch (ReflectiveOperationException exception) {
       throw new RuntimeException("Unable to access method: " + method, exception);
     }
-
   }
 
-  /**
-   * @see MethodHandles.Lookup
-   */
+  /** @see MethodHandles.Lookup */
   private Constructor<MethodHandles.Lookup> findConstructorHandlesLookup() {
     try {
       Constructor<MethodHandles.Lookup> constructorLookup =
@@ -57,6 +52,4 @@ public class AssistedFactoryMethodHandle {
       return null;
     }
   }
-
-
 }

@@ -2,6 +2,10 @@ package net.flintmc.mcapi.v1_15_2.items.meta;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -16,11 +20,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Implement(value = ItemMeta.class, version = "1.15.2")
 public class VersionedItemMeta extends DefaultItemMeta {

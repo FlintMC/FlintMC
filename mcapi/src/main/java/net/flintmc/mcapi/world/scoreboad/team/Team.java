@@ -1,12 +1,13 @@
 package net.flintmc.mcapi.world.scoreboad.team;
 
+import java.util.Collection;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 
-import java.util.Collection;
-
-/** Represents a Minecraft team. */
+/**
+ * Represents a Minecraft team.
+ */
 public interface Team {
 
   /**

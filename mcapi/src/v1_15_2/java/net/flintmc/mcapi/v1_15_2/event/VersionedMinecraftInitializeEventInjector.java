@@ -18,7 +18,8 @@ public class VersionedMinecraftInitializeEventInjector {
   @Inject
   public VersionedMinecraftInitializeEventInjector(EventBus eventBus) {
     this.eventBus = eventBus;
-    this.event = new MinecraftInitializeEvent() {};
+    this.event = new MinecraftInitializeEvent() {
+    };
   }
 
   @Hook(

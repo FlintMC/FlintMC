@@ -10,9 +10,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import net.flintmc.framework.inject.assisted.data.AssistData;
 
-/**
- * The module configures whether the method should create the constructor for the module.
- */
+/** The module configures whether the method should create the constructor for the module. */
 public class AssistedFactoryModule extends AbstractModule {
 
   private final Method method;
@@ -23,13 +21,13 @@ public class AssistedFactoryModule extends AbstractModule {
   /**
    * Constructs a new {@link AssistedFactoryModule} with the given parameters.
    *
-   * @param method     The method that should be bound to the {@link Binder#withSource(Object)}
-   * @param arguments  The arguments of the method.
+   * @param method The method that should be bound to the {@link Binder#withSource(Object)}
+   * @param arguments The arguments of the method.
    * @param assistData The assisted data for the module.
-   * @param returnKey  The return type of the method.
+   * @param returnKey The return type of the method.
    */
-  public AssistedFactoryModule(Method method, Object[] arguments, AssistData assistData,
-      Key<?> returnKey) {
+  public AssistedFactoryModule(
+      Method method, Object[] arguments, AssistData assistData, Key<?> returnKey) {
     this.method = method;
     this.arguments = arguments;
     this.assistData = assistData;
@@ -45,19 +43,20 @@ public class AssistedFactoryModule extends AbstractModule {
     boolean optimized = assistData.isOptimized();
 
     for (Key<?> parameterType : assistData.getParameterTypes()) {
-      binder.bind((Key) parameterType)
+      binder
+          .bind((Key) parameterType)
           .toProvider(
-              optimized ?
-                  assistData.getProviders().get(providerCount++) :
-                  Providers.of(arguments[providerCount++])
-          );
+              optimized
+                  ? assistData.getProviders().get(providerCount++)
+                  : Providers.of(arguments[providerCount++]));
     }
 
     // Retrieves the constructor of the assisted data
     Constructor constructor = assistData.getConstructor();
 
     if (constructor != null) {
-      binder.bind(returnKey)
+      binder
+          .bind(returnKey)
           .toConstructor(constructor, (TypeLiteral) assistData.getImplementationType())
           .in(Scopes.NO_SCOPE);
     }

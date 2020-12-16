@@ -1,8 +1,7 @@
 package net.flintmc.framework.inject.logging;
 
-import org.apache.logging.log4j.Logger;
-
 import java.util.function.Function;
+import org.apache.logging.log4j.Logger;
 
 /** Provides Log4J Logger instances. */
 public interface LoggingProvider {

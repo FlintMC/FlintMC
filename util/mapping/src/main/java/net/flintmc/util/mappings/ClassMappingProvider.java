@@ -3,16 +3,18 @@ package net.flintmc.util.mappings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import net.flintmc.util.mappings.exceptions.MappingParseException;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import net.flintmc.util.mappings.exceptions.MappingParseException;
 
-/** <code>ClassMappingProvider</code> manages class mappings produced by a mapping parser. */
+/**
+ * <code>ClassMappingProvider</code> manages class mappings produced by a mapping parser.
+ */
 @Singleton
 public final class ClassMappingProvider {
+
   private final Map<String, ClassMapping> obfuscatedClassMappings;
   private final Map<String, ClassMapping> deobfuscatedClassMappings = new HashMap<>();
 
@@ -58,7 +60,9 @@ public final class ClassMappingProvider {
    * @return A class mapping.
    */
   public ClassMapping get(final String name) {
-    if (obfuscatedClassMappings.containsKey(name)) return obfuscatedClassMappings.get(name);
+    if (obfuscatedClassMappings.containsKey(name)) {
+      return obfuscatedClassMappings.get(name);
+    }
     return deobfuscatedClassMappings.get(name);
   }
 

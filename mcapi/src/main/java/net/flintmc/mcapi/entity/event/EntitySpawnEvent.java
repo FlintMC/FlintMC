@@ -12,11 +12,18 @@ import net.flintmc.mcapi.entity.Entity;
  * <p>When joining a world or server (Singleplayer or Multiplayer), this event will be fired for
  * every entity in the world and the player himself.
  *
- * <p>It will only be fired in the {@link Subscribe.Phase#POST} phase.
+ * <p>It will only be fired in the {@link Subscribe.Phase#PRE} phase.
  *
  * @see Subscribe
  */
 public interface EntitySpawnEvent extends Event {
+
+  /**
+   * Retrieves the identifier of the spawned entity.
+   *
+   * @return The identifier of the non-null entity that has been spawned.
+   */
+  int getIdentifier();
 
   /**
    * Retrieves the entity that has been spawned in this event.
@@ -25,16 +32,19 @@ public interface EntitySpawnEvent extends Event {
    */
   Entity getEntity();
 
-  /** Factory for the {@link EntitySpawnEvent}. */
+  /**
+   * Factory for the {@link EntitySpawnEvent}.
+   */
   @AssistedFactory(EntitySpawnEvent.class)
   interface Factory {
 
     /**
      * Creates a new {@link EntitySpawnEvent} for the given entity.
      *
-     * @param entity The non-null entity that has been spawned
+     * @param identifier The identifier of the non-null entity that has been spawned.
+     * @param entity     The non-null entity that has been spawned.
      * @return The new non-null {@link EntitySpawnEvent}
      */
-    EntitySpawnEvent create(@Assisted Entity entity);
+    EntitySpawnEvent create(@Assisted int identifier, @Assisted Entity entity);
   }
 }

@@ -1,10 +1,9 @@
 package net.flintmc.util.session.launcher;
 
+import java.util.Collection;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
-
-import java.util.Collection;
 
 /**
  * Represents the part of the launcher_profiles.json that contains the accounts, clientToken and
@@ -24,7 +23,7 @@ public interface LauncherProfiles {
    * Retrieves the version out of the launcher_profiles.json if a serializer is present for it.
    *
    * @return The version or {@link LauncherProfileResolver#getHighestSerializerVersion()} if no
-   *     serializer is registered with the version from the file
+   * serializer is registered with the version from the file
    */
   int getPreferredVersion();
 
@@ -36,17 +35,19 @@ public interface LauncherProfiles {
    */
   Collection<LauncherProfile> getProfiles();
 
-  /** Factory for the {@link LauncherProfiles}. */
+  /**
+   * Factory for the {@link LauncherProfiles}.
+   */
   @AssistedFactory(LauncherProfiles.class)
   interface Factory {
 
     /**
      * Creates new {@link LauncherProfiles} with the given parameters.
      *
-     * @param clientToken The non-null clientToken from the launcher_profiles.json
+     * @param clientToken      The non-null clientToken from the launcher_profiles.json
      * @param preferredVersion The version which should be used to serialize the new object
-     * @param profiles The non-null collection of all non-null profiles from the
-     *     launcher_profiles.json
+     * @param profiles         The non-null collection of all non-null profiles from the
+     *                         launcher_profiles.json
      * @return The new non-null {@link LauncherProfiles}
      */
     LauncherProfiles create(

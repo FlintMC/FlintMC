@@ -1,6 +1,9 @@
 package net.flintmc.mcapi.v1_15_2.chat;
 
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.controller.ChatController;
@@ -8,10 +11,6 @@ import net.flintmc.mcapi.chat.controller.filter.FilterableChatMessage;
 import net.flintmc.mcapi.internal.chat.controller.DefaultChatController;
 import net.flintmc.mcapi.internal.chat.controller.DefaultFilterableChatMessage;
 import net.minecraft.client.Minecraft;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Singleton
 @Implement(value = ChatController.class, version = "1.15.2")

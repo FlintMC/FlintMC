@@ -2,7 +2,9 @@ package net.flintmc.mcapi.entity.passive;
 
 import net.flintmc.mcapi.entity.passive.farmanimal.PigEntity;
 
-/** Mapper between the Minecraft's passive entities and Flint's passive entities. */
+/**
+ * Mapper between the Minecraft's passive entities and Flint's passive entities.
+ */
 public interface PassiveEntityMapper {
 
   /**
@@ -10,7 +12,7 @@ public interface PassiveEntityMapper {
    *
    * @param handle The non-null Minecraft ambient entity.
    * @return The new Flint {@link AmbientEntity} or {@code null} if the given ambient entity was
-   *     invalid.
+   * invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft ambient entity.
    */
   AmbientEntity fromMinecraftAmbientEntity(Object handle);
@@ -20,7 +22,7 @@ public interface PassiveEntityMapper {
    *
    * @param ambientEntity The non-null Flint {@link AmbientEntity}.
    * @return The new Minecraft ambient entity or {@code null} if the given ambient entity was
-   *     invalid.
+   * invalid.
    */
   Object toMinecraftAmbientEntity(AmbientEntity ambientEntity);
 
@@ -29,7 +31,7 @@ public interface PassiveEntityMapper {
    *
    * @param handle The non-null Minecraft animal entity.
    * @return The new Flint {@link AnimalEntity} or {@code null} if the given animal entity was
-   *     invalid.
+   * invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft animal entity.
    */
   AnimalEntity fromMinecraftAnimalEntity(Object handle);

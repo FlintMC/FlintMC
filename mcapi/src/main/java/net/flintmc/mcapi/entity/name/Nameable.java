@@ -2,7 +2,9 @@ package net.flintmc.mcapi.entity.name;
 
 import net.flintmc.mcapi.chat.component.ChatComponent;
 
-/** Serves as name interface for objects. */
+/**
+ * Serves as name interface for objects.
+ */
 public interface Nameable {
 
   /**

@@ -1,14 +1,13 @@
 package net.flintmc.util.mojang.internal.history;
 
 import com.google.common.collect.ImmutableList;
+import java.util.Collection;
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.mojang.history.NameHistory;
 import net.flintmc.util.mojang.history.NameHistoryEntry;
-
-import java.util.Collection;
-import java.util.UUID;
 
 @Implement(NameHistory.class)
 public class DefaultNameHistory implements NameHistory {

@@ -7,7 +7,9 @@ import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
 import net.flintmc.mcapi.player.PlayerEntity;
 
-/** Mapper between Minecraft entity and Flint entity. */
+/**
+ * Mapper between Minecraft entity and Flint entity.
+ */
 public interface EntityMapper {
 
   /**
@@ -60,7 +62,7 @@ public interface EntityMapper {
    *
    * @param handle The non-null Minecraft living entity.
    * @return The new Flint {@link LivingEntity} or {@code null} if the given living entity was
-   *     invalid.
+   * invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft living entity.
    */
   LivingEntity fromMinecraftLivingEntity(Object handle);

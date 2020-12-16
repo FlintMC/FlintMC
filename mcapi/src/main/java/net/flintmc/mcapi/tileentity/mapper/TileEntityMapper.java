@@ -3,7 +3,9 @@ package net.flintmc.mcapi.tileentity.mapper;
 import net.flintmc.mcapi.tileentity.SignTileEntity;
 import net.flintmc.mcapi.tileentity.TileEntity;
 
-/** Mapper between the Minecraft tile entity type and Flint tile entity. */
+/**
+ * Mapper between the Minecraft tile entity type and Flint tile entity.
+ */
 public interface TileEntityMapper {
 
   /**
@@ -32,11 +34,12 @@ public interface TileEntityMapper {
   Object toMinecraftSignTileEntity(SignTileEntity signTileEntity);
 
   /**
-   * Creates a new {@link SignTileEntity} by using the given Minecraft sign tile entity as the base.
+   * Creates a new {@link SignTileEntity} by using the given Minecraft sign tile entity as the
+   * base.
    *
    * @param signTileEntity The non-null Minecraft sign tile entity.
    * @return The new Flint {@link SignTileEntity} or {@code null} if the given sign tile entity was
-   *     invalid.
+   * invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft sign tile entity.
    */
   SignTileEntity fromMinecraftSignTileEntity(Object signTileEntity);

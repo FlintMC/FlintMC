@@ -3,18 +3,19 @@ package net.flintmc.util.session.internal.launcher.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.util.session.launcher.LauncherProfile;
 import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-/** Serializer for version 1 of the launcher_profiles.json by Mojang. */
+/**
+ * Serializer for version 1 of the launcher_profiles.json by Mojang.
+ */
 @ProfileSerializerVersion(1)
 public class V1LauncherProfileSerializer implements LauncherProfileSerializer {
 
@@ -90,7 +91,7 @@ public class V1LauncherProfileSerializer implements LauncherProfileSerializer {
 
       result.put(
           profileId,
-          this.profileFactory.create(profileId, accessToken, new GameProfile[] {profile}));
+          this.profileFactory.create(profileId, accessToken, new GameProfile[]{profile}));
     }
 
     return result;

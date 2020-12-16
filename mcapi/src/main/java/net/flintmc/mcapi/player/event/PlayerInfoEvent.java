@@ -1,12 +1,11 @@
 package net.flintmc.mcapi.player.event;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
-
-import javax.annotation.Nullable;
 
 /**
  * This event will be fired when a {@link NetworkPlayerInfo} is added/removed/updated on a
@@ -31,7 +30,9 @@ public interface PlayerInfoEvent extends Event {
    */
   NetworkPlayerInfo getPlayerInfo();
 
-  /** Types as reasons for a {@link PlayerInfoEvent} being fired. */
+  /**
+   * Types as reasons for a {@link PlayerInfoEvent} being fired.
+   */
   enum Type {
     ADD(false),
     REMOVE(false),
@@ -50,21 +51,23 @@ public interface PlayerInfoEvent extends Event {
      * added/removed.
      *
      * @return {@code true} if it will be fired as an update, {@code false} if it will be fired as
-     *     an add/remove
+     * an add/remove
      */
     public boolean isUpdate() {
       return this.update;
     }
   }
 
-  /** Factory for {@link PlayerInfoEvent}. */
+  /**
+   * Factory for {@link PlayerInfoEvent}.
+   */
   @AssistedFactory(PlayerInfoEvent.class)
   interface Factory {
 
     /**
      * Creates a new {@link PlayerInfoEvent}.
      *
-     * @param type The non-null type of the event
+     * @param type       The non-null type of the event
      * @param playerInfo The non-null player info that has been updated
      * @return The new non-null {@link PlayerInfoEvent}
      */

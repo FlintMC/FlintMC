@@ -2,7 +2,9 @@ package net.flintmc.mcapi.tileentity.type;
 
 import java.util.Map;
 
-/** The register is used to register {@link TileEntityType}'s or to get {@link TileEntityType}'s. */
+/**
+ * The register is used to register {@link TileEntityType}'s or to get {@link TileEntityType}'s.
+ */
 public interface TileEntityTypeRegister {
 
   /**

@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Set;
 import net.flintmc.framework.inject.assisted.thread.ThreadLocalProvider;
 
-/**
- * The object stores important information for assisted methods.
- */
+/** The object stores important information for assisted methods. */
 public class AssistData implements AssistedMethod {
 
   private final Constructor<?> constructor;
@@ -30,15 +28,14 @@ public class AssistData implements AssistedMethod {
   /**
    * Constructs a new {@link AssistData} with the given parameters.
    *
-   * @param constructor        The constructor of the assisted data.
-   * @param returnType         The return type of the assisted data.
-   * @param parameterTypes     The parameter types of the assisted data.
+   * @param constructor The constructor of the assisted data.
+   * @param returnType The return type of the assisted data.
+   * @param parameterTypes The parameter types of the assisted data.
    * @param implementationType The implementation type of the assisted data.
-   * @param factoryMethod      The factory method of the assisted data.
-   * @param dependencies       The dependencies of the assisted ata.
-   * @param optimized          {@code true} if the assisted data is optimized, otherwise {@code
-   *                           false}.
-   * @param providers          A collection with all providers of the assisted data.
+   * @param factoryMethod The factory method of the assisted data.
+   * @param dependencies The dependencies of the assisted ata.
+   * @param optimized {@code true} if the assisted data is optimized, otherwise {@code false}.
+   * @param providers A collection with all providers of the assisted data.
    */
   public AssistData(
       Constructor<?> constructor,
@@ -74,33 +71,25 @@ public class AssistData implements AssistedMethod {
         .toString();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Set<Dependency<?>> getDependencies() {
     return dependencies;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Method getFactoryMethod() {
     return factoryMethod;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Constructor<?> getImplementationConstructor() {
     return constructor;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public TypeLiteral<?> getImplementationType() {
     return implementationType;

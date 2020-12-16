@@ -21,7 +21,7 @@ public class AssistedFactoryModuleBuilder {
    *
    * @param source The source of the binding.
    * @param target The target of the source binding.
-   * @param <T>    The type of the bindings.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(Class<T> source, Class<? extends T> target) {
@@ -33,11 +33,11 @@ public class AssistedFactoryModuleBuilder {
    *
    * @param source The source of the binding.
    * @param target The target of the source binding.
-   * @param <T>    The type of the bindings.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
-  public <T> AssistedFactoryModuleBuilder implement(Class<T> source,
-      TypeLiteral<? extends T> target) {
+  public <T> AssistedFactoryModuleBuilder implement(
+      Class<T> source, TypeLiteral<? extends T> target) {
     return implement(TypeLiteral.get(source), target);
   }
 
@@ -46,11 +46,11 @@ public class AssistedFactoryModuleBuilder {
    *
    * @param source The source of the binding.
    * @param target The target of the source binding.
-   * @param <T>    The type of the bindings.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
-  public <T> AssistedFactoryModuleBuilder implement(TypeLiteral<T> source,
-      Class<? extends T> target) {
+  public <T> AssistedFactoryModuleBuilder implement(
+      TypeLiteral<T> source, Class<? extends T> target) {
     return implement(source, TypeLiteral.get(target));
   }
 
@@ -59,7 +59,7 @@ public class AssistedFactoryModuleBuilder {
    *
    * @param source The source of the binding.
    * @param target The target of the source binding.
-   * @param <T>    The type of the bindings.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -71,10 +71,10 @@ public class AssistedFactoryModuleBuilder {
    * Bind the given {@code target} to the {@code source} and the annotation type of the {@code
    * source}.
    *
-   * @param source     The source of the binding.
+   * @param source The source of the binding.
    * @param annotation The annotation of the source.
-   * @param target     The target of the source binding.
-   * @param <T>        The type of the bindings.
+   * @param target The target of the source binding.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -86,10 +86,10 @@ public class AssistedFactoryModuleBuilder {
    * Bind the given {@code target} to the {@code source} and the annotation type of the {@code
    * source}.
    *
-   * @param source     The source of the binding.
+   * @param source The source of the binding.
    * @param annotation The annotation of the source.
-   * @param target     The target of the source binding.
-   * @param <T>        The type of the bindings.
+   * @param target The target of the source binding.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -101,10 +101,10 @@ public class AssistedFactoryModuleBuilder {
    * Bind the given {@code target} to the {@code source} and the annotation type of the {@code
    * source}.
    *
-   * @param source     The source of the binding.
+   * @param source The source of the binding.
    * @param annotation The annotation of the source.
-   * @param target     The target of the source binding.
-   * @param <T>        The type of the bindings.
+   * @param target The target of the source binding.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -116,10 +116,10 @@ public class AssistedFactoryModuleBuilder {
    * Bind the given {@code target} to the {@code source} and the annotation type of the {@code
    * source}.
    *
-   * @param source     The source of the binding.
+   * @param source The source of the binding.
    * @param annotation The annotation of the source.
-   * @param target     The target of the source binding.
-   * @param <T>        The type of the bindings.
+   * @param target The target of the source binding.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -131,10 +131,10 @@ public class AssistedFactoryModuleBuilder {
    * Bind the given {@code target} to the {@code source} and the annotation type of the {@code
    * source}.
    *
-   * @param source         The source of the binding.
+   * @param source The source of the binding.
    * @param annotationType The annotation type of the source.
-   * @param target         The target of the source binding.
-   * @param <T>            The type of the bindings.
+   * @param target The target of the source binding.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -146,10 +146,10 @@ public class AssistedFactoryModuleBuilder {
    * Bind the given {@code target} to the {@code source} and the annotation type of the {@code
    * source}.
    *
-   * @param source         The source of the binding.
+   * @param source The source of the binding.
    * @param annotationType The annotation type of the source.
-   * @param target         The target of the source binding.
-   * @param <T>            The type of the bindings.
+   * @param target The target of the source binding.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -163,10 +163,10 @@ public class AssistedFactoryModuleBuilder {
    * Bind the given {@code target} to the {@code source} and the annotation type of the {@code
    * source}.
    *
-   * @param source         The source of the binding.
+   * @param source The source of the binding.
    * @param annotationType The annotation type of the source.
-   * @param target         The target of the source binding.
-   * @param <T>            The type of the bindings.
+   * @param target The target of the source binding.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -180,10 +180,10 @@ public class AssistedFactoryModuleBuilder {
    * Bind the given {@code target} to the {@code source} and the annotation type of the {@code
    * source}.
    *
-   * @param source         The source of the binding.
+   * @param source The source of the binding.
    * @param annotationType The annotation type of the source.
-   * @param target         The target of the source binding.
-   * @param <T>            The type of the bindings.
+   * @param target The target of the source binding.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(
@@ -198,7 +198,7 @@ public class AssistedFactoryModuleBuilder {
    *
    * @param source The source of the binding.
    * @param target The target of the source binding.
-   * @param <T>    The type of the bindings.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
   public <T> AssistedFactoryModuleBuilder implement(Key<T> source, Class<? extends T> target) {
@@ -210,11 +210,11 @@ public class AssistedFactoryModuleBuilder {
    *
    * @param source The source of the binding.
    * @param target The target of the source binding.
-   * @param <T>    The type of the bindings.
+   * @param <T> The type of the bindings.
    * @return This builder, for chaining.
    */
-  public <T> AssistedFactoryModuleBuilder implement(Key<T> source,
-      TypeLiteral<? extends T> target) {
+  public <T> AssistedFactoryModuleBuilder implement(
+      Key<T> source, TypeLiteral<? extends T> target) {
     bindings.addBinding(source, target);
     return this;
   }
@@ -223,7 +223,7 @@ public class AssistedFactoryModuleBuilder {
    * Built a module with the given factory interface.
    *
    * @param factoryInterface The interface for the factory.
-   * @param <F>              The type of the factory.
+   * @param <F> The type of the factory.
    * @return The built module.
    */
   public <F> Module build(Class<F> factoryInterface) {
@@ -234,7 +234,7 @@ public class AssistedFactoryModuleBuilder {
    * Built a module with the given factory interface.
    *
    * @param factoryInterface The interface for the factory.
-   * @param <F>              The type of the factory.
+   * @param <F> The type of the factory.
    * @return The built module
    */
   public <F> Module build(TypeLiteral<F> factoryInterface) {
@@ -245,7 +245,7 @@ public class AssistedFactoryModuleBuilder {
    * Built a module with the given factory interface.
    *
    * @param factoryInterface The interface for the factory.
-   * @param <F>              The type of the factory.
+   * @param <F> The type of the factory.
    * @return The built module
    */
   public <F> Module build(final Key<F> factoryInterface) {
@@ -257,5 +257,4 @@ public class AssistedFactoryModuleBuilder {
       }
     };
   }
-
 }

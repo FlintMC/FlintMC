@@ -38,5 +38,4 @@ public interface AssistedMethod {
    * @return All non-assisted dependencies required to construct and inject the implementation.
    */
   Set<Dependency<?>> getDependencies();
-
 }

@@ -23,7 +23,7 @@ public class ClickEvent {
    * <p>Available since Minecraft 1.7.10.
    *
    * @param action The non-null action of the click event
-   * @param value The non-null value of the click event
+   * @param value  The non-null value of the click event
    * @return The new non-null click event
    * @see Action
    */
@@ -107,12 +107,16 @@ public class ClickEvent {
     return of(Action.CHANGE_PAGE, String.valueOf(page));
   }
 
-  /** Retrieves the non-null action of this click event. */
+  /**
+   * Retrieves the non-null action of this click event.
+   */
   public Action getAction() {
     return this.action;
   }
 
-  /** Retrieves the non-null value of this click event. */
+  /**
+   * Retrieves the non-null value of this click event.
+   */
   public String getValue() {
     return this.value;
   }

@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.version;
 
-/** The version helper can be used to write version specific code in the internal module. */
+/**
+ * The version helper can be used to write version specific code in the internal module.
+ */
 public interface VersionHelper {
 
   /**
@@ -29,17 +31,18 @@ public interface VersionHelper {
    *
    * @param minor The minor version.
    * @return {@code true} if the minor version of the client is below the given minor version,
-   *     otherwise {@code false}.
+   * otherwise {@code false}.
    */
   boolean isUnder(int minor);
 
   /**
-   * Whether the minor and patch versions of the client is below the given minor and patch versions.
+   * Whether the minor and patch versions of the client is below the given minor and patch
+   * versions.
    *
    * @param minor The minor version.
    * @param patch The patch version.
    * @return {@code true} if the minor and patch versions of the client is below the given minor and
-   *     patch versions, otherwise {@code false}.
+   * patch versions, otherwise {@code false}.
    */
   boolean isUnder(int minor, int patch);
 
@@ -50,7 +53,7 @@ public interface VersionHelper {
    * @param minor The minor version.
    * @param patch The patch version.
    * @return {@code true} if the client version under the given version numbers, otherwise {@code
-   *     false}.
+   * false}.
    */
   boolean isUnder(int major, int minor, int patch);
 
