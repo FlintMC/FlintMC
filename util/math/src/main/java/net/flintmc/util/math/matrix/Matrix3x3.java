@@ -3,6 +3,29 @@ package net.flintmc.util.math.matrix;
 public interface Matrix3x3<T_Number extends Number, T_Matrix3 extends Matrix3x3<T_Number, T_Matrix3>> {
 
   /**
+   * Rotate this matrix around a specified axis
+   *
+   * @param ang rotation in radians
+   * @param x x axis
+   * @param y y axis
+   * @param z z axis
+   * @return this
+   */
+  T_Matrix3 rotate(float ang, float x, float y, float z);
+
+  /**
+   * Rotate this matrix around a specified axis and writes the output to a target
+   *
+   * @param ang rotation in radians
+   * @param x x axis
+   * @param y y axis
+   * @param z z axis
+   * @param target the target to write to
+   * @return target
+   */
+  T_Matrix3 rotate(float ang, float x, float y, float z, T_Matrix3 target);
+
+  /**
    * Inverts this matrix
    *
    * @return this

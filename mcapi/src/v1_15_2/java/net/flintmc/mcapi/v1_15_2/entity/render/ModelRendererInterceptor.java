@@ -18,8 +18,10 @@ import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.CtClassFilter;
 import net.flintmc.transform.javassist.CtClassFilters;
 import net.flintmc.util.mappings.ClassMappingProvider;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -42,14 +44,14 @@ public class ModelRendererInterceptor {
           ClassPool.getDefault()
               .get(
                   new String[] {
-                    "com.mojang.blaze3d.matrix.MatrixStack$Entry",
-                    "com.mojang.blaze3d.vertex.IVertexBuilder",
-                    "int",
-                    "int",
-                    "float",
-                    "float",
-                    "float",
-                    "float"
+                      "com.mojang.blaze3d.matrix.MatrixStack$Entry",
+                      "com.mojang.blaze3d.vertex.IVertexBuilder",
+                      "int",
+                      "int",
+                      "float",
+                      "float",
+                      "float",
+                      "float"
                   });
 
       CtMethod doRender =
@@ -87,7 +89,7 @@ public class ModelRendererInterceptor {
         ClassPool.getDefault()
             .get(
                 new String[] {
-                  "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
+                    "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
                 });
 
     for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {
@@ -116,7 +118,6 @@ public class ModelRendererInterceptor {
     private final ClientPlayer clientPlayer;
     private final MinecraftRenderMeta alternatingMinecraftRenderMeta;
     private Entity lastRenderedEntity;
-    private boolean expectRenderCleanup;
 
     @Inject
     private Handler(
@@ -164,6 +165,7 @@ public class ModelRendererInterceptor {
 
         Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixEntryIn.getMatrix();
         Matrix3fAccessor normalMatrix = (Matrix3fAccessor) (Object) matrixEntryIn.getNormal();
+
         INSTANCE
             .alternatingMinecraftRenderMeta
             .getWorld()
@@ -199,6 +201,11 @@ public class ModelRendererInterceptor {
                 normalMatrix.getM12(),
                 normalMatrix.getM22());
 
+        INSTANCE
+            .alternatingMinecraftRenderMeta
+            .setPackedLight(packedLightIn)
+            .setPartialTick(Minecraft.getInstance().getRenderPartialTicks());
+
         boolean cancelRender =
             !modelBoxHolder
                 .getContext()
@@ -222,16 +229,13 @@ public class ModelRendererInterceptor {
             alpha,
             modelBoxHolder.getContext().getRenderer(),
             modelBoxHolder,
-            null);
+            INSTANCE.alternatingMinecraftRenderMeta);
         if (cancelRender) {
           modelBoxHolder.callRenderCleanup();
-          INSTANCE.expectRenderCleanup = false;
         } else {
-          INSTANCE.expectRenderCleanup = true;
         }
         return cancelRender;
       } else {
-        INSTANCE.expectRenderCleanup = true;
         return false;
       }
     }
@@ -249,7 +253,7 @@ public class ModelRendererInterceptor {
         float alpha,
         Renderer renderer,
         ModelBoxHolder modelBoxHolder,
-        Object renderMeta) {
+        MinecraftRenderMeta renderMeta) {
 
       if (renderer != null) {
         Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixStackEntry.getMatrix();
@@ -260,54 +264,20 @@ public class ModelRendererInterceptor {
           BufferBuilder.DrawState drawState;
 
           Constructor<?> declaredConstructor1 =
-              BufferBuilder.DrawState.class.getDeclaredConstructors()[1];
+              BufferBuilder.DrawState.class.getDeclaredConstructor(
+                  VertexFormat.class, int.class, int.class);
           declaredConstructor1.setAccessible(true);
           drawState =
               (BufferBuilder.DrawState)
                   declaredConstructor1.newInstance(
                       ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
           DrawStateAccessor drawStateAccessor = (DrawStateAccessor) (Object) drawState;
-          MinecraftRenderMeta minecraftRenderMeta =
-              InjectionHolder.getInjectedInstance(MinecraftRenderMeta.Factory.class).create();
 
-          minecraftRenderMeta
-              .getWorld()
-              .set(
-                  worldMatrix.getM00(),
-                  worldMatrix.getM10(),
-                  worldMatrix.getM20(),
-                  worldMatrix.getM30(),
-                  worldMatrix.getM01(),
-                  worldMatrix.getM11(),
-                  worldMatrix.getM21(),
-                  worldMatrix.getM31(),
-                  worldMatrix.getM02(),
-                  worldMatrix.getM12(),
-                  worldMatrix.getM22(),
-                  worldMatrix.getM32(),
-                  worldMatrix.getM03(),
-                  worldMatrix.getM13(),
-                  worldMatrix.getM23(),
-                  worldMatrix.getM33());
-
-          minecraftRenderMeta
-              .getNormal()
-              .set(
-                  normalMatrix.getM00(),
-                  normalMatrix.getM10(),
-                  normalMatrix.getM20(),
-                  normalMatrix.getM01(),
-                  normalMatrix.getM11(),
-                  normalMatrix.getM21(),
-                  normalMatrix.getM02(),
-                  normalMatrix.getM12(),
-                  normalMatrix.getM22());
-
-          drawStateAccessor.setModelRenderData(minecraftRenderMeta);
+          drawStateAccessor.setModelRenderData(renderMeta);
           drawStateAccessor.setModelBoxHolder(modelBoxHolder);
           drawStates.add(drawState);
 
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
           e.printStackTrace();
         }
         if (!renderer.shouldExecuteNextStage(modelBoxHolder, renderMeta)) {

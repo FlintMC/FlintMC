@@ -8,8 +8,7 @@ import net.flintmc.render.vbo.VertexAttributes;
 import net.flintmc.render.vbo.VertexBufferObject;
 import net.flintmc.render.vbo.VertexBuilder;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Function;
 
 /** {@inheritDoc} */
@@ -24,7 +23,7 @@ public class VersionedVertexBuilder implements VertexBuilder {
   private final AttributeValueHandler rgbHandler;
   private final AttributeValueHandler rgbaHandler;
   private final AttributeValueHandler textureHandler;
-  private final AttributeValueHandler customHandler;
+  private final SortedMap<Integer, AttributeValueHandler> customHandlers;
 
   @AssistedInject
   private VersionedVertexBuilder(@Assisted VertexBufferObject vbo) {
@@ -42,8 +41,7 @@ public class VersionedVertexBuilder implements VertexBuilder {
         new AttributeValueHandler(attribute -> attribute == VertexAttributes.COLOR_RGBA);
     this.textureHandler =
         new AttributeValueHandler(attribute -> attribute == VertexAttributes.TEXTURE_UV);
-    this.customHandler =
-        new AttributeValueHandler(attribute -> true);
+    this.customHandlers = new TreeMap<>(Comparator.comparingInt(i -> i));
   }
 
   /** {@inheritDoc} */
@@ -114,8 +112,10 @@ public class VersionedVertexBuilder implements VertexBuilder {
 
   /** {@inheritDoc} */
   @Override
-  public VertexBuilder custom(float... values) {
-    this.customHandler.addFloats(values);
+  public VertexBuilder custom(int position, float... values) {
+    this.customHandlers.computeIfAbsent(
+        position, (key) -> new AttributeValueHandler(attribute -> true));
+    this.customHandlers.get(position).addFloats(values);
     return this;
   }
 
@@ -140,7 +140,9 @@ public class VersionedVertexBuilder implements VertexBuilder {
       else if (attribute == VertexAttributes.TEXTURE_UV)
         this.textureHandler.writeFloats(buffer, offset);
       else
-        this.customHandler.writeFloats(buffer, offset);
+        for (Map.Entry<Integer, AttributeValueHandler> entry : this.customHandlers.entrySet()) {
+          entry.getValue().writeFloats(buffer, offset);
+        }
       offset += attribute.getSize();
     }
     return offset - startOffset;

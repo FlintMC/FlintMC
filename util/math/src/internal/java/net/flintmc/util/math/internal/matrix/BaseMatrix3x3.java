@@ -1,6 +1,7 @@
 package net.flintmc.util.math.internal.matrix;
 
 import net.flintmc.util.math.matrix.Matrix3x3;
+import org.joml.Math;
 
 /**
  * {@inheritDoc}
@@ -13,6 +14,11 @@ public abstract class BaseMatrix3x3<
   protected T_Number m00, m01, m02;
   protected T_Number m10, m11, m12;
   protected T_Number m20, m21, m22;
+
+  @Override
+  public T_Matrix3 rotate(float ang, float x, float y, float z) {
+    return this.rotate(ang, x, y, z, (T_Matrix3) this);
+  }
 
   /** {@inheritDoc} */
   @Override
