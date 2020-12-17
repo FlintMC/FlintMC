@@ -3,6 +3,7 @@ package net.flintmc.mcapi.v1_15_2.items.inventory;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
+import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.items.inventory.InventoryDimension;
 import net.flintmc.mcapi.items.inventory.InventoryType;
 import net.flintmc.mcapi.items.inventory.player.PlayerArmorPart;
@@ -14,6 +15,8 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.NonNullList;
 
 public class VersionedPlayerInventory extends VersionedInventory implements PlayerInventory {
+
+  private static final EquipmentSlotType[] SLOT_TYPES = EquipmentSlotType.values();
 
   private final MinecraftItemMapper itemMapper;
 
@@ -63,12 +66,40 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
   }
 
   @Override
+  public int getHeldItemSlot() {
+    int slot = Minecraft.getInstance().player.inventory.currentItem;
+    return slot >= 0 && slot <= 8 ? slot : -1;
+  }
+
+  @Override
+  public void setHeldItemSlot(int slot) {
+    if (slot < 0 || slot > 8) {
+      throw new IndexOutOfBoundsException("Slot cannot be smaller than 0 and larger than 8");
+    }
+    Minecraft.getInstance().player.inventory.currentItem = slot;
+  }
+
+  @Override
+  public EquipmentSlotType getSlotType(int slot) {
+    if (this.getHeldItemSlot() == slot) {
+      return EquipmentSlotType.MAIN_HAND;
+    }
+
+    for (EquipmentSlotType slotType : SLOT_TYPES) {
+      if (slotType.getSlotIndex() == slot) {
+        return slotType;
+      }
+    }
+
+    return null;
+  }
+
+  @Override
   public int getHandSlot(PlayerHand hand) {
     if (hand == PlayerHand.OFF_HAND) {
-      return 40;
+      return 45;
     }
-    int currentItem = Minecraft.getInstance().player.inventory.currentItem;
-    return currentItem >= 0 && currentItem <= 8 ? currentItem : -1;
+    return 36 + this.getHeldItemSlot();
   }
 
   @Override

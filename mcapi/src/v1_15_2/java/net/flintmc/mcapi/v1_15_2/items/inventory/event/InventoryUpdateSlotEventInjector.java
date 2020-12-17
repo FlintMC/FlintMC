@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
@@ -22,7 +23,7 @@ public class InventoryUpdateSlotEventInjector {
   private final InventoryUpdateSlotEvent.Factory eventFactory;
 
   @Inject
-  public InventoryUpdateSlotEventInjector(
+  private InventoryUpdateSlotEventInjector(
       EventBus eventBus,
       InventoryController controller,
       MinecraftItemMapper itemMapper,
@@ -33,17 +34,8 @@ public class InventoryUpdateSlotEventInjector {
     this.eventFactory = eventFactory;
   }
 
-  @Subscribe(phase = Subscribe.Phase.PRE)
-  public void handlePreSetSlot(PacketEvent event) {
-    this.fireSetSlot(event, Subscribe.Phase.PRE);
-  }
-
-  @Subscribe(phase = Subscribe.Phase.POST)
-  public void handlePostSetSlot(PacketEvent event) {
-    this.fireSetSlot(event, Subscribe.Phase.POST);
-  }
-
-  private void fireSetSlot(PacketEvent event, Subscribe.Phase phase) {
+  @Subscribe(phase = Phase.ANY)
+  public void handleSetSlot(PacketEvent event, Phase phase) {
     if (event.getDirection() != DirectionalEvent.Direction.RECEIVE
         || !(event.getPacket() instanceof SSetSlotPacket)
         || !this.controller.canOpenInventories()) {
