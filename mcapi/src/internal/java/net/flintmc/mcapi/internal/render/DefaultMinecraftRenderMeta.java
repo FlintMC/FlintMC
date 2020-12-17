@@ -45,7 +45,7 @@ public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
   @Override
   public MinecraftRenderMeta rotate(float ang, float x, float y, float z) {
     this.getNormal().rotate(ang, x, y, z);
-    this.getWorld().rotate(ang, x, y, z);
+    this.getWorld().rotate(-ang, x, y, z);
     return this;
   }
 
