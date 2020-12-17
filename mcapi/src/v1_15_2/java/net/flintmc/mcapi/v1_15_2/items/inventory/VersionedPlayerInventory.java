@@ -124,7 +124,7 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
 
   @Override
   public ItemStack[] getContents() {
-    return this.map(Minecraft.getInstance().player.inventory.mainInventory);
+    return this.map(super.getContainer().getInventory());
   }
 
   @Override

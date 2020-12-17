@@ -8,6 +8,6 @@ import net.minecraft.util.Session;
 @Shadow("net.minecraft.client.Minecraft")
 public interface SessionRefreshableMinecraft {
 
-  @FieldSetter(value = "session", removeFinal = true)
+  @FieldSetter("session")
   void setSession(Session session);
 }
