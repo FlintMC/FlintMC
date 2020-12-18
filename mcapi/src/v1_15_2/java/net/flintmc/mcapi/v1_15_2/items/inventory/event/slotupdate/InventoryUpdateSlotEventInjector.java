@@ -2,9 +2,11 @@ package net.flintmc.mcapi.v1_15_2.items.inventory.event.slotupdate;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
+import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.event.TickEvent;
 import net.flintmc.mcapi.items.ItemStack;
@@ -13,8 +15,10 @@ import net.flintmc.mcapi.items.inventory.InventoryController;
 import net.flintmc.mcapi.items.inventory.event.InventoryUpdateSlotEvent;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.flintmc.mcapi.server.event.PacketEvent;
+import net.flintmc.transform.hook.Hook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.play.server.SSetSlotPacket;
 
 @Singleton
@@ -43,15 +47,25 @@ public class InventoryUpdateSlotEventInjector {
   @Subscribe
   public void injectUpdatingItemLists(TickEvent event) {
     ClientPlayerEntity player = Minecraft.getInstance().player;
-    if (player == null) {
+    if (player != null) {
+      this.injectLists(player.inventory);
+    }
+  }
+
+  @Hook(
+      className = "net.minecraft.entity.player.PlayerInventory",
+      methodName = "setInventorySlotContents",
+      parameters = {@Type(reference = int.class), @Type(typeName = "net.minecraft.item.ItemStack")})
+  public void setInventorySlotContents(@Named("instance") Object instance) {
+    this.injectLists((PlayerInventory) instance);
+  }
+
+  private void injectLists(PlayerInventory playerInventory) {
+    if (playerInventory.mainInventory instanceof SlotUpdateHandlingItemList) {
       return;
     }
 
-    if (player.inventory.mainInventory instanceof SlotUpdateHandlingItemList) {
-      return;
-    }
-
-    AccessiblePlayerInventory inventory = (AccessiblePlayerInventory) player.inventory;
+    AccessiblePlayerInventory inventory = (AccessiblePlayerInventory) playerInventory;
     inventory.setMainInventory(this.listFactory.create(9, 36, inventory.getMainInventory()));
     inventory.setArmorInventory(this.listFactory.create(5, 4, inventory.getArmorInventory()));
     inventory.setOffHandInventory(this.listFactory.create(45, 1, inventory.getOffHandInventory()));
