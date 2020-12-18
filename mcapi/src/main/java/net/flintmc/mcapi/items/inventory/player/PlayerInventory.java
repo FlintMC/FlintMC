@@ -50,6 +50,14 @@ public interface PlayerInventory extends Inventory {
   ItemStack getItem(int slot) throws IndexOutOfBoundsException;
 
   /**
+   * Retrieves an item in a specific slot in this inventory.
+   *
+   * @param slotType The non-null unique type of slot to get the item from
+   * @return The non-null item out of this slot
+   */
+  ItemStack getItem(EquipmentSlotType slotType);
+
+  /**
    * Retrieves the slot from the player's hand.
    *
    * @param hand The hand to get the slot from

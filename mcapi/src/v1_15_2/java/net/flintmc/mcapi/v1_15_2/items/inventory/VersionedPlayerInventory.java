@@ -81,17 +81,55 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
 
   @Override
   public EquipmentSlotType getSlotType(int slot) {
-    if (this.getHeldItemSlot() == slot) {
+    if (this.getHandSlot(PlayerHand.MAIN_HAND) == slot) {
       return EquipmentSlotType.MAIN_HAND;
     }
 
-    for (EquipmentSlotType slotType : SLOT_TYPES) {
-      if (slotType.getSlotIndex() == slot) {
-        return slotType;
-      }
+    switch (slot) {
+      case 5:
+        return EquipmentSlotType.HEAD;
+      case 6:
+        return EquipmentSlotType.CHEST;
+      case 7:
+        return EquipmentSlotType.LEGS;
+      case 8:
+        return EquipmentSlotType.FEET;
+      case 45:
+        return EquipmentSlotType.OFF_HAND;
+      default:
+        return null;
+    }
+  }
+
+  @Override
+  public ItemStack getItem(EquipmentSlotType slotType) {
+    if (slotType == EquipmentSlotType.MAIN_HAND) {
+      return this.getItem(this.getHandSlot(PlayerHand.MAIN_HAND));
     }
 
-    return null;
+    int slot;
+
+    switch (slotType) {
+      case HEAD:
+        slot = 5;
+        break;
+      case CHEST:
+        slot = 6;
+        break;
+      case LEGS:
+        slot = 7;
+        break;
+      case FEET:
+        slot = 8;
+        break;
+      case OFF_HAND:
+        slot = 45;
+        break;
+      default:
+        throw new IllegalStateException("Unexpected value: " + slotType);
+    }
+
+    return this.getItem(slot);
   }
 
   @Override
