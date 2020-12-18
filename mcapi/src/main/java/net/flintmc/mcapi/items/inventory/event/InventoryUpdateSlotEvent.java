@@ -2,14 +2,15 @@ package net.flintmc.mcapi.items.inventory.event;
 
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
 
 /**
- * This event will be fired when an item in the inventory gets updated. It will only be fired in the
- * {@link Subscribe.Phase#PRE} phase.
+ * This event will be fired when an item in the inventory gets updated. It will only be fired in
+ * both the {@link Phase#PRE} and {@link Phase#POST} phases.
  *
  * @see Subscribe
  */

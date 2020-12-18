@@ -1,7 +1,6 @@
 package net.flintmc.mcapi.v1_15_2.items.inventory.event.slotupdate;
 
 import com.google.common.base.Preconditions;
-import java.util.Arrays;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -12,6 +11,8 @@ import net.flintmc.mcapi.items.inventory.event.InventoryUpdateSlotEvent;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+
+import java.util.Arrays;
 
 public class SlotUpdateHandlingItemList extends NonNullList<ItemStack> {
 
@@ -61,13 +62,13 @@ public class SlotUpdateHandlingItemList extends NonNullList<ItemStack> {
 
     InventoryUpdateSlotEvent event =
         this.eventFactory.create(
-            this.controller.getPlayerInventory(),
-            slot,
-            this.itemMapper.fromMinecraft(item));
+            this.controller.getPlayerInventory(), slot, this.itemMapper.fromMinecraft(item));
 
     this.eventBus.fireEvent(event, Phase.PRE);
+    ItemStack result = super.set(index, item);
+    this.eventBus.fireEvent(event, Phase.POST);
 
-    return super.set(index, item);
+    return result;
   }
 
   @AssistedFactory(SlotUpdateHandlingItemList.class)
