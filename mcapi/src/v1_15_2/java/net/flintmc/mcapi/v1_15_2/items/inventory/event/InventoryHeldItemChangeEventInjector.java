@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.mcapi.items.ItemStack;
+import net.flintmc.mcapi.items.inventory.InventoryController;
 import net.flintmc.mcapi.items.inventory.event.InventoryHeldItemChangeEvent;
 import net.flintmc.mcapi.items.inventory.event.InventoryHeldItemChangeEvent.Factory;
 import net.flintmc.transform.hook.Hook;
@@ -15,11 +17,14 @@ import net.minecraft.client.Minecraft;
 public class InventoryHeldItemChangeEventInjector {
 
   private final EventBus eventBus;
+  private final InventoryController controller;
   private final InventoryHeldItemChangeEvent.Factory eventFactory;
 
   @Inject
-  private InventoryHeldItemChangeEventInjector(EventBus eventBus, Factory eventFactory) {
+  private InventoryHeldItemChangeEventInjector(
+      EventBus eventBus, InventoryController controller, Factory eventFactory) {
     this.eventBus = eventBus;
+    this.controller = controller;
     this.eventFactory = eventFactory;
   }
 
@@ -32,10 +37,12 @@ public class InventoryHeldItemChangeEventInjector {
     int knownSlot = ((AccessiblePlayerController) instance).getCurrentPlayerItem();
     int changedSlot = Minecraft.getInstance().player.inventory.currentItem;
     if (knownSlot != changedSlot) {
+      ItemStack item = this.controller.getPlayerInventory().getItem(changedSlot + 36);
       boolean cancelled =
           this.eventBus
-              .fireEvent(this.eventFactory.create(changedSlot), executionTime)
+              .fireEvent(this.eventFactory.create(changedSlot, item), executionTime)
               .isCancelled();
+
       return cancelled ? HookResult.BREAK : HookResult.CONTINUE;
     }
     return HookResult.CONTINUE;

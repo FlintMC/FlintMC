@@ -5,7 +5,7 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /**
- * This event will be fried when a world is being unloaded. It will only be fried in the {@link
+ * This event will be fired when a world is being unloaded. It will only be fired in the {@link
  * Subscribe.Phase#POST} phase.
  *
  * @see Subscribe
