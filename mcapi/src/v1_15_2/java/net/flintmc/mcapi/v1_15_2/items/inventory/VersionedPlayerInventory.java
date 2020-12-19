@@ -16,8 +16,6 @@ import net.minecraft.util.NonNullList;
 
 public class VersionedPlayerInventory extends VersionedInventory implements PlayerInventory {
 
-  private static final EquipmentSlotType[] SLOT_TYPES = EquipmentSlotType.values();
-
   private final MinecraftItemMapper itemMapper;
 
   public VersionedPlayerInventory(
@@ -162,7 +160,7 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
 
   @Override
   public ItemStack[] getContents() {
-    return this.map(super.getContainer().getInventory());
+    return this.map(Minecraft.getInstance().player.inventory.mainInventory);
   }
 
   @Override

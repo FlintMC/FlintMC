@@ -9,9 +9,12 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.event.TickEvent;
+import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
+import net.flintmc.mcapi.items.inventory.InventoryClick;
 import net.flintmc.mcapi.items.inventory.InventoryController;
+import net.flintmc.mcapi.items.inventory.event.InventoryClickEvent;
 import net.flintmc.mcapi.items.inventory.event.InventoryUpdateSlotEvent;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.flintmc.mcapi.server.event.PacketEvent;
@@ -29,6 +32,7 @@ public class InventoryUpdateSlotEventInjector {
   private final MinecraftItemMapper itemMapper;
   private final SlotUpdateHandlingItemList.Factory listFactory;
   private final InventoryUpdateSlotEvent.Factory eventFactory;
+  private final ItemStack airStack;
 
   @Inject
   public InventoryUpdateSlotEventInjector(
@@ -36,12 +40,14 @@ public class InventoryUpdateSlotEventInjector {
       InventoryController controller,
       MinecraftItemMapper itemMapper,
       SlotUpdateHandlingItemList.Factory listFactory,
-      InventoryUpdateSlotEvent.Factory eventFactory) {
+      InventoryUpdateSlotEvent.Factory eventFactory,
+      ItemRegistry registry) {
     this.eventBus = eventBus;
     this.controller = controller;
     this.itemMapper = itemMapper;
     this.listFactory = listFactory;
     this.eventFactory = eventFactory;
+    this.airStack = registry.getAirType().createStack();
   }
 
   @Subscribe
@@ -99,5 +105,44 @@ public class InventoryUpdateSlotEventInjector {
     ItemStack newItem = this.itemMapper.fromMinecraft(packet.getStack());
 
     this.eventBus.fireEvent(this.eventFactory.create(inventory, slot, newItem), phase);
+  }
+
+  @Subscribe(phase = Phase.ANY)
+  public void handleInventoryClick(
+      InventoryClickEvent event, ItemStack.Factory itemFactory, Phase phase) {
+    // only drops are not confirmed by the server before updated and therefore not updated above
+    InventoryClick type = event.getClickType();
+
+    if (type != InventoryClick.DROP && type != InventoryClick.DROP_ALL) {
+      return;
+    }
+
+    ItemStack clicked = event.getClickedItem();
+    if (clicked == null) {
+      return;
+    }
+
+    ItemStack newItem;
+    switch (phase) {
+      case POST:
+        newItem = clicked;
+        break;
+
+      case PRE:
+        if (type == InventoryClick.DROP_ALL || clicked.getStackSize() == 1) {
+          newItem = this.airStack;
+        } else {
+          newItem =
+              itemFactory.createItemStack(
+                  clicked.getType(), clicked.getStackSize() - 1, clicked.getItemMeta());
+        }
+        break;
+
+      default:
+        throw new IllegalStateException("Unexpected value: " + phase);
+    }
+
+    this.eventBus.fireEvent(
+        this.eventFactory.create(event.getInventory(), event.getSlot(), newItem), phase);
   }
 }
