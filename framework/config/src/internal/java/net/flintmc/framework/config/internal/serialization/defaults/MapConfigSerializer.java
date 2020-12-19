@@ -18,10 +18,11 @@ public class MapConfigSerializer implements ConfigSerializationHandler<Map<?, ?>
   private final ConfigSerializationService serializationService;
 
   @Inject
-  public MapConfigSerializer(ConfigSerializationService serializationService) {
+  private MapConfigSerializer(ConfigSerializationService serializationService) {
     this.serializationService = serializationService;
   }
 
+  /** {@inheritDoc} */
   @Override
   public JsonElement serialize(Map<?, ?> map) {
     JsonObject object = new JsonObject();
@@ -40,6 +41,7 @@ public class MapConfigSerializer implements ConfigSerializationHandler<Map<?, ?>
     return object;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Map<?, ?> deserialize(JsonElement source) {
     if (!source.isJsonObject()) {

@@ -2,6 +2,7 @@ package net.flintmc.framework.config.internal.transform;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.ParsedConfig;
@@ -13,6 +14,7 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Singleton
 @Service(
     value = ConfigImplementation.class,
     priority = 3 /* needs to be called after the ConfigTransformer */)
@@ -22,7 +24,7 @@ public class ConfigPostTransformer implements ServiceHandler<ConfigImplementatio
   private final ConfigTransformer transformer;
 
   @Inject
-  public ConfigPostTransformer(ConfigGenerator configGenerator, ConfigTransformer transformer) {
+  private ConfigPostTransformer(ConfigGenerator configGenerator, ConfigTransformer transformer) {
     this.configGenerator = configGenerator;
     this.transformer = transformer;
   }

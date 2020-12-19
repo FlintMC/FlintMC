@@ -32,17 +32,20 @@ public class DefaultAnnotationMapperRegistryService
     this.mappers = new HashMap<>();
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<Class<? extends Annotation>> getAnnotationTypes() {
     return Collections.unmodifiableCollection(this.mappers.keySet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(ConfigObjectReference reference, Annotation annotation) {
     DefaultAnnotationMapperHandler handler = this.mappers.get(annotation.annotationType());
     return handler != null ? handler.getDefaultValue(reference, annotation) : null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void discover(AnnotationMeta<DefaultAnnotationMapper> meta) {
     this.mappers.put(

@@ -50,7 +50,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   private final EventConfigInitializer eventConfigInitializer;
 
   @Inject
-  public DefaultConfigGenerator(
+  private DefaultConfigGenerator(
       ConfigStorageProvider storageProvider,
       ConfigObjectReference.Parser objectReferenceParser,
       GeneratingConfig.Factory configFactory,
@@ -73,6 +73,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     this.discoveredConfigs = new HashMap<>();
   }
 
+  /** {@inheritDoc} */
   @Override
   public ParsedConfig generateConfigImplementation(CtClass configInterface)
       throws NotFoundException, CannotCompileException, IOException, ReflectiveOperationException {
@@ -126,11 +127,13 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     classLoader.loadClass(implemented.getName());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<ParsedConfig> getDiscoveredConfigs() {
     return Collections.unmodifiableCollection(this.discoveredConfigs.values());
   }
 
+  /** {@inheritDoc} */
   @Override
   public void bindConfig(GeneratingConfig generatingConfig, ParsedConfig config)
       throws IllegalStateException {
@@ -158,6 +161,7 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     this.eventBus.fireEvent(this.eventFactory.create(config), Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void initConfig(ParsedConfig config) {
     for (ConfigObjectReference reference : config.getConfigReferences()) {

@@ -18,10 +18,11 @@ public class CollectionConfigSerializer implements ConfigSerializationHandler<Co
   private final ConfigSerializationService serializationService;
 
   @Inject
-  public CollectionConfigSerializer(ConfigSerializationService serializationService) {
+  private CollectionConfigSerializer(ConfigSerializationService serializationService) {
     this.serializationService = serializationService;
   }
 
+  /** {@inheritDoc} */
   @Override
   public JsonElement serialize(Collection<?> collection) {
     JsonArray array = new JsonArray();
@@ -35,6 +36,7 @@ public class CollectionConfigSerializer implements ConfigSerializationHandler<Co
     return array;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<?> deserialize(JsonElement source) {
     if (!source.isJsonArray()) {

@@ -32,6 +32,7 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
     this.groups = Arrays.asList(getterGroup, setterGroup);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void resolveMethods(GeneratingConfig config) throws NotFoundException {
     this.resolveMethods(config, config.getBaseClass(), new String[0]);

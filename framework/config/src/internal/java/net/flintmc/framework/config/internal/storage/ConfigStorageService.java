@@ -23,10 +23,11 @@ public class ConfigStorageService implements ServiceHandler<StoragePriority> {
   private final ConfigStorageProvider storageProvider;
 
   @Inject
-  public ConfigStorageService(ConfigStorageProvider storageProvider) {
+  private ConfigStorageService(ConfigStorageProvider storageProvider) {
     this.storageProvider = storageProvider;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void discover(AnnotationMeta<StoragePriority> meta) {
     Identifier<CtClass> identifier = meta.getIdentifier();

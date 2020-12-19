@@ -16,6 +16,7 @@ public class DefaultConfigDiscoveredEvent implements ConfigDiscoveredEvent {
     this.config = config;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ParsedConfig getConfig() {
     return this.config;

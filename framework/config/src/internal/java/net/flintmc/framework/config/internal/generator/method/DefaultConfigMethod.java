@@ -44,31 +44,37 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
     this.fieldValues = new HashMap<>();
   }
 
+  /** {@inheritDoc} */
   @Override
   public GeneratingConfig getConfig() {
     return this.config;
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass getDeclaringClass() {
     return this.declaringClass;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getConfigName() {
     return this.configName;
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass getStoredType() {
     return this.methodType;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String[] getPathPrefix() {
     return this.pathPrefix;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setPathPrefix(String[] pathPrefix) throws IllegalStateException {
     if (this.pathPrefix != null) {
@@ -87,16 +93,19 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
     return CtResolver.get(implementation != null ? implementation : superClass);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void requireNoImplementation() {
     this.implementedMethods = true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean hasImplementedExistingMethods() {
     return this.implementedMethods;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean hasAddedInterfaceMethods() {
     return this.addedInterfaceMethods;
@@ -143,6 +152,7 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
     return field;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getFieldValuesCreator() {
     if (this.fieldValues.isEmpty()) {

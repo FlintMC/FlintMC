@@ -33,6 +33,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     this.implementationGenerator = implementationGenerator;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ConfigObjectReference parse(
       GeneratingConfig generatingConfig, ParsedConfig config, ConfigMethod method) {
@@ -105,6 +106,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
         method.getSerializedType());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<ConfigObjectReference> parseAll(
       GeneratingConfig generatingConfig, ParsedConfig config) {
