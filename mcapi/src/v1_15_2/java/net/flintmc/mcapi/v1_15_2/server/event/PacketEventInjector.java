@@ -11,6 +11,7 @@ import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.server.event.PacketEvent;
 import net.flintmc.transform.hook.Hook;
+import net.flintmc.transform.hook.Hook.ExecutionTime;
 import net.flintmc.transform.hook.HookResult;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.IPacket;
@@ -33,7 +34,7 @@ public class PacketEventInjector {
   }
 
   @Hook(
-      executionTime = Hook.ExecutionTime.BEFORE,
+      executionTime = {Hook.ExecutionTime.BEFORE, ExecutionTime.AFTER},
       className = "net.minecraft.network.NetworkManager",
       methodName = "processPacket",
       parameters = {@Type(reference = IPacket.class), @Type(reference = INetHandler.class)})
@@ -62,7 +63,8 @@ public class PacketEventInjector {
         @Type(reference = IPacket.class),
         @Type(reference = GenericFutureListener.class)
       })
-  public HookResult dispatchOutgoingPacket(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
+  public HookResult dispatchOutgoingPacket(
+      @Named("args") Object[] args, Hook.ExecutionTime executionTime) {
     Object packet = args[0];
     ProtocolType type = ProtocolType.getFromPacket((IPacket<?>) packet);
     if (type == null) {

@@ -27,17 +27,8 @@ public class InventoryCloseEventInjector {
     this.controller = controller;
   }
 
-  @Subscribe(phase = Subscribe.Phase.PRE)
-  public void handlePreIncomingClose(PacketEvent event) {
-    this.fireServerClose(event, Subscribe.Phase.PRE);
-  }
-
-  @Subscribe(phase = Subscribe.Phase.POST)
-  public void handlePostIncomingClose(PacketEvent event) {
-    this.fireServerClose(event, Subscribe.Phase.POST);
-  }
-
-  private void fireServerClose(PacketEvent event, Subscribe.Phase phase) {
+  @Subscribe(phase = Subscribe.Phase.ANY)
+  public void fireServerClose(PacketEvent event, Subscribe.Phase phase) {
     if (event.getDirection() != Direction.RECEIVE
         || !(event.getPacket() instanceof AccessibleSCloseWindowPacket)) {
       return;

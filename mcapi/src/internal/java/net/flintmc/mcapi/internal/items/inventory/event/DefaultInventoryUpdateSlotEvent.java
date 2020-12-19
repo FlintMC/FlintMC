@@ -12,24 +12,15 @@ import net.flintmc.mcapi.items.inventory.event.InventoryUpdateSlotEvent;
 public class DefaultInventoryUpdateSlotEvent extends DefaultInventorySlotEvent
     implements InventoryUpdateSlotEvent {
 
-  private final ItemStack previousItem;
   private final ItemStack newItem;
 
   @AssistedInject
   public DefaultInventoryUpdateSlotEvent(
       @Assisted("inventory") Inventory inventory,
       @Assisted("slot") int slot,
-      @Assisted("previousItem") ItemStack previousItem,
       @Assisted("newItem") ItemStack newItem) {
     super(inventory, slot);
-    this.previousItem = previousItem;
     this.newItem = newItem;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public ItemStack getPreviousItem() {
-    return this.previousItem;
   }
 
   /** {@inheritDoc} */

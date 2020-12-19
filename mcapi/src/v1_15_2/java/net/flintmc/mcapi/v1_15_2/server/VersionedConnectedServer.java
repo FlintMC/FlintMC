@@ -106,7 +106,7 @@ public class VersionedConnectedServer implements ConnectedServer {
     // Creates a send payload event
     SendPayloadEvent sendPayloadEvent =
         this.sendPayloadEventFactory.create(identifier, packetBuffer);
-    // Fried the send payload event
+    // Fires the send payload event
     this.eventBus.fireEvent(sendPayloadEvent, Phase.PRE);
 
     // Cancel the send attempt
