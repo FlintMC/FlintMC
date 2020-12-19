@@ -110,15 +110,23 @@ public class InventoryUpdateSlotEventInjector {
   @Subscribe(phase = Phase.ANY)
   public void handleInventoryClick(
       InventoryClickEvent event, ItemStack.Factory itemFactory, Phase phase) {
-    // only drops are not confirmed by the server before updated and therefore not updated above
+    // only drops/pickups are not confirmed by the server before updated and therefore not updated above
     InventoryClick type = event.getClickType();
 
-    if (type != InventoryClick.DROP && type != InventoryClick.DROP_ALL) {
+    if (type != InventoryClick.DROP
+        && type != InventoryClick.DROP_ALL
+        && type != InventoryClick.PICKUP_HALF
+        && type != InventoryClick.PICKUP_ALL) {
       return;
     }
 
     ItemStack clicked = event.getClickedItem();
     if (clicked == null) {
+      return;
+    }
+
+    if (type != InventoryClick.PICKUP_HALF && clicked.getStackSize() == 1) {
+      // update already sent by the server
       return;
     }
 

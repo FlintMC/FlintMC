@@ -36,13 +36,13 @@ public class VersionedItemRenderer implements ItemRenderer {
 
   /** {@inheritDoc} */
   @Override
-  public void drawItemStack(float x, float y, ItemStack item) {
-    this.drawRawItemStack(x, y, this.itemMapper.toMinecraft(item));
+  public void drawItemStack(float x, float y, float scale, ItemStack item) {
+    this.drawRawItemStack(x, y, scale, this.itemMapper.toMinecraft(item));
   }
 
   /** {@inheritDoc} */
   @Override
-  public void drawRawItemStack(float x, float y, Object minecraftItem) {
+  public void drawRawItemStack(float x, float y, float scale, Object minecraftItem) {
     if (!this.initialized) {
       return;
     }
@@ -55,6 +55,11 @@ public class VersionedItemRenderer implements ItemRenderer {
 
     RenderSystem.disableDepthTest();
     RenderSystem.pushMatrix();
+
+    if (scale != 1) {
+      RenderSystem.scalef(scale, scale, 1F);
+    }
+
     RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.enableRescaleNormal();
     RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
