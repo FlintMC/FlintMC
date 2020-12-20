@@ -73,6 +73,7 @@ public class DefaultConfigTransformer
     this.implementMethods(implementation);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void discover(AnnotationMeta<ConfigImplementation> meta) throws ServiceNotFoundException {
     // implement the configs that are annotated with ImplementedConfig

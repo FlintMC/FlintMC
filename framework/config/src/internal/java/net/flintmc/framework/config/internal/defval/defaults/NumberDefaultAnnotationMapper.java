@@ -10,6 +10,7 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 @DefaultAnnotationMapper(DefaultNumber.class)
 public class NumberDefaultAnnotationMapper
     implements DefaultAnnotationMapperHandler<DefaultNumber> {
+  /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(ConfigObjectReference reference, DefaultNumber annotation) {
     return annotation.value();

@@ -44,11 +44,13 @@ public class FileConfigStorage implements ConfigStorage {
     this.filter = reference -> reference.appliesTo(this);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getName() {
     return NAME;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void write(ParsedConfig config) {
     JsonObject object = new JsonObject();
@@ -71,6 +73,7 @@ public class FileConfigStorage implements ConfigStorage {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void read(ParsedConfig config) {
     File file = this.getFile(config);

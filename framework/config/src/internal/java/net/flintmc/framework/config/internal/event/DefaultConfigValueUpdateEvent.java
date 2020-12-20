@@ -25,16 +25,19 @@ public class DefaultConfigValueUpdateEvent implements ConfigValueUpdateEvent {
     this.newValue = newValue;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ConfigObjectReference getReference() {
     return this.reference;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object getPreviousValue() {
     return this.previousValue;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object getNewValue() {
     return this.newValue;

@@ -9,6 +9,7 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 @Singleton
 @DefaultAnnotationMapper(DefaultEnum.class)
 public class EnumDefaultAnnotationMapper implements DefaultAnnotationMapperHandler<DefaultEnum> {
+  /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(ConfigObjectReference reference, DefaultEnum annotation) {
     int index = annotation.value();

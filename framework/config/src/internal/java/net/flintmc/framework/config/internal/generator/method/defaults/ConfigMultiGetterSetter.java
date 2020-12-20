@@ -38,6 +38,7 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
     this.valueType = valueType;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getGetterName() {
     return "get" + ALL_PREFIX + super.getConfigName();
@@ -52,6 +53,7 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
     return prefix + super.getConfigName();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getSetterName() {
     return "set" + ALL_PREFIX + super.getConfigName();
@@ -61,6 +63,7 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
     return "set" + super.getConfigName();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String[] getMethodNames() {
     return new String[] {
@@ -71,11 +74,13 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
     };
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass[] getTypes() {
     return new CtClass[] {this.keyType, this.getStoredType(), this.valueType};
   }
 
+  /** {@inheritDoc} */
   @Override
   public Type getSerializedType() {
     return TypeToken.getParameterized(
@@ -85,6 +90,7 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
         .getType();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void generateMethods(CtClass target) throws CannotCompileException {
     CtField field = super.generateOrGetField(target, "new java.util.HashMap()");
@@ -106,6 +112,7 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void implementExistingMethods(CtClass target)
       throws CannotCompileException, NotFoundException {
@@ -137,6 +144,7 @@ public class ConfigMultiGetterSetter extends DefaultConfigMethod {
     super.implementedMethods = true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addInterfaceMethods(CtClass target) throws CannotCompileException {
     if (this.keyType.isEnum()) {

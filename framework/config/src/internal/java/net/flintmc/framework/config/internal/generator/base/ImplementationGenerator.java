@@ -2,15 +2,17 @@ package net.flintmc.framework.config.internal.generator.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtConstructor;
 import javassist.CtField;
 import javassist.CtNewConstructor;
 import javassist.NotFoundException;
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.annotation.Annotation;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
@@ -19,9 +21,6 @@ import net.flintmc.framework.config.internal.transform.ConfigTransformer;
 import net.flintmc.framework.config.internal.transform.PendingTransform;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
-
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class ImplementationGenerator {
@@ -37,8 +36,8 @@ public class ImplementationGenerator {
 
   @Inject
   public ImplementationGenerator(
-          ClassPool pool,
-          ConfigMethodResolver methodResolver,
+      ClassPool pool,
+      ConfigMethodResolver methodResolver,
       InjectedFieldBuilder.Factory fieldBuilderFactory,
       ConfigTransformer transformer) {
     this.fieldBuilderFactory = fieldBuilderFactory;
@@ -74,7 +73,8 @@ public class ImplementationGenerator {
       if (config.getGeneratedImplementation(declaring.getName()) != null) {
         continue;
       }
-      CtClass implementation = this.generateImplementation(config, declaring);
+      CtClass implementation = this.generateImplementation(declaring);
+      this.buildConfigField(config, implementation, declaring);
       config.bindGeneratedImplementation(declaring, implementation);
     }
 
@@ -90,11 +90,26 @@ public class ImplementationGenerator {
       method.generateMethods(implementation);
     }
 
+    Collection<CtClass> implementations =
+        config.getAllMethods().stream()
+            .map(method -> config.getGeneratedImplementation(method.getDeclaringClass().getName()))
+            .filter(Objects::nonNull)
+            // if null the interface is annotated with @ImplementedConfig and therefore the
+            // implementation already exists
+            .distinct()
+            .collect(Collectors.toList());
+
+    for (CtClass implementation : implementations) {
+      this.buildConstructor(config, implementation);
+    }
+    for (CtClass implementation : implementations) {
+      this.fillConstructor(config, implementation);
+    }
+
     return config.getGeneratedImplementation(type.getName());
   }
 
-  private CtClass generateImplementation(GeneratingConfig config, CtClass type)
-      throws CannotCompileException {
+  private CtClass generateImplementation(CtClass type) throws CannotCompileException {
     CtClass implementation =
         this.pool.makeClass(
             type.getSimpleName()
@@ -105,7 +120,6 @@ public class ImplementationGenerator {
     implementation.addInterface(type);
 
     this.addConfigStorageProvider(implementation);
-    this.buildConstructor(implementation, type, config.getBaseClass());
 
     return implementation;
   }
@@ -119,38 +133,43 @@ public class ImplementationGenerator {
         .generate();
   }
 
-  private void buildConstructor(CtClass implementation, CtClass type, CtClass baseClass)
+  private void buildConfigField(GeneratingConfig config, CtClass implementation, CtClass declaring)
       throws CannotCompileException {
-    String baseField = "private final transient " + baseClass.getName() + " config";
-    if (baseClass.getName().equals(type.getName())) {
+    String baseClass = config.getBaseClass().getName();
+
+    String baseField = "private final transient " + baseClass + " config";
+    if (baseClass.equals(declaring.getName())) {
       baseField += " = this";
     }
     implementation.addField(CtField.make(baseField + ";", implementation));
+  }
 
-    if (baseClass.getName().equals(type.getName())) {
-      CtConstructor constructor =
-          CtNewConstructor.make(
-              "public " + implementation.getSimpleName() + "() {}", implementation);
+  private void buildConstructor(GeneratingConfig config, CtClass implementation)
+      throws CannotCompileException, NotFoundException {
+    String baseClass = config.getBaseClass().getName();
+    boolean base = implementation.subtypeOf(config.getBaseClass());
 
-      // add inject annotation for Guice
-      AnnotationsAttribute attribute =
-          new AnnotationsAttribute(
-              implementation.getClassFile().getConstPool(), AnnotationsAttribute.visibleTag);
-      attribute.addAnnotation(
-          new Annotation(Inject.class.getName(), implementation.getClassFile().getConstPool()));
-      constructor.getMethodInfo().addAttribute(attribute);
+    String params = !base ? baseClass + " type" : "";
+    String bodyPrefix = !base ? "this.config = type;" : "";
 
-      implementation.addConstructor(constructor);
-    } else {
-      implementation.addConstructor(
-          CtNewConstructor.make(
-              "public "
-                  + implementation.getSimpleName()
-                  + "("
-                  + baseClass.getName()
-                  + " type)"
-                  + " { this.config = type; }",
-              implementation));
+    String src =
+        "public " + implementation.getSimpleName() + '(' + params + "){" + bodyPrefix + "}";
+    implementation.addConstructor(CtNewConstructor.make(src, implementation));
+  }
+
+  private void fillConstructor(GeneratingConfig config, CtClass implementation)
+      throws NotFoundException, CannotCompileException {
+    StringBuilder body = new StringBuilder();
+
+    for (ConfigMethod method : config.getAllMethods()) {
+      if (implementation.subtypeOf(method.getDeclaringClass())) {
+        body.append(method.getFieldValuesCreator());
+      }
     }
+
+    if (body.length() == 0) {
+      return;
+    }
+    implementation.getDeclaredConstructors()[0].insertAfter(body.toString());
   }
 }

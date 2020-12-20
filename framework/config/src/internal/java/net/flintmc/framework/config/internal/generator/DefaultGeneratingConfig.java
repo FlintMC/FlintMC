@@ -31,47 +31,56 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
     this.generatedImplementations = new HashMap<>();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getName() {
     return this.name;
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass getBaseClass() {
     return this.baseClass;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<ConfigMethod> getAllMethods() {
     return this.allMethods;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<CtClass> getImplementedInterfaces() {
     return Collections.unmodifiableCollection(this.implementedInterfaces);
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<CtClass> getGeneratedImplementations() {
     return Collections.unmodifiableCollection(this.generatedImplementations.values());
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass getGeneratedImplementation(String baseName) {
     return this.generatedImplementations.get(baseName);
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass getGeneratedImplementation(String baseName, CtClass def) {
     return this.generatedImplementations.getOrDefault(baseName, def);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void bindGeneratedImplementation(CtClass base, CtClass implementation) {
     this.generatedImplementations.put(base.getName(), implementation);
     this.implementedInterfaces.add(base);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ClassLoader getClassLoader() {
     return this.classLoader;

@@ -1,6 +1,10 @@
 package net.flintmc.framework.config.internal.generator.method;
 
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
@@ -8,6 +12,8 @@ import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 import net.flintmc.framework.stereotype.service.CtResolver;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class DefaultConfigMethod implements ConfigMethod {
 
@@ -21,6 +27,8 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
   protected boolean addedInterfaceMethods;
   private String[] pathPrefix;
 
+  private final Map<CtField, String> fieldValues;
+
   public DefaultConfigMethod(
       ConfigSerializationService serializationService,
       GeneratingConfig config,
@@ -32,33 +40,41 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
     this.declaringClass = declaringClass;
     this.configName = configName;
     this.methodType = methodType;
+
+    this.fieldValues = new HashMap<>();
   }
 
+  /** {@inheritDoc} */
   @Override
   public GeneratingConfig getConfig() {
     return this.config;
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass getDeclaringClass() {
     return this.declaringClass;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getConfigName() {
     return this.configName;
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass getStoredType() {
     return this.methodType;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String[] getPathPrefix() {
     return this.pathPrefix;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setPathPrefix(String[] pathPrefix) throws IllegalStateException {
     if (this.pathPrefix != null) {
@@ -77,16 +93,19 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
     return CtResolver.get(implementation != null ? implementation : superClass);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void requireNoImplementation() {
     this.implementedMethods = true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean hasImplementedExistingMethods() {
     return this.implementedMethods;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean hasAddedInterfaceMethods() {
     return this.addedInterfaceMethods;
@@ -103,7 +122,7 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
     } catch (NotFoundException ignored) {
     }
 
-    String fieldSrc = "private " + this.methodType.getName() + " " + this.configName;
+    String fieldValue = defaultValue;
 
     if (defaultValue == null
         && this.methodType.isInterface()
@@ -111,24 +130,42 @@ public abstract class DefaultConfigMethod implements ConfigMethod {
       CtClass implementation = this.config.getGeneratedImplementation(this.methodType.getName());
 
       if (implementation != null) {
-        fieldSrc += " = new " + implementation.getName() + "(this.config)";
+        fieldValue = "new " + implementation.getName() + "(this.config)";
       } else {
-        fieldSrc +=
-            " = "
-                + InjectionHolder.class.getName()
+        fieldValue =
+            InjectionHolder.class.getName()
                 + ".getInjectedInstance("
                 + this.methodType.getName()
                 + ".class)";
       }
     }
 
-    if (defaultValue != null) {
-      fieldSrc += " = " + defaultValue;
+    String fieldSrc = "private " + this.methodType.getName() + " " + this.configName + ";";
+
+    CtField field = CtField.make(fieldSrc, target);
+    target.addField(field);
+
+    if (fieldValue != null) {
+      this.fieldValues.put(field, fieldValue);
     }
 
-    CtField field = CtField.make(fieldSrc + ";", target);
-    target.addField(field);
     return field;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getFieldValuesCreator() {
+    if (this.fieldValues.isEmpty()) {
+      return "";
+    }
+
+    StringBuilder builder = new StringBuilder();
+
+    this.fieldValues.forEach(
+        (field, value) ->
+            builder.append("this.").append(field.getName()).append('=').append(value).append(';'));
+
+    return builder.toString();
   }
 
   protected boolean hasMethod(CtClass type, String name) {
