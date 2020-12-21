@@ -24,11 +24,12 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
   private final ConfigSerializationService serializationService;
 
   @Inject
-  public DefaultJsonConfigSerializer(ConfigSerializationService serializationService) {
+  private DefaultJsonConfigSerializer(ConfigSerializationService serializationService) {
     this.serializationService = serializationService;
     this.gson = new Gson();
   }
 
+  /** {@inheritDoc} */
   @Override
   public JsonObject serialize(ParsedConfig config) {
     JsonObject object = new JsonObject();
@@ -36,6 +37,7 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     return object;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void deserialize(JsonObject object, ParsedConfig config) {
     this.deserialize(object, config, TRUE);
@@ -48,6 +50,7 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     return null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void serialize(
       ParsedConfig config, JsonObject object, Predicate<ConfigObjectReference> predicate) {
@@ -95,6 +98,7 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void deserialize(
       JsonObject object, ParsedConfig config, Predicate<ConfigObjectReference> predicate) {

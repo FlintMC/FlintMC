@@ -22,6 +22,7 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
     super(serializationService, config, declaringClass, name, methodType);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getGetterName() {
     CtClass type = super.getStoredType();
@@ -33,26 +34,31 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
     return prefix + super.getConfigName();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getSetterName() {
     return "set" + super.getConfigName();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String[] getMethodNames() {
     return new String[] {this.getGetterName(), this.getSetterName()};
   }
 
+  /** {@inheritDoc} */
   @Override
   public CtClass[] getTypes() {
     return new CtClass[] {super.getStoredType()};
   }
 
+  /** {@inheritDoc} */
   @Override
   public Type getSerializedType() {
     return super.loadImplementationOrDefault(super.getStoredType());
   }
 
+  /** {@inheritDoc} */
   @Override
   public void generateMethods(CtClass target) throws CannotCompileException {
     if (!this.hasMethod(target, this.getGetterName())) {
@@ -64,6 +70,7 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void implementExistingMethods(CtClass target)
       throws CannotCompileException, NotFoundException {
@@ -84,6 +91,7 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
     super.implementedMethods = true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addInterfaceMethods(CtClass target) throws CannotCompileException {
     if (!this.hasMethod(target, this.getGetterName())) {

@@ -44,11 +44,13 @@ public class DefaultConfigModifierRegistry
     this.handlers = HashMultimap.create();
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<ConfigModificationHandler> getHandlers() {
     return Collections.unmodifiableCollection(this.handlers.values());
   }
 
+  /** {@inheritDoc} */
   @Override
   public <A extends Annotation> A modify(ConfigObjectReference reference, A annotation) {
     Collection<ConfigModificationHandler> handlers = this.handlers.get(reference);
@@ -66,6 +68,7 @@ public class DefaultConfigModifierRegistry
     return annotation;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void discover(AnnotationMeta<AnnotationModifier> meta) throws ServiceNotFoundException {
     AnnotationModifier modifier = meta.getAnnotation();

@@ -33,11 +33,13 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
     this.serializationService = serializationService;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String[] getPossiblePrefixes() {
     return new String[] {"get", "is"};
   }
 
+  /** {@inheritDoc} */
   @Override
   public ConfigMethod resolveMethod(
       GeneratingConfig config, CtClass type, String entryName, CtMethod method)

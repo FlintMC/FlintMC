@@ -15,12 +15,14 @@ import java.util.function.Predicate;
 @Implement(ConfigAnnotationCollector.class)
 public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollector {
 
+  /** {@inheritDoc} */
   @Override
   public <A extends Annotation> A findLastAnnotation(
       Method[] methods, Class<? extends A> annotationType) {
     return this.forEachAnnotations(methods, annotationType, a -> true);
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<Annotation> findAllAnnotations(Method[] methods) {
     Collection<Annotation> annotations = new ArrayList<>();
@@ -36,6 +38,7 @@ public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollect
     return annotations;
   }
 
+  /** {@inheritDoc} */
   @Override
   public <A extends Annotation> Collection<A> getAllAnnotations(Class<?> clazz, Class<A> annotationType) {
     Collection<A> result = new ArrayList<>();

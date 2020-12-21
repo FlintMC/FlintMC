@@ -33,11 +33,13 @@ public class ConfigSetterGroup implements ConfigMethodGroup {
     this.methodHelper = methodHelper;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String[] getPossiblePrefixes() {
     return new String[] {"set"};
   }
 
+  /** {@inheritDoc} */
   @Override
   public ConfigMethod resolveMethod(
       GeneratingConfig config, CtClass type, String entryName, CtMethod method)

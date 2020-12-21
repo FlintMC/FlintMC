@@ -163,7 +163,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
 
       CtField field = ctClass.getField(fieldName);
 
-      if (fieldSetter.removeFinal() && Modifier.isFinal(field.getModifiers())) {
+      if (Modifier.isFinal(field.getModifiers())) {
         field.setModifiers(field.getModifiers() & ~Modifier.FINAL);
       }
 
