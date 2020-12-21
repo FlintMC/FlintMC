@@ -1,5 +1,6 @@
 plugins {
     id("net.flintmc.flint-gradle-plugin")
+    id("net.minecrell.licenser") version "0.4.1"
 }
 
 fun RepositoryHandler.flintRepository() {
@@ -20,8 +21,10 @@ repositories {
     mavenLocal()
     flintRepository()
     mavenCentral()
+    maven {
+        url = uri("https://plugins.gradle.org/m2/")
+    }
 }
-
 
 subprojects {
 
@@ -55,6 +58,20 @@ allprojects {
             force("commons-io:commons-io:2.6")
             force("commons-codec:commons-codec:1.10")
             force("com.beust:jcommander:1.78")
+        }
+    }
+
+    plugins.apply("net.minecrell.licenser")
+
+    license {
+        header = rootProject.file("LICENSE")
+        include("**/*.java")
+        include("**/*.kts")
+
+        tasks {
+            "gradle" {
+                files = project.files("build.gradle.kts", "settings.gradle.kts")
+            }
         }
     }
 }
