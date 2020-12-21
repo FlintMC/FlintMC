@@ -4,13 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.entity.EntityRepository;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.MobEntity;
 import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.mapper.EntityMapper;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
-import net.flintmc.mcapi.internal.entity.cache.EntityCache;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.RemoteClientPlayer;
 import net.minecraft.client.Minecraft;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Implement(value = EntityMapper.class, version = "1.15.2")
 public class VersionedEntityMapper implements EntityMapper {
 
-  private final EntityCache entityCache;
+  private final EntityRepository entityRepository;
 
   private final Entity.Factory entityFactory;
   private final EntityTypeMapper entityTypeMapper;
@@ -39,7 +39,7 @@ public class VersionedEntityMapper implements EntityMapper {
 
   @Inject
   private VersionedEntityMapper(
-      EntityCache entityCache,
+      EntityRepository entityRepository,
       Entity.Factory entityFactory,
       EntityTypeMapper entityTypeMapper,
       ItemEntityMapper itemEntityMapper,
@@ -48,7 +48,7 @@ public class VersionedEntityMapper implements EntityMapper {
       PassiveEntityMapper passiveEntityMapper,
       PlayerEntity.Provider playerEntityProvider,
       RemoteClientPlayer.Provider remoteClientPlayerProvider) {
-    this.entityCache = entityCache;
+    this.entityRepository = entityRepository;
     this.entityFactory = entityFactory;
     this.livingEntityProvider = livingEntityProvider;
     this.mobEntityProvider = mobEntityProvider;
@@ -92,19 +92,19 @@ public class VersionedEntityMapper implements EntityMapper {
 
     if (minecraftEntity instanceof ItemEntity) {
 
-      return this.entityCache.putIfAbsent(
+      return this.entityRepository.putIfAbsent(
           uniqueId, () -> this.itemEntityMapper.fromMinecraftItemEntity(minecraftEntity));
     } else if (minecraftEntity instanceof PigEntity) {
 
-      return this.entityCache.putIfAbsent(
+      return this.entityRepository.putIfAbsent(
           uniqueId, () -> this.passiveEntityMapper.fromMinecraftPigEntity(minecraftEntity));
     } else if (minecraftEntity instanceof RemoteClientPlayerEntity) {
 
-      return this.entityCache.putIfAbsent(
+      return this.entityRepository.putIfAbsent(
           uniqueId, () -> this.remoteClientPlayerProvider.get(minecraftEntity));
     } else {
 
-      return this.entityCache.putIfAbsent(
+      return this.entityRepository.putIfAbsent(
           uniqueId,
           () ->
               this.entityFactory.create(
@@ -139,7 +139,7 @@ public class VersionedEntityMapper implements EntityMapper {
         (net.minecraft.entity.player.PlayerEntity) handle;
 
     return (PlayerEntity)
-        this.entityCache.putIfAbsent(
+        this.entityRepository.putIfAbsent(
             playerEntity.getUniqueID(), () -> this.playerEntityProvider.get(playerEntity));
   }
 
@@ -169,7 +169,7 @@ public class VersionedEntityMapper implements EntityMapper {
     net.minecraft.entity.LivingEntity livingEntity = (net.minecraft.entity.LivingEntity) handle;
 
     return (LivingEntity)
-        this.entityCache.putIfAbsent(
+        this.entityRepository.putIfAbsent(
             livingEntity.getUniqueID(), () -> this.livingEntityProvider.get(livingEntity));
   }
 
@@ -200,7 +200,7 @@ public class VersionedEntityMapper implements EntityMapper {
     net.minecraft.entity.MobEntity mobEntity = (net.minecraft.entity.MobEntity) handle;
 
     return (MobEntity)
-        this.entityCache.putIfAbsent(
+        this.entityRepository.putIfAbsent(
             mobEntity.getUniqueID(), () -> this.mobEntityProvider.get(mobEntity));
   }
 

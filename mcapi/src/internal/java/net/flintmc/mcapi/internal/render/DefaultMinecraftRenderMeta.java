@@ -7,6 +7,7 @@ import net.flintmc.util.math.matrix.Matrix3x3f;
 import net.flintmc.util.math.matrix.Matrix4x4f;
 
 import java.util.Stack;
+import java.util.UUID;
 
 @Implement(MinecraftRenderMeta.class)
 public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
@@ -17,6 +18,7 @@ public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
 
   private int packedLight;
   private float partialTick;
+  private UUID targetUuid;
 
   @AssistedInject
   private DefaultMinecraftRenderMeta(
@@ -43,9 +45,15 @@ public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
   }
 
   @Override
+  public UUID getTargetUUID() {
+    return this.targetUuid;
+  }
+
+  @Override
   public MinecraftRenderMeta rotate(float ang, float x, float y, float z) {
-    this.getNormal().rotate(ang, x, y, z);
-    this.getWorld().rotate(-ang, x, y, z);
+    ang = (float) Math.toRadians(ang);
+    this.getNormal().rotate(ang, -x, -y, -z);
+    this.getWorld().rotate(-ang, -x, -y, -z);
     return this;
   }
 
@@ -65,6 +73,9 @@ public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
 
   @Override
   public MinecraftRenderMeta translate(float x, float y, float z) {
+    x *= 16;
+    y *= 16;
+    z *= 16;
     this.getWorld().translate(x, y, z);
     return this;
   }
@@ -98,6 +109,12 @@ public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
   @Override
   public MinecraftRenderMeta setPartialTick(float partialTick) {
     this.partialTick = partialTick;
+    return this;
+  }
+
+  @Override
+  public MinecraftRenderMeta setTargetUuid(UUID uuid) {
+    this.targetUuid = uuid;
     return this;
   }
 
@@ -142,8 +159,8 @@ public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
     }
 
     public MatrixState(MatrixState peek) {
-      this.normal = peek.getNormal();
-      this.world = peek.getWorld();
+      this.normal = peek.getNormal().copy(matrix3x3fFactory.create());
+      this.world = peek.getWorld().copy(matrix4x4fFactory.create());
     }
 
     public Matrix3x3f getNormal() {

@@ -71,10 +71,7 @@ public class VersionedEntity implements Entity {
     this.entitySupplier = entitySupplier;
     this.entityRenderContext =
         InjectionHolder.getInjectedInstance(EntityRenderContext.Factory.class).create(this);
-    for (Map.Entry<String, ModelBoxHolder<Entity, EntityRenderContext>> entry :
-        this.createModelRenderers().entrySet()) {
-      this.entityRenderContext.registerRenderable(entry.getKey(), entry.getValue());
-    }
+    this.updateRenderables();
   }
 
   protected ModelBoxHolder<Entity, EntityRenderContext> createModelBox(
@@ -163,7 +160,7 @@ public class VersionedEntity implements Entity {
                         PositionTextureVertexAccessor vertexPosition = quad.getVertexPositions()[i];
                         vertexPositions[i] =
                             InjectionHolder.getInjectedInstance(
-                                ModelBox.TexturedQuad.VertexPosition.Factory.class)
+                                    ModelBox.TexturedQuad.VertexPosition.Factory.class)
                                 .create(
                                     vertexPosition.getTextureU(),
                                     vertexPosition.getTextureV(),
@@ -1189,5 +1186,14 @@ public class VersionedEntity implements Entity {
   @Override
   public ChatComponent getName() {
     return this.entityFoundationMapper.getComponentMapper().fromMinecraft(this.wrapped().getName());
+  }
+
+  @Override
+  public void updateRenderables() {
+    this.entityRenderContext.getRenderables().clear();
+    for (Map.Entry<String, ModelBoxHolder<Entity, EntityRenderContext>> entry :
+        this.createModelRenderers().entrySet()) {
+      this.entityRenderContext.registerRenderable(entry.getKey(), entry.getValue());
+    }
   }
 }

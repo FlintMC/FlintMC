@@ -130,3 +130,5 @@ src/test/
 
 versioned/*/Labyfy
 .idea/intellij-javadocs-4.0.1.xml
+
+**/.flint

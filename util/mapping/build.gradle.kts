@@ -9,7 +9,6 @@ group = "net.flintmc"
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    v1_15_2AnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
     api(project(":launcher"))
     api(project(":framework:framework-inject"))

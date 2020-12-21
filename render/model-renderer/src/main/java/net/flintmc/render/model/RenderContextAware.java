@@ -11,4 +11,6 @@ public interface RenderContextAware<T_RenderContext extends RenderContext<?, ?, 
    * @return the provided {@link RenderContext}
    */
   T_RenderContext getRenderContext();
+
+  void updateRenderables();
 }

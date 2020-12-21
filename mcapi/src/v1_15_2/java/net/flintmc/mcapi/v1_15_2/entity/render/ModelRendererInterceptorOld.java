@@ -1,22 +1,6 @@
 package net.flintmc.mcapi.v1_15_2.entity.render;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javassist.*;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.mcapi.entity.Entity;
-import net.flintmc.mcapi.entity.render.EntityRenderContext;
-import net.flintmc.mcapi.internal.entity.cache.EntityCache;
-import net.flintmc.mcapi.player.ClientPlayer;
-import net.flintmc.mcapi.render.MinecraftRenderMeta;
-import net.flintmc.render.model.ModelBoxHolder;
-import net.flintmc.transform.javassist.ClassTransform;
-import net.flintmc.transform.javassist.ClassTransformContext;
-import net.flintmc.transform.javassist.CtClassFilter;
-import net.flintmc.transform.javassist.CtClassFilters;
-import net.flintmc.util.mappings.ClassMappingProvider;
 
 @Singleton
 public class ModelRendererInterceptorOld {

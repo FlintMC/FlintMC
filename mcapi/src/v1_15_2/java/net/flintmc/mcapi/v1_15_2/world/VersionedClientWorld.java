@@ -26,7 +26,6 @@ import net.minecraft.client.Minecraft;
 @Implement(value = ClientWorld.class, version = "1.15.2")
 public class VersionedClientWorld extends VersionedWorld implements ClientWorld {
 
-  private final ClientPlayer player;
   private final Set<PlayerEntity> players;
   private final Map<Integer, Entity> entities;
   private final Scoreboard scoreboard;
@@ -36,10 +35,8 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
       Factory blockPositionFactory,
       DifficultyLocal.Factory difficultyLocalFactory,
       WorldBorder worldBorder,
-      ClientPlayer player,
       Scoreboard scoreboard) {
     super(blockPositionFactory, difficultyLocalFactory, worldBorder, scoreboard);
-    this.player = player;
     this.scoreboard = scoreboard;
     this.entities = Maps.newHashMap();
     this.players = Sets.newHashSet();
@@ -94,13 +91,13 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
   }
 
   @PreSubscribe
-  public void entitySpawn(EntitySpawnEvent event) {
+  public void entitySpawn(EntitySpawnEvent event, ClientPlayer player) {
     Entity entity = event.getEntity();
 
     if (entity instanceof PlayerEntity) {
       PlayerEntity playerEntity = (PlayerEntity) entity;
-      if (playerEntity.getUniqueId().equals(this.player.getUniqueId())) {
-        this.addPlayer(this.player);
+      if (playerEntity.getUniqueId().equals(player.getUniqueId())) {
+        this.addPlayer(player);
       } else {
         this.addPlayer(playerEntity);
       }

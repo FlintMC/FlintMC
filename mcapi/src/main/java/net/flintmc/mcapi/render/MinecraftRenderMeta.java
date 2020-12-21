@@ -3,6 +3,7 @@ package net.flintmc.mcapi.render;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.util.math.matrix.Matrix3x3f;
 import net.flintmc.util.math.matrix.Matrix4x4f;
+import java.util.UUID;
 
 public interface MinecraftRenderMeta {
 
@@ -21,6 +22,8 @@ public interface MinecraftRenderMeta {
   MinecraftRenderMeta push();
 
   MinecraftRenderMeta pop();
+
+  UUID getTargetUUID();
 
   /**
    * Rotate this matrix around a specified axis
@@ -60,6 +63,8 @@ public interface MinecraftRenderMeta {
    * @return this
    */
   MinecraftRenderMeta translate(float x, float y, float z);
+
+  MinecraftRenderMeta setTargetUuid(UUID uuid);
 
   @AssistedFactory(MinecraftRenderMeta.class)
   interface Factory {

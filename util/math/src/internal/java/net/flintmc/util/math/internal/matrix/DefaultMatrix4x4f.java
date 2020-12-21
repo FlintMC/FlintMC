@@ -224,7 +224,7 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         this.m00 * factorX,
         this.m01 * factorX,
         this.m02 * factorX,
-        this.m03 * factorY,
+        this.m03 * factorX,
         this.m10 * factorY,
         this.m11 * factorY,
         this.m12 * factorY,

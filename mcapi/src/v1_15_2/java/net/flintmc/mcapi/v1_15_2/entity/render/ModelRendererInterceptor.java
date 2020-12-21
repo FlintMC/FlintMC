@@ -8,7 +8,7 @@ import javassist.*;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
-import net.flintmc.mcapi.internal.entity.cache.EntityCache;
+import net.flintmc.mcapi.internal.entity.DefaultEntityRepository;
 import net.flintmc.mcapi.player.ClientPlayer;
 import net.flintmc.mcapi.render.MinecraftRenderMeta;
 import net.flintmc.render.model.ModelBoxHolder;
@@ -44,14 +44,14 @@ public class ModelRendererInterceptor {
           ClassPool.getDefault()
               .get(
                   new String[] {
-                      "com.mojang.blaze3d.matrix.MatrixStack$Entry",
-                      "com.mojang.blaze3d.vertex.IVertexBuilder",
-                      "int",
-                      "int",
-                      "float",
-                      "float",
-                      "float",
-                      "float"
+                    "com.mojang.blaze3d.matrix.MatrixStack$Entry",
+                    "com.mojang.blaze3d.vertex.IVertexBuilder",
+                    "int",
+                    "int",
+                    "float",
+                    "float",
+                    "float",
+                    "float"
                   });
 
       CtMethod doRender =
@@ -89,7 +89,7 @@ public class ModelRendererInterceptor {
         ClassPool.getDefault()
             .get(
                 new String[] {
-                    "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
+                  "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
                 });
 
     for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {
@@ -114,24 +114,24 @@ public class ModelRendererInterceptor {
 
     private static final Handler INSTANCE = InjectionHolder.getInjectedInstance(Handler.class);
 
-    private final EntityCache entityCache;
+    private final DefaultEntityRepository entityRepository;
     private final ClientPlayer clientPlayer;
     private final MinecraftRenderMeta alternatingMinecraftRenderMeta;
     private Entity lastRenderedEntity;
 
     @Inject
     private Handler(
-        EntityCache entityCache,
+        DefaultEntityRepository entityRepository,
         ClientPlayer clientPlayer,
         MinecraftRenderMeta.Factory minecraftRenderMetaFactory) {
-      this.entityCache = entityCache;
+      this.entityRepository = entityRepository;
       this.clientPlayer = clientPlayer;
       this.alternatingMinecraftRenderMeta = minecraftRenderMetaFactory.create();
     }
 
     public static void interceptRotationAnglesUpdate(net.minecraft.entity.Entity minecraftEntity) {
 
-      Entity flintEntity = INSTANCE.entityCache.getEntity((minecraftEntity).getUniqueID());
+      Entity flintEntity = INSTANCE.entityRepository.getEntity((minecraftEntity).getUniqueID());
 
       if (flintEntity == null
           && INSTANCE.clientPlayer.getUniqueId().equals(minecraftEntity.getUniqueID())) {
@@ -159,7 +159,14 @@ public class ModelRendererInterceptor {
       if (INSTANCE.lastRenderedEntity == null) return false;
       ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder =
           INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
-      if (modelBoxHolder == null) return false;
+      if (modelBoxHolder == null) {
+        INSTANCE.lastRenderedEntity.updateRenderables();
+        modelBoxHolder =
+            INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
+        if (modelBoxHolder == null) {
+          return false;
+        }
+      }
       modelBoxHolder.callRenderPreparations();
       if (modelBoxHolder.getContext().getRenderer() != null) {
 
@@ -204,7 +211,8 @@ public class ModelRendererInterceptor {
         INSTANCE
             .alternatingMinecraftRenderMeta
             .setPackedLight(packedLightIn)
-            .setPartialTick(Minecraft.getInstance().getRenderPartialTicks());
+            .setPartialTick(Minecraft.getInstance().getRenderPartialTicks())
+            .setTargetUuid(INSTANCE.lastRenderedEntity.getUniqueId());
 
         boolean cancelRender =
             !modelBoxHolder
@@ -277,7 +285,10 @@ public class ModelRendererInterceptor {
           drawStateAccessor.setModelBoxHolder(modelBoxHolder);
           drawStates.add(drawState);
 
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (IllegalAccessException
+            | InstantiationException
+            | InvocationTargetException
+            | NoSuchMethodException e) {
           e.printStackTrace();
         }
         if (!renderer.shouldExecuteNextStage(modelBoxHolder, renderMeta)) {

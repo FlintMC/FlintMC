@@ -795,4 +795,5 @@ public class VersionedLivingEntity extends VersionedEntity implements LivingEnti
   public boolean isAlive() {
     return this.wrapped().isAlive();
   }
+
 }
