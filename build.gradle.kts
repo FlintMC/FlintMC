@@ -49,6 +49,7 @@ subprojects {
 
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
+        plugins.apply("net.minecrell.licenser")
 
         version = System.getenv().getOrDefault("VERSION", "1.0.0")
 
@@ -59,6 +60,18 @@ subprojects {
 
         tasks.withType<JavaCompile> {
             options.isFork = true
+        }
+
+        license {
+            header = rootProject.file("LICENSE-HEADER")
+            include("**/*.java")
+            include("**/*.kts")
+
+            tasks {
+                create("gradle") {
+                    files = project.files("build.gradle.kts", "settings.gradle.kts")
+                }
+            }
         }
     }
 }
@@ -77,20 +90,6 @@ allprojects {
             force("commons-io:commons-io:2.6")
             force("commons-codec:commons-codec:1.10")
             force("com.beust:jcommander:1.78")
-        }
-    }
-
-    plugins.apply("net.minecrell.licenser")
-
-    license {
-        header = rootProject.file("LICENSE-HEADER")
-        include("**/*.java")
-        include("**/*.kts")
-
-        tasks {
-            create("gradle") {
-                files = project.files("build.gradle.kts", "settings.gradle.kts")
-            }
         }
     }
 }
