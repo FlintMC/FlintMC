@@ -1,5 +1,5 @@
 plugins {
-    id("net.flintmc.flint-gradle-plugin")
+    id("net.flintmc.flint-gradle")
 }
 
 fun RepositoryHandler.flintRepository() {
@@ -65,6 +65,8 @@ flint {
     projectFilter {
         !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
     }
+
+    minecraftVersions("1.15.2")
 
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
     authors = arrayOf("LabyMedia GmbH")
