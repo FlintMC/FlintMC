@@ -7,7 +7,9 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(RegisteredCategory.class)
 public class DefaultRegisteredCategory implements RegisteredCategory {
 
@@ -28,25 +30,33 @@ public class DefaultRegisteredCategory implements RegisteredCategory {
     this.icon = icon;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getRegistryName() {
     return this.registryName;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getDisplayName() {
     return this.displayName;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getDescription() {
     return this.description;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Icon getIcon() {
     return this.icon;

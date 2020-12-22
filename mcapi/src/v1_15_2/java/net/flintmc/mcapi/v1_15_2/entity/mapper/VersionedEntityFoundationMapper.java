@@ -14,13 +14,14 @@ import net.flintmc.mcapi.player.type.hand.HandMapper;
 import net.flintmc.mcapi.player.type.sound.SoundMapper;
 import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
-import net.flintmc.mcapi.world.math.Direction;
 import net.minecraft.entity.Pose;
 import net.minecraft.world.GameType;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** 1.15.2 implementation of the {@link EntityFoundationMapper}. */
+/**
+ * 1.15.2 implementation of the {@link EntityFoundationMapper}.
+ */
 @Singleton
 @Implement(value = EntityFoundationMapper.class, version = "1.15.2")
 public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
@@ -54,7 +55,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     this.entityMapper = entityMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle) {
     if (!(handle instanceof net.minecraft.inventory.EquipmentSlotType)) {
@@ -85,7 +88,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEquipmentSlotType(EquipmentSlotType equipmentSlotType) {
     switch (equipmentSlotType) {
@@ -106,7 +111,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameMode fromMinecraftGameType(Object handle) {
     if (!(handle instanceof GameType)) {
@@ -131,7 +138,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftGameType(GameMode mode) {
     switch (mode) {
@@ -148,7 +157,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MoverType fromMinecraftMoverType(Object handle) {
     if (!(handle instanceof net.minecraft.entity.MoverType)) {
@@ -176,7 +187,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftMoverType(MoverType mode) {
     switch (mode) {
@@ -193,7 +206,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPose fromMinecraftPose(Object handle) {
     if (!(handle instanceof Pose)) {
@@ -223,7 +238,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPose(EntityPose pose) {
     switch (pose) {
@@ -246,100 +263,65 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public Direction fromMinecraftDirection(Object handle) {
-    if (!(handle instanceof net.minecraft.util.Direction)) {
-      throw new IllegalArgumentException(
-          handle.getClass().getName()
-              + " is not an instance of "
-              + net.minecraft.util.Direction.class.getName());
-    }
-
-    net.minecraft.util.Direction direction = (net.minecraft.util.Direction) handle;
-
-    switch (direction) {
-      case UP:
-        return Direction.UP;
-      case DOWN:
-        return Direction.DOWN;
-      case NORTH:
-        return Direction.NORTH;
-      case SOUTH:
-        return Direction.SOUTH;
-      case WEST:
-        return Direction.WEST;
-      case EAST:
-        return Direction.EAST;
-      default:
-        throw new IllegalStateException("Unexpected value: " + direction);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Object toMinecraftDirection(Direction direction) {
-    switch (direction) {
-      case UP:
-        return net.minecraft.util.Direction.UP;
-      case DOWN:
-        return net.minecraft.util.Direction.DOWN;
-      case NORTH:
-        return net.minecraft.util.Direction.NORTH;
-      case SOUTH:
-        return net.minecraft.util.Direction.SOUTH;
-      case WEST:
-        return net.minecraft.util.Direction.WEST;
-      case EAST:
-        return net.minecraft.util.Direction.EAST;
-      default:
-        throw new IllegalStateException("Unexpected value: " + direction);
-    }
-  }
-
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HandMapper getHandMapper() {
     return this.handMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SoundMapper getSoundMapper() {
     return this.soundMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MinecraftComponentMapper getComponentMapper() {
     return this.componentMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MinecraftItemMapper getItemMapper() {
     return this.itemMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocationProvider getResourceLocationProvider() {
     return this.resourceLocationProvider;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityMapper getEntityMapper() {
     return this.entityMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PotionMapper getPotionMapper() {
     return this.potionMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NBTMapper getNbtMapper() {
     return this.nbtMapper;

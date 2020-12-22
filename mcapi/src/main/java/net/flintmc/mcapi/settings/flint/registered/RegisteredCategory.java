@@ -45,7 +45,9 @@ public interface RegisteredCategory {
    */
   Icon getIcon();
 
-  /** Factory for the {@link RegisteredCategory}. */
+  /**
+   * Factory for the {@link RegisteredCategory}.
+   */
   @AssistedFactory(RegisteredCategory.class)
   interface Factory {
 
@@ -54,12 +56,13 @@ public interface RegisteredCategory {
      * SettingsProvider#registerCategory(RegisteredCategory)}.
      *
      * @param registryName The non-null name of the new category, unique per {@link
-     *     SettingsProvider}
-     * @param displayName The non-null display name of the new category as it will be displayed
-     * @param description The non-null description of the new category as it will be displayed, if
-     *     no description is available, this should be a {@link TextComponent} with an empty text
-     * @param icon The non-null icon of the new category, if no icon is set, this should be an empty
-     *     icon
+     *                     SettingsProvider}
+     * @param displayName  The non-null display name of the new category as it will be displayed
+     * @param description  The non-null description of the new category as it will be displayed, if
+     *                     no description is available, this should be a {@link TextComponent} with
+     *                     an empty text
+     * @param icon         The non-null icon of the new category, if no icon is set, this should be
+     *                     an empty icon
      * @return The new non-null {@link RegisteredCategory}
      */
     RegisteredCategory create(
