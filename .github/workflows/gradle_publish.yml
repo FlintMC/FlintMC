@@ -27,10 +27,14 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Get tag name
+        id: get_tag_name
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
       - name: Build with Gradle and publish to distributor
         run: ./gradlew clean build publish --full-stacktrace
         env:
-          VERSION: ${{ github.event.ref }}
+          VERSION: ${{ steps.get_tag_name.outputs.VERSION }}
           FLINT_DISTRIBUTOR_PUBLISH_TOKEN: ${{ secrets.FLINT_DISTRIBUTOR_PUBLISH_TOKEN }}
           FLINT_DISTRIBUTOR_URL: ${{ secrets.FLINT_DISTRIBUTOR_URL }}
           FLINT_DISTRIBUTOR_AUTHORIZATION: ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}
