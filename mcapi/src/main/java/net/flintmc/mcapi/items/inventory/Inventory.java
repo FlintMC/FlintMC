@@ -75,7 +75,8 @@ public interface Inventory {
 
   /**
    * Counts all items in this inventory matching the given type. If a stack has multiple items on
-   * it, every single one will count.
+   * it, every single one will count. It doesn't include the item that is currently dragged by the
+   * cursor of the player.
    *
    * @param type The type to count the items for
    * @return The number of items in this inventory matching the given type.

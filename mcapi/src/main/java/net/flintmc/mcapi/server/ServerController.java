@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.server;
 
-/** The controller for the currently connected server. */
+/**
+ * The controller for the currently connected server.
+ */
 public interface ServerController {
 
   /**
@@ -8,7 +10,7 @@ public interface ServerController {
    * multiplayer).
    *
    * @return {@code true} if the client is connected or currently connecting to a server, {@code
-   *     false} otherwise
+   * false} otherwise
    */
   boolean isConnected();
 
@@ -16,7 +18,7 @@ public interface ServerController {
    * Retrieves the currently connected server.
    *
    * @return The server or {@code null} if the client isn't connected with or currently connecting
-   *     to any server
+   * to any server
    * @see #isConnected()
    */
   ConnectedServer getConnectedServer();

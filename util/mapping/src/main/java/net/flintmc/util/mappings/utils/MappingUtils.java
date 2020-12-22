@@ -1,12 +1,11 @@
 package net.flintmc.util.mappings.utils;
 
+import java.util.Map;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
-
-import java.util.Map;
 
 /**
  * <code>MappingUtils</code> provides several utilities to parse mappings. It focuses on general
@@ -14,6 +13,7 @@ import java.util.Map;
  * the mapping parser.
  */
 public final class MappingUtils {
+
   private static ClassMappingProvider classMappingProvider;
 
   private MappingUtils() {
@@ -86,15 +86,33 @@ public final class MappingUtils {
    */
   public static String generateDescriptor(final Class<?> clazz) {
     if (clazz.isPrimitive()) {
-      if (clazz == byte.class) return "B";
-      if (clazz == char.class) return "C";
-      if (clazz == double.class) return "D";
-      if (clazz == float.class) return "F";
-      if (clazz == int.class) return "I";
-      if (clazz == long.class) return "J";
-      if (clazz == short.class) return "S";
-      if (clazz == boolean.class) return "Z";
-      if (clazz == void.class) return "V";
+      if (clazz == byte.class) {
+        return "B";
+      }
+      if (clazz == char.class) {
+        return "C";
+      }
+      if (clazz == double.class) {
+        return "D";
+      }
+      if (clazz == float.class) {
+        return "F";
+      }
+      if (clazz == int.class) {
+        return "I";
+      }
+      if (clazz == long.class) {
+        return "J";
+      }
+      if (clazz == short.class) {
+        return "S";
+      }
+      if (clazz == boolean.class) {
+        return "Z";
+      }
+      if (clazz == void.class) {
+        return "V";
+      }
     } else if (clazz.isArray()) {
       return "[" + generateArrayDescriptor(clazz.getComponentType());
     }
@@ -155,15 +173,33 @@ public final class MappingUtils {
    */
   public static String generateDescriptor(final CtClass clazz) {
     if (clazz.isPrimitive()) {
-      if (clazz == CtClass.byteType) return "B";
-      if (clazz == CtClass.charType) return "C";
-      if (clazz == CtClass.doubleType) return "D";
-      if (clazz == CtClass.floatType) return "F";
-      if (clazz == CtClass.intType) return "I";
-      if (clazz == CtClass.longType) return "J";
-      if (clazz == CtClass.shortType) return "S";
-      if (clazz == CtClass.booleanType) return "Z";
-      if (clazz == CtClass.voidType) return "V";
+      if (clazz == CtClass.byteType) {
+        return "B";
+      }
+      if (clazz == CtClass.charType) {
+        return "C";
+      }
+      if (clazz == CtClass.doubleType) {
+        return "D";
+      }
+      if (clazz == CtClass.floatType) {
+        return "F";
+      }
+      if (clazz == CtClass.intType) {
+        return "I";
+      }
+      if (clazz == CtClass.longType) {
+        return "J";
+      }
+      if (clazz == CtClass.shortType) {
+        return "S";
+      }
+      if (clazz == CtClass.booleanType) {
+        return "Z";
+      }
+      if (clazz == CtClass.voidType) {
+        return "V";
+      }
     } else if (clazz.isArray()) {
       try {
         return "[" + generateArrayDescriptor(clazz.getComponentType());
@@ -184,15 +220,33 @@ public final class MappingUtils {
    */
   public static String generateDescriptor(boolean obfuscated, final CtClass clazz) {
     if (clazz.isPrimitive()) {
-      if (clazz == CtClass.byteType) return "B";
-      if (clazz == CtClass.charType) return "C";
-      if (clazz == CtClass.doubleType) return "D";
-      if (clazz == CtClass.floatType) return "F";
-      if (clazz == CtClass.intType) return "I";
-      if (clazz == CtClass.longType) return "J";
-      if (clazz == CtClass.shortType) return "S";
-      if (clazz == CtClass.booleanType) return "Z";
-      if (clazz == CtClass.voidType) return "V";
+      if (clazz == CtClass.byteType) {
+        return "B";
+      }
+      if (clazz == CtClass.charType) {
+        return "C";
+      }
+      if (clazz == CtClass.doubleType) {
+        return "D";
+      }
+      if (clazz == CtClass.floatType) {
+        return "F";
+      }
+      if (clazz == CtClass.intType) {
+        return "I";
+      }
+      if (clazz == CtClass.longType) {
+        return "J";
+      }
+      if (clazz == CtClass.shortType) {
+        return "S";
+      }
+      if (clazz == CtClass.booleanType) {
+        return "Z";
+      }
+      if (clazz == CtClass.voidType) {
+        return "V";
+      }
     } else if (clazz.isArray()) {
       try {
         return "[" + generateArrayDescriptor(clazz.getComponentType());
@@ -201,7 +255,8 @@ public final class MappingUtils {
       }
     }
     ClassMapping classMapping = classMappingProvider.get(clazz.getName());
-    String name = classMapping != null ? (obfuscated ? classMapping.getObfuscatedName() : classMapping.getDeobfuscatedName()) : clazz.getName();
+    String name = classMapping != null ? (obfuscated ? classMapping.getObfuscatedName()
+        : classMapping.getDeobfuscatedName()) : clazz.getName();
     return "L" + name.replace(".", "/") + ";";
   }
 
@@ -223,8 +278,9 @@ public final class MappingUtils {
   }
 
   public static ClassMappingProvider getClassMappingProvider() {
-    if (classMappingProvider == null)
+    if (classMappingProvider == null) {
       classMappingProvider = InjectionHolder.getInjectedInstance(ClassMappingProvider.class);
+    }
     return classMappingProvider;
   }
 }

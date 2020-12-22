@@ -12,13 +12,16 @@ import net.flintmc.mcapi.server.ServerController;
  * connection has been called through the {@link ServerController} or by the user. It will be fired
  * in both PRE and POST phases ignoring any errors that occur while connecting.
  *
- * <p>In this event, the {@link ServerAddressEvent#getAddress() address} will never be {@code null}.
+ * <p>In this event, the {@link ServerAddressEvent#getAddress() address} will never be {@code
+ * null}.
  *
  * @see Subscribe
  */
 public interface ServerConnectEvent extends Event, ServerAddressEvent {
 
-  /** Factory for the {@link ServerConnectEvent}. */
+  /**
+   * Factory for the {@link ServerConnectEvent}.
+   */
   @AssistedFactory(ServerConnectEvent.class)
   interface Factory {
 

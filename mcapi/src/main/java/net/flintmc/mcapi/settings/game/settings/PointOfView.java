@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.settings.game.settings;
 
-/** An enumeration representing points of view. */
+/**
+ * An enumeration representing points of view.
+ */
 public enum PointOfView {
   FIRST_PERSON(true, false),
   THIRD_PERSON_BACK(false, false),

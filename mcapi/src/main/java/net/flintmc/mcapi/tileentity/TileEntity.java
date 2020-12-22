@@ -6,7 +6,9 @@ import net.flintmc.mcapi.tileentity.type.TileEntityType;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 
-/** Represents the Minecraft tile entity. */
+/**
+ * Represents the Minecraft tile entity.
+ */
 public interface TileEntity {
 
   /**
@@ -61,13 +63,19 @@ public interface TileEntity {
    */
   boolean isRemoved();
 
-  /** Removes the tile entity. */
+  /**
+   * Removes the tile entity.
+   */
   void removed();
 
-  /** Validates the tile entity. */
+  /**
+   * Validates the tile entity.
+   */
   void validate();
 
-  /** Updates the containing block information of this tile entity. */
+  /**
+   * Updates the containing block information of this tile entity.
+   */
   void updateContainingBlockInfo();
 
   /**
@@ -77,14 +85,16 @@ public interface TileEntity {
    */
   TileEntityType getType();
 
-  /** A factory class for the {@link TileEntity}. */
+  /**
+   * A factory class for the {@link TileEntity}.
+   */
   @AssistedFactory(TileEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link TileEntity} with the given parameters.
      *
-     * @param tileEntity The non-null Minecraft tile entity.
+     * @param tileEntity     The non-null Minecraft tile entity.
      * @param tileEntityType The type of the tile entity.
      * @return A created tile entity.
      */

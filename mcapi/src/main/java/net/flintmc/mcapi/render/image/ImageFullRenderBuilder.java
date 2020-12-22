@@ -14,7 +14,7 @@ import net.flintmc.mcapi.resources.ResourceLocation;
  * </ul>
  *
  * @see ImageRenderer#drawFullImage(float, float, int, Object, float, float, float, float, int, int,
- *     int, int)
+ * int, int)
  */
 public interface ImageFullRenderBuilder {
 
@@ -41,7 +41,7 @@ public interface ImageFullRenderBuilder {
    * is not set, this will also be the size as it will be displayed on the screen without any
    * scaling.
    *
-   * @param width The width of the image in the resource location in pixels
+   * @param width  The width of the image in the resource location in pixels
    * @param height The height of the image in the resource location in pixels
    * @return this builder for chaining
    */
@@ -51,7 +51,7 @@ public interface ImageFullRenderBuilder {
    * Changes the size of the image as it will be displayed on the screen. If this is not set, {@link
    * #fullImageSize(float, float)} will be used as the size to display the image on the screen.
    *
-   * @param width The width of the image on the screen in pixels
+   * @param width  The width of the image on the screen in pixels
    * @param height The height of the image on the screen in pixels
    * @return this builder for chaining
    */
@@ -105,9 +105,9 @@ public interface ImageFullRenderBuilder {
    * ImageRenderer#bindTexture(ResourceLocation)}
    *
    * @throws IllegalArgumentException If no fullImageHeight (or something <= 0) and/or color
-   *     components (r, g, b, a) not >= 0 and <= 255
+   *                                  components (r, g, b, a) not >= 0 and <= 255
    * @see ImageRenderer#drawFullImage(float, float, int, Object, float, float, float, float, int,
-   *     int, int, int)
+   * int, int, int)
    */
   void draw() throws IllegalArgumentException;
 }

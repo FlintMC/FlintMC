@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.v1_15_2.items.inventory;
 
+import java.util.function.Supplier;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.internal.items.inventory.DefaultInventory;
 import net.flintmc.mcapi.items.ItemRegistry;
@@ -8,8 +9,6 @@ import net.flintmc.mcapi.items.inventory.InventoryDimension;
 import net.flintmc.mcapi.items.inventory.InventoryType;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.minecraft.inventory.container.Container;
-
-import java.util.function.Supplier;
 
 public abstract class VersionedInventory extends DefaultInventory {
 

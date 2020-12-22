@@ -9,6 +9,7 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 @Singleton
 @DefaultAnnotationMapper(DefaultChar.class)
 public class CharDefaultAnnotationMapper implements DefaultAnnotationMapperHandler<DefaultChar> {
+  /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(ConfigObjectReference reference, DefaultChar annotation) {
     return annotation.value();

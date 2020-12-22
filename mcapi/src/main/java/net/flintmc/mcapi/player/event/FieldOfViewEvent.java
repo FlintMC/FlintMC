@@ -4,7 +4,9 @@ import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Fired when the player's field of view is rendered. */
+/**
+ * Fired when the player's field of view is rendered.
+ */
 public interface FieldOfViewEvent extends Event {
 
   /**
@@ -21,7 +23,9 @@ public interface FieldOfViewEvent extends Event {
    */
   void setFov(float fov);
 
-  /** A factory class for the {@link FieldOfViewEvent}. */
+  /**
+   * A factory class for the {@link FieldOfViewEvent}.
+   */
   @AssistedFactory(FieldOfViewEvent.class)
   interface Factory {
 

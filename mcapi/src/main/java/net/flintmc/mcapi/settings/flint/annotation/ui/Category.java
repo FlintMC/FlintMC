@@ -1,13 +1,12 @@
 package net.flintmc.mcapi.settings.flint.annotation.ui;
 
-import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 
 /**
  * Sets a category for a specific {@link ApplicableSetting} in a {@link Config}. It can be used on

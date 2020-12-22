@@ -1,8 +1,7 @@
 package net.flintmc.mcapi.nbt;
 
-import net.flintmc.framework.inject.assisted.AssistedFactory;
-
 import java.util.Map;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /**
  * A list of fully formed tags, including their ID's, names, and payloads. No two tags may have the
@@ -22,7 +21,7 @@ public interface NBTCompound extends NBT {
    *
    * @param key The key.
    * @return {@code true} if a tag exists inside this compound with the given key, otherwise {@code
-   *     false}.
+   * false}.
    */
   boolean containsKey(String key);
 
@@ -50,7 +49,9 @@ public interface NBTCompound extends NBT {
    */
   Map<String, NBT> getTags();
 
-  /** A factory class for the {@link NBTCompound}. */
+  /**
+   * A factory class for the {@link NBTCompound}.
+   */
   @AssistedFactory(NBTCompound.class)
   interface Factory {
 

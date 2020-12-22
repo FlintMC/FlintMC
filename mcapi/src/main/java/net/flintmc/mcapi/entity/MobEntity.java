@@ -9,7 +9,9 @@ import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.world.math.BlockPosition;
 
-/** Represents the Minecraft mob. */
+/**
+ * Represents the Minecraft mob.
+ */
 public interface MobEntity extends LivingEntity {
 
   /**
@@ -17,7 +19,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The senses of the mob entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   EntitySenses getEntitySenses();
 
@@ -26,7 +28,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The attack target.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   LivingEntity getAttackTarget();
 
@@ -35,7 +37,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @param entity The new attack target.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setAttackTarget(LivingEntity entity);
 
@@ -43,7 +45,7 @@ public interface MobEntity extends LivingEntity {
    * Eat grass for a bonus.
    *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void eatGrassBonus();
 
@@ -52,18 +54,24 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The mob entity talk interval.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getTalkInterval();
 
-  /** Plays ambient sounds at the position of the mob entity.
+  /**
+   * Plays ambient sounds at the position of the mob entity.
+   *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client*/
+   *                                  client
+   */
   void playAmbientSound();
 
-  /** Spawns explosion particle at the position of the mob entity.
+  /**
+   * Spawns explosion particle at the position of the mob entity.
+   *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client*/
+   *                                  client
+   */
   void spawnExplosionParticle();
 
   /**
@@ -71,7 +79,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @param amount The move forward value.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setMoveForward(float amount);
 
@@ -80,7 +88,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @param amount The move vertical value.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setMoveVertical(float amount);
 
@@ -89,7 +97,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @param amount The move strafing value.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setMoveStrafing(float amount);
 
@@ -99,7 +107,7 @@ public interface MobEntity extends LivingEntity {
    * @param distanceToClosestPlayer The distance to the closet player.
    * @return {@code true} if the mob entity can despawn, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean canDespawn(double distanceToClosestPlayer);
 
@@ -108,7 +116,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@code true} if the mob entity prevent from despawn, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean preventDespawn();
 
@@ -117,7 +125,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The vertical face speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getVerticalFaceSpeed();
 
@@ -126,7 +134,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The horizontal face speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getHorizontalFaceSpeed();
 
@@ -135,18 +143,18 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The face rotation speed.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getFaceRotationSpeed();
 
   /**
    * Lets the face of the mob entity look at the given entity.
    *
-   * @param entity The entity to look at.
-   * @param maxYawIncrease The maximum yaw increase.
+   * @param entity           The entity to look at.
+   * @param maxYawIncrease   The maximum yaw increase.
    * @param maxPitchIncrease The maximum pitch increase.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void faceEntity(Entity entity, float maxYawIncrease, float maxPitchIncrease);
 
@@ -155,7 +163,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The maximal spawned in chunk count.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   int getMaxSpawnedInChunk();
 
@@ -165,7 +173,7 @@ public interface MobEntity extends LivingEntity {
    * @param size The size for the group.
    * @return {@code true} if the mob entity maximal group size, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isMaxGroupSize(int size);
 
@@ -174,22 +182,25 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@code true} if the mob entity can be steered, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean canBeSteered();
 
-  /** Enables the persistence of this mob entity.
+  /**
+   * Enables the persistence of this mob entity.
+   *
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client*/
+   *                                  client
+   */
   void enablePersistence();
 
   /**
    * Changes the drop chance of an equipment slot.
    *
    * @param slotType The equipment slot.
-   * @param chance The new drop chance.
+   * @param chance   The new drop chance.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setDropChance(EquipmentSlotType slotType, float chance);
 
@@ -198,7 +209,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@code true} if the mob entity can pickup loot, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean canPickUpLoot();
 
@@ -207,7 +218,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @param canPickUpLoot {@code true} if the mob entity can pickup loot, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setCanPickUpLoot(boolean canPickUpLoot);
 
@@ -216,7 +227,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@code true} if the mob entity is no despawn required, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isNoDespawnRequired();
 
@@ -224,9 +235,9 @@ public interface MobEntity extends LivingEntity {
    * Whether the mob entity is within home distance to the current position.
    *
    * @return {@code true} if the mob entity is within home distance to the current position,
-   *     otherwise {@code false}.
+   * otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isWithinHomeDistanceCurrentPosition();
 
@@ -235,9 +246,9 @@ public interface MobEntity extends LivingEntity {
    *
    * @param position The block position to be checked.
    * @return {@code true} if the mob entity is within home distance from the given position,
-   *     otherwise {@code false}.
+   * otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isWithinHomeDistanceFromPosition(BlockPosition position);
 
@@ -247,7 +258,7 @@ public interface MobEntity extends LivingEntity {
    * @param position The new home position.
    * @param distance The new distance.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setHomePositionAndDistance(BlockPosition position, int distance);
 
@@ -256,7 +267,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The home position of this mob entity.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   BlockPosition getHomePosition();
 
@@ -265,7 +276,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The maximum home distance.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getMaximumHomeDistance();
 
@@ -274,7 +285,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@code true} if the mob entity detach home, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean detachHome();
 
@@ -282,9 +293,9 @@ public interface MobEntity extends LivingEntity {
    * Clears all leads from the mob entity.
    *
    * @param sendPacket {@code true} if the packet should be sent, otherwise {@code false}.
-   * @param dropLead {@code true} if the lead is dropped, otherwise {@code false}.
+   * @param dropLead   {@code true} if the lead is dropped, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void clearLeashed(boolean sendPacket, boolean dropLead);
 
@@ -293,9 +304,9 @@ public interface MobEntity extends LivingEntity {
    *
    * @param playerEntity The player entity to be checked.
    * @return {@code true} if the mob entity can be leashed to given {@link PlayerEntity}, otherwise
-   *     {@code false}.
+   * {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean canBeLeashedTo(PlayerEntity playerEntity);
 
@@ -304,7 +315,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@link true} if the mob entity is leashed, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isLeashed();
 
@@ -313,17 +324,17 @@ public interface MobEntity extends LivingEntity {
    *
    * @return The leash holder.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   Entity getLeashHolder();
 
   /**
    * Changes the leash holder of this mob entity.
    *
-   * @param entity The new leash holder.
+   * @param entity      The new leash holder.
    * @param leashHolder {@code true} if the new leash holder, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setLeashHolder(Entity entity, boolean leashHolder);
 
@@ -332,18 +343,18 @@ public interface MobEntity extends LivingEntity {
    *
    * @param vehicleEntityId The new vehicle entity identifier.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setVehicleEntityId(int vehicleEntityId);
 
   /**
    * Whether the given {@link ItemStack} is in the slot type.
    *
-   * @param slotType The slot type of the item stack.
+   * @param slotType  The slot type of the item stack.
    * @param itemStack The item stack to be checked.
    * @return {@code true} if the given item stack is in the slot type, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isItemStackInSlot(EquipmentSlotType slotType, ItemStack itemStack);
 
@@ -352,7 +363,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @param noAI {@code true} if the entity should have no AI, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setNoAI(boolean noAI);
 
@@ -361,7 +372,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@code true} if the entity AI is disabled, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isAIDisabled();
 
@@ -370,7 +381,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@code true} if the entity is left handed, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isLeftHanded();
 
@@ -379,7 +390,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @param leftHanded {@code true} if the entity is left-handed, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setLeftHanded(boolean leftHanded);
 
@@ -388,7 +399,7 @@ public interface MobEntity extends LivingEntity {
    *
    * @return {@code true} if the entity is aggressive, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isAggressive();
 
@@ -397,18 +408,20 @@ public interface MobEntity extends LivingEntity {
    *
    * @param aggressive {@code true} if the entity should be aggressive, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setAggressive(boolean aggressive);
 
-  /** A factory class for the {@link MobEntity}. */
+  /**
+   * A factory class for the {@link MobEntity}.
+   */
   @AssistedFactory(MobEntity.class)
   interface Factory {
 
     /**
      * Creates a new {@link MobEntity} with the given entity.
      *
-     * @param entity The given entity.
+     * @param entity     The given entity.
      * @param entityType The type of the entity.
      * @return A created mob entity.
      */
@@ -416,7 +429,9 @@ public interface MobEntity extends LivingEntity {
         @Assisted("mobEntity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /** Service interface for creating {@link MobEntity}'s. */
+  /**
+   * Service interface for creating {@link MobEntity}'s.
+   */
   interface Provider {
 
     /**

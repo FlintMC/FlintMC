@@ -4,13 +4,15 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.Entity;
 
-/** Represents a builder to built entity types. */
+/**
+ * Represents a builder to built entity types.
+ */
 public interface EntityTypeBuilder {
 
   /**
    * Sets the size of the entity type.
    *
-   * @param width The width of the entity type.
+   * @param width  The width of the entity type.
    * @param height The height of the entity type.
    * @return This builder, for chaining.
    */
@@ -52,7 +54,9 @@ public interface EntityTypeBuilder {
    */
   EntityType build(String id);
 
-  /** A factory class for {@link EntityTypeBuilder}. */
+  /**
+   * A factory class for {@link EntityTypeBuilder}.
+   */
   @AssistedFactory(EntityTypeBuilder.class)
   interface Factory {
 

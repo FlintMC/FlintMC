@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.entity.reason;
 
-/** An enumeration of all available spawn reasons. */
+/**
+ * An enumeration of all available spawn reasons.
+ */
 public enum SpawnReason {
   NATURAL,
   CHUNK_GENERATION,

@@ -1,13 +1,14 @@
 package net.flintmc.mcapi.server.status;
 
-import net.flintmc.mcapi.server.ServerAddress;
-import net.flintmc.mcapi.server.status.pending.PendingStatusRequest;
-
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import net.flintmc.mcapi.server.ServerAddress;
+import net.flintmc.mcapi.server.status.pending.PendingStatusRequest;
 
-/** This interface is used to ping servers and retrieve their status for the server list. */
+/**
+ * This interface is used to ping servers and retrieve their status for the server list.
+ */
 public interface ServerStatusResolver {
 
   /**

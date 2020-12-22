@@ -1,9 +1,13 @@
 package net.flintmc.mcapi.server;
 
-/** Represents the minecraft server list. */
+/**
+ * Represents the minecraft server list.
+ */
 public interface ServerList {
 
-  /** Saves the server list to disk. */
+  /**
+   * Saves the server list to disk.
+   */
   void saveServerList();
 
   /**
@@ -14,13 +18,15 @@ public interface ServerList {
    */
   ServerData getServer(int index);
 
-  /** @return the size of the server list */
+  /**
+   * @return the size of the server list
+   */
   int size();
 
   /**
    * Updates the content of the entry at a given index to tbe provided data.
    *
-   * @param index the index of the server list entry to update
+   * @param index  the index of the server list entry to update
    * @param server the data to update the entry from
    */
   void updateServerData(int index, ServerData server);
@@ -35,7 +41,7 @@ public interface ServerList {
   /**
    * Adds a server to the server list at a given index.
    *
-   * @param index the index at which to add the server to the list
+   * @param index  the index at which to add the server to the list
    * @param server the data describing the server to add
    */
   void addServer(int index, ServerData server);

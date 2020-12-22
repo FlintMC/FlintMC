@@ -20,7 +20,9 @@ public interface InventoryEvent extends Event {
    */
   Inventory getInventory();
 
-  /** Factory for the {@link InventoryEvent}. */
+  /**
+   * Factory for the {@link InventoryEvent}.
+   */
   @AssistedFactory(InventoryEvent.class)
   interface Factory {
 

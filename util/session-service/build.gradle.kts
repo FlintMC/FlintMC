@@ -4,7 +4,7 @@ plugins {
 
 group = "net.flintmc"
 
-flint{
+flint {
     minecraftVersions("1.15.2")
 }
 

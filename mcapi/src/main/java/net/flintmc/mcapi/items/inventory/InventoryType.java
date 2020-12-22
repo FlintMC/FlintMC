@@ -5,7 +5,9 @@ import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 
-/** Represents a type for the inventory. */
+/**
+ * Represents a type for the inventory.
+ */
 public interface InventoryType {
 
   /**
@@ -36,7 +38,9 @@ public interface InventoryType {
    */
   boolean isCustomizableDimensions();
 
-  /** A builder class for {@link InventoryType} */
+  /**
+   * A builder class for {@link InventoryType}
+   */
   interface Builder {
 
     /**
@@ -84,7 +88,9 @@ public interface InventoryType {
     InventoryType build();
   }
 
-  /** A factory class for {@link Builder} */
+  /**
+   * A factory class for {@link Builder}
+   */
   @AssistedFactory(Builder.class)
   interface Factory {
 

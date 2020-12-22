@@ -63,7 +63,9 @@ public interface ServerStatus {
    */
   long getTimestamp();
 
-  /** Factory for the {@link ServerStatus}. */
+  /**
+   * Factory for the {@link ServerStatus}.
+   */
   @AssistedFactory(ServerStatus.class)
   interface Factory {
 
@@ -71,11 +73,11 @@ public interface ServerStatus {
      * Creates a new server status with the given values.
      *
      * @param sourceAddress The non-null address of the server where these values came from
-     * @param version The non-null version of the server
-     * @param players The non-null players on the server
-     * @param description The non-null description of the server (can contain a line break)
-     * @param favicon The non-null favicon of the server
-     * @param ping The ping between the client and the server in milliseconds
+     * @param version       The non-null version of the server
+     * @param players       The non-null players on the server
+     * @param description   The non-null description of the server (can contain a line break)
+     * @param favicon       The non-null favicon of the server
+     * @param ping          The ping between the client and the server in milliseconds
      * @return The new non-null status
      */
     ServerStatus create(

@@ -109,9 +109,14 @@ public class VersionedWindow implements InternalWindow {
     }
     int glfwAction =
         key.isMouse()
-            ? GLFW.glfwGetMouseButton(this.getHandle(), glfwKey)
-            : GLFW.glfwGetKey(this.getHandle(), glfwKey);
+            ? GLFW.glfwGetMouseButton(this.ensureHandle(), glfwKey)
+            : GLFW.glfwGetKey(this.ensureHandle(), glfwKey);
     return glfwAction == GLFW.GLFW_PRESS;
+  }
+
+  @Override
+  public boolean isClosed() {
+    return this.handle == 0;
   }
 
   @Override

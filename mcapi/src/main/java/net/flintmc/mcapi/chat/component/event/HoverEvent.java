@@ -1,11 +1,10 @@
 package net.flintmc.mcapi.chat.component.event;
 
+import java.util.UUID;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.component.event.content.HoverEntity;
 import net.flintmc.mcapi.chat.component.event.content.HoverText;
-
-import java.util.UUID;
 
 /**
  * The implementation of a hover event for chat components that will be displayed when the player
@@ -69,7 +68,7 @@ public class HoverEvent {
    * <p>Available since Minecraft 1.7.10.
    *
    * @param entityId The non-null id of the entity
-   * @param type The non-null type of the entity to be displayed (e.g. `minecraft:zombie`)
+   * @param type     The non-null type of the entity to be displayed (e.g. `minecraft:zombie`)
    * @return The new non-null hover event
    */
   public static HoverEvent entity(UUID entityId, String type) {
@@ -81,8 +80,8 @@ public class HoverEvent {
    *
    * <p>Available since Minecraft 1.7.10.
    *
-   * @param entityId The non-null id of the entity
-   * @param type The non-null type of the entity to be displayed (e.g. `minecraft:zombie`)
+   * @param entityId    The non-null id of the entity
+   * @param type        The non-null type of the entity to be displayed (e.g. `minecraft:zombie`)
    * @param displayName The nullable display name of the entity
    * @return The new non-null hover event
    */
@@ -90,12 +89,16 @@ public class HoverEvent {
     return of(new HoverEntity(entityId, type, displayName));
   }
 
-  /** Retrieves the non-null value of this hover event. */
+  /**
+   * Retrieves the non-null value of this hover event.
+   */
   public HoverContent[] getContents() {
     return this.contents;
   }
 
-  /** Available actions for the {@link HoverEvent}. */
+  /**
+   * Available actions for the {@link HoverEvent}.
+   */
   public enum Action {
 
     /**
@@ -125,8 +128,8 @@ public class HoverEvent {
      * Gets the achievement by using the text of the given value as the id for the achievement and
      * displays it. This can also display statistics.
      *
-     * <p>Available since Minecraft 1.7.10 until Minecraft 1.12.2. Since 1.13, Minecraft uses {@link
-     * #SHOW_TEXT} to display advancements.
+     * <p>Available since Minecraft 1.7.10 until Minecraft 1.12.2. Since 1.13, Minecraft uses
+     * {@link #SHOW_TEXT} to display advancements.
      */
     @Deprecated
     SHOW_ACHIEVEMENT;

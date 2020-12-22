@@ -1,7 +1,6 @@
 package net.flintmc.util.mappings;
 
 import com.google.inject.ImplementedBy;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -9,6 +8,7 @@ import java.util.Map;
 @FunctionalInterface
 @ImplementedBy(DefaultMappingFileProvider.class)
 public interface MappingFileProvider {
+
   /**
    * Get mapping input.
    *

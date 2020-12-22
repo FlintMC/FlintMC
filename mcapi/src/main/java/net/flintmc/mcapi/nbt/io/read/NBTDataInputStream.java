@@ -1,12 +1,11 @@
 package net.flintmc.mcapi.nbt.io.read;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.nbt.NBT;
 import net.flintmc.util.commons.Pair;
-
-import java.io.DataInputStream;
-import java.io.IOException;
 
 /**
  * A data input stream lets an application read primitive Java data types and named binary tags from
@@ -39,7 +38,9 @@ public interface NBTDataInputStream {
    */
   DataInputStream getDataInputStream();
 
-  /** A factory class for the {@link NBTDataInputStream}. */
+  /**
+   * A factory class for the {@link NBTDataInputStream}.
+   */
   @AssistedFactory(NBTDataInputStream.class)
   interface Factory {
 

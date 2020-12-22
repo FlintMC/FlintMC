@@ -1,8 +1,6 @@
 package net.flintmc.framework.generation.internal.parsing;
 
 import com.google.inject.Singleton;
-import java.util.Collection;
-import java.util.HashSet;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.Modifier;
@@ -16,6 +14,8 @@ import net.flintmc.framework.generation.parsing.DataMethodParser;
 import net.flintmc.framework.generation.parsing.data.DataFieldMethod;
 import net.flintmc.framework.generation.parsing.factory.DataFactoryMethod;
 import net.flintmc.framework.inject.implement.Implement;
+import java.util.Collection;
+import java.util.HashSet;
 
 /** {@inheritDoc} */
 @Singleton
@@ -119,7 +119,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
     if (!interfaceMethod.hasAnnotation(TargetDataField.class)) {
       throw new IllegalStateException(
           String.format(
-              "Method %s in data interface %s does not target a valid data field",
+              "Method %s in data interface %s does not target a valid data field (Missing @TargetDataField)",
               interfaceMethod.getName(), interfaceMethod.getDeclaringClass().getName()));
     }
 
@@ -138,7 +138,7 @@ public class DefaultDataMethodParser implements DataMethodParser {
     if (targetDataField == null) {
       throw new IllegalStateException(
           String.format(
-              "Method %s in data interface %s does not target a valid data field",
+              "Method %s in data interface %s does not target a valid data field (Missing @TargetDataField)",
               interfaceMethod.getName(), interfaceMethod.getDeclaringClass().getName()));
     }
 

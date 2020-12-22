@@ -9,7 +9,9 @@ import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.resources.ResourceLocation;
 
-/** Represents a unique type of an item. */
+/**
+ * Represents a unique type of an item.
+ */
 public interface ItemType {
 
   /**
@@ -92,7 +94,9 @@ public interface ItemType {
    */
   ResourceLocation getResourceLocation();
 
-  /** Builder for {@link ItemType}. */
+  /**
+   * Builder for {@link ItemType}.
+   */
   interface Builder {
 
     /**
@@ -100,7 +104,7 @@ public interface ItemType {
      * type will not be displayed in any creative inventory.
      *
      * @param category The category of this builder or {@code null} to not display the result type
-     *     in the creative menu
+     *                 in the creative menu
      * @return this
      */
     Builder category(ItemCategory category);
@@ -135,7 +139,7 @@ public interface ItemType {
      * Sets the maximum damage of the result of this builder.
      *
      * @param maxDamage The maximum damage of the result type or -1 if the result type should not be
-     *     damageable.
+     *                  damageable.
      * @return this
      */
     Builder maxDamage(int maxDamage);
@@ -170,19 +174,23 @@ public interface ItemType {
      *
      * @return The new non-null type of items
      * @throws IllegalArgumentException If the specified {@link #maxStackSize(int)} is smaller than
-     *     or equal to zero
-     * @throws NullPointerException If no {@link #registryName(NameSpacedKey)} (or {@code null}) has
-     *     been provided
-     * @throws NullPointerException If {@code null} has been provided as the {@link
-     *     #metaClass(Class)}
+     *                                  or equal to zero
+     * @throws NullPointerException     If no {@link #registryName(NameSpacedKey)} (or {@code null})
+     *                                  has been provided
+     * @throws NullPointerException     If {@code null} has been provided as the {@link
+     *                                  #metaClass(Class)}
      */
     ItemType build() throws IllegalArgumentException;
 
-    /** Resets all values in this builder to their default as if you were creating a new builder. */
+    /**
+     * Resets all values in this builder to their default as if you were creating a new builder.
+     */
     void reset();
   }
 
-  /** Factory for the {@link Builder} for {@link ItemType}s. */
+  /**
+   * Factory for the {@link Builder} for {@link ItemType}s.
+   */
   @AssistedFactory(Builder.class)
   interface Factory {
 

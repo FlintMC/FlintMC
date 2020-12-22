@@ -23,7 +23,7 @@ public interface NameHistoryEntry {
    * this entry is the first one in the history, this will be -1.
    *
    * @return The timestamp in milliseconds since 01/01/1970 or -1 if this entry is the first one in
-   *     the history
+   * the history
    */
   long getTimestamp();
 
@@ -34,16 +34,18 @@ public interface NameHistoryEntry {
    */
   boolean isFirstEntry();
 
-  /** Factory for the {@link NameHistoryEntry}. */
+  /**
+   * Factory for the {@link NameHistoryEntry}.
+   */
   @AssistedFactory(NameHistoryEntry.class)
   interface Factory {
 
     /**
      * Creates a new entry for a {@link NameHistory} at the given timestamp.
      *
-     * @param name The non-null name at this timestamp
+     * @param name      The non-null name at this timestamp
      * @param timestamp The timestamp when the player has changed their name to this one, -1 if the
-     *     new entry is the first one in the history
+     *                  new entry is the first one in the history
      * @return The new non-null {@link NameHistoryEntry}.
      */
     NameHistoryEntry create(@Assisted String name, @Assisted long timestamp);

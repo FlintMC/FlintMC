@@ -39,24 +39,35 @@ public interface WorldLoadEvent extends Event {
    */
   float getProcessPercentage();
 
-  /** States in the loading phase in a {@link WorldLoadEvent}. */
+  /**
+   * States in the loading phase in a {@link WorldLoadEvent}.
+   */
   enum State {
-    /** The loading of the world has just started. */
+    /**
+     * The loading of the world has just started.
+     */
     START,
-    /** Another chunk has been loaded and the percentage has been updated. */
+    /**
+     * Another chunk has been loaded and the percentage has been updated.
+     */
     UPDATE,
-    /** All required chunks have been loaded the loading is done. */
+    /**
+     * All required chunks have been loaded the loading is done.
+     */
     END
   }
 
-  /** Factory for the {@link WorldLoadEvent}. */
+  /**
+   * Factory for the {@link WorldLoadEvent}.
+   */
   @AssistedFactory(WorldLoadEvent.class)
   interface Factory {
+
     /**
      * Creates a new {@link WorldLoadEvent}.
      *
-     * @param worldName The non-null name of the world that is being loaded
-     * @param state The non-null state in loading the world
+     * @param worldName         The non-null name of the world that is being loaded
+     * @param state             The non-null state in loading the world
      * @param processPercentage The percentage of the completion in loading the world from 0 to 100
      * @return The new non-null {@link WorldLoadEvent}
      */

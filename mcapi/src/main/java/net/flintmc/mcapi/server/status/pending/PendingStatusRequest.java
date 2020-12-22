@@ -1,15 +1,16 @@
 package net.flintmc.mcapi.server.status.pending;
 
+import java.net.UnknownHostException;
+import java.util.concurrent.CompletableFuture;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.status.ServerFavicon;
 import net.flintmc.mcapi.server.status.ServerStatus;
 
-import java.net.UnknownHostException;
-import java.util.concurrent.CompletableFuture;
-
-/** A pending request for the {@link ServerStatus} of a server. */
+/**
+ * A pending request for the {@link ServerStatus} of a server.
+ */
 public interface PendingStatusRequest {
 
   /**
@@ -40,7 +41,8 @@ public interface PendingStatusRequest {
    * PendingStatusState#IDLE} to {@link PendingStatusState#CONNECTING} and to {@link
    * PendingStatusState#RECEIVING}.
    *
-   * @throws UnknownHostException If an unknown host has been provided when creating this request
+   * @throws UnknownHostException     If an unknown host has been provided when creating this
+   *                                  request
    * @throws IllegalArgumentException If this method has been called already.
    */
   void start() throws UnknownHostException, IllegalArgumentException;
@@ -49,11 +51,13 @@ public interface PendingStatusRequest {
    * Retrieves the timestamp in milliseconds when the {@link #start()} method has been called.
    *
    * @return The timestamp in milliseconds since 01/01/1970 or -1 if the {@link #start()} method
-   *     hasn't been called yet
+   * hasn't been called yet
    */
   long getStartTimestamp();
 
-  /** Factory for the {@link PendingStatusRequest}. */
+  /**
+   * Factory for the {@link PendingStatusRequest}.
+   */
   @AssistedFactory(PendingStatusRequest.class)
   interface Factory {
 
@@ -62,9 +66,9 @@ public interface PendingStatusRequest {
      * This method will not connect to the server, to connect to the server and request a status,
      * use {@link PendingStatusRequest#start()}.
      *
-     * @param targetAddress The non-null address to retrieve the status from.
+     * @param targetAddress  The non-null address to retrieve the status from.
      * @param defaultFavicon The non-null favicon to be used when the server doesn't send any
-     *     favicon
+     *                       favicon
      * @return The new non-null status request
      */
     PendingStatusRequest create(

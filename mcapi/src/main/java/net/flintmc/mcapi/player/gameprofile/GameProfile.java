@@ -1,12 +1,13 @@
 package net.flintmc.mcapi.player.gameprofile;
 
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
-import java.util.UUID;
-
-/** Represents the game profile of a player */
+/**
+ * Represents the game profile of a player
+ */
 public interface GameProfile {
 
   /**
@@ -37,7 +38,7 @@ public interface GameProfile {
    * be constructed manually and used as input to methods.
    *
    * @return {@code true} if this profile is complete (as opposed to partial), otherwise {@code
-   *     false}
+   * false}
    */
   boolean isComplete();
 
@@ -48,7 +49,9 @@ public interface GameProfile {
    */
   boolean isLegacy();
 
-  /** A factory class for the {@link GameProfile}. */
+  /**
+   * A factory class for the {@link GameProfile}.
+   */
   @AssistedFactory(GameProfile.class)
   interface Factory {
 
@@ -56,7 +59,7 @@ public interface GameProfile {
      * Creates a new {@link GameProfile} with the given parameters.
      *
      * @param uniqueId The unique identifier for this game profile.
-     * @param name The username for this game profile.
+     * @param name     The username for this game profile.
      * @return A created game profile.
      */
     GameProfile create(@Assisted("uniqueId") UUID uniqueId, @Assisted("name") String name);
@@ -64,8 +67,8 @@ public interface GameProfile {
     /**
      * Creates a new {@link GameProfile} with the given parameters.
      *
-     * @param uniqueId The unique identifier for this game profile.
-     * @param name The username for this game profile.
+     * @param uniqueId   The unique identifier for this game profile.
+     * @param name       The username for this game profile.
      * @param properties The properties for this game profile.
      * @return A created game profile.
      */
@@ -75,7 +78,9 @@ public interface GameProfile {
         @Assisted("properties") PropertyMap properties);
   }
 
-  /** Builder class for {@link GameProfile} */
+  /**
+   * Builder class for {@link GameProfile}
+   */
   interface Builder {
 
     /**

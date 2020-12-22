@@ -1,15 +1,24 @@
 package net.flintmc.mcapi.world;
 
-import net.flintmc.mcapi.entity.Entity;
-import net.flintmc.mcapi.player.BaseClientPlayer;
-import net.flintmc.mcapi.world.scoreboad.Scoreboard;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.player.PlayerEntity;
+import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 
-/** Represents the world of this client. */
+/**
+ * Represents the world of this client.
+ */
 public interface ClientWorld extends World {
+
+  /**
+   * Retrieves an entity with the given identifier.
+   *
+   * @param identifier The identifier of an entity.
+   * @return An entity with the identifier or {@code null}.
+   */
+  Entity getEntityByIdentifier(int identifier);
 
   /**
    * Retrieves the loaded entity count of this world.
@@ -23,9 +32,9 @@ public interface ClientWorld extends World {
    *
    * @param player The player to add
    * @return {@code true} if this collection changed as a result of the call, otherwise {@code
-   *     false}
+   * false}
    */
-  boolean addPlayer(BaseClientPlayer player);
+  boolean addPlayer(PlayerEntity player);
 
   /**
    * Removes a player from the collection.
@@ -61,5 +70,5 @@ public interface ClientWorld extends World {
    *
    * @return A collection with all players in the world.
    */
-  Set<BaseClientPlayer> getPlayers();
+  Set<PlayerEntity> getPlayers();
 }

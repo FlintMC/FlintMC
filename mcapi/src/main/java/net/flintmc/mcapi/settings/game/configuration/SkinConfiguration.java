@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.settings.game.configuration;
 
+import java.util.Set;
 import net.flintmc.framework.config.annotation.ConfigExclude;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.annotation.Component;
@@ -8,9 +9,9 @@ import net.flintmc.mcapi.player.type.model.PlayerClothing;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
 import net.flintmc.mcapi.settings.flint.options.dropdown.EnumSelectSetting;
 
-import java.util.Set;
-
-/** Represents the skin configuration. */
+/**
+ * Represents the skin configuration.
+ */
 @DefineCategory(
     name = "minecraft.settings.skin",
     displayName = @Component(value = "options.skinCustomisation", translate = true))
@@ -44,7 +45,7 @@ public interface SkinConfiguration {
    * Changes the state of the player clothing.
    *
    * @param clothing The player clothing to enable or disable.
-   * @param state {@code true} if the clothing should be enabled, otherwise {@code false}.
+   * @param state    {@code true} if the clothing should be enabled, otherwise {@code false}.
    */
   void setModelClothingEnabled(PlayerClothing clothing, boolean state);
 

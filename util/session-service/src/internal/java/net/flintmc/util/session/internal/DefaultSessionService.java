@@ -10,6 +10,18 @@ import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.util.UUIDTypeAdapter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.Proxy;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
@@ -23,15 +35,6 @@ import net.flintmc.util.session.event.SessionTokenRefreshEvent;
 import net.flintmc.util.session.internal.refresh.RefreshableBaseUserAuthentication;
 import net.flintmc.util.session.internal.refresh.RefreshableYggdrasilUserAuthentication;
 import org.apache.logging.log4j.Logger;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.Proxy;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public abstract class DefaultSessionService implements SessionService {
 

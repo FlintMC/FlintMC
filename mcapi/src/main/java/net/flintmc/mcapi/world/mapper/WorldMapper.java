@@ -10,18 +10,22 @@ import net.flintmc.mcapi.world.type.WorldType;
 public interface WorldMapper {
 
   /**
-   * Creates a new Minecraft world settings by using the Flint {@link WorldConfiguration} as the base.
+   * Creates a new Minecraft world settings by using the Flint {@link WorldConfiguration} as the
+   * base.
    *
    * @param configuration The non-null Flint {@link WorldConfiguration}.
-   * @return The new Minecraft world settings or {@code null} if the given world configuration was invalid.
+   * @return The new Minecraft world settings or {@code null} if the given world configuration was
+   * invalid.
    */
   Object toMinecraftWorldSettings(WorldConfiguration configuration);
 
   /**
-   * Creates a new {@link WorldConfiguration} by using the given Minecraft world settings as the base.
+   * Creates a new {@link WorldConfiguration} by using the given Minecraft world settings as the
+   * base.
    *
    * @param handle The non-null Minecraft world settings.
-   * @return The new Flint {@link WorldConfiguration} or {@code null} if the given world settings was invalid.
+   * @return The new Flint {@link WorldConfiguration} or {@code null} if the given world settings
+   * was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft world settings.
    */
   WorldConfiguration fromMinecraftWorldSettings(Object handle);
@@ -55,7 +59,8 @@ public interface WorldMapper {
    * Creates a new {@link WorldOverview} by using the given Minecraft world summary as the base.
    *
    * @param handle The non-null Minecraft world type.
-   * @return The new Flint {@link WorldOverview} or {@code null} if the given world summary was invalid.
+   * @return The new Flint {@link WorldOverview} or {@code null} if the given world summary was
+   * invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft world summary.
    */
   WorldOverview fromMinecraftWorldSummary(Object handle);

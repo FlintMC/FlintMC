@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.v1_15_2.items.inventory;
 
+import java.util.List;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
@@ -10,8 +11,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.NonNullList;
-
-import java.util.List;
 
 public class VersionedOpenedInventory extends VersionedInventory {
 
@@ -82,6 +81,7 @@ public class VersionedOpenedInventory extends VersionedInventory {
     }
 
     @Override
-    public void sendWindowProperty(Container containerIn, int varToUpdate, int newValue) {}
+    public void sendWindowProperty(Container containerIn, int varToUpdate, int newValue) {
+    }
   }
 }

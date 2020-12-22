@@ -1,5 +1,7 @@
 package net.flintmc.mcapi.settings.game.configuration;
 
+import java.util.List;
+import java.util.Map;
 import net.flintmc.framework.config.annotation.ConfigExclude;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.Keybind;
@@ -10,10 +12,9 @@ import net.flintmc.mcapi.settings.game.KeyBinding;
 import net.flintmc.mcapi.settings.game.keybind.KeyBindSetting;
 import net.flintmc.render.gui.input.Key;
 
-import java.util.List;
-import java.util.Map;
-
-/** Represents the key binding configuration. */
+/**
+ * Represents the key binding configuration.
+ */
 @DefineCategory(
     name = "minecraft.settings.controls",
     displayName = @Component(value = "options.controls", translate = true))
@@ -33,7 +34,7 @@ public interface KeyBindingConfiguration {
    * Binds the physical key to a specific description
    *
    * @param keyDescription The non-null description of the key ({@link Keybind#getKey()}
-   * @param key The key to be bound, {@code null} to disable the binding
+   * @param key            The key to be bound, {@code null} to disable the binding
    */
   void setKey(String keyDescription, Key key);
 
@@ -59,7 +60,7 @@ public interface KeyBindingConfiguration {
    * Retrieves whether there are duplicates Minecrafts settings for this keyCode.
    *
    * @return {@code true} if other KeyBindings in Minecraft also use this keyCode, {@code false}
-   *     otherwise
+   * otherwise
    */
   @ConfigExclude
   boolean hasDuplicates(Key key);

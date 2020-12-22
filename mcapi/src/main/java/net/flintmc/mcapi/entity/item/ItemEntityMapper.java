@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.entity.item;
 
-/** Mapper between the Minecraft item entities and Flint entities. */
+/**
+ * Mapper between the Minecraft item entities and Flint entities.
+ */
 public interface ItemEntityMapper {
 
   /**

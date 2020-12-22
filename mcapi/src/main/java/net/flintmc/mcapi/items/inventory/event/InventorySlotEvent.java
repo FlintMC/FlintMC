@@ -26,7 +26,9 @@ public interface InventorySlotEvent extends Event, InventoryEvent {
   @Named("slot")
   int getSlot();
 
-  /** Factory for the {@link InventorySlotEvent}. */
+  /**
+   * Factory for the {@link InventorySlotEvent}.
+   */
   @AssistedFactory(InventorySlotEvent.class)
   interface Factory {
 
@@ -34,9 +36,9 @@ public interface InventorySlotEvent extends Event, InventoryEvent {
      * Creates a new {@link InventorySlotEvent} with the given inventory and slot.
      *
      * @param inventory The non-null inventory where the event has happened
-     * @param slot The slot where this event has happened or {@code -1} if it happened outside of
-     *     any slot. If the slot isn't {@code -1}, {@link Inventory#getItem(int)} with the given
-     *     inventory and slot has to work.
+     * @param slot      The slot where this event has happened or {@code -1} if it happened outside
+     *                  of any slot. If the slot isn't {@code -1}, {@link Inventory#getItem(int)}
+     *                  with the given inventory and slot has to work.
      * @return The new event
      */
     InventorySlotEvent create(

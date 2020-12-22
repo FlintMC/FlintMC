@@ -1,11 +1,10 @@
 package net.flintmc.mcapi.settings.flint.serializer;
 
 import com.google.gson.JsonObject;
+import java.lang.annotation.Annotation;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
-
-import java.lang.annotation.Annotation;
 
 /**
  * Handler for the serialization of annotations that can be applied on a method that is annotated
@@ -26,10 +25,11 @@ public interface SettingsSerializationHandler<A extends Annotation> {
    *
    * <p>The new contents of the json object depend on the implementation.
    *
-   * @param result The non-null json object to serialize the given annotation into
-   * @param setting The non-null setting where the given annotation has been found
+   * @param result     The non-null json object to serialize the given annotation into
+   * @param setting    The non-null setting where the given annotation has been found
    * @param annotation The annotation that has been found matching the type that is supported by
-   *     this handler, may be {@code null} if no annotation with the given type was found
+   *                   this handler, may be {@code null} if no annotation with the given type was
+   *                   found
    */
   void append(JsonObject result, RegisteredSetting setting, A annotation);
 }

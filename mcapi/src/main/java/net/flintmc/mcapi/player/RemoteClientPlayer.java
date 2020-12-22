@@ -4,23 +4,29 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.type.EntityType;
 
-/** Represents the remote client player. */
+/**
+ * Represents the remote client player.
+ */
 public interface RemoteClientPlayer extends PlayerEntity, BaseClientPlayer {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   default boolean isSpectator() {
     return false;
   }
 
-  /** A factory class for the {@link RemoteClientPlayer}. */
+  /**
+   * A factory class for the {@link RemoteClientPlayer}.
+   */
   @AssistedFactory(RemoteClientPlayer.class)
   interface Factory {
 
     /**
      * Creates a new {@link RemoteClientPlayer} with the given parameters.
      *
-     * @param entity The non-null Minecraft entity.
+     * @param entity     The non-null Minecraft entity.
      * @param entityType The entity type.
      * @return A created {@link RemoteClientPlayer}.
      */
@@ -28,7 +34,9 @@ public interface RemoteClientPlayer extends PlayerEntity, BaseClientPlayer {
         @Assisted("entity") Object entity, @Assisted("entityType") EntityType entityType);
   }
 
-  /** Service interface for creating {@link RemoteClientPlayer}'s. */
+  /**
+   * Service interface for creating {@link RemoteClientPlayer}'s.
+   */
   interface Provider {
 
     /**

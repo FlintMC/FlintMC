@@ -2,12 +2,17 @@ package net.flintmc.mcapi.v1_15_2.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.function.Supplier;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
-import net.flintmc.mcapi.chat.component.*;
+import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.component.KeybindComponent;
+import net.flintmc.mcapi.chat.component.ScoreComponent;
+import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
+import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
@@ -16,11 +21,20 @@ import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.mcapi.internal.chat.builder.*;
+import net.flintmc.mcapi.internal.chat.builder.DefaultKeybindComponentBuilder;
+import net.flintmc.mcapi.internal.chat.builder.DefaultScoreComponentBuilder;
+import net.flintmc.mcapi.internal.chat.builder.DefaultSelectorComponentBuilder;
+import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
+import net.flintmc.mcapi.internal.chat.builder.DefaultTranslationComponentBuilder;
 import net.flintmc.mcapi.internal.chat.component.DefaultKeybindComponent;
-import net.minecraft.util.text.*;
-
-import java.util.function.Supplier;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.KeybindTextComponent;
+import net.minecraft.util.text.ScoreTextComponent;
+import net.minecraft.util.text.SelectorTextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
 @Implement(value = MinecraftComponentMapper.class, version = "1.15.2")

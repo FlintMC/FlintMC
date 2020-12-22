@@ -2,7 +2,9 @@ package net.flintmc.mcapi.server.status.pending;
 
 import net.flintmc.mcapi.server.status.ServerStatus;
 
-/** The state of a {@link PendingStatusRequest}. */
+/**
+ * The state of a {@link PendingStatusRequest}.
+ */
 public enum PendingStatusState {
 
   /**

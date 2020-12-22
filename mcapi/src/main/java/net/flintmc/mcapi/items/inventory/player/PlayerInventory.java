@@ -1,6 +1,7 @@
 package net.flintmc.mcapi.items.inventory.player;
 
 import net.flintmc.mcapi.items.ItemStack;
+import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.items.inventory.Inventory;
 
 public interface PlayerInventory extends Inventory {
@@ -21,17 +22,40 @@ public interface PlayerInventory extends Inventory {
    */
   ItemStack getItemInHand(PlayerHand hand);
 
+  int getHeldItemSlot();
+
+  void setHeldItemSlot(int slot);
+
+  /**
+   * Retrieves the type of a specific slot in this inventory.
+   *
+   * @param slot The slot to get the type from
+   * @return The type of the given slot or {@code null} if the given slot is no special type
+   * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
+   *     the highest possible slot in this inventory
+   */
+  EquipmentSlotType getSlotType(int slot);
+
   /**
    * Retrieves an item in a specific slot in this inventory.
    *
-   * @param slot The slot to get the item from. Slots from 36 to 44 are hotbar slots. Slots from 6
-   *     to 35 are the main inventory. Slots from 0 to 4 are the crafting inventory.
+   * @param slot The slot to get the item from. Slots from 0 to 4 are the crafting inventory. Slots
+   *     from 5 to 8 are the armor. Slots from 9 to 35 are the main inventory. Slots from 36 to 44
+   *     are the hotbar. 45 is the off hand.
    * @return The non-null item out of this slot
    * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
    *     the highest possible slot in this inventory
    */
   @Override
   ItemStack getItem(int slot) throws IndexOutOfBoundsException;
+
+  /**
+   * Retrieves an item in a specific slot in this inventory.
+   *
+   * @param slotType The non-null unique type of slot to get the item from
+   * @return The non-null item out of this slot
+   */
+  ItemStack getItem(EquipmentSlotType slotType);
 
   /**
    * Retrieves the slot from the player's hand.
