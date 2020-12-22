@@ -7,12 +7,12 @@ fun defineModule(path: String) {
 
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle") version "2.6.3"
+        id("net.flintmc.flint-gradle") version "2.7.0"
     }
 
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle", "2.6.3")
+            classpath("net.flintmc", "flint-gradle", "2.7.0")
         }
         repositories {
             mavenLocal()
