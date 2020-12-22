@@ -22,6 +22,7 @@ dependencies {
     api(project(":transform:transform-shadow"))
 
     api(project(":render:render-gui"))
+    api(project(":render:render-webgui"))
 
     api(project(":util:util-i18n"))
 

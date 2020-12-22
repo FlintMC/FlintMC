@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
-import net.flintmc.mcapi.settings.flint.annotation.ui.Icon;
+import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.dropdown.CustomSelectSetting;

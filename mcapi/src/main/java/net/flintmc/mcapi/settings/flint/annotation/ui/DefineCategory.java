@@ -9,6 +9,7 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 
 /**
  * Sets a category for a specific {@link ApplicableSetting} in a {@link Config}. It can be used on
@@ -56,5 +57,5 @@ public @interface DefineCategory {
    *
    * @return The icon of this category
    */
-  Icon icon() default @Icon("");
+  Icon icon() default @Icon();
 }
