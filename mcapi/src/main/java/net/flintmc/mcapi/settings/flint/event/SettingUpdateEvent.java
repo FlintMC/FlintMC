@@ -14,7 +14,7 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
  *
  * @see Subscribe
  */
-public interface SettingsUpdateEvent extends Event {
+public interface SettingUpdateEvent extends Event {
 
   /**
    * Retrieves the setting that has been updated in this event.
@@ -24,17 +24,17 @@ public interface SettingsUpdateEvent extends Event {
   RegisteredSetting getSetting();
 
   /**
-   * Factory for the {@link SettingsUpdateEvent}.
+   * Factory for the {@link SettingUpdateEvent}.
    */
-  @AssistedFactory(SettingsUpdateEvent.class)
+  @AssistedFactory(SettingUpdateEvent.class)
   interface Factory {
 
     /**
-     * Creates a new {@link SettingsUpdateEvent} with the given setting.
+     * Creates a new {@link SettingUpdateEvent} with the given setting.
      *
      * @param setting The non-null setting that has been updated
      * @return The new non-null event
      */
-    SettingsUpdateEvent create(@Assisted RegisteredSetting setting);
+    SettingUpdateEvent create(@Assisted RegisteredSetting setting);
   }
 }

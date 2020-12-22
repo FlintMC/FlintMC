@@ -18,7 +18,7 @@
  */
 
 plugins {
-    id("net.flintmc.flint-gradle-plugin")
+    id("net.flintmc.flint-gradle")
     id("net.minecrell.licenser") version "0.4.1"
 }
 
@@ -100,6 +100,8 @@ flint {
     projectFilter {
         !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
     }
+
+    minecraftVersions("1.15.2")
 
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
     authors = arrayOf("LabyMedia GmbH")

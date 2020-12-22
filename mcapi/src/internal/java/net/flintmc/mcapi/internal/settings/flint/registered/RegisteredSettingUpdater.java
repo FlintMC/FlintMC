@@ -6,7 +6,7 @@ import net.flintmc.framework.config.event.ConfigValueUpdateEvent;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.flintmc.mcapi.settings.flint.event.SettingsUpdateEvent;
+import net.flintmc.mcapi.settings.flint.event.SettingUpdateEvent;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
 
@@ -15,11 +15,11 @@ public class RegisteredSettingUpdater {
 
   private final SettingsProvider provider;
   private final EventBus eventBus;
-  private final SettingsUpdateEvent.Factory eventFactory;
+  private final SettingUpdateEvent.Factory eventFactory;
 
   @Inject
   public RegisteredSettingUpdater(
-      SettingsProvider provider, EventBus eventBus, SettingsUpdateEvent.Factory eventFactory) {
+      SettingsProvider provider, EventBus eventBus, SettingUpdateEvent.Factory eventFactory) {
     this.provider = provider;
     this.eventBus = eventBus;
     this.eventFactory = eventFactory;
@@ -41,7 +41,7 @@ public class RegisteredSettingUpdater {
       return;
     }
 
-    SettingsUpdateEvent fired = this.eventFactory.create(setting);
+    SettingUpdateEvent fired = this.eventFactory.create(setting);
     this.eventBus.fireEvent(fired, phase);
   }
 }

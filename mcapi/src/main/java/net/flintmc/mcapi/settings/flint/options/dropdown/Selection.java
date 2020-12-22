@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
-import net.flintmc.mcapi.settings.flint.annotation.ui.Icon;
+import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 
 /**
  * Represents a selection entry in a {@link CustomSelectSetting}.
@@ -42,5 +42,5 @@ public @interface Selection {
    *
    * @return The icon of this entry
    */
-  Icon icon() default @Icon("");
+  Icon icon() default @Icon();
 }
