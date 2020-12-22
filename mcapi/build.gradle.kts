@@ -4,14 +4,13 @@ plugins {
 
 group = "net.flintmc"
 
-flint {
-    minecraftVersions("1.15.2")
-}
-
 dependencies {
+    minecraft("1.15.2"){
+        annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
+    }
+
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    v1_15_2AnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
     api(project(":framework:framework-eventbus"))
     api(project(":framework:framework-inject"))

@@ -1,5 +1,22 @@
+buildscript {
+    repositories {
+        maven {
+            setUrl("https://dist.labymod.net/api/v1/maven/release")
+            name = "Flint"
+            credentials(HttpHeaderCredentials::class) {
+                name = "Authorization"
+                value = "Bearer CbtTjzAOuDBr5QXcGnBc1MB3eIHxcZetnyHtdN76VpTNgbwAf87bzWPCntsXwj52"
+            }
+            authentication {
+                create<HttpHeaderAuthentication>("header")
+            }
+        }
+        mavenCentral()
+    }
+}
+
 plugins {
-    id("net.flintmc.flint-gradle-plugin")
+    id("net.flintmc.flint-gradle")
 }
 
 fun RepositoryHandler.flintRepository() {
@@ -68,6 +85,7 @@ flint {
 
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
     authors = arrayOf("LabyMedia GmbH")
+    minecraftVersions("1.15.2")
 
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")
