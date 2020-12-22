@@ -66,6 +66,8 @@ flint {
         !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
     }
 
+    minecraftVersions("1.15.2")
+
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
     authors = arrayOf("LabyMedia GmbH")
 
