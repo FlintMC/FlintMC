@@ -4,16 +4,19 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageResolver;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubSettingsFor;
+import net.flintmc.mcapi.settings.flint.event.SettingRegisterEvent;
+import net.flintmc.mcapi.settings.flint.event.SettingRegisterEvent.Factory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
 import org.apache.logging.log4j.Logger;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,14 +30,22 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
   private final Logger logger;
   private final PackageResolver packageResolver;
+  private final EventBus eventBus;
+  private final SettingRegisterEvent.Factory registerEventFactory;
 
   private final Collection<RegisteredSetting> settings;
   private final Map<String, RegisteredCategory> categories;
 
   @Inject
-  public DefaultSettingsProvider(@InjectLogger Logger logger, PackageResolver packageResolver) {
+  private DefaultSettingsProvider(
+      @InjectLogger Logger logger,
+      PackageResolver packageResolver,
+      EventBus eventBus,
+      Factory registerEventFactory) {
     this.logger = logger;
     this.packageResolver = packageResolver;
+    this.eventBus = eventBus;
+    this.registerEventFactory = registerEventFactory;
 
     this.settings = new CopyOnWriteArrayList<>();
     this.categories = new HashMap<>();
@@ -61,6 +72,15 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
   @Override
   public void registerSetting(RegisteredSetting setting) {
+    SettingRegisterEvent event = this.registerEventFactory.create(setting);
+    if (this.eventBus.fireEvent(event, Phase.PRE).isCancelled()) {
+      this.logger.debug(
+          "Not registering setting {}.{} because it has been cancelled by the EventBus",
+          setting.getReference().getConfig().getConfigName(),
+          setting.getReference().getKey());
+      return;
+    }
+
     if (!this.registerSubSettings(setting, false)) {
       this.settings.add(setting);
     }
@@ -68,6 +88,8 @@ public class DefaultSettingsProvider implements SettingsProvider {
     for (RegisteredSetting registeredSetting : this.settings) {
       this.registerSubSettings(registeredSetting, true);
     }
+
+    this.eventBus.fireEvent(event, Phase.POST);
   }
 
   private boolean registerSubSettings(RegisteredSetting newSetting, boolean remove) {
@@ -117,7 +139,8 @@ public class DefaultSettingsProvider implements SettingsProvider {
   public Collection<RegisteredSetting> getSettings(String packageName) {
     Collection<RegisteredSetting> settings = new HashSet<>();
     for (RegisteredSetting setting : this.getAllSettings()) {
-      Package settingPackage = this.packageResolver.resolvePackage(setting.getReference().getConfigBaseClass());
+      Package settingPackage =
+          this.packageResolver.resolvePackage(setting.getReference().getConfigBaseClass());
       if (settingPackage != null && settingPackage.getName().equals(packageName)) {
         settings.add(setting);
       }

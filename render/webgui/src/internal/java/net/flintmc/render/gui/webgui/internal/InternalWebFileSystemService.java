@@ -40,7 +40,6 @@ public class InternalWebFileSystemService
   @Override
   public void discover(AnnotationMeta<WebFileSystem> annotationMeta)
       throws ServiceNotFoundException {
-
     CtClass fileSystem = annotationMeta.<ClassIdentifier>getIdentifier().getLocation();
 
     try {

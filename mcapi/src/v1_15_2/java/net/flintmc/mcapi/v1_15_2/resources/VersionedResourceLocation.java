@@ -34,6 +34,12 @@ public class VersionedResourceLocation extends net.minecraft.util.ResourceLocati
     return Minecraft.getInstance().getResourceManager().getResource(this).getInputStream();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean exists() {
+    return Minecraft.getInstance().getResourceManager().hasResource(this);
+  }
+
   /**
    * Retrieves the resource location as a {@link String}.
    *

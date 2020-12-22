@@ -121,18 +121,18 @@ public interface ConfigObjectReference {
    * last one will be used always, so for example:
    *
    * <pre>
-   * {@literal @}IncludeStorage("abcd")
+   *  &#064;IncludeStorage("abcd")
    *  interface Config {
    *
-   *   {@literal @}IncludeStorage("1234")
+   *    &#064;IncludeStorage("1234")
    *    String getX();
    *
-   *   {@literal @}IncludeStorage("5678")
+   *    &#064;IncludeStorage("5678")
    *    void setX();
    *
    *    int getY();
    *
-   *   {@literal @}ExcludeStorage("local")
+   *    &#064;ExcludeStorage("local")
    *    boolean getZ();
    *
    *   }
@@ -145,7 +145,7 @@ public interface ConfigObjectReference {
    * interface is. If the Config interface wouldn't be annotated with {@link Config @Config}, 'Y'
    * would be stored in every storage. <br>
    * - 'Z' will be stored in every storage except 'local' because the method is annotated with
-   * {@link ExcludeStorage {@literal @}ExcludeStorage} and {@link ExcludeStorage} always has a
+   * {@link ExcludeStorage &#064;ExcludeStorage} and {@link ExcludeStorage} always has a
    * higher priority than {@link IncludeStorage}.
    *
    * @param storage The non-null storage which should be checked for

@@ -6,7 +6,7 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.settings.flint.event.SettingsUpdateEvent;
+import net.flintmc.mcapi.settings.flint.event.SettingUpdateEvent;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
@@ -26,14 +26,14 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
   private final Collection<RegisteredSetting> subSettings;
 
   private final EventBus eventBus;
-  private final SettingsUpdateEvent updateEvent;
+  private final SettingUpdateEvent updateEvent;
   private boolean enabled;
 
   @AssistedInject
   public DefaultRegisteredSetting(
       SettingHandler settingHandler,
       EventBus eventBus,
-      SettingsUpdateEvent.Factory eventFactory,
+      SettingUpdateEvent.Factory eventFactory,
       @Assisted Class<? extends Annotation> annotationType,
       @Assisted @Nullable String categoryName,
       @Assisted ConfigObjectReference reference) {
