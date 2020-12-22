@@ -377,16 +377,16 @@ tutorials on how to publish your Mod to our distribution service.
 
 This project is not yet finished, there are many things we still want to do.
 
-- [] Improve dependency resolution in package loading.
-- [] Implement Minecraft 1.16.x, 1.8.9 and other versions.
-- [] Make it possible to create server mods.
-- [] Write more documentation and create further resources on getting started.
-- [] Improve Minecraft API.
-- [] Move to yarn mappings.
-- [] Make the gradle plugin not depend on MCP.
-- [] Remove Guice and create an own injection framework for better performance
+- [ ] Improve dependency resolution in package loading.
+- [ ] Implement Minecraft 1.16.x, 1.8.9 and other versions.
+- [ ] Make it possible to create server mods.
+- [ ] Write more documentation and create further resources on getting started.
+- [ ] Improve Minecraft API.
+- [ ] Move to yarn mappings.
+- [ ] Make the gradle plugin not depend on MCP.
+- [ ] Remove Guice and create an own injection framework for better performance
      and more control over class loading.
-- [] Improve startup performance.
+- [ ] Improve startup performance.
 
 ## Further Resources
 
