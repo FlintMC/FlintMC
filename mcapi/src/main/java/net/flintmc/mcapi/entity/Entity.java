@@ -22,6 +22,7 @@ import net.flintmc.mcapi.player.type.sound.SoundCategory;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.block.material.PushReaction;
 import net.flintmc.mcapi.world.math.BlockPosition;
+import net.flintmc.mcapi.world.math.Direction;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 
@@ -348,6 +349,15 @@ public interface Entity extends Nameable {
    *                                  client
    */
   void setYaw(float yaw);
+
+  /**
+   * Retrieves the horizontal facing direction of this entity.
+   *
+   * @return The horizontal facing.
+   * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
+   *                                  client
+   */
+  Direction getHorizontalFacing();
 
   /**
    * Retrieves the maximal in portal time of this entity.

@@ -11,10 +11,9 @@ import net.flintmc.mcapi.player.type.hand.HandMapper;
 import net.flintmc.mcapi.player.type.sound.SoundMapper;
 import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
+import net.flintmc.mcapi.world.math.Direction;
 
-/**
- * Mapper between Minecraft entity and Flint entity.
- */
+/** Mapper between Minecraft entity and Flint entity. */
 public interface EntityFoundationMapper {
 
   /**
@@ -23,7 +22,7 @@ public interface EntityFoundationMapper {
    *
    * @param handle The non-null Minecraft equipment slot type.
    * @return The new Flint {@link EquipmentSlotType} or {@code null} if the given equipment slot
-   * type was invalid.
+   *     type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft equipment slot type.
    */
   EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle);
@@ -34,7 +33,7 @@ public interface EntityFoundationMapper {
    *
    * @param equipmentSlotType The non-null Flint {@link EquipmentSlotType}.
    * @return The new Minecraft equipment slot type or {@code null} if the given equipment slot type
-   * was invalid.
+   *     was invalid.
    */
   Object toMinecraftEquipmentSlotType(EquipmentSlotType equipmentSlotType);
 
@@ -88,6 +87,22 @@ public interface EntityFoundationMapper {
    * @return The new Minecraft entity pose or {@code null} if the given entity pose was invalid.
    */
   Object toMinecraftPose(EntityPose pose);
+
+  /**
+   * Returns the equivalent Flint {@link Direction} of a Minecraft direction.
+   *
+   * @param handle The non-null Minecraft direction.
+   * @return The Flint {@link Direction} based on the given Minecraft direction.
+   */
+  Direction fromMinecraftDirection(Object handle);
+
+  /**
+   * Returns the equivalent Minecraft direction of a Flint {@link Direction}.
+   *
+   * @param direction The non-null Flint {@link Direction}.
+   * @return The Minecraft direction based on the given Flint {@link Direction}.
+   */
+  Object toMinecraftDirection(Direction direction);
 
   /**
    * Retrieves the hand mapper.

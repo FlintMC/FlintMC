@@ -6,6 +6,7 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Category;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
+import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 
 /**
  * Represents a category of settings in the {@link SettingsProvider}.
@@ -38,16 +39,13 @@ public interface RegisteredCategory {
   ChatComponent getDescription();
 
   /**
-   * Retrieves the URL to the icon of this category. If no icon is set, this will be an empty
-   * string.
+   * Retrieves the icon of this category. If no icon is set, this will be an empty icon.
    *
-   * @return The non-null URL to the icon of this category
+   * @return The non-null icon of this category
    */
-  String getIconUrl();
+  Icon getIcon();
 
-  /**
-   * Factory for the {@link RegisteredCategory}.
-   */
+  /** Factory for the {@link RegisteredCategory}. */
   @AssistedFactory(RegisteredCategory.class)
   interface Factory {
 
@@ -56,19 +54,18 @@ public interface RegisteredCategory {
      * SettingsProvider#registerCategory(RegisteredCategory)}.
      *
      * @param registryName The non-null name of the new category, unique per {@link
-     *                     SettingsProvider}
-     * @param displayName  The non-null display name of the new category as it will be displayed
-     * @param description  The non-null description of the new category as it will be displayed, if
-     *                     no description is available, this should be a {@link TextComponent} with
-     *                     an empty text
-     * @param iconUrl      The non-null URL to the icon of the new category, if no icon is set, this
-     *                     should be an empty string
+     *     SettingsProvider}
+     * @param displayName The non-null display name of the new category as it will be displayed
+     * @param description The non-null description of the new category as it will be displayed, if
+     *     no description is available, this should be a {@link TextComponent} with an empty text
+     * @param icon The non-null icon of the new category, if no icon is set, this should be an empty
+     *     icon
      * @return The new non-null {@link RegisteredCategory}
      */
     RegisteredCategory create(
         @Assisted("registryName") String registryName,
         @Assisted("displayName") ChatComponent displayName,
         @Assisted("description") ChatComponent description,
-        @Assisted("iconUrl") String iconUrl);
+        @Assisted("icon") Icon icon);
   }
 }

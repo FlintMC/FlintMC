@@ -14,9 +14,9 @@ import net.flintmc.mcapi.player.type.hand.HandMapper;
 import net.flintmc.mcapi.player.type.sound.SoundMapper;
 import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
+import net.flintmc.mcapi.world.math.Direction;
 import net.minecraft.entity.Pose;
 import net.minecraft.world.GameType;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -36,14 +36,14 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
 
   @Inject
   private VersionedEntityFoundationMapper(
-          EntityMapper entityMapper,
-          HandMapper handMapper,
-          MinecraftItemMapper itemMapper,
-          MinecraftComponentMapper componentMapper,
-          PotionMapper potionMapper,
-          NBTMapper nbtMapper,
-          ResourceLocationProvider resourceLocationProvider,
-          SoundMapper soundMapper) {
+      EntityMapper entityMapper,
+      HandMapper handMapper,
+      MinecraftItemMapper itemMapper,
+      MinecraftComponentMapper componentMapper,
+      PotionMapper potionMapper,
+      NBTMapper nbtMapper,
+      ResourceLocationProvider resourceLocationProvider,
+      SoundMapper soundMapper) {
     this.itemMapper = itemMapper;
     this.componentMapper = componentMapper;
     this.potionMapper = potionMapper;
@@ -248,6 +248,57 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
 
   /** {@inheritDoc} */
   @Override
+  public Direction fromMinecraftDirection(Object handle) {
+    if (!(handle instanceof net.minecraft.util.Direction)) {
+      throw new IllegalArgumentException(
+          handle.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.util.Direction.class.getName());
+    }
+
+    net.minecraft.util.Direction direction = (net.minecraft.util.Direction) handle;
+
+    switch (direction) {
+      case UP:
+        return Direction.UP;
+      case DOWN:
+        return Direction.DOWN;
+      case NORTH:
+        return Direction.NORTH;
+      case SOUTH:
+        return Direction.SOUTH;
+      case WEST:
+        return Direction.WEST;
+      case EAST:
+        return Direction.EAST;
+      default:
+        throw new IllegalStateException("Unexpected value: " + direction);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object toMinecraftDirection(Direction direction) {
+    switch (direction) {
+      case UP:
+        return net.minecraft.util.Direction.UP;
+      case DOWN:
+        return net.minecraft.util.Direction.DOWN;
+      case NORTH:
+        return net.minecraft.util.Direction.NORTH;
+      case SOUTH:
+        return net.minecraft.util.Direction.SOUTH;
+      case WEST:
+        return net.minecraft.util.Direction.WEST;
+      case EAST:
+        return net.minecraft.util.Direction.EAST;
+      default:
+        throw new IllegalStateException("Unexpected value: " + direction);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public HandMapper getHandMapper() {
     return this.handMapper;
   }
@@ -282,9 +333,7 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     return this.entityMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public PotionMapper getPotionMapper() {
     return this.potionMapper;

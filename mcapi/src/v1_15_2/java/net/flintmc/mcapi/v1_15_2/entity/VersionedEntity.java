@@ -16,6 +16,7 @@ import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
+import net.flintmc.mcapi.world.math.Direction;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.minecraft.entity.Pose;
@@ -24,7 +25,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -276,6 +276,12 @@ public class VersionedEntity implements Entity {
   @Override
   public void setYaw(float yaw) {
     this.wrapped().rotationYaw = yaw;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Direction getHorizontalFacing() {
+    return this.entityFoundationMapper.fromMinecraftDirection(this.wrapped().getHorizontalFacing());
   }
 
   /** {@inheritDoc} */
