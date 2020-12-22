@@ -1,7 +1,10 @@
 package net.flintmc.util.mappings.exceptions;
 
-/** This exception will be thrown if the mapping parser could not parse specified mappings. */
+/**
+ * This exception will be thrown if the mapping parser could not parse specified mappings.
+ */
 public class MappingParseException extends Exception {
+
   /**
    * Constructs a new exception with {@code null} as its detail message. The cause is not
    * initialized, and may subsequently be initialized by a call to {@link #initCause}.
@@ -15,7 +18,7 @@ public class MappingParseException extends Exception {
    * may subsequently be initialized by a call to {@link #initCause}.
    *
    * @param message the detail message. The detail message is saved for later retrieval by the
-   *     {@link #getMessage()} method.
+   *                {@link #getMessage()} method.
    */
   public MappingParseException(String message) {
     super(message);
@@ -28,10 +31,10 @@ public class MappingParseException extends Exception {
    * incorporated in this exception's detail message.
    *
    * @param message the detail message (which is saved for later retrieval by the {@link
-   *     #getMessage()} method).
-   * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method).
-   *     (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent or
-   *     unknown.)
+   *                #getMessage()} method).
+   * @param cause   the cause (which is saved for later retrieval by the {@link #getCause()}
+   *                method). (A <tt>null</tt> value is permitted, and indicates that the cause is
+   *                nonexistent or unknown.)
    */
   public MappingParseException(String message, Throwable cause) {
     super(message, cause);
@@ -44,8 +47,8 @@ public class MappingParseException extends Exception {
    * for other throwables.
    *
    * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method).
-   *     (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent or
-   *     unknown.)
+   *              (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent
+   *              or unknown.)
    */
   public MappingParseException(Throwable cause) {
     super(cause);

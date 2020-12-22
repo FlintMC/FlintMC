@@ -4,10 +4,20 @@ import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.annotation.ExcludeStorage;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.settings.flint.annotation.ui.NativeSetting;
-import net.flintmc.mcapi.settings.game.configuration.*;
+import net.flintmc.mcapi.settings.game.configuration.AccessibilityConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.ChatConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.DebugConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.GraphicConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.KeyBindingConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.MouseConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.ResourcePackConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.SkinConfiguration;
+import net.flintmc.mcapi.settings.game.configuration.SoundConfiguration;
 import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 
-/** Represents the Minecraft game settings */
+/**
+ * Represents the Minecraft game settings
+ */
 @Config
 @ImplementedConfig
 @ExcludeStorage("local")

@@ -5,7 +5,9 @@ import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
 import net.flintmc.mcapi.items.type.ItemCategory;
 import net.flintmc.mcapi.items.type.ItemType;
 
-/** A registry containing all available item types and categories. */
+/**
+ * A registry containing all available item types and categories.
+ */
 public interface ItemRegistry {
 
   /**
@@ -20,7 +22,7 @@ public interface ItemRegistry {
    *
    * @param registryName The non-null key for the item
    * @return The item type out of this registry matching the given key or {@code null} if no type
-   *     with the given key could be found
+   * with the given key could be found
    */
   ItemType getType(NameSpacedKey registryName);
 
@@ -43,7 +45,7 @@ public interface ItemRegistry {
    *
    * @param category The non-null category to get all item types from
    * @return A new non-null array of all types that were found in this category, modification to
-   *     this array will have no effect
+   * this array will have no effect
    */
   ItemType[] getTypesInCategory(ItemCategory category);
 
@@ -59,7 +61,7 @@ public interface ItemRegistry {
    * Retrieves all available categories in this registry.
    *
    * @return A non-null array of all categories in this registry, modifcation to this array will
-   *     have no effect
+   * have no effect
    */
   ItemCategory[] getCategories();
 
@@ -68,7 +70,7 @@ public interface ItemRegistry {
    *
    * @param index The index of the category to search for
    * @return The category with the given index or {@code null} if no category with the given index
-   *     exists in this registry
+   * exists in this registry
    */
   ItemCategory getCategory(int index);
 
@@ -77,7 +79,7 @@ public interface ItemRegistry {
    *
    * @param registryName The non-null name of the category to search for
    * @return The category with the given name or {@code null} if no category with the given name
-   *     exists in this registry
+   * exists in this registry
    */
   ItemCategory getCategory(NameSpacedKey registryName);
 
@@ -100,7 +102,7 @@ public interface ItemRegistry {
    *
    * @param registryName The non-null key for the enchantment type
    * @return The enchantment type out of this registry matching the given key or {@code null} if no
-   *     type with the given key could be found
+   * type with the given key could be found
    */
   EnchantmentType getEnchantmentType(NameSpacedKey registryName);
 }

@@ -1,11 +1,12 @@
 package net.flintmc.mcapi.player.gameprofile.property;
 
+import java.security.PublicKey;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-import java.security.PublicKey;
-
-/** Represents the property of a game profile. */
+/**
+ * Represents the property of a game profile.
+ */
 public interface Property {
 
   /**
@@ -44,14 +45,16 @@ public interface Property {
    */
   boolean isSignatureValid(PublicKey publicKey);
 
-  /** A factory class for the {@link Property}. */
+  /**
+   * A factory class for the {@link Property}.
+   */
   @AssistedFactory(Property.class)
   interface Factory {
 
     /**
      * Creates a new {@link Property} with the given name and value.
      *
-     * @param name The name of the property
+     * @param name  The name of the property
      * @param value The value of the property.
      * @return A created property.
      */
@@ -60,8 +63,8 @@ public interface Property {
     /**
      * Creates a new {@link Property} with the given parameters.
      *
-     * @param name The name of the property
-     * @param value The value of the property.
+     * @param name      The name of the property
+     * @param value     The value of the property.
      * @param signature The signature of the property.
      * @return A created property.
      */

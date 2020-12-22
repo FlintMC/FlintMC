@@ -1,8 +1,8 @@
 package net.flintmc.mcapi.chat.event;
 
-import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 
@@ -21,13 +21,16 @@ public interface ChatReceiveEvent extends ChatMessageEvent, Cancellable {
   ChatComponent getMessage();
 
   /**
-   * Changes the message that will be displayed by the client. This has no effect in the POST phase.
+   * Changes the message that will be displayed by the client. This has no effect in the POST
+   * phase.
    *
    * @param message The new non-null message to be displayed
    */
   void setMessage(ChatComponent message);
 
-  /** Factory for the {@link ChatReceiveEvent}. */
+  /**
+   * Factory for the {@link ChatReceiveEvent}.
+   */
   @AssistedFactory(ChatReceiveEvent.class)
   interface Factory {
 

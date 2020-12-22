@@ -18,7 +18,9 @@ import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
  */
 public interface InventoryOpenEvent extends Event, InventoryEvent {
 
-  /** Factory for the {@link InventoryOpenEvent}. */
+  /**
+   * Factory for the {@link InventoryOpenEvent}.
+   */
   @AssistedFactory(InventoryOpenEvent.class)
   interface Factory {
 

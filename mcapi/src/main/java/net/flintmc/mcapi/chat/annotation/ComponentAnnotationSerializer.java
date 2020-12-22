@@ -2,7 +2,9 @@ package net.flintmc.mcapi.chat.annotation;
 
 import net.flintmc.mcapi.chat.component.ChatComponent;
 
-/** Serializer to map {@link Component} annotations to {@link ChatComponent}s. */
+/**
+ * Serializer to map {@link Component} annotations to {@link ChatComponent}s.
+ */
 public interface ComponentAnnotationSerializer {
 
   /**
@@ -31,7 +33,7 @@ public interface ComponentAnnotationSerializer {
    * <p>If {@code components.length} is 0, {@code def} will be returned.
    *
    * @param components The non-null component annotation to be deserialized
-   * @param def The non-null optional component to be used if {@code components.length} is 0
+   * @param def        The non-null optional component to be used if {@code components.length} is 0
    * @return The new non-null component or {@code def}
    * @see Component#value()
    */
@@ -45,7 +47,7 @@ public interface ComponentAnnotationSerializer {
    * with {@link ComponentSerializer.Factory#legacy()} and returned.
    *
    * @param components The non-null component annotation to be deserialized
-   * @param def The non-null optional string to be used if {@code components.length} is 0
+   * @param def        The non-null optional string to be used if {@code components.length} is 0
    * @return The new non-null component or {@code def}
    * @see Component#value()
    */

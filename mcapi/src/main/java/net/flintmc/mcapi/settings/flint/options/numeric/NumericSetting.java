@@ -1,16 +1,15 @@
 package net.flintmc.mcapi.settings.flint.options.numeric;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.flintmc.framework.config.defval.annotation.DefaultNumber;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplay;
 import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplays;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * The {@link ApplicableSetting} to define a number input in a specified range, the stored type has

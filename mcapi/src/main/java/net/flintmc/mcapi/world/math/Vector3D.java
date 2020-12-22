@@ -54,7 +54,30 @@ public interface Vector3D {
    * @return The square of the distance from this {@link Vector3D} to a specified point.
    */
   default double distanceSq(Vector3D vector) {
-    return this.distanceSq(vector.getX(), vector.getY(), vector.getZ(), true);
+    return this.distanceSq(vector, false);
+  }
+
+  /**
+   * The square of the distance from this {@link Vector3D} to a specified point.
+   *
+   * @param vector The vector of the specified point to be measured against this {@link Vector3D}.
+   * @param useCenter {@code true} if the center should be used, otherwise {@code false}.
+   * @return The square of the distance from this {@link Vector3D} to a specified point.
+   */
+  default double distanceSq(Vector3D vector, boolean useCenter) {
+    return this.distanceSq(vector.getX(), vector.getY(), vector.getZ(), useCenter);
+  }
+
+  /**
+   * The square of the distance from this {@link Vector3D} to a specified point.
+   *
+   * @param x The X coordinate of the specified point to be measured against this {@link Vector3D}.
+   * @param y The Y coordinate of the specified point to be measured against this {@link Vector3D}.
+   * @param z The Z coordinate of the specified point to be measured against this {@link Vector3D}.
+   * @return The square of the distance from this {@link Vector3D} to a specified point.
+   */
+  default double distanceSq(double x, double y, double z) {
+    return this.distanceSq(x, y, z, false);
   }
 
   /**

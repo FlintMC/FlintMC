@@ -36,7 +36,7 @@ public interface Chat {
    *
    * @param message The new non-null message to be displayed
    * @throws IllegalArgumentException If the {@link ChatMessage#getTargetChat()} is not the same as
-   *     this chat
+   *                                  this chat
    */
   void displayChatMessage(ChatMessage message);
 }

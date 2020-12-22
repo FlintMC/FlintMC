@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.settings.game.settings;
 
-/** An enumeration representing tutorial steps. */
+/**
+ * An enumeration representing tutorial steps.
+ */
 public enum TutorialSteps {
   MOVEMENT("movement"),
   FIND_TREE("find_tree"),

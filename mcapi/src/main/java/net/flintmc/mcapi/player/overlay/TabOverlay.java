@@ -2,7 +2,9 @@ package net.flintmc.mcapi.player.overlay;
 
 import net.flintmc.mcapi.chat.component.ChatComponent;
 
-/** Represents the tab overlay */
+/**
+ * Represents the tab overlay
+ */
 public interface TabOverlay {
 
   /**

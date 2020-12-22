@@ -9,16 +9,24 @@ import java.util.Map;
  */
 public enum ChatFormat {
 
-  /** Defines that a chat component will be displayed bold. */
+  /**
+   * Defines that a chat component will be displayed bold.
+   */
   BOLD('l'),
 
-  /** Defines that a chat component will be displayed italic. */
+  /**
+   * Defines that a chat component will be displayed italic.
+   */
   ITALIC('o'),
 
-  /** Defines that a chat component will be underlined. */
+  /**
+   * Defines that a chat component will be underlined.
+   */
   UNDERLINED('n'),
 
-  /** Defines that a chat component will be crossed out. */
+  /**
+   * Defines that a chat component will be crossed out.
+   */
   STRIKETHROUGH('m'),
 
   /**
@@ -45,7 +53,8 @@ public enum ChatFormat {
   }
 
   /**
-   * Retrieves a format by the given format char or {@code null} if no format with that char exists.
+   * Retrieves a format by the given format char or {@code null} if no format with that char
+   * exists.
    *
    * @return The nullable format by the given char
    */

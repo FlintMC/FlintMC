@@ -9,6 +9,7 @@ package net.flintmc.util.commons.consumer;
  */
 @FunctionalInterface
 public interface TriConsumer<A, B, C> {
+
   /**
    * Performs the operation given the specified arguments.
    *

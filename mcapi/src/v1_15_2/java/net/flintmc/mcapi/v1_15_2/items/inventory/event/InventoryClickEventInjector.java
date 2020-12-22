@@ -42,10 +42,10 @@ public class InventoryClickEventInjector {
       className = "net.minecraft.inventory.container.Container",
       methodName = "slotClick",
       parameters = {
-        @Type(reference = int.class),
-        @Type(reference = int.class),
-        @Type(reference = ClickType.class),
-        @Type(reference = PlayerEntity.class)
+          @Type(reference = int.class),
+          @Type(reference = int.class),
+          @Type(reference = ClickType.class),
+          @Type(reference = PlayerEntity.class)
       },
       defaultValue = "net.minecraft.item.ItemStack.EMPTY")
   public HookResult slotClick(
@@ -104,8 +104,8 @@ public class InventoryClickEventInjector {
     }
 
     return this.eventBus
-            .fireEvent(this.clickEventFactory.create(inventory, slot, click), executionTime)
-            .isCancelled()
+        .fireEvent(this.clickEventFactory.create(inventory, slot, click), executionTime)
+        .isCancelled()
         ? HookResult.BREAK
         : HookResult.CONTINUE;
   }
@@ -113,8 +113,8 @@ public class InventoryClickEventInjector {
   private HookResult performHotkeyPress(
       Inventory inventory, int slot, int hotkey, Hook.ExecutionTime executionTime) {
     return this.eventBus
-            .fireEvent(this.hotkeyEventFactory.create(inventory, slot, hotkey), executionTime)
-            .isCancelled()
+        .fireEvent(this.hotkeyEventFactory.create(inventory, slot, hotkey), executionTime)
+        .isCancelled()
         ? HookResult.BREAK
         : HookResult.CONTINUE;
   }

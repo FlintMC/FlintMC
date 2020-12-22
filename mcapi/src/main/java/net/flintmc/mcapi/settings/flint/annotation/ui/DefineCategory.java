@@ -1,22 +1,22 @@
 package net.flintmc.mcapi.settings.flint.annotation.ui;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
  * Sets a category for a specific {@link ApplicableSetting} in a {@link Config}. It can be used on
  * any method or class that is associated with the given value, see {@link
  * ConfigObjectReference#findLastAnnotation(Class)} for more information.
  *
- * <p>If no category with the given {@link #name()} exists, it will be created with the given {@link
+ * <p>If no category with the given {@link #name()} exists, it will be created with the given
+ * {@link
  * #displayName()}, {@link #description()} and {@link #icon()}. If it already exists, it will be
  * used just like it is done with {@link Category}.
  *

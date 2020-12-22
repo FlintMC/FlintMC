@@ -3,7 +3,9 @@ package net.flintmc.mcapi.settings.game.settings;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 
-/** An enumeration representing chat visibility states. */
+/**
+ * An enumeration representing chat visibility states.
+ */
 public enum ChatVisibility {
   @DisplayName(@Component(value = "options.chat.visibility.full", translate = true))
   FULL(),

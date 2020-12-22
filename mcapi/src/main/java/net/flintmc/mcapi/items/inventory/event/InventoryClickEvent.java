@@ -13,7 +13,8 @@ import net.flintmc.mcapi.items.inventory.InventoryController;
 /**
  * This event will be fired whenever the player clicks into the inventory. It will also be fired by
  * {@link InventoryController#performClick(InventoryClick, int)} and in both the PRE and POST
- * phases, but cancellation will only have an effect in the PRE phase.
+ * phases, but cancellation will only have an effect in the PRE phase. In the POST phase, the item
+ * will be the new item after the click has taken effect.
  *
  * @see Subscribe
  */

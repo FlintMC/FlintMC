@@ -3,10 +3,14 @@ package net.flintmc.mcapi.world.math;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents the Minecraft BlockPos. */
+/**
+ * Represents the Minecraft BlockPos.
+ */
 public interface BlockPosition extends Vector3I {
 
-  /** A factory class for the {@link BlockPosition} */
+  /**
+   * A factory class for the {@link BlockPosition}
+   */
   @AssistedFactory(BlockPosition.class)
   interface Factory {
 

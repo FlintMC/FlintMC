@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-/** I/O utility class for mapping parser. */
+/**
+ * I/O utility class for mapping parser.
+ */
 public final class IOUtils {
-  private IOUtils() {}
+
+  private IOUtils() {
+  }
 
   /**
    * Read an input stream to string.

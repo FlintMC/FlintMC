@@ -20,16 +20,24 @@ public interface GameSettingsStorageEvent extends Event {
    */
   State getState();
 
-  /** An enumeration that representing all states for the configuration. */
+  /**
+   * An enumeration that representing all states for the configuration.
+   */
   enum State {
 
-    /** When the configuration is loaded. */
+    /**
+     * When the configuration is loaded.
+     */
     LOAD,
-    /** When the configuration is saved. */
+    /**
+     * When the configuration is saved.
+     */
     SAVE
   }
 
-  /** A factory class for the {@link GameSettingsStorageEvent}. */
+  /**
+   * A factory class for the {@link GameSettingsStorageEvent}.
+   */
   @AssistedFactory(GameSettingsStorageEvent.class)
   interface Factory {
 

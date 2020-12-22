@@ -40,29 +40,37 @@ public interface ServerListUpdateEvent extends Event, Cancellable {
    */
   Type getType();
 
-  /** All types why a {@link ServerListUpdateEvent} could be fired. */
+  /**
+   * All types why a {@link ServerListUpdateEvent} could be fired.
+   */
   enum Type {
-    /** Fired when an entry is added to the {@link ServerList}. */
+    /**
+     * Fired when an entry is added to the {@link ServerList}.
+     */
     ADD,
     /**
      * Fired when an entry is updated in the {@link ServerList}, e.g. when two entries are swapped,
      * two updates will be fired for each of them.
      */
     UPDATE,
-    /** Fired when an entry is removed from the {@link ServerList}. */
+    /**
+     * Fired when an entry is removed from the {@link ServerList}.
+     */
     REMOVE
   }
 
-  /** Factory for the {@link ServerListUpdateEvent}. */
+  /**
+   * Factory for the {@link ServerListUpdateEvent}.
+   */
   @AssistedFactory(ServerListUpdateEvent.class)
   interface Factory {
 
     /**
      * Creates a new {@link ServerListUpdateEvent}.
      *
-     * @param index The index of the entry that has been updated, always >= 0
+     * @param index      The index of the entry that has been updated, always >= 0
      * @param serverData The non-null data that has been updated
-     * @param type The non-null type of the new event
+     * @param type       The non-null type of the new event
      * @return The new non-null {@link ServerListUpdateEvent}
      */
     ServerListUpdateEvent create(

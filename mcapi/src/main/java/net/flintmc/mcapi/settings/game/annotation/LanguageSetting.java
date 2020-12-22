@@ -1,13 +1,12 @@
 package net.flintmc.mcapi.settings.game.annotation;
 
-import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
-import net.flintmc.mcapi.settings.game.configuration.AccessibilityConfiguration;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
+import net.flintmc.mcapi.settings.game.configuration.AccessibilityConfiguration;
 
 /**
  * The {@link ApplicableSetting} to define a setting to show all available languages, the stored
@@ -26,4 +25,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ApplicableSetting(types = String.class, name = "language")
-public @interface LanguageSetting {}
+public @interface LanguageSetting {
+
+}

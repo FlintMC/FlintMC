@@ -1,23 +1,23 @@
 package net.flintmc.util.session.launcher;
 
+import java.io.IOException;
 import javassist.CtClass;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.event.MinecraftInitializeEvent;
 import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 
-import java.io.IOException;
-
-/** Contains the reader and writer for the launcher_profiles.json for the Minecraft launcher. */
+/**
+ * Contains the reader and writer for the launcher_profiles.json for the Minecraft launcher.
+ */
 public interface LauncherProfileResolver {
 
   /**
    * Registers a new serializer for the {@link LauncherProfiles} with the specified version. This
-   * serializer will be called by {@link #loadProfiles()} and {@link
-   * #storeProfiles(LauncherProfiles)} if the version in the {@link LauncherProfiles} matches the
-   * version of this serializer.
+   * serializer will be called by {@link #loadProfiles()} and {@link #storeProfiles(LauncherProfiles)}
+   * if the version in the {@link LauncherProfiles} matches the version of this serializer.
    *
-   * @param version The version of the serializer
+   * @param version         The version of the serializer
    * @param serializerClass The non-null class of the serializer which should be called
    * @throws IllegalArgumentException If a serializer for the given version is already registered
    */
@@ -29,7 +29,7 @@ public interface LauncherProfileResolver {
    *
    * @param version The version of the serializer
    * @return The serializer or {@code null} if no serializer for the given version has been
-   *     registered
+   * registered
    */
   LauncherProfileSerializer getSerializer(int version);
 
@@ -47,7 +47,7 @@ public interface LauncherProfileResolver {
    * Subscribe.Phase#POST} phase, otherwise it may throw unspecified exceptions.
    *
    * @return The launcher profiles or {@code null} if an error occurred (e.g. if the file doesn't
-   *     exist, if there is no serializer for the specified version registered)
+   * exist, if there is no serializer for the specified version registered)
    * @throws IOException If an I/O error occurred
    */
   LauncherProfiles loadProfiles() throws IOException;
@@ -59,7 +59,7 @@ public interface LauncherProfileResolver {
    * {@link Subscribe.Phase#POST} phase, otherwise it may throw unspecified exceptions.
    *
    * @param profiles The non-null profiles to be written
-   * @throws IOException If an I/O error occurred
+   * @throws IOException           If an I/O error occurred
    * @throws IllegalStateException If there is no serializer registered for the specified version
    */
   void storeProfiles(LauncherProfiles profiles) throws IOException;

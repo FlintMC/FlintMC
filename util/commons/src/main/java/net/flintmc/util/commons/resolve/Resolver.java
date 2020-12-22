@@ -10,6 +10,7 @@ import java.util.function.Function;
  */
 @FunctionalInterface
 public interface Resolver<T, R> extends Function<T, R> {
+
   /**
    * Resolves the given value to another value.
    *

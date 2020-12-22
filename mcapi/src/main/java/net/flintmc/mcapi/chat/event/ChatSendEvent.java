@@ -1,8 +1,8 @@
 package net.flintmc.mcapi.chat.event;
 
-import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /**
@@ -28,7 +28,9 @@ public interface ChatSendEvent extends ChatMessageEvent, Cancellable {
    */
   void setMessage(String message);
 
-  /** Factory for the {@link ChatSendEvent}. */
+  /**
+   * Factory for the {@link ChatSendEvent}.
+   */
   @AssistedFactory(ChatSendEvent.class)
   interface Factory {
 

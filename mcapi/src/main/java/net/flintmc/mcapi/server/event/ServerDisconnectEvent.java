@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.server.event;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -7,8 +8,6 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.ServerController;
-
-import javax.annotation.Nullable;
 
 /**
  * This event will be fired whenever the user disconnects from a server. It doesn't matter whether
@@ -25,7 +24,9 @@ import javax.annotation.Nullable;
  */
 public interface ServerDisconnectEvent extends Event, ServerAddressEvent, DirectionalEvent {
 
-  /** Factory for the {@link ServerDisconnectEvent}. */
+  /**
+   * Factory for the {@link ServerDisconnectEvent}.
+   */
   @AssistedFactory(ServerDisconnectEvent.class)
   interface Factory {
 
@@ -33,7 +34,7 @@ public interface ServerDisconnectEvent extends Event, ServerAddressEvent, Direct
      * Creates a new {@link ServerDisconnectEvent} with the given address.
      *
      * @param address The address for the new event, may be {@code null} if the event happened in
-     *     singleplayer
+     *                singleplayer
      * @return The new event
      */
     ServerDisconnectEvent create(@Assisted("address") @Nullable ServerAddress address);

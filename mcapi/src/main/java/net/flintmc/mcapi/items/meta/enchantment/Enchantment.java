@@ -4,7 +4,9 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 
-/** An Enchantment of an Item. */
+/**
+ * An Enchantment of an Item.
+ */
 public interface Enchantment {
 
   /**
@@ -29,14 +31,16 @@ public interface Enchantment {
    */
   ChatComponent getDisplayName();
 
-  /** Factory for {@link Enchantment}. */
+  /**
+   * Factory for {@link Enchantment}.
+   */
   @AssistedFactory(Enchantment.class)
   interface Factory {
 
     /**
      * Creates a new enchantment with the given type and level.
      *
-     * @param type The non-null type of the new enchantment
+     * @param type  The non-null type of the new enchantment
      * @param level The level of the new enchantment, has to be at least 1
      * @return The new non-null enchantment
      */

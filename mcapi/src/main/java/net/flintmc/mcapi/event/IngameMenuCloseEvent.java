@@ -13,7 +13,9 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
  */
 public interface IngameMenuCloseEvent extends Event {
 
-  /** Factory for the {@link IngameMenuCloseEvent}. */
+  /**
+   * Factory for the {@link IngameMenuCloseEvent}.
+   */
   @AssistedFactory(IngameMenuCloseEvent.class)
   interface Factory {
 

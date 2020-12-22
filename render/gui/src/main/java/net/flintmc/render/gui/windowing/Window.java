@@ -41,6 +41,8 @@ public interface Window {
    *
    * <p>Note that this might or might not take effect immediately, but the window should be
    * considered invalid after this method has been invoked!
+   *
+   * @throws IllegalStateException If the window is already closed
    */
   void close();
 
@@ -49,6 +51,7 @@ public interface Window {
    * rendering chain.
    *
    * @param renderer The renderer to add to this window
+   * @throws IllegalStateException If the window is already closed
    */
   void addRenderer(WindowRenderer renderer);
 
@@ -58,6 +61,7 @@ public interface Window {
    * @param renderer The renderer to remove
    * @return {@code true} if the renderer had been added and was removed now, {@code false}
    *     otherwise
+   * @throws IllegalStateException If the window is already closed
    */
   boolean removeRenderer(WindowRenderer renderer);
 
@@ -65,6 +69,7 @@ public interface Window {
    * Tests whether the window is currently focused.
    *
    * @return {@code true} if the window is focused currently, {@code false} otherwise
+   * @throws IllegalStateException If the window is already closed
    */
   boolean isFocused();
 
@@ -73,8 +78,18 @@ public interface Window {
    *
    * @param key The non-null key to check for
    * @return {@code true} if the key is pressed, {@code false otherwise}
+   * @throws IllegalStateException If the window is already closed
+   * @see #isClosed()
    */
   boolean isKeyPressed(Key key);
+
+  /**
+   * Retrieves whether this window has been closed. If it has been closed, no more operations should
+   * be called to this window, otherwise they will end in errors.
+   *
+   * @return {@code true} if it has been closed and should no more be used, {@code false} otherwise
+   */
+  boolean isClosed();
 
   /** Factory for {@link Window}s. */
   @AssistedFactory(Window.class)

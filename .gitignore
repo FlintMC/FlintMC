@@ -34,8 +34,9 @@ hs_err_pid*
 .idea/**/dictionaries
 .idea/**/shelf
 .idea/**/misc.xml
-.idea/codeStyles/
 .idea/**/discord.xml
+.idea/**/encodings.xml
+.idea/codeStyles/
 .idea/sonarlint/
 
 # Generated files

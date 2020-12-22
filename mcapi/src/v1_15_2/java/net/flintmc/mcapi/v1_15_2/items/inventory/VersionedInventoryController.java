@@ -1,8 +1,13 @@
 package net.flintmc.mcapi.v1_15_2.items.inventory;
 
+import static net.flintmc.mcapi.items.inventory.InventoryDimension.other;
+import static net.flintmc.mcapi.items.inventory.InventoryDimension.rect;
+
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
@@ -11,7 +16,11 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.internal.items.inventory.DefaultInventoryController;
 import net.flintmc.mcapi.internal.items.inventory.InternalInventoryMapping;
 import net.flintmc.mcapi.items.ItemRegistry;
-import net.flintmc.mcapi.items.inventory.*;
+import net.flintmc.mcapi.items.inventory.Inventory;
+import net.flintmc.mcapi.items.inventory.InventoryClick;
+import net.flintmc.mcapi.items.inventory.InventoryController;
+import net.flintmc.mcapi.items.inventory.InventoryDimension;
+import net.flintmc.mcapi.items.inventory.InventoryType;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,12 +30,6 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.DispenserContainer;
 import net.minecraft.inventory.container.PlayerContainer;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static net.flintmc.mcapi.items.inventory.InventoryDimension.other;
-import static net.flintmc.mcapi.items.inventory.InventoryDimension.rect;
 
 @Singleton
 @Implement(value = InventoryController.class, version = "1.15.2")
@@ -149,8 +152,8 @@ public class VersionedInventoryController extends DefaultInventoryController {
     InventoryDimension dimension =
         type.isCustomizableDimensions()
             ? mapping.createDimension(
-                container.getInventory().size()
-                    - Minecraft.getInstance().player.inventory.mainInventory.size())
+            container.getInventory().size()
+                - Minecraft.getInstance().player.inventory.mainInventory.size())
             : type.getDefaultDimension();
 
     ChatComponent title = type.getDefaultTitle();

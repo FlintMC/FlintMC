@@ -39,7 +39,8 @@ public interface WorldType {
   /**
    * Changes whether the world type has a custom configuration.
    *
-   * @param customConfigurations {@code true} if the world type has a custom configuration, otherwise {@code false}.
+   * @param customConfigurations {@code true} if the world type has a custom configuration,
+   *                             otherwise {@code false}.
    */
   void setCustomConfigurations(boolean customConfigurations);
 
@@ -102,8 +103,8 @@ public interface WorldType {
      * @return A created world type.
      */
     WorldType create(
-            @Assisted("identifier") int identifier,
-            @Assisted("name") String name);
+        @Assisted("identifier") int identifier,
+        @Assisted("name") String name);
 
     /**
      * Creates a new {@link WorldType} with the given parameters.
@@ -114,9 +115,9 @@ public interface WorldType {
      * @return A created world type.
      */
     WorldType create(
-            @Assisted("identifier") int identifier,
-            @Assisted("name") String name,
-            @Assisted("version") int version);
+        @Assisted("identifier") int identifier,
+        @Assisted("name") String name,
+        @Assisted("version") int version);
 
     /**
      * Creates a new {@link WorldType} with the given parameters.
@@ -128,10 +129,10 @@ public interface WorldType {
      * @return A created world type.
      */
     WorldType create(
-            @Assisted("identifier") int identifier,
-            @Assisted("name") String name,
-            @Assisted("serializedIdentifier") String serializedIdentifier,
-            @Assisted("version") int version);
+        @Assisted("identifier") int identifier,
+        @Assisted("name") String name,
+        @Assisted("serializedIdentifier") String serializedIdentifier,
+        @Assisted("version") int version);
 
     /**
      * Creates a new {@link WorldType} with the given parameters.
@@ -140,21 +141,25 @@ public interface WorldType {
      * @param name                 The name for the world type.
      * @param serializedIdentifier The serialized identifier for the world type.
      * @param version              The version for the world type.
-     * @param canBeCreated         {@code true} if the world type can be created, otherwise {@code false}.
-     * @param versioned            {@code true} if the world type is versioned, otherwise {@code false}.
-     * @param hasInfoNotice        {@code true} if the world type has an information notice, otherwise {@code false}.
-     * @param customConfiguration  {@code true} if the world type has a custom configuration, otherwise {@code false}.
+     * @param canBeCreated         {@code true} if the world type can be created, otherwise {@code
+     *                             false}.
+     * @param versioned            {@code true} if the world type is versioned, otherwise {@code
+     *                             false}.
+     * @param hasInfoNotice        {@code true} if the world type has an information notice,
+     *                             otherwise {@code false}.
+     * @param customConfiguration  {@code true} if the world type has a custom configuration,
+     *                             otherwise {@code false}.
      * @return A created world type.
      */
     WorldType create(
-            @Assisted("identifier") int identifier,
-            @Assisted("name") String name,
-            @Assisted("serializedIdentifier") String serializedIdentifier,
-            @Assisted("version") int version,
-            @Assisted("canBeCreated") boolean canBeCreated,
-            @Assisted("versioned") boolean versioned,
-            @Assisted("hasInfoNotice") boolean hasInfoNotice,
-            @Assisted("customConfiguration") boolean customConfiguration);
+        @Assisted("identifier") int identifier,
+        @Assisted("name") String name,
+        @Assisted("serializedIdentifier") String serializedIdentifier,
+        @Assisted("version") int version,
+        @Assisted("canBeCreated") boolean canBeCreated,
+        @Assisted("versioned") boolean versioned,
+        @Assisted("hasInfoNotice") boolean hasInfoNotice,
+        @Assisted("customConfiguration") boolean customConfiguration);
   }
 
 }

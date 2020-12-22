@@ -1,11 +1,10 @@
 package net.flintmc.mcapi.chat.controller;
 
+import java.util.List;
+import java.util.UUID;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.controller.filter.ChatFilter;
 import net.flintmc.mcapi.chat.controller.filter.FilterableChatMessage;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * This class manages the whole chat, it allows the usage of multiple chat windows and filters for
@@ -40,7 +39,7 @@ public interface ChatController {
    *
    * @param component The non-null component to be displayed
    * @return {@code true} if the message will be displayed in the chat or {@code false} if it has
-   *     been blocked by a {@link ChatFilter}.
+   * been blocked by a {@link ChatFilter}.
    */
   boolean displayChatMessage(ChatComponent component);
 
@@ -48,11 +47,11 @@ public interface ChatController {
    * Displays the message into the chat. Before it is displayed, all registered filters will be
    * applied.
    *
-   * @param component The non-null component to be displayed
+   * @param component      The non-null component to be displayed
    * @param senderUniqueId The non-null UUID of the sender or a UUID with 0 as the most- and
-   *     leastSignificantBits if this message doesn't have a sender
+   *                       leastSignificantBits if this message doesn't have a sender
    * @return {@code true} if the message will be displayed in the chat or {@code false} if it has
-   *     been blocked by a {@link ChatFilter}.
+   * been blocked by a {@link ChatFilter}.
    */
   boolean displayChatMessage(ChatComponent component, UUID senderUniqueId);
 

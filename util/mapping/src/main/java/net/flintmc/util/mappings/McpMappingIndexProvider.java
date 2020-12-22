@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -13,6 +12,7 @@ import java.util.Map;
 
 @Singleton
 public class McpMappingIndexProvider {
+
   private static final String INDEX_URL = "https://dl.labymod.net/mappings/index_new.json";
   private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
@@ -28,7 +28,8 @@ public class McpMappingIndexProvider {
     connection.connect();
 
     try (InputStreamReader reader = new InputStreamReader(connection.getInputStream())) {
-      return gson.fromJson(reader, new TypeToken<Map<String, Version>>() {}.getType());
+      return gson.fromJson(reader, new TypeToken<Map<String, Version>>() {
+      }.getType());
     }
   }
 }

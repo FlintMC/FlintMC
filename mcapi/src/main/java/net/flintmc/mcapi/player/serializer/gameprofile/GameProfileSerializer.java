@@ -8,4 +8,6 @@ import net.flintmc.mcapi.player.serializer.Serializer;
  *
  * @param <T> The type to serialize or deserialize
  */
-public interface GameProfileSerializer<T> extends Serializer<T, GameProfile> {}
+public interface GameProfileSerializer<T> extends Serializer<T, GameProfile> {
+
+}

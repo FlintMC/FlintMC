@@ -11,7 +11,9 @@ import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
 import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
 import net.flintmc.mcapi.settings.game.settings.NarratorStatus;
 
-/** Represents the chat configuration. */
+/**
+ * Represents the chat configuration.
+ */
 @DefineCategory(
     name = "minecraft.settings.chat",
     displayName = @Component(value = "options.chat.title", translate = true))

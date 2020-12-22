@@ -3,7 +3,9 @@ package net.flintmc.mcapi.player;
 import net.flintmc.mcapi.entity.EntityNotLoadedException;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
 
-/** Represents the Minecraft abstract client player. */
+/**
+ * Represents the Minecraft abstract client player.
+ */
 public interface BaseClientPlayer extends PlayerSkinProfile {
 
   /**
@@ -11,7 +13,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @return The elytra pitch.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getElytraPitch();
 
@@ -20,7 +22,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @param elytraPitch The new elytra pitch.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setElytraPitch(float elytraPitch);
 
@@ -29,7 +31,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @return The elytra yaw.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getElytraYaw();
 
@@ -38,7 +40,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @param elytraYaw The new elytra yaw.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setElytraYaw(float elytraYaw);
 
@@ -47,7 +49,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @return The elytra roll.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getElytraRoll();
 
@@ -56,7 +58,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @param elytraRoll The new elytra roll.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   void setElytraRoll(float elytraRoll);
 
@@ -65,7 +67,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @return {@code true} if the entity is a spectator, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isSpectator();
 
@@ -74,7 +76,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @return {@code true} if the entity is in the creative mode, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean isCreative();
 
@@ -83,7 +85,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @return {@code true} if the player has network information, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   boolean hasPlayerInfo();
 
@@ -92,7 +94,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @return The player's network information.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   NetworkPlayerInfo getNetworkPlayerInfo();
 
@@ -101,7 +103,7 @@ public interface BaseClientPlayer extends PlayerSkinProfile {
    *
    * @return The FOV modifier.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
-   *     client
+   *                                  client
    */
   float getFovModifier();
 }

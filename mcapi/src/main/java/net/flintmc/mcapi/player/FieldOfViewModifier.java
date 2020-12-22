@@ -1,6 +1,8 @@
 package net.flintmc.mcapi.player;
 
-/** Represents the fov modifier of the player. */
+/**
+ * Represents the fov modifier of the player.
+ */
 public interface FieldOfViewModifier {
 
   /**

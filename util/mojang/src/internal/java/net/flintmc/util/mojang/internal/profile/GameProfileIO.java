@@ -2,17 +2,16 @@ package net.flintmc.util.mojang.internal.profile;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.UUID;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.property.Property;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 import net.flintmc.util.mojang.internal.cache.DataStreamHelper;
 import net.flintmc.util.mojang.internal.cache.object.CacheIO;
 import net.flintmc.util.mojang.internal.cache.object.CachedObjectIO;
-
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.util.UUID;
 
 @Singleton
 @CacheIO

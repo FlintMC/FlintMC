@@ -1,11 +1,12 @@
 package net.flintmc.mcapi.nbt;
 
+import java.io.IOException;
 import net.flintmc.mcapi.nbt.io.read.NBTDataInputStream;
 import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
-import java.io.IOException;
-
-/** The basic representation of a NBT tag. */
+/**
+ * The basic representation of a NBT tag.
+ */
 public interface NBT {
 
   /**

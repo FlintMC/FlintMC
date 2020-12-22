@@ -1,13 +1,21 @@
 package net.flintmc.mcapi.world.type;
 
-/** An enumeration of all available dimensions. */
+/**
+ * An enumeration of all available dimensions.
+ */
 public enum Dimension {
 
-  /** The overworld is the dimension in which all player begin their. */
+  /**
+   * The overworld is the dimension in which all player begin their.
+   */
   OVERWORLD(0),
-  /** The nether is a dangerous hell-like dimension. */
+  /**
+   * The nether is a dangerous hell-like dimension.
+   */
   NETHER(-1),
-  /** The end is a dark, space-like dimension. */
+  /**
+   * The end is a dark, space-like dimension.
+   */
   THE_END(1);
 
   private final int id;

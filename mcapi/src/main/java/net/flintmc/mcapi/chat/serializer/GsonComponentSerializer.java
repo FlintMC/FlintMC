@@ -7,7 +7,9 @@ import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
 
-/** Serializer for components which uses {@link Gson} for serialization and deserialization. */
+/**
+ * Serializer for components which uses {@link Gson} for serialization and deserialization.
+ */
 public interface GsonComponentSerializer extends ComponentSerializer {
 
   /**
@@ -23,7 +25,7 @@ public interface GsonComponentSerializer extends ComponentSerializer {
    * #getHoverContentSerializer(HoverEvent.Action)} with the given action.
    *
    * @param component The non-null component to be deserialized
-   * @param action The non-null action of the content in the given component
+   * @param action    The non-null action of the content in the given component
    * @return A new {@link HoverContent} or {@code null} if an invalid component has been provided
    * @throws UnsupportedOperationException If no serializer for the given action was registered
    * @see HoverContentSerializer#deserialize(ChatComponent, ComponentBuilder.Factory, Gson)
@@ -47,7 +49,7 @@ public interface GsonComponentSerializer extends ComponentSerializer {
    * Registers a new {@link HoverContentSerializer} for the given action which will be used to
    * serialize {@link HoverContent}s into {@link ChatComponent}s.
    *
-   * @param action The non-null action to use this serializer for
+   * @param action     The non-null action to use this serializer for
    * @param serializer The non-null serializer to be registered
    * @throws IllegalArgumentException If a serializer for the given action is already registered
    */

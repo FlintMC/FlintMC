@@ -1,7 +1,6 @@
 package net.flintmc.mcapi.items.inventory;
 
 import com.google.common.base.Preconditions;
-
 import java.util.Objects;
 
 public class InventoryDimension {
@@ -20,10 +19,10 @@ public class InventoryDimension {
    * Creates a new inventory dimension that represents a rectangle inventory like chests and
    * dispensers.
    *
-   * @param width The width of the inventory in slots
+   * @param width  The width of the inventory in slots
    * @param height The height of the inventory in slots
    * @return The new non-null dimension with the given width and height and width * height and the
-   *     number of slots
+   * number of slots
    * @throws IllegalArgumentException If the width is zero or lower
    * @throws IllegalArgumentException If the height is zero or lower
    */
@@ -89,8 +88,12 @@ public class InventoryDimension {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     InventoryDimension that = (InventoryDimension) o;
     return width == that.width && height == that.height && slotCount == that.slotCount;
   }

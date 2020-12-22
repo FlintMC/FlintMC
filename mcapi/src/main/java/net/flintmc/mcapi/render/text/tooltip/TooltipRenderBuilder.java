@@ -39,7 +39,7 @@ public interface TooltipRenderBuilder {
    * Draws the values that have been set in this builder on the screen and resets this builder to be
    * re-used for the next rendering.
    *
-   * @throws NullPointerException If no text or null has been set
+   * @throws NullPointerException     If no text or null has been set
    * @throws IllegalArgumentException If no position and/or an empty text has been set
    * @see TooltipRenderer#renderTooltip(float, float, String)
    */
