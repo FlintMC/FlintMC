@@ -23,6 +23,7 @@ public class DefaultConfigImplementer implements ConfigImplementer {
     this.pool = pool;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void implementParsedConfig(CtClass implementation, String name)
       throws NotFoundException, CannotCompileException {

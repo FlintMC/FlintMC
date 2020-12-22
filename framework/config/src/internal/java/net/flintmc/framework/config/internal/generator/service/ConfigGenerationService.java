@@ -25,10 +25,11 @@ public class ConfigGenerationService implements ServiceHandler<Config> {
   private final ConfigGenerator generator;
 
   @Inject
-  public ConfigGenerationService(ConfigGenerator generator) {
+  private ConfigGenerationService(ConfigGenerator generator) {
     this.generator = generator;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void discover(AnnotationMeta<Config> meta) throws ServiceNotFoundException {
     Identifier<CtClass> identifier = meta.getIdentifier();

@@ -39,11 +39,13 @@ public class DefaultConfigSerializationService
     this.handlers = new HashMap<>();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean hasSerializer(Class<?> interfaceType) {
     return this.getSerializer(interfaceType) != null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean hasSerializer(CtClass interfaceType) {
     for (Map.Entry<Class<?>, ConfigSerializationHandler<?>> entry : this.handlers.entrySet()) {
@@ -65,6 +67,7 @@ public class DefaultConfigSerializationService
     return false;
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings("unchecked")
   public <T> ConfigSerializationHandler<T> getSerializer(Class<T> interfaceType) {
@@ -77,24 +80,28 @@ public class DefaultConfigSerializationService
     return null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public <T> void registerSerializer(
       Class<T> interfaceType, ConfigSerializationHandler<T> handler) {
     this.handlers.put(interfaceType, handler);
   }
 
+  /** {@inheritDoc} */
   @Override
   public <T> JsonElement serialize(Class<T> interfaceType, T value) {
     ConfigSerializationHandler<T> handler = this.getSerializer(interfaceType);
     return handler != null ? handler.serialize(value) : null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public <T> T deserialize(Class<T> interfaceType, JsonElement value) {
     ConfigSerializationHandler<T> handler = this.getSerializer(interfaceType);
     return handler != null ? handler.deserialize(value) : null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public JsonElement serializeWithType(Object value) {
     Class<?> serializable = this.getSerializableType(value);
@@ -138,6 +145,7 @@ public class DefaultConfigSerializationService
     return this.hasSerializer(ifc) ? ifc : null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object deserializeWithType(JsonElement value) {
     if (value.isJsonPrimitive()) {
@@ -186,6 +194,7 @@ public class DefaultConfigSerializationService
     return serializer.deserialize(element);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void discover(AnnotationMeta<ConfigSerializer> meta) {
     Class<?> interfaceType = meta.getAnnotation().value();

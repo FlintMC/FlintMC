@@ -1,5 +1,6 @@
 package net.flintmc.mcapi.internal.potion;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class DefaultPotionRegister implements PotionRegister {
   private final Map<ResourceLocation, StatusEffect> effects;
   private final Map<ResourceLocation, Potion> potions;
 
+  @Inject
   private DefaultPotionRegister() {
     this.effects = new HashMap<>();
     this.potions = new HashMap<>();

@@ -90,16 +90,19 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
         TimeUnit.SECONDS);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getName() {
     return NAME;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void write(ParsedConfig config) {
     this.pendingWrites.put(config.getClass(), config);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void read(ParsedConfig config) {
     ConfigStorageEvent event = this.eventFactory.create(ConfigStorageEvent.Type.READ, config);
@@ -112,6 +115,7 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void registerStorage(ConfigStorage storage) throws IllegalStateException {
     if (!storage.getClass().isAnnotationPresent(StoragePriority.class)) {

@@ -26,16 +26,19 @@ public class ComparableConfigStorage implements Comparable<ComparableConfigStora
     return Integer.compare(this.priority, o.priority);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getName() {
     return this.wrapped.getName();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void write(ParsedConfig config) {
     this.wrapped.write(config);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void read(ParsedConfig config) {
     this.wrapped.read(config);

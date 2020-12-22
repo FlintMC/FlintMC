@@ -63,8 +63,8 @@ public class DefaultVector3I implements Vector3I {
   public double distanceSq(double x, double y, double z, boolean useCenter) {
     double center = useCenter ? 0.5D : 0.0D;
     double distanceX = (double) this.getX() + center - x;
-    double distanceY = (double) this.getX() + center - y;
-    double distanceZ = (double) this.getX() + center - z;
+    double distanceY = (double) this.getY() + center - y;
+    double distanceZ = (double) this.getZ() + center - z;
     return distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ;
   }
 

@@ -8,7 +8,7 @@ import net.flintmc.framework.config.defval.annotation.DefaultString;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
-import net.flintmc.mcapi.settings.flint.annotation.ui.Icon;
+import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 
 /**

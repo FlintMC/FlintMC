@@ -105,41 +105,49 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.defaultValue = defaultValue;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Class<?> getConfigBaseClass() {
     return this.configBaseClass;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getKey() {
     return this.key;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getLastName() {
     return this.pathKeys[this.pathKeys.length - 1];
   }
 
+  /** {@inheritDoc} */
   @Override
   public String[] getPathKeys() {
     return this.pathKeys;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Class<?> getDeclaringClass() {
     return this.declaringClass;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ParsedConfig getConfig() {
     return this.config;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Type getSerializedType() {
     return this.serializedType;
   }
 
+  /** {@inheritDoc} */
   @Override
   public <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType) {
     if (this.lastAnnotations.containsKey(annotationType)) {
@@ -160,6 +168,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     return annotation;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<Annotation> findAllAnnotations() {
     if (this.allAnnotations != null) {
@@ -201,6 +210,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean appliesTo(ConfigStorage storage) {
     String name = storage.getName();
@@ -232,16 +242,19 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     return true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object getDefaultValue() {
     return this.defaultValue;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object getValue() {
     return this.invoker.getValue(this.config);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setValue(Object value) {
     Object previousValue = this.getValue();
