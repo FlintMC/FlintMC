@@ -1,5 +1,5 @@
 plugins {
-    id("net.flintmc.flint-gradle-plugin")
+    id("net.flintmc.flint-gradle")
 }
 
 fun RepositoryHandler.flintRepository() {
