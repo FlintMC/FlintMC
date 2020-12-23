@@ -6,7 +6,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.math.Vector3I;
 
-/** Default implementation of {@link Vector3I}. */
+/**
+ * Default implementation of {@link Vector3I}.
+ */
 @Implement(Vector3D.class)
 public class DefaultVector3D implements Vector3D {
 
@@ -32,25 +34,33 @@ public class DefaultVector3D implements Vector3D {
     this(vector.getX(), vector.getY(), vector.getZ(), vector3DFactory);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public double getX() {
     return this.x;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public double getY() {
     return this.y;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public double getZ() {
     return this.z;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Vector3D crossProduct(Vector3D vector) {
     return this.vector3DFactory.create(
@@ -59,17 +69,21 @@ public class DefaultVector3D implements Vector3D {
         this.getX() * vector.getY() - this.getY() * vector.getX());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public double distanceSq(double x, double y, double z, boolean useCenter) {
     double center = useCenter ? 0.5D : 0.0D;
     double distanceX = this.getX() + center - x;
-    double distanceY = this.getX() + center - y;
-    double distanceZ = this.getX() + center - z;
+    double distanceY = this.getY() + center - y;
+    double distanceZ = this.getZ() + center - z;
     return distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int manhattanDistance(Vector3D vector) {
     float absX = (float) Math.abs(vector.getX() - this.getX());
@@ -78,13 +92,17 @@ public class DefaultVector3D implements Vector3D {
     return (int) (absX + absY + absZ);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Vector3D multiply(Vector3D vector) {
     return this.multiply(vector.getX(), vector.getY(), vector.getZ());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Vector3D multiply(double factorX, double factorY, double factorZ) {
     return this.vector3DFactory.create(
