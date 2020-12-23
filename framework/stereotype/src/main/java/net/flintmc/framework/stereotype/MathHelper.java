@@ -36,10 +36,10 @@ public final class MathHelper {
    */
   public static double wrapDegrees180(double value) {
     double degrees = value % 360;
+
     if (degrees >= 180) {
       degrees -= 360;
     }
-
     if (degrees < -180) {
       degrees += 360;
     }

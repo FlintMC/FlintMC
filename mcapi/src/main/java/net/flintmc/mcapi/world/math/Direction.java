@@ -56,6 +56,8 @@ public enum Direction {
       new Direction.AxisDirection[]{AxisDirection.X_POSITIVE, AxisDirection.Z_POSITIVE},
       InjectionHolder.getInjectedInstance(Vector3D.Factory.class).create(1, 0, 1));
 
+  private static final Direction[] DIRECTIONS = Direction.values();
+
   private final String oppositeDirection;
   private final String name;
   private final String symbol;
@@ -93,11 +95,15 @@ public enum Direction {
    * @return The direction or {@code null} if the degrees are not in range from 0 to 360
    */
   public static Direction getDirectionByDegrees(double degrees) {
-    Direction[] directions = Direction.values();
-    int directionIndex = (int) (degrees / 45.1);
+    for (Direction direction : DIRECTIONS) {
+      int index = direction.ordinal();
 
-    if (directionIndex >= 0 && directionIndex < directions.length) {
-      return directions[directionIndex];
+      int startDegrees = index * 45;
+      int endDegrees = startDegrees + 45;
+
+      if (degrees >= startDegrees && degrees <= endDegrees) {
+        return direction;
+      }
     }
 
     return null;
