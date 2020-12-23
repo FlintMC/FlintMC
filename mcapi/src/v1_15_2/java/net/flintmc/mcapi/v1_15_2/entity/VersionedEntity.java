@@ -345,7 +345,7 @@ public class VersionedEntity implements Entity {
    */
   @Override
   public Direction getDirection() {
-    return Direction.getDirectionByYaw(this.getYaw());
+    return Direction.fromAngle(this.getYaw());
   }
 
   /**

@@ -27,6 +27,16 @@ public final class MathHelper {
     return number < minimum ? minimum : Math.min(number, maximum);
   }
 
+  /**
+   * Floors a double value to an int.
+   *
+   * @param value The double value
+   * @return The floored value as an int
+   */
+  public static int floor(double value) {
+    int integerValue = (int) value;
+    return value < integerValue ? integerValue - 1 : integerValue;
+  }
 
   /**
    * Wraps a value to degrees ranging from -180 to 180.

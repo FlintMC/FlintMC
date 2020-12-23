@@ -78,35 +78,16 @@ public enum Direction {
   }
 
   /**
-   * Retrieves the direction by a yaw rotation value
+   * Retrieves the direction by an angle
    *
-   * @param yaw The yaw rotation value
-   * @return The direction retrieved from the yaw rotation value
+   * @param angle The angle
+   * @return The direction retrieved from the angle
    */
-  public static Direction getDirectionByYaw(float yaw) {
-    double degrees = MathHelper.wrapDegrees360(yaw);
-    return getDirectionByDegrees(degrees);
-  }
+  public static Direction fromAngle(double angle) {
+    int rightAngle = MathHelper.floor(angle / 45 + 0.5) & 7;
+    int index = Math.abs(rightAngle % DIRECTIONS.length);
 
-  /**
-   * Retrieves the direction by degrees, ranging from 0 to 360.
-   *
-   * @param degrees The degrees
-   * @return The direction or {@code null} if the degrees are not in range from 0 to 360
-   */
-  public static Direction getDirectionByDegrees(double degrees) {
-    for (Direction direction : DIRECTIONS) {
-      int index = direction.ordinal();
-
-      int startDegrees = index * 45;
-      int endDegrees = startDegrees + 45;
-
-      if (degrees >= startDegrees && degrees <= endDegrees) {
-        return direction;
-      }
-    }
-
-    return null;
+    return DIRECTIONS[index];
   }
 
   /**
