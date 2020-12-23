@@ -78,16 +78,14 @@ public enum Direction {
   }
 
   /**
-   * Retrieves the direction by an angle
+   * Retrieves the direction from an angle
    *
    * @param angle The angle
    * @return The direction retrieved from the angle
    */
   public static Direction fromAngle(double angle) {
-    int rightAngle = MathHelper.floor(angle / 45 + 0.5) & 7;
-    int index = Math.abs(rightAngle % DIRECTIONS.length);
-
-    return DIRECTIONS[index];
+    int directionIndex = MathHelper.floor((angle / 45) + 0.5) & 7;
+    return DIRECTIONS[directionIndex];
   }
 
   /**
