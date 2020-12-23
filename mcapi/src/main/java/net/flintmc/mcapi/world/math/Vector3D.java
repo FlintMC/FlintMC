@@ -97,7 +97,7 @@ public interface Vector3D {
    * @param vector The vector for the calculation.
    * @return The calculated distance between three points.
    */
-  int manhattanDistance(Vector3D vector);
+  double manhattanDistance(Vector3D vector);
 
   /**
    * Multiplies the current vector with the given vector.
