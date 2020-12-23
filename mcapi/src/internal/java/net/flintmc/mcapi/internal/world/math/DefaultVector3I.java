@@ -84,10 +84,10 @@ public class DefaultVector3I implements Vector3I {
    */
   @Override
   public int manhattanDistance(Vector3I vector) {
-    float absX = (float) Math.abs(vector.getX() - this.getX());
-    float absY = (float) Math.abs(vector.getY() - this.getY());
-    float absZ = (float) Math.abs(vector.getZ() - this.getZ());
-    return (int) (absX + absY + absZ);
+    int absX = vector.getX() - this.getX();
+    int absY = vector.getY() - this.getY();
+    int absZ = vector.getZ() - this.getZ();
+    return absX + absY + absZ;
   }
 
   @Override

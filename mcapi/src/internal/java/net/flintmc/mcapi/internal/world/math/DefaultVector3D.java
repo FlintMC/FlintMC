@@ -86,9 +86,9 @@ public class DefaultVector3D implements Vector3D {
    */
   @Override
   public int manhattanDistance(Vector3D vector) {
-    float absX = (float) Math.abs(vector.getX() - this.getX());
-    float absY = (float) Math.abs(vector.getY() - this.getY());
-    float absZ = (float) Math.abs(vector.getZ() - this.getZ());
+    double absX = Math.abs(vector.getX() - this.getX());
+    double absY = Math.abs(vector.getY() - this.getY());
+    double absZ = Math.abs(vector.getZ() - this.getZ());
     return (int) (absX + absY + absZ);
   }
 
