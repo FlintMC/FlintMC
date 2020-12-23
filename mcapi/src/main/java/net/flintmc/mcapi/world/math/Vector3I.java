@@ -56,7 +56,7 @@ public interface Vector3I extends Comparable<Vector3I> {
    * @return {@code true} if the distance larger than the square distance, otherwise {@code false}.
    */
   default boolean withinDistance(Vector3I vector, double distance) {
-    return this.distanceSq(vector.getX(), vector.getY(), vector.getZ(), false)
+    return this.distanceSq(vector.getX(), vector.getY(), vector.getZ())
         < distance * distance;
   }
 
@@ -66,23 +66,18 @@ public interface Vector3I extends Comparable<Vector3I> {
    * @param vector The vector of the specified point to be measured against this {@link Vector3I}.
    * @return The square of the distance from this {@link Vector3I} to a specified point.
    */
-  default double distanceSq(Vector3I vector) {
-    return this.distanceSq(vector.getX(), vector.getY(), vector.getZ(), true);
+  default int distanceSq(Vector3I vector) {
+    return this.distanceSq(vector.getX(), vector.getY(), vector.getZ());
   }
 
   /**
    * The square of the distance from this {@link Vector3I} to a specified point.
    *
-   * @param x         The X coordinate of the specified point to be measured against this {@link
-   *                  Vector3I}.
-   * @param y         The Y coordinate of the specified point to be measured against this {@link
-   *                  Vector3I}.
-   * @param z         The Z coordinate of the specified point to be measured against this {@link
-   *                  Vector3I}.
-   * @param useCenter {@code true} if the center should be used, otherwise {@code false}.
-   * @return The square of the distance from this {@link Vector3I} to a specified point.
+   * @param x The X coordinate of the specified point to be measured against this {@link Vector3I}.
+   * @param y The Y coordinate of the specified point to be measured against this {@link Vector3I}.
+   * @param z The Z coordinate of the specified point to be measured against this {@link Vector3I}.
    */
-  double distanceSq(double x, double y, double z, boolean useCenter);
+  int distanceSq(int x, int y, int z);
 
   /**
    * Calculates the distance between three points.
