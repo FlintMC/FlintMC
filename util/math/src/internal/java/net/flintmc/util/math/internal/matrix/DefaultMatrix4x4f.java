@@ -1,11 +1,11 @@
 package net.flintmc.util.math.internal.matrix;
 
+import java.nio.FloatBuffer;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.math.matrix.Matrix4x4f;
+import net.flintmc.util.math.rotation.Quaternion;
 import org.joml.Math;
-
-import java.nio.FloatBuffer;
 
 /**
  * {@inheritDoc}
@@ -15,6 +15,7 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
 
   @AssistedInject
   private DefaultMatrix4x4f() {
+    this.setIdentity();
   }
 
   /** {@inheritDoc} */
@@ -41,6 +42,58 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
     float rm20 = xz * C + y * s;
     float rm21 = yz * C - x * s;
     float rm22 = zz * C + c;
+    float nm00 = m00 * rm00 + m10 * rm01 + m20 * rm02;
+    float nm01 = m01 * rm00 + m11 * rm01 + m21 * rm02;
+    float nm02 = m02 * rm00 + m12 * rm01 + m22 * rm02;
+    float nm03 = m03 * rm00 + m13 * rm01 + m23 * rm02;
+    float nm10 = m00 * rm10 + m10 * rm11 + m20 * rm12;
+    float nm11 = m01 * rm10 + m11 * rm11 + m21 * rm12;
+    float nm12 = m02 * rm10 + m12 * rm11 + m22 * rm12;
+    float nm13 = m03 * rm10 + m13 * rm11 + m23 * rm12;
+    return target
+        .setM20(m00 * rm20 + m10 * rm21 + m20 * rm22)
+        .setM21(m01 * rm20 + m11 * rm21 + m21 * rm22)
+        .setM22(m02 * rm20 + m12 * rm21 + m22 * rm22)
+        .setM23(m03 * rm20 + m13 * rm21 + m23 * rm22)
+        .setM00(nm00)
+        .setM01(nm01)
+        .setM02(nm02)
+        .setM03(nm03)
+        .setM10(nm10)
+        .setM11(nm11)
+        .setM12(nm12)
+        .setM13(nm13)
+        .setM30(m30)
+        .setM31(m31)
+        .setM32(m32)
+        .setM33(m33);
+  }
+
+  @Override
+  public Matrix4x4f rotate(Quaternion<Float, ?> quaternion, Matrix4x4f target) {
+    float w2 = quaternion.getW() * quaternion.getW(), x2 = quaternion.getX() * quaternion.getX();
+    float y2 = quaternion.getY() * quaternion.getY(), z2 = quaternion.getZ() * quaternion.getZ();
+    float zw = quaternion.getZ() * quaternion.getW(),
+        dzw = zw + zw,
+        xy = quaternion.getX() * quaternion.getY(),
+        dxy = xy + xy;
+    float xz = quaternion.getX() * quaternion.getZ(),
+        dxz = xz + xz,
+        yw = quaternion.getY() * quaternion.getW(),
+        dyw = yw + yw;
+    float yz = quaternion.getY() * quaternion.getZ(),
+        dyz = yz + yz,
+        xw = quaternion.getX() * quaternion.getW(),
+        dxw = xw + xw;
+    float rm00 = w2 + x2 - z2 - y2;
+    float rm01 = dxy + dzw;
+    float rm02 = dxz - dyw;
+    float rm10 = -dzw + dxy;
+    float rm11 = y2 - z2 + w2 - x2;
+    float rm12 = dyz + dxw;
+    float rm20 = dyw + dxz;
+    float rm21 = dyz - dxw;
+    float rm22 = z2 - y2 - x2 + w2;
     float nm00 = m00 * rm00 + m10 * rm01 + m20 * rm02;
     float nm01 = m01 * rm00 + m11 * rm01 + m21 * rm02;
     float nm02 = m02 * rm00 + m12 * rm01 + m22 * rm02;
@@ -105,9 +158,7 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         .setM33(Math.fma(m20, d, Math.fma(-m21, b, m22 * a)) * det);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public synchronized Matrix4x4f transpose(Matrix4x4f target) {
     return target.set(
@@ -115,9 +166,7 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         this.m12, this.m22, this.m32, this.m03, this.m13, this.m23, this.m33);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public synchronized Matrix4x4f copy(Matrix4x4f target) {
     return target.set(
@@ -214,9 +263,7 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         nm33);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public synchronized Matrix4x4f scale(
       Float factorX, Float factorY, Float factorZ, Matrix4x4f target) {
@@ -239,9 +286,7 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         this.m33);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Matrix4x4f translate(Float x, Float y, Float z, Matrix4x4f target) {
     return target.set(
@@ -263,17 +308,13 @@ public class DefaultMatrix4x4f extends BaseMatrix4x4<Float, Matrix4x4f> implemen
         Math.fma(m03, x, Math.fma(m13, y, Math.fma(m23, z, m33))));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Matrix4x4f setIdentity() {
     return this.set(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Matrix4x4f write(FloatBuffer floatBuffer) {
     floatBuffer.put(0, this.m00);

@@ -1,5 +1,7 @@
 package net.flintmc.util.math.matrix;
 
+import net.flintmc.util.math.rotation.Quaternion;
+
 /**
  * Generic 4x4 Matrix. Will be extended by many features and optimized in the feature.
  *
@@ -31,6 +33,10 @@ public interface Matrix4x4<
    * @return target
    */
   T_Matrix4 rotate(float ang, float x, float y, float z, T_Matrix4 target);
+
+  T_Matrix4 rotate(Quaternion<T_Number, ?> quaternion);
+
+  T_Matrix4 rotate(Quaternion<T_Number, ?> quaternion, T_Matrix4 target);
 
   /**
    * Inverts this matrix
@@ -367,4 +373,8 @@ public interface Matrix4x4<
       T_Number m31,
       T_Number m32,
       T_Number m33);
+
+  T_Matrix4 set3x3(Matrix3x3<T_Number, ?> matrix3x3f);
+
+  T_Matrix4 set3x3(Matrix3x3<T_Number, ?> matrix3x3f, T_Matrix4 target);
 }

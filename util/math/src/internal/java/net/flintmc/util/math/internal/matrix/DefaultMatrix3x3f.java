@@ -1,19 +1,19 @@
 package net.flintmc.util.math.internal.matrix;
 
+import java.nio.FloatBuffer;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.math.matrix.Matrix3x3f;
-import net.flintmc.util.math.matrix.Matrix4x4f;
 import org.joml.Math;
-
-import java.nio.FloatBuffer;
 
 /** {@inheritDoc} */
 @Implement(Matrix3x3f.class)
 public class DefaultMatrix3x3f extends BaseMatrix3x3<Float, Matrix3x3f> implements Matrix3x3f {
 
   @AssistedInject
-  private DefaultMatrix3x3f() {}
+  private DefaultMatrix3x3f() {
+    this.setIdentity();
+  }
 
 
   /**

@@ -266,4 +266,6 @@ public interface Matrix3x3<T_Number extends Number, T_Matrix3 extends Matrix3x3<
       T_Number m20,
       T_Number m21,
       T_Number m22);
+
+  T_Matrix3 set(Matrix3x3<T_Number, ?> matrix3x3);
 }

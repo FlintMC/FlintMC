@@ -1,16 +1,15 @@
-package net.flintmc.mcapi.internal.render;
+package net.flintmc.mcapi.v1_15_2.render;
 
+import java.util.Stack;
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.render.MinecraftRenderMeta;
 import net.flintmc.util.math.matrix.Matrix3x3f;
 import net.flintmc.util.math.matrix.Matrix4x4f;
 
-import java.util.Stack;
-import java.util.UUID;
-
 @Implement(MinecraftRenderMeta.class)
-public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
+public class VersionedMinecraftRenderMeta implements MinecraftRenderMeta {
 
   private final Stack<MatrixState> matrixStates;
   private final Matrix4x4f.Factory matrix4x4fFactory;
@@ -21,7 +20,7 @@ public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
   private UUID targetUuid;
 
   @AssistedInject
-  private DefaultMinecraftRenderMeta(
+  private VersionedMinecraftRenderMeta(
       Matrix3x3f.Factory matrix3x3Factory,
       Matrix4x4f.Factory matrix4x4Factory,
       Matrix4x4f.Factory matrix4x4fFactory,
@@ -47,6 +46,14 @@ public class DefaultMinecraftRenderMeta implements MinecraftRenderMeta {
   @Override
   public UUID getTargetUUID() {
     return this.targetUuid;
+  }
+
+  @Override
+  public MinecraftRenderMeta rotateToPlayersCamera() {
+    Matrix3x3f matrix3x3f = matrix3x3fFactory.create();
+    matrix3x3f.setIdentity();
+    getWorld().set3x3(matrix3x3f);
+    return this;
   }
 
   @Override

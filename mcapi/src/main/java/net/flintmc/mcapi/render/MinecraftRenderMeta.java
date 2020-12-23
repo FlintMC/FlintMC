@@ -1,9 +1,9 @@
 package net.flintmc.mcapi.render;
 
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.util.math.matrix.Matrix3x3f;
 import net.flintmc.util.math.matrix.Matrix4x4f;
-import java.util.UUID;
 
 public interface MinecraftRenderMeta {
 
@@ -25,13 +25,15 @@ public interface MinecraftRenderMeta {
 
   UUID getTargetUUID();
 
+  MinecraftRenderMeta rotateToPlayersCamera();
+
   /**
    * Rotate this matrix around a specified axis
    *
    * @param ang rotation in radians
-   * @param x x axis
-   * @param y y axis
-   * @param z z axis
+   * @param x   x axis
+   * @param y   y axis
+   * @param z   z axis
    * @return this
    */
   MinecraftRenderMeta rotate(float ang, float x, float y, float z);

@@ -1,7 +1,6 @@
 package net.flintmc.util.math.internal.matrix;
 
 import net.flintmc.util.math.matrix.Matrix3x3;
-import org.joml.Math;
 
 /**
  * {@inheritDoc}
@@ -191,6 +190,20 @@ public abstract class BaseMatrix3x3<
     this.m21 = m21;
     this.m22 = m22;
     return (T_Matrix3) this;
+  }
+
+  @Override
+  public T_Matrix3 set(Matrix3x3<T_Number, ?> matrix3x3) {
+    return this.set(
+        matrix3x3.getM00(),
+        matrix3x3.getM01(),
+        matrix3x3.getM02(),
+        matrix3x3.getM10(),
+        matrix3x3.getM11(),
+        matrix3x3.getM12(),
+        matrix3x3.getM20(),
+        matrix3x3.getM21(),
+        matrix3x3.getM22());
   }
 
   /**
