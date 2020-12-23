@@ -2,6 +2,7 @@ package net.flintmc.processing.autoload;
 
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import net.flintmc.processing.autoload.identifier.ConstructorIdentifier;
+import net.flintmc.processing.autoload.identifier.FieldIdentifier;
 import net.flintmc.processing.autoload.identifier.Identifier;
 import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 
@@ -54,7 +55,11 @@ public class AnnotationMeta<T extends Annotation> {
    *     placed at
    */
   public MethodIdentifier getMethodIdentifier() {
-    return ((MethodIdentifier) this.identifier);
+    return (MethodIdentifier) this.identifier;
+  }
+
+  public FieldIdentifier getFieldIdentifier() {
+    return (FieldIdentifier) this.identifier;
   }
 
   /**
@@ -62,7 +67,7 @@ public class AnnotationMeta<T extends Annotation> {
    *     placed at
    */
   public ClassIdentifier getClassIdentifier() {
-    return ((ClassIdentifier) this.identifier);
+    return (ClassIdentifier) this.identifier;
   }
 
   /**
@@ -70,7 +75,7 @@ public class AnnotationMeta<T extends Annotation> {
    *     placed at
    */
   public ConstructorIdentifier getConstructorIdentifier() {
-    return ((ConstructorIdentifier) this.identifier);
+    return (ConstructorIdentifier) this.identifier;
   }
 
   /**
