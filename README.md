@@ -403,7 +403,7 @@ This project is not yet finished, there are many things we still want to do.
   documentation as well as many examples and tutorials.
 - JavaDocs should automatically be available in your IDE of choice if you're
   including Flint as a Gradle/maven dependency. However, a hosted version can
-  be found [here](https://flintmc.net/javadocs).
+  be found [here](https://javadocs.flintmc.net/).
 - For more explanations regarding dependency injection, also refer to the
   [Guice documentation](https://github.com/google/guice/wiki).
 - If you have any questions or feedback, feel free to join our
