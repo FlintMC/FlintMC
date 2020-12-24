@@ -287,7 +287,7 @@ will use the following `build.gradle.kts`:
 ```kotlin
 plugins {
     id("java-library")
-    id("net.flintmc.flint-gradle-plugin")
+    id("net.flintmc.flint-gradle")
 }
 
 repositories {
@@ -329,11 +329,11 @@ Gradle won't find our custom Gradle plugin.
 pluginManagement {
     plugins {
         // make sure to use the newest version
-        id("net.flintmc.flint-gradle-plugin") version "2.7.1"
+        id("net.flintmc.flint-gradle") version "2.7.1"
     }
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle-plugin", "2.7.1")         
+            classpath("net.flintmc", "flint-gradle", "2.7.1")         
         }
         repositories {
             maven {
