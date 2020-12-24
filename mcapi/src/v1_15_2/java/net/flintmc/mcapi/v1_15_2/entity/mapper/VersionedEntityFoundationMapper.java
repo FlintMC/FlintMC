@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.mcapi.v1_15_2.entity.mapper;
 
 import net.flintmc.framework.inject.implement.Implement;
@@ -16,11 +35,12 @@ import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.minecraft.entity.Pose;
 import net.minecraft.world.GameType;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** 1.15.2 implementation of the {@link EntityFoundationMapper}. */
+/**
+ * 1.15.2 implementation of the {@link EntityFoundationMapper}.
+ */
 @Singleton
 @Implement(value = EntityFoundationMapper.class, version = "1.15.2")
 public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
@@ -36,14 +56,14 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
 
   @Inject
   private VersionedEntityFoundationMapper(
-          EntityMapper entityMapper,
-          HandMapper handMapper,
-          MinecraftItemMapper itemMapper,
-          MinecraftComponentMapper componentMapper,
-          PotionMapper potionMapper,
-          NBTMapper nbtMapper,
-          ResourceLocationProvider resourceLocationProvider,
-          SoundMapper soundMapper) {
+      EntityMapper entityMapper,
+      HandMapper handMapper,
+      MinecraftItemMapper itemMapper,
+      MinecraftComponentMapper componentMapper,
+      PotionMapper potionMapper,
+      NBTMapper nbtMapper,
+      ResourceLocationProvider resourceLocationProvider,
+      SoundMapper soundMapper) {
     this.itemMapper = itemMapper;
     this.componentMapper = componentMapper;
     this.potionMapper = potionMapper;
@@ -54,7 +74,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     this.entityMapper = entityMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EquipmentSlotType fromMinecraftEquipmentSlotType(Object handle) {
     if (!(handle instanceof net.minecraft.inventory.EquipmentSlotType)) {
@@ -85,7 +107,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEquipmentSlotType(EquipmentSlotType equipmentSlotType) {
     switch (equipmentSlotType) {
@@ -106,7 +130,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameMode fromMinecraftGameType(Object handle) {
     if (!(handle instanceof GameType)) {
@@ -131,7 +157,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftGameType(GameMode mode) {
     switch (mode) {
@@ -148,7 +176,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MoverType fromMinecraftMoverType(Object handle) {
     if (!(handle instanceof net.minecraft.entity.MoverType)) {
@@ -176,7 +206,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftMoverType(MoverType mode) {
     switch (mode) {
@@ -193,7 +225,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPose fromMinecraftPose(Object handle) {
     if (!(handle instanceof Pose)) {
@@ -223,7 +257,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPose(EntityPose pose) {
     switch (pose) {
@@ -246,37 +282,49 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HandMapper getHandMapper() {
     return this.handMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SoundMapper getSoundMapper() {
     return this.soundMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MinecraftComponentMapper getComponentMapper() {
     return this.componentMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MinecraftItemMapper getItemMapper() {
     return this.itemMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocationProvider getResourceLocationProvider() {
     return this.resourceLocationProvider;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityMapper getEntityMapper() {
     return this.entityMapper;
@@ -290,7 +338,9 @@ public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
     return this.potionMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NBTMapper getNbtMapper() {
     return this.nbtMapper;
