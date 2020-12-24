@@ -1,7 +1,10 @@
 package net.flintmc.render.gui.windowing;
 
-/** Interface representing the minecraft main window. */
+/**
+ * Interface representing the minecraft main window.
+ */
 public interface MinecraftWindow extends Window {
+
   /**
    * Retrieves the scale factor currently applied to the minecraft window. This will usually be 1 to
    * 4, but could be changed by mods.
@@ -46,11 +49,8 @@ public interface MinecraftWindow extends Window {
    * Retrieves the FPS counter of the minecraft window.
    *
    * @return The current FPS of the minecraft window
-   * @throws IllegalAccessException If the field definition could not be accessed.
-   * @throws NoSuchFieldException If the field could not be found.
-   * @throws ClassNotFoundException If the class could not be found.
    */
-  int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
+  int getFPS();
 
   /**
    * Retrieves whether the game is currently ingame or not. Ingame means that a world is loaded, for

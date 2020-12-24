@@ -14,6 +14,7 @@ dependencies {
     v1_15_2AnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
     api(project(":framework:framework-eventbus"))
+    api(project(":transform:transform-shadow"))
 
     v1_15_2Implementation(project(":annotation-processing:annotation-processing-autoload"))
 }
