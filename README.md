@@ -297,11 +297,9 @@ repositories {
 group = "your.group"
 version = "1.0.0"
 
-// enter the newest Flint version here
-var depFlintVersion = "2.5.0"
-
 flint {
-    flintVersion = depFlintVersion
+    // Enter the newest Flint version here
+    flintVersion = "2.0.5"
     minecraftVersions("1.15.2")
     authors = arrayOf("Your Name")
     runs {
@@ -310,14 +308,17 @@ flint {
 }
 
 dependencies {
-    annotationProcessor("net.flintmc", "annotation-processing-autoload", depFlintVersion)
-    internalAnnotationProcessor("net.flintmc", "annotation-processing-autoload", depFlintVersion)
-    v1_15_2AnnotationProcessor("net.flintmc", "annotation-processing-autoload", depFlintVersion)
+    annotationProcessor(flintApi("annotation-processing-autoload"))
+    internalAnnotationProcessor(flintApi("annotation-processing-autoload"))
 
-    api("net.flintmc", "framework-eventbus", depFlintVersion)
-    api("net.flintmc", "framework-inject", depFlintVersion)
-    api("net.flintmc", "mcapi", depFlintVersion)
-    api("net.flintmc", "util-task-executor", depFlintVersion)
+    api(flintApi("framework-eventbus"))
+    api(flintApi("framework-inject"))
+    api(flintApi("mcapi"))
+    api(flintApi("util-task-executor"))
+
+    minecraft("1.15.2") {
+        annotationProcessor(flintApi("annotation-processing-autoload"))
+    }
 }
 ```
 
