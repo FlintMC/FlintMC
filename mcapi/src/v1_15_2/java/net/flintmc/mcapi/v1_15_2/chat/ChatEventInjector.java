@@ -89,7 +89,7 @@ public class ChatEventInjector {
 
     method.insertAfter(
         String.format(
-            " { %s.handleChatSend($1, %s.POST); }",
+            " { if ($1 != null) { %s.handleChatSend($1, %s.POST); } }",
             injectedField.getName(), Subscribe.Phase.class.getName()));
   }
 
