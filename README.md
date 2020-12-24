@@ -370,7 +370,7 @@ install dependencies (including Flint itself) if not already installed.
 To generate the installer, just run following task:
 
 ```bash
-$ ./gradlew generateInstaller
+$ ./gradlew bundledInstallerJar
 ```
 
 For more comprehensive examples and tutorials, go to our
