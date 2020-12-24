@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.framework.config.generator.method;
 
 import javassist.CtClass;
@@ -121,18 +140,18 @@ public interface ConfigObjectReference {
    * last one will be used always, so for example:
    *
    * <pre>
-   * {@literal @}IncludeStorage("abcd")
+   *  &#064;IncludeStorage("abcd")
    *  interface Config {
    *
-   *   {@literal @}IncludeStorage("1234")
+   *    &#064;IncludeStorage("1234")
    *    String getX();
    *
-   *   {@literal @}IncludeStorage("5678")
+   *    &#064;IncludeStorage("5678")
    *    void setX();
    *
    *    int getY();
    *
-   *   {@literal @}ExcludeStorage("local")
+   *    &#064;ExcludeStorage("local")
    *    boolean getZ();
    *
    *   }
@@ -145,7 +164,7 @@ public interface ConfigObjectReference {
    * interface is. If the Config interface wouldn't be annotated with {@link Config @Config}, 'Y'
    * would be stored in every storage. <br>
    * - 'Z' will be stored in every storage except 'local' because the method is annotated with
-   * {@link ExcludeStorage {@literal @}ExcludeStorage} and {@link ExcludeStorage} always has a
+   * {@link ExcludeStorage &#064;ExcludeStorage} and {@link ExcludeStorage} always has a
    * higher priority than {@link IncludeStorage}.
    *
    * @param storage The non-null storage which should be checked for

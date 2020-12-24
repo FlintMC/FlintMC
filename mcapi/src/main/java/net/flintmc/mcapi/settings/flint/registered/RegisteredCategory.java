@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.mcapi.settings.flint.registered;
 
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -6,6 +25,7 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Category;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
+import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 
 /**
  * Represents a category of settings in the {@link SettingsProvider}.
@@ -38,12 +58,11 @@ public interface RegisteredCategory {
   ChatComponent getDescription();
 
   /**
-   * Retrieves the URL to the icon of this category. If no icon is set, this will be an empty
-   * string.
+   * Retrieves the icon of this category. If no icon is set, this will be an empty icon.
    *
-   * @return The non-null URL to the icon of this category
+   * @return The non-null icon of this category
    */
-  String getIconUrl();
+  Icon getIcon();
 
   /**
    * Factory for the {@link RegisteredCategory}.
@@ -61,14 +80,14 @@ public interface RegisteredCategory {
      * @param description  The non-null description of the new category as it will be displayed, if
      *                     no description is available, this should be a {@link TextComponent} with
      *                     an empty text
-     * @param iconUrl      The non-null URL to the icon of the new category, if no icon is set, this
-     *                     should be an empty string
+     * @param icon         The non-null icon of the new category, if no icon is set, this should be
+     *                     an empty icon
      * @return The new non-null {@link RegisteredCategory}
      */
     RegisteredCategory create(
         @Assisted("registryName") String registryName,
         @Assisted("displayName") ChatComponent displayName,
         @Assisted("description") ChatComponent description,
-        @Assisted("iconUrl") String iconUrl);
+        @Assisted("icon") Icon icon);
   }
 }

@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.mcapi.settings.flint.annotation;
 
 import java.lang.annotation.ElementType;
@@ -17,30 +36,30 @@ import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
  * <p>A config with settings could look like the following:
  *
  * <pre>
- *    {@literal @}Config
+ *     &#064;Config
  *     public interface MySettings {
  *
- *       {@literal @}DisplayName({@literal @}Component("My string value")) // set an optional displayName
- *       {@literal @}Description({@literal @}Component("Description of my string value")) // set an optional description
- *       {@literal @}StringSetting // define the value of this method to be a string setting
- *       {@literal @}DefineCategory( // define a new category and apply it to this setting
+ *        &#064;DisplayName( &#064;Component("My string value")) // set an optional displayName
+ *        &#064;Description( &#064;Component("Description of my string value")) // set an optional description
+ *        &#064;StringSetting // define the value of this method to be a string setting
+ *        &#064;DefineCategory( // define a new category and apply it to this setting
  *                         // - if the category already exists, nothing will happen
- *                         // - if you know that the category already exists, just use {@literal @}Category
+ *                         // - if you know that the category already exists, just use  &#064;Category
  *          name = "my unique category",
- *          displayName = {@literal @}Component("My category"),
- *          description = {@literal @}Component("This is a category")
+ *          displayName = &#064;Component("My category"),
+ *          description = &#064;Component("This is a category")
  *        )
- *       {@literal @}SubCategory({@literal @}Component("This is a splitter")) // set an optional sub category
- *       {@literal @}DefaultString("default value of this setting") // set the default, if not set this will be null
+ *        &#064;SubCategory(&#064;Component("This is a splitter")) // set an optional sub category
+ *        &#064;DefaultString("default value of this setting") // set the default, if not set this will be null
  *                                                              // for primitives it will be 0 for numbers,
  *                                                              // false for booleans and '\0' for characters
  *        String getValue();
  *
- *       {@literal @}SubSettingsFor("Value") // marks every setting in the SubSettings interface
+ *        &#064;SubSettingsFor("Value") // marks every setting in the SubSettings interface
  *                                 // to be sub settings of the setting on 'getValue'
  *        interface SubSettings {
  *
- *          {@literal @}BooleanSetting
+ *           &#064;BooleanSetting
  *           boolean isSomeSettingEnabled()
  *
  *        }
