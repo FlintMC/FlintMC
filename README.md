@@ -298,7 +298,7 @@ group = "your.group"
 version = "1.0.0"
 
 // enter the newest Flint version here
-var depFlintVersion = "1.1.0"
+var depFlintVersion = "2.5.0"
 
 flint {
     flintVersion = depFlintVersion
@@ -310,6 +310,10 @@ flint {
 }
 
 dependencies {
+    annotationProcessor("net.flintmc", "annotation-processing-autoload", depFlintVersion)
+    internalAnnotationProcessor("net.flintmc", "annotation-processing-autoload", depFlintVersion)
+    v1_15_2AnnotationProcessor("net.flintmc", "annotation-processing-autoload", depFlintVersion)
+
     api("net.flintmc", "framework-eventbus", depFlintVersion)
     api("net.flintmc", "framework-inject", depFlintVersion)
     api("net.flintmc", "mcapi", depFlintVersion)
@@ -324,11 +328,11 @@ Gradle won't find our custom Gradle plugin.
 pluginManagement {
     plugins {
         // make sure to use the newest version
-        id("net.flintmc.flint-gradle-plugin") version "2.7.0"
+        id("net.flintmc.flint-gradle-plugin") version "2.7.1"
     }
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle-plugin", "2.7.0")         
+            classpath("net.flintmc", "flint-gradle-plugin", "2.7.1")         
         }
         repositories {
             maven {
