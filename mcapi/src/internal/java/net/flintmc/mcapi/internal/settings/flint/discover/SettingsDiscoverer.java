@@ -171,7 +171,7 @@ public class SettingsDiscoverer {
                 name,
                 this.annotationSerializer.deserialize(define.displayName(), define.name()),
                 this.annotationSerializer.deserialize(define.description()),
-                define.icon().url()));
+                define.icon()));
       }
     }
 

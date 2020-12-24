@@ -38,13 +38,6 @@ pluginManagement {
             maven {
                 setUrl("https://dist.labymod.net/api/v1/maven/release")
                 name = "Flint"
-                credentials(HttpHeaderCredentials::class) {
-                    name = "Authorization"
-                    value = "Bearer CbtTjzAOuDBr5QXcGnBc1MB3eIHxcZetnyHtdN76VpTNgbwAf87bzWPCntsXwj52"
-                }
-                authentication {
-                    create<HttpHeaderAuthentication>("header")
-                }
             }
             mavenCentral()
         }

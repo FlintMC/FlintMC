@@ -24,7 +24,9 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.math.Vector3I;
 
-/** Default implementation of {@link Vector3I}. */
+/**
+ * Default implementation of {@link Vector3I}.
+ */
 @Implement(Vector3I.class)
 public class DefaultVector3I implements Vector3I {
 
@@ -50,25 +52,33 @@ public class DefaultVector3I implements Vector3I {
     this(vector.getX(), vector.getY(), vector.getZ(), vector3IFactory);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getX() {
     return this.x;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getY() {
     return this.y;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getZ() {
     return this.z;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Vector3I crossProduct(Vector3I vector) {
     return this.vector3IFactory.create(
@@ -77,23 +87,26 @@ public class DefaultVector3I implements Vector3I {
         this.getX() * vector.getY() - this.getY() * vector.getX());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public double distanceSq(double x, double y, double z, boolean useCenter) {
-    double center = useCenter ? 0.5D : 0.0D;
-    double distanceX = (double) this.getX() + center - x;
-    double distanceY = (double) this.getY() + center - y;
-    double distanceZ = (double) this.getZ() + center - z;
+  public int distanceSq(int x, int y, int z) {
+    int distanceX = this.getX() - x;
+    int distanceY = this.getY() - y;
+    int distanceZ = this.getZ() - z;
     return distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int manhattanDistance(Vector3I vector) {
-    float absX = (float) Math.abs(vector.getX() - this.getX());
-    float absY = (float) Math.abs(vector.getY() - this.getY());
-    float absZ = (float) Math.abs(vector.getZ() - this.getZ());
-    return (int) (absX + absY + absZ);
+    int absX = vector.getX() - this.getX();
+    int absY = vector.getY() - this.getY();
+    int absZ = vector.getZ() - this.getZ();
+    return absX + absY + absZ;
   }
 
   @Override
