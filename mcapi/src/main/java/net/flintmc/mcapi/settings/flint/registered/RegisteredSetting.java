@@ -19,9 +19,6 @@
 
 package net.flintmc.mcapi.settings.flint.registered;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import javax.annotation.Nullable;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -30,6 +27,9 @@ import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubSettingsFor;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 /**
  * Represents a setting in the {@link SettingsProvider}.
@@ -44,6 +44,13 @@ public interface RegisteredSetting {
    * @return The non-null config reference of this setting
    */
   ConfigObjectReference getReference();
+
+  /**
+   * Retrieves the type from the {@link ApplicableSetting} annotation which marks this setting.
+   *
+   * @return The non-null type
+   */
+  String getType();
 
   /**
    * Retrieves the {@link ApplicableSetting} annotation which marks this setting. This can be for
