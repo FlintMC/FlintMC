@@ -17,20 +17,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.chat.controller.filter;
+package net.flintmc.mcapi.chat;
 
-import java.util.UUID;
+import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
 
 /**
- * Implementation of the {@link ChatFilter} which already creates the {@code uniqueId} for this
- * filter.
+ * A location in the chat where components can be displayed by the {@link ChatController}.
  */
-public abstract class BasicChatFilter implements ChatFilter {
+public enum ChatLocation {
 
-  private final UUID uniqueId = UUID.randomUUID();
+  /**
+   * The default chat.
+   */
+  CHAT,
 
-  @Override
-  public UUID getUniqueId() {
-    return this.uniqueId;
-  }
+  /**
+   * The action bar above the hotbar.
+   */
+  ACTION_BAR,
+
+  /**
+   * The default chat but only if the user has enabled {@link ChatVisibility#SYSTEM}.
+   */
+  SYSTEM
+
 }
