@@ -34,5 +34,6 @@ dependencies {
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
     api(project(":framework:framework-eventbus"))
+    api(project(":transform:transform-shadow"))
 
 }
