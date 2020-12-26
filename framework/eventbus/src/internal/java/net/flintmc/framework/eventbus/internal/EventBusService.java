@@ -79,7 +79,10 @@ public class EventBusService implements ServiceHandler<Annotation> {
 
       if (eventClass == null) {
         throw new ServiceNotFoundException(
-            "One parameter of a @Subscribe Method must be a subtype of Event");
+            String.format(
+                "At least one parameter of an @%s method must implement %s which is missing at %s.%s()",
+                meta.getAnnotation().annotationType().getSimpleName(), Event.class.getName(),
+                method.getDeclaringClass().getName(), method.getName()));
       }
     } catch (NotFoundException e) {
       throw new ServiceNotFoundException("Failed to retrieve CtClass of parameter type.", e);
