@@ -100,7 +100,7 @@ public class VersionedPlayerInfoInterceptor {
           break;
         case REMOVE_PLAYER:
           this.registry.getPlayerInfoMap().remove(data.getProfile().getId());
-          event = this.eventFactory.create(PlayerInfoEvent.Type.REMOVE, null);
+          event = this.eventFactory.create(PlayerInfoEvent.Type.REMOVE, info);
           break;
 
         default:
