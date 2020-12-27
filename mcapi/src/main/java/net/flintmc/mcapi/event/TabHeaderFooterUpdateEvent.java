@@ -22,7 +22,9 @@ package net.flintmc.mcapi.event;
 import javax.annotation.Nullable;
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -36,6 +38,7 @@ import net.flintmc.mcapi.player.overlay.TabOverlay;
  *
  * @see Subscribe
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface TabHeaderFooterUpdateEvent extends Event, Cancellable {
 
   /**

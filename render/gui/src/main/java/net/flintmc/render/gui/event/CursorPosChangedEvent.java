@@ -19,9 +19,12 @@
 
 package net.flintmc.render.gui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.windowing.Window;
 
 /** Event indicating that the cursor position has changed within the window bounds. */
+@Subscribable(Phase.PRE)
 public class CursorPosChangedEvent extends DefaultGuiEvent implements GuiEvent {
   private final double x;
   private final double y;

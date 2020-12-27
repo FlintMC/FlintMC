@@ -19,7 +19,9 @@
 
 package net.flintmc.mcapi.potion.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.LivingEntity;
@@ -32,6 +34,7 @@ import net.flintmc.mcapi.potion.effect.StatusEffect;
  *
  * @see Subscribe.Phase#PRE
  */
+@Subscribable(Phase.PRE)
 public interface PotionRemoveEvent extends PotionEvent {
 
   /**

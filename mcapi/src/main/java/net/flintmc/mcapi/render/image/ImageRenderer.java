@@ -27,13 +27,12 @@ import net.flintmc.mcapi.resources.ResourceLocation;
 public interface ImageRenderer {
 
   /**
-   * Binds the given texture location to be used for {@link #drawFullImage(float, float, int, float,
-   * float, float, float, int, int, int, int)} and {@link #drawPartImage(float, float, float, float,
-   * int, float, float, float, float, float, float, int, int, int, int)}.
+   * Binds the given texture location to be used for {@link #drawPartImage(float, float, float,
+   * float, int, Object, float, float, float, float, float, float, int, int, int, int)} and {@link
+   * #drawFullImage(float, float, int, Object, float, float, float, float, int, int, int, int)}.
    *
    * <p>Once bound, the texture can be used multiple times for those two methods and doesn't need
-   * to
-   * be bound multiple times.
+   * to be bound multiple times.
    *
    * @param location The non-null texture to be bound
    */

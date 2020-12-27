@@ -19,9 +19,12 @@
 
 package net.flintmc.render.gui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.windowing.Window;
 
 /** Event indicating that the user has done scroll input */
+@Subscribable(Phase.PRE)
 public class MouseScrolledEvent extends DefaultGuiEvent implements GuiEvent {
   private final double xOffset;
   private final double yOffset;

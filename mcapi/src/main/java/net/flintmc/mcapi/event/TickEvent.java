@@ -20,7 +20,9 @@
 package net.flintmc.mcapi.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
@@ -29,6 +31,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
  *
  * @see Subscribe
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface TickEvent extends Event {
 
   /**

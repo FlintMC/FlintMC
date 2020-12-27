@@ -20,11 +20,14 @@
 package net.flintmc.render.gui.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 
 /**
  * This event will be fired during Minecraft initialization, when OpenGL is initialized. It will be
  * fired in both {@link Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST} phases on the
  * Minecraft main thread.
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface OpenGLInitializeEvent extends Event {}

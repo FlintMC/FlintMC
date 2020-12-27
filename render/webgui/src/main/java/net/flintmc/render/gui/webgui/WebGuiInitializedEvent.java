@@ -20,6 +20,9 @@
 package net.flintmc.render.gui.webgui;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 
 /** Gets fired when a web gui backend was successfully initialized. */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface WebGuiInitializedEvent extends Event {}

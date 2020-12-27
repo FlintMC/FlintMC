@@ -19,5 +19,43 @@
 
 package net.flintmc.framework.eventbus.event;
 
-/** Represents an event. All other events must implement this Interface. */
-public interface Event {}
+import java.util.Collection;
+import java.util.List;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
+import net.flintmc.framework.eventbus.method.SubscribeMethod;
+
+/**
+ * Represents an event. All other events must implement this Interface and have the {@link
+ * Subscribable} annotation.
+ *
+ * @see Subscribe
+ */
+public interface Event {
+
+  /**
+   * Retrieves a list of all methods that are subscribed to this event. This method shouldn't be
+   * implemented by any implementation of this interface because it will be generated
+   * automatically.
+   *
+   * @return An immutable list of methods that are subscribed to this event
+   */
+  default List<SubscribeMethod> getMethods() {
+    throw new UnsupportedOperationException(
+        "Missing @Subscribable on " + this.getClass().getName());
+  }
+
+  /**
+   * Retrieves a list of all phases that are supported by this event that have been declared in the
+   * {@link Subscribable} annotation of this event. This method shouldn't be implemented by any
+   * implementation of this interface because it will be generated automatically.
+   *
+   * @return An immutable list of phases that are supported by this event
+   */
+  default Collection<Phase> getSupportedPhases() {
+    throw new UnsupportedOperationException(
+        "Missing @Subscribable on " + this.getClass().getName());
+  }
+
+}

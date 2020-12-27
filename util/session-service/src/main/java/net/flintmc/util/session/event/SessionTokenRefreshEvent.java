@@ -20,6 +20,8 @@
 package net.flintmc.util.session.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.util.session.SessionService;
@@ -30,6 +32,7 @@ import net.flintmc.util.session.SessionService;
  *
  * @see SessionService#refreshToken()
  */
+@Subscribable(Phase.POST)
 public interface SessionTokenRefreshEvent extends Event {
 
   /**

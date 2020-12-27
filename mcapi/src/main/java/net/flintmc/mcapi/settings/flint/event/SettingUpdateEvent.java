@@ -21,7 +21,9 @@ package net.flintmc.mcapi.settings.flint.event;
 
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
@@ -33,6 +35,7 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
  *
  * @see Subscribe
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface SettingUpdateEvent extends Event {
 
   /**

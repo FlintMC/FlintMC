@@ -20,7 +20,9 @@
 package net.flintmc.mcapi.chat.event;
 
 import net.flintmc.framework.eventbus.event.Cancellable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -30,6 +32,7 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
  * and POST {@link Subscribe.Phase}s but the cancellation will be ignored in the POST phase. If this
  * event has been cancelled in the PRE phase, the message won't be displayed anymore in the chat.
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface ChatReceiveEvent extends ChatMessageEvent, Cancellable {
 
   /**

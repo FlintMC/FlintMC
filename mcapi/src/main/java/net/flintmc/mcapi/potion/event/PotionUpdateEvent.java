@@ -20,7 +20,9 @@
 package net.flintmc.mcapi.potion.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.LivingEntity;
@@ -30,6 +32,7 @@ import net.flintmc.mcapi.entity.LivingEntity;
  *
  * <p>The event is fired in the {@link Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST} phase.
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface PotionUpdateEvent extends Event {
 
   /**

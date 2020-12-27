@@ -19,9 +19,12 @@
 
 package net.flintmc.render.gui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.windowing.Window;
 
 /** Event indicating that the window size has changed. */
+@Subscribable(Phase.PRE)
 public class WindowSizeEvent extends DefaultGuiEvent implements GuiEvent {
   private final int width;
   private final int height;

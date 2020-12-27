@@ -19,9 +19,12 @@
 
 package net.flintmc.render.gui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.windowing.Window;
 
 /** Event indicating that a window got or lost focus. */
+@Subscribable(Phase.PRE)
 public class WindowFocusEvent extends DefaultGuiEvent implements GuiEvent {
   private final boolean isFocused;
 
