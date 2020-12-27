@@ -19,10 +19,13 @@
 
 package net.flintmc.render.gui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.windowing.Window;
 import net.flintmc.render.gui.windowing.WindowRenderer;
 
 /** Gets fired when a window renderer is being called (PRE and POST). */
+@Subscribable(Phase.PRE)
 public class WindowRenderEvent extends DefaultGuiEvent implements GuiEvent {
 
   private final WindowRenderer windowRenderer;

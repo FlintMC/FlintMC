@@ -19,6 +19,7 @@
 
 package net.flintmc.framework.stereotype.service;
 
+import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtConstructor;
@@ -28,6 +29,7 @@ import javassist.NotFoundException;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 import net.flintmc.launcher.LaunchController;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -130,5 +132,11 @@ public class CtResolver {
       e.printStackTrace();
       return null;
     }
+  }
+
+  public static Class<?> defineClass(CtClass generated) throws IOException, CannotCompileException {
+    byte[] bytes = generated.toBytecode();
+    return LaunchController.getInstance().getRootLoader()
+        .commonDefineClass(generated.getName(), bytes, 0, bytes.length, null);
   }
 }

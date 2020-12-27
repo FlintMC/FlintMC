@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -62,12 +63,12 @@ public class ServerKickEventInjector {
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "onDisconnect",
       parameters = @Type(reference = ITextComponent.class))
-  public void handleKick(Hook.ExecutionTime executionTime, @Named("args") Object[] args) {
+  public void handleKick(@Named("args") Object[] args) {
     ConnectedServer server = this.controller.getConnectedServer();
 
     ServerAddress address = server != null ? server.getAddress() : null;
     ChatComponent reason = this.componentMapper.fromMinecraft(args[0]);
 
-    this.eventBus.fireEvent(this.eventFactory.create(address, reason), executionTime);
+    this.eventBus.fireEvent(this.eventFactory.create(address, reason), Phase.PRE);
   }
 }

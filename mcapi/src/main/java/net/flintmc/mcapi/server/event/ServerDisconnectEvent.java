@@ -21,7 +21,9 @@ package net.flintmc.mcapi.server.event;
 
 import javax.annotation.Nullable;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.event.DirectionalEvent;
@@ -41,6 +43,7 @@ import net.flintmc.mcapi.server.ServerController;
  *
  * @see Subscribe
  */
+@Subscribable(Phase.POST)
 public interface ServerDisconnectEvent extends Event, ServerAddressEvent, DirectionalEvent {
 
   /**

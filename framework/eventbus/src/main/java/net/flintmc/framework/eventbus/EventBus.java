@@ -19,7 +19,6 @@
 
 package net.flintmc.framework.eventbus;
 
-import com.google.common.collect.Multimap;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
@@ -37,18 +36,22 @@ public interface EventBus {
    *
    * @param event The event to fire.
    * @param phase The phase when the event is fired.
-   * @param <E> The type of the fired event.
+   * @param <E>   The type of the fired event.
    * @return The input event
+   * @throws IllegalArgumentException If the given phase is not supported by the given Event
+   * @see Event#getSupportedPhases()
    */
   <E extends Event> E fireEvent(E event, Subscribe.Phase phase);
 
   /**
    * Fires the given event to the bus.
    *
-   * @param event The event to fire.
+   * @param event         The event to fire.
    * @param executionTime The execution time of a hooked method.
-   * @param <E> The type of the fired event.
+   * @param <E>           The type of the fired event.
    * @return The input event
+   * @throws IllegalArgumentException If the given phase is not supported by the given Event
+   * @see Event#getSupportedPhases()
    */
   default <E extends Event> E fireEvent(E event, Hook.ExecutionTime executionTime) {
     switch (executionTime) {
@@ -60,13 +63,6 @@ public interface EventBus {
         throw new IllegalStateException("Unexpected value: " + executionTime);
     }
   }
-
-  /**
-   * Retrieves a {@link Multimap} that contains all subscribe methods.
-   *
-   * @return A multimap that contains all subscribe methods.
-   */
-  Multimap<Class<? extends Event>, SubscribeMethod> getSubscribeMethods();
 
   /**
    * Registers a new {@link SubscribeMethod} to this event bus, the executor in this method will be

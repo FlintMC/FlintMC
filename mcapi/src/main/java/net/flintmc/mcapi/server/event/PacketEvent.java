@@ -21,6 +21,7 @@ package net.flintmc.mcapi.server.event;
 
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -38,6 +39,7 @@ import net.flintmc.mcapi.server.status.ServerStatus;
  *
  * @see Subscribe
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface PacketEvent extends Event, DirectionalEvent, Cancellable {
 
   /**

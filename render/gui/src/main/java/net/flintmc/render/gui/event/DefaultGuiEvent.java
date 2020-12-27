@@ -21,7 +21,9 @@ package net.flintmc.render.gui.event;
 
 import net.flintmc.render.gui.windowing.Window;
 
-/** Base class for {@link GuiEvent}s which means cancellable events with a window. */
+/**
+ * Base class for {@link GuiEvent}s which means cancellable events with a window.
+ */
 public class DefaultGuiEvent implements GuiEvent {
 
   private final Window window;

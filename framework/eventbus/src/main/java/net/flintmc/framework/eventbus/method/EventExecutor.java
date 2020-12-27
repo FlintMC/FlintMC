@@ -27,13 +27,14 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
  *
  * @param <E> The type of the event that can be executed by this executor
  */
+@FunctionalInterface
 public interface EventExecutor<E extends Event> {
 
   /**
    * Invokes the appropriate method on the given listener to handle the event.
    *
-   * @param event The event.
-   * @param phase The phase in which the given event has been fired
+   * @param event        The event.
+   * @param phase        The phase in which the given event has been fired
    * @param holderMethod The subscribe method holding this executor
    * @throws Throwable If an exception occurred.
    */

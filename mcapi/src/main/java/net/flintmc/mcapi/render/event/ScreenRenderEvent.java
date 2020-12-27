@@ -20,7 +20,9 @@
 package net.flintmc.mcapi.render.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.mcapi.render.image.ImageFullRenderBuilder;
 import net.flintmc.mcapi.render.text.raw.FontRenderBuilder;
 
@@ -32,6 +34,7 @@ import net.flintmc.mcapi.render.text.raw.FontRenderBuilder;
  *
  * @see Subscribe
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface ScreenRenderEvent extends Event {
 
 }

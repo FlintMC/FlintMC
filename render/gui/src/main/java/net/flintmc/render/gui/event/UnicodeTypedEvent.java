@@ -19,12 +19,15 @@
 
 package net.flintmc.render.gui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.windowing.Window;
 
 import java.util.Set;
 
 /** Event indicating that the user has typed input */
+@Subscribable(Phase.PRE)
 public class UnicodeTypedEvent extends EventWithModifierKeys {
   private final int codepoint;
 

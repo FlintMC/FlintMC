@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.BiFunction;
 
-/** Provides injection for a {@link Logger} annoted with {@link InjectLogger}. */
+/** Provides injection for a {@link Logger} annotated with {@link InjectLogger}. */
 public class AnnotatedLoggerTypeListener
     implements BiFunction<InjectionPoint, Key<Logger>, Logger> {
 

@@ -19,6 +19,7 @@
 
 package net.flintmc.transform.minecraft;
 
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.DetectableAnnotation;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
@@ -46,4 +47,18 @@ public @interface MinecraftTransformer {
    * @return the priority for class transformations
    */
   int priority() default 0;
+
+  /**
+   * Defines whether the transformer class requires the implementations to be bound or not. If this
+   * is {@code false}, no interfaces with their implementations marked with {@link Implement} can be
+   * used.
+   * <p>
+   * If classes that are discovered by the {@link Implement} annotation should be transformed, this
+   * has to be {@code false} because otherwise they would be loaded before this transformer is
+   * registered.
+   *
+   * @return {@code true} if implementations are required, {@code false} if they are not
+   */
+  boolean implementations() default true;
+
 }

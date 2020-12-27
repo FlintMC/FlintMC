@@ -21,6 +21,13 @@ package net.flintmc.transform.javassist.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Consumer;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -28,7 +35,6 @@ import javassist.bytecode.ClassFile;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
-import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.javassist.ClassTransform;
@@ -37,15 +43,10 @@ import net.flintmc.transform.javassist.ClassTransformMeta;
 import net.flintmc.transform.javassist.ClassTransformService;
 import net.flintmc.transform.javassist.ConsumerBasedClassTransformMeta;
 import net.flintmc.transform.javassist.MethodBasedClassTransformMeta;
+import net.flintmc.transform.javassist.internal.factory.DefaultConsumerBasedClassTransformMetaFactory;
+import net.flintmc.transform.javassist.internal.factory.DefaultMethodBasedClassTransformMetaFactory;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
 
 @Singleton
 @MinecraftTransformer
@@ -62,8 +63,8 @@ public class DefaultClassTransformService
   @Inject
   private DefaultClassTransformService(
       ClassPool pool,
-      MethodBasedClassTransformMeta.Factory methodBasedClassTransformMetaFactory,
-      ConsumerBasedClassTransformMeta.Factory consumerBasedClassTransformMetaFactory) {
+      DefaultMethodBasedClassTransformMetaFactory methodBasedClassTransformMetaFactory,
+      DefaultConsumerBasedClassTransformMetaFactory consumerBasedClassTransformMetaFactory) {
     this.pool = pool;
     this.methodBasedClassTransformMetaFactory = methodBasedClassTransformMetaFactory;
     this.consumerBasedClassTransformMetaFactory = consumerBasedClassTransformMetaFactory;
@@ -71,23 +72,25 @@ public class DefaultClassTransformService
   }
 
   @Override
-  public void discover(AnnotationMeta<ClassTransform> identifierMeta)
-      throws ServiceNotFoundException {
+  public void discover(AnnotationMeta<ClassTransform> identifierMeta) {
     this.classTransformMetas.add(this.methodBasedClassTransformMetaFactory.create(identifierMeta));
     this.sortFactories();
   }
 
+  @Override
   public ClassTransformService addClassTransformation(
       CtClass ctClass, Consumer<ClassTransformContext> consumer) {
     return this.addClassTransformation(ctClass, 0, consumer);
   }
 
+  @Override
   public ClassTransformService addClassTransformation(
       CtClass ctClass, int priority, Consumer<ClassTransformContext> consumer) {
     return this.addClassTransformation(
         this.consumerBasedClassTransformMetaFactory.create(ctClass, priority, consumer));
   }
 
+  @Override
   public ClassTransformService addClassTransformation(ClassTransformMeta classTransformMeta) {
     this.classTransformMetas.add(classTransformMeta);
     this.sortFactories();
@@ -108,7 +111,9 @@ public class DefaultClassTransformService
               new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), true);
 
       for (ClassTransformMeta classTransformMeta : this.classTransformMetas) {
-        if (!classTransformMeta.matches(ctClass)) continue;
+        if (!classTransformMeta.matches(ctClass)) {
+          continue;
+        }
         classTransformMeta.execute(ctClass);
       }
 

@@ -19,6 +19,8 @@
 
 package net.flintmc.render.gui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.windowing.Window;
 
@@ -27,6 +29,7 @@ import net.flintmc.render.gui.windowing.Window;
  *
  * <p>This event is only fired on the main window by default.
  */
+@Subscribable(Phase.PRE)
 public class ScreenChangedEvent extends DefaultGuiEvent implements GuiEvent {
   private final ScreenName screenName;
 

@@ -21,7 +21,9 @@ package net.flintmc.render.gui.event;
 
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.windowing.Window;
 
 /**
@@ -30,6 +32,7 @@ import net.flintmc.render.gui.windowing.Window;
  *
  * @see Subscribe
  */
+@Subscribable(Phase.PRE)
 public interface GuiEvent extends Event, Cancellable {
 
   /**

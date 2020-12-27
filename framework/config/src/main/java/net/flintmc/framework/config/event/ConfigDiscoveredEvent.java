@@ -19,21 +19,24 @@
 
 package net.flintmc.framework.config.event;
 
-import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /**
- * This event will be fired after a {@link Config} has been discovered, completely generated and an instance is
- * available.
+ * This event will be fired after a {@link Config} has been discovered, completely generated and an
+ * instance is available.
  * <p>
  * It will only be fired in the {@link Subscribe.Phase#POST} phase.
  *
  * @see Subscribe
  */
+@Subscribable(Phase.POST)
 public interface ConfigDiscoveredEvent extends Event {
 
   /**

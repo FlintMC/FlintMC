@@ -19,7 +19,10 @@
 
 package net.flintmc.render.gui.webgui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
 /** Event indicating that the Javascript window object of a {@link WebGuiView} is ready. */
+@Subscribable(Phase.POST)
 public interface WebGuiViewWindowObjectReadyEvent extends WebGuiViewStateChangeEvent {}

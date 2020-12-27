@@ -19,6 +19,8 @@
 
 package net.flintmc.render.gui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.input.InputState;
 import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.input.Key;
@@ -27,6 +29,7 @@ import net.flintmc.render.gui.windowing.Window;
 import java.util.Set;
 
 /** Event indicating that a key state has changed or is still being hold. */
+@Subscribable(Phase.PRE)
 public class KeyEvent extends EventWithModifierKeys {
   private final Key key;
   private final int scancode;

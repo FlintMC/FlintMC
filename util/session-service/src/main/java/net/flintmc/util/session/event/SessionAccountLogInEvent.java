@@ -20,6 +20,8 @@
 package net.flintmc.util.session.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
@@ -31,6 +33,7 @@ import net.flintmc.util.session.SessionService;
  *
  * @see SessionService#logIn(String, String)
  */
+@Subscribable(Phase.POST)
 public interface SessionAccountLogInEvent extends Event {
 
   /**

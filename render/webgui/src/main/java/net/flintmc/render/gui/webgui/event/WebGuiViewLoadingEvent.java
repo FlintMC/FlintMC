@@ -19,9 +19,12 @@
 
 package net.flintmc.render.gui.webgui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
 /** Event indicating that the loading status of a {@link WebGuiView} has changed. */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface WebGuiViewLoadingEvent extends WebGuiViewStateChangeEvent {
   /**
    * Retrieves error info about the event.

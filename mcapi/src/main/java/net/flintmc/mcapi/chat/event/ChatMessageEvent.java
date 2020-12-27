@@ -20,10 +20,13 @@
 package net.flintmc.mcapi.chat.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 
 /**
  * The base event for sending/receiving messages in the chat.
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface ChatMessageEvent extends Event {
 
   /**

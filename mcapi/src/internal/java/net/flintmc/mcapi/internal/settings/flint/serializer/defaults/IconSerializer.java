@@ -21,6 +21,7 @@ package net.flintmc.mcapi.internal.settings.flint.serializer.defaults;
 
 import com.google.gson.JsonObject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
@@ -46,7 +47,7 @@ public class IconSerializer implements SettingsSerializationHandler<Icon> {
     }
 
     if (!annotation.resource().isEmpty()) {
-      String url = "file:///$resource/" + annotation.resource();
+      String url = "file:///$resource/" + NameSpacedKey.parse(annotation.resource());
       icon.addProperty("url", url);
       return;
     }

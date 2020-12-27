@@ -20,7 +20,9 @@
 package net.flintmc.mcapi.chat.event;
 
 import net.flintmc.framework.eventbus.event.Cancellable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
@@ -30,6 +32,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
  * ignored in the POST phase. If this event has been cancelled in the PRE phase, the message won't
  * be sent to the server anymore.
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface ChatSendEvent extends ChatMessageEvent, Cancellable {
 
   /**
