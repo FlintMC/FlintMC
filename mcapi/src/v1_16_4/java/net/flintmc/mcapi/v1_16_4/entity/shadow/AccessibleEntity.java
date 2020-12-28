@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.MethodProxy;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.nbt.CompoundNBT;
 
-@Shadow("net.minecraft.entity.Entity")
+@Shadow(value = "net.minecraft.entity.Entity", version = "1.16.4")
 public interface AccessibleEntity {
 
   @MethodProxy

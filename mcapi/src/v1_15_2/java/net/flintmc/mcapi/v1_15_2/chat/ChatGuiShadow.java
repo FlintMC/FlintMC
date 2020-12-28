@@ -24,7 +24,7 @@ import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.gui.ChatLine;
 import java.util.List;
 
-@Shadow("net.minecraft.client.gui.NewChatGui")
+@Shadow(value = "net.minecraft.client.gui.NewChatGui", version = "1.15.2")
 public interface ChatGuiShadow {
 
   @FieldGetter("chatLines")

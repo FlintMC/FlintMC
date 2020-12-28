@@ -48,7 +48,7 @@ public @interface Shadow {
   String value();
 
   /**
-   * Retrieves the minecraft version where this shadow should be active, for example "1.15.2"". If
+   * Retrieves the minecraft version where this shadow should be active, for example "1.15.2". If
    * it is empty, it will work in every version.
    *
    * @return The version where this shadow should be available

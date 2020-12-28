@@ -25,7 +25,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.util.text.ITextComponent;
 
-@Shadow("net.minecraft.util.text.KeyBindTextComponent")
+@Shadow(value = "net.minecraft.util.text.KeyBindTextComponent", version = "1.16.4")
 public interface AccessibleKeybindTextComponent {
 
   @FieldGetter("displaySupplierFunction")

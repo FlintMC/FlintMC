@@ -24,7 +24,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.multiplayer.ServerData;
 
-@Shadow("net.minecraft.client.multiplayer.ServerList")
+@Shadow(value = "net.minecraft.client.multiplayer.ServerList", version = "1.16.4")
 public interface ServerListShadow {
 
   @FieldGetter("servers")

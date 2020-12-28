@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.entity.BoostHelper;
 
-@Shadow("net.minecraft.entity.passive.PigEntity")
+@Shadow(value = "net.minecraft.entity.passive.PigEntity", version = "1.16.4")
 public interface AccessiblePigEntity {
 
   @FieldGetter("field_234214_bx_")

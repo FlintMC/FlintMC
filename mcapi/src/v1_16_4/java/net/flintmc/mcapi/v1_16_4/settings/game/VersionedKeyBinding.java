@@ -41,19 +41,22 @@ public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBindin
     super(description, keyCode, category);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getKeyCode() {
     return ((ShadowKeyBinding) this).getKeyCode().getKeyCode();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void bind(Key key) {
     super.bind(InputMappings.getInputByName(key.getConfigurationName()));
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getLocalizedName() {
-    return null;
+    return this.getTranslationKey();
   }
 }

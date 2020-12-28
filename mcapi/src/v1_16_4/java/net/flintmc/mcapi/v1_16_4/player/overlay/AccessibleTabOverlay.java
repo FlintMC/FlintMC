@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
 /** A shadow interface for the player tab overlay gui. */
-@Shadow("net.minecraft.client.gui.overlay.PlayerTabOverlayGui")
+@Shadow(value = "net.minecraft.client.gui.overlay.PlayerTabOverlayGui", version = "1.16.4")
 public interface AccessibleTabOverlay {
 
   /**

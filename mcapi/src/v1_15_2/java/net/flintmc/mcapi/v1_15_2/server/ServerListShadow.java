@@ -25,7 +25,7 @@ import net.minecraft.client.multiplayer.ServerData;
 
 import java.util.List;
 
-@Shadow("net.minecraft.client.multiplayer.ServerList")
+@Shadow(value = "net.minecraft.client.multiplayer.ServerList", version = "1.15.2")
 public interface ServerListShadow {
 
   @FieldGetter("servers")
