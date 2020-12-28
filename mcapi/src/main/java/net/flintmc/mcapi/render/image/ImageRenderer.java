@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.mcapi.render.image;
 
 import net.flintmc.mcapi.resources.ResourceLocation;
@@ -8,13 +27,12 @@ import net.flintmc.mcapi.resources.ResourceLocation;
 public interface ImageRenderer {
 
   /**
-   * Binds the given texture location to be used for {@link #drawFullImage(float, float, int, float,
-   * float, float, float, int, int, int, int)} and {@link #drawPartImage(float, float, float, float,
-   * int, float, float, float, float, float, float, int, int, int, int)}.
+   * Binds the given texture location to be used for {@link #drawPartImage(float, float, float,
+   * float, int, Object, float, float, float, float, float, float, int, int, int, int)} and {@link
+   * #drawFullImage(float, float, int, Object, float, float, float, float, int, int, int, int)}.
    *
    * <p>Once bound, the texture can be used multiple times for those two methods and doesn't need
-   * to
-   * be bound multiple times.
+   * to be bound multiple times.
    *
    * @param location The non-null texture to be bound
    */

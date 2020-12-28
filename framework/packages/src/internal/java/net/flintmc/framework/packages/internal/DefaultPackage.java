@@ -1,5 +1,30 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.framework.packages.internal;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarFile;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectionService;
@@ -21,19 +46,11 @@ import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
-import net.flintmc.processing.autoload.identifier.ConstructorIdentifier;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
-import net.flintmc.util.mappings.ClassMapping;
-import net.flintmc.util.mappings.ClassMappingProvider;
-import net.flintmc.util.mappings.MethodMapping;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.jar.JarFile;
-
-/** Default implementation of the {@link Package}. */
+/**
+ * Default implementation of the {@link Package}.
+ */
 @Implement(Package.class)
 public class DefaultPackage implements Package {
 
@@ -51,11 +68,12 @@ public class DefaultPackage implements Package {
    * Creates a new Flint package with the given description loader and the given files.
    *
    * @param serviceRepository The singleton instance of the {@link ServiceRepository}
-   * @param manifestLoader The loader to use for reading the manifest
-   * @param jarFile The java IO file this package should be loaded from, or null if loaded from the
-   *     classpath
-   * @param jar The java IO jar file this package should be loaded from, must point to the same file
-   *     as the `file` parameter, or must be null if the package has been loaded from the classpath
+   * @param manifestLoader    The loader to use for reading the manifest
+   * @param jarFile           The java IO file this package should be loaded from, or null if loaded
+   *                          from the classpath
+   * @param jar               The java IO jar file this package should be loaded from, must point to
+   *                          the same file as the `file` parameter, or must be null if the package
+   *                          has been loaded from the classpath
    */
   @AssistedInject
   private DefaultPackage(
@@ -107,37 +125,49 @@ public class DefaultPackage implements Package {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PackageManifest getPackageManifest() {
     return this.packageManifest;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.packageManifest != null ? this.packageManifest.getName() : jarFile.getName();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getDisplayName() {
     return this.packageManifest != null ? this.packageManifest.getDisplayName() : jarFile.getName();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getVersion() {
     return this.packageManifest != null ? this.packageManifest.getVersion() : "unknown";
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PackageState getState() {
     return this.packageState;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setState(PackageState state) {
     if (packageState != PackageState.NOT_LOADED) {
@@ -151,13 +181,17 @@ public class DefaultPackage implements Package {
     this.packageState = state;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public File getFile() {
     return this.jarFile;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PackageState load() {
     if (packageState != PackageState.NOT_LOADED) {
@@ -176,7 +210,9 @@ public class DefaultPackage implements Package {
     return this.packageState;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void enable() {
     if (packageState != PackageState.LOADED) {
@@ -212,7 +248,7 @@ public class DefaultPackage implements Package {
     // Find all autoload providers within the package
     List<AnnotationMeta> annotations = getAnnotationMeta();
     // Iterate over all annotations
-    for (AnnotationMeta annotationMeta : annotations) {
+    for (AnnotationMeta<?> annotationMeta : annotations) {
       if (annotationMeta.getAnnotation().annotationType().equals(Service.class)) {
         // if yes go ahead and register it
         Service annotation = (Service) annotationMeta.getAnnotation();
@@ -246,95 +282,23 @@ public class DefaultPackage implements Package {
 
   /**
    * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
-   *     on compile time
+   * on compile time
    */
   private List<AnnotationMeta> getAnnotationMeta() {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();
 
     Set<DetectableAnnotationProvider> discover =
-            ExtendedServiceLoader.get(DetectableAnnotationProvider.class)
-                    .discover(LaunchController.getInstance().getRootLoader());
+        ExtendedServiceLoader.get(DetectableAnnotationProvider.class)
+            .discover(LaunchController.getInstance().getRootLoader());
 
-    discover.forEach(
-            detectableAnnotationProvider -> detectableAnnotationProvider.register(annotationMetas));
-
-    ClassMappingProvider classMappingProvider = InjectionHolder.getInjectedInstance(ClassMappingProvider.class);
-
-    for (AnnotationMeta parent : annotationMetas) {
-      for (AnnotationMeta annotationMeta : getAnnotationsRecursively(parent)) {
-        if (annotationMeta.getIdentifier() instanceof MethodIdentifier) {
-          annotationMeta.getMethodIdentifier()
-                  .setOwnerConverter((methodIdentifier, owner) -> {
-                    ClassMapping classMapping = classMappingProvider.get(owner);
-                    if (classMapping == null) return owner;
-                    return classMapping.getName();
-                  })
-                  .setParametersConverter((methodIdentifier, parameters) -> {
-                    String[] transformedParameterTypes = new String[parameters.length];
-                    for (int i = 0; i < transformedParameterTypes.length; i++) {
-                      ClassMapping classMapping = classMappingProvider.get(parameters[i]);
-                      if (classMapping == null) {
-                        transformedParameterTypes[i] = parameters[i];
-                        continue;
-                      }
-                      transformedParameterTypes[i] = classMapping.getName();
-                    }
-                    return transformedParameterTypes;
-                  })
-                  .setNameConverter((methodIdentifier, name) -> {
-                    ClassMapping classMapping = classMappingProvider.get(name);
-                    if (classMapping == null) return name;
-                    for (MethodMapping methodMapping : classMapping.getDeobfuscatedMethods().values()) {
-                      if (methodMapping.getDeobfuscatedName().equals(name) || methodMapping.getObfuscatedName().equals(name)) {
-                        return methodMapping.getName();
-                      }
-                    }
-                    return name;
-                  });
-        }
-        if (annotationMeta.getIdentifier() instanceof ClassIdentifier) {
-          annotationMeta.getClassIdentifier().setNameConverter(((classIdentifier, name) -> {
-            ClassMapping classMapping = classMappingProvider.get(name);
-            if (classMapping == null) return name;
-            return classMapping.getName();
-          }));
-        }
-        if (annotationMeta.getIdentifier() instanceof ConstructorIdentifier) {
-          annotationMeta.getConstructorIdentifier()
-                  .setOwnerConverter((constructorIdentifier, name) -> {
-                    ClassMapping classMapping = classMappingProvider.get(name);
-                    if (classMapping == null) return name;
-                    return classMapping.getName();
-                  })
-                  .setParametersConverter((constructorIdentifier, parameters) -> {
-                    String[] transformedParameterTypes = new String[parameters.length];
-                    for (int i = 0; i < transformedParameterTypes.length; i++) {
-                      ClassMapping classMapping = classMappingProvider.get(parameters[i]);
-                      if (classMapping == null) {
-                        transformedParameterTypes[i] = parameters[i];
-                        continue;
-                      }
-                      transformedParameterTypes[i] = classMapping.getName();
-                    }
-                    return transformedParameterTypes;
-                  });
-        }
-      }
-    }
+    discover.forEach(provider -> provider.register(annotationMetas));
 
     return annotationMetas;
   }
 
-  private Collection<AnnotationMeta> getAnnotationsRecursively(AnnotationMeta<?> annotationMeta) {
-    Collection<AnnotationMeta> result = new HashSet<>();
-    for (AnnotationMeta<?> metaDatum : annotationMeta.getMetaData()) {
-      result.addAll(this.getAnnotationsRecursively(metaDatum));
-    }
-    result.add(annotationMeta);
-    return result;
-  }
-
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PackageClassLoader getPackageClassLoader() {
     if (packageState != PackageState.LOADED && packageState != PackageState.ENABLED) {
@@ -346,13 +310,17 @@ public class DefaultPackage implements Package {
     return this.classLoader;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PackageLocalizationLoader getPackageLocalizationLoader() {
     return this.localizationLoader;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Exception getLoadException() {
     if (packageState != PackageState.ERRORED) {

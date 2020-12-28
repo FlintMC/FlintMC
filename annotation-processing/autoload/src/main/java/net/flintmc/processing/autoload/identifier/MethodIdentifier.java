@@ -1,26 +1,40 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.processing.autoload.identifier;
 
-import com.google.common.base.Functions;
 import javassist.ClassPool;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.processing.autoload.DetectableAnnotation;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 /**
- * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s located at method level.
+ * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s located at method
+ * level.
  *
  * @see Identifier
  */
 public class MethodIdentifier implements Identifier<CtMethod> {
+
   private final String owner;
   private final String name;
   private final String[] parameters;
-  private BiFunction<MethodIdentifier, String, String> ownerConverter = (methodIdentifier, owner) -> owner;
-  private BiFunction<MethodIdentifier, String, String> nameConverter = (methodIdentifier, name) -> name;
-  private BiFunction<MethodIdentifier, String[], String[]> parametersConverter = ((methodIdentifier, parameters) -> parameters);
 
   public MethodIdentifier(String owner, String name, String... parameters) {
     this.owner = owner;
@@ -32,36 +46,21 @@ public class MethodIdentifier implements Identifier<CtMethod> {
    * @return The class name of the declaring class of the method represented by this identifier
    */
   public String getOwner() {
-    return this.ownerConverter.apply(this, this.owner);
+    return this.owner;
   }
 
   /**
    * @return The parameter type names of the method represented by this identifier
    */
   public String[] getParameters() {
-    return this.parametersConverter.apply(this, this.parameters);
+    return this.parameters;
   }
 
   /**
    * @return The method name of this identifier
    */
   public String getName() {
-    return this.nameConverter.apply(this, this.name);
-  }
-
-  public MethodIdentifier setNameConverter(BiFunction<MethodIdentifier, String, String> nameConverter) {
-    this.nameConverter = nameConverter;
-    return this;
-  }
-
-  public MethodIdentifier setOwnerConverter(BiFunction<MethodIdentifier, String, String> ownerConverter) {
-    this.ownerConverter = ownerConverter;
-    return this;
-  }
-
-  public MethodIdentifier setParametersConverter(BiFunction<MethodIdentifier, String[], String[]> parametersConverter) {
-    this.parametersConverter = parametersConverter;
-    return this;
+    return this.name;
   }
 
   /**

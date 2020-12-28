@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.launcher.classloading;
 
 import net.flintmc.launcher.LaunchController;
@@ -32,7 +51,6 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   private final List<ChildClassLoader> children;
   private final List<String> modificationExclusions;
   private final Map<String, Class<?>> classCache;
-  private final Map<URL, byte[]> resourceDataCache;
   private final Logger logger;
   private final Map<String, byte[]> modifiedClasses;
   private boolean transformEnabled;
@@ -50,7 +68,6 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     this.children = new ArrayList<>();
     this.modificationExclusions = new ArrayList<>();
     this.classCache = new ConcurrentHashMap<>();
-    this.resourceDataCache = new ConcurrentHashMap<>();
     this.logger = LogManager.getLogger(RootClassLoader.class);
 
     this.transformEnabled = false;
@@ -137,7 +154,9 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
   public Class<?> findClass(String name, ChildClassLoader preferredLoader)
       throws ClassNotFoundException {
     if (currentlyLoading.contains(name)) {
-      throw new IllegalStateException("Circular load detected: " + name);
+      throw new CircularClassLoadException(
+          "Circular load detected: " + name + " (caused by: " + String
+              .join(", ", currentlyLoading));
     }
 
     // Filter out internal classes
@@ -209,10 +228,16 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
       byte[] classBytes = this.modifiedClasses.getOrDefault(name, information.getClassBytes());
 
       for (LauncherPlugin plugin : plugins) {
-        byte[] newBytes = plugin.modifyClass(name, classBytes);
-        if (newBytes != null) {
-          // The plugin has modified the bytes, copy the reference of the array over
-          classBytes = newBytes;
+        try {
+          byte[] newBytes = plugin.modifyClass(name, classBytes);
+          if (newBytes != null) {
+            // The plugin has modified the bytes, copy the reference of the array over
+            classBytes = newBytes;
+          }
+        } catch (CircularClassLoadException ignored) {
+          this.logger
+              .debug("Not transforming class {} to {} because it is loaded by a transformer", name,
+                  plugin.name());
         }
       }
 

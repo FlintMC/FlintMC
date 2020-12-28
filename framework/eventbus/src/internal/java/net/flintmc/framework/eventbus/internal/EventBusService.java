@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.framework.eventbus.internal;
 
 import com.google.inject.Inject;
@@ -60,7 +79,10 @@ public class EventBusService implements ServiceHandler<Annotation> {
 
       if (eventClass == null) {
         throw new ServiceNotFoundException(
-            "One parameter of a @Subscribe Method must be a subtype of Event");
+            String.format(
+                "At least one parameter of an @%s method must implement %s which is missing at %s.%s()",
+                meta.getAnnotation().annotationType().getSimpleName(), Event.class.getName(),
+                method.getDeclaringClass().getName(), method.getName()));
       }
     } catch (NotFoundException e) {
       throw new ServiceNotFoundException("Failed to retrieve CtClass of parameter type.", e);

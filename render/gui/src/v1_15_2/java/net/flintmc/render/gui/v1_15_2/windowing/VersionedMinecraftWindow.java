@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.render.gui.v1_15_2.windowing;
 
 import net.flintmc.framework.eventbus.EventBus;
@@ -7,7 +26,6 @@ import net.flintmc.render.gui.event.WindowRenderEvent;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.WindowRenderer;
-import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
 
 import javax.inject.Inject;
@@ -21,16 +39,14 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 @Singleton
 @Implement(value = MinecraftWindow.class, version = "1.15.2")
 public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
-  private final ClassMappingProvider classMappingProvider;
+
   private final List<WindowRenderer> intrusiveRenderers;
 
   @Inject
   private VersionedMinecraftWindow(
-      ClassMappingProvider classMappingProvider,
       DefaultWindowManager windowManager,
       EventBus eventBus) {
     super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager, eventBus);
-    this.classMappingProvider = classMappingProvider;
     this.intrusiveRenderers = new ArrayList<>();
   }
 
@@ -82,57 +98,74 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getScaleFactor() {
     return (int) Minecraft.getInstance().getMainWindow().getGuiScaleFactor();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getWidth() {
     return Minecraft.getInstance().getMainWindow().getWidth();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getHeight() {
     return Minecraft.getInstance().getMainWindow().getHeight();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getScaledWidth() {
     return Minecraft.getInstance().getMainWindow().getScaledWidth();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getScaledHeight() {
     return Minecraft.getInstance().getMainWindow().getScaledHeight();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFramebufferWidth() {
     return Minecraft.getInstance().getFramebuffer().framebufferWidth;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFramebufferHeight() {
     return Minecraft.getInstance().getFramebuffer().framebufferHeight;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
-    return this.classMappingProvider
-        .get("net.minecraft.client.Minecraft")
-        .getField("debugFPS")
-        .getValue(null);
+  public int getFPS() {
+    return ((MinecraftFpsShadow) Minecraft.getInstance()).getFPS();
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public boolean isIngame() {
     return Minecraft.getInstance().world != null;
   }

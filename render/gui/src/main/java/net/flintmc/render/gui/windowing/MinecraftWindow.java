@@ -1,7 +1,29 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.render.gui.windowing;
 
-/** Interface representing the minecraft main window. */
+/**
+ * Interface representing the minecraft main window.
+ */
 public interface MinecraftWindow extends Window {
+
   /**
    * Retrieves the scale factor currently applied to the minecraft window. This will usually be 1 to
    * 4, but could be changed by mods.
@@ -46,11 +68,8 @@ public interface MinecraftWindow extends Window {
    * Retrieves the FPS counter of the minecraft window.
    *
    * @return The current FPS of the minecraft window
-   * @throws IllegalAccessException If the field definition could not be accessed.
-   * @throws NoSuchFieldException If the field could not be found.
-   * @throws ClassNotFoundException If the class could not be found.
    */
-  int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException;
+  int getFPS();
 
   /**
    * Retrieves whether the game is currently ingame or not. Ingame means that a world is loaded, for
