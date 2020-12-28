@@ -25,7 +25,7 @@ import net.flintmc.render.gui.windowing.Window;
 import net.flintmc.render.gui.windowing.WindowRenderer;
 
 /** Gets fired when a window renderer is being called (PRE and POST). */
-@Subscribable(Phase.PRE)
+@Subscribable({Phase.PRE, Phase.POST})
 public class WindowRenderEvent extends DefaultGuiEvent implements GuiEvent {
 
   private final WindowRenderer windowRenderer;
