@@ -44,7 +44,7 @@ public class VersionedWorldJoinEventInjector {
   }
 
   @Subscribe(phase = Phase.ANY)
-  public void handleMultiplayerConnect(ServerConnectEvent event, Phase phase) {
+  public void fireSingleplayerWorldJoinEvent(ServerConnectEvent event, Phase phase) {
     WorldJoinEvent joinEvent = this.eventFactory
         .create(event.getAddress().toString(), WorldJoinEvent.Type.MULTIPLAYER);
     this.eventBus.fireEvent(joinEvent, phase);

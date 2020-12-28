@@ -77,11 +77,10 @@ public interface WorldJoinEvent extends Event {
      * Creates a new {@link WorldJoinEvent} with the given parameters.
      *
      * @param worldName The non-null world name (Singleplayer) or Server IP and port (Multiplayer)
-     * @param type      The non-null type of wold that the player is joining
+     * @param type      The non-null type of the world that the player is joining
      * @return The new non-null {@link WorldJoinEvent}
      */
     WorldJoinEvent create(@Assisted String worldName, @Assisted Type type);
 
   }
-
 }
