@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.framework.eventbus.method;
 
 import java.util.function.Consumer;
@@ -9,7 +28,8 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 /**
  * Builder for {@link SubscribeMethod}s.
  *
- * <p>The only necessary value before {@link #build()} can be used is one of the {@code to} methods.
+ * <p>The only necessary value before {@link #build()} can be used is one of the {@code to}
+ * methods.
  *
  * @param <E> The type of the event that is handled by the generating method.
  * @see Factory
@@ -69,14 +89,16 @@ public interface SubscribeMethodBuilder<E extends Event> {
    */
   void buildAndRegister() throws NullPointerException;
 
-  /** Factory for the {@link SubscribeMethodBuilder}. */
+  /**
+   * Factory for the {@link SubscribeMethodBuilder}.
+   */
   interface Factory {
 
     /**
      * Creates a new {@link SubscribeMethodBuilder} for the given event.
      *
      * @param eventClass The non-null class of the event which the new builder is for
-     * @param <E> The type of the event which the new builder is for
+     * @param <E>        The type of the event which the new builder is for
      * @return The new non-null builder for the given event class
      */
     <E extends Event> SubscribeMethodBuilder<E> newBuilder(Class<E> eventClass);

@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.transform.launchplugin;
 
 import com.google.inject.Inject;
@@ -15,16 +34,11 @@ import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
-import net.flintmc.processing.autoload.identifier.ConstructorIdentifier;
-import net.flintmc.processing.autoload.identifier.Identifier;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.launchplugin.inject.module.BindConstantModule;
-import net.flintmc.util.mappings.ClassMapping;
-import net.flintmc.util.mappings.ClassMappingProvider;
-import net.flintmc.util.mappings.MethodMapping;
-import net.flintmc.util.mappings.utils.MappingUtils;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Singleton
 public class FlintFrameworkInitializer {
@@ -75,7 +89,7 @@ public class FlintFrameworkInitializer {
     // Discover all annotation meta data
     List<AnnotationMeta> annotations = getAnnotationMeta();
     // Iterate over all annotations
-    for (AnnotationMeta annotationMeta : annotations) {
+    for (AnnotationMeta<?> annotationMeta : annotations) {
       // check if metadata is a service
       if (annotationMeta.getAnnotation().annotationType().equals(Service.class)) {
         // if yes go ahead and register it
@@ -96,13 +110,13 @@ public class FlintFrameworkInitializer {
               service.priority(),
               service.state(),
               ClassPool.getDefault()
-                  .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+                  .get(((ClassIdentifier) annotationMeta.getIdentifier()).getName()));
         }
       }
     }
 
     // Iterate over all annotations again
-    for (AnnotationMeta annotationMeta : annotations) {
+    for (AnnotationMeta<?> annotationMeta : annotations) {
       // register the annotation
       serviceRepository.registerAnnotation(annotationMeta);
     }
@@ -122,79 +136,6 @@ public class FlintFrameworkInitializer {
     discover.forEach(
         detectableAnnotationProvider -> detectableAnnotationProvider.register(annotationMetas));
 
-    ClassMappingProvider classMappingProvider = InjectionHolder.getInjectedInstance(ClassMappingProvider.class);
-
-    for (AnnotationMeta parent : annotationMetas) {
-      for (AnnotationMeta annotationMeta : getAnnotationsRecursively(parent)) {
-        if (annotationMeta.getIdentifier() instanceof MethodIdentifier) {
-          annotationMeta.getMethodIdentifier()
-              .setOwnerConverter((methodIdentifier, owner) -> {
-                ClassMapping classMapping = classMappingProvider.get(owner);
-                if (classMapping == null) return owner;
-                return classMapping.getName();
-              })
-              .setParametersConverter((methodIdentifier, parameters) -> {
-                String[] transformedParameterTypes = new String[parameters.length];
-                for (int i = 0; i < transformedParameterTypes.length; i++) {
-                  ClassMapping classMapping = classMappingProvider.get(parameters[i]);
-                  if (classMapping == null) {
-                    transformedParameterTypes[i] = parameters[i];
-                    continue;
-                  }
-                  transformedParameterTypes[i] = classMapping.getName();
-                }
-                return transformedParameterTypes;
-              })
-              .setNameConverter((methodIdentifier, name) -> {
-                ClassMapping classMapping = classMappingProvider.get(name);
-                if (classMapping == null) return name;
-                for (MethodMapping methodMapping : classMapping.getDeobfuscatedMethods().values()) {
-                  if (methodMapping.getDeobfuscatedName().equals(name) || methodMapping.getObfuscatedName().equals(name)) {
-                    return methodMapping.getName();
-                  }
-                }
-                return name;
-              });
-        }
-        if (annotationMeta.getIdentifier() instanceof ClassIdentifier) {
-          annotationMeta.getClassIdentifier().setNameConverter(((classIdentifier, name) -> {
-            ClassMapping classMapping = classMappingProvider.get(name);
-            if (classMapping == null) return name;
-            return classMapping.getName();
-          }));
-        }
-        if (annotationMeta.getIdentifier() instanceof ConstructorIdentifier) {
-          annotationMeta.getConstructorIdentifier()
-              .setOwnerConverter((constructorIdentifier, name) -> {
-                ClassMapping classMapping = classMappingProvider.get(name);
-                if (classMapping == null) return name;
-                return classMapping.getName();
-              })
-              .setParametersConverter((constructorIdentifier, parameters) -> {
-                String[] transformedParameterTypes = new String[parameters.length];
-                for (int i = 0; i < transformedParameterTypes.length; i++) {
-                  ClassMapping classMapping = classMappingProvider.get(parameters[i]);
-                  if (classMapping == null) {
-                    transformedParameterTypes[i] = parameters[i];
-                    continue;
-                  }
-                  transformedParameterTypes[i] = classMapping.getName();
-                }
-                return transformedParameterTypes;
-              });
-        }
-      }
-    }
-
     return annotationMetas;
-  }
-
-  private Collection<AnnotationMeta> getAnnotationsRecursively(AnnotationMeta<?> annotationMeta) {
-    Collection<AnnotationMeta> result = new HashSet<>();
-    for (AnnotationMeta<?> metaDatum : annotationMeta.getMetaData()) {
-      result.addAll(this.getAnnotationsRecursively(metaDatum));
-    }
-    result.add(annotationMeta);
-    return result;
   }
 }
