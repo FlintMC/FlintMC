@@ -20,12 +20,18 @@ public class VersionedOpenGLInitializeEventInjector {
     this.event = new OpenGLInitializeEvent() {};
   }
 
-  @Hook(className = "net.minecraft.client.Minecraft", methodName = "startTimerHackThread")
+  @Hook(
+      className = "net.minecraft.client.Minecraft",
+      methodName = "isMultiplayerEnabled",
+      version = "1.16.4")
   public void preInitialize() {
     this.eventBus.fireEvent(this.event, Subscribe.Phase.PRE);
   }
 
-  @Hook(className = "net.minecraft.client.MainWindow", methodName = "setLogOnGlError")
+  @Hook(
+      className = "net.minecraft.client.MainWindow",
+      methodName = "setLogOnGlError",
+      version = "1.16.4")
   public void postInitialize() {
     this.eventBus.fireEvent(this.event, Subscribe.Phase.POST);
   }

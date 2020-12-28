@@ -32,7 +32,7 @@ import java.util.Map;
 
 /** 1.15.2 implementation of {@link GameProfileSerializer} */
 @Singleton
-@Implement(GameProfileSerializer.class)
+@Implement(value = GameProfileSerializer.class, version = "1.15.2")
 public class VersionedGameProfileSerializer
     implements GameProfileSerializer<com.mojang.authlib.GameProfile> {
 

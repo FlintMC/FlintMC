@@ -43,7 +43,7 @@ import java.util.List;
 import static org.lwjgl.glfw.GLFW.*;
 
 /** 1.15.2 implementation for {@link Window}. */
-@Implement(Window.class)
+@Implement(value = Window.class, version = "1.15.2")
 public class VersionedWindow implements InternalWindow {
 
   protected final EventBus eventBus;

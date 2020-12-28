@@ -11,7 +11,7 @@ import net.flintmc.render.vbo.VertexFormatBuilder;
 
 /** {@inheritDoc} */
 @Singleton
-@Implement(VertexFormatBuilder.class)
+@Implement(value = VertexFormatBuilder.class, version = "1.16.4")
 public class VersionedVertexFormatBuilder implements VertexFormatBuilder {
 
   private final VertexFormat.Factory vertexFormatFactory;

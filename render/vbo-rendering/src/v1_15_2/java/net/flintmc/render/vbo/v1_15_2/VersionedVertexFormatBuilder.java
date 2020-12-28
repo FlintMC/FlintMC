@@ -31,7 +31,7 @@ import java.util.List;
 
 /** {@inheritDoc} */
 @Singleton
-@Implement(VertexFormatBuilder.class)
+@Implement(value = VertexFormatBuilder.class, version = "1.15.2")
 public class VersionedVertexFormatBuilder implements VertexFormatBuilder {
 
   private final VertexFormat.Factory vertexFormatFactory;

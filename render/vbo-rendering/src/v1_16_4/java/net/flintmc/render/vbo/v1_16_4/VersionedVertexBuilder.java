@@ -13,7 +13,7 @@ import net.flintmc.render.vbo.VertexBufferObject;
 import net.flintmc.render.vbo.VertexBuilder;
 
 /** {@inheritDoc} */
-@Implement(VertexBuilder.class)
+@Implement(value = VertexBuilder.class,  version = "1.16.4")
 public class VersionedVertexBuilder implements VertexBuilder {
 
   private final VertexBufferObject vbo;

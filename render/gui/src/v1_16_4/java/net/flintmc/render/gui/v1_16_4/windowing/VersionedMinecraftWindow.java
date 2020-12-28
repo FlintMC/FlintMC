@@ -18,7 +18,7 @@ import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = MinecraftWindow.class, version = "1.15.2")
+@Implement(value = MinecraftWindow.class, version = "1.16.4")
 public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
   private final ClassMappingProvider classMappingProvider;
   private final List<WindowRenderer> intrusiveRenderers;
@@ -125,11 +125,8 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
 
   /** {@inheritDoc} */
   @Override
-  public int getFPS() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
-    return this.classMappingProvider
-        .get("net.minecraft.client.Minecraft")
-        .getField("debugFPS")
-        .getValue(null);
+  public int getFPS() {
+    return ((MinecraftFpsShadow) Minecraft.getInstance()).getFPS();
   }
 
   public boolean isIngame() {

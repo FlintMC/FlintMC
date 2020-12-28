@@ -26,7 +26,7 @@ import net.flintmc.render.shader.uniformprovider.PartialTickProvider;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(PartialTickProvider.class)
+@Implement(value = PartialTickProvider.class, version = "1.15.2")
 public class VersionedPartialTickProvider implements PartialTickProvider {
 
   /** {@inheritDoc} */

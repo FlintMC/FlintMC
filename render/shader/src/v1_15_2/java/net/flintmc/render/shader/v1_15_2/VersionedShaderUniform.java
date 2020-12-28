@@ -31,7 +31,7 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL20.*;
 
 /** {@inheritDoc} */
-@Implement(ShaderUniform.class)
+@Implement(value = ShaderUniform.class, version = "1.15.2")
 public class VersionedShaderUniform implements ShaderUniform {
 
   private final String name;

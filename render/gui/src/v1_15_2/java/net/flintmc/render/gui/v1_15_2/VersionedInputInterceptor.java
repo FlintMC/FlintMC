@@ -45,7 +45,7 @@ import java.nio.DoubleBuffer;
 
 /** 1.15.2 implementation of the input interceptor */
 @Singleton
-@Implement(InputInterceptor.class)
+@Implement(value = InputInterceptor.class, version = "1.15.2")
 public class VersionedInputInterceptor implements InputInterceptor {
 
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;

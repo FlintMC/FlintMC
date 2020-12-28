@@ -29,7 +29,7 @@ import java.nio.IntBuffer;
 import static org.lwjgl.opengl.GL33.*;
 
 /** {@inheritDoc} */
-@Implement(VertexArrayObject.class)
+@Implement(value = VertexArrayObject.class, version = "1.15.2")
 public class VersionedVertexArrayObject implements VertexArrayObject {
 
   private final VertexFormat format;

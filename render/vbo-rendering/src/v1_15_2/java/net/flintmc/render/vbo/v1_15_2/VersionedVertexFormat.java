@@ -31,7 +31,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL33.*;
 
 /** {@inheritDoc} */
-@Implement(VertexFormat.class)
+@Implement(value = VertexFormat.class, version = "1.15.2")
 public class VersionedVertexFormat implements VertexFormat {
 
   private final List<VertexAttribute> attributes;

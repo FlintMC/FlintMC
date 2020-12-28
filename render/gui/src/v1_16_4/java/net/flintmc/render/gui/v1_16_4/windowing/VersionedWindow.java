@@ -29,7 +29,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 
 /** 1.16.4 implementation for {@link Window}. */
-@Implement(Window.class)
+@Implement(value = Window.class, version = "1.16.4")
 public class VersionedWindow implements InternalWindow {
 
   protected final EventBus eventBus;

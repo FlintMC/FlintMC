@@ -30,7 +30,7 @@ import net.flintmc.render.shader.ShaderUniform;
 import org.apache.commons.io.IOUtils;
 
 /** {@inheritDoc} */
-@Implement(ShaderProgram.class)
+@Implement(value = ShaderProgram.class, version = "1.15.2")
 public class VersionedShaderProgram implements ShaderProgram {
 
   private final List<ShaderUniform> providedShaderUniforms;

@@ -25,7 +25,7 @@ import net.flintmc.render.shader.ShaderUniform;
 import net.flintmc.render.shader.uniformprovider.WorldMatrixProvider;
 
 @Singleton
-@Implement(WorldMatrixProvider.class)
+@Implement(value = WorldMatrixProvider.class, version = "1.15.2")
 public class VersionedWorldMatrixProvider implements WorldMatrixProvider {
 
   /** {@inheritDoc} */

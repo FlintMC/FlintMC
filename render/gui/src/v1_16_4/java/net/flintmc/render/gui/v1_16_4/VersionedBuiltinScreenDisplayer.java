@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screen.Screen;
 
 /** 1.16.4 Implementation of the {@link BuiltinScreenDisplayer} */
 @Singleton
-@Implement(BuiltinScreenDisplayer.class)
+@Implement(value = BuiltinScreenDisplayer.class, version = "1.16.4")
 public class VersionedBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
   private final Map<ScreenName, Consumer<Object[]>> supportedScreens;
 

@@ -29,7 +29,7 @@ import java.util.Queue;
 import java.util.function.Function;
 
 /** {@inheritDoc} */
-@Implement(VertexBuilder.class)
+@Implement(value = VertexBuilder.class, version = "1.15.2")
 public class VersionedVertexBuilder implements VertexBuilder {
 
   private final VertexBufferObject vbo;

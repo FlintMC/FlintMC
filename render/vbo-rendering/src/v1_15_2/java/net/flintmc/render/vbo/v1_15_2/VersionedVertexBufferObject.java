@@ -33,7 +33,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL33.*;
 
 /** {@inheritDoc} */
-@Implement(VertexBufferObject.class)
+@Implement(value = VertexBufferObject.class, version = "1.15.2")
 public class VersionedVertexBufferObject implements VertexBufferObject {
 
   private final VertexFormat vertexFormat;

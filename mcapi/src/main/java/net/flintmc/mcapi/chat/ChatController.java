@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.chat;
 
 import java.util.List;
+import java.util.UUID;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 
 /**
@@ -70,6 +71,15 @@ public interface ChatController {
    * @param component The non-null component to be displayed
    */
   void displayChatMessage(ChatLocation location, ChatComponent component);
+
+  /**
+   * Display the message into the chat.
+   *
+   * @param location The non-null location to display the message at.
+   * @param component The non-null component to be displayed.
+   * @param senderUniqueId The sender unique identifier.
+   */
+  void displayChatMessage(ChatLocation location, ChatComponent component, UUID senderUniqueId);
 
   /**
    * Retrieves a list of all messages that are displayed in this chat. The size of this list will

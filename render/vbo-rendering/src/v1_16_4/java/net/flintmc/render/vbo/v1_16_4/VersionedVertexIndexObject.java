@@ -19,7 +19,7 @@ import net.flintmc.render.vbo.VboDrawMode;
 import net.flintmc.render.vbo.VertexIndexObject;
 
 /** {@inheritDoc} */
-@Implement(VertexIndexObject.class)
+@Implement(value = VertexIndexObject.class, version = "1.16.4")
 public class VersionedVertexIndexObject implements VertexIndexObject {
 
   private final List<Integer> indices;

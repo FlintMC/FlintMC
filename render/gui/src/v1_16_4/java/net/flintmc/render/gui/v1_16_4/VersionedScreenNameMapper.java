@@ -8,7 +8,7 @@ import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
 
 @Singleton
-@Implement(ScreenNameMapper.class)
+@Implement(value = ScreenNameMapper.class, version = "1.16.4")
 public class VersionedScreenNameMapper implements ScreenNameMapper {
   // Map of all deobfuscated screen class names to their ScreeName equivalents
   private static final Map<String, ScreenName> KNOWN_NAMES =

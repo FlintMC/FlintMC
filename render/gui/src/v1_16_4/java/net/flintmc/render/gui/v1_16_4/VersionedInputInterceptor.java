@@ -25,7 +25,7 @@ import org.lwjgl.system.MemoryStack;
 
 /** 1.16.4 implementation of the input interceptor */
 @Singleton
-@Implement(InputInterceptor.class)
+@Implement(value = InputInterceptor.class, version = "1.16.4")
 public class VersionedInputInterceptor implements InputInterceptor {
 
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;

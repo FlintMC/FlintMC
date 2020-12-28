@@ -35,7 +35,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL20.*;
 
 /** {@inheritDoc} */
-@Implement(ShaderProgram.class)
+@Implement(value = ShaderProgram.class, version = "1.15.2")
 public class VersionedShaderProgram implements ShaderProgram {
 
   private final List<ShaderUniform> providedShaderUniforms;

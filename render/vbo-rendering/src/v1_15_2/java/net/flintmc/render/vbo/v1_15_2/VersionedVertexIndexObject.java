@@ -32,7 +32,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL33.*;
 
 /** {@inheritDoc} */
-@Implement(VertexIndexObject.class)
+@Implement(value = VertexIndexObject.class, version = "1.15.2")
 public class VersionedVertexIndexObject implements VertexIndexObject {
 
   private final List<Integer> indices;
