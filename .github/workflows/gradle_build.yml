@@ -19,9 +19,7 @@ jobs:
       - name: Cache multiple paths
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.gradle/caches/flint-gradle
-            ./**/build/flint
+          path: ~/.gradle/caches/flint-gradle
           key: jdk-8-flint-gradle
 
       - name: Check for license headers
