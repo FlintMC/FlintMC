@@ -24,9 +24,6 @@ jobs:
             ./**/build/flint
           key: jdk-8-flint-gradle
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Get tag name
         id: get_tag_name
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
