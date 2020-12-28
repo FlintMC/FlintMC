@@ -36,7 +36,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 public interface WorldJoinEvent extends Event {
 
   /**
-   * Retrieves the name of the world the player was joining. In Multiplayer ({@code type ==
+   * Retrieves the name of the world the player is joining. In Multiplayer ({@code type ==
    * Type.MULTIPLAYER}), this will be the IP with the port.
    *
    * @return The non-null name of the world or the IP and Port of the server
