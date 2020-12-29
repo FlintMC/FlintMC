@@ -21,15 +21,6 @@ package net.flintmc.framework.eventbus.internal.method.subscribable;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -39,10 +30,11 @@ import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import javassist.bytecode.ClassFile;
 import net.flintmc.framework.eventbus.event.Event;
-import net.flintmc.framework.eventbus.internal.method.handler.EventMethodHandler;
+import net.flintmc.framework.eventbus.event.EventDetails;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
+import net.flintmc.framework.eventbus.internal.method.handler.EventMethodHandler;
 import net.flintmc.framework.eventbus.internal.method.handler.EventMethodRegistry;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
@@ -53,6 +45,15 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Finds and transforms events, this needs to be called before the assisted factories and
@@ -69,6 +70,7 @@ public class SubscribableService implements LateInjectedTransformer, ServiceHand
   private final EventMethodRegistry methodRegistry;
 
   private final CtClass eventClass;
+  private final CtClass eventDetailsClass;
 
   private final Map<String, EventTransform> pendingTransforms;
   private final Map<String, Phase[]> missingFields;
@@ -83,6 +85,7 @@ public class SubscribableService implements LateInjectedTransformer, ServiceHand
     this.pool = new ClassPool();
     this.pool.appendSystemPath();
     this.eventClass = this.pool.get(Event.class.getName());
+    this.eventDetailsClass = this.pool.get(EventDetails.class.getName());
 
     this.idCounter = new AtomicInteger();
     this.pendingTransforms = new ConcurrentHashMap<>();
@@ -275,6 +278,7 @@ public class SubscribableService implements LateInjectedTransformer, ServiceHand
       return;
     }
 
+    transforming.addInterface(this.eventDetailsClass);
     transforming.addMethod(
         this.makeGetter("getMethods", transforming, transform.getUnmodifiableMethodsField()));
     transforming.addMethod(
@@ -283,9 +287,9 @@ public class SubscribableService implements LateInjectedTransformer, ServiceHand
 
   private CtMethod makeGetter(String name, CtClass declaring, CtField target)
       throws NotFoundException, CannotCompileException {
-    return CtNewMethod.make(String
-        .format("public %s %s() { return %s.%s; }", target.getType().getName(), name,
-            target.getDeclaringClass().getName(), target.getName()), declaring);
+    return CtNewMethod.make(String.format(
+        "public %s %s() { return %s.%s; }", target.getType().getName(), name,
+        target.getDeclaringClass().getName(), target.getName()
+    ), declaring);
   }
-
 }

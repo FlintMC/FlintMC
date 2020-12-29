@@ -20,8 +20,8 @@
 package net.flintmc.framework.eventbus.event.subscribe;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.EventDetails;
 import net.flintmc.processing.autoload.DetectableAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -42,7 +42,7 @@ public @interface Subscribable {
    * Retrieves the phases in which this event can be fired.
    *
    * @return The array of phases that are supported by this event
-   * @see Event#getSupportedPhases()
+   * @see EventDetails#getSupportedPhases()
    */
   Subscribe.Phase[] value();
 

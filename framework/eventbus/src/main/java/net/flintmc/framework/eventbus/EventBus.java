@@ -20,6 +20,8 @@
 package net.flintmc.framework.eventbus;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.EventDetails;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
@@ -39,7 +41,10 @@ public interface EventBus {
    * @param <E>   The type of the fired event.
    * @return The input event
    * @throws IllegalArgumentException If the given phase is not supported by the given Event
-   * @see Event#getSupportedPhases()
+   * @throws IllegalStateException    If the given event doesn't have the {@link Subscribable}
+   *                                  annotation on itself OR on EXACTLY ONE interface or
+   *                                  superclass
+   * @see EventDetails#getSupportedPhases()
    */
   <E extends Event> E fireEvent(E event, Subscribe.Phase phase);
 
@@ -51,7 +56,10 @@ public interface EventBus {
    * @param <E>           The type of the fired event.
    * @return The input event
    * @throws IllegalArgumentException If the given phase is not supported by the given Event
-   * @see Event#getSupportedPhases()
+   * @throws IllegalStateException    If the given event doesn't have the {@link Subscribable}
+   *                                  annotation on itself OR on EXACTLY ONE interface or
+   *                                  superclass
+   * @see EventDetails#getSupportedPhases()
    */
   default <E extends Event> E fireEvent(E event, Hook.ExecutionTime executionTime) {
     switch (executionTime) {
