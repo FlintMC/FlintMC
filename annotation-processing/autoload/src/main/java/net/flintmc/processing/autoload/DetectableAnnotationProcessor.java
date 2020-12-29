@@ -77,7 +77,7 @@ public class DetectableAnnotationProcessor implements Processor {
    */
   private static final String ANNOTATION_META_TEMPLATE =
       "new AnnotationMeta(\n"
-          + "   net.flintmc.processing.autoload.ElementKind.${ELEMENT_KIND}, \n"
+          + "   net.flintmc.processing.autoload.StructureType.${STRUCTURE_TYPE}, \n"
           + "   ${IDENTIFIER}, \n"
           + "   ${ANNOTATION}, \n"
           + "new AnnotationMeta[]{${META_DATA}})";
@@ -260,7 +260,7 @@ public class DetectableAnnotationProcessor implements Processor {
 
     return handleTemplate(
         ImmutableMap.<String, String>builder()
-            .put("ELEMENT_KIND", annotatedElement.getKind().name())
+            .put("STRUCTURE_TYPE", annotatedElement.getKind().name())
             .put("IDENTIFIER", createAnnotationIdentifier(annotatedElement))
             .put(
                 "ANNOTATION",
