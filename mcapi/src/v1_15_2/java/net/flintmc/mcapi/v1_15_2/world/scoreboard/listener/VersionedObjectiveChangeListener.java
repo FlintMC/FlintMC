@@ -47,9 +47,7 @@ public class VersionedObjectiveChangeListener implements ObjectiveChangeListener
     this.scoreboardMapper = scoreboardMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void changeDisplayName(Objective objective, ChatComponent displayName) {
     this.getObjective(objective)
@@ -60,9 +58,7 @@ public class VersionedObjectiveChangeListener implements ObjectiveChangeListener
             });
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void changeRenderType(Objective objective, RenderType renderType) {
     this.getObjective(objective)

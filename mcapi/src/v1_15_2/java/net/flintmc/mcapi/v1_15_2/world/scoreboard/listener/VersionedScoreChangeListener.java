@@ -39,17 +39,13 @@ public class VersionedScoreChangeListener implements ScoreChangeListener {
     this.scoreboardMapper = scoreboardMapper;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void changeScorePoints(Score score, int points) {
     this.getScore(score).ifPresent(s -> s.setScorePoints(points));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public void changeLocked(Score score, boolean locked) {
     this.getScore(score).ifPresent(s -> s.setLocked(locked));
