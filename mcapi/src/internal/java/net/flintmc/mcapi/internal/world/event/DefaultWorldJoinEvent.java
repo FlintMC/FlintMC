@@ -17,20 +17,41 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.server.event;
+package net.flintmc.mcapi.internal.world.event;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.server.ServerAddress;
-import net.flintmc.mcapi.server.event.ServerConnectEvent;
+import net.flintmc.mcapi.world.event.WorldJoinEvent;
 
-@Implement(ServerConnectEvent.class)
-public class DefaultServerConnectEvent extends DefaultServerAddressEvent
-    implements ServerConnectEvent {
+/**
+ * {@inheritDoc}
+ */
+@Implement(WorldJoinEvent.class)
+public class DefaultWorldJoinEvent implements WorldJoinEvent {
+
+  private final String worldName;
+  private final Type type;
 
   @AssistedInject
-  public DefaultServerConnectEvent(@Assisted("address") ServerAddress address) {
-    super(address);
+  public DefaultWorldJoinEvent(@Assisted String worldName, @Assisted Type type) {
+    this.worldName = worldName;
+    this.type = type;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getWorldName() {
+    return this.worldName;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Type getType() {
+    return this.type;
   }
 }

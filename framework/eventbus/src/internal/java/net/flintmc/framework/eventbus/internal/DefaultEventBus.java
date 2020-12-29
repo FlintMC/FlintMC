@@ -21,10 +21,10 @@ package net.flintmc.framework.eventbus.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.List;
-import java.util.stream.Collectors;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.EventDetails;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.eventbus.internal.method.handler.EventMethodRegistry;
@@ -32,6 +32,9 @@ import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Default implementation of the {@link EventBus}.
@@ -57,13 +60,29 @@ public class DefaultEventBus implements EventBus {
     if (event == null) {
       throw new NullPointerException("An error is occurred because the event is null");
     }
+    if (!(event instanceof EventDetails)) {
+      throw new IllegalStateException(
+          "Missing @Subscribable on " + event.getClass().getName());
+    }
 
-    if (phase != Phase.ANY && (!event.getSupportedPhases().contains(phase) || event
-        .getSupportedPhases().contains(Phase.ANY))) {
+    EventDetails details = (EventDetails) event;
+
+    try {
+      details.getSupportedPhases();
+    } catch (IncompatibleClassChangeError error) {
+      throw new IllegalStateException(
+          "You can only fire events of a type that is either annotated with "
+              + "@Subscribable or implements/extends EXACTLY ONE interface/class "
+              + "that is annotated with @Subscribable",
+          error);
+    }
+
+    if (phase != Phase.ANY && (!details.getSupportedPhases().contains(phase)
+        || details.getSupportedPhases().contains(Phase.ANY))) {
       throw new IllegalArgumentException(
           String.format("The event %s doesn't support the phase %s, it only supports %s",
               event.getClass().getName(), phase.name(),
-              event.getSupportedPhases().stream()
+              details.getSupportedPhases().stream()
                   .map(Enum::name)
                   .collect(Collectors.joining(", "))
           ));
@@ -78,6 +97,14 @@ public class DefaultEventBus implements EventBus {
    */
   @Override
   public void registerSubscribeMethod(SubscribeMethod method) {
+    if (!method.getEventClass().isAnnotationPresent(Subscribable.class)) {
+      throw new IllegalStateException(String.format(
+          "Cannot register a SubscribeMethod to an event (%s) that "
+              + "doesn't have the @Subscribable annotation",
+          method.getEventClass().getName()
+      ));
+    }
+
     this.registry.registerForEvents(method);
   }
 
@@ -105,7 +132,7 @@ public class DefaultEventBus implements EventBus {
    * @param <E>   The event type.
    */
   private <E extends Event> void postEvent(E event, Subscribe.Phase phase) {
-    List<SubscribeMethod> methods = event.getMethods();
+    List<SubscribeMethod> methods = ((EventDetails) event).getMethods();
     if (methods.isEmpty()) {
       return;
     }
@@ -126,7 +153,8 @@ public class DefaultEventBus implements EventBus {
    * @param method The subscribed method.
    * @param <E>    The event type.
    */
-  private <E extends Event> void invokeMethod(E event, Subscribe.Phase phase, SubscribeMethod method) {
+  private <E extends Event> void invokeMethod(
+      E event, Subscribe.Phase phase, SubscribeMethod method) {
     try {
       method.invoke(event, phase);
     } catch (Throwable throwable) {
