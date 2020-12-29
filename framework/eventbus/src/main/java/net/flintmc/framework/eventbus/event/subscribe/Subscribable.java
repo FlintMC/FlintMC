@@ -19,17 +19,22 @@
 
 package net.flintmc.framework.eventbus.event.subscribe;
 
-import net.flintmc.framework.eventbus.event.Event;
-import net.flintmc.framework.eventbus.event.EventDetails;
-import net.flintmc.processing.autoload.DetectableAnnotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.EventDetails;
+import net.flintmc.processing.autoload.DetectableAnnotation;
 
 /**
  * Marks a class that implements an {@link Event} as such and must be applied on EVERY event that
  * may be fired.
+ * <p>
+ * If your event is an interface, this annotation has to be on the interface. It can also be on the
+ * implementation, but this is optional UNLESS your implementation implements multiple interfaces
+ * with this annotation. If this is the case, your implementation also requires this annotation to
+ * uniquely identify it.
  *
  * @see Event
  */
