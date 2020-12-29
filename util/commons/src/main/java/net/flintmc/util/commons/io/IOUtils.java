@@ -17,16 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.mappings.utils;
+package net.flintmc.util.commons.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-/**
- * I/O utility class for mapping parser.
- */
 public final class IOUtils {
 
   private IOUtils() {
