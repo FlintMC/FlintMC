@@ -37,14 +37,14 @@ import java.util.*;
  */
 public class AnnotationMeta<T extends Annotation> {
 
-  private final StructureType elementType;
+  private final StructureType structureType;
   private final Identifier identifier;
   private final T annotation;
   private final Collection<AnnotationMeta<?>> metaData;
 
   public AnnotationMeta(
-      StructureType elementType, Identifier identifier, T annotation, AnnotationMeta<?>... metaData) {
-    this.elementType = elementType;
+      StructureType structureType, Identifier identifier, T annotation, AnnotationMeta<?>... metaData) {
+    this.structureType = structureType;
     this.identifier = identifier;
     this.annotation = annotation;
     this.metaData = Arrays.asList(metaData);
@@ -55,9 +55,9 @@ public class AnnotationMeta<T extends Annotation> {
     return annotation;
   }
 
-  /** @return the element type which this annotation annotates */
-  public StructureType getElementKind() {
-    return elementType;
+  /** @return the structure type which this annotation annotates */
+  public StructureType getStructureType() {
+    return structureType;
   }
 
   /**
