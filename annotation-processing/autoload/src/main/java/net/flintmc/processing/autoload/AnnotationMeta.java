@@ -25,7 +25,6 @@ import net.flintmc.processing.autoload.identifier.FieldIdentifier;
 import net.flintmc.processing.autoload.identifier.Identifier;
 import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 
-import net.flintmc.processing.autoload.ElementKind;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -38,13 +37,13 @@ import java.util.*;
  */
 public class AnnotationMeta<T extends Annotation> {
 
-  private final ElementKind elementType;
+  private final StructureType elementType;
   private final Identifier identifier;
   private final T annotation;
   private final Collection<AnnotationMeta<?>> metaData;
 
   public AnnotationMeta(
-      ElementKind elementType, Identifier identifier, T annotation, AnnotationMeta<?>... metaData) {
+      StructureType elementType, Identifier identifier, T annotation, AnnotationMeta<?>... metaData) {
     this.elementType = elementType;
     this.identifier = identifier;
     this.annotation = annotation;
@@ -57,7 +56,7 @@ public class AnnotationMeta<T extends Annotation> {
   }
 
   /** @return the element type which this annotation annotates */
-  public ElementKind getElementKind() {
+  public StructureType getElementKind() {
     return elementType;
   }
 
