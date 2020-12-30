@@ -35,7 +35,9 @@ import java.lang.annotation.Target;
  * Marks a method as an event receiver. The method will then be invoked if the given event has been
  * fired. The method needs to declare at least one parameter which has to be an {@link Event}, the
  * other parameters can be anything from the Injector, {@link Phase} or {@link SubscribeMethod} to
- * get more information about the annotated method in the {@link EventBus}.
+ * get more information about the annotated method in the {@link EventBus}. The {@link Event} in the
+ * parameters needs to have the {@link Subscribable} annotation directly (not through any
+ * superclasses or interfaces).
  *
  * <p>Subscribe methods should be only used in classes annotated with {@link Singleton} and in
  * classes NOT annotated with {@link Service}.
@@ -70,7 +72,9 @@ public @interface Subscribe {
    */
   Phase phase() default Phase.PRE;
 
-  /** An enumeration representing all available phases. */
+  /**
+   * An enumeration representing all available phases.
+   */
   enum Phase {
 
     /**
@@ -78,9 +82,13 @@ public @interface Subscribe {
      * phases.
      */
     ANY,
-    /** Defines the fired event as pre/before. */
+    /**
+     * Defines the fired event as pre/before.
+     */
     PRE,
-    /** Defines the fired event as post/after. */
+    /**
+     * Defines the fired event as post/after.
+     */
     POST
   }
 }

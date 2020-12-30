@@ -31,8 +31,8 @@ import javassist.NotFoundException;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.flintmc.framework.eventbus.internal.exception.ExecutorGenerationException;
 import net.flintmc.framework.eventbus.method.EventExecutor;
 import net.flintmc.framework.eventbus.method.ExecutorFactory;
 import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
@@ -42,12 +42,14 @@ import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.processing.autoload.AnnotationMeta;
 
-/** Service for sending events to receivers. */
+/**
+ * Service for sending events to receivers.
+ */
 @Singleton
 @Service(
     value = {Subscribe.class, PreSubscribe.class, PostSubscribe.class},
     priority = -10000)
-public class EventBusService implements ServiceHandler<Annotation> {
+public class SubscribeService implements ServiceHandler<Annotation> {
 
   private final ExecutorFactory factory;
   private final CtClass eventInterface;
@@ -55,7 +57,7 @@ public class EventBusService implements ServiceHandler<Annotation> {
   private final String version;
 
   @Inject
-  private EventBusService(
+  private SubscribeService(
       ExecutorFactory executorFactory,
       ClassPool pool,
       SubscribeMethodBuilder.Factory methodBuilderFactory,
@@ -67,7 +69,9 @@ public class EventBusService implements ServiceHandler<Annotation> {
     this.version = (String) launchArguments.get("--game-version");
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void discover(AnnotationMeta<Annotation> meta) throws ServiceNotFoundException {
     Annotation subscribe = meta.getAnnotation();
@@ -103,7 +107,7 @@ public class EventBusService implements ServiceHandler<Annotation> {
     try {
       executor = this.factory.create(method);
     } catch (Throwable throwable) {
-      throw new ExecutorGenerationException(
+      throw new ServiceNotFoundException(
           "Encountered an exception while creating an event subscriber for method \""
               + method
               + "\"!",
@@ -122,8 +126,16 @@ public class EventBusService implements ServiceHandler<Annotation> {
       priority = ((Subscribe) subscribe).priority();
       phase = ((Subscribe) subscribe).phase();
     } else {
-      throw new ExecutorGenerationException(
+      throw new ServiceNotFoundException(
           "Unknown subscribe annotation: " + subscribe.annotationType().getName());
+    }
+
+    if (!eventClass.hasAnnotation(Subscribable.class)) {
+      throw new ServiceNotFoundException(
+          String.format("Cannot register %s.%s to an event (%s) that "
+                  + "doesn't have the @Subscribable annotation",
+              method.getDeclaringClass().getName(), method.getName(), eventClass.getName()
+          ));
     }
 
     SubscribeMethodBuilder builder =
