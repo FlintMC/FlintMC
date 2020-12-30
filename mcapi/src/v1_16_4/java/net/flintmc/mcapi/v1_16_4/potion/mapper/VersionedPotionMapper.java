@@ -31,9 +31,9 @@ import net.minecraft.potion.EffectType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
-/** 1.15.2 implementation of the {@link PotionMapper}. */
+/** 1.16.4 implementation of the {@link PotionMapper}. */
 @Singleton
-@Implement(value = PotionMapper.class, version = "1.15.2")
+@Implement(value = PotionMapper.class, version = "1.16.4")
 public class VersionedPotionMapper implements PotionMapper {
 
   private final StatusEffect.Factory effectFactory;

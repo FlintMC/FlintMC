@@ -32,7 +32,7 @@ import java.util.UUID;
 
 /** Default implementation of {@link NetworkPlayerInfoRegistry} */
 @Singleton
-@Implement(value = NetworkPlayerInfoRegistry.class, version = "1.15.2")
+@Implement(value = NetworkPlayerInfoRegistry.class)
 public class DefaultNetworkPlayerInfoRegistry implements NetworkPlayerInfoRegistry {
 
   private final Map<UUID, NetworkPlayerInfo> networkPlayerInfoMap;

@@ -17,16 +17,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.session.v1_16_4;
+package net.flintmc.mcapi.internal.world.codec;
 
-import net.flintmc.transform.shadow.FieldSetter;
-import net.flintmc.transform.shadow.Shadow;
-import net.minecraft.util.Session;
+import java.util.List;
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.world.codec.DatapackCodec;
 
-// Minecraft doesn't allow for changing the session
-@Shadow(value = "net.minecraft.client.Minecraft", version = "1.16.4")
-public interface SessionRefreshableMinecraft {
+@Implement(DatapackCodec.class)
+public class DefaultDatapackCodec implements DatapackCodec {
 
-  @FieldSetter("session")
-  void setSession(Session session);
+  private final List<String> enabled;
+  private final List<String> disabled;
+
+  @AssistedInject
+  private DefaultDatapackCodec(List<String> enabled, List<String> disabled) {
+    this.enabled = enabled;
+    this.disabled = disabled;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<String> getEnabled() {
+    return this.enabled;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<String> getDisabled() {
+    return this.disabled;
+  }
 }

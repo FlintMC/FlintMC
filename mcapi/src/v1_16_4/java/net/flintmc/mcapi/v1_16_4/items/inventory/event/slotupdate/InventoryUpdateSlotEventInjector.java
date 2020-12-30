@@ -69,7 +69,7 @@ public class InventoryUpdateSlotEventInjector {
     this.airStack = registry.getAirType().createStack();
   }
 
-  @Subscribe
+  @Subscribe(version = "1.16.4")
   public void injectUpdatingItemLists(TickEvent event) {
     ClientPlayerEntity player = Minecraft.getInstance().player;
     if (player != null) {
@@ -97,7 +97,7 @@ public class InventoryUpdateSlotEventInjector {
     inventory.updateAllInventories();
   }
 
-  @Subscribe(phase = Phase.ANY)
+  @Subscribe(phase = Phase.ANY, version = "1.16.4")
   public void handleSetSlot(PacketEvent event, Phase phase) {
     if (event.getDirection() != DirectionalEvent.Direction.RECEIVE
         || !(event.getPacket() instanceof SSetSlotPacket)

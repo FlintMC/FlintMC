@@ -77,7 +77,7 @@ public class VersionedGuiInterceptor {
       executionTime = {Hook.ExecutionTime.AFTER, Hook.ExecutionTime.BEFORE},
       className = "net.minecraft.client.gui.IngameGui",
       methodName = "renderGameOverlay",
-      parameters = @Type(reference = float.class))
+      parameters = @Type(reference = float.class), version = "1.15.2")
   public void hookIngameRender(Hook.ExecutionTime executionTime) {
     if (executionTime == Hook.ExecutionTime.AFTER) {
       postScreenRenderCallback();

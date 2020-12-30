@@ -26,6 +26,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.render.text.raw.FontRenderBuilder;
 import net.flintmc.mcapi.render.text.raw.FontRenderer;
 import net.flintmc.mcapi.render.text.raw.StringAlignment;
+import net.flintmc.mcapi.version.VersionHelper;
 
 @Singleton
 @Implement(FontRenderBuilder.class)
@@ -34,6 +35,7 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
   private static final int WHITE = 16777215; // r = 255; g = 255; b = 255; a = 255
 
   private final FontRenderer renderer;
+  private final VersionHelper versionHelper;
   private float x;
   private float y;
   private String text;
@@ -43,10 +45,12 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
   private boolean shadow;
   private float xFactor;
   private float yFactor;
+  private Object matrixStack;
 
   @Inject
-  private DefaultFontRenderBuilder(FontRenderer renderer) {
+  private DefaultFontRenderBuilder(FontRenderer renderer, VersionHelper versionHelper) {
     this.renderer = renderer;
+    this.versionHelper = versionHelper;
     this.reset();
   }
 
@@ -147,19 +151,46 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
 
   /** {@inheritDoc} */
   @Override
+  public FontRenderBuilder matrixStack(Object matrixStack) {
+    this.matrixStack = matrixStack;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void draw() {
     this.validate();
 
-    this.renderer.drawString(
-        this.x,
-        this.y,
-        this.text,
-        this.rgba,
-        this.alignment,
-        this.maxLineLength,
-        this.shadow,
-        this.xFactor,
-        this.yFactor);
+    boolean isNetherUpdate = this.versionHelper.isUnder(16);
+
+    if (isNetherUpdate) {
+
+      Preconditions.checkNotNull(this.matrixStack, "Matrix stack cannot be null!");
+
+      this.renderer.drawString(
+          this.matrixStack,
+          this.x,
+          this.y,
+          this.text,
+          this.rgba,
+          this.alignment,
+          this.maxLineLength,
+          this.shadow,
+          this.xFactor,
+          this.yFactor);
+    } else {
+
+      this.renderer.drawString(
+          this.x,
+          this.y,
+          this.text,
+          this.rgba,
+          this.alignment,
+          this.maxLineLength,
+          this.shadow,
+          this.xFactor,
+          this.yFactor);
+    }
 
     this.reset();
   }

@@ -25,20 +25,24 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.render.text.tooltip.TooltipRenderBuilder;
 import net.flintmc.mcapi.render.text.tooltip.TooltipRenderer;
+import net.flintmc.mcapi.version.VersionHelper;
 
 @Singleton
 @Implement(TooltipRenderBuilder.class)
 public class DefaultTooltipRenderBuilder implements TooltipRenderBuilder {
 
   private final TooltipRenderer renderer;
+  private final VersionHelper versionHelper;
 
   private float x;
   private float y;
   private String text;
+  private Object matrixStack;
 
   @Inject
-  private DefaultTooltipRenderBuilder(TooltipRenderer renderer) {
+  private DefaultTooltipRenderBuilder(TooltipRenderer renderer, VersionHelper versionHelper) {
     this.renderer = renderer;
+    this.versionHelper = versionHelper;
   }
 
   private void validate() {
@@ -69,12 +73,26 @@ public class DefaultTooltipRenderBuilder implements TooltipRenderBuilder {
     return this;
   }
 
+  @Override
+  public TooltipRenderBuilder matrixStack(Object matrixStack) {
+    this.matrixStack = matrixStack;
+    return this;
+  }
+
   /** {@inheritDoc} */
   @Override
   public void draw() {
     this.validate();
 
-    this.renderer.renderTooltip(this.x, this.y, this.text);
+    boolean isNetherUpdate = this.versionHelper.isUnder(16);
+
+    if(isNetherUpdate) {
+      Preconditions.checkNotNull(this.matrixStack, "Matrix stack cannot be null!");
+
+      this.renderer.renderTooltip(this.matrixStack, this.x, this.y, this.text);
+    } else {
+      this.renderer.renderTooltip(this.x, this.y, this.text);
+    }
 
     this.reset();
   }

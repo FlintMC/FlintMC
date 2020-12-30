@@ -28,6 +28,7 @@ import net.flintmc.mcapi.entity.event.EntityRenderNameEvent;
 import net.flintmc.mcapi.entity.mapper.EntityMapper;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.text.ITextComponent;
 
 @Singleton
 public class VersionedEntityRenderNameEventInjector {
@@ -61,13 +62,13 @@ public class VersionedEntityRenderNameEventInjector {
       textBackgroundColor = (int) (opacity * 255.0F) << 24;
     }
 
-    String displayName = (String) args[1];
+    ITextComponent displayName = (ITextComponent) args[1];
     IRenderTypeBuffer buffer = (IRenderTypeBuffer) args[3];
     int packedLight = (int) args[4];
 
     EntityRenderNameEvent event =
         this.eventFactory.create(
-            entity, displayName, matrix, buffer, notSneaking, textBackgroundColor, packedLight, y);
+            entity, displayName.getString(), matrix, buffer, notSneaking, textBackgroundColor, packedLight, y);
 
     this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
   }

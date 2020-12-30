@@ -23,14 +23,15 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.entity.Entity.Classification;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 import net.minecraft.entity.EntityClassification;
 
-/** 1.15.2 implementation of the {@link EntityTypeMapper}. */
+/** 1.16.4 implementation of the {@link EntityTypeMapper}. */
 @Singleton
-@Implement(value = EntityTypeMapper.class, version = "1.15.2")
+@Implement(value = EntityTypeMapper.class, version = "1.16.4")
 public class VersionedEntityTypeMapper implements EntityTypeMapper {
 
   private final EntityType.Factory entityTypeFactory;
@@ -76,6 +77,8 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
         return EntityClassification.AMBIENT;
       case WATER_CREATURE:
         return EntityClassification.WATER_CREATURE;
+      case WATER_AMBIENT:
+        return EntityClassification.WATER_AMBIENT;
       default:
         return EntityClassification.MISC;
     }
@@ -102,6 +105,8 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
         return Entity.Classification.AMBIENT;
       case WATER_CREATURE:
         return Entity.Classification.WATER_CREATURE;
+      case WATER_AMBIENT:
+        return Classification.WATER_AMBIENT;
       case MISC:
         return Entity.Classification.MISC;
       default:

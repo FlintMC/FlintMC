@@ -27,10 +27,13 @@ import net.flintmc.mcapi.world.mapper.WorldMapper;
 import net.flintmc.mcapi.world.storage.WorldConfiguration;
 import net.flintmc.mcapi.world.storage.WorldOverview;
 import net.flintmc.mcapi.world.type.WorldType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.GameType;
+import net.minecraft.server.SessionLockManager;
+import net.minecraft.util.SharedConstants;
 import net.minecraft.world.WorldSettings;
+import net.minecraft.world.storage.VersionData;
 import net.minecraft.world.storage.WorldSummary;
+import java.io.File;
+import java.io.IOException;
 
 @Singleton
 @Implement(value = WorldMapper.class, version = "1.16.4")
@@ -50,61 +53,85 @@ public class VersionedWorldMapper implements WorldMapper {
     this.worldOverviewFactory = worldOverviewFactory;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftWorldSettings(WorldConfiguration configuration) {
-    return null;
+    // TODO: 30.12.2020 Better abstraction for this
+    throw new UnsupportedOperationException();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public WorldConfiguration fromMinecraftWorldSettings(Object handle) {
 
     if (!(handle instanceof WorldSettings)) {
       throw new IllegalStateException(
-          handle.getClass().getName()
-              + " is not an instance of "
-              + WorldSettings.class.getName());
+          handle.getClass().getName() + " is not an instance of " + WorldSettings.class.getName());
     }
 
     WorldSettings worldSettings = (WorldSettings) handle;
 
-    return null;
+    return this.worldConfigurationFactory.create(
+        0L,
+        GameMode.valueOf(worldSettings.getGameType().name()),
+        worldSettings.isHardcoreEnabled(),
+        worldSettings.isCommandsAllowed(),
+        null);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftWorldType(WorldType worldType) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public WorldType fromMinecraftWorldType(Object handle) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Object toMinecraftWorldSummary(WorldOverview worldOverview) {
-    return null;
+    File file = new File(worldOverview.getFileName());
+
+    try {
+      // TODO: 30.12.2020 We need a better api for this.
+      return new WorldSummary(
+          null,
+          new VersionData(0, 0, SharedConstants.getVersion().getName(), SharedConstants.getVersion().getWorldVersion(), !SharedConstants.getVersion().isStable()),
+          worldOverview.getFileName(),
+          worldOverview.requiresConversion(),
+          SessionLockManager.func_232999_b_(file.toPath()),
+          new File(worldOverview.getFileName() + "/icon.png"));
+    } catch (IOException exception) {
+      return null;
+    }
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public WorldOverview fromMinecraftWorldSummary(Object handle) {
-    return null;
+    if (!(handle instanceof WorldSummary)) {
+      return null;
+    }
+
+    WorldSummary worldSummary = (WorldSummary) handle;
+
+    // TODO: 29.12.2020 Disk size
+    return this.worldOverviewFactory.create(
+        worldSummary.getFileName(),
+        worldSummary.getDisplayName(),
+        worldSummary.getLastTimePlayed(),
+        0L, /* Disk size is maybe removed since 1.16.x*/
+        worldSummary.requiresConversion(),
+        GameMode.valueOf(worldSummary.getEnumGameType().name()),
+        worldSummary.isHardcoreModeEnabled(),
+        worldSummary.getCheatsEnabled(),
+        worldSummary.askToOpenWorld(),
+        worldSummary.markVersionInList(),
+        worldSummary.askToOpenWorld(),
+        worldSummary.askToCreateBackup());
   }
 }

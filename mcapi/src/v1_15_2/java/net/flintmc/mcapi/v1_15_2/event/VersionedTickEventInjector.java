@@ -53,7 +53,8 @@ public class VersionedTickEventInjector {
   @Hook(
       executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
       className = "net.minecraft.client.renderer.GameRenderer",
-      methodName = "tick")
+      methodName = "tick",
+      version = "1.15.2")
   public void handleGameRenderTick(ExecutionTime executionTime) {
     this.eventBus.fireEvent(this.gameRenderTickEvent, executionTime);
   }
@@ -61,7 +62,8 @@ public class VersionedTickEventInjector {
   @Hook(
       executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
       className = "net.minecraft.client.renderer.WorldRenderer",
-      methodName = "tick")
+      methodName = "tick",
+      version = "1.15.2")
   public void hookWorldRenderTick(ExecutionTime executionTime) {
     this.eventBus.fireEvent(this.worldRenderTickEvent, executionTime);
   }

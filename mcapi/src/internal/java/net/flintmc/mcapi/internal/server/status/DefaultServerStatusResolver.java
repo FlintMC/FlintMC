@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
-@Implement(value = ServerStatusResolver.class, version = "1.15.2")
+@Implement(value = ServerStatusResolver.class)
 public class DefaultServerStatusResolver implements ServerStatusResolver {
 
   private final Map<ServerAddress, PendingStatusRequest> pendingRequests =

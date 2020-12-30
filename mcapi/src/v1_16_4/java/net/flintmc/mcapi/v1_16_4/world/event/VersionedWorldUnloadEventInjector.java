@@ -42,7 +42,7 @@ public class VersionedWorldUnloadEventInjector {
   }
 
   @Hook(className = "net.minecraft.client.Minecraft", methodName = "unloadWorld", parameters = {
-      @Type(reference = Screen.class)})
+      @Type(reference = Screen.class)},version = "1.16.4")
   public void hookUnloadWorld(Hook.ExecutionTime executionTime) {
     this.eventBus.fireEvent(this.worldUnloadEvent, executionTime);
   }

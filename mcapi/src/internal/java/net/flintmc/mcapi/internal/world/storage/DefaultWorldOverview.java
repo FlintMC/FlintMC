@@ -19,15 +19,14 @@
 
 package net.flintmc.mcapi.internal.world.storage;
 
+import java.io.File;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.storage.WorldOverview;
 
-/**
- * Default implementation of the {@link WorldOverview}.
- */
+/** Default implementation of the {@link WorldOverview}. */
 @Implement(WorldOverview.class)
 public class DefaultWorldOverview implements WorldOverview {
 
@@ -43,21 +42,22 @@ public class DefaultWorldOverview implements WorldOverview {
   private final boolean markWorldInList;
   private final boolean futureWorld;
   private final boolean outdatedWorld;
+  private File icon;
 
   @AssistedInject
   private DefaultWorldOverview(
-          @Assisted("fileName") String fileName,
-          @Assisted("displayName") String displayName,
-          @Assisted("lastTimePlayed") long lastTimePlayed,
-          @Assisted("sizeOnDisk") long sizeOnDisk,
-          @Assisted("requiresConversion") boolean requiresConversion,
-          @Assisted("gameMode") GameMode gameMode,
-          @Assisted("hardcoreMode") boolean hardcoreMode,
-          @Assisted("cheats") boolean cheats,
-          @Assisted("askToOpenWorld") boolean askToOpenWorld,
-          @Assisted("markWorldInList") boolean markWorldInList,
-          @Assisted("futureWorld") boolean futureWorld,
-          @Assisted("outdatedWorld") boolean outdatedWorld) {
+      @Assisted("fileName") String fileName,
+      @Assisted("displayName") String displayName,
+      @Assisted("lastTimePlayed") long lastTimePlayed,
+      @Assisted("sizeOnDisk") long sizeOnDisk,
+      @Assisted("requiresConversion") boolean requiresConversion,
+      @Assisted("gameMode") GameMode gameMode,
+      @Assisted("hardcoreMode") boolean hardcoreMode,
+      @Assisted("cheats") boolean cheats,
+      @Assisted("askToOpenWorld") boolean askToOpenWorld,
+      @Assisted("markWorldInList") boolean markWorldInList,
+      @Assisted("futureWorld") boolean futureWorld,
+      @Assisted("outdatedWorld") boolean outdatedWorld) {
     this.fileName = fileName;
     this.displayName = displayName;
     this.lastTimePlayed = lastTimePlayed;
@@ -73,111 +73,98 @@ public class DefaultWorldOverview implements WorldOverview {
     this.outdatedWorld = outdatedWorld;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public String getFileName() {
     return this.fileName;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
+  @Override
+  public File getFileIcon() {
+    if (this.icon == null) {
+      this.icon = new File(this.fileName + "/icon.png");
+    }
+
+    return this.icon;
+  }
+
+  /** {@inheritDoc} */
   @Override
   public String getDisplayName() {
     return this.displayName;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
+  @Deprecated
   @Override
   public long getSizeOnDisk() {
     return this.sizeOnDisk;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean requiresConversion() {
     return this.requiresConversion;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public long getLastTimePlayed() {
     return this.lastTimePlayed;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public GameMode getGameMode() {
     return this.gameMode;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isHardcoreMode() {
     return this.hardcoreMode;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCheats() {
     return this.cheats;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean markWorldInList() {
     return this.markWorldInList;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean askToOpenWorld() {
     return this.askToOpenWorld;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isFutureWorld() {
     return this.futureWorld;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isOutdatedWorld() {
     return this.outdatedWorld;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int compareTo(WorldOverview overview) {
     if (this.lastTimePlayed < overview.getLastTimePlayed()) {
       return 1;
     } else {
-      return this.lastTimePlayed > overview.getLastTimePlayed() ? -1 : this.fileName.compareTo(overview.getFileName());
+      return this.lastTimePlayed > overview.getLastTimePlayed()
+          ? -1
+          : this.fileName.compareTo(overview.getFileName());
     }
   }
 }

@@ -53,7 +53,8 @@ public class ServerLoginSuccessEventInjector {
       executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
       className = "net.minecraft.client.network.login.ClientLoginNetHandler",
       methodName = "handleLoginSuccess",
-      parameters = @Type(reference = SLoginSuccessPacket.class))
+      parameters = @Type(reference = SLoginSuccessPacket.class),
+      version = "1.16.4")
   public void handleLoginSuccess(
       @Named("instance") Object instance, Hook.ExecutionTime executionTime) {
     ClientLoginNetHandler handler = (ClientLoginNetHandler) instance;

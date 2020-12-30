@@ -1457,6 +1457,7 @@ public interface Entity extends Nameable {
     CREATURE("creature", 10, true, true),
     AMBIENT("ambient", 15, true, false),
     WATER_CREATURE("water_creature", 15, true, false),
+    WATER_AMBIENT("water_ambient", 20, true, false),
     MISC("misc", 15, true, true);
 
     private final String name;

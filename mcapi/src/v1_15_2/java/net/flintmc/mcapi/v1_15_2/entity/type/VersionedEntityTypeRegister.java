@@ -46,7 +46,7 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
     this.entityTypes = Maps.newHashMap();
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @Subscribe(phase = Subscribe.Phase.POST, version = "1.15.2")
   public void convertEntityTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.entity.EntityType<?> entityType : Registry.ENTITY_TYPE) {
       String key = Registry.ENTITY_TYPE.getKey(entityType).getPath();

@@ -26,8 +26,8 @@ import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.type.EntityType;
 
-/** 1.15.2 implementation of the {@link EntityType}. */
-@Implement(value = EntityType.class, version = "1.15.2")
+/** 1.16.4 implementation of the {@link EntityType}. */
+@Implement(value = EntityType.class, version = "1.16.4")
 public class VersionedEntityType implements EntityType {
 
   private final Entity.Classification classification;

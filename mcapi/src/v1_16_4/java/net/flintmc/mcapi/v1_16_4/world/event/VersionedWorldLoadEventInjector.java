@@ -24,14 +24,18 @@ import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtConstructor;
+import javassist.CtMethod;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
+import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
+import net.flintmc.util.mappings.FieldMapping;
 
 @Singleton
 public class VersionedWorldLoadEventInjector {
 
   private static final String LISTENER = "net.minecraft.world.chunk.listener.IChunkStatusListener";
+  private static final String SERVER_WORLD_INFO = "net.minecraft.world.storage.IServerWorldInfo";
 
   private final ClassMappingProvider mappingProvider;
 
@@ -40,7 +44,21 @@ public class VersionedWorldLoadEventInjector {
     this.mappingProvider = mappingProvider;
   }
 
-  @ClassTransform("net.minecraft.world.server.ChunkManager")
+  @ClassTransform(value = "net.minecraft.world.server.ServerWorld", version = "1.16.4")
+  public void transformServerWorld(ClassTransformContext context) throws CannotCompileException {
+    CtClass transforming = context.getCtClass();
+    ClassMapping classMapping = this.mappingProvider.get("net.minecraft.world.server.ServerWorld");
+    FieldMapping fieldMapping = classMapping.getField("field_241103_E_");
+
+    transforming.addMethod(
+        CtMethod.make(
+            String.format(
+                "public %s getServerWorldInfo() {" + "return %s;" + "}",
+                this.mappingProvider.get(SERVER_WORLD_INFO).getName(), fieldMapping.getName()),
+            transforming));
+  }
+
+  @ClassTransform(value = "net.minecraft.world.server.ChunkManager", version = "1.16.4")
   public void transformChunkManager(ClassTransformContext context) throws CannotCompileException {
     CtClass transforming = context.getCtClass();
     CtConstructor constructor = transforming.getDeclaredConstructors()[0];
@@ -50,12 +68,9 @@ public class VersionedWorldLoadEventInjector {
             "%s delegate = $9; $9 = new %s(delegate, $1.%s().%s());",
             LISTENER,
             DelegatingChunkStatusListener.class.getName(),
+            "getServerWorldInfo",
             this.mappingProvider
-                .get("net.minecraft.world.World")
-                .getMethod("getWorldInfo")
-                .getName(),
-            this.mappingProvider
-                .get("net.minecraft.world.storage.WorldInfo")
+                .get("net.minecraft.world.storage.IServerWorldInfo")
                 .getMethod("getWorldName")
                 .getName()));
   }

@@ -45,18 +45,6 @@ public class VersionedWorldTypeRegister implements WorldTypeRegister {
     this.worldTypes = Lists.newArrayList();
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
-  public void loadWorldTypes(OpenGLInitializeEvent event) {
-/*    Registry.
-
-    BiomeGeneratorTypeScreens.func_239079_a_(DimensionGeneratorSettings)
-    for (net.minecraft.world.WorldType worldType : net.minecraft.world.WorldType.WORLD_TYPES) {
-      if (worldType != null) {
-        this.worldTypes.add(this.worldMapper.fromMinecraftWorldType(worldType));
-      }
-    }*/
-  }
-
   /**
    * {@inheritDoc}
    */

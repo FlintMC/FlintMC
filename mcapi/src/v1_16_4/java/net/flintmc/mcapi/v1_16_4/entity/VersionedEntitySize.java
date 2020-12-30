@@ -24,8 +24,8 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.EntitySize;
 
-/** 1.15.2 implementation of the {@link EntitySize}. */
-@Implement(value = EntitySize.class, version = "1.15.2")
+/** 1.16.4 implementation of the {@link EntitySize}. */
+@Implement(value = EntitySize.class, version = "1.16.4")
 public class VersionedEntitySize implements EntitySize {
 
   private float width;

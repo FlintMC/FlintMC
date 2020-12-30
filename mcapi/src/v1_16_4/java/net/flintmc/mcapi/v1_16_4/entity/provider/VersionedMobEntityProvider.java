@@ -27,7 +27,7 @@ import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 
 /** 1.15.2 implementation of the {@link MobEntity.Provider}. */
 @Singleton
-@Implement(value = MobEntity.Provider.class, version = "1.15.2")
+@Implement(value = MobEntity.Provider.class, version = "1.16.4")
 public class VersionedMobEntityProvider implements MobEntity.Provider {
 
   private final MobEntity.Factory mobEntityFactory;

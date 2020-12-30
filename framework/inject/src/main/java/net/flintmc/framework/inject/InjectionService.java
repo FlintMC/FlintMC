@@ -100,7 +100,6 @@ public class InjectionService implements ServiceHandler<Annotation> {
               annotation.value(),
               implementations.get(annotation.value()).getName()));
     }
-    System.out.println("Superclass: " + annotation.value().getName() + ", Name: " + location.getName());
     implementations.put(annotation.value(), location);
   }
 

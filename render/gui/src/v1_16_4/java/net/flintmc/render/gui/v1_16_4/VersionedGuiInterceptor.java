@@ -1,10 +1,32 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.render.gui.v1_16_4;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import javassist.CannotCompileException;
+import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
+import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.render.gui.event.ScreenChangedEvent;
@@ -57,23 +79,34 @@ public class VersionedGuiInterceptor {
   @Hook(
       executionTime = {Hook.ExecutionTime.AFTER, Hook.ExecutionTime.BEFORE},
       className = "net.minecraft.client.gui.IngameGui",
-      methodName = "renderGameOverlay",
-      parameters = @Type(reference = float.class))
+      methodName = "renderIngameGui",
+      parameters = {@Type(reference = MatrixStack.class), @Type(reference = float.class)},
+      version = "1.16.4")
   public void hookIngameRender(Hook.ExecutionTime executionTime) {
     if (executionTime == Hook.ExecutionTime.AFTER) {
       postScreenRenderCallback();
     }
   }
 
-  @ClassTransform
+  @ClassTransform(version = "1.16.4")
   @CtClassFilter(
       className = "net.minecraft.client.gui.screen.Screen",
       value = CtClassFilters.SUBCLASS_OF)
-  private void hookScreenRender(ClassTransformContext context) throws CannotCompileException {
+  private void hookScreenRender(ClassTransformContext context)
+      throws CannotCompileException, NotFoundException {
     MethodMapping renderMapping =
         mappingProvider
             .get("net.minecraft.client.gui.IRenderable")
-            .getMethod("render", int.class, int.class, float.class);
+            .getMethod(
+                "render",
+                ClassPool.getDefault()
+                    .get(
+                        this.mappingProvider
+                            .get("com.mojang.blaze3d.matrix.MatrixStack")
+                            .getName()),
+                CtClass.intType,
+                CtClass.intType,
+                CtClass.floatType);
 
     CtClass screenClass = context.getCtClass();
     for (CtMethod method : screenClass.getDeclaredMethods()) {
@@ -92,12 +125,12 @@ public class VersionedGuiInterceptor {
        */
 
       method.insertBefore(
-          "if(net.flintmc.render.gui.v1_15_2.VersionedGuiInterceptor.preScreenRenderCallback()) {"
+          "if(net.flintmc.render.gui.v1_16_4.VersionedGuiInterceptor.preScreenRenderCallback()) {"
               + "   return;"
               + "}");
 
       method.insertAfter(
-          "net.flintmc.render.gui.v1_15_2.VersionedGuiInterceptor.postScreenRenderCallback();");
+          "net.flintmc.render.gui.v1_16_4.VersionedGuiInterceptor.postScreenRenderCallback();");
 
       break;
     }
@@ -108,7 +141,7 @@ public class VersionedGuiInterceptor {
       methodName = "displayGuiScreen",
       parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
       executionTime = Hook.ExecutionTime.AFTER,
-      version = "1.15.2")
+      version = "1.16.4")
   public void hookScreenChanged() {
     this.windowManager.fireEvent(
         -1,

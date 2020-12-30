@@ -54,4 +54,12 @@ public class VersionedTooltipRenderer implements TooltipRenderer {
 
     this.screen.renderTooltip(lines, (int) x, (int) y);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void renderTooltip(Object matrixStack, float x, float y, String text) {
+    this.renderTooltip(x, y, text);
+  }
 }

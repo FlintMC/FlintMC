@@ -65,7 +65,8 @@ public class InventoryCloseEventInjector {
   @Hook(
       executionTime = Hook.ExecutionTime.BEFORE,
       className = "net.minecraft.client.entity.player.ClientPlayerEntity",
-      methodName = "closeScreen")
+      methodName = "closeScreen",
+      version = "1.16.4")
   public HookResult closeScreen() {
     Inventory inventory = this.controller.getOpenInventory();
     if (inventory == null) {

@@ -21,18 +21,20 @@ package net.flintmc.mcapi.v1_16_4.render.text;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.render.text.raw.FontRenderer;
 import net.flintmc.mcapi.render.text.raw.StringAlignment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.fonts.Font;
+import net.minecraft.util.text.Style;
 
 @Singleton
-@Implement(value = FontRenderer.class, version = "1.15.2")
+@Implement(value = FontRenderer.class, version = "1.16.4")
 public class VersionedFontRenderer implements FontRenderer {
 
   private final Minecraft minecraft;
@@ -51,7 +53,9 @@ public class VersionedFontRenderer implements FontRenderer {
   /** {@inheritDoc} */
   @Override
   public float getCharWidth(char c) {
-    return 0F;
+
+    Font font = ((ShadowFontRenderer) this.minecraft.fontRenderer).getFont(Style.DEFAULT_FONT);
+    return font.func_238557_a_(c).getAdvance(false);
   }
 
   /** {@inheritDoc} */
@@ -61,13 +65,28 @@ public class VersionedFontRenderer implements FontRenderer {
       return 0;
     }
 
-    Font font = ((ShadowFontRenderer) this.minecraft.fontRenderer).getFont();
-    return 0F;
+    Font font = ((ShadowFontRenderer) this.minecraft.fontRenderer).getFont(Style.DEFAULT_FONT);
+    return font.func_238557_a_(c).getAdvance();
   }
 
   /** {@inheritDoc} */
   @Override
   public void drawString(
+      float x,
+      float y,
+      String text,
+      int rgba,
+      StringAlignment alignment,
+      int maxLineLength,
+      boolean shadow,
+      float xFactor,
+      float yFactor) {
+    this.drawString(null, x, y, text, rgba, alignment, maxLineLength, shadow, xFactor, yFactor);
+  }
+
+  @Override
+  public void drawString(
+      Object matrixStack,
       float x,
       float y,
       String text,
@@ -96,12 +115,14 @@ public class VersionedFontRenderer implements FontRenderer {
     }
 
     if (maxLineLength != 0) {
-      //this.minecraft.fontRenderer.drawSplitString(text, (int) x, (int) y, maxLineLength, rgba);
+      text = this.trimStringNewline(text);
+      this.renderSplitString((MatrixStack) matrixStack, text, x, y, maxLineLength, rgba);
     } else {
       if (shadow) {
-        //this.minecraft.fontRenderer.drawStringWithShadow(text, x, y, rgba);
+        this.minecraft.fontRenderer.drawStringWithShadow(
+            (MatrixStack) matrixStack, text, x, y, rgba);
       } else {
-        //this.minecraft.fontRenderer.drawString(text, x, y, rgba);
+        this.minecraft.fontRenderer.drawString((MatrixStack) matrixStack, text, x, y, rgba);
       }
     }
 
@@ -113,18 +134,42 @@ public class VersionedFontRenderer implements FontRenderer {
   /** {@inheritDoc} */
   @Override
   public List<String> listFormattedString(String text, int wrapWidth) {
-    return new CopyOnWriteArrayList<>();
+    return Arrays.asList(this.wrapFormattedString(text, wrapWidth).split("\n"));
   }
 
   /** {@inheritDoc} */
   @Override
   public String wrapFormattedString(String text, int wrapWidth) {
-    return "";
+    return this.minecraft.fontRenderer.func_238412_a_(text, wrapWidth);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getStringWrappedHeight(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.getWordWrappedHeight(text, wrapWidth);
+  }
+
+  private String trimStringNewline(String text) {
+    while(text != null && text.endsWith("\n")) {
+      text = text.substring(0, text.length() - 1);
+    }
+
+    return text;
+  }
+
+  private void renderSplitString(
+      MatrixStack matrixStack, String text, float x, float y, int wrapWidth, int textColor) {
+    List<String> lines = this.listFormattedString(text, wrapWidth);
+
+    for (String line : lines) {
+      float width = x;
+      if (this.minecraft.fontRenderer.getBidiFlag()) {
+        int stringWidth = this.minecraft.fontRenderer.getStringWidth(text);
+        width += wrapWidth - stringWidth;
+      }
+
+      this.minecraft.fontRenderer.drawString(matrixStack, line, width, y, textColor);
+      y += 9;
+    }
   }
 }

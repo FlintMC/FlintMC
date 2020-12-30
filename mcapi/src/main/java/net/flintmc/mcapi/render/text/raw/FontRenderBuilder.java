@@ -31,7 +31,7 @@ package net.flintmc.mcapi.render.text.raw;
  * </ul>
  *
  * @see FontRenderer#drawString(float, float, String, int, StringAlignment, int, boolean, float,
- * float)
+ *     float)
  */
 public interface FontRenderBuilder {
 
@@ -143,13 +143,24 @@ public interface FontRenderBuilder {
   FontRenderBuilder disableShadow();
 
   /**
+   * Changes the matrix stack of this builder. The matrix stack is used to correctly display the
+   * font.
+   *
+   * <p><b>Note:</b> The matrix stack is used for font rendering in 1.16 and later.
+   *
+   * @param matrixStack The non-null matrix stack.
+   * @return This builder for chaining.
+   */
+  FontRenderBuilder matrixStack(Object matrixStack);
+
+  /**
    * Draws the values that have been set in this builder on the screen and resets this builder to be
    * re-used for the next rendering.
    *
-   * @throws NullPointerException     If no text/null or null as the alignment has been set
+   * @throws NullPointerException If no text/null or null as the alignment has been set
    * @throws IllegalArgumentException If a maxLineLength < 0 and/or an empty text has been set
    * @see FontRenderer#drawString(float, float, String, int, StringAlignment, int, boolean, float,
-   * float)
+   *     float)
    */
   void draw() throws NullPointerException, IllegalArgumentException;
 }

@@ -19,13 +19,14 @@
 
 package net.flintmc.mcapi.v1_16_4.render.text;
 
-import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.MethodProxy;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.gui.fonts.Font;
+import net.minecraft.util.ResourceLocation;
 
 @Shadow(value = "net.minecraft.client.gui.FontRenderer", version = "1.16.4")
 public interface ShadowFontRenderer {
 
-  @FieldGetter("font")
-  Font getFont();
+  @MethodProxy
+  Font getFont(ResourceLocation resourceLocation);
 }
