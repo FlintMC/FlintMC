@@ -24,7 +24,6 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.flintmc.framework.eventbus.EventBus;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.event.DirectionalEvent;
@@ -56,8 +55,10 @@ public class PacketEventInjector {
       executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
       className = "net.minecraft.network.NetworkManager",
       methodName = "processPacket",
-      parameters = {@Type(reference = IPacket.class), @Type(reference = INetHandler.class)})
-  public HookResult processIncomingPacket(@Named("args") Object[] args) {
+      parameters = {@Type(reference = IPacket.class), @Type(reference = INetHandler.class)},
+      version = "1.16.4")
+  public HookResult processIncomingPacket(
+      ExecutionTime executionTime, @Named("args") Object[] args) {
     Object packet = args[0];
     ProtocolType type = ProtocolType.getFromPacket((IPacket<?>) packet);
     if (type == null) {
@@ -69,7 +70,7 @@ public class PacketEventInjector {
 
     PacketEvent.ProtocolPhase phase = this.getFlintPhaseFromType(type);
     PacketEvent event = this.eventFactory.create(packet, phase, DirectionalEvent.Direction.RECEIVE);
-    this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
+    this.eventBus.fireEvent(event, executionTime);
 
     return event.isCancelled() ? HookResult.BREAK : HookResult.CONTINUE;
   }
@@ -81,7 +82,8 @@ public class PacketEventInjector {
       parameters = {
         @Type(reference = IPacket.class),
         @Type(reference = GenericFutureListener.class)
-      })
+      },
+      version = "1.16.4")
   public HookResult dispatchOutgoingPacket(
       @Named("args") Object[] args, ExecutionTime executionTime) {
     Object packet = args[0];

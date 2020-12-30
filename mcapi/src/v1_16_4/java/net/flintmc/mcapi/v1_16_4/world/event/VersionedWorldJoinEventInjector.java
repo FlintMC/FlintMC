@@ -17,11 +17,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.world.event;
+package net.flintmc.mcapi.v1_16_4.world.event;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.mojang.datafixers.util.Function4;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
@@ -30,6 +31,9 @@ import net.flintmc.mcapi.server.event.ServerConnectEvent;
 import net.flintmc.mcapi.world.event.WorldJoinEvent;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.Hook.ExecutionTime;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.registry.DynamicRegistries;
+import java.util.function.Function;
 
 @Singleton
 public class VersionedWorldJoinEventInjector {
@@ -43,7 +47,7 @@ public class VersionedWorldJoinEventInjector {
     this.eventFactory = eventFactory;
   }
 
-  @Subscribe(phase = Phase.ANY, version = "1.15.2")
+  @Subscribe(phase = Phase.ANY, version = "1.16.4")
   public void fireSingleplayerWorldJoinEvent(ServerConnectEvent event, Phase phase) {
     WorldJoinEvent joinEvent = this.eventFactory
         .create(event.getAddress().toString(), WorldJoinEvent.Type.MULTIPLAYER);
@@ -52,18 +56,21 @@ public class VersionedWorldJoinEventInjector {
 
   @Hook(
       className = "net.minecraft.client.Minecraft",
-      methodName = "launchIntegratedServer",
+      methodName = "loadWorld",
       parameters = {
           @Type(reference = String.class),
-          @Type(reference = String.class),
-          @Type(typeName = "net.minecraft.world.WorldSettings")
+          @Type(reference = DynamicRegistries.Impl.class),
+          @Type(reference = Function.class),
+          @Type(reference = Function4.class),
+          @Type(reference = boolean.class),
+          @Type(typeName = "net.minecraft.client.Minecraft$WorldSelectionType")
       },
       executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
-      version = "1.15.2"
+      version = "1.16.4"
   )
   public void launchIntegratedServer(ExecutionTime executionTime, @Named("args") Object[] args) {
     WorldJoinEvent event = this.eventFactory
-        .create((String) args[1], WorldJoinEvent.Type.SINGLEPLAYER);
+        .create((String) args[0], WorldJoinEvent.Type.SINGLEPLAYER);
     this.eventBus.fireEvent(event, executionTime);
   }
 }

@@ -48,7 +48,7 @@ public class VersionedItemRenderer implements ItemRenderer {
     this.fontRenderer = Minecraft.getInstance().fontRenderer;
   }
 
-  @PostSubscribe
+  @PostSubscribe(version = "1.15.2")
   public void handleResourceReload(ResourcePackReloadEvent event) {
     this.initialized = true;
   }
