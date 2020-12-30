@@ -17,22 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-plugins {
-    id("java-library")
-}
+package net.flintmc.util.i18n.v1_16_4.shadow;
 
-group = "net.flintmc"
+import java.util.Map;
+import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.Shadow;
 
-dependencies {
-    minecraft("1.15.2", "1.16.4") {
-        annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-        implementation(project(":transform:transform-hook"))
-        implementation(project(":transform:transform-javassist"))
-        implementation(project(":transform:transform-shadow"))
-    }
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
+@Shadow(value = "net.minecraft.client.resources.ClientLanguageMap", version = "1.16.4")
+public interface AccessibleClientLanguageMap {
 
-    api(project(":framework:framework-stereotype"))
-    api(project(":transform:transform-minecraft"))
+  @FieldGetter("field_239495_c_")
+  Map<String, String> getTranslations();
 }
