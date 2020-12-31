@@ -28,6 +28,7 @@ public final class ScreenName {
   public static final String OPTIONS = "options";
   public static final String MULTIPLAYER = "multiplayer";
   public static final String SINGLEPLAYER = "singleplayer";
+  public static final String DUMMY = "dummy";
 
   // Where the screen is from
   private final Type type;

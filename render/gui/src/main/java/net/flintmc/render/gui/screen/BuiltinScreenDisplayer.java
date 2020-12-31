@@ -58,12 +58,12 @@ public interface BuiltinScreenDisplayer {
 
   /**
    * Retrieves the currently active GUI screen, this will never return a screen name of the type
-   * {@link ScreenName.Type#FROM_MINECRAFT} and may not be {@link #supports(ScreenName) supported by
-   * this displayer}. Those screens for example can be the chat, the main menu, etc.
+   * {@link ScreenName.Type#FROM_MINECRAFT} with one exception being {@link ScreenName#DUMMY} and
+   * may not be {@link #supports(ScreenName) supported by this displayer}. Those screens for example
+   * can be the chat, the main menu, etc.
    *
    * @return The currently open screen or {@code null} if there is currently no screen opened (e.g.
    * the ingame screen without the chat opened)
-   * @see #isScreenOpened()
    */
   ScreenName getOpenScreen();
 
@@ -74,6 +74,8 @@ public interface BuiltinScreenDisplayer {
    * with {@link #display(ScreenName, Object...)}. Pressing Escape with the {@link KeyEvent} not
    * being cancelled will also close this dummy and therefore disable that the mouse is being
    * displayed.
+   * <p>
+   * The {@link ScreenName} by {@link #getOpenScreen()} will be {@link ScreenName#DUMMY}.
    */
   void displayMouse();
 }
