@@ -47,12 +47,23 @@ public interface BuiltinScreenDisplayer {
   void display(ScreenName screenName, Object... args);
 
   /**
+   * Retrieves whether there is an active GUI screen. An open screen for example is the chat and the
+   * main menu, it is not the ingame screen itself without any other GUI.
+   *
+   * @return {@code true} if there is a screen opened (e.g. the chat, inventory), {@code false}
+   * otherwise
+   * @see #getOpenScreen()
+   */
+  boolean isScreenOpened();
+
+  /**
    * Retrieves the currently active GUI screen, this will never return a screen name of the type
    * {@link ScreenName.Type#FROM_MINECRAFT} and may not be {@link #supports(ScreenName) supported by
-   * this displayer}.
+   * this displayer}. Those screens for example can be the chat, the main menu, etc.
    *
    * @return The currently open screen or {@code null} if there is currently no screen opened (e.g.
    * the ingame screen without the chat opened)
+   * @see #isScreenOpened()
    */
   ScreenName getOpenScreen();
 
