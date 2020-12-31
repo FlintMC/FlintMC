@@ -20,14 +20,13 @@
 package net.flintmc.render.gui.v1_15_2.screen;
 
 import net.flintmc.render.gui.screen.BuiltinScreenDisplayer;
-import net.flintmc.render.gui.screen.ScreenName;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
 
 /**
  * Dummy screen for 1.15.2 that renders nothing and only exists to display the mouse.
  *
- * @see BuiltinScreenDisplayer#display(ScreenName, Object...)
+ * @see BuiltinScreenDisplayer#displayMouse()
  */
 public class VersionedDummyScreen extends Screen {
 
