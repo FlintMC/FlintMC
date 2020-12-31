@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.render.gui.v1_16_4;
+package net.flintmc.render.gui.v1_16_4.screen;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;

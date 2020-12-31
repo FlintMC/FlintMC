@@ -33,9 +33,6 @@ import net.flintmc.render.gui.event.ScreenRenderEvent;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.transform.hook.Hook;
-import net.flintmc.transform.hook.HookFilter;
-import net.flintmc.transform.hook.HookFilters;
-import net.flintmc.transform.hook.HookResult;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.CtClassFilter;
@@ -44,7 +41,9 @@ import net.flintmc.util.mappings.ClassMappingProvider;
 import net.flintmc.util.mappings.MethodMapping;
 import net.minecraft.client.Minecraft;
 
-/** 1.15.2 Implementation of the gui interceptor */
+/**
+ * 1.15.2 Implementation of the gui interceptor
+ */
 @Singleton
 public class VersionedGuiInterceptor {
 
@@ -70,7 +69,7 @@ public class VersionedGuiInterceptor {
     this.windowManager.renderMinecraftWindow();
   }
 
-  @ClassTransform
+  @ClassTransform("1.15.2")
   @CtClassFilter(
       className = "net.minecraft.client.gui.screen.Screen",
       value = CtClassFilters.SUBCLASS_OF)
@@ -82,10 +81,12 @@ public class VersionedGuiInterceptor {
 
     CtClass screenClass = context.getCtClass();
 
-    CtField field = this.fieldBuilder.create()
-        .target(screenClass)
-        .inject(DefaultWindowManager.class)
-        .generate();
+    CtField field =
+        this.fieldBuilder
+            .create()
+            .target(screenClass)
+            .inject(DefaultWindowManager.class)
+            .generate();
 
     for (CtMethod method : screenClass.getDeclaredMethods()) {
       if (!method.getName().equals(renderMapping.getName())) {
@@ -93,7 +94,9 @@ public class VersionedGuiInterceptor {
       }
 
       method.insertBefore(
-          "if(" + field.getName() + ".isMinecraftWindowRenderedIntrusively()) {"
+          "if("
+              + field.getName()
+              + ".isMinecraftWindowRenderedIntrusively()) {"
               + "   return;"
               + "}");
       break;

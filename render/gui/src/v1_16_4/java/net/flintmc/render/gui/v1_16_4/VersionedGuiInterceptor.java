@@ -21,15 +21,17 @@ package net.flintmc.render.gui.v1_16_4;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
+import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.render.gui.event.ScreenChangedEvent;
+import net.flintmc.render.gui.event.ScreenRenderEvent;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.transform.hook.Hook;
@@ -41,51 +43,32 @@ import net.flintmc.util.mappings.ClassMappingProvider;
 import net.flintmc.util.mappings.MethodMapping;
 import net.minecraft.client.Minecraft;
 
-/** 1.16.4 Implementation of the gui interceptor */
+/**
+ * 1.16.4 Implementation of the gui interceptor
+ */
 @Singleton
 public class VersionedGuiInterceptor {
+
   private final ClassMappingProvider mappingProvider;
   private final DefaultWindowManager windowManager;
   private final ScreenNameMapper nameMapper;
+  private final InjectedFieldBuilder.Factory fieldBuilder;
 
   @Inject
   private VersionedGuiInterceptor(
       ClassMappingProvider mappingProvider,
       DefaultWindowManager windowManager,
-      ScreenNameMapper nameMapper) {
+      ScreenNameMapper nameMapper,
+      InjectedFieldBuilder.Factory fieldBuilder) {
     this.mappingProvider = mappingProvider;
     this.windowManager = windowManager;
     this.nameMapper = nameMapper;
+    this.fieldBuilder = fieldBuilder;
   }
 
-  public static boolean preScreenRenderCallback() {
-    DefaultWindowManager windowManager =
-        InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).windowManager;
-
-    boolean intrusive = windowManager.isMinecraftWindowRenderedIntrusively();
-    if (intrusive) {
-      windowManager.renderMinecraftWindow();
-    }
-
-    return intrusive;
-  }
-
-  public static void postScreenRenderCallback() {
-    DefaultWindowManager windowManager =
-        InjectionHolder.getInjectedInstance(VersionedGuiInterceptor.class).windowManager;
-    windowManager.renderMinecraftWindow();
-  }
-
-  @Hook(
-      executionTime = {Hook.ExecutionTime.AFTER, Hook.ExecutionTime.BEFORE},
-      className = "net.minecraft.client.gui.IngameGui",
-      methodName = "renderIngameGui",
-      parameters = {@Type(reference = MatrixStack.class), @Type(reference = float.class)},
-      version = "1.16.4")
-  public void hookIngameRender(Hook.ExecutionTime executionTime) {
-    if (executionTime == Hook.ExecutionTime.AFTER) {
-      postScreenRenderCallback();
-    }
+  @PostSubscribe(version = "1.16.4")
+  public void hookMinecraftWindowRender(ScreenRenderEvent event) {
+    this.windowManager.renderMinecraftWindow();
   }
 
   @ClassTransform(version = "1.16.4")
@@ -97,41 +80,32 @@ public class VersionedGuiInterceptor {
     MethodMapping renderMapping =
         mappingProvider
             .get("net.minecraft.client.gui.IRenderable")
-            .getMethod(
-                "render",
-                ClassPool.getDefault()
-                    .get(
-                        this.mappingProvider
-                            .get("com.mojang.blaze3d.matrix.MatrixStack")
-                            .getName()),
+            .getMethod("render",
+                ClassPool.getDefault().get("com.mojang.blaze3d.matrix.MatrixStack"),
                 CtClass.intType,
                 CtClass.intType,
                 CtClass.floatType);
 
     CtClass screenClass = context.getCtClass();
+
+    CtField field =
+        this.fieldBuilder
+            .create()
+            .target(screenClass)
+            .inject(DefaultWindowManager.class)
+            .generate();
+
     for (CtMethod method : screenClass.getDeclaredMethods()) {
       if (!method.getName().equals(renderMapping.getName())) {
         continue;
       }
 
-      /*
-       * Adjustment of the render method:
-       *
-       * if(preRenderCallback() {
-       *   return;
-       * }
-       * [... original method ...]
-       * postRenderCallback();
-       */
-
       method.insertBefore(
-          "if(net.flintmc.render.gui.v1_16_4.VersionedGuiInterceptor.preScreenRenderCallback()) {"
+          "if("
+              + field.getName()
+              + ".isMinecraftWindowRenderedIntrusively()) {"
               + "   return;"
               + "}");
-
-      method.insertAfter(
-          "net.flintmc.render.gui.v1_16_4.VersionedGuiInterceptor.postScreenRenderCallback();");
-
       break;
     }
   }
