@@ -156,7 +156,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     if (currentlyLoading.contains(name)) {
       throw new CircularClassLoadException(
           "Circular load detected: " + name + " (caused by: " + String
-              .join(", ", currentlyLoading));
+              .join(", ", currentlyLoading) + ")");
     }
 
     // Filter out internal classes

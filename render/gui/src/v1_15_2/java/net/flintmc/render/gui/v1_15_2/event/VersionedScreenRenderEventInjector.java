@@ -17,13 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.render.event;
+package net.flintmc.render.gui.v1_15_2.event;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.stereotype.type.Type;
-import net.flintmc.mcapi.render.event.ScreenRenderEvent;
+import net.flintmc.render.gui.event.ScreenRenderEvent;
 import net.flintmc.transform.hook.Hook;
 
 @Singleton
