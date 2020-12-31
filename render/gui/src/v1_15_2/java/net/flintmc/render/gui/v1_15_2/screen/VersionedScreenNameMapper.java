@@ -19,33 +19,41 @@
 
 package net.flintmc.render.gui.v1_15_2.screen;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
 @Implement(ScreenNameMapper.class)
 public class VersionedScreenNameMapper implements ScreenNameMapper {
-  // Map of all deobfuscated screen class names to their ScreeName equivalents
-  private static final Map<String, ScreenName> KNOWN_NAMES =
-      ImmutableMap.of(
-          "net.minecraft.client.gui.screen.MainMenuScreen",
-              ScreenName.minecraft(ScreenName.MAIN_MENU),
-          "net.minecraft.client.gui.ResourceLoadProgressGui",
-              ScreenName.minecraft(ScreenName.RESOURCE_LOAD),
-          "net.minecraft.client.gui.screen", ScreenName.minecraft(ScreenName.OPTIONS),
-          "net.minecraft.client.gui.screen.MultiplayerScreen",
-              ScreenName.minecraft(ScreenName.MULTIPLAYER),
-          "net.minecraft.client.gui.screen.WorldSelectionScreen",
-              ScreenName.minecraft(ScreenName.SINGLEPLAYER));
 
-  /** {@inheritDoc} */
+  // Map of all deobfuscated screen class names to their ScreenName equivalents
+  private static final Map<String, ScreenName> KNOWN_NAMES = new HashMap<>();
+
+  static {
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen.MainMenuScreen",
+        ScreenName.minecraft(ScreenName.MAIN_MENU));
+    KNOWN_NAMES.put("net.minecraft.client.gui.ResourceLoadProgressGui",
+        ScreenName.minecraft(ScreenName.RESOURCE_LOAD));
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen", ScreenName.minecraft(ScreenName.OPTIONS));
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen.MultiplayerScreen",
+        ScreenName.minecraft(ScreenName.MULTIPLAYER));
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen.WorldSelectionScreen",
+        ScreenName.minecraft(ScreenName.SINGLEPLAYER));
+    KNOWN_NAMES.put("net.flintmc.render.gui.v1_15_2.screen.VersionedDummyScreen",
+        ScreenName.minecraft(ScreenName.DUMMY));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ScreenName fromClass(String className) {
-    return KNOWN_NAMES.get(className);
+    ScreenName screenName = KNOWN_NAMES.get(className);
+    return screenName != null ? screenName : ScreenName.unknown(className);
   }
 }
