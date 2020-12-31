@@ -87,6 +87,14 @@ public class VersionedBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
    * {@inheritDoc}
    */
   @Override
+  public boolean isScreenOpened() {
+    return Minecraft.getInstance().currentScreen != null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public ScreenName getOpenScreen() {
     Screen screen = Minecraft.getInstance().currentScreen;
     return screen != null ? ScreenName.unknown(screen.getClass().getName()) : null;
