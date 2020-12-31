@@ -17,20 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.render.event;
+package net.flintmc.render.gui.event;
 
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
-import net.flintmc.mcapi.render.image.ImageFullRenderBuilder;
-import net.flintmc.mcapi.render.text.raw.FontRenderBuilder;
 
 /**
  * This event will be fired whenever the screen is rendered. It will be fired in both {@link
  * Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST} phases and it will always be fired on the
- * render thread by Minecraft, which means that in this event for example the {@link
- * FontRenderBuilder} and {@link ImageFullRenderBuilder} can be used to draw objects.
+ * render thread by Minecraft.
  *
  * @see Subscribe
  */
