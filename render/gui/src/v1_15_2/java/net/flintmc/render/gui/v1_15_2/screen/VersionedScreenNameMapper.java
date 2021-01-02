@@ -49,8 +49,8 @@ public class VersionedScreenNameMapper implements ScreenNameMapper {
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.OptionsScreen",
         ScreenName.minecraft(ScreenName.OPTIONS));
 
-    KNOWN_NAMES
-        .put("net.minecraft.client.gui.screen.ChatScreen", ScreenName.minecraft(ScreenName.CHAT));
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen.ChatScreen", 
+        ScreenName.minecraft(ScreenName.CHAT));
     KNOWN_NAMES.put("net.flintmc.render.gui.v1_15_2.screen.VersionedDummyScreen",
         ScreenName.minecraft(ScreenName.DUMMY));
   }
