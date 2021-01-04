@@ -32,11 +32,10 @@ public class DelegatingChunkStatusListener implements IChunkStatusListener {
 
   private final EventBus eventBus;
   private final IChunkStatusListener delegate;
+  private final int totalChunks;
   private DefaultWorldLoadEvent event;
-
   private boolean running;
   private int loadedChunks;
-  private final int totalChunks;
 
   public DelegatingChunkStatusListener(IChunkStatusListener delegate, String worldName) {
     this.eventBus = InjectionHolder.getInjectedInstance(EventBus.class);

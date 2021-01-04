@@ -21,6 +21,8 @@ package net.flintmc.mcapi.v1_16_4.world.mapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.File;
+import java.io.IOException;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
@@ -32,8 +34,6 @@ import net.minecraft.util.SharedConstants;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.VersionData;
 import net.minecraft.world.storage.WorldSummary;
-import java.io.File;
-import java.io.IOException;
 
 @Singleton
 @Implement(value = WorldMapper.class, version = "1.16.4")
@@ -53,14 +53,18 @@ public class VersionedWorldMapper implements WorldMapper {
     this.worldOverviewFactory = worldOverviewFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftWorldSettings(WorldConfiguration configuration) {
     // TODO: 30.12.2020 Better abstraction for this
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldConfiguration fromMinecraftWorldSettings(Object handle) {
 
@@ -79,19 +83,25 @@ public class VersionedWorldMapper implements WorldMapper {
         null);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftWorldType(WorldType worldType) {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldType fromMinecraftWorldType(Object handle) {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftWorldSummary(WorldOverview worldOverview) {
     File file = new File(worldOverview.getFileName());
@@ -100,7 +110,9 @@ public class VersionedWorldMapper implements WorldMapper {
       // TODO: 30.12.2020 We need a better api for this.
       return new WorldSummary(
           null,
-          new VersionData(0, 0, SharedConstants.getVersion().getName(), SharedConstants.getVersion().getWorldVersion(), !SharedConstants.getVersion().isStable()),
+          new VersionData(0, 0, SharedConstants.getVersion().getName(),
+              SharedConstants.getVersion().getWorldVersion(),
+              !SharedConstants.getVersion().isStable()),
           worldOverview.getFileName(),
           worldOverview.requiresConversion(),
           SessionLockManager.func_232999_b_(file.toPath()),
@@ -110,7 +122,9 @@ public class VersionedWorldMapper implements WorldMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldOverview fromMinecraftWorldSummary(Object handle) {
     if (!(handle instanceof WorldSummary)) {

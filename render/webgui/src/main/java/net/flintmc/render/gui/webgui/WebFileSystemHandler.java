@@ -21,7 +21,9 @@ package net.flintmc.render.gui.webgui;
 
 import java.io.FileNotFoundException;
 
-/** Represents a web file system that can be used by the web front-end. */
+/**
+ * Represents a web file system that can be used by the web front-end.
+ */
 public interface WebFileSystemHandler {
 
   /**

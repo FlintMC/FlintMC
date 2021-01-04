@@ -29,7 +29,9 @@ import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
 import net.flintmc.mcapi.player.serializer.gameprofile.PropertyMapSerializer;
 
-/** 1.16.4 implementation of {@link GameProfileSerializer} */
+/**
+ * 1.16.4 implementation of {@link GameProfileSerializer}
+ */
 @Singleton
 @Implement(value = GameProfileSerializer.class, version = "1.16.4")
 public class VersionedGameProfileSerializer
@@ -46,7 +48,8 @@ public class VersionedGameProfileSerializer
   }
 
   /**
-   * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Flint {@link GameProfile}
+   * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Flint {@link
+   * GameProfile}
    *
    * @param profile The game profile to deserialize
    * @return A deserialized {@link GameProfile}

@@ -29,7 +29,9 @@ import net.flintmc.mcapi.world.World;
 import net.flintmc.transform.hook.Hook;
 import net.minecraft.util.math.BlockPos;
 
-/** 1.16.4 implementation nof the world interceptor. */
+/**
+ * 1.16.4 implementation nof the world interceptor.
+ */
 @Singleton
 public class VersionedWorldInterceptor {
 

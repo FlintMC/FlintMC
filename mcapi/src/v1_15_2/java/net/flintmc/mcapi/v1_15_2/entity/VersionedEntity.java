@@ -20,6 +20,14 @@
 package net.flintmc.mcapi.v1_15_2.entity;
 
 import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -44,14 +52,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 @Implement(value = Entity.class, version = "1.15.2")
 public class VersionedEntity implements Entity {

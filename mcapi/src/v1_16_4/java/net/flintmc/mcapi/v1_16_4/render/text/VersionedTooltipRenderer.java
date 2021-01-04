@@ -46,17 +46,22 @@ public class VersionedTooltipRenderer implements TooltipRenderer {
   private VersionedTooltipRenderer(FontRenderer fontRenderer) {
     this.fontRenderer = fontRenderer;
     this.minecraft = Minecraft.getInstance();
-    this.screen = new Screen(new StringTextComponent("")) {};
+    this.screen = new Screen(new StringTextComponent("")) {
+    };
     this.screen.init(minecraft, 0, 0);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void renderTooltip(float x, float y, String text) {
     this.renderTooltip(null, x, y, text);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void renderTooltip(Object matrixStack, float x, float y, String text) {
     int width = this.minecraft.getMainWindow().getScaledWidth();

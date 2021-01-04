@@ -21,14 +21,15 @@ package net.flintmc.mcapi.v1_15_2.player.serializer.gameprofile;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.property.Property;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 import net.flintmc.mcapi.player.serializer.gameprofile.PropertyMapSerializer;
 
-import java.util.Map;
-
-/** 1.15.2. implementation of {@link PropertyMapSerializer} */
+/**
+ * 1.15.2. implementation of {@link PropertyMapSerializer}
+ */
 @Singleton
 @Implement(value = PropertyMapSerializer.class, version = "1.15.2")
 public class VersionedPropertyMapSerializer

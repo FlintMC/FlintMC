@@ -19,6 +19,13 @@
 
 package net.flintmc.render.gui.v1_15_2.windowing;
 
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
@@ -27,14 +34,6 @@ import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.WindowRenderer;
 import net.minecraft.client.Minecraft;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 @Singleton
 @Implement(value = MinecraftWindow.class, version = "1.15.2")

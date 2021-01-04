@@ -41,19 +41,25 @@ public class VersionedFontRenderer implements FontRenderer {
     this.minecraft = Minecraft.getInstance();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getStringWidth(String text) {
     return this.minecraft.fontRenderer.getStringWidth(text);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getCharWidth(char c) {
     return this.minecraft.fontRenderer.getCharWidth(c);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getBoldCharWidth(char c) {
     if (c == ChatColor.PREFIX_CHAR) {
@@ -64,7 +70,9 @@ public class VersionedFontRenderer implements FontRenderer {
     return font.findGlyph(c).getAdvance(true);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawString(
       float x,
@@ -109,7 +117,9 @@ public class VersionedFontRenderer implements FontRenderer {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawString(
       Object matrixStack,
@@ -125,19 +135,25 @@ public class VersionedFontRenderer implements FontRenderer {
     this.drawString(x, y, text, rgba, alignment, maxLineLength, shadow, xFactor, yFactor);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> listFormattedString(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.listFormattedStringToWidth(text, wrapWidth);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String wrapFormattedString(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.wrapFormattedStringToWidth(text, wrapWidth);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getStringWrappedHeight(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.getWordWrappedHeight(text, wrapWidth);

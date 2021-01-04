@@ -27,7 +27,9 @@ import net.flintmc.mcapi.player.gameprofile.property.Property;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 import net.flintmc.mcapi.player.serializer.gameprofile.PropertyMapSerializer;
 
-/** 1.16.4. implementation of {@link PropertyMapSerializer} */
+/**
+ * 1.16.4. implementation of {@link PropertyMapSerializer}
+ */
 @Singleton
 @Implement(value = PropertyMapSerializer.class, version = "1.16.4")
 public class VersionedPropertyMapSerializer

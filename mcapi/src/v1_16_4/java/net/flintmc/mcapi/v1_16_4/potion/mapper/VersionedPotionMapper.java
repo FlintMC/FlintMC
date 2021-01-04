@@ -31,7 +31,9 @@ import net.minecraft.potion.EffectType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
-/** 1.16.4 implementation of the {@link PotionMapper}. */
+/**
+ * 1.16.4 implementation of the {@link PotionMapper}.
+ */
 @Singleton
 @Implement(value = PotionMapper.class, version = "1.16.4")
 public class VersionedPotionMapper implements PotionMapper {
@@ -50,13 +52,17 @@ public class VersionedPotionMapper implements PotionMapper {
     this.potionFactory = potionFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPotion(Potion potion) {
     return net.minecraft.potion.Potion.getPotionTypeForName(potion.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Potion fromMinecraftPotion(Object handle) {
     if (!(handle instanceof net.minecraft.potion.Potion)) {
@@ -81,13 +87,17 @@ public class VersionedPotionMapper implements PotionMapper {
         : this.potionFactory.create(name, effects);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEffect(StatusEffect statusEffect) {
     return this.getEffect(statusEffect.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public StatusEffect fromMinecraftEffect(Object handle) {
     if (!(handle instanceof net.minecraft.potion.Effect)) {
@@ -106,7 +116,9 @@ public class VersionedPotionMapper implements PotionMapper {
         effect.getLiquidColor());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEffectType(StatusEffect.Type effectType) {
     switch (effectType) {
@@ -119,7 +131,9 @@ public class VersionedPotionMapper implements PotionMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public StatusEffect.Type fromMinecraftEffectType(Object handle) {
 
@@ -135,7 +149,9 @@ public class VersionedPotionMapper implements PotionMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEffectInstance(StatusEffectInstance foundation) {
     return new EffectInstance(
@@ -146,7 +162,9 @@ public class VersionedPotionMapper implements PotionMapper {
         foundation.doesShowParticles());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public StatusEffectInstance fromMinecraftEffectInstance(Object handle) {
     if (!(handle instanceof EffectInstance)) {

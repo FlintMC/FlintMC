@@ -28,7 +28,9 @@ import net.flintmc.render.vbo.VertexAttribute;
 import net.flintmc.render.vbo.VertexFormat;
 import net.flintmc.render.vbo.VertexFormatBuilder;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Singleton
 @Implement(value = VertexFormatBuilder.class, version = "1.16.4")
 public class VersionedVertexFormatBuilder implements VertexFormatBuilder {
@@ -42,14 +44,18 @@ public class VersionedVertexFormatBuilder implements VertexFormatBuilder {
     this.vertexFormatFactory = vertexFormatFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VertexFormatBuilder addAttribute(VertexAttribute attribute) {
     this.currentAttributes.add(attribute);
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VertexFormat build() {
     VertexFormat format = this.vertexFormatFactory.create(this.currentAttributes);

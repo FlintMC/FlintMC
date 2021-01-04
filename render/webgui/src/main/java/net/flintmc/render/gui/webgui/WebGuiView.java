@@ -19,8 +19,11 @@
 
 package net.flintmc.render.gui.webgui;
 
-/** Represents a single view (imagine like a browser tab) which can display content. */
+/**
+ * Represents a single view (imagine like a browser tab) which can display content.
+ */
 public interface WebGuiView {
+
   /**
    * Closes the view and disposes its native resources. Note that closing the view can have further
    * impact such as closing the window if the view has wrapped a window.
@@ -34,7 +37,7 @@ public interface WebGuiView {
    * skipped. Views other than the main view may or may not respect it.
    *
    * @param transparent {@code true} if the view should become transparent, {@code false} to make
-   *     the view opaque
+   *                    the view opaque
    */
   void setTransparent(boolean transparent);
 
@@ -62,7 +65,7 @@ public interface WebGuiView {
   /**
    * Transports a Java object to Javascript or deletes a global Javascript object.
    *
-   * @param key The name of the object
+   * @param key   The name of the object
    * @param value The Java instance of the object to set, or {@code null}, to remove it
    */
   default void setGlobalJavascriptObject(String key, Object value) {
@@ -72,8 +75,8 @@ public interface WebGuiView {
   /**
    * Transports a Java object to Javascript or deletes a global Javascript object.
    *
-   * @param <T> The type to bridge
-   * @param key The name of the object
+   * @param <T>   The type to bridge
+   * @param key   The name of the object
    * @param value The Java instance of the object to set, or {@code null}, to remove it
    * @param clazz The class to use as the bridging base
    */

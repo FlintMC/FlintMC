@@ -27,7 +27,6 @@ import net.flintmc.mcapi.world.storage.WorldConfiguration;
 import net.flintmc.mcapi.world.storage.WorldOverview;
 import net.flintmc.mcapi.world.storage.service.WorldLauncher;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.WorldSettings;
 
 /**
  * 1.16.4 implementation of the {@link WorldLauncher}.

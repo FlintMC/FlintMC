@@ -31,7 +31,9 @@ import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.minecraft.util.registry.Registry;
 
-/** 1.16.4 implementation of the {@link EntityTypeRegister}. */
+/**
+ * 1.16.4 implementation of the {@link EntityTypeRegister}.
+ */
 @Singleton
 @Implement(value = EntityTypeRegister.class, version = "1.16.4")
 public class VersionedEntityTypeRegister implements EntityTypeRegister {
@@ -53,13 +55,17 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, EntityType> getEntityTypes() {
     return this.entityTypes;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityType getEntityType(String key) {
     return this.entityTypes.get(key);

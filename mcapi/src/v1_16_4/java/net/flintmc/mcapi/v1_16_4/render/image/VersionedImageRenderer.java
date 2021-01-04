@@ -43,13 +43,17 @@ public class VersionedImageRenderer implements ImageRenderer {
     this.minecraft = Minecraft.getInstance();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void bindTexture(ResourceLocation location) {
     this.minecraft.getTextureManager().bindTexture(location.getHandle());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawFullImage(
       float screenX,
@@ -83,7 +87,9 @@ public class VersionedImageRenderer implements ImageRenderer {
         a);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawPartImage(
       float screenX,

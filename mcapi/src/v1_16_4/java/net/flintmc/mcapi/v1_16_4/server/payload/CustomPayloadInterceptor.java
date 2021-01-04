@@ -46,7 +46,7 @@ import net.flintmc.util.mappings.ClassMappingProvider;
 public class CustomPayloadInterceptor {
 
   private static final int[] LOGGER_WARN_SEQUENCE =
-      new int[] {Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
+      new int[]{Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
 
   private final ClassPool pool;
   private final ClassMapping customPayloadPacketMapping;
@@ -72,8 +72,8 @@ public class CustomPayloadInterceptor {
             .getCtClass()
             .getDeclaredMethod(
                 "handleCustomPayload",
-                new CtClass[] {
-                  this.pool.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
+                new CtClass[]{
+                    this.pool.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
                 });
 
     MethodInfo methodInfo = method.getMethodInfo();

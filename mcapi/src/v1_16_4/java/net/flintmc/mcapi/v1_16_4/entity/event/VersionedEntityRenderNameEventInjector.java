@@ -68,7 +68,8 @@ public class VersionedEntityRenderNameEventInjector {
 
     EntityRenderNameEvent event =
         this.eventFactory.create(
-            entity, displayName.getString(), matrix, buffer, notSneaking, textBackgroundColor, packedLight, y);
+            entity, displayName.getString(), matrix, buffer, notSneaking, textBackgroundColor,
+            packedLight, y);
 
     this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
   }

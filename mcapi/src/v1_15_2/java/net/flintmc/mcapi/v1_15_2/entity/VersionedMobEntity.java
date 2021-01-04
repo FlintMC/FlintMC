@@ -33,7 +33,6 @@ import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.type.hand.Hand;
-import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
@@ -48,11 +47,11 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
 
   @AssistedInject
   public VersionedMobEntity(
-          @Assisted("mobEntity") Object entity,
-          @Assisted("entityType") EntityType entityType,
-          World world,
-          EntityFoundationMapper entityFoundationMapper,
-          EntitySenses.Factory entitySensesFactory) {
+      @Assisted("mobEntity") Object entity,
+      @Assisted("entityType") EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper,
+      EntitySenses.Factory entitySensesFactory) {
     super(entity, entityType, world, entityFoundationMapper);
     this.entitySensesFactory = entitySensesFactory;
 
@@ -65,13 +64,17 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
     this.mobEntity = (net.minecraft.entity.MobEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntitySenses getEntitySenses() {
     return this.entitySensesFactory.create(this);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LivingEntity getAttackTarget() {
     return this.getEntityFoundationMapper()
@@ -79,7 +82,9 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
         .fromMinecraftLivingEntity(this.mobEntity.getAttackTarget());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setAttackTarget(LivingEntity entity) {
     this.mobEntity.setAttackTarget(
@@ -87,79 +92,105 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftLivingEntity(entity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void eatGrassBonus() {
     this.mobEntity.eatGrassBonus();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getTalkInterval() {
     return this.mobEntity.getTalkInterval();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void playAmbientSound() {
     this.mobEntity.playAmbientSound();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void spawnExplosionParticle() {
     this.mobEntity.spawnExplosionParticle();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMoveForward(float amount) {
     this.mobEntity.setMoveForward(amount);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMoveVertical(float amount) {
     this.mobEntity.setMoveVertical(amount);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMoveStrafing(float amount) {
     this.mobEntity.setMoveStrafing(amount);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canDespawn(double distanceToClosestPlayer) {
     return this.mobEntity.canDespawn(distanceToClosestPlayer);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean preventDespawn() {
     return this.mobEntity.preventDespawn();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getVerticalFaceSpeed() {
     return this.mobEntity.getVerticalFaceSpeed();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getHorizontalFaceSpeed() {
     return this.mobEntity.getHorizontalFaceSpeed();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFaceRotationSpeed() {
     return this.mobEntity.getFaceRotSpeed();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void faceEntity(Entity entity, float maxYawIncrease, float maxPitchIncrease) {
     this.mobEntity.faceEntity(
@@ -169,31 +200,41 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
         maxPitchIncrease);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMaxSpawnedInChunk() {
     return this.mobEntity.getMaxSpawnedInChunk();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isMaxGroupSize(int size) {
     return this.mobEntity.isMaxGroupSize(size);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canBeSteered() {
     return this.mobEntity.canBeSteered();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void enablePersistence() {
     this.mobEntity.enablePersistence();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDropChance(EquipmentSlotType slotType, float chance) {
     this.mobEntity.setDropChance(
@@ -202,69 +243,91 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
         chance);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canPickUpLoot() {
     return this.mobEntity.canPickUpLoot();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCanPickUpLoot(boolean canPickUpLoot) {
     this.mobEntity.setCanPickUpLoot(canPickUpLoot);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isNoDespawnRequired() {
     return this.mobEntity.isNoDespawnRequired();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isWithinHomeDistanceCurrentPosition() {
     return this.mobEntity.isWithinHomeDistanceCurrentPosition();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isWithinHomeDistanceFromPosition(BlockPosition position) {
     return this.mobEntity.isWithinHomeDistanceFromPosition(
         (BlockPos) this.getWorld().toMinecraftBlockPos(position));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setHomePositionAndDistance(BlockPosition position, int distance) {
     this.mobEntity.setHomePosAndDistance(
         (BlockPos) this.getWorld().toMinecraftBlockPos(position), distance);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BlockPosition getHomePosition() {
     return this.getWorld().fromMinecraftBlockPos(this.mobEntity.getHomePosition());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getMaximumHomeDistance() {
     return this.mobEntity.getMaximumHomeDistance();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean detachHome() {
     return this.mobEntity.detachHome();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void clearLeashed(boolean sendPacket, boolean dropLead) {
     this.mobEntity.clearLeashed(sendPacket, dropLead);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canBeLeashedTo(PlayerEntity playerEntity) {
     return this.mobEntity.canBeLeashedTo(
@@ -274,13 +337,17 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
                 .toMinecraftPlayerEntity(playerEntity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isLeashed() {
     return this.mobEntity.getLeashed();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity getLeashHolder() {
     return this.getEntityFoundationMapper()
@@ -288,7 +355,9 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
         .fromMinecraftEntity(this.mobEntity.getLeashHolder());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setLeashHolder(Entity entity, boolean leashHolder) {
     this.mobEntity.setLeashHolder(
@@ -297,13 +366,17 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
         leashHolder);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setVehicleEntityId(int vehicleEntityId) {
     this.mobEntity.setVehicleEntityId(vehicleEntityId);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isItemStackInSlot(EquipmentSlotType slotType, ItemStack itemStack) {
     return net.minecraft.entity.MobEntity.isItemStackInSlot(
@@ -313,43 +386,57 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setNoAI(boolean noAI) {
     this.mobEntity.setNoAI(noAI);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isAIDisabled() {
     return this.mobEntity.isAIDisabled();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isLeftHanded() {
     return this.mobEntity.isLeftHanded();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setLeftHanded(boolean leftHanded) {
     this.mobEntity.setLeftHanded(leftHanded);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isAggressive() {
     return this.mobEntity.isAggressive();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setAggressive(boolean aggressive) {
     this.mobEntity.setAggroed(aggressive);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocation getLootTableResourceLocation() {
     return this.getEntityFoundationMapper()
@@ -358,19 +445,25 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
         .getHandle();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setAIMoveSpeed(float speed) {
     this.mobEntity.setAIMoveSpeed(speed);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void checkDespawn() {
     this.mobEntity.checkDespawn();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getItemStackFromSlot(EquipmentSlotType slotType) {
     return this.getEntityFoundationMapper()
@@ -381,7 +474,9 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
                     this.getEntityFoundationMapper().toMinecraftEquipmentSlotType(slotType)));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canPickUpItem(ItemStack stack) {
     return this.mobEntity.canPickUpItem(
@@ -389,7 +484,9 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(stack));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
     return this.mobEntity.replaceItemInInventory(
@@ -398,19 +495,25 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canPassengerSteer() {
     return this.mobEntity.canPassengerSteer();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isServerWorld() {
     return this.mobEntity.isServerWorld();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canAttack(LivingEntity entity) {
     return this.mobEntity.canAttack(
@@ -418,7 +521,9 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void attackEntityAsMob(Entity entity) {
     this.mobEntity.attackEntityAsMob(
@@ -426,21 +531,27 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(entity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.mobEntity.writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.mobEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Hand.Side getPrimaryHand() {
     return this.getEntityFoundationMapper()

@@ -23,8 +23,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.render.image.ImageRenderer;
+import net.flintmc.mcapi.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Matrix4f;
@@ -43,13 +43,17 @@ public class VersionedImageRenderer implements ImageRenderer {
     this.minecraft = Minecraft.getInstance();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void bindTexture(ResourceLocation location) {
     this.minecraft.getTextureManager().bindTexture(location.getHandle());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawFullImage(
       float screenX,
@@ -83,7 +87,9 @@ public class VersionedImageRenderer implements ImageRenderer {
         a);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawPartImage(
       float screenX,

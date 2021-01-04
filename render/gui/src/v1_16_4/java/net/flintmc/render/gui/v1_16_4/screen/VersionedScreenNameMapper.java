@@ -29,20 +29,23 @@ import net.flintmc.render.gui.screen.ScreenNameMapper;
 @Singleton
 @Implement(value = ScreenNameMapper.class, version = "1.16.4")
 public class VersionedScreenNameMapper implements ScreenNameMapper {
+
   // Map of all deobfuscated screen class names to their ScreeName equivalents
   private static final Map<String, ScreenName> KNOWN_NAMES =
       ImmutableMap.of(
           "net.minecraft.client.gui.screen.MainMenuScreen",
-              ScreenName.minecraft(ScreenName.MAIN_MENU),
+          ScreenName.minecraft(ScreenName.MAIN_MENU),
           "net.minecraft.client.gui.ResourceLoadProgressGui",
-              ScreenName.minecraft(ScreenName.RESOURCE_LOAD),
+          ScreenName.minecraft(ScreenName.RESOURCE_LOAD),
           "net.minecraft.client.gui.screen", ScreenName.minecraft(ScreenName.OPTIONS),
           "net.minecraft.client.gui.screen.MultiplayerScreen",
-              ScreenName.minecraft(ScreenName.MULTIPLAYER),
+          ScreenName.minecraft(ScreenName.MULTIPLAYER),
           "net.minecraft.client.gui.screen.WorldSelectionScreen",
-              ScreenName.minecraft(ScreenName.SINGLEPLAYER));
+          ScreenName.minecraft(ScreenName.SINGLEPLAYER));
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ScreenName fromClass(String className) {
     return KNOWN_NAMES.get(className);

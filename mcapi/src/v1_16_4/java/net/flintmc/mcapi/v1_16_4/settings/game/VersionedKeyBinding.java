@@ -28,7 +28,9 @@ import net.flintmc.render.gui.input.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 
-/** 1.16.4 implementation of {@link KeyBinding}. */
+/**
+ * 1.16.4 implementation of {@link KeyBinding}.
+ */
 @Implement(value = KeyBinding.class, version = "1.16.4")
 public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding
     implements KeyBinding {
@@ -41,20 +43,26 @@ public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBindin
     super(description, keyCode, category);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getKeyCode() {
     return ((ShadowKeyBinding) this).getKeyCode().getKeyCode();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void bind(Key key) {
     super.bind(InputMappings.getInputByName(key.getConfigurationName()));
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getLocalizedName() {
     return this.getTranslationKey();

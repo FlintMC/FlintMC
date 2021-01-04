@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.player.PlayerEntity;
 
-/** 1.16.4 implementation of the {@link PlayerEntity.Provider}. */
+/**
+ * 1.16.4 implementation of the {@link PlayerEntity.Provider}.
+ */
 @Singleton
 @Implement(value = PlayerEntity.Provider.class, version = "1.16.4")
 public class VersionedPlayerEntityProvider implements PlayerEntity.Provider {
@@ -40,7 +42,9 @@ public class VersionedPlayerEntityProvider implements PlayerEntity.Provider {
     this.entityTypeRegister = entityTypeRegister;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PlayerEntity get(Object entity) {
     return this.playerEntityFactory.create(entity, this.entityTypeRegister.getEntityType("player"));

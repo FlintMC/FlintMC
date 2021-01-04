@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.player.RemoteClientPlayer;
 
-/** 1.16.4 implementation of the {@link RemoteClientPlayer.Provider}. */
+/**
+ * 1.16.4 implementation of the {@link RemoteClientPlayer.Provider}.
+ */
 @Singleton
 @Implement(value = RemoteClientPlayer.Provider.class, version = "1.16.4")
 public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPlayer.Provider {
@@ -40,7 +42,9 @@ public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPl
     this.entityTypeRegister = entityTypeRegister;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RemoteClientPlayer get(Object entity) {
     return this.remoteClientPlayerEntity.create(

@@ -19,15 +19,14 @@
 
 package net.flintmc.render.gui.v1_15_2.lazy;
 
+import java.util.Map;
+import java.util.function.Consumer;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.MultiplayerScreen;
 import net.minecraft.client.gui.screen.OptionsScreen;
 import net.minecraft.client.gui.screen.WorldSelectionScreen;
-
-import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * Helper classes used for deferred to loading to prevent class transform issues due to early

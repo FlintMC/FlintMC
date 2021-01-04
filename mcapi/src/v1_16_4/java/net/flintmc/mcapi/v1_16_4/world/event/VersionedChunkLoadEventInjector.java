@@ -51,13 +51,13 @@ public class VersionedChunkLoadEventInjector {
       className = "net.minecraft.client.multiplayer.ClientChunkProvider",
       methodName = "loadChunk",
       parameters = {
-        @Type(reference = int.class), // chunkX
-        @Type(reference = int.class), // chunkZ
-        @Type(typeName = "net.minecraft.world.biome.BiomeContainer"),
-        @Type(typeName = "net.minecraft.network.PacketBuffer"),
-        @Type(typeName = "net.minecraft.nbt.CompoundNBT"),
-        @Type(reference = int.class), // size
-        @Type(reference = boolean.class) // isFullChunk
+          @Type(reference = int.class), // chunkX
+          @Type(reference = int.class), // chunkZ
+          @Type(typeName = "net.minecraft.world.biome.BiomeContainer"),
+          @Type(typeName = "net.minecraft.network.PacketBuffer"),
+          @Type(typeName = "net.minecraft.nbt.CompoundNBT"),
+          @Type(reference = int.class), // size
+          @Type(reference = boolean.class) // isFullChunk
       },
       executionTime = Hook.ExecutionTime.BEFORE,
       version = "1.16.4")
@@ -73,8 +73,8 @@ public class VersionedChunkLoadEventInjector {
       className = "net.minecraft.client.world.ClientWorld",
       methodName = "onChunkLoaded",
       parameters = {
-        @Type(reference = int.class), // chunkX
-        @Type(reference = int.class) // chunkZ
+          @Type(reference = int.class), // chunkX
+          @Type(reference = int.class) // chunkZ
       },
       executionTime = Hook.ExecutionTime.AFTER,
       version = "1.16.4")
@@ -90,9 +90,9 @@ public class VersionedChunkLoadEventInjector {
       className = "net.minecraft.client.multiplayer.ClientChunkProvider$ChunkArray",
       methodName = "unload",
       parameters = {
-        @Type(reference = int.class), // chunkIndex
-        @Type(typeName = "net.minecraft.world.chunk.Chunk"),
-        @Type(typeName = "net.minecraft.world.chunk.Chunk")
+          @Type(reference = int.class), // chunkIndex
+          @Type(typeName = "net.minecraft.world.chunk.Chunk"),
+          @Type(typeName = "net.minecraft.world.chunk.Chunk")
       },
       executionTime = Hook.ExecutionTime.BEFORE,
       version = "1.16.4")

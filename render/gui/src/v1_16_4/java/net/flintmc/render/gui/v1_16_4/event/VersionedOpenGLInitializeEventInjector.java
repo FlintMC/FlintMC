@@ -37,7 +37,8 @@ public class VersionedOpenGLInitializeEventInjector {
   @Inject
   public VersionedOpenGLInitializeEventInjector(EventBus eventBus) {
     this.eventBus = eventBus;
-    this.event = new OpenGLInitializeEvent() {};
+    this.event = new OpenGLInitializeEvent() {
+    };
   }
 
   @Hook(

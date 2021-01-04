@@ -39,7 +39,9 @@ public class VersionedAmbientEntityProvider implements AmbientEntity.Provider {
     this.entityTypeMapper = entityTypeMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AmbientEntity get(Object entity) {
     if (!(entity instanceof net.minecraft.entity.passive.AmbientEntity)) {

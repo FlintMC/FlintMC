@@ -30,12 +30,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.util.HandSide;
 
-/** 1.15.2 implementation of {@link SkinConfiguration}. */
+/**
+ * 1.15.2 implementation of {@link SkinConfiguration}.
+ */
 @Singleton
 @ConfigImplementation(value = SkinConfiguration.class, version = "1.16.4")
 public class VersionedSkinConfiguration implements SkinConfiguration {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Set<PlayerClothing> getPlayerClothing() {
     return Minecraft.getInstance().gameSettings.getModelParts().stream()
@@ -43,7 +47,9 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
         .collect(Collectors.toSet());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setModelClothingEnabled(PlayerClothing clothing, boolean enable) {
     Minecraft.getInstance()
@@ -52,7 +58,9 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isModelClothingEnabled(PlayerClothing clothing) {
     PlayerModelPart targetPart = this.toMinecraftObject(clothing);
@@ -65,14 +73,18 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     return false;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void switchModelClothingEnabled(PlayerClothing clothing) {
     Minecraft.getInstance().gameSettings.switchModelPartEnabled(this.toMinecraftObject(clothing));
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Hand.Side getMainHand() {
     switch (Minecraft.getInstance().gameSettings.mainHand) {
@@ -86,7 +98,9 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMainHand(Hand.Side mainHand) {
     switch (mainHand) {

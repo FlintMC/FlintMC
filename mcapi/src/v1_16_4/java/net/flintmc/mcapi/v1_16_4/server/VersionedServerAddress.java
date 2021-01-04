@@ -53,19 +53,25 @@ public class VersionedServerAddress implements ServerAddress {
     this(address.getAddress().getHostName(), address.getPort());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getIP() {
     return this.ip;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getPort() {
     return this.port;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     return this.ip + ":" + this.port;

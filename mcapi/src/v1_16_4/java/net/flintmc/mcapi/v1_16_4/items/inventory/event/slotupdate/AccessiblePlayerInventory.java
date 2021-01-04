@@ -30,23 +30,23 @@ import net.minecraft.util.NonNullList;
 @Shadow(value = "net.minecraft.entity.player.PlayerInventory", version = "1.16.4")
 public interface AccessiblePlayerInventory {
 
-  @FieldSetter("mainInventory")
-  void setMainInventory(NonNullList<ItemStack> list);
-
-  @FieldSetter("armorInventory")
-  void setArmorInventory(NonNullList<ItemStack> list);
-
-  @FieldSetter("offHandInventory")
-  void setOffHandInventory(NonNullList<ItemStack> list);
-
   @FieldGetter("mainInventory")
   NonNullList<ItemStack> getMainInventory();
+
+  @FieldSetter("mainInventory")
+  void setMainInventory(NonNullList<ItemStack> list);
 
   @FieldGetter("armorInventory")
   NonNullList<ItemStack> getArmorInventory();
 
+  @FieldSetter("armorInventory")
+  void setArmorInventory(NonNullList<ItemStack> list);
+
   @FieldGetter("offHandInventory")
   NonNullList<ItemStack> getOffHandInventory();
+
+  @FieldSetter("offHandInventory")
+  void setOffHandInventory(NonNullList<ItemStack> list);
 
   default void updateAllInventories() {
     this.setAllInventories(

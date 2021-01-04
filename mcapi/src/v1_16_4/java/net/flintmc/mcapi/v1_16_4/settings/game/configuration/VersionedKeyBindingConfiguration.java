@@ -34,7 +34,9 @@ import net.flintmc.render.gui.input.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 
-/** 1.16.4 implementation of {@link KeyBindingConfiguration}. */
+/**
+ * 1.16.4 implementation of {@link KeyBindingConfiguration}.
+ */
 @Singleton
 @ConfigImplementation(value = KeyBindingConfiguration.class, version = "1.16.4")
 public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration {
@@ -51,7 +53,7 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
     return keyBinding != null
         ? Key.getByConfigurationName(
-            ((ShadowKeyBinding) keyBinding).getKeyCode().getTranslationKey())
+        ((ShadowKeyBinding) keyBinding).getKeyCode().getTranslationKey())
         : null;
   }
 
@@ -119,7 +121,9 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public KeyBinding getKeyBinding(Keybind keybind) {
     net.minecraft.client.settings.KeyBinding keyBinding =
@@ -127,7 +131,9 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     return keyBinding != null ? this.fromMinecraftObject(keyBinding) : null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<KeyBinding> getKeyBindsHotbar() {
     return Arrays.stream(Minecraft.getInstance().gameSettings.keyBindsHotbar)
@@ -135,7 +141,9 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
         .collect(Collectors.toList());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<KeyBinding> getKeyBindings() {
     return Arrays.stream(Minecraft.getInstance().gameSettings.keyBindings)

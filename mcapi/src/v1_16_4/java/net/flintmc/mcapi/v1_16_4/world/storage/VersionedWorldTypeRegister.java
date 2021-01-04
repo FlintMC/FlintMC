@@ -22,16 +22,10 @@ package net.flintmc.mcapi.v1_16_4.world.storage;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import java.util.List;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegister;
-import net.flintmc.render.gui.event.OpenGLInitializeEvent;
-import net.minecraft.client.gui.screen.BiomeGeneratorTypeScreens;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.BiomeGenerationSettings;
-import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 
 @Implement(value = WorldTypeRegister.class, version = "1.16.4")
 public class VersionedWorldTypeRegister implements WorldTypeRegister {

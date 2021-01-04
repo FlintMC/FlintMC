@@ -42,7 +42,9 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 import org.lwjgl.system.MemoryStack;
 
-/** 1.16.4 implementation of the input interceptor */
+/**
+ * 1.16.4 implementation of the input interceptor
+ */
 @Singleton
 @Implement(value = InputInterceptor.class, version = "1.16.4")
 public class VersionedInputInterceptor implements InputInterceptor {
@@ -58,7 +60,9 @@ public class VersionedInputInterceptor implements InputInterceptor {
     this.callbacks = callbacks;
   }
 
-  /** Called from injected code, see below. The parameters match the hooked function */
+  /**
+   * Called from injected code, see below. The parameters match the hooked function
+   */
   public void interceptKeyboardCallbacks(
       long minecraftWindowHandle,
       GLFWKeyCallbackI keyCallback,
@@ -84,7 +88,9 @@ public class VersionedInputInterceptor implements InputInterceptor {
         });
   }
 
-  /** Called from injected code, see below. The parameters match the hooked function. */
+  /**
+   * Called from injected code, see below. The parameters match the hooked function.
+   */
   public void interceptMouseCallbacks(
       long minecraftWindowHandle,
       GLFWCursorPosCallbackI cursorPosCallback,
@@ -177,7 +183,9 @@ public class VersionedInputInterceptor implements InputInterceptor {
         .insertBefore(String.format("if (%s.windowFocusCallback($$)) { return; }", fieldName));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void signalCurrentMousePosition() {
     MainWindow window = Minecraft.getInstance().getMainWindow();

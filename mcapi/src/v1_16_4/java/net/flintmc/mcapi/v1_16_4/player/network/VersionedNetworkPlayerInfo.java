@@ -35,7 +35,9 @@ import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 
-/** 1.16.4 implementation of the {@link NetworkPlayerInfo} */
+/**
+ * 1.16.4 implementation of the {@link NetworkPlayerInfo}
+ */
 @Implement(value = NetworkPlayerInfo.class, version = "1.16.4")
 public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
 
@@ -53,55 +55,73 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     this.entityFoundationMapper = entityFoundationMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile getGameProfile() {
     return this.gameProfile;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getResponseTime() {
     return this.getPlayerInfo().getResponseTime();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameMode getGameMode() {
     return this.entityFoundationMapper.fromMinecraftGameType(this.getPlayerInfo().getGameType());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PlayerTeam getPlayerTeam() {
     return this.scoreboard.getPlayerTeam(this.gameProfile.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getLastHealth() {
     return this.getPlayerInfo().getLastHealth();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getDisplayHealth() {
     return this.getPlayerInfo().getDisplayHealth();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getLastHealthTime() {
     return this.getPlayerInfo().getLastHealthTime();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getHealthBlinkTime() {
     return this.getPlayerInfo().getHealthBlinkTime();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getRenderVisibilityId() {
     return this.getPlayerInfo().getRenderVisibilityId();
@@ -117,25 +137,33 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
     return this.entityFoundationMapper.getComponentMapper().fromMinecraft(displayName);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SkinModel getSkinModel() {
     return SkinModel.getModel(this.getPlayerInfo().getSkinType());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocation getSkinLocation() {
     return this.mapLocation(this.getPlayerInfo().getLocationSkin());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocation getCloakLocation() {
     return this.mapLocation(this.getPlayerInfo().getLocationCape());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocation getElytraLocation() {
     return this.mapLocation(this.getPlayerInfo().getLocationElytra());
@@ -151,19 +179,25 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
         .get(minecraftLocation.getNamespace(), minecraftLocation.getPath());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasSkin() {
     return this.getSkinLocation() != null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasCloak() {
     return this.getCloakLocation() != null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasElytra() {
     return this.getElytraLocation() != null;

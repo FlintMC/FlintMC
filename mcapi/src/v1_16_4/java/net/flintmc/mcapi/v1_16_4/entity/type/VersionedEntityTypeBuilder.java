@@ -27,7 +27,9 @@ import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.entity.type.EntityTypeBuilder;
 
-/** 1.15.2 implementation of the {@link EntityTypeBuilder}. */
+/**
+ * 1.15.2 implementation of the {@link EntityTypeBuilder}.
+ */
 @Implement(value = EntityTypeBuilder.class, version = "1.15.2")
 public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
 
@@ -56,42 +58,54 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
     this.size = entitySizeFactory.create(0.6F, 1.8F, false);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder size(float width, float height) {
     this.size = this.entitySizeFactory.create(width, height, false);
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder disableSummoning() {
     this.summonable = false;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder disableSerialization() {
     this.serializable = false;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder immuneToFire() {
     this.immuneToFire = true;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder canSpawnFarFromPlayer() {
     this.canSpawnFarFromPlayer = true;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityType build(String id) {
     return this.entityTypeFactory.create(

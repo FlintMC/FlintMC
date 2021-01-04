@@ -38,7 +38,9 @@ import net.flintmc.render.vbo.VertexBufferObject;
 import net.flintmc.render.vbo.VertexBuilder;
 import net.flintmc.render.vbo.VertexFormat;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(value = VertexBufferObject.class, version = "1.16.4")
 public class VersionedVertexBufferObject implements VertexBufferObject {
 
@@ -62,27 +64,35 @@ public class VersionedVertexBufferObject implements VertexBufferObject {
     this.deleted = false;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VertexBuilder addVertex() {
-    if (isAvailable)
+    if (isAvailable) {
       throw new IllegalStateException(
           "This VBO is already pushed to the GPU, vertices can't be added anymore.");
+    }
     VertexBuilder builder = this.vertexBuilderFactory.create(this);
     this.vertices.add(builder);
     return builder;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addVertex(VertexBuilder vertexBuilder) {
-    if (isAvailable)
+    if (isAvailable) {
       throw new IllegalStateException(
           "This VBO is already pushed to the GPU, vertices can't be added anymore.");
+    }
     this.vertices.add(vertexBuilder);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<VertexBuilder> getVertices() {
     return Collections.unmodifiableList(this.vertices);
@@ -92,10 +102,14 @@ public class VersionedVertexBufferObject implements VertexBufferObject {
     return this.vertices.size();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void pushToGPU() {
-    if (isAvailable) throw new IllegalStateException("This VBO is already pushed to the GPU.");
+    if (isAvailable) {
+      throw new IllegalStateException("This VBO is already pushed to the GPU.");
+    }
     int totalSize = vertices.size() * vertexFormat.getVertexSize();
     float[] buffer = new float[totalSize];
     int offset = 0;
@@ -108,13 +122,17 @@ public class VersionedVertexBufferObject implements VertexBufferObject {
     this.isAvailable = true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getID() {
     return this.id;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void bind() {
     this.previousVbo = glGetInteger(GL_ARRAY_BUFFER_BINDING);
@@ -122,28 +140,38 @@ public class VersionedVertexBufferObject implements VertexBufferObject {
     glBindBuffer(GL_ARRAY_BUFFER, this.id);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void unbind() {
     glBindBuffer(GL_ARRAY_BUFFER, Math.max(this.previousVbo, 0));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isAvailable() {
     return this.isAvailable;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VertexFormat getFormat() {
     return this.vertexFormat;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void delete() {
-    if (this.deleted) throw new IllegalStateException("The VBO was already deleted.");
+    if (this.deleted) {
+      throw new IllegalStateException("The VBO was already deleted.");
+    }
     this.bind();
     glDeleteBuffers(this.id);
     this.unbind();

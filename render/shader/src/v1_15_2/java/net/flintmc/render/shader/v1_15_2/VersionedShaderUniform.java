@@ -19,6 +19,24 @@
 
 package net.flintmc.render.shader.v1_15_2;
 
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glUniform1f;
+import static org.lwjgl.opengl.GL20.glUniform1fv;
+import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniform2f;
+import static org.lwjgl.opengl.GL20.glUniform2fv;
+import static org.lwjgl.opengl.GL20.glUniform2i;
+import static org.lwjgl.opengl.GL20.glUniform3f;
+import static org.lwjgl.opengl.GL20.glUniform3fv;
+import static org.lwjgl.opengl.GL20.glUniform3i;
+import static org.lwjgl.opengl.GL20.glUniform4f;
+import static org.lwjgl.opengl.GL20.glUniform4fv;
+import static org.lwjgl.opengl.GL20.glUniform4i;
+import static org.lwjgl.opengl.GL20.glUniformMatrix2fv;
+import static org.lwjgl.opengl.GL20.glUniformMatrix3fv;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+
+import java.nio.FloatBuffer;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -26,11 +44,9 @@ import net.flintmc.render.shader.ShaderProgram;
 import net.flintmc.render.shader.ShaderUniform;
 import net.flintmc.render.shader.ShaderUniformProvider;
 
-import java.nio.FloatBuffer;
-
-import static org.lwjgl.opengl.GL20.*;
-
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(value = ShaderUniform.class, version = "1.15.2")
 public class VersionedShaderUniform implements ShaderUniform {
 
@@ -63,147 +79,197 @@ public class VersionedShaderUniform implements ShaderUniform {
     this.location = glGetUniformLocation(this.shaderProgram.getProgramID(), this.name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getLocation() {
     return this.location;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set1f(float v0) {
     glUniform1f(this.location, v0);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set2f(float v0, float v1) {
     glUniform2f(this.location, v0, v1);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set3f(float v0, float v1, float v2) {
     glUniform3f(this.location, v0, v1, v2);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set4f(float v0, float v1, float v2, float v3) {
     glUniform4f(this.location, v0, v1, v2, v3);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set1i(int v0) {
     glUniform1i(this.location, v0);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set2i(int v0, int v1) {
     glUniform2i(this.location, v0, v1);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set3i(int v0, int v1, int v2) {
     glUniform3i(this.location, v0, v1, v2);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set4i(int v0, int v1, int v2, int v3) {
     glUniform4i(this.location, v0, v1, v2, v3);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set1fv(float[] value) {
     glUniform1fv(this.location, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set1fv(FloatBuffer value) {
     glUniform1fv(this.location, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set2fv(float[] value) {
     glUniform2fv(this.location, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set2fv(FloatBuffer value) {
     glUniform2fv(this.location, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set3fv(float[] value) {
     glUniform3fv(this.location, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set3fv(FloatBuffer value) {
     glUniform3fv(this.location, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set4fv(float[] value) {
     glUniform4fv(this.location, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void set4fv(FloatBuffer value) {
     glUniform4fv(this.location, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMatrix2fv(boolean transpose, float[] value) {
     glUniformMatrix2fv(this.location, transpose, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMatrix2fv(boolean transpose, FloatBuffer value) {
     glUniformMatrix2fv(this.location, transpose, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMatrix3fv(boolean transpose, float[] value) {
     glUniformMatrix3fv(this.location, transpose, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMatrix3fv(boolean transpose, FloatBuffer value) {
     glUniformMatrix3fv(this.location, transpose, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMatrix4fv(boolean transpose, float[] value) {
     glUniformMatrix4fv(this.location, transpose, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMatrix4fv(boolean transpose, FloatBuffer value) {
     glUniformMatrix4fv(this.location, transpose, value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateFromValueProvider() {
-    if (this.shaderUniformProvider != null) this.shaderUniformProvider.apply(this);
+    if (this.shaderUniformProvider != null) {
+      this.shaderUniformProvider.apply(this);
+    }
   }
 }

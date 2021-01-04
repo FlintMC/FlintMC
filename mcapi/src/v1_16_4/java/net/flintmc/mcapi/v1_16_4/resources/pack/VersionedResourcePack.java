@@ -27,8 +27,11 @@ import net.flintmc.mcapi.resources.pack.ResourcePack;
 import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.resources.ResourcePackType;
 
-/** 1.16.4 implementation of a Flint resource pack */
+/**
+ * 1.16.4 implementation of a Flint resource pack
+ */
 public class VersionedResourcePack implements ResourcePack {
+
   private final ResourcePackInfo info;
 
   /**
@@ -40,29 +43,39 @@ public class VersionedResourcePack implements ResourcePack {
     this.info = info;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public Collection<String> getNameSpaces() {
     return this.info.getResourcePack().getResourceNamespaces(ResourcePackType.CLIENT_RESOURCES);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public InputStream getStream(ResourceLocation resourceLocation) throws IOException {
     return this.info
         .getResourcePack()
         .getResourceStream(ResourcePackType.CLIENT_RESOURCES, resourceLocation.getHandle());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public String getName() {
     return info.getName();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public String getDescription() {
     return info.getDescription().getString();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public String getTitle() {
     return info.getTitle().getString();
   }

@@ -48,7 +48,9 @@ import net.flintmc.render.shader.ShaderProgram;
 import net.flintmc.render.shader.ShaderUniform;
 import org.apache.commons.io.IOUtils;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(value = ShaderProgram.class, version = "1.15.2")
 public class VersionedShaderProgram implements ShaderProgram {
 
@@ -67,7 +69,9 @@ public class VersionedShaderProgram implements ShaderProgram {
     this.linked = true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addVertexShader(InputStream shader) throws ShaderException {
     try {
@@ -77,7 +81,9 @@ public class VersionedShaderProgram implements ShaderProgram {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addFragmentShader(InputStream shader) throws ShaderException {
     try {
@@ -87,19 +93,25 @@ public class VersionedShaderProgram implements ShaderProgram {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addVertexShader(String shader) throws ShaderException {
-    if (this.vertexShader != 0)
+    if (this.vertexShader != 0) {
       throw new ShaderException("Only one vertex shader can be added to a shader program.");
+    }
     this.vertexShader = addShader(shader, GL_VERTEX_SHADER);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addFragmentShader(String shader) throws ShaderException {
-    if (this.fragmentShader != 0)
+    if (this.fragmentShader != 0) {
       throw new ShaderException("Only one fragment shader can be added to a shader program.");
+    }
     this.fragmentShader = addShader(shader, GL_FRAGMENT_SHADER);
   }
 
@@ -115,13 +127,19 @@ public class VersionedShaderProgram implements ShaderProgram {
     return shaderId;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void link() throws ShaderException {
     this.shaderProgram = glCreateProgram();
 
-    if (this.vertexShader != 0) glAttachShader(this.shaderProgram, this.vertexShader);
-    if (this.fragmentShader != 0) glAttachShader(this.shaderProgram, this.fragmentShader);
+    if (this.vertexShader != 0) {
+      glAttachShader(this.shaderProgram, this.vertexShader);
+    }
+    if (this.fragmentShader != 0) {
+      glAttachShader(this.shaderProgram, this.fragmentShader);
+    }
 
     glLinkProgram(this.shaderProgram);
 
@@ -131,56 +149,77 @@ public class VersionedShaderProgram implements ShaderProgram {
 
     this.linked = true;
 
-    if (this.vertexShader != 0) glDeleteShader(this.vertexShader);
-    if (this.fragmentShader != 0) glDeleteShader(this.fragmentShader);
+    if (this.vertexShader != 0) {
+      glDeleteShader(this.vertexShader);
+    }
+    if (this.fragmentShader != 0) {
+      glDeleteShader(this.fragmentShader);
+    }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void useShader() {
-    if (this.shaderProgram <= 0)
+    if (this.shaderProgram <= 0) {
       throw new IllegalStateException("Shader program has not been successfully linked yet.");
+    }
     glUseProgram(shaderProgram);
     this.updateProvidedUniforms();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void stopShader() {
     glUseProgram(0);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateProvidedUniforms() {
     providedShaderUniforms.forEach(ShaderUniform::updateFromValueProvider);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addProvidedUniform(ShaderUniform uniform) {
     this.providedShaderUniforms.add(uniform);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getProgramID() {
     return this.shaderProgram;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getVertexShaderID() {
     return this.vertexShader;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFragmentShaderID() {
     return this.fragmentShader;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isLinked() {
     return this.linked;

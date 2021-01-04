@@ -80,8 +80,8 @@ public class PacketEventInjector {
       className = "net.minecraft.network.NetworkManager",
       methodName = "dispatchPacket",
       parameters = {
-        @Type(reference = IPacket.class),
-        @Type(reference = GenericFutureListener.class)
+          @Type(reference = IPacket.class),
+          @Type(reference = GenericFutureListener.class)
       },
       version = "1.16.4")
   public HookResult dispatchOutgoingPacket(

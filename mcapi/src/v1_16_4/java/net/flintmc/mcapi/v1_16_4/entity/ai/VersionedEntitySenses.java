@@ -27,7 +27,9 @@ import net.flintmc.mcapi.entity.MobEntity;
 import net.flintmc.mcapi.entity.ai.EntitySenses;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 
-/** 1.16.4 implementation of the {@link EntitySenses}. */
+/**
+ * 1.16.4 implementation of the {@link EntitySenses}.
+ */
 @Implement(value = EntitySenses.class, version = "1.16.4")
 public class VersionedEntitySenses extends net.minecraft.entity.ai.EntitySenses
     implements EntitySenses {
@@ -43,7 +45,9 @@ public class VersionedEntitySenses extends net.minecraft.entity.ai.EntitySenses
     this.entityFoundationMapper = entityFoundationMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canSeeEntity(Entity entity) {
     return this.canSee(

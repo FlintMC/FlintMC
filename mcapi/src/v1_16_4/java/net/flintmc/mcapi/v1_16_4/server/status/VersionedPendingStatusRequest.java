@@ -107,25 +107,33 @@ public class VersionedPendingStatusRequest
     this.state = PendingStatusState.IDLE;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<ServerStatus> getFuture() {
     return this.future;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ServerAddress getTargetAddress() {
     return this.targetAddress;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PendingStatusState getState() {
     return this.state;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void start() throws UnknownHostException {
     Preconditions.checkState(
@@ -146,7 +154,9 @@ public class VersionedPendingStatusRequest
     this.state = PendingStatusState.RECEIVING;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getStartTimestamp() {
     return this.startTimestamp;
@@ -192,7 +202,7 @@ public class VersionedPendingStatusRequest
 
     ServerFavicon favicon =
         this.response.getFavicon() != null
-                && this.response.getFavicon().startsWith(DefaultServerFavicon.PREFIX)
+            && this.response.getFavicon().startsWith(DefaultServerFavicon.PREFIX)
             ? this.faviconFactory.createCustom(this.response.getFavicon())
             : this.defaultFavicon;
 

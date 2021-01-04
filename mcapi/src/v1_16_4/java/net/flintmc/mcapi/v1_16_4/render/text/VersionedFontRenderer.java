@@ -44,13 +44,17 @@ public class VersionedFontRenderer implements FontRenderer {
     this.minecraft = Minecraft.getInstance();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getStringWidth(String text) {
     return this.minecraft.fontRenderer.getStringWidth(text);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getCharWidth(char c) {
 
@@ -58,7 +62,9 @@ public class VersionedFontRenderer implements FontRenderer {
     return font.func_238557_a_(c).getAdvance(false);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getBoldCharWidth(char c) {
     if (c == ChatColor.PREFIX_CHAR) {
@@ -69,7 +75,9 @@ public class VersionedFontRenderer implements FontRenderer {
     return font.func_238557_a_(c).getAdvance();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawString(
       float x,
@@ -131,26 +139,32 @@ public class VersionedFontRenderer implements FontRenderer {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> listFormattedString(String text, int wrapWidth) {
     return Arrays.asList(this.wrapFormattedString(text, wrapWidth).split("\n"));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String wrapFormattedString(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.func_238412_a_(text, wrapWidth);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getStringWrappedHeight(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.getWordWrappedHeight(text, wrapWidth);
   }
 
   private String trimStringNewline(String text) {
-    while(text != null && text.endsWith("\n")) {
+    while (text != null && text.endsWith("\n")) {
       text = text.substring(0, text.length() - 1);
     }
 

@@ -45,19 +45,25 @@ public class VersionedServerController implements ServerController {
     this.connectedServer = connectedServer;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isConnected() {
     return this.connectedServer.isConnected();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ConnectedServer getConnectedServer() {
     return this.isConnected() ? this.connectedServer : null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void disconnectFromServer() {
     if (Minecraft.getInstance().world != null) {
@@ -66,7 +72,9 @@ public class VersionedServerController implements ServerController {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void connectToServer(ServerAddress address) {
     // rendering has to be called from Minecraft's main thread

@@ -27,10 +27,13 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 
-/** 1.16.4 implementation of a minecraft resource location. */
+/**
+ * 1.16.4 implementation of a minecraft resource location.
+ */
 @Implement(value = ResourceLocation.class, version = "1.16.4")
 public class VersionedResourceLocation extends net.minecraft.util.ResourceLocation
     implements ResourceLocation {
+
   @AssistedInject
   private VersionedResourceLocation(@Assisted("fullPath") String fullPath) {
     super(fullPath);
@@ -42,18 +45,24 @@ public class VersionedResourceLocation extends net.minecraft.util.ResourceLocati
     super(nameSpace, path);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @SuppressWarnings("unchecked")
   public <T> T getHandle() {
     return (T) this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public InputStream openInputStream() throws IOException {
     return Minecraft.getInstance().getResourceManager().getResource(this).getInputStream();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean exists() {
     return Minecraft.getInstance().getResourceManager().hasResource(this);

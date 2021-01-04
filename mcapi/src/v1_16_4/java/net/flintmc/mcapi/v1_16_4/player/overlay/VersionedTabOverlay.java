@@ -28,7 +28,9 @@ import net.flintmc.mcapi.player.overlay.TabOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 
-/** 1.16.4 implementation of {@link TabOverlay} */
+/**
+ * 1.16.4 implementation of {@link TabOverlay}
+ */
 @Singleton
 @Implement(value = TabOverlay.class, version = "1.16.4")
 public class VersionedTabOverlay implements TabOverlay {

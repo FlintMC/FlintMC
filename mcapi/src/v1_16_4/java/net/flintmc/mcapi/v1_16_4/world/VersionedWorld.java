@@ -40,7 +40,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
-/** 1.15.2 implementation of {@link World}. */
+/**
+ * 1.15.2 implementation of {@link World}.
+ */
 @Singleton
 @Implement(value = World.class, version = "1.16.4")
 public class VersionedWorld implements World {
@@ -74,13 +76,17 @@ public class VersionedWorld implements World {
             .getWorld(Minecraft.getInstance().world.getDimensionKey());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getSeed() {
     return this.getServerWorld() == null ? 0L : this.getServerWorld().getSeed();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BlockPosition getSpawnPoint() {
     return this.getServerWorld() == null
@@ -88,13 +94,17 @@ public class VersionedWorld implements World {
         : this.fromMinecraftBlockPos(this.getServerWorld().getSpawnPoint());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getCurrentMoonPhaseFactor() {
     return this.getServerWorld() == null ? 0F : this.getServerWorld().getMoonFactor();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getCelestialAngle(float partialTicks) {
     return this.getServerWorld() == null
@@ -102,13 +112,17 @@ public class VersionedWorld implements World {
         : this.getServerWorld().getCelestialAngleRadians(partialTicks);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMoonPhase() {
     return Minecraft.getInstance().world.getMoonPhase();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public DifficultyLocal getDifficulty(BlockPosition position) {
     ClientWorld world = Minecraft.getInstance().world;
@@ -125,7 +139,9 @@ public class VersionedWorld implements World {
         this.getDifficulty(), this.getDayTime(), chunkInhabitedTime, moonPhaseFactory);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Difficulty getDifficulty() {
     net.minecraft.world.Difficulty difficulty = Minecraft.getInstance().world.getDifficulty();
@@ -144,85 +160,113 @@ public class VersionedWorld implements World {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getDayTime() {
     return Minecraft.getInstance().world.getDayTime();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldBorder getWorldBorder() {
     return this.worldBorder;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Random getRandom() {
     return Minecraft.getInstance().world.getRandom();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isDayTime() {
     return Minecraft.getInstance().world.isDaytime();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isNightTime() {
     return Minecraft.getInstance().world.isNightTime();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getThunderStrength(float partialTicks) {
     return Minecraft.getInstance().world.getThunderStrength(partialTicks);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setThunderStrength(float strength) {
     Minecraft.getInstance().world.setThunderStrength(strength);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getRainStrength(float partialTicks) {
     return Minecraft.getInstance().world.getRainStrength(partialTicks);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setRainStrength(float strength) {
     Minecraft.getInstance().world.setRainStrength(strength);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isThundering() {
     return Minecraft.getInstance().world.isThundering();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isRainingAt(BlockPosition position) {
     return Minecraft.getInstance().world.isRainingAt((BlockPos) this.toMinecraftBlockPos(position));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getActualHeight() {
     return Minecraft.getInstance().world.getHeight();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getLight(BlockPosition position) {
     return Minecraft.getInstance().world.getLight((BlockPos) this.toMinecraftBlockPos(position));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getLightSubtracted(BlockPosition position, int amount) {
     return Minecraft.getInstance()
@@ -230,7 +274,9 @@ public class VersionedWorld implements World {
         .getLightSubtracted((BlockPos) this.toMinecraftBlockPos(position), amount);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getLightValue(BlockPosition position) {
     return Minecraft.getInstance()
@@ -238,13 +284,17 @@ public class VersionedWorld implements World {
         .getLightValue((BlockPos) this.toMinecraftBlockPos(position));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMaxLightLevel() {
     return Minecraft.getInstance().world.getMaxLightLevel();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getNeighborAwareLightSubtracted(BlockPosition position, int amount) {
     return Minecraft.getInstance()
@@ -252,19 +302,25 @@ public class VersionedWorld implements World {
         .getNeighborAwareLightSubtracted((BlockPos) this.toMinecraftBlockPos(position), amount);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Dimension getDimension() {
     return this.fromMinecraftDimension(Minecraft.getInstance().world.getDimensionType());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Scoreboard getScoreboard() {
     return this.scoreboard;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TileEntity getTileEntity(BlockPosition blockPosition) {
     for (TileEntity loadedTileEntity : this.loadedTileEntities) {
@@ -275,7 +331,9 @@ public class VersionedWorld implements World {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addTileEntity(TileEntity tileEntity) {
     if (tileEntity != null) {
@@ -284,35 +342,47 @@ public class VersionedWorld implements World {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removeTileEntity(TileEntity tileEntity) {
     this.loadedTileEntities.remove(tileEntity);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<TileEntity> getLoadedTileEntities() {
     return this.loadedTileEntities;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftBlockPos(BlockPosition position) {
     return new BlockPos(position.getX(), position.getY(), position.getZ());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BlockPosition fromMinecraftBlockPos(Object handle) {
-    if (!(handle instanceof BlockPos)) return null;
+    if (!(handle instanceof BlockPos)) {
+      return null;
+    }
 
     BlockPos blockPos = (BlockPos) handle;
 
     return this.blockPositionFactory.create(blockPos.getX(), blockPos.getY(), blockPos.getZ());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftDimension(Dimension dimension) {
     switch (dimension) {
@@ -325,7 +395,9 @@ public class VersionedWorld implements World {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Dimension fromMinecraftDimension(Object handle) {
     if (!(handle instanceof ResourceLocation)) {

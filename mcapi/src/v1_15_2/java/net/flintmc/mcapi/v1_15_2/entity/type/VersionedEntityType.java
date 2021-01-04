@@ -26,7 +26,9 @@ import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.type.EntityType;
 
-/** 1.15.2 implementation of the {@link EntityType}. */
+/**
+ * 1.15.2 implementation of the {@link EntityType}.
+ */
 @Implement(value = EntityType.class, version = "1.15.2")
 public class VersionedEntityType implements EntityType {
 
@@ -53,37 +55,49 @@ public class VersionedEntityType implements EntityType {
     this.entitySize = entitySize;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity.Classification getClassification() {
     return this.classification;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isSerializable() {
     return this.serializable;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isSummonable() {
     return this.summonable;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isImmuneToFire() {
     return this.immuneToFire;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canSpawnFarFromPlayer() {
     return this.canSpawnFarFromPlayer;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntitySize getSize() {
     return this.entitySize;

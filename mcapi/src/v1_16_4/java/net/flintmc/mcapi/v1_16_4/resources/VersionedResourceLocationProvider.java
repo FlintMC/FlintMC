@@ -31,7 +31,9 @@ import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResource;
 
-/** 1.16.4 implementation of the {@link ResourceLocationProvider} */
+/**
+ * 1.16.4 implementation of the {@link ResourceLocationProvider}
+ */
 @Singleton
 @Implement(value = ResourceLocationProvider.class, version = "1.16.4")
 public class VersionedResourceLocationProvider implements ResourceLocationProvider {
@@ -43,17 +45,23 @@ public class VersionedResourceLocationProvider implements ResourceLocationProvid
     this.resourceLocationFactory = resourceLocationFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public ResourceLocation get(String path) {
     return this.get("minecraft", path);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public ResourceLocation get(String nameSpace, String path) {
     return this.resourceLocationFactory.create(nameSpace, path);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public Collection<ResourceLocation> getRecursive(ResourceLocation resourceLocation)
       throws IOException {
     return Minecraft.getInstance()
@@ -65,12 +73,16 @@ public class VersionedResourceLocationProvider implements ResourceLocationProvid
         .collect(Collectors.toSet());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public Collection<ResourceLocation> getLoaded(String namespace) {
     return this.getLoaded(namespace, s -> true);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public Collection<ResourceLocation> getLoaded(String namespace, Predicate<String> predicate) {
     return Minecraft.getInstance()
         .getResourceManager()

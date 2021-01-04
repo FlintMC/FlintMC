@@ -22,6 +22,10 @@ package net.flintmc.mcapi.v1_16_4.tileentity.type;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.tileentity.type.TileEntityType;
 
-/** Represents the Minecraft tile entity type. */
+/**
+ * Represents the Minecraft tile entity type.
+ */
 @Implement(value = TileEntityType.class, version = "1.16.4")
-public class VersionedTileEntityType implements TileEntityType {}
+public class VersionedTileEntityType implements TileEntityType {
+
+}

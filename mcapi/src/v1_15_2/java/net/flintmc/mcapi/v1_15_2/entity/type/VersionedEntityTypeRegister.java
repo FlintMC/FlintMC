@@ -20,6 +20,9 @@
 package net.flintmc.mcapi.v1_15_2.entity.type;
 
 import com.beust.jcommander.internal.Maps;
+import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.type.EntityType;
@@ -28,11 +31,9 @@ import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.minecraft.util.registry.Registry;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.Map;
-
-/** 1.15.2 implementation of the {@link EntityTypeRegister}. */
+/**
+ * 1.15.2 implementation of the {@link EntityTypeRegister}.
+ */
 @Singleton
 @Implement(value = EntityTypeRegister.class, version = "1.15.2")
 public class VersionedEntityTypeRegister implements EntityTypeRegister {
@@ -54,13 +55,17 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, EntityType> getEntityTypes() {
     return this.entityTypes;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityType getEntityType(String key) {
     return this.entityTypes.get(key);

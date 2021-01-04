@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.mojang.datafixers.util.Function4;
+import java.util.function.Function;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
@@ -31,9 +32,7 @@ import net.flintmc.mcapi.server.event.ServerConnectEvent;
 import net.flintmc.mcapi.world.event.WorldJoinEvent;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.Hook.ExecutionTime;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.registry.DynamicRegistries;
-import java.util.function.Function;
 
 @Singleton
 public class VersionedWorldJoinEventInjector {

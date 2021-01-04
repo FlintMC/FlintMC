@@ -57,7 +57,9 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
     this.world = world;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftTileEntity(TileEntity tileEntity) {
 
@@ -72,7 +74,9 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TileEntity fromMinecraftTileEntity(Object tileEntity) {
     if (!(tileEntity instanceof net.minecraft.tileentity.TileEntity)) {
@@ -103,7 +107,9 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftSignTileEntity(SignTileEntity signTileEntity) {
 
@@ -118,7 +124,9 @@ public class VersionedTileEntityMapper implements TileEntityMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SignTileEntity fromMinecraftSignTileEntity(Object signTileEntity) {
     if (!(signTileEntity instanceof net.minecraft.tileentity.SignTileEntity)) {

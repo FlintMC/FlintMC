@@ -24,9 +24,12 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Base interface for all events sent from {@link WebGuiView}s. */
+/**
+ * Base interface for all events sent from {@link WebGuiView}s.
+ */
 @Subscribable({Phase.PRE, Phase.POST})
 public interface WebGuiViewEvent extends Event {
+
   /**
    * Retrieves the {@link WebGuiView} that sent the event.
    *

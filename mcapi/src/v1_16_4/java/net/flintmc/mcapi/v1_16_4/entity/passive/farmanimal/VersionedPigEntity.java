@@ -67,26 +67,34 @@ public class VersionedPigEntity extends VersionedAnimalEntity implements PigEnti
     this.pigEntity = (net.minecraft.entity.passive.PigEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isSaddled() {
     return this.pigEntity.isHorseSaddled();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setSaddled(boolean saddled) {
     AccessiblePigEntity accessiblePigEntity = (AccessiblePigEntity) this.pigEntity;
     accessiblePigEntity.getBoostHelper().setSaddledFromBoolean(saddled);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean boost() {
     return this.pigEntity.boost();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean processInteract(PlayerEntity entity, Hand hand) {
     ActionResultType actionResultType =
@@ -98,7 +106,9 @@ public class VersionedPigEntity extends VersionedAnimalEntity implements PigEnti
     return actionResultType.isSuccessOrConsume();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isBreedingItem(ItemStack breedingItem) {
     return this.pigEntity.isBreedingItem(
@@ -106,21 +116,27 @@ public class VersionedPigEntity extends VersionedAnimalEntity implements PigEnti
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(breedingItem));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.pigEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.pigEntity.writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canBeSteered() {
     return this.pigEntity.canBeSteered();

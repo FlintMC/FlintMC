@@ -85,7 +85,9 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
     this.setItemStack(itemStack);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getItemStack() {
     return this.getEntityFoundationMapper()
@@ -93,7 +95,9 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
         .fromMinecraft(this.itemEntity.getItem());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setItemStack(ItemStack itemStack) {
     this.itemEntity.setItem(
@@ -101,93 +105,123 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getOwnerIdentifier() {
     return this.itemEntity.getOwnerId();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setOwnerIdentifier(UUID ownerIdentifier) {
     this.itemEntity.setOwnerId(ownerIdentifier);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getThrowerIdentifier() {
     return this.itemEntity.getThrowerId();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setThrowerIdentifier(UUID throwerIdentifier) {
     this.itemEntity.setThrowerId(throwerIdentifier);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getAge() {
     return this.itemEntity.getAge();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDefaultPickupDelay() {
     this.itemEntity.setDefaultPickupDelay();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setNoPickupDelay() {
     this.itemEntity.setNoPickupDelay();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setInfinitePickupDelay() {
     this.itemEntity.setInfinitePickupDelay();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPickupDelay(int ticks) {
     this.itemEntity.setPickupDelay(ticks);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean cannotPickup() {
     return this.itemEntity.cannotPickup();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setNoDespawn() {
     this.itemEntity.setNoDespawn();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void makeFakeItem() {
     this.itemEntity.makeFakeItem();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.itemEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.itemEntity.writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getName() {
     return this.getEntityFoundationMapper()

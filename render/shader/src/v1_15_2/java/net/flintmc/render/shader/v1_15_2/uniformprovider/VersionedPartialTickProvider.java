@@ -29,7 +29,9 @@ import net.minecraft.client.Minecraft;
 @Implement(value = PartialTickProvider.class, version = "1.15.2")
 public class VersionedPartialTickProvider implements PartialTickProvider {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void apply(ShaderUniform uniform) {
     uniform.set1f(Minecraft.getInstance().getRenderPartialTicks());

@@ -30,7 +30,9 @@ import net.flintmc.mcapi.server.event.ServerListUpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerList;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Singleton
 @Implement(value = net.flintmc.mcapi.server.ServerList.class, version = "1.16.4")
 public class VersionedServerList implements net.flintmc.mcapi.server.ServerList {
@@ -54,13 +56,17 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
     this.mcServerList = new ServerList(Minecraft.getInstance());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void saveServerList() {
     this.mcServerList.saveServerList();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ServerData getServer(int index) {
     net.minecraft.client.multiplayer.ServerData data = this.mcServerList.getServerData(index);
@@ -70,13 +76,17 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
         ServerData.ResourceMode.valueOf(data.getResourceMode().name()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int size() {
     return this.mcServerList.countServers();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateServerData(int index, ServerData server) {
     ServerListUpdateEvent event =
@@ -95,13 +105,17 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addServer(ServerData server) {
     this.mcServerList.addServerData(createNMSServerData(server));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addServer(int index, ServerData server) {
     ((ServerListShadow) this.mcServerList)
@@ -109,7 +123,9 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
         .add(index, createNMSServerData(server));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   private net.minecraft.client.multiplayer.ServerData createNMSServerData(ServerData server) {
     String ip = server.getServerAddress().getIP() + ":" + server.getServerAddress().getPort();
     net.minecraft.client.multiplayer.ServerData data =
@@ -120,7 +136,9 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
     return data;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removeServer(int index) {
     ((ServerListShadow) this.mcServerList).getServerDataList().remove(index);

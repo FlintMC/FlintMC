@@ -76,7 +76,8 @@ public class VersionedConnectedServer implements ConnectedServer {
 
   private SocketAddress getRawAddress() {
     if (Minecraft.getInstance().currentScreen instanceof ConnectingScreenShadow) {
-      ConnectingScreenShadow screen = (ConnectingScreenShadow) Minecraft.getInstance().currentScreen;
+      ConnectingScreenShadow screen = (ConnectingScreenShadow) Minecraft
+          .getInstance().currentScreen;
       return screen.getNetworkManager().getRemoteAddress();
     }
 
@@ -84,7 +85,9 @@ public class VersionedConnectedServer implements ConnectedServer {
     return connection != null ? connection.getNetworkManager().getRemoteAddress() : null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ServerAddress getAddress() {
     SocketAddress address = this.getRawAddress();
@@ -97,13 +100,17 @@ public class VersionedConnectedServer implements ConnectedServer {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isConnected() {
     return this.getRawAddress() instanceof InetSocketAddress;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<ServerStatus> resolveStatus() {
     ServerAddress address = this.getAddress();
@@ -116,7 +123,9 @@ public class VersionedConnectedServer implements ConnectedServer {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void sendCustomPayload(
       ResourceLocation identifier, net.flintmc.mcapi.server.buffer.PacketBuffer packetBuffer) {
@@ -141,13 +150,17 @@ public class VersionedConnectedServer implements ConnectedServer {
     handler.sendPacket(new CCustomPayloadPacket(identifier.getHandle(), buffer));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void sendCustomPayload(ResourceLocation identifier, byte[] payload) {
     this.sendCustomPayload(identifier, this.packetBufferFactory.create(payload));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void retrieveCustomPayload(String identifier, Object payload) {
     if (!(payload instanceof PacketBuffer)) {

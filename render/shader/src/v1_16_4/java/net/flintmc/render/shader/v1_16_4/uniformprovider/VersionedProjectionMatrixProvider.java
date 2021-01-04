@@ -28,7 +28,10 @@ import net.flintmc.render.shader.uniformprovider.ProjectionMatrixProvider;
 @Implement(value = ProjectionMatrixProvider.class, version = "1.16.4")
 public class VersionedProjectionMatrixProvider implements ProjectionMatrixProvider {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void apply(ShaderUniform uniform) {}
+  public void apply(ShaderUniform uniform) {
+  }
 }

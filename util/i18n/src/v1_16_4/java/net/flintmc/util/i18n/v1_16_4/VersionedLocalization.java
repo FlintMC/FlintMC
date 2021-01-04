@@ -35,13 +35,17 @@ public class VersionedLocalization implements Localization {
     this.clientLanguageMap = clientLanguageMap;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void add(String key, String translation) {
     this.clientLanguageMap.getTranslations().put(key, translation);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, String> getProperties() {
     return this.clientLanguageMap.getTranslations();

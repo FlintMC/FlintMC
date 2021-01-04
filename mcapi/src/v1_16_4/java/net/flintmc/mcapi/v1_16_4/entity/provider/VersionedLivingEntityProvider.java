@@ -39,7 +39,9 @@ public class VersionedLivingEntityProvider implements LivingEntity.Provider {
     this.entityTypeMapper = entityTypeMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LivingEntity get(Object entity) {
     if (!(entity instanceof net.minecraft.entity.LivingEntity)) {

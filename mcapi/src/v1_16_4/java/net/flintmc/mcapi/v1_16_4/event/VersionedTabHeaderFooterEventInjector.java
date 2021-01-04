@@ -51,7 +51,7 @@ public class VersionedTabHeaderFooterEventInjector {
       className = "net.minecraft.client.gui.overlay.PlayerTabOverlayGui",
       methodName = "setHeader",
       parameters = @Type(typeName = "net.minecraft.util.text.ITextComponent"),
-      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},version = "1.16.4")
+      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER}, version = "1.16.4")
   public HookResult handleHeader(@Named("args") Object[] args, ExecutionTime executionTime) {
     Object newHeader = args[0];
 
@@ -63,7 +63,7 @@ public class VersionedTabHeaderFooterEventInjector {
       methodName = "setFooter",
       parameters = @Type(typeName = "net.minecraft.util.text.ITextComponent"),
       executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
-  version = "1.16.4")
+      version = "1.16.4")
   public HookResult handleFooter(@Named("args") Object[] args, ExecutionTime executionTime) {
     Object newFooter = args[0];
 

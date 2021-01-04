@@ -21,6 +21,9 @@ package net.flintmc.mcapi.v1_15_2.server.status;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonParseException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.concurrent.CompletableFuture;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -51,10 +54,6 @@ import net.minecraft.util.SharedConstants;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.logging.log4j.Logger;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.CompletableFuture;
 
 @Implement(value = PendingStatusRequest.class, version = "1.15.2")
 public class VersionedPendingStatusRequest
@@ -108,25 +107,33 @@ public class VersionedPendingStatusRequest
     this.state = PendingStatusState.IDLE;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<ServerStatus> getFuture() {
     return this.future;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ServerAddress getTargetAddress() {
     return this.targetAddress;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PendingStatusState getState() {
     return this.state;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void start() throws UnknownHostException {
     Preconditions.checkState(
@@ -147,7 +154,9 @@ public class VersionedPendingStatusRequest
     this.state = PendingStatusState.RECEIVING;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getStartTimestamp() {
     return this.startTimestamp;
@@ -193,7 +202,7 @@ public class VersionedPendingStatusRequest
 
     ServerFavicon favicon =
         this.response.getFavicon() != null
-                && this.response.getFavicon().startsWith(DefaultServerFavicon.PREFIX)
+            && this.response.getFavicon().startsWith(DefaultServerFavicon.PREFIX)
             ? this.faviconFactory.createCustom(this.response.getFavicon())
             : this.defaultFavicon;
 

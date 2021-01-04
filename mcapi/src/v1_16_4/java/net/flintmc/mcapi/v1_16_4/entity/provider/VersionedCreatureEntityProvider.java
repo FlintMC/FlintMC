@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.CreatureEntity;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 
-/** 1.15.2 implementation of the {@link CreatureEntity.Provider}. */
+/**
+ * 1.15.2 implementation of the {@link CreatureEntity.Provider}.
+ */
 @Singleton
 @Implement(value = CreatureEntity.Provider.class, version = "1.15.2")
 public class VersionedCreatureEntityProvider implements CreatureEntity.Provider {
@@ -40,7 +42,9 @@ public class VersionedCreatureEntityProvider implements CreatureEntity.Provider 
     this.entityTypeMapper = entityTypeMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CreatureEntity get(Object entity) {
     if (!(entity instanceof net.minecraft.entity.CreatureEntity)) {

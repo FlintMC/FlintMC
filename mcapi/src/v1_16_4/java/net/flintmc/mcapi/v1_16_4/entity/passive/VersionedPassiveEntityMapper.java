@@ -50,7 +50,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
     this.pigEntityFactory = pigEntityFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AmbientEntity fromMinecraftAmbientEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.passive.AmbientEntity)) {
@@ -68,7 +70,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
             ambientEntity.getUniqueID(), () -> this.ambientEntityProvider.get(ambientEntity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftAmbientEntity(AmbientEntity ambientEntity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
@@ -81,7 +85,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AnimalEntity fromMinecraftAnimalEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.passive.AnimalEntity)) {
@@ -99,7 +105,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
             animalEntity.getUniqueID(), () -> this.animalEntityProvider.get(animalEntity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftAnimalEntity(AnimalEntity animalEntity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
@@ -112,7 +120,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PigEntity fromMinecraftPigEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.passive.PigEntity)) {
@@ -130,7 +140,9 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
             pigEntity.getUniqueID(), () -> this.pigEntityFactory.create(pigEntity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPigEntity(PigEntity pigEntity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {

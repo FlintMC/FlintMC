@@ -32,7 +32,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.vbo.VertexAttribute;
 import net.flintmc.render.vbo.VertexFormat;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(value = VertexFormat.class, version = "1.16.4")
 public class VersionedVertexFormat implements VertexFormat {
 
@@ -46,31 +48,41 @@ public class VersionedVertexFormat implements VertexFormat {
         this.attributes.stream().mapToInt(VertexAttribute::getSize).reduce(0, Integer::sum);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getAttributeCount() {
     return attributes.size();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getVertexSize() {
     return this.stride;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<VertexAttribute> getAttributes() {
     return Collections.unmodifiableList(this.attributes);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int createVAO() {
     return glGenVertexArrays();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void pushToGPU(int vao) {
     int index = 0;

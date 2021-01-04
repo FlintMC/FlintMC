@@ -64,19 +64,25 @@ public class VersionedChatController implements ChatController {
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getChatInputLimit() {
     return MAX_INPUT_LENGTH;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void displayChatMessage(ChatLocation location, ChatComponent component) {
     this.displayChatMessage(location, component, UUID.randomUUID());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void displayChatMessage(
       ChatLocation location, ChatComponent component, UUID senderUniqueId) {
@@ -104,7 +110,9 @@ public class VersionedChatController implements ChatController {
     Minecraft.getInstance().ingameGUI.func_238450_a_(type, mapped, senderUniqueId);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> getInputHistory() {
     if (Minecraft.getInstance().ingameGUI == null) {
@@ -113,7 +121,9 @@ public class VersionedChatController implements ChatController {
     return Minecraft.getInstance().ingameGUI.getChatGUI().getSentMessages();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<ChatComponent> getReceivedMessages() {
     ChatGuiShadow shadow = (ChatGuiShadow) Minecraft.getInstance().ingameGUI.getChatGUI();
@@ -126,7 +136,9 @@ public class VersionedChatController implements ChatController {
     return components;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMaxMessages() {
     return MAX_MESSAGES;

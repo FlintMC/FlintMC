@@ -26,8 +26,11 @@ import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.input.ModifierKey;
 import org.lwjgl.glfw.GLFW;
 
-/** Utility class to convert GLFW constants to Flint constants. */
+/**
+ * Utility class to convert GLFW constants to Flint constants.
+ */
 public class VersionedGLFWInputConverter {
+
   // Static class
   private VersionedGLFWInputConverter() {
     throw new UnsupportedOperationException("GLFWInput converter is a utility class");
@@ -38,7 +41,7 @@ public class VersionedGLFWInputConverter {
    *
    * @param key The GLFW key constant to convert
    * @return The converted key, or {@link Key#UNKNOWN} if the key is {@link GLFW#GLFW_KEY_UNKNOWN}
-   *     or not known
+   * or not known
    */
   public static Key glfwKeyToFlintKey(int key) {
     switch (key) {
@@ -479,7 +482,7 @@ public class VersionedGLFWInputConverter {
    * @param state The GLFW constant to convert
    * @return The converted mouse input state
    * @throws IllegalArgumentException If {@code state} is not one of {@link GLFW#GLFW_PRESS}, {@link
-   *     GLFW#GLFW_RELEASE} or {@link GLFW#GLFW_REPEAT}
+   *                                  GLFW#GLFW_RELEASE} or {@link GLFW#GLFW_REPEAT}
    */
   public static InputState glfwActionToFlintInputState(int state) {
     switch (state) {
@@ -502,7 +505,7 @@ public class VersionedGLFWInputConverter {
    *
    * @param key The GLFW key constant to convert
    * @return The converted key, or {@link GLFW#GLFW_KEY_UNKNOWN} if the key is {@link Key#UNKNOWN}
-   *     or not known
+   * or not known
    */
   public static int flintKeyToGlfwKey(Key key) {
     switch (key) {

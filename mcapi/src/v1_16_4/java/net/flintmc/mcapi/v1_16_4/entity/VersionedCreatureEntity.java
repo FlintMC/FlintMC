@@ -30,7 +30,9 @@ import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.minecraft.util.math.BlockPos;
 
-/** 1.16.4 implementation of the {@link CreatureEntity}. */
+/**
+ * 1.16.4 implementation of the {@link CreatureEntity}.
+ */
 @Implement(value = CreatureEntity.class, version = "1.16.4")
 public class VersionedCreatureEntity extends VersionedMobEntity implements CreatureEntity {
 
@@ -38,11 +40,11 @@ public class VersionedCreatureEntity extends VersionedMobEntity implements Creat
 
   @AssistedInject
   public VersionedCreatureEntity(
-          @Assisted("entity") Object entity,
-          @Assisted("entityType") EntityType entityType,
-          World world,
-          EntityFoundationMapper entityFoundationMapper,
-          EntitySenses.Factory entitySensesFactory) {
+      @Assisted("entity") Object entity,
+      @Assisted("entityType") EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper,
+      EntitySenses.Factory entitySensesFactory) {
     super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
 
     if (!(entity instanceof net.minecraft.entity.CreatureEntity)) {
@@ -54,14 +56,18 @@ public class VersionedCreatureEntity extends VersionedMobEntity implements Creat
     this.creatureEntity = (net.minecraft.entity.CreatureEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getBlockPathWeight(BlockPosition position) {
     return this.creatureEntity.getBlockPathWeight(
         (BlockPos) this.getWorld().toMinecraftBlockPos(position));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasPath() {
     return this.creatureEntity.hasPath();

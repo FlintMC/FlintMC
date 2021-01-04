@@ -26,7 +26,9 @@ import net.flintmc.transform.shadow.MethodProxy;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 
-/** A shadow interface for the abstract arrow entity. */
+/**
+ * A shadow interface for the abstract arrow entity.
+ */
 @Shadow(value = "net.minecraft.entity.projectile.AbstractArrowEntity", version = "1.16.4")
 public interface AccessibleAbstractArrowEntity {
 

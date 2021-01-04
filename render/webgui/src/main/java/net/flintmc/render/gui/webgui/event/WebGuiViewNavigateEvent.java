@@ -23,6 +23,10 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Event indicating that the {@link WebGuiView} has navigated. */
+/**
+ * Event indicating that the {@link WebGuiView} has navigated.
+ */
 @Subscribable(Phase.POST)
-public interface WebGuiViewNavigateEvent extends WebGuiViewEvent {}
+public interface WebGuiViewNavigateEvent extends WebGuiViewEvent {
+
+}

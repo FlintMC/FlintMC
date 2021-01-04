@@ -19,11 +19,12 @@
 
 package net.flintmc.render.shader;
 
+import java.io.InputStream;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-import java.io.InputStream;
-
-/** Represents an OpenGL shader program and its current state. */
+/**
+ * Represents an OpenGL shader program and its current state.
+ */
 public interface ShaderProgram {
 
   /**
@@ -65,13 +66,19 @@ public interface ShaderProgram {
    */
   void link() throws ShaderException;
 
-  /** Enable this shader program and updates provided uniforms. */
+  /**
+   * Enable this shader program and updates provided uniforms.
+   */
   void useShader();
 
-  /** Disable this shader program. No shader will be enabled after this call. */
+  /**
+   * Disable this shader program. No shader will be enabled after this call.
+   */
   void stopShader();
 
-  /** Updates provided uniforms. */
+  /**
+   * Updates provided uniforms.
+   */
   void updateProvidedUniforms();
 
   /**
@@ -83,7 +90,7 @@ public interface ShaderProgram {
 
   /**
    * @return the OpenGL ID of this shader program. 0, if the program has not been linked
-   *     successfully (yet).
+   * successfully (yet).
    */
   int getProgramID();
 
@@ -94,17 +101,21 @@ public interface ShaderProgram {
 
   /**
    * @return the OpenGL ID of this shader program's fragment shader. 0, if no fragment shader was
-   *     added.
+   * added.
    */
   int getFragmentShaderID();
 
-  /** @return true, if the has been linked successfully, false if not */
+  /**
+   * @return true, if the has been linked successfully, false if not
+   */
   boolean isLinked();
 
   @AssistedFactory(ShaderProgram.class)
   interface Factory {
 
-    /** @return a new shader program */
+    /**
+     * @return a new shader program
+     */
     ShaderProgram create();
   }
 }

@@ -45,19 +45,25 @@ public class VersionedTileEntity implements TileEntity {
     this.world = world;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public World getWorld() {
     return this.world;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasWorld() {
     return this.tileEntity.hasWorld();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public double getDistanceSq(double x, double y, double z) {
     double xSq = this.getPosition().getX() + 0.5D - x;
@@ -66,49 +72,65 @@ public class VersionedTileEntity implements TileEntity {
     return xSq * xSq + ySq * ySq + zSq * zSq;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public double getMaxRenderDistanceSquared() {
     return this.tileEntity.getMaxRenderDistanceSquared();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BlockPosition getPosition() {
     return this.world.fromMinecraftBlockPos(this.tileEntity.getPos());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPosition(BlockPosition position) {
     this.tileEntity.setPos((BlockPos) this.world.toMinecraftBlockPos(position));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isRemoved() {
     return this.tileEntity.isRemoved();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removed() {
     this.tileEntity.remove();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void validate() {
     this.tileEntity.validate();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateContainingBlockInfo() {
     this.tileEntity.updateContainingBlockInfo();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TileEntityType getType() {
     return this.tileEntityType;

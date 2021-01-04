@@ -37,7 +37,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.vbo.VboDrawMode;
 import net.flintmc.render.vbo.VertexIndexObject;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(value = VertexIndexObject.class, version = "1.16.4")
 public class VersionedVertexIndexObject implements VertexIndexObject {
 
@@ -64,34 +66,44 @@ public class VersionedVertexIndexObject implements VertexIndexObject {
     this.drawMode = drawMode;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addIndices(int... indices) {
-    if (this.isAvailable)
+    if (this.isAvailable) {
       throw new IllegalStateException(
           "This EBO has already been pushed to the GPU, indices can't be added anymore.");
+    }
     for (int index : indices) {
       this.indices.add(index);
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Integer> getIndices() {
     return Collections.unmodifiableList(this.indices);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getSize() {
     return this.indices.size();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void pushToGPU() {
-    if (this.isAvailable)
+    if (this.isAvailable) {
       throw new IllegalStateException("This EBO has already been pushed to the GPU.");
+    }
 
     int[] indicesArray = new int[indices.size()];
     for (int i = 0; i < this.indices.size(); i++) {
@@ -103,13 +115,17 @@ public class VersionedVertexIndexObject implements VertexIndexObject {
     this.isAvailable = true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getID() {
     return this.id;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void bind() {
     this.oldEbo = glGetInteger(GL_ELEMENT_ARRAY_BUFFER_BINDING);
@@ -117,28 +133,38 @@ public class VersionedVertexIndexObject implements VertexIndexObject {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.id);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void unbind() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Math.max(this.oldEbo, 0));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isAvailable() {
     return this.isAvailable;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VboDrawMode getDrawMode() {
     return this.drawMode;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void delete() {
-    if (this.deleted) throw new IllegalStateException("The EBO was already deleted.");
+    if (this.deleted) {
+      throw new IllegalStateException("The EBO was already deleted.");
+    }
     this.bind();
     glDeleteBuffers(this.id);
     this.unbind();

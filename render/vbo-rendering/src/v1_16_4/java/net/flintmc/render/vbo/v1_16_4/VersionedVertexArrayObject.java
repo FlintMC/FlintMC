@@ -38,7 +38,9 @@ import net.flintmc.render.vbo.VertexBufferObject;
 import net.flintmc.render.vbo.VertexFormat;
 import net.flintmc.render.vbo.VertexIndexObject;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(value = VertexArrayObject.class, version = "1.16.4")
 public class VersionedVertexArrayObject implements VertexArrayObject {
 
@@ -51,7 +53,8 @@ public class VersionedVertexArrayObject implements VertexArrayObject {
 
   @AssistedInject
   private VersionedVertexArrayObject(@Assisted VertexBufferObject vbo) {
-    this(vbo, () -> {});
+    this(vbo, () -> {
+    });
   }
 
   @AssistedInject
@@ -76,7 +79,9 @@ public class VersionedVertexArrayObject implements VertexArrayObject {
     this.unbind();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void draw(VertexIndexObject ebo) {
     this.bind();
@@ -88,63 +93,88 @@ public class VersionedVertexArrayObject implements VertexArrayObject {
     ebo.unbind();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void draw(IntBuffer indices, VboDrawMode drawMode) {
     this.bind();
     this.vbo.bind();
-    if (drawMode == VboDrawMode.TRIANGLES) glDrawElements(GL_TRIANGLES, indices);
-    else if (drawMode == VboDrawMode.QUADS) glDrawElements(GL_QUADS, indices);
+    if (drawMode == VboDrawMode.TRIANGLES) {
+      glDrawElements(GL_TRIANGLES, indices);
+    } else if (drawMode == VboDrawMode.QUADS) {
+      glDrawElements(GL_QUADS, indices);
+    }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawWithoutBind(VertexIndexObject ebo) {
-    if (this.deleted)
+    if (this.deleted) {
       throw new IllegalStateException(
           "The VAO has already been deleted and can not be used for drawing anymore.");
-    if (!ebo.isAvailable()) ebo.pushToGPU();
-    if (ebo.getDrawMode() == VboDrawMode.TRIANGLES)
+    }
+    if (!ebo.isAvailable()) {
+      ebo.pushToGPU();
+    }
+    if (ebo.getDrawMode() == VboDrawMode.TRIANGLES) {
       glDrawElements(GL_TRIANGLES, ebo.getSize(), GL_UNSIGNED_INT, 0);
-    else if (ebo.getDrawMode() == VboDrawMode.QUADS)
+    } else if (ebo.getDrawMode() == VboDrawMode.QUADS) {
       glDrawElements(GL_QUADS, ebo.getSize(), GL_UNSIGNED_INT, 0);
+    }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VertexFormat getFormat() {
     return this.format;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VertexBufferObject getVBO() {
     return this.vbo;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void bind() {
     this.oldId = glGetInteger(GL_VERTEX_ARRAY_BINDING);
     glBindVertexArray(this.id);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void unbind() {
     glBindVertexArray(this.oldId);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getID() {
     return this.id;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void delete() {
-    if (this.deleted) throw new IllegalStateException("The VAO was already deleted.");
+    if (this.deleted) {
+      throw new IllegalStateException("The VAO was already deleted.");
+    }
     this.vbo.delete();
     this.bind();
     glDeleteVertexArrays(this.id);

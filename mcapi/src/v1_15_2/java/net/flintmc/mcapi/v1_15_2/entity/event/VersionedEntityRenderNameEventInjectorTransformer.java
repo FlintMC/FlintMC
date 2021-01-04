@@ -43,23 +43,23 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
   // fontRenderer.renderString(displayName, f2, (float)i, -1, false, matrix4f, bufferIn, false, 0,
   // packedLight)
   private static final int[] NAME_RENDER_SEQUENCE =
-      new int[] {
-        Bytecode.ILOAD,
-        Bytecode.IFEQ,
-        Bytecode.ALOAD,
-        Bytecode.ALOAD_2,
-        Bytecode.FLOAD,
-        Bytecode.ILOAD,
-        Bytecode.I2F,
-        Bytecode.ICONST_M1,
-        Bytecode.ICONST_0,
-        Bytecode.ALOAD,
-        Bytecode.ALOAD,
-        Bytecode.ICONST_0,
-        Bytecode.ICONST_0,
-        Bytecode.ILOAD,
-        Bytecode.INVOKEVIRTUAL,
-        Bytecode.POP
+      new int[]{
+          Bytecode.ILOAD,
+          Bytecode.IFEQ,
+          Bytecode.ALOAD,
+          Bytecode.ALOAD_2,
+          Bytecode.FLOAD,
+          Bytecode.ILOAD,
+          Bytecode.I2F,
+          Bytecode.ICONST_M1,
+          Bytecode.ICONST_0,
+          Bytecode.ALOAD,
+          Bytecode.ALOAD,
+          Bytecode.ICONST_0,
+          Bytecode.ICONST_0,
+          Bytecode.ILOAD,
+          Bytecode.INVOKEVIRTUAL,
+          Bytecode.POP
       };
 
   private final ClassPool pool;
@@ -68,9 +68,9 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
 
   @Inject
   private VersionedEntityRenderNameEventInjectorTransformer(
-          ClassPool pool,
-          ClassMappingProvider mappingProvider,
-          InjectedFieldBuilder.Factory fieldBuilderFactory) {
+      ClassPool pool,
+      ClassMappingProvider mappingProvider,
+      InjectedFieldBuilder.Factory fieldBuilderFactory) {
     this.fieldBuilderFactory = fieldBuilderFactory;
     this.pool = pool;
     this.mappingProvider = mappingProvider;
@@ -80,16 +80,16 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
   public void transformRenderName(ClassTransformContext context)
       throws NotFoundException, CannotCompileException, BadBytecode {
     CtClass[] params =
-        new CtClass[] {
-          this.pool.get(this.mappingProvider.get("net.minecraft.entity.Entity").getName()),
-          this.pool.get("java.lang.String"),
-          this.pool.get(
-              this.mappingProvider.get("com.mojang.blaze3d.matrix.MatrixStack").getName()),
-          this.pool.get(
-              this.mappingProvider
-                  .get("net.minecraft.client.renderer.IRenderTypeBuffer")
-                  .getName()),
-          this.pool.get("int")
+        new CtClass[]{
+            this.pool.get(this.mappingProvider.get("net.minecraft.entity.Entity").getName()),
+            this.pool.get("java.lang.String"),
+            this.pool.get(
+                this.mappingProvider.get("com.mojang.blaze3d.matrix.MatrixStack").getName()),
+            this.pool.get(
+                this.mappingProvider
+                    .get("net.minecraft.client.renderer.IRenderTypeBuffer")
+                    .getName()),
+            this.pool.get("int")
         };
 
     CtClass transforming = context.getCtClass();

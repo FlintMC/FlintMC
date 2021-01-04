@@ -80,14 +80,18 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
     this.setPosition(thrower.getPosX(), thrower.getPosYEye() - 0.1D, thrower.getPosZ());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void shoot(
       Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
     this.throwableEntity.shoot(pitch, yaw, pitchOffset, velocity, inaccuracy);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LivingEntity getThrower() {
     return this.getEntityFoundationMapper()
@@ -95,19 +99,25 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
         .fromMinecraftLivingEntity(this.throwableEntity);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
     this.throwableEntity.shoot(x, y, z, velocity, inaccuracy);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMotion(double x, double y, double z) {
     this.throwableEntity.setMotion(x, y, z);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     AccessibleEntity accessibleThrowableEntity =
@@ -116,7 +126,9 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     AccessibleEntity accessibleThrowableEntity =

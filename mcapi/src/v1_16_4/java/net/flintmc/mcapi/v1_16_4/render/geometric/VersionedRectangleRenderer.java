@@ -34,7 +34,9 @@ import net.minecraft.util.math.vector.TransformationMatrix;
 @Implement(value = RectangleRenderer.class, version = "1.16.4")
 public class VersionedRectangleRenderer implements RectangleRenderer {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawRectBorder(
       float x, float y, float width, float height, int rgba, float borderWidth) {
@@ -49,7 +51,9 @@ public class VersionedRectangleRenderer implements RectangleRenderer {
     this.fill(left, bottom - borderWidth, right, bottom, rgba); // bottom
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawFilledRect(float x, float y, float width, float height, int rgba) {
     this.fill(x, y, x + width, y + height, rgba);
