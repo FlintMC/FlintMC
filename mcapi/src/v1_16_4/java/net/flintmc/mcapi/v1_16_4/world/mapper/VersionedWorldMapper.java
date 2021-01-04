@@ -137,6 +137,7 @@ public class VersionedWorldMapper implements WorldMapper {
     return this.worldOverviewFactory.create(
         worldSummary.getFileName(),
         worldSummary.getDisplayName(),
+        worldSummary.getVersionName().getString(),
         worldSummary.getLastTimePlayed(),
         0L, /* Disk size is maybe removed since 1.16.x*/
         worldSummary.requiresConversion(),

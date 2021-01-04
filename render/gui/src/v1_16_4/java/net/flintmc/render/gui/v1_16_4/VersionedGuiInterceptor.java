@@ -33,6 +33,7 @@ import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.render.gui.event.ScreenChangedEvent;
 import net.flintmc.render.gui.event.ScreenRenderEvent;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
+import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.javassist.ClassTransform;
@@ -117,10 +118,7 @@ public class VersionedGuiInterceptor {
       executionTime = Hook.ExecutionTime.AFTER,
       version = "1.16.4")
   public void hookScreenChanged() {
-    this.windowManager.fireEvent(
-        -1,
-        window ->
-            new ScreenChangedEvent(
-                window, nameMapper.fromObject(Minecraft.getInstance().currentScreen)));
+    ScreenName screenName = this.nameMapper.fromObject(Minecraft.getInstance().currentScreen);
+    this.windowManager.fireEvent(-1, window -> new ScreenChangedEvent(window, screenName));
   }
 }

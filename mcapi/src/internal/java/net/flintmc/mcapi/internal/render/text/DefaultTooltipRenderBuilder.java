@@ -84,9 +84,9 @@ public class DefaultTooltipRenderBuilder implements TooltipRenderBuilder {
   public void draw() {
     this.validate();
 
-    boolean isNetherUpdate = this.versionHelper.isUnder(16);
+    boolean hasMatrixStack = !this.versionHelper.isUnder(16);
 
-    if(isNetherUpdate) {
+    if(hasMatrixStack) {
       Preconditions.checkNotNull(this.matrixStack, "Matrix stack cannot be null!");
 
       this.renderer.renderTooltip(this.matrixStack, this.x, this.y, this.text);

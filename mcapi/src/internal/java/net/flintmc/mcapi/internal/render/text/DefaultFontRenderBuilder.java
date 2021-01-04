@@ -161,9 +161,9 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
   public void draw() {
     this.validate();
 
-    boolean isNetherUpdate = this.versionHelper.isUnder(16);
+    boolean hasMatrixStack = !this.versionHelper.isUnder(16);
 
-    if (isNetherUpdate) {
+    if (hasMatrixStack) {
 
       Preconditions.checkNotNull(this.matrixStack, "Matrix stack cannot be null!");
 

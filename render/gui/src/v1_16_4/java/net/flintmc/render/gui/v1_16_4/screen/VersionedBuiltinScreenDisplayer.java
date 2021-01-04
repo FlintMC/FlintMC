@@ -55,8 +55,8 @@ public class VersionedBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
   @Override
   public boolean supports(ScreenName screenName) {
     if (!this.initialized) {
-      this.supportedScreens.put(ScreenName.unknown(this.dummyScreen.getClass().getName()),
-          objects -> this.displayMouse());
+      this.supportedScreens
+          .put(ScreenName.minecraft(ScreenName.DUMMY), objects -> this.displayMouse());
       VersionedBuiltinScreenDisplayInit.init(this.supportedScreens);
 
       this.initialized = true;
@@ -87,8 +87,19 @@ public class VersionedBuiltinScreenDisplayer implements BuiltinScreenDisplayer {
    * {@inheritDoc}
    */
   @Override
+  public boolean isScreenOpened() {
+    return Minecraft.getInstance().currentScreen != null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public ScreenName getOpenScreen() {
     Screen screen = Minecraft.getInstance().currentScreen;
+    if (screen == this.dummyScreen) {
+      return ScreenName.minecraft(ScreenName.DUMMY);
+    }
     return screen != null ? ScreenName.unknown(screen.getClass().getName()) : null;
   }
 
