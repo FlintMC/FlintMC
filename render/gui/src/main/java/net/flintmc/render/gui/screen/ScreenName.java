@@ -25,9 +25,12 @@ import java.util.Objects;
 public final class ScreenName {
   public static final String MAIN_MENU = "main_menu";
   public static final String RESOURCE_LOAD = "resource_load";
+  public static final String CHAT = "chat";
+  public static final String INGAME_MENU = "ingame_menu";
   public static final String OPTIONS = "options";
   public static final String MULTIPLAYER = "multiplayer";
   public static final String SINGLEPLAYER = "singleplayer";
+  public static final String DUMMY = "dummy";
 
   // Where the screen is from
   private final Type type;

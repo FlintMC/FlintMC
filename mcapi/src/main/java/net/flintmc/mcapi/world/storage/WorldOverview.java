@@ -19,12 +19,14 @@
 
 package net.flintmc.mcapi.world.storage;
 
-import java.io.File;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.type.GameMode;
+import javax.annotation.Nullable;
 
-/** Represents an informative interface for the world. */
+/**
+ * Represents an informative interface for the world.
+ */
 public interface WorldOverview extends Comparable<WorldOverview> {
 
   /**
@@ -35,18 +37,18 @@ public interface WorldOverview extends Comparable<WorldOverview> {
   String getFileName();
 
   /**
-   * Retrieves the file icon of the world.
-   *
-   * @return The world's file icon.
-   */
-  File getFileIcon();
-
-  /**
    * Retrieves the display name of the world.
    *
    * @return The world's display name.
    */
   String getDisplayName();
+
+  /**
+   * Retrieves the version in which the world has been used the last time.
+   *
+   * @return The version or {@code null} if the version is unknown
+   */
+  String getVersion();
 
   /**
    * Retrieves the size on the disk of the world.
@@ -118,32 +120,38 @@ public interface WorldOverview extends Comparable<WorldOverview> {
    */
   boolean isOutdatedWorld();
 
-  /** A factory class for creating {@link WorldOverview}'s. */
+  /**
+   * A factory class for creating {@link WorldOverview}'s.
+   */
   @AssistedFactory(WorldOverview.class)
   interface Factory {
 
     /**
      * Creates a new {@link WorldOverview} with the given parameters.
      *
-     * @param fileName The file name of the world overview.
-     * @param displayName The display name of the world overview.
-     * @param lastTimePlayed The last time played timestamp of the world overview.
-     * @param sizeOnDisk The size on the disk of the world.
+     * @param fileName           The file name of the world overview.
+     * @param displayName        The display name of the world overview.
+     * @param version            The version in which the world has been used the last time or
+     *                           {@code null} if the version is unknown
+     * @param lastTimePlayed     The last time played timestamp of the world overview.
+     * @param sizeOnDisk         The size on the disk of the world.
      * @param requiresConversion {@code true} if the world requires a conversion, otherwise {@code
-     *     false}.
-     * @param gameMode The game mode of the world.
-     * @param hardcoreMode {@code true} if the hardcore mode is enabled in the world, otherwise
-     *     {@code false}.
-     * @param cheats {@code true} if the cheats are enabled in the world, otherwise {@code false}.
-     * @param askToOpenWorld {@code true} asks a world to open, otherwise {@code false}.
-     * @param markWorldInList {@code true} marks a world in the list, otherwise {@code false}.
-     * @param futureWorld {@code true} if the world in the future, otherwise {@code false}.
-     * @param outdatedWorld {@code true} if the world is outdated, otherwise {@code false}.
+     *                           false}.
+     * @param gameMode           The game mode of the world.
+     * @param hardcoreMode       {@code true} if the hardcore mode is enabled in the world,
+     *                           otherwise {@code false}.
+     * @param cheats             {@code true} if the cheats are enabled in the world, otherwise
+     *                           {@code false}.
+     * @param askToOpenWorld     {@code true} asks a world to open, otherwise {@code false}.
+     * @param markWorldInList    {@code true} marks a world in the list, otherwise {@code false}.
+     * @param futureWorld        {@code true} if the world in the future, otherwise {@code false}.
+     * @param outdatedWorld      {@code true} if the world is outdated, otherwise {@code false}.
      * @return A created world overview.
      */
     WorldOverview create(
         @Assisted("fileName") String fileName,
         @Assisted("displayName") String displayName,
+        @Assisted("version") @Nullable String version,
         @Assisted("lastTimePlayed") long lastTimePlayed,
         @Assisted("sizeOnDisk") long sizeOnDisk,
         @Assisted("requiresConversion") boolean requiresConversion,
@@ -154,5 +162,7 @@ public interface WorldOverview extends Comparable<WorldOverview> {
         @Assisted("markWorldInList") boolean markWorldInList,
         @Assisted("futureWorld") boolean futureWorld,
         @Assisted("outdatedWorld") boolean outdatedWorld);
+
   }
+
 }
