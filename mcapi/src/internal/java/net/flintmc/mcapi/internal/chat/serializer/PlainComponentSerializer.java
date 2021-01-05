@@ -68,7 +68,7 @@ public class PlainComponentSerializer implements ComponentSerializer {
     }
 
     char[] chars = serialized.toCharArray();
-    TextComponentBuilder builder = new DefaultTextComponentBuilder();
+    TextComponentBuilder builder = new DefaultTextComponentBuilder().text("");
 
     for (int i = 0; i < chars.length; i++) {
       char c = chars[i];

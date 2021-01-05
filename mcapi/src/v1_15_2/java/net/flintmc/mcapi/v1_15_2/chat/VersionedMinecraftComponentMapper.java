@@ -43,7 +43,6 @@ import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.internal.chat.builder.DefaultKeybindComponentBuilder;
 import net.flintmc.mcapi.internal.chat.builder.DefaultScoreComponentBuilder;
 import net.flintmc.mcapi.internal.chat.builder.DefaultSelectorComponentBuilder;
-import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
 import net.flintmc.mcapi.internal.chat.builder.DefaultTranslationComponentBuilder;
 import net.flintmc.mcapi.internal.chat.component.DefaultKeybindComponent;
 import net.minecraft.util.text.ITextComponent;
@@ -141,9 +140,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
 
     } else if (component instanceof StringTextComponent) {
 
-      return new DefaultTextComponentBuilder()
-          .text(((StringTextComponent) component).getText())
-          .build();
+      return this.parseText(((StringTextComponent) component).getText());
 
     } else if (component instanceof TranslationTextComponent) {
 
@@ -156,8 +153,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
         }
 
         if (mappedArguments[i] == null) {
-          mappedArguments[i] =
-              new DefaultTextComponentBuilder().text(String.valueOf(argument)).build();
+          mappedArguments[i] = this.parseText(String.valueOf(argument));
         }
       }
 
@@ -168,6 +164,12 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     return null;
+  }
+
+  private ChatComponent parseText(String text) {
+    // we need to deserialize this as some servers still use the old format
+    // and send something like '§atest' in the text
+    return this.factory.legacy().deserialize(text);
   }
 
   private void applyStyle(ChatComponent component, Style style) {
