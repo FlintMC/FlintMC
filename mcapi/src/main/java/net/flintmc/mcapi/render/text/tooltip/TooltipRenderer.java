@@ -50,9 +50,9 @@ public interface TooltipRenderer {
    * where it should be rendered.
    *
    * @param matrixStack The non-null matrix stack to display the tooltip correctly.
-   * @param x    The x position on the screen where the tooltip should be rendered
-   * @param y    The y position on the screen where the tooltip should be rendered
-   * @param text The non-null text to be rendered
+   * @param x           The x position on the screen where the tooltip should be rendered
+   * @param y           The y position on the screen where the tooltip should be rendered
+   * @param text        The non-null text to be rendered
    */
   void renderTooltip(Object matrixStack, float x, float y, String text);
 }

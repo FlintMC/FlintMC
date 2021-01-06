@@ -19,6 +19,12 @@
 
 package net.flintmc.mcapi.entity;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Stream;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -38,12 +44,6 @@ import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Direction;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Represents the Minecraft entity.

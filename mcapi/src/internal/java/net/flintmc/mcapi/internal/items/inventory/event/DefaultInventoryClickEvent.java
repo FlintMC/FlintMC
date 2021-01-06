@@ -27,7 +27,9 @@ import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.InventoryClick;
 import net.flintmc.mcapi.items.inventory.event.InventoryClickEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(InventoryClickEvent.class)
 public class DefaultInventoryClickEvent extends DefaultInventoryEvent
     implements InventoryClickEvent {
@@ -48,31 +50,41 @@ public class DefaultInventoryClickEvent extends DefaultInventoryEvent
     this.slot = slot;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getClickedItem() {
     return this.clickedItem;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public InventoryClick getClickType() {
     return this.clickType;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getSlot() {
     return this.slot;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCancelled() {
     return this.cancelled;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;

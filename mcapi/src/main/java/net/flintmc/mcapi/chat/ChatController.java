@@ -75,8 +75,8 @@ public interface ChatController {
   /**
    * Display the message into the chat.
    *
-   * @param location The non-null location to display the message at.
-   * @param component The non-null component to be displayed.
+   * @param location       The non-null location to display the message at.
+   * @param component      The non-null component to be displayed.
    * @param senderUniqueId The sender unique identifier.
    */
   void displayChatMessage(ChatLocation location, ChatComponent component, UUID senderUniqueId);

@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Vector3I;
 
-/** Default implementation of {@link BlockPosition}. */
+/**
+ * Default implementation of {@link BlockPosition}.
+ */
 @Implement(BlockPosition.class)
 public class DefaultBlockPosition extends DefaultVector3I implements BlockPosition {
 

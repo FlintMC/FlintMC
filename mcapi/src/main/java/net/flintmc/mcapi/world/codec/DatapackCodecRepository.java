@@ -21,13 +21,15 @@ package net.flintmc.mcapi.world.codec;
 
 import java.util.Map;
 
-/** Represents a repository to register and unregister {@link DatapackCodec}. */
+/**
+ * Represents a repository to register and unregister {@link DatapackCodec}.
+ */
 public interface DatapackCodecRepository {
 
   /**
    * Registers a new {@link DatapackCodec} with the given {@code name}.
    *
-   * @param name The name of the datapack codec.
+   * @param name          The name of the datapack codec.
    * @param datapackCodec The datapack codec to be registered.
    */
   void register(String name, DatapackCodec datapackCodec);
@@ -42,7 +44,7 @@ public interface DatapackCodecRepository {
   /**
    * Unregisters a {@link DatapackCodec} with the given {@code name} and the {@code datapackCodec}.
    *
-   * @param name The name of the datapack to be unregistered.
+   * @param name          The name of the datapack to be unregistered.
    * @param datapackCodec The datapack to be unregistered.
    */
   void unregister(String name, DatapackCodec datapackCodec);

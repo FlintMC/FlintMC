@@ -25,6 +25,7 @@ import java.util.List;
  * Represents a world type register.
  *
  * <p><b>DEPRECATED</b>
+ *
  * @see WorldType
  */
 @Deprecated

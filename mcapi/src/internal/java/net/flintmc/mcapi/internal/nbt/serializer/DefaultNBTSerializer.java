@@ -19,16 +19,32 @@
 
 package net.flintmc.mcapi.internal.nbt.serializer;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.nbt.*;
+import net.flintmc.mcapi.nbt.NBT;
+import net.flintmc.mcapi.nbt.NBTByte;
+import net.flintmc.mcapi.nbt.NBTCompound;
+import net.flintmc.mcapi.nbt.NBTCreator;
+import net.flintmc.mcapi.nbt.NBTDouble;
+import net.flintmc.mcapi.nbt.NBTEnd;
+import net.flintmc.mcapi.nbt.NBTFloat;
+import net.flintmc.mcapi.nbt.NBTInt;
+import net.flintmc.mcapi.nbt.NBTList;
+import net.flintmc.mcapi.nbt.NBTLong;
+import net.flintmc.mcapi.nbt.NBTShort;
+import net.flintmc.mcapi.nbt.NBTString;
 import net.flintmc.mcapi.nbt.serializer.NBTSerializer;
 
-import java.util.Map;
-
-/** Default implementation of the {@link NBTSerializer}. */
+/**
+ * Default implementation of the {@link NBTSerializer}.
+ */
 @Singleton
 @Implement(NBTSerializer.class)
 public class DefaultNBTSerializer implements NBTSerializer {
@@ -40,7 +56,9 @@ public class DefaultNBTSerializer implements NBTSerializer {
     this.creator = creator;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonElement serialize(NBT nbt) {
 
@@ -90,7 +108,9 @@ public class DefaultNBTSerializer implements NBTSerializer {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NBT deserialize(JsonElement element) {
     if (element instanceof JsonPrimitive) {

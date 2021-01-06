@@ -44,7 +44,9 @@ public interface InventoryUpdateSlotEvent extends Event, InventorySlotEvent, Inv
    */
   ItemStack getNewItem();
 
-  /** Factory for the {@link InventoryUpdateSlotEvent}. */
+  /**
+   * Factory for the {@link InventoryUpdateSlotEvent}.
+   */
   @AssistedFactory(InventoryUpdateSlotEvent.class)
   interface Factory {
 
@@ -52,8 +54,8 @@ public interface InventoryUpdateSlotEvent extends Event, InventorySlotEvent, Inv
      * Creates a new {@link InventoryUpdateSlotEvent}.
      *
      * @param inventory The non-null inventory in which the slot has been updated
-     * @param slot The slot that has been updated
-     * @param newItem The non-null item that is now set after the update
+     * @param slot      The slot that has been updated
+     * @param newItem   The non-null item that is now set after the update
      * @return The new non-null {@link InventoryUpdateSlotEvent}.
      */
     InventoryUpdateSlotEvent create(

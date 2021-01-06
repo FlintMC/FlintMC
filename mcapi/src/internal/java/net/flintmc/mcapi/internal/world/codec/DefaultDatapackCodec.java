@@ -36,13 +36,17 @@ public class DefaultDatapackCodec implements DatapackCodec {
     this.disabled = disabled;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> getEnabled() {
     return this.enabled;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> getDisabled() {
     return this.disabled;

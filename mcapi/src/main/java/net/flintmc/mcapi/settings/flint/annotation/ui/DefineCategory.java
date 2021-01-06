@@ -36,9 +36,8 @@ import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
  * ConfigObjectReference#findLastAnnotation(Class)} for more information.
  *
  * <p>If no category with the given {@link #name()} exists, it will be created with the given
- * {@link
- * #displayName()}, {@link #description()} and {@link #icon()}. If it already exists, it will be
- * used just like it is done with {@link Category}.
+ * {@link #displayName()}, {@link #description()} and {@link #icon()}. If it already exists, it will
+ * be used just like it is done with {@link Category}.
  *
  * @see Config
  * @see Category

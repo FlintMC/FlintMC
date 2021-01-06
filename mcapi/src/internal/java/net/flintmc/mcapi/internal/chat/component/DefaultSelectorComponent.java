@@ -21,10 +21,9 @@ package net.flintmc.mcapi.internal.chat.component;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import java.util.Collection;
 import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.component.SelectorComponent;
-
-import java.util.Collection;
 
 public class DefaultSelectorComponent extends DefaultChatComponent implements SelectorComponent {
 

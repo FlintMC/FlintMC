@@ -22,7 +22,9 @@ package net.flintmc.mcapi.world.codec;
 import java.util.List;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-/** Represents a datapack codec. */
+/**
+ * Represents a datapack codec.
+ */
 public interface DatapackCodec {
 
   /**
@@ -39,14 +41,16 @@ public interface DatapackCodec {
    */
   List<String> getDisabled();
 
-  /** Factory for {@link DatapackCodec}. */
+  /**
+   * Factory for {@link DatapackCodec}.
+   */
   @AssistedFactory(DatapackCodec.class)
   interface Factory {
 
     /**
      * Creates a new {@link DatapackCodec} with the given parameters.
      *
-     * @param enabled A collection of all enabled datapack codecs.
+     * @param enabled  A collection of all enabled datapack codecs.
      * @param disabled A collection of all disabled datapack codecs.
      * @return A created datapack codec.
      */

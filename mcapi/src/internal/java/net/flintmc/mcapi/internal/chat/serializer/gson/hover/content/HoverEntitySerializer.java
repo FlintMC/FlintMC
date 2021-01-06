@@ -23,16 +23,18 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import java.util.UUID;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.component.event.content.HoverEntity;
 import net.flintmc.mcapi.chat.component.event.content.JsonHoverContentSerializer;
 
-import java.util.UUID;
-
-/** Serializer for {@link HoverEntity} */
+/**
+ * Serializer for {@link HoverEntity}
+ */
 public class HoverEntitySerializer extends JsonHoverContentSerializer {
+
   @Override
   protected HoverContent deserializeJson(
       JsonElement element, ComponentBuilder.Factory componentFactory, Gson gson)
@@ -58,7 +60,7 @@ public class HoverEntitySerializer extends JsonHoverContentSerializer {
         object.has("name")
             ? gson.fromJson(object.get("name"), ChatComponent.class)
             : null // nullable display name of the entity
-        );
+    );
   }
 
   @Override

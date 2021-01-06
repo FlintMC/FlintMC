@@ -19,10 +19,10 @@
 
 package net.flintmc.mcapi.world.storage;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.type.GameMode;
-import javax.annotation.Nullable;
 
 /**
  * Represents an informative interface for the world.

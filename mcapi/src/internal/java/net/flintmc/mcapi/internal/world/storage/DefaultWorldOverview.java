@@ -19,12 +19,12 @@
 
 package net.flintmc.mcapi.internal.world.storage;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.storage.WorldOverview;
-import javax.annotation.Nullable;
 
 /**
  * Default implementation of the {@link WorldOverview}.

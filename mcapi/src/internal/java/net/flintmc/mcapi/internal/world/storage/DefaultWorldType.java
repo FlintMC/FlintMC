@@ -41,38 +41,38 @@ public class DefaultWorldType implements WorldType {
 
   @AssistedInject
   private DefaultWorldType(
-          @Assisted("identifier") int identifier,
-          @Assisted("name") String name) {
+      @Assisted("identifier") int identifier,
+      @Assisted("name") String name) {
     this(identifier, name, name, 0);
   }
 
   @AssistedInject
   private DefaultWorldType(
-          @Assisted("identifier") int identifier,
-          @Assisted("name") String name,
-          @Assisted("version") int version) {
+      @Assisted("identifier") int identifier,
+      @Assisted("name") String name,
+      @Assisted("version") int version) {
     this(identifier, name, name, version);
   }
 
   @AssistedInject
   private DefaultWorldType(
-          @Assisted("identifier") int identifier,
-          @Assisted("name") String name,
-          @Assisted("serializedIdentifier") String serializedIdentifier,
-          @Assisted("version") int version) {
+      @Assisted("identifier") int identifier,
+      @Assisted("name") String name,
+      @Assisted("serializedIdentifier") String serializedIdentifier,
+      @Assisted("version") int version) {
     this(identifier, name, serializedIdentifier, version, true, false, false, false);
   }
 
   @AssistedInject
   private DefaultWorldType(
-          @Assisted("identifier") int identifier,
-          @Assisted("name") String name,
-          @Assisted("serializedIdentifier") String serializedIdentifier,
-          @Assisted("version") int version,
-          @Assisted("canBeCreated") boolean canBeCreated,
-          @Assisted("versioned") boolean versioned,
-          @Assisted("hasInfoNotice") boolean hasInfoNotice,
-          @Assisted("customConfiguration") boolean customConfiguration) {
+      @Assisted("identifier") int identifier,
+      @Assisted("name") String name,
+      @Assisted("serializedIdentifier") String serializedIdentifier,
+      @Assisted("version") int version,
+      @Assisted("canBeCreated") boolean canBeCreated,
+      @Assisted("versioned") boolean versioned,
+      @Assisted("hasInfoNotice") boolean hasInfoNotice,
+      @Assisted("customConfiguration") boolean customConfiguration) {
     this.identifier = identifier;
     this.name = name;
     this.serializedIdentifier = serializedIdentifier;

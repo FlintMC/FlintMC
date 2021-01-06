@@ -42,31 +42,41 @@ public class DefaultDatapackCodecRepository implements DatapackCodecRepository {
         "vanilla", datapackCodecFactory.create(ImmutableList.of("vanilla"), ImmutableList.of()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void register(String name, DatapackCodec datapackCodec) {
     this.datapackCodecs.put(name, datapackCodec);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void unregister(String name) {
     this.datapackCodecs.remove(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void unregister(String name, DatapackCodec datapackCodec) {
     this.datapackCodecs.remove(name, datapackCodec);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public DatapackCodec getDatapackCodec(String name) {
     return this.datapackCodecs.get(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, DatapackCodec> getDatapacks() {
     return this.datapackCodecs;

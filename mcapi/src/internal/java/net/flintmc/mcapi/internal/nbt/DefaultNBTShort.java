@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.internal.nbt;
 
+import java.io.IOException;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -27,9 +28,9 @@ import net.flintmc.mcapi.nbt.NBTType;
 import net.flintmc.mcapi.nbt.io.read.NBTDataInputStream;
 import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
-import java.io.IOException;
-
-/** Default implementation the {@link NBTShort}. */
+/**
+ * Default implementation the {@link NBTShort}.
+ */
 @Implement(NBTShort.class)
 public class DefaultNBTShort implements NBTShort {
 
@@ -55,13 +56,17 @@ public class DefaultNBTShort implements NBTShort {
     outputStream.getDataOutputStream().writeShort(this.value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String asString() {
     return String.valueOf(this.value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public short asShort() {
     return this.value;
