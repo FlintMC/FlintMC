@@ -17,10 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.generator.flat;
+package net.flintmc.mcapi.internal.world.generator;
 
-public interface FlatWorldGeneratorSettingsHolder {
+import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+import java.io.File;
+
+public interface WorldGeneratorSettingsImplementation {
 
   FlatWorldGeneratorSettings createDefault();
+
+  String findFileName(String worldName);
 
 }

@@ -27,11 +27,11 @@ public interface BuffetWorldGeneratorSettings {
 
   Biome getBiome();
 
-  void setBiome(Biome biome);
+  BuffetWorldGeneratorSettings setBiome(Biome biome);
 
   BuffetWorldGeneratorType getType();
 
-  void setType(BuffetWorldGeneratorType type);
+  BuffetWorldGeneratorSettings setType(BuffetWorldGeneratorType type);
 
   BuffetWorldGeneratorSettings validate();
 

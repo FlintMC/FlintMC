@@ -66,7 +66,7 @@ public class VersionedBlockType implements BlockType {
    * {@inheritDoc}
    */
   @Override
-  public ResourceLocation getKey() {
+  public ResourceLocation getName() {
     return this.key;
   }
 
@@ -124,5 +124,13 @@ public class VersionedBlockType implements BlockType {
   @Override
   public float getJumpFactor() {
     return this.handle.getJumpFactor();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return this.handle.toString();
   }
 }

@@ -44,6 +44,17 @@ public class VersionedResourceLocationProvider implements ResourceLocationProvid
     this.resourceLocationFactory = resourceLocationFactory;
   }
 
+  @Override
+  public ResourceLocation fromMinecraft(Object handle) {
+    if (!(handle instanceof net.minecraft.util.ResourceLocation)) {
+      throw new IllegalArgumentException(
+          "Object must be an instance of " + net.minecraft.util.ResourceLocation.class.getName());
+    }
+
+    net.minecraft.util.ResourceLocation location = (net.minecraft.util.ResourceLocation) handle;
+    return this.get(location.getNamespace(), location.getPath());
+  }
+
   /** {@inheritDoc} */
   public ResourceLocation get(String path) {
     return this.get("minecraft", path);
@@ -62,7 +73,7 @@ public class VersionedResourceLocationProvider implements ResourceLocationProvid
         .getAllResources(resourceLocation.getHandle())
         .stream()
         .map(IResource::getLocation)
-        .map(location -> get(location.getNamespace(), location.getPath()))
+        .map(this::fromMinecraft)
         .collect(Collectors.toSet());
   }
 
@@ -77,7 +88,7 @@ public class VersionedResourceLocationProvider implements ResourceLocationProvid
         .getResourceManager()
         .getAllResourceLocations(namespace, predicate)
         .stream()
-        .map(location -> get(location.getNamespace(), location.getPath()))
+        .map(this::fromMinecraft)
         .collect(Collectors.toSet());
   }
 }

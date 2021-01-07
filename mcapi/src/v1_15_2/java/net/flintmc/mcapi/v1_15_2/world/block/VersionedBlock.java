@@ -252,4 +252,12 @@ public class VersionedBlock implements Block {
     return this.resolvedItemType =
         this.itemRegistry.getType(NameSpacedKey.of(key.getNamespace(), key.getPath()));
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return this.handle.toString() + "[" + this.position + "]";
+  }
 }

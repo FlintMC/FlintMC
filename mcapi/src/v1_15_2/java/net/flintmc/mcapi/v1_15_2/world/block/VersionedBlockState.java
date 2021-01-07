@@ -57,7 +57,7 @@ public class VersionedBlockState implements BlockState {
     net.minecraft.block.BlockState state = (net.minecraft.block.BlockState) handle;
     ResourceLocation key = Registry.BLOCK.getKey(state.getBlock());
 
-    return registry.getType(provider.get(key.getNamespace(), key.getPath()));
+    return registry.getType(provider.fromMinecraft(key));
   }
 
   /**
@@ -148,5 +148,13 @@ public class VersionedBlockState implements BlockState {
   @Override
   public boolean canProvidePower() {
     return this.handle.canProvidePower();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return this.handle.toString();
   }
 }

@@ -44,10 +44,12 @@ public class VersionedBlockTypeRegistry implements BlockTypeRegistry {
     this.types = new HashMap<>();
 
     for (net.minecraft.util.ResourceLocation key : Registry.BLOCK.keySet()) {
-      ResourceLocation location = provider.get(key.getNamespace(), key.getPath());
-      BlockType type = typeFactory.create(location, Registry.BLOCK.getValue(key));
+      ResourceLocation location = provider.fromMinecraft(key);
+      Registry.BLOCK.getValue(key).ifPresent(block -> {
+        BlockType type = typeFactory.create(location, block);
 
-      this.types.put(location, type);
+        this.types.put(location, type);
+      });
     }
   }
 

@@ -17,24 +17,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.world.generator.flat;
+package net.flintmc.mcapi.v1_15_2.world.generator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.internal.world.generator.WorldGeneratorSettingsImplementation;
 import net.flintmc.mcapi.world.generator.WorldGeneratorMapper;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
-import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettingsHolder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.FileUtil;
 import net.minecraft.world.gen.FlatGenerationSettings;
+import java.nio.file.Path;
 
 @Singleton
-@Implement(value = FlatWorldGeneratorSettingsHolder.class, version = "1.15.2")
-public class VersionedFlatWorldGeneratorSettingsHolder implements FlatWorldGeneratorSettingsHolder {
+@Implement(value = WorldGeneratorSettingsImplementation.class, version = "1.15.2")
+public class VersionedWorldGeneratorSettingsImplementation
+    implements WorldGeneratorSettingsImplementation {
 
   private final WorldGeneratorMapper mapper;
 
   @Inject
-  private VersionedFlatWorldGeneratorSettingsHolder(WorldGeneratorMapper mapper) {
+  private VersionedWorldGeneratorSettingsImplementation(WorldGeneratorMapper mapper) {
     this.mapper = mapper;
   }
 
@@ -45,5 +49,29 @@ public class VersionedFlatWorldGeneratorSettingsHolder implements FlatWorldGener
   public FlatWorldGeneratorSettings createDefault() {
     Object handle = FlatGenerationSettings.getDefaultFlatGenerator();
     return this.mapper.fromMinecraftFlatSettings(handle);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String findFileName(String worldName) {
+    String saveDirName = worldName.isEmpty() ? "World" : worldName;
+
+    Path directory = Minecraft.getInstance().getSaveLoader().getSavesDir();
+
+    try {
+      saveDirName = FileUtil.findAvailableName(directory, saveDirName, "");
+    } catch (Exception var4) {
+      saveDirName = "World";
+
+      try {
+        saveDirName = FileUtil.findAvailableName(directory, saveDirName, "");
+      } catch (Exception exception) {
+        throw new RuntimeException("Could not create save folder", exception);
+      }
+    }
+
+    return saveDirName;
   }
 }

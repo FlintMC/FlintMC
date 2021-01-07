@@ -23,8 +23,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.internal.world.generator.WorldGeneratorSettingsImplementation;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
-import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettingsHolder;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettingsSerializer;
 
 @Singleton
@@ -33,13 +33,13 @@ public class DefaultFlatWorldGeneratorSettingsFactory
     implements FlatWorldGeneratorSettings.Factory {
 
   private final Provider<FlatWorldGeneratorSettings> settingsProvider;
-  private final FlatWorldGeneratorSettingsHolder holder;
+  private final WorldGeneratorSettingsImplementation holder;
   private final FlatWorldGeneratorSettingsSerializer serializer;
 
   @Inject
   private DefaultFlatWorldGeneratorSettingsFactory(
       Provider<FlatWorldGeneratorSettings> settingsProvider,
-      FlatWorldGeneratorSettingsHolder holder,
+      WorldGeneratorSettingsImplementation holder,
       FlatWorldGeneratorSettingsSerializer serializer) {
     this.settingsProvider = settingsProvider;
     this.holder = holder;

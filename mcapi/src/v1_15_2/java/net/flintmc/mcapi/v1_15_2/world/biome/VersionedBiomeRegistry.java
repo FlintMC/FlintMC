@@ -42,10 +42,11 @@ public class VersionedBiomeRegistry implements BiomeRegistry {
     this.biomes = new HashMap<>();
 
     for (net.minecraft.util.ResourceLocation location : Registry.BIOME.keySet()) {
-      ResourceLocation flintLocation =
-          provider.get(location.getNamespace(), location.getPath());
-      Biome biome = biomeFactory.create(flintLocation, Registry.BIOME.getValue(location));
-      this.biomes.put(biome.getName(), biome);
+      ResourceLocation flintLocation = provider.fromMinecraft(location);
+      Registry.BIOME.getValue(location).ifPresent(handle -> {
+        Biome biome = biomeFactory.create(flintLocation, handle);
+        this.biomes.put(biome.getName(), biome);
+      });
     }
   }
 

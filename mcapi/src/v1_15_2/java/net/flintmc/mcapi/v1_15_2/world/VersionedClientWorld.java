@@ -34,6 +34,8 @@ import net.flintmc.mcapi.entity.event.EntitySpawnEvent;
 import net.flintmc.mcapi.player.ClientPlayer;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.world.ClientWorld;
+import net.flintmc.mcapi.world.block.Block;
+import net.flintmc.mcapi.world.block.BlockState;
 import net.flintmc.mcapi.world.border.WorldBorder;
 import net.flintmc.mcapi.world.math.BlockPosition.Factory;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
@@ -53,6 +55,8 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
   @Inject
   public VersionedClientWorld(
       Factory blockPositionFactory,
+      BlockState.Factory stateFactory,
+      Block.Factory blockFactory,
       DifficultyLocal.Factory difficultyLocalFactory,
       WorldBorder worldBorder,
       ClientPlayer player,

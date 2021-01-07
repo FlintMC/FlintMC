@@ -66,6 +66,13 @@ public interface ResourceLocation {
    */
   boolean exists();
 
+  /**
+   * Retrieves the resource location as a {@link String} in the format 'namespace:path'.
+   *
+   * @return The resource location as a string.
+   */
+  String toString();
+
   /** Factory class for {@link ResourceLocation} */
   @AssistedFactory(ResourceLocation.class)
   interface Factory {

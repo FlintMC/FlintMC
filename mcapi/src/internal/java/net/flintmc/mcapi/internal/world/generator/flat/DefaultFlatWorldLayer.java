@@ -23,6 +23,7 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.block.BlockState;
+import net.flintmc.mcapi.world.block.BlockType;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldLayer;
 
 @Implement(FlatWorldLayer.class)
@@ -30,16 +31,18 @@ public class DefaultFlatWorldLayer implements FlatWorldLayer {
 
   private final BlockState blockState;
   private final int layerHeight;
-  private final int minY;
 
   @AssistedInject
   public DefaultFlatWorldLayer(
-      @Assisted BlockState blockState,
-      @Assisted("layerHeight") int layerHeight,
-      @Assisted("minY") int minY) {
+      @Assisted BlockType blockType, @Assisted("layerHeight") int layerHeight) {
+    this(blockType.getDefaultState(), layerHeight);
+  }
+
+  @AssistedInject
+  public DefaultFlatWorldLayer(
+      @Assisted BlockState blockState, @Assisted("layerHeight") int layerHeight) {
     this.blockState = blockState;
     this.layerHeight = layerHeight;
-    this.minY = minY;
   }
 
   @Override
@@ -50,10 +53,5 @@ public class DefaultFlatWorldLayer implements FlatWorldLayer {
   @Override
   public int getLayerHeight() {
     return this.layerHeight;
-  }
-
-  @Override
-  public int getMinY() {
-    return this.minY;
   }
 }

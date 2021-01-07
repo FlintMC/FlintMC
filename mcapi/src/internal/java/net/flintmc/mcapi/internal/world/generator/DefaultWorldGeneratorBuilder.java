@@ -32,6 +32,7 @@ import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
 
   private final WorldGenerator generator;
+  private final WorldGeneratorSettingsImplementation implementation;
   private final ExtendedWorldGeneratorSettings.Factory extendedFactory;
   private final FlatWorldGeneratorSettings.Factory flatFactory;
   private final BuffetWorldGeneratorSettings.Factory buffetFactory;
@@ -44,10 +45,12 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
   @AssistedInject
   public DefaultWorldGeneratorBuilder(
       WorldGenerator generator,
+      WorldGeneratorSettingsImplementation implementation,
       ExtendedWorldGeneratorSettings.Factory extendedFactory,
       FlatWorldGeneratorSettings.Factory flatFactory,
       BuffetWorldGeneratorSettings.Factory buffetFactory) {
     this.generator = generator;
+    this.implementation = implementation;
     this.extendedFactory = extendedFactory;
     this.flatFactory = flatFactory;
     this.buffetFactory = buffetFactory;
@@ -66,7 +69,7 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
 
   @Override
   public String findFileName() {
-    return null; // TODO
+    return this.implementation.findFileName(this.name);
   }
 
   @Override
@@ -85,6 +88,11 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
   }
 
   @Override
+  public boolean hasFlatSettings() {
+    return this.flatSettings != null;
+  }
+
+  @Override
   public FlatWorldGeneratorSettings flatSettings() {
     if (this.flatSettings == null) {
       this.flatSettings = this.flatFactory.createDefault();
@@ -97,6 +105,11 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
   public WorldGeneratorBuilder flatSettings(FlatWorldGeneratorSettings settings) {
     this.flatSettings = settings;
     return this;
+  }
+
+  @Override
+  public boolean hasBuffetSettings() {
+    return this.buffetSettings != null;
   }
 
   @Override

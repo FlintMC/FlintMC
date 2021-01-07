@@ -24,10 +24,8 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
@@ -41,17 +39,15 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
 
   private final FlatWorldGeneratorSettingsSerializer serializer;
 
-  private Biome biome; // TODO add default value
-  private final Set<FlatWorldStructure> structures;
-  private final Map<FlatWorldStructure, Map<StructureOption, Integer>> options;
+  private Biome biome;
+  private final Map<FlatWorldStructure, Map<StructureOption, Integer>> structures;
   private final List<FlatWorldLayer> layers;
 
   @Inject
   private DefaultFlatWorldGeneratorSettings(FlatWorldGeneratorSettingsSerializer serializer) {
     this.serializer = serializer;
 
-    this.structures = new HashSet<>();
-    this.options = new HashMap<>();
+    this.structures = new HashMap<>();
     this.layers = new ArrayList<>();
   }
 
@@ -61,37 +57,49 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
   }
 
   @Override
-  public void setBiome(Biome biome) {
+  public FlatWorldGeneratorSettings setBiome(Biome biome) {
     this.biome = biome;
+    return this;
   }
 
   @Override
   public FlatWorldStructure[] getStructures() {
-    return this.structures.toArray(new FlatWorldStructure[0]);
+    return this.structures.keySet().toArray(new FlatWorldStructure[0]);
   }
 
   @Override
-  public void addStructure(FlatWorldStructure structure) {
-    this.structures.add(structure);
+  public FlatWorldGeneratorSettings addStructure(FlatWorldStructure structure) {
+    if (!this.structures.containsKey(structure)) {
+      this.structures.put(structure, new HashMap<>());
+    }
+    return this;
   }
 
   @Override
-  public void removeStructure(FlatWorldStructure structure) {
+  public FlatWorldGeneratorSettings removeStructure(FlatWorldStructure structure) {
     this.structures.remove(structure);
+    return this;
   }
 
   @Override
-  public int getStructureValue(FlatWorldStructure structure, StructureOption option)
+  public boolean hasStructureOption(FlatWorldStructure structure, StructureOption option) {
+    return this.structures.containsKey(structure) && this.structures.get(structure).containsKey(option);
+  }
+
+  @Override
+  public int getStructureOption(FlatWorldStructure structure, StructureOption option)
       throws IllegalArgumentException {
-    return this.options.getOrDefault(structure, Collections.emptyMap())
+    return this.structures.getOrDefault(structure, Collections.emptyMap())
         .getOrDefault(option, 0);
   }
 
   @Override
-  public void setStructureValue(FlatWorldStructure structure, StructureOption option,
+  public FlatWorldGeneratorSettings setStructureOption(FlatWorldStructure structure,
+      StructureOption option,
       int value) throws IllegalArgumentException {
-    this.options.computeIfAbsent(structure, s -> new HashMap<>())
+    this.structures.computeIfAbsent(structure, s -> new HashMap<>())
         .put(option, value);
+    return this;
   }
 
   @Override
@@ -100,18 +108,21 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
   }
 
   @Override
-  public void addLayer(FlatWorldLayer layer) {
+  public FlatWorldGeneratorSettings addLayer(FlatWorldLayer layer) {
     this.layers.add(layer);
+    return this;
   }
 
   @Override
-  public void setLayer(int index, FlatWorldLayer layer) {
+  public FlatWorldGeneratorSettings setLayer(int index, FlatWorldLayer layer) {
     this.layers.set(index, layer);
+    return this;
   }
 
   @Override
-  public void removeLayer(int index) {
+  public FlatWorldGeneratorSettings removeLayer(int index) {
     this.layers.remove(index);
+    return this;
   }
 
   @Override

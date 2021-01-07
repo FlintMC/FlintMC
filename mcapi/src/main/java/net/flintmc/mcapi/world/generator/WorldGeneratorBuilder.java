@@ -35,9 +35,13 @@ public interface WorldGeneratorBuilder {
 
   WorldGeneratorBuilder extended(ExtendedWorldGeneratorSettings extended);
 
+  boolean hasFlatSettings();
+
   FlatWorldGeneratorSettings flatSettings();
 
   WorldGeneratorBuilder flatSettings(FlatWorldGeneratorSettings settings);
+
+  boolean hasBuffetSettings();
 
   BuffetWorldGeneratorSettings buffetSettings();
 

@@ -22,6 +22,7 @@ package net.flintmc.mcapi.world.generator.flat;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.world.block.BlockState;
+import net.flintmc.mcapi.world.block.BlockType;
 
 public interface FlatWorldLayer {
 
@@ -29,15 +30,14 @@ public interface FlatWorldLayer {
 
   int getLayerHeight();
 
-  int getMinY();
-
   @AssistedFactory(FlatWorldLayer.class)
   interface Factory {
 
     FlatWorldLayer create(
-        @Assisted BlockState blockState,
-        @Assisted("layerHeight") int layerHeight,
-        @Assisted("minY") int minY);
+        @Assisted BlockState blockState, @Assisted("layerHeight") int layerHeight);
+
+    FlatWorldLayer create(
+        @Assisted BlockType blockType, @Assisted("layerHeight") int layerHeight);
 
   }
 

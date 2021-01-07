@@ -28,6 +28,8 @@ import java.util.function.Predicate;
  */
 public interface ResourceLocationProvider {
 
+  ResourceLocation fromMinecraft(Object handle);
+
   /**
    * Creates a resource location with the given path. Equivalent to {@link
    * ResourceLocation.Factory#create(String)}.

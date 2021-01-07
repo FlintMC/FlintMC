@@ -28,7 +28,7 @@ public interface BlockType {
 
   <T> T getHandle();
 
-  ResourceLocation getKey();
+  ResourceLocation getName();
 
   BlockState getDefaultState();
 

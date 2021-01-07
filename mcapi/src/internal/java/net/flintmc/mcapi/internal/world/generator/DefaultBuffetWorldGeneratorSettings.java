@@ -52,8 +52,9 @@ public class DefaultBuffetWorldGeneratorSettings implements BuffetWorldGenerator
   }
 
   @Override
-  public void setBiome(Biome biome) {
+  public BuffetWorldGeneratorSettings setBiome(Biome biome) {
     this.biome = biome;
+    return this;
   }
 
   @Override
@@ -62,8 +63,9 @@ public class DefaultBuffetWorldGeneratorSettings implements BuffetWorldGenerator
   }
 
   @Override
-  public void setType(BuffetWorldGeneratorType type) {
+  public BuffetWorldGeneratorSettings setType(BuffetWorldGeneratorType type) {
     this.type = type;
+    return this;
   }
 
   @Override

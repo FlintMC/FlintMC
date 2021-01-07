@@ -25,25 +25,27 @@ public interface FlatWorldGeneratorSettings {
 
   Biome getBiome();
 
-  void setBiome(Biome biome);
+  FlatWorldGeneratorSettings setBiome(Biome biome);
 
   FlatWorldStructure[] getStructures();
 
-  void addStructure(FlatWorldStructure structure);
+  FlatWorldGeneratorSettings addStructure(FlatWorldStructure structure);
 
-  void removeStructure(FlatWorldStructure structure);
+  FlatWorldGeneratorSettings removeStructure(FlatWorldStructure structure);
 
-  int getStructureValue(FlatWorldStructure structure, StructureOption option);
+  boolean hasStructureOption(FlatWorldStructure structure, StructureOption option);
 
-  void setStructureValue(FlatWorldStructure structure, StructureOption option, int value);
+  int getStructureOption(FlatWorldStructure structure, StructureOption option);
+
+  FlatWorldGeneratorSettings setStructureOption(FlatWorldStructure structure, StructureOption option, int value);
 
   FlatWorldLayer[] getLayers();
 
-  void addLayer(FlatWorldLayer layer);
+  FlatWorldGeneratorSettings addLayer(FlatWorldLayer layer);
 
-  void setLayer(int index, FlatWorldLayer layer);
+  FlatWorldGeneratorSettings setLayer(int index, FlatWorldLayer layer);
 
-  void removeLayer(int index);
+  FlatWorldGeneratorSettings removeLayer(int index);
 
   FlatWorldGeneratorSettings validate();
 
