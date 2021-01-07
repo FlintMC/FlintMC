@@ -161,8 +161,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
         }
 
         if (mappedArguments[i] == null) {
-          mappedArguments[i] =
-              new DefaultTextComponentBuilder().text(String.valueOf(argument)).build();
+          mappedArguments[i] = this.parseText(String.valueOf(argument));
         }
       }
 
@@ -173,6 +172,12 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     return null;
+  }
+
+  private ChatComponent parseText(String text) {
+    // we need to deserialize this as some servers still use the old format
+    // and send something like '§atest' in the text
+    return this.factory.legacy().deserialize(text);
   }
 
   private void applyStyle(ChatComponent component, Style style) {
