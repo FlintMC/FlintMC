@@ -36,7 +36,9 @@ public class DefaultSettingRegisterEvent implements SettingRegisterEvent {
     this.setting = setting;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RegisteredSetting getSetting() {
     return this.setting;

@@ -20,6 +20,10 @@
 package net.flintmc.mcapi.internal.server.status;
 
 import com.google.common.base.Charsets;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -27,11 +31,6 @@ import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.server.status.ServerFavicon;
 import org.apache.logging.log4j.Logger;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
 
 @Implement(ServerFavicon.class)
 public class DefaultServerFavicon implements ServerFavicon {
@@ -72,13 +71,17 @@ public class DefaultServerFavicon implements ServerFavicon {
     this.data = data;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCustom() {
     return this.data != null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public InputStream createStream() {
     if (this.data == null) {

@@ -36,7 +36,9 @@ public class DefaultPotionUpdateEvent implements PotionUpdateEvent {
     this.livingEntity = livingEntity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LivingEntity getLivingEntity() {
     return this.livingEntity;

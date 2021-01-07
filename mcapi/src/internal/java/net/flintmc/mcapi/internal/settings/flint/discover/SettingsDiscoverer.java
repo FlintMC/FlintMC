@@ -22,6 +22,11 @@ package net.flintmc.mcapi.internal.settings.flint.discover;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Map;
 import net.flintmc.framework.config.event.ConfigDiscoveredEvent;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
@@ -37,12 +42,6 @@ import net.flintmc.mcapi.settings.flint.annotation.version.VersionOnly;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Map;
 
 @Singleton
 public class SettingsDiscoverer {
@@ -75,13 +74,13 @@ public class SettingsDiscoverer {
       VersionOnly versionOnly = reference.findLastAnnotation(VersionOnly.class);
       if (versionOnly != null
           && Arrays.stream(versionOnly.value())
-              .noneMatch(allowed -> allowed.equals(this.launchArguments.get("--game-version")))) {
+          .noneMatch(allowed -> allowed.equals(this.launchArguments.get("--game-version")))) {
         continue;
       }
       VersionExclude versionExclude = reference.findLastAnnotation(VersionExclude.class);
       if (versionExclude != null
           && Arrays.stream(versionExclude.value())
-              .anyMatch(blocked -> blocked.equals(this.launchArguments.get("--game-version")))) {
+          .anyMatch(blocked -> blocked.equals(this.launchArguments.get("--game-version")))) {
         continue;
       }
 

@@ -19,13 +19,12 @@
 
 package net.flintmc.render.gui.v1_15_2.screen;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 @Implement(value = ScreenNameMapper.class, version = "1.15.2")

@@ -21,6 +21,12 @@ package net.flintmc.mcapi.internal.settings.flint.registered;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.eventbus.EventBus;
@@ -36,12 +42,6 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
 import org.apache.logging.log4j.Logger;
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Singleton
 @Implement(SettingsProvider.class)

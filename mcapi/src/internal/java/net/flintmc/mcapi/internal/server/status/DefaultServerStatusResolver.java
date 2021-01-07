@@ -21,6 +21,12 @@ package net.flintmc.mcapi.internal.server.status;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.net.UnknownHostException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.mcapi.server.ServerAddress;
@@ -28,13 +34,6 @@ import net.flintmc.mcapi.server.status.ServerFavicon;
 import net.flintmc.mcapi.server.status.ServerStatus;
 import net.flintmc.mcapi.server.status.ServerStatusResolver;
 import net.flintmc.mcapi.server.status.pending.PendingStatusRequest;
-
-import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @Implement(value = ServerStatusResolver.class)
@@ -56,7 +55,9 @@ public class DefaultServerStatusResolver implements ServerStatusResolver {
             resourceLocationProvider.get("textures/misc/unknown_server.png"));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<ServerStatus> resolveStatus(ServerAddress address)
       throws UnknownHostException {
@@ -77,7 +78,9 @@ public class DefaultServerStatusResolver implements ServerStatusResolver {
     return request.getFuture();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<PendingStatusRequest> getPendingRequests() {
     return Collections.unmodifiableCollection(this.pendingRequests.values());

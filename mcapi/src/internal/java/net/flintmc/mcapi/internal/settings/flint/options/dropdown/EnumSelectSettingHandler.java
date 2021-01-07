@@ -24,6 +24,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.EnumFieldResolver;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
@@ -32,9 +34,6 @@ import net.flintmc.mcapi.settings.flint.options.dropdown.EnumSelectSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 
 @Singleton
 @RegisterSettingHandler(EnumSelectSetting.class)

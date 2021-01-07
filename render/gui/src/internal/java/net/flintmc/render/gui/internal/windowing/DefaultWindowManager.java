@@ -21,6 +21,11 @@ package net.flintmc.render.gui.internal.windowing;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
@@ -29,16 +34,13 @@ import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.Window;
 import net.flintmc.render.gui.windowing.WindowManager;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-/** Default implementation of the Flint {@link WindowManager}. */
+/**
+ * Default implementation of the Flint {@link WindowManager}.
+ */
 @Singleton
 @Implement(WindowManager.class)
 public class DefaultWindowManager implements WindowManager {
+
   private final Map<Long, InternalWindow> windows;
 
   private final EventBus eventBus;
@@ -87,7 +89,7 @@ public class DefaultWindowManager implements WindowManager {
   /**
    * Fires an event and automatically select the target window based on the event source handle.
    *
-   * @param windowHandle The handle of the window to, or {@code -1} for the minecraft window
+   * @param windowHandle  The handle of the window to, or {@code -1} for the minecraft window
    * @param eventFunction The function to create the event with the window for the given handle
    * @return {@code true} if the event has been handled, {@code false} otherwise
    */
@@ -110,12 +112,16 @@ public class DefaultWindowManager implements WindowManager {
     return ((InternalWindow) minecraftWindow).isRenderedIntrusively();
   }
 
-  /** Renders the minecraft window now. */
+  /**
+   * Renders the minecraft window now.
+   */
   public void renderMinecraftWindow() {
     ((InternalWindow) minecraftWindow).render();
   }
 
-  /** Renders all windows except the minecraft window itself. */
+  /**
+   * Renders all windows except the minecraft window itself.
+   */
   public void renderSideWindows() {
     for (InternalWindow window : windows.values()) {
       if (window == minecraftWindow) {

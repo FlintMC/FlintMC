@@ -74,7 +74,9 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
     this.yFactor = 1;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder at(float x, float y) {
     this.x = x;
@@ -82,20 +84,26 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder text(String text) {
     this.text = text;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder scale(float factor) {
     return this.scale(factor, factor);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder scale(float xFactor, float yFactor) {
     this.xFactor = xFactor;
@@ -103,60 +111,78 @@ public class DefaultFontRenderBuilder implements FontRenderBuilder {
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder color(int rgba) {
     this.rgba = rgba;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder color(int r, int g, int b) {
     return this.color(r, g, b, 255);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder color(int r, int g, int b, int a) {
     return this.color(((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder align(StringAlignment alignment) {
     this.alignment = alignment;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder useMultipleLines(int maxLineLength) {
     this.maxLineLength = maxLineLength;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder useMultipleLines() {
     return this.useMultipleLines(Integer.MAX_VALUE);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder disableShadow() {
     this.shadow = false;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FontRenderBuilder matrixStack(Object matrixStack) {
     this.matrixStack = matrixStack;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void draw() {
     this.validate();

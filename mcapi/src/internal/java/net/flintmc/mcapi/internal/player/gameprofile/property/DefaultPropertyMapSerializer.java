@@ -19,17 +19,23 @@
 
 package net.flintmc.mcapi.internal.player.gameprofile.property;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.reflect.Type;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.property.Property;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
-/** An implementation of {@link PropertyMap.Serializer} */
+/**
+ * An implementation of {@link PropertyMap.Serializer}
+ */
 @Singleton
 @Implement(PropertyMap.Serializer.class)
 public class DefaultPropertyMapSerializer implements PropertyMap.Serializer {
@@ -54,7 +60,7 @@ public class DefaultPropertyMapSerializer implements PropertyMap.Serializer {
    * type passing {@code json} since that will cause an infinite loop (Gson will call your call-back
    * method again).
    *
-   * @param json The Json data being deserialized
+   * @param json    The Json data being deserialized
    * @param typeOfT The type of the Object to deserialize to
    * @param context The json context to use for creating the property map
    * @return A deserialized object of the specified type typeOfT which is a subclass of {@code T}
@@ -108,9 +114,9 @@ public class DefaultPropertyMapSerializer implements PropertyMap.Serializer {
    * src} object itself since that will cause an infinite loop (Gson will call your call-back method
    * again).
    *
-   * @param src The object that needs to be converted to Json.
+   * @param src       The object that needs to be converted to Json.
    * @param typeOfSrc The actual type (fully generic version) of the source object.
-   * @param context The json context to use for creating the json element
+   * @param context   The json context to use for creating the json element
    * @return A JsonElement corresponding to the specified object.
    */
   @Override

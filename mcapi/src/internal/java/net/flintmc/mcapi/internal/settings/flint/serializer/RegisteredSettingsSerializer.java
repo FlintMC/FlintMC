@@ -19,9 +19,8 @@
 
 package net.flintmc.mcapi.internal.settings.flint.serializer;
 
-import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
-
 import java.lang.annotation.Annotation;
+import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
 
 public class RegisteredSettingsSerializer<A extends Annotation> {
 

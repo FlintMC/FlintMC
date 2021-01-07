@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.event.EntityAttackEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(EntityAttackEvent.class)
 public class DefaultEntityAttackEvent implements EntityAttackEvent {
 
@@ -36,7 +38,9 @@ public class DefaultEntityAttackEvent implements EntityAttackEvent {
     this.attacked = attacked;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity getAttacked() {
     return this.attacked;

@@ -30,6 +30,7 @@ import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializer;
 @Singleton
 @SettingsSerializer(Icon.class)
 public class IconSerializer implements SettingsSerializationHandler<Icon> {
+
   @Override
   public void append(JsonObject result, RegisteredSetting setting, Icon annotation) {
     if (annotation == null) {

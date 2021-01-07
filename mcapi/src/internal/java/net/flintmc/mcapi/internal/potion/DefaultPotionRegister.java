@@ -42,61 +42,81 @@ public class DefaultPotionRegister implements PotionRegister {
     this.potions = new HashMap<>();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addEffect(ResourceLocation location, StatusEffect effect) {
     this.effects.put(location, effect);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removeEffect(ResourceLocation location) {
     this.effects.remove(location);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removeEffect(ResourceLocation location, StatusEffect effect) {
     this.effects.remove(location, effect);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public StatusEffect getEffect(ResourceLocation location) {
     return this.effects.get(location);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<ResourceLocation, StatusEffect> getEffects() {
     return this.effects;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addPotion(ResourceLocation location, Potion potion) {
     this.potions.put(location, potion);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removePotion(ResourceLocation location) {
     this.potions.remove(location);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removePotion(ResourceLocation location, Potion potion) {
     this.potions.remove(location, potion);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Potion getPotion(ResourceLocation location) {
     return this.potions.get(location);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<ResourceLocation, Potion> getPotions() {
     return this.potions;
