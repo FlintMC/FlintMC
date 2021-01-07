@@ -22,13 +22,19 @@ package net.flintmc.render.gui.webgui;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/** Represents a resource readable from a web front-end. */
+/**
+ * Represents a resource readable from a web front-end.
+ */
 public interface WebResource {
 
-  /** @return the path to this resource */
+  /**
+   * @return the path to this resource
+   */
   String getPath();
 
-  /** @return the MIME type of this resource */
+  /**
+   * @return the MIME type of this resource
+   */
   String getMimeType();
 
   /**
@@ -54,7 +60,7 @@ public interface WebResource {
   /**
    * Reads from this resource
    *
-   * @param data the buffer to write the resource content to
+   * @param data   the buffer to write the resource content to
    * @param length the maximum number of bytes to read
    * @return the number of bytes read (and written to data)
    * @throws IOException if the resource couldn't be read

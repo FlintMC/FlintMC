@@ -22,14 +22,13 @@ package net.flintmc.mcapi.internal.settings.flint.options.text;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.inject.Singleton;
+import java.util.regex.Pattern;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.text.StringRestriction;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
-
-import java.util.regex.Pattern;
 
 @Singleton
 @RegisterSettingHandler(StringSetting.class)

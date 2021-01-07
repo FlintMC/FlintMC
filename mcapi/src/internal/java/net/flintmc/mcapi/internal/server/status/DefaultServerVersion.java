@@ -41,19 +41,25 @@ public class DefaultServerVersion implements ServerVersion {
     this.compatible = compatible;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getProtocolVersion() {
     return this.protocolVersion;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCompatible() {
     return this.compatible;

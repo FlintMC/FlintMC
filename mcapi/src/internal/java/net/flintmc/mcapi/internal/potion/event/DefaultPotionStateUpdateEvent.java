@@ -43,19 +43,25 @@ public class DefaultPotionStateUpdateEvent implements PotionStateUpdateEvent {
     this.state = state;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LivingEntity getLivingEntity() {
     return this.livingEntity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public StatusEffectInstance getStatusEffectInstance() {
     return this.statusEffectInstance;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public State getState() {
     return this.state;

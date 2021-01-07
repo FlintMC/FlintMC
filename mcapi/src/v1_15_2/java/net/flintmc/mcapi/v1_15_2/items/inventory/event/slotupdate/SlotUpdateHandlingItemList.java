@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.v1_15_2.items.inventory.event.slotupdate;
 
 import com.google.common.base.Preconditions;
+import java.util.Arrays;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -30,8 +31,6 @@ import net.flintmc.mcapi.items.inventory.event.InventoryUpdateSlotEvent;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
-import java.util.Arrays;
 
 public class SlotUpdateHandlingItemList extends NonNullList<ItemStack> {
 

@@ -24,7 +24,9 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.settings.game.event.GameSettingsStorageEvent;
 
-/** Default implementation of the {@link GameSettingsStorageEvent}. */
+/**
+ * Default implementation of the {@link GameSettingsStorageEvent}.
+ */
 @Implement(GameSettingsStorageEvent.class)
 public class DefaultGameSettingsStorageEvent implements GameSettingsStorageEvent {
 
@@ -35,7 +37,9 @@ public class DefaultGameSettingsStorageEvent implements GameSettingsStorageEvent
     this.state = state;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public State getState() {
     return this.state;

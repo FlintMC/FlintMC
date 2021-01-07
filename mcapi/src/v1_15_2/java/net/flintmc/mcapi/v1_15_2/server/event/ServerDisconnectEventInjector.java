@@ -44,7 +44,8 @@ public class ServerDisconnectEventInjector {
 
   @Hook(
       className = "net.minecraft.client.world.ClientWorld",
-      methodName = "sendQuittingDisconnectingPacket")
+      methodName = "sendQuittingDisconnectingPacket",
+      version = "1.15.2")
   public void handleDisconnect(Hook.ExecutionTime executionTime) {
     ServerAddress address =
         this.controller.isConnected() ? this.controller.getConnectedServer().getAddress() : null;

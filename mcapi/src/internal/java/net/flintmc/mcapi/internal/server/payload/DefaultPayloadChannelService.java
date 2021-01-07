@@ -48,7 +48,9 @@ public class DefaultPayloadChannelService implements PayloadChannelService {
     this.payloadChannels = HashMultimap.create();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void registerPayloadChannel(
       String namespace, String path, PayloadChannelListener payloadChannelListener) {
@@ -56,33 +58,43 @@ public class DefaultPayloadChannelService implements PayloadChannelService {
         this.resourceLocationProvider.get(namespace, path), payloadChannelListener);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void registerPayloadChannel(
       ResourceLocation resourceLocation, PayloadChannelListener payloadChannelListener) {
     this.payloadChannels.put(resourceLocation, payloadChannelListener);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void unregisterPayloadChannels(ResourceLocation resourceLocation) {
     this.payloadChannels.removeAll(resourceLocation);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void unregisterPayloadChannel(PayloadChannelListener payloadChannelListener) {
     this.payloadChannels.values().remove(payloadChannelListener);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void unregisterPayloadChannel(
       ResourceLocation resourceLocation, PayloadChannelListener payloadChannelListener) {
     this.payloadChannels.remove(resourceLocation, payloadChannelListener);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean shouldListen(String channelIdentifier, Object buffer) {
     boolean shouldListen = false;
@@ -97,7 +109,9 @@ public class DefaultPayloadChannelService implements PayloadChannelService {
     return shouldListen;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Multimap<ResourceLocation, PayloadChannelListener> getPayloadChannels() {
     return this.payloadChannels;

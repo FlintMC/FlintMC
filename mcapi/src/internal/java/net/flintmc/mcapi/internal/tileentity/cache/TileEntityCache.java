@@ -22,11 +22,10 @@ package net.flintmc.mcapi.internal.tileentity.cache;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.mcapi.tileentity.TileEntity;
-import net.flintmc.mcapi.world.math.BlockPosition;
-
 import java.util.Map;
 import java.util.function.Supplier;
+import net.flintmc.mcapi.tileentity.TileEntity;
+import net.flintmc.mcapi.world.math.BlockPosition;
 
 /**
  * This cache is used to store all tile entities ported from Minecraft to Flint to save resources.
@@ -62,9 +61,9 @@ public class TileEntityCache {
    * the block position with the given supplied tile entity.
    *
    * @param blockPosition The block position with the specified tile entity is to be associated.
-   * @param supplier The tile entity to be associated with the specified block position.
+   * @param supplier      The tile entity to be associated with the specified block position.
    * @return The previous tile entity associated with the specified block position, or a the given
-   *     supplied tile entity if there was not mapping for the block position.
+   * supplied tile entity if there was not mapping for the block position.
    */
   public TileEntity putIfAbsent(BlockPosition blockPosition, Supplier<TileEntity> supplier) {
     if (this.tileEntities.containsKey(blockPosition)) {
@@ -75,7 +74,9 @@ public class TileEntityCache {
     return suppliedEntity;
   }
 
-  /** Clears the cache. */
+  /**
+   * Clears the cache.
+   */
   public void clear() {
     this.tileEntities.clear();
   }

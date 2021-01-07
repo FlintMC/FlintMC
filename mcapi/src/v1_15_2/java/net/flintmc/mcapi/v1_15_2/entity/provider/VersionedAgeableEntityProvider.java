@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.AgeableEntity;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 
-/** 1.15.2 implementation of the {@link AgeableEntity.Provider}. */
+/**
+ * 1.15.2 implementation of the {@link AgeableEntity.Provider}.
+ */
 @Singleton
 @Implement(value = AgeableEntity.Provider.class, version = "1.15.2")
 public class VersionedAgeableEntityProvider implements AgeableEntity.Provider {
@@ -40,7 +42,9 @@ public class VersionedAgeableEntityProvider implements AgeableEntity.Provider {
     this.entityTypeMapper = entityTypeMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AgeableEntity get(Object entity) {
     if (!(entity instanceof net.minecraft.entity.AgeableEntity)) {

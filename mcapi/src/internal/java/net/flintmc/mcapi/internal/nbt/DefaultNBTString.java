@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.internal.nbt;
 
+import java.io.IOException;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -27,9 +28,9 @@ import net.flintmc.mcapi.nbt.NBTType;
 import net.flintmc.mcapi.nbt.io.read.NBTDataInputStream;
 import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
-import java.io.IOException;
-
-/** Default implementation the {@link NBTString}. */
+/**
+ * Default implementation the {@link NBTString}.
+ */
 @Implement(NBTString.class)
 public class DefaultNBTString implements NBTString {
 
@@ -40,25 +41,33 @@ public class DefaultNBTString implements NBTString {
     this.value = value;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NBTType getIdentifier() {
     return NBTType.TAG_STRING;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readContents(NBTDataInputStream inputStream) throws IOException {
     this.value = inputStream.getDataInputStream().readUTF();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeContents(NBTDataOutputStream outputStream) throws IOException {
     outputStream.getDataOutputStream().writeUTF(this.value);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String asString() {
     return this.value;

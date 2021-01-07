@@ -20,14 +20,13 @@
 package net.flintmc.mcapi.v1_15_2.server.event;
 
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.event.ServerListUpdateEvent;
 import net.flintmc.mcapi.server.event.ServerListUpdateEvent.Type;
 import net.minecraft.client.multiplayer.ServerData;
-
-import java.util.ArrayList;
 
 public class ModServerList extends ArrayList<ServerData> {
 

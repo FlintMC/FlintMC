@@ -52,25 +52,33 @@ public class URLWebResource implements WebResource {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getPath() {
     return this.path;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getMimeType() {
     return URLConnection.guessContentTypeFromName(this.url.toString());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void open() throws IOException {
     this.stream = this.url.openStream();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void close() throws IOException {
     this.stream.close();
@@ -93,7 +101,9 @@ public class URLWebResource implements WebResource {
     return total;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getSize() throws IOException {
     if (this.size < 0) {
@@ -102,7 +112,9 @@ public class URLWebResource implements WebResource {
     return this.size;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long readFromFile(ByteBuffer data, long length) throws IOException {
     int read = readFile();

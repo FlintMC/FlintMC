@@ -65,27 +65,29 @@ public class VersionedGuiInterceptor {
     this.fieldBuilder = fieldBuilder;
   }
 
-  @PostSubscribe
+  @PostSubscribe(version = "1.15.2")
   public void hookMinecraftWindowRender(ScreenRenderEvent event) {
     this.windowManager.renderMinecraftWindow();
   }
 
-  @ClassTransform
+  @ClassTransform("1.15.2")
   @CtClassFilter(
       className = "net.minecraft.client.gui.screen.Screen",
       value = CtClassFilters.SUBCLASS_OF)
   private void hookScreenRender(ClassTransformContext context) throws CannotCompileException {
     MethodMapping renderMapping =
-        this.mappingProvider
+        mappingProvider
             .get("net.minecraft.client.gui.IRenderable")
             .getMethod("render", int.class, int.class, float.class);
 
     CtClass screenClass = context.getCtClass();
 
-    CtField field = this.fieldBuilder.create()
-        .target(screenClass)
-        .inject(DefaultWindowManager.class)
-        .generate();
+    CtField field =
+        this.fieldBuilder
+            .create()
+            .target(screenClass)
+            .inject(DefaultWindowManager.class)
+            .generate();
 
     for (CtMethod method : screenClass.getDeclaredMethods()) {
       if (!method.getName().equals(renderMapping.getName())) {
@@ -93,7 +95,9 @@ public class VersionedGuiInterceptor {
       }
 
       method.insertBefore(
-          "if(" + field.getName() + ".isMinecraftWindowRenderedIntrusively()) {"
+          "if("
+              + field.getName()
+              + ".isMinecraftWindowRenderedIntrusively()) {"
               + "   return;"
               + "}");
       break;

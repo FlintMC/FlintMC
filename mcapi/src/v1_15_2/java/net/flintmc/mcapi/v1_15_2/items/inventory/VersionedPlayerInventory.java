@@ -66,33 +66,43 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
     return result;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setItem(int slot, ItemStack item) throws IndexOutOfBoundsException {
     Minecraft.getInstance().player.inventory.mainInventory.set(slot, super.mapToVanilla(item));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getArmorPart(PlayerArmorPart part) {
     return this.getItem(Minecraft.getInstance().player.inventory.armorInventory, part.getIndex());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getItemInHand(PlayerHand hand) {
     int slot = this.getHandSlot(hand);
     return slot == -1 ? super.registry.getAirType().createStack() : this.getItem(slot);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getHeldItemSlot() {
     int slot = Minecraft.getInstance().player.inventory.currentItem;
     return slot >= 0 && slot <= 8 ? slot : -1;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setHeldItemSlot(int slot) {
     if (slot < 0 || slot > 8) {
@@ -101,7 +111,9 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
     Minecraft.getInstance().player.inventory.currentItem = slot;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EquipmentSlotType getSlotType(int slot) {
     if (this.getHandSlot(PlayerHand.MAIN_HAND) == slot) {
@@ -124,7 +136,9 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getItem(EquipmentSlotType slotType) {
     if (slotType == EquipmentSlotType.MAIN_HAND) {
@@ -156,7 +170,9 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
     return this.getItem(slot);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getHandSlot(PlayerHand hand) {
     if (hand == PlayerHand.OFF_HAND) {
@@ -165,13 +181,17 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
     return 36 + this.getHeldItemSlot();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasHand(PlayerHand hand) {
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getCursor() {
     Object item = Minecraft.getInstance().player.inventory.getItemStack();
@@ -180,7 +200,9 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
         : this.itemMapper.fromMinecraft(item);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void closeInventory() {
     if (Minecraft.getInstance().currentScreen instanceof ContainerScreen) {
@@ -188,13 +210,17 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack[] getContents() {
     return this.map(Minecraft.getInstance().player.inventory.mainInventory);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setContents(ItemStack[] contents) throws IllegalArgumentException {
     super.validateContents(contents);

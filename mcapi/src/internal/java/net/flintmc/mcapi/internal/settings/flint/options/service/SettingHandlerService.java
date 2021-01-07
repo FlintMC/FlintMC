@@ -21,6 +21,10 @@ package net.flintmc.mcapi.internal.settings.flint.options.service;
 
 import com.google.gson.JsonObject;
 import com.google.inject.Singleton;
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javassist.CtClass;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.inject.implement.Implement;
@@ -35,11 +39,6 @@ import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.Identifier;
-
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @Implement(SettingHandler.class)

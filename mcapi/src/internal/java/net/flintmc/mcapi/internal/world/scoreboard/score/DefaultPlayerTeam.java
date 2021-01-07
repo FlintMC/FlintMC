@@ -69,46 +69,60 @@ public class DefaultPlayerTeam implements PlayerTeam {
     this.collisionType = CollisionType.ALWAYS;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getDisplayName() {
     return this.displayName;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDisplayName(ChatComponent displayName) {
     this.displayName = displayName;
     this.playerTeamChangeListener.changeDisplayName(this, displayName);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getPrefix() {
     return this.prefix;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPrefix(ChatComponent prefix) {
     this.prefix = prefix;
     this.playerTeamChangeListener.changePrefix(this, prefix);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getSuffix() {
     return this.suffix;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setSuffix(ChatComponent suffix) {
     this.suffix = suffix;
     this.playerTeamChangeListener.changeSuffix(this, suffix);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFriendlyFlags() {
     int flag = 0;
@@ -130,90 +144,118 @@ public class DefaultPlayerTeam implements PlayerTeam {
     this.setSeeFriendlyInvisible((flags & 2) > 0);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setColor(ChatColor color) {
     this.chatColor = color;
     this.playerTeamChangeListener.changeColor(this, color);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setAllowFriendlyFire(boolean friendlyFire) {
     this.allowFriendlyFire = friendlyFire;
     this.playerTeamChangeListener.changeAllowFriendlyFire(this, friendlyFire);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setSeeFriendlyInvisible(boolean friendlyInvisible) {
     this.canSeeFriendlyInvisible = friendlyInvisible;
     this.playerTeamChangeListener.changeSeeFriendlyInvisible(this, friendlyInvisible);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<String> getMembers() {
     return this.members;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatColor getTeamColor() {
     return this.chatColor;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean seeFriendlyInvisible() {
     return this.canSeeFriendlyInvisible;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean allowFriendlyFire() {
     return this.allowFriendlyFire;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VisibleType getNameTagVisibility() {
     return this.nameTagVisibility;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setNameTagVisibility(VisibleType visibility) {
     this.nameTagVisibility = visibility;
     this.playerTeamChangeListener.changeNameTagVisibility(this, visibility);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VisibleType getDeathMessageVisibility() {
     return this.deathMessageVisibility;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDeathMessageVisibility(VisibleType visibility) {
     this.deathMessageVisibility = visibility;
     this.playerTeamChangeListener.changeDeathMessageVisibility(this, visibility);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CollisionType getCollisionType() {
     return this.collisionType;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCollisionType(CollisionType type) {
     this.collisionType = type;

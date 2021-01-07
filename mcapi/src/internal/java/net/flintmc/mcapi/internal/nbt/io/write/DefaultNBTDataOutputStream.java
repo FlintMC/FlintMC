@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.internal.nbt.io.write;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -26,10 +28,9 @@ import net.flintmc.mcapi.nbt.NBT;
 import net.flintmc.mcapi.nbt.NBTType;
 import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-/** Default implementation of the {@link NBTDataOutputStream}. */
+/**
+ * Default implementation of the {@link NBTDataOutputStream}.
+ */
 @Implement(NBTDataOutputStream.class)
 public class DefaultNBTDataOutputStream implements NBTDataOutputStream {
 
@@ -41,7 +42,9 @@ public class DefaultNBTDataOutputStream implements NBTDataOutputStream {
     this.dataOutputStream = dataOutputStream;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeFullyFormedTag(String name, NBT nbt) throws IOException {
     this.dataOutputStream.writeByte(nbt.getIdentifier().getIdentifier());
@@ -49,13 +52,17 @@ public class DefaultNBTDataOutputStream implements NBTDataOutputStream {
     nbt.writeContents(this);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeEndTag() throws IOException {
     this.dataOutputStream.writeByte(NBTType.TAG_END.getIdentifier());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public DataOutputStream getDataOutputStream() {
     return this.dataOutputStream;

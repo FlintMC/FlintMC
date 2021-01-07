@@ -39,7 +39,9 @@ public class VersionedAnimalEntityProvider implements AnimalEntity.Provider {
     this.entityTypeMapper = entityTypeMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AnimalEntity get(Object entity) {
     if (!(entity instanceof net.minecraft.entity.passive.AnimalEntity)) {

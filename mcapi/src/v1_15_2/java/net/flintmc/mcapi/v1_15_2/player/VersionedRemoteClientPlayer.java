@@ -32,7 +32,6 @@ import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.player.type.model.ModelMapper;
 import net.flintmc.mcapi.player.type.model.SkinModel;
-import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.tileentity.mapper.TileEntityMapper;
 import net.flintmc.mcapi.world.World;
@@ -42,37 +41,37 @@ import net.flintmc.mcapi.world.World;
  */
 @Implement(value = RemoteClientPlayer.class, version = "1.15.2")
 public class VersionedRemoteClientPlayer extends VersionedPlayerEntity
-        implements RemoteClientPlayer {
+    implements RemoteClientPlayer {
 
   private final net.minecraft.client.entity.player.RemoteClientPlayerEntity playerEntity;
   private final NetworkPlayerInfoRegistry networkPlayerInfoRegistry;
 
   @AssistedInject
   private VersionedRemoteClientPlayer(
-          @Assisted("entity") Object entity,
-          @Assisted("entityType") EntityType entityType,
-          World world,
-          EntityFoundationMapper entityFoundationMapper,
-          GameProfileSerializer gameProfileSerializer,
-          ModelMapper modelMapper,
-          NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
-          ItemEntityMapper itemEntityMapper,
-          TileEntityMapper tileEntityMapper) {
+      @Assisted("entity") Object entity,
+      @Assisted("entityType") EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper,
+      GameProfileSerializer gameProfileSerializer,
+      ModelMapper modelMapper,
+      NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
+      ItemEntityMapper itemEntityMapper,
+      TileEntityMapper tileEntityMapper) {
     super(
-            entity,
-            entityType,
-            world,
-            entityFoundationMapper,
-            gameProfileSerializer,
-            modelMapper,
-            itemEntityMapper,
-            tileEntityMapper);
+        entity,
+        entityType,
+        world,
+        entityFoundationMapper,
+        gameProfileSerializer,
+        modelMapper,
+        itemEntityMapper,
+        tileEntityMapper);
 
     if (!(entity instanceof net.minecraft.client.entity.player.RemoteClientPlayerEntity)) {
       throw new IllegalArgumentException(
-              entity.getClass().getName()
-                      + " is not an instance of "
-                      + net.minecraft.client.entity.player.RemoteClientPlayerEntity.class.getName());
+          entity.getClass().getName()
+              + " is not an instance of "
+              + net.minecraft.client.entity.player.RemoteClientPlayerEntity.class.getName());
     }
     this.playerEntity = (net.minecraft.client.entity.player.RemoteClientPlayerEntity) entity;
     this.networkPlayerInfoRegistry = networkPlayerInfoRegistry;

@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
 import net.flintmc.mcapi.player.serializer.network.NetworkPlayerInfoSerializer;
 
-/** 1.15.2 implementation of {@link NetworkPlayerInfoSerializer} */
+/**
+ * 1.15.2 implementation of {@link NetworkPlayerInfoSerializer}
+ */
 @Singleton
 @Implement(value = NetworkPlayerInfoSerializer.class, version = "1.15.2")
 public class VersionedNetworkPlayerInfoSerializer
@@ -44,8 +46,7 @@ public class VersionedNetworkPlayerInfoSerializer
   }
 
   /**
-   * Serializes the Flint {@link NetworkPlayerInfo} to the {@link
-   * net.minecraft.client.network.play.NetworkPlayerInfo}
+   * Serializes the Flint {@link NetworkPlayerInfo} to the {@link net.minecraft.client.network.play.NetworkPlayerInfo}
    *
    * @param value The network player info being serialized
    * @return A serialized {@link net.minecraft.client.network.play.NetworkPlayerInfo}

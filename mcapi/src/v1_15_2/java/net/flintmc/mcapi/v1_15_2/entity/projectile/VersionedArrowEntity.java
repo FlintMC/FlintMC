@@ -94,7 +94,9 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
     this.arrowEntity = (net.minecraft.entity.projectile.ArrowEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPotionEffect(ItemStack itemStack) {
     this.arrowEntity.setPotionEffect(
@@ -102,20 +104,26 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getColor() {
     return this.arrowEntity.getColor();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.arrowEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.arrowEntity.writeAdditional(

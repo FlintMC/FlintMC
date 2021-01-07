@@ -30,12 +30,11 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
 
 /**
- * Fired whenever a setting is registered via {@link
- * SettingsProvider#registerSetting(RegisteredSetting)}. This event will be fired in both the {@link
- * Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST} phases, but cancellation will only have an
- * effect in the {@link Phase#PRE} phase. It will not be fired for each sub setting of a setting,
- * but in the {@link Phase#PRE} phase, the given setting won't contain any sub settings, those will
- * be added before the {@link Phase#POST} phase.
+ * Fired whenever a setting is registered via {@link SettingsProvider#registerSetting(RegisteredSetting)}.
+ * This event will be fired in both the {@link Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST}
+ * phases, but cancellation will only have an effect in the {@link Phase#PRE} phase. It will not be
+ * fired for each sub setting of a setting, but in the {@link Phase#PRE} phase, the given setting
+ * won't contain any sub settings, those will be added before the {@link Phase#POST} phase.
  *
  * @see Subscribe
  */
@@ -49,7 +48,9 @@ public interface SettingRegisterEvent extends Event, Cancellable {
    */
   RegisteredSetting getSetting();
 
-  /** Factory for the {@link SettingRegisterEvent}. */
+  /**
+   * Factory for the {@link SettingRegisterEvent}.
+   */
   @AssistedFactory(SettingRegisterEvent.class)
   interface Factory {
 

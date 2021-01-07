@@ -39,7 +39,9 @@ public class DefaultPotionAddEvent extends DefaultPotionEvent implements PotionA
     this.statusEffectInstance = statusEffectInstance;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public StatusEffectInstance getStatusEffectInstance() {
     return this.statusEffectInstance;

@@ -29,11 +29,12 @@ import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.type.hand.Hand;
-import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
 
-/** 1.15.2 implementation of the {@link AgeableEntity}. */
+/**
+ * 1.15.2 implementation of the {@link AgeableEntity}.
+ */
 @Implement(value = AgeableEntity.class, version = "1.15.2")
 public class VersionedAgeableEntity extends VersionedCreatureEntity implements AgeableEntity {
 
@@ -41,11 +42,11 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
 
   @AssistedInject
   public VersionedAgeableEntity(
-          @Assisted("entity") Object entity,
-          @Assisted("entityType") EntityType entityType,
-          World world,
-          EntityFoundationMapper entityFoundationMapper,
-          EntitySenses.Factory entitySensesFactory) {
+      @Assisted("entity") Object entity,
+      @Assisted("entityType") EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper,
+      EntitySenses.Factory entitySensesFactory) {
     super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
 
     if (!(entity instanceof net.minecraft.entity.AgeableEntity)) {
@@ -57,7 +58,9 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
     this.ageableEntity = (net.minecraft.entity.AgeableEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean processInteract(PlayerEntity entity, Hand hand) {
     return this.ageableEntity.processInteract(
@@ -67,45 +70,59 @@ public class VersionedAgeableEntity extends VersionedCreatureEntity implements A
             this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getGrowingAge() {
     return this.ageableEntity.getGrowingAge();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setGrowingAge(int age) {
     this.ageableEntity.setGrowingAge(age);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void ageUp(int growth, boolean updateForcedAge) {
     this.ageableEntity.ageUp(growth, updateForcedAge);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addGrowth(int growth) {
     this.ageableEntity.addGrowth(growth);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.ageableEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.ageableEntity.writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isChild() {
     return this.ageableEntity.isChild();

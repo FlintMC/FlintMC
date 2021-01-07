@@ -83,8 +83,7 @@ public @interface ApplicableSetting {
    * Config}.
    *
    * <p>{@link ConfigObjectReference#getSerializedType()} (or if it is a {@link Map}, the value
-   * type
-   * of it) has to be assignable to at least one of these types.
+   * type of it) has to be assignable to at least one of these types.
    *
    * @return The types for this setting
    */

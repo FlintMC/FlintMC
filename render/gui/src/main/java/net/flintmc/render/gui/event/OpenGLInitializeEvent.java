@@ -30,4 +30,6 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
  * Minecraft main thread.
  */
 @Subscribable({Phase.PRE, Phase.POST})
-public interface OpenGLInitializeEvent extends Event {}
+public interface OpenGLInitializeEvent extends Event {
+
+}

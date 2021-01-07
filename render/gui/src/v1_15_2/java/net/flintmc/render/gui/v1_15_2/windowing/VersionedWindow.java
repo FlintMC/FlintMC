@@ -19,6 +19,17 @@
 
 package net.flintmc.render.gui.v1_15_2.windowing;
 
+import static org.lwjgl.glfw.GLFW.GLFW_FOCUSED;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowAttrib;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -36,14 +47,10 @@ import net.flintmc.render.gui.windowing.WindowRenderer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.*;
-
-/** 1.15.2 implementation for {@link Window}. */
-@Implement(Window.class)
+/**
+ * 1.15.2 implementation for {@link Window}.
+ */
+@Implement(value = Window.class, version = "1.15.2")
 public class VersionedWindow implements InternalWindow {
 
   protected final EventBus eventBus;
@@ -57,12 +64,12 @@ public class VersionedWindow implements InternalWindow {
    * Creates a new OpenGL window using GLFW. Constructor for assisted factory at {@link
    * Window.Factory#create(String, int, int)}.
    *
-   * @param title The title of new the window
-   * @param width The width of new the window
-   * @param height The height of the new window
+   * @param title           The title of new the window
+   * @param width           The width of new the window
+   * @param height          The height of the new window
    * @param minecraftWindow The main minecraft window, used to derive the context
-   * @param windowManager The window manager of this Flint instance
-   * @param callbacks The callbacks to install on the window
+   * @param windowManager   The window manager of this Flint instance
+   * @param callbacks       The callbacks to install on the window
    */
   @AssistedInject
   public VersionedWindow(
@@ -87,7 +94,7 @@ public class VersionedWindow implements InternalWindow {
    *
    * <p><b>Registration of the window needs to be done by the caller or by other means!</b>
    *
-   * @param handle The GLFW handle to wrap
+   * @param handle        The GLFW handle to wrap
    * @param windowManager The window manager to unregister this window on when it is closed
    */
   protected VersionedWindow(long handle, DefaultWindowManager windowManager, EventBus eventBus) {
@@ -186,7 +193,7 @@ public class VersionedWindow implements InternalWindow {
    * Overloaded version of {@link #close()} allowing more control over the close process.
    *
    * @param destroyWindow If {@code true}, the GLFW window is destroyed, if {@code false}, only the
-   *     {@link #handle} field is zeroed out
+   *                      {@link #handle} field is zeroed out
    */
   protected final void close(boolean destroyWindow) {
     // Clean up all renderers

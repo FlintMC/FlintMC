@@ -84,4 +84,5 @@ defineModule("util:session-service")
 defineModule("util:task-executor")
 
 defineModule("minecraft:minecraft-1-15-2")
+defineModule("minecraft:minecraft-1-16-4")
 include("bootstrap")

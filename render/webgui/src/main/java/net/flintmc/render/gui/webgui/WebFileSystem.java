@@ -19,12 +19,11 @@
 
 package net.flintmc.render.gui.webgui;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.processing.autoload.DetectableAnnotation;
 
 /**
  * Marks a {@link WebFileSystemHandler} implementation that should be used by the web gui backend.
@@ -35,6 +34,8 @@ import java.lang.annotation.Target;
 @DetectableAnnotation
 public @interface WebFileSystem {
 
-  /** @return the protocol name of the filesystem. */
+  /**
+   * @return the protocol name of the filesystem.
+   */
   String value();
 }

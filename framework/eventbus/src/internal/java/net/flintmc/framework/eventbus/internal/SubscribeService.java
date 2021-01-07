@@ -21,7 +21,9 @@ package net.flintmc.framework.eventbus.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import java.lang.annotation.Annotation;
+import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -52,16 +54,19 @@ public class SubscribeService implements ServiceHandler<Annotation> {
   private final ExecutorFactory factory;
   private final CtClass eventInterface;
   private final SubscribeMethodBuilder.Factory methodBuilderFactory;
+  private final String version;
 
   @Inject
   private SubscribeService(
       ExecutorFactory executorFactory,
       ClassPool pool,
-      SubscribeMethodBuilder.Factory methodBuilderFactory)
+      SubscribeMethodBuilder.Factory methodBuilderFactory,
+      @Named("launchArguments") Map launchArguments)
       throws NotFoundException {
     this.methodBuilderFactory = methodBuilderFactory;
     this.eventInterface = pool.get(Event.class.getName());
     this.factory = executorFactory;
+    this.version = (String) launchArguments.get("--game-version");
   }
 
   /**
@@ -71,6 +76,9 @@ public class SubscribeService implements ServiceHandler<Annotation> {
   public void discover(AnnotationMeta<Annotation> meta) throws ServiceNotFoundException {
     Annotation subscribe = meta.getAnnotation();
     CtMethod method = meta.getMethodIdentifier().getLocation();
+
+    String version = this.getVersion(subscribe);
+    if (!(version.isEmpty() || version.equals(this.version))) return;
 
     CtClass eventClass = null;
     try {
@@ -85,8 +93,10 @@ public class SubscribeService implements ServiceHandler<Annotation> {
         throw new ServiceNotFoundException(
             String.format(
                 "At least one parameter of an @%s method must implement %s which is missing at %s.%s()",
-                meta.getAnnotation().annotationType().getSimpleName(), Event.class.getName(),
-                method.getDeclaringClass().getName(), method.getName()));
+                meta.getAnnotation().annotationType().getSimpleName(),
+                Event.class.getName(),
+                method.getDeclaringClass().getName(),
+                method.getName()));
       }
     } catch (NotFoundException e) {
       throw new ServiceNotFoundException("Failed to retrieve CtClass of parameter type.", e);
@@ -135,5 +145,18 @@ public class SubscribeService implements ServiceHandler<Annotation> {
             .phaseOnly(phase);
 
     builder.to(executor).buildAndRegister();
+  }
+
+  private String getVersion(Annotation annotation) {
+    if (annotation instanceof PreSubscribe) {
+      return ((PreSubscribe) annotation).version();
+    } else if (annotation instanceof PostSubscribe) {
+      return ((PostSubscribe) annotation).version();
+    } else if (annotation instanceof Subscribe) {
+      return ((Subscribe) annotation).version();
+    } else {
+      throw new IllegalArgumentException(
+          "Unknown subscribe annotation: " + annotation.annotationType().getName());
+    }
   }
 }

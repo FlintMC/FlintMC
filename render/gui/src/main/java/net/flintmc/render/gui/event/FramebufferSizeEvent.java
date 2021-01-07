@@ -23,9 +23,12 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.windowing.Window;
 
-/** Event indicating that the framebuffer size has changed. */
+/**
+ * Event indicating that the framebuffer size has changed.
+ */
 @Subscribable(Phase.PRE)
 public class FramebufferSizeEvent extends DefaultGuiEvent implements GuiEvent {
+
   private final int width;
   private final int height;
 
@@ -33,7 +36,7 @@ public class FramebufferSizeEvent extends DefaultGuiEvent implements GuiEvent {
    * Constructs a new {@link FramebufferSizeEvent} with the specified with and height.
    *
    * @param window The non-null window where this event has happened
-   * @param width The new width of the framebuffer in pixels
+   * @param width  The new width of the framebuffer in pixels
    * @param height The new height of the framebuffer in pixels
    */
   public FramebufferSizeEvent(Window window, int width, int height) {

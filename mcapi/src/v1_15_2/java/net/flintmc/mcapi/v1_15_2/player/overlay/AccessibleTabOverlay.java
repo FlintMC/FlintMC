@@ -22,8 +22,10 @@ package net.flintmc.mcapi.v1_15_2.player.overlay;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-/** A shadow interface for the player tab overlay gui. */
-@Shadow("net.minecraft.client.gui.overlay.PlayerTabOverlayGui")
+/**
+ * A shadow interface for the player tab overlay gui.
+ */
+@Shadow(value = "net.minecraft.client.gui.overlay.PlayerTabOverlayGui", version = "1.15.2")
 public interface AccessibleTabOverlay {
 
   /**

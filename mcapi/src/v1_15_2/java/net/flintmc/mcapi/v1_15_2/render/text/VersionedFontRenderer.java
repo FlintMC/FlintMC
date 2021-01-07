@@ -22,14 +22,13 @@ package net.flintmc.mcapi.v1_15_2.render.text;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.List;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.render.text.raw.FontRenderer;
 import net.flintmc.mcapi.render.text.raw.StringAlignment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.fonts.Font;
-
-import java.util.List;
 
 @Singleton
 @Implement(value = FontRenderer.class, version = "1.15.2")
@@ -42,19 +41,25 @@ public class VersionedFontRenderer implements FontRenderer {
     this.minecraft = Minecraft.getInstance();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getStringWidth(String text) {
     return this.minecraft.fontRenderer.getStringWidth(text);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getCharWidth(char c) {
     return this.minecraft.fontRenderer.getCharWidth(c);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getBoldCharWidth(char c) {
     if (c == ChatColor.PREFIX_CHAR) {
@@ -65,7 +70,9 @@ public class VersionedFontRenderer implements FontRenderer {
     return font.findGlyph(c).getAdvance(true);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void drawString(
       float x,
@@ -110,19 +117,43 @@ public class VersionedFontRenderer implements FontRenderer {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void drawString(
+      Object matrixStack,
+      float x,
+      float y,
+      String text,
+      int rgba,
+      StringAlignment alignment,
+      int maxLineLength,
+      boolean shadow,
+      float xFactor,
+      float yFactor) {
+    this.drawString(x, y, text, rgba, alignment, maxLineLength, shadow, xFactor, yFactor);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> listFormattedString(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.listFormattedStringToWidth(text, wrapWidth);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String wrapFormattedString(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.wrapFormattedStringToWidth(text, wrapWidth);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getStringWrappedHeight(String text, int wrapWidth) {
     return this.minecraft.fontRenderer.getWordWrappedHeight(text, wrapWidth);

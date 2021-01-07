@@ -19,18 +19,20 @@
 
 package net.flintmc.render.gui.event;
 
+import java.util.Set;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.input.InputState;
-import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.input.Key;
+import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.windowing.Window;
 
-import java.util.Set;
-
-/** Event indicating that a mouse button state has changed or is still being hold. */
+/**
+ * Event indicating that a mouse button state has changed or is still being hold.
+ */
 @Subscribable(Phase.PRE)
 public class MouseButtonEvent extends EventWithModifierKeys {
+
   private final Key button;
   private final InputState state;
   private final double x;
@@ -39,12 +41,12 @@ public class MouseButtonEvent extends EventWithModifierKeys {
   /**
    * Constructs a new {@link MouseButtonEvent} with the given state, button and modifier keys.
    *
-   * @param window The non-null window where this event has happened
-   * @param state The new state the button is in
-   * @param button The mouse button that has changed state with {@link Key#isMouse()} being
-   *     {@code true}
-   * @param x The x coordinate of the event
-   * @param y The y coordinate of the event
+   * @param window       The non-null window where this event has happened
+   * @param state        The new state the button is in
+   * @param button       The mouse button that has changed state with {@link Key#isMouse()} being
+   *                     {@code true}
+   * @param x            The x coordinate of the event
+   * @param y            The y coordinate of the event
    * @param modifierKeys The modifier keys which were active while the event was fired
    */
   public MouseButtonEvent(

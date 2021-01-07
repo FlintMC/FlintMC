@@ -19,8 +19,15 @@
 
 package net.flintmc.render.gui.webgui.internal;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import javassist.CtClass;
 import javassist.NotFoundException;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
@@ -33,14 +40,6 @@ import net.flintmc.render.gui.webgui.WebFileSystem;
 import net.flintmc.render.gui.webgui.WebFileSystemHandler;
 import net.flintmc.render.gui.webgui.WebFileSystemService;
 import net.flintmc.util.commons.Pair;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Singleton
 @Implement(WebFileSystemService.class)
@@ -75,7 +74,9 @@ public class InternalWebFileSystemService
     fileSystems.add(new Pair<>(fileSystem, annotationMeta.getAnnotation().value()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<Pair<WebFileSystemHandler, String>> getFileSystems() {
     if (cachedInstances == null) {

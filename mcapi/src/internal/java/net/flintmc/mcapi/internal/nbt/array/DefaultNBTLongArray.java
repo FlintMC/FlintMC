@@ -20,6 +20,8 @@
 package net.flintmc.mcapi.internal.nbt.array;
 
 import com.google.common.base.Joiner;
+import java.io.IOException;
+import java.util.Collections;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -28,10 +30,9 @@ import net.flintmc.mcapi.nbt.array.NBTLongArray;
 import net.flintmc.mcapi.nbt.io.read.NBTDataInputStream;
 import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 
-import java.io.IOException;
-import java.util.Collections;
-
-/** Default implementation of the {@link NBTLongArray}. */
+/**
+ * Default implementation of the {@link NBTLongArray}.
+ */
 @Implement(NBTLongArray.class)
 public class DefaultNBTLongArray implements NBTLongArray {
 
@@ -42,13 +43,17 @@ public class DefaultNBTLongArray implements NBTLongArray {
     this.value = value;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NBTType getIdentifier() {
     return NBTType.TAG_LONG_ARRAY;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readContents(NBTDataInputStream inputStream) throws IOException {
     int length = inputStream.getDataInputStream().readInt();
@@ -59,7 +64,9 @@ public class DefaultNBTLongArray implements NBTLongArray {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeContents(NBTDataOutputStream outputStream) throws IOException {
     outputStream.getDataOutputStream().writeInt(this.value.length);
@@ -68,13 +75,17 @@ public class DefaultNBTLongArray implements NBTLongArray {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String asString() {
     return Joiner.on(",").join(Collections.singleton(this.value));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long[] asArray() {
     return this.value;

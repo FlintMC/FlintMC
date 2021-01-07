@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.internal.chat.builder;
 
+import java.util.function.Supplier;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
@@ -28,10 +29,8 @@ import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.internal.chat.component.DefaultTextComponent;
 
-import java.util.function.Supplier;
-
 public abstract class DefaultComponentBuilder<
-        B extends ComponentBuilder<B>, C extends ChatComponent>
+    B extends ComponentBuilder<B>, C extends ChatComponent>
     implements ComponentBuilder<B> {
 
   private final B builder;

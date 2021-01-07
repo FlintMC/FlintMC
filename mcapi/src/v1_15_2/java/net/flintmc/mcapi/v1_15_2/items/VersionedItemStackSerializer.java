@@ -43,7 +43,7 @@ import net.minecraft.nbt.NumberNBT;
 import net.minecraft.nbt.StringNBT;
 
 @Singleton
-@Implement(ItemStackSerializer.class)
+@Implement(value = ItemStackSerializer.class, version = "1.15.2")
 public class VersionedItemStackSerializer implements ItemStackSerializer {
 
   private final ItemRegistry itemRegistry;

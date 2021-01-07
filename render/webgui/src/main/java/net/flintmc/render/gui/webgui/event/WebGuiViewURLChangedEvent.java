@@ -23,9 +23,12 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Event indicating that a {@link WebGuiView}s URL has changed. */
+/**
+ * Event indicating that a {@link WebGuiView}s URL has changed.
+ */
 @Subscribable(Phase.POST)
 public interface WebGuiViewURLChangedEvent extends WebGuiViewEvent {
+
   /**
    * Retrieves the new URL of the {@link WebGuiView}.
    *

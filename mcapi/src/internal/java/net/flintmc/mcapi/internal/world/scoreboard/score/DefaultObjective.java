@@ -55,44 +55,58 @@ public class DefaultObjective implements Objective {
     this.renderType = renderType;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Scoreboard getScoreboard() {
     return this.scoreboard;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getDisplayName() {
     return this.displayName;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDisplayName(ChatComponent displayName) {
     this.displayName = displayName;
     this.objectiveChangeListener.changeDisplayName(this, displayName);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Criteria getCriteria() {
     return this.criteria;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RenderType getRenderType() {
     return this.renderType;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setRenderType(RenderType renderType) {
     this.renderType = renderType;

@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.v1_15_2.entity.type;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
@@ -26,10 +28,9 @@ import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 import net.minecraft.entity.EntityClassification;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-/** 1.15.2 implementation of the {@link EntityTypeMapper}. */
+/**
+ * 1.15.2 implementation of the {@link EntityTypeMapper}.
+ */
 @Singleton
 @Implement(value = EntityTypeMapper.class, version = "1.15.2")
 public class VersionedEntityTypeMapper implements EntityTypeMapper {
@@ -44,7 +45,9 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
     this.entitySizeFactory = entitySizeFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityType fromMinecraftEntityType(Object handle) {
     if (!(handle instanceof net.minecraft.entity.EntityType)) {
@@ -65,7 +68,9 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
         this.fromMinecraftEntitySize(type.getSize()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEntityClassification(Entity.Classification classification) {
     switch (classification) {
@@ -82,7 +87,9 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity.Classification fromMinecraftEntityClassification(Object handle) {
     if (!(handle instanceof EntityClassification)) {
@@ -110,14 +117,18 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEntitySize(EntitySize entitySize) {
     return new net.minecraft.entity.EntitySize(
         entitySize.getWidth(), entitySize.getHeight(), entitySize.isFixed());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntitySize fromMinecraftEntitySize(Object handle) {
     if (!(handle instanceof net.minecraft.entity.EntitySize)) {

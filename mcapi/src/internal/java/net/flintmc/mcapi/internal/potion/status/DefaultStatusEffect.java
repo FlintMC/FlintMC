@@ -45,31 +45,41 @@ public class DefaultStatusEffect implements StatusEffect {
     this.liquidColor = liquidColor;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isBeneficial() {
     return this.statusEffectType == Type.BENEFICIAL;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getLiquidColor() {
     return this.liquidColor;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getEffectType() {
     return this.statusEffectType;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isInstant() {
     return this.instant;

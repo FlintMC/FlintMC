@@ -26,7 +26,11 @@ import net.flintmc.mcapi.server.ConnectedServer;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.ServerController;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.screen.ConnectingScreen;
+import net.minecraft.client.gui.screen.DirtMessageScreen;
+import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.MultiplayerScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -41,19 +45,25 @@ public class VersionedServerController implements ServerController {
     this.connectedServer = connectedServer;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isConnected() {
     return this.connectedServer.isConnected();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ConnectedServer getConnectedServer() {
     return this.isConnected() ? this.connectedServer : null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void disconnectFromServer() {
     if (Minecraft.getInstance().world != null) {
@@ -62,7 +72,9 @@ public class VersionedServerController implements ServerController {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void connectToServer(ServerAddress address) {
     // rendering has to be called from Minecraft's main thread

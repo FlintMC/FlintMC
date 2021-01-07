@@ -20,12 +20,11 @@
 package net.flintmc.mcapi.internal.items.meta;
 
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.flintmc.mcapi.items.meta.ItemHideFlag;
 import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.items.type.ItemType;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public abstract class DefaultItemMeta implements ItemMeta {
 

@@ -39,7 +39,9 @@ public class DefaultPotionRemoveEvent extends DefaultPotionEvent implements Poti
     this.statusEffect = statusEffect;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public StatusEffect getStatusEffect() {
     return this.statusEffect;

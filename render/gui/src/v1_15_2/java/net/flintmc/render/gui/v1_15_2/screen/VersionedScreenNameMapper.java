@@ -20,14 +20,14 @@
 package net.flintmc.render.gui.v1_15_2.screen;
 
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
-@Implement(ScreenNameMapper.class)
+@Implement(value = ScreenNameMapper.class, version = "1.15.2")
 public class VersionedScreenNameMapper implements ScreenNameMapper {
 
   // Map of all deobfuscated screen class names to their ScreenName equivalents
@@ -49,7 +49,7 @@ public class VersionedScreenNameMapper implements ScreenNameMapper {
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.OptionsScreen",
         ScreenName.minecraft(ScreenName.OPTIONS));
 
-    KNOWN_NAMES.put("net.minecraft.client.gui.screen.ChatScreen", 
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen.ChatScreen",
         ScreenName.minecraft(ScreenName.CHAT));
     KNOWN_NAMES.put("net.flintmc.render.gui.v1_15_2.screen.VersionedDummyScreen",
         ScreenName.minecraft(ScreenName.DUMMY));

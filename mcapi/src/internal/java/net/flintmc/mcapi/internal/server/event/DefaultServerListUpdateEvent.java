@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.server.ServerData;
 import net.flintmc.mcapi.server.event.ServerListUpdateEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(ServerListUpdateEvent.class)
 public class DefaultServerListUpdateEvent implements ServerListUpdateEvent {
 
@@ -42,31 +44,41 @@ public class DefaultServerListUpdateEvent implements ServerListUpdateEvent {
     this.type = type;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getIndex() {
     return this.index;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ServerData getServerData() {
     return this.serverData;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getType() {
     return this.type;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCancelled() {
     return this.cancelled;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;

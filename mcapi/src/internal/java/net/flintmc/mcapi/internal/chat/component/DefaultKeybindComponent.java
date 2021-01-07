@@ -19,10 +19,9 @@
 
 package net.flintmc.mcapi.internal.chat.component;
 
+import java.util.function.Function;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
-
-import java.util.function.Function;
 
 public class DefaultKeybindComponent extends DefaultChatComponent implements KeybindComponent {
 

@@ -26,7 +26,9 @@ import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.event.InventoryUpdateSlotEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(InventoryUpdateSlotEvent.class)
 public class DefaultInventoryUpdateSlotEvent extends DefaultInventorySlotEvent
     implements InventoryUpdateSlotEvent {
@@ -42,7 +44,9 @@ public class DefaultInventoryUpdateSlotEvent extends DefaultInventorySlotEvent
     this.newItem = newItem;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getNewItem() {
     return this.newItem;

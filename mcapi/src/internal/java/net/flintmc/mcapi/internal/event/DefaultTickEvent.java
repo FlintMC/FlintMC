@@ -24,7 +24,9 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.event.TickEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(TickEvent.class)
 public class DefaultTickEvent implements TickEvent {
 
@@ -35,7 +37,9 @@ public class DefaultTickEvent implements TickEvent {
     this.type = type;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getType() {
     return this.type;

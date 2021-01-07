@@ -19,10 +19,9 @@
 
 package net.flintmc.mcapi.internal.items.inventory;
 
+import java.util.function.IntFunction;
 import net.flintmc.mcapi.items.inventory.InventoryDimension;
 import net.flintmc.mcapi.items.inventory.InventoryType;
-
-import java.util.function.IntFunction;
 
 public class InternalInventoryMapping {
 
