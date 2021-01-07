@@ -263,7 +263,7 @@ $ ./gradlew build
 There is also a task to start a de-obfuscated Minecraft directly out of your
 development environment.
 ```bash
-$ ./gradlew runClient1.15.2
+$ ./gradlew runClient1.16.4
 ```
 
 If you want to login into your Minecraft account, just set the following
@@ -301,7 +301,7 @@ version = "1.0.0"
 flint {
     // Enter the newest Flint version here
     flintVersion = "2.0.12"
-    minecraftVersions("1.15.2")
+    minecraftVersions("1.15.2", "1.16.4")
     authors = arrayOf("Your Name")
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")    
@@ -317,7 +317,7 @@ dependencies {
     api(flintApi("mcapi"))
     api(flintApi("util-task-executor"))
 
-    minecraft("1.15.2") {
+    minecraft("1.15.2", "1.16.4") {
         annotationProcessor(flintApi("annotation-processing-autoload"))
     }
 }
@@ -355,7 +355,7 @@ structure:
 └── src
     ├── internal/java/your/group/internal
     ├── main/java/your/group
-    └── v1_15_2/java/your/group/v1_15_2
+    └── v1_16_4/java/your/group/v1_16_4
 ```
 
 If you now add the `ChatHandler` class from the 
@@ -384,7 +384,7 @@ tutorials on how to publish your Mod to our distribution service.
 This project is not yet finished, there are many things we still want to do.
 
 - [ ] Improve dependency resolution in package loading.
-- [ ] Implement Minecraft 1.16.x, 1.8.9 and other versions.
+- [ ] Implement Minecraft 1.8.9 and other versions.
 - [ ] Make it possible to create server mods.
 - [ ] Write more documentation and create further resources on getting started.
 - [ ] Improve Minecraft API.
