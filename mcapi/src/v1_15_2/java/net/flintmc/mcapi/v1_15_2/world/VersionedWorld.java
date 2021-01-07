@@ -25,6 +25,9 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.tileentity.TileEntity;
 import net.flintmc.mcapi.world.World;
+import net.flintmc.mcapi.world.block.Block;
+import net.flintmc.mcapi.world.block.BlockState;
+import net.flintmc.mcapi.world.block.BlockState.Factory;
 import net.flintmc.mcapi.world.border.WorldBorder;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
@@ -36,7 +39,9 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -46,6 +51,9 @@ import java.util.Random;
 @Implement(value = World.class, version = "1.15.2")
 public class VersionedWorld implements World {
 
+  private final BlockState.Factory stateFactory;
+  private final Block.Factory blockFactory;
+
   private final BlockPosition.Factory blockPositionFactory;
   private final DifficultyLocal.Factory difficultyLocalFactory;
   private final WorldBorder worldBorder;
@@ -53,18 +61,26 @@ public class VersionedWorld implements World {
 
   private final List<TileEntity> loadedTileEntities;
 
+  private final Map<net.minecraft.block.BlockState, BlockState> cachedStates;
+
   @Inject
   public VersionedWorld(
-          BlockPosition.Factory blockPositionFactory,
-          DifficultyLocal.Factory difficultyLocalFactory,
-          WorldBorder worldBorder,
-          Scoreboard scoreboard) {
+      Factory stateFactory,
+      Block.Factory blockFactory,
+      BlockPosition.Factory blockPositionFactory,
+      DifficultyLocal.Factory difficultyLocalFactory,
+      WorldBorder worldBorder,
+      Scoreboard scoreboard) {
+    this.stateFactory = stateFactory;
+    this.blockFactory = blockFactory;
     this.blockPositionFactory = blockPositionFactory;
     this.difficultyLocalFactory = difficultyLocalFactory;
     this.worldBorder = worldBorder;
     this.scoreboard = scoreboard;
 
     this.loadedTileEntities = Lists.newArrayList();
+
+    this.cachedStates = new HashMap<>();
   }
 
   /**
@@ -324,7 +340,6 @@ public class VersionedWorld implements World {
   @Override
   public void addTileEntity(TileEntity tileEntity) {
     if (tileEntity != null) {
-
       this.loadedTileEntities.add(tileEntity);
     }
   }
@@ -343,6 +358,47 @@ public class VersionedWorld implements World {
   @Override
   public List<TileEntity> getLoadedTileEntities() {
     return this.loadedTileEntities;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BlockState getBlockState(int x, int y, int z) {
+    net.minecraft.block.BlockState stateHandle =
+        Minecraft.getInstance().world.getBlockState(new BlockPos(x, y, z));
+    if (this.cachedStates.containsKey(stateHandle)) {
+      return this.cachedStates.get(stateHandle);
+    }
+
+    BlockState state = this.stateFactory.create(stateHandle);
+    this.cachedStates.put(stateHandle, state);
+
+    return state;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BlockState getBlockState(BlockPosition position) {
+    return this.getBlockState(position.getX(), position.getY(), position.getZ());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Block getBlock(int x, int y, int z) {
+    return this.getBlock(this.blockPositionFactory.create(x, y, z));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Block getBlock(BlockPosition position) {
+    return this.blockFactory.create(position);
   }
 
   /**

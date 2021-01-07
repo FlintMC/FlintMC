@@ -57,7 +57,7 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
       WorldBorder worldBorder,
       ClientPlayer player,
       Scoreboard scoreboard) {
-    super(blockPositionFactory, difficultyLocalFactory, worldBorder, scoreboard);
+    super(stateFactory, blockFactory, blockPositionFactory, difficultyLocalFactory, worldBorder, scoreboard);
     this.player = player;
     this.scoreboard = scoreboard;
     this.entities = Maps.newHashMap();

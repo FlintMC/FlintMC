@@ -22,6 +22,8 @@ package net.flintmc.mcapi.world;
 import java.util.List;
 import java.util.Random;
 import net.flintmc.mcapi.tileentity.TileEntity;
+import net.flintmc.mcapi.world.block.Block;
+import net.flintmc.mcapi.world.block.BlockState;
 import net.flintmc.mcapi.world.border.WorldBorder;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
@@ -258,6 +260,14 @@ public interface World {
    * @return A collection with all loaded tile entities.
    */
   List<TileEntity> getLoadedTileEntities();
+
+  BlockState getBlockState(int x, int y, int z);
+
+  BlockState getBlockState(BlockPosition position);
+
+  Block getBlock(int x, int y, int z);
+
+  Block getBlock(BlockPosition position);
 
   /**
    * Creates a new Minecraft block pos by using the given {@link BlockPosition} as the base.

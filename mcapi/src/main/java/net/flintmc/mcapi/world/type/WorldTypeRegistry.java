@@ -17,28 +17,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.storage.service;
+package net.flintmc.mcapi.world.type;
 
-import net.flintmc.mcapi.world.storage.WorldOverview;
+import java.util.List;
 
 /**
- * Represents a launcher for the launch of worlds.
+ * Represents a world type  register.
  */
-public interface WorldLauncher {
+public interface WorldTypeRegistry {
 
   /**
-   * Launch a world with the given {@code worldOverview}.
+   * Retrieves a collection with all world types.
    *
-   * @param worldOverview The overview of the world.
+   * @return A collection with all world types.
    */
-  void launchWorld(WorldOverview worldOverview);
+  List<WorldType> getWorldTypes();
 
-  /**
-   * Launch a world with the given {@code fileName} and the {@code displayName}.
-   *
-   * @param fileName    The file name of the world.
-   * @param displayName The display name of the world.
-   */
-  void launchWorld(String fileName, String displayName);
+  WorldType getDefaultType();
+
+  WorldType getFlatType();
+
+  WorldType getLargeBiomesType();
+
+  WorldType getAmplifiedType();
+
+  WorldType getBuffetType();
+
+  WorldType getType(String name);
 
 }

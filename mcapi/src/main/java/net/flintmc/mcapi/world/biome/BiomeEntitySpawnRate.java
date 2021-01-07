@@ -17,28 +17,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.storage.service;
+package net.flintmc.mcapi.world.biome;
 
-import net.flintmc.mcapi.world.storage.WorldOverview;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.entity.type.EntityType;
 
-/**
- * Represents a launcher for the launch of worlds.
- */
-public interface WorldLauncher {
+public interface BiomeEntitySpawnRate {
 
-  /**
-   * Launch a world with the given {@code worldOverview}.
-   *
-   * @param worldOverview The overview of the world.
-   */
-  void launchWorld(WorldOverview worldOverview);
+  EntityType getEntityType();
 
-  /**
-   * Launch a world with the given {@code fileName} and the {@code displayName}.
-   *
-   * @param fileName    The file name of the world.
-   * @param displayName The display name of the world.
-   */
-  void launchWorld(String fileName, String displayName);
+  int getWeight();
+
+  int getMinGroupCount();
+
+  int getMaxGroupCount();
+
+  @AssistedFactory(BiomeEntitySpawnRate.class)
+  interface Factory {
+
+    BiomeEntitySpawnRate create(
+        @Assisted EntityType entityType,
+        @Assisted("weight") int weight,
+        @Assisted("minGroupCount") int minGroupCount,
+        @Assisted("maxGroupCount") int maxGroupCount);
+
+  }
 
 }

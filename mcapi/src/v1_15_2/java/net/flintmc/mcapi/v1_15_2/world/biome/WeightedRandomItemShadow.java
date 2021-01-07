@@ -17,28 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.storage.service;
+package net.flintmc.mcapi.v1_15_2.world.biome;
 
-import net.flintmc.mcapi.world.storage.WorldOverview;
+import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.Shadow;
 
-/**
- * Represents a launcher for the launch of worlds.
- */
-public interface WorldLauncher {
+@Shadow("net.minecraft.util.WeightedRandom$Item")
+public interface WeightedRandomItemShadow {
 
-  /**
-   * Launch a world with the given {@code worldOverview}.
-   *
-   * @param worldOverview The overview of the world.
-   */
-  void launchWorld(WorldOverview worldOverview);
-
-  /**
-   * Launch a world with the given {@code fileName} and the {@code displayName}.
-   *
-   * @param fileName    The file name of the world.
-   * @param displayName The display name of the world.
-   */
-  void launchWorld(String fileName, String displayName);
+  @FieldGetter("itemWeight")
+  int getWeight();
 
 }

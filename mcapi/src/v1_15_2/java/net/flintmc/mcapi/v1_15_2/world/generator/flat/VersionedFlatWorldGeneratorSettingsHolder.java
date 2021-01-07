@@ -17,41 +17,33 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.world.storage;
+package net.flintmc.mcapi.v1_15_2.world.generator.flat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.world.storage.WorldOverview;
-import net.flintmc.mcapi.world.storage.service.WorldLauncher;
-import net.minecraft.client.Minecraft;
+import net.flintmc.mcapi.world.generator.WorldGeneratorMapper;
+import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettingsHolder;
+import net.minecraft.world.gen.FlatGenerationSettings;
 
-/**
- * 1.15.2 implementation of the {@link WorldLauncher}.
- */
 @Singleton
-@Implement(value = WorldLauncher.class, version = "1.15.2")
-public class VersionedWorldLauncher implements WorldLauncher {
+@Implement(value = FlatWorldGeneratorSettingsHolder.class, version = "1.15.2")
+public class VersionedFlatWorldGeneratorSettingsHolder implements FlatWorldGeneratorSettingsHolder {
+
+  private final WorldGeneratorMapper mapper;
 
   @Inject
-  private VersionedWorldLauncher() {
+  private VersionedFlatWorldGeneratorSettingsHolder(WorldGeneratorMapper mapper) {
+    this.mapper = mapper;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void launchWorld(WorldOverview worldOverview) {
-    this.launchWorld(worldOverview.getFileName(), worldOverview.getDisplayName());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void launchWorld(String fileName, String displayName) {
-    if (Minecraft.getInstance().getSaveLoader().canLoadWorld(fileName)) {
-      Minecraft.getInstance().launchIntegratedServer(fileName, displayName, null);
-    }
+  public FlatWorldGeneratorSettings createDefault() {
+    Object handle = FlatGenerationSettings.getDefaultFlatGenerator();
+    return this.mapper.fromMinecraftFlatSettings(handle);
   }
 }

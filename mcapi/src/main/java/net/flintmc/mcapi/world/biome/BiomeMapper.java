@@ -17,20 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.type;
+package net.flintmc.mcapi.world.biome;
 
-import java.util.List;
+public interface BiomeMapper {
 
-/**
- * Represents a world type  register.
- */
-public interface WorldTypeRegister {
+  BiomeCategory fromMinecraftBiomeCategory(Object category);
 
-  /**
-   * Retrieves a collection with all world types.
-   *
-   * @return A collection with all world types.
-   */
-  List<WorldType> getWorldTypes();
+  Object toMinecraftBiomeCategory(BiomeCategory category);
+
+  RainType fromMinecraftRainType(Object rainType);
+
+  Object toMinecraftRainType(RainType rainType);
+
+  TemperatureCategory fromMinecraftTemperatureCategory(Object category);
+
+  Object toMinecraftTemperatureCategory(TemperatureCategory category);
 
 }
