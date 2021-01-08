@@ -26,6 +26,8 @@ public interface BiomeRegistry {
 
   Collection<Biome> getBiomes();
 
+  Biome getDefaultBiome();
+
   Biome getBiome(ResourceLocation name);
 
 }

@@ -19,7 +19,6 @@
 
 package net.flintmc.mcapi.internal.world.generator;
 
-import java.util.Random;
 import com.google.common.base.Preconditions;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -27,6 +26,8 @@ import net.flintmc.mcapi.world.generator.ExtendedWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.WorldGameMode;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegistry;
+
+import java.util.Random;
 
 @Implement(ExtendedWorldGeneratorSettings.class)
 public class DefaultExtendedWorldGeneratorSettings implements ExtendedWorldGeneratorSettings {
@@ -47,6 +48,9 @@ public class DefaultExtendedWorldGeneratorSettings implements ExtendedWorldGener
     this.type = typeRegistry.getDefaultType();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings seed(String seed) {
     if (seed.isEmpty()) {
@@ -61,6 +65,9 @@ public class DefaultExtendedWorldGeneratorSettings implements ExtendedWorldGener
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings seed(long seed) {
     this.randomSeed = false;
@@ -68,6 +75,9 @@ public class DefaultExtendedWorldGeneratorSettings implements ExtendedWorldGener
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long seed() {
     if (this.randomSeed) {
@@ -78,61 +88,94 @@ public class DefaultExtendedWorldGeneratorSettings implements ExtendedWorldGener
     return this.seed;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings mode(WorldGameMode mode) {
     this.mode = mode;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldGameMode mode() {
     return this.mode;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings type(WorldType type) {
     this.type = type;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldType type() {
     return this.type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings generateStructures(boolean generateStructures) {
     this.generateStructures = generateStructures;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean generateStructures() {
     return this.generateStructures;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings allowCheats(boolean allowCheats) {
     this.allowCheats = allowCheats;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean allowCheats() {
     return this.allowCheats;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings bonusChest(boolean bonusChest) {
     this.bonusChest = bonusChest;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean bonusChest() {
     return this.bonusChest;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings validate() {
     Preconditions.checkNotNull(this.mode, "Invalid mode set");

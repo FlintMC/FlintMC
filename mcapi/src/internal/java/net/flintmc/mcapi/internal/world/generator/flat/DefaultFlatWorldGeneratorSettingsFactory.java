@@ -46,16 +46,25 @@ public class DefaultFlatWorldGeneratorSettingsFactory
     this.serializer = serializer;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings createDefault() {
     return this.holder.createDefault();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings createEmpty() {
     return this.settingsProvider.get();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings parseString(String serialized) {
     return this.serializer.deserialize(serialized);

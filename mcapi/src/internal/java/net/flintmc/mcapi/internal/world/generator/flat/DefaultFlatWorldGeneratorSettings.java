@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.biome.Biome;
+import net.flintmc.mcapi.world.biome.BiomeRegistry;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettingsSerializer;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldLayer;
@@ -38,35 +39,55 @@ import net.flintmc.mcapi.world.generator.flat.StructureOption;
 public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSettings {
 
   private final FlatWorldGeneratorSettingsSerializer serializer;
+  private final BiomeRegistry biomeRegistry;
 
   private Biome biome;
   private final Map<FlatWorldStructure, Map<StructureOption, Integer>> structures;
   private final List<FlatWorldLayer> layers;
 
   @Inject
-  private DefaultFlatWorldGeneratorSettings(FlatWorldGeneratorSettingsSerializer serializer) {
+  private DefaultFlatWorldGeneratorSettings(
+      FlatWorldGeneratorSettingsSerializer serializer,
+      BiomeRegistry biomeRegistry) {
     this.serializer = serializer;
+    this.biomeRegistry = biomeRegistry;
 
     this.structures = new HashMap<>();
     this.layers = new ArrayList<>();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Biome getBiome() {
+    if (this.biome == null) {
+      this.biome = this.biomeRegistry.getDefaultBiome();
+    }
+
     return this.biome;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings setBiome(Biome biome) {
     this.biome = biome;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldStructure[] getStructures() {
     return this.structures.keySet().toArray(new FlatWorldStructure[0]);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings addStructure(FlatWorldStructure structure) {
     if (!this.structures.containsKey(structure)) {
@@ -75,17 +96,27 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings removeStructure(FlatWorldStructure structure) {
     this.structures.remove(structure);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasStructureOption(FlatWorldStructure structure, StructureOption option) {
-    return this.structures.containsKey(structure) && this.structures.get(structure).containsKey(option);
+    return this.structures.containsKey(structure)
+        && this.structures.get(structure).containsKey(option);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getStructureOption(FlatWorldStructure structure, StructureOption option)
       throws IllegalArgumentException {
@@ -93,46 +124,65 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
         .getOrDefault(option, 0);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings setStructureOption(FlatWorldStructure structure,
       StructureOption option,
       int value) throws IllegalArgumentException {
-    this.structures.computeIfAbsent(structure, s -> new HashMap<>())
-        .put(option, value);
+    this.structures.computeIfAbsent(structure, s -> new HashMap<>()).put(option, value);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldLayer[] getLayers() {
     return this.layers.toArray(new FlatWorldLayer[0]);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings addLayer(FlatWorldLayer layer) {
     this.layers.add(layer);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings setLayer(int index, FlatWorldLayer layer) {
     this.layers.set(index, layer);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings removeLayer(int index) {
     this.layers.remove(index);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings validate() {
-    Preconditions.checkNotNull(this.biome, "Invalid biome provided");
     Preconditions.checkArgument(!this.layers.isEmpty(), "No layers set");
 
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String serialize() {
     return this.serializer.serialize(this.validate());

@@ -20,7 +20,6 @@
 package net.flintmc.mcapi.internal.world.generator;
 
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
-import java.io.File;
 
 public interface WorldGeneratorSettingsImplementation {
 

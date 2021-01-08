@@ -45,11 +45,17 @@ public class DefaultFlatWorldLayer implements FlatWorldLayer {
     this.layerHeight = layerHeight;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BlockState getBlockState() {
     return this.blockState;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getLayerHeight() {
     return this.layerHeight;

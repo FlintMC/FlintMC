@@ -36,7 +36,7 @@ public class DefaultBuffetWorldGeneratorSettings implements BuffetWorldGenerator
 
   @AssistedInject
   public DefaultBuffetWorldGeneratorSettings(BiomeRegistry registry) {
-    this(registry.getBiomes().iterator().next(), BuffetWorldGeneratorType.SURFACE);
+    this(registry.getDefaultBiome(), BuffetWorldGeneratorType.SURFACE);
   }
 
   @AssistedInject
@@ -46,28 +46,43 @@ public class DefaultBuffetWorldGeneratorSettings implements BuffetWorldGenerator
     this.type = type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Biome getBiome() {
     return this.biome;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BuffetWorldGeneratorSettings setBiome(Biome biome) {
     this.biome = biome;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BuffetWorldGeneratorType getType() {
     return this.type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BuffetWorldGeneratorSettings setType(BuffetWorldGeneratorType type) {
     this.type = type;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BuffetWorldGeneratorSettings validate() {
     Preconditions.checkNotNull(this.biome, "Invalid biome provided");

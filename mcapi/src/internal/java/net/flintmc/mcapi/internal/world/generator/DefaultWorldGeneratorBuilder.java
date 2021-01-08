@@ -56,22 +56,34 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
     this.buffetFactory = buffetFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldGeneratorBuilder name(String name) {
     this.name = name;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String name() {
     return this.name;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String findFileName() {
     return this.implementation.findFileName(this.name);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExtendedWorldGeneratorSettings extended() {
     if (this.extended == null) {
@@ -81,17 +93,26 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
     return this.extended;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldGeneratorBuilder extended(ExtendedWorldGeneratorSettings extended) {
     this.extended = extended;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasFlatSettings() {
     return this.flatSettings != null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public FlatWorldGeneratorSettings flatSettings() {
     if (this.flatSettings == null) {
@@ -101,17 +122,26 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
     return this.flatSettings;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldGeneratorBuilder flatSettings(FlatWorldGeneratorSettings settings) {
     this.flatSettings = settings;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasBuffetSettings() {
     return this.buffetSettings != null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BuffetWorldGeneratorSettings buffetSettings() {
     if (this.buffetSettings == null) {
@@ -121,12 +151,18 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
     return this.buffetSettings;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldGeneratorBuilder buffetSettings(BuffetWorldGeneratorSettings settings) {
     this.buffetSettings = settings;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldGeneratorBuilder validate() {
     Preconditions.checkNotNull(this.name, "No name set");
@@ -142,6 +178,9 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void generateAndJoin() {
     this.generator.generateAndJoin(this.validate());

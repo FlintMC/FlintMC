@@ -45,21 +45,33 @@ public class DefaultBiomeEntitySpawnRate implements BiomeEntitySpawnRate {
     this.maxGroupCount = maxGroupCount;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityType getEntityType() {
     return this.entityType;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getWeight() {
     return this.weight;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMinGroupCount() {
     return this.minGroupCount;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMaxGroupCount() {
     return this.maxGroupCount;

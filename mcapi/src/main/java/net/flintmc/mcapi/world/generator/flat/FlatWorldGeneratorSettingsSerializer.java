@@ -19,10 +19,27 @@
 
 package net.flintmc.mcapi.world.generator.flat;
 
+/**
+ * Serializer for the {@link FlatWorldGeneratorSettings}.
+ */
 public interface FlatWorldGeneratorSettingsSerializer {
 
+  /**
+   * Serializes the given settings into a string.
+   *
+   * @param settings The non-null settings to be serialized
+   * @return The new non-null string
+   * @see FlatWorldGeneratorSettings#serialize()
+   */
   String serialize(FlatWorldGeneratorSettings settings);
 
+  /**
+   * Deserializes the given string into a new settings object.
+   *
+   * @param serialized The non-null string to be deserialized
+   * @return The new non-null settings
+   * @see FlatWorldGeneratorSettings.Factory#parseString(String)
+   */
   FlatWorldGeneratorSettings deserialize(String serialized);
 
 }

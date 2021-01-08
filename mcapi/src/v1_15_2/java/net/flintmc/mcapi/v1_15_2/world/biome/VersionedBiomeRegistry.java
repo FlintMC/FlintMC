@@ -36,6 +36,7 @@ import java.util.Map;
 public class VersionedBiomeRegistry implements BiomeRegistry {
 
   private final Map<ResourceLocation, Biome> biomes;
+  private final Biome defaultBiome;
 
   @Inject
   private VersionedBiomeRegistry(ResourceLocationProvider provider, Biome.Factory biomeFactory) {
@@ -48,11 +49,20 @@ public class VersionedBiomeRegistry implements BiomeRegistry {
         this.biomes.put(biome.getName(), biome);
       });
     }
+
+    net.minecraft.world.biome.Biome defaultBiome
+        = Registry.BIOME.getOrDefault(new net.minecraft.util.ResourceLocation(""));
+    this.defaultBiome = this.getBiome(provider.fromMinecraft(Registry.BIOME.getKey(defaultBiome)));
   }
 
   @Override
   public Collection<Biome> getBiomes() {
     return this.biomes.values();
+  }
+
+  @Override
+  public Biome getDefaultBiome() {
+    return this.defaultBiome;
   }
 
   @Override

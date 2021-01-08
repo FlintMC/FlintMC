@@ -286,7 +286,7 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
   }
 
   private void appendBuffetSettings(JsonObject json, BuffetWorldGeneratorSettings settings) {
-
+    // TODO
   }
 
   /**
@@ -344,6 +344,8 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
         ? new ResourceLocation("")
         : settings.getBiome().getName().getHandle());
     result.setBiome(biome);
+
+    // TODO
 
     return result;
   }
