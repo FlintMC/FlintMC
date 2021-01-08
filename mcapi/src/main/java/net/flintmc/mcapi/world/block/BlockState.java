@@ -32,8 +32,6 @@ public interface BlockState {
 
   boolean ticksRandomly();
 
-  boolean isEmissiveRendering();
-
   boolean isSolid();
 
   boolean isTransparent();

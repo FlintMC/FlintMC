@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.world.block;
+package net.flintmc.mcapi.v1_16_4.world.block;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
@@ -30,7 +30,7 @@ import net.flintmc.mcapi.world.block.BlockTypeRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
-@Implement(value = BlockState.class, version = "1.15.2")
+@Implement(value = BlockState.class, version = "1.16.4")
 public class VersionedBlockState implements BlockState {
 
   private final BlockType type;
@@ -101,6 +101,7 @@ public class VersionedBlockState implements BlockState {
   public boolean ticksRandomly() {
     return this.handle.ticksRandomly();
   }
+
 
   /**
    * {@inheritDoc}

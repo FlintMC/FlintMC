@@ -67,13 +67,8 @@ public class VersionedWorldMapper implements WorldMapper {
     net.minecraft.world.WorldType worldType = (net.minecraft.world.WorldType) handle;
 
     return this.worldTypeFactory.create(
-        worldType.getId(),
         worldType.getName(),
-        worldType.getSerialization(),
-        worldType.getVersion(),
         worldType.canBeCreated(),
-        worldType.isVersioned(),
-        worldType.hasInfoNotice(),
         worldType.hasCustomOptions()
     );
   }

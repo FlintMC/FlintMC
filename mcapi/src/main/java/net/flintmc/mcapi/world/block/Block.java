@@ -36,8 +36,6 @@ public interface Block {
 
   boolean isNormalCube();
 
-  int getTickRate();
-
   boolean isSuffocating();
 
   boolean causesSuffocation();
@@ -51,6 +49,8 @@ public interface Block {
   boolean hasSolidSideOnTop();
 
   boolean isOpaqueCube();
+
+  boolean isEmissiveRendering();
 
   boolean propagatesSkylightDown();
 

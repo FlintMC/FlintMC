@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.world.block;
+package net.flintmc.mcapi.v1_16_4.world.block;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
@@ -40,7 +40,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
-@Implement(value = Block.class, version = "1.15.2")
+@Implement(value = Block.class, version = "1.16.4")
 public class VersionedBlock implements Block {
 
   private final EntityMapper entityMapper;
@@ -188,7 +188,7 @@ public class VersionedBlock implements Block {
    */
   @Override
   public boolean isEmissiveRendering() {
-    return this.handle.isEmissiveRendering();
+    return this.handle.isEmissiveRendering(this.getWorld(), this.positionHandle);
   }
 
   /**

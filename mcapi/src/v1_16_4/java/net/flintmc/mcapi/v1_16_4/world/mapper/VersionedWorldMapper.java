@@ -21,66 +21,32 @@ package net.flintmc.mcapi.v1_16_4.world.mapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.File;
-import java.io.IOException;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
-import net.flintmc.mcapi.world.storage.WorldConfiguration;
 import net.flintmc.mcapi.world.storage.WorldOverview;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.minecraft.server.SessionLockManager;
 import net.minecraft.util.SharedConstants;
-import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.VersionData;
 import net.minecraft.world.storage.WorldSummary;
+
+import java.io.File;
+import java.io.IOException;
 
 @Singleton
 @Implement(value = WorldMapper.class, version = "1.16.4")
 public class VersionedWorldMapper implements WorldMapper {
 
-  private final WorldConfiguration.Factory worldConfigurationFactory;
   private final WorldType.Factory worldTypeFactory;
   private final WorldOverview.Factory worldOverviewFactory;
 
   @Inject
   private VersionedWorldMapper(
-      WorldConfiguration.Factory worldConfigurationFactory,
       WorldType.Factory worldTypeFactory,
       WorldOverview.Factory worldOverviewFactory) {
-    this.worldConfigurationFactory = worldConfigurationFactory;
     this.worldTypeFactory = worldTypeFactory;
     this.worldOverviewFactory = worldOverviewFactory;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object toMinecraftWorldSettings(WorldConfiguration configuration) {
-    // TODO: 30.12.2020 Better abstraction for this
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public WorldConfiguration fromMinecraftWorldSettings(Object handle) {
-
-    if (!(handle instanceof WorldSettings)) {
-      throw new IllegalStateException(
-          handle.getClass().getName() + " is not an instance of " + WorldSettings.class.getName());
-    }
-
-    WorldSettings worldSettings = (WorldSettings) handle;
-
-    return this.worldConfigurationFactory.create(
-        0L,
-        GameMode.valueOf(worldSettings.getGameType().name()),
-        worldSettings.isHardcoreEnabled(),
-        worldSettings.isCommandsAllowed(),
-        null);
   }
 
   /**
