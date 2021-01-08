@@ -3,6 +3,10 @@ name: Java CI with Gradle
 on:
   pull_request:
     types: [ opened, synchronize ]
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
   build:
@@ -21,6 +25,9 @@ jobs:
         with:
           path: ~/.gradle/caches/flint-gradle
           key: jdk-8-flint-gradle
+
+      - name: Configure gradle
+        run: ./gradlew
 
       - name: Check for license headers
         run: ./gradlew checkLicenses
