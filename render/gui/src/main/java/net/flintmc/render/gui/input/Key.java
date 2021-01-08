@@ -22,7 +22,9 @@ package net.flintmc.render.gui.input;
 import java.util.HashMap;
 import java.util.Map;
 
-/** An enumeration representing some keys from a keyboard or mouse. */
+/**
+ * An enumeration representing some keys from a keyboard or mouse.
+ */
 public enum Key {
   UNKNOWN("key.keyboard.unknown", -1, -1, false),
   MOUSE_LEFT("key.mouse.left", 0, -100, true),

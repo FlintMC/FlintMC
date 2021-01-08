@@ -30,8 +30,8 @@ import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
  * Can be used with any {@link ApplicableSetting} to add an icon to the setting. If it is not set,
  * there will be no icon. Only one of the values in this annotation should be set.
  *
- * <p>The resulting json from the {@link SettingsSerializationHandler} will contain an 'icon' object
- * with the data from the provided value.
+ * <p>The resulting json from the {@link SettingsSerializationHandler} will contain an 'icon'
+ * object with the data from the provided value.
  *
  * <p>For the item, it will contain a 'type', 'amount' and 'enchanted' containing the values from
  * the item annotation, for the url it will contain a 'url' string, for the html it will contain a

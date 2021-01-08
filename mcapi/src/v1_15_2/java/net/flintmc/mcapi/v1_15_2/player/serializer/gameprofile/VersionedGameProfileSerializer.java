@@ -23,16 +23,17 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
 import net.flintmc.mcapi.player.serializer.gameprofile.PropertyMapSerializer;
 
-import java.util.Map;
-
-/** 1.15.2 implementation of {@link GameProfileSerializer} */
+/**
+ * 1.15.2 implementation of {@link GameProfileSerializer}
+ */
 @Singleton
-@Implement(GameProfileSerializer.class)
+@Implement(value = GameProfileSerializer.class, version = "1.15.2")
 public class VersionedGameProfileSerializer
     implements GameProfileSerializer<com.mojang.authlib.GameProfile> {
 
@@ -47,7 +48,8 @@ public class VersionedGameProfileSerializer
   }
 
   /**
-   * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Flint {@link GameProfile}
+   * Deserializes the Mojang {@link com.mojang.authlib.GameProfile} to the Flint {@link
+   * GameProfile}
    *
    * @param profile The game profile to deserialize
    * @return A deserialized {@link GameProfile}

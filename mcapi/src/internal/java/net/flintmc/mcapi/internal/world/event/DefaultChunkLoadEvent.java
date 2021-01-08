@@ -24,7 +24,9 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.event.ChunkLoadEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(ChunkLoadEvent.class)
 public class DefaultChunkLoadEvent implements ChunkLoadEvent {
 
@@ -37,13 +39,17 @@ public class DefaultChunkLoadEvent implements ChunkLoadEvent {
     this.z = z;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getX() {
     return this.x;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getZ() {
     return this.z;

@@ -21,6 +21,7 @@ package net.flintmc.mcapi.v1_15_2.player.type.sound;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Optional;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.player.type.sound.SoundCategory;
@@ -28,9 +29,9 @@ import net.flintmc.mcapi.player.type.sound.SoundMapper;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Optional;
-
-/** 1.15.2 implementation of the {@link SoundMapper}. */
+/**
+ * 1.15.2 implementation of the {@link SoundMapper}.
+ */
 @Singleton
 @Implement(value = SoundMapper.class, version = "1.15.2")
 public class VersionedSoundMapper implements SoundMapper {
@@ -42,7 +43,9 @@ public class VersionedSoundMapper implements SoundMapper {
     this.soundFactory = soundFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Sound fromMinecraftSoundEvent(Object soundEvent) {
     if (!(soundEvent instanceof SoundEvent)) {
@@ -54,14 +57,18 @@ public class VersionedSoundMapper implements SoundMapper {
     return this.soundFactory.create(minecraftSoundEvent.getName().getPath());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftSoundEvent(Sound sound) {
     Optional<SoundEvent> optional = Registry.SOUND_EVENT.getValue(sound.getName().getHandle());
     return optional.orElseGet(() -> new SoundEvent(sound.getName().getHandle()));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SoundCategory fromMinecraftSoundCategory(Object soundCategory) {
     if (!(soundCategory instanceof net.minecraft.util.SoundCategory)) {
@@ -95,7 +102,9 @@ public class VersionedSoundMapper implements SoundMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftSoundCategory(SoundCategory soundCategory) {
     switch (soundCategory) {

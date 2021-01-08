@@ -43,7 +43,7 @@ public class VersionedWorldTypeRegistry implements WorldTypeRegistry {
     this.worldTypes = Lists.newArrayList();
   }
 
-  @PostSubscribe
+  @PostSubscribe(version = "1.15.2")
   public void loadWorldTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.world.WorldType worldType : net.minecraft.world.WorldType.WORLD_TYPES) {
       if (worldType != null) {

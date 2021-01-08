@@ -26,10 +26,10 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.util.commons.io.IOUtils;
 import net.flintmc.util.csv.lexical.Tokenizer;
 import net.flintmc.util.csv.parsing.NamedCSVParser;
 import net.flintmc.util.mappings.exceptions.MappingParseException;
-import net.flintmc.util.commons.io.IOUtils;
 import net.flintmc.util.mappings.utils.MappingUtils;
 
 public final class McpMappingParser implements MappingParser {

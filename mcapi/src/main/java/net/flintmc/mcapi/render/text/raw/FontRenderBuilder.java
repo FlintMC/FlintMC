@@ -143,6 +143,17 @@ public interface FontRenderBuilder {
   FontRenderBuilder disableShadow();
 
   /**
+   * Changes the matrix stack of this builder. The matrix stack is used to correctly display the
+   * font.
+   *
+   * <p><b>Note:</b> The matrix stack is used for font rendering in 1.16 and later.
+   *
+   * @param matrixStack The non-null matrix stack.
+   * @return This builder for chaining.
+   */
+  FontRenderBuilder matrixStack(Object matrixStack);
+
+  /**
    * Draws the values that have been set in this builder on the screen and resets this builder to be
    * re-used for the next rendering.
    *

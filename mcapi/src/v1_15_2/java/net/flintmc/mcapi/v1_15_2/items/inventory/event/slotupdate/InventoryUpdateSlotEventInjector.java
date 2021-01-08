@@ -69,7 +69,7 @@ public class InventoryUpdateSlotEventInjector {
     this.airStack = registry.getAirType().createStack();
   }
 
-  @Subscribe
+  @Subscribe(version = "1.15.2")
   public void injectUpdatingItemLists(TickEvent event) {
     ClientPlayerEntity player = Minecraft.getInstance().player;
     if (player != null) {
@@ -80,7 +80,8 @@ public class InventoryUpdateSlotEventInjector {
   @Hook(
       className = "net.minecraft.entity.player.PlayerInventory",
       methodName = "setInventorySlotContents",
-      parameters = {@Type(reference = int.class), @Type(typeName = "net.minecraft.item.ItemStack")})
+      parameters = {@Type(reference = int.class), @Type(typeName = "net.minecraft.item.ItemStack")},
+      version = "1.15.2")
   public void setInventorySlotContents(@Named("instance") Object instance) {
     this.injectLists((PlayerInventory) instance);
   }
@@ -97,7 +98,7 @@ public class InventoryUpdateSlotEventInjector {
     inventory.updateAllInventories();
   }
 
-  @Subscribe(phase = Phase.ANY)
+  @Subscribe(phase = Phase.ANY, version = "1.15.2")
   public void handleSetSlot(PacketEvent event, Phase phase) {
     if (event.getDirection() != DirectionalEvent.Direction.RECEIVE
         || !(event.getPacket() instanceof SSetSlotPacket)
@@ -126,10 +127,11 @@ public class InventoryUpdateSlotEventInjector {
     this.eventBus.fireEvent(this.eventFactory.create(inventory, slot, newItem), phase);
   }
 
-  @Subscribe(phase = Phase.ANY)
+  @Subscribe(phase = Phase.ANY, version = "1.15.2")
   public void handleInventoryClick(
       InventoryClickEvent event, ItemStack.Factory itemFactory, Phase phase) {
-    // only drops/pickups are not confirmed by the server before updated and therefore not updated above
+    // only drops/pickups are not confirmed by the server before updated and therefore not updated
+    // above
     InventoryClick type = event.getClickType();
 
     if (type != InventoryClick.DROP

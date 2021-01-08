@@ -22,8 +22,13 @@ package net.flintmc.mcapi.world.type;
 import java.util.List;
 
 /**
- * Represents a world type  register.
+ * Represents a world type register.
+ *
+ * <p><b>DEPRECATED</b>
+ *
+ * @see WorldType
  */
+@Deprecated
 public interface WorldTypeRegistry {
 
   /**

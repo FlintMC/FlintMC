@@ -28,7 +28,9 @@ import net.flintmc.mcapi.chat.component.event.content.JsonHoverContentSerializer
 import net.flintmc.mcapi.items.ItemStackSerializer;
 import net.flintmc.mcapi.items.component.HoverItem;
 
-/** Serializer for {@link HoverItem} */
+/**
+ * Serializer for {@link HoverItem}
+ */
 public class HoverItemSerializer extends JsonHoverContentSerializer {
 
   private final ItemStackSerializer itemStackSerializer;

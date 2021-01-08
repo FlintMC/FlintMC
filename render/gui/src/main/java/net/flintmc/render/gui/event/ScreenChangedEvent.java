@@ -31,14 +31,15 @@ import net.flintmc.render.gui.windowing.Window;
  */
 @Subscribable(Phase.PRE)
 public class ScreenChangedEvent extends DefaultGuiEvent implements GuiEvent {
+
   private final ScreenName screenName;
 
   /**
    * Constructs a new {@link ScreenChangedEvent} with the given screen name.
    *
-   * @param window The non-null window where this event has happened
+   * @param window     The non-null window where this event has happened
    * @param screenName The name of the new GUI screen, or {@code null}, if no screen is displayed
-   *     anymore
+   *                   anymore
    */
   public ScreenChangedEvent(Window window, ScreenName screenName) {
     super(window);
@@ -49,7 +50,7 @@ public class ScreenChangedEvent extends DefaultGuiEvent implements GuiEvent {
    * Retrieves the newly displayed screen name.
    *
    * @return The name of the newly displayed screen, or {@code null}, if no screen is displayed
-   *     anymore
+   * anymore
    */
   public ScreenName getScreenName() {
     return screenName;

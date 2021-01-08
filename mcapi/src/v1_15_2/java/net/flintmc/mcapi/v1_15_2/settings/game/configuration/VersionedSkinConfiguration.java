@@ -20,6 +20,8 @@
 package net.flintmc.mcapi.v1_15_2.settings.game.configuration;
 
 import com.google.inject.Singleton;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.model.PlayerClothing;
@@ -28,15 +30,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.util.HandSide;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-/** 1.15.2 implementation of {@link SkinConfiguration}. */
+/**
+ * 1.15.2 implementation of {@link SkinConfiguration}.
+ */
 @Singleton
 @ConfigImplementation(value = SkinConfiguration.class, version = "1.15.2")
 public class VersionedSkinConfiguration implements SkinConfiguration {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Set<PlayerClothing> getPlayerClothing() {
     return Minecraft.getInstance().gameSettings.getModelParts().stream()
@@ -44,7 +47,9 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
         .collect(Collectors.toSet());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setModelClothingEnabled(PlayerClothing clothing, boolean enable) {
     Minecraft.getInstance()
@@ -53,7 +58,9 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isModelClothingEnabled(PlayerClothing clothing) {
     PlayerModelPart targetPart = this.toMinecraftObject(clothing);
@@ -66,14 +73,18 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     return false;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void switchModelClothingEnabled(PlayerClothing clothing) {
     Minecraft.getInstance().gameSettings.switchModelPartEnabled(this.toMinecraftObject(clothing));
     Minecraft.getInstance().gameSettings.saveOptions();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Hand.Side getMainHand() {
     switch (Minecraft.getInstance().gameSettings.mainHand) {
@@ -87,7 +98,9 @@ public class VersionedSkinConfiguration implements SkinConfiguration {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMainHand(Hand.Side mainHand) {
     switch (mainHand) {

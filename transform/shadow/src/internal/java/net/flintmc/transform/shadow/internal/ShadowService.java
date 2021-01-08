@@ -23,7 +23,17 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.*;
+import com.google.inject.name.Named;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
@@ -33,15 +43,16 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
-import net.flintmc.transform.shadow.*;
+import net.flintmc.transform.shadow.FieldCreate;
+import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.FieldSetter;
+import net.flintmc.transform.shadow.MethodProxy;
+import net.flintmc.transform.shadow.Shadow;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.flintmc.util.mappings.FieldMapping;
 import net.flintmc.util.mappings.MethodMapping;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 @Singleton
 @Service(value = Shadow.class, priority = -20000, state = Service.State.AFTER_IMPLEMENT)
@@ -50,12 +61,17 @@ public class ShadowService implements ServiceHandler<Shadow> {
   private final Logger logger;
   private final ClassMappingProvider classMappingProvider;
   private final Multimap<String, AnnotationMeta<Shadow>> transforms;
+  private final String version;
 
   @Inject
-  private ShadowService(@InjectLogger Logger logger, ClassMappingProvider classMappingProvider) {
+  private ShadowService(
+      @InjectLogger Logger logger,
+      ClassMappingProvider classMappingProvider,
+      @Named("launchArguments") Map launchArguments) {
     this.logger = logger;
     this.classMappingProvider = classMappingProvider;
     this.transforms = HashMultimap.create();
+    this.version = (String) launchArguments.get("--game-version");
   }
 
   @Override
@@ -68,6 +84,11 @@ public class ShadowService implements ServiceHandler<Shadow> {
           String.format(
               "Shadow annotation can only be used on interfaces, but found one on %s (not an interface) pointing to %s",
               location.getName(), target));
+    }
+
+    if (!(meta.getAnnotation().version().isEmpty()
+        || meta.getAnnotation().version().equals(this.version))) {
+      return;
     }
 
     transforms.put(target, meta);
@@ -194,7 +215,8 @@ public class ShadowService implements ServiceHandler<Shadow> {
     }
   }
 
-  private boolean hasMethod(CtClass ctClass, String name, CtClass[] parameters) throws NotFoundException {
+  private boolean hasMethod(CtClass ctClass, String name, CtClass[] parameters)
+      throws NotFoundException {
     for (CtMethod method : ctClass.getDeclaredMethods()) {
       if (method.getName().equals(name) && Arrays.equals(method.getParameterTypes(), parameters)) {
         return true;

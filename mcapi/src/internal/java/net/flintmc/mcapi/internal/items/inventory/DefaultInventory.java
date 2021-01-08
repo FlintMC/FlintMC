@@ -20,15 +20,14 @@
 package net.flintmc.mcapi.internal.items.inventory;
 
 import com.google.common.primitives.Ints;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.InventoryDimension;
 import net.flintmc.mcapi.items.inventory.InventoryType;
 import net.flintmc.mcapi.items.type.ItemType;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public abstract class DefaultInventory implements Inventory {
 

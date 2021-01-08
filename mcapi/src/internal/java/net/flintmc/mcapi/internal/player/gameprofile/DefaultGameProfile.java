@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.internal.player.gameprofile;
 
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -26,19 +27,27 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
-import java.util.UUID;
-
-/** An implementation of the {@link GameProfile} */
+/**
+ * An implementation of the {@link GameProfile}
+ */
 @Implement(GameProfile.class)
 public class DefaultGameProfile implements GameProfile {
 
-  /** The unique identifier of this profile. */
+  /**
+   * The unique identifier of this profile.
+   */
   private final UUID uniqueId;
-  /** The display name of this profile. */
+  /**
+   * The display name of this profile.
+   */
   private final String name;
-  /** The properties of this profile. */
+  /**
+   * The properties of this profile.
+   */
   private final PropertyMap properties;
-  /** If this profile is a legacy. */
+  /**
+   * If this profile is a legacy.
+   */
   private boolean legacy;
 
   @AssistedInject
@@ -51,8 +60,9 @@ public class DefaultGameProfile implements GameProfile {
       @Assisted("uniqueId") UUID uniqueId,
       @Assisted("name") String name,
       @Assisted("properties") PropertyMap properties) {
-    if (uniqueId == null && isBlank(name))
+    if (uniqueId == null && isBlank(name)) {
       throw new IllegalArgumentException("Name and identifier cannot both be blank");
+    }
     this.uniqueId = uniqueId;
     this.name = name;
     this.properties = properties;
@@ -95,7 +105,7 @@ public class DefaultGameProfile implements GameProfile {
    * be constructed manually and used as input to methods.
    *
    * @return {@code true} if this profile is complete (as opposed to partial), otherwise {@code
-   *     false}
+   * false}
    */
   @Override
   public boolean isComplete() {
@@ -120,10 +130,14 @@ public class DefaultGameProfile implements GameProfile {
    */
   private boolean isBlank(CharSequence sequence) {
     int length = sequence.length();
-    if (length == 0) return true;
+    if (length == 0) {
+      return true;
+    }
 
     for (int i = 0; i < length; i++) {
-      if (!Character.isWhitespace(sequence.charAt(i))) return false;
+      if (!Character.isWhitespace(sequence.charAt(i))) {
+        return false;
+      }
     }
     return true;
   }

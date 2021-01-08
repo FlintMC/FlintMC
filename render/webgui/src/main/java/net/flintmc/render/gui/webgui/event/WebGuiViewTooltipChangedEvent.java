@@ -23,9 +23,12 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Event indicating the tooltip of a {@link WebGuiView} changed. */
+/**
+ * Event indicating the tooltip of a {@link WebGuiView} changed.
+ */
 @Subscribable({Phase.PRE, Phase.POST})
 public interface WebGuiViewTooltipChangedEvent extends WebGuiViewEvent {
+
   /**
    * Retrieves the new tooltip of the view.
    *

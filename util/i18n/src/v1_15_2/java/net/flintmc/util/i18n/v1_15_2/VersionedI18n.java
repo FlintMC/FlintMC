@@ -19,9 +19,9 @@
 
 package net.flintmc.util.i18n.v1_15_2;
 
+import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.HashSet;
-import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.i18n.I18n;
 import net.minecraft.client.Minecraft;

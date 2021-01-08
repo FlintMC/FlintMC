@@ -36,15 +36,22 @@ public class VersionedOpenGLInitializeEventInjector {
   @Inject
   public VersionedOpenGLInitializeEventInjector(EventBus eventBus) {
     this.eventBus = eventBus;
-    this.event = new OpenGLInitializeEvent() {};
+    this.event = new OpenGLInitializeEvent() {
+    };
   }
 
-  @Hook(className = "net.minecraft.client.Minecraft", methodName = "startTimerHackThread")
+  @Hook(
+      className = "net.minecraft.client.Minecraft",
+      methodName = "startTimerHackThread",
+      version = "1.15.2")
   public void preInitialize() {
     this.eventBus.fireEvent(this.event, Subscribe.Phase.PRE);
   }
 
-  @Hook(className = "net.minecraft.client.MainWindow", methodName = "setLogOnGlError")
+  @Hook(
+      className = "net.minecraft.client.MainWindow",
+      methodName = "setLogOnGlError",
+      version = "1.15.2")
   public void postInitialize() {
     this.eventBus.fireEvent(this.event, Subscribe.Phase.POST);
   }

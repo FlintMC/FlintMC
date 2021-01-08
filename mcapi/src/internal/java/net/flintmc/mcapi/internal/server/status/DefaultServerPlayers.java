@@ -42,19 +42,25 @@ public class DefaultServerPlayers implements ServerPlayers {
     this.players = players;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOnlinePlayerCount() {
     return this.online;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMaxPlayerCount() {
     return this.max;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile[] getOnlinePlayers() {
     return this.players;

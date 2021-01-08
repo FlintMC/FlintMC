@@ -51,7 +51,7 @@ public interface PlayerInventory extends Inventory {
    * @param slot The slot to get the type from
    * @return The type of the given slot or {@code null} if the given slot is no special type
    * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
-   *     the highest possible slot in this inventory
+   *                                   the highest possible slot in this inventory
    */
   EquipmentSlotType getSlotType(int slot);
 
@@ -59,11 +59,11 @@ public interface PlayerInventory extends Inventory {
    * Retrieves an item in a specific slot in this inventory.
    *
    * @param slot The slot to get the item from. Slots from 0 to 4 are the crafting inventory. Slots
-   *     from 5 to 8 are the armor. Slots from 9 to 35 are the main inventory. Slots from 36 to 44
-   *     are the hotbar. 45 is the off hand.
+   *             from 5 to 8 are the armor. Slots from 9 to 35 are the main inventory. Slots from 36
+   *             to 44 are the hotbar. 45 is the off hand.
    * @return The non-null item out of this slot
    * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
-   *     the highest possible slot in this inventory
+   *                                   the highest possible slot in this inventory
    */
   @Override
   ItemStack getItem(int slot) throws IndexOutOfBoundsException;

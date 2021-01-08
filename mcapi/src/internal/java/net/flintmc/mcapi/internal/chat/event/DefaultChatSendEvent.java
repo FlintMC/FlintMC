@@ -36,25 +36,33 @@ public class DefaultChatSendEvent extends DefaultChatMessageEvent implements Cha
     this.message = message;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getMessage() {
     return this.message;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMessage(String message) {
     this.message = message;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCancelled() {
     return this.cancelled;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;

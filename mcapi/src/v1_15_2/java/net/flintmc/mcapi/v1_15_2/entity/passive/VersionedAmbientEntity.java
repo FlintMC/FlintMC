@@ -43,7 +43,9 @@ public class VersionedAmbientEntity extends VersionedMobEntity implements Ambien
     super(entity, entityType, world, entityFoundationMapper, entitySensesFactory);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canBeLeashedTo(PlayerEntity playerEntity) {
     return false;

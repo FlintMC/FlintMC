@@ -31,8 +31,8 @@ import net.flintmc.mcapi.server.ServerAddress;
 
 /**
  * This event will be fired whenever the user gets kicked from a server. Note that this event will
- * NOT be fired if the user disconnects from the server by himself. It will only be fired in the
- * PRE phase.
+ * NOT be fired if the user disconnects from the server by himself. It will only be fired in the PRE
+ * phase.
  *
  * @see Subscribe
  */

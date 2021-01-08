@@ -55,55 +55,73 @@ public class DefaultStatusEffectInstance implements StatusEffectInstance {
     this.showIcon = showIcon;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public StatusEffect getPotion() {
     return this.potion;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getDuration() {
     return this.duration;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getAmplifier() {
     return this.amplifier;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isAmbient() {
     return this.ambient;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean doesShowParticles() {
     return this.showParticles;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isShowIcon() {
     return this.showIcon;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getEffectName() {
     return this.potion.getName();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isDurationMaximum() {
     return this.durationMaximum;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDurationMaximum(boolean durationMaximal) {
     this.durationMaximum = durationMaximal;

@@ -24,7 +24,11 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /**
  * Represents the type of the world.
+ *
+ * <p><b>DEPRECATED</b> This is deprecated because the world types have changed in 1.16.x.
  */
+// TODO: 30.12.2020 Need a new implementation
+@Deprecated
 public interface WorldType {
 
   /**
@@ -112,6 +116,7 @@ public interface WorldType {
    * A factory class for creating {@link WorldType}'s.
    */
   @AssistedFactory(WorldType.class)
+  @Deprecated
   interface Factory {
 
     /**
@@ -121,9 +126,7 @@ public interface WorldType {
      * @param name       The name for the world type.
      * @return A created world type.
      */
-    WorldType create(
-        @Assisted("identifier") int identifier,
-        @Assisted("name") String name);
+    WorldType create(@Assisted("identifier") int identifier, @Assisted("name") String name);
 
     /**
      * Creates a new {@link WorldType} with the given parameters.
@@ -180,5 +183,4 @@ public interface WorldType {
         @Assisted("hasInfoNotice") boolean hasInfoNotice,
         @Assisted("customConfiguration") boolean customConfiguration);
   }
-
 }

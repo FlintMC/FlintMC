@@ -19,13 +19,12 @@
 
 package net.flintmc.mcapi.internal.player.event;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.event.PlayerInfoEvent;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
-
-import javax.annotation.Nullable;
 
 /**
  * {@inheritDoc}

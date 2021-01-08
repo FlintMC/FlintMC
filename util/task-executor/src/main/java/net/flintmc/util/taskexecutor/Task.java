@@ -66,17 +66,17 @@ public interface Task extends Runnable {
   int getTicksToStart();
 
   /**
-   * @return the the amount of ticks that should pass between executions if this task is a repeating
-   * task
-   */
-  int getInterval();
-
-  /**
    * Sets the ticks that should pass till this task should execute.
    *
    * @param ticks amount of ticks
    */
   void setTicksToStart(int ticks);
+
+  /**
+   * @return the the amount of ticks that should pass between executions if this task is a repeating
+   * task
+   */
+  int getInterval();
 
   /**
    * Sets the interval length between executions if this is a repeating task.

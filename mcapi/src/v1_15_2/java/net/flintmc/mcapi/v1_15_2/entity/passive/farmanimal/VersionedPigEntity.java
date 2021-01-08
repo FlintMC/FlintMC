@@ -65,25 +65,33 @@ public class VersionedPigEntity extends VersionedAnimalEntity implements PigEnti
     this.pigEntity = (net.minecraft.entity.passive.PigEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isSaddled() {
     return this.pigEntity.getSaddled();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setSaddled(boolean saddled) {
     this.pigEntity.setSaddled(saddled);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean boost() {
     return this.pigEntity.boost();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean processInteract(PlayerEntity entity, Hand hand) {
     return this.pigEntity.processInteract(
@@ -93,7 +101,9 @@ public class VersionedPigEntity extends VersionedAnimalEntity implements PigEnti
             this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isBreedingItem(ItemStack breedingItem) {
     return this.pigEntity.isBreedingItem(
@@ -101,21 +111,27 @@ public class VersionedPigEntity extends VersionedAnimalEntity implements PigEnti
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(breedingItem));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.pigEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.pigEntity.writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canBeSteered() {
     return this.pigEntity.canBeSteered();

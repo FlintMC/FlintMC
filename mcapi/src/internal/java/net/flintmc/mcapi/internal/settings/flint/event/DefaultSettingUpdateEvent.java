@@ -35,7 +35,9 @@ public class DefaultSettingUpdateEvent implements SettingUpdateEvent {
     this.setting = setting;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RegisteredSetting getSetting() {
     return this.setting;

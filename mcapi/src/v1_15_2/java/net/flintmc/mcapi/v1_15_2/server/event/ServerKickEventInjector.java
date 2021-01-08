@@ -31,7 +31,6 @@ import net.flintmc.mcapi.server.ConnectedServer;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.ServerController;
 import net.flintmc.mcapi.server.event.ServerKickEvent;
-import net.flintmc.mcapi.v1_15_2.server.event.shadow.AccessibleDisconnectedScreen;
 import net.flintmc.transform.hook.Hook;
 import net.minecraft.util.text.ITextComponent;
 

@@ -20,8 +20,8 @@
 package net.flintmc.mcapi.internal.resources;
 
 import com.google.inject.Inject;
-import java.io.FileNotFoundException;
 import com.google.inject.Singleton;
+import java.io.FileNotFoundException;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.render.gui.webgui.WebFileSystem;
@@ -39,13 +39,17 @@ public class ResourcePackWebFileSystem implements WebFileSystemHandler {
     this.provider = provider;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean existsFile(String path) {
     return this.provider.get(path).exists();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WebResource getFile(String path) throws FileNotFoundException {
     ResourceLocation location = this.provider.get(path);

@@ -20,13 +20,14 @@
 package net.flintmc.mcapi.internal.player.gameprofile;
 
 import com.google.inject.Inject;
+import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.property.PropertyMap;
 
-import java.util.UUID;
-
-/** An implementation of {@link GameProfile.Builder} */
+/**
+ * An implementation of {@link GameProfile.Builder}
+ */
 @Implement(GameProfile.Builder.class)
 public class DefaultGameProfileBuilder implements GameProfile.Builder {
 

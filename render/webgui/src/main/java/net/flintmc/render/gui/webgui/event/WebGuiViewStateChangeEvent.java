@@ -23,9 +23,12 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Event indicating that a {@link WebGuiView} state has changed. */
+/**
+ * Event indicating that a {@link WebGuiView} state has changed.
+ */
 @Subscribable({Phase.PRE, Phase.POST})
 public interface WebGuiViewStateChangeEvent extends WebGuiViewEvent {
+
   /**
    * Retrieves the ID of the frame that sent the event.
    *

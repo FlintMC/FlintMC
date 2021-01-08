@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.ChatController;
 import net.flintmc.mcapi.chat.ChatLocation;
@@ -47,6 +48,9 @@ public class VersionedChatController implements ChatController {
     this.componentMapper = componentMapper;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean dispatchChatInput(String message) {
     if (message.length() >= this.getChatInputLimit()) {
@@ -60,11 +64,17 @@ public class VersionedChatController implements ChatController {
     return true;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getChatInputLimit() {
     return MAX_INPUT_LENGTH;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void displayChatMessage(ChatLocation location, ChatComponent component) {
     if (Minecraft.getInstance().ingameGUI == null) {
@@ -91,6 +101,18 @@ public class VersionedChatController implements ChatController {
     Minecraft.getInstance().ingameGUI.addChatMessage(type, mapped);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void displayChatMessage(
+      ChatLocation location, ChatComponent component, UUID senderUniqueId) {
+    this.displayChatMessage(location, component);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> getInputHistory() {
     if (Minecraft.getInstance().ingameGUI == null) {
@@ -99,6 +121,9 @@ public class VersionedChatController implements ChatController {
     return Minecraft.getInstance().ingameGUI.getChatGUI().getSentMessages();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<ChatComponent> getReceivedMessages() {
     ChatGuiShadow shadow = (ChatGuiShadow) Minecraft.getInstance().ingameGUI.getChatGUI();
@@ -111,6 +136,9 @@ public class VersionedChatController implements ChatController {
     return components;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMaxMessages() {
     return MAX_MESSAGES;

@@ -48,7 +48,7 @@ public class VersionedServerListUpdateEventInjector {
     this.mappingProvider = mappingProvider;
   }
 
-  @ClassTransform("net.minecraft.client.multiplayer.ServerList")
+  @ClassTransform(value = "net.minecraft.client.multiplayer.ServerList", version = "1.15.2")
   public void transformServerList(ClassTransformContext context)
       throws NotFoundException, CannotCompileException, BadBytecode {
     CtClass transforming = context.getCtClass();

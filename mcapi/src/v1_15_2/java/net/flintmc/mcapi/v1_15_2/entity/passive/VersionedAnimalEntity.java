@@ -62,7 +62,9 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
     this.animalEntity = (net.minecraft.entity.passive.AnimalEntity) entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isBreedingItem(ItemStack breedingItem) {
     return this.animalEntity.isBreedingItem(
@@ -70,25 +72,33 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
             this.getEntityFoundationMapper().getItemMapper().toMinecraft(breedingItem));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canBreed() {
     return this.animalEntity.canBreed();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isInLove() {
     return this.animalEntity.isInLove();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setInLove(int ticks) {
     this.animalEntity.setInLove(ticks);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setInLove(PlayerEntity player) {
     this.animalEntity.setInLove(
@@ -96,13 +106,17 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftPlayerEntity(player));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resetInLove() {
     this.animalEntity.resetInLove();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canMateWith(AnimalEntity entity) {
     return this.animalEntity.canMateWith(
@@ -110,19 +124,25 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
             this.passiveEntityMapper.toMinecraftAnimalEntity(entity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getTalkInterval() {
     return this.animalEntity.getTalkInterval();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canDespawn(double distanceToClosestPlayer) {
     return this.animalEntity.canDespawn(distanceToClosestPlayer);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean processInteract(PlayerEntity entity, Hand hand) {
     return this.animalEntity.processInteract(
@@ -132,14 +152,18 @@ public class VersionedAnimalEntity extends VersionedAgeableEntity implements Ani
             this.getEntityFoundationMapper().getHandMapper().toMinecraftHand(hand));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.animalEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.animalEntity.writeAdditional(

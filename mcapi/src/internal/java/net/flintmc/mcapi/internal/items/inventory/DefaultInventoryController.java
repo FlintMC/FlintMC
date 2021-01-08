@@ -20,14 +20,13 @@
 package net.flintmc.mcapi.internal.items.inventory;
 
 import com.google.common.base.Preconditions;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.InventoryController;
 import net.flintmc.mcapi.items.inventory.InventoryType;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class DefaultInventoryController implements InventoryController {
 

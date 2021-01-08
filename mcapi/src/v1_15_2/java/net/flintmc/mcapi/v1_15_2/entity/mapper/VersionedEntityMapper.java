@@ -21,6 +21,7 @@ package net.flintmc.mcapi.v1_15_2.entity.mapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.LivingEntity;
@@ -37,8 +38,6 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.PigEntity;
-
-import java.util.UUID;
 
 @Singleton
 @Implement(value = EntityMapper.class, version = "1.15.2")
@@ -78,7 +77,9 @@ public class VersionedEntityMapper implements EntityMapper {
     this.remoteClientPlayerProvider = remoteClientPlayerProvider;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity fromAnyMinecraftEntity(Object handle) {
     if (handle instanceof net.minecraft.entity.player.PlayerEntity) {
@@ -96,7 +97,9 @@ public class VersionedEntityMapper implements EntityMapper {
     return this.fromMinecraftEntity(handle);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity fromMinecraftEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.Entity)) {
@@ -132,7 +135,9 @@ public class VersionedEntityMapper implements EntityMapper {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftEntity(Entity entity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {
@@ -144,7 +149,9 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PlayerEntity fromMinecraftPlayerEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.player.PlayerEntity)) {
@@ -162,7 +169,9 @@ public class VersionedEntityMapper implements EntityMapper {
             playerEntity.getUniqueID(), () -> this.playerEntityProvider.get(playerEntity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftPlayerEntity(PlayerEntity entity) {
 
@@ -175,7 +184,9 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LivingEntity fromMinecraftLivingEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.LivingEntity)) {
@@ -192,7 +203,9 @@ public class VersionedEntityMapper implements EntityMapper {
             livingEntity.getUniqueID(), () -> this.livingEntityProvider.get(livingEntity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftLivingEntity(LivingEntity entity) {
 
@@ -206,7 +219,9 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MobEntity fromMinecraftMobEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.MobEntity)) {
@@ -223,7 +238,9 @@ public class VersionedEntityMapper implements EntityMapper {
             mobEntity.getUniqueID(), () -> this.mobEntityProvider.get(mobEntity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftMobEntity(MobEntity entity) {
 
@@ -237,13 +254,17 @@ public class VersionedEntityMapper implements EntityMapper {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemEntityMapper getItemEntityMapper() {
     return this.itemEntityMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PassiveEntityMapper getPassiveEntityMapper() {
     return this.passiveEntityMapper;

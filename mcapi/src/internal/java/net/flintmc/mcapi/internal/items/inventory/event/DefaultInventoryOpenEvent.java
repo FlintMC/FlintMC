@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.event.InventoryOpenEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(InventoryOpenEvent.class)
 public class DefaultInventoryOpenEvent extends DefaultInventoryEvent implements InventoryOpenEvent {
 

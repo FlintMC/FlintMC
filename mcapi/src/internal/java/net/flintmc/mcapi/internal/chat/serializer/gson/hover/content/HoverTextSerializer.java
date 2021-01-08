@@ -26,7 +26,9 @@ import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
 import net.flintmc.mcapi.chat.component.event.content.HoverText;
 
-/** Serializer for {@link HoverText} */
+/**
+ * Serializer for {@link HoverText}
+ */
 public class HoverTextSerializer implements HoverContentSerializer {
 
   @Override

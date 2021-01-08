@@ -22,6 +22,8 @@ package net.flintmc.mcapi.v1_15_2.world;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
+import java.util.Random;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.tileentity.TileEntity;
 import net.flintmc.mcapi.world.World;
@@ -139,7 +141,7 @@ public class VersionedWorld implements World {
     }
 
     return this.difficultyLocalFactory.create(
-            this.getDifficulty(), this.getDayTime(), chunkInhabitedTime, moonPhaseFactory);
+        this.getDifficulty(), this.getDayTime(), chunkInhabitedTime, moonPhaseFactory);
   }
 
   /**
@@ -273,8 +275,8 @@ public class VersionedWorld implements World {
   @Override
   public int getLightSubtracted(BlockPosition position, int amount) {
     return Minecraft.getInstance()
-            .world
-            .getLightSubtracted((BlockPos) this.toMinecraftBlockPos(position), amount);
+        .world
+        .getLightSubtracted((BlockPos) this.toMinecraftBlockPos(position), amount);
   }
 
   /**
@@ -283,8 +285,8 @@ public class VersionedWorld implements World {
   @Override
   public int getLightValue(BlockPosition position) {
     return Minecraft.getInstance()
-            .world
-            .getLightValue((BlockPos) this.toMinecraftBlockPos(position));
+        .world
+        .getLightValue((BlockPos) this.toMinecraftBlockPos(position));
   }
 
   /**
@@ -301,8 +303,8 @@ public class VersionedWorld implements World {
   @Override
   public int getNeighborAwareLightSubtracted(BlockPosition position, int amount) {
     return Minecraft.getInstance()
-            .world
-            .getNeighborAwareLightSubtracted((BlockPos) this.toMinecraftBlockPos(position), amount);
+        .world
+        .getNeighborAwareLightSubtracted((BlockPos) this.toMinecraftBlockPos(position), amount);
   }
 
   /**
@@ -414,7 +416,9 @@ public class VersionedWorld implements World {
    */
   @Override
   public BlockPosition fromMinecraftBlockPos(Object handle) {
-    if (!(handle instanceof BlockPos)) return null;
+    if (!(handle instanceof BlockPos)) {
+      return null;
+    }
 
     BlockPos blockPos = (BlockPos) handle;
 
@@ -434,7 +438,9 @@ public class VersionedWorld implements World {
    */
   @Override
   public Dimension fromMinecraftDimension(Object handle) {
-    if (!(handle instanceof DimensionType)) return null;
+    if (!(handle instanceof DimensionType)) {
+      return null;
+    }
 
     DimensionType dimensionType = (DimensionType) handle;
 

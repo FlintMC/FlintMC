@@ -35,16 +35,17 @@ public class VersionedScreenRenderEventInjector {
   @Inject
   private VersionedScreenRenderEventInjector(EventBus eventBus) {
     this.eventBus = eventBus;
-    this.event = new ScreenRenderEvent() {};
+    this.event = new ScreenRenderEvent() {
+    };
   }
 
   @Hook(
       className = "net.minecraft.client.renderer.GameRenderer",
       methodName = "updateCameraAndRender",
       parameters = {
-        @Type(reference = float.class),
-        @Type(reference = long.class),
-        @Type(reference = boolean.class)
+          @Type(reference = float.class),
+          @Type(reference = long.class),
+          @Type(reference = boolean.class)
       },
       executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER})
   public void renderScreen(Hook.ExecutionTime executionTime) {

@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.event.EntityDespawnEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(EntityDespawnEvent.class)
 public class DefaultEntityDespawnEvent implements EntityDespawnEvent {
 
@@ -36,7 +38,9 @@ public class DefaultEntityDespawnEvent implements EntityDespawnEvent {
     this.entity = entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity getEntity() {
     return this.entity;

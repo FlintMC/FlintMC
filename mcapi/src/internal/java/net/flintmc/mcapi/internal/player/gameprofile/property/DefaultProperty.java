@@ -19,15 +19,20 @@
 
 package net.flintmc.mcapi.internal.player.gameprofile.property;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.util.Base64;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.property.Property;
 
-import java.security.*;
-import java.util.Base64;
-
-/** An implementation of {@link Property} */
+/**
+ * An implementation of {@link Property}
+ */
 @Implement(Property.class)
 public class DefaultProperty implements Property {
 

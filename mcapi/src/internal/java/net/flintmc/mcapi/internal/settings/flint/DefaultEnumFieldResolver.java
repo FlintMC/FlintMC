@@ -21,15 +21,14 @@ package net.flintmc.mcapi.internal.settings.flint;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.mcapi.settings.flint.EnumFieldResolver;
-import org.apache.logging.log4j.Logger;
-
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.mcapi.settings.flint.EnumFieldResolver;
+import org.apache.logging.log4j.Logger;
 
 @Singleton
 @Implement(EnumFieldResolver.class)

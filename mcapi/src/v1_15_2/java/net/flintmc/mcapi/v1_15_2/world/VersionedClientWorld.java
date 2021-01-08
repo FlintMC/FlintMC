@@ -42,7 +42,9 @@ import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.type.difficulty.DifficultyLocal;
 import net.minecraft.client.Minecraft;
 
-/** 1.15.2 implementation of {@link ClientWorld} */
+/**
+ * 1.15.2 implementation of {@link ClientWorld}
+ */
 @Singleton
 @Implement(value = ClientWorld.class, version = "1.15.2")
 public class VersionedClientWorld extends VersionedWorld implements ClientWorld {
@@ -68,49 +70,65 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
     this.players = Sets.newHashSet();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity getEntityByIdentifier(int identifier) {
     return this.entities.get(identifier);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getEntityCount() {
     return Minecraft.getInstance().world.getCountLoadedEntities();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean addPlayer(PlayerEntity player) {
     return this.players.add(player);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean removePlayer(UUID uniqueId) {
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Scoreboard getScoreboard() {
     return this.scoreboard;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<Integer, Entity> getEntities() {
     return this.entities;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Set<PlayerEntity> getPlayers() {
     return this.players;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getPlayerCount() {
     return this.players.size();

@@ -19,15 +19,16 @@
 
 package net.flintmc.mcapi.internal.server.event;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.event.ServerAddressEvent;
 
-import javax.annotation.Nullable;
-
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(ServerAddressEvent.class)
 public class DefaultServerAddressEvent implements ServerAddressEvent {
 
@@ -38,7 +39,9 @@ public class DefaultServerAddressEvent implements ServerAddressEvent {
     this.address = address;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ServerAddress getAddress() {
     return this.address;

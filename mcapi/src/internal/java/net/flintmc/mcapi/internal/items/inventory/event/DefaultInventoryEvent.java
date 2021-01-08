@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.event.InventoryEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(InventoryEvent.class)
 public class DefaultInventoryEvent implements InventoryEvent {
 
@@ -36,7 +38,9 @@ public class DefaultInventoryEvent implements InventoryEvent {
     this.inventory = inventory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Inventory getInventory() {
     return this.inventory;

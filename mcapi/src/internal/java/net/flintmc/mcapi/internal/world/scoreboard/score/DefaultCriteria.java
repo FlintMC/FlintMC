@@ -47,19 +47,25 @@ public class DefaultCriteria implements Criteria {
     this.renderType = renderType;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean readOnly() {
     return this.readOnly;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RenderType getRenderType() {
     return this.renderType;

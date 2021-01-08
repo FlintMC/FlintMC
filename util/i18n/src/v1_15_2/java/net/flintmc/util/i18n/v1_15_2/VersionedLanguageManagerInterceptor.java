@@ -45,7 +45,8 @@ public class VersionedLanguageManagerInterceptor {
   @Hook(
       className = "net.minecraft.client.resources.LanguageManager",
       methodName = "onResourceManagerReload",
-      parameters = {@Type(reference = IResourceManager.class)})
+      parameters = {@Type(reference = IResourceManager.class)},
+      version = "1.15.2")
   public void hookOnResourceManagerReload(@Named("instance") Object instance) {
     LanguageManager languageManager = (LanguageManager) instance;
     AccessibleLanguageManager accessibleLanguageManager =

@@ -19,6 +19,10 @@
 
 package net.flintmc.mcapi.internal.settings.flint.registered;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.HashSet;
+import javax.annotation.Nullable;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
@@ -29,10 +33,6 @@ import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.event.SettingUpdateEvent;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
-import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.HashSet;
 
 @Implement(RegisteredSetting.class)
 public class DefaultRegisteredSetting implements RegisteredSetting {

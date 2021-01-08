@@ -44,4 +44,12 @@ public @interface PreSubscribe {
    * @see Subscribe#priority()
    */
   byte priority() default EventPriority.NORMAL;
+
+  /**
+   * Retrieves the minecraft version where this event should be fired, for example "1.15.2". If it
+   * is empty, it will work in every version.
+   *
+   * @return The version where this event should be available
+   */
+  String version() default "";
 }

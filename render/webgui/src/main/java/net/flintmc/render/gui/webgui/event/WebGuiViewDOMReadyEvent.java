@@ -23,6 +23,10 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Event indicating that the DOM of a {@link WebGuiView} is ready. */
+/**
+ * Event indicating that the DOM of a {@link WebGuiView} is ready.
+ */
 @Subscribable(Phase.POST)
-public interface WebGuiViewDOMReadyEvent extends WebGuiViewStateChangeEvent {}
+public interface WebGuiViewDOMReadyEvent extends WebGuiViewStateChangeEvent {
+
+}

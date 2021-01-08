@@ -19,12 +19,12 @@
 
 package net.flintmc.mcapi.v1_15_2.chat;
 
+import java.util.List;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.gui.ChatLine;
-import java.util.List;
 
-@Shadow("net.minecraft.client.gui.NewChatGui")
+@Shadow(value = "net.minecraft.client.gui.NewChatGui", version = "1.15.2")
 public interface ChatGuiShadow {
 
   @FieldGetter("chatLines")

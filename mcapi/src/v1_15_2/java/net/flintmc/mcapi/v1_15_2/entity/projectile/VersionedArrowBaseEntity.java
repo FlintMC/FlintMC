@@ -101,13 +101,17 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Sound getHitSound() {
     return this.hitSound;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setHitSound(Sound sound) {
     this.hitSound = sound;
@@ -116,7 +120,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
             this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(this.hitSound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void shoot(
       Entity shooter, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
@@ -130,7 +136,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
         inaccuracy);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity getShooter() {
     return this.getEntityFoundationMapper()
@@ -138,7 +146,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
         .fromMinecraftEntity(this.arrowBaseEntity.getShooter());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setShooter(Entity shooter) {
     this.arrowBaseEntity.setShooter(
@@ -146,7 +156,9 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(shooter));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getArrowStack() {
     return this.getEntityFoundationMapper()
@@ -154,55 +166,73 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
         .fromMinecraft(this.accessibleAbstractArrowEntity.getArrowStack());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public double getDamage() {
     return this.arrowBaseEntity.getDamage();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDamage(double damage) {
     this.arrowBaseEntity.setDamage(damage);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getKnockbackStrength() {
     return this.accessibleAbstractArrowEntity.getKnockbackStrength();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setKnockbackStrength(int knockbackStrength) {
     this.arrowBaseEntity.setKnockbackStrength(knockbackStrength);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCritical() {
     return this.arrowBaseEntity.getIsCritical();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCritical(boolean critical) {
     this.arrowBaseEntity.setIsCritical(critical);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public byte getPierceLevel() {
     return this.arrowBaseEntity.getPierceLevel();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPierceLevel(byte level) {
     this.arrowBaseEntity.setPierceLevel(level);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setEnchantmentEffectsFromEntity(LivingEntity entity, float damage) {
     this.arrowBaseEntity.setEnchantmentEffectsFromEntity(
@@ -211,37 +241,49 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
         damage);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isNoClip() {
     return this.arrowBaseEntity.getNoClip();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setNoClip(boolean noClip) {
     this.arrowBaseEntity.setNoClip(noClip);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isShotFromCrossbow() {
     return this.arrowBaseEntity.getShotFromCrossbow();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setShotFromCrossbow(boolean fromCrossbow) {
     this.arrowBaseEntity.setShotFromCrossbow(fromCrossbow);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getWaterDrag() {
     return this.accessibleAbstractArrowEntity.getWaterDrag();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PickupStatus getPickupStatus() {
     AbstractArrowEntity.PickupStatus pickupStatus =
@@ -254,34 +296,44 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
     return this.pickupStatus;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPickupStatus(PickupStatus pickupStatus) {
     this.pickupStatus = pickupStatus;
     this.accessibleAbstractArrowEntity.setPickupStatus(this.toMinecraftPickupStatus(pickupStatus));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
     this.arrowBaseEntity.shoot(x, y, z, velocity, inaccuracy);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.arrowBaseEntity.readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.arrowBaseEntity.writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setMotion(double x, double y, double z) {
     this.arrowBaseEntity.setMotion(x, y, z);

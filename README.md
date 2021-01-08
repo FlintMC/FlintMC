@@ -6,6 +6,7 @@
 
 ![License](https://img.shields.io/badge/license-LGPL--3.0-blue)
 ![MC Version](https://img.shields.io/badge/Minecraft-1.15.2-9cf)
+![MC Version](https://img.shields.io/badge/Minecraft-1.16.4-9cf)
 [![Discord](https://img.shields.io/discord/784821338199556096.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/tPb9j3ZBXu)
 
 Flint is a Minecraft modding framework created by LabyMedia GmbH. It is
@@ -16,8 +17,8 @@ Minecraft isn't patched directly - resulting in better compatibility between
 Mods and a simpler update process.
  
 **Warning**: Flint is still in development and not stable yet. We are
-currently working with Minecraft 1.15.2, but will soon start to implement other
-versions (including 1.16 and 1.8).
+currently working with Minecraft 1.15.2 and 1.16.4, but will soon start to implement other
+versions (including 1.8.9).
  
 Contributions are welcome, just make sure to take a look at our contribution
 guidelines first. We would also love to chat with you about Flint on our
@@ -262,7 +263,7 @@ $ ./gradlew build
 There is also a task to start a de-obfuscated Minecraft directly out of your
 development environment.
 ```bash
-$ ./gradlew runClient1.15.2
+$ ./gradlew runClient1.16.4
 ```
 
 If you want to login into your Minecraft account, just set the following
@@ -299,8 +300,8 @@ version = "1.0.0"
 
 flint {
     // Enter the newest Flint version here
-    flintVersion = "2.0.5"
-    minecraftVersions("1.15.2")
+    flintVersion = "2.0.12"
+    minecraftVersions("1.15.2", "1.16.4")
     authors = arrayOf("Your Name")
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")    
@@ -316,7 +317,7 @@ dependencies {
     api(flintApi("mcapi"))
     api(flintApi("util-task-executor"))
 
-    minecraft("1.15.2") {
+    minecraft("1.15.2", "1.16.4") {
         annotationProcessor(flintApi("annotation-processing-autoload"))
     }
 }
@@ -329,11 +330,11 @@ Gradle won't find our custom Gradle plugin.
 pluginManagement {
     plugins {
         // make sure to use the newest version
-        id("net.flintmc.flint-gradle") version "2.7.1"
+        id("net.flintmc.flint-gradle") version "2.7.2"
     }
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle", "2.7.1")         
+            classpath("net.flintmc", "flint-gradle", "2.7.2")         
         }
         repositories {
             maven {
@@ -354,7 +355,7 @@ structure:
 └── src
     ├── internal/java/your/group/internal
     ├── main/java/your/group
-    └── v1_15_2/java/your/group/v1_15_2
+    └── v1_16_4/java/your/group/v1_16_4
 ```
 
 If you now add the `ChatHandler` class from the 
@@ -383,7 +384,7 @@ tutorials on how to publish your Mod to our distribution service.
 This project is not yet finished, there are many things we still want to do.
 
 - [ ] Improve dependency resolution in package loading.
-- [ ] Implement Minecraft 1.16.x, 1.8.9 and other versions.
+- [ ] Implement Minecraft 1.8.9 and other versions.
 - [ ] Make it possible to create server mods.
 - [ ] Write more documentation and create further resources on getting started.
 - [ ] Improve Minecraft API.

@@ -19,6 +19,13 @@
 
 package net.flintmc.mcapi.internal.nbt.io.write;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.zip.GZIPOutputStream;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -26,10 +33,9 @@ import net.flintmc.mcapi.nbt.NBT;
 import net.flintmc.mcapi.nbt.io.write.NBTDataOutputStream;
 import net.flintmc.mcapi.nbt.io.write.NBTWriter;
 
-import java.io.*;
-import java.util.zip.GZIPOutputStream;
-
-/** Default implementation of the {@link NBTWriter}. */
+/**
+ * Default implementation of the {@link NBTWriter}.
+ */
 @Implement(NBTWriter.class)
 public class DefaultNBTWriter implements NBTWriter {
 
@@ -55,19 +61,25 @@ public class DefaultNBTWriter implements NBTWriter {
     this(factory, new BufferedOutputStream(new FileOutputStream(file)), compressed);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeNamed(String name, NBT tag) throws IOException {
     this.outputStream.writeFullyFormedTag(name, tag);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeRaw(NBT tag) throws IOException {
     tag.writeContents(this.outputStream);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void close() throws IOException {
     this.outputStream.getDataOutputStream().close();

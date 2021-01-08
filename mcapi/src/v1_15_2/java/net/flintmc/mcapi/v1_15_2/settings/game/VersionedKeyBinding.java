@@ -28,7 +28,9 @@ import net.flintmc.render.gui.input.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 
-/** 1.15.2 implementation of {@link KeyBinding}. */
+/**
+ * 1.15.2 implementation of {@link KeyBinding}.
+ */
 @Implement(value = KeyBinding.class, version = "1.15.2")
 public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding
     implements KeyBinding {

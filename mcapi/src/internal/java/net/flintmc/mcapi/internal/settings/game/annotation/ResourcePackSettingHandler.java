@@ -23,6 +23,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.resources.pack.ResourcePack;
 import net.flintmc.mcapi.resources.pack.ResourcePackProvider;
@@ -30,10 +33,6 @@ import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.game.annotation.ResourcePackSetting;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Singleton
 @RegisterSettingHandler(ResourcePackSetting.class)
