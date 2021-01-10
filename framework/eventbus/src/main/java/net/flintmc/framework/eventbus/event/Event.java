@@ -19,5 +19,14 @@
 
 package net.flintmc.framework.eventbus.event;
 
-/** Represents an event. All other events must implement this Interface. */
-public interface Event {}
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+
+/**
+ * Represents an event. All other events must implement this Interface and have the {@link
+ * Subscribable} annotation.
+ *
+ * @see Subscribe
+ */
+public interface Event {
+}

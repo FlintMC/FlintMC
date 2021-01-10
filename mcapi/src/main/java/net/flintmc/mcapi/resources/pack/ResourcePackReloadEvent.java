@@ -20,11 +20,14 @@
 package net.flintmc.mcapi.resources.pack;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 
 /**
  * This event will be fired whenever the resource packs have been reloaded (or initially loaded on
  * startup), it only supports the POST phase.
  */
+@Subscribable(Phase.POST)
 public interface ResourcePackReloadEvent extends Event {
 
 }

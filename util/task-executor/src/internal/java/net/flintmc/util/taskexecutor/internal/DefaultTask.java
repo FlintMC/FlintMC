@@ -32,15 +32,13 @@ import net.flintmc.util.taskexecutor.TaskExecutor;
 @Implement(Task.class)
 public class DefaultTask implements Task {
 
-  private int ticks;
-  private int interval;
-
-  private boolean scheduled;
-
   private final boolean async;
   private final boolean repeat;
   private final Consumer<Task> runnable;
   private final TaskExecutor taskExecutor;
+  private int ticks;
+  private int interval;
+  private boolean scheduled;
 
   @AssistedInject
   private DefaultTask(
@@ -121,16 +119,16 @@ public class DefaultTask implements Task {
    * {@inheritDoc}
    */
   @Override
-  public int getInterval() {
-    return this.interval;
+  public void setTicksToStart(int ticks) {
+    this.ticks = ticks;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void setTicksToStart(int ticks) {
-    this.ticks = ticks;
+  public int getInterval() {
+    return this.interval;
   }
 
   /**

@@ -46,6 +46,13 @@ public interface RegisteredSetting {
   ConfigObjectReference getReference();
 
   /**
+   * Retrieves the type from the {@link ApplicableSetting} annotation which marks this setting.
+   *
+   * @return The non-null type
+   */
+  String getType();
+
+  /**
    * Retrieves the {@link ApplicableSetting} annotation which marks this setting. This can be for
    * example {@link StringSetting}.
    *

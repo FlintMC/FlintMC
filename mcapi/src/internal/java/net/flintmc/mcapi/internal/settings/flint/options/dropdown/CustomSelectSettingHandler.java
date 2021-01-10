@@ -76,7 +76,7 @@ public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSe
         handler.append(object, setting, selection.description());
       }
       for (SettingsSerializationHandler<Icon> handler :
-              this.serializer.getHandlers(Icon.class)) {
+          this.serializer.getHandlers(Icon.class)) {
         handler.append(object, setting, selection.icon());
       }
     }

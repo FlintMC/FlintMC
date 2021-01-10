@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.event.EntitySpawnEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(EntitySpawnEvent.class)
 public class DefaultEntitySpawnEvent implements EntitySpawnEvent {
 
@@ -38,13 +40,17 @@ public class DefaultEntitySpawnEvent implements EntitySpawnEvent {
     this.entity = entity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getIdentifier() {
     return this.identifier;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity getEntity() {
     return this.entity;

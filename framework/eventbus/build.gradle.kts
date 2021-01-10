@@ -31,4 +31,5 @@ dependencies {
 
     api(project(":framework:framework-inject"))
     api(project(":transform:transform-hook"))
+    api(project(":transform:transform-minecraft"))
 }

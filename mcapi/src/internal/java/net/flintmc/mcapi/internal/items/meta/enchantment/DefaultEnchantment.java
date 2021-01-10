@@ -59,7 +59,9 @@ public class DefaultEnchantment implements Enchantment {
 
   @Override
   public ChatComponent getDisplayName() {
-    if (this.displayName != null) return this.displayName;
+    if (this.displayName != null) {
+      return this.displayName;
+    }
 
     ChatComponent displayName = this.type.getDisplayName().copy();
 

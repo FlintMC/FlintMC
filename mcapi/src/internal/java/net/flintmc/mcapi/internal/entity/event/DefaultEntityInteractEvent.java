@@ -26,7 +26,9 @@ import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.event.EntityInteractEvent;
 import net.flintmc.mcapi.items.inventory.player.PlayerHand;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(EntityInteractEvent.class)
 public class DefaultEntityInteractEvent implements EntityInteractEvent {
 
@@ -39,13 +41,17 @@ public class DefaultEntityInteractEvent implements EntityInteractEvent {
     this.hand = hand;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Entity getInteracted() {
     return this.interacted;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PlayerHand getHand() {
     return this.hand;

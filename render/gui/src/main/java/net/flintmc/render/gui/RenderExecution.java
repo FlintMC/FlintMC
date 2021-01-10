@@ -19,8 +19,11 @@
 
 package net.flintmc.render.gui;
 
-/** Represents an execution of a rendering cycle. */
+/**
+ * Represents an execution of a rendering cycle.
+ */
 public class RenderExecution {
+
   private final float partialTicks;
   private final VanillaRenderCancellation cancellation;
 
@@ -39,7 +42,7 @@ public class RenderExecution {
    * Constructs a new {@link RenderExecution} with a boolean determining the the cancellation is
    * canceled already, the given mouse x and y coordinate and the current partial ticks value.
    *
-   * @param isCancelled Whether the execution has been cancelled already
+   * @param isCancelled  Whether the execution has been cancelled already
    * @param partialTicks The current partial tick counter
    */
   public RenderExecution(boolean isCancelled, float partialTicks) {

@@ -35,7 +35,9 @@ public class DefaultWindowManagerHandler {
     this.windowManager = windowManager;
   }
 
-  /** Registers the minecraft window after it has been initialized with OpenGL. */
+  /**
+   * Registers the minecraft window after it has been initialized with OpenGL.
+   */
   @Subscribe(phase = Subscribe.Phase.POST)
   public void postOpenGLInitialize(MinecraftWindow window, OpenGLInitializeEvent event) {
     this.windowManager.minecraftWindow = window;

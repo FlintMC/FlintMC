@@ -19,6 +19,7 @@
 
 package net.flintmc.util.i18n.v1_15_2;
 
+import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.HashSet;
 import net.flintmc.framework.inject.implement.Implement;
@@ -29,6 +30,7 @@ import net.minecraft.client.resources.Language;
 /**
  * 1.15.2 implementation of the {@link I18n}.
  */
+@Singleton
 @Implement(value = I18n.class, version = "1.15.2")
 public class VersionedI18n implements I18n {
 

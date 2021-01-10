@@ -121,7 +121,7 @@ public class VersionedSessionService extends DefaultSessionService {
         this.resolver);
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @Subscribe(phase = Subscribe.Phase.POST, version = "1.15.2")
   public void initSession(MinecraftInitializeEvent event) throws IOException {
     // load the session that has been given to the client by the launcher
     Session session = Minecraft.getInstance().getSession();

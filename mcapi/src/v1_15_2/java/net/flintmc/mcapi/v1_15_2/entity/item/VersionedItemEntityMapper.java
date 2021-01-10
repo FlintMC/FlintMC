@@ -40,7 +40,9 @@ public class VersionedItemEntityMapper implements ItemEntityMapper {
     this.itemEntityFactory = itemEntityFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemEntity fromMinecraftItemEntity(Object handle) {
     if (!(handle instanceof net.minecraft.entity.item.ItemEntity)) {
@@ -57,7 +59,9 @@ public class VersionedItemEntityMapper implements ItemEntityMapper {
             itemEntity.getUniqueID(), () -> this.itemEntityFactory.create(itemEntity));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftItemEntity(ItemEntity itemEntity) {
     for (net.minecraft.entity.Entity allEntity : Minecraft.getInstance().world.getAllEntities()) {

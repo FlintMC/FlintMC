@@ -19,6 +19,8 @@
 
 package net.flintmc.framework.config.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.generator.ParsedConfig;
@@ -37,6 +39,7 @@ import javax.annotation.Nullable;
  *
  * @see Subscribe
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface ConfigValueUpdateEvent extends Event {
 
   /**

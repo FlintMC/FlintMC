@@ -88,6 +88,7 @@ public class HookService implements ServiceHandler<Hook> {
 
     Hook annotation = meta.getAnnotation();
 
+    if (!(annotation.version().isEmpty() || annotation.version().equals(this.version))) return;
     this.hooks.add(
         new HookEntry(
             meta,
@@ -105,7 +106,6 @@ public class HookService implements ServiceHandler<Hook> {
       AnnotationMeta<Hook> identifier = entry.hook;
 
       Hook hook = identifier.getAnnotation();
-      if (!(hook.version().isEmpty() || hook.version().equals(this.version))) continue;
       if (!hook.className().isEmpty()) {
         String className = this.mappingProvider.get(hook.className()).getName();
         if (className != null && className.equals(ctClass.getName())) {

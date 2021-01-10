@@ -19,12 +19,11 @@
 
 package net.flintmc.mcapi.internal.chat.component;
 
-import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.mcapi.chat.component.TranslationComponent;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.component.TranslationComponent;
 
 public class DefaultTranslationComponent extends DefaultChatComponent
     implements TranslationComponent {

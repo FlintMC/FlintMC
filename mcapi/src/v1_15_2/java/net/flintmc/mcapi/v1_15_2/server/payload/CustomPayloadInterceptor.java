@@ -21,9 +21,6 @@ package net.flintmc.mcapi.v1_15_2.server.payload;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -42,13 +39,14 @@ import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
+
 ;
 
 @Singleton
 public class CustomPayloadInterceptor {
 
   private static final int[] LOGGER_WARN_SEQUENCE =
-      new int[] {Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
+      new int[]{Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
 
   private final ClassPool pool;
   private final ClassMapping customPayloadPacketMapping;
@@ -74,8 +72,8 @@ public class CustomPayloadInterceptor {
             .getCtClass()
             .getDeclaredMethod(
                 "handleCustomPayload",
-                new CtClass[] {
-                  this.pool.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
+                new CtClass[]{
+                    this.pool.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
                 });
 
     MethodInfo methodInfo = method.getMethodInfo();

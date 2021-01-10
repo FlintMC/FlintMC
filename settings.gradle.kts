@@ -26,12 +26,12 @@ fun defineModule(path: String) {
 
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle") version "2.7.0"
+        id("net.flintmc.flint-gradle") version "2.7.3"
     }
 
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle", "2.7.0")
+            classpath("net.flintmc", "flint-gradle", "2.7.3")
         }
         repositories {
             mavenLocal()
@@ -87,4 +87,5 @@ defineModule("util:session-service")
 defineModule("util:task-executor")
 
 defineModule("minecraft:minecraft-1-15-2")
+defineModule("minecraft:minecraft-1-16-4")
 defineModule("bootstrap")

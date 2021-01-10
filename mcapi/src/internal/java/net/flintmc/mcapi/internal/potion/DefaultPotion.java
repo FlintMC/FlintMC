@@ -47,19 +47,25 @@ public class DefaultPotion implements Potion {
     this.effects = ImmutableList.copyOf(effects);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<StatusEffectInstance> getStatusEffects() {
     return this.effects;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasInstantly() {
     return !this.effects.isEmpty()

@@ -19,7 +19,6 @@
 
 package net.flintmc.mcapi.internal.potion.event;
 
-import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.potion.event.PotionEvent;
 
@@ -33,13 +32,17 @@ public class DefaultPotionEvent implements PotionEvent {
     this.livingEntity = livingEntity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LivingEntity getLivingEntity() {
     return this.livingEntity;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getType() {
     return this.type;

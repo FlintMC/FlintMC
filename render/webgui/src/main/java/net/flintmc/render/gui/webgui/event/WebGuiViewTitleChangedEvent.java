@@ -19,10 +19,16 @@
 
 package net.flintmc.render.gui.webgui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Event indicating a title of a {@link WebGuiView} changed. */
+/**
+ * Event indicating a title of a {@link WebGuiView} changed.
+ */
+@Subscribable(Phase.POST)
 public interface WebGuiViewTitleChangedEvent extends WebGuiViewEvent {
+
   /**
    * Retrieves the new title of the view.
    *

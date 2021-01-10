@@ -45,24 +45,25 @@ public class DefaultWorldConfiguration implements WorldConfiguration {
 
   @AssistedInject
   private DefaultWorldConfiguration(
-          @Assisted("seed") long seed,
-          @Assisted("gameMode") GameMode gameMode,
-          @Assisted("mapFeaturesEnabled") boolean mapFeaturesEnabled,
-          @Assisted("hardcoreMode") boolean hardcoreMode,
-          @Assisted("terrainType") WorldType terrainType) {
-    this(seed, gameMode, mapFeaturesEnabled, hardcoreMode, terrainType, false, false, new JsonObject());
+      @Assisted("seed") long seed,
+      @Assisted("gameMode") GameMode gameMode,
+      @Assisted("mapFeaturesEnabled") boolean mapFeaturesEnabled,
+      @Assisted("hardcoreMode") boolean hardcoreMode,
+      @Assisted("terrainType") WorldType terrainType) {
+    this(seed, gameMode, mapFeaturesEnabled, hardcoreMode, terrainType, false, false,
+        new JsonObject());
   }
 
   @AssistedInject
   private DefaultWorldConfiguration(
-          @Assisted("seed") long seed,
-          @Assisted("gameMode") GameMode gameMode,
-          @Assisted("mapFeaturesEnabled") boolean mapFeaturesEnabled,
-          @Assisted("hardcoreMode") boolean hardcoreMode,
-          @Assisted("terrainType") WorldType terrainType,
-          @Assisted("commandsAllowed") boolean commandsAllowed,
-          @Assisted("bonusChest") boolean bonusChest,
-          @Assisted("generationOptions") JsonElement generationOptions) {
+      @Assisted("seed") long seed,
+      @Assisted("gameMode") GameMode gameMode,
+      @Assisted("mapFeaturesEnabled") boolean mapFeaturesEnabled,
+      @Assisted("hardcoreMode") boolean hardcoreMode,
+      @Assisted("terrainType") WorldType terrainType,
+      @Assisted("commandsAllowed") boolean commandsAllowed,
+      @Assisted("bonusChest") boolean bonusChest,
+      @Assisted("generationOptions") JsonElement generationOptions) {
     this.seed = seed;
     this.gameMode = gameMode;
     this.mapFeaturesEnabled = mapFeaturesEnabled;

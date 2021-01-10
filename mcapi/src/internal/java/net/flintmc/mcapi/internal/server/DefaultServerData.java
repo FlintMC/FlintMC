@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.internal.server;
 
+import java.net.UnknownHostException;
+import java.util.concurrent.CompletableFuture;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -26,9 +28,6 @@ import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.ServerData;
 import net.flintmc.mcapi.server.status.ServerStatus;
 import net.flintmc.mcapi.server.status.ServerStatusResolver;
-
-import java.net.UnknownHostException;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * {@inheritDoc}
@@ -44,10 +43,10 @@ public class DefaultServerData implements ServerData {
 
   @AssistedInject
   private DefaultServerData(
-          @Assisted String name,
-          @Assisted ServerAddress address,
-          @Assisted ResourceMode resourceMode,
-          ServerStatusResolver serverStatusResolver) {
+      @Assisted String name,
+      @Assisted ServerAddress address,
+      @Assisted ResourceMode resourceMode,
+      ServerStatusResolver serverStatusResolver) {
     this.name = name;
     this.address = address;
     this.resourceMode = resourceMode;

@@ -20,12 +20,15 @@
 package net.flintmc.mcapi.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 
 /**
  * This event will be fired when Minecraft is initialized. It will be fired in both {@link
  * Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST} phases.
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface MinecraftInitializeEvent extends Event {
 
 }

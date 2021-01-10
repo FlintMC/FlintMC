@@ -21,6 +21,7 @@ package net.flintmc.render.gui.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.nio.DoubleBuffer;
 import javassist.CannotCompileException;
 import javassist.CtField;
 import javassist.CtMethod;
@@ -41,11 +42,11 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 import org.lwjgl.system.MemoryStack;
 
-import java.nio.DoubleBuffer;
-
-/** 1.15.2 implementation of the input interceptor */
+/**
+ * 1.15.2 implementation of the input interceptor
+ */
 @Singleton
-@Implement(InputInterceptor.class)
+@Implement(value = InputInterceptor.class, version = "1.15.2")
 public class VersionedInputInterceptor implements InputInterceptor {
 
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
@@ -59,7 +60,9 @@ public class VersionedInputInterceptor implements InputInterceptor {
     this.callbacks = callbacks;
   }
 
-  /** Called from injected code, see below. The parameters match the hooked function */
+  /**
+   * Called from injected code, see below. The parameters match the hooked function
+   */
   public void interceptKeyboardCallbacks(
       long minecraftWindowHandle,
       GLFWKeyCallbackI keyCallback,
@@ -85,7 +88,9 @@ public class VersionedInputInterceptor implements InputInterceptor {
         });
   }
 
-  /** Called from injected code, see below. The parameters match the hooked function. */
+  /**
+   * Called from injected code, see below. The parameters match the hooked function.
+   */
   public void interceptMouseCallbacks(
       long minecraftWindowHandle,
       GLFWCursorPosCallbackI cursorPosCallback,
@@ -178,7 +183,9 @@ public class VersionedInputInterceptor implements InputInterceptor {
         .insertBefore(String.format("if (%s.windowFocusCallback($$)) { return; }", fieldName));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void signalCurrentMousePosition() {
     MainWindow window = Minecraft.getInstance().getMainWindow();

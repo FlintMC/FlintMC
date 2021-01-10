@@ -19,14 +19,14 @@
 
 package net.flintmc.mcapi.internal.resources;
 
-import net.flintmc.mcapi.resources.ResourceLocation;
-import net.flintmc.render.gui.webgui.WebResource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import net.flintmc.mcapi.resources.ResourceLocation;
+import net.flintmc.render.gui.webgui.WebResource;
 
 public class ResourcePackWebResource implements WebResource {
 
@@ -42,25 +42,33 @@ public class ResourcePackWebResource implements WebResource {
     this.data = new ArrayList<>();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getPath() {
     return this.location.getNamespace() + ':' + this.location.getPath();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getMimeType() {
     return URLConnection.guessContentTypeFromName(this.location.getPath());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void open() throws IOException {
     this.stream = this.location.openInputStream();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void close() throws IOException {
     this.stream.close();
@@ -83,7 +91,9 @@ public class ResourcePackWebResource implements WebResource {
     return total;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getSize() throws IOException {
     if (this.size < 0) {
@@ -92,7 +102,9 @@ public class ResourcePackWebResource implements WebResource {
     return this.size;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long readFromFile(ByteBuffer data, long length) throws IOException {
     int read = readFile();

@@ -25,10 +25,13 @@ import net.flintmc.render.shader.ShaderUniform;
 import net.flintmc.render.shader.uniformprovider.ProjectionMatrixProvider;
 
 @Singleton
-@Implement(ProjectionMatrixProvider.class)
+@Implement(value = ProjectionMatrixProvider.class, version = "1.15.2")
 public class VersionedProjectionMatrixProvider implements ProjectionMatrixProvider {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void apply(ShaderUniform uniform) {}
+  public void apply(ShaderUniform uniform) {
+  }
 }

@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.event.InventoryHeldItemChangeEvent;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(InventoryHeldItemChangeEvent.class)
 public class DefaultInventoryHeldItemChangeEvent implements InventoryHeldItemChangeEvent {
 
@@ -40,25 +42,33 @@ public class DefaultInventoryHeldItemChangeEvent implements InventoryHeldItemCha
     this.item = item;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getSlot() {
     return this.slot;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getItem() {
     return this.item;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCancelled() {
     return this.cancelled;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;

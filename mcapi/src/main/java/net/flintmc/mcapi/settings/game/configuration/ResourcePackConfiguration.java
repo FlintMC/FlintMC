@@ -54,9 +54,8 @@ public interface ResourcePackConfiguration {
   /**
    * Retrieves a collection with all incompatible resource packs.<br>
    * <b>Note:</b> If you use this method to add an incompatible resource pack, the client only
-   * knows
-   * about it and is temporary not saved in the options. The next time the options are saved, the
-   * added incompatible resource packs are also saved.
+   * knows about it and is temporary not saved in the options. The next time the options are saved,
+   * the added incompatible resource packs are also saved.
    *
    * @return A collection with all incompatible resource packs.
    */

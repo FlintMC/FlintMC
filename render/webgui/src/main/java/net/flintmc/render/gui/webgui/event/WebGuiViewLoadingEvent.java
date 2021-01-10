@@ -19,10 +19,16 @@
 
 package net.flintmc.render.gui.webgui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Event indicating that the loading status of a {@link WebGuiView} has changed. */
+/**
+ * Event indicating that the loading status of a {@link WebGuiView} has changed.
+ */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface WebGuiViewLoadingEvent extends WebGuiViewStateChangeEvent {
+
   /**
    * Retrieves error info about the event.
    *
@@ -39,8 +45,11 @@ public interface WebGuiViewLoadingEvent extends WebGuiViewStateChangeEvent {
     return errorInfo() != null;
   }
 
-  /** Error information for this event. */
+  /**
+   * Error information for this event.
+   */
   class ErrorInfo {
+
     private final String message;
     private final String domain;
     private final int code;
@@ -49,8 +58,8 @@ public interface WebGuiViewLoadingEvent extends WebGuiViewStateChangeEvent {
      * Constructs a new {@link ErrorInfo}.
      *
      * @param message The error message
-     * @param domain The domain the error originated from
-     * @param code The error code (HTTP code for HTTP errors, anything else for other errors)
+     * @param domain  The domain the error originated from
+     * @param code    The error code (HTTP code for HTTP errors, anything else for other errors)
      */
     public ErrorInfo(String message, String domain, int code) {
       this.message = message;

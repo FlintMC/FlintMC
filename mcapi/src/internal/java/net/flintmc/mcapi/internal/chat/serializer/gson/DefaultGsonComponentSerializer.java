@@ -23,6 +23,8 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
@@ -35,9 +37,6 @@ import net.flintmc.mcapi.internal.chat.serializer.gson.hover.ModernHoverEventSer
 import net.flintmc.mcapi.internal.chat.serializer.gson.hover.content.HoverEntitySerializer;
 import net.flintmc.mcapi.internal.chat.serializer.gson.hover.content.HoverTextSerializer;
 import org.apache.logging.log4j.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DefaultGsonComponentSerializer implements GsonComponentSerializer {
 

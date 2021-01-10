@@ -21,7 +21,9 @@ package net.flintmc.mcapi.server.event;
 
 import javax.annotation.Nullable;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -29,11 +31,12 @@ import net.flintmc.mcapi.server.ServerAddress;
 
 /**
  * This event will be fired whenever the user gets kicked from a server. Note that this event will
- * NOT be fired if the user disconnects from the server by himself. It will only be fired in the
- * POST phase.
+ * NOT be fired if the user disconnects from the server by himself. It will only be fired in the PRE
+ * phase.
  *
  * @see Subscribe
  */
+@Subscribable(Phase.PRE)
 public interface ServerKickEvent extends Event, ServerAddressEvent, ServerDisconnectEvent {
 
   /**

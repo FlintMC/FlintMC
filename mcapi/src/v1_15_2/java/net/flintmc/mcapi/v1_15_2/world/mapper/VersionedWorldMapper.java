@@ -70,9 +70,8 @@ public class VersionedWorldMapper implements WorldMapper {
    */
   @Override
   public WorldConfiguration fromMinecraftWorldSettings(Object handle) {
-
     if (!(handle instanceof WorldSettings)) {
-      throw new IllegalStateException(
+      throw new IllegalArgumentException(
           handle.getClass().getName()
               + " is not an instance of "
               + WorldSettings.class.getName());
@@ -105,9 +104,8 @@ public class VersionedWorldMapper implements WorldMapper {
    */
   @Override
   public WorldType fromMinecraftWorldType(Object handle) {
-
     if (!(handle instanceof net.minecraft.world.WorldType)) {
-      throw new IllegalStateException(
+      throw new IllegalArgumentException(
           handle.getClass().getName()
               + " is not an instance of "
               + net.minecraft.world.WorldType.class.getName());
@@ -153,7 +151,6 @@ public class VersionedWorldMapper implements WorldMapper {
    */
   @Override
   public WorldOverview fromMinecraftWorldSummary(Object handle) {
-
     if (!(handle instanceof WorldSummary)) {
       throw new IllegalStateException(
           handle.getClass().getName()
@@ -161,21 +158,23 @@ public class VersionedWorldMapper implements WorldMapper {
               + WorldInfo.class.getName());
     }
 
-    WorldSummary worldSummary = (WorldSummary) handle;
+    WorldSummary summary = (WorldSummary) handle;
+    String rawVersion = ((WorldSummaryShadow) summary).getRawVersionName();
 
     return this.worldOverviewFactory.create(
-        worldSummary.getFileName(),
-        worldSummary.getDisplayName(),
-        worldSummary.getLastTimePlayed(),
-        worldSummary.getSizeOnDisk(),
-        worldSummary.requiresConversion(),
-        GameMode.valueOf(worldSummary.getEnumGameType().name()),
-        worldSummary.isHardcoreModeEnabled(),
-        worldSummary.getCheatsEnabled(),
-        worldSummary.askToOpenWorld(),
-        worldSummary.markVersionInList(),
-        worldSummary.func_202842_n(),
-        worldSummary.func_197731_n()
+        summary.getFileName(),
+        summary.getDisplayName(),
+        rawVersion == null || rawVersion.isEmpty() ? null : rawVersion,
+        summary.getLastTimePlayed(),
+        summary.getSizeOnDisk(),
+        summary.requiresConversion(),
+        GameMode.valueOf(summary.getEnumGameType().name()),
+        summary.isHardcoreModeEnabled(),
+        summary.getCheatsEnabled(),
+        summary.askToOpenWorld(),
+        summary.markVersionInList(),
+        summary.func_202842_n(),
+        summary.func_197731_n()
     );
   }
 }

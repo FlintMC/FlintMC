@@ -21,8 +21,11 @@ package net.flintmc.render.gui.webgui;
 
 import java.util.Collection;
 
-/** General tooling around the web GUI components. */
+/**
+ * General tooling around the web GUI components.
+ */
 public interface WebGuiController {
+
   /**
    * Retrieves a <b>read-only</b> collection of all currently active views.
    *

@@ -57,19 +57,25 @@ public class DefaultScore implements Score {
     this.scorePoints = scorePoints;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getPlayerName() {
     return this.username;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Objective getObjective() {
     return this.objective;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void increaseScore(int amount) {
     if (this.objective.getCriteria().readOnly()) {
@@ -79,19 +85,25 @@ public class DefaultScore implements Score {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void incrementScore() {
     this.increaseScore(1);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getScorePoints() {
     return this.scorePoints;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setScorePoints(int points) {
     int sPoints = this.scorePoints;
@@ -104,19 +116,25 @@ public class DefaultScore implements Score {
     this.scoreChangeListener.changeScorePoints(this, points);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void reset() {
     this.setScorePoints(0);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean locked() {
     return this.locked;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setLocked(boolean locked) {
     this.locked = locked;

@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.internal.world.storage;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -33,6 +34,7 @@ public class DefaultWorldOverview implements WorldOverview {
 
   private final String fileName;
   private final String displayName;
+  private final String version;
   private final long lastTimePlayed;
   private final long sizeOnDisk;
   private final boolean requiresConversion;
@@ -46,20 +48,22 @@ public class DefaultWorldOverview implements WorldOverview {
 
   @AssistedInject
   private DefaultWorldOverview(
-          @Assisted("fileName") String fileName,
-          @Assisted("displayName") String displayName,
-          @Assisted("lastTimePlayed") long lastTimePlayed,
-          @Assisted("sizeOnDisk") long sizeOnDisk,
-          @Assisted("requiresConversion") boolean requiresConversion,
-          @Assisted("gameMode") GameMode gameMode,
-          @Assisted("hardcoreMode") boolean hardcoreMode,
-          @Assisted("cheats") boolean cheats,
-          @Assisted("askToOpenWorld") boolean askToOpenWorld,
-          @Assisted("markWorldInList") boolean markWorldInList,
-          @Assisted("futureWorld") boolean futureWorld,
-          @Assisted("outdatedWorld") boolean outdatedWorld) {
+      @Assisted("fileName") String fileName,
+      @Assisted("displayName") String displayName,
+      @Assisted("version") @Nullable String version,
+      @Assisted("lastTimePlayed") long lastTimePlayed,
+      @Assisted("sizeOnDisk") long sizeOnDisk,
+      @Assisted("requiresConversion") boolean requiresConversion,
+      @Assisted("gameMode") GameMode gameMode,
+      @Assisted("hardcoreMode") boolean hardcoreMode,
+      @Assisted("cheats") boolean cheats,
+      @Assisted("askToOpenWorld") boolean askToOpenWorld,
+      @Assisted("markWorldInList") boolean markWorldInList,
+      @Assisted("futureWorld") boolean futureWorld,
+      @Assisted("outdatedWorld") boolean outdatedWorld) {
     this.fileName = fileName;
     this.displayName = displayName;
+    this.version = version;
     this.lastTimePlayed = lastTimePlayed;
     this.sizeOnDisk = sizeOnDisk;
     this.requiresConversion = requiresConversion;
@@ -87,6 +91,14 @@ public class DefaultWorldOverview implements WorldOverview {
   @Override
   public String getDisplayName() {
     return this.displayName;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getVersion() {
+    return this.version;
   }
 
   /**
@@ -177,7 +189,8 @@ public class DefaultWorldOverview implements WorldOverview {
     if (this.lastTimePlayed < overview.getLastTimePlayed()) {
       return 1;
     } else {
-      return this.lastTimePlayed > overview.getLastTimePlayed() ? -1 : this.fileName.compareTo(overview.getFileName());
+      return this.lastTimePlayed > overview.getLastTimePlayed() ? -1
+          : this.fileName.compareTo(overview.getFileName());
     }
   }
 }

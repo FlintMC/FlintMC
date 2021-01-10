@@ -22,6 +22,7 @@ package net.flintmc.mcapi.v1_15_2.player.network;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.authlib.GameProfile;
+import java.util.UUID;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.player.event.PlayerInfoEvent;
@@ -30,8 +31,6 @@ import net.flintmc.mcapi.player.network.NetworkPlayerInfoRegistry;
 import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
 import net.flintmc.mcapi.server.event.PacketEvent;
 import net.minecraft.network.play.server.SPlayerListItemPacket;
-
-import java.util.UUID;
 
 @Singleton
 public class VersionedPlayerInfoInterceptor {
@@ -100,7 +99,7 @@ public class VersionedPlayerInfoInterceptor {
           break;
         case REMOVE_PLAYER:
           this.registry.getPlayerInfoMap().remove(data.getProfile().getId());
-          event = this.eventFactory.create(PlayerInfoEvent.Type.REMOVE, null);
+          event = this.eventFactory.create(PlayerInfoEvent.Type.REMOVE, info);
           break;
 
         default:

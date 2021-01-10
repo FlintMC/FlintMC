@@ -1,48 +1,43 @@
-name : Java CI with Gradle
+name: Java CI with Gradle
 
-on :
-  push :
-    tags :
+on:
+  push:
+    tags:
       - '**'
-jobs :
-  build :
-    runs-on : ubuntu-latest
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-    steps :
-      - name : Cache multiple paths
-        uses : actions/cache@v2
-        with :
-          path : |
-            ~/.gradle/caches/flint-gradle
-            ./**/build/flint
-          key : jdk-8-flint-gradle
+    steps:
+      - uses: actions/checkout@v2
 
-      - uses : actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
 
-      - name : Set up JDK 1.8
-        uses : actions/setup-java@v1
-        with :
-          java-version : 1.8
+      - name: Cache multiple paths
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches/flint-gradle
+          key: jdk-8-flint-gradle
 
-      - name : Grant execute permission for gradlew
-        run : chmod +x gradlew
+      - name: Get tag name
+        id: get_tag_name
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-      - name : Get tag name
-        id : get_tag_name
-        run : echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Build with Gradle
+        run: ./gradlew build --full-stacktrace
+        env:
+          VERSION: ${{ steps.get_tag_name.outputs.VERSION }}
+          FLINT_DISTRIBUTOR_PUBLISH_TOKEN: ${{ secrets.FLINT_DISTRIBUTOR_PUBLISH_TOKEN }}
+          FLINT_DISTRIBUTOR_URL: ${{ secrets.FLINT_DISTRIBUTOR_URL }}
+          FLINT_DISTRIBUTOR_AUTHORIZATION: ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}
 
-      - name : Build with Gradle
-        run : ./gradlew build --full-stacktrace
-        env :
-          VERSION : ${{ steps.get_tag_name.outputs.VERSION }}
-          FLINT_DISTRIBUTOR_PUBLISH_TOKEN : ${{ secrets.FLINT_DISTRIBUTOR_PUBLISH_TOKEN }}
-          FLINT_DISTRIBUTOR_URL : ${{ secrets.FLINT_DISTRIBUTOR_URL }}
-          FLINT_DISTRIBUTOR_AUTHORIZATION : ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}
-
-      - name : Build with Gradle and publish to distributor
-        run : ./gradlew publish --full-stacktrace
-        env :
-          VERSION : ${{ steps.get_tag_name.outputs.VERSION }}
-          FLINT_DISTRIBUTOR_PUBLISH_TOKEN : ${{ secrets.FLINT_DISTRIBUTOR_PUBLISH_TOKEN }}
-          FLINT_DISTRIBUTOR_URL : ${{ secrets.FLINT_DISTRIBUTOR_URL }}
-          FLINT_DISTRIBUTOR_AUTHORIZATION : ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}
+      - name: Publish to distributor
+        run: ./gradlew publish --full-stacktrace
+        env:
+          VERSION: ${{ steps.get_tag_name.outputs.VERSION }}
+          FLINT_DISTRIBUTOR_PUBLISH_TOKEN: ${{ secrets.FLINT_DISTRIBUTOR_PUBLISH_TOKEN }}
+          FLINT_DISTRIBUTOR_URL: ${{ secrets.FLINT_DISTRIBUTOR_URL }}
+          FLINT_DISTRIBUTOR_AUTHORIZATION: ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}

@@ -23,8 +23,11 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.render.gui.input.Key;
 
-/** A generic, operating system window. */
+/**
+ * A generic, operating system window.
+ */
 public interface Window {
+
   /**
    * Retrieves the platform native handle.
    *
@@ -79,7 +82,7 @@ public interface Window {
    *
    * @param renderer The renderer to remove
    * @return {@code true} if the renderer had been added and was removed now, {@code false}
-   *     otherwise
+   * otherwise
    * @throws IllegalStateException If the window is already closed
    */
   boolean removeRenderer(WindowRenderer renderer);
@@ -110,15 +113,18 @@ public interface Window {
    */
   boolean isClosed();
 
-  /** Factory for {@link Window}s. */
+  /**
+   * Factory for {@link Window}s.
+   */
   @AssistedFactory(Window.class)
   interface Factory {
+
     /**
      * Creates a new window and displays it. The OpenGL context of the window will a child context
      * of the minecraft context.
      *
-     * @param title The title of new the window
-     * @param width The width of new the window
+     * @param title  The title of new the window
+     * @param width  The width of new the window
      * @param height The height of the new window
      * @return The created window
      */

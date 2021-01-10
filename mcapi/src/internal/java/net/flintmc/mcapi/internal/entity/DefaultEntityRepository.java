@@ -29,6 +29,7 @@ import net.flintmc.mcapi.entity.EntityRepository;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
+import net.flintmc.mcapi.entity.Entity;
 
 /**
  * This cache is used to store all entities ported from Minecraft to Flint to save resources.
@@ -68,7 +69,7 @@ public class DefaultEntityRepository implements EntityRepository {
    * @param uniqueId The unique identifier with the specified entity is to be associated.
    * @param supplier The entity to be associated with the specified unique identifier.
    * @return The previous entity associated with the specified unique identifier, or a the given
-   *     supplied entity if there was not mapping for the unique identifier.
+   * supplied entity if there was not mapping for the unique identifier.
    */
   @Override
   public Entity putIfAbsent(UUID uniqueId, Supplier<Entity> supplier) {
@@ -80,8 +81,10 @@ public class DefaultEntityRepository implements EntityRepository {
     return suppliedEntity;
   }
 
-  /** Clears the cache. */
   @Override
+  /**
+   * Clears the cache.
+   */
   public void clear() {
     this.entities.clear();
   }

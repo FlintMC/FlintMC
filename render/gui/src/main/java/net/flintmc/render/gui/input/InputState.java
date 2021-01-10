@@ -19,14 +19,22 @@
 
 package net.flintmc.render.gui.input;
 
-/** Simple representation of possible key/button states */
+/**
+ * Simple representation of possible key/button states
+ */
 public enum InputState {
-  /** The key/button has been pressed */
+  /**
+   * The key/button has been pressed
+   */
   PRESS,
 
-  /** The key/button has been released */
+  /**
+   * The key/button has been released
+   */
   RELEASE,
 
-  /** The key/button is being hold for a long duration */
+  /**
+   * The key/button is being hold for a long duration
+   */
   REPEAT
 }

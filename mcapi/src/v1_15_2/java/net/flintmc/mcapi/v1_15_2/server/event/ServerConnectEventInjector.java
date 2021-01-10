@@ -23,24 +23,35 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.stereotype.type.Type;
+import net.flintmc.mcapi.event.DirectionalEvent.Direction;
 import net.flintmc.mcapi.server.ServerAddress;
+import net.flintmc.mcapi.server.ServerAddress.Factory;
+import net.flintmc.mcapi.server.ServerController;
+import net.flintmc.mcapi.server.event.PacketEvent;
+import net.flintmc.mcapi.server.event.PacketEvent.ProtocolPhase;
 import net.flintmc.mcapi.server.event.ServerConnectEvent;
 import net.flintmc.transform.hook.Hook;
+import net.minecraft.network.login.server.SLoginSuccessPacket;
 
 @Singleton
 public class ServerConnectEventInjector {
 
   private final EventBus eventBus;
+  private final ServerController serverController;
   private final ServerAddress.Factory addressFactory;
   private final ServerConnectEvent.Factory eventFactory;
 
   @Inject
   public ServerConnectEventInjector(
       EventBus eventBus,
-      ServerAddress.Factory addressFactory,
+      ServerController serverController,
+      Factory addressFactory,
       ServerConnectEvent.Factory eventFactory) {
     this.eventBus = eventBus;
+    this.serverController = serverController;
     this.addressFactory = addressFactory;
     this.eventFactory = eventFactory;
   }
@@ -49,9 +60,23 @@ public class ServerConnectEventInjector {
       executionTime = Hook.ExecutionTime.BEFORE,
       className = "net.minecraft.client.gui.screen.ConnectingScreen",
       methodName = "connect",
-      parameters = {@Type(reference = String.class), @Type(reference = int.class)})
-  public void handleConnect(Hook.ExecutionTime executionTime, @Named("args") Object[] args) {
+      parameters = {@Type(reference = String.class), @Type(reference = int.class)},
+      version = "1.15.2")
+  public void handlePreConnect(@Named("args") Object[] args) {
     ServerAddress address = this.addressFactory.create((String) args[0], (int) args[1]);
-    this.eventBus.fireEvent(this.eventFactory.create(address), executionTime);
+    this.eventBus.fireEvent(this.eventFactory.create(address), Phase.PRE);
+  }
+
+  @PostSubscribe(version = "1.15.2")
+  public void handleLoginSuccess(PacketEvent event) {
+    if (event.getDirection() != Direction.RECEIVE
+        || event.getPhase() != ProtocolPhase.LOGIN
+        || !(event.getPacket() instanceof SLoginSuccessPacket)
+        || this.serverController.getConnectedServer() == null) {
+      return;
+    }
+
+    ServerAddress address = this.serverController.getConnectedServer().getAddress();
+    this.eventBus.fireEvent(this.eventFactory.create(address), Phase.POST);
   }
 }

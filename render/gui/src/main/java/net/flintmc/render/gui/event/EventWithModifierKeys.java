@@ -19,20 +19,25 @@
 
 package net.flintmc.render.gui.event;
 
+import java.util.Collections;
+import java.util.Set;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.windowing.Window;
 
-import java.util.Collections;
-import java.util.Set;
-
-/** Base class for events with key modifiers. */
+/**
+ * Base class for events with key modifiers.
+ */
+@Subscribable(Phase.PRE)
 public abstract class EventWithModifierKeys extends DefaultGuiEvent implements GuiEvent {
+
   protected final Set<ModifierKey> modifierKeys;
 
   /**
    * Constructs a new {@link EventWithModifierKeys} with the specified modifier keys active.
    *
-   * @param window The non-null window where this event has happened
+   * @param window       The non-null window where this event has happened
    * @param modifierKeys The modifier keys which were active while the event was fired
    */
   protected EventWithModifierKeys(Window window, Set<ModifierKey> modifierKeys) {

@@ -21,17 +21,18 @@ package net.flintmc.render.vbo.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.vbo.VertexAttribute;
 import net.flintmc.render.vbo.VertexFormat;
 import net.flintmc.render.vbo.VertexFormatBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Singleton
-@Implement(VertexFormatBuilder.class)
+@Implement(value = VertexFormatBuilder.class, version = "1.15.2")
 public class VersionedVertexFormatBuilder implements VertexFormatBuilder {
 
   private final VertexFormat.Factory vertexFormatFactory;
@@ -43,14 +44,18 @@ public class VersionedVertexFormatBuilder implements VertexFormatBuilder {
     this.vertexFormatFactory = vertexFormatFactory;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VertexFormatBuilder addAttribute(VertexAttribute attribute) {
     this.currentAttributes.add(attribute);
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public VertexFormat build() {
     VertexFormat format = this.vertexFormatFactory.create(this.currentAttributes);

@@ -19,7 +19,13 @@
 
 package net.flintmc.mcapi.internal.chat.serializer.gson.hover;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import java.lang.reflect.Type;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
@@ -28,9 +34,9 @@ import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
 import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Type;
-
-/** The serializer for hover events in minecraft versions 1.16 and above. */
+/**
+ * The serializer for hover events in minecraft versions 1.16 and above.
+ */
 public class ModernHoverEventSerializer extends HoverEventSerializer {
 
   private final ComponentBuilder.Factory componentFactory;
@@ -67,7 +73,7 @@ public class ModernHoverEventSerializer extends HoverEventSerializer {
       }
 
     } else {
-      contents = new HoverContent[] {this.deserialize(serializer, value, context)};
+      contents = new HoverContent[]{this.deserialize(serializer, value, context)};
       if (contents[0] == null) {
         return null;
       }

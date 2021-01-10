@@ -97,6 +97,8 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
         payloadChannel.namespace(),
         payloadChannel.path(),
         InjectionHolder.getInjectedInstance(CtResolver.get(declaringClass)));
-    this.logger.info("A payload channel was registered!");
+
+    this.logger.info("The payload channel {}:{} was registered!", payloadChannel.namespace(),
+        payloadChannel.path());
   }
 }

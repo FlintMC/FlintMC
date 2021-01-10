@@ -19,6 +19,8 @@
 
 package net.flintmc.framework.config.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.storage.ConfigStorage;
@@ -33,6 +35,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
  *
  * @see Subscribe
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface ConfigStorageEvent extends Event {
 
   /**

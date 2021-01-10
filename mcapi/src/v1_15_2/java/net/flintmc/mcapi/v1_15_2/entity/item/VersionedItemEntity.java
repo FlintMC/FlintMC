@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.v1_15_2.entity.item;
 
+import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -31,8 +32,6 @@ import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.v1_15_2.entity.VersionedEntity;
 import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
-
-import java.util.UUID;
 
 @Implement(value = ItemEntity.class, version = "1.15.2")
 public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
@@ -89,6 +88,9 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
     this.setItemStack(itemStack);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected net.minecraft.entity.item.ItemEntity wrapped() {
     return (net.minecraft.entity.item.ItemEntity) super.wrapped();
@@ -115,79 +117,105 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
                 this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getOwnerIdentifier() {
     return this.wrapped().getOwnerId();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setOwnerIdentifier(UUID ownerIdentifier) {
     this.wrapped().setOwnerId(ownerIdentifier);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getThrowerIdentifier() {
     return this.wrapped().getThrowerId();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setThrowerIdentifier(UUID throwerIdentifier) {
     this.wrapped().setThrowerId(throwerIdentifier);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getAge() {
     return this.wrapped().getAge();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDefaultPickupDelay() {
     this.wrapped().setDefaultPickupDelay();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setNoPickupDelay() {
     this.wrapped().setNoPickupDelay();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setInfinitePickupDelay() {
     this.wrapped().setInfinitePickupDelay();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setPickupDelay(int ticks) {
     this.wrapped().setPickupDelay(ticks);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean cannotPickup() {
     return this.wrapped().cannotPickup();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setNoDespawn() {
     this.wrapped().setNoDespawn();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void makeFakeItem() {
     this.wrapped().makeFakeItem();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void readAdditional(NBTCompound compound) {
     this.wrapped()
@@ -195,7 +223,9 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
             (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void writeAdditional(NBTCompound compound) {
     this.wrapped()
@@ -203,7 +233,9 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
             (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getName() {
     return this.getEntityFoundationMapper()

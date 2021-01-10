@@ -21,7 +21,9 @@ package net.flintmc.mcapi.items.inventory.event;
 
 import com.google.inject.name.Named;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.inventory.Inventory;
@@ -31,6 +33,7 @@ import net.flintmc.mcapi.items.inventory.Inventory;
  *
  * @see Subscribe
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface InventorySlotEvent extends Event, InventoryEvent {
 
   /**

@@ -22,17 +22,18 @@ package net.flintmc.mcapi.internal.player.network;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfoRegistry;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
-
-/** Default implementation of {@link NetworkPlayerInfoRegistry} */
+/**
+ * Default implementation of {@link NetworkPlayerInfoRegistry}
+ */
 @Singleton
-@Implement(value = NetworkPlayerInfoRegistry.class, version = "1.15.2")
+@Implement(value = NetworkPlayerInfoRegistry.class)
 public class DefaultNetworkPlayerInfoRegistry implements NetworkPlayerInfoRegistry {
 
   private final Map<UUID, NetworkPlayerInfo> networkPlayerInfoMap;

@@ -100,7 +100,8 @@ public class VersionedLivingEntityPotionInterceptor {
   @Hook(
       executionTime = {ExecutionTime.AFTER, ExecutionTime.BEFORE},
       className = LIVING_ENTITY,
-      methodName = "updatePotionEffects")
+      methodName = "updatePotionEffects",
+      version = "1.15.2")
   public void hookUpdatePotionEffects(
       @Named("instance") Object owner, ExecutionTime executionTime) {
     this.getLivingEntity((LivingEntity) owner)
@@ -122,7 +123,8 @@ public class VersionedLivingEntityPotionInterceptor {
       executionTime = ExecutionTime.BEFORE,
       className = LIVING_ENTITY,
       methodName = "addPotionEffect",
-      parameters = {@Type(reference = EffectInstance.class)})
+      parameters = {@Type(reference = EffectInstance.class)},
+      version = "1.15.2")
   public void hookAddPotionEffect(@Named("instance") Object owner, @Named("args") Object[] args) {
     this.getLivingEntity((LivingEntity) owner)
         .ifPresent(
@@ -144,7 +146,8 @@ public class VersionedLivingEntityPotionInterceptor {
       executionTime = ExecutionTime.BEFORE,
       className = LIVING_ENTITY,
       methodName = "removeActivePotionEffect",
-      parameters = {@Type(reference = Effect.class)})
+      parameters = {@Type(reference = Effect.class)},
+      version = "1.15.2")
   public void hookRemoveActivePotionEffect(
       @Named("instance") Object owner, @Named("args") Object[] args) {
     this.getLivingEntity((LivingEntity) owner)
@@ -167,7 +170,8 @@ public class VersionedLivingEntityPotionInterceptor {
       executionTime = ExecutionTime.BEFORE,
       className = LIVING_ENTITY,
       methodName = "onNewPotionEffect",
-      parameters = {@Type(reference = EffectInstance.class)})
+      parameters = {@Type(reference = EffectInstance.class)},
+      version = "1.15.2")
   public void hookOnNewPotionEffect(@Named("instance") Object owner, @Named("args") Object[] args) {
     this.getLivingEntity((LivingEntity) owner)
         .ifPresent(
@@ -184,7 +188,8 @@ public class VersionedLivingEntityPotionInterceptor {
       executionTime = ExecutionTime.BEFORE,
       className = LIVING_ENTITY,
       methodName = "onChangedPotionEffect",
-      parameters = {@Type(reference = EffectInstance.class), @Type(reference = boolean.class)})
+      parameters = {@Type(reference = EffectInstance.class), @Type(reference = boolean.class)},
+      version = "1.15.2")
   public void hookOnChangedPotionEffect(
       @Named("instance") Object owner, @Named("args") Object[] args) {
     this.getLivingEntity((LivingEntity) owner)
@@ -202,7 +207,8 @@ public class VersionedLivingEntityPotionInterceptor {
       executionTime = ExecutionTime.BEFORE,
       className = LIVING_ENTITY,
       methodName = "onFinishedPotionEffect",
-      parameters = {@Type(reference = EffectInstance.class)})
+      parameters = {@Type(reference = EffectInstance.class)},
+      version = "1.15.2")
   public void hookOnFinishedPotionEffect(
       @Named("instance") Object owner, @Named("args") Object[] args) {
     this.getLivingEntity((LivingEntity) owner)

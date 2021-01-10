@@ -19,15 +19,16 @@
 
 package net.flintmc.mcapi.items.inventory.event;
 
+import static net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
+
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
-
-import static net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 
 /**
  * This event will be fired when the player changes the selected slot in their hotbar. It will also
@@ -36,6 +37,7 @@ import static net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
  *
  * @see Subscribe
  */
+@Subscribable(Phase.PRE)
 public interface InventoryHeldItemChangeEvent extends Event, Cancellable {
 
   /**
@@ -53,7 +55,9 @@ public interface InventoryHeldItemChangeEvent extends Event, Cancellable {
    */
   ItemStack getItem();
 
-  /** Factory for the {@link InventoryHeldItemChangeEvent}. */
+  /**
+   * Factory for the {@link InventoryHeldItemChangeEvent}.
+   */
   @AssistedFactory(InventoryHeldItemChangeEvent.class)
   interface Factory {
 

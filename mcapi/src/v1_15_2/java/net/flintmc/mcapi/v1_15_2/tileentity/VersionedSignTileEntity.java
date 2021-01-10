@@ -46,7 +46,9 @@ public class VersionedSignTileEntity extends VersionedTileEntity implements Sign
     this.componentMapper = componentMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getText(int line) {
     try {
@@ -56,7 +58,9 @@ public class VersionedSignTileEntity extends VersionedTileEntity implements Sign
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setText(int line, ChatComponent component) {
     this.signTileEntity.setText(line, (ITextComponent) this.componentMapper.toMinecraft(component));

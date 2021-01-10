@@ -19,7 +19,14 @@
 
 package net.flintmc.render.gui.webgui.event;
 
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.render.gui.webgui.WebGuiView;
 
-/** Event indicating that a {@link WebGuiView} is closing. */
-public interface WebGuiViewCloseEvent extends WebGuiViewEvent {}
+/**
+ * Event indicating that a {@link WebGuiView} is closing.
+ */
+@Subscribable({Phase.PRE, Phase.POST})
+public interface WebGuiViewCloseEvent extends WebGuiViewEvent {
+
+}

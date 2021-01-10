@@ -35,6 +35,7 @@ import net.flintmc.framework.inject.InjectionUtils;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.method.MethodInjectionUtils;
 import net.flintmc.framework.inject.method.MethodInjectorGenerationException;
+import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.launcher.LaunchController;
 
 /** {@inheritDoc} */
@@ -127,10 +128,7 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
 
     if (moved) {
       try {
-        byte[] bytes = target.toBytecode();
-        LaunchController.getInstance()
-            .getRootLoader()
-            .commonDefineClass(target.getName(), bytes, 0, bytes.length, null);
+        CtResolver.defineClass(target);
       } catch (IOException exception) {
         throw new MethodInjectorGenerationException(
             String.format(

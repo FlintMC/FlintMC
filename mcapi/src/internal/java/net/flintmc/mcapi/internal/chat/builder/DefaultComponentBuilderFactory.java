@@ -21,11 +21,17 @@ package net.flintmc.mcapi.internal.chat.builder;
 
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.chat.builder.*;
+import net.flintmc.mcapi.chat.builder.ComponentBuilder;
+import net.flintmc.mcapi.chat.builder.KeybindComponentBuilder;
+import net.flintmc.mcapi.chat.builder.ScoreComponentBuilder;
+import net.flintmc.mcapi.chat.builder.SelectorComponentBuilder;
+import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
+import net.flintmc.mcapi.chat.builder.TranslationComponentBuilder;
 
 @Singleton
 @Implement(ComponentBuilder.Factory.class)
 public class DefaultComponentBuilderFactory implements ComponentBuilder.Factory {
+
   @Override
   public TextComponentBuilder text() {
     return new DefaultTextComponentBuilder();

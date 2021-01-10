@@ -21,12 +21,15 @@ package net.flintmc.mcapi.server.payload;
 
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.server.buffer.PacketBuffer;
 
 /**
  * Represents the base event of the payload.
  */
+@Subscribable({Phase.PRE, Phase.POST})
 public interface PayloadEvent extends Cancellable, Event {
 
   /**

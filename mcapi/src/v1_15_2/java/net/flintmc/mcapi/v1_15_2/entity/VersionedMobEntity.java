@@ -33,7 +33,6 @@ import net.flintmc.mcapi.items.inventory.EquipmentSlotType;
 import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.type.hand.Hand;
-import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
@@ -48,11 +47,11 @@ public class VersionedMobEntity extends VersionedLivingEntity implements MobEnti
 
   @AssistedInject
   public VersionedMobEntity(
-          @Assisted("mobEntity") Object entity,
-          @Assisted("entityType") EntityType entityType,
-          World world,
-          EntityFoundationMapper entityFoundationMapper,
-          EntitySenses.Factory entitySensesFactory) {
+      @Assisted("mobEntity") Object entity,
+      @Assisted("entityType") EntityType entityType,
+      World world,
+      EntityFoundationMapper entityFoundationMapper,
+      EntitySenses.Factory entitySensesFactory) {
     super(entity, entityType, world, entityFoundationMapper);
     this.entitySensesFactory = entitySensesFactory;
 

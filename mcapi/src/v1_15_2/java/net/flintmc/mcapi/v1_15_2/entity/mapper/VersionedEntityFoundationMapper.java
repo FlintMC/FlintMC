@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.v1_15_2.entity.mapper;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
@@ -35,8 +37,6 @@ import net.flintmc.mcapi.potion.mapper.PotionMapper;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.minecraft.entity.Pose;
 import net.minecraft.world.GameType;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * 1.15.2 implementation of the {@link EntityFoundationMapper}.

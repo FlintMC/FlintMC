@@ -43,6 +43,7 @@ dependencies {
                 ":util",
                 ":minecraft",
                 ":minecraft:minecraft-minecraft-1-15-2",
+                ":minecraft:minecraft-minecraft-1-16-4",
                 ":bootstrap"
             ).contains(subProject.path)
         ) {

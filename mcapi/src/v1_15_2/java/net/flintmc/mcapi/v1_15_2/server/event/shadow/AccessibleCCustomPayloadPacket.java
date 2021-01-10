@@ -25,10 +25,10 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Shadow implementation of the {@link net.minecraft.network.play.client.CCustomPayloadPacket} with public getters for
- * the channel name and data.
+ * Shadow implementation of the {@link net.minecraft.network.play.client.CCustomPayloadPacket} with
+ * public getters for the channel name and data.
  */
-@Shadow("net.minecraft.network.play.client.CCustomPayloadPacket")
+@Shadow(value = "net.minecraft.network.play.client.CCustomPayloadPacket", version = "1.15.2")
 public interface AccessibleCCustomPayloadPacket {
 
   /**

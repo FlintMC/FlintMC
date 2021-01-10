@@ -25,6 +25,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.function.Function;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
@@ -40,13 +46,6 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.function.Function;
 
 @Singleton
 @Implement(JsonSettingsSerializer.class)

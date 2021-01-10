@@ -19,9 +19,10 @@
 
 package net.flintmc.mcapi.player.event;
 
-import javax.annotation.Nullable;
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
@@ -33,6 +34,7 @@ import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
  *
  * @see Subscribe
  */
+@Subscribable(Phase.POST)
 public interface PlayerInfoEvent extends Event {
 
   /**
@@ -90,6 +92,6 @@ public interface PlayerInfoEvent extends Event {
      * @param playerInfo The non-null player info that has been updated
      * @return The new non-null {@link PlayerInfoEvent}
      */
-    PlayerInfoEvent create(@Assisted Type type, @Assisted @Nullable NetworkPlayerInfo playerInfo);
+    PlayerInfoEvent create(@Assisted Type type, @Assisted NetworkPlayerInfo playerInfo);
   }
 }

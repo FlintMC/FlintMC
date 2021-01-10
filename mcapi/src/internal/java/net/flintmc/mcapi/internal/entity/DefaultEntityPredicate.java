@@ -19,14 +19,15 @@
 
 package net.flintmc.mcapi.internal.entity;
 
+import java.util.function.Predicate;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.EntityPredicate;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.MobEntity;
 
-import java.util.function.Predicate;
-
-/** Default implementation of the {@link EntityPredicate}. */
+/**
+ * Default implementation of the {@link EntityPredicate}.
+ */
 @Implement(EntityPredicate.class)
 public class DefaultEntityPredicate implements EntityPredicate {
 
@@ -38,56 +39,72 @@ public class DefaultEntityPredicate implements EntityPredicate {
   private boolean useVisibilityModifier;
   private Predicate<LivingEntity> customPredicate;
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPredicate setDistance(double distance) {
     this.distance = distance;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPredicate allowInvulnerable() {
     this.allowInvulnerable = true;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPredicate allowFriendlyFire() {
     this.friendlyFire = true;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPredicate allowRequireLineOfSight() {
     this.requireLineOfSight = true;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPredicate allowSkipAttackChecks() {
     this.skipAttackChecks = true;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPredicate disallowInvisibilityCheck() {
     this.useVisibilityModifier = false;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityPredicate setCustomPredicate(Predicate<LivingEntity> predicate) {
     this.customPredicate = predicate;
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean canTarget(LivingEntity attacker, LivingEntity target) {
     if (attacker == target) {

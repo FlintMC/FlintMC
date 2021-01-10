@@ -28,7 +28,8 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 /**
  * Builder for {@link SubscribeMethod}s.
  *
- * <p>The only necessary value before {@link #build()} can be used is one of the {@code to} methods.
+ * <p>The only necessary value before {@link #build()} can be used is one of the {@code to}
+ * methods.
  *
  * @param <E> The type of the event that is handled by the generating method.
  * @see Factory
@@ -88,14 +89,16 @@ public interface SubscribeMethodBuilder<E extends Event> {
    */
   void buildAndRegister() throws NullPointerException;
 
-  /** Factory for the {@link SubscribeMethodBuilder}. */
+  /**
+   * Factory for the {@link SubscribeMethodBuilder}.
+   */
   interface Factory {
 
     /**
      * Creates a new {@link SubscribeMethodBuilder} for the given event.
      *
      * @param eventClass The non-null class of the event which the new builder is for
-     * @param <E> The type of the event which the new builder is for
+     * @param <E>        The type of the event which the new builder is for
      * @return The new non-null builder for the given event class
      */
     <E extends Event> SubscribeMethodBuilder<E> newBuilder(Class<E> eventClass);

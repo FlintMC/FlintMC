@@ -23,7 +23,9 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.type.ItemType;
 
-/** Represents an inventory in Minecraft which can contain items. */
+/**
+ * Represents an inventory in Minecraft which can contain items.
+ */
 public interface Inventory {
 
   /**
@@ -67,7 +69,7 @@ public interface Inventory {
    * Sets the contents of this inventory.
    *
    * @param contents The non-null array of contents for this inventory, {@code null} can be used to
-   *     represent air
+   *                 represent air
    * @throws IllegalArgumentException If the array of contents is too large for this inventory
    */
   void setContents(ItemStack[] contents) throws IllegalArgumentException;
@@ -78,7 +80,7 @@ public interface Inventory {
    * @param slot The slot to get the item from
    * @return The non-null item out of this slot
    * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
-   *     the highest possible slot in this inventory
+   *                                   the highest possible slot in this inventory
    */
   ItemStack getItem(int slot) throws IndexOutOfBoundsException;
 
@@ -88,7 +90,7 @@ public interface Inventory {
    * @param slot The slot to which the stack of items to be set
    * @param item The stack of items to set
    * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
-   *     the highest possible slot in this inventory.
+   *                                   the highest possible slot in this inventory.
    */
   void setItem(int slot, ItemStack item) throws IndexOutOfBoundsException;
 
@@ -107,7 +109,7 @@ public interface Inventory {
    *
    * @param type The type to find the items for
    * @return A non-null array containing all slots that contain an item with the given type in this
-   *     inventory
+   * inventory
    */
   int[] findSlots(ItemType type);
 }

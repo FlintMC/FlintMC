@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.world.storage;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.player.type.GameMode;
@@ -41,6 +42,13 @@ public interface WorldOverview extends Comparable<WorldOverview> {
    * @return The world's display name.
    */
   String getDisplayName();
+
+  /**
+   * Retrieves the version in which the world has been used the last time.
+   *
+   * @return The version or {@code null} if the version is unknown
+   */
+  String getVersion();
 
   /**
    * Retrieves the size on the disk of the world.
@@ -123,6 +131,8 @@ public interface WorldOverview extends Comparable<WorldOverview> {
      *
      * @param fileName           The file name of the world overview.
      * @param displayName        The display name of the world overview.
+     * @param version            The version in which the world has been used the last time or
+     *                           {@code null} if the version is unknown
      * @param lastTimePlayed     The last time played timestamp of the world overview.
      * @param sizeOnDisk         The size on the disk of the world.
      * @param requiresConversion {@code true} if the world requires a conversion, otherwise {@code
@@ -141,6 +151,7 @@ public interface WorldOverview extends Comparable<WorldOverview> {
     WorldOverview create(
         @Assisted("fileName") String fileName,
         @Assisted("displayName") String displayName,
+        @Assisted("version") @Nullable String version,
         @Assisted("lastTimePlayed") long lastTimePlayed,
         @Assisted("sizeOnDisk") long sizeOnDisk,
         @Assisted("requiresConversion") boolean requiresConversion,

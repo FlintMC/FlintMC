@@ -19,28 +19,30 @@
 
 package net.flintmc.mcapi.internal.settings.flint.registered;
 
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedInject;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.framework.eventbus.EventBus;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.settings.flint.event.SettingUpdateEvent;
-import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
-import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
-
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashSet;
+import javax.annotation.Nullable;
+import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.event.SettingUpdateEvent;
+import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
+import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 @Implement(RegisteredSetting.class)
 public class DefaultRegisteredSetting implements RegisteredSetting {
 
   private final SettingHandler settingHandler;
-  private final Class<? extends Annotation> annotationType;
   private final String categoryName;
   private final ConfigObjectReference reference;
+
+  private final Annotation annotation;
+  private final String type;
 
   private final Collection<RegisteredSetting> subSettings;
 
@@ -57,9 +59,11 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
       @Assisted @Nullable String categoryName,
       @Assisted ConfigObjectReference reference) {
     this.settingHandler = settingHandler;
-    this.annotationType = annotationType;
     this.categoryName = categoryName;
     this.reference = reference;
+
+    this.annotation = this.reference.findLastAnnotation(annotationType);
+    this.type = this.annotation.annotationType().getAnnotation(ApplicableSetting.class).name();
 
     this.subSettings = new HashSet<>();
 
@@ -68,21 +72,41 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     this.updateEvent = eventFactory.create(this);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ConfigObjectReference getReference() {
     return this.reference;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public Annotation getAnnotation() {
-    return this.reference.findLastAnnotation(this.annotationType);
+  public String getType() {
+    return this.type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Annotation getAnnotation() {
+    return this.annotation;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getCurrentValue() {
     return this.reference.getValue();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean setCurrentValue(Object value) {
     if (!this.settingHandler.isValidInput(value, this.reference, this.getAnnotation())) {
@@ -93,16 +117,25 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     return true;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getCategoryName() {
     return this.categoryName;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isEnabled() {
     return this.enabled;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setEnabled(boolean enabled) {
     if (this.enabled == enabled) {
@@ -114,11 +147,17 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     this.eventBus.fireEvent(this.updateEvent, Subscribe.Phase.POST);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<RegisteredSetting> getSubSettings() {
     return this.subSettings;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     return "DefaultRegisteredSetting(" + this.reference + ")";

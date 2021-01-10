@@ -19,6 +19,12 @@
 
 package net.flintmc.mcapi.entity;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Stream;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
@@ -1459,6 +1465,7 @@ public interface Entity extends Nameable, RenderContextAware<EntityRenderContext
     CREATURE("creature", 10, true, true),
     AMBIENT("ambient", 15, true, false),
     WATER_CREATURE("water_creature", 15, true, false),
+    WATER_AMBIENT("water_ambient", 20, true, false),
     MISC("misc", 15, true, true);
 
     private final String name;

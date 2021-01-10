@@ -19,15 +19,16 @@
 
 package net.flintmc.mcapi.internal.event;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.event.TabHeaderFooterUpdateEvent;
 
-import javax.annotation.Nullable;
-
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Implement(TabHeaderFooterUpdateEvent.class)
 public class DefaultTabHeaderFooterUpdateEvent implements TabHeaderFooterUpdateEvent {
 
@@ -42,25 +43,33 @@ public class DefaultTabHeaderFooterUpdateEvent implements TabHeaderFooterUpdateE
     this.type = type;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getNewValue() {
     return this.newValue;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getType() {
     return this.type;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCancelled() {
     return this.cancelled;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;

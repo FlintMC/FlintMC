@@ -19,7 +19,9 @@
 
 package net.flintmc.render.shader;
 
-/** A class that is able to update a shader uniform when needed. */
+/**
+ * A class that is able to update a shader uniform when needed.
+ */
 public interface ShaderUniformProvider {
 
   /**

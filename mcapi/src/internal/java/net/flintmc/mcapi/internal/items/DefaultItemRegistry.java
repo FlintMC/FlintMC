@@ -20,6 +20,10 @@
 package net.flintmc.mcapi.internal.items;
 
 import com.google.common.base.Preconditions;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
@@ -30,11 +34,6 @@ import net.flintmc.mcapi.items.ItemStackSerializer;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
 import net.flintmc.mcapi.items.type.ItemCategory;
 import net.flintmc.mcapi.items.type.ItemType;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 public abstract class DefaultItemRegistry implements ItemRegistry {
 

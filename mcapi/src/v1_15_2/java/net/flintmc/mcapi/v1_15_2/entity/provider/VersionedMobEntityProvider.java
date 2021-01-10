@@ -25,7 +25,9 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.MobEntity;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 
-/** 1.15.2 implementation of the {@link MobEntity.Provider}. */
+/**
+ * 1.15.2 implementation of the {@link MobEntity.Provider}.
+ */
 @Singleton
 @Implement(value = MobEntity.Provider.class, version = "1.15.2")
 public class VersionedMobEntityProvider implements MobEntity.Provider {
@@ -40,7 +42,9 @@ public class VersionedMobEntityProvider implements MobEntity.Provider {
     this.entityTypeMapper = entityTypeMapper;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MobEntity get(Object entity) {
     if (!(entity instanceof net.minecraft.entity.MobEntity)) {

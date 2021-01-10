@@ -25,8 +25,7 @@ group = "net.flintmc"
 
 
 dependencies {
-
-    minecraft("1.15.2"){
+    minecraft("1.15.2", "1.16.4") {
         annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
         implementation(project(":annotation-processing:annotation-processing-autoload"))
     }
@@ -35,5 +34,6 @@ dependencies {
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
     api(project(":framework:framework-eventbus"))
+    api(project(":transform:transform-shadow"))
 
 }

@@ -20,11 +20,14 @@
 package net.flintmc.mcapi.potion.event;
 
 import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.mcapi.entity.LivingEntity;
 
 /**
  * Base event for the {@link PotionAddEvent} and {@link PotionRemoveEvent}.
  */
+@Subscribable(Phase.PRE)
 public interface PotionEvent extends Event {
 
   /**

@@ -76,6 +76,9 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
     this.setPosition(thrower.getPosX(), thrower.getPosYEye() - 0.1D, thrower.getPosZ());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected net.minecraft.entity.projectile.ThrowableEntity wrapped() {
     return (net.minecraft.entity.projectile.ThrowableEntity) super.wrapped();
