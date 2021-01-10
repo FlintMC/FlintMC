@@ -53,8 +53,6 @@ public interface Biome {
 
   int getWaterFogColor();
 
-  Biome getParent();
-
   BiomeCategory getCategory();
 
   Multimap<Classification, BiomeEntitySpawnRate> getSpawnRates();

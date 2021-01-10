@@ -22,6 +22,7 @@ package net.flintmc.mcapi.v1_15_2.world.generator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.server.ServerController;
 import net.flintmc.mcapi.world.generator.WorldGenerator;
 import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder;
 import net.flintmc.mcapi.world.generator.WorldGeneratorMapper;
@@ -32,10 +33,12 @@ import net.minecraft.world.WorldSettings;
 @Implement(value = WorldGenerator.class, version = "1.15.2")
 public class VersionedWorldGenerator implements WorldGenerator {
 
+  private final ServerController serverController;
   private final WorldGeneratorMapper mapper;
 
   @Inject
-  private VersionedWorldGenerator(WorldGeneratorMapper mapper) {
+  private VersionedWorldGenerator(ServerController serverController, WorldGeneratorMapper mapper) {
+    this.serverController = serverController;
     this.mapper = mapper;
   }
 
@@ -46,9 +49,10 @@ public class VersionedWorldGenerator implements WorldGenerator {
   public void generateAndJoin(WorldGeneratorBuilder builder) {
     builder.validate();
 
-    // TODO unload current world/disconnect from current server
-
     WorldSettings handle = (WorldSettings) this.mapper.toMinecraftGenerator(builder);
+
+    this.serverController.disconnectFromServer();
+
     Minecraft.getInstance().launchIntegratedServer(builder.findFileName(), builder.name(), handle);
   }
 }

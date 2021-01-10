@@ -29,21 +29,19 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity.Classification;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
-import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.resources.ResourceLocation;
-import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.biome.BiomeCategory;
 import net.flintmc.mcapi.world.biome.BiomeEntitySpawnRate;
 import net.flintmc.mcapi.world.biome.BiomeMapper;
-import net.flintmc.mcapi.world.biome.BiomeRegistry;
 import net.flintmc.mcapi.world.biome.RainType;
 import net.flintmc.mcapi.world.biome.TemperatureCategory;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
+
 import java.util.List;
 
 @Implement(value = Biome.class, version = "1.15.2")
@@ -52,9 +50,7 @@ public class VersionedBiome implements Biome {
   private static final EntityClassification[] CLASSIFICATIONS = EntityClassification.values();
 
   private final World world;
-  private final ResourceLocationProvider resourceLocationProvider;
   private final EntityTypeMapper entityTypeMapper;
-  private final BiomeRegistry biomeRegistry;
   private final BiomeEntitySpawnRate.Factory spawnRateFactory;
 
   private final ResourceLocation name;
@@ -65,24 +61,17 @@ public class VersionedBiome implements Biome {
   private final Multimap<Classification, BiomeEntitySpawnRate> spawnRates;
   private final net.minecraft.world.biome.Biome handle;
 
-  private boolean parentResolved;
-  private Biome parent;
-
   @AssistedInject
   public VersionedBiome(
       World world,
-      ResourceLocationProvider resourceLocationProvider,
       EntityTypeMapper entityTypeMapper,
-      BiomeRegistry biomeRegistry,
       BiomeEntitySpawnRate.Factory spawnRateFactory,
       BiomeMapper biomeMapper,
       MinecraftComponentMapper componentMapper,
       @Assisted ResourceLocation name,
       @Assisted("handle") Object handle) {
     this.world = world;
-    this.resourceLocationProvider = resourceLocationProvider;
     this.entityTypeMapper = entityTypeMapper;
-    this.biomeRegistry = biomeRegistry;
     this.spawnRateFactory = spawnRateFactory;
     this.name = name;
     this.handle = (net.minecraft.world.biome.Biome) handle;
@@ -176,22 +165,6 @@ public class VersionedBiome implements Biome {
   @Override
   public int getWaterFogColor() {
     return this.handle.getWaterFogColor();
-  }
-
-  @Override
-  public Biome getParent() {
-    if (this.parentResolved) {
-      return this.parent;
-    }
-
-    String parentName = this.handle.getParent();
-    ResourceLocation parentLocation =
-        parentName != null ? this.resourceLocationProvider.get(parentName) : null;
-
-    this.parent = parentName != null ? this.biomeRegistry.getBiome(parentLocation) : null;
-    this.parentResolved = true;
-
-    return this.parent;
   }
 
   @Override

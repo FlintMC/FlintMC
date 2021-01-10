@@ -31,13 +31,11 @@ import net.flintmc.mcapi.entity.Entity.Classification;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 import net.flintmc.mcapi.resources.ResourceLocation;
-import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.biome.BiomeCategory;
 import net.flintmc.mcapi.world.biome.BiomeEntitySpawnRate;
 import net.flintmc.mcapi.world.biome.BiomeMapper;
-import net.flintmc.mcapi.world.biome.BiomeRegistry;
 import net.flintmc.mcapi.world.biome.RainType;
 import net.flintmc.mcapi.world.biome.TemperatureCategory;
 import net.flintmc.mcapi.world.math.BlockPosition;
@@ -52,9 +50,7 @@ public class VersionedBiome implements Biome {
   private static final EntityClassification[] CLASSIFICATIONS = EntityClassification.values();
 
   private final World world;
-  private final ResourceLocationProvider resourceLocationProvider;
   private final EntityTypeMapper entityTypeMapper;
-  private final BiomeRegistry biomeRegistry;
   private final BiomeEntitySpawnRate.Factory spawnRateFactory;
 
   private final ResourceLocation name;
@@ -65,24 +61,17 @@ public class VersionedBiome implements Biome {
   private final Multimap<Classification, BiomeEntitySpawnRate> spawnRates;
   private final net.minecraft.world.biome.Biome handle;
 
-  private boolean parentResolved;
-  private Biome parent;
-
   @AssistedInject
   public VersionedBiome(
       World world,
-      ResourceLocationProvider resourceLocationProvider,
       EntityTypeMapper entityTypeMapper,
-      BiomeRegistry biomeRegistry,
       BiomeEntitySpawnRate.Factory spawnRateFactory,
       BiomeMapper biomeMapper,
       ComponentBuilder.Factory componentFactory,
       @Assisted ResourceLocation name,
       @Assisted("handle") Object handle) {
     this.world = world;
-    this.resourceLocationProvider = resourceLocationProvider;
     this.entityTypeMapper = entityTypeMapper;
-    this.biomeRegistry = biomeRegistry;
     this.spawnRateFactory = spawnRateFactory;
     this.name = name;
     this.handle = (net.minecraft.world.biome.Biome) handle;
@@ -139,97 +128,129 @@ public class VersionedBiome implements Biome {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocation getName() {
     return this.name;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getGrassColor(double x, double z) {
     return this.handle.getGrassColor(x, z);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFoliageColor() {
     return this.handle.getFoliageColor();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RainType getRainType() {
     return this.rainType;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getDisplayName() {
     return this.displayName;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TemperatureCategory getTemperatureCategory() {
     return this.temperatureCategory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getDefaultTemperature() {
     return this.handle.getTemperature();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getTemperature(BlockPosition position) {
     return this.handle.getTemperature((BlockPos) this.world.toMinecraftBlockPos(position));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getHumidity() {
     return this.handle.getDownfall();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isHighHumidity() {
     return this.handle.isHighHumidity();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getWaterColor() {
     return this.handle.getWaterColor();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getWaterFogColor() {
     return this.handle.getWaterFogColor();
   }
 
-  @Override
-  public Biome getParent() {
-    if (this.parentResolved) {
-      return this.parent;
-    }
-
-    String parentName = null; // TODO
-    ResourceLocation parentLocation =
-        parentName != null ? this.resourceLocationProvider.get(parentName) : null;
-
-    this.parent = parentName != null ? this.biomeRegistry.getBiome(parentLocation) : null;
-    this.parentResolved = true;
-
-    return this.parent;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BiomeCategory getCategory() {
     return this.category;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Multimap<Classification, BiomeEntitySpawnRate> getSpawnRates() {
     return this.spawnRates;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getSpawningChance() {
     return this.handle.getMobSpawnInfo().getCreatureSpawnProbability();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getSkyColor() {
     return this.handle.getSkyColor();

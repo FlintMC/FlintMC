@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Collection;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.mcapi.server.ServerController;
 import net.flintmc.mcapi.world.generator.ExtendedWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.WorldGenerator;
 import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder;
@@ -46,23 +46,25 @@ import net.minecraft.world.biome.provider.SingleBiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.FlatChunkGenerator;
 import net.minecraft.world.gen.FlatGenerationSettings;
-import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 
 @Singleton
 @Implement(value = WorldGenerator.class, version = "1.16.4")
 public class VersionedWorldGenerator implements WorldGenerator {
 
+  private final ServerController serverController;
   private final WorldTypeRegistry typeRegistry;
   private final WorldGeneratorMapper mapper;
   private final Collection<BiomeGeneratorTypeScreens> minecraftWorldTypes;
 
   @Inject
   private VersionedWorldGenerator(
+      ServerController serverController,
       WorldTypeRegistry typeRegistry,
       WorldGeneratorMapper mapper,
       ClassMappingProvider mappingProvider)
       throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
+    this.serverController = serverController;
     this.typeRegistry = typeRegistry;
     this.mapper = mapper;
 
@@ -78,8 +80,6 @@ public class VersionedWorldGenerator implements WorldGenerator {
   @Override
   public void generateAndJoin(WorldGeneratorBuilder builder) {
     builder.validate();
-
-    // TODO unload current world/disconnect from current server
 
     ExtendedWorldGeneratorSettings extended = builder.extended();
     DynamicRegistries.Impl registries = DynamicRegistries.func_239770_b_();
@@ -109,6 +109,9 @@ public class VersionedWorldGenerator implements WorldGenerator {
     }
 
     WorldSettings handle = (WorldSettings) this.mapper.toMinecraftGenerator(builder);
+
+    this.serverController.disconnectFromServer();
+
     Minecraft.getInstance()
         .createWorld(builder.findFileName(), handle, registries, generatorSettings);
   }

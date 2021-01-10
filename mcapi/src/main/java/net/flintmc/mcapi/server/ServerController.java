@@ -43,8 +43,8 @@ public interface ServerController {
   ConnectedServer getConnectedServer();
 
   /**
-   * Disconnects the client from the currently connected server or does nothing when not connected
-   * to any server.
+   * Disconnects the client from the currently connected server (or singleplayer world) or does
+   * nothing when not connected to any server/singleplayer world.
    *
    * @see #isConnected()
    */
