@@ -92,6 +92,8 @@ public class VersionedWorldLoader implements WorldLoader {
   }
 
   private void convertWorldSummaries() throws AnvilConverterException {
+    this.worldOverviews.clear();
+
     SaveFormat saveFormat = Minecraft.getInstance().getSaveLoader();
     for (WorldSummary worldSummary : saveFormat.getSaveList()) {
       this.worldOverviews.put(

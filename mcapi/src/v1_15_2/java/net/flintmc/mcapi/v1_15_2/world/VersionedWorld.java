@@ -149,20 +149,7 @@ public class VersionedWorld implements World {
    */
   @Override
   public Difficulty getDifficulty() {
-    net.minecraft.world.Difficulty difficulty = Minecraft.getInstance().world.getDifficulty();
-
-    switch (difficulty) {
-      case PEACEFUL:
-        return Difficulty.PEACEFUL;
-      case EASY:
-        return Difficulty.EASY;
-      case NORMAL:
-        return Difficulty.NORMAL;
-      case HARD:
-        return Difficulty.HARD;
-      default:
-        throw new IllegalStateException("Unexpected value: " + difficulty);
-    }
+    return this.fromMinecraftDifficulty(Minecraft.getInstance().world.getDifficulty());
   }
 
   /**
@@ -453,6 +440,48 @@ public class VersionedWorld implements World {
         return Dimension.THE_END;
       default:
         throw new IllegalStateException("Unexpected value: " + dimensionType.getId());
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftDifficulty(Difficulty difficulty) {
+    switch (difficulty) {
+      case PEACEFUL:
+        return net.minecraft.world.Difficulty.PEACEFUL;
+      case EASY:
+        return net.minecraft.world.Difficulty.EASY;
+      case NORMAL:
+        return net.minecraft.world.Difficulty.NORMAL;
+      case HARD:
+        return net.minecraft.world.Difficulty.HARD;
+      default:
+        throw new IllegalStateException("Unexpected value: " + difficulty);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Difficulty fromMinecraftDifficulty(Object handle) {
+    if (!(handle instanceof net.minecraft.world.Difficulty)) {
+      return null;
+    }
+
+    switch ((net.minecraft.world.Difficulty) handle) {
+      case PEACEFUL:
+        return Difficulty.PEACEFUL;
+      case EASY:
+        return Difficulty.EASY;
+      case NORMAL:
+        return Difficulty.NORMAL;
+      case HARD:
+        return Difficulty.HARD;
+      default:
+        throw new IllegalStateException("Unexpected value: " + handle);
     }
   }
 }

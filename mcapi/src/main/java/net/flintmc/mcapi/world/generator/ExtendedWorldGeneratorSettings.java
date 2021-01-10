@@ -21,6 +21,7 @@ package net.flintmc.mcapi.world.generator;
 
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.world.type.WorldType;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 
 public interface ExtendedWorldGeneratorSettings {
 
@@ -49,6 +50,10 @@ public interface ExtendedWorldGeneratorSettings {
   ExtendedWorldGeneratorSettings bonusChest(boolean bonusChest);
 
   boolean bonusChest();
+
+  ExtendedWorldGeneratorSettings difficulty(Difficulty difficulty);
+
+  Difficulty difficulty();
 
   ExtendedWorldGeneratorSettings validate();
 

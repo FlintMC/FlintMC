@@ -38,14 +38,10 @@ import java.io.IOException;
 @Implement(value = WorldMapper.class, version = "1.16.4")
 public class VersionedWorldMapper implements WorldMapper {
 
-  private final WorldType.Factory worldTypeFactory;
   private final WorldOverview.Factory worldOverviewFactory;
 
   @Inject
-  private VersionedWorldMapper(
-      WorldType.Factory worldTypeFactory,
-      WorldOverview.Factory worldOverviewFactory) {
-    this.worldTypeFactory = worldTypeFactory;
+  private VersionedWorldMapper(WorldOverview.Factory worldOverviewFactory) {
     this.worldOverviewFactory = worldOverviewFactory;
   }
 
@@ -54,7 +50,7 @@ public class VersionedWorldMapper implements WorldMapper {
    */
   @Override
   public Object toMinecraftWorldType(WorldType worldType) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("Not supported in 1.16.4");
   }
 
   /**
@@ -62,7 +58,7 @@ public class VersionedWorldMapper implements WorldMapper {
    */
   @Override
   public WorldType fromMinecraftWorldType(Object handle) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("Not supported in 1.16.4");
   }
 
   /**
@@ -97,22 +93,23 @@ public class VersionedWorldMapper implements WorldMapper {
       return null;
     }
 
-    WorldSummary worldSummary = (WorldSummary) handle;
+    WorldSummary summary = (WorldSummary) handle;
+    String rawVersion = ((WorldSummaryShadow) summary).getRawVersion().getName();
 
     // TODO: 29.12.2020 Disk size
     return this.worldOverviewFactory.create(
-        worldSummary.getFileName(),
-        worldSummary.getDisplayName(),
-        worldSummary.getVersionName().getString(),
-        worldSummary.getLastTimePlayed(),
+        summary.getFileName(),
+        summary.getDisplayName(),
+        rawVersion == null || rawVersion.isEmpty() ? null : rawVersion,
+        summary.getLastTimePlayed(),
         0L, /* Disk size is maybe removed since 1.16.x*/
-        worldSummary.requiresConversion(),
-        GameMode.valueOf(worldSummary.getEnumGameType().name()),
-        worldSummary.isHardcoreModeEnabled(),
-        worldSummary.getCheatsEnabled(),
-        worldSummary.askToOpenWorld(),
-        worldSummary.markVersionInList(),
-        worldSummary.askToOpenWorld(),
-        worldSummary.askToCreateBackup());
+        summary.requiresConversion(),
+        GameMode.valueOf(summary.getEnumGameType().name()),
+        summary.isHardcoreModeEnabled(),
+        summary.getCheatsEnabled(),
+        summary.askToOpenWorld(),
+        summary.markVersionInList(),
+        summary.askToOpenWorld(),
+        summary.askToCreateBackup());
   }
 }

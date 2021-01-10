@@ -17,15 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.generator;
+package net.flintmc.mcapi.v1_16_4.world.biome;
 
-import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.Shadow;
 
-public interface WorldGeneratorMapper {
+@Shadow(value = "net.minecraft.util.WeightedRandom$Item", version = "1.16.4")
+public interface WeightedRandomItemShadow {
 
-  Object toMinecraftGenerator(WorldGeneratorBuilder generator);
+  @FieldGetter("itemWeight")
+  int getWeight();
 
-  FlatWorldGeneratorSettings fromMinecraftFlatSettings(Object settings);
-
-  Object toMinecraftFlatSettings(FlatWorldGeneratorSettings settings);
 }

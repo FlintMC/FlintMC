@@ -17,15 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.generator;
+package net.flintmc.mcapi.v1_16_4.world.generator;
 
-import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+import net.flintmc.transform.shadow.FieldSetter;
+import net.flintmc.transform.shadow.Shadow;
+import net.minecraft.world.gen.ChunkGenerator;
 
-public interface WorldGeneratorMapper {
+@Shadow("net.minecraft.world.Dimension")
+public interface DimensionShadow {
 
-  Object toMinecraftGenerator(WorldGeneratorBuilder generator);
+  @FieldSetter("chunkGenerator")
+  void setChunkGenerator(ChunkGenerator generator);
 
-  FlatWorldGeneratorSettings fromMinecraftFlatSettings(Object settings);
-
-  Object toMinecraftFlatSettings(FlatWorldGeneratorSettings settings);
 }

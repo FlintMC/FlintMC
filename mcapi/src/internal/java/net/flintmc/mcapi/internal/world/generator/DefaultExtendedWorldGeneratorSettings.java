@@ -26,6 +26,7 @@ import net.flintmc.mcapi.world.generator.ExtendedWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.WorldGameMode;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegistry;
+import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 
 import java.util.Random;
 
@@ -41,6 +42,7 @@ public class DefaultExtendedWorldGeneratorSettings implements ExtendedWorldGener
   private boolean generateStructures = true;
   private boolean allowCheats;
   private boolean bonusChest;
+  private Difficulty difficulty = Difficulty.NORMAL;
 
   @AssistedInject
   public DefaultExtendedWorldGeneratorSettings(WorldTypeRegistry typeRegistry) {
@@ -177,9 +179,27 @@ public class DefaultExtendedWorldGeneratorSettings implements ExtendedWorldGener
    * {@inheritDoc}
    */
   @Override
+  public ExtendedWorldGeneratorSettings difficulty(Difficulty difficulty) {
+    this.difficulty = difficulty;
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Difficulty difficulty() {
+    return this.difficulty;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public ExtendedWorldGeneratorSettings validate() {
     Preconditions.checkNotNull(this.mode, "Invalid mode set");
     Preconditions.checkNotNull(this.type, "Invalid type set");
+    Preconditions.checkNotNull(this.difficulty, "Invalid difficulty set");
 
     return this;
   }

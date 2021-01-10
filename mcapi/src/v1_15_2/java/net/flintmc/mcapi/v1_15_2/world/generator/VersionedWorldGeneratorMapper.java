@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.v1_15_2.world.generator;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
@@ -27,17 +29,15 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.mcapi.world.biome.BiomeRegistry;
 import net.flintmc.mcapi.world.block.BlockState;
-import net.flintmc.mcapi.world.block.BlockTypeRegistry;
 import net.flintmc.mcapi.world.generator.WorldGameMode;
 import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder;
-import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder.Factory;
 import net.flintmc.mcapi.world.generator.WorldGeneratorMapper;
 import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldLayer;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldStructure;
 import net.flintmc.mcapi.world.generator.flat.StructureOption;
-import net.flintmc.mcapi.world.type.WorldTypeRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameType;
@@ -46,10 +46,36 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.FlatLayerInfo;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 @Implement(value = WorldGeneratorMapper.class, version = "1.15.2")
 public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
+
+  private static final BiMap<String, FlatWorldStructure> STRUCTURES = HashBiMap.create();
+
+  static {
+    STRUCTURES.put("mineshaft", FlatWorldStructure.MINESHAFT);
+    STRUCTURES.put("village", FlatWorldStructure.VILLAGE);
+    STRUCTURES.put("stronghold", FlatWorldStructure.STRONGHOLD);
+    STRUCTURES.put("swamp_hut", FlatWorldStructure.SWAMP_HUT);
+    STRUCTURES.put("desert_pyramid", FlatWorldStructure.DESERT_PYRAMID);
+    STRUCTURES.put("jungle_temple", FlatWorldStructure.JUNGLE_TEMPLE);
+    STRUCTURES.put("igloo", FlatWorldStructure.IGLOO);
+    STRUCTURES.put("shipwreck", FlatWorldStructure.SHIPWRECK);
+    STRUCTURES.put("ocean_ruin", FlatWorldStructure.OCEAN_RUIN);
+    STRUCTURES.put("lake", FlatWorldStructure.WATER_LAKE);
+    STRUCTURES.put("lava_lake", FlatWorldStructure.LAVA_LAKE);
+    STRUCTURES.put("endcity", FlatWorldStructure.END_CITY);
+    STRUCTURES.put("mansion", FlatWorldStructure.MANSION);
+    STRUCTURES.put("fortress", FlatWorldStructure.FORTRESS);
+    STRUCTURES.put("biome_1", FlatWorldStructure.BIOME);
+    STRUCTURES.put("oceanmonument", FlatWorldStructure.OCEANMONUMENT);
+    STRUCTURES.put("pillager_outpost", FlatWorldStructure.PILLAGER_OUTPOST);
+    STRUCTURES.put("dungeon", FlatWorldStructure.DUNGEON);
+    STRUCTURES.put("decoration", FlatWorldStructure.DECORATION);
+  }
 
   private static final StructureOption[] OPTIONS = StructureOption.values();
 
@@ -57,8 +83,6 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
   private final ResourceLocationProvider provider;
   private final BlockState.Factory blockStateFactory;
   private final FlatWorldLayer.Factory layerFactory;
-  private final WorldTypeRegistry typeRegistry;
-  private final WorldGeneratorBuilder.Factory builderFactory;
   private final FlatWorldGeneratorSettings.Factory flatSettingsFactory;
 
   @Inject
@@ -67,45 +91,12 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
       ResourceLocationProvider provider,
       BlockState.Factory blockStateFactory,
       FlatWorldLayer.Factory layerFactory,
-      WorldTypeRegistry typeRegistry,
-      Factory builderFactory,
       FlatWorldGeneratorSettings.Factory flatSettingsFactory) {
     this.biomeRegistry = biomeRegistry;
     this.provider = provider;
     this.blockStateFactory = blockStateFactory;
     this.layerFactory = layerFactory;
-    this.typeRegistry = typeRegistry;
-    this.builderFactory = builderFactory;
     this.flatSettingsFactory = flatSettingsFactory;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public WorldGeneratorBuilder fromMinecraftGenerator(Object generator) {
-    if (!(generator instanceof WorldSettings)) {
-      throw new IllegalArgumentException(
-          "Object needs to be an instance of " + WorldSettings.class.getName());
-    }
-
-    WorldSettings settings = (WorldSettings) generator;
-
-    WorldGeneratorBuilder builder = this.builderFactory.newBuilder();
-
-    builder.extended()
-        .seed(settings.getSeed())
-        .mode(settings.getHardcoreEnabled() ? WorldGameMode.HARDCORE
-            : settings.getGameType() == GameType.CREATIVE ? WorldGameMode.CREATIVE
-                : WorldGameMode.SURVIVAL)
-        .type(this.typeRegistry.getType(settings.getTerrainType().getName()))
-        .generateStructures(settings.isMapFeaturesEnabled())
-        .allowCheats(settings.areCommandsAllowed())
-        .bonusChest(settings.isBonusChestEnabled());
-
-    // TODO read json
-
-    return builder;
   }
 
   /**
@@ -180,8 +171,14 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
     json.add("structures", structures);
 
     for (FlatWorldStructure structure : settings.getStructures()) {
+      String structureHandle = STRUCTURES.inverse().get(structure);
+      if (structureHandle == null) {
+        throw new IllegalStateException(
+            "Structure " + structure + " is not supported in this version");
+      }
+
       JsonObject structureJson = new JsonObject();
-      structures.add(this.mapStructure(structure), structureJson);
+      structures.add(structureHandle, structureJson);
 
       for (StructureOption option : OPTIONS) {
         if (!settings.hasStructureOption(structure, option)) {
@@ -191,97 +188,6 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
         int value = settings.getStructureOption(structure, option);
         structureJson.addProperty(option.name().toLowerCase(), value);
       }
-    }
-  }
-
-  private FlatWorldStructure mapStructure(String structure) {
-    switch (structure) {
-      case "mineshaft":
-        return FlatWorldStructure.MINESHAFT;
-      case "village":
-        return FlatWorldStructure.VILLAGE;
-      case "stronghold":
-        return FlatWorldStructure.STRONGHOLD;
-      case "swamp_hut":
-        return FlatWorldStructure.SWAMP_HUT;
-      case "desert_pyramid":
-        return FlatWorldStructure.DESERT_PYRAMID;
-      case "jungle_temple":
-        return FlatWorldStructure.JUNGLE_TEMPLE;
-      case "igloo":
-        return FlatWorldStructure.IGLOO;
-      case "shipwreck":
-        return FlatWorldStructure.SHIPWRECK;
-      case "ocean_ruin":
-        return FlatWorldStructure.OCEAN_RUIN;
-      case "lake":
-        return FlatWorldStructure.WATER_LAKE;
-      case "lava_lake":
-        return FlatWorldStructure.LAVA_LAKE;
-      case "endcity":
-        return FlatWorldStructure.END_CITY;
-      case "mansion":
-        return FlatWorldStructure.MANSION;
-      case "fortress":
-        return FlatWorldStructure.FORTRESS;
-      case "biome_1":
-        return FlatWorldStructure.BIOME;
-      case "oceanmonument":
-        return FlatWorldStructure.OCEANMONUMENT;
-      case "pillager_outpost":
-        return FlatWorldStructure.PILLAGER_OUTPOST;
-      case "dungeon":
-        return FlatWorldStructure.DUNGEON;
-      case "decoration":
-        return FlatWorldStructure.DECORATION;
-      default:
-        return null;
-    }
-  }
-
-  private String mapStructure(FlatWorldStructure structure) {
-    switch (structure) {
-      case MINESHAFT:
-        return "mineshaft";
-      case VILLAGE:
-        return "village";
-      case STRONGHOLD:
-        return "stronghold";
-      case SWAMP_HUT:
-        return "swamp_hut";
-      case DESERT_PYRAMID:
-        return "desert_pyramid";
-      case JUNGLE_TEMPLE:
-        return "jungle_temple";
-      case IGLOO:
-        return "igloo";
-      case SHIPWRECK:
-        return "shipwreck";
-      case OCEAN_RUIN:
-        return "ocean_ruin";
-      case WATER_LAKE:
-        return "lake";
-      case LAVA_LAKE:
-        return "lava_lake";
-      case END_CITY:
-        return "endcity";
-      case MANSION:
-        return "mansion";
-      case FORTRESS:
-        return "fortress";
-      case BIOME:
-        return "biome_1";
-      case OCEANMONUMENT:
-        return "oceanmonument";
-      case PILLAGER_OUTPOST:
-        return "pillager_outpost";
-      case DUNGEON:
-        return "dungeon";
-      case DECORATION:
-        return "decoration";
-      default:
-        throw new IllegalStateException(
-            "Structure " + structure + " is not supported in this version");
     }
   }
 
@@ -314,7 +220,7 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
     }
 
     handle.getWorldFeatures().forEach((structure, options) -> {
-      FlatWorldStructure structureEnum = this.mapStructure(structure);
+      FlatWorldStructure structureEnum = STRUCTURES.get(structure);
       if (structureEnum == null) {
         return;
       }
@@ -345,7 +251,30 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
         : settings.getBiome().getName().getHandle());
     result.setBiome(biome);
 
-    // TODO
+    for (FlatWorldLayer layer : settings.getLayers()) {
+      Block block = layer.getBlockState().getType().getHandle();
+      result.getFlatLayers().add(new FlatLayerInfo(layer.getLayerHeight(), block));
+    }
+
+    for (FlatWorldStructure structure : settings.getStructures()) {
+      String structureHandle = STRUCTURES.inverse().get(structure);
+      if (structureHandle == null) {
+        throw new IllegalStateException(
+            "Structure " + structure + " is not supported in this version");
+      }
+
+      Map<String, String> options = new HashMap<>();
+      result.getWorldFeatures().put(structureHandle, options);
+
+      for (StructureOption option : OPTIONS) {
+        if (!settings.hasStructureOption(structure, option)) {
+          continue;
+        }
+
+        int value = settings.getStructureOption(structure, option);
+        options.put(option.name().toLowerCase(), String.valueOf(value));
+      }
+    }
 
     return result;
   }

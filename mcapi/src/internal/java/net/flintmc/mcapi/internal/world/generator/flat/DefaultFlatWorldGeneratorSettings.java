@@ -44,6 +44,7 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
   private Biome biome;
   private final Map<FlatWorldStructure, Map<StructureOption, Integer>> structures;
   private final List<FlatWorldLayer> layers;
+  private final Map<String, Object> options;
 
   @Inject
   private DefaultFlatWorldGeneratorSettings(
@@ -54,6 +55,7 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
 
     this.structures = new HashMap<>();
     this.layers = new ArrayList<>();
+    this.options = new HashMap<>();
   }
 
   /**
@@ -83,6 +85,14 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
   @Override
   public FlatWorldStructure[] getStructures() {
     return this.structures.keySet().toArray(new FlatWorldStructure[0]);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasStructure(FlatWorldStructure structure) {
+    return this.structures.containsKey(structure);
   }
 
   /**
@@ -170,6 +180,12 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
     return this;
   }
 
+  @Override
+  public FlatWorldGeneratorSettings clearLayers() {
+    this.layers.clear();
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -187,4 +203,21 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
   public String serialize() {
     return this.serializer.serialize(this.validate());
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void withOption(String key, Object value) {
+    this.options.put(key, value);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object getOption(String key) {
+    return this.options.get(key);
+  }
+
 }

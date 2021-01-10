@@ -303,4 +303,9 @@ public interface World {
    * @throws IllegalStateException When an unexpected value is received.
    */
   Dimension fromMinecraftDimension(Object handle);
+
+  Object toMinecraftDifficulty(Difficulty difficulty);
+
+  Difficulty fromMinecraftDifficulty(Object handle);
+
 }

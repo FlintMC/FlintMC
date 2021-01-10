@@ -17,15 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.generator;
+package net.flintmc.mcapi.v1_16_4.world.generator.flat;
 
-import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+import net.flintmc.transform.shadow.Shadow;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.FlatGenerationSettings;
 
-public interface WorldGeneratorMapper {
+@Shadow("net.minecraft.client.gui.screen.FlatPresetsScreen")
+public interface FlatPresetsShadow {
 
-  Object toMinecraftGenerator(WorldGeneratorBuilder generator);
+  String func_243303_b(Registry<Biome> registry, FlatGenerationSettings settings);
 
-  FlatWorldGeneratorSettings fromMinecraftFlatSettings(Object settings);
-
-  Object toMinecraftFlatSettings(FlatWorldGeneratorSettings settings);
 }

@@ -20,10 +20,13 @@
 package net.flintmc.mcapi.world.codec;
 
 import java.util.List;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /**
  * Represents a datapack codec.
+ *
+ * @see DatapackCodecRepository
  */
 public interface DatapackCodec {
 
@@ -54,6 +57,7 @@ public interface DatapackCodec {
      * @param disabled A collection of all disabled datapack codecs.
      * @return A created datapack codec.
      */
-    DatapackCodec create(List<String> enabled, List<String> disabled);
+    DatapackCodec create(
+        @Assisted("enabled") List<String> enabled, @Assisted("disabled") List<String> disabled);
   }
 }

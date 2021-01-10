@@ -17,15 +17,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.generator;
+package net.flintmc.mcapi.v1_16_4.world.generator.flat.preset;
 
-import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.Shadow;
+import net.minecraft.item.Item;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.FlatGenerationSettings;
+import java.util.function.Function;
 
-public interface WorldGeneratorMapper {
+@Shadow(value = "net.minecraft.client.gui.screen.FlatPresetsScreen$LayerItem", version = "1.16.4")
+public interface FlatPresetsLayerShadow {
 
-  Object toMinecraftGenerator(WorldGeneratorBuilder generator);
+  @FieldGetter("icon")
+  Item getIcon();
 
-  FlatWorldGeneratorSettings fromMinecraftFlatSettings(Object settings);
+  @FieldGetter("name")
+  ITextComponent getName();
 
-  Object toMinecraftFlatSettings(FlatWorldGeneratorSettings settings);
+  @FieldGetter("field_238643_c_")
+  Function<Registry<Biome>, FlatGenerationSettings> getSettingsFunction();
+
 }

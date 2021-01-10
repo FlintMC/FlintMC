@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.world.generator;
 
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.world.codec.DatapackCodec;
 import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 
@@ -46,6 +47,10 @@ public interface WorldGeneratorBuilder {
   BuffetWorldGeneratorSettings buffetSettings();
 
   WorldGeneratorBuilder buffetSettings(BuffetWorldGeneratorSettings settings);
+
+  WorldGeneratorBuilder datapackCodec(DatapackCodec codec);
+
+  DatapackCodec datapackCodec();
 
   WorldGeneratorBuilder validate();
 

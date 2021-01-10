@@ -22,6 +22,8 @@ package net.flintmc.mcapi.internal.world.generator;
 import com.google.common.base.Preconditions;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.world.codec.DatapackCodec;
+import net.flintmc.mcapi.world.codec.DatapackCodecRepository;
 import net.flintmc.mcapi.world.generator.ExtendedWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.WorldGenerator;
 import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder;
@@ -41,6 +43,7 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
   private ExtendedWorldGeneratorSettings extended;
   private FlatWorldGeneratorSettings flatSettings;
   private BuffetWorldGeneratorSettings buffetSettings;
+  private DatapackCodec datapackCodec;
 
   @AssistedInject
   public DefaultWorldGeneratorBuilder(
@@ -48,12 +51,14 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
       WorldGeneratorSettingsImplementation implementation,
       ExtendedWorldGeneratorSettings.Factory extendedFactory,
       FlatWorldGeneratorSettings.Factory flatFactory,
-      BuffetWorldGeneratorSettings.Factory buffetFactory) {
+      BuffetWorldGeneratorSettings.Factory buffetFactory,
+      DatapackCodecRepository datapackCodecRepository) {
     this.generator = generator;
     this.implementation = implementation;
     this.extendedFactory = extendedFactory;
     this.flatFactory = flatFactory;
     this.buffetFactory = buffetFactory;
+    this.datapackCodec = datapackCodecRepository.getDatapackCodec("vanilla");
   }
 
   /**
@@ -158,6 +163,23 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
   public WorldGeneratorBuilder buffetSettings(BuffetWorldGeneratorSettings settings) {
     this.buffetSettings = settings;
     return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public WorldGeneratorBuilder datapackCodec(DatapackCodec codec) {
+    this.datapackCodec = codec;
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public DatapackCodec datapackCodec() {
+    return this.datapackCodec;
   }
 
   /**

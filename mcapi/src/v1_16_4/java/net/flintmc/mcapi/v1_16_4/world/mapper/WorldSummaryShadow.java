@@ -17,15 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.generator;
+package net.flintmc.mcapi.v1_16_4.world.mapper;
 
-import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.Shadow;
+import net.minecraft.world.storage.VersionData;
 
-public interface WorldGeneratorMapper {
+@Shadow(value = "net.minecraft.world.storage.WorldSummary", version = "1.16.4")
+public interface WorldSummaryShadow {
 
-  Object toMinecraftGenerator(WorldGeneratorBuilder generator);
+  @FieldGetter("versionData")
+  VersionData getRawVersion();
 
-  FlatWorldGeneratorSettings fromMinecraftFlatSettings(Object settings);
-
-  Object toMinecraftFlatSettings(FlatWorldGeneratorSettings settings);
 }

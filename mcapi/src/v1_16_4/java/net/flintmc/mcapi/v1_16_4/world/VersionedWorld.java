@@ -22,6 +22,10 @@ package net.flintmc.mcapi.v1_16_4.world;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.tileentity.TileEntity;
 import net.flintmc.mcapi.world.World;
@@ -39,10 +43,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.server.ServerWorld;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * 1.15.2 implementation of {@link World}.
@@ -159,20 +159,7 @@ public class VersionedWorld implements World {
    */
   @Override
   public Difficulty getDifficulty() {
-    net.minecraft.world.Difficulty difficulty = Minecraft.getInstance().world.getDifficulty();
-
-    switch (difficulty) {
-      case PEACEFUL:
-        return Difficulty.PEACEFUL;
-      case EASY:
-        return Difficulty.EASY;
-      case NORMAL:
-        return Difficulty.NORMAL;
-      case HARD:
-        return Difficulty.HARD;
-      default:
-        throw new IllegalStateException("Unexpected value: " + difficulty);
-    }
+    return this.fromMinecraftDifficulty(Minecraft.getInstance().world.getDifficulty());
   }
 
   /**
@@ -469,6 +456,48 @@ public class VersionedWorld implements World {
         return Dimension.THE_END;
       default:
         return Dimension.OVERWORLD;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftDifficulty(Difficulty difficulty) {
+    switch (difficulty) {
+      case PEACEFUL:
+        return net.minecraft.world.Difficulty.PEACEFUL;
+      case EASY:
+        return net.minecraft.world.Difficulty.EASY;
+      case NORMAL:
+        return net.minecraft.world.Difficulty.NORMAL;
+      case HARD:
+        return net.minecraft.world.Difficulty.HARD;
+      default:
+        throw new IllegalStateException("Unexpected value: " + difficulty);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Difficulty fromMinecraftDifficulty(Object handle) {
+    if (!(handle instanceof net.minecraft.world.Difficulty)) {
+      return null;
+    }
+
+    switch ((net.minecraft.world.Difficulty) handle) {
+      case PEACEFUL:
+        return Difficulty.PEACEFUL;
+      case EASY:
+        return Difficulty.EASY;
+      case NORMAL:
+        return Difficulty.NORMAL;
+      case HARD:
+        return Difficulty.HARD;
+      default:
+        throw new IllegalStateException("Unexpected value: " + handle);
     }
   }
 }

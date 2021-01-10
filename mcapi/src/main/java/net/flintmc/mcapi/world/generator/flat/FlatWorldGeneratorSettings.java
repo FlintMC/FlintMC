@@ -58,6 +58,8 @@ public interface FlatWorldGeneratorSettings {
    */
   FlatWorldStructure[] getStructures();
 
+  boolean hasStructure(FlatWorldStructure structure);
+
   /**
    * Adds a new structure to this settings object. If the structure is already added, nothing will
    * happen.
@@ -154,8 +156,11 @@ public interface FlatWorldGeneratorSettings {
    * @return this settings object for chaining
    * @throws IndexOutOfBoundsException If the given index is out of range (<tt>index &lt; 0 || index
    *                                   &gt;= size()</tt>)
+   * @see #clearLayers()
    */
   FlatWorldGeneratorSettings removeLayer(int index);
+
+  FlatWorldGeneratorSettings clearLayers();
 
   /**
    * Validates if this settings object is correct and can be used to generate a new flat world.
@@ -172,6 +177,10 @@ public interface FlatWorldGeneratorSettings {
    * @see Factory#parseString(String)
    */
   String serialize();
+
+  void withOption(String key, Object value);
+
+  Object getOption(String key);
 
   /**
    * Factory for the {@link FlatWorldGeneratorSettings}.
