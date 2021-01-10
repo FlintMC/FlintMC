@@ -25,17 +25,46 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 
+/**
+ * Represents a preset for {@link FlatWorldGeneratorSettings}.
+ */
 public interface FlatWorldPreset {
 
+  /**
+   * Retrieves the display name of this preset as it will be displayed.
+   *
+   * @return The non-null display name
+   */
   ChatComponent getDisplayName();
 
+  /**
+   * Retrieves the item that should be used as the icon of this preset.
+   *
+   * @return The non-null icon
+   */
   ItemStack getIcon();
 
+  /**
+   * Retrieves the settings of this preset for the flat world generator.
+   *
+   * @return The non-null flat generator settings
+   */
   FlatWorldGeneratorSettings getSettings();
 
+  /**
+   * Factory for the {@link FlatWorldPreset}.
+   */
   @AssistedFactory(FlatWorldPreset.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link FlatWorldPreset}.
+     *
+     * @param displayName The non-null display name
+     * @param icon        The non-null item that should be used as the icon of this preset
+     * @param settings    The non-null flat generator settings of this preset
+     * @return The new non-null {@link FlatWorldPreset}
+     */
     FlatWorldPreset create(
         @Assisted ChatComponent displayName,
         @Assisted ItemStack icon,

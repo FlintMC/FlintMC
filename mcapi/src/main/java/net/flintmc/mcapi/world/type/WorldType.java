@@ -24,6 +24,8 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 /**
  * Represents the type of the world.
+ *
+ * @see WorldTypeRegistry
  */
 public interface WorldType {
 

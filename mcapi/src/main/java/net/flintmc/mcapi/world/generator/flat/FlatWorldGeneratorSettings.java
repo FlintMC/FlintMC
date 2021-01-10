@@ -58,6 +58,13 @@ public interface FlatWorldGeneratorSettings {
    */
   FlatWorldStructure[] getStructures();
 
+  /**
+   * Retrieves whether this settings object contains this structure. Similar to checking if {@link
+   * #getStructures()} contains the given structure.
+   *
+   * @param structure The non-null structure to check for
+   * @return this settings object for chaining
+   */
   boolean hasStructure(FlatWorldStructure structure);
 
   /**
@@ -178,8 +185,24 @@ public interface FlatWorldGeneratorSettings {
    */
   String serialize();
 
-  void withOption(String key, Object value);
+  /**
+   * Sets an option to this settings object. If the given key is already set for another option, the
+   * old one will be overridden. This is independent from Minecraft stuff and only intended to be
+   * used internally.
+   *
+   * @param key   The non-null key for the option
+   * @param value The non-null value for the option
+   * @see #getOption(String)
+   */
+  FlatWorldGeneratorSettings setOption(String key, Object value);
 
+  /**
+   * Retrieves an option that has been set for this settings object.
+   *
+   * @param key The non-null key to get the option for
+   * @return The value of the option or {@code null} if the given key has no option
+   * @see #setOption(String, Object)
+   */
   Object getOption(String key);
 
   /**

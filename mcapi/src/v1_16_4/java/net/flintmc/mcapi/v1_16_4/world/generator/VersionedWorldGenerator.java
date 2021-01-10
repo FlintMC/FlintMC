@@ -131,7 +131,7 @@ public class VersionedWorldGenerator implements WorldGenerator {
 
   private ChunkGenerator createFlatChunkGenerator(
       DynamicRegistries registries, FlatWorldGeneratorSettings settings) {
-    settings.withOption(VersionedWorldGeneratorMapper.REGISTRIES_OPTION, registries);
+    settings.setOption(VersionedWorldGeneratorMapper.REGISTRIES_OPTION, registries);
 
     FlatGenerationSettings handle =
         (FlatGenerationSettings) this.mapper.toMinecraftFlatSettings(settings);

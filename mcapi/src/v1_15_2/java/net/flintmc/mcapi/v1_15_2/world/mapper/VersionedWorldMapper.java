@@ -86,7 +86,7 @@ public class VersionedWorldMapper implements WorldMapper {
           worldInfo,
           worldOverview.getFileName(),
           worldOverview.getDisplayName(),
-          worldOverview.getSizeOnDisk(),
+          0L,
           worldOverview.requiresConversion()
       );
     }
@@ -114,7 +114,6 @@ public class VersionedWorldMapper implements WorldMapper {
         summary.getDisplayName(),
         rawVersion == null || rawVersion.isEmpty() ? null : rawVersion,
         summary.getLastTimePlayed(),
-        summary.getSizeOnDisk(),
         summary.requiresConversion(),
         GameMode.valueOf(summary.getEnumGameType().name()),
         summary.isHardcoreModeEnabled(),

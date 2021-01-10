@@ -19,14 +19,34 @@
 
 package net.flintmc.mcapi.world.generator.flat.presets;
 
+import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+
 import java.util.Collection;
 
+/**
+ * Registry for presets of {@link FlatWorldGeneratorSettings}.
+ */
 public interface FlatWorldPresetRegistry {
 
+  /**
+   * Retrieves a mutable list of presets for the flat world generator.
+   *
+   * @return The non-null mutable list of presets
+   */
   Collection<FlatWorldPreset> getPresets();
 
+  /**
+   * Adds a new preset to this registry.
+   *
+   * @param preset The non-null preset to be added
+   */
   void addPreset(FlatWorldPreset preset);
 
+  /**
+   * Removes an existing preset from this registry.
+   *
+   * @param preset The non-null preset to be removed
+   */
   void removePreset(FlatWorldPreset preset);
 
 }

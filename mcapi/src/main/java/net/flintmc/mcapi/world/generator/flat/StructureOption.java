@@ -19,6 +19,10 @@
 
 package net.flintmc.mcapi.world.generator.flat;
 
+/**
+ * Options for structures that can be used in the {@link FlatWorldGeneratorSettings}. Not every
+ * option is supported for every structure.
+ */
 public enum StructureOption {
 
   DISTANCE,

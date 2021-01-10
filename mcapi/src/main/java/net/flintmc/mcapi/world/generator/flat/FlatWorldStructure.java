@@ -19,6 +19,10 @@
 
 package net.flintmc.mcapi.world.generator.flat;
 
+/**
+ * Structures that can be used in the {@link FlatWorldGeneratorSettings}. Not every structure is
+ * supported in every version.
+ */
 public enum FlatWorldStructure {
 
   MINESHAFT,

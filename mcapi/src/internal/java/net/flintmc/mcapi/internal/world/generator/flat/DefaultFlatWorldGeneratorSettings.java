@@ -208,8 +208,9 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
    * {@inheritDoc}
    */
   @Override
-  public void withOption(String key, Object value) {
+  public FlatWorldGeneratorSettings setOption(String key, Object value) {
     this.options.put(key, value);
+    return this;
   }
 
   /**

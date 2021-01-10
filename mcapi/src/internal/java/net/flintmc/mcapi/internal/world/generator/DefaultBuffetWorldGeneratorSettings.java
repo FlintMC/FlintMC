@@ -27,21 +27,27 @@ import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.biome.BiomeRegistry;
 import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorType;
+import javax.annotation.Nullable;
 
 @Implement(BuffetWorldGeneratorSettings.class)
 public class DefaultBuffetWorldGeneratorSettings implements BuffetWorldGeneratorSettings {
+
+  private final BiomeRegistry biomeRegistry;
 
   private Biome biome;
   private BuffetWorldGeneratorType type;
 
   @AssistedInject
   public DefaultBuffetWorldGeneratorSettings(BiomeRegistry registry) {
-    this(registry.getDefaultBiome(), BuffetWorldGeneratorType.SURFACE);
+    this(registry, null, BuffetWorldGeneratorType.SURFACE);
   }
 
   @AssistedInject
   public DefaultBuffetWorldGeneratorSettings(
-      @Assisted Biome biome, @Assisted BuffetWorldGeneratorType type) {
+      BiomeRegistry biomeRegistry,
+      @Assisted @Nullable Biome biome,
+      @Assisted BuffetWorldGeneratorType type) {
+    this.biomeRegistry = biomeRegistry;
     this.biome = biome;
     this.type = type;
   }
@@ -51,6 +57,10 @@ public class DefaultBuffetWorldGeneratorSettings implements BuffetWorldGenerator
    */
   @Override
   public Biome getBiome() {
+    if (this.biome == null) {
+      this.biome = this.biomeRegistry.getDefaultBiome();
+    }
+
     return this.biome;
   }
 
@@ -85,7 +95,6 @@ public class DefaultBuffetWorldGeneratorSettings implements BuffetWorldGenerator
    */
   @Override
   public BuffetWorldGeneratorSettings validate() {
-    Preconditions.checkNotNull(this.biome, "Invalid biome provided");
     Preconditions.checkNotNull(this.type, "Invalid type provided");
 
     return this;

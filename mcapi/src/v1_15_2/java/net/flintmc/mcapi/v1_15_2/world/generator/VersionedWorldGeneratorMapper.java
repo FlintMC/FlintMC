@@ -277,6 +277,7 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
       Block block = layer.getBlockState().getType().getHandle();
       result.getFlatLayers().add(new FlatLayerInfo(layer.getLayerHeight(), block));
     }
+    result.updateLayers();
 
     for (FlatWorldStructure structure : settings.getStructures()) {
       String structureHandle = STRUCTURES.inverse().get(structure);

@@ -21,6 +21,8 @@ package net.flintmc.mcapi.v1_16_4.world.mapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.File;
+import java.io.IOException;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
@@ -30,9 +32,6 @@ import net.minecraft.server.SessionLockManager;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.world.storage.VersionData;
 import net.minecraft.world.storage.WorldSummary;
-
-import java.io.File;
-import java.io.IOException;
 
 @Singleton
 @Implement(value = WorldMapper.class, version = "1.16.4")
@@ -96,13 +95,11 @@ public class VersionedWorldMapper implements WorldMapper {
     WorldSummary summary = (WorldSummary) handle;
     String rawVersion = ((WorldSummaryShadow) summary).getRawVersion().getName();
 
-    // TODO: 29.12.2020 Disk size
     return this.worldOverviewFactory.create(
         summary.getFileName(),
         summary.getDisplayName(),
         rawVersion == null || rawVersion.isEmpty() ? null : rawVersion,
         summary.getLastTimePlayed(),
-        0L, /* Disk size is maybe removed since 1.16.x*/
         summary.requiresConversion(),
         GameMode.valueOf(summary.getEnumGameType().name()),
         summary.isHardcoreModeEnabled(),

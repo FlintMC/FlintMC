@@ -19,12 +19,27 @@
 
 package net.flintmc.mcapi.world.generator.buffet;
 
+/**
+ * Types of buffet world generators.
+ *
+ * @see BuffetWorldGeneratorSettings
+ */
 public enum BuffetWorldGeneratorType {
 
+  /**
+   * A default world consisting one biome.
+   */
   SURFACE,
 
+  /**
+   * Surface out of bedrock and only caves, somehow similar to the default Nether but everything is
+   * dark.
+   */
   CAVES,
 
+  /**
+   * Only floating islands without a bottom of bedrock.
+   */
   FLOATING_ISLANDS
 
 }
