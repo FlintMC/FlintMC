@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegistry;
@@ -31,6 +32,7 @@ import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.gui.screen.BiomeGeneratorTypeScreens;
 import net.minecraft.util.text.TranslationTextComponent;
 
+@Singleton
 @Implement(value = WorldTypeRegistry.class, version = "1.16.4")
 public class VersionedWorldTypeRegistry implements WorldTypeRegistry {
 

@@ -35,7 +35,7 @@ import net.minecraft.client.gui.FontRenderer;
  * {@inheritDoc}
  */
 @Singleton
-@Implement(value = ItemRenderer.class, version = "1.15.2")
+@Implement(value = ItemRenderer.class, version = "1.16.4")
 public class VersionedItemRenderer implements ItemRenderer {
 
   private final MinecraftItemMapper itemMapper;

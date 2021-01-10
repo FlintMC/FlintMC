@@ -27,6 +27,7 @@ import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.biome.BiomeRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biomes;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,21 +51,28 @@ public class VersionedBiomeRegistry implements BiomeRegistry {
       });
     }
 
-    net.minecraft.world.biome.Biome defaultBiome
-        = Registry.BIOME.getOrDefault(new net.minecraft.util.ResourceLocation(""));
-    this.defaultBiome = this.getBiome(provider.fromMinecraft(Registry.BIOME.getKey(defaultBiome)));
+    this.defaultBiome = this.getBiome(provider.fromMinecraft(Registry.BIOME.getKey(Biomes.PLAINS)));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<Biome> getBiomes() {
     return this.biomes.values();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Biome getDefaultBiome() {
     return this.defaultBiome;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Biome getBiome(ResourceLocation name) {
     return this.biomes.get(name);

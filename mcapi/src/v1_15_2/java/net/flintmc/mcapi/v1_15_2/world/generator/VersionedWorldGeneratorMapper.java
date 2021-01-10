@@ -25,6 +25,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.mcapi.world.biome.BiomeRegistry;
@@ -44,10 +46,9 @@ import net.minecraft.world.GameType;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.provider.BiomeProviderType;
 import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.FlatLayerInfo;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 @Implement(value = WorldGeneratorMapper.class, version = "1.15.2")
@@ -192,7 +193,28 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
   }
 
   private void appendBuffetSettings(JsonObject json, BuffetWorldGeneratorSettings settings) {
-    // TODO
+    JsonObject biomeSource = new JsonObject();
+    json.add("biome_source", biomeSource);
+
+    biomeSource.addProperty(
+        "type", Registry.BIOME_SOURCE_TYPE.getKey(BiomeProviderType.FIXED).toString());
+
+    JsonObject biomeOptions = new JsonObject();
+    JsonArray biomes = new JsonArray();
+    biomeOptions.add("biomes", biomes);
+    biomeSource.add("options", biomeOptions);
+    biomes.add(settings.getBiome().getName().toString());
+
+    JsonObject chunkGenerator = new JsonObject();
+    json.add("chunk_generator", chunkGenerator);
+
+    chunkGenerator.addProperty("type", "minecraft:" + settings.getType().name().toLowerCase());
+
+    JsonObject chunkOptions = new JsonObject();
+    chunkGenerator.add("options", chunkOptions);
+    // hardcoded in CreateBuffetWorldScreen.serialize
+    chunkOptions.addProperty("default_fluid", "minecraft:water");
+    chunkOptions.addProperty("default_block", "minecraft:stone");
   }
 
   /**

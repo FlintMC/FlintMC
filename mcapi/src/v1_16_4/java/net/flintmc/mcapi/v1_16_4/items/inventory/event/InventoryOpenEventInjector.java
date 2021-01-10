@@ -64,7 +64,7 @@ public class InventoryOpenEventInjector {
       methodName = "displayGuiScreen",
       parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
       executionTime = Hook.ExecutionTime.AFTER,
-      version = "1.15.2")
+      version = "1.16.4")
   public void displayGuiScreen(@Named("args") Object[] args) {
     if (!(args[0] instanceof InventoryScreen)) {
       return;

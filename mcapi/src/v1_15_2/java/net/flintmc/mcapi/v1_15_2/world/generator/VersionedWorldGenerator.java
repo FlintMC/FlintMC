@@ -46,6 +46,8 @@ public class VersionedWorldGenerator implements WorldGenerator {
   public void generateAndJoin(WorldGeneratorBuilder builder) {
     builder.validate();
 
+    // TODO unload current world/disconnect from current server
+
     WorldSettings handle = (WorldSettings) this.mapper.toMinecraftGenerator(builder);
     Minecraft.getInstance().launchIntegratedServer(builder.findFileName(), builder.name(), handle);
   }

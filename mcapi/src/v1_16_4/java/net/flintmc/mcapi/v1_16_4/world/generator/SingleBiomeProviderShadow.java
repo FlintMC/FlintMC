@@ -17,17 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_16_4.world.generator.flat;
+package net.flintmc.mcapi.v1_16_4.world.generator;
 
-import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.FieldSetter;
 import net.flintmc.transform.shadow.Shadow;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import java.util.function.Supplier;
 
-@Shadow(value = "net.minecraft.world.gen.FlatGenerationSettings", version = "1.16.4")
-public interface FlatGenerationSettingsShadow {
+@Shadow(value = "net.minecraft.world.biome.provider.SingleBiomeProvider", version = "1.16.4")
+public interface SingleBiomeProviderShadow {
 
-  @FieldGetter("field_242867_d")
-  Registry<Biome> getBiomeRegistry();
+  @FieldSetter("biome")
+  void setBiome(Supplier<Biome> biome);
 
 }

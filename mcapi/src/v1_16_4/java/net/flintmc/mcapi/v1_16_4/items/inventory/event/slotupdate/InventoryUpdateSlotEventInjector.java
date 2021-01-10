@@ -80,7 +80,8 @@ public class InventoryUpdateSlotEventInjector {
   @Hook(
       className = "net.minecraft.entity.player.PlayerInventory",
       methodName = "setInventorySlotContents",
-      parameters = {@Type(reference = int.class), @Type(typeName = "net.minecraft.item.ItemStack")})
+      parameters = {@Type(reference = int.class), @Type(typeName = "net.minecraft.item.ItemStack")},
+      version = "1.16.4")
   public void setInventorySlotContents(@Named("instance") Object instance) {
     this.injectLists((PlayerInventory) instance);
   }

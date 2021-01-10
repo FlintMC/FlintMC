@@ -28,6 +28,7 @@ import net.flintmc.mcapi.world.generator.ExtendedWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.WorldGenerator;
 import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder;
 import net.flintmc.mcapi.world.generator.WorldGeneratorMapper;
+import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegistry;
@@ -39,9 +40,13 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Dimension;
 import net.minecraft.world.WorldSettings;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.provider.BiomeProvider;
+import net.minecraft.world.biome.provider.SingleBiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.FlatChunkGenerator;
 import net.minecraft.world.gen.FlatGenerationSettings;
+import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 
 @Singleton
@@ -74,6 +79,8 @@ public class VersionedWorldGenerator implements WorldGenerator {
   public void generateAndJoin(WorldGeneratorBuilder builder) {
     builder.validate();
 
+    // TODO unload current world/disconnect from current server
+
     ExtendedWorldGeneratorSettings extended = builder.extended();
     DynamicRegistries.Impl registries = DynamicRegistries.func_239770_b_();
 
@@ -93,9 +100,30 @@ public class VersionedWorldGenerator implements WorldGenerator {
       shadow.setChunkGenerator(generator);
     }
 
+    if (builder.extended().type() == this.typeRegistry.getBuffetType()) {
+      BiomeProvider provider = overworld.getChunkGenerator().getBiomeProvider();
+      if (provider instanceof SingleBiomeProvider) {
+        Biome biome = this.getBiome(registries, builder.buffetSettings());
+        ((SingleBiomeProviderShadow) provider).setBiome(() -> biome);
+      }
+    }
+
     WorldSettings handle = (WorldSettings) this.mapper.toMinecraftGenerator(builder);
     Minecraft.getInstance()
         .createWorld(builder.findFileName(), handle, registries, generatorSettings);
+  }
+
+  private Biome getBiome(DynamicRegistries registries, BuffetWorldGeneratorSettings settings) {
+    net.flintmc.mcapi.world.biome.Biome flintBiome = settings.getBiome();
+
+    Registry<Biome> biomeRegistry = registries.getRegistry(Registry.BIOME_KEY);
+    for (Biome biome : biomeRegistry) {
+      if (biomeRegistry.getKey(biome).equals(flintBiome.getName().getHandle())) {
+        return biome;
+      }
+    }
+
+    throw new IllegalArgumentException("Unknown biome: " + flintBiome.getName());
   }
 
   private ChunkGenerator createFlatChunkGenerator(
