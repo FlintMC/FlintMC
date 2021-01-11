@@ -61,7 +61,7 @@ subprojects {
         apply<MavenPublishPlugin>()
         plugins.apply("net.minecrell.licenser")
 
-        version = System.getenv().getOrDefault("VERSION", "1.0.0")
+        version = System.getenv().getOrDefault("VERSION", "2.0.15")
 
         repositories {
             flintRepository()
