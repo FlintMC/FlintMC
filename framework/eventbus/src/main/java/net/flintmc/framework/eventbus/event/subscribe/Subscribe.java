@@ -70,7 +70,7 @@ public @interface Subscribe {
    *
    * @return The subscribed method phase.
    */
-  Phase phase() default Phase.PRE;
+  Phase phase();
 
   /**
    * An enumeration representing all available phases.

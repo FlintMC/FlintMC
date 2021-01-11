@@ -36,7 +36,7 @@ public class VersionedAbstractClientPlayerTransformer {
   private static final String FOV_MODIFIER_CLASS = FieldOfViewModifier.class.getName();
   private static final int LOCAL_FOV = 1;
 
-  @ClassTransform("net.minecraft.client.entity.player.AbstractClientPlayerEntity")
+  @ClassTransform(value = "net.minecraft.client.entity.player.AbstractClientPlayerEntity", version = "1.16.4")
   public void transform(ClassTransformContext context) throws NotFoundException, BadBytecode {
     CtMethod fovModifierMethod = context.getDeclaredMethod("getFovModifier");
 
