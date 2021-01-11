@@ -19,8 +19,7 @@
 
 package net.flintmc.render.gui.webgui;
 
-import java.util.Collection;
-import net.flintmc.util.commons.Pair;
+import java.util.Map;
 
 /**
  * Holds a collection of discovered web filesystem implementations.
@@ -28,11 +27,11 @@ import net.flintmc.util.commons.Pair;
 public interface WebFileSystemService {
 
   /**
-   * Gets a collection of web filesystem implementations and their protocol name. Creates the
+   * Retrieves a Map of web filesystem implementations and their protocol name. Creates the
    * instances via the injection holder if they haven't been created yet.
    *
-   * @return a {@link Pair} with the first element being the filesystem instance and the second
-   * element being the protocol name of the filesystem
+   * @return a {@link Map} with the first element being the protocol name of the filesystem and the
+   * second element  being the filesystem instance
    */
-  Collection<Pair<WebFileSystemHandler, String>> getFileSystems();
+  Map<String, WebFileSystemHandler> getFileSystems();
 }
