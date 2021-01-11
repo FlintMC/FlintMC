@@ -22,11 +22,11 @@ package net.flintmc.mcapi.v1_16_4.entity.passive;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.entity.EntityRepository;
 import net.flintmc.mcapi.entity.passive.AmbientEntity;
 import net.flintmc.mcapi.entity.passive.AnimalEntity;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
 import net.flintmc.mcapi.entity.passive.farmanimal.PigEntity;
-import net.flintmc.mcapi.internal.entity.cache.EntityCache;
 import net.minecraft.client.Minecraft;
 
 @Singleton
@@ -35,18 +35,18 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
 
   private final AmbientEntity.Provider ambientEntityProvider;
   private final AnimalEntity.Provider animalEntityProvider;
-  private final EntityCache entityCache;
+  private final EntityRepository entityRepository;
   private final PigEntity.Factory pigEntityFactory;
 
   @Inject
   private VersionedPassiveEntityMapper(
       AmbientEntity.Provider ambientEntityProvider,
       AnimalEntity.Provider animalEntityProvider,
-      EntityCache entityCache,
+      EntityRepository entityRepository,
       PigEntity.Factory pigEntityFactory) {
     this.ambientEntityProvider = ambientEntityProvider;
     this.animalEntityProvider = animalEntityProvider;
-    this.entityCache = entityCache;
+    this.entityRepository = entityRepository;
     this.pigEntityFactory = pigEntityFactory;
   }
 
@@ -66,7 +66,7 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
         (net.minecraft.entity.passive.AmbientEntity) handle;
 
     return (AmbientEntity)
-        this.entityCache.putIfAbsent(
+        this.entityRepository.putIfAbsent(
             ambientEntity.getUniqueID(), () -> this.ambientEntityProvider.get(ambientEntity));
   }
 
@@ -101,7 +101,7 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
         (net.minecraft.entity.passive.AnimalEntity) handle;
 
     return (AnimalEntity)
-        this.entityCache.putIfAbsent(
+        this.entityRepository.putIfAbsent(
             animalEntity.getUniqueID(), () -> this.animalEntityProvider.get(animalEntity));
   }
 
@@ -136,7 +136,7 @@ public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
         (net.minecraft.entity.passive.PigEntity) handle;
 
     return (PigEntity)
-        this.entityCache.putIfAbsent(
+        this.entityRepository.putIfAbsent(
             pigEntity.getUniqueID(), () -> this.pigEntityFactory.create(pigEntity));
   }
 

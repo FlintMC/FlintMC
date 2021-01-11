@@ -24,13 +24,13 @@ import com.google.inject.Singleton;
 import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.entity.EntityRepository;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.MobEntity;
 import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.flintmc.mcapi.entity.mapper.EntityMapper;
 import net.flintmc.mcapi.entity.passive.PassiveEntityMapper;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
-import net.flintmc.mcapi.internal.entity.cache.EntityCache;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.RemoteClientPlayer;
 import net.minecraft.client.Minecraft;
@@ -43,7 +43,7 @@ import net.minecraft.entity.passive.PigEntity;
 @Implement(value = EntityMapper.class, version = "1.16.4")
 public class VersionedEntityMapper implements EntityMapper {
 
-  private final EntityCache entityCache;
+  private final EntityRepository entityCache;
 
   private final Entity.Factory entityFactory;
   private final EntityTypeMapper entityTypeMapper;
@@ -57,7 +57,7 @@ public class VersionedEntityMapper implements EntityMapper {
 
   @Inject
   private VersionedEntityMapper(
-      EntityCache entityCache,
+      EntityRepository entityRepository,
       Entity.Factory entityFactory,
       EntityTypeMapper entityTypeMapper,
       ItemEntityMapper itemEntityMapper,
@@ -66,7 +66,7 @@ public class VersionedEntityMapper implements EntityMapper {
       PassiveEntityMapper passiveEntityMapper,
       PlayerEntity.Provider playerEntityProvider,
       RemoteClientPlayer.Provider remoteClientPlayerProvider) {
-    this.entityCache = entityCache;
+    this.entityCache = entityRepository;
     this.entityFactory = entityFactory;
     this.livingEntityProvider = livingEntityProvider;
     this.mobEntityProvider = mobEntityProvider;

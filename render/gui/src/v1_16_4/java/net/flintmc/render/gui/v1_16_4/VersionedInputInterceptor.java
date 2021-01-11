@@ -128,7 +128,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
         });
   }
 
-  @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
+  @ClassTransform(value = "net.minecraft.client.util.InputMappings", version = "1.16.4")
   public void transformInputMappings(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     CtField injectedField =
@@ -155,7 +155,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
     setMouseCallbacksMethod.setBody(String.format("%s.interceptMouseCallbacks($$);", fieldName));
   }
 
-  @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.15.2")
+  @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.16.4")
   public void hookMainWindowConstructor(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtField injectedField =

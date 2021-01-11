@@ -76,7 +76,7 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
     this.mappingProvider = mappingProvider;
   }
 
-  @ClassTransform("net.minecraft.client.renderer.entity.EntityRenderer")
+  @ClassTransform(value = "net.minecraft.client.renderer.entity.EntityRenderer", version = "1.16.4")
   public void transformRenderName(ClassTransformContext context)
       throws NotFoundException, CannotCompileException, BadBytecode {
     CtClass[] params =

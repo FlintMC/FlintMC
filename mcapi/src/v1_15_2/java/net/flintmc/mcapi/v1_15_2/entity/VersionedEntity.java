@@ -22,7 +22,9 @@ package net.flintmc.mcapi.v1_15_2.entity;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -44,7 +46,11 @@ import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.player.type.sound.Sound;
-import net.flintmc.mcapi.v1_15_2.entity.render.*;
+import net.flintmc.mcapi.v1_15_2.entity.render.EntityAccessor;
+import net.flintmc.mcapi.v1_15_2.entity.render.ModelBoxAccessor;
+import net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererAccessor;
+import net.flintmc.mcapi.v1_15_2.entity.render.PositionTextureVertexAccessor;
+import net.flintmc.mcapi.v1_15_2.entity.render.TexturedQuadAccessor;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Direction;
@@ -61,16 +67,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 @Implement(value = Entity.class, version = "1.15.2")
 public class VersionedEntity implements Entity {
@@ -81,7 +77,7 @@ public class VersionedEntity implements Entity {
 
   private final Supplier<Object> entitySupplier;
   private final Random random;
-  private final EntityRenderContext entityRenderContext;
+  private EntityRenderContext entityRenderContext;
 
   @AssistedInject
   public VersionedEntity(
@@ -103,9 +99,6 @@ public class VersionedEntity implements Entity {
 
     this.random = new Random();
     this.entitySupplier = entitySupplier;
-    this.entityRenderContext =
-        InjectionHolder.getInjectedInstance(EntityRenderContext.Factory.class).create(this);
-    this.updateRenderables();
   }
 
   protected ModelBoxHolder<Entity, EntityRenderContext> createModelBox(
@@ -338,6 +331,11 @@ public class VersionedEntity implements Entity {
 
   @Override
   public EntityRenderContext getRenderContext() {
+    if (this.entityRenderContext == null) {
+      this.entityRenderContext =
+          InjectionHolder.getInjectedInstance(EntityRenderContext.Factory.class).create(this);
+      this.updateRenderables();
+    }
     return this.entityRenderContext;
   }
 

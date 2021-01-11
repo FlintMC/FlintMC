@@ -1,17 +1,31 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.render.model.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.model.ModelBox;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 
 @Implement(ModelBox.class)
 public class DefaultModelBox implements ModelBox {
@@ -206,6 +220,7 @@ public class DefaultModelBox implements ModelBox {
 
   @Implement(TexturedQuad.class)
   public static class DefaultTexturedQuad implements TexturedQuad {
+
     private final float normalX;
     private final float normalY;
     private final float normalZ;
@@ -242,6 +257,7 @@ public class DefaultModelBox implements ModelBox {
 
     @Implement(VertexPosition.class)
     public static class DefaultVertexPosition implements VertexPosition {
+
       private final float positionX;
       private final float positionY;
       private final float positionZ;

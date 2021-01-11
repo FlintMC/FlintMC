@@ -22,7 +22,9 @@ package net.flintmc.mcapi.v1_16_4.entity;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -31,12 +33,14 @@ import java.util.stream.Stream;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntityNotLoadedException;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.reason.MoverType;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
@@ -47,6 +51,7 @@ import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Direction;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
+import net.flintmc.render.model.ModelBoxHolder;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
@@ -63,6 +68,7 @@ public class VersionedEntity implements Entity {
 
   private final Supplier<Object> entitySupplier;
   private final Random random;
+  private EntityRenderContext entityRenderContext;
 
   @AssistedInject
   public VersionedEntity(
@@ -84,6 +90,7 @@ public class VersionedEntity implements Entity {
 
     this.random = new Random();
     this.entitySupplier = entitySupplier;
+    this.updateRenderables();
   }
 
   protected net.minecraft.entity.Entity wrapped() {
@@ -1246,5 +1253,28 @@ public class VersionedEntity implements Entity {
   @Override
   public ChatComponent getName() {
     return this.entityFoundationMapper.getComponentMapper().fromMinecraft(this.wrapped().getName());
+  }
+
+  protected Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers() {
+    return new HashMap<>();
+  }
+
+  @Override
+  public EntityRenderContext getRenderContext() {
+    if (this.entityRenderContext == null) {
+      this.entityRenderContext =
+          InjectionHolder.getInjectedInstance(EntityRenderContext.Factory.class).create(this);
+      this.updateRenderables();
+    }
+    return this.entityRenderContext;
+  }
+
+  @Override
+  public void updateRenderables() {
+    this.entityRenderContext.getRenderables().clear();
+    for (Map.Entry<String, ModelBoxHolder<Entity, EntityRenderContext>> entry :
+        this.createModelRenderers().entrySet()) {
+      this.entityRenderContext.registerRenderable(entry.getKey(), entry.getValue());
+    }
   }
 }

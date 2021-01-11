@@ -19,13 +19,16 @@
 
 package net.flintmc.render.vbo.v1_16_4;
 
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.render.vbo.EnumeratedVertexFormat;
 import net.flintmc.render.vbo.VertexAttribute;
 import net.flintmc.render.vbo.VertexAttributes;
 import net.flintmc.render.vbo.VertexBufferObject;
@@ -45,7 +48,7 @@ public class VersionedVertexBuilder implements VertexBuilder {
   private final AttributeValueHandler rgbHandler;
   private final AttributeValueHandler rgbaHandler;
   private final AttributeValueHandler textureHandler;
-  private final AttributeValueHandler customHandler;
+  private final SortedMap<Integer, AttributeValueHandler> customHandlers;
 
   @AssistedInject
   private VersionedVertexBuilder(@Assisted VertexBufferObject vbo) {
@@ -63,8 +66,7 @@ public class VersionedVertexBuilder implements VertexBuilder {
         new AttributeValueHandler(attribute -> attribute == VertexAttributes.COLOR_RGBA);
     this.textureHandler =
         new AttributeValueHandler(attribute -> attribute == VertexAttributes.TEXTURE_UV);
-    this.customHandler =
-        new AttributeValueHandler(attribute -> !(attribute instanceof EnumeratedVertexFormat));
+    this.customHandlers = new TreeMap<>(Comparator.comparingInt(i -> i));
   }
 
   /**
@@ -155,8 +157,10 @@ public class VersionedVertexBuilder implements VertexBuilder {
    * {@inheritDoc}
    */
   @Override
-  public VertexBuilder custom(float... values) {
-    this.customHandler.addFloats(values);
+  public VertexBuilder custom(int position, float... values) {
+    this.customHandlers.computeIfAbsent(
+        position, (key) -> new AttributeValueHandler(attribute -> true));
+    this.customHandlers.get(position).addFloats(values);
     return this;
   }
 
@@ -187,13 +191,12 @@ public class VersionedVertexBuilder implements VertexBuilder {
         this.rgbaHandler.writeFloats(buffer, offset);
       } else if (attribute == VertexAttributes.TEXTURE_UV) {
         this.textureHandler.writeFloats(buffer, offset);
-      } else if (!(attribute instanceof EnumeratedVertexFormat)) {
-        this.customHandler.writeFloats(buffer, offset);
       } else {
-        throw new IllegalStateException(
-            "You're not supposed to implement EnumeratedVertexFormat yourself. Go away.");
+        for (Map.Entry<Integer, AttributeValueHandler> entry : this.customHandlers.entrySet()) {
+          entry.getValue().writeFloats(buffer, offset);
+        }
+        offset += attribute.getSize();
       }
-      offset += attribute.getSize();
     }
     return offset - startOffset;
   }

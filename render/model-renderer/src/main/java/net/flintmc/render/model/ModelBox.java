@@ -1,13 +1,28 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.render.model;
 
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-
-import java.awt.*;
 import java.util.Collection;
 import java.util.List;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 public interface ModelBox {
 
@@ -40,6 +55,7 @@ public interface ModelBox {
   ModelBox setTexturedQuads(List<TexturedQuad> texturedQuads);
 
   interface TexturedQuad {
+
     float getNormalX();
 
     float getNormalY();
@@ -50,6 +66,7 @@ public interface ModelBox {
 
     @AssistedFactory(TexturedQuad.class)
     interface Factory {
+
       TexturedQuad create(
           @Assisted("normalX") float normalX,
           @Assisted("normalY") float normalY,
@@ -58,6 +75,7 @@ public interface ModelBox {
     }
 
     interface VertexPosition {
+
       float getTextureU();
 
       float getTextureV();
@@ -72,6 +90,7 @@ public interface ModelBox {
 
       @AssistedFactory(VertexPosition.class)
       interface Factory {
+
         VertexPosition create(
             @Assisted("textureU") float textureU,
             @Assisted("textureV") float textureV,
@@ -84,6 +103,7 @@ public interface ModelBox {
 
   @AssistedFactory(ModelBox.class)
   interface Factory {
+
     ModelBox create();
 
     ModelBox create(

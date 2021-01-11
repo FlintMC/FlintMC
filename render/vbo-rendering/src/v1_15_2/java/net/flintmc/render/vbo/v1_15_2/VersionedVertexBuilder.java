@@ -19,22 +19,16 @@
 
 package net.flintmc.render.vbo.v1_15_2;
 
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedInject;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.render.vbo.VertexAttribute;
-import net.flintmc.render.vbo.VertexAttributes;
-import net.flintmc.render.vbo.VertexBufferObject;
-import net.flintmc.render.vbo.VertexBuilder;
-
-import java.util.*;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.render.vbo.EnumeratedVertexFormat;
 import net.flintmc.render.vbo.VertexAttribute;
 import net.flintmc.render.vbo.VertexAttributes;
 import net.flintmc.render.vbo.VertexBufferObject;
@@ -197,11 +191,12 @@ public class VersionedVertexBuilder implements VertexBuilder {
         this.rgbaHandler.writeFloats(buffer, offset);
       } else if (attribute == VertexAttributes.TEXTURE_UV) {
         this.textureHandler.writeFloats(buffer, offset);
-      else
+      } else {
         for (Map.Entry<Integer, AttributeValueHandler> entry : this.customHandlers.entrySet()) {
           entry.getValue().writeFloats(buffer, offset);
         }
-      offset += attribute.getSize();
+        offset += attribute.getSize();
+      }
     }
     return offset - startOffset;
   }

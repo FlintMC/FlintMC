@@ -1,3 +1,22 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.util.property;
 
 import java.util.Objects;
@@ -11,6 +30,7 @@ import java.util.function.Supplier;
  * @param <T_PropertyMeta>  the type of the properties metadata. If not required, use {@link Void}.
  */
 public interface Property<T_PropertyValue, T_PropertyMeta> {
+
   static Builder<Object, Void> builder() {
     return new Builder<>();
   }
@@ -47,6 +67,7 @@ public interface Property<T_PropertyValue, T_PropertyMeta> {
    */
   @SuppressWarnings("unchecked")
   class Builder<T_PropertyValue, T_PropertyMeta> {
+
     private final Predicate<T_PropertyValue> defaultValuePredicate = Objects::nonNull;
     private final Predicate<T_PropertyMeta> defaultMetaPredicate = Objects::nonNull;
     private final Supplier<T_PropertyValue> defaultDefaultValue = () -> null;

@@ -63,7 +63,8 @@ public class VersionedScoreboardInterceptor {
   @Hook(
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleScoreboardObjective",
-      parameters = {@Type(reference = SScoreboardObjectivePacket.class)})
+      parameters = {@Type(reference = SScoreboardObjectivePacket.class)},
+      version = "1.15.2")
   public void hookHandleScoreboardObjective(@Named("args") Object[] args) {
     SScoreboardObjectivePacket packet = (SScoreboardObjectivePacket) args[0];
 
@@ -92,7 +93,8 @@ public class VersionedScoreboardInterceptor {
   @Hook(
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleUpdateScore",
-      parameters = {@Type(reference = SUpdateScorePacket.class)})
+      parameters = {@Type(reference = SUpdateScorePacket.class)},
+      version = "1.15.2")
   public void hookHandleUpdateScore(@Named("args") Object[] args) {
     SUpdateScorePacket packet = (SUpdateScorePacket) args[0];
 
@@ -114,7 +116,8 @@ public class VersionedScoreboardInterceptor {
   @Hook(
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleDisplayObjective",
-      parameters = {@Type(reference = SDisplayObjectivePacket.class)})
+      parameters = {@Type(reference = SDisplayObjectivePacket.class)},
+      version = "1.15.2")
   public void hookHandleDisplayObjective(@Named("args") Object[] args) {
     SDisplayObjectivePacket packet = (SDisplayObjectivePacket) args[0];
     String name = packet.getName();
@@ -126,7 +129,8 @@ public class VersionedScoreboardInterceptor {
   @Hook(
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleTeams",
-      parameters = {@Type(reference = STeamsPacket.class)})
+      parameters = {@Type(reference = STeamsPacket.class)},
+      version = "1.15.2")
   public void hookHandleTeams(@Named("args") Object[] args) {
     STeamsPacket packet = (STeamsPacket) args[0];
 

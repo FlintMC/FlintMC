@@ -1,10 +1,37 @@
+/*
+ * FlintMC
+ * Copyright (C) 2020-2021 LabyMedia GmbH and contributors
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package net.flintmc.mcapi.v1_15_2.entity.render;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javassist.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
@@ -19,13 +46,13 @@ import net.flintmc.transform.javassist.CtClassFilter;
 import net.flintmc.transform.javassist.CtClassFilters;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Matrix3f;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 @Singleton
 public class ModelRendererInterceptor {
@@ -37,21 +64,21 @@ public class ModelRendererInterceptor {
     this.classMappingProvider = classMappingProvider;
   }
 
-  @ClassTransform("net.minecraft.client.renderer.model.ModelRenderer")
+  @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.15.2")
   public void transform(ClassTransformContext classTransformContext) {
     try {
       CtClass[] doRenderParameters =
           ClassPool.getDefault()
               .get(
                   new String[] {
-                    "com.mojang.blaze3d.matrix.MatrixStack$Entry",
-                    "com.mojang.blaze3d.vertex.IVertexBuilder",
-                    "int",
-                    "int",
-                    "float",
-                    "float",
-                    "float",
-                    "float"
+                      "com.mojang.blaze3d.matrix.MatrixStack$Entry",
+                      "com.mojang.blaze3d.vertex.IVertexBuilder",
+                      "int",
+                      "int",
+                      "float",
+                      "float",
+                      "float",
+                      "float"
                   });
 
       CtMethod doRender =
@@ -79,7 +106,7 @@ public class ModelRendererInterceptor {
     }
   }
 
-  @ClassTransform
+  @ClassTransform(version = "1.15.2")
   @CtClassFilter(
       value = CtClassFilters.SUBCLASS_OF,
       className = "net.minecraft.client.renderer.entity.model.EntityModel")
@@ -89,7 +116,7 @@ public class ModelRendererInterceptor {
         ClassPool.getDefault()
             .get(
                 new String[] {
-                  "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
+                    "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
                 });
 
     for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {

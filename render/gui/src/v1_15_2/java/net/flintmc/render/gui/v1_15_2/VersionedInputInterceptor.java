@@ -128,7 +128,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
         });
   }
 
-  @ClassTransform(version = "1.15.2", value = "net.minecraft.client.util.InputMappings")
+  @ClassTransform(value = "net.minecraft.client.util.InputMappings", version = "1.15.2")
   public void transformInputMappings(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     CtField injectedField =
