@@ -330,11 +330,11 @@ Gradle won't find our custom Gradle plugin.
 pluginManagement {
     plugins {
         // make sure to use the newest version
-        id("net.flintmc.flint-gradle") version "2.7.2"
+        id("net.flintmc.flint-gradle") version "2.7.3"
     }
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle", "2.7.2")         
+            classpath("net.flintmc", "flint-gradle", "2.7.3")         
         }
         repositories {
             maven {

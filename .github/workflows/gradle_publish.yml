@@ -34,7 +34,7 @@ jobs:
           FLINT_DISTRIBUTOR_URL: ${{ secrets.FLINT_DISTRIBUTOR_URL }}
           FLINT_DISTRIBUTOR_AUTHORIZATION: ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}
 
-      - name: Build with Gradle and publish to distributor
+      - name: Publish to distributor
         run: ./gradlew publish --full-stacktrace
         env:
           VERSION: ${{ steps.get_tag_name.outputs.VERSION }}

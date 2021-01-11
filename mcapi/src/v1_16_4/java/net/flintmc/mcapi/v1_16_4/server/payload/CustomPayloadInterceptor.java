@@ -63,7 +63,7 @@ public class CustomPayloadInterceptor {
     this.fieldBuilderFactory = fieldBuilderFactory;
   }
 
-  @ClassTransform("net.minecraft.client.network.play.ClientPlayNetHandler")
+  @ClassTransform(value = "net.minecraft.client.network.play.ClientPlayNetHandler", version = "1.16.4")
   public void transform(ClassTransformContext context)
       throws NotFoundException, BadBytecode, CannotCompileException {
 

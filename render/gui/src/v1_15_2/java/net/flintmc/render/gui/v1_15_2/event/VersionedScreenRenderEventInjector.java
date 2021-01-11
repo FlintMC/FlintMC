@@ -47,7 +47,8 @@ public class VersionedScreenRenderEventInjector {
           @Type(reference = long.class),
           @Type(reference = boolean.class)
       },
-      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER})
+      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
+      version = "1.15.2")
   public void renderScreen(Hook.ExecutionTime executionTime) {
     this.eventBus.fireEvent(this.event, executionTime);
   }

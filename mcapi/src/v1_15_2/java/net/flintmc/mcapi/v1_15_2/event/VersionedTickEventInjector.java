@@ -45,7 +45,8 @@ public class VersionedTickEventInjector {
   @Hook(
       executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
       className = "net.minecraft.client.Minecraft",
-      methodName = "runTick")
+      methodName = "runTick",
+      version = "1.15.2")
   public void handleGeneralTick(ExecutionTime executionTime) {
     this.eventBus.fireEvent(this.generalTickEvent, executionTime);
   }

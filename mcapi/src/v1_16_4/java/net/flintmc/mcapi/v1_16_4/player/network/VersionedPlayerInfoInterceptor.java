@@ -24,6 +24,7 @@ import com.google.inject.Singleton;
 import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.player.event.PlayerInfoEvent;
 import net.flintmc.mcapi.player.network.NetworkPlayerInfo;
@@ -55,7 +56,7 @@ public class VersionedPlayerInfoInterceptor {
     this.gameProfileSerializer = gameProfileSerializer;
   }
 
-  @Subscribe(version = "1.16.4")
+  @PreSubscribe(version = "1.16.4")
   public void handlePlayerList(PacketEvent packetEvent) {
     if (!(packetEvent.getPacket() instanceof SPlayerListItemPacket)) {
       return;

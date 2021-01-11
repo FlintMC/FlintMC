@@ -22,8 +22,6 @@ package net.flintmc.mcapi.v1_15_2.server.event;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.server.ServerAddress;
@@ -31,6 +29,9 @@ import net.flintmc.mcapi.server.event.ServerLoginSuccessEvent;
 import net.flintmc.transform.hook.Hook;
 import net.minecraft.client.network.login.ClientLoginNetHandler;
 import net.minecraft.network.login.server.SLoginSuccessPacket;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 @Singleton
 public class ServerLoginSuccessEventInjector {
@@ -53,7 +54,8 @@ public class ServerLoginSuccessEventInjector {
       executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
       className = "net.minecraft.client.network.login.ClientLoginNetHandler",
       methodName = "handleLoginSuccess",
-      parameters = @Type(reference = SLoginSuccessPacket.class))
+      parameters = @Type(reference = SLoginSuccessPacket.class),
+      version = "1.15.2")
   public void handleLoginSuccess(
       @Named("instance") Object instance, Hook.ExecutionTime executionTime) {
     ClientLoginNetHandler handler = (ClientLoginNetHandler) instance;

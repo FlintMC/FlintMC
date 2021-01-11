@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.stereotype.type.Type;
@@ -69,7 +70,7 @@ public class InventoryUpdateSlotEventInjector {
     this.airStack = registry.getAirType().createStack();
   }
 
-  @Subscribe(version = "1.15.2")
+  @PreSubscribe(version = "1.15.2")
   public void injectUpdatingItemLists(TickEvent event) {
     ClientPlayerEntity player = Minecraft.getInstance().player;
     if (player != null) {

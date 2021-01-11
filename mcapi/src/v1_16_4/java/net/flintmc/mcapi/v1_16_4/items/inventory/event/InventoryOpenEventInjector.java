@@ -53,7 +53,8 @@ public class InventoryOpenEventInjector {
           @Type(typeName = "net.minecraft.inventory.container.ContainerType"),
           @Type(typeName = "net.minecraft.client.Minecraft"),
           @Type(reference = int.class)
-      })
+      },
+      version = "1.16.4")
   public void createScreen() {
     InventoryOpenEvent event = this.eventFactory.create(this.controller.getOpenInventory());
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
