@@ -19,12 +19,6 @@
 
 package net.flintmc.framework.packages.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarFile;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectionService;
@@ -48,6 +42,13 @@ import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarFile;
+
 /**
  * Default implementation of the {@link Package}.
  */
@@ -65,15 +66,18 @@ public class DefaultPackage implements Package {
   private Exception loadException;
 
   /**
-   * Creates a new Flint package with the given description loader and the given files.
+   * Creates a new Flint package with the given description loader and the given
+   * files.
    *
-   * @param serviceRepository The singleton instance of the {@link ServiceRepository}
+   * @param serviceRepository The singleton instance of the {@link
+   *                          ServiceRepository}
    * @param manifestLoader    The loader to use for reading the manifest
-   * @param jarFile           The java IO file this package should be loaded from, or null if loaded
-   *                          from the classpath
-   * @param jar               The java IO jar file this package should be loaded from, must point to
-   *                          the same file as the `file` parameter, or must be null if the package
-   *                          has been loaded from the classpath
+   * @param jarFile           The java IO file this package should be loaded
+   *                          from, or null if loaded from the classpath
+   * @param jar               The java IO jar file this package should be loaded
+   *                          from, must point to the same file as the `file`
+   *                          parameter, or must be null if the package has been
+   *                          loaded from the classpath
    */
   @AssistedInject
   private DefaultPackage(
@@ -91,7 +95,8 @@ public class DefaultPackage implements Package {
       // If the package should be loaded from a jar file, try to retrieve the manifest from it
       if (!manifestLoader.isManifestPresent(jar)) {
         throw new IllegalArgumentException(
-            "The given JAR file " + jarFile.getName() + " does not contain a package manifest");
+            "The given JAR file " + jarFile.getName()
+                + " does not contain a package manifest");
       }
 
       // Try to load the manifest
@@ -138,7 +143,8 @@ public class DefaultPackage implements Package {
    */
   @Override
   public String getName() {
-    return this.packageManifest != null ? this.packageManifest.getName() : jarFile.getName();
+    return this.packageManifest != null ? this.packageManifest.getName()
+        : jarFile.getName();
   }
 
   /**
@@ -146,7 +152,8 @@ public class DefaultPackage implements Package {
    */
   @Override
   public String getDisplayName() {
-    return this.packageManifest != null ? this.packageManifest.getDisplayName() : jarFile.getName();
+    return this.packageManifest != null ? this.packageManifest.getDisplayName()
+        : jarFile.getName();
   }
 
   /**
@@ -154,7 +161,8 @@ public class DefaultPackage implements Package {
    */
   @Override
   public String getVersion() {
-    return this.packageManifest != null ? this.packageManifest.getVersion() : "unknown";
+    return this.packageManifest != null ? this.packageManifest.getVersion()
+        : "unknown";
   }
 
   /**
@@ -237,7 +245,9 @@ public class DefaultPackage implements Package {
       // Flush all other higher level framework features like Events, Transforms etc.
       this.serviceRepository.flushServices(Service.State.POST_INIT);
     } catch (NotFoundException e) {
-      this.logger.error("Failed to configure services for package {}", this.getName(), e);
+      this.logger
+          .error("Failed to configure services for package {}", this.getName(),
+              e);
     }
 
     // The package is now enabled
@@ -249,7 +259,8 @@ public class DefaultPackage implements Package {
     List<AnnotationMeta> annotations = getAnnotationMeta();
     // Iterate over all annotations
     for (AnnotationMeta<?> annotationMeta : annotations) {
-      if (annotationMeta.getAnnotation().annotationType().equals(Service.class)) {
+      if (annotationMeta.getAnnotation().annotationType()
+          .equals(Service.class)) {
         // if yes go ahead and register it
         Service annotation = (Service) annotationMeta.getAnnotation();
         serviceRepository.registerService(
@@ -257,18 +268,22 @@ public class DefaultPackage implements Package {
             annotation.priority(),
             annotation.state(),
             ClassPool.getDefault()
-                .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+                .get(((ClassIdentifier) (annotationMeta.getIdentifier()))
+                    .getName()));
         // if not check if it might be multiple services at once. the Javapoet framework sadly seems
         // to not support Repeatable annotations yet. Maybe this will change sometime.
-      } else if (annotationMeta.getAnnotation().annotationType().equals(Services.class)) {
+      } else if (annotationMeta.getAnnotation().annotationType()
+          .equals(Services.class)) {
         // Iterate over all services and register them
-        for (Service service : ((Services) annotationMeta.getAnnotation()).value()) {
+        for (Service service : ((Services) annotationMeta.getAnnotation())
+            .value()) {
           serviceRepository.registerService(
               service.value(),
               service.priority(),
               service.state(),
               ClassPool.getDefault()
-                  .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+                  .get(((ClassIdentifier) (annotationMeta.getIdentifier()))
+                      .getName()));
         }
       }
     }
@@ -281,8 +296,8 @@ public class DefaultPackage implements Package {
   }
 
   /**
-   * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
-   * on compile time
+   * @return all saved annotation meta that was written to the {@link
+   * DetectableAnnotationProvider} on compile time
    */
   private List<AnnotationMeta> getAnnotationMeta() {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();
@@ -301,7 +316,8 @@ public class DefaultPackage implements Package {
    */
   @Override
   public PackageClassLoader getPackageClassLoader() {
-    if (packageState != PackageState.LOADED && packageState != PackageState.ENABLED) {
+    if (packageState != PackageState.LOADED
+        && packageState != PackageState.ENABLED) {
       throw new IllegalStateException(
           "The package has to be in the LOADED or ENABLED state in order to retrieve "
               + "the class loader of it");

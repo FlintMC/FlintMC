@@ -23,6 +23,13 @@ import java.util.Set;
 
 /** Represents the service responsible for loading packages. */
 public interface PackageLoader {
+
+  String PACKAGE_DIR = "flint/packages";
+  String PACKAGE_DIR_TEMPLATE = "${FLINT_PACKAGE_DIR}";
+
+  String LIBRARY_DIR = "libraries";
+  String LIBRARY_DIR_TEMPLATE = "${FLINT_PACKAGE_DIR}";
+
   /**
    * Retrieves a set of all packages. This ignores the {@link PackageState} completely, which means
    * this set may for example also contain errored or not loaded packages.
