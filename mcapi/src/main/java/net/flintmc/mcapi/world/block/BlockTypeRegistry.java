@@ -22,10 +22,25 @@ package net.flintmc.mcapi.world.block;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import java.util.Collection;
 
+/**
+ * Registry for all {@link BlockType}s available in this Minecraft version.
+ */
 public interface BlockTypeRegistry {
 
+  /**
+   * Retrieves a collection of all block types that are registered.
+   *
+   * @return The non-null collection of all block types
+   */
   Collection<BlockType> getTypes();
 
+  /**
+   * Retrieves a specific block type for a specific location
+   *
+   * @param location The non-null location to get the type for (e.g. minecraft:stone)
+   * @return The type for the given location or {@code null} if there is no block type for the given
+   * location
+   */
   BlockType getType(ResourceLocation location);
 
 }

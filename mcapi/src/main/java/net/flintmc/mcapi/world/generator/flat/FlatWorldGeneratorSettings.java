@@ -26,6 +26,8 @@ import net.flintmc.mcapi.world.type.WorldTypeRegistry;
 
 /**
  * Settings for the flat world generator with the {@link WorldType} flat.
+ * <p>
+ * To be used at least one layer has to be set.
  *
  * @see WorldGeneratorBuilder
  * @see WorldTypeRegistry#getFlatType()
@@ -45,7 +47,7 @@ public interface FlatWorldGeneratorSettings {
    * used.
    *
    * @param biome The new biome to be used or {@code null} to use the default biome of Minecraft
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    */
   FlatWorldGeneratorSettings setBiome(Biome biome);
 
@@ -63,7 +65,7 @@ public interface FlatWorldGeneratorSettings {
    * #getStructures()} contains the given structure.
    *
    * @param structure The non-null structure to check for
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    */
   boolean hasStructure(FlatWorldStructure structure);
 
@@ -72,7 +74,7 @@ public interface FlatWorldGeneratorSettings {
    * happen.
    *
    * @param structure The non-null structure to be added
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    */
   FlatWorldGeneratorSettings addStructure(FlatWorldStructure structure);
 
@@ -81,7 +83,7 @@ public interface FlatWorldGeneratorSettings {
    * added, nothing will happen.
    *
    * @param structure The non-null structure to be added
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    */
   FlatWorldGeneratorSettings removeStructure(FlatWorldStructure structure);
 
@@ -116,7 +118,7 @@ public interface FlatWorldGeneratorSettings {
    * @param structure The non-null structure to change the option for
    * @param option    The non-null option to be changed
    * @param value     The new value of the given option
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    * @see #hasStructureOption(FlatWorldStructure, StructureOption)
    * @see #getStructureOption(FlatWorldStructure, StructureOption)
    */
@@ -138,7 +140,7 @@ public interface FlatWorldGeneratorSettings {
    * Adds a new layer to the top of the already present layers.
    *
    * @param layer The non-null layer to be added
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    * @see #getLayers()
    * @see #setLayer(int, FlatWorldLayer)
    * @see #removeLayer(int)
@@ -150,7 +152,7 @@ public interface FlatWorldGeneratorSettings {
    *
    * @param index The index of the layer to be replaced
    * @param layer The new non-null layer to replace the old one with
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    * @throws IndexOutOfBoundsException If the given index is out of range (<tt>index &lt; 0 || index
    *                                   &gt;= size()</tt>)
    */
@@ -160,19 +162,25 @@ public interface FlatWorldGeneratorSettings {
    * Removes the layer at the given index.
    *
    * @param index The index of the layer to be removed
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    * @throws IndexOutOfBoundsException If the given index is out of range (<tt>index &lt; 0 || index
    *                                   &gt;= size()</tt>)
    * @see #clearLayers()
    */
   FlatWorldGeneratorSettings removeLayer(int index);
 
+  /**
+   * Clears all layers of this settings object.
+   *
+   * @return This settings object for chaining
+   * @see #removeLayer(int)
+   */
   FlatWorldGeneratorSettings clearLayers();
 
   /**
    * Validates if this settings object is correct and can be used to generate a new flat world.
    *
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    * @throws IllegalArgumentException If no {@link #getLayers() layer} is set
    */
   FlatWorldGeneratorSettings validate();

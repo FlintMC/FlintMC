@@ -19,6 +19,11 @@
 
 package net.flintmc.mcapi.world.generator;
 
+/**
+ * An enumeration of all game modes that can be used to generate a world.
+ *
+ * @see ExtendedWorldGeneratorSettings
+ */
 public enum WorldGameMode {
 
   SURVIVAL,

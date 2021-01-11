@@ -17,12 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.block;
+package net.flintmc.mcapi.entity;
 
-public enum PathType {
-
-  LAND,
-  WATER,
-  AIR
-
+/**
+ * An enumeration representing all available push reactions of entities.
+ */
+public enum PushReaction {
+  NORMAL,
+  DESTROY,
+  BLOCK,
+  IGNORE,
+  PUSH_ONLY
 }

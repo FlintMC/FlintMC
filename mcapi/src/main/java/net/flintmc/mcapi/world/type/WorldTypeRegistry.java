@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.world.type;
 
+import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorSettings;
+import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 import java.util.List;
 
 /**
@@ -35,16 +37,51 @@ public interface WorldTypeRegistry {
    */
   List<WorldType> getWorldTypes();
 
+  /**
+   * Retrieves the type to generate a default Minecraft world.
+   *
+   * @return The non-null default type
+   */
   WorldType getDefaultType();
 
+  /**
+   * Retrieves the type to generate a Minecraft flat world.
+   *
+   * @return The non-null flat type
+   * @see FlatWorldGeneratorSettings
+   */
   WorldType getFlatType();
 
+  /**
+   * Retrieves the type to generate a default Minecraft world with larger biomes than normal.
+   *
+   * @return The non-null large biomes type
+   */
   WorldType getLargeBiomesType();
 
+  /**
+   * Retrieves the type to generate an amplified Minecraft world.
+   *
+   * @return The non-null amplified type
+   */
   WorldType getAmplifiedType();
 
+  /**
+   * Retrieves the buffet type to generate a world consisting of one biome.
+   *
+   * @return The non-null buffet type
+   * @see BuffetWorldGeneratorSettings
+   */
   WorldType getBuffetType();
 
+  /**
+   * Retrieves the type from this registry with matching the given name.
+   *
+   * @param name The non-null case-sensitive name (e.g. "default")
+   * @return The world type with the given name or {@code null} if there is no type matching the
+   * given name
+   * @see WorldType#getName()
+   */
   WorldType getType(String name);
 
 }

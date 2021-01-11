@@ -21,11 +21,37 @@ package net.flintmc.mcapi.world.generator;
 
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 
+/**
+ * Mapper between Flint implementations of world generator classes and their respective Minecraft
+ * implementation.
+ * <p>
+ * Only intended to be used internally.
+ */
 public interface WorldGeneratorMapper {
 
+  /**
+   * Maps the given generator to a Minecraft instance.
+   *
+   * @param generator The non-null generator to be mapped
+   * @return The new non-null Minecraft generator settings
+   */
   Object toMinecraftGenerator(WorldGeneratorBuilder generator);
 
+  /**
+   * Maps the given Minecraft flat settings to a Flint instance.
+   *
+   * @param settings The non-null settings to be mapped
+   * @return The new non-null flat settings from the Minecraft settings
+   * @throws IllegalArgumentException If the given object is not an instance of the Minecraft
+   *                                  generator settings of this version
+   */
   FlatWorldGeneratorSettings fromMinecraftFlatSettings(Object settings);
 
+  /**
+   * Maps the given Flint flat settings to a Minecraft instance.
+   *
+   * @param settings The non-null settings to be mapped
+   * @return The new non-null Minecraft flat settings
+   */
   Object toMinecraftFlatSettings(FlatWorldGeneratorSettings settings);
 }

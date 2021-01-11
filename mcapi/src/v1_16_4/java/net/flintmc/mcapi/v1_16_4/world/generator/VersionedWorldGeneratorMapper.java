@@ -115,7 +115,7 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
   public Object toMinecraftGenerator(WorldGeneratorBuilder generator) {
     generator.validate();
 
-    net.flintmc.mcapi.world.codec.DatapackCodec datapacks = generator.datapackCodec();
+    net.flintmc.mcapi.world.datapack.DatapackCodec datapacks = generator.datapackCodec();
     return new WorldSettings(
         generator.name(),
         this.mapGameMode(generator.extended().mode()),

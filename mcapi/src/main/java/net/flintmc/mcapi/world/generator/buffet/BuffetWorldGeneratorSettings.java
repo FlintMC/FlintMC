@@ -19,19 +19,28 @@
 
 package net.flintmc.mcapi.world.generator.buffet;
 
+import javax.annotation.Nullable;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.biome.BiomeRegistry;
-import javax.annotation.Nullable;
+import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder;
+import net.flintmc.mcapi.world.type.WorldType;
+import net.flintmc.mcapi.world.type.WorldTypeRegistry;
 
+/**
+ * Settings for the buffet world generator with the {@link WorldType} buffet.
+ *
+ * @see WorldGeneratorBuilder
+ * @see WorldTypeRegistry#getBuffetType()
+ */
 public interface BuffetWorldGeneratorSettings {
 
   /**
    * Retrieves the biome that has been set for this generator settings. If not set, the default
    * biome of Minecraft will be used.
    *
-   * @return The non-null biome
+   * @return The non-null biome that will be used for this generator
    */
   Biome getBiome();
 
@@ -40,7 +49,7 @@ public interface BuffetWorldGeneratorSettings {
    * used.
    *
    * @param biome The new biome to be used or {@code null} to use the default biome of Minecraft
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    */
   BuffetWorldGeneratorSettings setBiome(Biome biome);
 
@@ -55,14 +64,14 @@ public interface BuffetWorldGeneratorSettings {
    * Sets the buffet type of this generator settings.
    *
    * @param type The new non-null type
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    */
   BuffetWorldGeneratorSettings setType(BuffetWorldGeneratorType type);
 
   /**
    * Validates if this settings object is valid to be used to generate a new world.
    *
-   * @return this settings object for chaining
+   * @return This settings object for chaining
    * @throws NullPointerException If {@link #getType()} is {@code null}
    */
   BuffetWorldGeneratorSettings validate();

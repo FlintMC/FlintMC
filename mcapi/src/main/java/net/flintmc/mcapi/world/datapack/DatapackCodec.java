@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.codec;
+package net.flintmc.mcapi.world.datapack;
 
 import java.util.List;
 import net.flintmc.framework.inject.assisted.Assisted;

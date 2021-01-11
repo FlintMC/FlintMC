@@ -25,9 +25,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.world.codec.DatapackCodec;
-import net.flintmc.mcapi.world.codec.DatapackCodec.Factory;
-import net.flintmc.mcapi.world.codec.DatapackCodecRepository;
+import net.flintmc.mcapi.world.datapack.DatapackCodec;
+import net.flintmc.mcapi.world.datapack.DatapackCodec.Factory;
+import net.flintmc.mcapi.world.datapack.DatapackCodecRepository;
 
 @Singleton
 @Implement(DatapackCodecRepository.class)

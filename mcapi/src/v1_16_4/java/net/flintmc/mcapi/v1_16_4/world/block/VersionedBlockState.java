@@ -23,7 +23,6 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
-import net.flintmc.mcapi.world.block.BlockRenderType;
 import net.flintmc.mcapi.world.block.BlockState;
 import net.flintmc.mcapi.world.block.BlockType;
 import net.flintmc.mcapi.world.block.BlockTypeRegistry;
@@ -81,27 +80,9 @@ public class VersionedBlockState implements BlockState {
    * {@inheritDoc}
    */
   @Override
-  public BlockRenderType getRenderType() {
-    switch (this.handle.getRenderType()) {
-      case MODEL:
-        return BlockRenderType.MODEL;
-      case INVISIBLE:
-        return BlockRenderType.INVISIBLE;
-      case ENTITYBLOCK_ANIMATED:
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
-      default:
-        throw new IllegalStateException("Unexpected value: " + this.handle.getRenderType());
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public boolean ticksRandomly() {
     return this.handle.ticksRandomly();
   }
-
 
   /**
    * {@inheritDoc}

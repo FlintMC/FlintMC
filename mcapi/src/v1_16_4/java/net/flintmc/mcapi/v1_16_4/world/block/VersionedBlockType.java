@@ -32,7 +32,7 @@ import net.minecraft.block.Block;
 @Implement(value = BlockType.class, version = "1.16.4")
 public class VersionedBlockType implements BlockType {
 
-  private final ResourceLocation key;
+  private final ResourceLocation name;
   private final BlockState defaultState;
 
   private final ChatComponent displayName;
@@ -43,9 +43,9 @@ public class VersionedBlockType implements BlockType {
   public VersionedBlockType(
       BlockState.Factory stateFactory,
       MinecraftComponentMapper componentMapper,
-      @Assisted ResourceLocation key,
+      @Assisted ResourceLocation name,
       @Assisted("handle") Object handle) {
-    this.key = key;
+    this.name = name;
     this.handle = (Block) handle;
 
     this.displayName = componentMapper.fromMinecraft(this.handle.getTranslatedName());
@@ -67,7 +67,7 @@ public class VersionedBlockType implements BlockType {
    */
   @Override
   public ResourceLocation getName() {
-    return this.key;
+    return this.name;
   }
 
   /**

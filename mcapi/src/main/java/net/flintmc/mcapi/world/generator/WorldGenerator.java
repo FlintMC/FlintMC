@@ -19,8 +19,22 @@
 
 package net.flintmc.mcapi.world.generator;
 
+/**
+ * World generator implementation.
+ *
+ * @see WorldGeneratorBuilder
+ */
 public interface WorldGenerator {
 
+  /**
+   * {@link WorldGeneratorBuilder#validate() Validates} and generates the world as configured in the
+   * given builder.
+   * <p>
+   * Equivalent to {@link WorldGeneratorBuilder#generateAndJoin()}.
+   *
+   * @param builder The non-null builder to generate the world from
+   * @see WorldGeneratorBuilder#validate()
+   */
   void generateAndJoin(WorldGeneratorBuilder builder);
 
 }

@@ -19,8 +19,6 @@
 
 package net.flintmc.mcapi.world;
 
-import java.util.List;
-import java.util.Random;
 import net.flintmc.mcapi.tileentity.TileEntity;
 import net.flintmc.mcapi.world.block.Block;
 import net.flintmc.mcapi.world.block.BlockState;
@@ -30,6 +28,8 @@ import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.type.Dimension;
 import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 import net.flintmc.mcapi.world.type.difficulty.DifficultyLocal;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Represents the Minecraft world.
@@ -261,12 +261,40 @@ public interface World {
    */
   List<TileEntity> getLoadedTileEntities();
 
+  /**
+   * Retrieves the block state at the given coordinates.
+   *
+   * @param x The x coordinate
+   * @param y The y coordinate
+   * @param z The z coordinate
+   * @return The non-null block state at the given coordinates
+   */
   BlockState getBlockState(int x, int y, int z);
 
+  /**
+   * Retrieves the block state at the given position.
+   *
+   * @param position The non-null position
+   * @return The non-null block state at the given position
+   */
   BlockState getBlockState(BlockPosition position);
 
+  /**
+   * Retrieves the block at the given coordinates.
+   *
+   * @param x The x coordinate
+   * @param y The y coordinate
+   * @param z The z coordinate
+   * @return The non-null block at the given coordinates
+   */
   Block getBlock(int x, int y, int z);
 
+  /**
+   * Retrieves the block at the given position.
+   *
+   * @param position The non-null position
+   * @return The non-null block at the given position
+   */
   Block getBlock(BlockPosition position);
 
   /**
@@ -304,8 +332,20 @@ public interface World {
    */
   Dimension fromMinecraftDimension(Object handle);
 
+  /**
+   * Converts the given Flint difficulty to the equivalent Minecraft difficulty.
+   *
+   * @param difficulty The non-null difficulty to be converted
+   * @return The non-null Minecraft difficulty
+   */
   Object toMinecraftDifficulty(Difficulty difficulty);
 
+  /**
+   * Converts the given Minecraft difficulty to the equivalent Flint difficulty.
+   *
+   * @param handle The non-null difficulty to be converted
+   * @return The non-null Flint difficulty
+   */
   Difficulty fromMinecraftDifficulty(Object handle);
 
 }

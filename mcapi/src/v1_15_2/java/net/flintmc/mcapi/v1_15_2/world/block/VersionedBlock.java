@@ -28,11 +28,9 @@ import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.flintmc.mcapi.items.type.ItemType;
-import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.block.Block;
 import net.flintmc.mcapi.world.block.BlockState;
-import net.flintmc.mcapi.world.block.PathType;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -68,7 +66,7 @@ public class VersionedBlock implements Block {
     this.positionHandle = (BlockPos) world.toMinecraftBlockPos(position);
 
     this.state = world.getBlockState(position);
-    this.handle = Minecraft.getInstance().world.getBlockState(this.positionHandle);
+    this.handle = this.state.getHandle();
   }
 
   private net.minecraft.world.World getWorld() {
@@ -108,115 +106,8 @@ public class VersionedBlock implements Block {
    * {@inheritDoc}
    */
   @Override
-  public boolean isNormalCube() {
-    return this.handle.isNormalCube(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isSuffocating() {
-    return this.handle.isSuffocating(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean causesSuffocation() {
-    return this.handle.causesSuffocation(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean allowsMovement(PathType type) {
-    net.minecraft.pathfinding.PathType typeHandle;
-    switch (type) {
-      case AIR:
-        typeHandle = net.minecraft.pathfinding.PathType.AIR;
-        break;
-      case LAND:
-        typeHandle = net.minecraft.pathfinding.PathType.LAND;
-        break;
-      case WATER:
-        typeHandle = net.minecraft.pathfinding.PathType.WATER;
-        break;
-      default:
-        throw new IllegalStateException("Unexpected value: " + type);
-    }
-
-    return this.handle.allowsMovement(this.getWorld(), this.positionHandle, typeHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public float getBlockHardness() {
     return this.handle.getBlockHardness(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean needsPostProcessing() {
-    return this.handle.blockNeedsPostProcessing(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean hasSolidSideOnTop() {
-    return net.minecraft.block.Block.hasSolidSideOnTop(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isOpaqueCube() {
-    return this.handle.isOpaqueCube(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isEmissiveRendering() {
-    return this.handle.isEmissiveRendering();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean propagatesSkylightDown() {
-    return this.handle.propagatesSkylightDown(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public int getOpacity() {
-    return this.handle.getOpacity(this.getWorld(), this.positionHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public float getRelativeBlockHardness(PlayerEntity entity, BlockPosition position) {
-    net.minecraft.entity.player.PlayerEntity entityHandle = (net.minecraft.entity.player.PlayerEntity)
-        this.entityMapper.fromMinecraftPlayerEntity(entity);
-
-    return this.handle.getPlayerRelativeBlockHardness(
-        entityHandle, this.getWorld(), this.positionHandle);
   }
 
   /**
