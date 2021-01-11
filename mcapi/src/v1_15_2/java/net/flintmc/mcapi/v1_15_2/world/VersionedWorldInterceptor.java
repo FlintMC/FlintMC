@@ -47,7 +47,8 @@ public class VersionedWorldInterceptor {
   @Hook(
       className = "net.minecraft.world.World",
       methodName = "addTileEntity",
-      parameters = {@Type(reference = net.minecraft.tileentity.TileEntity.class)})
+      parameters = {@Type(reference = net.minecraft.tileentity.TileEntity.class)},
+      version = "1.15.2")
   public void hookAfterAddTileEntity(@Named("args") Object[] args) {
     net.minecraft.tileentity.TileEntity minecraftTileEntity =
         (net.minecraft.tileentity.TileEntity) args[0];
@@ -66,7 +67,8 @@ public class VersionedWorldInterceptor {
   @Hook(
       className = "net.minecraft.world.World",
       methodName = "removeTileEntity",
-      parameters = {@Type(reference = BlockPos.class)})
+      parameters = {@Type(reference = BlockPos.class)},
+      version = "1.15.2")
   public void hookAfterRemoveTileEntity(@Named("args") Object[] args) {
     BlockPos blockPos = (BlockPos) args[0];
     TileEntity tileEntity = this.world.getTileEntity(this.world.fromMinecraftBlockPos(blockPos));

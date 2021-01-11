@@ -34,7 +34,7 @@ import net.flintmc.util.i18n.Localization;
 @Singleton
 public class LocaleTransformer {
 
-  @ClassTransform("net.minecraft.client.resources.Locale")
+  @ClassTransform(value = "net.minecraft.client.resources.Locale", version = "1.15.2")
   public void transform(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtClass ctClass = context.getCtClass();

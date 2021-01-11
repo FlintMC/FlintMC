@@ -61,7 +61,8 @@ public class ServerKickEventInjector {
       executionTime = Hook.ExecutionTime.BEFORE,
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "onDisconnect",
-      parameters = @Type(reference = ITextComponent.class))
+      parameters = @Type(reference = ITextComponent.class),
+      version = "1.15.2")
   public void handleKick(@Named("args") Object[] args) {
     ConnectedServer server = this.controller.getConnectedServer();
 

@@ -19,23 +19,11 @@
 
 package net.flintmc.render.gui.webgui;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import net.flintmc.processing.autoload.DetectableAnnotation;
-
 /**
- * Marks a {@link WebFileSystemHandler} implementation that should be used by the web gui backend.
- * The annotated class must implement {@link WebFileSystemHandler}.
+ * Exception thrown when an attempt is made to load a non-existent file system.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@DetectableAnnotation
-public @interface WebFileSystem {
-
-  /**
-   * @return The protocol name of the filesystem.
-   */
-  String value();
+public class UnknownWebFileSystemException extends Exception {
+  public UnknownWebFileSystemException(String message) {
+    super(message);
+  }
 }
