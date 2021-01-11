@@ -19,9 +19,10 @@
 
 package net.flintmc.framework.packages.internal.load;
 
+import net.flintmc.framework.packages.DependencyDescription;
+import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.load.DependencyGraphBuilder;
-import org.apache.tools.ant.taskdefs.Pack;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
@@ -30,7 +31,44 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
    * {@inheritDoc}
    */
   @Override
-  public List<Package> buildDependencyGraph(List<Pack> packages) {
-    return null;
+  public List<Package> buildDependencyGraph(List<Package> packages) {
+
+    List<Package> loadable = new ArrayList<>();
+
+    int progress;
+    do {
+      progress = -loadable.size();
+      for (Package pack : packages) {
+        if (areDependenciesSatisfied(pack, loadable)) {
+          loadable.add(pack);
+        }
+      }
+      progress += loadable.size();
+    } while (progress > 0);
+
+    return loadable;
   }
+
+  private boolean areDependenciesSatisfied(Package pack,
+      List<Package> available) {
+
+    for (Package p : available) {
+      if (p.getName().equals(pack.getName())) {
+        return false;
+      }
+    }
+
+    for (DependencyDescription dependency : pack.getPackageManifest()
+        .getDependencies()) {
+
+      if (available.stream()
+          .noneMatch(p -> dependency.matches(p.getPackageManifest()))) {
+        return false;
+      }
+
+    }
+
+    return true;
+  }
+
 }

@@ -20,7 +20,7 @@
 package net.flintmc.framework.packages.load;
 
 import java.util.List;
-import org.apache.tools.ant.taskdefs.Pack;
+import net.flintmc.framework.packages.Package;
 
 /**
  * Util to build the best fitting dependency graph for a given list of
@@ -36,6 +36,6 @@ public interface DependencyGraphBuilder {
    * @return a list of packages that can be loaded in the given order without
    * producing dependency errors
    */
-  List<Package> buildDependencyGraph(List<Pack> packages);
+  List<Package> buildDependencyGraph(List<Package> packages);
 
 }
