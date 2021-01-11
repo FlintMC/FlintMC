@@ -31,7 +31,7 @@ public interface WebFileSystemService {
    * instances via the injection holder if they haven't been created yet.
    *
    * @return a {@link Map} with the first element being the protocol name of the filesystem and the
-   * second element  being the filesystem instance
+   * second element being the filesystem instance
    */
   Map<String, WebFileSystemHandler> getFileSystems();
 }
