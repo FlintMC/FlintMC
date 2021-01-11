@@ -19,8 +19,10 @@
 
 package net.flintmc.framework.packages.load;
 
-import java.util.List;
 import net.flintmc.framework.packages.Package;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Util to build the best fitting dependency graph for a given list of
@@ -37,5 +39,36 @@ public interface DependencyGraphBuilder {
    * producing dependency errors
    */
   List<Package> buildDependencyGraph(List<Package> packages);
+
+  /**
+   * Checks whether a given {@link Package} is loadable assuming a list of given
+   * Packages is already loaded. If true is returned, it is guaranteed that (1)
+   * all dependencies of the Package are met in the given list and (2) the
+   * Package does not have a conflict with a Package in the given list.
+   *
+   * @param pack      the {@link Package} to check
+   * @param available the list of Packages that are available to meet
+   *                  dependencies
+   * @return true, if the Package should be loadable, false if not
+   */
+  boolean isLoadable(Package pack, List<Package> available);
+
+  /**
+   * Checks whether a given {@link Package} is loadable assuming a list of given
+   * Packages is already loaded. If true is returned, it is guaranteed that (1)
+   * all dependencies of the Package are met in the given list and (2) the
+   * Package does not have a conflict with a Package in the given list.
+   *
+   * @param pack       the {@link Package} to check
+   * @param available  the list of Packages that are available to meet
+   *                   dependencies
+   * @param errorTrack the Map in which to write short debug messages in case
+   *                   false is returned (will not be modified if true is
+   *                   returned, otherwise the value with pack as a key will be
+   *                   written)
+   * @return true, if the Package should be loadable, false if not
+   */
+  boolean isLoadable(Package pack, List<Package> available,
+      Map<Package, List<String>> errorTrack);
 
 }
