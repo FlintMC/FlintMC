@@ -107,81 +107,129 @@ public class VersionedBiome implements Biome {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocation getName() {
     return this.name;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getGrassColor(double x, double z) {
     return this.handle.getGrassColor(x, z);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFoliageColor() {
     return this.handle.getFoliageColor();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RainType getRainType() {
     return this.rainType;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getDisplayName() {
     return this.displayName;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TemperatureCategory getTemperatureCategory() {
     return this.temperatureCategory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getDefaultTemperature() {
     return this.handle.getDefaultTemperature();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getTemperature(BlockPosition position) {
     return this.handle.getTemperature((BlockPos) this.world.toMinecraftBlockPos(position));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getHumidity() {
     return this.handle.getDownfall();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isHighHumidity() {
     return this.handle.isHighHumidity();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getWaterColor() {
     return this.handle.getWaterColor();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getWaterFogColor() {
     return this.handle.getWaterFogColor();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BiomeCategory getCategory() {
     return this.category;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Multimap<Classification, BiomeEntitySpawnRate> getSpawnRates() {
     return this.spawnRates;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getSpawningChance() {
     return this.handle.getSpawningChance();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getSkyColor() {
     return this.handle.getSkyColor();

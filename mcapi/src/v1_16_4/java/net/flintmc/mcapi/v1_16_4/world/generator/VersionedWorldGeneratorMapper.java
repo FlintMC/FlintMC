@@ -122,7 +122,7 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
         generator.extended().mode() == WorldGameMode.HARDCORE,
         (Difficulty) this.world.toMinecraftDifficulty(generator.extended().difficulty()),
         generator.extended().allowCheats(),
-        new GameRules(), // TODO?
+        new GameRules(), // TODO Maybe implement custom game rules in the generator
         datapacks == null ? DatapackCodec.VANILLA_CODEC
             : new DatapackCodec(datapacks.getEnabled(), datapacks.getDisabled())
     );
