@@ -21,7 +21,6 @@ package net.flintmc.render.gui.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.nio.DoubleBuffer;
 import javassist.CannotCompileException;
 import javassist.CtField;
 import javassist.CtMethod;
@@ -41,6 +40,8 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 import org.lwjgl.system.MemoryStack;
+
+import java.nio.DoubleBuffer;
 
 /**
  * 1.15.2 implementation of the input interceptor
