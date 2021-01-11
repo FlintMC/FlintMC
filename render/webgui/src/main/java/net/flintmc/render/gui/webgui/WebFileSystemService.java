@@ -30,7 +30,7 @@ public interface WebFileSystemService {
    * Retrieves a Map of web filesystem implementations and their protocol name. Creates the
    * instances via the injection holder if they haven't been created yet.
    *
-   * @return a {@link Map} with the first element being the protocol name of the filesystem and the
+   * @return A {@link Map} with the first element being the protocol name of the filesystem and the
    * second element being the filesystem instance
    */
   Map<String, WebFileSystemHandler> getFileSystems();
