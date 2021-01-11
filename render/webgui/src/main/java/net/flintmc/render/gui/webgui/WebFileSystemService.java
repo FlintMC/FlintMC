@@ -19,19 +19,18 @@
 
 package net.flintmc.render.gui.webgui;
 
-import java.util.Map;
-
 /**
- * Holds a collection of discovered web filesystem implementations.
+ * Provider for all known filesystem implementations.
  */
 public interface WebFileSystemService {
 
   /**
-   * Retrieves a Map of web filesystem implementations and their protocol name. Creates the
-   * instances via the injection holder if they haven't been created yet.
+   * Retrieves the filesystem implementation by its protocol name lazy. Creates the instance via the
+   * injection holder if it hasn't been created yet.
    *
-   * @return a {@link Map} with the first element being the protocol name of the filesystem and the
-   * second element being the filesystem instance
+   * @param key the filesystem protocol name
+   * @return the retrieved filesystem
+   * @throws UnknownWebFileSystemException if no filesystem could be found
    */
-  Map<String, WebFileSystemHandler> getFileSystems();
+  WebFileSystemHandler getHandlerFor(String key) throws UnknownWebFileSystemException;
 }
