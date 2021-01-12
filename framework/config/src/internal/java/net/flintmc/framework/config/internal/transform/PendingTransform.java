@@ -24,6 +24,7 @@ import net.flintmc.framework.config.generator.method.ConfigMethod;
 public class PendingTransform {
 
   private final ConfigMethod method;
+  private TransformedConfigMeta configMeta;
 
   public PendingTransform(ConfigMethod method) {
     this.method = method;
@@ -31,5 +32,13 @@ public class PendingTransform {
 
   public ConfigMethod getMethod() {
     return this.method;
+  }
+
+  public TransformedConfigMeta getConfigMeta() {
+    return this.configMeta;
+  }
+
+  public void setConfigMeta(TransformedConfigMeta configMeta) {
+    this.configMeta = configMeta;
   }
 }
