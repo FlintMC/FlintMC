@@ -236,6 +236,10 @@ public class VersionedVertexBuilder implements VertexBuilder {
     }
 
     void writeFloats(float[] buffer, int offset) {
+      if(this.pos == 0){
+        throw new IllegalStateException(
+            "Not enough attributes have been written to match the vertex format.");
+      }
       int floatsPerAttribute = toWrite.size() / this.pos;
       for (int i = 0; i < floatsPerAttribute; i++) {
         if (this.toWrite.peek() != null) {

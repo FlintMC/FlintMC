@@ -63,6 +63,22 @@ public interface RendererRepository {
   Renderer<T_Renderable, T_RenderContext, T_RenderMeta> getRenderer(
       T_RenderContextAware renderContextAware);
 
+  <
+      T_RenderContextAware extends RenderContextAware<T_RenderContext>,
+      T_RenderContext extends
+          RenderContext<
+              T_RenderContextAware,
+              T_RenderContext,
+              T_Renderable,
+              T_RenderMeta,
+              T_RenderTarget>,
+      T_Renderable extends
+          Renderable<T_RenderContextAware, T_RenderContext, T_Renderable, T_RenderTarget>,
+      T_RenderMeta,
+      T_RenderTarget>
+  Renderer<T_Renderable, T_RenderContext, T_RenderMeta> getRenderer(
+      T_RenderContext renderContextAware);
+
   /**
    * Sets the {@link Renderer} for all {@link RenderContext}s matching {@link
    * RenderContext#getOwner()} as {@link Class#isInstance(Object)} for renderContextAware. In order

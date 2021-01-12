@@ -64,7 +64,9 @@ public class ReferenceInvocationGenerator {
                 + this.random.nextInt(Integer.MAX_VALUE));
     target.addInterface(this.pool.get(ReferenceInvoker.class.getName()));
 
-    String base = "((" + config.getBaseClass().getName() + ") instance)";
+    String base =
+        "((" + config.getGeneratedImplementation(config.getBaseClass().getName()).getName()
+            + ") instance)";
     String lastAccessor = this.buildPathCasts(path) + base + this.buildPathGetters(path);
 
     target.addMethod(this.generateGetter(lastAccessor, target, getter));

@@ -85,7 +85,7 @@ public class DefaultEntityRenderContext implements EntityRenderContext {
   }
 
   public EntityRenderContext updateRenderer() {
-    this.renderer = rendererRepository.getRenderer(this.owner);
+    this.renderer = rendererRepository.getRenderer(this);
     return this;
   }
 
