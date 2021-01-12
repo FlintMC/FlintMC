@@ -23,10 +23,8 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 
 import java.util.List;
 
-/**
- * Lists predefined vertex formats.
- */
-public enum VertexFormats implements VertexFormat {
+/** Lists predefined vertex formats. */
+public enum VertexFormats implements EnumeratedVertexFormat {
   /**
    * A vertex format that contains a homogenous 3D position, a RGB color and texture coordinates.
    */

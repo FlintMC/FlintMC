@@ -122,7 +122,7 @@ public interface VertexBuilder {
    * @param values the value for the attribute.
    * @return the instance.
    */
-  VertexBuilder custom(int position, float... values);
+  VertexBuilder custom(float... values);
 
   /** @return a new {@link VertexBuilder} to add a vertex to the same vertex buffer object. */
   VertexBuilder next();

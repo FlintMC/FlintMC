@@ -31,5 +31,4 @@ dependencies {
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
     api(project(":framework:framework-inject"))
-    api(project(":util:util-math"))
 }

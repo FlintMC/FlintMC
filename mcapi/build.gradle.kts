@@ -44,6 +44,7 @@ dependencies {
     api(project(":render:render-webgui"))
 
     api(project(":util:util-i18n"))
+    api(project(":util:util-math"))
 
     api("com.google.code.gson", "gson", "2.8.6")
 }
