@@ -19,20 +19,27 @@
 
 package net.flintmc.framework.config.internal.transform;
 
+import javassist.CtClass;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 
 public class TransformedConfigMeta {
 
   private final Class<?> superClass;
+  private final CtClass implementationCtClass;
   private Class<?> implementationClass;
   private GeneratingConfig config;
 
-  public TransformedConfigMeta(Class<?> superClass) {
+  public TransformedConfigMeta(Class<?> superClass, CtClass implementationCtClass) {
     this.superClass = superClass;
+    this.implementationCtClass = implementationCtClass;
   }
 
   public Class<?> getSuperClass() {
     return this.superClass;
+  }
+
+  public CtClass getImplementationCtClass() {
+    return this.implementationCtClass;
   }
 
   public Class<?> getImplementationClass() {

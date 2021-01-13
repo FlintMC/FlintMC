@@ -36,6 +36,7 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCharModsCallbackI;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
+import org.lwjgl.glfw.GLFWDropCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
@@ -91,11 +92,13 @@ public class VersionedInputInterceptor implements InputInterceptor {
   /**
    * Called from injected code, see below. The parameters match the hooked function.
    */
+  @SuppressWarnings("unused")
   public void interceptMouseCallbacks(
       long minecraftWindowHandle,
       GLFWCursorPosCallbackI cursorPosCallback,
       GLFWMouseButtonCallbackI mouseButtonCallback,
-      GLFWScrollCallbackI scrollCallback) {
+      GLFWScrollCallbackI scrollCallback,
+      GLFWDropCallbackI dropCallback /* currently unused, here for future support */) {
     this.cursorPosCallback =
         (window, x, y) -> {
           if (!this.callbacks.cursorPosCallback(window, x, y)) {
@@ -151,7 +154,8 @@ public class VersionedInputInterceptor implements InputInterceptor {
             long.class,
             GLFWCursorPosCallbackI.class,
             GLFWMouseButtonCallbackI.class,
-            GLFWScrollCallbackI.class);
+            GLFWScrollCallbackI.class,
+            GLFWDropCallbackI.class);
     setMouseCallbacksMethod.setBody(String.format("%s.interceptMouseCallbacks($$);", fieldName));
   }
 

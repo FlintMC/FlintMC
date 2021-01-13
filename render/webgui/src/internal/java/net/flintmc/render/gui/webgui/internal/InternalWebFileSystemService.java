@@ -19,11 +19,12 @@
 
 package net.flintmc.render.gui.webgui.internal;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import com.google.common.cache.Cache;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import javax.inject.Inject;
@@ -36,10 +37,10 @@ import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.render.gui.webgui.UnknownWebFileSystemException;
 import net.flintmc.render.gui.webgui.WebFileSystem;
 import net.flintmc.render.gui.webgui.WebFileSystemHandler;
 import net.flintmc.render.gui.webgui.WebFileSystemService;
-import net.flintmc.util.commons.Pair;
 
 @Singleton
 @Implement(WebFileSystemService.class)
@@ -47,16 +48,17 @@ import net.flintmc.util.commons.Pair;
 public class InternalWebFileSystemService
     implements ServiceHandler<WebFileSystem>, WebFileSystemService {
 
-  private final List<Pair<CtClass, String>> fileSystems;
-  private List<Pair<WebFileSystemHandler, String>> cachedInstances;
+  private final Map<String, CtClass> fileSystemsToLoad;
+  private final Map<String, WebFileSystemHandler> fileSystemsLoaded;
 
   @Inject
   private InternalWebFileSystemService() {
-    this.fileSystems = new ArrayList<>();
+    this.fileSystemsToLoad = new HashMap<>();
+    this.fileSystemsLoaded = new HashMap<>();
   }
 
   @Override
-  public void discover(AnnotationMeta<WebFileSystem> annotationMeta)
+  public synchronized void discover(AnnotationMeta<WebFileSystem> annotationMeta)
       throws ServiceNotFoundException {
     CtClass fileSystem = annotationMeta.<ClassIdentifier>getIdentifier().getLocation();
 
@@ -64,31 +66,36 @@ public class InternalWebFileSystemService
       if (Arrays.stream(fileSystem.getInterfaces())
           .noneMatch(iface -> iface.getName().equals(WebFileSystemHandler.class.getName()))) {
         throw new ServiceNotFoundException(
-            "The filesystem doesn't implement the WebFileSystemHandler interface.");
+            "The filesystem doesn't implement the WebFileSystemHandler interface");
       }
     } catch (NotFoundException e) {
       throw new ServiceNotFoundException(
-          "Failed to read interfaces from discovered annotation bearer.", e);
+          "Failed to read interfaces from discovered annotation bearer", e);
     }
 
-    fileSystems.add(new Pair<>(fileSystem, annotationMeta.getAnnotation().value()));
+    this.fileSystemsToLoad.put(annotationMeta.getAnnotation().value(), fileSystem);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Collection<Pair<WebFileSystemHandler, String>> getFileSystems() {
-    if (cachedInstances == null) {
-      cachedInstances =
-          fileSystems.stream()
-              .map(
-                  ctPair ->
-                      new Pair<WebFileSystemHandler, String>(
-                          InjectionHolder.getInjectedInstance(CtResolver.get(ctPair.first())),
-                          ctPair.second()))
-              .collect(Collectors.toList());
+  public synchronized WebFileSystemHandler getHandlerFor(String key) throws UnknownWebFileSystemException {
+    WebFileSystemHandler handler;
+    if((handler = this.fileSystemsLoaded.get(key)) != null) {
+      // File system handler loaded already
+      return handler;
     }
-    return cachedInstances;
+
+    CtClass pendingFileSystem;
+    if((pendingFileSystem = this.fileSystemsToLoad.get(key)) == null) {
+      // Don't know how to handle this file system type
+      throw new UnknownWebFileSystemException("No file system handler available for " + key);
+    }
+
+    // Resolve the file system handler and cache it
+    handler = InjectionHolder.getInjectedInstance(CtResolver.get(pendingFileSystem));
+    this.fileSystemsLoaded.put(key, handler);
+    return handler;
   }
 }

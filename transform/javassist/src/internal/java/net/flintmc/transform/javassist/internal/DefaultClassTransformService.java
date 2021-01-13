@@ -21,13 +21,6 @@ package net.flintmc.transform.javassist.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -37,16 +30,18 @@ import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
-import net.flintmc.transform.javassist.ClassTransform;
-import net.flintmc.transform.javassist.ClassTransformContext;
-import net.flintmc.transform.javassist.ClassTransformMeta;
-import net.flintmc.transform.javassist.ClassTransformService;
-import net.flintmc.transform.javassist.ConsumerBasedClassTransformMeta;
-import net.flintmc.transform.javassist.MethodBasedClassTransformMeta;
+import net.flintmc.transform.javassist.*;
 import net.flintmc.transform.javassist.internal.factory.DefaultConsumerBasedClassTransformMetaFactory;
 import net.flintmc.transform.javassist.internal.factory.DefaultMethodBasedClassTransformMetaFactory;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.function.Consumer;
 
 @Singleton
 @MinecraftTransformer
@@ -58,17 +53,22 @@ public class DefaultClassTransformService
   private final ClassPool pool;
   private final MethodBasedClassTransformMeta.Factory methodBasedClassTransformMetaFactory;
   private final ConsumerBasedClassTransformMeta.Factory consumerBasedClassTransformMetaFactory;
+  private final ClassMappingProvider classMappingProvider;
   private final List<ClassTransformMeta> classTransformMetas;
+  private final Set<String> currentlyTransforming;
 
   @Inject
   private DefaultClassTransformService(
       ClassPool pool,
       DefaultMethodBasedClassTransformMetaFactory methodBasedClassTransformMetaFactory,
-      DefaultConsumerBasedClassTransformMetaFactory consumerBasedClassTransformMetaFactory) {
+      DefaultConsumerBasedClassTransformMetaFactory consumerBasedClassTransformMetaFactory,
+      ClassMappingProvider classMappingProvider) {
     this.pool = pool;
     this.methodBasedClassTransformMetaFactory = methodBasedClassTransformMetaFactory;
     this.consumerBasedClassTransformMetaFactory = consumerBasedClassTransformMetaFactory;
+    this.classMappingProvider = classMappingProvider;
     this.classTransformMetas = new ArrayList<>();
+    this.currentlyTransforming = new HashSet<>();
   }
 
   @Override
@@ -103,9 +103,24 @@ public class DefaultClassTransformService
 
   @Override
   public byte[] transform(String className, byte[] bytes) throws ClassTransformException {
+    ClassMapping mapping = classMappingProvider.get(className);
+    String deobfuscatedName = mapping != null ? mapping.getDeobfuscatedName() : className;
+    if (!deobfuscatedName.startsWith("net.minecraft") && !deobfuscatedName
+        .startsWith("com.mojang")) {
+      // Skip classes which are not part of minecraft or some Mojang library
+      return null;
+    }
+
+    if (currentlyTransforming.contains(className)) {
+      throw new ClassTransformException(
+          "Tried to transform " + className
+              + " while transforming it already, a transformer loaded the class while transforming it");
+    }
+
     CtClass ctClass;
 
     try {
+      currentlyTransforming.add(className);
       ctClass =
           this.pool.makeClass(
               new ClassFile(new DataInputStream(new ByteArrayInputStream(bytes))), true);
@@ -129,6 +144,8 @@ public class DefaultClassTransformService
           "Unable to write class bytecode to byte array: " + className, exception);
     } catch (CannotCompileException exception) {
       throw new ClassTransformException("Unable to transform class: " + className, exception);
+    } finally {
+      currentlyTransforming.remove(className);
     }
   }
 }
