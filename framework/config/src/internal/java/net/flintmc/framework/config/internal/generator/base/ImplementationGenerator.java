@@ -21,11 +21,6 @@ package net.flintmc.framework.config.internal.generator.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -36,10 +31,17 @@ import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
 import net.flintmc.framework.config.generator.method.ConfigMethodResolver;
+import net.flintmc.framework.config.internal.generator.service.ConfigImplementationMapper;
 import net.flintmc.framework.config.internal.transform.ConfigTransformer;
 import net.flintmc.framework.config.internal.transform.PendingTransform;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
+import net.flintmc.framework.inject.InjectedFieldBuilder.Factory;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ImplementationGenerator {
@@ -52,14 +54,17 @@ public class ImplementationGenerator {
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final ConfigClassLoader classLoader;
   private final ConfigTransformer transformer;
+  private final ConfigImplementationMapper implementationMapper;
 
   @Inject
   public ImplementationGenerator(
       ClassPool pool,
       ConfigMethodResolver methodResolver,
-      InjectedFieldBuilder.Factory fieldBuilderFactory,
-      ConfigTransformer transformer) {
+      Factory fieldBuilderFactory,
+      ConfigTransformer transformer,
+      ConfigImplementationMapper implementationMapper) {
     this.fieldBuilderFactory = fieldBuilderFactory;
+    this.implementationMapper = implementationMapper;
     this.classLoader = new ConfigClassLoader(ImplementationGenerator.class.getClassLoader());
 
     this.pool = pool;
@@ -125,7 +130,29 @@ public class ImplementationGenerator {
       this.fillConstructor(config, implementation);
     }
 
-    return config.getGeneratedImplementation(type.getName());
+    CtClass baseImplementation = config.getGeneratedImplementation(type.getName());
+
+    // Map the implementations so that they are available in the further process of the
+    // config generation
+    config.getAllMethods().stream()
+        .map(ConfigMethod::getDeclaringClass)
+        .filter(ifc -> config.getGeneratedImplementation(ifc.getName()) == null)
+        .distinct()
+        .forEach(ifc -> {
+          if (ifc.hasAnnotation(ImplementedConfig.class)) {
+            CtClass implementation = this.implementationMapper
+                .getImplementationMappings().get(ifc.getName());
+            if (implementation == null) {
+              throw new IllegalStateException(String.format(
+                  "Config %s has @ImplementedConfig annotation, but no @ConfigImplementation class can be mapped to it",
+                  ifc.getName()));
+            }
+
+            config.bindGeneratedImplementation(ifc, implementation);
+          }
+        });
+
+    return baseImplementation;
   }
 
   private CtClass generateImplementation(CtClass type) throws CannotCompileException {
