@@ -42,12 +42,14 @@ public class DefaultConfigImplementer implements ConfigImplementer {
     this.pool = pool;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void implementParsedConfig(CtClass implementation, String name)
       throws NotFoundException, CannotCompileException {
-    for (CtClass anInterface : implementation.getInterfaces()) {
-      if (anInterface.getName().equalsIgnoreCase(ParsedConfig.class.getName())) {
+    for (CtClass ifc : implementation.getInterfaces()) {
+      if (ifc.getName().equals(ParsedConfig.class.getName())) {
         return;
       }
     }

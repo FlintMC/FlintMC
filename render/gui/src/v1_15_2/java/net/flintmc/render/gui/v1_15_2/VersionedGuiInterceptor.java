@@ -70,7 +70,7 @@ public class VersionedGuiInterceptor {
     this.windowManager.renderMinecraftWindow();
   }
 
-  @ClassTransform("1.15.2")
+  @ClassTransform(version = "1.15.2")
   @CtClassFilter(
       className = "net.minecraft.client.gui.screen.Screen",
       value = CtClassFilters.SUBCLASS_OF)

@@ -17,42 +17,60 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.internal.transform;
+package net.flintmc.framework.config.internal.generator.service;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
+import javassist.CtClass;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.ParsedConfig;
+import net.flintmc.framework.config.internal.transform.ConfigTransformer;
+import net.flintmc.framework.config.internal.transform.TransformedConfigMeta;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
+import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.processing.autoload.AnnotationMeta;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Singleton
 @Service(
     value = ConfigImplementation.class,
     priority = 3 /* needs to be called after the ConfigTransformer */)
-public class ConfigPostTransformer implements ServiceHandler<ConfigImplementation> {
+public class ConfigImplementationBinder implements ServiceHandler<ConfigImplementation> {
 
   private final ConfigGenerator configGenerator;
   private final ConfigTransformer transformer;
 
   @Inject
-  private ConfigPostTransformer(ConfigGenerator configGenerator, ConfigTransformer transformer) {
+  private ConfigImplementationBinder(
+      ConfigGenerator configGenerator, ConfigTransformer transformer) {
     this.configGenerator = configGenerator;
     this.transformer = transformer;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public void discover(AnnotationMeta<ConfigImplementation> annotationMeta) {
+  public void discover(AnnotationMeta<ConfigImplementation> annotationMeta)
+      throws ServiceNotFoundException {
     // flush the implemented configs from the ConfigTransformer
     // into the injector
+
+    for (TransformedConfigMeta meta : this.transformer.getMappings()) {
+      try {
+        CtClass implementation = meta.getImplementationCtClass();
+
+        // load the class so that the transformer will be called
+        Class<?> definedImplementation =
+            super.getClass().getClassLoader().loadClass(implementation.getName());
+        meta.setImplementationClass(definedImplementation);
+      } catch (ClassNotFoundException exception) {
+        throw new ServiceNotFoundException("Cannot load transformed config class", exception);
+      }
+    }
 
     Collection<TransformedConfigMeta> mappings = this.transformer.getMappings();
     if (mappings.isEmpty()) {
