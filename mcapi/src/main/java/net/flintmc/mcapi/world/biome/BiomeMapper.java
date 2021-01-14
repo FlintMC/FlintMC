@@ -19,18 +19,67 @@
 
 package net.flintmc.mcapi.world.biome;
 
+/**
+ * Mapper between Flint biomes to and Minecraft biomes.
+ *
+ * @see Biome
+ */
 public interface BiomeMapper {
 
+  /**
+   * Maps the given Minecraft category to the Flint biome category.
+   *
+   * @param category The non-null Minecraft category to be mapped
+   * @return The non-null Flint category matching the given Minecraft category
+   * @see #toMinecraftBiomeCategory(BiomeCategory)
+   */
   BiomeCategory fromMinecraftBiomeCategory(Object category);
 
+  /**
+   * Maps the given Flint category to the Minecraft biome category.
+   *
+   * @param category The non-null Flint category to be mapped
+   * @return The non-null Minecraft category matching the given Flint category
+   * @see #fromMinecraftBiomeCategory(Object)
+   */
   Object toMinecraftBiomeCategory(BiomeCategory category);
 
+  /**
+   * Maps the given Minecraft rain type to the Flint biome rain type.
+   *
+   * @param rainType The non-null Minecraft rain type to be mapped
+   * @return The non-null Flint rain type matching the given Minecraft rain type
+   * @see #toMinecraftRainType(RainType)
+   */
   RainType fromMinecraftRainType(Object rainType);
 
+  /**
+   * Maps the given Flint rain type to the Minecraft biome rain type.
+   *
+   * @param rainType The non-null Flint rain type to be mapped
+   * @return The non-null Minecraft rain type matching the given Flint rain type
+   * @see #fromMinecraftRainType(Object)
+   */
   Object toMinecraftRainType(RainType rainType);
 
+  /**
+   * Maps the given Minecraft temperature category to the Flint biome temperature category.
+   *
+   * @param category The non-null Minecraft temperature category to be mapped
+   * @return The non-null Flint temperature category matching the given Minecraft temperature
+   * category
+   * @see #toMinecraftTemperatureCategory(TemperatureCategory)
+   */
   TemperatureCategory fromMinecraftTemperatureCategory(Object category);
 
+  /**
+   * Maps the given Flint temperature category to the Minecraft biome temperature category.
+   *
+   * @param category The non-null Flint temperature category to be mapped
+   * @return The non-null Minecraft temperature category matching the given Flint temperature
+   * category
+   * @see #fromMinecraftTemperatureCategory(Object)
+   */
   Object toMinecraftTemperatureCategory(TemperatureCategory category);
 
 }

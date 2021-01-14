@@ -204,7 +204,7 @@ public class VersionedBiome implements Biome {
    * {@inheritDoc}
    */
   @Override
-  public boolean isHighHumidity() {
+  public boolean hasHighHumidity() {
     return this.handle.isHighHumidity();
   }
 
@@ -244,7 +244,7 @@ public class VersionedBiome implements Biome {
    * {@inheritDoc}
    */
   @Override
-  public float getSpawningChance() {
+  public float getMobSpawnChance() {
     return this.handle.getMobSpawnInfo().getCreatureSpawnProbability();
   }
 

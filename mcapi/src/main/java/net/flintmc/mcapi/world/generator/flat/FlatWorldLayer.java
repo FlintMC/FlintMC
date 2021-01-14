@@ -39,7 +39,7 @@ public interface FlatWorldLayer {
   /**
    * Retrieves the height of this layer in blocks.
    *
-   * @return The height of this layer in blocks, always > 0
+   * @return The height of this layer in blocks, always &gt; 0
    */
   int getLayerHeight();
 
@@ -53,7 +53,7 @@ public interface FlatWorldLayer {
      * Creates a new {@link FlatWorldLayer}.
      *
      * @param blockState  The non-null block state of this layer
-     * @param layerHeight The height of this layer in blocks, needs to be > 0
+     * @param layerHeight The height of this layer in blocks, needs to be &gt; 0
      * @return The new non-null {@link FlatWorldLayer}
      */
     FlatWorldLayer create(
@@ -64,7 +64,7 @@ public interface FlatWorldLayer {
      * block state} of the given block type.
      *
      * @param blockType   The non-null block type of this layer to get the default state from
-     * @param layerHeight The height of this layer in blocks, needs to be > 0
+     * @param layerHeight The height of this layer in blocks, needs to be &gt; 0
      * @return The new non-null {@link FlatWorldLayer}
      */
     FlatWorldLayer create(

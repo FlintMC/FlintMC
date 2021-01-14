@@ -27,7 +27,7 @@ package net.flintmc.mcapi.world.generator.buffet;
 public enum BuffetWorldGeneratorType {
 
   /**
-   * A default world consisting one biome.
+   * A default world consisting of one biome.
    */
   SURFACE,
 

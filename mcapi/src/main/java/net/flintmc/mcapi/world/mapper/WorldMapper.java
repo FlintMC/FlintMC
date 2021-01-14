@@ -31,7 +31,7 @@ public interface WorldMapper {
    * Creates a new Minecraft world type by using the Flint {@link WorldType} as the base.
    *
    * @param worldType The non-null Flint {@link WorldType}.
-   * @return The new Minecraft world type or {@code null} if the given world type was invalid.
+   * @return The new Minecraft world type or {@code null}, if the given world type was invalid.
    */
   Object toMinecraftWorldType(WorldType worldType);
 
@@ -39,7 +39,7 @@ public interface WorldMapper {
    * Creates a new {@link WorldType} by using the given Minecraft world type as the base.
    *
    * @param handle The non-null Minecraft world type.
-   * @return The new Flint {@link WorldType} or {@code null} if the given world type was invalid.
+   * @return The new Flint {@link WorldType} or {@code null}, if the given world type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft world type.
    */
   WorldType fromMinecraftWorldType(Object handle);
@@ -48,7 +48,7 @@ public interface WorldMapper {
    * Creates a new Minecraft world summary by using the Flint {@link WorldOverview} as the base.
    *
    * @param worldOverview The non-null Flint {@link WorldOverview}.
-   * @return The new Minecraft world summary or {@code null} if the given world summary was invalid.
+   * @return The new Minecraft world summary or {@code null}, if the given world summary was invalid.
    */
   Object toMinecraftWorldSummary(WorldOverview worldOverview);
 
@@ -56,7 +56,7 @@ public interface WorldMapper {
    * Creates a new {@link WorldOverview} by using the given Minecraft world summary as the base.
    *
    * @param handle The non-null Minecraft world type.
-   * @return The new Flint {@link WorldOverview} or {@code null} if the given world summary was
+   * @return The new Flint {@link WorldOverview} or {@code null}, if the given world summary was
    * invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft world summary.
    */

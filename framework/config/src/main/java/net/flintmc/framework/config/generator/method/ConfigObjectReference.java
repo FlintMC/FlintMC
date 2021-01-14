@@ -111,7 +111,7 @@ public interface ConfigObjectReference {
    *
    * @param annotationType The non-null type of the annotation
    * @param <A> The annotation which should be searched
-   * @return The discovered annotation or {@code null} if no method/interface associated with this
+   * @return The discovered annotation or {@code null}, if no method/interface associated with this
    *     reference is annotated with it.
    */
   <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType);
@@ -176,7 +176,7 @@ public interface ConfigObjectReference {
    * Retrieves the default value which has been defined by the user and will be used if no value is
    * set in the config. It is parsed from the {@link DefaultAnnotationMapperRegistry}.
    *
-   * @return The default value or {@code null} if no defaultValue has been set
+   * @return The default value or {@code null}, if no defaultValue has been set
    */
   Object getDefaultValue();
 

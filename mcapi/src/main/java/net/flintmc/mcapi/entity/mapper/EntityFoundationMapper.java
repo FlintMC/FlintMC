@@ -41,7 +41,7 @@ public interface EntityFoundationMapper {
    * base.
    *
    * @param handle The non-null Minecraft equipment slot type.
-   * @return The new Flint {@link EquipmentSlotType} or {@code null} if the given equipment slot
+   * @return The new Flint {@link EquipmentSlotType} or {@code null}, if the given equipment slot
    * type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft equipment slot type.
    */
@@ -52,7 +52,7 @@ public interface EntityFoundationMapper {
    * base.
    *
    * @param equipmentSlotType The non-null Flint {@link EquipmentSlotType}.
-   * @return The new Minecraft equipment slot type or {@code null} if the given equipment slot type
+   * @return The new Minecraft equipment slot type or {@code null}, if the given equipment slot type
    * was invalid.
    */
   Object toMinecraftEquipmentSlotType(EquipmentSlotType equipmentSlotType);
@@ -61,7 +61,7 @@ public interface EntityFoundationMapper {
    * Creates a new {@link GameMode} by using the given Minecraft game type as the base.
    *
    * @param handle The non-null Minecraft game type.
-   * @return The new Flint {@link GameMode} or {@code null} if the given game type was invalid.
+   * @return The new Flint {@link GameMode} or {@code null}, if the given game type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft game type type.
    */
   GameMode fromMinecraftGameType(Object handle);
@@ -70,7 +70,7 @@ public interface EntityFoundationMapper {
    * Creates a new Minecraft game type by using the Flint {@link GameMode} as the base.
    *
    * @param mode The non-null Flint {@link GameMode}.
-   * @return The new Minecraft game type or {@code null} if the given game type was invalid.
+   * @return The new Minecraft game type or {@code null}, if the given game type was invalid.
    */
   Object toMinecraftGameType(GameMode mode);
 
@@ -78,7 +78,7 @@ public interface EntityFoundationMapper {
    * Creates a new {@link GameMode} by using the given Minecraft mover type as the base.
    *
    * @param handle The non-null Minecraft mover type.
-   * @return The new Flint {@link GameMode} or {@code null} if the given mover type was invalid.
+   * @return The new Flint {@link GameMode} or {@code null}, if the given mover type was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft mover type type.
    */
   MoverType fromMinecraftMoverType(Object handle);
@@ -87,7 +87,7 @@ public interface EntityFoundationMapper {
    * Creates a new Minecraft mover type by using the Flint {@link MoverType} as the base.
    *
    * @param mode The non-null Flint {@link MoverType}.
-   * @return The new Minecraft mover type or {@code null} if the given mover type was invalid.
+   * @return The new Minecraft mover type or {@code null}, if the given mover type was invalid.
    */
   Object toMinecraftMoverType(MoverType mode);
 
@@ -95,7 +95,7 @@ public interface EntityFoundationMapper {
    * Creates a new {@link EntityPose} by using the given Minecraft entity pose as the base.
    *
    * @param handle The non-null Minecraft entity pose.
-   * @return The new Flint {@link EntityPose} or {@code null} if the given entity pose was invalid.
+   * @return The new Flint {@link EntityPose} or {@code null}, if the given entity pose was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft entity pose.
    */
   EntityPose fromMinecraftPose(Object handle);
@@ -104,7 +104,7 @@ public interface EntityFoundationMapper {
    * Creates a new Minecraft entity pose by using the Flint {@link EntityPose} as the base.
    *
    * @param pose The non-null Flint {@link EntityPose}.
-   * @return The new Minecraft entity pose or {@code null} if the given entity pose was invalid.
+   * @return The new Minecraft entity pose or {@code null}, if the given entity pose was invalid.
    */
   Object toMinecraftPose(EntityPose pose);
 

@@ -19,11 +19,34 @@
 
 package net.flintmc.mcapi.world.biome;
 
+/**
+ * Categories of temperatures in a biome.
+ *
+ * @see Biome#getTemperatureCategory()
+ */
 public enum TemperatureCategory {
 
+  /**
+   * This biome is an ocean biome and has ocean-like temperatures, those are for example the frozen
+   * ocean and the lukewarm ocean biomes.
+   */
   OCEAN,
+
+  /**
+   * This is a pretty cold biome, maybe also with snow in it, those are for example the snowy taiga
+   * mountains and ice spikes biomes.
+   */
   COLD,
+
+  /**
+   * The medium biome temperature, those are for example the giant tree taiga hills and taiga
+   * biomes.
+   */
   MEDIUM,
+
+  /**
+   * The warm biome temperature, those are for example the nether and desert biomes.
+   */
   WARM
 
 }

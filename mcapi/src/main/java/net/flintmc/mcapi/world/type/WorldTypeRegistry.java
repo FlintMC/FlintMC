@@ -78,7 +78,7 @@ public interface WorldTypeRegistry {
    * Retrieves the type from this registry with matching the given name.
    *
    * @param name The non-null case-sensitive name (e.g. "default")
-   * @return The world type with the given name or {@code null} if there is no type matching the
+   * @return The world type with the given name or {@code null}, if there is no type matching the
    * given name
    * @see WorldType#getName()
    */

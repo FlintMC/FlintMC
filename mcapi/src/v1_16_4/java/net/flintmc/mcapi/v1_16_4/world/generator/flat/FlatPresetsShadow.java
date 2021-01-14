@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.v1_16_4.world.generator.flat;
 
+import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettingsSerializer;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -27,6 +28,13 @@ import net.minecraft.world.gen.FlatGenerationSettings;
 @Shadow("net.minecraft.client.gui.screen.FlatPresetsScreen")
 public interface FlatPresetsShadow {
 
+  /**
+   * Serializes the given settings into a string for {@link FlatWorldGeneratorSettingsSerializer#deserialize(String)}
+   *
+   * @param registry The non-null registry for biomes
+   * @param settings The non-null settings to be serialized
+   * @return The new non-null serialized string of the given settings
+   */
   String func_243303_b(Registry<Biome> registry, FlatGenerationSettings settings);
 
 }

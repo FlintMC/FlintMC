@@ -36,7 +36,7 @@ public interface ServerController {
   /**
    * Retrieves the currently connected server.
    *
-   * @return The server or {@code null} if the client isn't connected with or currently connecting
+   * @return The server or {@code null}, if the client isn't connected with or currently connecting
    * to any server
    * @see #isConnected()
    */

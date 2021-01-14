@@ -44,9 +44,9 @@ public interface TextComponentBuilder extends ComponentBuilder<TextComponentBuil
   TextComponentBuilder appendText(String text);
 
   /**
-   * Retrieves the text of the current component or {@code null} if no text has been set.
+   * Retrieves the text of the current component or {@code null}, if no text has been set.
    *
-   * @return The text of the current component or {@code null} if no text has been provided
+   * @return The text of the current component or {@code null}, if no text has been provided
    * @see #text(String)
    * @see #appendText(String)
    */

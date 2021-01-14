@@ -31,7 +31,7 @@ public interface KeybindComponent extends ChatComponent {
    * Retrieves the keybind which will be replaced with the configured key in the settings by the
    * client.
    *
-   * @return The keybind out of this component or {@code null} if no keybind has been set
+   * @return The keybind out of this component or {@code null}, if no keybind has been set
    * @see #keybind(Keybind)
    */
   Keybind keybind();

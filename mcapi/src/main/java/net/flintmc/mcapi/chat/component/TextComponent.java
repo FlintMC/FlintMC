@@ -28,7 +28,7 @@ public interface TextComponent extends ChatComponent {
    * Retrieves the raw text of this component which will be displayed by the client or {@code null}
    * if no text has been specified.
    *
-   * @return The text or {@code null} if no text has been provided
+   * @return The text or {@code null}, if no text has been provided
    * @see #text(String)
    */
   String text();

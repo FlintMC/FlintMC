@@ -301,7 +301,7 @@ public interface World {
    * Creates a new Minecraft block pos by using the given {@link BlockPosition} as the base.
    *
    * @param position The non-null {@link BlockPosition}.
-   * @return The new Minecraft block pos or {@code null} if the given block position was invalid.
+   * @return The new Minecraft block pos or {@code null}, if the given block position was invalid.
    */
   Object toMinecraftBlockPos(BlockPosition position);
 
@@ -309,7 +309,7 @@ public interface World {
    * Creates a new {@link BlockPosition} by using the given Minecraft block pos as the base.
    *
    * @param handle The non-null block pos.
-   * @return The new {@link BlockPosition} or {@code null} if the given Minecraft block pos was
+   * @return The new {@link BlockPosition} or {@code null}, if the given Minecraft block pos was
    * invalid.
    */
   BlockPosition fromMinecraftBlockPos(Object handle);
@@ -318,7 +318,7 @@ public interface World {
    * Creates a new Minecraft dimension type by using the given {@link Dimension} as the base.
    *
    * @param dimension The non-null {@link Dimension}.
-   * @return The new Minecraft dimension type or {@code null} if the given {@link Dimension} was
+   * @return The new Minecraft dimension type or {@code null}, if the given {@link Dimension} was
    * invalid.
    */
   Object toMinecraftDimension(Dimension dimension);
@@ -327,7 +327,7 @@ public interface World {
    * Creates a new {@link Dimension} by using the given Minecraft dimension type as the base.
    *
    * @param handle The non-null minecraft dimension type.
-   * @return The new {@link Dimension} or {@code null} if the given {@link Dimension} was invalid.
+   * @return The new {@link Dimension} or {@code null}, if the given {@link Dimension} was invalid.
    * @throws IllegalStateException When an unexpected value is received.
    */
   Dimension fromMinecraftDimension(Object handle);

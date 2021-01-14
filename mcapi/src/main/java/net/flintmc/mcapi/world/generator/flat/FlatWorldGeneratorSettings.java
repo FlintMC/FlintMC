@@ -38,7 +38,7 @@ public interface FlatWorldGeneratorSettings {
    * Retrieves the biome that has been set for this generator settings. If not set, the default
    * biome of Minecraft will be used.
    *
-   * @return The biome or {@code null} if no biome is set
+   * @return The biome or {@code null}, if no biome is set
    */
   Biome getBiome();
 
@@ -61,7 +61,7 @@ public interface FlatWorldGeneratorSettings {
   FlatWorldStructure[] getStructures();
 
   /**
-   * Retrieves whether this settings object contains this structure. Similar to checking if {@link
+   * Retrieves whether this settings object contains this structure. Equal to checking if {@link
    * #getStructures()} contains the given structure.
    *
    * @param structure The non-null structure to check for
@@ -79,7 +79,7 @@ public interface FlatWorldGeneratorSettings {
   FlatWorldGeneratorSettings addStructure(FlatWorldStructure structure);
 
   /**
-   * Removes a structure and all its options from this settings object. If the structure is not
+   * Removes a structure and all its options from this settings object. If the structure hasn't
    * added, nothing will happen.
    *
    * @param structure The non-null structure to be added
@@ -112,8 +112,8 @@ public interface FlatWorldGeneratorSettings {
 
   /**
    * Changes the value of the given option for the given structure to the given value. If the given
-   * structure is not {@link #addStructure(FlatWorldStructure) added yet}, it will automatically be
-   * added.
+   * structure hasn't been {@link #addStructure(FlatWorldStructure) added yet}, it will
+   * automatically be added.
    *
    * @param structure The non-null structure to change the option for
    * @param option    The non-null option to be changed
@@ -126,15 +126,26 @@ public interface FlatWorldGeneratorSettings {
       FlatWorldStructure structure, StructureOption option, int value);
 
   /**
-   * Retrieves the layers of this settings object. The lowest value in this array (index 0) will be
-   * the lowest layer.
+   * Retrieves the layers of this settings object. The order in the array represents the order of
+   * layers in the world from the lowest to the highest ordered by index.
    *
    * @return The non-null array of layers in this settings object
    * @see #addLayer(FlatWorldLayer)
    * @see #setLayer(int, FlatWorldLayer)
    * @see #removeLayer(int)
+   * @see #layerCount()
    */
   FlatWorldLayer[] getLayers();
+
+  /**
+   * Retrieves the number of layers in this settings object.
+   * <p>
+   * Equivalent to {@code getLayers().length}
+   *
+   * @return The number of layers which is always >= 0
+   * @see #getLayers()
+   */
+  int layerCount();
 
   /**
    * Adds a new layer to the top of the already present layers.
@@ -208,7 +219,7 @@ public interface FlatWorldGeneratorSettings {
    * Retrieves an option that has been set for this settings object.
    *
    * @param key The non-null key to get the option for
-   * @return The value of the option or {@code null} if the given key has no option
+   * @return The value of the option or {@code null}, if the given key has no option
    * @see #setOption(String, Object)
    */
   Object getOption(String key);
@@ -258,6 +269,11 @@ public interface FlatWorldGeneratorSettings {
      * semicolon the biome needs to be set. (If set) followed by another semicolon the
      * structures (separated by a comma) can be set. If the structures are set, the biome
      * also needs to be set.
+     * <p>
+     * If the biome in the given string doesn't exist, the default biome will be used. If no
+     * (or at least one invalid) layer is set in the given string, the {@link #createDefault()
+     * default settings} will
+     * be retrieved.
      *
      * @param serialized The non-null serialized string in the described format
      * @return The new non-null world generator settings

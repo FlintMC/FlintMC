@@ -19,6 +19,12 @@
 
 package net.flintmc.mcapi.world.biome;
 
+/**
+ * Categories of biomes, for example the ocean category for all ocean-like biomes like the standard
+ * ocean and lukewarm ocean.
+ *
+ * @see Biome#getCategory()
+ */
 public enum BiomeCategory {
 
   NONE,

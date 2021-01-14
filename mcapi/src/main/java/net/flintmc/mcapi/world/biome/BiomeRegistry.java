@@ -19,15 +19,36 @@
 
 package net.flintmc.mcapi.world.biome;
 
-import java.util.Collection;
 import net.flintmc.mcapi.resources.ResourceLocation;
+import java.util.Collection;
 
+/**
+ * Registry for all {@link Biome}s available in this Minecraft version.
+ */
 public interface BiomeRegistry {
 
+  /**
+   * Retrieves a collection of all available biomes in this Minecraft  version.
+   *
+   * @return The non-null collection of biomes
+   */
   Collection<Biome> getBiomes();
 
+  /**
+   * Retrieves the default biome of this Minecraft version.
+   *
+   * @return The non-null default biome
+   */
   Biome getDefaultBiome();
 
+  /**
+   * Retrieves the biome in this registry with the given resource name.
+   *
+   * @param name The non-null name of the biome to get
+   * @return The biome in this registry for the given name or {@code null}, if no biome exists for
+   * the given name
+   * @see Biome#getName()
+   */
   Biome getBiome(ResourceLocation name);
 
 }

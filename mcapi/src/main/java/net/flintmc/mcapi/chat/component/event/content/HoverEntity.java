@@ -37,7 +37,7 @@ public class HoverEntity extends HoverContent {
    *
    * @param uniqueId    The non-null uniqueId of the entity
    * @param type        The non-null type of the entity
-   * @param displayName The display name of the entity or {@code null} if the entity doesn't have a
+   * @param displayName The display name of the entity or {@code null}, if the entity doesn't have a
    *                    specific display name
    */
   public HoverEntity(UUID uniqueId, String type, ChatComponent displayName) {
@@ -67,7 +67,7 @@ public class HoverEntity extends HoverContent {
   /**
    * Retrieves the display name of this entity which is used when displaying the entity.
    *
-   * @return The display name of this entity or {@code null} if no display name has been set
+   * @return The display name of this entity or {@code null}, if no display name has been set
    */
   public ChatComponent getDisplayName() {
     return this.displayName;

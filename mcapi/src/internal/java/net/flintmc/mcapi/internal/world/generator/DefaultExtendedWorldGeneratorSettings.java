@@ -19,7 +19,6 @@
 
 package net.flintmc.mcapi.internal.world.generator;
 
-import com.google.common.base.Preconditions;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.generator.ExtendedWorldGeneratorSettings;
@@ -27,7 +26,7 @@ import net.flintmc.mcapi.world.generator.WorldGameMode;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegistry;
 import net.flintmc.mcapi.world.type.difficulty.Difficulty;
-
+import net.flintmc.util.commons.Validate;
 import java.util.Random;
 
 @Implement(ExtendedWorldGeneratorSettings.class)
@@ -197,9 +196,10 @@ public class DefaultExtendedWorldGeneratorSettings implements ExtendedWorldGener
    */
   @Override
   public ExtendedWorldGeneratorSettings validate() {
-    Preconditions.checkNotNull(this.mode, "Invalid mode set");
-    Preconditions.checkNotNull(this.type, "Invalid type set");
-    Preconditions.checkNotNull(this.difficulty, "Invalid difficulty set");
+    Validate.checkNotNull(this.mode, "Invalid mode set");
+    Validate.checkNotNull(this.mode, "Invalid mode set");
+    Validate.checkNotNull(this.type, "Invalid type set");
+    Validate.checkNotNull(this.difficulty, "Invalid difficulty set");
 
     return this;
   }

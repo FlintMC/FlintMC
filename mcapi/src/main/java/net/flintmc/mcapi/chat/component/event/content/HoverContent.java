@@ -54,7 +54,7 @@ public abstract class HoverContent {
    *
    * @param uniqueId    The non-null uniqueId of the entity
    * @param type        The non-null type of the entity
-   * @param displayName The display name of the entity or {@code null} if the entity doesn't have a
+   * @param displayName The display name of the entity or {@code null}, if the entity doesn't have a
    *                    specific display name
    * @return The new non-null content to be used in a {@link HoverEvent}
    */

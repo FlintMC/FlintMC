@@ -64,8 +64,7 @@ import net.minecraft.world.gen.settings.StructureSpreadSettings;
 @Implement(value = WorldGeneratorMapper.class, version = "1.16.4")
 public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
 
-  public static final String REGISTRIES_OPTION =
-      "dynamicRegistries+" + UUID.randomUUID().toString();
+  public static final String REGISTRIES_OPTION = "1.16.4_dynamicRegistries";
 
   private static final BiMap<Structure<?>, FlatWorldStructure> STRUCTURES = HashBiMap.create();
 

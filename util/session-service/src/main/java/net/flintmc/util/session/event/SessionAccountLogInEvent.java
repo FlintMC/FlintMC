@@ -39,7 +39,7 @@ public interface SessionAccountLogInEvent extends Event {
   /**
    * Retrieves the game profile from before the log in (if the account was switched).
    *
-   * @return The profile of the previous account or {@code null} if the client was not logged in
+   * @return The profile of the previous account or {@code null}, if the client was not logged in
    * when changing the account
    */
   GameProfile getPreviousProfile();

@@ -27,4 +27,6 @@ public interface WorldGeneratorSettingsImplementation {
 
   String findFileName(String worldName);
 
+  boolean supportsDatapackCodec();
+
 }

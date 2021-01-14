@@ -45,6 +45,9 @@ public class VersionedResourceLocationProvider implements ResourceLocationProvid
     this.resourceLocationFactory = resourceLocationFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceLocation fromMinecraft(Object handle) {
     if (!(handle instanceof net.minecraft.util.ResourceLocation)) {

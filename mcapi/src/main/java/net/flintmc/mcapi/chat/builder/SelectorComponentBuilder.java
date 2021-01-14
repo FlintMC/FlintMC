@@ -40,7 +40,7 @@ public interface SelectorComponentBuilder extends ComponentBuilder<SelectorCompo
   /**
    * Retrieves the type of the targeting entities. Defaults to {@link EntitySelector#SELF}.
    *
-   * @return The selector of the current component or {@code null} if no selector has been provided
+   * @return The selector of the current component or {@code null}, if no selector has been provided
    * @see #selector(EntitySelector)
    */
   EntitySelector selector();

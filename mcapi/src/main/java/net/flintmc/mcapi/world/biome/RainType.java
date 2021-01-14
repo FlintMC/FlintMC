@@ -19,10 +19,26 @@
 
 package net.flintmc.mcapi.world.biome;
 
+/**
+ * Types of rain that may occur in a biome.
+ *
+ * @see Biome#getRainType()
+ */
 public enum RainType {
 
+  /**
+   * There will be no rain in this biome.
+   */
   NONE,
+
+  /**
+   * There may be rain in this biome, but no snow.
+   */
   RAIN,
+
+  /**
+   * There may be snow in this biome, but no rain.
+   */
   SNOW
 
 }

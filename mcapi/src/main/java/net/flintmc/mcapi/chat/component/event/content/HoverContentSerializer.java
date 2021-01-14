@@ -41,7 +41,7 @@ public interface HoverContentSerializer {
    * @param componentFactory The non-null factory which might be used to create new components
    * @param gson             The non-null gson instance which might be used to deserialize {@link
    *                         ChatComponent}s
-   * @return A new {@link HoverContent} or {@code null} if an invalid component has been provided
+   * @return A new {@link HoverContent} or {@code null}, if an invalid component has been provided
    * @throws JsonParseException If an error occurred while parsing the json out of the component
    */
   HoverContent deserialize(
@@ -56,7 +56,7 @@ public interface HoverContentSerializer {
    * @param componentFactory The non-null factory which might be used to create new components
    * @param gson             The non-null gson instance which might be used to deserialize {@link
    *                         ChatComponent}s.
-   * @return A new {@link ChatComponent} or {@code null} if an invalid content has been provided
+   * @return A new {@link ChatComponent} or {@code null}, if an invalid content has been provided
    * @throws JsonParseException If an error occurred while parsing the json out of the component
    */
   ChatComponent serialize(

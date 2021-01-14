@@ -33,6 +33,9 @@ import net.minecraft.world.biome.Biome.TempCategory;
 @Implement(value = BiomeMapper.class, version = "1.15.2")
 public class VersionedBiomeMapper implements BiomeMapper {
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BiomeCategory fromMinecraftBiomeCategory(Object category) {
     switch ((Category) category) {
@@ -75,6 +78,9 @@ public class VersionedBiomeMapper implements BiomeMapper {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftBiomeCategory(BiomeCategory category) {
     switch (category) {
@@ -118,6 +124,9 @@ public class VersionedBiomeMapper implements BiomeMapper {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RainType fromMinecraftRainType(Object rainType) {
     switch ((Biome.RainType) rainType) {
@@ -132,6 +141,9 @@ public class VersionedBiomeMapper implements BiomeMapper {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftRainType(RainType rainType) {
     switch (rainType) {
@@ -146,6 +158,9 @@ public class VersionedBiomeMapper implements BiomeMapper {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TemperatureCategory fromMinecraftTemperatureCategory(Object category) {
     switch ((TempCategory) category) {
@@ -162,6 +177,9 @@ public class VersionedBiomeMapper implements BiomeMapper {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraftTemperatureCategory(TemperatureCategory category) {
     switch (category) {

@@ -104,7 +104,7 @@ public class ChatColor {
    * Retrieves the default color by the given name.
    *
    * @param name The case-sensitive non-null name of the default color
-   * @return The color or {@code null} if no color that name exists
+   * @return The color or {@code null}, if no color that name exists
    */
   public static ChatColor getByName(String name) {
     return DEFAULT_COLORS.get(name);
@@ -114,7 +114,7 @@ public class ChatColor {
    * Retrieves the default color by the given char. E.g. `4` for {@link #DARK_RED}
    *
    * @param c The character of the default color
-   * @return The color or {@code null} if no color with that code exists
+   * @return The color or {@code null}, if no color with that code exists
    */
   public static ChatColor getByChar(char c) {
     return DEFAULT_COLORS_BY_CHAR.get(c);
@@ -126,7 +126,7 @@ public class ChatColor {
    * @param rawColor The 1, 6 or 7 characters long text containing either the RGB value in the
    *                 hexadecimal format (with or without the `#` prefix) or the Minecraft color
    *                 codes like `4` for {@link #DARK_RED}.
-   * @return The result or {@code null} if no color with the 1 length char exists
+   * @return The result or {@code null}, if no color with the 1 length char exists
    * @throws InvalidChatColorException If the length of the input doesn't match
    * @throws InvalidChatColorException If the given hex value is no valid hexadecimal integer
    */

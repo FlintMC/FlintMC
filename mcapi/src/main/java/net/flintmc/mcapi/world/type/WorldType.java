@@ -44,9 +44,10 @@ public interface WorldType {
   boolean hasCustomConfigurations();
 
   /**
-   * Whether the world type can be created.
+   * Whether the world type can be created. For example types like the debug type of Minecraft
+   * cannot be created.
    *
-   * @return {@code true} if the world can be created.
+   * @return {@code true} if the world can be created, {@code false} otherwise
    */
   boolean canBeCreated();
 

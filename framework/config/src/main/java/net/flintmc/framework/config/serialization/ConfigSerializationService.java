@@ -55,7 +55,7 @@ public interface ConfigSerializationService {
    *
    * @param interfaceType The non-null type of the interface that should be serialized
    * @param <T> The type of the interface that should be serialized
-   * @return The handler for the given type or {@code null} if there is none
+   * @return The handler for the given type or {@code null}, if there is none
    */
   <T> ConfigSerializationHandler<T> getSerializer(Class<T> interfaceType);
 
@@ -75,7 +75,7 @@ public interface ConfigSerializationService {
    * @param interfaceType The non-null type of the interface of the value to get the handler for
    * @param value The non-null value to be serialized
    * @param <T> The type of the value
-   * @return The new json element containing the serialized object or {@code null} if there is no
+   * @return The new json element containing the serialized object or {@code null}, if there is no
    *     handler for the given type
    * @see #deserialize(Class, JsonElement)
    */
@@ -87,7 +87,7 @@ public interface ConfigSerializationService {
    * @param interfaceType The non-null type of the interface of the value to get the handler for
    * @param value The non-null json element to be deserialized
    * @param <T> The type of the value
-   * @return The new object from the given json element or {@code null} if there is no handler for
+   * @return The new object from the given json element or {@code null}, if there is no handler for
    *     the given type
    * @see #serialize(Class, Object)
    */
@@ -98,7 +98,7 @@ public interface ConfigSerializationService {
    * it can be deserialized again without providing the type of the object.
    *
    * @param value The non-null value to be serialized
-   * @return The new json element containing the serialized object or {@code null} if there is no
+   * @return The new json element containing the serialized object or {@code null}, if there is no
    *     handler for the given type
    * @see #deserializeWithType(JsonElement)
    */
@@ -109,7 +109,7 @@ public interface ConfigSerializationService {
    * an object.
    *
    * @param value The non-null json element to be deserialized
-   * @return The new object from the given json element or {@code null} if there is no handler for
+   * @return The new object from the given json element or {@code null}, if there is no handler for
    *     the given type
    * @see #serializeWithType(Object)
    */

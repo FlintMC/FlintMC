@@ -19,7 +19,6 @@
 
 package net.flintmc.mcapi.internal.world.generator;
 
-import com.google.common.base.Preconditions;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.datapack.DatapackCodec;
@@ -29,6 +28,7 @@ import net.flintmc.mcapi.world.generator.WorldGenerator;
 import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder;
 import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
+import net.flintmc.util.commons.Validate;
 
 @Implement(WorldGeneratorBuilder.class)
 public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
@@ -58,7 +58,9 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
     this.extendedFactory = extendedFactory;
     this.flatFactory = flatFactory;
     this.buffetFactory = buffetFactory;
-    this.datapackCodec = datapackCodecRepository.getDatapackCodec("vanilla");
+
+    this.datapackCodec =
+        this.supportsDatapackCodec() ? datapackCodecRepository.getDatapackCodec("vanilla") : null;
   }
 
   /**
@@ -170,7 +172,10 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
    */
   @Override
   public WorldGeneratorBuilder datapackCodec(DatapackCodec codec) {
-    this.datapackCodec = codec;
+    if (this.supportsDatapackCodec()) {
+      this.datapackCodec = codec;
+    }
+
     return this;
   }
 
@@ -186,8 +191,16 @@ public class DefaultWorldGeneratorBuilder implements WorldGeneratorBuilder {
    * {@inheritDoc}
    */
   @Override
+  public boolean supportsDatapackCodec() {
+    return this.implementation.supportsDatapackCodec();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public WorldGeneratorBuilder validate() {
-    Preconditions.checkNotNull(this.name, "No name set");
+    Validate.checkNotNull(this.name, "No name set");
     this.extended().validate();
 
     if (this.flatSettings != null) {

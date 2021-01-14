@@ -46,7 +46,7 @@ public interface WorldOverview extends Comparable<WorldOverview> {
   /**
    * Retrieves the version in which the world has been used the last time.
    *
-   * @return The version or {@code null} if the version is unknown
+   * @return The version or {@code null}, if the version is unknown
    */
   String getVersion();
 
@@ -125,7 +125,7 @@ public interface WorldOverview extends Comparable<WorldOverview> {
      * @param fileName           The file name of the world overview.
      * @param displayName        The display name of the world overview.
      * @param version            The version in which the world has been used the last time or
-     *                           {@code null} if the version is unknown
+     *                           {@code null}, if the version is unknown
      * @param lastTimePlayed     The last time played timestamp of the world overview.
      * @param requiresConversion {@code true} if the world requires a conversion, otherwise {@code
      *                           false}.

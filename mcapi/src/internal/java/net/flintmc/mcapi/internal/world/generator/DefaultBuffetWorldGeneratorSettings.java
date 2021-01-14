@@ -19,7 +19,6 @@
 
 package net.flintmc.mcapi.internal.world.generator;
 
-import com.google.common.base.Preconditions;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -27,6 +26,8 @@ import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.biome.BiomeRegistry;
 import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.buffet.BuffetWorldGeneratorType;
+import net.flintmc.util.commons.Validate;
+
 import javax.annotation.Nullable;
 
 @Implement(BuffetWorldGeneratorSettings.class)
@@ -95,7 +96,7 @@ public class DefaultBuffetWorldGeneratorSettings implements BuffetWorldGenerator
    */
   @Override
   public BuffetWorldGeneratorSettings validate() {
-    Preconditions.checkNotNull(this.type, "Invalid type provided");
+    Validate.checkNotNull(this.type, "Invalid type provided");
 
     return this;
   }

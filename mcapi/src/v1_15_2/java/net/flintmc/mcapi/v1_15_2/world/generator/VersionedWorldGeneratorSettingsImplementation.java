@@ -22,12 +22,15 @@ package net.flintmc.mcapi.v1_15_2.world.generator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.mcapi.internal.world.generator.WorldGeneratorSettingsImplementation;
 import net.flintmc.mcapi.world.generator.WorldGeneratorMapper;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.FileUtil;
 import net.minecraft.world.gen.FlatGenerationSettings;
+import org.apache.logging.log4j.Logger;
+
 import java.nio.file.Path;
 
 @Singleton
@@ -35,10 +38,14 @@ import java.nio.file.Path;
 public class VersionedWorldGeneratorSettingsImplementation
     implements WorldGeneratorSettingsImplementation {
 
+  private final Logger logger;
   private final WorldGeneratorMapper mapper;
 
   @Inject
-  private VersionedWorldGeneratorSettingsImplementation(WorldGeneratorMapper mapper) {
+  private VersionedWorldGeneratorSettingsImplementation(
+      @InjectLogger Logger logger,
+      WorldGeneratorMapper mapper) {
+    this.logger = logger;
     this.mapper = mapper;
   }
 
@@ -62,16 +69,22 @@ public class VersionedWorldGeneratorSettingsImplementation
 
     try {
       saveDirName = FileUtil.findAvailableName(directory, saveDirName, "");
-    } catch (Exception var4) {
-      saveDirName = "World";
+    } catch (Exception exception) {
+      this.logger.trace(String.format(
+          "Cannot find file name for world %s in directory %s", saveDirName, directory.toString()),
+          exception);
 
-      try {
-        saveDirName = FileUtil.findAvailableName(directory, saveDirName, "");
-      } catch (Exception exception) {
-        throw new RuntimeException("Could not create save folder", exception);
-      }
+      saveDirName = "World";
     }
 
     return saveDirName;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean supportsDatapackCodec() {
+    return false;
   }
 }

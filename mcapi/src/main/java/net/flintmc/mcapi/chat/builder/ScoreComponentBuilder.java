@@ -38,7 +38,7 @@ public interface ScoreComponentBuilder extends ComponentBuilder<ScoreComponentBu
   /**
    * Retrieves the name of the current component.
    *
-   * @return The name of the current component in the scoreboard or {@code null} if no name has been
+   * @return The name of the current component in the scoreboard or {@code null}, if no name has been
    * provided
    * @see #name(String)
    */
@@ -56,7 +56,7 @@ public interface ScoreComponentBuilder extends ComponentBuilder<ScoreComponentBu
   /**
    * Retrieves the objective of the current component.
    *
-   * @return The objective of the current component in the scoreboard or {@code null} if no
+   * @return The objective of the current component in the scoreboard or {@code null}, if no
    * objective has been provided
    * @see #objective(String)
    */

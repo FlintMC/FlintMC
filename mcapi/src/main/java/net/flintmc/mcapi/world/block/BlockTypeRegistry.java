@@ -38,7 +38,7 @@ public interface BlockTypeRegistry {
    * Retrieves a specific block type for a specific location
    *
    * @param location The non-null location to get the type for (e.g. minecraft:stone)
-   * @return The type for the given location or {@code null} if there is no block type for the given
+   * @return The type for the given location or {@code null}, if there is no block type for the given
    * location
    */
   BlockType getType(ResourceLocation location);

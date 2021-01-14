@@ -23,19 +23,57 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.type.EntityType;
 
+/**
+ * Represents the spawn rate of a specific entity type in a {@link Biome}.
+ *
+ * @see Biome#getSpawnRates()
+ */
 public interface BiomeEntitySpawnRate {
 
+  /**
+   * Retrieves the entity type which is represented by this spawn rate.
+   *
+   * @return The non-null entity type of this spawn rate
+   */
   EntityType getEntityType();
 
+  /**
+   * Retrieves the weight of this spawn rate which is used to get a random value whether an entity
+   * should be spawned in a tick.
+   *
+   * @return The weight of this spawn rate, can be any integer
+   */
   int getWeight();
 
+  /**
+   * Retrieves the minimum count of groups of entities that should be spawned at the same time.
+   *
+   * @return The minimum group count of this spawn rate
+   */
   int getMinGroupCount();
 
+  /**
+   * Retrieves the maximum count of groups of entities that should be spawned at the same time.
+   *
+   * @return The maximum group count of this spawn rate
+   */
   int getMaxGroupCount();
 
+  /**
+   * Factory for the {@link BiomeEntitySpawnRate}.
+   */
   @AssistedFactory(BiomeEntitySpawnRate.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link BiomeEntitySpawnRate}.
+     *
+     * @param entityType    The non-null entity type of this spawn rate
+     * @param weight        The weight of this spawn rate, can be any integer
+     * @param minGroupCount The minimum group count of this spawn rate
+     * @param maxGroupCount The maximum group count of this spawn rate
+     * @return The new non-null {@link BiomeEntitySpawnRate}
+     */
     BiomeEntitySpawnRate create(
         @Assisted EntityType entityType,
         @Assisted("weight") int weight,

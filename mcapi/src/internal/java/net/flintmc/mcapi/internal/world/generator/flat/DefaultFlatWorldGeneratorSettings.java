@@ -19,13 +19,7 @@
 
 package net.flintmc.mcapi.internal.world.generator.flat;
 
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.biome.BiomeRegistry;
@@ -34,6 +28,12 @@ import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettingsSerializ
 import net.flintmc.mcapi.world.generator.flat.FlatWorldLayer;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldStructure;
 import net.flintmc.mcapi.world.generator.flat.StructureOption;
+import net.flintmc.util.commons.Validate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Implement(FlatWorldGeneratorSettings.class)
 public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSettings {
@@ -157,6 +157,14 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
    * {@inheritDoc}
    */
   @Override
+  public int layerCount() {
+    return this.layers.size();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public FlatWorldGeneratorSettings addLayer(FlatWorldLayer layer) {
     this.layers.add(layer);
     return this;
@@ -191,7 +199,7 @@ public class DefaultFlatWorldGeneratorSettings implements FlatWorldGeneratorSett
    */
   @Override
   public FlatWorldGeneratorSettings validate() {
-    Preconditions.checkArgument(!this.layers.isEmpty(), "No layers set");
+    Validate.checkFalse(this.layers.isEmpty(), "No layers set");
 
     return this;
   }
