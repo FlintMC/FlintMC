@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.mcapi.v1_16_4.world.generator.flat.FlatGenerationSettingsShadow;
@@ -41,8 +40,8 @@ import net.flintmc.mcapi.world.generator.WorldGeneratorMapper;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings.Factory;
 import net.flintmc.mcapi.world.generator.flat.FlatWorldLayer;
-import net.flintmc.mcapi.world.generator.flat.FlatWorldStructure;
-import net.flintmc.mcapi.world.generator.flat.StructureOption;
+import net.flintmc.mcapi.world.generator.flat.structure.FlatWorldStructure;
+import net.flintmc.mcapi.world.generator.flat.structure.StructureOption;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.codec.DatapackCodec;
@@ -66,7 +65,7 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
 
   public static final String REGISTRIES_OPTION = "1.16.4_dynamicRegistries";
 
-  private static final BiMap<Structure<?>, FlatWorldStructure> STRUCTURES = HashBiMap.create();
+  public static final BiMap<Structure<?>, FlatWorldStructure> STRUCTURES = HashBiMap.create();
 
   static {
     STRUCTURES.put(Structure.MINESHAFT, FlatWorldStructure.MINESHAFT);

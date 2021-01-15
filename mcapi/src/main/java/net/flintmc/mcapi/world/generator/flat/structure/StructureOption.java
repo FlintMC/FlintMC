@@ -17,11 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.generator.flat;
+package net.flintmc.mcapi.world.generator.flat.structure;
+
+import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 
 /**
  * Options for structures that can be used in the {@link FlatWorldGeneratorSettings}. Not every
  * option is supported for every structure.
+ *
+ * @see SupportedStructureHolder#isSupportedOption(FlatWorldStructure, StructureOption)
  */
 public enum StructureOption {
 

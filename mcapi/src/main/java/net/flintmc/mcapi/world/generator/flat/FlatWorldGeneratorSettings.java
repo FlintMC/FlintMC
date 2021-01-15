@@ -21,6 +21,9 @@ package net.flintmc.mcapi.world.generator.flat;
 
 import net.flintmc.mcapi.world.biome.Biome;
 import net.flintmc.mcapi.world.generator.WorldGeneratorBuilder;
+import net.flintmc.mcapi.world.generator.flat.structure.FlatWorldStructure;
+import net.flintmc.mcapi.world.generator.flat.structure.StructureOption;
+import net.flintmc.mcapi.world.generator.flat.structure.SupportedStructureHolder;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegistry;
 
@@ -66,6 +69,7 @@ public interface FlatWorldGeneratorSettings {
    *
    * @param structure The non-null structure to check for
    * @return This settings object for chaining
+   * @see SupportedStructureHolder#isSupportedStructure(FlatWorldStructure)
    */
   boolean hasStructure(FlatWorldStructure structure);
 
@@ -75,6 +79,7 @@ public interface FlatWorldGeneratorSettings {
    *
    * @param structure The non-null structure to be added
    * @return This settings object for chaining
+   * @see SupportedStructureHolder#isSupportedStructure(FlatWorldStructure)
    */
   FlatWorldGeneratorSettings addStructure(FlatWorldStructure structure);
 
@@ -84,6 +89,7 @@ public interface FlatWorldGeneratorSettings {
    *
    * @param structure The non-null structure to be added
    * @return This settings object for chaining
+   * @see SupportedStructureHolder#isSupportedStructure(FlatWorldStructure)
    */
   FlatWorldGeneratorSettings removeStructure(FlatWorldStructure structure);
 
@@ -95,6 +101,7 @@ public interface FlatWorldGeneratorSettings {
    * @return {@code true} if it is set, {@code false} otherwise
    * @see #getStructureOption(FlatWorldStructure, StructureOption)
    * @see #setStructureOption(FlatWorldStructure, StructureOption, int)
+   * @see SupportedStructureHolder#isSupportedOption(FlatWorldStructure, StructureOption)
    */
   boolean hasStructureOption(FlatWorldStructure structure, StructureOption option);
 
@@ -107,6 +114,7 @@ public interface FlatWorldGeneratorSettings {
    * #hasStructureOption(FlatWorldStructure, StructureOption) this option is not set}
    * @see #hasStructureOption(FlatWorldStructure, StructureOption)
    * @see #setStructureOption(FlatWorldStructure, StructureOption, int)
+   * @see SupportedStructureHolder#isSupportedOption(FlatWorldStructure, StructureOption)
    */
   int getStructureOption(FlatWorldStructure structure, StructureOption option);
 
@@ -121,6 +129,7 @@ public interface FlatWorldGeneratorSettings {
    * @return This settings object for chaining
    * @see #hasStructureOption(FlatWorldStructure, StructureOption)
    * @see #getStructureOption(FlatWorldStructure, StructureOption)
+   * @see SupportedStructureHolder#isSupportedOption(FlatWorldStructure, StructureOption)
    */
   FlatWorldGeneratorSettings setStructureOption(
       FlatWorldStructure structure, StructureOption option, int value);
