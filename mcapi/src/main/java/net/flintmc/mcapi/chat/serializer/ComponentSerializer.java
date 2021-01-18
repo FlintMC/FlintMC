@@ -28,7 +28,7 @@ public interface ComponentSerializer {
    * Serializes the given component into a string
    *
    * @param component The non-null component to be serialized
-   * @return The serialized text or {@code null} if an invalid component has been provided (e.g. no
+   * @return The serialized text or {@code null}, if an invalid component has been provided (e.g. no
    * text in the text component)
    */
   String serialize(ChatComponent component);
@@ -37,7 +37,7 @@ public interface ComponentSerializer {
    * Deserializes the given text into a component
    *
    * @param serialized The non-null text to be deserialized
-   * @return The deserialized component or {@code null} if an invalid text has been provided
+   * @return The deserialized component or {@code null}, if an invalid text has been provided
    * @throws ComponentDeserializationException If an invalid text has been provided
    */
   ChatComponent deserialize(String serialized);

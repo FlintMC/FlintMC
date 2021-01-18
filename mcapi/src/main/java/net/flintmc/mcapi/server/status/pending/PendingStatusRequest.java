@@ -34,7 +34,7 @@ public interface PendingStatusRequest {
 
   /**
    * Retrieves the future which will be completed with the {@link ServerStatus} when the status has
-   * been successfully retrieved or {@code null} if the status couldn't be retrieved.
+   * been successfully retrieved or {@code null}, if the status couldn't be retrieved.
    *
    * @return The non-null future of this request
    */

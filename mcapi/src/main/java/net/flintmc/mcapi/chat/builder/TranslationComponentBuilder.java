@@ -37,10 +37,10 @@ public interface TranslationComponentBuilder extends ComponentBuilder<Translatio
   TranslationComponentBuilder translationKey(String translationKey);
 
   /**
-   * Retrieves the key for translations of the current component or {@code null} if no key has been
+   * Retrieves the key for translations of the current component or {@code null}, if no key has been
    * set.
    *
-   * @return The key for translations of the current component or {@code null} if no translation key
+   * @return The key for translations of the current component or {@code null}, if no translation key
    * has been provided
    * @see #translationKey(String)
    */

@@ -40,7 +40,7 @@ public interface ItemRegistry {
    * Retrieves an item type by the name out of this registry.
    *
    * @param registryName The non-null key for the item
-   * @return The item type out of this registry matching the given key or {@code null} if no type
+   * @return The item type out of this registry matching the given key or {@code null}, if no type
    * with the given key could be found
    */
   ItemType getType(NameSpacedKey registryName);
@@ -88,7 +88,7 @@ public interface ItemRegistry {
    * Retrieves a category matching the given index.
    *
    * @param index The index of the category to search for
-   * @return The category with the given index or {@code null} if no category with the given index
+   * @return The category with the given index or {@code null}, if no category with the given index
    * exists in this registry
    */
   ItemCategory getCategory(int index);
@@ -97,7 +97,7 @@ public interface ItemRegistry {
    * Retrieves a category matching the given name.
    *
    * @param registryName The non-null name of the category to search for
-   * @return The category with the given name or {@code null} if no category with the given name
+   * @return The category with the given name or {@code null}, if no category with the given name
    * exists in this registry
    */
   ItemCategory getCategory(NameSpacedKey registryName);
@@ -120,7 +120,7 @@ public interface ItemRegistry {
    * Retrieves an enchantment type by the name out of this registry.
    *
    * @param registryName The non-null key for the enchantment type
-   * @return The enchantment type out of this registry matching the given key or {@code null} if no
+   * @return The enchantment type out of this registry matching the given key or {@code null}, if no
    * type with the given key could be found
    */
   EnchantmentType getEnchantmentType(NameSpacedKey registryName);

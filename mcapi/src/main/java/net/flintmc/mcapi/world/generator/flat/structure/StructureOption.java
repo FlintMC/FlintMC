@@ -17,24 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.type;
+package net.flintmc.mcapi.world.generator.flat.structure;
 
-import java.util.List;
+import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettings;
 
 /**
- * Represents a world type register.
+ * Options for structures that can be used in the {@link FlatWorldGeneratorSettings}. Not every
+ * option is supported for every structure.
  *
- * <p><b>DEPRECATED</b>
- *
- * @see WorldType
+ * @see SupportedStructureHolder#isSupportedOption(FlatWorldStructure, StructureOption)
  */
-@Deprecated
-public interface WorldTypeRegister {
+public enum StructureOption {
 
-  /**
-   * Retrieves a collection with all world types.
-   *
-   * @return A collection with all world types.
-   */
-  List<WorldType> getWorldTypes();
+  DISTANCE,
+  COUNT,
+  SPREAD,
+  SEPARATION,
+  SPACING
+
 }

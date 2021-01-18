@@ -174,9 +174,8 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
       return null;
     }
 
-    return this.entityFoundationMapper
-        .getResourceLocationProvider()
-        .get(minecraftLocation.getNamespace(), minecraftLocation.getPath());
+    return this.entityFoundationMapper.getResourceLocationProvider()
+        .fromMinecraft(minecraftLocation);
   }
 
   /**

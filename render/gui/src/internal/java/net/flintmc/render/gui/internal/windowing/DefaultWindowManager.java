@@ -80,7 +80,7 @@ public class DefaultWindowManager implements WindowManager {
    * Retrieves the window with a specific handle that should be used for a {@link GuiEvent}.
    *
    * @param handle The handle of the window, or {@code -1} for the minecraft window
-   * @return The window or {@code null} if there is no window with the given handle
+   * @return The window or {@code null}, if there is no window with the given handle
    */
   public Window getTargetWindowForEvent(long handle) {
     return handle == -1 ? this.minecraftWindow : this.windows.get(handle);

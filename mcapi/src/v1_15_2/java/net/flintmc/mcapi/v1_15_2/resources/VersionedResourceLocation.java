@@ -69,9 +69,7 @@ public class VersionedResourceLocation extends net.minecraft.util.ResourceLocati
   }
 
   /**
-   * Retrieves the resource location as a {@link String}.
-   *
-   * @return The resource location as a string.
+   * {@inheritDoc}
    */
   @Override
   public String toString() {

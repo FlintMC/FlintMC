@@ -31,7 +31,7 @@ public interface ItemStackSerializer {
    * Parses an {@link ItemStack} out of the given json object.
    *
    * @param object The non-null object to parse the item out
-   * @return The parsed item or {@code null} if an invalid json has been provided
+   * @return The parsed item or {@code null}, if an invalid json has been provided
    * @throws NullPointerException If no item with the id in the given json exists
    */
   ItemStack fromJson(JsonObject object);

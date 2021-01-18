@@ -32,7 +32,7 @@ public interface SelectorComponent extends ChatComponent {
    * Retrieves the target selector for the type of target entities of this component or {@code null}
    * if no selector has been set.
    *
-   * @return The selector or {@code null} if no selector has been provided
+   * @return The selector or {@code null}, if no selector has been provided
    * @see #selector(EntitySelector)
    */
   EntitySelector selector();

@@ -44,7 +44,7 @@ public interface TabHeaderFooterUpdateEvent extends Event, Cancellable {
   /**
    * Retrieves the new header/footer that has been set to be displayed.
    *
-   * @return The new header/footer component or {@code null} if it has been reset
+   * @return The new header/footer component or {@code null}, if it has been reset
    */
   ChatComponent getNewValue();
 
@@ -80,7 +80,7 @@ public interface TabHeaderFooterUpdateEvent extends Event, Cancellable {
     /**
      * Creates a new {@link TabHeaderFooterUpdateEvent}.
      *
-     * @param newValue The component that has been updated or {@code null} if it has been reset
+     * @param newValue The component that has been updated or {@code null}, if it has been reset
      * @param type     The non-null type of the component that has been updated
      * @return The new non-null {@link TabHeaderFooterUpdateEvent}.
      */

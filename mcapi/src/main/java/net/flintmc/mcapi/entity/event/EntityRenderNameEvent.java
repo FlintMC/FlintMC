@@ -57,7 +57,7 @@ public interface EntityRenderNameEvent extends Event {
    * Retrieves the matrix that contains data for the renderer. This is version specific, but when
    * rendering something it should be applied to the renderer if possible.
    *
-   * @return The matrix of this event, or {@code null} if the version doesn't use a matrix for
+   * @return The matrix of this event, or {@code null}, if the version doesn't use a matrix for
    * rendering
    */
   Object getMatrix();
@@ -66,7 +66,7 @@ public interface EntityRenderNameEvent extends Event {
    * Retrieves the buffer that contains data for the renderer. This is version specific, but when
    * rendering something it should be applied to the renderer if possible.
    *
-   * @return The buffer of this event, or {@code null} if the version doesn't use a buffer for
+   * @return The buffer of this event, or {@code null}, if the version doesn't use a buffer for
    * rendering
    */
   Object getBuffer();
@@ -114,9 +114,9 @@ public interface EntityRenderNameEvent extends Event {
      *
      * @param entity              The non-null entity that is being rendered
      * @param displayName         The non-null display name of the entity
-     * @param matrix              The matrix of this event, or {@code null} if the version doesn't
+     * @param matrix              The matrix of this event, or {@code null}, if the version doesn't
      *                            use a matrix for rendering
-     * @param buffer              The buffer of this event, or {@code null} if the version doesn't
+     * @param buffer              The buffer of this event, or {@code null}, if the version doesn't
      *                            use a buffer for rendering
      * @param notSneaking         {@code true} if the name should be rendered as if the player is
      *                            not sneaking, {@code false} otherwise

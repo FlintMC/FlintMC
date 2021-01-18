@@ -26,12 +26,10 @@ import java.io.IOException;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
-import net.flintmc.mcapi.world.storage.WorldConfiguration;
 import net.flintmc.mcapi.world.storage.WorldOverview;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.minecraft.server.SessionLockManager;
 import net.minecraft.util.SharedConstants;
-import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.VersionData;
 import net.minecraft.world.storage.WorldSummary;
 
@@ -39,17 +37,10 @@ import net.minecraft.world.storage.WorldSummary;
 @Implement(value = WorldMapper.class, version = "1.16.4")
 public class VersionedWorldMapper implements WorldMapper {
 
-  private final WorldConfiguration.Factory worldConfigurationFactory;
-  private final WorldType.Factory worldTypeFactory;
   private final WorldOverview.Factory worldOverviewFactory;
 
   @Inject
-  private VersionedWorldMapper(
-      WorldConfiguration.Factory worldConfigurationFactory,
-      WorldType.Factory worldTypeFactory,
-      WorldOverview.Factory worldOverviewFactory) {
-    this.worldConfigurationFactory = worldConfigurationFactory;
-    this.worldTypeFactory = worldTypeFactory;
+  private VersionedWorldMapper(WorldOverview.Factory worldOverviewFactory) {
     this.worldOverviewFactory = worldOverviewFactory;
   }
 
@@ -57,38 +48,8 @@ public class VersionedWorldMapper implements WorldMapper {
    * {@inheritDoc}
    */
   @Override
-  public Object toMinecraftWorldSettings(WorldConfiguration configuration) {
-    // TODO: 30.12.2020 Better abstraction for this
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public WorldConfiguration fromMinecraftWorldSettings(Object handle) {
-
-    if (!(handle instanceof WorldSettings)) {
-      throw new IllegalStateException(
-          handle.getClass().getName() + " is not an instance of " + WorldSettings.class.getName());
-    }
-
-    WorldSettings worldSettings = (WorldSettings) handle;
-
-    return this.worldConfigurationFactory.create(
-        0L,
-        GameMode.valueOf(worldSettings.getGameType().name()),
-        worldSettings.isHardcoreEnabled(),
-        worldSettings.isCommandsAllowed(),
-        null);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public Object toMinecraftWorldType(WorldType worldType) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("Not supported in 1.16.4");
   }
 
   /**
@@ -96,7 +57,7 @@ public class VersionedWorldMapper implements WorldMapper {
    */
   @Override
   public WorldType fromMinecraftWorldType(Object handle) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("Not supported in 1.16.4");
   }
 
   /**
@@ -131,22 +92,21 @@ public class VersionedWorldMapper implements WorldMapper {
       return null;
     }
 
-    WorldSummary worldSummary = (WorldSummary) handle;
+    WorldSummary summary = (WorldSummary) handle;
+    String rawVersion = ((WorldSummaryShadow) summary).getRawVersion().getName();
 
-    // TODO: 29.12.2020 Disk size
     return this.worldOverviewFactory.create(
-        worldSummary.getFileName(),
-        worldSummary.getDisplayName(),
-        worldSummary.getVersionName().getString(),
-        worldSummary.getLastTimePlayed(),
-        0L, /* Disk size is maybe removed since 1.16.x*/
-        worldSummary.requiresConversion(),
-        GameMode.valueOf(worldSummary.getEnumGameType().name()),
-        worldSummary.isHardcoreModeEnabled(),
-        worldSummary.getCheatsEnabled(),
-        worldSummary.askToOpenWorld(),
-        worldSummary.markVersionInList(),
-        worldSummary.askToOpenWorld(),
-        worldSummary.askToCreateBackup());
+        summary.getFileName(),
+        summary.getDisplayName(),
+        rawVersion == null || rawVersion.isEmpty() ? null : rawVersion,
+        summary.getLastTimePlayed(),
+        summary.requiresConversion(),
+        GameMode.valueOf(summary.getEnumGameType().name()),
+        summary.isHardcoreModeEnabled(),
+        summary.getCheatsEnabled(),
+        summary.askToOpenWorld(),
+        summary.markVersionInList(),
+        summary.askToOpenWorld(),
+        summary.askToCreateBackup());
   }
 }

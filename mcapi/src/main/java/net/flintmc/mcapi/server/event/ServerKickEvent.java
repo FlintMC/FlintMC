@@ -55,7 +55,7 @@ public interface ServerKickEvent extends Event, ServerAddressEvent, ServerDiscon
     /**
      * Creates a new {@link ServerKickEvent} with the given address and reason.
      *
-     * @param address The address for the new event, may be {@code null} if the event happened in
+     * @param address The address for the new event, may be {@code null}, if the event happened in
      *                singleplayer
      * @param reason  The non-null reason for the kick
      * @return The new event

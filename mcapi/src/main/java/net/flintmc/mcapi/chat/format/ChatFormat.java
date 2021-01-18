@@ -72,7 +72,7 @@ public enum ChatFormat {
   }
 
   /**
-   * Retrieves a format by the given format char or {@code null} if no format with that char
+   * Retrieves a format by the given format char or {@code null}, if no format with that char
    * exists.
    *
    * @return The nullable format by the given char

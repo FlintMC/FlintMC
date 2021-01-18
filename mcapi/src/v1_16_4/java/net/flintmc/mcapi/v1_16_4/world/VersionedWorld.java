@@ -22,11 +22,15 @@ package net.flintmc.mcapi.v1_16_4.world;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.tileentity.TileEntity;
 import net.flintmc.mcapi.world.World;
+import net.flintmc.mcapi.world.block.Block;
+import net.flintmc.mcapi.world.block.BlockState;
 import net.flintmc.mcapi.world.border.WorldBorder;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
@@ -47,6 +51,9 @@ import net.minecraft.world.server.ServerWorld;
 @Implement(value = World.class, version = "1.16.4")
 public class VersionedWorld implements World {
 
+  private final BlockState.Factory stateFactory;
+  private final Block.Factory blockFactory;
+
   private final BlockPosition.Factory blockPositionFactory;
   private final DifficultyLocal.Factory difficultyLocalFactory;
   private final WorldBorder worldBorder;
@@ -54,18 +61,26 @@ public class VersionedWorld implements World {
 
   private final List<TileEntity> loadedTileEntities;
 
+  private final Map<net.minecraft.block.BlockState, BlockState> cachedStates;
+
   @Inject
   public VersionedWorld(
+      BlockState.Factory stateFactory,
+      Block.Factory blockFactory,
       BlockPosition.Factory blockPositionFactory,
       DifficultyLocal.Factory difficultyLocalFactory,
       WorldBorder worldBorder,
       Scoreboard scoreboard) {
+    this.stateFactory = stateFactory;
+    this.blockFactory = blockFactory;
     this.blockPositionFactory = blockPositionFactory;
     this.difficultyLocalFactory = difficultyLocalFactory;
     this.worldBorder = worldBorder;
     this.scoreboard = scoreboard;
 
     this.loadedTileEntities = Lists.newArrayList();
+
+    this.cachedStates = new HashMap<>();
   }
 
   private ServerWorld getServerWorld() {
@@ -144,20 +159,7 @@ public class VersionedWorld implements World {
    */
   @Override
   public Difficulty getDifficulty() {
-    net.minecraft.world.Difficulty difficulty = Minecraft.getInstance().world.getDifficulty();
-
-    switch (difficulty) {
-      case PEACEFUL:
-        return Difficulty.PEACEFUL;
-      case EASY:
-        return Difficulty.EASY;
-      case NORMAL:
-        return Difficulty.NORMAL;
-      case HARD:
-        return Difficulty.HARD;
-      default:
-        throw new IllegalStateException("Unexpected value: " + difficulty);
-    }
+    return this.fromMinecraftDifficulty(Minecraft.getInstance().world.getDifficulty());
   }
 
   /**
@@ -362,6 +364,47 @@ public class VersionedWorld implements World {
    * {@inheritDoc}
    */
   @Override
+  public BlockState getBlockState(int x, int y, int z) {
+    net.minecraft.block.BlockState stateHandle =
+        Minecraft.getInstance().world.getBlockState(new BlockPos(x, y, z));
+    if (this.cachedStates.containsKey(stateHandle)) {
+      return this.cachedStates.get(stateHandle);
+    }
+
+    BlockState state = this.stateFactory.create(stateHandle);
+    this.cachedStates.put(stateHandle, state);
+
+    return state;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BlockState getBlockState(BlockPosition position) {
+    return this.getBlockState(position.getX(), position.getY(), position.getZ());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Block getBlock(int x, int y, int z) {
+    return this.getBlock(this.blockPositionFactory.create(x, y, z));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Block getBlock(BlockPosition position) {
+    return this.blockFactory.create(position);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Object toMinecraftBlockPos(BlockPosition position) {
     return new BlockPos(position.getX(), position.getY(), position.getZ());
   }
@@ -413,6 +456,48 @@ public class VersionedWorld implements World {
         return Dimension.THE_END;
       default:
         return Dimension.OVERWORLD;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftDifficulty(Difficulty difficulty) {
+    switch (difficulty) {
+      case PEACEFUL:
+        return net.minecraft.world.Difficulty.PEACEFUL;
+      case EASY:
+        return net.minecraft.world.Difficulty.EASY;
+      case NORMAL:
+        return net.minecraft.world.Difficulty.NORMAL;
+      case HARD:
+        return net.minecraft.world.Difficulty.HARD;
+      default:
+        throw new IllegalStateException("Unexpected value: " + difficulty);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Difficulty fromMinecraftDifficulty(Object handle) {
+    if (!(handle instanceof net.minecraft.world.Difficulty)) {
+      return null;
+    }
+
+    switch ((net.minecraft.world.Difficulty) handle) {
+      case PEACEFUL:
+        return Difficulty.PEACEFUL;
+      case EASY:
+        return Difficulty.EASY;
+      case NORMAL:
+        return Difficulty.NORMAL;
+      case HARD:
+        return Difficulty.HARD;
+      default:
+        throw new IllegalStateException("Unexpected value: " + handle);
     }
   }
 }
