@@ -21,7 +21,6 @@ package net.flintmc.framework.packages.load;
 
 import java.io.IOException;
 import java.util.List;
-
 import net.flintmc.framework.packages.Package;
 
 /**
@@ -39,5 +38,13 @@ public interface PackageFinder {
    *                     doesn't exist and can't be created.
    */
   List<Package> findPackages(String path) throws IOException;
+
+  /**
+   * Finds packages that are already loaded into classpath and creates
+   * appropriate representations for them.
+   *
+   * @return a list of created {@link Package} instances
+   */
+  List<Package> findPackagesInClasspath();
 
 }

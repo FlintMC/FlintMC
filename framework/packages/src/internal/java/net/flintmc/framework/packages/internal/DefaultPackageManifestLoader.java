@@ -46,8 +46,6 @@ import java.util.zip.ZipEntry;
 @Implement(PackageManifestLoader.class)
 public class DefaultPackageManifestLoader implements PackageManifestLoader {
 
-  public static final String MANIFEST_NAME = "manifest.json";
-
   private final ModelSerializer manifestLoader;
   private Logger logger;
 

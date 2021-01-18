@@ -20,19 +20,22 @@
 package net.flintmc.framework.packages.internal.load;
 
 import com.google.inject.Inject;
-import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.PackageManifestLoader;
-import net.flintmc.framework.packages.load.PackageFinder;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.packages.Package;
+import net.flintmc.framework.packages.PackageManifestLoader;
+import net.flintmc.framework.packages.PackageState;
+import net.flintmc.framework.packages.load.PackageFinder;
+import net.flintmc.launcher.LaunchController;
+import org.apache.logging.log4j.Logger;
 
 public class DefaultPackageFinder implements PackageFinder {
 
@@ -55,6 +58,37 @@ public class DefaultPackageFinder implements PackageFinder {
   public List<Package> findPackages(String path) throws IOException {
     File packageDir = this.ensureDirectory(path);
     return this.findPackages(packageDir);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<Package> findPackagesInClasspath() {
+    try {
+      return Collections
+          .list(LaunchController.getInstance().getRootLoader().getResources(
+              PackageManifestLoader.MANIFEST_NAME)).stream()
+          .map(url -> {
+            try {
+              return this.manifestLoader.loadManifest(url);
+            } catch (IOException e) {
+              this.logger.warn(
+                  "Found a manifest file in the classpath, but "
+                      + "couldn't load it.", e);
+              return null;
+            }
+          })
+          .filter(Objects::nonNull)
+          .map(this.packageFactory::create)
+          .peek(pack -> pack.forceState(PackageState.LOADED))
+          .collect(Collectors.toList());
+    } catch (IOException e) {
+      this.logger
+          .error("Failed to read classpath to discover loaded "
+              + "packages.", e);
+      return new ArrayList<>();
+    }
   }
 
   private List<Package> findPackages(File packageDir) {

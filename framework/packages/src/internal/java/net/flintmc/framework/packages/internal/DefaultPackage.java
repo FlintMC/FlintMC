@@ -85,8 +85,8 @@ public class DefaultPackage implements Package {
       PackageManifestLoader manifestLoader,
       PackageClassLoader.Factory classLoaderFactory,
       @InjectLogger Logger logger,
-      @Assisted File jarFile,
-      @Assisted JarFile jar) {
+      @Assisted("jarFile") File jarFile,
+      @Assisted("jar") JarFile jar) {
     this.serviceRepository = serviceRepository;
     this.classLoaderFactory = classLoaderFactory;
     this.logger = logger;
@@ -129,6 +129,22 @@ public class DefaultPackage implements Package {
       // manifest and mark  the package as ready for load
       this.packageState = PackageState.NOT_LOADED;
     }
+  }
+
+  @AssistedInject
+  private DefaultPackage(ServiceRepository serviceRepository,
+      PackageLocalizationLoader localizationLoader,
+      PackageManifestLoader manifestLoader,
+      PackageClassLoader.Factory classLoaderFactory,
+      @InjectLogger Logger logger,
+      @Assisted("manifest") PackageManifest manifest) {
+    this.serviceRepository = serviceRepository;
+    this.classLoaderFactory = classLoaderFactory;
+    this.logger = logger;
+    this.jarFile = null;
+    this.localizationLoader = null;
+    this.packageManifest = manifest;
+    this.packageState = PackageState.NOT_LOADED;
   }
 
   /**
@@ -181,12 +197,22 @@ public class DefaultPackage implements Package {
   public void setState(PackageState state) {
     if (packageState != PackageState.NOT_LOADED) {
       throw new IllegalStateException(
-          "The package state can only be changed if the package has not been loaded already");
+          "The package state can only be changed if the package has not been "
+              + "loaded already");
     } else if (state == PackageState.LOADED) {
       throw new IllegalArgumentException(
-          "The package state can't be set to LOADED explicitly, use the load() method");
+          "The package state can't be set to LOADED explicitly, use the load() "
+              + "method");
     }
 
+    this.packageState = state;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void forceState(PackageState state) {
     this.packageState = state;
   }
 
@@ -205,14 +231,16 @@ public class DefaultPackage implements Package {
   public PackageState load() {
     if (packageState != PackageState.NOT_LOADED) {
       throw new IllegalStateException(
-          "The package has to be in the NOT_LOADED state in order to be loaded");
+          "The package has to be in the NOT_LOADED state in order to be "
+              + "loaded");
     }
 
     try {
       this.classLoader = this.classLoaderFactory.create(this);
       this.packageState = PackageState.LOADED;
     } catch (Exception exception) {
-      // The package failed to load, save the error and mark the package itself as errored
+      // The package failed to load, save the error and mark the package
+      // itself as errored
       this.packageState = PackageState.ERRORED;
       this.loadException = exception;
     }
@@ -230,10 +258,12 @@ public class DefaultPackage implements Package {
     }
 
     try {
-      // Find all services on the classpath and register them to the service repository
+      // Find all services on the classpath and register them to
+      // the service repository
       this.prepareServices();
-      // Flush all registered services that are defined in the PRE_INIT state. This should only be
-      // done if it is really necessary.
+      // Flush all registered services that are defined in the
+      // PRE_INIT state. This should only be done if it is
+      // really necessary.
       this.serviceRepository.flushServices(Service.State.PRE_INIT);
       // Apply all Implementations and AssistedFactories
       InjectionService injectionService =
@@ -243,7 +273,8 @@ public class DefaultPackage implements Package {
       serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
 
       injectionService.flushAssistedFactory();
-      // Flush all other higher level framework features like Events, Transforms etc.
+      // Flush all other higher level framework features like Events,
+      // Transforms etc.
       this.serviceRepository.flushServices(Service.State.POST_INIT);
     } catch (NotFoundException e) {
       this.logger
@@ -257,6 +288,7 @@ public class DefaultPackage implements Package {
 
   private void prepareServices() throws NotFoundException {
     // Find all autoload providers within the package
+    @SuppressWarnings("rawtypes")
     List<AnnotationMeta> annotations = getAnnotationMeta();
     // Iterate over all annotations
     for (AnnotationMeta<?> annotationMeta : annotations) {
@@ -271,8 +303,9 @@ public class DefaultPackage implements Package {
             ClassPool.getDefault()
                 .get(((ClassIdentifier) (annotationMeta.getIdentifier()))
                     .getName()));
-        // if not check if it might be multiple services at once. the Javapoet framework sadly seems
-        // to not support Repeatable annotations yet. Maybe this will change sometime.
+        // if not check if it might be multiple services at once.
+        // the Javapoet framework sadly seems to not support Repeatable
+        // annotations yet. Maybe this will change sometime.
       } else if (annotationMeta.getAnnotation().annotationType()
           .equals(Services.class)) {
         // Iterate over all services and register them
@@ -290,7 +323,9 @@ public class DefaultPackage implements Package {
     }
 
     // Iterate over all annotations again
-    for (AnnotationMeta annotationMeta : annotations) {
+
+    for (@SuppressWarnings("rawtypes")
+        AnnotationMeta annotationMeta : annotations) {
       // register the annotation
       serviceRepository.registerAnnotation(annotationMeta);
     }
@@ -300,6 +335,7 @@ public class DefaultPackage implements Package {
    * @return all saved annotation meta that was written to the {@link
    * DetectableAnnotationProvider} on compile time
    */
+  @SuppressWarnings("rawtypes")
   private List<AnnotationMeta> getAnnotationMeta() {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();
 
@@ -320,8 +356,8 @@ public class DefaultPackage implements Package {
     if (packageState != PackageState.LOADED
         && packageState != PackageState.ENABLED) {
       throw new IllegalStateException(
-          "The package has to be in the LOADED or ENABLED state in order to retrieve "
-              + "the class loader of it");
+          "The package has to be in the LOADED or ENABLED state in order to "
+              + "retrieve the class loader of it");
     }
 
     return this.classLoader;
@@ -342,8 +378,8 @@ public class DefaultPackage implements Package {
   public Exception getLoadException() {
     if (packageState != PackageState.ERRORED) {
       throw new IllegalStateException(
-          "The package has to be in the ERRORED state in order to retrieve the exception "
-              + "which caused its loading to fail");
+          "The package has to be in the ERRORED state in order to retrieve the "
+              + "exception which caused its loading to fail");
     }
 
     return this.loadException;
