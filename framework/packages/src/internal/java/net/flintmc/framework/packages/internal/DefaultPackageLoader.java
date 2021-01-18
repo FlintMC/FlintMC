@@ -22,19 +22,17 @@ package net.flintmc.framework.packages.internal;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.internal.DefaultLoggingProvider;
 import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.inject.logging.LoggingProvider;
 import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.PackageClassLoader;
-import net.flintmc.framework.packages.PackageLoader;
-import net.flintmc.framework.packages.PackageState;
+import net.flintmc.framework.packages.*;
+import net.flintmc.framework.packages.load.DependencyGraphBuilder;
 import net.flintmc.framework.packages.load.PackageFinder;
+import net.flintmc.util.commons.Pair;
 import org.apache.logging.log4j.Logger;
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -42,7 +40,8 @@ import java.util.stream.Collectors;
 public class DefaultPackageLoader implements PackageLoader {
 
   private final Logger logger;
-  private DefaultPackageManifestLoader descriptionLoader;
+  private PackageManifestLoader descriptionLoader;
+  private DependencyGraphBuilder dependencyGraphBuilder;
 
   private Set<Package> allPackages;
 
@@ -50,9 +49,10 @@ public class DefaultPackageLoader implements PackageLoader {
 
   @Inject
   private DefaultPackageLoader(
-      DefaultLoggingProvider loggingProvider,
-      DefaultPackageManifestLoader descriptionLoader,
+      LoggingProvider loggingProvider,
+      PackageManifestLoader descriptionLoader,
       PackageFinder packageFinder,
+      DependencyGraphBuilder dependencyGraphBuilder,
       @InjectLogger Logger logger) {
     this.descriptionLoader = descriptionLoader;
     this.logger = logger;
@@ -76,14 +76,54 @@ public class DefaultPackageLoader implements PackageLoader {
 
     List<Package> packagesToLoad = new ArrayList<>();
 
+    // make sure every discovered package contains a valid manifest
     for (Package pack : this.discoveredPackages) {
       if (pack.getState() == PackageState.INVALID_MANIFEST) {
         this.logger.error(
-            "The file %s appears to be a package, but it does not contain a "
-                + "valid manifest.");
+            String.format(
+                "The file '%s' appears to be a package, but it does not "
+                    + "contain a valid manifest.",
+                pack.getFile().getName()));
       } else {
         packagesToLoad.add(pack);
       }
+    }
+
+    if (packagesToLoad.isEmpty()) {
+      this.logger.info("No valid packages have been found...");
+      return;
+    }
+
+    // build a loadable dependency graph
+    Pair<List<Package>, List<File>> loadable = this.dependencyGraphBuilder
+        .buildDependencyGraph(packagesToLoad);
+    List<Package> loadablePackages = loadable.first();
+
+    List<Package> loadedSuccessfully = new ArrayList<>();
+    Map<Package, List<String>> errorTrack = new HashMap<>();
+
+    // check which packages have been loaded successfully
+    // and print error messages if needed
+    for (Package pack : loadablePackages) {
+      if (dependencyGraphBuilder
+          .isLoadable(pack, loadedSuccessfully, errorTrack)) {
+        if (pack.load() == PackageState.LOADED) {
+          loadedSuccessfully.add(pack);
+        } else {
+          this.logger.error(
+              String.format("Failed to load package %s (version %s).",
+                  pack.getName(), pack.getVersion()), pack.getLoadException());
+        }
+      } else {
+        this.logger.error(
+            String.format(
+                "Failed to load package %s (version %s) due to unmet "
+                    + "dependencies. This may cause additional errors while "
+                    + "trying to load subsequent packages.", pack.getName(),
+                pack.getVersion()));
+      }
+
+
     }
 
   }

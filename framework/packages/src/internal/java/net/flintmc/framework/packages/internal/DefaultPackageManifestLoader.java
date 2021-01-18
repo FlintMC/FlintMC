@@ -33,7 +33,6 @@ import net.flintmc.installer.impl.repository.models.ModelSerializer;
 import net.flintmc.installer.impl.repository.models.PackageModel;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -46,6 +45,7 @@ import java.util.zip.ZipEntry;
 @Singleton
 @Implement(PackageManifestLoader.class)
 public class DefaultPackageManifestLoader implements PackageManifestLoader {
+
   public static final String MANIFEST_NAME = "manifest.json";
 
   private final ModelSerializer manifestLoader;
@@ -55,7 +55,8 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
   private DefaultPackageManifestLoader(@InjectLogger Logger logger) {
     this.logger = logger;
     InjectionHolder.getInstance().addModules(new InstallerModule());
-    this.manifestLoader = InjectionHolder.getInjectedInstance(ModelSerializer.class);
+    this.manifestLoader = InjectionHolder
+        .getInjectedInstance(ModelSerializer.class);
   }
 
   /**
@@ -75,22 +76,27 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
   public PackageManifest loadManifest(JarFile file) throws IOException {
     ZipEntry manifest = file.getEntry(MANIFEST_NAME);
     return new DefaultPackageManifest(
-        this.manifestLoader.fromString(readZipEntry(file, manifest), PackageModel.class));
+        this.manifestLoader
+            .fromString(readZipEntry(file, manifest), PackageModel.class));
   }
 
   @Override
   public PackageManifest loadManifest(URL url) throws IOException {
-    return new DefaultPackageManifest(this.manifestLoader.fromString(IOUtils.toString(url, StandardCharsets.UTF_8), PackageModel.class));
+    return new DefaultPackageManifest(this.manifestLoader
+        .fromString(IOUtils.toString(url, StandardCharsets.UTF_8),
+            PackageModel.class));
   }
 
   private String readZipEntry(JarFile file, ZipEntry entry) throws IOException {
-    InputStreamReader reader = new InputStreamReader(file.getInputStream(entry));
+    InputStreamReader reader = new InputStreamReader(
+        file.getInputStream(entry));
     StringBuilder manifest = new StringBuilder();
     char[] data = new char[1024];
     int read = 0;
     while ((read = reader.read(data)) > 0) {
-      for (int i = 0; i < read; i++)
+      for (int i = 0; i < read; i++) {
         manifest.append(data[i]);
+      }
     }
     return manifest.toString();
   }
@@ -99,14 +105,16 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
    * Default implementation of a {@link PackageManifest}.
    */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
-  private static class DefaultPackageManifest implements PackageManifest, Serializable {
+  private static class DefaultPackageManifest implements PackageManifest,
+      Serializable {
 
     private PackageModel model;
     private Set<DefaultDependencyDescription> dependencies = new HashSet<>();
 
     DefaultPackageManifest(PackageModel model) {
       this.model = model;
-      model.getDependencies().forEach(dep -> dependencies.add(new DefaultDependencyDescription(dep)));
+      model.getDependencies().forEach(
+          dep -> dependencies.add(new DefaultDependencyDescription(dep)));
     }
 
     /**
@@ -172,7 +180,18 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
       return this.getName() != null
           && this.getVersion() != null
           && this.getAuthors() != null
-          && dependencies.stream().allMatch(dependency -> dependency.getName() != null);
+          && dependencies.stream()
+          .allMatch(dependency -> dependency.getName() != null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addDependency(String packageName, String versions,
+        String channel) {
+      this.dependencies.add(new DefaultDependencyDescription(
+          new DependencyDescriptionModel(packageName, versions, channel)));
     }
   }
 
@@ -180,7 +199,8 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
    * Default implementation of a {@link DependencyDescription}.
    */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
-  private static class DefaultDependencyDescription implements DependencyDescription, Serializable {
+  private static class DefaultDependencyDescription implements
+      DependencyDescription, Serializable {
 
     private DependencyDescriptionModel model;
 
@@ -215,7 +235,8 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     @Override
     public boolean matches(PackageManifest manifest) {
       return this.getName().equals(manifest.getName())
-          && this.getVersions().stream().anyMatch(manifest.getVersion()::equals);
+          && this.getVersions().stream()
+          .anyMatch(manifest.getVersion()::equals);
     }
   }
 }

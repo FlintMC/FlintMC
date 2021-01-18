@@ -21,33 +21,58 @@ package net.flintmc.framework.packages.internal.load;
 
 import com.google.inject.Inject;
 import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.packages.DependencyDescription;
 import net.flintmc.framework.packages.Package;
+import net.flintmc.framework.packages.*;
 import net.flintmc.framework.packages.load.DependencyGraphBuilder;
+import net.flintmc.util.commons.Pair;
 import org.apache.logging.log4j.Logger;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
 
 public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
 
   private final Logger logger;
+  private final Package.Factory packageFactory;
+  private final PackageManifestLoader manifestLoader;
 
   @Inject
-  private DefaultDependencyGraphBuilder(@InjectLogger Logger logger) {
+  private DefaultDependencyGraphBuilder(@InjectLogger Logger logger,
+      Package.Factory packageFactory,
+      PackageManifestLoader manifestLoader) {
     this.logger = logger;
+    this.packageFactory = packageFactory;
+    this.manifestLoader = manifestLoader;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public List<Package> buildDependencyGraph(List<Package> packages) {
+  public Pair<List<Package>, List<File>> buildDependencyGraph(
+      List<Package> packages) {
 
-    List<Package> loadable = new ArrayList<>();
+    Pair<List<Package>, List<File>> dependencyGraph = Pair
+        .of(new ArrayList<>(), new ArrayList<>());
+
+    // resolve additional classpath requirements
+    for (Package pack : packages) {
+      this.resolveClasspathRecursively(pack, dependencyGraph);
+    }
+
+    List<Package> loadable = dependencyGraph.first();
     Map<Package, List<String>> errorTrack = new HashMap<>();
 
+    // build a dependency graph by searching for loadable
+    // packages as long as progress is being made
+    // Note: This is just a heuristic. The algorithm does
+    //       not necessarily find the biggest loadable graph.
+    //       However it should be good enough for now and
+    //       gives extensive debugging information to resolve
+    //       problems manually if needed.
     int progress;
     do {
       progress = -loadable.size();
@@ -77,10 +102,113 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
           }
         }
       }
+    }
+
+    return dependencyGraph;
+  }
+
+  private void resolveClasspathRecursively(
+      Package pack,
+      Pair<List<Package>, List<File>> alreadyPresent) {
+
+    List<Package> packages = alreadyPresent.first();
+    List<File> files = alreadyPresent.second();
+
+    List<Package> libraryPackages = new ArrayList<>();
+
+    for (String entry : pack.getPackageManifest().getRuntimeClassPath()) {
+      File requiredFile = new File(replacePath(entry));
+
+      // check whether the current entry is already being tracked
+      if (this.containsPackage(packages, requiredFile) || this
+          .containsFile(files, requiredFile) || this
+          .containsPackage(libraryPackages, requiredFile)) {
+        continue;
+      }
+
+      // check via required classpath element is jar file
+
+      if (requiredFile.getName().toLowerCase().endsWith(".jar")) {
+        try {
+          JarFile jar = new JarFile(requiredFile);
+
+          if (!this.manifestLoader.isManifestPresent(jar)) {
+            // the file is a jar, but there is no package manifest,
+            // so just add it to list of classpath files
+            this.addFileIfNotPresent(files, requiredFile);
+            continue;
+          }
+
+          Package libraryPack = this.packageFactory.create(requiredFile, jar);
+
+          if (libraryPack.getState() != PackageState.NOT_LOADED) {
+            this.logger.error(
+                String.format(
+                    "Filed to read manifest of library package '%s'. "
+                        + "Adding it to the classpath anyway.",
+                    requiredFile.getPath()), libraryPack.getLoadException());
+            this.addFileIfNotPresent(files, requiredFile);
+            continue;
+          }
+
+          // add library package as a dependency to track errors later
+          pack.getPackageManifest()
+              .addDependency(libraryPack.getName(), libraryPack.getVersion(),
+                  "");
+
+          // add package to load target and resolve classpath
+          // recursively later
+          libraryPackages.add(libraryPack);
+
+        } catch (Exception e) {
+          this.logger.error(
+              String.format(
+                  "Failed to read library package '%s' required in "
+                      + "classpath by package %s (version %s).",
+                  requiredFile.getPath(),
+                  pack.getName(), pack.getVersion()), e);
+          this.addFileIfNotPresent(files, requiredFile);
+        }
+
+
+      } else {
+        // no need for recursion, file can be added to classpath
+        // if not already present
+        this.addFileIfNotPresent(files, requiredFile);
+      }
+
+      packages.addAll(libraryPackages);
+
+      // recursively resolve classpath requirement
+      // of library packages
+      for (Package libraryPack : libraryPackages) {
+        this.resolveClasspathRecursively(libraryPack, alreadyPresent);
+      }
 
     }
 
-    return loadable;
+  }
+
+  private boolean containsPackage(List<Package> packages, File file) {
+    return packages.stream().anyMatch(pack -> pack.getFile().getAbsolutePath()
+        .equals(file.getAbsolutePath()));
+  }
+
+  private boolean containsFile(List<File> files, File file) {
+    return files.stream().anyMatch(f -> f.getAbsolutePath()
+        .equals(file.getAbsolutePath()));
+  }
+
+  private void addFileIfNotPresent(List<File> files, File file) {
+    if (!this.containsFile(files, file)) {
+      files.add(file);
+    }
+  }
+
+  private String replacePath(String path) {
+    return path
+        .replace(PackageLoader.PACKAGE_DIR_TEMPLATE, PackageLoader.PACKAGE_DIR)
+        .replace(PackageLoader.LIBRARY_DIR_TEMPLATE, PackageLoader.LIBRARY_DIR);
   }
 
   /**

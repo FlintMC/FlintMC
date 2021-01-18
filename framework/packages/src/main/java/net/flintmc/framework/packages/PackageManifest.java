@@ -21,7 +21,9 @@ package net.flintmc.framework.packages;
 
 import java.util.Set;
 
-/** Represents the metadata of a package. */
+/**
+ * Represents the metadata of a package.
+ */
 public interface PackageManifest {
 
   /**
@@ -32,7 +34,8 @@ public interface PackageManifest {
   String getName();
 
   /**
-   * Retrieves the display name of the package. This will always be a human readable string.
+   * Retrieves the display name of the package. This will always be a human
+   * readable string.
    *
    * @return The display name of the package
    */
@@ -53,29 +56,42 @@ public interface PackageManifest {
   Set<String> getAuthors();
 
   /**
-   * @return a set of library/asset paths that should be available in the package's classpath at
-   *     runtime.
+   * @return a set of library/asset paths that should be available in the
+   * package's classpath at runtime.
    */
   Set<String> getRuntimeClassPath();
 
   /**
-   * Retrieves the description of the package. This will always be a human readable string.
+   * Retrieves the description of the package. This will always be a human
+   * readable string.
    *
    * @return The description of the package
    */
   String getDescription();
 
   /**
-   * The list of dependencies this package has. This includes `hard` and `soft` dependencies.
+   * The list of dependencies this package has. This includes `hard` and `soft`
+   * dependencies.
    *
    * @return The list of dependencies this package has
    */
   Set<? extends DependencyDescription> getDependencies();
 
   /**
-   * Checks if this package manifest is valid, e.g. if all necessary values are present.
+   * Checks if this package manifest is valid, e.g. if all necessary values are
+   * present.
    *
    * @return {@code true} if the manifest is valid, {@code false} otherwise
    */
   boolean isValid();
+
+  /**
+   * Adds a dependency at runtime. The dependency will only be resolved if this
+   * happens before the {@link PackageLoader} loads the package.
+   *
+   * @param packageName the name of the {@link Package} to depend on
+   * @param versions    the version to depend on
+   * @param channel     the channel to depend on
+   */
+  void addDependency(String packageName, String versions, String channel);
 }

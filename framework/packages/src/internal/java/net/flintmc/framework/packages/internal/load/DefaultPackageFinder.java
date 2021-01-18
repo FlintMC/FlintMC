@@ -20,6 +20,12 @@
 package net.flintmc.framework.packages.internal.load;
 
 import com.google.inject.Inject;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.packages.Package;
+import net.flintmc.framework.packages.PackageManifestLoader;
+import net.flintmc.framework.packages.load.PackageFinder;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,21 +33,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.jar.JarFile;
-import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.load.PackageFinder;
-import org.apache.logging.log4j.Logger;
 
 public class DefaultPackageFinder implements PackageFinder {
 
   private final Logger logger;
   private final Package.Factory packageFactory;
+  private final PackageManifestLoader manifestLoader;
 
   @Inject
   private DefaultPackageFinder(@InjectLogger Logger logger,
-      Package.Factory packageFactory) {
+      Package.Factory packageFactory, PackageManifestLoader manifestLoader) {
     this.logger = logger;
     this.packageFactory = packageFactory;
+    this.manifestLoader = manifestLoader;
   }
 
   /**
@@ -71,10 +75,18 @@ public class DefaultPackageFinder implements PackageFinder {
   // tries to construct a Package instance from the given file
   private Optional<Package> constructPackage(File file) {
     try {
-      return Optional.of(this.packageFactory.create(file, new JarFile(file)));
+      JarFile jar = new JarFile(file);
+      if (manifestLoader.isManifestPresent(jar)) {
+        return Optional.of(this.packageFactory.create(file, jar));
+      } else {
+        this.logger
+            .warn(String.format(
+                "The file '%s' is in the package directory, but it doesn't "
+                    + "contain a package manifest.", file.getPath()));
+      }
     } catch (Exception e) {
       this.logger.warn(String.format(
-          "The file %s qualifies as a potential package but a package "
+          "The file '%s' qualifies as a potential package but a package "
               + "could not be constructed from it.",
           file.getPath()));
     }

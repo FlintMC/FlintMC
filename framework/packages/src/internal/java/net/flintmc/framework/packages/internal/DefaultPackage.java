@@ -28,9 +28,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.PackageClassLoader;
-import net.flintmc.framework.packages.PackageManifest;
-import net.flintmc.framework.packages.PackageState;
+import net.flintmc.framework.packages.*;
 import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
 import net.flintmc.framework.service.ExtendedServiceLoader;
 import net.flintmc.framework.stereotype.service.Service;
@@ -41,7 +39,6 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
 import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,8 +53,10 @@ import java.util.jar.JarFile;
 public class DefaultPackage implements Package {
 
   private final ServiceRepository serviceRepository;
+  private final PackageClassLoader.Factory classLoaderFactory;
   private final Logger logger;
   private final File jarFile;
+
 
   private PackageLocalizationLoader localizationLoader;
   private PackageManifest packageManifest;
@@ -83,16 +82,19 @@ public class DefaultPackage implements Package {
   private DefaultPackage(
       ServiceRepository serviceRepository,
       PackageLocalizationLoader localizationLoader,
-      DefaultPackageManifestLoader manifestLoader,
+      PackageManifestLoader manifestLoader,
+      PackageClassLoader.Factory classLoaderFactory,
       @InjectLogger Logger logger,
       @Assisted File jarFile,
       @Assisted JarFile jar) {
     this.serviceRepository = serviceRepository;
+    this.classLoaderFactory = classLoaderFactory;
     this.logger = logger;
     this.jarFile = jarFile;
 
     if (jar != null) {
-      // If the package should be loaded from a jar file, try to retrieve the manifest from it
+      // If the package should be loaded from a jar file, try to retrieve the
+      // manifest from it
       if (!manifestLoader.isManifestPresent(jar)) {
         throw new IllegalArgumentException(
             "The given JAR file " + jarFile.getName()
@@ -123,9 +125,8 @@ public class DefaultPackage implements Package {
       }
 
     } else {
-      // The package should not be loaded from a file, thus we don't have a manifest and mark  the
-      // package
-      // as ready for load
+      // The package should not be loaded from a file, thus we don't have a
+      // manifest and mark  the package as ready for load
       this.packageState = PackageState.NOT_LOADED;
     }
   }
@@ -208,7 +209,7 @@ public class DefaultPackage implements Package {
     }
 
     try {
-      this.classLoader = new DefaultPackageClassLoader(this);
+      this.classLoader = this.classLoaderFactory.create(this);
       this.packageState = PackageState.LOADED;
     } catch (Exception exception) {
       // The package failed to load, save the error and mark the package itself as errored

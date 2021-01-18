@@ -20,7 +20,8 @@
 package net.flintmc.framework.packages.load;
 
 import net.flintmc.framework.packages.Package;
-
+import net.flintmc.util.commons.Pair;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -36,9 +37,10 @@ public interface DependencyGraphBuilder {
    *
    * @param packages a list of potentially loadable packages
    * @return a list of packages that can be loaded in the given order without
-   * producing dependency errors
+   * producing dependency errors and a list of files that need to be on the
+   * classpath for the packages to load
    */
-  List<Package> buildDependencyGraph(List<Package> packages);
+  Pair<List<Package>, List<File>> buildDependencyGraph(List<Package> packages);
 
   /**
    * Checks whether a given {@link Package} is loadable assuming a list of given
