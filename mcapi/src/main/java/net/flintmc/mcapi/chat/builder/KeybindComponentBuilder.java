@@ -40,7 +40,7 @@ public interface KeybindComponentBuilder extends ComponentBuilder<KeybindCompone
   /**
    * Retrieves the keybind of the current component.
    *
-   * @return The keybind out of the current component or {@code null} if no keybind has been set
+   * @return The keybind out of the current component or {@code null}, if no keybind has been set
    * @see #keybind(Keybind)
    */
   Keybind keybind();

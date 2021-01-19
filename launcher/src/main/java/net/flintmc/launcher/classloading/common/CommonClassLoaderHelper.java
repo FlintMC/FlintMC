@@ -56,7 +56,7 @@ public class CommonClassLoaderHelper {
    *
    * @param commonClassLoader The class loader to use to get the data
    * @param name The name of the class
-   * @return Information about and content of the class, or {@code null} if the class could not be
+   * @return Information about and content of the class, or {@code null}, if the class could not be
    *     found
    * @throws IOException If an I/O error occurs while reading the class
    */

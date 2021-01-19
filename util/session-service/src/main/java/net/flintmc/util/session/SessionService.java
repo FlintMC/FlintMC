@@ -37,21 +37,21 @@ public interface SessionService {
   /**
    * Retrieves the uniqueId of the player of the account which is currently used by the client.
    *
-   * @return The uniqueId or {@code null} if the client is not logged into any account
+   * @return The uniqueId or {@code null}, if the client is not logged into any account
    */
   UUID getUniqueId();
 
   /**
    * Retrieves the name of the player of the account which is currently used by the client.
    *
-   * @return The name or {@code null} if the client is not logged into any account
+   * @return The name or {@code null}, if the client is not logged into any account
    */
   String getUsername();
 
   /**
    * Retrieves the profile of the player of the account which is currently used by the client.
    *
-   * @return The profile or {@code null} if the client is not logged into any account
+   * @return The profile or {@code null}, if the client is not logged into any account
    */
   GameProfile getProfile();
 
@@ -80,7 +80,7 @@ public interface SessionService {
    * #refreshToken()}. If the {@link SessionService} is logged in, but the token is no more valid,
    * this method will still return the token and not {@code null}.
    *
-   * @return The access token or {@code null} if the client is not logged into any account
+   * @return The access token or {@code null}, if the client is not logged into any account
    * @see #refreshToken()
    */
   String getAccessToken();

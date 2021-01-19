@@ -36,7 +36,7 @@ public interface ScoreboardMapper {
    * Creates a new Minecraft player team by using the given {@link PlayerTeam} as the base.
    *
    * @param team The non-null {@link PlayerTeam}.
-   * @return The new Minecraft player team or {@code null} if the given player team was invalid.
+   * @return The new Minecraft player team or {@code null}, if the given player team was invalid.
    */
   Object toMinecraftPlayerTeam(PlayerTeam team);
 
@@ -44,7 +44,7 @@ public interface ScoreboardMapper {
    * Creates a new {@link PlayerTeam} by using the given Minecraft player team as the base.
    *
    * @param team The non-null Minecraft player team.
-   * @return The new {@link PlayerTeam} or {@code null} if the given player team was invalid.
+   * @return The new {@link PlayerTeam} or {@code null}, if the given player team was invalid.
    */
   PlayerTeam fromMinecraftPlayerTeam(Object team);
 
@@ -52,7 +52,7 @@ public interface ScoreboardMapper {
    * Creates a new Minecraft objective by using the given {@link Objective} as the base.
    *
    * @param objective The non-null {@link Objective}.
-   * @return The new Minecraft objective or {@code null} if the given objective was invalid.
+   * @return The new Minecraft objective or {@code null}, if the given objective was invalid.
    */
   Object toMinecraftObjective(Objective objective);
 
@@ -60,7 +60,7 @@ public interface ScoreboardMapper {
    * Creates a new {@link Objective} by using the given Minecraft objective as the base.
    *
    * @param objective The non-null Minecraft objective.
-   * @return The new {@link Objective} or {@code null} if the given objective was invalid.
+   * @return The new {@link Objective} or {@code null}, if the given objective was invalid.
    */
   Objective fromMinecraftObjective(Object objective);
 
@@ -68,7 +68,7 @@ public interface ScoreboardMapper {
    * Creates a new Minecraft score by using the given {@link Score} as the base.
    *
    * @param score The non-null {@link Score}.
-   * @return The new Minecraft score or {@code null} if the given objective was invalid.
+   * @return The new Minecraft score or {@code null}, if the given objective was invalid.
    */
   Object toMinecraftScore(Score score);
 
@@ -76,7 +76,7 @@ public interface ScoreboardMapper {
    * Creates a new {@link Score} by using the given Minecraft score as the base.
    *
    * @param score The non-null Minecraft score.
-   * @return The new {@link Score} or {@code null} if the given score was invalid.
+   * @return The new {@link Score} or {@code null}, if the given score was invalid.
    */
   Score fromMinecraftScore(Object score);
 
@@ -84,7 +84,7 @@ public interface ScoreboardMapper {
    * Creates a new Minecraft criteria by using the given {@link Criteria} as the base.
    *
    * @param criteria The non-null {@link Criteria}.
-   * @return The new Minecraft criteria or {@code null} if the given criteria was invalid.
+   * @return The new Minecraft criteria or {@code null}, if the given criteria was invalid.
    */
   Object toMinecraftCriteria(Criteria criteria);
 
@@ -92,7 +92,7 @@ public interface ScoreboardMapper {
    * Creates a new {@link Criteria} by using the given Minecraft criteria as the base.
    *
    * @param criteria The non-null Minecraft criteria.
-   * @return The new {@link Criteria} or {@code null} if the given criteria was invalid.
+   * @return The new {@link Criteria} or {@code null}, if the given criteria was invalid.
    */
   Criteria fromMinecraftCriteria(Object criteria);
 

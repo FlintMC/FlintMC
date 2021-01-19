@@ -27,9 +27,9 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 public interface TranslationComponent extends ChatComponent {
 
   /**
-   * Retrieves the key for translations of this component or {@code null} if no key has been set.
+   * Retrieves the key for translations of this component or {@code null}, if no key has been set.
    *
-   * @return The key for translations or {@code null} if no translation key has been provided
+   * @return The key for translations or {@code null}, if no translation key has been provided
    * @see #translationKey(String)
    */
   String translationKey();

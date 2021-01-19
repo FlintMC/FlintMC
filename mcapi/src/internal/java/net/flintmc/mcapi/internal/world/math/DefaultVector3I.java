@@ -128,4 +128,12 @@ public class DefaultVector3I implements Vector3I {
   public int hashCode() {
     return (this.getY() + this.getZ() * 31) * 31 + this.getX();
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "Vector3I{x=" + this.x + ";y=" + this.y + ";z=" + this.z + "}";
+  }
 }

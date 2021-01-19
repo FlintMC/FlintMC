@@ -34,7 +34,7 @@ public interface ConfigAnnotationCollector {
    * @param methods The non-null array of methods to search for
    * @param annotationType The non-null type of the annotation
    * @param <A> The annotation which should be searched
-   * @return The discovered annotation or {@code null} if no method/class associated with this
+   * @return The discovered annotation or {@code null}, if no method/class associated with this
    *     reference is annotated with it.
    * @see ConfigObjectReference#findLastAnnotation(Class)
    */

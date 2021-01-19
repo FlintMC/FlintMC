@@ -53,7 +53,7 @@ public interface InventoryClickEvent
    * up in the PRE phase and air in the POST phase or if an item has been placed the item in the
    * POST phase and air in the PRE phase.
    *
-   * @return The clicked item or {@code null} if no slot has been clicked (e.g. outside of the
+   * @return The clicked item or {@code null}, if no slot has been clicked (e.g. outside of the
    * inventory when {@link #getClickType()} == {@link InventoryClick#DROP}
    */
   ItemStack getClickedItem();

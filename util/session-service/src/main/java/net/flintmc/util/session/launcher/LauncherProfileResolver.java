@@ -47,7 +47,7 @@ public interface LauncherProfileResolver {
    * #registerSerializer(int, CtClass)} )} or the {@link ProfileSerializerVersion} annotation.
    *
    * @param version The version of the serializer
-   * @return The serializer or {@code null} if no serializer for the given version has been
+   * @return The serializer or {@code null}, if no serializer for the given version has been
    * registered
    */
   LauncherProfileSerializer getSerializer(int version);
@@ -65,7 +65,7 @@ public interface LauncherProfileResolver {
    * called before the {@link MinecraftInitializeEvent} has been fired in the {@link
    * Subscribe.Phase#POST} phase, otherwise it may throw unspecified exceptions.
    *
-   * @return The launcher profiles or {@code null} if an error occurred (e.g. if the file doesn't
+   * @return The launcher profiles or {@code null}, if an error occurred (e.g. if the file doesn't
    * exist, if there is no serializer for the specified version registered)
    * @throws IOException If an I/O error occurred
    */

@@ -42,7 +42,7 @@ public interface ItemStack {
    *
    * @param create Whether this method is allowed to create the ItemMeta if it is not present
    * @return The ItemMeta of this ItemStack or {@code null}, if no ItemMeta is present and {@code
-   * create} has been set to {@code false}. This will never be {@code null} if {@code create} was
+   * create} has been set to {@code false}. This will never be {@code null}, if {@code create} was
    * set to {@code true}.
    * @see #hasItemMeta()
    */

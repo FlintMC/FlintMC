@@ -44,7 +44,7 @@ public interface ServerLoginSuccessEvent extends Event, ServerAddressEvent {
     /**
      * Creates a new {@link ServerLoginSuccessEvent} with the given address.
      *
-     * @param address The address for the new event, may be {@code null} if the event happened in
+     * @param address The address for the new event, may be {@code null}, if the event happened in
      *                singleplayer
      * @return The new event
      */

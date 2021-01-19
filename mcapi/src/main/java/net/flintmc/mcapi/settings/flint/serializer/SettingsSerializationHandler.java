@@ -47,7 +47,7 @@ public interface SettingsSerializationHandler<A extends Annotation> {
    * @param result     The non-null json object to serialize the given annotation into
    * @param setting    The non-null setting where the given annotation has been found
    * @param annotation The annotation that has been found matching the type that is supported by
-   *                   this handler, may be {@code null} if no annotation with the given type was
+   *                   this handler, may be {@code null}, if no annotation with the given type was
    *                   found
    */
   void append(JsonObject result, RegisteredSetting setting, A annotation);

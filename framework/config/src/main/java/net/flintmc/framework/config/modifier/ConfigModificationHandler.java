@@ -38,7 +38,7 @@ public interface ConfigModificationHandler {
    * Modifies the given annotation, the exact process depends on the implementation.
    *
    * @param annotation The non-null annotation to be modified
-   * @return The modified/new annotation, {@code null} if no modification should be applied
+   * @return The modified/new annotation, {@code null}, if no modification should be applied
    */
   Annotation modify(Annotation annotation);
 

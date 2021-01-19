@@ -85,7 +85,7 @@ public enum Keybind {
    * Retrieves the keybind by the given minecraft key.
    *
    * @param key The non-null key for the keybind
-   * @return The keybind by the given key or {@code null} if no keybind with the given key exists
+   * @return The keybind by the given key or {@code null}, if no keybind with the given key exists
    */
   public static Keybind getByKey(String key) {
     return BY_KEY.get(key);

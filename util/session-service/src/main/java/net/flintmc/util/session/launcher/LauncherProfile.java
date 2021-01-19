@@ -35,7 +35,7 @@ public interface LauncherProfile {
    * Retrieves a {@link GameProfile} from this profile with the given {@code uniqueId}.
    *
    * @param uniqueId The non-null uniqueId of the profile
-   * @return The {@link GameProfile} with the given {@code uniqueId} or {@code null} if there is no
+   * @return The {@link GameProfile} with the given {@code uniqueId} or {@code null}, if there is no
    * {@link GameProfile} with the given {@code uniqueId} in {@link #getProfiles() the profiles}
    */
   GameProfile getProfile(UUID uniqueId);

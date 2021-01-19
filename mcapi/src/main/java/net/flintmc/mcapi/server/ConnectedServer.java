@@ -30,7 +30,7 @@ public interface ConnectedServer {
   /**
    * Retrieves the address of the server which the client is connected to.
    *
-   * @return The address of the server or {@code null} if the client is not connected to any server
+   * @return The address of the server or {@code null}, if the client is not connected to any server
    */
   ServerAddress getAddress();
 
@@ -47,7 +47,7 @@ public interface ConnectedServer {
    * Uses {@link ServerStatusResolver#resolveStatus(ServerAddress)} to get the status of a server
    * for the server list.
    *
-   * @return The non-null future which will be completed with the status or {@code null} if the
+   * @return The non-null future which will be completed with the status or {@code null}, if the
    * status couldn't be retrieved
    * @throws IllegalStateException If the client is not connected with any server
    */

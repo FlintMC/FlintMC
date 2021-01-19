@@ -99,7 +99,7 @@ public interface ComponentBuilder<B extends ComponentBuilder<B>> {
    * Retrieves the current click event of the current component or {@code null}, if no click event
    * has been set by using {@link #clickEvent(ClickEvent)}.
    *
-   * @return The click event or {@code null} if no click event has been set
+   * @return The click event or {@code null}, if no click event has been set
    * @see #clickEvent(ClickEvent)
    */
   ClickEvent clickEvent();
@@ -118,7 +118,7 @@ public interface ComponentBuilder<B extends ComponentBuilder<B>> {
    * Retrieves the hover click event of the current component or {@code null}, if no hover event has
    * been set by using {@link #hoverEvent(HoverEvent)}.
    *
-   * @return The hover event or {@code null} if no hover event has been set
+   * @return The hover event or {@code null}, if no hover event has been set
    * @see #hoverEvent(HoverEvent)
    */
   HoverEvent hoverEvent();

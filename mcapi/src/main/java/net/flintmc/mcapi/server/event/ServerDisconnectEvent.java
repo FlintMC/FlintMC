@@ -55,7 +55,7 @@ public interface ServerDisconnectEvent extends Event, ServerAddressEvent, Direct
     /**
      * Creates a new {@link ServerDisconnectEvent} with the given address.
      *
-     * @param address The address for the new event, may be {@code null} if the event happened in
+     * @param address The address for the new event, may be {@code null}, if the event happened in
      *                singleplayer
      * @return The new event
      */

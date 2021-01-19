@@ -19,15 +19,17 @@
 
 package net.flintmc.mcapi.world;
 
-import java.util.List;
-import java.util.Random;
 import net.flintmc.mcapi.tileentity.TileEntity;
+import net.flintmc.mcapi.world.block.Block;
+import net.flintmc.mcapi.world.block.BlockState;
 import net.flintmc.mcapi.world.border.WorldBorder;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.type.Dimension;
 import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 import net.flintmc.mcapi.world.type.difficulty.DifficultyLocal;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Represents the Minecraft world.
@@ -260,10 +262,46 @@ public interface World {
   List<TileEntity> getLoadedTileEntities();
 
   /**
+   * Retrieves the block state at the given coordinates.
+   *
+   * @param x The x coordinate
+   * @param y The y coordinate
+   * @param z The z coordinate
+   * @return The non-null block state at the given coordinates
+   */
+  BlockState getBlockState(int x, int y, int z);
+
+  /**
+   * Retrieves the block state at the given position.
+   *
+   * @param position The non-null position
+   * @return The non-null block state at the given position
+   */
+  BlockState getBlockState(BlockPosition position);
+
+  /**
+   * Retrieves the block at the given coordinates.
+   *
+   * @param x The x coordinate
+   * @param y The y coordinate
+   * @param z The z coordinate
+   * @return The non-null block at the given coordinates
+   */
+  Block getBlock(int x, int y, int z);
+
+  /**
+   * Retrieves the block at the given position.
+   *
+   * @param position The non-null position
+   * @return The non-null block at the given position
+   */
+  Block getBlock(BlockPosition position);
+
+  /**
    * Creates a new Minecraft block pos by using the given {@link BlockPosition} as the base.
    *
    * @param position The non-null {@link BlockPosition}.
-   * @return The new Minecraft block pos or {@code null} if the given block position was invalid.
+   * @return The new Minecraft block pos or {@code null}, if the given block position was invalid.
    */
   Object toMinecraftBlockPos(BlockPosition position);
 
@@ -271,7 +309,7 @@ public interface World {
    * Creates a new {@link BlockPosition} by using the given Minecraft block pos as the base.
    *
    * @param handle The non-null block pos.
-   * @return The new {@link BlockPosition} or {@code null} if the given Minecraft block pos was
+   * @return The new {@link BlockPosition} or {@code null}, if the given Minecraft block pos was
    * invalid.
    */
   BlockPosition fromMinecraftBlockPos(Object handle);
@@ -280,7 +318,7 @@ public interface World {
    * Creates a new Minecraft dimension type by using the given {@link Dimension} as the base.
    *
    * @param dimension The non-null {@link Dimension}.
-   * @return The new Minecraft dimension type or {@code null} if the given {@link Dimension} was
+   * @return The new Minecraft dimension type or {@code null}, if the given {@link Dimension} was
    * invalid.
    */
   Object toMinecraftDimension(Dimension dimension);
@@ -289,8 +327,25 @@ public interface World {
    * Creates a new {@link Dimension} by using the given Minecraft dimension type as the base.
    *
    * @param handle The non-null minecraft dimension type.
-   * @return The new {@link Dimension} or {@code null} if the given {@link Dimension} was invalid.
+   * @return The new {@link Dimension} or {@code null}, if the given {@link Dimension} was invalid.
    * @throws IllegalStateException When an unexpected value is received.
    */
   Dimension fromMinecraftDimension(Object handle);
+
+  /**
+   * Converts the given Flint difficulty to the equivalent Minecraft difficulty.
+   *
+   * @param difficulty The non-null difficulty to be converted
+   * @return The non-null Minecraft difficulty
+   */
+  Object toMinecraftDifficulty(Difficulty difficulty);
+
+  /**
+   * Converts the given Minecraft difficulty to the equivalent Flint difficulty.
+   *
+   * @param handle The non-null difficulty to be converted
+   * @return The non-null Flint difficulty
+   */
+  Difficulty fromMinecraftDifficulty(Object handle);
+
 }

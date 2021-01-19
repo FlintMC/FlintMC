@@ -40,7 +40,7 @@ public interface PotionMapper {
    * Creates a new {@link Potion} by using the given Minecraft potion as the base.
    *
    * @param handle The non-null Minecraft potion.
-   * @return The new Flint {@link Potion} or {@code null} if the given potion was invalid.
+   * @return The new Flint {@link Potion} or {@code null}, if the given potion was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft potion.
    */
   Potion fromMinecraftPotion(Object handle);
@@ -57,7 +57,7 @@ public interface PotionMapper {
    * Creates a new {@link StatusEffect} by using the given Minecraft effect as the base.
    *
    * @param handle The non-null Minecraft effect.
-   * @return The new Flint {@link StatusEffect} or {@code null} if the given effect was invalid.
+   * @return The new Flint {@link StatusEffect} or {@code null}, if the given effect was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft effect.
    */
   StatusEffect fromMinecraftEffect(Object handle);
@@ -92,7 +92,7 @@ public interface PotionMapper {
    * base.
    *
    * @param handle The non-null Minecraft effect instance.
-   * @return The new Flint {@link StatusEffectInstance} or {@code null} if the given effect instance
+   * @return The new Flint {@link StatusEffectInstance} or {@code null}, if the given effect instance
    * was invalid.
    * @throws IllegalArgumentException If the given object is no Minecraft effect instance.
    */

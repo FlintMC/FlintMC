@@ -45,7 +45,7 @@ public interface GsonComponentSerializer extends ComponentSerializer {
    *
    * @param component The non-null component to be deserialized
    * @param action    The non-null action of the content in the given component
-   * @return A new {@link HoverContent} or {@code null} if an invalid component has been provided
+   * @return A new {@link HoverContent} or {@code null}, if an invalid component has been provided
    * @throws UnsupportedOperationException If no serializer for the given action was registered
    * @see HoverContentSerializer#deserialize(ChatComponent, ComponentBuilder.Factory, Gson)
    * @see #getHoverContentSerializer(HoverEvent.Action)
@@ -57,7 +57,7 @@ public interface GsonComponentSerializer extends ComponentSerializer {
    * #getHoverContentSerializer(HoverEvent.Action)} with the action out of the given content.
    *
    * @param content The non-null content to be serialized
-   * @return A new {@link ChatComponent} or {@code null} if an invalid content has been provided
+   * @return A new {@link ChatComponent} or {@code null}, if an invalid content has been provided
    * @throws UnsupportedOperationException If no serializer for the given action was registered
    * @see HoverContentSerializer#serialize(HoverContent, ComponentBuilder.Factory, Gson)
    * @see #getHoverContentSerializer(HoverEvent.Action)

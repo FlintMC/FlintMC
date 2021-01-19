@@ -71,7 +71,7 @@ public enum EntitySelector {
    * Retrieves the selector by the given shortcut char.
    *
    * @param shortcut The shortcut for the specific selector
-   * @return The selector by the given shortcut or {@code null} if no selector with the given
+   * @return The selector by the given shortcut or {@code null}, if no selector with the given
    * shortcut exists
    */
   public static EntitySelector getByShortcut(char shortcut) {

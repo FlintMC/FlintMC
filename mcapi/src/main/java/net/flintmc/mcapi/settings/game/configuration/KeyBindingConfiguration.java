@@ -44,7 +44,7 @@ public interface KeyBindingConfiguration {
    * Retrieves the physically bound key to a specific description.
    *
    * @param keyDescription The non-null description of the key ({@link Keybind#getKey()})
-   * @return The key that is bound to the given description or {@code null} if no key is bound
+   * @return The key that is bound to the given description or {@code null}, if no key is bound
    */
   @KeyBindSetting
   Key getKey(String keyDescription);

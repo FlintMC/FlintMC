@@ -17,15 +17,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.world.block.material;
+package net.flintmc.mcapi.world.biome;
 
 /**
- * An enumeration that representing all available push reactions.
+ * Types of rain that may occur in a biome.
+ *
+ * @see Biome#getRainType()
  */
-public enum PushReaction {
-  NORMAL,
-  DESTROY,
-  BLOCK,
-  IGNORE,
-  PUSH_ONLY
+public enum RainType {
+
+  /**
+   * There will be no rain in this biome.
+   */
+  NONE,
+
+  /**
+   * There may be rain in this biome, but no snow.
+   */
+  RAIN,
+
+  /**
+   * There may be snow in this biome, but no rain.
+   */
+  SNOW
+
 }

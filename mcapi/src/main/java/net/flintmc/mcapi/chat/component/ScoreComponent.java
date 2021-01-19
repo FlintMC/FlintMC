@@ -27,11 +27,11 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 public interface ScoreComponent extends ChatComponent {
 
   /**
-   * Retrieves the name of this component or {@code null} if no name has been set. The client will
+   * Retrieves the name of this component or {@code null}, if no name has been set. The client will
    * display the value out of the scoreboard where this key is the line that is displayed next to
    * the value.
    *
-   * @return The name in the scoreboard or {@code null} if no name has been provided
+   * @return The name in the scoreboard or {@code null}, if no name has been provided
    * @see #name(String)
    */
   String name();
@@ -45,10 +45,10 @@ public interface ScoreComponent extends ChatComponent {
   void name(String name);
 
   /**
-   * Retrieves the name of the objective of this component or {@code null} if no objective has been
+   * Retrieves the name of the objective of this component or {@code null}, if no objective has been
    * set. The client will use this to get the objective containing the value to display.
    *
-   * @return The objective in the scoreboard or {@code null} if no objective has been provided
+   * @return The objective in the scoreboard or {@code null}, if no objective has been provided
    * @see #objective(String)
    */
   String objective();
