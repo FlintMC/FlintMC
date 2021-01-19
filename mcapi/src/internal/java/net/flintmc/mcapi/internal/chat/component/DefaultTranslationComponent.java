@@ -22,65 +22,119 @@ package net.flintmc.mcapi.internal.chat.component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
+import net.flintmc.util.i18n.I18n;
 
+@Implement(TranslationComponent.class)
 public class DefaultTranslationComponent extends DefaultChatComponent
     implements TranslationComponent {
+
+  private final I18n i18n;
+  private final TextComponent.Factory textFactory;
 
   private final List<ChatComponent> arguments = new ArrayList<>();
   private String translationKey;
 
+  @AssistedInject
+  private DefaultTranslationComponent(I18n i18n, TextComponent.Factory textFactory) {
+    this.i18n = i18n;
+    this.textFactory = textFactory;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String translationKey() {
     return this.translationKey;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void translationKey(String translationKey) {
     this.translationKey = translationKey;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String translate() {
     if (this.translationKey == null) {
       return "null";
     }
 
-    return this
-        .translationKey; // TODO translate with the given translationKey (return the translationKey
-    // if no translation exists)
+    String[] arguments = new String[this.arguments.size()];
+    for (int i = 0; i < arguments.length; i++) {
+      arguments[i] = this.arguments.get(i).getUnformattedText();
+    }
+
+    return this.i18n.translate(this.translationKey, (Object[]) arguments);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void arguments(ChatComponent... arguments) {
     this.arguments.clear();
     this.arguments.addAll(Arrays.asList(arguments));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void appendArgument(ChatComponent argument) {
     this.arguments.add(argument);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void appendArgument(String text) {
+    TextComponent component = this.textFactory.create();
+    component.text(text);
+    this.appendArgument(component);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent[] arguments() {
     return this.arguments.toArray(new ChatComponent[0]);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getUnformattedText() {
     return this.translate();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected DefaultChatComponent createCopy() {
-    DefaultTranslationComponent component = new DefaultTranslationComponent();
+    DefaultTranslationComponent component = new DefaultTranslationComponent(i18n, textFactory);
     component.translationKey = this.translationKey;
     this.arguments.forEach(argument -> component.arguments.add(argument.copy()));
     return component;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean isSpecificEmpty() {
     return this.translationKey == null && this.arguments.isEmpty();

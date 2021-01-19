@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.chat.component;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
+
 /**
  * A component for displaying normal text in the chat.
  */
@@ -39,4 +41,12 @@ public interface TextComponent extends ChatComponent {
    * @param text The new non-null text for this component
    */
   void text(String text);
+
+  /**
+   * Factory for the {@link TextComponent}.
+   */
+  @AssistedFactory(TextComponent.class)
+  interface Factory extends ChatComponent.Factory<TextComponent> {
+
+  }
 }

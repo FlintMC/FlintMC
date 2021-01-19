@@ -17,29 +17,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.chat;
+package net.flintmc.mcapi.internal.chat.serializer;
 
-import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
+import net.flintmc.mcapi.chat.component.event.HoverEvent;
 
 /**
- * A location in the chat where components can be displayed by the {@link ChatController}.
+ * Holder for whether this version has a legacy or the new {@link HoverEvent} serialization.
  */
-public enum ChatLocation {
+public interface LegacyHoverHolder {
 
   /**
-   * The default chat.
+   * Retrieves whether or not the {@link HoverEvent} is serialized in the legacy or modern format.
+   *
+   * @return {@code true} if the hover event is serialized in the legacy format, {@code false} if
+   * the modern format should be used
    */
-  CHAT,
-
-  /**
-   * The action bar above the hotbar. Every message sent into the action bar will only be displayed
-   * for 20 ticks (1 second) and needs to be resent after that if should should stay there.
-   */
-  ACTION_BAR,
-
-  /**
-   * The default chat but only if the user has enabled {@link ChatVisibility#SYSTEM}.
-   */
-  SYSTEM
+  boolean isLegacyHoverEvent();
 
 }

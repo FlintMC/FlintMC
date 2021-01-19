@@ -19,37 +19,53 @@
 
 package net.flintmc.mcapi.internal.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.ScoreComponentBuilder;
 import net.flintmc.mcapi.chat.component.ScoreComponent;
-import net.flintmc.mcapi.internal.chat.component.DefaultScoreComponent;
+import net.flintmc.mcapi.chat.component.TextComponent;
 
 @Implement(value = ScoreComponentBuilder.class)
 public class DefaultScoreComponentBuilder
     extends DefaultComponentBuilder<ScoreComponentBuilder, ScoreComponent>
     implements ScoreComponentBuilder {
 
-  public DefaultScoreComponentBuilder() {
-    super(DefaultScoreComponent::new);
+  @AssistedInject
+  private DefaultScoreComponentBuilder(
+      TextComponent.Factory textComponentFactory,
+      ScoreComponent.Factory factory) {
+    super(textComponentFactory, factory);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ScoreComponentBuilder name(String name) {
     super.currentComponent.name(name);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String name() {
     return super.currentComponent.name();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ScoreComponentBuilder objective(String objective) {
     super.currentComponent.objective(objective);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String objective() {
     return super.currentComponent.objective();

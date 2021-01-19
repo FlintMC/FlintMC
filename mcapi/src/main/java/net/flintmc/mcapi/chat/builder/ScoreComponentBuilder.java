@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ScoreComponent;
 
 /**
@@ -61,4 +62,19 @@ public interface ScoreComponentBuilder extends ComponentBuilder<ScoreComponentBu
    * @see #objective(String)
    */
   String objective();
+
+  /**
+   * Factory for the {@link ScoreComponentBuilder}.
+   */
+  @AssistedFactory(ScoreComponentBuilder.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link ScoreComponentBuilder} without any arguments.
+     *
+     * @return The new non-null {@link ScoreComponentBuilder}
+     */
+    ScoreComponentBuilder newBuilder();
+
+  }
 }

@@ -19,7 +19,9 @@
 
 package net.flintmc.mcapi.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
 
 /**
@@ -61,13 +63,26 @@ public interface TranslationComponentBuilder extends ComponentBuilder<Translatio
    * Appends a new argument to the arguments of the current component for the translation of the
    * current component.
    *
-   * <p>Minecraft will replace %s the translation with the arguments of the {@link
+   * <p>Minecraft will replace %s in the translation with the arguments of the {@link
    * TranslationComponent}.
    *
    * @param argument The non-null argument to pass to the client
    * @return this
    */
   TranslationComponentBuilder appendArgument(ChatComponent argument);
+
+  /**
+   * Appends a new {@link TextComponent} to the current component for the translation of the current
+   * component.
+   *
+   * <p>Minecraft will replace %s in the translation with the arguments of the {@link
+   * TranslationComponent}.
+   *
+   * @param text The non-null text to be appended
+   * @return this
+   * @see #appendArgument(ChatComponent)
+   */
+  TranslationComponentBuilder appendArgument(String text);
 
   /**
    * Retrieves all arguments of the current component which Minecraft uses for the translation of
@@ -77,4 +92,19 @@ public interface TranslationComponentBuilder extends ComponentBuilder<Translatio
    * the current component
    */
   ChatComponent[] arguments();
+
+  /**
+   * Factory for the {@link TranslationComponentBuilder}.
+   */
+  @AssistedFactory(TranslationComponentBuilder.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link TranslationComponentBuilder} without any arguments.
+     *
+     * @return The new non-null {@link TranslationComponentBuilder}
+     */
+    TranslationComponentBuilder newBuilder();
+
+  }
 }

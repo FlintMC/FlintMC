@@ -19,27 +19,37 @@
 
 package net.flintmc.mcapi.internal.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.builder.KeybindComponentBuilder;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
-import net.flintmc.mcapi.internal.chat.component.DefaultKeybindComponent;
+import net.flintmc.mcapi.chat.component.TextComponent;
 
 @Implement(value = KeybindComponentBuilder.class)
 public class DefaultKeybindComponentBuilder
     extends DefaultComponentBuilder<KeybindComponentBuilder, KeybindComponent>
     implements KeybindComponentBuilder {
 
-  public DefaultKeybindComponentBuilder() {
-    super(DefaultKeybindComponent::new);
+  @AssistedInject
+  private DefaultKeybindComponentBuilder(
+      TextComponent.Factory textComponentFactory,
+      KeybindComponent.Factory keybindComponentFactory) {
+    super(textComponentFactory, keybindComponentFactory);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public KeybindComponentBuilder keybind(Keybind keybind) {
     super.currentComponent.keybind(keybind);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Keybind keybind() {
     return super.currentComponent.keybind();

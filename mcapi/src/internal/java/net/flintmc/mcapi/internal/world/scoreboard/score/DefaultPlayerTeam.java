@@ -52,14 +52,14 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @AssistedInject
   public DefaultPlayerTeam(
       PlayerTeamChangeListener playerTeamChangeListener,
-      TextComponentBuilder textComponentBuilder,
+      TextComponentBuilder.Factory textFactory,
       @Assisted("name") String name) {
     this.playerTeamChangeListener = playerTeamChangeListener;
     this.members = Sets.newHashSet();
     this.name = name;
-    this.displayName = textComponentBuilder.text(name).build();
-    this.prefix = textComponentBuilder.text("").build();
-    this.suffix = textComponentBuilder.text("").build();
+    this.displayName = textFactory.newBuilder().text(name).build();
+    this.prefix = textFactory.newBuilder().text("").build();
+    this.suffix = textFactory.newBuilder().text("").build();
 
     this.allowFriendlyFire = true;
     this.canSeeFriendlyInvisible = true;

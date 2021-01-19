@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.chat.component;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
+
 /**
  * A component that allows to display the numeric value of an entry in the scoreboard.
  */
@@ -58,4 +60,12 @@ public interface ScoreComponent extends ChatComponent {
    * @param objective The non-null name of the objective for this component
    */
   void objective(String objective);
+
+  /**
+   * Factory for the {@link ScoreComponent}.
+   */
+  @AssistedFactory(ScoreComponent.class)
+  interface Factory extends ChatComponent.Factory<ScoreComponent> {
+
+  }
 }

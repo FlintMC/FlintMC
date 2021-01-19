@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.TextComponent;
 
 /**
@@ -51,4 +52,19 @@ public interface TextComponentBuilder extends ComponentBuilder<TextComponentBuil
    * @see #appendText(String)
    */
   String text();
+
+  /**
+   * Factory for the {@link TextComponentBuilder}.
+   */
+  @AssistedFactory(TextComponentBuilder.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link TextComponentBuilder} without any arguments.
+     *
+     * @return The new non-null {@link TextComponentBuilder}
+     */
+    TextComponentBuilder newBuilder();
+
+  }
 }

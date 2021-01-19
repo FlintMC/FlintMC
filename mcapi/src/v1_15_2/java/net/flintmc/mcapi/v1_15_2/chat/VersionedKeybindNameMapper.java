@@ -17,29 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.chat;
+package net.flintmc.mcapi.v1_15_2.chat;
 
-import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
+import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.Keybind;
+import net.flintmc.mcapi.internal.chat.component.KeybindNameMapper;
+import net.minecraft.client.settings.KeyBinding;
 
-/**
- * A location in the chat where components can be displayed by the {@link ChatController}.
- */
-public enum ChatLocation {
-
+@Singleton
+@Implement(value = KeybindNameMapper.class, version = "1.15.2")
+public class VersionedKeybindNameMapper implements KeybindNameMapper {
   /**
-   * The default chat.
+   * {@inheritDoc}
    */
-  CHAT,
-
-  /**
-   * The action bar above the hotbar. Every message sent into the action bar will only be displayed
-   * for 20 ticks (1 second) and needs to be resent after that if should should stay there.
-   */
-  ACTION_BAR,
-
-  /**
-   * The default chat but only if the user has enabled {@link ChatVisibility#SYSTEM}.
-   */
-  SYSTEM
-
+  @Override
+  public String translateKeybind(Keybind keybind) {
+    return KeyBinding.getDisplayString(keybind.getKey()).get();
+  }
 }
