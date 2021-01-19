@@ -28,6 +28,9 @@ import net.minecraft.client.settings.KeyBinding;
 @Singleton
 @Implement(value = KeybindNameMapper.class, version = "1.15.2")
 public class VersionedKeybindNameMapper implements KeybindNameMapper {
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String translateKeybind(Keybind keybind) {
     return KeyBinding.getDisplayString(keybind.getKey()).get();

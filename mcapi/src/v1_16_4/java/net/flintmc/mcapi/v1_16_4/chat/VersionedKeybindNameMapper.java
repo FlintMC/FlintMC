@@ -23,13 +23,28 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.internal.chat.component.KeybindNameMapper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
 @Implement(value = KeybindNameMapper.class, version = "1.16.4")
 public class VersionedKeybindNameMapper implements KeybindNameMapper {
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String translateKeybind(Keybind keybind) {
-    return KeyBinding.getDisplayString(keybind.getKey()).get().getUnformattedComponentText();
+    ITextComponent component = KeyBinding.getDisplayString(keybind.getKey()).get();
+    if (component instanceof TranslationTextComponent) {
+      String key = ((TranslationTextComponent) component).getKey();
+      Object[] args = ((TranslationTextComponent) component).getFormatArgs();
+
+      return I18n.format(key, args);
+    }
+
+    return component.getUnformattedComponentText();
   }
 }
