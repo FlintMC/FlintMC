@@ -32,6 +32,6 @@ public class VersionedLegacyHoverHolder implements LegacyHoverHolder {
    */
   @Override
   public boolean isLegacyHoverEvent() {
-    return false;
+    return true;
   }
 }
