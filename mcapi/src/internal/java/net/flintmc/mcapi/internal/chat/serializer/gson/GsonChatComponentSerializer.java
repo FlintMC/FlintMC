@@ -26,13 +26,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.flintmc.mcapi.chat.Keybind;
+import net.flintmc.mcapi.chat.builder.SelectorComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
 import net.flintmc.mcapi.chat.component.ScoreComponent;
 import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
+import net.flintmc.mcapi.chat.component.TextComponent.Factory;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
@@ -40,21 +43,34 @@ import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
-import net.flintmc.mcapi.internal.chat.builder.DefaultSelectorComponentBuilder;
-import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
-import net.flintmc.mcapi.internal.chat.component.DefaultKeybindComponent;
-import net.flintmc.mcapi.internal.chat.component.DefaultScoreComponent;
-import net.flintmc.mcapi.internal.chat.component.DefaultTextComponent;
-import net.flintmc.mcapi.internal.chat.component.DefaultTranslationComponent;
 import org.apache.logging.log4j.Logger;
+import java.lang.reflect.Type;
 
+@Singleton
 public class GsonChatComponentSerializer
     implements JsonSerializer<ChatComponent>, JsonDeserializer<ChatComponent> {
 
   private final Logger logger;
+  private final TextComponent.Factory textFactory;
+  private final TranslationComponent.Factory translationFactory;
+  private final KeybindComponent.Factory keybindFactory;
+  private final ScoreComponent.Factory scoreFactory;
+  private final SelectorComponentBuilder.Factory selectorFactory;
 
-  public GsonChatComponentSerializer(Logger logger) {
+  @Inject
+  private GsonChatComponentSerializer(
+      Logger logger,
+      Factory textFactory,
+      TranslationComponent.Factory translationFactory,
+      KeybindComponent.Factory keybindFactory,
+      ScoreComponent.Factory scoreFactory,
+      SelectorComponentBuilder.Factory selectorFactory) {
     this.logger = logger;
+    this.textFactory = textFactory;
+    this.translationFactory = translationFactory;
+    this.keybindFactory = keybindFactory;
+    this.scoreFactory = scoreFactory;
+    this.selectorFactory = selectorFactory;
   }
 
   // read everything that is the same in any type of component
@@ -151,7 +167,9 @@ public class GsonChatComponentSerializer
       JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
     if (json.isJsonPrimitive()) {
-      return new DefaultTextComponentBuilder().text(json.getAsString()).build();
+      TextComponent component = this.textFactory.create();
+      component.text(json.getAsString());
+      return component;
     }
 
     if (!json.isJsonObject()) {
@@ -173,13 +191,13 @@ public class GsonChatComponentSerializer
   private ChatComponent deserializeSpecific(JsonObject object, JsonDeserializationContext context) {
     if (object.has("text")) {
       // text components are identified by the "text" string
-      TextComponent component = new DefaultTextComponent();
+      TextComponent component = this.textFactory.create();
       component.text(object.get("text").getAsString());
       return component;
     } else if (object.has("translate")) {
       // translation components are identified by the "translate" string
       // and might contain "with" as an array of components for replacements in the translated text
-      TranslationComponent component = new DefaultTranslationComponent();
+      TranslationComponent component = this.translationFactory.create();
       component.translationKey(object.get("translate").getAsString());
       if (object.has("with")) {
         component.arguments(context.deserialize(object.get("with"), ChatComponent[].class));
@@ -192,7 +210,7 @@ public class GsonChatComponentSerializer
         return null;
       }
 
-      KeybindComponent component = new DefaultKeybindComponent();
+      KeybindComponent component = this.keybindFactory.create();
       component.keybind(keybind);
       return component;
     } else if (object.has("score")) {
@@ -202,14 +220,14 @@ public class GsonChatComponentSerializer
         return null;
       }
 
-      ScoreComponent component = new DefaultScoreComponent();
+      ScoreComponent component = this.scoreFactory.create();
       component.name(score.get("name").getAsString());
       component.objective(score.get("objective").getAsString());
       return component;
     } else if (object.has("selector")) {
       // selector components are identified by a "selector" string
       try {
-        return new DefaultSelectorComponentBuilder()
+        return this.selectorFactory.newBuilder()
             .parse(object.get("selector").getAsString())
             .build();
       } catch (InvalidSelectorException exception) {

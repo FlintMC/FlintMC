@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.chat.builder;
 
 import java.util.Collection;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
@@ -84,4 +85,19 @@ public interface SelectorComponentBuilder extends ComponentBuilder<SelectorCompo
    * @throws InvalidSelectorException The {@code rawSelector} doesn't have the correct format.
    */
   SelectorComponentBuilder parse(String rawSelector);
+
+  /**
+   * Factory for the {@link SelectorComponentBuilder}.
+   */
+  @AssistedFactory(SelectorComponentBuilder.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link SelectorComponentBuilder} without any arguments.
+     *
+     * @return The new non-null {@link SelectorComponentBuilder}
+     */
+    SelectorComponentBuilder newBuilder();
+
+  }
 }

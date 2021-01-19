@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.internal.chat.serializer;
 
+import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
@@ -31,10 +32,15 @@ import org.apache.logging.log4j.Logger;
 public class PlainComponentSerializer implements ComponentSerializer {
 
   private final Logger logger;
+  private final ComponentBuilder.Factory componentFactory;
   private final boolean applyFormat;
 
-  public PlainComponentSerializer(Logger logger, boolean applyFormat) {
+  public PlainComponentSerializer(
+      Logger logger,
+      ComponentBuilder.Factory componentFactory,
+      boolean applyFormat) {
     this.logger = logger;
+    this.componentFactory = componentFactory;
     this.applyFormat = applyFormat;
   }
 
@@ -64,11 +70,11 @@ public class PlainComponentSerializer implements ComponentSerializer {
   public ChatComponent deserialize(String serialized) {
     if (!this.applyFormat) {
       // no need for parsing the colors
-      return new DefaultTextComponentBuilder().text(serialized).build();
+      return this.componentFactory.text().text(serialized).build();
     }
 
     char[] chars = serialized.toCharArray();
-    TextComponentBuilder builder = new DefaultTextComponentBuilder().text("");
+    TextComponentBuilder builder = this.componentFactory.text().text("");
 
     for (int i = 0; i < chars.length; i++) {
       char c = chars[i];

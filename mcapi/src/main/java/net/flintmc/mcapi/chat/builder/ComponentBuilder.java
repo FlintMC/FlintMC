@@ -144,35 +144,40 @@ public interface ComponentBuilder<B extends ComponentBuilder<B>> {
   interface Factory {
 
     /**
-     * Creates a new builder for the {@link TextComponent}.
+     * Creates a new builder for the {@link TextComponent}. Equivalent to {@link
+     * TextComponentBuilder.Factory#newBuilder()}.
      *
      * @return The newly created builder
      */
     TextComponentBuilder text();
 
     /**
-     * Creates a new builder for the {@link KeybindComponent}.
+     * Creates a new builder for the {@link KeybindComponent}. Equivalent to {@link
+     * KeybindComponentBuilder.Factory#newBuilder()}.
      *
      * @return The newly created builder
      */
     KeybindComponentBuilder keybind();
 
     /**
-     * Creates a new builder for the {@link ScoreComponent}.
+     * Creates a new builder for the {@link ScoreComponent}. Equivalent to {@link
+     * ScoreComponentBuilder.Factory#newBuilder()}.
      *
      * @return The newly created builder
      */
     ScoreComponentBuilder score();
 
     /**
-     * Creates a new builder for the {@link SelectorComponent}.
+     * Creates a new builder for the {@link SelectorComponent}. Equivalent to {@link
+     * SelectorComponentBuilder.Factory#newBuilder()}.
      *
      * @return The newly created builder
      */
     SelectorComponentBuilder selector();
 
     /**
-     * Creates a new builder for the {@link TranslationComponent}.
+     * Creates a new builder for the {@link TranslationComponent}. Equivalent to {@link
+     * TranslationComponentBuilder.Factory#newBuilder()}.
      *
      * @return The newly created builder
      */

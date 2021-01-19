@@ -21,6 +21,7 @@ package net.flintmc.mcapi.chat.component;
 
 import com.google.common.collect.Multimap;
 import java.util.Collection;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.EntitySelector;
 
 /**
@@ -75,4 +76,12 @@ public interface SelectorComponent extends ChatComponent {
    * @return The non-null values for the given option, empty if no option with the given key is set.
    */
   Collection<String> selectorOption(String option);
+
+  /**
+   * Factory for the {@link SelectorComponent}.
+   */
+  @AssistedFactory(SelectorComponent.class)
+  interface Factory extends ChatComponent.Factory<SelectorComponent> {
+
+  }
 }

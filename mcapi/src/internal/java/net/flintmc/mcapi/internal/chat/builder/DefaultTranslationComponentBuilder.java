@@ -19,44 +19,72 @@
 
 package net.flintmc.mcapi.internal.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.TranslationComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
-import net.flintmc.mcapi.internal.chat.component.DefaultTranslationComponent;
 
 @Implement(value = TranslationComponentBuilder.class)
 public class DefaultTranslationComponentBuilder
     extends DefaultComponentBuilder<TranslationComponentBuilder, TranslationComponent>
     implements TranslationComponentBuilder {
 
-  public DefaultTranslationComponentBuilder() {
-    super(DefaultTranslationComponent::new);
+  @AssistedInject
+  private DefaultTranslationComponentBuilder(
+      TextComponent.Factory textComponentFactory,
+      TranslationComponent.Factory factory) {
+    super(textComponentFactory, factory);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TranslationComponentBuilder translationKey(String translationKey) {
     super.currentComponent.translationKey(translationKey);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String translationKey() {
     return super.currentComponent.translationKey();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TranslationComponentBuilder arguments(ChatComponent... arguments) {
     super.currentComponent.arguments(arguments);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TranslationComponentBuilder appendArgument(ChatComponent argument) {
     super.currentComponent.appendArgument(argument);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public TranslationComponentBuilder appendArgument(String text) {
+    super.currentComponent.appendArgument(text);
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent[] arguments() {
     return super.currentComponent.arguments();

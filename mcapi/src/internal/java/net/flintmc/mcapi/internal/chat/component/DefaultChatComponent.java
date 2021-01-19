@@ -31,8 +31,9 @@ import net.flintmc.mcapi.chat.format.ChatFormat;
 
 public abstract class DefaultChatComponent implements ChatComponent {
 
+  private static final ChatFormat[] FORMATS = ChatFormat.values();
   private final boolean[] formats =
-      new boolean[ChatFormat.values().length]; // all formats sorted by the order in the enum
+      new boolean[FORMATS.length]; // all formats sorted by the order in the enum
 
   private final List<ChatComponent> extras = new ArrayList<>();
 
@@ -43,79 +44,121 @@ public abstract class DefaultChatComponent implements ChatComponent {
   private ClickEvent clickEvent;
   private HoverEvent hoverEvent;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatFormat[] formats() {
     Collection<ChatFormat> formats = new ArrayList<>();
     for (int i = 0; i < this.formats.length; i++) {
       if (this.formats[i]) {
-        formats.add(ChatFormat.values()[i]);
+        formats.add(FORMATS[i]);
       }
     }
 
     return formats.toArray(new ChatFormat[0]);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasFormat(ChatFormat format) {
     return this.formats[format.ordinal()];
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void toggleFormat(ChatFormat format, boolean enabled) {
     this.formats[format.ordinal()] = enabled;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatColor color() {
     return this.color == null ? ChatColor.WHITE : this.color;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void color(ChatColor color) {
     this.color = color;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String insertion() {
     return this.insertion;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void insertion(String insertion) {
     this.insertion = insertion;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ClickEvent clickEvent() {
     return this.clickEvent;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void clickEvent(ClickEvent event) {
     this.clickEvent = event;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverEvent hoverEvent() {
     return this.hoverEvent;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void hoverEvent(HoverEvent event) {
     this.hoverEvent = event;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent[] extras() {
     return this.extras.toArray(new ChatComponent[0]);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void extras(ChatComponent[] extras) {
     this.extras.clear();
     this.extras.addAll(Arrays.asList(extras));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent copy() {
     DefaultChatComponent copy = this.createCopy();
@@ -137,11 +180,17 @@ public abstract class DefaultChatComponent implements ChatComponent {
 
   protected abstract DefaultChatComponent createCopy();
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void append(ChatComponent extra) {
     this.extras.add(extra);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isEmpty() {
     for (boolean format : this.formats) {

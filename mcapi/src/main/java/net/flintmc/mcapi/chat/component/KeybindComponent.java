@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.chat.component;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.Keybind;
 
 /**
@@ -43,4 +44,12 @@ public interface KeybindComponent extends ChatComponent {
    * @param keybind The new non-null keybind
    */
   void keybind(Keybind keybind);
+
+  /**
+   * Factory for the {@link KeybindComponent}.
+   */
+  @AssistedFactory(KeybindComponent.class)
+  interface Factory extends ChatComponent.Factory<KeybindComponent> {
+
+  }
 }

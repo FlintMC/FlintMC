@@ -35,10 +35,13 @@ public class DefaultComponentAnnotationHandler
   private final ComponentAnnotationSerializer annotationSerializer;
 
   @Inject
-  public DefaultComponentAnnotationHandler(ComponentAnnotationSerializer annotationSerializer) {
+  private DefaultComponentAnnotationHandler(ComponentAnnotationSerializer annotationSerializer) {
     this.annotationSerializer = annotationSerializer;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getDefaultValue(ConfigObjectReference reference, DefaultComponent annotation) {
     return this.annotationSerializer.deserialize(annotation.value());

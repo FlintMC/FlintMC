@@ -173,4 +173,16 @@ public interface ChatComponent {
    * @return whether this component is empty or not
    */
   boolean isEmpty();
+
+  /**
+   * Base for the Factory for every chat component (e.g. {@link TextComponent}).
+   *
+   * @param <C> The type of component that can be created by this factory
+   */
+  interface Factory<C extends ChatComponent> {
+
+    C create();
+
+  }
+
 }

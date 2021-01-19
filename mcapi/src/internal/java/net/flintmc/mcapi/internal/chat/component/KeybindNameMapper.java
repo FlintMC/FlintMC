@@ -17,29 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.chat;
+package net.flintmc.mcapi.internal.chat.component;
 
-import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
+import net.flintmc.mcapi.chat.Keybind;
 
 /**
- * A location in the chat where components can be displayed by the {@link ChatController}.
+ * Mapper from {@link Keybind} to the translated string.
  */
-public enum ChatLocation {
+public interface KeybindNameMapper {
 
   /**
-   * The default chat.
+   * Maps the given keybind to the translation of the selected key for the given keybind of
+   * Minecraft.
+   *
+   * @param keybind The non-null keybind to be mapped
+   * @return The non-null mapped text of the given keybind, empty if no key is bound
    */
-  CHAT,
-
-  /**
-   * The action bar above the hotbar. Every message sent into the action bar will only be displayed
-   * for 20 ticks (1 second) and needs to be resent after that if should should stay there.
-   */
-  ACTION_BAR,
-
-  /**
-   * The default chat but only if the user has enabled {@link ChatVisibility#SYSTEM}.
-   */
-  SYSTEM
+  String translateKeybind(Keybind keybind);
 
 }
