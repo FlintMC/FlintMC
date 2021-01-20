@@ -6,7 +6,7 @@
 
 ![License](https://img.shields.io/badge/license-LGPL--3.0-blue)
 ![MC Version](https://img.shields.io/badge/Minecraft-1.15.2-9cf)
-![MC Version](https://img.shields.io/badge/Minecraft-1.16.4-9cf)
+![MC Version](https://img.shields.io/badge/Minecraft-1.16.5-9cf)
 [![Discord](https://img.shields.io/discord/784821338199556096.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/tPb9j3ZBXu)
 
 Flint is a Minecraft modding framework created by LabyMedia GmbH. It is
@@ -17,7 +17,7 @@ Minecraft isn't patched directly - resulting in better compatibility between
 Mods and a simpler update process.
  
 **Warning**: Flint is still in development and not stable yet. We are
-currently working with Minecraft 1.15.2 and 1.16.4, but will soon start to implement other
+currently working with Minecraft 1.15.2 and 1.16.5, but will soon start to implement other
 versions (including 1.8.9).
  
 Contributions are welcome, just make sure to take a look at our contribution
@@ -263,7 +263,7 @@ $ ./gradlew build
 There is also a task to start a de-obfuscated Minecraft directly out of your
 development environment.
 ```bash
-$ ./gradlew runClient1.16.4
+$ ./gradlew runClient1.16.5
 ```
 
 If you want to login into your Minecraft account, just set the following
@@ -301,7 +301,7 @@ version = "1.0.0"
 flint {
     // Enter the newest Flint version here
     flintVersion = "2.0.12"
-    minecraftVersions("1.15.2", "1.16.4")
+    minecraftVersions("1.15.2", "1.16.5")
     authors = arrayOf("Your Name")
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")    
@@ -317,7 +317,7 @@ dependencies {
     api(flintApi("mcapi"))
     api(flintApi("util-task-executor"))
 
-    minecraft("1.15.2", "1.16.4") {
+    minecraft("1.15.2", "1.16.5") {
         annotationProcessor(flintApi("annotation-processing-autoload"))
     }
 }
@@ -355,7 +355,7 @@ structure:
 └── src
     ├── internal/java/your/group/internal
     ├── main/java/your/group
-    └── v1_16_4/java/your/group/v1_16_4
+    └── v1_16_5/java/your/group/v1_16_5
 ```
 
 If you now add the `ChatHandler` class from the 
