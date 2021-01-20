@@ -19,11 +19,11 @@
 
 package net.flintmc.framework.packages.load;
 
-import net.flintmc.framework.packages.Package;
-import net.flintmc.util.commons.Pair;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import net.flintmc.framework.packages.Package;
+import net.flintmc.util.commons.Pair;
 
 /**
  * Util to build the best fitting dependency graph for a given list of
@@ -33,7 +33,9 @@ public interface DependencyGraphBuilder {
 
   /**
    * Builds the best fitting set of Packages that can be loaded without
-   * unresolved dependencies or conflicts (dependencies or versions).
+   * unresolved dependencies or conflicts (dependencies or versions). Packages
+   * that are not in the {@link net.flintmc.framework.packages.PackageState#NOT_LOADED}
+   * will be ignored.
    *
    * @param packages a list of potentially loadable packages
    * @return a list of packages that can be loaded in the given order without

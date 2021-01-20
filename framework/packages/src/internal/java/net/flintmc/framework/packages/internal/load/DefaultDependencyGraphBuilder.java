@@ -60,7 +60,9 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
 
     // resolve additional classpath requirements
     for (Package pack : packages) {
-      this.resolveClasspathRecursively(pack, dependencyGraph);
+      if (pack.getState() == PackageState.NOT_LOADED) {
+        this.resolveClasspathRecursively(pack, dependencyGraph);
+      }
     }
 
     List<Package> loadable = dependencyGraph.first();
