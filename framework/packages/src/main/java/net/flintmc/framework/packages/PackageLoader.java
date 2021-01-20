@@ -28,7 +28,7 @@ public interface PackageLoader {
   String PACKAGE_DIR_TEMPLATE = "${FLINT_PACKAGE_DIR}";
 
   String LIBRARY_DIR = "libraries";
-  String LIBRARY_DIR_TEMPLATE = "${FLINT_PACKAGE_DIR}";
+  String LIBRARY_DIR_TEMPLATE = "${FLINT_LIBRARY_DIR}";
 
   /**
    * Retrieves a set of all packages. This ignores the {@link PackageState} completely, which means

@@ -24,6 +24,7 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.packages.Package;
+import net.flintmc.framework.packages.PackageManifest;
 import net.flintmc.framework.packages.PackageManifestLoader;
 import net.flintmc.framework.packages.PackageState;
 import net.flintmc.framework.packages.load.PackageFinder;
@@ -66,9 +67,12 @@ public class DefaultPackageFinder implements PackageFinder {
   @Override
   public List<Package> findPackagesInClasspath() {
     try {
-      return Collections
+      final List<PackageManifest> manifests = new ArrayList<>();
+
+      Collections
           .list(LaunchController.getInstance().getRootLoader().getResources(
               PackageManifestLoader.MANIFEST_NAME)).stream()
+          .distinct()
           .map(url -> {
             try {
               return this.manifestLoader.loadManifest(url);
@@ -80,8 +84,19 @@ public class DefaultPackageFinder implements PackageFinder {
             }
           })
           .filter(Objects::nonNull)
+          .forEach(discovered -> {
+            // only add manifests of packages we haven't yet
+            // discovered a manifest of
+            if (manifests.stream().noneMatch(
+                manifest -> manifest.getName().equals(discovered.getName())
+                    && manifest.getVersion().equals(discovered.getVersion()))) {
+              manifests.add(discovered);
+            }
+          });
+
+      return manifests.stream()
           .map(this.packageFactory::create)
-          .peek(pack -> pack.forceState(PackageState.LOADED))
+          .peek(pack -> pack.forceState(PackageState.ENABLED))
           .collect(Collectors.toList());
     } catch (IOException e) {
       this.logger

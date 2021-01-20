@@ -21,22 +21,19 @@ package net.flintmc.framework.packages.internal.load;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.packages.Package;
+import net.flintmc.framework.packages.*;
+import net.flintmc.framework.packages.load.DependencyGraphBuilder;
+import net.flintmc.util.commons.Pair;
+import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.packages.DependencyDescription;
-import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.PackageLoader;
-import net.flintmc.framework.packages.PackageManifestLoader;
-import net.flintmc.framework.packages.PackageState;
-import net.flintmc.framework.packages.load.DependencyGraphBuilder;
-import net.flintmc.util.commons.Pair;
-import org.apache.logging.log4j.Logger;
 
 @Singleton
 @Implement(DependencyGraphBuilder.class)
@@ -67,7 +64,7 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
 
     // resolve additional classpath requirements
     for (Package pack : packages) {
-      if (pack.getState() == PackageState.NOT_LOADED) {
+      if (PackageState.NOT_LOADED.matches(pack)) {
         this.resolveClasspathRecursively(pack, dependencyGraph);
       }
     }
@@ -86,12 +83,22 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
     do {
       progress = -loadable.size();
       for (Package pack : packages) {
-        if (isLoadable(pack, loadable, errorTrack)) {
+        if (isLoadable(pack, loadable)) {
           loadable.add(pack);
         }
       }
       progress += loadable.size();
     } while (progress > 0);
+
+    // compute error messages
+    for (Package pack : packages) {
+      if (!loadable.contains(pack)) {
+        isLoadable(pack, loadable, errorTrack);
+      }
+    }
+
+    loadable.removeIf(PackageState.ENABLED::matches);
+    packages.removeIf(PackageState.ENABLED::matches);
 
     if (loadable.size() < packages.size()) {
       // some packages cannot be loaded due to unmet dependencies or conflicts
@@ -106,7 +113,8 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
               .error(String
                   .format("    [%d] %s (version %s):", ++i, pack.getName(),
                       pack.getVersion()));
-          for (String error : errorTrack.get(pack)) {
+          for (String error : errorTrack
+              .computeIfAbsent(pack, p -> new ArrayList<>())) {
             this.logger.error(String.format("        - %s", error));
           }
         }
@@ -172,10 +180,10 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
         } catch (Exception e) {
           this.logger.error(
               String.format(
-                  "Failed to read library package '%s' required in "
+                  "Failed to read file '%s' required in "
                       + "classpath by package %s (version %s).",
-                  requiredFile.getPath(),
-                  pack.getName(), pack.getVersion()), e);
+                  this.replacePath(requiredFile.getPath()),
+                  pack.getName(), pack.getVersion()));
           this.addFileIfNotPresent(files, requiredFile);
         }
 

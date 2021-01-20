@@ -41,6 +41,7 @@ public class DefaultPackageLoader implements PackageLoader {
 
   private final Logger logger;
   private final PackageManifestLoader descriptionLoader;
+  private final PackageFinder packageFinder;
   private final DependencyGraphBuilder dependencyGraphBuilder;
   private final Set<Package> allPackages;
 
@@ -54,6 +55,7 @@ public class DefaultPackageLoader implements PackageLoader {
       DependencyGraphBuilder dependencyGraphBuilder,
       @InjectLogger Logger logger) {
     this.descriptionLoader = descriptionLoader;
+    this.packageFinder = packageFinder;
     this.dependencyGraphBuilder = dependencyGraphBuilder;
     this.logger = logger;
     this.allPackages = new HashSet<>();
@@ -61,7 +63,7 @@ public class DefaultPackageLoader implements PackageLoader {
     loggingProvider.setPrefixProvider(this::getLogPrefix);
 
     try {
-      this.discoveredPackages = packageFinder
+      this.discoveredPackages = this.packageFinder
           .findPackages(PackageLoader.PACKAGE_DIR);
     } catch (IOException e) {
       this.logger.error("Failed to discover packages.", e);
@@ -94,6 +96,12 @@ public class DefaultPackageLoader implements PackageLoader {
       return;
     }
 
+    List<Package> classpathPackages = this.packageFinder
+        .findPackagesInClasspath();
+
+    this.allPackages.addAll(classpathPackages);
+    packagesToLoad.addAll(classpathPackages);
+
     // build a loadable dependency graph
     Pair<List<Package>, List<File>> loadable = this.dependencyGraphBuilder
         .buildDependencyGraph(packagesToLoad);
@@ -102,7 +110,8 @@ public class DefaultPackageLoader implements PackageLoader {
     this.allPackages.addAll(this.discoveredPackages);
     this.allPackages.addAll(loadablePackages);
 
-    List<Package> loadedSuccessfully = new ArrayList<>();
+    List<Package> loadedSuccessfully = new ArrayList<>(
+        this.getLoadedPackages());
     Map<Package, List<String>> errorTrack = new HashMap<>();
 
     // check which packages have been loaded successfully
@@ -111,6 +120,7 @@ public class DefaultPackageLoader implements PackageLoader {
       if (dependencyGraphBuilder
           .isLoadable(pack, loadedSuccessfully, errorTrack)) {
         if (pack.load() == PackageState.LOADED) {
+          pack.enable();
           loadedSuccessfully.add(pack);
         } else {
           this.logger.error(
@@ -126,7 +136,16 @@ public class DefaultPackageLoader implements PackageLoader {
                 pack.getVersion()));
       }
 
+    }
 
+    Set<Package> allLoaded = this.getLoadedPackages();
+    if (!allLoaded.isEmpty()) {
+      this.logger.info(String
+          .format("Following packages are loaded (%d):", allLoaded.size()));
+      for (Package pack : allLoaded) {
+        this.logger.info(String.format("    - %s (version %s)", pack.getName(),
+            pack.getVersion()));
+      }
     }
 
   }
