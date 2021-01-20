@@ -40,10 +40,9 @@ import java.util.stream.Collectors;
 public class DefaultPackageLoader implements PackageLoader {
 
   private final Logger logger;
-  private PackageManifestLoader descriptionLoader;
-  private DependencyGraphBuilder dependencyGraphBuilder;
-
-  private Set<Package> allPackages;
+  private final PackageManifestLoader descriptionLoader;
+  private final DependencyGraphBuilder dependencyGraphBuilder;
+  private final Set<Package> allPackages;
 
   private List<Package> discoveredPackages;
 
@@ -55,8 +54,9 @@ public class DefaultPackageLoader implements PackageLoader {
       DependencyGraphBuilder dependencyGraphBuilder,
       @InjectLogger Logger logger) {
     this.descriptionLoader = descriptionLoader;
+    this.dependencyGraphBuilder = dependencyGraphBuilder;
     this.logger = logger;
-
+    this.allPackages = new HashSet<>();
     // Tell the logging provider we now are able to resolve logging prefixes
     loggingProvider.setPrefixProvider(this::getLogPrefix);
 
@@ -98,6 +98,9 @@ public class DefaultPackageLoader implements PackageLoader {
     Pair<List<Package>, List<File>> loadable = this.dependencyGraphBuilder
         .buildDependencyGraph(packagesToLoad);
     List<Package> loadablePackages = loadable.first();
+
+    this.allPackages.addAll(this.discoveredPackages);
+    this.allPackages.addAll(loadablePackages);
 
     List<Package> loadedSuccessfully = new ArrayList<>();
     Map<Package, List<String>> errorTrack = new HashMap<>();

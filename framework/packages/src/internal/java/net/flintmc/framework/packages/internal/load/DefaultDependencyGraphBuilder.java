@@ -20,19 +20,26 @@
 package net.flintmc.framework.packages.internal.load;
 
 import com.google.inject.Inject;
-import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.*;
-import net.flintmc.framework.packages.load.DependencyGraphBuilder;
-import net.flintmc.util.commons.Pair;
-import org.apache.logging.log4j.Logger;
+import com.google.inject.Singleton;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.framework.packages.DependencyDescription;
+import net.flintmc.framework.packages.Package;
+import net.flintmc.framework.packages.PackageLoader;
+import net.flintmc.framework.packages.PackageManifestLoader;
+import net.flintmc.framework.packages.PackageState;
+import net.flintmc.framework.packages.load.DependencyGraphBuilder;
+import net.flintmc.util.commons.Pair;
+import org.apache.logging.log4j.Logger;
 
+@Singleton
+@Implement(DependencyGraphBuilder.class)
 public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
 
   private final Logger logger;

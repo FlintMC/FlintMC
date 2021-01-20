@@ -20,15 +20,8 @@
 package net.flintmc.framework.packages.internal.load;
 
 import com.google.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.jar.JarFile;
-import java.util.stream.Collectors;
+import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageManifestLoader;
@@ -36,7 +29,14 @@ import net.flintmc.framework.packages.PackageState;
 import net.flintmc.framework.packages.load.PackageFinder;
 import net.flintmc.launcher.LaunchController;
 import org.apache.logging.log4j.Logger;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
+@Singleton
+@Implement(PackageFinder.class)
 public class DefaultPackageFinder implements PackageFinder {
 
   private final Logger logger;
