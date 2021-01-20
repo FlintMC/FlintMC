@@ -27,6 +27,7 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.packages.DependencyDescription;
 import net.flintmc.framework.packages.PackageManifest;
 import net.flintmc.framework.packages.PackageManifestLoader;
+import net.flintmc.framework.packages.SemanticVersion;
 import net.flintmc.installer.impl.InstallerModule;
 import net.flintmc.installer.impl.repository.models.DependencyDescriptionModel;
 import net.flintmc.installer.impl.repository.models.ModelSerializer;
@@ -38,7 +39,9 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -107,10 +110,12 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
       Serializable {
 
     private PackageModel model;
+    private SemanticVersion version;
     private Set<DefaultDependencyDescription> dependencies = new HashSet<>();
 
     DefaultPackageManifest(PackageModel model) {
       this.model = model;
+      this.version = SemanticVersion.from(model.getVersion());
       model.getDependencies().forEach(
           dep -> dependencies.add(new DefaultDependencyDescription(dep)));
     }
@@ -137,6 +142,11 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     @Override
     public String getVersion() {
       return this.model.getVersion();
+    }
+
+    @Override
+    public SemanticVersion getSemanticVersion() {
+      return this.version;
     }
 
     /**
@@ -201,9 +211,11 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
       DependencyDescription, Serializable {
 
     private DependencyDescriptionModel model;
+    private SemanticVersion version;
 
     DefaultDependencyDescription(DependencyDescriptionModel model) {
       this.model = model;
+      this.version = SemanticVersion.from(model.getVersions());
     }
 
     /**
@@ -218,8 +230,13 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getVersions() {
-      return Arrays.asList(this.model.getVersions().split(","));
+    public String getVersions() {
+      return this.model.getVersions();
+    }
+
+    @Override
+    public SemanticVersion getSemanticVersion() {
+      return this.version;
     }
 
     @Override
@@ -232,9 +249,8 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
      */
     @Override
     public boolean matches(PackageManifest manifest) {
-      return this.getName().equals(manifest.getName())
-          && this.getVersions().stream()
-          .anyMatch(manifest.getVersion()::equals);
+      return this.getSemanticVersion()
+          .isSatisfiedBy(manifest.getSemanticVersion());
     }
   }
 }

@@ -49,6 +49,13 @@ public interface PackageManifest {
   String getVersion();
 
   /**
+   * Retrieves tha version of the package.
+   *
+   * @return the semantic version of the package
+   */
+  SemanticVersion getSemanticVersion();
+
+  /**
    * Retrieves the list of authors of this package.
    *
    * @return The list of authors of this package
