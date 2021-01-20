@@ -38,7 +38,7 @@ public interface AuthenticationResult {
   /**
    * Retrieves the new profile of the new account.
    *
-   * @return The profile of the new account or {@code null} if an error occurred while logging in
+   * @return The profile of the new account or {@code null}, if an error occurred while logging in
    * (and therefore the {@link #getType()} must not be {@link Type#SUCCESS})
    */
   GameProfile getProfile();

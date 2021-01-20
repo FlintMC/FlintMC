@@ -19,32 +19,44 @@
 
 package net.flintmc.mcapi.internal.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.component.TextComponent;
-import net.flintmc.mcapi.internal.chat.component.DefaultTextComponent;
 
-@Implement(value = TextComponentBuilder.class)
+@Implement(TextComponentBuilder.class)
 public class DefaultTextComponentBuilder
     extends DefaultComponentBuilder<TextComponentBuilder, TextComponent>
     implements TextComponentBuilder {
 
-  public DefaultTextComponentBuilder() {
-    super(DefaultTextComponent::new);
+  @AssistedInject
+  private DefaultTextComponentBuilder(
+      TextComponent.Factory textComponentFactory,
+      TextComponent.Factory factory) {
+    super(textComponentFactory, factory);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TextComponentBuilder text(String text) {
     super.currentComponent.text(text);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TextComponentBuilder appendText(String text) {
     String currentText = this.text();
     return this.text(currentText == null ? text : currentText + text);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String text() {
     return super.currentComponent.text();

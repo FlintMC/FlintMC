@@ -20,9 +20,10 @@
 package net.flintmc.mcapi.internal.world.codec;
 
 import java.util.List;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.world.codec.DatapackCodec;
+import net.flintmc.mcapi.world.datapack.DatapackCodec;
 
 @Implement(DatapackCodec.class)
 public class DefaultDatapackCodec implements DatapackCodec {
@@ -31,7 +32,8 @@ public class DefaultDatapackCodec implements DatapackCodec {
   private final List<String> disabled;
 
   @AssistedInject
-  private DefaultDatapackCodec(List<String> enabled, List<String> disabled) {
+  private DefaultDatapackCodec(
+      @Assisted("enabled") List<String> enabled, @Assisted("disabled") List<String> disabled) {
     this.enabled = enabled;
     this.disabled = disabled;
   }

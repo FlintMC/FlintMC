@@ -56,11 +56,8 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
    */
   @Override
   public void changeDisplayName(PlayerTeam playerTeam, ChatComponent displayName) {
-    this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setDisplayName((ITextComponent) this.componentMapper.toMinecraft(displayName));
-            });
+    this.getPlayerTeam(playerTeam).ifPresent(team -> team.setDisplayName(
+        (ITextComponent) this.componentMapper.toMinecraft(displayName)));
   }
 
   /**
@@ -68,11 +65,8 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
    */
   @Override
   public void changePrefix(PlayerTeam playerTeam, ChatComponent prefix) {
-    this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setPrefix((ITextComponent) this.componentMapper.toMinecraft(prefix));
-            });
+    this.getPlayerTeam(playerTeam).ifPresent(team -> team.setPrefix(
+        (ITextComponent) this.componentMapper.toMinecraft(prefix)));
   }
 
   /**
@@ -80,11 +74,8 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
    */
   @Override
   public void changeSuffix(PlayerTeam playerTeam, ChatComponent suffix) {
-    this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setSuffix((ITextComponent) this.componentMapper.toMinecraft(suffix));
-            });
+    this.getPlayerTeam(playerTeam).ifPresent(team -> team.setSuffix(
+        (ITextComponent) this.componentMapper.toMinecraft(suffix)));
   }
 
   /**
@@ -93,10 +84,7 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
   @Override
   public void changeColor(PlayerTeam playerTeam, ChatColor chatColor) {
     this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setColor(TextFormatting.valueOf(chatColor.getName()));
-            });
+        .ifPresent(team -> team.setColor(TextFormatting.valueOf(chatColor.getName())));
   }
 
   /**
@@ -104,11 +92,7 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
    */
   @Override
   public void changeAllowFriendlyFire(PlayerTeam playerTeam, boolean friendlyFire) {
-    this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setAllowFriendlyFire(friendlyFire);
-            });
+    this.getPlayerTeam(playerTeam).ifPresent(team -> team.setAllowFriendlyFire(friendlyFire));
   }
 
   /**
@@ -117,10 +101,7 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
   @Override
   public void changeSeeFriendlyInvisible(PlayerTeam playerTeam, boolean friendlyInvisible) {
     this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setSeeFriendlyInvisiblesEnabled(friendlyInvisible);
-            });
+        .ifPresent(team -> team.setSeeFriendlyInvisiblesEnabled(friendlyInvisible));
   }
 
   /**
@@ -128,12 +109,8 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
    */
   @Override
   public void changeNameTagVisibility(PlayerTeam playerTeam, VisibleType visibleType) {
-    this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setNameTagVisibility(
-                  (Visible) this.scoreboardMapper.toMinecraftVisible(visibleType));
-            });
+    this.getPlayerTeam(playerTeam).ifPresent(team -> team.setNameTagVisibility(
+        (Visible) this.scoreboardMapper.toMinecraftVisible(visibleType)));
   }
 
   /**
@@ -141,12 +118,8 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
    */
   @Override
   public void changeDeathMessageVisibility(PlayerTeam playerTeam, VisibleType visibleType) {
-    this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setDeathMessageVisibility(
-                  (Visible) this.scoreboardMapper.toMinecraftVisible(visibleType));
-            });
+    this.getPlayerTeam(playerTeam).ifPresent(team -> team.setDeathMessageVisibility(
+        (Visible) this.scoreboardMapper.toMinecraftVisible(visibleType)));
   }
 
   /**
@@ -154,12 +127,8 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
    */
   @Override
   public void changeCollisionType(PlayerTeam playerTeam, CollisionType collisionType) {
-    this.getPlayerTeam(playerTeam)
-        .ifPresent(
-            team -> {
-              team.setCollisionRule(
-                  (CollisionRule) this.scoreboardMapper.toMinecraftCollisionRule(collisionType));
-            });
+    this.getPlayerTeam(playerTeam).ifPresent(team -> team.setCollisionRule(
+        (CollisionRule) this.scoreboardMapper.toMinecraftCollisionRule(collisionType)));
   }
 
   private Optional<ScorePlayerTeam> getPlayerTeam(PlayerTeam name) {

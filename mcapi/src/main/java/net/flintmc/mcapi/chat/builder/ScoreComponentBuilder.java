@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ScoreComponent;
 
 /**
@@ -38,7 +39,7 @@ public interface ScoreComponentBuilder extends ComponentBuilder<ScoreComponentBu
   /**
    * Retrieves the name of the current component.
    *
-   * @return The name of the current component in the scoreboard or {@code null} if no name has been
+   * @return The name of the current component in the scoreboard or {@code null}, if no name has been
    * provided
    * @see #name(String)
    */
@@ -56,9 +57,24 @@ public interface ScoreComponentBuilder extends ComponentBuilder<ScoreComponentBu
   /**
    * Retrieves the objective of the current component.
    *
-   * @return The objective of the current component in the scoreboard or {@code null} if no
+   * @return The objective of the current component in the scoreboard or {@code null}, if no
    * objective has been provided
    * @see #objective(String)
    */
   String objective();
+
+  /**
+   * Factory for the {@link ScoreComponentBuilder}.
+   */
+  @AssistedFactory(ScoreComponentBuilder.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link ScoreComponentBuilder} without any arguments.
+     *
+     * @return The new non-null {@link ScoreComponentBuilder}
+     */
+    ScoreComponentBuilder newBuilder();
+
+  }
 }

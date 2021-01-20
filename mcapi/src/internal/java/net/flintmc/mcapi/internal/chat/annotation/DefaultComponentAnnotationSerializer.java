@@ -43,6 +43,9 @@ public class DefaultComponentAnnotationSerializer implements ComponentAnnotation
     this.serializerFactory = serializerFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent deserialize(Component component) {
     if (component.translate()) {
@@ -54,6 +57,9 @@ public class DefaultComponentAnnotationSerializer implements ComponentAnnotation
     return this.serializerFactory.legacy().deserialize(component.value());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent deserialize(Component[] components) {
     TextComponentBuilder builder = this.builderFactory.text().text("");
@@ -65,6 +71,9 @@ public class DefaultComponentAnnotationSerializer implements ComponentAnnotation
     return builder.build();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent deserialize(Component[] components, ChatComponent def) {
     if (components.length == 0) {
@@ -74,6 +83,9 @@ public class DefaultComponentAnnotationSerializer implements ComponentAnnotation
     return this.deserialize(components);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent deserialize(Component[] components, String def) {
     if (components.length == 0) {

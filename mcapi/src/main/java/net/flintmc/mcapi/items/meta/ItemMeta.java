@@ -37,7 +37,7 @@ public interface ItemMeta {
    * Retrieves the display name of this meta which will be displayed instead of the default name of
    * the item.
    *
-   * @return The custom display name or {@code null} if this meta doesn't have any custom display
+   * @return The custom display name or {@code null}, if this meta doesn't have any custom display
    * name
    */
   ChatComponent getCustomDisplayName();
@@ -151,7 +151,7 @@ public interface ItemMeta {
    * in this enchantment will match the given type in this method.
    *
    * @param type The non-null type to get the enchantment for
-   * @return The enchantment of this meta or {@code null} if this meta isn't enchanted with the
+   * @return The enchantment of this meta or {@code null}, if this meta isn't enchanted with the
    * given type
    */
   Enchantment getEnchantment(EnchantmentType type);

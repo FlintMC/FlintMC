@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.chat.builder;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
 
@@ -39,8 +40,24 @@ public interface KeybindComponentBuilder extends ComponentBuilder<KeybindCompone
   /**
    * Retrieves the keybind of the current component.
    *
-   * @return The keybind out of the current component or {@code null} if no keybind has been set
+   * @return The keybind out of the current component or {@code null}, if no keybind has been set
    * @see #keybind(Keybind)
    */
   Keybind keybind();
+
+  /**
+   * Factory for the {@link KeybindComponentBuilder}.
+   */
+  @AssistedFactory(KeybindComponentBuilder.class)
+  interface Factory {
+
+    /**
+     * Creates a new {@link KeybindComponentBuilder} without any arguments.
+     *
+     * @return The new non-null {@link KeybindComponentBuilder}
+     */
+    KeybindComponentBuilder newBuilder();
+
+  }
+
 }

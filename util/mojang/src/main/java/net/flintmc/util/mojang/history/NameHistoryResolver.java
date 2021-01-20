@@ -33,7 +33,7 @@ public interface NameHistoryResolver {
    * Resolves the past names of a specified player.
    *
    * @param uniqueId The non-null UUID of the player to retrieve the name history for
-   * @return The non-null future which will be completed with the history or {@code null} if there
+   * @return The non-null future which will be completed with the history or {@code null}, if there
    * is no player with the given uuid or an internal error occurred
    */
   CompletableFuture<NameHistory> resolveHistory(UUID uniqueId);

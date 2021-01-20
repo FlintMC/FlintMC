@@ -38,10 +38,10 @@ public interface ServerFavicon {
 
   /**
    * Retrieves a new input stream with the data of this favicon, servers should send a PNG image
-   * with the size of 64x64. This can only be {@code null} if the server didn't send a favicon and
+   * with the size of 64x64. This can only be {@code null}, if the server didn't send a favicon and
    * an error occurred while loading the default favicon.
    *
-   * @return The stream with the favicon or {@code null} if an error occurred while loading the
+   * @return The stream with the favicon or {@code null}, if an error occurred while loading the
    * default favicon
    */
   InputStream createStream();

@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.internal.chat.builder;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
@@ -26,34 +27,70 @@ import net.flintmc.mcapi.chat.builder.KeybindComponentBuilder;
 import net.flintmc.mcapi.chat.builder.ScoreComponentBuilder;
 import net.flintmc.mcapi.chat.builder.SelectorComponentBuilder;
 import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
+import net.flintmc.mcapi.chat.builder.TextComponentBuilder.Factory;
 import net.flintmc.mcapi.chat.builder.TranslationComponentBuilder;
 
 @Singleton
 @Implement(ComponentBuilder.Factory.class)
 public class DefaultComponentBuilderFactory implements ComponentBuilder.Factory {
 
+  private final TextComponentBuilder.Factory textFactory;
+  private final KeybindComponentBuilder.Factory keybindFactory;
+  private final ScoreComponentBuilder.Factory scoreFactory;
+  private final SelectorComponentBuilder.Factory selectorFactory;
+  private final TranslationComponentBuilder.Factory translationFactory;
+
+  @Inject
+  private DefaultComponentBuilderFactory(
+      Factory textFactory,
+      KeybindComponentBuilder.Factory keybindFactory,
+      ScoreComponentBuilder.Factory scoreFactory,
+      SelectorComponentBuilder.Factory selectorFactory,
+      TranslationComponentBuilder.Factory translationFactory) {
+    this.textFactory = textFactory;
+    this.keybindFactory = keybindFactory;
+    this.scoreFactory = scoreFactory;
+    this.selectorFactory = selectorFactory;
+    this.translationFactory = translationFactory;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TextComponentBuilder text() {
-    return new DefaultTextComponentBuilder();
+    return this.textFactory.newBuilder();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public KeybindComponentBuilder keybind() {
-    return new DefaultKeybindComponentBuilder();
+    return this.keybindFactory.newBuilder();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ScoreComponentBuilder score() {
-    return new DefaultScoreComponentBuilder();
+    return this.scoreFactory.newBuilder();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SelectorComponentBuilder selector() {
-    return new DefaultSelectorComponentBuilder();
+    return this.selectorFactory.newBuilder();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TranslationComponentBuilder translation() {
-    return new DefaultTranslationComponentBuilder();
+    return this.translationFactory.newBuilder();
   }
 }

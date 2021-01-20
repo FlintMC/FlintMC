@@ -76,7 +76,7 @@ public interface ChatComponent {
   void color(ChatColor color);
 
   /**
-   * Retrieves the insertion of this component or {@code null} if no insertion has been specified.
+   * Retrieves the insertion of this component or {@code null}, if no insertion has been specified.
    *
    * @return The insertion of this component or {@code null}
    * @see #insertion(String)
@@ -96,7 +96,7 @@ public interface ChatComponent {
    * Retrieves the click event of this component which will be executed when the player clicks on
    * this component.
    *
-   * @return The click event of this component or {@code null} if no click event has been provided.
+   * @return The click event of this component or {@code null}, if no click event has been provided.
    * @see #clickEvent(ClickEvent)
    */
   ClickEvent clickEvent();
@@ -113,7 +113,7 @@ public interface ChatComponent {
    * Retrieves the hover event of this component which will be displayed when the player hovers over
    * this component.
    *
-   * @return The hover event of this component or {@code null} if no hover event has been provided.
+   * @return The hover event of this component or {@code null}, if no hover event has been provided.
    * @see #hoverEvent(HoverEvent)
    */
   HoverEvent hoverEvent();
@@ -173,4 +173,16 @@ public interface ChatComponent {
    * @return whether this component is empty or not
    */
   boolean isEmpty();
+
+  /**
+   * Base for the Factory for every chat component (e.g. {@link TextComponent}).
+   *
+   * @param <C> The type of component that can be created by this factory
+   */
+  interface Factory<C extends ChatComponent> {
+
+    C create();
+
+  }
+
 }

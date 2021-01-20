@@ -19,15 +19,17 @@
 
 package net.flintmc.mcapi.chat.component;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
+
 /**
  * A component for displaying the text of a translation in the language selected by the client.
  */
 public interface TranslationComponent extends ChatComponent {
 
   /**
-   * Retrieves the key for translations of this component or {@code null} if no key has been set.
+   * Retrieves the key for translations of this component or {@code null}, if no key has been set.
    *
-   * @return The key for translations or {@code null} if no translation key has been provided
+   * @return The key for translations or {@code null}, if no translation key has been provided
    * @see #translationKey(String)
    */
   String translationKey();
@@ -58,8 +60,7 @@ public interface TranslationComponent extends ChatComponent {
   void arguments(ChatComponent... arguments);
 
   /**
-   * Appends a new argument to the arguments of this component for translation of the current
-   * component.
+   * Appends a new argument to the arguments of this component for translation of this component.
    *
    * <p>Minecraft will replace %s in the translation with the arguments of the {@link
    * TranslationComponent}.
@@ -67,6 +68,17 @@ public interface TranslationComponent extends ChatComponent {
    * @param argument The non-null argument to pass to the client
    */
   void appendArgument(ChatComponent argument);
+
+  /**
+   * Appends a new argument to the arguments of this component for translation of this component.
+   *
+   * <p>Minecraft will replace %s in the translation with the arguments of the {@link
+   * TranslationComponent}.
+   *
+   * @param text The non-null text to be appended
+   * @see #appendArgument(ChatComponent)
+   */
+  void appendArgument(String text);
 
   /**
    * Retrieves all arguments of this component that are used by Minecraft for the translation of the
@@ -77,4 +89,13 @@ public interface TranslationComponent extends ChatComponent {
    * this component
    */
   ChatComponent[] arguments();
+
+  /**
+   * Factory for the {@link TranslationComponent}.
+   */
+  @AssistedFactory(TranslationComponent.class)
+  interface Factory extends ChatComponent.Factory<TranslationComponent> {
+
+  }
+
 }

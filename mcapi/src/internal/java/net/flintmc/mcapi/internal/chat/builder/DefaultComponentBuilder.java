@@ -19,7 +19,6 @@
 
 package net.flintmc.mcapi.internal.chat.builder;
 
-import java.util.function.Supplier;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
@@ -27,24 +26,29 @@ import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
-import net.flintmc.mcapi.internal.chat.component.DefaultTextComponent;
 
 public abstract class DefaultComponentBuilder<
     B extends ComponentBuilder<B>, C extends ChatComponent>
     implements ComponentBuilder<B> {
 
+  private final TextComponent.Factory textComponentFactory;
   private final B builder;
-  private final Supplier<C> componentSupplier;
+  private final ChatComponent.Factory<C> factory;
   protected C currentComponent;
   private TextComponent baseComponent;
 
   @SuppressWarnings("unchecked")
-  public DefaultComponentBuilder(Supplier<C> componentSupplier) {
-    this.componentSupplier = componentSupplier;
-    this.currentComponent = componentSupplier.get();
+  public DefaultComponentBuilder(
+      TextComponent.Factory textComponentFactory, ChatComponent.Factory<C> factory) {
+    this.textComponentFactory = textComponentFactory;
+    this.factory = factory;
+    this.currentComponent = factory.create();
     this.builder = (B) this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent build() {
     if (this.baseComponent == null || this.baseComponent.extras().length == 0) {
@@ -56,56 +60,86 @@ public abstract class DefaultComponentBuilder<
     return this.baseComponent;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public B format(ChatFormat format) {
     this.currentComponent.toggleFormat(format, true);
     return this.builder;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatFormat[] enabledFormats() {
     return this.currentComponent.formats();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public B color(ChatColor color) {
     this.currentComponent.color(color);
     return this.builder;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatColor color() {
     return this.currentComponent.color();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public B clickEvent(ClickEvent event) {
     this.currentComponent.clickEvent(event);
     return this.builder;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ClickEvent clickEvent() {
     return this.currentComponent.clickEvent();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public B hoverEvent(HoverEvent event) {
     this.currentComponent.hoverEvent(event);
     return this.builder;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverEvent hoverEvent() {
     return this.currentComponent.hoverEvent();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public B append(ChatComponent component) {
     this.currentComponent.append(component);
     return this.builder;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public B nextComponent() {
     if (this.currentComponent.isEmpty()) {
@@ -113,11 +147,11 @@ public abstract class DefaultComponentBuilder<
     }
 
     if (this.baseComponent == null) {
-      this.baseComponent = new DefaultTextComponent();
+      this.baseComponent = this.textComponentFactory.create();
       this.baseComponent.text("");
     }
     this.baseComponent.append(this.currentComponent);
-    this.currentComponent = this.componentSupplier.get();
+    this.currentComponent = this.factory.create();
     return this.builder;
   }
 }

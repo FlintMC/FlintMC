@@ -21,11 +21,12 @@ package net.flintmc.mcapi.v1_15_2.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.function.Supplier;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
+import net.flintmc.mcapi.chat.builder.ComponentBuilder;
+import net.flintmc.mcapi.chat.builder.ComponentBuilder.Factory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
 import net.flintmc.mcapi.chat.component.ScoreComponent;
@@ -40,11 +41,6 @@ import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.mcapi.internal.chat.builder.DefaultKeybindComponentBuilder;
-import net.flintmc.mcapi.internal.chat.builder.DefaultScoreComponentBuilder;
-import net.flintmc.mcapi.internal.chat.builder.DefaultSelectorComponentBuilder;
-import net.flintmc.mcapi.internal.chat.builder.DefaultTranslationComponentBuilder;
-import net.flintmc.mcapi.internal.chat.component.DefaultKeybindComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.KeybindTextComponent;
 import net.minecraft.util.text.ScoreTextComponent;
@@ -58,19 +54,13 @@ import net.minecraft.util.text.TranslationTextComponent;
 @Implement(value = MinecraftComponentMapper.class, version = "1.15.2")
 public class VersionedMinecraftComponentMapper implements MinecraftComponentMapper {
 
-  static {
-    DefaultKeybindComponent.nameFunction =
-        keybind -> {
-          Supplier<String> supplier =
-              KeybindTextComponent.displaySupplierFunction.apply(keybind.getKey());
-          return supplier == null ? null : supplier.get();
-        };
-  }
-
+  private final ComponentBuilder.Factory builderFactory;
   private final ComponentSerializer.Factory factory;
 
   @Inject
-  public VersionedMinecraftComponentMapper(ComponentSerializer.Factory factory) {
+  private VersionedMinecraftComponentMapper(
+      Factory builderFactory, ComponentSerializer.Factory factory) {
+    this.builderFactory = builderFactory;
     this.factory = factory;
   }
 
@@ -118,13 +108,13 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
   private ChatComponent createFlintComponent(ITextComponent component) {
     if (component instanceof KeybindTextComponent) {
 
-      return new DefaultKeybindComponentBuilder()
+      return this.builderFactory.keybind()
           .keybind(Keybind.getByKey(((KeybindTextComponent) component).getKeybind()))
           .build();
 
     } else if (component instanceof ScoreTextComponent) {
 
-      return new DefaultScoreComponentBuilder()
+      return this.builderFactory.score()
           .name(((ScoreTextComponent) component).getName())
           .objective(((ScoreTextComponent) component).getObjective())
           .build();
@@ -132,7 +122,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     } else if (component instanceof SelectorTextComponent) {
 
       try {
-        return new DefaultSelectorComponentBuilder()
+        return this.builderFactory.selector()
             .parse(((SelectorTextComponent) component).getSelector())
             .build();
       } catch (InvalidSelectorException ignored) {
@@ -157,7 +147,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
         }
       }
 
-      return new DefaultTranslationComponentBuilder()
+      return this.builderFactory.translation()
           .translationKey(((TranslationTextComponent) component).getKey())
           .arguments(mappedArguments)
           .build();

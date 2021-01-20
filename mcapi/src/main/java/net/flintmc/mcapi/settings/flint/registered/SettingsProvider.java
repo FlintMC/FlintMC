@@ -53,7 +53,7 @@ public interface SettingsProvider {
    * Retrieves the category with the given name that is registered in this provider.
    *
    * @param name The non-null case-sensitive name of the category to get
-   * @return The category with the given name or {@code null} if there is no category with the given
+   * @return The category with the given name or {@code null}, if there is no category with the given
    * name
    */
   RegisteredCategory getCategory(String name);
@@ -113,7 +113,7 @@ public interface SettingsProvider {
    * Retrieves the setting that matches the given reference.
    *
    * @param reference The non-null reference to match the setting
-   * @return The setting to match the given reference or {@code null} if the given reference doesn't
+   * @return The setting to match the given reference or {@code null}, if the given reference doesn't
    * match any setting
    */
   RegisteredSetting getSetting(ConfigObjectReference reference);
@@ -123,7 +123,7 @@ public interface SettingsProvider {
    *
    * @param key The non-null case-sensitive key to match the setting (see {@link
    *            ConfigObjectReference#getKey()})
-   * @return The setting to match the given key or {@code null} if the given key doesn't match any
+   * @return The setting to match the given key or {@code null}, if the given key doesn't match any
    * setting
    */
   RegisteredSetting getSetting(String key);
