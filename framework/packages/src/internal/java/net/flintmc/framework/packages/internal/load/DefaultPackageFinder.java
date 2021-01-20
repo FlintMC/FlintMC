@@ -98,7 +98,7 @@ public class DefaultPackageFinder implements PackageFinder {
     for (File file : Objects.requireNonNull(packageDir.listFiles())) {
       if (file.isDirectory()) {
         packages.addAll(this.findPackages(file));
-      } else if (file.getName().toLowerCase().endsWith("'.jar")) {
+      } else if (file.getName().toLowerCase().endsWith(".jar")) {
         this.constructPackage(file).ifPresent(packages::add);
       }
     }
@@ -122,7 +122,7 @@ public class DefaultPackageFinder implements PackageFinder {
       this.logger.warn(String.format(
           "The file '%s' qualifies as a potential package but a package "
               + "could not be constructed from it.",
-          file.getPath()));
+          file.getPath()), e);
     }
 
     return Optional.empty();

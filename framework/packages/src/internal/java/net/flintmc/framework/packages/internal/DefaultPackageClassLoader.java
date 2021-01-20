@@ -19,23 +19,25 @@
 
 package net.flintmc.framework.packages.internal;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.CodeSource;
-import java.util.Enumeration;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.framework.packages.internal.source.PackageSource;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.launcher.classloading.ChildClassLoader;
 import net.flintmc.launcher.classloading.RootClassLoader;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.CodeSource;
+import java.util.Enumeration;
 
 /**
  * Default package loader implementation.
  */
+@Implement(PackageClassLoader.class)
 public class DefaultPackageClassLoader extends ClassLoader
     implements PackageClassLoader, ChildClassLoader {
 
