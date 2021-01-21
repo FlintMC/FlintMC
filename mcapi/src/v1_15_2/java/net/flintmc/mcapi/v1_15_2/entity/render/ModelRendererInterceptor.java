@@ -44,11 +44,14 @@ import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.CtClassFilter;
 import net.flintmc.transform.javassist.CtClassFilters;
+import net.flintmc.transform.shadow.MethodProxy;
+import net.flintmc.transform.shadow.Shadow;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Matrix3f;
 import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -70,7 +73,7 @@ public class ModelRendererInterceptor {
       CtClass[] doRenderParameters =
           ClassPool.getDefault()
               .get(
-                  new String[] {
+                  new String[]{
                       "com.mojang.blaze3d.matrix.MatrixStack$Entry",
                       "com.mojang.blaze3d.vertex.IVertexBuilder",
                       "int",
@@ -92,11 +95,19 @@ public class ModelRendererInterceptor {
                   doRenderParameters);
 
       doRender.insertBefore(
-          "{if(net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.interceptDoRender($0,$$)){"
-              +
-              //
-              // "net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.interceptRenderCleanup($0, $$);" +
-              "return;}}");
+          "{\n"
+              + "    "
+              + "if(net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.shouldCancel($0, $1, $3)){\n"
+              + "        net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.interceptDoRender($0, $$);\n"
+              + "return;\n"
+              + "    }\n"
+              + "}");
+      doRender.insertAfter("{\n"
+          + "    if(!net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.shouldCancel($0, $1, $3)){\n"
+          + "        net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.interceptDoRender($0, $$);\n"
+          +
+          "    }\n"
+          + "}");
       //      render.insertAfter(
       //
       // "{net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.interceptRenderCleanup($0, $$);}");
@@ -115,7 +126,7 @@ public class ModelRendererInterceptor {
     CtClass[] classes =
         ClassPool.getDefault()
             .get(
-                new String[] {
+                new String[]{
                     "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
                 });
 
@@ -127,9 +138,10 @@ public class ModelRendererInterceptor {
                   .get("net.minecraft.client.renderer.entity.model.EntityModel")
                   .getMethod("setRotationAngles", classes)
                   .getName())) {
-        if (!Modifier.isAbstract(declaredMethod.getModifiers()))
+        if (!Modifier.isAbstract(declaredMethod.getModifiers())) {
           declaredMethod.insertAfter(
               "{net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.interceptRotationAnglesUpdate($1);}");
+        }
 
         break;
       }
@@ -154,7 +166,9 @@ public class ModelRendererInterceptor {
       this.entityRepository = entityRepository;
       this.clientPlayer = clientPlayer;
       this.alternatingMinecraftRenderMeta = minecraftRenderMetaFactory.create();
+
     }
+
 
     public static void interceptRotationAnglesUpdate(net.minecraft.entity.Entity minecraftEntity) {
 
@@ -164,12 +178,87 @@ public class ModelRendererInterceptor {
           && INSTANCE.clientPlayer.getUniqueId().equals(minecraftEntity.getUniqueID())) {
         flintEntity = INSTANCE.clientPlayer;
       }
-      if (flintEntity == null) return;
+      if (flintEntity == null) {
+        return;
+      }
       for (ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder :
           flintEntity.getRenderContext().getRenderables().values()) {
         modelBoxHolder.callPropertyPreparations().callPropertyHandler();
       }
       INSTANCE.lastRenderedEntity = flintEntity;
+    }
+
+    public static boolean shouldCancel(ModelRenderer instance,
+        MatrixStack.Entry matrixEntryIn,
+        int packedLightIn) {
+
+      if (INSTANCE.lastRenderedEntity == null) {
+        return false;
+      }
+      ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder =
+          INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
+      if (modelBoxHolder == null) {
+        INSTANCE.lastRenderedEntity.updateRenderables();
+        modelBoxHolder =
+            INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
+        if (modelBoxHolder == null) {
+          return false;
+        }
+      }
+      if (modelBoxHolder.getContext().getRenderer() != null) {
+
+        Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixEntryIn.getMatrix();
+        Matrix3fAccessor normalMatrix = (Matrix3fAccessor) (Object) matrixEntryIn.getNormal();
+
+        INSTANCE
+            .alternatingMinecraftRenderMeta
+            .getWorld()
+            .set(
+                worldMatrix.getM00(),
+                worldMatrix.getM10(),
+                worldMatrix.getM20(),
+                worldMatrix.getM30(),
+                worldMatrix.getM01(),
+                worldMatrix.getM11(),
+                worldMatrix.getM21(),
+                worldMatrix.getM31(),
+                worldMatrix.getM02(),
+                worldMatrix.getM12(),
+                worldMatrix.getM22(),
+                worldMatrix.getM32(),
+                worldMatrix.getM03(),
+                worldMatrix.getM13(),
+                worldMatrix.getM23(),
+                worldMatrix.getM33());
+
+        INSTANCE
+            .alternatingMinecraftRenderMeta
+            .getNormal()
+            .set(
+                normalMatrix.getM00(),
+                normalMatrix.getM10(),
+                normalMatrix.getM20(),
+                normalMatrix.getM01(),
+                normalMatrix.getM11(),
+                normalMatrix.getM21(),
+                normalMatrix.getM02(),
+                normalMatrix.getM12(),
+                normalMatrix.getM22());
+
+        INSTANCE
+            .alternatingMinecraftRenderMeta
+            .setPackedLight(packedLightIn)
+            .setPartialTick(Minecraft.getInstance().getRenderPartialTicks())
+            .setTargetUuid(INSTANCE.lastRenderedEntity.getUniqueId());
+
+        return !modelBoxHolder
+            .getContext()
+            .getRenderer()
+            .shouldExecuteNextStage(modelBoxHolder, INSTANCE.alternatingMinecraftRenderMeta);
+      } else {
+        return false;
+      }
+
     }
 
     public static boolean interceptDoRender(
@@ -183,7 +272,9 @@ public class ModelRendererInterceptor {
         float blue,
         float alpha) {
 
-      if (INSTANCE.lastRenderedEntity == null) return false;
+      if (INSTANCE.lastRenderedEntity == null) {
+        return false;
+      }
       ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder =
           INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
       if (modelBoxHolder == null) {
@@ -267,7 +358,6 @@ public class ModelRendererInterceptor {
             INSTANCE.alternatingMinecraftRenderMeta);
         if (cancelRender) {
           modelBoxHolder.callRenderCleanup();
-        } else {
         }
         return cancelRender;
       } else {
@@ -291,9 +381,6 @@ public class ModelRendererInterceptor {
         MinecraftRenderMeta renderMeta) {
 
       if (renderer != null) {
-        Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixStackEntry.getMatrix();
-        Matrix3fAccessor normalMatrix = (Matrix3fAccessor) (Object) matrixStackEntry.getNormal();
-
         List<BufferBuilder.DrawState> drawStates = ((BufferBuilderAccessor) buffer).getDrawStates();
         try {
           BufferBuilder.DrawState drawState;

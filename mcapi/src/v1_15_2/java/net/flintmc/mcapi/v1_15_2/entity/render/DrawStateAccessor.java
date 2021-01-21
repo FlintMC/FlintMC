@@ -25,11 +25,16 @@ import net.flintmc.transform.shadow.FieldCreate;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.FieldSetter;
 import net.flintmc.transform.shadow.Shadow;
+import java.util.Set;
 
 @Shadow("net.minecraft.client.renderer.BufferBuilder$DrawState")
 @FieldCreate(name = "modelBoxHolder", typeName = "net.flintmc.render.model.ModelBoxHolder")
 @FieldCreate(name = "modelRenderData", typeName = "net.flintmc.mcapi.render.MinecraftRenderMeta")
+@FieldCreate(name = "renderCallbacks", typeName = "java.util.Set", defaultValue = "new java.util.HashSet()")
 public interface DrawStateAccessor {
+
+  @FieldGetter("renderCallbacks")
+  Set<Runnable> getRenderCallbacks();
 
   @FieldSetter("modelBoxHolder")
   void setModelBoxHolder(ModelBoxHolder<?, ?> modelBoxHolder);

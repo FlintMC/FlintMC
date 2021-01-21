@@ -31,6 +31,9 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.render.model.ModelBoxHolder;
+import net.flintmc.render.vbo.VertexArrayObject;
+import net.flintmc.render.vbo.VertexBufferObject;
+import net.flintmc.render.vbo.VertexBufferObject.Factory;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMappingProvider;
@@ -48,7 +51,9 @@ public class WorldVertexBufferUploaderInterceptor {
     this.classMappingProvider = classMappingProvider;
   }
 
-  @ClassTransform(value = "net.minecraft.client.renderer.WorldVertexBufferUploader", version = "1.15.2")
+  @ClassTransform(
+      value = "net.minecraft.client.renderer.WorldVertexBufferUploader",
+      version = "1.15.2")
   public void transform(ClassTransformContext classTransformContext)
       throws NotFoundException, CannotCompileException {
     CtClass bufferBuilderClass =
@@ -61,7 +66,7 @@ public class WorldVertexBufferUploaderInterceptor {
                     .get("net.minecraft.client.renderer.WorldVertexBufferUploader")
                     .getMethod("draw", bufferBuilderClass)
                     .getName(),
-                new CtClass[]{bufferBuilderClass});
+                new CtClass[] {bufferBuilderClass});
 
     draw.setBody(
         "net.flintmc.mcapi.v1_15_2.entity.render.WorldVertexBufferUploaderInterceptor$Handler.draw($1);");
@@ -107,6 +112,9 @@ public class WorldVertexBufferUploaderInterceptor {
         vertexFormatIn.clearBufferState();
       }
       DrawStateAccessor drawStateAccessor = (DrawStateAccessor) (Object) pair.getFirst();
+
+      drawStateAccessor.getRenderCallbacks().forEach(Runnable::run);
+
       if (drawStateAccessor.getModelBoxHolder() == null) {
         return;
       }
@@ -114,7 +122,9 @@ public class WorldVertexBufferUploaderInterceptor {
       if (modelBoxHolder.getContext().getRenderer() == null) {
         return;
       }
-      modelBoxHolder.getContext().getRenderer()
+      modelBoxHolder
+          .getContext()
+          .getRenderer()
           .render(modelBoxHolder, drawStateAccessor.getRenderData());
     }
   }
