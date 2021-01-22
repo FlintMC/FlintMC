@@ -25,6 +25,7 @@ import com.google.inject.name.Named;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.format.ChatColor;
+import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.world.mapper.ScoreboardMapper;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Criterias;
@@ -63,7 +64,8 @@ public class VersionedScoreboardInterceptor {
   @Hook(
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleScoreboardObjective",
-      parameters = {@Type(reference = SScoreboardObjectivePacket.class)})
+      parameters = {@Type(reference = SScoreboardObjectivePacket.class)},
+      version = "1.15.2")
   public void hookHandleScoreboardObjective(@Named("args") Object[] args) {
     SScoreboardObjectivePacket packet = (SScoreboardObjectivePacket) args[0];
 
@@ -92,7 +94,8 @@ public class VersionedScoreboardInterceptor {
   @Hook(
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleUpdateScore",
-      parameters = {@Type(reference = SUpdateScorePacket.class)})
+      parameters = {@Type(reference = SUpdateScorePacket.class)},
+      version = "1.15.2")
   public void hookHandleUpdateScore(@Named("args") Object[] args) {
     SUpdateScorePacket packet = (SUpdateScorePacket) args[0];
 
@@ -114,7 +117,8 @@ public class VersionedScoreboardInterceptor {
   @Hook(
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleDisplayObjective",
-      parameters = {@Type(reference = SDisplayObjectivePacket.class)})
+      parameters = {@Type(reference = SDisplayObjectivePacket.class)},
+      version = "1.15.2")
   public void hookHandleDisplayObjective(@Named("args") Object[] args) {
     SDisplayObjectivePacket packet = (SDisplayObjectivePacket) args[0];
     String name = packet.getName();
@@ -126,7 +130,8 @@ public class VersionedScoreboardInterceptor {
   @Hook(
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleTeams",
-      parameters = {@Type(reference = STeamsPacket.class)})
+      parameters = {@Type(reference = STeamsPacket.class)},
+  version = "1.15.2")
   public void hookHandleTeams(@Named("args") Object[] args) {
     STeamsPacket packet = (STeamsPacket) args[0];
 
@@ -140,7 +145,25 @@ public class VersionedScoreboardInterceptor {
 
     if (action == 0 || action == 2) {
       playerTeam.setDisplayName(this.componentMapper.fromMinecraft(packet.getDisplayName()));
-      playerTeam.setColor(ChatColor.getByName(packet.getColor().getFriendlyName().toUpperCase()));
+
+
+      String friendlyName = packet.getColor().getFriendlyName();
+      ChatColor color = ChatColor.getByName(friendlyName.toUpperCase());
+
+      if (friendlyName.equalsIgnoreCase("reset")) {
+        color = ChatColor.WHITE;
+      }
+
+      if(color != null) {
+        playerTeam.setColor(color);
+      } else {
+        ChatFormat chatFormat = ChatFormat.getByName(friendlyName);
+
+        if(chatFormat != null) {
+          playerTeam.setChatFormat(chatFormat);
+        }
+      }
+
       playerTeam.setFriendlyFlags(packet.getFriendlyFlags());
 
       VisibleType teamVisibility = VisibleType.getByName(packet.getNameTagVisibility());

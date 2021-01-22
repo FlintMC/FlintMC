@@ -249,7 +249,7 @@ public class DefaultScoreboard implements Scoreboard {
   @Override
   public boolean addPlayerToTeam(String username, PlayerTeam team) {
     if (username.length() > 40) {
-      throw new IllegalArgumentException(String.format("The player name \"%s\" is too long!"));
+      throw new IllegalArgumentException(String.format("The player name \"%s\" is too long!", username));
     } else {
       if (this.getPlayerTeam(username) != null) {
         this.removePlayerFromTeams(username);
@@ -283,6 +283,7 @@ public class DefaultScoreboard implements Scoreboard {
   public boolean removePlayerFromTeams(String username) {
     PlayerTeam playerTeam = this.getPlayerTeam(username);
 
+    System.out.println("Removing... " + username);
     if (playerTeam != null) {
       this.removePlayerFromTeam(username, playerTeam);
       return true;

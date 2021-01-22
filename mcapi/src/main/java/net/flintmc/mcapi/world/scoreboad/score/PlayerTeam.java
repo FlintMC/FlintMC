@@ -19,10 +19,12 @@
 
 package net.flintmc.mcapi.world.scoreboad.score;
 
+import java.util.Optional;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.format.ChatColor;
+import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
@@ -94,6 +96,13 @@ public interface PlayerTeam extends Team {
    * @param color The new color for this team
    */
   void setColor(ChatColor color);
+
+  /**
+   * Sets the chat format for this team.
+   *
+   * @param format The new chat format for this team.
+   */
+  void setChatFormat(ChatFormat format);
 
   /**
    * Changes the allow friendly fire of this team.
