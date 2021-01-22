@@ -26,10 +26,13 @@ import java.util.Collection;
 import java.util.List;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.MinecraftComponentMapper;
+import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.flintmc.mcapi.world.type.WorldTypeRegistry;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.gui.screen.BiomeGeneratorTypeScreens;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
@@ -44,6 +47,8 @@ public class VersionedWorldTypeRegistry implements WorldTypeRegistry {
   @Inject
   private VersionedWorldTypeRegistry(
       WorldType.Factory typeFactory,
+      MinecraftComponentMapper componentMapper,
+      TranslationComponent.Factory componentFactory,
       ClassMappingProvider mappingProvider)
       throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
     this.worldTypes = Lists.newArrayList();
@@ -55,22 +60,26 @@ public class VersionedWorldTypeRegistry implements WorldTypeRegistry {
     for (Object type : types) {
       BiomeGeneratorTypeScreens screens = (BiomeGeneratorTypeScreens) type;
 
-      String name = ((TranslationTextComponent) screens.func_239077_a_()).getKey()
-          .replaceFirst("generator.", "");
+      ITextComponent component = screens.func_239077_a_();
+      String name = ((TranslationTextComponent) component).getKey().replaceFirst("generator.", "");
 
       if (BUFFET_TYPES.contains(name)) {
         continue;
       }
       WorldType worldType = typeFactory.create(
           name,
+          componentMapper.fromMinecraft(component),
           !name.equals("debug_all_block_states"),
+          name.equals("debug_all_block_states"),
           name.equals("flat") || name.equals("customized")
       );
 
       this.worldTypes.add(worldType);
     }
 
-    worldTypes.add(typeFactory.create("buffet", true, true));
+    TranslationComponent buffetName = componentFactory.create();
+    buffetName.translationKey("generator.buffet");
+    this.worldTypes.add(typeFactory.create("buffet", buffetName, true, false, true));
   }
 
   /**
