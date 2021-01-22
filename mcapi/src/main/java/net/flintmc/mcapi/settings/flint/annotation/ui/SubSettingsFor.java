@@ -59,7 +59,7 @@ import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
  * of this setting. Sub settings cannot have sub settings.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface SubSettingsFor {
 
   /**
