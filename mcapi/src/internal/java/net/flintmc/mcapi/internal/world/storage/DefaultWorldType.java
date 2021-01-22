@@ -22,6 +22,7 @@ package net.flintmc.mcapi.internal.world.storage;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.world.type.WorldType;
 
 /**
@@ -31,16 +32,22 @@ import net.flintmc.mcapi.world.type.WorldType;
 public class DefaultWorldType implements WorldType {
 
   private final String name;
+  private final ChatComponent displayName;
   private final boolean canBeCreated;
+  private final boolean canBeCreatedWithShift;
   private final boolean customConfiguration;
 
   @AssistedInject
   private DefaultWorldType(
       @Assisted("name") String name,
+      @Assisted("displayName") ChatComponent displayName,
       @Assisted("canBeCreated") boolean canBeCreated,
+      @Assisted("canBeCreatedWithShift") boolean canBeCreatedWithShift,
       @Assisted("customConfiguration") boolean customConfiguration) {
     this.name = name;
+    this.displayName = displayName;
     this.canBeCreated = canBeCreated;
+    this.canBeCreatedWithShift = canBeCreatedWithShift;
     this.customConfiguration = customConfiguration;
   }
 
@@ -50,6 +57,14 @@ public class DefaultWorldType implements WorldType {
   @Override
   public String getName() {
     return this.name;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ChatComponent getDisplayName() {
+    return this.displayName;
   }
 
   /**
@@ -66,5 +81,13 @@ public class DefaultWorldType implements WorldType {
   @Override
   public boolean canBeCreated() {
     return this.canBeCreated;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean canBeCreatedWithShift() {
+    return this.canBeCreatedWithShift;
   }
 }

@@ -22,6 +22,7 @@ package net.flintmc.mcapi.v1_15_2.world.mapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
 import net.flintmc.mcapi.world.storage.WorldOverview;
@@ -34,12 +35,16 @@ import net.minecraft.world.storage.WorldSummary;
 @Implement(value = WorldMapper.class, version = "1.15.2")
 public class VersionedWorldMapper implements WorldMapper {
 
+  private final TranslationComponent.Factory componentFactory;
   private final WorldType.Factory worldTypeFactory;
   private final WorldOverview.Factory worldOverviewFactory;
 
   @Inject
   private VersionedWorldMapper(
-      WorldType.Factory worldTypeFactory, WorldOverview.Factory worldOverviewFactory) {
+      TranslationComponent.Factory componentFactory,
+      WorldType.Factory worldTypeFactory,
+      WorldOverview.Factory worldOverviewFactory) {
+    this.componentFactory = componentFactory;
     this.worldTypeFactory = worldTypeFactory;
     this.worldOverviewFactory = worldOverviewFactory;
   }
@@ -66,9 +71,15 @@ public class VersionedWorldMapper implements WorldMapper {
 
     net.minecraft.world.WorldType worldType = (net.minecraft.world.WorldType) handle;
 
+    TranslationComponent displayName = this.componentFactory.create();
+    displayName.translationKey(worldType.getTranslationKey());
+
     return this.worldTypeFactory.create(
         worldType.getName(),
-        worldType.canBeCreated(),
+        displayName,
+        worldType.canBeCreated() && !worldType.getName()
+            .equals(net.minecraft.world.WorldType.DEBUG_ALL_BLOCK_STATES.getName()),
+        worldType.getName().equals(net.minecraft.world.WorldType.DEBUG_ALL_BLOCK_STATES.getName()),
         worldType.hasCustomOptions()
     );
   }
