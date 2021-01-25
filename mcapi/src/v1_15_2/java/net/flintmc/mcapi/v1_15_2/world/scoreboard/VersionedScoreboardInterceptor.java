@@ -130,7 +130,7 @@ public class VersionedScoreboardInterceptor {
       className = "net.minecraft.client.network.play.ClientPlayNetHandler",
       methodName = "handleTeams",
       parameters = {@Type(reference = STeamsPacket.class)},
-  version = "1.15.2")
+      version = "1.15.2")
   public void hookHandleTeams(@Named("args") Object[] args) {
     STeamsPacket packet = (STeamsPacket) args[0];
 
@@ -145,11 +145,10 @@ public class VersionedScoreboardInterceptor {
     if (action == 0 || action == 2) {
       playerTeam.setDisplayName(this.componentMapper.fromMinecraft(packet.getDisplayName()));
 
-
       String friendlyName = packet.getColor().getFriendlyName();
       ChatColor color = ChatColor.getByName(friendlyName.toUpperCase());
 
-      if(color != null) {
+      if (color != null) {
         playerTeam.setColor(color);
       }
 
