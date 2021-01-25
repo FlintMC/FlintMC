@@ -25,7 +25,6 @@ import com.google.inject.name.Named;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.world.mapper.ScoreboardMapper;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.Criterias;
@@ -149,18 +148,8 @@ public class VersionedScoreboardInterceptor {
       String friendlyName = packet.getColor().getFriendlyName();
       ChatColor color = ChatColor.getByName(friendlyName.toUpperCase());
 
-      if (friendlyName.equalsIgnoreCase("reset")) {
-        color = ChatColor.WHITE;
-      }
-
       if(color != null) {
         playerTeam.setColor(color);
-      } else {
-        ChatFormat chatFormat = ChatFormat.getByName(friendlyName);
-
-        if(chatFormat != null) {
-          playerTeam.setChatFormat(chatFormat);
-        }
       }
 
       playerTeam.setFriendlyFlags(packet.getFriendlyFlags());

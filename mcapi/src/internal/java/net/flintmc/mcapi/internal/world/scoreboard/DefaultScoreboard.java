@@ -164,6 +164,10 @@ public class DefaultScoreboard implements Scoreboard {
    */
   @Override
   public void removeObjective(Objective objective) {
+    if(this.objectives.isEmpty()) {
+      return;
+    }
+
     this.objectives.remove(objective.getName());
 
     for (int slot = 0; slot < DISPLAY_LIMIT; ++slot) {
@@ -283,7 +287,6 @@ public class DefaultScoreboard implements Scoreboard {
   public boolean removePlayerFromTeams(String username) {
     PlayerTeam playerTeam = this.getPlayerTeam(username);
 
-    System.out.println("Removing... " + username);
     if (playerTeam != null) {
       this.removePlayerFromTeam(username, playerTeam);
       return true;

@@ -39,7 +39,6 @@ import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.exception.ComponentDeserializationException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.KeybindTextComponent;
@@ -164,19 +163,19 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
 
   private void applyStyle(ChatComponent component, Style style) {
     if (style.getBold()) {
-      component.toggleFormat(ChatFormat.BOLD, true);
+      component.toggleChatFormat(ChatColor.BOLD, true);
     }
     if (style.getItalic()) {
-      component.toggleFormat(ChatFormat.ITALIC, true);
+      component.toggleChatFormat(ChatColor.ITALIC, true);
     }
     if (style.getObfuscated()) {
-      component.toggleFormat(ChatFormat.OBFUSCATED, true);
+      component.toggleChatFormat(ChatColor.OBFUSCATED, true);
     }
     if (style.getStrikethrough()) {
-      component.toggleFormat(ChatFormat.STRIKETHROUGH, true);
+      component.toggleChatFormat(ChatColor.STRIKETHROUGH, true);
     }
     if (style.getUnderlined()) {
-      component.toggleFormat(ChatFormat.UNDERLINED, true);
+      component.toggleChatFormat(ChatColor.UNDERLINED, true);
     }
     if (style.getColor() != null) {
       ChatColor color = ChatColor.getByName(style.getColor().name());
@@ -262,11 +261,11 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
   private Style createStyle(ChatComponent component) {
     Style style = new Style();
 
-    style.setBold(component.hasFormat(ChatFormat.BOLD));
-    style.setItalic(component.hasFormat(ChatFormat.ITALIC));
-    style.setUnderlined(component.hasFormat(ChatFormat.UNDERLINED));
-    style.setStrikethrough(component.hasFormat(ChatFormat.STRIKETHROUGH));
-    style.setObfuscated(component.hasFormat(ChatFormat.OBFUSCATED));
+    style.setBold(component.hasChatFormat(ChatColor.BOLD));
+    style.setItalic(component.hasChatFormat(ChatColor.ITALIC));
+    style.setUnderlined(component.hasChatFormat(ChatColor.UNDERLINED));
+    style.setStrikethrough(component.hasChatFormat(ChatColor.STRIKETHROUGH));
+    style.setObfuscated(component.hasChatFormat(ChatColor.OBFUSCATED));
 
     if (component.color().isDefaultColor()) {
       style.setColor(TextFormatting.valueOf(component.color().getName()));

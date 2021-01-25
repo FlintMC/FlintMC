@@ -26,6 +26,7 @@ import java.util.Map;
  * Formats for chat components, after a color is displayed in the legacy chat message, all formats
  * will be reset.
  */
+@Deprecated
 public enum ChatFormat {
 
   /**

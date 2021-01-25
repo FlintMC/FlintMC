@@ -21,7 +21,6 @@ package net.flintmc.mcapi.internal.world.scoreboard.score;
 
 import com.beust.jcommander.internal.Sets;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
@@ -29,7 +28,6 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.internal.world.scoreboard.listener.PlayerTeamChangeListener;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
@@ -49,7 +47,6 @@ public class DefaultPlayerTeam implements PlayerTeam {
   private VisibleType nameTagVisibility;
   private VisibleType deathMessageVisibility;
   private ChatColor chatColor;
-  private ChatFormat chatFormat;
   private CollisionType collisionType;
 
   @AssistedInject
@@ -69,7 +66,6 @@ public class DefaultPlayerTeam implements PlayerTeam {
     this.nameTagVisibility = VisibleType.ALWAYS;
     this.deathMessageVisibility = VisibleType.ALWAYS;
     this.chatColor = ChatColor.WHITE;
-    this.chatFormat = ChatFormat.OBFUSCATED;
     this.collisionType = CollisionType.ALWAYS;
   }
 
@@ -157,12 +153,6 @@ public class DefaultPlayerTeam implements PlayerTeam {
     this.playerTeamChangeListener.changeColor(this, color.getLowerName());
   }
 
-  @Override
-  public void setChatFormat(ChatFormat format) {
-    this.chatFormat = format;
-    this.playerTeamChangeListener.changeColor(this, format.getLowerName());
-  }
-
   /**
    * {@inheritDoc}
    */
@@ -202,24 +192,7 @@ public class DefaultPlayerTeam implements PlayerTeam {
    */
   @Override
   public ChatColor getTeamColor() {
-    return this.getOptionalTeamColor().orElse(ChatColor.WHITE);
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Optional<ChatColor> getOptionalTeamColor() {
-    return Optional.ofNullable(this.chatColor);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Optional<ChatFormat> getOptionalChatFormat() {
-    return Optional.ofNullable(this.chatFormat);
+    return this.chatColor;
   }
 
   /**

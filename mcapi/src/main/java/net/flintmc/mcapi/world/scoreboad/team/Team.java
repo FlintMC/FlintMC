@@ -20,9 +20,7 @@
 package net.flintmc.mcapi.world.scoreboad.team;
 
 import java.util.Collection;
-import java.util.Optional;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.world.scoreboad.type.CollisionType;
 import net.flintmc.mcapi.world.scoreboad.type.VisibleType;
 
@@ -58,25 +56,9 @@ public interface Team {
   /**
    * Retrieves the color of this team.
    *
-   * @deprecated To avoid an error.
    * @return The team color.
    */
-  @Deprecated
   ChatColor getTeamColor();
-
-  /**
-   * Retrieves an optional color of this team.
-   *
-   * @return The optional team color.
-   */
-  Optional<ChatColor> getOptionalTeamColor();
-
-  /**
-   * Retrieves an optional chat format of this team.
-   *
-   * @return The optional team chat format.
-   */
-  Optional<ChatFormat> getOptionalChatFormat();
 
   /**
    * Whether friendly invisible members may be seen.

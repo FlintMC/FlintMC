@@ -19,7 +19,9 @@
 
 package net.flintmc.mcapi.chat.format;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.flintmc.framework.stereotype.MathHelper;
 import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
@@ -39,6 +41,7 @@ public class ChatColor {
 
   private static final Map<String, ChatColor> DEFAULT_COLORS = new HashMap<>();
   private static final Map<Character, ChatColor> DEFAULT_COLORS_BY_CHAR = new HashMap<>();
+  private static final List<ChatColor> FORMATS = new ArrayList<>();
 
   public static final ChatColor DARK_RED = defaultColor("DARK_RED", '4', 11141120);
   public static final ChatColor RED = defaultColor("RED", 'c', 16733525);
@@ -57,6 +60,13 @@ public class ChatColor {
   public static final ChatColor DARK_GRAY = defaultColor("DARK_GRAY", '8', 5592405);
   public static final ChatColor BLACK = defaultColor("BLACK", '0', 0);
 
+  public static final ChatColor RESET = defaultFormat("RESET", 'r');
+  public static final ChatColor BOLD = defaultFormat("BOLD", 'l');
+  public static final ChatColor ITALIC = defaultFormat("ITALIC", 'o');
+  public static final ChatColor UNDERLINED = defaultFormat("UNDERLINED", 'n');
+  public static final ChatColor STRIKETHROUGH = defaultFormat("STRIKETHROUGH", 'm');
+  public static final ChatColor OBFUSCATED = defaultFormat("OBFUSCATED", 'k');
+
   private static boolean rgbSupport = false; // TODO: set to true on 1.16+
 
   private final String name;
@@ -64,17 +74,32 @@ public class ChatColor {
   private final String colorCode;
   private final int rgb;
   private final boolean defaultColor;
+  private final boolean format;
 
   private ChatColor(String name, String colorCode, int rgb) {
     this(name, colorCode, rgb, false);
   }
 
   private ChatColor(String name, String colorCode, int rgb, boolean defaultColor) {
+    this(name, colorCode, rgb, defaultColor, false);
+  }
+
+  public ChatColor(String name, String colorCode, int rgb, boolean defaultColor,
+      boolean format) {
     this.name = name;
     this.lowerName = name.toLowerCase();
     this.colorCode = colorCode;
     this.rgb = rgb;
     this.defaultColor = defaultColor;
+    this.format = format;
+  }
+
+  private static ChatColor defaultFormat(String name, char colorCode) {
+    ChatColor chatFormat = new ChatColor(name, String.valueOf(colorCode), 0, true, false);
+    DEFAULT_COLORS.put(name, chatFormat);
+    DEFAULT_COLORS_BY_CHAR.put(colorCode, chatFormat);
+    FORMATS.add(chatFormat);
+    return chatFormat;
   }
 
   private static ChatColor defaultColor(String name, char colorCode, int rgb) {
@@ -296,6 +321,24 @@ public class ChatColor {
    */
   public int getBlue() {
     return this.rgb & 0xFF;
+  }
+
+  /**
+   * Whether the chat color is a format.
+   *
+   * @return {@code true} if the chat color is a format, otherwise {@code false}.
+   */
+  public boolean isFormat() {
+    return format;
+  }
+
+  /**
+   * Retrieves a collection with all chat formats.
+   *
+   * @return A collection with all available chat formats.
+   */
+  public static List<ChatColor> getChatFormats() {
+    return FORMATS;
   }
 
   /**
