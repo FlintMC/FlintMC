@@ -117,7 +117,7 @@ public interface ExtendedWorldGeneratorSettings {
 
   /**
    * Retrieves whether cheats (= usage of commands) is enabled or disabled in this settings object,
-   * defaults to {@code true}.
+   * defaults to {@code false}.
    *
    * @return {@code true} if it is enabled, {@code false} otherwise
    */
@@ -133,7 +133,7 @@ public interface ExtendedWorldGeneratorSettings {
 
   /**
    * Retrieves whether the bonus chest is enabled or disabled in this settings object, defaults to
-   * {@code true}.
+   * {@code false}.
    *
    * @return {@code true} if it is enabled, {@code false} otherwise
    */

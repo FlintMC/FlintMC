@@ -165,7 +165,7 @@ public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
       layers.add(layerJson);
 
       layerJson.addProperty("block", layer.getBlockState().getType().getName().toString());
-      layerJson.addProperty("heght", layer.getLayerHeight());
+      layerJson.addProperty("height", layer.getLayerHeight());
     }
 
     JsonObject structures = new JsonObject();
