@@ -17,23 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.items.inventory.event;
+package net.flintmc.mcapi.v1_15_2.items.inventory;
 
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedInject;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.items.inventory.Inventory;
-import net.flintmc.mcapi.items.inventory.event.InventoryOpenEvent;
-import javax.annotation.Nullable;
+import java.util.List;
+import net.flintmc.transform.shadow.FieldGetter;
+import net.flintmc.transform.shadow.Shadow;
+import net.minecraft.util.NonNullList;
 
-/**
- * {@inheritDoc}
- */
-@Implement(InventoryOpenEvent.class)
-public class DefaultInventoryOpenEvent extends DefaultInventoryEvent implements InventoryOpenEvent {
+@Shadow("net.minecraft.entity.player.PlayerInventory")
+public interface AccessiblePlayerInventory {
 
-  @AssistedInject
-  public DefaultInventoryOpenEvent(@Nullable @Assisted("inventory") Inventory inventory) {
-    super(inventory);
-  }
+  @FieldGetter("allInventories")
+  List<NonNullList<net.minecraft.item.ItemStack>> getAllInventories();
+
 }

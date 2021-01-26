@@ -19,6 +19,8 @@
 
 package net.flintmc.mcapi.v1_15_2.items.inventory;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
@@ -58,12 +60,16 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
     return this.itemMapper.fromMinecraft(inventory.get(slot));
   }
 
-  private ItemStack[] map(NonNullList<net.minecraft.item.ItemStack> inventory) {
-    ItemStack[] result = new ItemStack[inventory.size()];
-    for (int i = 0; i < inventory.size(); i++) {
-      result[i] = this.itemMapper.fromMinecraft(inventory.get(i));
+  private ItemStack[] map(NonNullList<net.minecraft.item.ItemStack>... inventories) {
+    Collection<ItemStack> itemStacks = new ArrayList<>();
+
+    for (NonNullList<net.minecraft.item.ItemStack> inventory : inventories) {
+      for (net.minecraft.item.ItemStack itemStack : inventory) {
+        itemStacks.add(this.itemMapper.fromMinecraft(itemStack));
+      }
     }
-    return result;
+
+    return itemStacks.toArray(new ItemStack[0]);
   }
 
   /**
@@ -71,7 +77,24 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
    */
   @Override
   public void setItem(int slot, ItemStack item) throws IndexOutOfBoundsException {
-    Minecraft.getInstance().player.inventory.mainInventory.set(slot, super.mapToVanilla(item));
+    AccessiblePlayerInventory accessiblePlayerInventory = (AccessiblePlayerInventory) Minecraft
+        .getInstance().player.inventory;
+
+    NonNullList<net.minecraft.item.ItemStack> nonNullList = null;
+
+    for (NonNullList<net.minecraft.item.ItemStack> allInventory : accessiblePlayerInventory
+        .getAllInventories()) {
+      if (slot < allInventory.size()) {
+        nonNullList = allInventory;
+        break;
+      }
+
+      slot -= allInventory.size();
+    }
+
+    if (nonNullList != null) {
+      nonNullList.set(slot, this.mapToVanilla(item));
+    }
   }
 
   /**
@@ -214,8 +237,51 @@ public class VersionedPlayerInventory extends VersionedInventory implements Play
    * {@inheritDoc}
    */
   @Override
+  public void setArmorContent(EquipmentSlotType type, ItemStack itemStack) {
+    if (type == EquipmentSlotType.MAIN_HAND || type == EquipmentSlotType.OFF_HAND) {
+      return;
+    }
+
+    Minecraft.getInstance().player.inventory.armorInventory
+        .set(type.getIndex(), this.mapToVanilla(itemStack));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemStack[] getArmorContents() {
+    return this.map(Minecraft.getInstance().player.inventory.armorInventory);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemStack getOffHandItem() {
+    net.minecraft.item.ItemStack itemStack = Minecraft
+        .getInstance().player.inventory.offHandInventory.get(0);
+
+    return itemStack == null ? null : this.itemMapper
+        .fromMinecraft(itemStack);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setOffHandItem(ItemStack itemStack) {
+    Minecraft.getInstance().player.inventory.offHandInventory.set(0, this.mapToVanilla(itemStack));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public ItemStack[] getContents() {
-    return this.map(Minecraft.getInstance().player.inventory.mainInventory);
+    return this.map(Minecraft.getInstance().player.inventory.mainInventory,
+        Minecraft.getInstance().player.inventory.armorInventory,
+        Minecraft.getInstance().player.inventory.offHandInventory);
   }
 
   /**

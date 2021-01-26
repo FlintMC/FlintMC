@@ -73,6 +73,11 @@ public class InventoryClickEventInjector {
       @Named("args") Object[] args,
       Hook.ExecutionTime executionTime) {
     int windowId = ((Container) instance).windowId;
+
+    if(this.controller.getOpenInventory() == null) {
+      return HookResult.CONTINUE;
+    }
+
     Inventory inventory =
         this.controller.getPlayerInventory().getWindowId() == windowId
             ? this.controller.getPlayerInventory()

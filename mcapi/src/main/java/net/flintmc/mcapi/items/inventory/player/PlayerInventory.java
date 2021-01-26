@@ -41,8 +41,18 @@ public interface PlayerInventory extends Inventory {
    */
   ItemStack getItemInHand(PlayerHand hand);
 
+  /**
+   * Retrieves the currently held item slot of this inventory.
+   *
+   * @return The currently held item slot.
+   */
   int getHeldItemSlot();
 
+  /**
+   * Sets the new slot for the currently held item in this inventory.
+   *
+   * @param slot The new held item slot.
+   */
   void setHeldItemSlot(int slot);
 
   /**
@@ -104,4 +114,34 @@ public interface PlayerInventory extends Inventory {
    * does nothing.
    */
   void closeInventory();
+
+  /**
+   * Sets the given {@code itemStack} on the equipment slot.
+   *
+   * @param type      The slot type of the equipment.
+   * @param itemStack The new item stack for the slot type.
+   */
+  void setArmorContent(EquipmentSlotType type, ItemStack itemStack);
+
+  /**
+   * Retrieves all armor parts from the armor inventory.
+   *
+   * @return An array of all armor parts from the armor inventory.
+   */
+  ItemStack[] getArmorContents();
+
+  /**
+   * Retrieves the item of the off hand.
+   *
+   * @return The item in the off hand.
+   */
+  ItemStack getOffHandItem();
+
+  /**
+   * Changes the off hand item.
+   *
+   * @param itemStack The new item stack for the off hand.
+   */
+  void setOffHandItem(ItemStack itemStack);
+
 }
