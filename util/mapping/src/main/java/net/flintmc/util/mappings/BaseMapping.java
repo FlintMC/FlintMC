@@ -41,7 +41,7 @@ class BaseMapping {
     this.obfuscated = obfuscated;
     this.obfuscatedName = obfuscatedName;
     this.deobfuscatedName = deobfuscatedName;
-    this.name = obfuscatedName;//obfuscated ? obfuscatedName : deobfuscatedName;
+    this.name = obfuscated ? obfuscatedName : deobfuscatedName;
   }
 
   /**
