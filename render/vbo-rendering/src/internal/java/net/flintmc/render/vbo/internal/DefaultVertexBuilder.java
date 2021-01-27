@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.render.vbo.v1_16_4;
+package net.flintmc.render.vbo.internal;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -34,37 +34,37 @@ import net.flintmc.render.vbo.VertexBuilder;
 /**
  * {@inheritDoc}
  */
-@Implement(value = VertexBuilder.class, version = "1.16.4")
-public class VersionedVertexBuilder implements VertexBuilder {
+@Implement(value = VertexBuilder.class)
+public class DefaultVertexBuilder implements VertexBuilder {
 
   private final VertexBufferObject vbo;
 
-  private final AttributeValueHandler pos3fHandler;
-  private final AttributeValueHandler pos4fHandler;
-  private final AttributeValueHandler normalHandler;
-  private final AttributeValueHandler rgbHandler;
-  private final AttributeValueHandler rgbaHandler;
-  private final AttributeValueHandler textureHandler;
-  private final AttributeValueHandler customHandler;
+  private final DefaultAttributeValueHandler pos3fHandler;
+  private final DefaultAttributeValueHandler pos4fHandler;
+  private final DefaultAttributeValueHandler normalHandler;
+  private final DefaultAttributeValueHandler rgbHandler;
+  private final DefaultAttributeValueHandler rgbaHandler;
+  private final DefaultAttributeValueHandler textureHandler;
+  private final DefaultAttributeValueHandler customHandler;
 
   @AssistedInject
-  private VersionedVertexBuilder(@Assisted VertexBufferObject vbo) {
+  private DefaultVertexBuilder(@Assisted VertexBufferObject vbo) {
     this.vbo = vbo;
 
     this.pos3fHandler =
-        new AttributeValueHandler(attribute -> attribute == VertexAttributes.POSITION3F);
+        new DefaultAttributeValueHandler(attribute -> attribute == VertexAttributes.POSITION3F);
     this.pos4fHandler =
-        new AttributeValueHandler(attribute -> attribute == VertexAttributes.POSITION4F);
+        new DefaultAttributeValueHandler(attribute -> attribute == VertexAttributes.POSITION4F);
     this.normalHandler =
-        new AttributeValueHandler(attribute -> attribute == VertexAttributes.NORMAL);
+        new DefaultAttributeValueHandler(attribute -> attribute == VertexAttributes.NORMAL);
     this.rgbHandler =
-        new AttributeValueHandler(attribute -> attribute == VertexAttributes.COLOR_RGB);
+        new DefaultAttributeValueHandler(attribute -> attribute == VertexAttributes.COLOR_RGB);
     this.rgbaHandler =
-        new AttributeValueHandler(attribute -> attribute == VertexAttributes.COLOR_RGBA);
+        new DefaultAttributeValueHandler(attribute -> attribute == VertexAttributes.COLOR_RGBA);
     this.textureHandler =
-        new AttributeValueHandler(attribute -> attribute == VertexAttributes.TEXTURE_UV);
+        new DefaultAttributeValueHandler(attribute -> attribute == VertexAttributes.TEXTURE_UV);
     this.customHandler =
-        new AttributeValueHandler(attribute -> !(attribute instanceof EnumeratedVertexFormat));
+        new DefaultAttributeValueHandler(attribute -> !(attribute instanceof EnumeratedVertexFormat));
   }
 
   /**
@@ -168,6 +168,41 @@ public class VersionedVertexBuilder implements VertexBuilder {
     return this.vbo.addVertex();
   }
 
+  @Override
+  public DefaultAttributeValueHandler getPos3fHandler() {
+    return pos3fHandler;
+  }
+
+  @Override
+  public DefaultAttributeValueHandler getPos4fHandler() {
+    return pos4fHandler;
+  }
+
+  @Override
+  public DefaultAttributeValueHandler getNormalHandler() {
+    return normalHandler;
+  }
+
+  @Override
+  public DefaultAttributeValueHandler getRgbHandler() {
+    return rgbHandler;
+  }
+
+  @Override
+  public DefaultAttributeValueHandler getRgbaHandler() {
+    return rgbaHandler;
+  }
+
+  @Override
+  public DefaultAttributeValueHandler getTextureHandler() {
+    return textureHandler;
+  }
+
+  @Override
+  public DefaultAttributeValueHandler getCustomHandler() {
+    return customHandler;
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -198,22 +233,23 @@ public class VersionedVertexBuilder implements VertexBuilder {
     return offset - startOffset;
   }
 
-  private class AttributeValueHandler {
+  private class DefaultAttributeValueHandler implements VertexBuilder.AttributeValueHandler{
 
     private final Function<VertexAttribute, Boolean> attributeTypeMatcher;
     private final Queue<Float> toWrite;
     private int pos;
 
-    AttributeValueHandler(Function<VertexAttribute, Boolean> attributeTypeMatcher) {
+    DefaultAttributeValueHandler(Function<VertexAttribute, Boolean> attributeTypeMatcher) {
       this.pos = 0;
       this.attributeTypeMatcher = attributeTypeMatcher;
       this.toWrite = new LinkedList<>();
     }
 
-    void addFloats(float... floats) {
+    @Override
+    public void addFloats(float... floats) {
       int i = 0;
       for (VertexAttribute attribute :
-          VersionedVertexBuilder.this.vbo.getFormat().getAttributes()) {
+          DefaultVertexBuilder.this.vbo.getFormat().getAttributes()) {
         if (this.attributeTypeMatcher.apply(attribute)) {
           if (i == this.pos) {
             if (floats.length != attribute.getSize()) {
@@ -235,7 +271,12 @@ public class VersionedVertexBuilder implements VertexBuilder {
           "Can't write (another) attribute of this type as the vertex format doesn't match.");
     }
 
-    void writeFloats(float[] buffer, int offset) {
+    @Override
+    public void writeFloats(float[] buffer, int offset) {
+      if(this.pos == 0){
+        throw new IllegalStateException(
+            "Not enough attributes have been written to match the vertex format.");
+      }
       int floatsPerAttribute = toWrite.size() / this.pos;
       for (int i = 0; i < floatsPerAttribute; i++) {
         if (this.toWrite.peek() != null) {
@@ -245,6 +286,12 @@ public class VersionedVertexBuilder implements VertexBuilder {
               "Not enough attributes have been written to match the vertex format.");
         }
       }
+    }
+
+    @Override
+    public void clear() {
+      this.toWrite.clear();
+      this.pos = 0;
     }
   }
 }
