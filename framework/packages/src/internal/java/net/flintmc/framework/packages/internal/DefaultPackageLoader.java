@@ -21,21 +21,31 @@ package net.flintmc.framework.packages.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.logging.LoggingProvider;
 import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.*;
+import net.flintmc.framework.packages.PackageClassLoader;
+import net.flintmc.framework.packages.PackageLoader;
+import net.flintmc.framework.packages.PackageManifestLoader;
+import net.flintmc.framework.packages.PackageState;
 import net.flintmc.framework.packages.load.DependencyGraphBuilder;
 import net.flintmc.framework.packages.load.PackageFinder;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.util.commons.Pair;
 import org.apache.logging.log4j.Logger;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Singleton
 @Implement(PackageLoader.class)
@@ -56,24 +66,21 @@ public class DefaultPackageLoader implements PackageLoader {
       PackageFinder packageFinder,
       DependencyGraphBuilder dependencyGraphBuilder,
       @InjectLogger Logger logger) {
-    try {
-      this.descriptionLoader = descriptionLoader;
-      this.packageFinder = packageFinder;
-      this.dependencyGraphBuilder = dependencyGraphBuilder;
-      this.logger = logger;
-      this.allPackages = new HashSet<>();
-      // Tell the logging provider we now are able to resolve logging prefixes
-      loggingProvider.setPrefixProvider(this::getLogPrefix);
+    this.descriptionLoader = descriptionLoader;
+    this.packageFinder = packageFinder;
+    this.dependencyGraphBuilder = dependencyGraphBuilder;
+    this.logger = logger;
+    this.allPackages = new HashSet<>();
+    // Tell the logging provider we now are able to resolve logging prefixes
+    loggingProvider.setPrefixProvider(this::getLogPrefix);
 
-      try {
-        this.discoveredPackages = this.packageFinder
-            .findPackages(PackageLoader.PACKAGE_DIR);
-      } catch (IOException e) {
-        this.logger.error("Failed to discover packages.", e);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    try {
+      this.discoveredPackages = this.packageFinder
+          .findPackages(PackageLoader.PACKAGE_DIR);
+    } catch (IOException e) {
+      this.logger.error("Failed to discover packages.", e);
     }
+
   }
 
   public void load() {
@@ -139,11 +146,21 @@ public class DefaultPackageLoader implements PackageLoader {
       for (Package pack : loadablePackages) {
         if (dependencyGraphBuilder
             .isLoadable(pack, loadedSuccessfully, errorTrack)) {
-          if (pack.load() == PackageState.LOADED) {
+          PackageState newState = PackageState.ERRORED;
+          try {
+            newState = pack.load();
+          } catch (Exception e) {
+            this.logger.error(
+                String.format("Failed to load package %s (version %s).",
+                    pack.getName(), pack.getVersion()), e);
+          }
+          if (newState == PackageState.LOADED) {
             try {
               pack.enable();
             } catch (Throwable t) {
-              this.logger.error(t);
+              this.logger.error(
+                  String.format("Failed to enable package %s (version %s).",
+                      pack.getName(), pack.getVersion()), t);
             }
             loadedSuccessfully.add(pack);
           } else {
@@ -174,7 +191,8 @@ public class DefaultPackageLoader implements PackageLoader {
         }
       }
     } catch (Exception e) {
-      this.logger.error(e);
+      this.logger
+          .error("Something went wrong while trying to load packages.", e);
     }
 
   }

@@ -85,11 +85,7 @@ public class FlintFrameworkInitializer {
       // Flush all other higher level framework features like Events, Transforms etc.
       serviceRepository.flushServices(Service.State.POST_INIT);
 
-      try {
-        InjectionHolder.getInjectedInstance(PackageLoader.class).load();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      InjectionHolder.getInjectedInstance(PackageLoader.class).load();
     } catch (NotFoundException e) {
       e.printStackTrace();
     }
