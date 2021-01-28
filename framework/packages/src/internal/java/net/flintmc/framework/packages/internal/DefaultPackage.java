@@ -38,7 +38,10 @@ import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
+import net.flintmc.util.mappings.utils.RemappingMethodLocationResolver;
 import org.apache.logging.log4j.Logger;
+import javax.lang.model.element.ElementKind;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -344,6 +347,15 @@ public class DefaultPackage implements Package {
             .discover(LaunchController.getInstance().getRootLoader());
 
     discover.forEach(provider -> provider.register(annotationMetas));
+    RemappingMethodLocationResolver remappingMethodLocationResolver
+        = new RemappingMethodLocationResolver();
+    for (AnnotationMeta annotationMeta : annotationMetas) {
+      if (annotationMeta.getElementKind() == ElementKind.METHOD) {
+        MethodIdentifier id = annotationMeta.getMethodIdentifier();
+        id.setMethodResolver(() -> remappingMethodLocationResolver
+            .getLocation(id.getOwner(), id.getName(), id.getParameters()));
+      }
+    }
 
     return annotationMetas;
   }

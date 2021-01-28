@@ -29,11 +29,9 @@ import net.flintmc.framework.packages.load.DependencyGraphBuilder;
 import net.flintmc.util.commons.Pair;
 import org.apache.logging.log4j.Logger;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 @Singleton
 @Implement(DependencyGraphBuilder.class)
@@ -62,14 +60,37 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
     Pair<List<Package>, List<File>> dependencyGraph = Pair
         .of(new ArrayList<>(), new ArrayList<>());
 
+    Pair<List<Package>, List<File>> resolved = Pair
+        .of(new ArrayList<>(), new ArrayList<>());
+
     // resolve additional classpath requirements
     for (Package pack : packages) {
       if (PackageState.NOT_LOADED.matches(pack)) {
-        this.resolveClasspathRecursively(pack, dependencyGraph);
+        this.resolveClasspathRecursively(pack, resolved, packages);
       }
     }
 
     List<Package> loadable = dependencyGraph.first();
+    loadable.addAll(
+        resolved.first().stream()
+            .filter(PackageState.ENABLED::matches)
+            .collect(Collectors.toList()));
+    loadable.addAll(
+        packages.stream()
+            .filter(PackageState.ENABLED::matches)
+            .collect(Collectors.toList()));
+
+    Set<Package> originalAvailable = resolved.first().stream()
+        .filter(PackageState.NOT_LOADED::matches).collect(
+            Collectors.toSet());
+    originalAvailable.addAll(
+        packages.stream().filter(PackageState.NOT_LOADED::matches).collect(
+            Collectors.toList()));
+
+    List<Package> available = new ArrayList<>(originalAvailable);
+
+    dependencyGraph.setSecond(resolved.second());
+
     Map<Package, List<String>> errorTrack = new HashMap<>();
 
     // build a dependency graph by searching for loadable
@@ -82,32 +103,35 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
     int progress;
     do {
       progress = -loadable.size();
-      for (Package pack : packages) {
+      ListIterator<Package> it = available.listIterator();
+      while (it.hasNext()) {
+        Package pack = it.next();
         if (isLoadable(pack, loadable)) {
           loadable.add(pack);
+          it.remove();
         }
       }
       progress += loadable.size();
     } while (progress > 0);
 
     // compute error messages
-    for (Package pack : packages) {
-      if (!loadable.contains(pack)) {
+    for (Package pack : originalAvailable) {
+      if (!loadable.contains(pack) && PackageState.NOT_LOADED.matches(pack)) {
         isLoadable(pack, loadable, errorTrack);
       }
     }
 
     loadable.removeIf(PackageState.ENABLED::matches);
-    packages.removeIf(PackageState.ENABLED::matches);
+    originalAvailable.removeIf(PackageState.ENABLED::matches);
 
-    if (loadable.size() < packages.size()) {
+    if (loadable.size() < originalAvailable.size()) {
       // some packages cannot be loaded due to unmet dependencies or conflicts
 
       this.logger.error(
           "Some packages were discovered but cannot be loaded due to unmet "
               + "dependencies or conflicts:");
       int i = 0;
-      for (Package pack : packages) {
+      for (Package pack : originalAvailable) {
         if (!loadable.contains(pack)) {
           this.logger
               .error(String
@@ -126,7 +150,8 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
 
   private void resolveClasspathRecursively(
       Package pack,
-      Pair<List<Package>, List<File>> alreadyPresent) {
+      Pair<List<Package>, List<File>> alreadyPresent,
+      List<Package> environment) {
 
     List<Package> packages = alreadyPresent.first();
     List<File> files = alreadyPresent.second();
@@ -153,6 +178,15 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
             // the file is a jar, but there is no package manifest,
             // so just add it to list of classpath files
             this.addFileIfNotPresent(files, requiredFile);
+            continue;
+          }
+
+          PackageManifest manifest = this.manifestLoader.loadManifest(jar);
+
+          if (packages.stream().anyMatch(
+              present -> present.getName().equals(manifest.getName()))
+              || environment.stream().anyMatch(
+              present -> present.getName().equals(manifest.getName()))) {
             continue;
           }
 
@@ -199,7 +233,8 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
       // recursively resolve classpath requirement
       // of library packages
       for (Package libraryPack : libraryPackages) {
-        this.resolveClasspathRecursively(libraryPack, alreadyPresent);
+        this.resolveClasspathRecursively(libraryPack, alreadyPresent,
+            environment);
       }
 
     }

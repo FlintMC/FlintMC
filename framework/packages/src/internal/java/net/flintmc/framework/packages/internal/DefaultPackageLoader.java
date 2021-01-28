@@ -28,10 +28,12 @@ import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.*;
 import net.flintmc.framework.packages.load.DependencyGraphBuilder;
 import net.flintmc.framework.packages.load.PackageFinder;
+import net.flintmc.launcher.LaunchController;
 import net.flintmc.util.commons.Pair;
 import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,11 +41,11 @@ import java.util.stream.Collectors;
 @Implement(PackageLoader.class)
 public class DefaultPackageLoader implements PackageLoader {
 
-  private final Logger logger;
-  private final PackageManifestLoader descriptionLoader;
-  private final PackageFinder packageFinder;
-  private final DependencyGraphBuilder dependencyGraphBuilder;
-  private final Set<Package> allPackages;
+  private Logger logger;
+  private PackageManifestLoader descriptionLoader;
+  private PackageFinder packageFinder;
+  private DependencyGraphBuilder dependencyGraphBuilder;
+  private Set<Package> allPackages;
 
   private List<Package> discoveredPackages;
 
@@ -54,98 +56,125 @@ public class DefaultPackageLoader implements PackageLoader {
       PackageFinder packageFinder,
       DependencyGraphBuilder dependencyGraphBuilder,
       @InjectLogger Logger logger) {
-    this.descriptionLoader = descriptionLoader;
-    this.packageFinder = packageFinder;
-    this.dependencyGraphBuilder = dependencyGraphBuilder;
-    this.logger = logger;
-    this.allPackages = new HashSet<>();
-    // Tell the logging provider we now are able to resolve logging prefixes
-    loggingProvider.setPrefixProvider(this::getLogPrefix);
-
     try {
-      this.discoveredPackages = this.packageFinder
-          .findPackages(PackageLoader.PACKAGE_DIR);
-    } catch (IOException e) {
-      this.logger.error("Failed to discover packages.", e);
-    }
+      this.descriptionLoader = descriptionLoader;
+      this.packageFinder = packageFinder;
+      this.dependencyGraphBuilder = dependencyGraphBuilder;
+      this.logger = logger;
+      this.allPackages = new HashSet<>();
+      // Tell the logging provider we now are able to resolve logging prefixes
+      loggingProvider.setPrefixProvider(this::getLogPrefix);
 
+      try {
+        this.discoveredPackages = this.packageFinder
+            .findPackages(PackageLoader.PACKAGE_DIR);
+      } catch (IOException e) {
+        this.logger.error("Failed to discover packages.", e);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void load() {
-    if (this.discoveredPackages == null) {
-      return;
-    }
-
-    List<Package> packagesToLoad = new ArrayList<>();
-
-    // make sure every discovered package contains a valid manifest
-    for (Package pack : this.discoveredPackages) {
-      if (pack.getState() == PackageState.INVALID_MANIFEST) {
-        this.logger.error(
-            String.format(
-                "The file '%s' appears to be a package, but it does not "
-                    + "contain a valid manifest.",
-                pack.getFile().getName()));
-      } else {
-        packagesToLoad.add(pack);
+    try {
+      if (this.discoveredPackages == null) {
+        return;
       }
-    }
 
-    if (packagesToLoad.isEmpty()) {
-      this.logger.info("No valid packages have been found...");
-      return;
-    }
+      List<Package> packagesToLoad = new ArrayList<>();
 
-    List<Package> classpathPackages = this.packageFinder
-        .findPackagesInClasspath();
+      // make sure every discovered package contains a valid manifest
+      for (Package pack : this.discoveredPackages) {
+        if (pack.getState() == PackageState.INVALID_MANIFEST) {
+          this.logger.error(
+              String.format(
+                  "The file '%s' appears to be a package, but it does not "
+                      + "contain a valid manifest.",
+                  pack.getFile().getName()));
+        } else {
+          packagesToLoad.add(pack);
+        }
+      }
 
-    this.allPackages.addAll(classpathPackages);
-    packagesToLoad.addAll(classpathPackages);
+      if (packagesToLoad.isEmpty()) {
+        this.logger.info("No valid packages have been found...");
+        return;
+      }
 
-    // build a loadable dependency graph
-    Pair<List<Package>, List<File>> loadable = this.dependencyGraphBuilder
-        .buildDependencyGraph(packagesToLoad);
-    List<Package> loadablePackages = loadable.first();
+      List<Package> classpathPackages = this.packageFinder
+          .findPackagesInClasspath();
 
-    this.allPackages.addAll(this.discoveredPackages);
-    this.allPackages.addAll(loadablePackages);
+      this.allPackages.addAll(classpathPackages);
+      packagesToLoad.addAll(classpathPackages);
 
-    List<Package> loadedSuccessfully = new ArrayList<>(
-        this.getLoadedPackages());
-    Map<Package, List<String>> errorTrack = new HashMap<>();
+      // build a loadable dependency graph
+      Pair<List<Package>, List<File>> loadable = this.dependencyGraphBuilder
+          .buildDependencyGraph(packagesToLoad);
+      List<Package> loadablePackages = loadable.first();
+      List<File> classPathFiles = loadable.second();
 
-    // check which packages have been loaded successfully
-    // and print error messages if needed
-    for (Package pack : loadablePackages) {
-      if (dependencyGraphBuilder
-          .isLoadable(pack, loadedSuccessfully, errorTrack)) {
-        if (pack.load() == PackageState.LOADED) {
-          pack.enable();
-          loadedSuccessfully.add(pack);
+      LaunchController.getInstance().getRootLoader()
+          .addURLs(classPathFiles.stream()
+              .map(f -> {
+                try {
+                  return f.toURI().toURL();
+                } catch (MalformedURLException e) {
+                  e.printStackTrace();
+                }
+                return null;
+              })
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList()));
+
+      this.allPackages.addAll(this.discoveredPackages);
+      this.allPackages.addAll(loadablePackages);
+
+      List<Package> loadedSuccessfully = new ArrayList<>(
+          this.getLoadedPackages());
+      Map<Package, List<String>> errorTrack = new HashMap<>();
+
+      // check which packages have been loaded successfully
+      // and print error messages if needed
+      for (Package pack : loadablePackages) {
+        if (dependencyGraphBuilder
+            .isLoadable(pack, loadedSuccessfully, errorTrack)) {
+          if (pack.load() == PackageState.LOADED) {
+            try {
+              pack.enable();
+            } catch (Throwable t) {
+              this.logger.error(t);
+            }
+            loadedSuccessfully.add(pack);
+          } else {
+            this.logger.error(
+                String.format("Failed to load package %s (version %s).",
+                    pack.getName(), pack.getVersion()),
+                pack.getLoadException());
+          }
         } else {
           this.logger.error(
-              String.format("Failed to load package %s (version %s).",
-                  pack.getName(), pack.getVersion()), pack.getLoadException());
+              String.format(
+                  "Failed to load package %s (version %s) due to unmet "
+                      + "dependencies. This may cause additional errors while "
+                      + "trying to load subsequent packages.", pack.getName(),
+                  pack.getVersion()));
         }
-      } else {
-        this.logger.error(
-            String.format(
-                "Failed to load package %s (version %s) due to unmet "
-                    + "dependencies. This may cause additional errors while "
-                    + "trying to load subsequent packages.", pack.getName(),
-                pack.getVersion()));
+
       }
 
-    }
-
-    Set<Package> allLoaded = this.getLoadedPackages();
-    if (!allLoaded.isEmpty()) {
-      this.logger.info(String
-          .format("Following packages are loaded (%d):", allLoaded.size()));
-      for (Package pack : allLoaded) {
-        this.logger.info(String.format("    - %s (version %s)", pack.getName(),
-            pack.getVersion()));
+      Set<Package> allLoaded = this.getLoadedPackages();
+      if (!allLoaded.isEmpty()) {
+        this.logger.info(String
+            .format("Following packages are loaded (%d):", allLoaded.size()));
+        for (Package pack : allLoaded) {
+          this.logger
+              .info(String.format("    - %s (version %s)", pack.getName(),
+                  pack.getVersion()));
+        }
       }
+    } catch (Exception e) {
+      this.logger.error(e);
     }
 
   }

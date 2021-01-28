@@ -21,6 +21,16 @@ package net.flintmc.framework.packages.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
@@ -34,16 +44,6 @@ import net.flintmc.installer.impl.repository.models.ModelSerializer;
 import net.flintmc.installer.impl.repository.models.PackageModel;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
 @Singleton
 @Implement(PackageManifestLoader.class)
@@ -249,7 +249,8 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
      */
     @Override
     public boolean matches(PackageManifest manifest) {
-      return this.getSemanticVersion()
+      return this.getName().equals(manifest.getName()) && this
+          .getSemanticVersion()
           .isSatisfiedBy(manifest.getSemanticVersion());
     }
   }
