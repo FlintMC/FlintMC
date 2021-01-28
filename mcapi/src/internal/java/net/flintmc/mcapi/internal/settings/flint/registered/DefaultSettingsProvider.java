@@ -70,6 +70,9 @@ public class DefaultSettingsProvider implements SettingsProvider {
     this.categories = new HashMap<>();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void registerCategory(RegisteredCategory category) throws IllegalArgumentException {
     if (this.categories.containsKey(category.getRegistryName())) {
@@ -79,16 +82,25 @@ public class DefaultSettingsProvider implements SettingsProvider {
     this.categories.put(category.getRegistryName(), category);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<RegisteredCategory> getCategories() {
     return this.categories.values();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RegisteredCategory getCategory(String name) {
     return this.categories.get(name);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void registerSetting(RegisteredSetting setting) {
     SettingRegisterEvent event = this.registerEventFactory.create(setting);
@@ -118,25 +130,26 @@ public class DefaultSettingsProvider implements SettingsProvider {
       return false;
     }
 
-    Class<?> declaring = newSetting.getReference().getDeclaringClass().getDeclaringClass();
+    Class<?> declaring = newSetting.getReference().getDeclaringClass();
+    if (declaring.getDeclaringClass() != null) {
+      declaring = declaring.getDeclaringClass();
+    }
 
     if (!subSettingsFor.declaring().equals(SubSettingsFor.Dummy.class)) {
       declaring = subSettingsFor.declaring();
     }
 
-    if (declaring == null) {
-      this.logger.trace(
-          "No declaring class found to map the SubSettings of "
-              + newSetting.getReference().getKey()
-              + " to '"
-              + subSettingsFor.value()
-              + "'");
-      return false;
-    }
-
     boolean found = false;
     for (RegisteredSetting setting : this.settings) {
-      if (setting.getReference().getDeclaringClass().equals(declaring)
+      if (newSetting.getReference().getConfig().getClass()
+          != setting.getReference().getConfig().getClass()) {
+        // there might be multiple instances of the declaring class of the setting
+        // when for example an interface extends from another interface which contains
+        // the sub settings
+        continue;
+      }
+
+      if (declaring.isAssignableFrom(setting.getReference().getDeclaringClass())
           && setting.getReference().getLastName().equals(subSettingsFor.value())) {
         setting.getSubSettings().add(newSetting);
         if (remove) {
@@ -149,11 +162,17 @@ public class DefaultSettingsProvider implements SettingsProvider {
     return found;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<RegisteredSetting> getAllSettings() {
     return this.settings;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<RegisteredSetting> getSettings(String packageName) {
     Collection<RegisteredSetting> settings = new HashSet<>();
@@ -168,6 +187,9 @@ public class DefaultSettingsProvider implements SettingsProvider {
     return settings;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <A extends Annotation> Collection<RegisteredSetting> getSettings(Class<A> annotationType) {
     Collection<RegisteredSetting> filtered = new HashSet<>();
@@ -179,6 +201,9 @@ public class DefaultSettingsProvider implements SettingsProvider {
     return filtered;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<RegisteredSetting> getSettings(ParsedConfig config) {
     Collection<RegisteredSetting> filtered = new HashSet<>();
@@ -190,11 +215,17 @@ public class DefaultSettingsProvider implements SettingsProvider {
     return filtered;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RegisteredSetting getSetting(ConfigObjectReference reference) {
     return this.getSetting(reference.getKey());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RegisteredSetting getSetting(String key) {
     for (RegisteredSetting setting : this.settings) {

@@ -43,7 +43,7 @@ public class Validate {
    * @throws IllegalArgumentException If the {@code argument} is true
    */
   public static void checkFalse(boolean argument, String message) {
-    if (!argument) {
+    if (argument) {
       throw new IllegalArgumentException(
           "Argument was true, but should be false" + (message != null ? ": " + message : ""));
     }
