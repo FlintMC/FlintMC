@@ -73,6 +73,10 @@ public class MappingLineParser {
 
       if (c == PREFIX) {
         String handlerName = this.parseHandlerName(src, i);
+        if (handlerName == null || handlerName.contains(" ")) {
+          builder.append(c);
+          continue;
+        }
         i += handlerName.length() + 2;
 
         LineMappingHandler handler = this.registry.getHandler(handlerName);
@@ -111,9 +115,7 @@ public class MappingLineParser {
   private String parseHandlerName(String src, int i) {
     int beginIndex = src.indexOf(VALUE_OPEN, i);
     if (beginIndex == -1) {
-      throw new MappingLineParseException(
-          "Got " + PREFIX + " without a begin of a value ('"
-              + VALUE_OPEN + "') in '" + src + "'");
+      return null;
     }
 
     return src.substring(i + 1, beginIndex);

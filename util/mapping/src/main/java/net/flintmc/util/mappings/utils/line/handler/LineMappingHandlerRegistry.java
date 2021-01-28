@@ -45,11 +45,16 @@ public class LineMappingHandlerRegistry {
    * @param handler The non-null handler to be registered in this registry
    * @param names   The non-null names that should identify the given handler
    * @throws IllegalArgumentException If a handler with any of the given case-insensitive names is
-   *                                  already present in this registry
+   *                                  already present in this registry or any name contains a space
    */
   public void registerHandler(LineMappingHandler handler, String... names) {
     for (String name : names) {
+      if (name.contains(" ")) {
+        throw new IllegalArgumentException("Name '" + name + "' cannot contain spaces");
+      }
+
       String lowerName = name.toLowerCase();
+
       if (this.mapper.containsKey(lowerName)) {
         throw new IllegalArgumentException(
             "Cannot register line mapping handler with name '" + name + "' twice");
