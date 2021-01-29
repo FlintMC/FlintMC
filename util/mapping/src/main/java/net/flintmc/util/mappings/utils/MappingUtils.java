@@ -152,6 +152,56 @@ public final class MappingUtils {
     return generateDescriptor(clazz);
   }
 
+  public static int parseArrayDimensions(String name) {
+    int arrayDimensions = 0;
+
+    while (name.startsWith("[")) {
+      ++arrayDimensions;
+      name = name.substring(1);
+    }
+
+    return arrayDimensions;
+  }
+
+  public static String parseReturnType(String descriptor) {
+    String returnType = descriptor.substring(descriptor.lastIndexOf(')') + 1);
+    return MappingUtils.parseDescriptorName(returnType);
+  }
+
+  public static String parseDescriptorName(String name) {
+    // remove array definition
+    name = name.replace("[", "");
+
+    switch (name) {
+      case "B":
+        return Byte.class.getName();
+      case "C":
+        return Character.class.getName();
+      case "D":
+        return Double.class.getName();
+      case "F":
+        return Float.class.getName();
+      case "I":
+        return Integer.class.getName();
+      case "J":
+        return Long.class.getName();
+      case "S":
+        return Short.class.getName();
+      case "Z":
+        return Boolean.class.getName();
+      case "V":
+        return Void.class.getName();
+      default:
+        break;
+    }
+
+    if (name.startsWith("L") && name.endsWith(";")) {
+      return name.substring(1, name.length() - 1);
+    }
+
+    throw new IllegalArgumentException("Unknown descriptor: " + name);
+  }
+
   /**
    * Generate a descriptor for specified classes.
    *

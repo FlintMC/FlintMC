@@ -21,11 +21,7 @@ package net.flintmc.mcapi.v1_15_2.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.CannotCompileException;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
@@ -35,6 +31,8 @@ import net.flintmc.mcapi.chat.event.ChatReceiveEvent;
 import net.flintmc.mcapi.chat.event.ChatSendEvent;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.util.text.ITextComponent;
 
 @Singleton
@@ -43,6 +41,7 @@ public class ChatEventInjector {
   private final EventBus eventBus;
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final MinecraftComponentMapper componentMapper;
+  private final ClassMappingProvider classMappingProvider;
 
   private final ChatSendEvent.Factory sendFactory;
   private final ChatReceiveEvent.Factory receiveFactory;
@@ -52,13 +51,22 @@ public class ChatEventInjector {
       EventBus eventBus,
       InjectedFieldBuilder.Factory fieldBuilderFactory,
       MinecraftComponentMapper componentMapper,
+      ClassMappingProvider classMappingProvider,
       ChatSendEvent.Factory sendFactory,
       ChatReceiveEvent.Factory receiveFactory) {
     this.eventBus = eventBus;
     this.fieldBuilderFactory = fieldBuilderFactory;
     this.componentMapper = componentMapper;
+    this.classMappingProvider = classMappingProvider;
     this.sendFactory = sendFactory;
     this.receiveFactory = receiveFactory;
+  }
+
+  private String mapName(ClassMapping classMapping, String name) {
+    if (classMapping == null) {
+      return name.split("\\(")[0];
+    }
+    return classMapping.getMethod(name).getName();
   }
 
   @ClassTransform(value = "net.minecraft.client.gui.NewChatGui", version = "1.15.2")
@@ -66,9 +74,13 @@ public class ChatEventInjector {
       throws NotFoundException, CannotCompileException {
     CtClass transforming = context.getCtClass();
     CtField injectedField =
-        this.fieldBuilderFactory.create().target(transforming).inject(super.getClass()).generate();
+        this.fieldBuilderFactory.create().target(transforming)
+            .inject(super.getClass()).generate();
 
-    CtMethod method = transforming.getDeclaredMethod("printChatMessageWithOptionalDeletion");
+    CtMethod method = transforming
+        .getDeclaredMethod(mapName(this.classMappingProvider
+                .get("net.minecraft.client.gui.NewChatGui"),
+            "printChatMessageWithOptionalDeletion(Lnet/minecraft/util/text/ITextComponent;I)"));
 
     method.insertBefore(
         String.format(
@@ -80,8 +92,10 @@ public class ChatEventInjector {
             injectedField.getName(), Subscribe.Phase.class.getName()));
   }
 
-  public ITextComponent handleChatReceive(ITextComponent component, Subscribe.Phase phase) {
-    ChatComponent flintComponent = this.componentMapper.fromMinecraft(component);
+  public ITextComponent handleChatReceive(ITextComponent component,
+      Subscribe.Phase phase) {
+    ChatComponent flintComponent = this.componentMapper
+        .fromMinecraft(component);
     ChatReceiveEvent event = this.receiveFactory.create(flintComponent);
     this.eventBus.fireEvent(event, phase);
 
@@ -89,7 +103,8 @@ public class ChatEventInjector {
       return null;
     }
 
-    return (ITextComponent) this.componentMapper.toMinecraft(event.getMessage());
+    return (ITextComponent) this.componentMapper
+        .toMinecraft(event.getMessage());
   }
 
   @ClassTransform(value = "net.minecraft.client.entity.player.ClientPlayerEntity", version = "1.15.2")
@@ -97,9 +112,13 @@ public class ChatEventInjector {
       throws CannotCompileException, NotFoundException {
     CtClass transforming = context.getCtClass();
     CtField injectedField =
-        this.fieldBuilderFactory.create().target(transforming).inject(super.getClass()).generate();
+        this.fieldBuilderFactory.create().target(transforming)
+            .inject(super.getClass()).generate();
 
-    CtMethod method = transforming.getDeclaredMethod("sendChatMessage");
+    CtMethod method = transforming.getDeclaredMethod(mapName(
+        this.classMappingProvider
+            .get("net.minecraft.client.entity.player.ClientPlayerEntity"),
+        "sendChatMessage(Ljava/lang/String;)"));
 
     method.insertBefore(
         String.format(

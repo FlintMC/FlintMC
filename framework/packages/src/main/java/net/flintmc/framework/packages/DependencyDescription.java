@@ -19,9 +19,9 @@
 
 package net.flintmc.framework.packages;
 
-import java.util.List;
-
-/** Represents a dependency a package may have. */
+/**
+ * Represents a dependency a package may have.
+ */
 public interface DependencyDescription {
 
   /**
@@ -32,20 +32,30 @@ public interface DependencyDescription {
   String getName();
 
   /**
-   * Retrieves the list of versions satisfying the dependency constraint.
+   * Retrieves the version satisfying the dependency constraint.
    *
-   * @return The list of versions satisfying the dependency constraint
+   * @return a version satisfying the dependency constraint
    */
-  List<String> getVersions();
+  String getVersions();
 
-  /** @return the repository channel this dependency was published in. */
+  /**
+   * Retrieves the semantic version satisfying the dependency constrain.
+   *
+   * @return a {@link SemanticVersion} satisfying the dependency constraint
+   */
+  SemanticVersion getSemanticVersion();
+
+  /**
+   * @return the repository channel this dependency was published in.
+   */
   String getChannel();
 
   /**
    * Checks if a package satisfies this dependency.
    *
    * @param manifest The {@link PackageManifest} of the package to check
-   * @return {@code true}, if the package satisfies this dependency, {@code false} otherwise
+   * @return {@code true}, if the package satisfies this dependency, {@code
+   * false} otherwise
    */
   boolean matches(PackageManifest manifest);
 }
