@@ -21,7 +21,9 @@ package net.flintmc.mcapi.chat;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.suggestion.SuggestionList;
 
 /**
  * This class manages the whole chat, it allows the usage of multiple chat windows and filters for
@@ -95,5 +97,15 @@ public interface ChatController {
    * @return An int which is always larger than 0
    */
   int getMaxMessages();
+
+  /**
+   * Requests the suggestions of a tab completion for the given input on the server. For commands,
+   * the input needs to start with a "/".
+   *
+   * @param input The non-null input to request the tab completion for
+   * @return The new non-null future that will be completed with the list when the server sends the
+   * response
+   */
+  CompletableFuture<SuggestionList> requestSuggestions(String input);
 
 }
