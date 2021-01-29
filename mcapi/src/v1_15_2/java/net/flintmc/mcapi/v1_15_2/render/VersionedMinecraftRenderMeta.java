@@ -37,6 +37,7 @@ public class VersionedMinecraftRenderMeta implements MinecraftRenderMeta {
   private int packedLight;
   private float partialTick;
   private UUID targetUuid;
+  private boolean batched;
 
   @AssistedInject
   private VersionedMinecraftRenderMeta(
@@ -73,6 +74,11 @@ public class VersionedMinecraftRenderMeta implements MinecraftRenderMeta {
     matrix3x3f.setIdentity();
     getWorld().set3x3(matrix3x3f);
     return this;
+  }
+
+  @Override
+  public boolean isBatched() {
+    return this.batched;
   }
 
   @Override
@@ -129,6 +135,12 @@ public class VersionedMinecraftRenderMeta implements MinecraftRenderMeta {
   @Override
   public MinecraftRenderMeta setPackedLight(int packedLight) {
     this.packedLight = packedLight;
+    return this;
+  }
+
+  @Override
+  public VersionedMinecraftRenderMeta setBatched(boolean batched) {
+    this.batched = batched;
     return this;
   }
 

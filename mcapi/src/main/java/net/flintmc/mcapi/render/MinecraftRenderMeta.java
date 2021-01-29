@@ -32,6 +32,8 @@ public interface MinecraftRenderMeta {
 
   MinecraftRenderMeta setPackedLight(int packedLight);
 
+  MinecraftRenderMeta setBatched(boolean batched);
+
   MinecraftRenderMeta setPartialTick(float partialTick);
 
   float getPartialTick();
@@ -45,6 +47,8 @@ public interface MinecraftRenderMeta {
   UUID getTargetUUID();
 
   MinecraftRenderMeta rotateToPlayersCamera();
+
+  boolean isBatched();
 
   /**
    * Rotate this matrix around a specified axis
