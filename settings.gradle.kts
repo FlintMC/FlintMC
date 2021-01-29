@@ -48,13 +48,14 @@ pluginManagement {
 
 defineModule("annotation-processing:autoload")
 
+defineModule("framework:config")
+defineModule("framework:data-generation")
 defineModule("framework:eventbus")
 defineModule("framework:inject")
 defineModule("framework:inject-primitive")
 defineModule("framework:packages")
 defineModule("framework:service")
 defineModule("framework:stereotype")
-defineModule("framework:config")
 
 defineModule(":launcher")
 

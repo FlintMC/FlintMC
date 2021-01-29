@@ -17,34 +17,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.packages;
+package net.flintmc.framework.packages.load;
 
-import java.util.Set;
+import java.io.IOException;
+import java.util.List;
+import net.flintmc.framework.packages.Package;
 
-/** Represents the service responsible for loading packages. */
-public interface PackageLoader {
-
-  String PACKAGE_DIR = "flint/packages";
-  String PACKAGE_DIR_TEMPLATE = "${FLINT_PACKAGE_DIR}";
-
-  String LIBRARY_DIR = "libraries";
-  String LIBRARY_DIR_TEMPLATE = "${FLINT_LIBRARY_DIR}";
+/**
+ * Utility to find potentially loadable packages.
+ */
+public interface PackageFinder {
 
   /**
-   * Retrieves a set of all packages. This ignores the {@link PackageState} completely, which means
-   * this set may for example also contain errored or not loaded packages.
+   * Finds packages in a given directory. Creates the directory if it doesn't
+   * exist.
    *
-   * @return A set of all packages found by the loader
+   * @param path the path of the directory to search packages in
+   * @return a {@link List} of {@link Package}s.
+   * @throws IOException if the files coulnd't be read of the package directory
+   *                     doesn't exist and can't be created.
    */
-  Set<Package> getAllPackages();
+  List<Package> findPackages(String path) throws IOException;
 
   /**
-   * Retrieves a set of all packages which are in the {@link PackageState#LOADED} or {@link
-   * PackageState#ENABLED} state.
+   * Finds packages that are already loaded into classpath and creates
+   * appropriate representations for them.
    *
-   * @return A set of all loaded or enabled packages
+   * @return a list of created {@link Package} instances
    */
-  Set<Package> getLoadedPackages();
+  List<Package> findPackagesInClasspath();
 
-  void load();
 }
