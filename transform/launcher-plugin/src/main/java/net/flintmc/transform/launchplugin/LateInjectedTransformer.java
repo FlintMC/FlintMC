@@ -21,8 +21,8 @@ package net.flintmc.transform.launchplugin;
 
 import net.flintmc.transform.exceptions.ClassTransformException;
 
-@FunctionalInterface
 public interface LateInjectedTransformer {
+
   /**
    * Transform a class.
    *
@@ -31,5 +31,11 @@ public interface LateInjectedTransformer {
    * @return A derivative of class data.
    * @throws ClassTransformException If the class transformation failed.
    */
-  byte[] transform(String className, byte[] classData) throws ClassTransformException;
+  default byte[] transform(String className, byte[] classData) throws ClassTransformException {
+    return classData;
+  }
+
+  default void notifyTransform(LateInjectedTransformer transformer, String className,
+      byte[] classData) {
+  }
 }

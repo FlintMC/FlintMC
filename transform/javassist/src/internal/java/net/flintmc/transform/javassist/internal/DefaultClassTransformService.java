@@ -102,6 +102,18 @@ public class DefaultClassTransformService
   }
 
   @Override
+  public void notifyTransform(LateInjectedTransformer transformer, String className,
+      byte[] classData) {
+    try {
+      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(classData);
+      ClassPool.getDefault().makeClass(byteArrayInputStream, false);
+      byteArrayInputStream.close();
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  @Override
   public byte[] transform(String className, byte[] bytes) throws ClassTransformException {
     ClassMapping mapping = classMappingProvider.get(className);
     String deobfuscatedName = mapping != null ? mapping.getDeobfuscatedName() : className;
