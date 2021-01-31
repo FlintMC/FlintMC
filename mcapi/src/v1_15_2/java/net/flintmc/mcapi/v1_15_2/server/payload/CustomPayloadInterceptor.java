@@ -49,6 +49,7 @@ public class CustomPayloadInterceptor {
       new int[]{Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
 
   private final ClassPool pool;
+  private final ClassMappingProvider classMappingProvider;
   private final ClassMapping customPayloadPacketMapping;
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
 
@@ -58,6 +59,7 @@ public class CustomPayloadInterceptor {
       ClassMappingProvider classMappingProvider,
       InjectedFieldBuilder.Factory fieldBuilderFactory) {
     this.pool = pool;
+    this.classMappingProvider = classMappingProvider;
     this.customPayloadPacketMapping =
         classMappingProvider.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket");
     this.fieldBuilderFactory = fieldBuilderFactory;
@@ -67,14 +69,18 @@ public class CustomPayloadInterceptor {
   public void transform(ClassTransformContext context)
       throws NotFoundException, BadBytecode, CannotCompileException {
 
+    CtClass[] params = new CtClass[]{
+        this.pool.get(this.classMappingProvider
+            .get("net.minecraft.network.play.server.SCustomPayloadPlayPacket").getName())
+    };
     CtMethod method =
         context
             .getCtClass()
             .getDeclaredMethod(
-                "handleCustomPayload",
-                new CtClass[]{
-                    this.pool.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
-                });
+                this.classMappingProvider.get(context.getCtClass().getName())
+                    .getMethod("handleCustomPayload", params).getName(),
+                params
+            );
 
     MethodInfo methodInfo = method.getMethodInfo();
     CodeAttribute codeAttribute = methodInfo.getCodeAttribute();

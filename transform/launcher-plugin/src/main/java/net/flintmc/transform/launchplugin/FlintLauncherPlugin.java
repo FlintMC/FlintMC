@@ -134,10 +134,10 @@ public class FlintLauncherPlugin implements LauncherPlugin {
   public byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
     for (LateInjectedTransformer transformer : injectedTransformers.values()) {
       byte[] newData = transformer.transform(className, classData);
-      for (LateInjectedTransformer notifyTransformer : injectedTransformers.values()) {
-        notifyTransformer.notifyTransform(transformer, className, classData);
-      }
       if (newData != null) {
+        for (LateInjectedTransformer notifyTransformer : injectedTransformers.values()) {
+          notifyTransformer.notifyTransform(transformer, className, newData);
+        }
         classData = newData;
       }
     }

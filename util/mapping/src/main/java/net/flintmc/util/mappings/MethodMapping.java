@@ -19,6 +19,10 @@
 
 package net.flintmc.util.mappings;
 
+import javassist.ClassPool;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+
 public final class MethodMapping extends BaseMapping {
 
   final ClassMapping classMapping;
@@ -97,5 +101,26 @@ public final class MethodMapping extends BaseMapping {
    */
   public String getDeobfuscatedIdentifier() {
     return deobfuscatedIdentifier;
+  }
+
+  /**
+   * Retrieves the javassist method of this mapping.
+   *
+   * @return The non-null javassist method
+   * @throws NotFoundException If this method doesn't exist which should basically never happen
+   */
+  public CtMethod getMethod() throws NotFoundException {
+    return this.getMethod(ClassPool.getDefault());
+  }
+
+  /**
+   * Retrieves the javassist method of this mapping from the given pool.
+   *
+   * @param pool The non-null pool to get the method and its declaring class from
+   * @return The non-null javassist method
+   * @throws NotFoundException If this method doesn't exist which should basically never happen
+   */
+  public CtMethod getMethod(ClassPool pool) throws NotFoundException {
+    return pool.get(this.classMapping.getName()).getMethod(this.getName(), this.getDescriptor());
   }
 }

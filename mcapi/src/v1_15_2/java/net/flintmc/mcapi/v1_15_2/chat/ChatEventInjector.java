@@ -66,7 +66,7 @@ public class ChatEventInjector {
     if (classMapping == null) {
       return name.split("\\(")[0];
     }
-    return classMapping.getMethod(name).getName();
+    return classMapping.getMethodByIdentifier(name).getName();
   }
 
   @ClassTransform(value = "net.minecraft.client.gui.NewChatGui", version = "1.15.2")
@@ -77,10 +77,11 @@ public class ChatEventInjector {
         this.fieldBuilderFactory.create().target(transforming)
             .inject(super.getClass()).generate();
 
-    CtMethod method = transforming
-        .getDeclaredMethod(mapName(this.classMappingProvider
-                .get("net.minecraft.client.gui.NewChatGui"),
-            "printChatMessageWithOptionalDeletion(Lnet/minecraft/util/text/ITextComponent;I)"));
+    CtMethod method = this.classMappingProvider
+        .get("net.minecraft.client.gui.NewChatGui")
+        .getMethodByIdentifier(
+            "printChatMessageWithOptionalDeletion(Lnet/minecraft/util/text/ITextComponent;I)")
+        .getMethod();
 
     method.insertBefore(
         String.format(
