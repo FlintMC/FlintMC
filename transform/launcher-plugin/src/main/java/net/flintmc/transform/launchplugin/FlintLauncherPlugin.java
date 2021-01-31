@@ -135,6 +135,9 @@ public class FlintLauncherPlugin implements LauncherPlugin {
     for (LateInjectedTransformer transformer : injectedTransformers.values()) {
       byte[] newData = transformer.transform(className, classData);
       if (newData != null) {
+        for (LateInjectedTransformer notifyTransformer : injectedTransformers.values()) {
+          notifyTransformer.notifyTransform(transformer, className, newData);
+        }
         classData = newData;
       }
     }

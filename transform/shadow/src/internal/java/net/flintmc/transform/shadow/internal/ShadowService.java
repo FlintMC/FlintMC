@@ -214,7 +214,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
                 String.format(
                     "public void %s(%s arg){this.%s = arg;}",
                     method.getName(), parameters[0].getName(),
-                    fieldSetter.value()),
+                    fieldName),
                 ctClass));
       }
     }

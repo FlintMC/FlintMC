@@ -57,7 +57,6 @@ public class MethodLineMappingHandler implements LineMappingHandler {
     MethodMapping method =
         descOpen != -1 ? mapping.getMethodByIdentifier(value) : mapping.getMethod(value);
 
-    System.out.println(method);
     if (method != null) {
       String returnType = MappingUtils.parseReturnType(method.getDescriptor());
 

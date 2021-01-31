@@ -53,12 +53,11 @@ public class RemappingMethodLocationResolver {
             .getDeclaredMethod(name,
                 ClassPool.getDefault().get(mappedParamNames));
       } catch (NotFoundException e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
     } catch (Throwable t) {
-      t.printStackTrace();
+      throw new RuntimeException(t);
     }
-    return null;
   }
 
 }
