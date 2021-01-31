@@ -17,29 +17,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.transform.shadow;
+package net.flintmc.transform.shadow.internal.handler;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import java.lang.annotation.Annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class RegisteredShadowHandler<A extends Annotation> {
 
-/**
- * Indicates a method in a shadow that executes a private method that cannot be called from the
- * outside. Method must return the field type and must not have parameters.
- *
- * <p>Example: {@code private void test(){...}} can be accessed with {@code void test();}
- *
- * @see Shadow
- * @see FieldGetter
- * @see FieldSetter
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@DetectableAnnotation(requiresParent = true)
-public @interface MethodProxy {
+  private final Class<A> annotationType;
+  private final int priority;
+  private final ShadowHandler<A> handler;
 
-  String value() default "";
+  public RegisteredShadowHandler(Class<A> annotationType, int priority, ShadowHandler<A> handler) {
+    this.annotationType = annotationType;
+    this.priority = priority;
+    this.handler = handler;
+  }
+
+  public Class<A> getAnnotationType() {
+    return this.annotationType;
+  }
+
+  public int getPriority() {
+    return this.priority;
+  }
+
+  public ShadowHandler<A> getHandler() {
+    return this.handler;
+  }
 }

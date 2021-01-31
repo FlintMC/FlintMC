@@ -17,29 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.transform.shadow;
+package net.flintmc.transform.shadow.internal.handler;
 
 import net.flintmc.processing.autoload.DetectableAnnotation;
-
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Indicates a method in a shadow that executes a private method that cannot be called from the
- * outside. Method must return the field type and must not have parameters.
- *
- * <p>Example: {@code private void test(){...}} can be accessed with {@code void test();}
- *
- * @see Shadow
- * @see FieldGetter
- * @see FieldSetter
- */
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@DetectableAnnotation(requiresParent = true)
-public @interface MethodProxy {
+@DetectableAnnotation
+public @interface RegisterShadowHandler {
 
-  String value() default "";
+  Class<? extends Annotation> value();
+
+  int priority();
+
 }

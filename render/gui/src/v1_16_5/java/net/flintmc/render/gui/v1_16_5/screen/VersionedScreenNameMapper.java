@@ -19,12 +19,15 @@
 
 package net.flintmc.render.gui.v1_16_5.screen;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
+import net.flintmc.util.mappings.ClassMapping;
+import net.flintmc.util.mappings.ClassMappingProvider;
 
 @Singleton
 @Implement(value = ScreenNameMapper.class, version = "1.16.5")
@@ -55,12 +58,27 @@ public class VersionedScreenNameMapper implements ScreenNameMapper {
         ScreenName.minecraft(ScreenName.DUMMY));
   }
 
+  private final ClassMappingProvider classMappingProvider;
+
+  @Inject
+  private VersionedScreenNameMapper(ClassMappingProvider classMappingProvider) {
+    this.classMappingProvider = classMappingProvider;
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
   public ScreenName fromClass(String className) {
     ScreenName screenName = KNOWN_NAMES.get(className);
+
+    if (screenName == null) {
+      ClassMapping mapping = this.classMappingProvider.get(className);
+      if (mapping != null) {
+        screenName = KNOWN_NAMES.get(mapping.getDeobfuscatedName());
+      }
+    }
+
     return screenName != null ? screenName : ScreenName.unknown(className);
   }
 }

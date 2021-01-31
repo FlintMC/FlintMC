@@ -31,18 +31,19 @@ import net.minecraft.client.Minecraft;
  * 1.16.5 implementation of a minecraft resource location.
  */
 @Implement(value = ResourceLocation.class, version = "1.16.5")
-public class VersionedResourceLocation extends net.minecraft.util.ResourceLocation
-    implements ResourceLocation {
+public class VersionedResourceLocation implements ResourceLocation {
+
+  private final net.minecraft.util.ResourceLocation wrapped;
 
   @AssistedInject
   private VersionedResourceLocation(@Assisted("fullPath") String fullPath) {
-    super(fullPath);
+    this.wrapped = new net.minecraft.util.ResourceLocation(fullPath);
   }
 
   @AssistedInject
   private VersionedResourceLocation(
       @Assisted("nameSpace") String nameSpace, @Assisted("path") String path) {
-    super(nameSpace, path);
+    this.wrapped = new net.minecraft.util.ResourceLocation(nameSpace, path);
   }
 
   /**
@@ -50,14 +51,30 @@ public class VersionedResourceLocation extends net.minecraft.util.ResourceLocati
    */
   @SuppressWarnings("unchecked")
   public <T> T getHandle() {
-    return (T) this;
+    return (T) this.wrapped;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getPath() {
+    return this.wrapped.getPath();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getNamespace() {
+    return this.wrapped.getNamespace();
   }
 
   /**
    * {@inheritDoc}
    */
   public InputStream openInputStream() throws IOException {
-    return Minecraft.getInstance().getResourceManager().getResource(this).getInputStream();
+    return Minecraft.getInstance().getResourceManager().getResource(this.wrapped).getInputStream();
   }
 
   /**
@@ -65,16 +82,14 @@ public class VersionedResourceLocation extends net.minecraft.util.ResourceLocati
    */
   @Override
   public boolean exists() {
-    return Minecraft.getInstance().getResourceManager().hasResource(this);
+    return Minecraft.getInstance().getResourceManager().hasResource(this.wrapped);
   }
 
   /**
-   * Retrieves the resource location as a {@link String}.
-   *
-   * @return The resource location as a string.
+   * {@inheritDoc}
    */
   @Override
   public String toString() {
-    return this.namespace + ":" + this.path;
+    return this.getNamespace() + ":" + this.getPath();
   }
 }

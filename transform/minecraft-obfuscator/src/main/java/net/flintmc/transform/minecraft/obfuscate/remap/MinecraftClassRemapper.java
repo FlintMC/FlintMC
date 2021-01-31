@@ -37,6 +37,7 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,20 +50,21 @@ import java.util.Map;
 @Singleton
 public class MinecraftClassRemapper extends SimpleRemapper {
 
-  private final ClassPool pool;
+  private final ClassMappingProvider classMappingProvider;
   private final RootClassLoader rootClassLoader;
   private Handle lastHandle;
 
   @Inject
   private MinecraftClassRemapper(ClassPool pool, ClassMappingProvider classMappingProvider) {
     super(collectMappings(pool, classMappingProvider));
-    this.pool = pool;
+    this.classMappingProvider = classMappingProvider;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
     this.rootClassLoader.excludeFromModification("org.objectweb.asm.");
   }
 
-  private static Map<String, String> collectMappings(ClassPool pool, ClassMappingProvider classMappingProvider) {
+  private static Map<String, String> collectMappings(ClassPool pool,
+      ClassMappingProvider classMappingProvider) {
     Map<String, String> mappings = new HashMap<>();
 
     for (ClassMapping classMapping : classMappingProvider.getDeobfuscatedClassMappings().values()) {
@@ -125,6 +127,15 @@ public class MinecraftClassRemapper extends SimpleRemapper {
     try {
       ClassInformation classInformation =
           CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, clazz);
+
+      if (classInformation == null) {
+        String mappedClass = this.map(clazz);
+        if (mappedClass != null) {
+          classInformation = CommonClassLoaderHelper
+              .retrieveClass(this.rootClassLoader, mappedClass);
+        }
+      }
+
       if (classInformation == null) {
         // Java internal class
         return new ArrayList<>();
@@ -180,6 +191,21 @@ public class MinecraftClassRemapper extends SimpleRemapper {
                       + "."
                       + name
                       + desc.substring(0, desc.lastIndexOf(')') + 1));
+
+          if (map == null) {
+            ClassMapping mapping = this.classMappingProvider.get(possibleOwner.replace('/', '.'));
+            if (mapping != null) {
+              String deobfuscatedName = mapping.getDeobfuscatedName();
+
+              map =
+                  this.map(
+                      deobfuscatedName.replace('.', '/')
+                          + "."
+                          + name
+                          + desc.substring(0, desc.lastIndexOf(')') + 1));
+
+            }
+          }
           if (map != null) {
             return map;
           }

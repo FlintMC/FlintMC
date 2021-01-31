@@ -72,8 +72,13 @@ public final class MethodMapping extends BaseMapping {
     return obfuscatedDescriptor;
   }
 
+  /**
+   * Get the obfuscated or deobfuscated method descriptor, depending on {@link #isObfuscated()}.
+   *
+   * @return An obfuscated or deobfuscated method descriptor
+   */
   public String getDescriptor() {
-    return this.isObfuscated() ? this.obfuscatedDescriptor : this.obfuscatedDescriptor;
+    return this.isObfuscated() ? this.obfuscatedDescriptor : this.deobfuscatedDescriptor;
   }
 
   /**

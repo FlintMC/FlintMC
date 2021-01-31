@@ -24,6 +24,7 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.method.MethodInjector;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.asm.MethodVisit;
 import net.flintmc.transform.asm.MethodVisitorContext;
@@ -63,7 +64,7 @@ public class MethodVisitService implements ServiceHandler<MethodVisit>, LateInje
   }
 
   @Override
-  public byte[] transform(String s, byte[] bytes) {
+  public byte[] transform(String s, CommonClassLoader classLoader, byte[] bytes) {
     ClassMapping classMapping = this.classMappingProvider.get(s);
     if (classMapping == null) {
       return bytes;
