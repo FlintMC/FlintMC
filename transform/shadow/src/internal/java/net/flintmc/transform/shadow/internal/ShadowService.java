@@ -126,44 +126,5 @@ public class ShadowService implements ServiceHandler<Shadow> {
         }
       }
     }
-
-    /*
-    try {
-      this.handleMethodProxies(meta, transforming);
-    } catch (ClassNotFoundException | NotFoundException exception) {
-      this.logger.trace(
-          String.format(
-              "Failed to generate a method proxy (@MethodProxy) in %s for shadow interface %s",
-              transforming.getName(), ifc.getName()),
-          exception);
-    }
-    try {
-      this.handleFieldCreators(meta, transforming);
-    } catch (NotFoundException | CannotCompileException exception) {
-      this.logger.trace(
-          String.format(
-              "Failed to generate a field (@FieldCreate) in %s for shadow interface %s",
-              transforming.getName(), ifc.getName()),
-          exception);
-    }
-    try {
-      this.handleFieldGetters(meta, transforming);
-    } catch (NotFoundException | CannotCompileException | ClassNotFoundException exception) {
-      this.logger.trace(
-          String.format(
-              "Failed to generate a field getter (@FieldGetter) in %s for shadow interface %s",
-              transforming.getName(), ifc.getName()),
-          exception);
-    }
-    try {
-      this.handleFieldSetters(meta, transforming);
-    } catch (CannotCompileException | NotFoundException | ClassNotFoundException exception) {
-      this.logger.trace(
-          String.format(
-              "Failed to generate a field setter (@FieldSetter) in %s for shadow interface %s",
-              transforming.getName(), ifc.getName()),
-          exception);
-    }
-    */
   }
 }
