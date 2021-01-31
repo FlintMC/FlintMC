@@ -35,6 +35,14 @@ public interface LateInjectedTransformer {
     return classData;
   }
 
+  /**
+   * This method will be invoked after a class has been transformed by a transformer to use the
+   * changes, at this point no more changes can be made to the class.
+   *
+   * @param transformer The non-null transformer that transformed the class
+   * @param className   The non-null name of the class that has been transformed
+   * @param classData   The non-null data of the modified class
+   */
   default void notifyTransform(LateInjectedTransformer transformer, String className,
       byte[] classData) {
   }

@@ -109,12 +109,12 @@ public class DefaultClassTransformService
   @Override
   public void notifyTransform(LateInjectedTransformer transformer, String className,
       byte[] classData) {
-    try {
-      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(classData);
-      this.pool.makeClass(byteArrayInputStream, false);
-      byteArrayInputStream.close();
+    try (ByteArrayInputStream inputStream = new ByteArrayInputStream(classData)) {
+      this.pool.makeClass(inputStream, false);
     } catch (Exception ex) {
-      ex.printStackTrace();
+      throw new RuntimeException(
+          String.format("Failed to update '%s' in the class pool", className),
+          ex);
     }
   }
 
