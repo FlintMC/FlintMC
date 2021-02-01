@@ -23,10 +23,6 @@ plugins {
 
 group = "net.flintmc"
 
-flint {
-    minecraftVersions("1.15.2")
-}
-
 dependencies {
     minecraft("1.15.2"){
         annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
