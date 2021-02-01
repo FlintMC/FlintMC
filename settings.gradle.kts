@@ -83,6 +83,7 @@ defineModule("util:mapping")
 defineModule("util:mojang")
 defineModule("util:session-service")
 defineModule("util:task-executor")
+defineModule("util:unit-testing")
 
 defineModule("minecraft:minecraft-1-15-2")
 defineModule("minecraft:minecraft-1-16-5")

@@ -55,6 +55,13 @@ subprojects {
             options.isFork = true
         }
 
+        tasks.test {
+            useJUnitPlatform()
+            testLogging {
+                events("passed", "skipped", "failed")
+            }
+        }
+
         license {
             header = rootProject.file("LICENSE-HEADER")
             include("**/*.java")
