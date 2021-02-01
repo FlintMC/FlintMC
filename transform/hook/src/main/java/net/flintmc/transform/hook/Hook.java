@@ -29,7 +29,7 @@ import net.flintmc.util.commons.resolve.AnnotationResolver;
 import net.flintmc.util.commons.resolve.NameResolver;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.flintmc.util.mappings.DefaultNameResolver;
-
+import net.flintmc.util.mappings.utils.line.MappingLineParser;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -118,11 +118,16 @@ public @interface Hook {
    * is {@link HookResult}. If this is empty, the return type will be null or the specific value if
    * it is a primitive. The provided value will be compiled as source code, for example this can be
    * the link to a constant or another method that should be invoked. It should not end with a
-   * semicolon. Exactly this will be returned and therefore no local variables should be used.
+   * semicolon. Exactly this will be returned (except for the translation to obfuscated names) and
+   * therefore no local variables should be used.
+   * <p>
+   * This value will be mapped using the {@link MappingLineParser#translateMappings(String)}, see
+   * its documentation for a detailed explanation of the syntax of this string.
    *
    * <p>This method will be ignored if the return type is no {@link HookResult}.
    *
    * @return The code to be compiled as the default value that should be returned
+   * @see MappingLineParser#translateMappings(String)
    */
   String defaultValue() default "";
 
@@ -159,7 +164,9 @@ public @interface Hook {
   Class<? extends AnnotationResolver<Hook, String>> methodNameResolver() default
       DefaultMethodNameResolver.class;
 
-  /** Times to call the hook inside of a method. */
+  /**
+   * Times to call the hook inside of a method.
+   */
   enum ExecutionTime {
     /**
      * This time defines that the hook should be fired before anything else in the hooked method.
@@ -174,7 +181,9 @@ public @interface Hook {
       }
     },
 
-    /** This time defines that the hook should be fired after anything else in the hooked method. */
+    /**
+     * This time defines that the hook should be fired after anything else in the hooked method.
+     */
     AFTER {
       public void insert(CtBehavior ctBehavior, String source) throws CannotCompileException {
         ctBehavior.insertAfter(source);
@@ -186,7 +195,7 @@ public @interface Hook {
      * method.
      *
      * @param ctBehavior The non-null method or constructor to insert the source code
-     * @param source The non-null source code to be inserted
+     * @param source     The non-null source code to be inserted
      * @throws CannotCompileException If the given source code cannot be compiled by Javassist
      */
     public abstract void insert(CtBehavior ctBehavior, String source) throws CannotCompileException;

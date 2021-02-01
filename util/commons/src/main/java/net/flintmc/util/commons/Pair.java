@@ -31,6 +31,10 @@ public class Pair<U, V> {
     this.second = second;
   }
 
+  public static <U, V> Pair<U, V> of(U first, V second) {
+    return new Pair<>(first, second);
+  }
+
   public U getFirst() {
     return this.first;
   }
@@ -92,7 +96,8 @@ public class Pair<U, V> {
       return false;
     }
     Pair<?, ?> pair = (Pair<?, ?>) o;
-    return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+    return Objects.equals(first, pair.first) && Objects
+        .equals(second, pair.second);
   }
 
   @Override

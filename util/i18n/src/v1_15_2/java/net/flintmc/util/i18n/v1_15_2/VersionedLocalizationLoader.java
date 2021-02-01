@@ -53,16 +53,24 @@ public class VersionedLocalizationLoader implements LocalizationLoader {
   public void load(Localization localization, String languageCode) {
     if (!this.packageLoader.getLoadedPackages().isEmpty()) {
       for (Package loadedPackage : this.packageLoader.getLoadedPackages()) {
+        if (loadedPackage.getFile() == null) {
+          continue;
+        }
+
         PackageLocalization packageLocalization =
-            loadedPackage.getPackageLocalizationLoader().getLocalizations().get(languageCode);
+            loadedPackage.getPackageLocalizationLoader().getLocalizations()
+                .get(languageCode);
 
         if (packageLocalization != null) {
           JsonObject object =
-              JsonParser.parseString(packageLocalization.getLocalizationContentAsString())
+              JsonParser.parseString(
+                  packageLocalization.getLocalizationContentAsString())
                   .getAsJsonObject();
 
-          for (Map.Entry<String, JsonElement> elementEntry : object.entrySet()) {
-            localization.add(elementEntry.getKey(), elementEntry.getValue().getAsString());
+          for (Map.Entry<String, JsonElement> elementEntry : object
+              .entrySet()) {
+            localization.add(elementEntry.getKey(),
+                elementEntry.getValue().getAsString());
           }
         }
       }

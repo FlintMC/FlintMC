@@ -36,6 +36,6 @@ dependencies {
     api("com.google.inject", "guice", "4.2.0")
     api("org.apache.commons", "commons-lang3", "3.9")
     api("org.codehaus.groovy", "groovy-all", "3.0.2")
-    api("org.javassist", "javassist", "3.25.0-GA")
+    api("org.javassist", "javassist", "3.27.0-GA")
 
 }

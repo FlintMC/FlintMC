@@ -66,7 +66,7 @@ public class InventoryClickEventInjector {
           @Type(reference = ClickType.class),
           @Type(reference = PlayerEntity.class)
       },
-      defaultValue = "net.minecraft.item.ItemStack.EMPTY",
+      defaultValue = "$c{net.minecraft.item.ItemStack}.$f{EMPTY}",
       version = "1.16.5")
   public HookResult slotClick(
       @Named("instance") Object instance,

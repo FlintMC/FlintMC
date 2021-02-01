@@ -19,17 +19,34 @@
 
 package net.flintmc.transform.launchplugin;
 
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.transform.exceptions.ClassTransformException;
 
-@FunctionalInterface
 public interface LateInjectedTransformer {
+
   /**
    * Transform a class.
    *
-   * @param className A class name.
-   * @param classData A byte array reassembling a class.
+   * @param className   The non-null name of the class to modify
+   * @param classLoader The non-null class loader that will be used to define the modified class
+   * @param classData   The class to modify
    * @return A derivative of class data.
    * @throws ClassTransformException If the class transformation failed.
    */
-  byte[] transform(String className, byte[] classData) throws ClassTransformException;
+  default byte[] transform(String className, CommonClassLoader classLoader, byte[] classData)
+      throws ClassTransformException {
+    return classData;
+  }
+
+  /**
+   * This method will be invoked after a class has been transformed by a transformer to use the
+   * changes, at this point no more changes can be made to the class.
+   *
+   * @param transformer The non-null transformer that transformed the class
+   * @param className   The non-null name of the class that has been transformed
+   * @param classData   The non-null data of the modified class
+   */
+  default void notifyTransform(LateInjectedTransformer transformer, String className,
+      byte[] classData) {
+  }
 }

@@ -19,22 +19,28 @@
 
 package net.flintmc.framework.packages.internal;
 
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.framework.packages.internal.source.PackageSource;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.launcher.classloading.ChildClassLoader;
 import net.flintmc.launcher.classloading.RootClassLoader;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.Enumeration;
 
-/** Default package loader implementation. */
+/**
+ * Default package loader implementation.
+ */
+@Implement(PackageClassLoader.class)
 public class DefaultPackageClassLoader extends ClassLoader
     implements PackageClassLoader, ChildClassLoader {
+
   static {
     registerAsParallelCapable();
   }
@@ -43,62 +49,81 @@ public class DefaultPackageClassLoader extends ClassLoader
   private final PackageSource source;
 
   /**
-   * Constructs a new {@link DefaultPackageClassLoader} and registers it with the {@link
-   * RootClassLoader} of the {@link LaunchController}.
+   * Constructs a new {@link DefaultPackageClassLoader} and registers it with
+   * the {@link RootClassLoader} of the {@link LaunchController}.
    *
    * @param owner The package owning this class loader
    * @throws IOException If the jar file could not be read.
    */
-  DefaultPackageClassLoader(Package owner) throws IOException {
+  @AssistedInject
+  private DefaultPackageClassLoader(@Assisted("owner") Package owner)
+      throws IOException {
     super(LaunchController.getInstance().getRootLoader());
     this.owner = owner;
     this.source = PackageSource.of(owner);
     LaunchController.getInstance().getRootLoader().registerChild(this);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Class<?> findClass(String name) throws ClassNotFoundException {
     return LaunchController.getInstance().getRootLoader().findClass(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ClassLoader asClassLoader() {
     return this;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Package getOwner() {
     return owner;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public URL childFindResource(String name, boolean forClassLoad) {
     return findResource(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Enumeration<URL> commonFindResources(String name) throws IOException {
     return source.findResources(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public Enumeration<URL> commonFindAllResources() throws IOException, URISyntaxException {
+  public Enumeration<URL> commonFindAllResources()
+      throws IOException, URISyntaxException {
     return source.findAllResources();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected URL findResource(String name) {
     return source.findResource(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public java.lang.Package commonDefinePackage(
       String name,
@@ -110,22 +135,30 @@ public class DefaultPackageClassLoader extends ClassLoader
       String implVendor,
       URL sealBase) {
     return definePackage(
-        name, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
+        name, specTitle, specVersion, specVendor, implTitle, implVersion,
+        implVendor, sealBase);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public Class<?> commonDefineClass(String name, byte[] b, int off, int len, CodeSource cs) {
+  public Class<?> commonDefineClass(String name, byte[] b, int off, int len,
+      CodeSource cs) {
     return defineClass(name, b, off, len, null);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public java.lang.Package commonGetPackage(String name) {
     return getPackage(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getClassloaderName() {
     return "FlintPackageLoader[" + owner.getName() + "]";

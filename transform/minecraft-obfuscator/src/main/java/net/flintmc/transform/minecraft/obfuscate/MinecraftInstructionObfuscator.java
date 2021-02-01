@@ -22,8 +22,11 @@ package net.flintmc.transform.minecraft.obfuscate;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import javassist.ClassPool;
+import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.classloading.common.ClassInformation;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.launcher.classloading.common.CommonClassLoaderHelper;
 import net.flintmc.transform.asm.ASMUtils;
 import net.flintmc.transform.exceptions.ClassTransformException;
@@ -35,9 +38,12 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-/** Deobfuscates all minecraft classes for which mappings are provided */
+/**
+ * Deobfuscates all minecraft classes for which mappings are provided
+ */
 @Singleton
 @MinecraftTransformer(priority = Integer.MIN_VALUE)
 public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
@@ -56,9 +62,14 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
   }
 
   @Override
-  public byte[] transform(String className, byte[] classData) throws ClassTransformException {
-    if (!obfuscated) return classData;
-    if (!className.startsWith("net.flintmc")) return classData;
+  public byte[] transform(String className, CommonClassLoader classLoader, byte[] classData) throws ClassTransformException {
+    if (!obfuscated) {
+      return classData;
+    }
+    if (!className.startsWith("net.flintmc") && !(classLoader instanceof PackageClassLoader)) {
+      // only reobfuscate flint classes and classes from packages
+      return classData;
+    }
 
     ClassInformation classInformation;
 
@@ -69,7 +80,9 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
           "Unable to retrieve class metadata: " + className, exception);
     }
 
-    if (classInformation == null) return classData;
+    if (classInformation == null) {
+      return classData;
+    }
 
     ClassNode classNode = ASMUtils.getNode(classInformation.getClassBytes());
     ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
