@@ -144,7 +144,14 @@ public class VersionedScoreboardInterceptor {
 
     if (action == 0 || action == 2) {
       playerTeam.setDisplayName(this.componentMapper.fromMinecraft(packet.getDisplayName()));
-      playerTeam.setColor(ChatColor.getByName(packet.getColor().getFriendlyName().toUpperCase()));
+
+      String friendlyName = packet.getColor().getFriendlyName();
+      ChatColor color = ChatColor.getByName(friendlyName.toUpperCase());
+
+      if (color != null) {
+        playerTeam.setColor(color);
+      }
+
       playerTeam.setFriendlyFlags(packet.getFriendlyFlags());
 
       VisibleType teamVisibility = VisibleType.getByName(packet.getNameTagVisibility());

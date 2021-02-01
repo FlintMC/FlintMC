@@ -19,19 +19,24 @@
 
 package net.flintmc.mcapi.internal.chat.component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 public abstract class DefaultChatComponent implements ChatComponent {
 
   private static final ChatFormat[] FORMATS = ChatFormat.values();
+  private final Map<ChatColor, Boolean> chatFormats = new HashMap<>();
   private final boolean[] formats =
       new boolean[FORMATS.length]; // all formats sorted by the order in the enum
 
@@ -50,13 +55,19 @@ public abstract class DefaultChatComponent implements ChatComponent {
   @Override
   public ChatFormat[] formats() {
     Collection<ChatFormat> formats = new ArrayList<>();
-    for (int i = 0; i < this.formats.length; i++) {
-      if (this.formats[i]) {
-        formats.add(FORMATS[i]);
+
+    for (Entry<ChatColor, Boolean> entry : this.chatFormats.entrySet()) {
+      if (entry.getValue()) {
+        formats.add(ChatFormat.getByChar(entry.getKey().getColorCode().charAt(0)));
       }
     }
 
     return formats.toArray(new ChatFormat[0]);
+  }
+
+  @Override
+  public ChatColor[] chatFormats() {
+    return this.chatFormats.keySet().toArray(new ChatColor[0]);
   }
 
   /**
@@ -64,7 +75,15 @@ public abstract class DefaultChatComponent implements ChatComponent {
    */
   @Override
   public boolean hasFormat(ChatFormat format) {
-    return this.formats[format.ordinal()];
+    return this.hasChatFormat(ChatColor.getByChar(format.getFormatChar()));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasChatFormat(ChatColor format) {
+    return this.chatFormats.containsKey(format);
   }
 
   /**
@@ -72,7 +91,19 @@ public abstract class DefaultChatComponent implements ChatComponent {
    */
   @Override
   public void toggleFormat(ChatFormat format, boolean enabled) {
-    this.formats[format.ordinal()] = enabled;
+    this.toggleChatFormat(ChatColor.getByChar(format.getFormatChar()), enabled);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void toggleChatFormat(ChatColor format, boolean enabled) {
+    if (!format.isFormat()) {
+      return;
+    }
+
+    this.chatFormats.put(format, enabled);
   }
 
   /**

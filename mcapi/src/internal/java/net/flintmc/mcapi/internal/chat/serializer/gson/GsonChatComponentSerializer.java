@@ -42,8 +42,8 @@ import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.chat.format.ChatFormat;
 import org.apache.logging.log4j.Logger;
+
 import java.lang.reflect.Type;
 
 @Singleton
@@ -88,9 +88,10 @@ public class GsonChatComponentSerializer
     }
 
     // the formats of the component
-    for (ChatFormat format : ChatFormat.values()) {
-      if (object.has(format.getLowerName())) {
-        component.toggleFormat(format, object.get(format.getLowerName()).getAsBoolean());
+    for (ChatColor chatFormat : ChatColor.getChatFormats()) {
+      if (object.has(chatFormat.getLowerName())) {
+        component
+            .toggleChatFormat(chatFormat, object.get(chatFormat.getLowerName()).getAsBoolean());
       }
     }
 
@@ -132,9 +133,9 @@ public class GsonChatComponentSerializer
     }
 
     // All formats of the component
-    for (ChatFormat format : ChatFormat.values()) {
-      if (src.hasFormat(format)) {
-        object.addProperty(format.getLowerName(), true);
+    for (ChatColor chatFormat : ChatColor.getChatFormats()) {
+      if (src.hasChatFormat(chatFormat)) {
+        object.addProperty(chatFormat.getLowerName(), true);
       }
     }
 
