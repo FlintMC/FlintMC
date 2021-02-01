@@ -29,6 +29,7 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
+import net.flintmc.framework.inject.InjectedFieldBuilder.Factory;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.render.gui.event.ScreenChangedEvent;
 import net.flintmc.render.gui.event.ScreenRenderEvent;
@@ -50,6 +51,7 @@ import net.minecraft.client.Minecraft;
 @Singleton
 public class VersionedGuiInterceptor {
 
+  private final ClassPool pool;
   private final ClassMappingProvider mappingProvider;
   private final DefaultWindowManager windowManager;
   private final ScreenNameMapper nameMapper;
@@ -57,10 +59,12 @@ public class VersionedGuiInterceptor {
 
   @Inject
   private VersionedGuiInterceptor(
+      ClassPool pool,
       ClassMappingProvider mappingProvider,
       DefaultWindowManager windowManager,
       ScreenNameMapper nameMapper,
-      InjectedFieldBuilder.Factory fieldBuilder) {
+      Factory fieldBuilder) {
+    this.pool = pool;
     this.mappingProvider = mappingProvider;
     this.windowManager = windowManager;
     this.nameMapper = nameMapper;
@@ -79,10 +83,11 @@ public class VersionedGuiInterceptor {
   private void hookScreenRender(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     MethodMapping renderMapping =
-        mappingProvider
+        this.mappingProvider
             .get("net.minecraft.client.gui.IRenderable")
             .getMethod("render",
-                ClassPool.getDefault().get("com.mojang.blaze3d.matrix.MatrixStack"),
+                this.pool.get(
+                    this.mappingProvider.get("com.mojang.blaze3d.matrix.MatrixStack").getName()),
                 CtClass.intType,
                 CtClass.intType,
                 CtClass.floatType);
@@ -97,7 +102,8 @@ public class VersionedGuiInterceptor {
             .generate();
 
     for (CtMethod method : screenClass.getDeclaredMethods()) {
-      if (!method.getName().equals(renderMapping.getName())) {
+      if (!method.getName().equals(renderMapping.getName()) ||
+          !method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor())) {
         continue;
       }
 

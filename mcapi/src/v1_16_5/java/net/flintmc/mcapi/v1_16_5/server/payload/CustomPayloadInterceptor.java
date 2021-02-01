@@ -70,17 +70,15 @@ public class CustomPayloadInterceptor {
   public void transform(ClassTransformContext context)
       throws NotFoundException, BadBytecode, CannotCompileException {
 
-    CtClass customPayloadPacketClass = this.pool.get(this.customPayloadPacketMapping.getName());
+    CtClass[] parameters = new CtClass[]{this.pool.get(this.customPayloadPacketMapping.getName())};
 
     CtMethod method =
         context
             .getCtClass()
             .getDeclaredMethod(
                 this.clientPlayNetHandlerMapping
-                    .getMethod("handleCustomPayload", customPayloadPacketClass).getName(),
-                new CtClass[]{
-                    customPayloadPacketClass
-                });
+                    .getMethod("handleCustomPayload", parameters).getName(),
+                parameters);
 
     MethodInfo methodInfo = method.getMethodInfo();
     CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
