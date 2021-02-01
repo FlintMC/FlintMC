@@ -23,18 +23,10 @@ plugins {
 
 group = "net.flintmc"
 
-flint {
-}
-
 dependencies {
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-
-    api(project(":framework:framework-eventbus"))
-    api(project(":framework:framework-stereotype"))
-    api(project(":mcapi"))
-    api(project(":transform:transform-hook"))
-
-    testImplementation(project(":util:util-unit-testing"))
-    testImplementation(project(":util:util-task-executor", "internal"))
+    api(platform("org.junit:junit-bom:5.7.0"))
+    api("org.junit.jupiter", "junit-jupiter", "5.7.0")
+    api("org.junit.jupiter", "junit-jupiter-api", "5.7.0")
+    api("com.google.inject", "guice", "4.2.0")
+    api("org.mockito:mockito-core:3.7.7")
 }

@@ -17,24 +17,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-plugins {
-    id("java-library")
-}
+package net.flintmc.util.unittesting;
 
-group = "net.flintmc"
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-flint {
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface RandomInt {
 
-dependencies {
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
+  Range value() default Range.ALL;
 
-    api(project(":framework:framework-eventbus"))
-    api(project(":framework:framework-stereotype"))
-    api(project(":mcapi"))
-    api(project(":transform:transform-hook"))
+  enum Range {
+    POSITIVE, NEGATIVE, ALL
+  }
 
-    testImplementation(project(":util:util-unit-testing"))
-    testImplementation(project(":util:util-task-executor", "internal"))
 }
