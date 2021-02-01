@@ -23,8 +23,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import javassist.ClassPool;
+import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.classloading.common.ClassInformation;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.launcher.classloading.common.CommonClassLoaderHelper;
 import net.flintmc.transform.asm.ASMUtils;
 import net.flintmc.transform.exceptions.ClassTransformException;
@@ -60,11 +62,12 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
   }
 
   @Override
-  public byte[] transform(String className, byte[] classData) throws ClassTransformException {
+  public byte[] transform(String className, CommonClassLoader classLoader, byte[] classData) throws ClassTransformException {
     if (!obfuscated) {
       return classData;
     }
-    if (!className.startsWith("net.flintmc")) {
+    if (!className.startsWith("net.flintmc") && !(classLoader instanceof PackageClassLoader)) {
+      // only reobfuscate flint classes and classes from packages
       return classData;
     }
 

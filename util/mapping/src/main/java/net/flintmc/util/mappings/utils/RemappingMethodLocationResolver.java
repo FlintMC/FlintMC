@@ -37,7 +37,6 @@ public class RemappingMethodLocationResolver {
 
   public CtMethod getLocation(String owner, String name, String[] parameters) {
     try {
-
       String[] mappedParamNames = new String[parameters.length];
 
       for (int i = 0; i < mappedParamNames.length; i++) {

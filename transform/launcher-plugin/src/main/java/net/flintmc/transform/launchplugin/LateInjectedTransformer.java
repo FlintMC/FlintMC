@@ -19,6 +19,7 @@
 
 package net.flintmc.transform.launchplugin;
 
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.transform.exceptions.ClassTransformException;
 
 public interface LateInjectedTransformer {
@@ -26,12 +27,14 @@ public interface LateInjectedTransformer {
   /**
    * Transform a class.
    *
-   * @param className A class name.
-   * @param classData A byte array reassembling a class.
+   * @param className   The non-null name of the class to modify
+   * @param classLoader The non-null class loader that will be used to define the modified class
+   * @param classData   The class to modify
    * @return A derivative of class data.
    * @throws ClassTransformException If the class transformation failed.
    */
-  default byte[] transform(String className, byte[] classData) throws ClassTransformException {
+  default byte[] transform(String className, CommonClassLoader classLoader, byte[] classData)
+      throws ClassTransformException {
     return classData;
   }
 

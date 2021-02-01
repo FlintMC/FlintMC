@@ -35,6 +35,7 @@ import javassist.bytecode.ClassFile;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.javassist.ClassTransform;
@@ -119,11 +120,12 @@ public class DefaultClassTransformService
   }
 
   @Override
-  public byte[] transform(String className, byte[] bytes) throws ClassTransformException {
+  public byte[] transform(String className, CommonClassLoader classLoader, byte[] bytes)
+      throws ClassTransformException {
     ClassMapping mapping = classMappingProvider.get(className);
     String deobfuscatedName = mapping != null ? mapping.getDeobfuscatedName() : className;
-    if (!deobfuscatedName.startsWith("net.minecraft") && !deobfuscatedName
-        .startsWith("com.mojang")) {
+    if (!deobfuscatedName.startsWith("net.minecraft")
+        && !deobfuscatedName.startsWith("com.mojang")) {
       // Skip classes which are not part of minecraft or some Mojang library
       return null;
     }

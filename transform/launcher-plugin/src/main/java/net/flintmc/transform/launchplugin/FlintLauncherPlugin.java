@@ -23,26 +23,31 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import io.sentry.Sentry;
 import io.sentry.event.BreadcrumbBuilder;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.launcher.classloading.RootClassLoader;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.launcher.service.LauncherPlugin;
 import net.flintmc.launcher.service.PreLaunchException;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
 public class FlintLauncherPlugin implements LauncherPlugin {
+
   private static FlintLauncherPlugin instance;
   private final Logger logger;
   private final Multimap<Integer, LateInjectedTransformer> injectedTransformers;
@@ -89,25 +94,33 @@ public class FlintLauncherPlugin implements LauncherPlugin {
     return instance;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String name() {
     return "Flint";
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
     classloader.excludeFromModification("javassist.", "com.google.", "net.flintmc.transform.");
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void modifyCommandlineArguments(List<String> arguments) {
     this.launchArguments = arguments;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {
     Map<String, String> arguments = new HashMap<>();
@@ -129,11 +142,14 @@ public class FlintLauncherPlugin implements LauncherPlugin {
     injectedTransformers.put(priority, transformer);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
+  public byte[] modifyClass(String className, CommonClassLoader classLoader, byte[] classData)
+      throws ClassTransformException {
     for (LateInjectedTransformer transformer : injectedTransformers.values()) {
-      byte[] newData = transformer.transform(className, classData);
+      byte[] newData = transformer.transform(className, classLoader, classData);
       if (newData != null) {
         for (LateInjectedTransformer notifyTransformer : injectedTransformers.values()) {
           notifyTransformer.notifyTransform(transformer, className, newData);
@@ -178,7 +194,9 @@ public class FlintLauncherPlugin implements LauncherPlugin {
     String environment = "PRODUCTION";
     String mcversion = "unknown";
 
-    if (arguments.containsKey("--game-version")) mcversion = arguments.get("--game-version");
+    if (arguments.containsKey("--game-version")) {
+      mcversion = arguments.get("--game-version");
+    }
 
     if (arguments.containsKey("--debug") && arguments.get("--debug").equals("true")) {
       environment = "DEVELOPMENT";
