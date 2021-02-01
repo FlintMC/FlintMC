@@ -148,7 +148,7 @@ public class VersionedScoreboardInterceptor {
       String friendlyName = packet.getColor().getFriendlyName();
       ChatColor color = ChatColor.getByName(friendlyName.toUpperCase());
 
-      if(color != null) {
+      if (color != null) {
         playerTeam.setColor(color);
       }
 

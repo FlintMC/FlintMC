@@ -19,31 +19,20 @@
 
 package net.flintmc.mcapi.internal.chat.serializer.gson;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.lang.reflect.Type;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.builder.SelectorComponentBuilder;
-import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.mcapi.chat.component.KeybindComponent;
-import net.flintmc.mcapi.chat.component.ScoreComponent;
-import net.flintmc.mcapi.chat.component.SelectorComponent;
-import net.flintmc.mcapi.chat.component.TextComponent;
+import net.flintmc.mcapi.chat.component.*;
 import net.flintmc.mcapi.chat.component.TextComponent.Factory;
-import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import org.apache.logging.log4j.Logger;
+import java.lang.reflect.Type;
 
 @Singleton
 public class GsonChatComponentSerializer
@@ -88,8 +77,9 @@ public class GsonChatComponentSerializer
 
     // the formats of the component
     for (ChatColor chatFormat : ChatColor.getChatFormats()) {
-      if(object.has(chatFormat.getLowerName())) {
-        component.toggleChatFormat(chatFormat, object.get(chatFormat.getLowerName()).getAsBoolean());
+      if (object.has(chatFormat.getLowerName())) {
+        component
+            .toggleChatFormat(chatFormat, object.get(chatFormat.getLowerName()).getAsBoolean());
       }
     }
 
@@ -132,7 +122,7 @@ public class GsonChatComponentSerializer
 
     // All formats of the component
     for (ChatColor chatFormat : ChatColor.getChatFormats()) {
-      if(src.hasChatFormat(chatFormat)) {
+      if (src.hasChatFormat(chatFormat)) {
         object.addProperty(chatFormat.getLowerName(), true);
       }
     }

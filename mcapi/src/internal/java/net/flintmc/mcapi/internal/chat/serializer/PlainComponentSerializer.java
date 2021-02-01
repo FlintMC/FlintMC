@@ -104,7 +104,7 @@ public class PlainComponentSerializer implements ComponentSerializer {
         ChatColor color = ChatColor.getByChar(c);
         if (color != null) {
 
-          if(color.isFormat()) {
+          if (color.isFormat()) {
             builder.chatFormat(color);
             continue;
           }

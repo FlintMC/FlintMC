@@ -32,11 +32,7 @@ import net.flintmc.mcapi.world.scoreboad.score.Objective.Factory;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Singleton
 @Implement(Scoreboard.class)
@@ -164,7 +160,7 @@ public class DefaultScoreboard implements Scoreboard {
    */
   @Override
   public void removeObjective(Objective objective) {
-    if(this.objectives.isEmpty()) {
+    if (this.objectives.isEmpty()) {
       return;
     }
 
@@ -253,7 +249,8 @@ public class DefaultScoreboard implements Scoreboard {
   @Override
   public boolean addPlayerToTeam(String username, PlayerTeam team) {
     if (username.length() > 40) {
-      throw new IllegalArgumentException(String.format("The player name \"%s\" is too long!", username));
+      throw new IllegalArgumentException(
+          String.format("The player name \"%s\" is too long!", username));
     } else {
       if (this.getPlayerTeam(username) != null) {
         this.removePlayerFromTeams(username);

@@ -19,12 +19,12 @@
 
 package net.flintmc.mcapi.chat.format;
 
+import net.flintmc.framework.stereotype.MathHelper;
+import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.flintmc.framework.stereotype.MathHelper;
-import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 
 /**
  * Colors that can be used by chat components. Since Minecraft 1.16, RGB colors can be used. This
@@ -329,7 +329,7 @@ public class ChatColor {
    * @return {@code true} if the chat color is a format, otherwise {@code false}.
    */
   public boolean isFormat() {
-    return format;
+    return this.format;
   }
 
   /**
