@@ -21,6 +21,7 @@ package net.flintmc.mcapi.v1_16_5.server;
 
 import com.google.common.base.Preconditions;
 import java.net.InetSocketAddress;
+import java.util.Objects;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -75,5 +76,28 @@ public class VersionedServerAddress implements ServerAddress {
   @Override
   public String toString() {
     return this.ip + ":" + this.port;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    VersionedServerAddress other = (VersionedServerAddress) o;
+    return this.port == other.port && this.ip.equals(other.ip);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.ip, this.port);
   }
 }
