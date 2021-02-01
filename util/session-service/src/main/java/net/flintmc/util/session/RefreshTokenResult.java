@@ -37,7 +37,7 @@ public interface RefreshTokenResult {
   /**
    * Retrieves the error message that has been provided by the session server for a failed result.
    *
-   * @return The error message or {@code null} if the request was either success or no error message
+   * @return The error message or {@code null}, if the request was either success or no error message
    * has been sent
    */
   String getErrorMessage();

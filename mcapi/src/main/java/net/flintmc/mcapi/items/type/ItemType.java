@@ -37,7 +37,7 @@ public interface ItemType {
    * Retrieves the category of this type where the item will be displayed in the creative menu. If
    * this type isn't displayed in the creative menu, this will be {@code null}.
    *
-   * @return The category or {@code null} if it is not available
+   * @return The category or {@code null}, if it is not available
    */
   ItemCategory getCategory();
 

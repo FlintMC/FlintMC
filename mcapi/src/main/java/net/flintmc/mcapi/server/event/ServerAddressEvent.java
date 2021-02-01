@@ -40,7 +40,7 @@ public interface ServerAddressEvent extends Event {
   /**
    * Retrieves the address of the server where this event has happened.
    *
-   * @return The address of the server or {@code null} if the event happend in singleplayer with the
+   * @return The address of the server or {@code null}, if the event happend in singleplayer with the
    * integrated server
    */
   ServerAddress getAddress();
@@ -54,7 +54,7 @@ public interface ServerAddressEvent extends Event {
     /**
      * Creates a new {@link ServerAddressEvent} with the given address.
      *
-     * @param address The address for the new event, may be {@code null} if the event happened in
+     * @param address The address for the new event, may be {@code null}, if the event happened in
      *                singleplayer
      * @return The new event
      */

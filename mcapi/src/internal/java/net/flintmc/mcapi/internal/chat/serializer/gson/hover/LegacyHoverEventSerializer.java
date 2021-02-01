@@ -39,14 +39,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class LegacyHoverEventSerializer extends HoverEventSerializer {
 
-  private final ComponentBuilder.Factory componentFactory;
-
   public LegacyHoverEventSerializer(
       Logger logger,
       ComponentBuilder.Factory componentFactory,
       GsonComponentSerializer componentSerializer) {
-    super(logger, componentSerializer);
-    this.componentFactory = componentFactory;
+    super(logger, componentSerializer, componentFactory);
   }
 
   @Override

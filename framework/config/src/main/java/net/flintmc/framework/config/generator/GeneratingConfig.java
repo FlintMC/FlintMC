@@ -73,7 +73,7 @@ public interface GeneratingConfig {
    * Retrieves an implementation for the given interface that has been generated for this config.
    *
    * @param baseName The name of the interface that has been implemented
-   * @return The implementation class or {@code null} if there is no implementation for an interface with the given name
+   * @return The implementation class or {@code null}, if there is no implementation for an interface with the given name
    * @see #bindGeneratedImplementation(CtClass, CtClass)
    */
   CtClass getGeneratedImplementation(String baseName);

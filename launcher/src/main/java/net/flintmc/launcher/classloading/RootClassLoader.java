@@ -229,7 +229,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
 
       for (LauncherPlugin plugin : plugins) {
         try {
-          byte[] newBytes = plugin.modifyClass(name, classBytes);
+          byte[] newBytes = plugin.modifyClass(name, loader, classBytes);
           if (newBytes != null) {
             // The plugin has modified the bytes, copy the reference of the array over
             classBytes = newBytes;
@@ -274,7 +274,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    *
    * @param name          The name of the resource to find
    * @param allowRedirect Wether child plugins should be allowed to redirect the URL to a new one
-   * @return An {@link URL} to the found resource, or {@code null} if the resource could not be
+   * @return An {@link URL} to the found resource, or {@code null}, if the resource could not be
    * found
    * @see ClassLoader#findResource(String)
    */

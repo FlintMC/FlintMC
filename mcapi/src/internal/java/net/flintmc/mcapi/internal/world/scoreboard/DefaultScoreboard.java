@@ -23,11 +23,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
@@ -37,6 +32,11 @@ import net.flintmc.mcapi.world.scoreboad.score.Objective.Factory;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 @Implement(Scoreboard.class)
@@ -131,6 +131,23 @@ public class DefaultScoreboard implements Scoreboard {
           this.entitiesScores.computeIfAbsent(username, function -> Maps.newHashMap());
       return objectiveScores.computeIfAbsent(
           objective, function -> this.scoreFactory.create(objective, username, 0));
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Score getScore(String username, Objective objective) {
+    if (username.length() > 40) {
+      throw new IllegalArgumentException(
+          String.format("The player name \"%s\" is too long!", username));
+    } else {
+      if (!this.entitiesScores.containsKey(username)) {
+        return null;
+      }
+
+      return this.entitiesScores.get(username).get(objective);
     }
   }
 

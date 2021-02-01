@@ -65,7 +65,8 @@ public class VersionedServerListUpdateEventInjector {
         transforming.getDeclaredMethod(
             listMapping != null ? listMapping.getName() : "loadServerList");
 
-    String base = String.format("((%s) this.servers).setEnabled(", ModServerList.class.getName());
+    String base = String
+        .format("((%s) this.%s).setEnabled(", ModServerList.class.getName(), field.getName());
     String disable = base + "false);";
     String enable = base + "true);";
 
@@ -91,7 +92,7 @@ public class VersionedServerListUpdateEventInjector {
     // before anything else, change the ArrayList to our own List which will fire events
     method.insertBefore(
         String.format(
-            "this.servers = (%s) %s.getInjectedInstance(%1$s.class);",
-            ModServerList.class.getName(), InjectionHolder.class.getName()));
+            "this.%s = (%s) %s.getInjectedInstance(%2$s.class);",
+            field.getName(), ModServerList.class.getName(), InjectionHolder.class.getName()));
   }
 }

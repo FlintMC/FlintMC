@@ -32,7 +32,8 @@ public enum ChatLocation {
   CHAT,
 
   /**
-   * The action bar above the hotbar.
+   * The action bar above the hotbar. Every message sent into the action bar will only be displayed
+   * for 20 ticks (1 second) and needs to be resent after that if should should stay there.
    */
   ACTION_BAR,
 

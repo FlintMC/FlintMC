@@ -19,6 +19,7 @@
 
 package net.flintmc.mcapi.chat.component;
 
+import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.Keybind;
 
 /**
@@ -31,7 +32,7 @@ public interface KeybindComponent extends ChatComponent {
    * Retrieves the keybind which will be replaced with the configured key in the settings by the
    * client.
    *
-   * @return The keybind out of this component or {@code null} if no keybind has been set
+   * @return The keybind out of this component or {@code null}, if no keybind has been set
    * @see #keybind(Keybind)
    */
   Keybind keybind();
@@ -43,4 +44,12 @@ public interface KeybindComponent extends ChatComponent {
    * @param keybind The new non-null keybind
    */
   void keybind(Keybind keybind);
+
+  /**
+   * Factory for the {@link KeybindComponent}.
+   */
+  @AssistedFactory(KeybindComponent.class)
+  interface Factory extends ChatComponent.Factory<KeybindComponent> {
+
+  }
 }

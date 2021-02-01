@@ -19,12 +19,6 @@
 
 package net.flintmc.framework.packages.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarFile;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectionService;
@@ -34,9 +28,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.PackageClassLoader;
-import net.flintmc.framework.packages.PackageManifest;
-import net.flintmc.framework.packages.PackageState;
+import net.flintmc.framework.packages.*;
 import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
 import net.flintmc.framework.service.ExtendedServiceLoader;
 import net.flintmc.framework.stereotype.service.Service;
@@ -46,7 +38,16 @@ import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
+import net.flintmc.util.mappings.utils.RemappingMethodLocationResolver;
 import org.apache.logging.log4j.Logger;
+import javax.lang.model.element.ElementKind;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarFile;
 
 /**
  * Default implementation of the {@link Package}.
@@ -55,8 +56,10 @@ import org.apache.logging.log4j.Logger;
 public class DefaultPackage implements Package {
 
   private final ServiceRepository serviceRepository;
+  private final PackageClassLoader.Factory classLoaderFactory;
   private final Logger logger;
   private final File jarFile;
+
 
   private PackageLocalizationLoader localizationLoader;
   private PackageManifest packageManifest;
@@ -65,33 +68,40 @@ public class DefaultPackage implements Package {
   private Exception loadException;
 
   /**
-   * Creates a new Flint package with the given description loader and the given files.
+   * Creates a new Flint package with the given description loader and the given
+   * files.
    *
-   * @param serviceRepository The singleton instance of the {@link ServiceRepository}
+   * @param serviceRepository The singleton instance of the {@link
+   *                          ServiceRepository}
    * @param manifestLoader    The loader to use for reading the manifest
-   * @param jarFile           The java IO file this package should be loaded from, or null if loaded
-   *                          from the classpath
-   * @param jar               The java IO jar file this package should be loaded from, must point to
-   *                          the same file as the `file` parameter, or must be null if the package
-   *                          has been loaded from the classpath
+   * @param jarFile           The java IO file this package should be loaded
+   *                          from, or null if loaded from the classpath
+   * @param jar               The java IO jar file this package should be loaded
+   *                          from, must point to the same file as the `file`
+   *                          parameter, or must be null if the package has been
+   *                          loaded from the classpath
    */
   @AssistedInject
   private DefaultPackage(
       ServiceRepository serviceRepository,
       PackageLocalizationLoader localizationLoader,
-      DefaultPackageManifestLoader manifestLoader,
+      PackageManifestLoader manifestLoader,
+      PackageClassLoader.Factory classLoaderFactory,
       @InjectLogger Logger logger,
-      @Assisted File jarFile,
-      @Assisted JarFile jar) {
+      @Assisted("jarFile") File jarFile,
+      @Assisted("jar") JarFile jar) {
     this.serviceRepository = serviceRepository;
+    this.classLoaderFactory = classLoaderFactory;
     this.logger = logger;
     this.jarFile = jarFile;
 
     if (jar != null) {
-      // If the package should be loaded from a jar file, try to retrieve the manifest from it
+      // If the package should be loaded from a jar file, try to retrieve the
+      // manifest from it
       if (!manifestLoader.isManifestPresent(jar)) {
         throw new IllegalArgumentException(
-            "The given JAR file " + jarFile.getName() + " does not contain a package manifest");
+            "The given JAR file " + jarFile.getName()
+                + " does not contain a package manifest");
       }
 
       // Try to load the manifest
@@ -118,11 +128,26 @@ public class DefaultPackage implements Package {
       }
 
     } else {
-      // The package should not be loaded from a file, thus we don't have a manifest and mark  the
-      // package
-      // as ready for load
+      // The package should not be loaded from a file, thus we don't have a
+      // manifest and mark  the package as ready for load
       this.packageState = PackageState.NOT_LOADED;
     }
+  }
+
+  @AssistedInject
+  private DefaultPackage(ServiceRepository serviceRepository,
+      PackageLocalizationLoader localizationLoader,
+      PackageManifestLoader manifestLoader,
+      PackageClassLoader.Factory classLoaderFactory,
+      @InjectLogger Logger logger,
+      @Assisted("manifest") PackageManifest manifest) {
+    this.serviceRepository = serviceRepository;
+    this.classLoaderFactory = classLoaderFactory;
+    this.logger = logger;
+    this.jarFile = null;
+    this.localizationLoader = null;
+    this.packageManifest = manifest;
+    this.packageState = PackageState.NOT_LOADED;
   }
 
   /**
@@ -138,7 +163,8 @@ public class DefaultPackage implements Package {
    */
   @Override
   public String getName() {
-    return this.packageManifest != null ? this.packageManifest.getName() : jarFile.getName();
+    return this.packageManifest != null ? this.packageManifest.getName()
+        : jarFile.getName();
   }
 
   /**
@@ -146,7 +172,8 @@ public class DefaultPackage implements Package {
    */
   @Override
   public String getDisplayName() {
-    return this.packageManifest != null ? this.packageManifest.getDisplayName() : jarFile.getName();
+    return this.packageManifest != null ? this.packageManifest.getDisplayName()
+        : jarFile.getName();
   }
 
   /**
@@ -154,7 +181,8 @@ public class DefaultPackage implements Package {
    */
   @Override
   public String getVersion() {
-    return this.packageManifest != null ? this.packageManifest.getVersion() : "unknown";
+    return this.packageManifest != null ? this.packageManifest.getVersion()
+        : "unknown";
   }
 
   /**
@@ -172,12 +200,22 @@ public class DefaultPackage implements Package {
   public void setState(PackageState state) {
     if (packageState != PackageState.NOT_LOADED) {
       throw new IllegalStateException(
-          "The package state can only be changed if the package has not been loaded already");
+          "The package state can only be changed if the package has not been "
+              + "loaded already");
     } else if (state == PackageState.LOADED) {
       throw new IllegalArgumentException(
-          "The package state can't be set to LOADED explicitly, use the load() method");
+          "The package state can't be set to LOADED explicitly, use the load() "
+              + "method");
     }
 
+    this.packageState = state;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void forceState(PackageState state) {
     this.packageState = state;
   }
 
@@ -196,14 +234,16 @@ public class DefaultPackage implements Package {
   public PackageState load() {
     if (packageState != PackageState.NOT_LOADED) {
       throw new IllegalStateException(
-          "The package has to be in the NOT_LOADED state in order to be loaded");
+          "The package has to be in the NOT_LOADED state in order to be "
+              + "loaded");
     }
 
     try {
-      this.classLoader = new DefaultPackageClassLoader(this);
+      this.classLoader = this.classLoaderFactory.create(this);
       this.packageState = PackageState.LOADED;
     } catch (Exception exception) {
-      // The package failed to load, save the error and mark the package itself as errored
+      // The package failed to load, save the error and mark the package
+      // itself as errored
       this.packageState = PackageState.ERRORED;
       this.loadException = exception;
     }
@@ -221,10 +261,12 @@ public class DefaultPackage implements Package {
     }
 
     try {
-      // Find all services on the classpath and register them to the service repository
+      // Find all services on the classpath and register them to
+      // the service repository
       this.prepareServices();
-      // Flush all registered services that are defined in the PRE_INIT state. This should only be
-      // done if it is really necessary.
+      // Flush all registered services that are defined in the
+      // PRE_INIT state. This should only be done if it is
+      // really necessary.
       this.serviceRepository.flushServices(Service.State.PRE_INIT);
       // Apply all Implementations and AssistedFactories
       InjectionService injectionService =
@@ -234,10 +276,13 @@ public class DefaultPackage implements Package {
       serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
 
       injectionService.flushAssistedFactory();
-      // Flush all other higher level framework features like Events, Transforms etc.
+      // Flush all other higher level framework features like Events,
+      // Transforms etc.
       this.serviceRepository.flushServices(Service.State.POST_INIT);
     } catch (NotFoundException e) {
-      this.logger.error("Failed to configure services for package {}", this.getName(), e);
+      this.logger
+          .error("Failed to configure services for package {}", this.getName(),
+              e);
     }
 
     // The package is now enabled
@@ -246,10 +291,12 @@ public class DefaultPackage implements Package {
 
   private void prepareServices() throws NotFoundException {
     // Find all autoload providers within the package
+    @SuppressWarnings("rawtypes")
     List<AnnotationMeta> annotations = getAnnotationMeta();
     // Iterate over all annotations
     for (AnnotationMeta<?> annotationMeta : annotations) {
-      if (annotationMeta.getAnnotation().annotationType().equals(Service.class)) {
+      if (annotationMeta.getAnnotation().annotationType()
+          .equals(Service.class)) {
         // if yes go ahead and register it
         Service annotation = (Service) annotationMeta.getAnnotation();
         serviceRepository.registerService(
@@ -257,33 +304,41 @@ public class DefaultPackage implements Package {
             annotation.priority(),
             annotation.state(),
             ClassPool.getDefault()
-                .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
-        // if not check if it might be multiple services at once. the Javapoet framework sadly seems
-        // to not support Repeatable annotations yet. Maybe this will change sometime.
-      } else if (annotationMeta.getAnnotation().annotationType().equals(Services.class)) {
+                .get(((ClassIdentifier) (annotationMeta.getIdentifier()))
+                    .getName()));
+        // if not check if it might be multiple services at once.
+        // the Javapoet framework sadly seems to not support Repeatable
+        // annotations yet. Maybe this will change sometime.
+      } else if (annotationMeta.getAnnotation().annotationType()
+          .equals(Services.class)) {
         // Iterate over all services and register them
-        for (Service service : ((Services) annotationMeta.getAnnotation()).value()) {
+        for (Service service : ((Services) annotationMeta.getAnnotation())
+            .value()) {
           serviceRepository.registerService(
               service.value(),
               service.priority(),
               service.state(),
               ClassPool.getDefault()
-                  .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+                  .get(((ClassIdentifier) (annotationMeta.getIdentifier()))
+                      .getName()));
         }
       }
     }
 
     // Iterate over all annotations again
-    for (AnnotationMeta annotationMeta : annotations) {
+
+    for (@SuppressWarnings("rawtypes")
+        AnnotationMeta annotationMeta : annotations) {
       // register the annotation
       serviceRepository.registerAnnotation(annotationMeta);
     }
   }
 
   /**
-   * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
-   * on compile time
+   * @return all saved annotation meta that was written to the {@link
+   * DetectableAnnotationProvider} on compile time
    */
+  @SuppressWarnings("rawtypes")
   private List<AnnotationMeta> getAnnotationMeta() {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();
 
@@ -292,6 +347,15 @@ public class DefaultPackage implements Package {
             .discover(LaunchController.getInstance().getRootLoader());
 
     discover.forEach(provider -> provider.register(annotationMetas));
+    RemappingMethodLocationResolver remappingMethodLocationResolver
+        = new RemappingMethodLocationResolver();
+    for (AnnotationMeta annotationMeta : annotationMetas) {
+      if (annotationMeta.getElementKind() == ElementKind.METHOD) {
+        MethodIdentifier id = annotationMeta.getMethodIdentifier();
+        id.setMethodResolver(() -> remappingMethodLocationResolver
+            .getLocation(id.getOwner(), id.getName(), id.getParameters()));
+      }
+    }
 
     return annotationMetas;
   }
@@ -301,10 +365,11 @@ public class DefaultPackage implements Package {
    */
   @Override
   public PackageClassLoader getPackageClassLoader() {
-    if (packageState != PackageState.LOADED && packageState != PackageState.ENABLED) {
+    if (packageState != PackageState.LOADED
+        && packageState != PackageState.ENABLED) {
       throw new IllegalStateException(
-          "The package has to be in the LOADED or ENABLED state in order to retrieve "
-              + "the class loader of it");
+          "The package has to be in the LOADED or ENABLED state in order to "
+              + "retrieve the class loader of it");
     }
 
     return this.classLoader;
@@ -325,8 +390,8 @@ public class DefaultPackage implements Package {
   public Exception getLoadException() {
     if (packageState != PackageState.ERRORED) {
       throw new IllegalStateException(
-          "The package has to be in the ERRORED state in order to retrieve the exception "
-              + "which caused its loading to fail");
+          "The package has to be in the ERRORED state in order to retrieve the "
+              + "exception which caused its loading to fail");
     }
 
     return this.loadException;

@@ -19,14 +19,14 @@
 
 package net.flintmc.mcapi.world.scoreboad;
 
-import java.util.Collection;
-import java.util.Map;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.world.scoreboad.score.Criteria;
 import net.flintmc.mcapi.world.scoreboad.score.Objective;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.flintmc.mcapi.world.scoreboad.score.Score;
 import net.flintmc.mcapi.world.scoreboad.type.RenderType;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Represents a Minecraft scoreboard.
@@ -66,11 +66,22 @@ public interface Scoreboard {
   /**
    * Retrieves or creates a new score.
    *
-   * @param username  The username to get the key-value system.
-   * @param objective The objective to set the retrieved or created score.
+   * @param username  The non-null username to get the score for
+   * @param objective The non-null objective to set the retrieved or created score
    * @return A retrieved or created score.
+   * @throws IllegalArgumentException If the given username is longer than 40 characters
    */
   Score getOrCreateScore(String username, Objective objective);
+
+  /**
+   * Retrieves a score from this scoreboard.
+   *
+   * @param username  The non-null username to get the score for
+   * @param objective The non-null objective to get the score from
+   * @return The score or {@code null} if no score with the given name in the given objective exists
+   * @throws IllegalArgumentException If the given username is longer than 40 characters
+   */
+  Score getScore(String username, Objective objective);
 
   /**
    * Retrieves an {@link Objective} in the given display slot.
@@ -80,6 +91,11 @@ public interface Scoreboard {
    */
   Objective getObjectiveInDisplaySlot(int slot);
 
+  /**
+   * Removes the given objective from this scoreboard.
+   *
+   * @param objective The non-null objective to be removed
+   */
   void removeObjective(Objective objective);
 
   /**

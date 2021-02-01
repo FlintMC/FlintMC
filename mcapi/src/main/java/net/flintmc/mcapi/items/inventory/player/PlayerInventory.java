@@ -49,7 +49,7 @@ public interface PlayerInventory extends Inventory {
    * Retrieves the type of a specific slot in this inventory.
    *
    * @param slot The slot to get the type from
-   * @return The type of the given slot or {@code null} if the given slot is no special type
+   * @return The type of the given slot or {@code null}, if the given slot is no special type
    * @throws IndexOutOfBoundsException If the slot is either smaller than 0, or greater or equal to
    *                                   the highest possible slot in this inventory
    */
@@ -95,7 +95,7 @@ public interface PlayerInventory extends Inventory {
   /**
    * Retrieves the item that is currently held on the cursor by the player.
    *
-   * @return The item on the cursor or {@code null} if the player has no item on the cursor
+   * @return The item on the cursor or {@code null}, if the player has no item on the cursor
    */
   ItemStack getCursor();
 

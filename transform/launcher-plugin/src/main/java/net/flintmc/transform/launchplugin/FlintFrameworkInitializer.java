@@ -34,7 +34,10 @@ import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.DetectableAnnotationProvider;
 import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.processing.autoload.identifier.MethodIdentifier;
 import net.flintmc.transform.launchplugin.inject.module.BindConstantModule;
+import net.flintmc.util.mappings.utils.RemappingMethodLocationResolver;
+import javax.lang.model.element.ElementKind;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,10 +60,12 @@ public class FlintFrameworkInitializer {
       LaunchController.getInstance()
           .getRootLoader()
           .excludeFromModification(
-              "net.flintmc.transform.", "net.flintmc.framework.config.internal.");
+              "net.flintmc.transform.",
+              "net.flintmc.framework.config.internal.");
 
       // create guice constant module
-      InjectionHolder.getInstance().addModules(new BindConstantModule(arguments));
+      InjectionHolder.getInstance()
+          .addModules(new BindConstantModule(arguments));
       // Apply module and instantiate service repository
       ServiceRepository serviceRepository =
           InjectionHolder.getInjectedInstance(ServiceRepository.class);
@@ -71,7 +76,8 @@ public class FlintFrameworkInitializer {
       // done if it is really necessary.
       serviceRepository.flushServices(Service.State.PRE_INIT);
       // Apply all Implementations and AssistedFactories
-      InjectionService service = InjectionHolder.getInjectedInstance(InjectionService.class);
+      InjectionService service = InjectionHolder
+          .getInjectedInstance(InjectionService.class);
       service.flushImplementation();
       serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
       service.flushAssistedFactory();
@@ -85,13 +91,15 @@ public class FlintFrameworkInitializer {
     }
   }
 
-  private void prepareServices(ServiceRepository serviceRepository) throws NotFoundException {
+  private void prepareServices(ServiceRepository serviceRepository)
+      throws NotFoundException {
     // Discover all annotation meta data
     List<AnnotationMeta> annotations = getAnnotationMeta();
     // Iterate over all annotations
     for (AnnotationMeta<?> annotationMeta : annotations) {
       // check if metadata is a service
-      if (annotationMeta.getAnnotation().annotationType().equals(Service.class)) {
+      if (annotationMeta.getAnnotation().annotationType()
+          .equals(Service.class)) {
         // if yes go ahead and register it
         Service annotation = (Service) annotationMeta.getAnnotation();
         serviceRepository.registerService(
@@ -99,18 +107,22 @@ public class FlintFrameworkInitializer {
             annotation.priority(),
             annotation.state(),
             ClassPool.getDefault()
-                .get(((ClassIdentifier) (annotationMeta.getIdentifier())).getName()));
+                .get(((ClassIdentifier) (annotationMeta.getIdentifier()))
+                    .getName()));
         // if not check if it might be multiple services at once. the Javapoet framework sadly seems
         // to not support Repeatable annotations yet. Maybe this will change sometime.
-      } else if (annotationMeta.getAnnotation().annotationType().equals(Services.class)) {
+      } else if (annotationMeta.getAnnotation().annotationType()
+          .equals(Services.class)) {
         // Iterate over all services and register them
-        for (Service service : ((Services) annotationMeta.getAnnotation()).value()) {
+        for (Service service : ((Services) annotationMeta.getAnnotation())
+            .value()) {
           serviceRepository.registerService(
               service.value(),
               service.priority(),
               service.state(),
               ClassPool.getDefault()
-                  .get(((ClassIdentifier) annotationMeta.getIdentifier()).getName()));
+                  .get(((ClassIdentifier) annotationMeta.getIdentifier())
+                      .getName()));
         }
       }
     }
@@ -123,8 +135,8 @@ public class FlintFrameworkInitializer {
   }
 
   /**
-   * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
-   * on compile time
+   * @return all saved annotation meta that was written to the {@link
+   * DetectableAnnotationProvider} on compile time
    */
   private List<AnnotationMeta> getAnnotationMeta() {
     List<AnnotationMeta> annotationMetas = new ArrayList<>();
@@ -134,8 +146,18 @@ public class FlintFrameworkInitializer {
             .discover(LaunchController.getInstance().getRootLoader());
 
     discover.forEach(
-        detectableAnnotationProvider -> detectableAnnotationProvider.register(annotationMetas));
+        detectableAnnotationProvider -> detectableAnnotationProvider
+            .register(annotationMetas));
 
+    RemappingMethodLocationResolver remappingMethodLocationResolver
+        = new RemappingMethodLocationResolver();
+    for (AnnotationMeta annotationMeta : annotationMetas) {
+      if (annotationMeta.getElementKind() == ElementKind.METHOD) {
+        MethodIdentifier id = annotationMeta.getMethodIdentifier();
+        id.setMethodResolver(() -> remappingMethodLocationResolver
+            .getLocation(id.getOwner(), id.getName(), id.getParameters()));
+      }
+    }
     return annotationMetas;
   }
 }

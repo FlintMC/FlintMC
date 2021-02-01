@@ -81,7 +81,7 @@ public interface RegisteredSetting {
   /**
    * Retrieves the name of the category which this setting belongs to.
    *
-   * @return The name of the category or {@code null} if it doesn't belong to any category
+   * @return The name of the category or {@code null}, if it doesn't belong to any category
    * @see SettingsProvider#getCategory(String)
    */
   String getCategoryName();
@@ -123,7 +123,7 @@ public interface RegisteredSetting {
      *
      * @param annotationType The non-null type of annotation which marks this setting ({@link
      *                       #getAnnotation()})
-     * @param categoryName   The name of the category the new setting belongs to, or {@code null} if
+     * @param categoryName   The name of the category the new setting belongs to, or {@code null}, if
      *                       it doesn't belong to any category
      * @param reference      The non-null reference in a {@link Config} where this setting has been
      *                       discovered

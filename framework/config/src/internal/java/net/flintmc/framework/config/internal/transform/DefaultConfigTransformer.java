@@ -22,11 +22,19 @@ package net.flintmc.framework.config.internal.transform;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.NotFoundException;
+import javassist.bytecode.ClassFile;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.ConfigImplementer;
@@ -38,21 +46,20 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.transform.javassist.ClassTransform;
-import net.flintmc.transform.javassist.ClassTransformContext;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
+import net.flintmc.transform.exceptions.ClassTransformException;
+import net.flintmc.transform.launchplugin.LateInjectedTransformer;
+import net.flintmc.transform.minecraft.MinecraftTransformer;
 
 @Singleton
 @Service(
     value = ConfigImplementation.class,
     priority = 2 /* needs to be called after the ConfigGenerationService */)
+@MinecraftTransformer
 @Implement(ConfigTransformer.class)
 public class DefaultConfigTransformer
-    implements ConfigTransformer, ServiceHandler<ConfigImplementation> {
+    implements ConfigTransformer, LateInjectedTransformer, ServiceHandler<ConfigImplementation> {
 
   private final ClassPool pool;
   private final ConfigImplementer configImplementer;
@@ -74,25 +81,19 @@ public class DefaultConfigTransformer
     this.mappings = new HashSet<>();
   }
 
+  @Override
   public Collection<TransformedConfigMeta> getMappings() {
     return this.mappings;
   }
 
+  @Override
   public Collection<PendingTransform> getPendingTransforms() {
     return this.pendingTransforms;
   }
 
-  @ClassTransform
-  public void transformConfigImplementation(ClassTransformContext context)
-      throws CannotCompileException, NotFoundException {
-    // implement methods in classes of the config (including the class annotated with @Config) that
-    // are also half-generated
-    CtClass implementation = context.getCtClass();
-
-    this.implementMethods(implementation);
-  }
-
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void discover(AnnotationMeta<ConfigImplementation> meta) throws ServiceNotFoundException {
     // implement the configs that are annotated with ImplementedConfig
@@ -113,29 +114,61 @@ public class DefaultConfigTransformer
       return;
     }
 
-    try {
-      TransformedConfigMeta configMeta = new TransformedConfigMeta(annotation.value());
-      this.mappings.add(configMeta);
+    TransformedConfigMeta configMeta = new TransformedConfigMeta(
+        annotation.value(), implementation);
+    this.mappings.add(configMeta);
 
-      // load the class so that the transformer will be called
-      Class<?> definedImplementation =
-          super.getClass().getClassLoader().loadClass(implementation.getName());
-      configMeta.setImplementationClass(definedImplementation);
-
-      if (configMeta.getConfig() == null) {
-        return;
+    for (PendingTransform transform : this.pendingTransforms) {
+      if (transform.getMethod().getDeclaringClass().getName()
+          .equals(annotation.value().getName())) {
+        transform.setConfigMeta(configMeta);
       }
+    }
+  }
 
-      // get the new implementation with the changes from the class transformer
-      CtClass newImplementation = this.pool.get(implementation.getName());
+  @Override
+  public byte[] transform(String className, CommonClassLoader classLoader, byte[] classData)
+      throws ClassTransformException {
+    // implement methods in classes of the config (including the class annotated with @Config) that
+    // are also half-generated
 
-      // bind the implementation in the config to be used by the ConfigObjectReference.Parser
-      configMeta
-          .getConfig()
-          .bindGeneratedImplementation(
-              this.pool.get(configMeta.getSuperClass().getName()), newImplementation);
-    } catch (ClassNotFoundException | NotFoundException e) {
-      throw new ServiceNotFoundException("Cannot load transformed config class");
+    boolean shouldTransform = false;
+
+    for (PendingTransform transform : this.pendingTransforms) {
+      if (transform.getConfigMeta() != null &&
+          transform.getConfigMeta().getImplementationCtClass().getName().equals(className)) {
+        shouldTransform = true;
+        break;
+      }
+    }
+
+    if (!shouldTransform) {
+      return classData;
+    }
+
+    CtClass transforming;
+
+    try {
+      transforming =
+          this.pool.makeClass(
+              new ClassFile(new DataInputStream(new ByteArrayInputStream(classData))), true);
+    } catch (IOException exception) {
+      throw new ClassTransformException("unable to read class", exception);
+    }
+
+    try {
+      this.implementMethods(transforming);
+    } catch (CannotCompileException | NotFoundException exception) {
+      throw new ClassTransformException(
+          "Failed to implement config methods: " + className, exception);
+    }
+
+    try {
+      return transforming.toBytecode();
+    } catch (IOException | CannotCompileException exception) {
+      // Basically unreachable.
+      throw new ClassTransformException(
+          "Unable to write class bytecode to byte array: " + className, exception);
     }
   }
 
@@ -149,11 +182,20 @@ public class DefaultConfigTransformer
 
     Collection<PendingTransform> copy = new HashSet<>(this.pendingTransforms);
     for (PendingTransform transform : copy) {
-      ConfigMethod method = transform.getMethod();
-      CtClass declaring = method.getDeclaringClass();
-      if (!implementation.subtypeOf(declaring)) {
+      if (transform.getConfigMeta() == null) {
         continue;
       }
+
+      ConfigMethod method = transform.getMethod();
+      CtClass declaring = method.getDeclaringClass();
+      if (!implementation.getName()
+          .equals(transform.getConfigMeta().getImplementationCtClass().getName())) {
+        continue;
+      }
+
+      // bind the new config class from the new class pool above with
+      // new methods from this transformer
+      method.getConfig().bindGeneratedImplementation(declaring, implementation);
 
       if (!modified
           && implementation.isInterface()
@@ -186,7 +228,7 @@ public class DefaultConfigTransformer
 
         if (method.getDeclaringClass().getName().equals(method.getConfig().getBaseClass().getName())
             && Arrays.stream(implementation.getInterfaces())
-                .noneMatch(iface -> iface.getName().equals(ParsedConfig.class.getName()))) {
+            .noneMatch(iface -> iface.getName().equals(ParsedConfig.class.getName()))) {
           // only the base class annotated with @Config should have the ParsedConfig implementation
           this.configImplementer.implementParsedConfig(
               implementation, method.getConfig().getName());

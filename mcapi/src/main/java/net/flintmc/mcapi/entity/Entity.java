@@ -40,7 +40,6 @@ import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.player.type.sound.Sound;
 import net.flintmc.mcapi.player.type.sound.SoundCategory;
 import net.flintmc.mcapi.world.World;
-import net.flintmc.mcapi.world.block.material.PushReaction;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Direction;
 import net.flintmc.mcapi.world.math.Vector3D;

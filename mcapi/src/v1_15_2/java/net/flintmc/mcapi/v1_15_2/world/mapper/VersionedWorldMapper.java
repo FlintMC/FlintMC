@@ -22,14 +22,12 @@ package net.flintmc.mcapi.v1_15_2.world.mapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.player.type.GameMode;
 import net.flintmc.mcapi.world.mapper.WorldMapper;
-import net.flintmc.mcapi.world.storage.WorldConfiguration;
 import net.flintmc.mcapi.world.storage.WorldOverview;
 import net.flintmc.mcapi.world.type.WorldType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.GameType;
-import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraft.world.storage.WorldSummary;
 
@@ -37,58 +35,18 @@ import net.minecraft.world.storage.WorldSummary;
 @Implement(value = WorldMapper.class, version = "1.15.2")
 public class VersionedWorldMapper implements WorldMapper {
 
-  private final WorldConfiguration.Factory worldConfigurationFactory;
+  private final TranslationComponent.Factory componentFactory;
   private final WorldType.Factory worldTypeFactory;
   private final WorldOverview.Factory worldOverviewFactory;
 
   @Inject
   private VersionedWorldMapper(
-      WorldConfiguration.Factory worldConfigurationFactory,
+      TranslationComponent.Factory componentFactory,
       WorldType.Factory worldTypeFactory,
       WorldOverview.Factory worldOverviewFactory) {
-    this.worldConfigurationFactory = worldConfigurationFactory;
+    this.componentFactory = componentFactory;
     this.worldTypeFactory = worldTypeFactory;
     this.worldOverviewFactory = worldOverviewFactory;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object toMinecraftWorldSettings(WorldConfiguration configuration) {
-    return new WorldSettings(
-        configuration.getSeed(),
-        GameType.getByName(configuration.getGameMode().getName()),
-        configuration.isMapFeaturesEnabled(),
-        configuration.isHardcoreMode(),
-        (net.minecraft.world.WorldType) this.toMinecraftWorldType(configuration.getWorldType())
-    );
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public WorldConfiguration fromMinecraftWorldSettings(Object handle) {
-    if (!(handle instanceof WorldSettings)) {
-      throw new IllegalArgumentException(
-          handle.getClass().getName()
-              + " is not an instance of "
-              + WorldSettings.class.getName());
-    }
-
-    WorldSettings worldSettings = (WorldSettings) handle;
-
-    return this.worldConfigurationFactory.create(
-        worldSettings.getSeed(),
-        GameMode.valueOf(worldSettings.getGameType().name()),
-        worldSettings.isMapFeaturesEnabled(),
-        worldSettings.getHardcoreEnabled(),
-        this.fromMinecraftWorldType(worldSettings.getGameType()),
-        worldSettings.isBonusChestEnabled(),
-        worldSettings.areCommandsAllowed(),
-        worldSettings.getGeneratorOptions()
-    );
   }
 
   /**
@@ -113,14 +71,15 @@ public class VersionedWorldMapper implements WorldMapper {
 
     net.minecraft.world.WorldType worldType = (net.minecraft.world.WorldType) handle;
 
+    TranslationComponent displayName = this.componentFactory.create();
+    displayName.translationKey(worldType.getTranslationKey());
+
     return this.worldTypeFactory.create(
-        worldType.getId(),
         worldType.getName(),
-        worldType.getSerialization(),
-        worldType.getVersion(),
-        worldType.canBeCreated(),
-        worldType.isVersioned(),
-        worldType.hasInfoNotice(),
+        displayName,
+        worldType.canBeCreated() && !worldType.getName()
+            .equals(net.minecraft.world.WorldType.DEBUG_ALL_BLOCK_STATES.getName()),
+        worldType.getName().equals(net.minecraft.world.WorldType.DEBUG_ALL_BLOCK_STATES.getName()),
         worldType.hasCustomOptions()
     );
   }
@@ -138,7 +97,7 @@ public class VersionedWorldMapper implements WorldMapper {
           worldInfo,
           worldOverview.getFileName(),
           worldOverview.getDisplayName(),
-          worldOverview.getSizeOnDisk(),
+          0L,
           worldOverview.requiresConversion()
       );
     }
@@ -166,7 +125,6 @@ public class VersionedWorldMapper implements WorldMapper {
         summary.getDisplayName(),
         rawVersion == null || rawVersion.isEmpty() ? null : rawVersion,
         summary.getLastTimePlayed(),
-        summary.getSizeOnDisk(),
         summary.requiresConversion(),
         GameMode.valueOf(summary.getEnumGameType().name()),
         summary.isHardcoreModeEnabled(),

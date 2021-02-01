@@ -29,6 +29,15 @@ import java.util.function.Predicate;
 public interface ResourceLocationProvider {
 
   /**
+   * Maps the given Minecraft resource location to the Flint resource location.
+   *
+   * @param handle The non-null Minecraft resource location
+   * @return The new non-null Flint resource location
+   * @see ResourceLocation#getHandle()
+   */
+  ResourceLocation fromMinecraft(Object handle);
+
+  /**
    * Creates a resource location with the given path. Equivalent to {@link
    * ResourceLocation.Factory#create(String)}.
    *

@@ -21,12 +21,23 @@ package net.flintmc.framework.packages.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.packages.DependencyDescription;
 import net.flintmc.framework.packages.PackageManifest;
 import net.flintmc.framework.packages.PackageManifestLoader;
+import net.flintmc.framework.packages.SemanticVersion;
 import net.flintmc.installer.impl.InstallerModule;
 import net.flintmc.installer.impl.repository.models.DependencyDescriptionModel;
 import net.flintmc.installer.impl.repository.models.ModelSerializer;
@@ -34,19 +45,9 @@ import net.flintmc.installer.impl.repository.models.PackageModel;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-
 @Singleton
 @Implement(PackageManifestLoader.class)
 public class DefaultPackageManifestLoader implements PackageManifestLoader {
-  public static final String MANIFEST_NAME = "manifest.json";
 
   private final ModelSerializer manifestLoader;
   private Logger logger;
@@ -55,7 +56,8 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
   private DefaultPackageManifestLoader(@InjectLogger Logger logger) {
     this.logger = logger;
     InjectionHolder.getInstance().addModules(new InstallerModule());
-    this.manifestLoader = InjectionHolder.getInjectedInstance(ModelSerializer.class);
+    this.manifestLoader = InjectionHolder
+        .getInjectedInstance(ModelSerializer.class);
   }
 
   /**
@@ -75,22 +77,27 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
   public PackageManifest loadManifest(JarFile file) throws IOException {
     ZipEntry manifest = file.getEntry(MANIFEST_NAME);
     return new DefaultPackageManifest(
-        this.manifestLoader.fromString(readZipEntry(file, manifest), PackageModel.class));
+        this.manifestLoader
+            .fromString(readZipEntry(file, manifest), PackageModel.class));
   }
 
   @Override
   public PackageManifest loadManifest(URL url) throws IOException {
-    return new DefaultPackageManifest(this.manifestLoader.fromString(IOUtils.toString(url, StandardCharsets.UTF_8), PackageModel.class));
+    return new DefaultPackageManifest(this.manifestLoader
+        .fromString(IOUtils.toString(url, StandardCharsets.UTF_8),
+            PackageModel.class));
   }
 
   private String readZipEntry(JarFile file, ZipEntry entry) throws IOException {
-    InputStreamReader reader = new InputStreamReader(file.getInputStream(entry));
+    InputStreamReader reader = new InputStreamReader(
+        file.getInputStream(entry));
     StringBuilder manifest = new StringBuilder();
     char[] data = new char[1024];
     int read = 0;
     while ((read = reader.read(data)) > 0) {
-      for (int i = 0; i < read; i++)
+      for (int i = 0; i < read; i++) {
         manifest.append(data[i]);
+      }
     }
     return manifest.toString();
   }
@@ -99,14 +106,18 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
    * Default implementation of a {@link PackageManifest}.
    */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
-  private static class DefaultPackageManifest implements PackageManifest, Serializable {
+  private static class DefaultPackageManifest implements PackageManifest,
+      Serializable {
 
     private PackageModel model;
+    private SemanticVersion version;
     private Set<DefaultDependencyDescription> dependencies = new HashSet<>();
 
     DefaultPackageManifest(PackageModel model) {
       this.model = model;
-      model.getDependencies().forEach(dep -> dependencies.add(new DefaultDependencyDescription(dep)));
+      this.version = SemanticVersion.from(model.getVersion());
+      model.getDependencies().forEach(
+          dep -> dependencies.add(new DefaultDependencyDescription(dep)));
     }
 
     /**
@@ -131,6 +142,11 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     @Override
     public String getVersion() {
       return this.model.getVersion();
+    }
+
+    @Override
+    public SemanticVersion getSemanticVersion() {
+      return this.version;
     }
 
     /**
@@ -172,7 +188,18 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
       return this.getName() != null
           && this.getVersion() != null
           && this.getAuthors() != null
-          && dependencies.stream().allMatch(dependency -> dependency.getName() != null);
+          && dependencies.stream()
+          .allMatch(dependency -> dependency.getName() != null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addDependency(String packageName, String versions,
+        String channel) {
+      this.dependencies.add(new DefaultDependencyDescription(
+          new DependencyDescriptionModel(packageName, versions, channel)));
     }
   }
 
@@ -180,12 +207,15 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
    * Default implementation of a {@link DependencyDescription}.
    */
   @SuppressWarnings({"unused", "FieldMayBeFinal"})
-  private static class DefaultDependencyDescription implements DependencyDescription, Serializable {
+  private static class DefaultDependencyDescription implements
+      DependencyDescription, Serializable {
 
     private DependencyDescriptionModel model;
+    private SemanticVersion version;
 
     DefaultDependencyDescription(DependencyDescriptionModel model) {
       this.model = model;
+      this.version = SemanticVersion.from(model.getVersions());
     }
 
     /**
@@ -200,8 +230,13 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getVersions() {
-      return Arrays.asList(this.model.getVersions().split(","));
+    public String getVersions() {
+      return this.model.getVersions();
+    }
+
+    @Override
+    public SemanticVersion getSemanticVersion() {
+      return this.version;
     }
 
     @Override
@@ -214,8 +249,9 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
      */
     @Override
     public boolean matches(PackageManifest manifest) {
-      return this.getName().equals(manifest.getName())
-          && this.getVersions().stream().anyMatch(manifest.getVersion()::equals);
+      return this.getName().equals(manifest.getName()) && this
+          .getSemanticVersion()
+          .isSatisfiedBy(manifest.getSemanticVersion());
     }
   }
 }

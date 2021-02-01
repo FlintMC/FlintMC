@@ -19,27 +19,46 @@
 
 package net.flintmc.mcapi.internal.chat.component;
 
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.TextComponent;
 
+@Implement(TextComponent.class)
 public class DefaultTextComponent extends DefaultChatComponent implements TextComponent {
 
   private String text;
 
+  @AssistedInject
+  private DefaultTextComponent() {
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String text() {
     return this.text;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void text(String text) {
     this.text = text;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getUnformattedText() {
     return this.text;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected DefaultChatComponent createCopy() {
     DefaultTextComponent component = new DefaultTextComponent();
@@ -47,6 +66,9 @@ public class DefaultTextComponent extends DefaultChatComponent implements TextCo
     return component;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean isSpecificEmpty() {
     return this.text == null;

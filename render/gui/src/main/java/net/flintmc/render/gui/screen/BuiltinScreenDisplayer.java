@@ -62,7 +62,7 @@ public interface BuiltinScreenDisplayer {
    * may not be {@link #supports(ScreenName) supported by this displayer}. Those screens for example
    * can be the chat, the main menu, etc.
    *
-   * @return The currently open screen or {@code null} if there is currently no screen opened (e.g.
+   * @return The currently open screen or {@code null}, if there is currently no screen opened (e.g.
    * the ingame screen without the chat opened)
    */
   ScreenName getOpenScreen();

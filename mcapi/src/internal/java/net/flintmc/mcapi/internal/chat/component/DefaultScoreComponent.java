@@ -19,23 +19,45 @@
 
 package net.flintmc.mcapi.internal.chat.component;
 
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ScoreComponent;
+import net.flintmc.mcapi.world.scoreboad.Scoreboard;
+import net.flintmc.mcapi.world.scoreboad.score.Objective;
+import net.flintmc.mcapi.world.scoreboad.score.Score;
 
+@Implement(ScoreComponent.class)
 public class DefaultScoreComponent extends DefaultChatComponent implements ScoreComponent {
+
+  private final Scoreboard scoreboard;
 
   private String name;
   private String objective;
 
+  @AssistedInject
+  private DefaultScoreComponent(Scoreboard scoreboard) {
+    this.scoreboard = scoreboard;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String name() {
     return this.name;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void name(String name) {
     this.name = name;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String objective() {
     return this.objective;
@@ -46,19 +68,37 @@ public class DefaultScoreComponent extends DefaultChatComponent implements Score
     this.objective = objective;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getUnformattedText() {
-    return "null"; // TODO get text out of the scoreboard
+    if (this.objective == null || this.name == null) {
+      return "null";
+    }
+    Objective objective = this.scoreboard.getObjective(this.objective);
+    if (objective == null) {
+      return "null";
+    }
+
+    Score score = this.scoreboard.getScore(this.name, objective);
+    return score != null ? String.valueOf(score.getScorePoints()) : "";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected DefaultChatComponent createCopy() {
-    DefaultScoreComponent component = new DefaultScoreComponent();
+    DefaultScoreComponent component = new DefaultScoreComponent(scoreboard);
     component.name = this.name;
     component.objective = this.objective;
     return component;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean isSpecificEmpty() {
     return this.name == null && this.objective == null;

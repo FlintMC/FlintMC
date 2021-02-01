@@ -20,44 +20,63 @@
 package net.flintmc.mcapi.internal.chat.builder;
 
 import java.util.Collection;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.builder.SelectorComponentBuilder;
 import net.flintmc.mcapi.chat.component.SelectorComponent;
+import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
-import net.flintmc.mcapi.internal.chat.component.DefaultSelectorComponent;
 
 @Implement(value = SelectorComponentBuilder.class)
 public class DefaultSelectorComponentBuilder
     extends DefaultComponentBuilder<SelectorComponentBuilder, SelectorComponent>
     implements SelectorComponentBuilder {
 
-  public DefaultSelectorComponentBuilder() {
-    super(DefaultSelectorComponent::new);
+  @AssistedInject
+  private DefaultSelectorComponentBuilder(
+      TextComponent.Factory textComponentFactory,
+      SelectorComponent.Factory factory) {
+    super(textComponentFactory, factory);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SelectorComponentBuilder selector(EntitySelector selector) {
     super.currentComponent.selector(selector);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntitySelector selector() {
     return super.currentComponent.selector();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SelectorComponentBuilder option(String option, String value) {
     super.currentComponent.selectorOption(option, value);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<String> option(String option) {
     return super.currentComponent.selectorOption(option);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SelectorComponentBuilder parse(String rawSelector) {
     rawSelector = rawSelector.replace(" ", "");

@@ -24,11 +24,11 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializer;
+import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
 import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
-import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -38,11 +38,16 @@ public abstract class HoverEventSerializer
     implements JsonSerializer<HoverEvent>, JsonDeserializer<HoverEvent> {
 
   protected final GsonComponentSerializer componentSerializer;
+  protected final ComponentBuilder.Factory componentFactory;
   private final Logger logger;
 
-  public HoverEventSerializer(Logger logger, GsonComponentSerializer componentSerializer) {
+  public HoverEventSerializer(
+      Logger logger,
+      GsonComponentSerializer componentSerializer,
+      ComponentBuilder.Factory componentFactory) {
     this.logger = logger;
     this.componentSerializer = componentSerializer;
+    this.componentFactory = componentFactory;
   }
 
   protected HoverEvent.Action deserializeAction(JsonObject object) {
@@ -70,7 +75,7 @@ public abstract class HoverEventSerializer
     if (value.isJsonObject()) {
       return context.deserialize(value, ChatComponent.class);
     } else if (value.isJsonPrimitive()) {
-      return new DefaultTextComponentBuilder().text(value.getAsString()).build();
+      return this.componentFactory.text().text(value.getAsString()).build();
     }
 
     return null;

@@ -47,6 +47,7 @@ import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.commons.resolve.AnnotationResolver;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
+import net.flintmc.util.mappings.utils.line.MappingLineParser;
 
 import java.util.Collection;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class HookService implements ServiceHandler<Hook> {
 
   private final ClassPool pool;
   private final ClassMappingProvider mappingProvider;
+  private final MappingLineParser lineParser;
   private final Provider<MethodInjectionUtils> methodInjectionUtils;
   private final String version;
   private final Collection<HookEntry> hooks;
@@ -65,10 +67,12 @@ public class HookService implements ServiceHandler<Hook> {
   private HookService(
       ClassPool pool,
       ClassMappingProvider mappingProvider,
+      MappingLineParser lineParser,
       Provider<MethodInjectionUtils> methodInjectionUtils,
       @Named("launchArguments") Map launchArguments) {
     this.pool = pool;
     this.mappingProvider = mappingProvider;
+    this.lineParser = lineParser;
     this.methodInjectionUtils = methodInjectionUtils;
     this.hooks = Sets.newHashSet();
     this.version = (String) launchArguments.get("--game-version");
@@ -166,7 +170,7 @@ public class HookService implements ServiceHandler<Hook> {
       returnValue =
           hook.defaultValue().isEmpty()
               ? DefaultValues.getDefaultValue(returnTypeName)
-              : hook.defaultValue();
+              : this.lineParser.translateMappings(hook.defaultValue());
     }
 
     if (executionTime == Hook.ExecutionTime.AFTER && returnTypeName.equals("void")) {

@@ -34,6 +34,8 @@ import net.flintmc.mcapi.entity.event.EntitySpawnEvent;
 import net.flintmc.mcapi.player.ClientPlayer;
 import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.world.ClientWorld;
+import net.flintmc.mcapi.world.block.Block;
+import net.flintmc.mcapi.world.block.BlockState;
 import net.flintmc.mcapi.world.border.WorldBorder;
 import net.flintmc.mcapi.world.math.BlockPosition.Factory;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
@@ -47,6 +49,7 @@ import net.minecraft.client.Minecraft;
 @Implement(value = ClientWorld.class, version = "1.15.2")
 public class VersionedClientWorld extends VersionedWorld implements ClientWorld {
 
+  private final ClientPlayer player;
   private final Set<PlayerEntity> players;
   private final Map<Integer, Entity> entities;
   private final Scoreboard scoreboard;
@@ -54,10 +57,14 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
   @Inject
   public VersionedClientWorld(
       Factory blockPositionFactory,
+      BlockState.Factory stateFactory,
+      Block.Factory blockFactory,
       DifficultyLocal.Factory difficultyLocalFactory,
       WorldBorder worldBorder,
+      ClientPlayer player,
       Scoreboard scoreboard) {
-    super(blockPositionFactory, difficultyLocalFactory, worldBorder, scoreboard);
+    super(stateFactory, blockFactory, blockPositionFactory, difficultyLocalFactory, worldBorder, scoreboard);
+    this.player = player;
     this.scoreboard = scoreboard;
     this.entities = Maps.newHashMap();
     this.players = Sets.newHashSet();
@@ -128,13 +135,13 @@ public class VersionedClientWorld extends VersionedWorld implements ClientWorld 
   }
 
   @PreSubscribe
-  public void entitySpawn(EntitySpawnEvent event, ClientPlayer player) {
+  public void entitySpawn(EntitySpawnEvent event) {
     Entity entity = event.getEntity();
 
     if (entity instanceof PlayerEntity) {
       PlayerEntity playerEntity = (PlayerEntity) entity;
-      if (playerEntity.getUniqueId().equals(player.getUniqueId())) {
-        this.addPlayer(player);
+      if (playerEntity.getUniqueId().equals(this.player.getUniqueId())) {
+        this.addPlayer(this.player);
       } else {
         this.addPlayer(playerEntity);
       }

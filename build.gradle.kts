@@ -16,7 +16,6 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
 buildscript {
     repositories {
         maven {
@@ -61,7 +60,7 @@ subprojects {
         apply<MavenPublishPlugin>()
         plugins.apply("net.minecrell.licenser")
 
-        version = System.getenv().getOrDefault("VERSION", "2.0.15")
+        version = System.getenv().getOrDefault("VERSION", "2.0.22")
 
         repositories {
             flintRepository()
@@ -115,7 +114,7 @@ flint {
         !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
     }
 
-    minecraftVersions("1.15.2", "1.16.4")
+    minecraftVersions("1.15.2", "1.16.5")
 
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
     authors = arrayOf("LabyMedia GmbH")

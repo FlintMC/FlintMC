@@ -19,42 +19,63 @@
 
 package net.flintmc.mcapi.internal.chat.component;
 
-import java.util.function.Function;
+import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
+import net.flintmc.util.i18n.I18n;
 
+@Implement(KeybindComponent.class)
 public class DefaultKeybindComponent extends DefaultChatComponent implements KeybindComponent {
 
-  public static Function<Keybind, String> nameFunction = Keybind::getKey;
+  private final I18n i18n;
+  private final KeybindNameMapper mapper;
 
   private Keybind keybind;
 
+  @AssistedInject
+  private DefaultKeybindComponent(I18n i18n, KeybindNameMapper mapper) {
+    this.i18n = i18n;
+    this.mapper = mapper;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Keybind keybind() {
     return this.keybind;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void keybind(Keybind keybind) {
     this.keybind = keybind;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getUnformattedText() {
-    if (nameFunction == null) {
-      nameFunction = Keybind::getKey;
-    }
-
-    return this.keybind == null ? "null" : nameFunction.apply(this.keybind);
+    return this.keybind == null ? "null" : this.mapper.translateKeybind(this.keybind);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected DefaultChatComponent createCopy() {
-    DefaultKeybindComponent component = new DefaultKeybindComponent();
+    DefaultKeybindComponent component = new DefaultKeybindComponent(i18n, mapper);
     component.keybind = this.keybind;
     return component;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean isSpecificEmpty() {
     return this.keybind == null;
