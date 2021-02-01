@@ -24,7 +24,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches/flint-gradle
-          key: jdk-8-flint-gradle
+          key: jdk-8-flint-gradle-${{ hashFiles('build.gradle.kts') }}
+          restore-keys : |
+            jdk-8-flint-gradle
 
       - name: Configure gradle
         run: ./gradlew
