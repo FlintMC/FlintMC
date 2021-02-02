@@ -39,7 +39,7 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.GameProfile.Builder;
-import net.flintmc.util.mojang.MojangUUIDMapper;
+import net.flintmc.util.mojang.UUIDParser;
 import net.flintmc.util.session.AuthenticationResult;
 import net.flintmc.util.session.AuthenticationResult.Type;
 import net.flintmc.util.session.RefreshTokenResult;
@@ -318,7 +318,7 @@ public class DefaultSessionService implements SessionService {
       if (object.has("selectedProfile")) {
         JsonObject profile = object.getAsJsonObject("selectedProfile");
         this.selectedProfile = this.gameProfileBuilderFactory.get()
-            .setUniqueId(MojangUUIDMapper.fromMojangString(profile.get("id").getAsString()))
+            .setUniqueId(UUIDParser.fromUndashedString(profile.get("id").getAsString()))
             .setName(profile.get("name").getAsString())
             .build();
       }
@@ -350,7 +350,7 @@ public class DefaultSessionService implements SessionService {
       this.logOut();
 
       this.updateAuthenticationContent(
-          MojangUUIDMapper.fromMojangString(profile.get("id").getAsString()),
+          UUIDParser.fromUndashedString(profile.get("id").getAsString()),
           profile.get("name").getAsString(),
           object.get("accessToken").getAsString());
 

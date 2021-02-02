@@ -22,19 +22,19 @@ package net.flintmc.util.session.internal.launcher.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import com.google.inject.Provider;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.GameProfile.Builder;
-import net.flintmc.util.mojang.MojangUUIDMapper;
+import net.flintmc.util.mojang.UUIDParser;
 import net.flintmc.util.session.launcher.LauncherProfile;
 import net.flintmc.util.session.launcher.LauncherProfile.Factory;
 import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Serializer for version 2 of the launcher_profiles.json by Mojang.
@@ -108,7 +108,7 @@ public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
         try {
           gameProfiles.add(
               this.gameProfileBuilderFactory.get()
-                  .setUniqueId(MojangUUIDMapper.fromMojangString(id))
+                  .setUniqueId(UUIDParser.fromUndashedString(id))
                   .setName(displayName.getAsString())
                   .build());
         } catch (IllegalArgumentException ignored) {

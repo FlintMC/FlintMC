@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.util.mojang.MojangRateLimitException;
-import net.flintmc.util.mojang.MojangUUIDMapper;
+import net.flintmc.util.mojang.UUIDParser;
 import net.flintmc.util.mojang.history.NameHistory;
 import net.flintmc.util.mojang.history.NameHistoryEntry;
 import net.flintmc.util.mojang.history.NameHistoryResolver;
@@ -100,7 +100,7 @@ public class DefaultNameHistoryResolver implements NameHistoryResolver {
   private Collection<NameHistoryEntry> fillEntries(UUID uniqueId) throws IOException {
     HttpURLConnection connection =
         (HttpURLConnection)
-            new URL(String.format(NAMES_URL, MojangUUIDMapper.toMojangString(uniqueId))).openConnection();
+            new URL(String.format(NAMES_URL, UUIDParser.toUndashedString(uniqueId))).openConnection();
     int code = connection.getResponseCode();
     if (code == 204) {
       return null;
