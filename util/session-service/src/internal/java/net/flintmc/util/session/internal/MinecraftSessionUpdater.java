@@ -17,17 +17,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.session.internal.refresh;
+package net.flintmc.util.session.internal;
 
-import com.mojang.authlib.GameProfile;
-import net.flintmc.transform.shadow.FieldSetter;
-import net.flintmc.transform.shadow.Shadow;
+import net.flintmc.util.session.SessionService;
 
-// The default UserAuthentication of the Authlib doesn't support overriding the selected profile, it
-// only does this when logging in/out
-@Shadow("com.mojang.authlib.BaseUserAuthentication")
-public interface RefreshableBaseUserAuthentication {
+public interface MinecraftSessionUpdater {
 
-  @FieldSetter(value = "selectedProfile")
-  void setPublicSelectedProfile(GameProfile profile);
+  void update(SessionService service);
+
 }

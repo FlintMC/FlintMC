@@ -22,156 +22,126 @@ package net.flintmc.util.session.internal;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.mojang.authlib.Agent;
-import com.mojang.authlib.UserAuthentication;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
-import com.mojang.authlib.exceptions.InvalidCredentialsException;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.util.UUIDTypeAdapter;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
-import net.flintmc.mcapi.player.serializer.gameprofile.GameProfileSerializer;
+import net.flintmc.mcapi.player.gameprofile.GameProfile.Builder;
+import net.flintmc.util.mojang.MojangUUIDMapper;
 import net.flintmc.util.session.AuthenticationResult;
 import net.flintmc.util.session.AuthenticationResult.Type;
 import net.flintmc.util.session.RefreshTokenResult;
+import net.flintmc.util.session.RefreshTokenResult.Factory;
 import net.flintmc.util.session.SessionService;
 import net.flintmc.util.session.event.SessionAccountLogInEvent;
 import net.flintmc.util.session.event.SessionTokenRefreshEvent;
-import net.flintmc.util.session.internal.refresh.RefreshableBaseUserAuthentication;
-import net.flintmc.util.session.internal.refresh.RefreshableYggdrasilUserAuthentication;
 import org.apache.logging.log4j.Logger;
 
-public abstract class DefaultSessionService implements SessionService {
+@Singleton
+@Implement(SessionService.class)
+public class DefaultSessionService implements SessionService {
 
   private static final String REFRESH_TOKEN_URL = "https://authserver.mojang.com/refresh";
   private static final String VALIDATE_TOKEN_URL = "https://authserver.mojang.com/validate";
+  private static final String AUTHENTICATE_URL = "https://authserver.mojang.com/authenticate";
 
-  protected final Logger logger;
+  private final Logger logger;
 
-  protected final Supplier<Proxy> minecraftProxySupplier;
+  private final RefreshTokenResult.Factory refreshTokenResultFactory;
+  private final AuthenticationResult.Factory authResultFactory;
+  private final Provider<GameProfile.Builder> gameProfileBuilderFactory;
+  private final EventBus eventBus;
+  private final SessionAccountLogInEvent.Factory logInEventFactory;
+  private final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
+  private final MinecraftSessionUpdater sessionUpdater;
 
-  protected final RefreshTokenResult.Factory refreshTokenResultFactory;
-  protected final AuthenticationResult.Factory authResultFactory;
-  protected final GameProfileSerializer<com.mojang.authlib.GameProfile> profileSerializer;
-  protected final EventBus eventBus;
-  protected final SessionAccountLogInEvent.Factory logInEventFactory;
-  protected final SessionTokenRefreshEvent.Factory tokenRefreshEventFactory;
-  protected final Consumer<SessionService> sessionRefresher;
-  protected UserAuthentication authentication;
-  protected String clientToken;
+  private GameProfile selectedProfile;
+  private String clientToken;
+  private String accessToken;
 
-  protected DefaultSessionService(
+  @Inject
+  private DefaultSessionService(
       Logger logger,
-      RefreshTokenResult.Factory refreshTokenResultFactory,
-      GameProfileSerializer profileSerializer,
+      Factory refreshTokenResultFactory,
+      Provider<Builder> gameProfileBuilderFactory,
       SessionAccountLogInEvent.Factory logInEventFactory,
       SessionTokenRefreshEvent.Factory tokenRefreshEventFactory,
       AuthenticationResult.Factory authResultFactory,
       EventBus eventBus,
-      Supplier<Proxy> minecraftProxySupplier,
-      Consumer<SessionService> sessionRefresher) {
+      MinecraftSessionUpdater sessionUpdater) {
     this.logger = logger;
     this.refreshTokenResultFactory = refreshTokenResultFactory;
-    this.minecraftProxySupplier = minecraftProxySupplier;
-    this.profileSerializer = profileSerializer;
+    this.gameProfileBuilderFactory = gameProfileBuilderFactory;
     this.logInEventFactory = logInEventFactory;
     this.tokenRefreshEventFactory = tokenRefreshEventFactory;
     this.authResultFactory = authResultFactory;
     this.eventBus = eventBus;
-    this.sessionRefresher = sessionRefresher;
+    this.sessionUpdater = sessionUpdater;
   }
 
   private void refreshSession() {
-    if (this.sessionRefresher != null) {
-      this.sessionRefresher.accept(this);
+    if (this.sessionUpdater != null) {
+      this.sessionUpdater.update(this);
     }
-  }
-
-  protected UserAuthentication ensureAuthenticationAvailable() {
-    if (this.authentication == null) {
-      if (this.clientToken == null) {
-        // no custom client token set, generate a new one
-        this.clientToken = UUID.randomUUID().toString().replace("-", "");
-      }
-
-      this.authentication =
-          new YggdrasilAuthenticationService(this.minecraftProxySupplier.get(), this.clientToken)
-              .createUserAuthentication(Agent.MINECRAFT);
-    }
-
-    return this.authentication;
   }
 
   protected void updateAuthenticationContent(UUID uniqueId, String name, String newAccessToken) {
-    ((RefreshableYggdrasilUserAuthentication) this.authentication).setAccessToken(newAccessToken);
-    ((RefreshableBaseUserAuthentication) this.authentication)
-        .setPublicSelectedProfile(new com.mojang.authlib.GameProfile(uniqueId, name));
+    this.accessToken = newAccessToken;
+    this.selectedProfile = this.gameProfileBuilderFactory.get()
+        .setUniqueId(uniqueId)
+        .setName(name)
+        .build();
   }
 
   @Override
   public String getClientToken() {
-    this.ensureAuthenticationAvailable(); // generate the client token if necessary
+    if (this.clientToken == null) {
+      // no custom client token set, generate a new one
+      this.clientToken = UUID.randomUUID().toString().replace("-", "");
+    }
+
     return this.clientToken;
   }
 
   @Override
   public void setClientToken(String clientToken) {
     this.clientToken = clientToken;
-    // remove the authentication because it gets invalid with a new clientToken
-    this.authentication = null;
+    // remove the authentication data because it gets invalid with a new clientToken
+    this.logOut();
     // refresh the Session in the Minecraft client
     this.refreshSession();
   }
 
   @Override
   public UUID getUniqueId() {
-    if (this.authentication == null) {
-      // never authenticated
-      return null;
-    }
-    com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
-    return profile != null ? profile.getId() : null;
+    return this.selectedProfile != null ? this.selectedProfile.getUniqueId() : null;
   }
 
   @Override
   public String getUsername() {
-    if (this.authentication == null) {
-      // never authenticated
-      return null;
-    }
-    com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
-    return profile != null ? profile.getName() : null;
+    return this.selectedProfile != null ? this.selectedProfile.getName() : null;
   }
 
   @Override
   public GameProfile getProfile() {
-    if (this.authentication == null) {
-      // never authenticated
-      return null;
-    }
-    com.mojang.authlib.GameProfile profile = this.authentication.getSelectedProfile();
-    return profile != null ? this.profileSerializer.deserialize(profile) : null;
+    return this.selectedProfile;
   }
 
   @Override
   public String getAccessToken() {
-    return this.authentication != null /* never authenticated in this SessionService */
-        ? this.authentication.getAuthenticatedToken()
-        : null;
+    return this.accessToken;
   }
 
   @Override
@@ -191,7 +161,7 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public boolean isLoggedIn() {
-    return this.authentication != null && this.authentication.isLoggedIn();
+    return this.accessToken != null && !this.accessToken.isEmpty();
   }
 
   @Override
@@ -201,18 +171,8 @@ public abstract class DefaultSessionService implements SessionService {
       return this.refreshTokenResultFactory.createUnknown(
           RefreshTokenResult.ResultType.NOT_LOGGED_IN);
     }
-    UserAuthentication authentication = this.ensureAuthenticationAvailable();
-
-    if (!(authentication instanceof RefreshableYggdrasilUserAuthentication)) {
-      // this can only happen if shadow has failed which basically never happens
-      throw new RuntimeException(
-          "Token refreshing not supported, possibly Shadow has failed transforming the UserAuthentication");
-    }
 
     try {
-      RefreshableYggdrasilUserAuthentication refreshable =
-          (RefreshableYggdrasilUserAuthentication) authentication;
-
       JsonObject result = this.requestNewToken(accessToken);
 
       if (result == null) {
@@ -228,7 +188,7 @@ public abstract class DefaultSessionService implements SessionService {
               this.tokenRefreshEventFactory.create(accessToken, newToken), Subscribe.Phase.POST);
         }
 
-        refreshable.setAccessToken(newToken);
+        this.accessToken = newToken;
         this.refreshSession();
         return this.refreshTokenResultFactory.createUnknown(RefreshTokenResult.ResultType.SUCCESS);
       }
@@ -245,26 +205,67 @@ public abstract class DefaultSessionService implements SessionService {
     }
   }
 
+  private byte[] generateAuthenticateBody(String email, String password) {
+    JsonObject object = new JsonObject();
+
+    JsonObject agent = new JsonObject();
+    object.add("agent", agent);
+    agent.addProperty("name", "Minecraft");
+    agent.addProperty("version", 1);
+
+    object.addProperty("username", email);
+    object.addProperty("password", password);
+    object.addProperty("clientToken", this.getClientToken());
+
+    return object.toString().getBytes(StandardCharsets.UTF_8);
+  }
+
+  private JsonObject authenticate(String email, String password) throws IOException {
+    byte[] body = this.generateAuthenticateBody(email, password);
+
+    HttpURLConnection connection = this.openConnection(AUTHENTICATE_URL, body);
+    connection.setDoInput(true);
+
+    try (OutputStream outputStream = connection.getOutputStream()) {
+      outputStream.write(body);
+    }
+
+    boolean ok = connection.getResponseCode() >= 200 && connection.getResponseCode() < 300;
+
+    try (InputStream inputStream = ok ? connection.getInputStream() : connection.getErrorStream();
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+      return JsonParser.parseReader(reader).getAsJsonObject();
+    }
+  }
+
   private byte[] generateAccessTokenBody(String accessToken) {
     JsonObject body = new JsonObject();
+
     body.addProperty("clientToken", this.clientToken);
     body.addProperty("accessToken", accessToken);
+
     return body.toString().getBytes(StandardCharsets.UTF_8);
   }
 
   private boolean validateAccessToken(String accessToken) throws IOException {
     byte[] body = this.generateAccessTokenBody(accessToken);
 
-    HttpURLConnection connection = (HttpURLConnection) new URL(VALIDATE_TOKEN_URL).openConnection();
-    connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-    connection.setRequestProperty("Content-Length", String.valueOf(body.length));
-    connection.setDoOutput(true);
+    HttpURLConnection connection = this.openConnection(VALIDATE_TOKEN_URL, body);
 
     try (OutputStream outputStream = connection.getOutputStream()) {
       outputStream.write(body);
     }
 
     return connection.getResponseCode() == 204;
+  }
+
+  private HttpURLConnection openConnection(String url, byte[] body) throws IOException {
+    HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+    connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+    connection.setRequestProperty("Content-Length", String.valueOf(body.length));
+    connection.setDoOutput(true);
+
+    return connection;
   }
 
   private JsonObject requestNewToken(String accessToken) throws IOException {
@@ -292,43 +293,51 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public AuthenticationResult logIn(String email, String password) {
-    GameProfile currentProfile = this.getProfile();
-    UserAuthentication authentication = this.ensureAuthenticationAvailable();
-
-    if (authentication.isLoggedIn()) {
-      authentication.logOut();
+    if (email.isEmpty() || password.isEmpty()) {
+      return this.authResultFactory.createFailed(Type.INVALID_CREDENTIALS);
     }
 
-    authentication.setUsername(email);
-    authentication.setPassword(password);
+    GameProfile currentProfile = this.getProfile();
+
+    this.logOut();
 
     try {
-      authentication.logIn();
+      JsonObject object = this.authenticate(email, password);
+
+      if (object.has("cause") || object.has("error")) {
+        String cause = object.has("cause") ? object.get("cause").getAsString() : null;
+        String error = object.has("error") ? object.get("error").getAsString() : null;
+        if ("UserMigratedException".equals(cause)) {
+          return this.authResultFactory.createFailed(Type.USER_MIGRATED);
+        }
+        if ("ForbiddenOperationException".equals(error)) {
+          return this.authResultFactory.createFailed(Type.INVALID_CREDENTIALS);
+        }
+      }
+
+      if (object.has("selectedProfile")) {
+        JsonObject profile = object.getAsJsonObject("selectedProfile");
+        this.selectedProfile = this.gameProfileBuilderFactory.get()
+            .setUniqueId(MojangUUIDMapper.fromMojangString(profile.get("id").getAsString()))
+            .setName(profile.get("name").getAsString())
+            .build();
+      }
+
+      if (object.has("accessToken")) {
+        this.accessToken = object.get("accessToken").getAsString();
+      }
 
       this.fireLoginEvent(currentProfile);
 
       return this.authResultFactory.createSuccess(this.getProfile());
-    } catch (AuthenticationUnavailableException e) {
-      return this.authResultFactory.createFailed(Type.AUTH_SERVER_OFFLINE);
-    } catch (InvalidCredentialsException e) {
-      return this.authResultFactory.createFailed(Type.INVALID_CREDENTIALS);
-    } catch (AuthenticationException e) {
+    } catch (IOException e) {
       this.logger.error("An error occurred while logging into an account", e);
-      return this.authResultFactory.createFailed(Type.UNKNOWN_ERROR);
+      return this.authResultFactory.createFailed(Type.AUTH_SERVER_OFFLINE);
     }
   }
 
   @Override
   public AuthenticationResult logIn(String accessToken) {
-    UserAuthentication authentication = this.ensureAuthenticationAvailable();
-
-    if (!(authentication instanceof RefreshableYggdrasilUserAuthentication)
-        || !(authentication instanceof RefreshableBaseUserAuthentication)) {
-      // this can only happen if shadow has failed which basically never happens
-      throw new RuntimeException(
-          "Token refreshing not supported, possibly Shadow has failed transforming the UserAuthentication");
-    }
-
     GameProfile currentProfile = this.getProfile();
 
     try {
@@ -338,10 +347,10 @@ public abstract class DefaultSessionService implements SessionService {
       }
       JsonObject profile = object.get("selectedProfile").getAsJsonObject();
 
-      this.authentication.logOut();
+      this.logOut();
 
       this.updateAuthenticationContent(
-          UUIDTypeAdapter.fromString(profile.get("id").getAsString()),
+          MojangUUIDMapper.fromMojangString(profile.get("id").getAsString()),
           profile.get("name").getAsString(),
           object.get("accessToken").getAsString());
 
@@ -370,8 +379,9 @@ public abstract class DefaultSessionService implements SessionService {
 
   @Override
   public void logOut() {
-    if (this.authentication != null && this.authentication.isLoggedIn()) {
-      this.authentication.logOut();
+    if (this.isLoggedIn()) {
+      this.selectedProfile = null;
+      this.accessToken = null;
     }
   }
 
@@ -379,6 +389,19 @@ public abstract class DefaultSessionService implements SessionService {
   public boolean isMain() {
     return this.tokenRefreshEventFactory != null
         && this.logInEventFactory != null
-        && this.sessionRefresher != null;
+        && this.sessionUpdater != null;
+  }
+
+  @Override
+  public SessionService newSessionService() {
+    return new DefaultSessionService(
+        this.logger,
+        this.refreshTokenResultFactory,
+        this.gameProfileBuilderFactory,
+        this.logInEventFactory,
+        this.tokenRefreshEventFactory,
+        this.authResultFactory,
+        this.eventBus,
+        this.sessionUpdater);
   }
 }

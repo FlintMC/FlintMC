@@ -26,7 +26,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.mojang.util.UUIDTypeAdapter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,6 +45,7 @@ import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
 import net.flintmc.mcapi.player.gameprofile.property.Property;
 import net.flintmc.util.mojang.MojangRateLimitException;
+import net.flintmc.util.mojang.MojangUUIDMapper;
 import net.flintmc.util.mojang.internal.cache.FileCache;
 import net.flintmc.util.mojang.profile.GameProfileResolver;
 import org.apache.logging.log4j.Logger;
@@ -106,7 +106,7 @@ public class DefaultGameProfileResolver implements GameProfileResolver {
   private GameProfile resolveProfileInternal(UUID uniqueId) throws IOException {
     HttpURLConnection connection =
         (HttpURLConnection)
-            new URL(String.format(UUID_TO_NAME_URL, UUIDTypeAdapter.fromUUID(uniqueId)))
+            new URL(String.format(UUID_TO_NAME_URL, MojangUUIDMapper.toMojangString(uniqueId)))
                 .openConnection();
     int code = connection.getResponseCode();
     if (code == 204) {
@@ -130,7 +130,7 @@ public class DefaultGameProfileResolver implements GameProfileResolver {
   private GameProfile parseProfile(JsonObject object) {
     GameProfile profile =
         this.profileFactory.create(
-            UUIDTypeAdapter.fromString(object.get("id").getAsString()),
+            MojangUUIDMapper.fromMojangString(object.get("id").getAsString()),
             object.get("name").getAsString());
 
     for (JsonElement element : object.getAsJsonArray("properties")) {
@@ -206,7 +206,7 @@ public class DefaultGameProfileResolver implements GameProfileResolver {
     try (InputStream inputStream = connection.getInputStream();
         Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
       JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
-      UUID uniqueId = UUIDTypeAdapter.fromString(object.get("id").getAsString());
+      UUID uniqueId = MojangUUIDMapper.fromMojangString(object.get("id").getAsString());
       if (textures) {
         return this.resolveProfileInternal(uniqueId);
       }
@@ -279,7 +279,7 @@ public class DefaultGameProfileResolver implements GameProfileResolver {
         JsonObject object = element.getAsJsonObject();
         GameProfile profile =
             this.profileFactory.create(
-                UUIDTypeAdapter.fromString(object.get("id").getAsString()),
+                MojangUUIDMapper.fromMojangString(object.get("id").getAsString()),
                 object.get("name").getAsString());
         profiles.add(profile);
       }

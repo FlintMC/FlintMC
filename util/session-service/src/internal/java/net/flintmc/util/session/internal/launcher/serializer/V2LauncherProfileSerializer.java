@@ -22,14 +22,17 @@ package net.flintmc.util.session.internal.launcher.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
-import com.mojang.util.UUIDTypeAdapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import com.google.inject.Provider;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.player.gameprofile.GameProfile;
+import net.flintmc.mcapi.player.gameprofile.GameProfile.Builder;
+import net.flintmc.util.mojang.MojangUUIDMapper;
 import net.flintmc.util.session.launcher.LauncherProfile;
+import net.flintmc.util.session.launcher.LauncherProfile.Factory;
 import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
 import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 
@@ -39,10 +42,14 @@ import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 @ProfileSerializerVersion(2)
 public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
 
+  private final Provider<GameProfile.Builder> gameProfileBuilderFactory;
   private final LauncherProfile.Factory profileFactory;
 
   @Inject
-  public V2LauncherProfileSerializer(LauncherProfile.Factory profileFactory) {
+  private V2LauncherProfileSerializer(
+      Provider<Builder> gameProfileBuilderFactory,
+      Factory profileFactory) {
+    this.gameProfileBuilderFactory = gameProfileBuilderFactory;
     this.profileFactory = profileFactory;
   }
 
@@ -100,8 +107,8 @@ public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
 
         try {
           gameProfiles.add(
-              InjectionHolder.getInjectedInstance(GameProfile.Builder.class)
-                  .setUniqueId(UUIDTypeAdapter.fromString(id))
+              this.gameProfileBuilderFactory.get()
+                  .setUniqueId(MojangUUIDMapper.fromMojangString(id))
                   .setName(displayName.getAsString())
                   .build());
         } catch (IllegalArgumentException ignored) {

@@ -29,7 +29,7 @@ flint {
     staticFiles {
         create("version.json") {
             from("build/generated/flint/version.json")
-            to("versions/flint-1.16.5/flint-version.json")
+            to("versions/flint-1.16.5/flint-1.16.5.json")
         }
 
         create("joined.tsrg") {
