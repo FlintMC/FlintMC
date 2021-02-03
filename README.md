@@ -269,7 +269,7 @@ $ ./gradlew runClient1.16.5
 If you want to login into your Minecraft account, just set the following
 property in your global Gradle property file (`~/.gradle/gradle.properties`):
 ```properties
-net.flintmc.gradle.login=true
+net.flintmc.enable-minecraft-login=true
 ```
 
 When running the client, a login prompt will appear.
