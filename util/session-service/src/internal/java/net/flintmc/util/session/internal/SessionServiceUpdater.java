@@ -17,15 +17,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.session.internal.refresh;
+package net.flintmc.util.session.internal;
 
-import net.flintmc.transform.shadow.FieldSetter;
-import net.flintmc.transform.shadow.Shadow;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import java.util.UUID;
 
-// The default UserAuthentication of the Authlib doesn't support overriding the access token
-@Shadow("com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication")
-public interface RefreshableYggdrasilUserAuthentication {
+@Singleton
+public class SessionServiceUpdater {
 
-  @FieldSetter("accessToken")
-  void setAccessToken(String accessToken);
+  private final DefaultSessionService sessionService;
+
+  @Inject
+  private SessionServiceUpdater(DefaultSessionService sessionService) {
+    this.sessionService = sessionService;
+  }
+
+  public void updateAuthenticationContent(UUID uniqueId, String name, String newAccessToken) {
+    this.sessionService.updateAuthenticationContent(uniqueId, name, newAccessToken);
+  }
 }

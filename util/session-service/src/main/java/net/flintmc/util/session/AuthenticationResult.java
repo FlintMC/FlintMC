@@ -57,6 +57,10 @@ public interface AuthenticationResult {
      */
     INVALID_CREDENTIALS,
     /**
+     * Specifies that the user has been migrated.
+     */
+    USER_MIGRATED,
+    /**
      * If this result is returned, the mojang auth server is offline and therefore no login is
      * possible.
      */

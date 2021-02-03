@@ -82,13 +82,13 @@ public class VersionedEntityRenderNameEventInjectorTransformer {
     CtClass[] params =
         new CtClass[]{
             this.pool.get(this.mappingProvider.get("net.minecraft.entity.Entity").getName()),
-            this.pool.get(this.mappingProvider.get("net.minecraft.util.text.ITextComponent").getName()),
+            this.pool.get(
+                this.mappingProvider.get("net.minecraft.util.text.ITextComponent").getName()),
             this.pool.get(
                 this.mappingProvider.get("com.mojang.blaze3d.matrix.MatrixStack").getName()),
             this.pool.get(
                 this.mappingProvider
-                    .get("net.minecraft.client.renderer.IRenderTypeBuffer")
-                    .getName()),
+                    .get("net.minecraft.client.renderer.IRenderTypeBuffer").getName()),
             CtClass.intType
         };
 

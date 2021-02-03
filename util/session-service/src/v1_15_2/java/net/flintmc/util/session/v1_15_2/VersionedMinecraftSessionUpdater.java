@@ -17,44 +17,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.session.internal.refresh;
+package net.flintmc.util.session.v1_15_2;
 
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedInject;
+import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.util.session.RefreshTokenResult;
+import net.flintmc.util.session.SessionService;
+import net.flintmc.util.session.internal.MinecraftSessionUpdater;
+import net.minecraft.client.Minecraft;
 
-@Implement(RefreshTokenResult.class)
-public class DefaultRefreshTokenResult implements RefreshTokenResult {
-
-  private final ResultType type;
-  private final String errorMessage;
-
-  @AssistedInject
-  private DefaultRefreshTokenResult(@Assisted("type") ResultType type) {
-    this(type, null);
-  }
-
-  @AssistedInject
-  private DefaultRefreshTokenResult(
-      @Assisted("type") ResultType type, @Assisted("errorMessage") String errorMessage) {
-    this.type = type;
-    this.errorMessage = errorMessage;
-  }
+@Singleton
+@Implement(value = MinecraftSessionUpdater.class, version = "1.15.2")
+public class VersionedMinecraftSessionUpdater implements MinecraftSessionUpdater {
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public ResultType getType() {
-    return this.type;
-  }
+  public void update(SessionService service) {
+    if (service.getUniqueId() == null) {
+      return;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getErrorMessage() {
-    return this.errorMessage;
+    String uuid = service.getUniqueId().toString().replace("-", "");
+    String name = service.getUsername();
+    String accessToken = service.getAccessToken();
+
+    SessionRefreshableMinecraft minecraft = (SessionRefreshableMinecraft) Minecraft.getInstance();
+    minecraft.setSession(
+        new net.minecraft.util.Session(
+            name, uuid, accessToken, net.minecraft.util.Session.Type.MOJANG.toString()));
   }
 }

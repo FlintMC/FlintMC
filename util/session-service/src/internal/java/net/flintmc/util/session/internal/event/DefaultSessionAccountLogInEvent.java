@@ -44,11 +44,17 @@ public class DefaultSessionAccountLogInEvent implements SessionAccountLogInEvent
     this(null, newProfile);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile getPreviousProfile() {
     return this.previousProfile;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile getNewProfile() {
     return this.newProfile;

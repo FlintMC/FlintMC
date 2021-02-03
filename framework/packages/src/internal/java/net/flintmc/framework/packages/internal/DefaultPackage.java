@@ -28,7 +28,10 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.*;
+import net.flintmc.framework.packages.PackageClassLoader;
+import net.flintmc.framework.packages.PackageManifest;
+import net.flintmc.framework.packages.PackageManifestLoader;
+import net.flintmc.framework.packages.PackageState;
 import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
 import net.flintmc.framework.service.ExtendedServiceLoader;
 import net.flintmc.framework.stereotype.service.Service;
@@ -68,18 +71,15 @@ public class DefaultPackage implements Package {
   private Exception loadException;
 
   /**
-   * Creates a new Flint package with the given description loader and the given
-   * files.
+   * Creates a new Flint package with the given description loader and the given files.
    *
-   * @param serviceRepository The singleton instance of the {@link
-   *                          ServiceRepository}
+   * @param serviceRepository The singleton instance of the {@link ServiceRepository}
    * @param manifestLoader    The loader to use for reading the manifest
-   * @param jarFile           The java IO file this package should be loaded
-   *                          from, or null if loaded from the classpath
-   * @param jar               The java IO jar file this package should be loaded
-   *                          from, must point to the same file as the `file`
-   *                          parameter, or must be null if the package has been
-   *                          loaded from the classpath
+   * @param jarFile           The java IO file this package should be loaded from, or null if loaded
+   *                          from the classpath
+   * @param jar               The java IO jar file this package should be loaded from, must point to
+   *                          the same file as the `file` parameter, or must be null if the package
+   *                          has been loaded from the classpath
    */
   @AssistedInject
   private DefaultPackage(
@@ -135,9 +135,8 @@ public class DefaultPackage implements Package {
   }
 
   @AssistedInject
-  private DefaultPackage(ServiceRepository serviceRepository,
-      PackageLocalizationLoader localizationLoader,
-      PackageManifestLoader manifestLoader,
+  private DefaultPackage(
+      ServiceRepository serviceRepository,
       PackageClassLoader.Factory classLoaderFactory,
       @InjectLogger Logger logger,
       @Assisted("manifest") PackageManifest manifest) {
@@ -335,8 +334,8 @@ public class DefaultPackage implements Package {
   }
 
   /**
-   * @return all saved annotation meta that was written to the {@link
-   * DetectableAnnotationProvider} on compile time
+   * @return all saved annotation meta that was written to the {@link DetectableAnnotationProvider}
+   * on compile time
    */
   @SuppressWarnings("rawtypes")
   private List<AnnotationMeta> getAnnotationMeta() {
