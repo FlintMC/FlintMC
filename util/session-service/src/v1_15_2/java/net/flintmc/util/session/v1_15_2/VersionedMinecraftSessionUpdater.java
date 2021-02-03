@@ -28,6 +28,10 @@ import net.minecraft.client.Minecraft;
 @Singleton
 @Implement(value = MinecraftSessionUpdater.class, version = "1.15.2")
 public class VersionedMinecraftSessionUpdater implements MinecraftSessionUpdater {
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void update(SessionService service) {
     if (service.getUniqueId() == null) {

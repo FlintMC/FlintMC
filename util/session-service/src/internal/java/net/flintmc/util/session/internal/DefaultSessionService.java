@@ -105,6 +105,9 @@ public class DefaultSessionService implements SessionService {
         .build();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getClientToken() {
     if (this.clientToken == null) {
@@ -115,6 +118,9 @@ public class DefaultSessionService implements SessionService {
     return this.clientToken;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setClientToken(String clientToken) {
     this.clientToken = clientToken;
@@ -124,26 +130,41 @@ public class DefaultSessionService implements SessionService {
     this.refreshSession();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getUniqueId() {
     return this.selectedProfile != null ? this.selectedProfile.getUniqueId() : null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getUsername() {
     return this.selectedProfile != null ? this.selectedProfile.getName() : null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile getProfile() {
     return this.selectedProfile;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getAccessToken() {
     return this.accessToken;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isAccessTokenValid() {
     String accessToken = this.getAccessToken();
@@ -159,11 +180,17 @@ public class DefaultSessionService implements SessionService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isLoggedIn() {
     return this.accessToken != null && !this.accessToken.isEmpty();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RefreshTokenResult refreshToken() {
     String accessToken = this.getAccessToken();
@@ -291,6 +318,9 @@ public class DefaultSessionService implements SessionService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AuthenticationResult logIn(String email, String password) {
     if (email.isEmpty() || password.isEmpty()) {
@@ -336,6 +366,9 @@ public class DefaultSessionService implements SessionService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public AuthenticationResult logIn(String accessToken) {
     GameProfile currentProfile = this.getProfile();
@@ -377,6 +410,9 @@ public class DefaultSessionService implements SessionService {
     this.refreshSession();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void logOut() {
     if (this.isLoggedIn()) {
@@ -385,6 +421,9 @@ public class DefaultSessionService implements SessionService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isMain() {
     return this.tokenRefreshEventFactory != null
@@ -392,6 +431,9 @@ public class DefaultSessionService implements SessionService {
         && this.sessionUpdater != null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SessionService newSessionService() {
     return new DefaultSessionService(

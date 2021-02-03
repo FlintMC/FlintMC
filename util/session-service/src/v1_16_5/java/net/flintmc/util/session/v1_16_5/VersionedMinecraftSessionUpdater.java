@@ -30,6 +30,9 @@ import net.minecraft.util.Session;
 @Implement(value = MinecraftSessionUpdater.class, version = "1.16.5")
 public class VersionedMinecraftSessionUpdater implements MinecraftSessionUpdater {
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void update(SessionService service) {
     if (service.getUniqueId() == null) {

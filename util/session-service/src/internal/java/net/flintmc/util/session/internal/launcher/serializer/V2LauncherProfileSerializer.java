@@ -53,6 +53,9 @@ public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
     this.profileFactory = profileFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateAuthData(Collection<LauncherProfile> profiles, JsonObject authData) {
     for (LauncherProfile profile : profiles) {
@@ -78,6 +81,9 @@ public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, LauncherProfile> readProfiles(JsonObject authData) {
     Map<String, LauncherProfile> result = new HashMap<>();
