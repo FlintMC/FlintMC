@@ -22,16 +22,8 @@ plugins {
     id("net.minecrell.licenser") version "0.4.1"
 }
 
-fun RepositoryHandler.flintRepository() {
-    maven {
-        setUrl("https://dist.labymod.net/api/v1/maven/release")
-        name = "Flint"
-    }
-}
-
 repositories {
     mavenLocal()
-    flintRepository()
     mavenCentral()
     maven {
         url = uri("https://plugins.gradle.org/m2/")
@@ -47,7 +39,6 @@ subprojects {
         version = System.getenv().getOrDefault("VERSION", "1.0.0")
 
         repositories {
-            flintRepository()
             mavenCentral()
         }
 
