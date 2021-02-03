@@ -63,7 +63,7 @@ public class VersionedResourceLocationProvider implements ResourceLocationProvid
    * {@inheritDoc}
    */
   public ResourceLocation get(String path) {
-    return this.get("minecraft", path);
+    return this.resourceLocationFactory.create(path);
   }
 
   /**
