@@ -248,7 +248,6 @@ public class ModelRendererInterceptor {
         INSTANCE
             .alternatingMinecraftRenderMeta
             .setPackedLight(packedLightIn)
-            .setBatched(false)
             .setPartialTick(Minecraft.getInstance().getRenderPartialTicks())
             .setTargetUuid(INSTANCE.lastRenderedEntity.getUniqueId());
 
@@ -330,7 +329,6 @@ public class ModelRendererInterceptor {
         INSTANCE
             .alternatingMinecraftRenderMeta
             .setPackedLight(packedLightIn)
-            .setBatched(false)
             .setPartialTick(Minecraft.getInstance().getRenderPartialTicks())
             .setTargetUuid(INSTANCE.lastRenderedEntity.getUniqueId());
 
