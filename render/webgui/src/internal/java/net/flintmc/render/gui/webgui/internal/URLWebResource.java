@@ -19,6 +19,8 @@
 
 package net.flintmc.render.gui.webgui.internal;
 
+import net.flintmc.render.gui.webgui.WebResource;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +29,6 @@ import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import net.flintmc.render.gui.webgui.WebResource;
 
 public class URLWebResource implements WebResource {
 
@@ -36,7 +37,7 @@ public class URLWebResource implements WebResource {
   private final String path;
   private final URL url;
   private final List<Byte> data;
-  int size = -1;
+  private long size = -1;
   private InputStream stream;
 
   public URLWebResource(String path, URL url) {
@@ -84,12 +85,12 @@ public class URLWebResource implements WebResource {
     this.stream.close();
   }
 
-  private int readFile() throws IOException {
+  private long readFile() throws IOException {
     if (!this.data.isEmpty()) {
       return this.data.size();
     }
-    int total = 0;
-    int read;
+    long total = 0;
+    long read;
     byte[] buffer = new byte[BUFFER_SIZE];
     while ((read = this.stream.read(buffer)) != -1) {
       total += read;
@@ -107,7 +108,7 @@ public class URLWebResource implements WebResource {
   @Override
   public long getSize() throws IOException {
     if (this.size < 0) {
-      this.size = readFile();
+      this.size = this.readFile();
     }
     return this.size;
   }
@@ -117,7 +118,7 @@ public class URLWebResource implements WebResource {
    */
   @Override
   public long readFromFile(ByteBuffer data, long length) throws IOException {
-    int read = readFile();
+    long read = this.readFile();
     for (byte b : this.data) {
       data.put(b);
     }
