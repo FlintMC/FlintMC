@@ -22,6 +22,7 @@ package net.flintmc.mcapi.v1_15_2.entity.type;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.type.EntityType;
@@ -32,6 +33,7 @@ import net.flintmc.mcapi.entity.type.EntityType;
 @Implement(value = EntityType.class, version = "1.15.2")
 public class VersionedEntityType implements EntityType {
 
+  private final ChatComponent displayName;
   private final Entity.Classification classification;
   private final boolean serializable;
   private final boolean summonable;
@@ -41,18 +43,28 @@ public class VersionedEntityType implements EntityType {
 
   @AssistedInject
   private VersionedEntityType(
+      @Assisted("displayName") ChatComponent displayName,
       @Assisted("classification") Entity.Classification classification,
       @Assisted("serializable") boolean serializable,
       @Assisted("summonable") boolean summonable,
       @Assisted("immuneToFire") boolean immuneToFire,
       @Assisted("canSpawnFarFromPlayer") boolean canSpawnFarFromPlayer,
       @Assisted("entitySize") EntitySize entitySize) {
+    this.displayName = displayName;
     this.classification = classification;
     this.serializable = serializable;
     this.summonable = summonable;
     this.immuneToFire = immuneToFire;
     this.canSpawnFarFromPlayer = canSpawnFarFromPlayer;
     this.entitySize = entitySize;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ChatComponent getDisplayName() {
+    return this.displayName;
   }
 
   /**

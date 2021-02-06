@@ -21,6 +21,7 @@ package net.flintmc.mcapi.items.mapper;
 
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
+import net.flintmc.mcapi.items.type.ItemType;
 
 /**
  * A mapper between the Flint {@link ItemStack} and the Minecraft ItemStack.
@@ -47,4 +48,9 @@ public interface MinecraftItemMapper {
    *                              minecraft.
    */
   Object toMinecraft(ItemStack stack) throws ItemMappingException;
+
+  ItemType fromMinecraftType(Object handle) throws ItemMappingException;
+
+  Object toMinecraftType(ItemType type) throws ItemMappingException;
+
 }

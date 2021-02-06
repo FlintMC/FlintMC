@@ -22,6 +22,8 @@ package net.flintmc.mcapi.v1_16_5.entity.type;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.builder.TranslationComponentBuilder;
+import net.flintmc.mcapi.chat.builder.TranslationComponentBuilder.Factory;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.Entity.Classification;
 import net.flintmc.mcapi.entity.EntitySize;
@@ -36,12 +38,15 @@ import net.minecraft.entity.EntityClassification;
 @Implement(value = EntityTypeMapper.class, version = "1.16.5")
 public class VersionedEntityTypeMapper implements EntityTypeMapper {
 
+  private final TranslationComponentBuilder.Factory componentFactory;
   private final EntityType.Factory entityTypeFactory;
   private final EntitySize.Factory entitySizeFactory;
 
   @Inject
   private VersionedEntityTypeMapper(
+      Factory componentFactory,
       EntityType.Factory entityTypeFactory, EntitySize.Factory entitySizeFactory) {
+    this.componentFactory = componentFactory;
     this.entityTypeFactory = entityTypeFactory;
     this.entitySizeFactory = entitySizeFactory;
   }
@@ -61,6 +66,7 @@ public class VersionedEntityTypeMapper implements EntityTypeMapper {
     net.minecraft.entity.EntityType type = (net.minecraft.entity.EntityType) handle;
 
     return this.entityTypeFactory.create(
+        this.componentFactory.newBuilder().translationKey(type.getTranslationKey()).build(),
         this.fromMinecraftEntityClassification(type.getClassification()),
         type.isSerializable(),
         type.isSummonable(),

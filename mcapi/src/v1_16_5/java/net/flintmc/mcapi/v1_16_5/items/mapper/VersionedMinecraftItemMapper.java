@@ -51,6 +51,9 @@ public class VersionedMinecraftItemMapper implements MinecraftItemMapper {
     this.metaFactory = metaFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack fromMinecraft(Object handle) throws ItemMappingException {
     if (!(handle instanceof net.minecraft.item.ItemStack)) {
@@ -61,14 +64,7 @@ public class VersionedMinecraftItemMapper implements MinecraftItemMapper {
     }
     net.minecraft.item.ItemStack stack = (net.minecraft.item.ItemStack) handle;
 
-    ResourceLocation resourceLocation = Registry.ITEM.getKey(stack.getItem());
-    NameSpacedKey registryName =
-        NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
-
-    ItemType type = this.registry.getType(registryName);
-    if (type == null) {
-      throw new ItemMappingException("No item type with the name " + registryName + " found");
-    }
+    ItemType type = this.fromMinecraftType(stack.getItem());
 
     ItemMeta meta = this.metaFactory.createMeta(type);
 
@@ -79,15 +75,12 @@ public class VersionedMinecraftItemMapper implements MinecraftItemMapper {
     return this.itemFactory.createItemStack(type, stack.getCount(), meta);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object toMinecraft(ItemStack stack) throws ItemMappingException {
-    Item item =
-        Registry.ITEM
-            .getOptional(stack.getType().getResourceLocation().getHandle())
-            .orElseThrow(
-                () ->
-                    new ItemMappingException(
-                        "Unknown item " + stack.getType().getResourceLocation()));
+    Item item = (Item) this.toMinecraftType(stack.getType());
 
     net.minecraft.item.ItemStack result =
         new net.minecraft.item.ItemStack(new IItemProvider() {
@@ -103,5 +96,31 @@ public class VersionedMinecraftItemMapper implements MinecraftItemMapper {
     }
 
     return result;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemType fromMinecraftType(Object handle) {
+    ResourceLocation resourceLocation = Registry.ITEM.getKey((Item) handle);
+    NameSpacedKey registryName =
+        NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
+
+    ItemType type = this.registry.getType(registryName);
+    if (type == null) {
+      throw new ItemMappingException("No item type with the name " + registryName + " found");
+    }
+
+    return type;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object toMinecraftType(ItemType type) {
+    return Registry.ITEM.getOptional(type.getResourceLocation().getHandle())
+        .orElseThrow(() -> new ItemMappingException("Unknown item " + type.getResourceLocation()));
   }
 }

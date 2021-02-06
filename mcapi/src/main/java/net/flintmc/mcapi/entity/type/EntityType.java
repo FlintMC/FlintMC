@@ -21,6 +21,7 @@ package net.flintmc.mcapi.entity.type;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 
@@ -28,6 +29,8 @@ import net.flintmc.mcapi.entity.EntitySize;
  * Represents the entity type.
  */
 public interface EntityType {
+
+  ChatComponent getDisplayName();
 
   /**
    * Retrieves the classification of this entity type.
@@ -89,6 +92,7 @@ public interface EntityType {
      * @return The created entity type.
      */
     EntityType create(
+        @Assisted("displayName") ChatComponent displayName,
         @Assisted("classification") Entity.Classification classification,
         @Assisted("serializable") boolean serializable,
         @Assisted("summonable") boolean summonable,

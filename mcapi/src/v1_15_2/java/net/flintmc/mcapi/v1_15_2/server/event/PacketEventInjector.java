@@ -24,12 +24,12 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.event.DirectionalEvent;
 import net.flintmc.mcapi.server.event.PacketEvent;
 import net.flintmc.transform.hook.Hook;
-import net.flintmc.transform.hook.Hook.ExecutionTime;
 import net.flintmc.transform.hook.HookResult;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.IPacket;
@@ -52,13 +52,12 @@ public class PacketEventInjector {
   }
 
   @Hook(
-      executionTime = {Hook.ExecutionTime.BEFORE, ExecutionTime.AFTER},
+      executionTime = Hook.ExecutionTime.BEFORE,
       className = "net.minecraft.network.NetworkManager",
       methodName = "processPacket",
       parameters = {@Type(reference = IPacket.class), @Type(reference = INetHandler.class)},
       version = "1.15.2")
-  public HookResult processIncomingPacket(
-      ExecutionTime executionTime, @Named("args") Object[] args) {
+  public HookResult processIncomingPacket(@Named("args") Object[] args) {
     Object packet = args[0];
     ProtocolType type = ProtocolType.getFromPacket((IPacket<?>) packet);
     if (type == null) {
@@ -70,7 +69,10 @@ public class PacketEventInjector {
 
     PacketEvent.ProtocolPhase phase = this.getFlintPhaseFromType(type);
     PacketEvent event = this.eventFactory.create(packet, phase, DirectionalEvent.Direction.RECEIVE);
-    this.eventBus.fireEvent(event, executionTime);
+    this.eventBus.fireEvent(event, Phase.PRE);
+
+    // Cannot be fired in POST because the processPacket method throws an exception when not
+    // invoked on the main thread
 
     return event.isCancelled() ? HookResult.BREAK : HookResult.CONTINUE;
   }

@@ -34,6 +34,7 @@ dependencies {
     api(project(":framework:framework-inject"))
     api(project(":framework:framework-stereotype"))
     api(project(":framework:framework-config"))
+    api(project(":framework:framework-data-generation"))
 
     api(project(":transform:transform-hook"))
     api(project(":transform:transform-shadow"))

@@ -22,6 +22,7 @@ package net.flintmc.mcapi.v1_16_5.entity.type;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.type.EntityType;
@@ -36,6 +37,7 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
   private final Entity.Classification classification;
   private final EntitySize.Factory entitySizeFactory;
   private final EntityType.Factory entityTypeFactory;
+  private ChatComponent displayName;
   private boolean serializable;
   private boolean summonable;
   private boolean immuneToFire;
@@ -56,6 +58,12 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
         classification == Entity.Classification.CREATURE
             || classification == Entity.Classification.MISC;
     this.size = entitySizeFactory.create(0.6F, 1.8F, false);
+  }
+
+  @Override
+  public EntityTypeBuilder displayName(ChatComponent displayName) {
+    this.displayName = displayName;
+    return this;
   }
 
   /**
@@ -109,6 +117,7 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
   @Override
   public EntityType build(String id) {
     return this.entityTypeFactory.create(
+        this.displayName,
         this.classification,
         this.serializable,
         this.summonable,
