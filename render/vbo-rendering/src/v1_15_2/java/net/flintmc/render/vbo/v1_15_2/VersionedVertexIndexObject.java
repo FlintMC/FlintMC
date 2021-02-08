@@ -101,10 +101,6 @@ public class VersionedVertexIndexObject implements VertexIndexObject {
    */
   @Override
   public void pushToGPU() {
-    if (this.isAvailable) {
-      throw new IllegalStateException("This EBO has already been pushed to the GPU.");
-    }
-
     int[] indicesArray = new int[indices.size()];
     for (int i = 0; i < this.indices.size(); i++) {
       indicesArray[i] = this.indices.get(i);

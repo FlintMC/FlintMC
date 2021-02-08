@@ -19,6 +19,7 @@
 
 package net.flintmc.render.vbo.v1_16_5;
 
+import static org.lwjgl.opengl.GL11.GL_POLYGON;
 import static org.lwjgl.opengl.GL33.GL_QUADS;
 import static org.lwjgl.opengl.GL33.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL33.GL_UNSIGNED_INT;
@@ -104,6 +105,8 @@ public class VersionedVertexArrayObject implements VertexArrayObject {
       glDrawElements(GL_TRIANGLES, indices);
     } else if (drawMode == VboDrawMode.QUADS) {
       glDrawElements(GL_QUADS, indices);
+    }else if(drawMode == VboDrawMode.POLYGON){
+      glDrawElements(GL_POLYGON, indices);
     }
   }
 
@@ -123,6 +126,8 @@ public class VersionedVertexArrayObject implements VertexArrayObject {
       glDrawElements(GL_TRIANGLES, ebo.getSize(), GL_UNSIGNED_INT, 0);
     } else if (ebo.getDrawMode() == VboDrawMode.QUADS) {
       glDrawElements(GL_QUADS, ebo.getSize(), GL_UNSIGNED_INT, 0);
+    }else if(ebo.getDrawMode() == VboDrawMode.POLYGON){
+      glDrawElements(GL_POLYGON, ebo.getSize(), GL_UNSIGNED_INT, 0);
     }
   }
 

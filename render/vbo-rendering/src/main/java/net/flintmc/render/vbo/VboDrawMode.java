@@ -24,5 +24,7 @@ public enum VboDrawMode {
   /** Draw using GL_QUADS. */
   QUADS,
   /** Draw using GL_TRIANGLES. */
-  TRIANGLES
+  TRIANGLES,
+  /** Draw using GL_POLYGON. */
+  POLYGON
 }
