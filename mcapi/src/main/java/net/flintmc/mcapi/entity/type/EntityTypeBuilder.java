@@ -21,12 +21,21 @@ package net.flintmc.mcapi.entity.type;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.Entity;
 
 /**
  * Represents a builder to built entity types.
  */
 public interface EntityTypeBuilder {
+
+  /**
+   * Sets the display name of the entity type
+   *
+   * @param displayName The non-null display name of the entity type.
+   * @return This builder, for chaining.
+   */
+  EntityTypeBuilder displayName(ChatComponent displayName);
 
   /**
    * Sets the size of the entity type.

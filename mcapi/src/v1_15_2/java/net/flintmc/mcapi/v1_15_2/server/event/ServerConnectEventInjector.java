@@ -24,6 +24,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
+import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.event.DirectionalEvent.Direction;
@@ -67,7 +68,7 @@ public class ServerConnectEventInjector {
     this.eventBus.fireEvent(this.eventFactory.create(address), Phase.PRE);
   }
 
-  @PostSubscribe(version = "1.15.2")
+  @PreSubscribe(version = "1.15.2")
   public void handleLoginSuccess(PacketEvent event) {
     if (event.getDirection() != Direction.RECEIVE
         || event.getPhase() != ProtocolPhase.LOGIN

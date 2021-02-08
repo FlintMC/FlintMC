@@ -35,7 +35,7 @@ import net.flintmc.mcapi.server.status.ServerStatus;
  * phases, but cancellation will only have an effect in the {@link Phase#PRE} phase.
  *
  * <p>This event should only be used if really necessary as it is completely version-specific, for
- * some things there are there separate events that are not version-specific.
+ * some things there are separate events that are not version-specific.
  *
  * @see Subscribe
  */
