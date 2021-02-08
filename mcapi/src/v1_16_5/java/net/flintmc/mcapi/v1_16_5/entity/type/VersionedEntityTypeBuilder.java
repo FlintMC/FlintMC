@@ -60,6 +60,9 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
     this.size = entitySizeFactory.create(0.6F, 1.8F, false);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EntityTypeBuilder displayName(ChatComponent displayName) {
     this.displayName = displayName;

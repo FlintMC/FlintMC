@@ -29,6 +29,12 @@ import net.flintmc.mcapi.entity.Entity;
  */
 public interface EntityTypeBuilder {
 
+  /**
+   * Sets the display name of the entity type
+   *
+   * @param displayName The non-null display name of the entity type.
+   * @return This builder, for chaining.
+   */
   EntityTypeBuilder displayName(ChatComponent displayName);
 
   /**
