@@ -17,10 +17,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.world.stats;
+package net.flintmc.mcapi.v1_16_5.world.stats;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
@@ -42,11 +44,8 @@ import net.minecraft.network.play.client.CClientStatusPacket.State;
 import net.minecraft.network.play.server.SStatisticsPacket;
 import net.minecraft.stats.StatisticsManager;
 
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
 @Singleton
-@Implement(value = WorldStatsProvider.class, version = "1.15.2")
+@Implement(value = WorldStatsProvider.class, version = "1.16.5")
 public class VersionedWorldStatsProvider implements WorldStatsProvider {
 
   private final VersionedWorldStatsMapper mapper;
@@ -106,12 +105,12 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     return this.mapper.getCategories();
   }
 
-  @PostSubscribe(version = "1.15.2")
+  @PostSubscribe(version = "1.16.5")
   public void resetPendingRequest(ServerConnectEvent event) {
     this.reset();
   }
 
-  @PostSubscribe(version = "1.15.2")
+  @PostSubscribe(version = "1.16.5")
   public void resetPendingRequest(ServerDisconnectEvent event) {
     this.reset();
   }
@@ -121,7 +120,7 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     this.lastStats = null;
   }
 
-  @Subscribe(phase = Phase.ANY, version = "1.15.2")
+  @Subscribe(phase = Phase.ANY, version = "1.16.5")
   public void processStatsResponse(PacketEvent event, Phase phase) {
     if (event.getDirection() != Direction.RECEIVE
         || !(event.getPacket() instanceof SStatisticsPacket)) {
