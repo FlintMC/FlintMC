@@ -31,13 +31,11 @@ import net.flintmc.mcapi.server.status.ServerStatus;
 
 /**
  * This event will be fired whenever a Packet is sent/received to/from a server or in singleplayer
- * to the integrated server. It will be fired in the {@link Phase#PRE} and {@link Phase#POST} phases
- * (for the direction {@link net.flintmc.mcapi.event.DirectionalEvent.Direction#RECEIVE} only in the
- * phase {@link Phase#PRE}), but cancellation will only have an effect in the {@link Phase#PRE}
- * phase.
+ * to the integrated server. It will be fired in the {@link Phase#PRE} and {@link Phase#POST}
+ * phases, but cancellation will only have an effect in the {@link Phase#PRE} phase.
  *
  * <p>This event should only be used if really necessary as it is completely version-specific, for
- * some things there are there separate events that are not version-specific.
+ * some things there are separate events that are not version-specific.
  *
  * @see Subscribe
  */

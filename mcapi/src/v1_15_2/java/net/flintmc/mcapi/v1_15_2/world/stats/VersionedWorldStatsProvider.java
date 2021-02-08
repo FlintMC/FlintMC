@@ -21,16 +21,17 @@ package net.flintmc.mcapi.v1_15_2.world.stats;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.concurrent.CompletableFuture;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
-import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.event.DirectionalEvent.Direction;
 import net.flintmc.mcapi.server.event.PacketEvent;
 import net.flintmc.mcapi.server.event.ServerConnectEvent;
 import net.flintmc.mcapi.server.event.ServerDisconnectEvent;
+import net.flintmc.mcapi.world.stats.StatsCategory;
+import net.flintmc.mcapi.world.stats.WorldStatType;
 import net.flintmc.mcapi.world.stats.WorldStats;
 import net.flintmc.mcapi.world.stats.WorldStatsProvider;
 import net.flintmc.mcapi.world.stats.event.PlayerStatsUpdateEvent;
@@ -40,6 +41,9 @@ import net.minecraft.network.play.client.CClientStatusPacket;
 import net.minecraft.network.play.client.CClientStatusPacket.State;
 import net.minecraft.network.play.server.SStatisticsPacket;
 import net.minecraft.stats.StatisticsManager;
+
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Singleton
 @Implement(value = WorldStatsProvider.class, version = "1.15.2")
@@ -65,11 +69,16 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     this.screen.updateData();
   }
 
+  @Override
+  public WorldStats getCurrentStats() {
+    return this.mapper.map(this.screen);
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<WorldStats> requestStats() {
+  public CompletableFuture<WorldStats> requestStatsUpdate() {
     if (this.pendingRequest == null) {
       if (Minecraft.getInstance().getConnection() == null) {
         throw new IllegalStateException("Cannot request stats while not connected to a server");
@@ -84,6 +93,14 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     return this.pendingRequest;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Map<WorldStatType, StatsCategory> getCategories() {
+    return this.mapper.getCategories();
+  }
+
   @PostSubscribe
   public void resetPendingRequest(ServerConnectEvent event) {
     this.pendingRequest = null;
@@ -94,21 +111,27 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     this.pendingRequest = null;
   }
 
-  @PreSubscribe
-  public void processStatsResponse(PacketEvent event) {
+  @Subscribe(phase = Phase.ANY)
+  public void processStatsResponse(PacketEvent event, Phase phase) {
     if (event.getDirection() != Direction.RECEIVE
         || !(event.getPacket() instanceof SStatisticsPacket)) {
       return;
     }
 
-    this.eventBus.fireEvent(this.event, Phase.PRE);
+    if (phase == Phase.PRE) {
+      this.eventBus.fireEvent(this.event, Phase.PRE);
+      return;
+    }
 
     SStatisticsPacket packet = (SStatisticsPacket) event.getPacket();
     packet.getStatisticMap()
         .forEach((stat, value) -> this.screen.getStatsManager().setValue(null, stat, value));
     this.screen.updateData();
 
-    this.pendingRequest.complete(this.mapper.map(this.screen));
+    if (this.pendingRequest != null) {
+      this.pendingRequest.complete(this.mapper.map(this.screen));
+      this.pendingRequest = null;
+    }
 
     this.eventBus.fireEvent(this.event, Phase.POST);
   }

@@ -19,10 +19,15 @@
 
 package net.flintmc.mcapi.world.stats;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public interface WorldStatsProvider {
 
-  CompletableFuture<WorldStats> requestStats();
+  WorldStats getCurrentStats();
+
+  CompletableFuture<WorldStats> requestStatsUpdate();
+
+  Map<WorldStatType, StatsCategory> getCategories();
 
 }

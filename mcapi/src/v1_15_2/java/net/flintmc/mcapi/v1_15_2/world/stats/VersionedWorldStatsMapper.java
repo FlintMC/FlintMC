@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.v1_15_2.world.stats;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -78,6 +79,7 @@ public class VersionedWorldStatsMapper {
   private final StatsCategory generalCategory;
   private final StatsCategory mobCategory;
   private final StatsCategory itemCategory;
+  private final Map<WorldStatType, StatsCategory> categories;
 
   @Inject
   private VersionedWorldStatsMapper(
@@ -101,6 +103,16 @@ public class VersionedWorldStatsMapper {
     this.generalCategory = this.createCategory(WorldStatType.GENERAL, "stat.generalButton");
     this.itemCategory = this.createCategory(WorldStatType.ITEM, "stat.itemsButton");
     this.mobCategory = this.createCategory(WorldStatType.MOB, "stat.mobsButton");
+
+    this.categories = ImmutableMap.of(
+        WorldStatType.GENERAL, this.generalCategory,
+        WorldStatType.ITEM, this.itemCategory,
+        WorldStatType.MOB, this.mobCategory
+    );
+  }
+
+  public Map<WorldStatType, StatsCategory> getCategories() {
+    return this.categories;
   }
 
   public WorldStats map(StatsScreenShadow shadow) {

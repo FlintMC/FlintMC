@@ -37,7 +37,8 @@ public interface ItemWorldStat extends WorldStat {
   interface Factory {
 
     ItemWorldStat create(
-        @Assisted("category") StatsCategory category, @Assisted("item") ItemType item,
+        @Assisted("category") StatsCategory category,
+        @Assisted("item") ItemType item,
         @Assisted("values") Map<ItemStatType, Integer> values,
         @Assisted("formattedValues") Map<ItemStatType, String> formattedValues);
   }
