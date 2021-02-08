@@ -50,12 +50,13 @@ import java.util.concurrent.CompletableFuture;
 public class VersionedWorldStatsProvider implements WorldStatsProvider {
 
   private final VersionedWorldStatsMapper mapper;
-  private final StatsScreenShadow screen;
+  private final StatsScreenShadow shadow;
 
   private final EventBus eventBus;
   private final PlayerStatsUpdateEvent event;
 
   private CompletableFuture<WorldStats> pendingRequest;
+  private WorldStats lastStats;
 
   @Inject
   private VersionedWorldStatsProvider(VersionedWorldStatsMapper mapper, EventBus eventBus) {
@@ -65,13 +66,17 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     this.event = new PlayerStatsUpdateEvent() {
     };
 
-    this.screen = (StatsScreenShadow) new StatsScreen(null, new StatisticsManager());
-    this.screen.updateData();
+    this.shadow = (StatsScreenShadow) new StatsScreen(null, new StatisticsManager());
+    this.shadow.updateData();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public WorldStats getCurrentStats() {
-    return this.mapper.map(this.screen);
+    return this.lastStats != null ? this.lastStats
+        : (this.lastStats = this.mapper.map(this.shadow));
   }
 
   /**
@@ -125,13 +130,15 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
 
     SStatisticsPacket packet = (SStatisticsPacket) event.getPacket();
     packet.getStatisticMap()
-        .forEach((stat, value) -> this.screen.getStatsManager().setValue(null, stat, value));
-    this.screen.updateData();
+        .forEach((stat, value) -> this.shadow.getStatsManager().setValue(null, stat, value));
+    this.shadow.updateData();
 
     if (this.pendingRequest != null) {
-      this.pendingRequest.complete(this.mapper.map(this.screen));
+      this.pendingRequest.complete(this.mapper.map(this.shadow));
       this.pendingRequest = null;
     }
+
+    this.lastStats = this.mapper.map(this.shadow);
 
     this.eventBus.fireEvent(this.event, Phase.POST);
   }

@@ -21,9 +21,18 @@ package net.flintmc.mcapi.world.stats.value;
 
 import net.flintmc.framework.generation.annotation.TargetDataField;
 import net.flintmc.mcapi.world.stats.StatsCategory;
+import net.flintmc.mcapi.world.stats.WorldStats;
 
+/**
+ * Represents a single statistic value from the {@link WorldStats}.
+ */
 public interface WorldStat {
 
+  /**
+   * Retrieves the category to which this statistic value belongs to.
+   *
+   * @return The non-null category of this statistic value
+   */
   @TargetDataField("category")
   StatsCategory getCategory();
 

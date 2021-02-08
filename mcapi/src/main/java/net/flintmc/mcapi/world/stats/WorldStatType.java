@@ -19,10 +19,32 @@
 
 package net.flintmc.mcapi.world.stats;
 
+import net.flintmc.mcapi.world.stats.value.GeneralWorldStat;
+import net.flintmc.mcapi.world.stats.value.ItemWorldStat;
+import net.flintmc.mcapi.world.stats.value.MobWorldStat;
+import net.flintmc.mcapi.world.stats.value.WorldStat;
+
+/**
+ * Types of stats for the statistics of a player in a world.
+ */
 public enum WorldStatType {
 
+  /**
+   * The {@link WorldStat}s will be an instance of {@link GeneralWorldStat} and contain stuff like
+   * the number of games quit, distance walked.
+   */
   GENERAL,
+
+  /**
+   * The {@link WorldStat}s will be an instance of {@link ItemWorldStat} and contain stuff like the
+   * number of items broken and picked up.
+   */
   ITEM,
+
+  /**
+   * The {@link WorldStat}s will be an instance of {@link MobWorldStat} and contain the number of
+   * kills for each entity type by the player and the mob.
+   */
   MOB;
 
 }

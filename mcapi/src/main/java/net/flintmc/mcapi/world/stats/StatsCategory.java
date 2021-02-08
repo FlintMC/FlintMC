@@ -21,21 +21,42 @@ package net.flintmc.mcapi.world.stats;
 
 import net.flintmc.framework.generation.annotation.DataFactory;
 import net.flintmc.framework.generation.annotation.TargetDataField;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 
+/**
+ * Category of stats that contains more information about a {@link WorldStatType}.
+ */
 public interface StatsCategory {
 
+  /**
+   * Retrieves the {@link WorldStatType} that identifies this category.
+   *
+   * @return The non-null world stat type of this category
+   */
   @TargetDataField("type")
   WorldStatType getType();
 
+  /**
+   * Retrieves the display name of this category as it would be displayed in the menu.
+   *
+   * @return The non-null display name of this category
+   */
   @TargetDataField("displayName")
   ChatComponent getDisplayName();
 
+  /**
+   * Factory for the {@link StatsCategory}.
+   */
   @DataFactory(StatsCategory.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link StatsCategory} for the given type and display name.
+     *
+     * @param type        The non-null type that identifies this category
+     * @param displayName The non-null display name of the new category
+     * @return The new non-null {@link StatsCategory}
+     */
     StatsCategory create(
         @TargetDataField("type") WorldStatType type,
         @TargetDataField("displayName") ChatComponent displayName);

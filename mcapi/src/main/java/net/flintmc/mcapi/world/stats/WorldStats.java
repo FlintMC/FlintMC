@@ -24,17 +24,44 @@ import net.flintmc.framework.generation.annotation.DataFactory;
 import net.flintmc.framework.generation.annotation.TargetDataField;
 import net.flintmc.mcapi.world.stats.value.WorldStat;
 
+/**
+ * Represents statistics from a specific timestamp per player in a world.
+ */
 public interface WorldStats {
 
+  /**
+   * Retrieves the timestamp when this stats object has been created in milliseconds.
+   *
+   * @return The timestamp in milliseconds
+   * @see System#currentTimeMillis()
+   */
   @TargetDataField("timestamp")
   long getTimestamp();
 
+  /**
+   * Retrieves the stats from this stats object mapped from its corresponding {@link
+   * WorldStatType}.
+   *
+   * @return The non-null map containing every stat per world stat type
+   */
   @TargetDataField("stats")
   Multimap<WorldStatType, WorldStat> getStats();
 
+  /**
+   * Factory for the {@link WorldStats}.
+   */
   @DataFactory(WorldStats.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link WorldStats} object with the given timestamp and stats.
+     *
+     * @param timestamp The current timestamp which represents the timestamp of the creation of the
+     *                  new object
+     * @param stats     The non-null map containing every stat mapped from its corresponding {@link
+     *                  WorldStatType}
+     * @return The new non-null {@link WorldStats} object
+     */
     WorldStats create(
         @TargetDataField("timestamp") long timestamp,
         @TargetDataField("stats") Multimap<WorldStatType, WorldStat> stats);

@@ -22,12 +22,38 @@ package net.flintmc.mcapi.world.stats;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Provider to get the {@link WorldStats} from a server.
+ */
 public interface WorldStatsProvider {
 
+  /**
+   * Retrieves the current stats from the last time the server sent them or empty stats if the
+   * server never sent them, though the timestamp will still be the one from the first invocation of
+   * this method when the server never sent them.
+   * <p>
+   * For this to be changed {@link #requestStatsUpdate()} doesn't necessarily need to be called,
+   * Minecraft itself can also send the stats on its own.
+   *
+   * @return The non-null stats from the last update from the server or empty stats (still non-null)
+   * if the server never sent something
+   */
   WorldStats getCurrentStats();
 
+  /**
+   * Requests an update of the stats from the server. When received {@link #getCurrentStats()} will
+   * be updated and the retrieved future will be completed. This request won't time out if the
+   * server doesn't send anything.
+   *
+   * @return The non-null future that will be completed when the server sends the response
+   */
   CompletableFuture<WorldStats> requestStatsUpdate();
 
+  /**
+   * Retrieves all available categories mapped from their corresponding {@link WorldStatType}.
+   *
+   * @return The non-null immutable map with all categories
+   */
   Map<WorldStatType, StatsCategory> getCategories();
 
 }

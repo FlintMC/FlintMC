@@ -30,6 +30,11 @@ import net.flintmc.mcapi.entity.EntitySize;
  */
 public interface EntityType {
 
+  /**
+   * Retrieves the display name of this entity type, usually a translation component.
+   *
+   * @return The non-null display name of this entity type
+   */
   ChatComponent getDisplayName();
 
   /**
@@ -83,6 +88,7 @@ public interface EntityType {
     /**
      * Creates a new {@link EntityType} by the given parameters.
      *
+     * @param displayName           The non-null display name of this entity type.
      * @param classification        The classifications for an entity type.
      * @param serializable          Whether the entity type if serializable.
      * @param summonable            Whether the entity type is summonable.

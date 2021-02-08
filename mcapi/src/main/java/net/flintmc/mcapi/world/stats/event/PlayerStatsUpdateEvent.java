@@ -21,8 +21,21 @@ package net.flintmc.mcapi.world.stats.event;
 
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
+import net.flintmc.mcapi.world.stats.WorldStats;
+import net.flintmc.mcapi.world.stats.WorldStatsProvider;
 
+/**
+ * This event will be fired when the server sends an update for the {@link WorldStats}, this will
+ * normally be done after the client sent a request which for example can be when {@link
+ * WorldStatsProvider#requestStatsUpdate()} has been invoked.
+ * <p>
+ * It will be fired in both the {@link Phase#PRE} and {@link Phase#POST} phases.
+ *
+ * @see Subscribe
+ */
 @Subscribable({Phase.PRE, Phase.POST})
 public interface PlayerStatsUpdateEvent extends Event {
+
 }

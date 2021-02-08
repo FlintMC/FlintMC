@@ -23,21 +23,53 @@ import net.flintmc.framework.generation.annotation.DataFactory;
 import net.flintmc.framework.generation.annotation.TargetDataField;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.world.stats.StatsCategory;
+import net.flintmc.mcapi.world.stats.WorldStats;
 
+/**
+ * Represents a simple statistic from the {@link WorldStats} with an integer value.
+ */
 public interface GeneralWorldStat extends WorldStat {
 
+  /**
+   * Retrieves the display name of this statistic.
+   *
+   * @return The non-null display name of this statistic
+   */
   @TargetDataField("displayName")
   ChatComponent getDisplayName();
 
+  /**
+   * Retrieves the {@link #getValue() value} of this statistic formatted, for example for distances
+   * this will be formatted with an "m" (or "cm"/"km", depending on the value) at the end.
+   *
+   * @return The non-null formatted value of this statistic
+   */
   @TargetDataField("formattedValue")
   String getFormattedValue();
 
+  /**
+   * Retrieves the value of this statistic.
+   *
+   * @return The value of this statistic
+   */
   @TargetDataField("value")
   int getValue();
 
+  /**
+   * Factory for the {@link GeneralWorldStat}.
+   */
   @DataFactory(GeneralWorldStat.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link GeneralWorldStat} with the given values.
+     *
+     * @param category       The non-null category of the new statistic
+     * @param displayName    The non-null display name of the new statistic
+     * @param formattedValue The non-null formatted value of the new statistic
+     * @param value          The value of the new statistic
+     * @return The new non-null {@link GeneralWorldStat}
+     */
     GeneralWorldStat create(
         @TargetDataField("category") StatsCategory category,
         @TargetDataField("displayName") ChatComponent displayName,
