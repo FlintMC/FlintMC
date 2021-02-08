@@ -22,6 +22,7 @@ package net.flintmc.mcapi.v1_15_2.server.payload;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CannotCompileException;
+import javassist.ClassMap;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
@@ -49,8 +50,8 @@ public class CustomPayloadInterceptor {
       new int[]{Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
 
   private final ClassPool pool;
-  private final ClassMappingProvider classMappingProvider;
   private final ClassMapping customPayloadPacketMapping;
+  private final ClassMapping clientPlayNetHandlerMapping;
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
 
   @Inject
@@ -59,9 +60,10 @@ public class CustomPayloadInterceptor {
       ClassMappingProvider classMappingProvider,
       InjectedFieldBuilder.Factory fieldBuilderFactory) {
     this.pool = pool;
-    this.classMappingProvider = classMappingProvider;
     this.customPayloadPacketMapping =
         classMappingProvider.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket");
+    this.clientPlayNetHandlerMapping = classMappingProvider
+        .get("net.minecraft.client.network.play.ClientPlayNetHandler");
     this.fieldBuilderFactory = fieldBuilderFactory;
   }
 
@@ -69,18 +71,17 @@ public class CustomPayloadInterceptor {
   public void transform(ClassTransformContext context)
       throws NotFoundException, BadBytecode, CannotCompileException {
 
-    CtClass[] params = new CtClass[]{
-        this.pool.get(this.classMappingProvider
-            .get("net.minecraft.network.play.server.SCustomPayloadPlayPacket").getName())
-    };
+    CtClass customPayloadPacketClass = this.pool.get(this.customPayloadPacketMapping.getName());
+
     CtMethod method =
         context
             .getCtClass()
             .getDeclaredMethod(
-                this.classMappingProvider.get(context.getCtClass().getName())
-                    .getMethod("handleCustomPayload", params).getName(),
-                params
-            );
+                this.clientPlayNetHandlerMapping
+                    .getMethod("handleCustomPayload", customPayloadPacketClass).getName(),
+                new CtClass[]{
+                    customPayloadPacketClass
+                });
 
     MethodInfo methodInfo = method.getMethodInfo();
     CodeAttribute codeAttribute = methodInfo.getCodeAttribute();

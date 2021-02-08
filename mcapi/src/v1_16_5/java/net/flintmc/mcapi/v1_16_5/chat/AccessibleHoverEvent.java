@@ -17,15 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.session.internal.refresh;
+package net.flintmc.mcapi.v1_16_5.chat;
 
-import net.flintmc.transform.shadow.FieldSetter;
+import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-// The default UserAuthentication of the Authlib doesn't support overriding the access token
-@Shadow("com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication")
-public interface RefreshableYggdrasilUserAuthentication {
+@Shadow(value = "net.minecraft.util.text.event.HoverEvent", version = "1.16.5")
+public interface AccessibleHoverEvent {
 
-  @FieldSetter("accessToken")
-  void setAccessToken(String accessToken);
+  @FieldGetter("value")
+  Object getValue();
 }

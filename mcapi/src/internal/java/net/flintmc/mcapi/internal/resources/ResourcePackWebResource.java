@@ -34,8 +34,8 @@ public class ResourcePackWebResource implements WebResource {
 
   private final ResourceLocation location;
   private final List<Byte> data;
+  private long size = -1;
   private InputStream stream;
-  private long size;
 
   protected ResourcePackWebResource(ResourceLocation location) {
     this.location = location;
@@ -74,12 +74,12 @@ public class ResourcePackWebResource implements WebResource {
     this.stream.close();
   }
 
-  private int readFile() throws IOException {
+  private long readFile() throws IOException {
     if (!this.data.isEmpty()) {
       return this.data.size();
     }
-    int total = 0;
-    int read;
+    long total = 0;
+    long read;
     byte[] buffer = new byte[BUFFER_SIZE];
     while ((read = this.stream.read(buffer)) != -1) {
       total += read;
@@ -97,7 +97,7 @@ public class ResourcePackWebResource implements WebResource {
   @Override
   public long getSize() throws IOException {
     if (this.size < 0) {
-      this.size = readFile();
+      this.size = this.readFile();
     }
     return this.size;
   }
@@ -107,7 +107,7 @@ public class ResourcePackWebResource implements WebResource {
    */
   @Override
   public long readFromFile(ByteBuffer data, long length) throws IOException {
-    int read = readFile();
+    long read = this.readFile();
     for (byte b : this.data) {
       data.put(b);
     }

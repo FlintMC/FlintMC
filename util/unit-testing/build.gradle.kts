@@ -17,17 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.session.internal.refresh;
+plugins {
+    id("java-library")
+}
 
-import com.mojang.authlib.GameProfile;
-import net.flintmc.transform.shadow.FieldSetter;
-import net.flintmc.transform.shadow.Shadow;
+group = "net.flintmc"
 
-// The default UserAuthentication of the Authlib doesn't support overriding the selected profile, it
-// only does this when logging in/out
-@Shadow("com.mojang.authlib.BaseUserAuthentication")
-public interface RefreshableBaseUserAuthentication {
-
-  @FieldSetter(value = "selectedProfile")
-  void setPublicSelectedProfile(GameProfile profile);
+dependencies {
+    api(platform("org.junit:junit-bom:5.7.0"))
+    api("org.junit.jupiter", "junit-jupiter", "5.7.0")
+    api("org.junit.jupiter", "junit-jupiter-api", "5.7.0")
+    api("com.google.inject", "guice", "4.2.0")
+    api("org.mockito:mockito-core:3.7.7")
 }

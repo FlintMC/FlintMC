@@ -43,16 +43,25 @@ public class DefaultLauncherProfiles implements LauncherProfiles {
     this.profiles = profiles;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getClientToken() {
     return this.clientToken;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getPreferredVersion() {
     return this.preferredVersion;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<LauncherProfile> getProfiles() {
     return this.profiles;

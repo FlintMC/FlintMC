@@ -24,9 +24,7 @@ import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.mcapi.internal.chat.builder.DefaultTextComponentBuilder;
 import org.apache.logging.log4j.Logger;
 
 public class PlainComponentSerializer implements ComponentSerializer {
@@ -54,8 +52,8 @@ public class PlainComponentSerializer implements ComponentSerializer {
   private void serialize(ChatComponent component, StringBuilder builder) {
     if (this.applyFormat) {
       builder.append(ChatColor.PREFIX_CHAR).append(component.color().getColorCode());
-      for (ChatFormat format : component.formats()) {
-        builder.append(ChatColor.PREFIX_CHAR).append(format.getFormatChar());
+      for (ChatColor chatColor : component.chatFormats()) {
+        builder.append(ChatColor.PREFIX_CHAR).append(chatColor.getColorCode());
       }
     }
 
@@ -105,16 +103,16 @@ public class PlainComponentSerializer implements ComponentSerializer {
 
         ChatColor color = ChatColor.getByChar(c);
         if (color != null) {
+
+          if (color.isFormat()) {
+            builder.chatFormat(color);
+            continue;
+          }
+
           builder.nextComponent();
           // for the text after a color, no formats before the color will be applied
           // it has the same effect as §r
           builder.color(color);
-          continue;
-        }
-
-        ChatFormat format = ChatFormat.getByChar(c);
-        if (format != null) {
-          builder.format(format);
           continue;
         }
       }

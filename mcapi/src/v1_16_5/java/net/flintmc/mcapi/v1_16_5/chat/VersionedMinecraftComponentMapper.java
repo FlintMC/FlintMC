@@ -34,11 +34,11 @@ import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
+import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.exception.ComponentDeserializationException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.IFormattableTextComponent;
@@ -99,7 +99,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     TextComponentUtils.func_240648_a_(
-        (IFormattableTextComponent) result, this.createStyle(component, result.getStyle()));
+        (IFormattableTextComponent) result, this.createStyle(component));
 
     for (ChatComponent extra : component.extras()) {
       ((IFormattableTextComponent) result).append((ITextComponent) this.toMinecraft(extra));
@@ -169,19 +169,19 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
 
   private void applyStyle(ChatComponent component, Style style) {
     if (style.getBold()) {
-      component.toggleFormat(ChatFormat.BOLD, true);
+      component.toggleChatFormat(ChatColor.BOLD, true);
     }
     if (style.getItalic()) {
-      component.toggleFormat(ChatFormat.ITALIC, true);
+      component.toggleChatFormat(ChatColor.ITALIC, true);
     }
     if (style.getObfuscated()) {
-      component.toggleFormat(ChatFormat.OBFUSCATED, true);
+      component.toggleChatFormat(ChatColor.OBFUSCATED, true);
     }
     if (style.getStrikethrough()) {
-      component.toggleFormat(ChatFormat.STRIKETHROUGH, true);
+      component.toggleChatFormat(ChatColor.STRIKETHROUGH, true);
     }
     if (style.getUnderlined()) {
-      component.toggleFormat(ChatFormat.UNDERLINED, true);
+      component.toggleChatFormat(ChatColor.UNDERLINED, true);
     }
     if (style.getColor() != null) {
       String coloredString = style.getColor().getName();
@@ -189,7 +189,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
       ChatColor color =
           coloredString.startsWith("#")
               ? ChatColor.parse(coloredString)
-              : ChatColor.getByName(coloredString);
+              : ChatColor.getByName(coloredString.toUpperCase());
       if (color != null) {
         component.color(color);
       }
@@ -203,19 +203,22 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     if (style.getHoverEvent() != null) {
-      // TODO: 28.12.2020 Mojang...
-      /*net.minecraft.util.text.event.HoverEvent hoverEvent = style.getHoverEvent();
-      hoverEvent.getParameter(Action.SHOW_TEXT);
-      HoverEvent.Action action = HoverEvent.Action.valueOf();
+      net.minecraft.util.text.event.HoverEvent hoverEvent = style.getHoverEvent();
+      net.minecraft.util.text.event.HoverEvent.Action<?> hoverAction = hoverEvent.getAction();
 
-      ITextComponent value = style.getHoverEvent().getValue();
+      HoverEvent.Action action = HoverEvent.Action
+          .valueOf(hoverAction.getCanonicalName().toUpperCase());
+
+      AccessibleHoverEvent accessibleHoverEvent = (AccessibleHoverEvent) hoverEvent;
+
+      ITextComponent value = (ITextComponent) accessibleHoverEvent.getValue();
 
       HoverContent content =
           this.factory.gson().deserializeHoverContent(this.fromMinecraft(value), action);
 
       if (content != null) {
         component.hoverEvent(HoverEvent.of(content));
-      }*/
+      }
     }
 
     component.insertion(style.getInsertion());
@@ -272,26 +275,27 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     return null;
   }
 
-  private Style createStyle(ChatComponent component, Style style) {
-    style.setBold(component.hasFormat(ChatFormat.BOLD));
-    style.setItalic(component.hasFormat(ChatFormat.ITALIC));
-    style.func_244282_c(component.hasFormat(ChatFormat.UNDERLINED));
-    if (component.hasFormat(ChatFormat.STRIKETHROUGH)) {
+  private Style createStyle(ChatComponent component) {
+    Style style = Style.EMPTY;
+    style = style.setBold(component.hasChatFormat(ChatColor.BOLD));
+    style = style.setItalic(component.hasChatFormat(ChatColor.ITALIC));
+    style = style.func_244282_c(component.hasChatFormat(ChatColor.UNDERLINED));
+    if (component.hasChatFormat(ChatColor.STRIKETHROUGH)) {
       style = style.applyFormatting(TextFormatting.STRIKETHROUGH);
     }
-    if (component.hasFormat(ChatFormat.OBFUSCATED)) {
+    if (component.hasChatFormat(ChatColor.OBFUSCATED)) {
       style = style.applyFormatting(TextFormatting.OBFUSCATED);
     }
 
     if (component.color().isDefaultColor()) {
-      style.setColor(Color.fromTextFormatting(TextFormatting.valueOf(component.color().getName())));
+      style = style.setColor(Color.fromTextFormatting(TextFormatting.getValueByName(component.color().getName())));
     } else {
-      style.setColor(Color.fromInt(component.color().getRgb()));
+      style = style.setColor(Color.fromInt(component.color().getRgb()));
     }
 
     if (component.clickEvent() != null) {
       try {
-        style.setClickEvent(
+        style = style.setClickEvent(
             new net.minecraft.util.text.event.ClickEvent(
                 net.minecraft.util.text.event.ClickEvent.Action.valueOf(
                     component.clickEvent().getAction().name()),
@@ -314,12 +318,12 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
       if (action != null) {
         ChatComponent value = this.factory.gson().serializeHoverContent(content);
 
-        style.setHoverEvent(
+        style = style.setHoverEvent(
             new net.minecraft.util.text.event.HoverEvent(action, this.toMinecraft(value)));
       }
     }
 
-    style.setInsertion(component.insertion());
+    style = style.setInsertion(component.insertion());
 
     return style;
   }
