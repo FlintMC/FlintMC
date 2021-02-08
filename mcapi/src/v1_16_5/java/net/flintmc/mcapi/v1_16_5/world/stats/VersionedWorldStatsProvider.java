@@ -21,8 +21,6 @@ package net.flintmc.mcapi.v1_16_5.world.stats;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
@@ -44,6 +42,9 @@ import net.minecraft.network.play.client.CClientStatusPacket.State;
 import net.minecraft.network.play.server.SStatisticsPacket;
 import net.minecraft.stats.StatisticsManager;
 
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
 @Singleton
 @Implement(value = WorldStatsProvider.class, version = "1.16.5")
 public class VersionedWorldStatsProvider implements WorldStatsProvider {
@@ -58,12 +59,11 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
   private WorldStats lastStats;
 
   @Inject
-  private VersionedWorldStatsProvider(VersionedWorldStatsMapper mapper, EventBus eventBus) {
+  private VersionedWorldStatsProvider(
+      VersionedWorldStatsMapper mapper, EventBus eventBus, PlayerStatsUpdateEvent event) {
     this.mapper = mapper;
-
     this.eventBus = eventBus;
-    this.event = new PlayerStatsUpdateEvent() {
-    };
+    this.event = event;
 
     this.shadow = (StatsScreenShadow) new StatsScreen(null, new StatisticsManager());
     this.shadow.updateData();

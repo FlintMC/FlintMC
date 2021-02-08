@@ -24,7 +24,6 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.MethodProxy;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.widget.list.ExtendedList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.stats.Stat;
@@ -50,12 +49,8 @@ public interface StatsScreenShadow {
   @MethodProxy
   void initLists();
 
-  @MethodProxy
-  void func_213110_a(ExtendedList<?> list);
-
   default void updateData() {
     this.initLists();
-    this.func_213110_a((ExtendedList<?>) this.getGeneralStats());
   }
 
   @Shadow(value = "net.minecraft.client.gui.screen.StatsScreen$CustomStatsList", version = "1.15.2")
