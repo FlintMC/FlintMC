@@ -42,11 +42,17 @@ public class DefaultRefreshTokenResult implements RefreshTokenResult {
     this.errorMessage = errorMessage;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResultType getType() {
     return this.type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getErrorMessage() {
     return this.errorMessage;

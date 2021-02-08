@@ -26,6 +26,8 @@ import net.flintmc.mcapi.chat.component.event.ClickEvent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public abstract class DefaultComponentBuilder<
     B extends ComponentBuilder<B>, C extends ChatComponent>
@@ -65,7 +67,15 @@ public abstract class DefaultComponentBuilder<
    */
   @Override
   public B format(ChatFormat format) {
-    this.currentComponent.toggleFormat(format, true);
+    return this.chatFormat(ChatColor.getByChar(format.getFormatChar()));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public B chatFormat(ChatColor format) {
+    this.currentComponent.toggleChatFormat(format, true);
     return this.builder;
   }
 
@@ -75,6 +85,14 @@ public abstract class DefaultComponentBuilder<
   @Override
   public ChatFormat[] enabledFormats() {
     return this.currentComponent.formats();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ChatColor[] enabledChatColorFormats() {
+    return this.currentComponent.chatFormats();
   }
 
   /**

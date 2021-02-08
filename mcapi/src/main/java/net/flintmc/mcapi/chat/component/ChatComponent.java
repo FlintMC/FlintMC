@@ -41,6 +41,14 @@ public interface ChatComponent {
   ChatFormat[] formats();
 
   /**
+   * Retrieves an array of all enabled formats in this component. Any modification will have no
+   * effect on the component.
+   *
+   * @return The non-null array of all enabled formats.
+   */
+  ChatColor[] chatFormats();
+
+  /**
    * Retrieves whether this component has the given format.
    *
    * @param format The non-null format to check for
@@ -51,6 +59,16 @@ public interface ChatComponent {
   boolean hasFormat(ChatFormat format);
 
   /**
+   * Retrieves whether this component has the given format.
+   *
+   * @param format The non-null format to check for.
+   * @return {@code true if this component has the given format or {@code false} if not.
+   * @see #toggleChatFormat(ChatColor, boolean)
+   * @see #chatFormats()
+   */
+  boolean hasChatFormat(ChatColor format);
+
+  /**
    * Enables/Disables the given format in this component. If the component is already in the given
    * state, this method will have no effect.
    *
@@ -58,6 +76,15 @@ public interface ChatComponent {
    * @param enabled Whether the format should be enabled or not
    */
   void toggleFormat(ChatFormat format, boolean enabled);
+
+  /**
+   * Enables/Disables the given format in this component. If the component is already in the given
+   * state, this method will have not effect.
+   *
+   * @param format  The format to enable/disable.
+   * @param enabled Whether the format should be enabled or not.
+   */
+  void toggleChatFormat(ChatColor format, boolean enabled);
 
   /**
    * Retrieves the color of this component or {@link ChatColor#WHITE} if no color has been set.

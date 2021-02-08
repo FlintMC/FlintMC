@@ -57,7 +57,17 @@ public interface ComponentBuilder<B extends ComponentBuilder<B>> {
    * @param format The format to be enabled
    * @return this
    */
+  @Deprecated
   B format(ChatFormat format);
+
+  /**
+   * Enables the given format for the current component. If the format is already enabled, nothing
+   * will happen.
+   *
+   * @param format The format to be enabled.
+   * @return This.
+   */
+  B chatFormat(ChatColor format);
 
   /**
    * Retrieves all formats that are enabled for the current component. By default no format is
@@ -66,7 +76,17 @@ public interface ComponentBuilder<B extends ComponentBuilder<B>> {
    * @return An unmodifiable non-null array with all enabled chat formats
    * @see #format(ChatFormat)
    */
+  @Deprecated
   ChatFormat[] enabledFormats();
+
+  /**
+   * Retrieves all formats that are enabled for the current component. By default no format is
+   * enabled.
+   *
+   * @return An unmodifiable non-null array with all enabled chat formats.
+   * @see #chatFormat(ChatColor)
+   */
+  ChatColor[] enabledChatColorFormats();
 
   /**
    * Changes the color of the current component to the given color. Every component can only have

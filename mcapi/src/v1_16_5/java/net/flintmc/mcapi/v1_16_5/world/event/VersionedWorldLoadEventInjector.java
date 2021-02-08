@@ -66,7 +66,7 @@ public class VersionedWorldLoadEventInjector {
     constructor.insertBeforeBody(
         String.format(
             "%s delegate = $9; $9 = new %s(delegate, $1.%s().%s());",
-            LISTENER,
+            this.mappingProvider.get(LISTENER).getName(),
             DelegatingChunkStatusListener.class.getName(),
             "getServerWorldInfo",
             this.mappingProvider

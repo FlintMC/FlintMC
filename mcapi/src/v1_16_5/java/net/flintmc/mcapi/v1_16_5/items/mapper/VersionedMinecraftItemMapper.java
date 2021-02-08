@@ -31,6 +31,7 @@ import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.items.type.ItemType;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
@@ -89,7 +90,12 @@ public class VersionedMinecraftItemMapper implements MinecraftItemMapper {
                         "Unknown item " + stack.getType().getResourceLocation()));
 
     net.minecraft.item.ItemStack result =
-        new net.minecraft.item.ItemStack(() -> item, stack.getStackSize());
+        new net.minecraft.item.ItemStack(new IItemProvider() {
+          @Override
+          public Item asItem() {
+            return item;
+          }
+        }, stack.getStackSize());
 
     if (stack.hasItemMeta()) {
       result.setTag(new CompoundNBT());

@@ -30,5 +30,5 @@ dependencies {
     api(project(":framework:framework-inject"))
     api(project(":mcapi"))
 
-    internalImplementation("com.mojang", "authlib", "1.6.25")
+    api("com.google.code.gson", "gson", "2.8.6")
 }

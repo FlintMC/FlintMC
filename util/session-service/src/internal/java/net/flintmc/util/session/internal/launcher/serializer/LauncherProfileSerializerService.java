@@ -39,6 +39,9 @@ public class LauncherProfileSerializerService implements ServiceHandler<ProfileS
     this.resolver = resolver;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void discover(AnnotationMeta<ProfileSerializerVersion> annotationMeta) {
     ProfileSerializerVersion version = annotationMeta.getAnnotation();

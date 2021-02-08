@@ -269,7 +269,7 @@ $ ./gradlew runClient1.16.5
 If you want to login into your Minecraft account, just set the following
 property in your global Gradle property file (`~/.gradle/gradle.properties`):
 ```properties
-net.flintmc.gradle.login=true
+net.flintmc.enable-minecraft-login=true
 ```
 
 When running the client, a login prompt will appear.
@@ -300,7 +300,7 @@ version = "1.0.0"
 
 flint {
     // Enter the newest Flint version here
-    flintVersion = "2.0.12"
+    flintVersion = "2.0.23"
     minecraftVersions("1.15.2", "1.16.5")
     authors = arrayOf("Your Name")
     runs {
@@ -330,11 +330,11 @@ Gradle won't find our custom Gradle plugin.
 pluginManagement {
     plugins {
         // make sure to use the newest version
-        id("net.flintmc.flint-gradle") version "2.7.3"
+        id("net.flintmc.flint-gradle") version "2.8.1"
     }
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle", "2.7.3")         
+            classpath("net.flintmc", "flint-gradle", "2.8.1")         
         }
         repositories {
             maven {

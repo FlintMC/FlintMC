@@ -22,16 +22,19 @@ package net.flintmc.util.session.internal.launcher.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
-import com.mojang.util.UUIDTypeAdapter;
+import com.google.inject.Provider;
+import net.flintmc.mcapi.player.gameprofile.GameProfile;
+import net.flintmc.mcapi.player.gameprofile.GameProfile.Builder;
+import net.flintmc.util.mojang.UUIDParser;
+import net.flintmc.util.session.launcher.LauncherProfile;
+import net.flintmc.util.session.launcher.LauncherProfile.Factory;
+import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
+import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.mcapi.player.gameprofile.GameProfile;
-import net.flintmc.util.session.launcher.LauncherProfile;
-import net.flintmc.util.session.launcher.serializer.LauncherProfileSerializer;
-import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 
 /**
  * Serializer for version 2 of the launcher_profiles.json by Mojang.
@@ -39,13 +42,20 @@ import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 @ProfileSerializerVersion(2)
 public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
 
+  private final Provider<GameProfile.Builder> gameProfileBuilderFactory;
   private final LauncherProfile.Factory profileFactory;
 
   @Inject
-  public V2LauncherProfileSerializer(LauncherProfile.Factory profileFactory) {
+  private V2LauncherProfileSerializer(
+      Provider<Builder> gameProfileBuilderFactory,
+      Factory profileFactory) {
+    this.gameProfileBuilderFactory = gameProfileBuilderFactory;
     this.profileFactory = profileFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateAuthData(Collection<LauncherProfile> profiles, JsonObject authData) {
     for (LauncherProfile profile : profiles) {
@@ -71,6 +81,9 @@ public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, LauncherProfile> readProfiles(JsonObject authData) {
     Map<String, LauncherProfile> result = new HashMap<>();
@@ -100,8 +113,8 @@ public class V2LauncherProfileSerializer implements LauncherProfileSerializer {
 
         try {
           gameProfiles.add(
-              InjectionHolder.getInjectedInstance(GameProfile.Builder.class)
-                  .setUniqueId(UUIDTypeAdapter.fromString(id))
+              this.gameProfileBuilderFactory.get()
+                  .setUniqueId(UUIDParser.fromUndashedString(id))
                   .setName(displayName.getAsString())
                   .build());
         } catch (IllegalArgumentException ignored) {

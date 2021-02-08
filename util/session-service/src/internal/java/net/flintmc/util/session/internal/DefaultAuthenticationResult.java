@@ -46,11 +46,17 @@ public class DefaultAuthenticationResult implements AuthenticationResult {
     this.profile = profile;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getType() {
     return this.type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile getProfile() {
     return this.profile;

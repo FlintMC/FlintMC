@@ -71,6 +71,9 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     this.serializers = new HashMap<>();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void registerSerializer(int version, CtClass serializerClass) {
     if (this.serializerClasses.containsKey(version)) {
@@ -81,6 +84,9 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     this.serializerClasses.put(version, serializerClass);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LauncherProfileSerializer getSerializer(int version) {
     if (!this.serializers.containsKey(version)) {
@@ -91,6 +97,9 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     return this.serializers.get(version);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getHighestSerializerVersion() {
     int max = 0;
@@ -115,6 +124,9 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     return version.get(FORMAT).getAsInt();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LauncherProfiles loadProfiles() throws IOException {
     Path path = this.launcherProfilesPathSupplier.get();
@@ -160,6 +172,9 @@ public class DefaultLauncherProfileResolver implements LauncherProfileResolver {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void storeProfiles(LauncherProfiles profiles) throws IOException {
     Path path = this.launcherProfilesPathSupplier.get();
