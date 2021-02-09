@@ -131,9 +131,10 @@ public interface PlayerInventory extends Inventory {
   ItemStack[] getArmorContents();
 
   /**
-   * Retrieves the item of the off hand.
+   * Retrieves the item of the off hand or {@code null} if the running Minecraft version doesn't
+   * support the off hand.
    *
-   * @return The item in the off hand.
+   * @return The item in the off hand or {@code null}.
    */
   ItemStack getOffHandItem();
 
