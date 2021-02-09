@@ -40,7 +40,6 @@ import net.flintmc.framework.config.storage.ConfigStorageProvider;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -92,7 +91,9 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     this.discoveredConfigs = new HashMap<>();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ParsedConfig generateConfigImplementation(CtClass configInterface)
       throws NotFoundException, CannotCompileException, IOException, ReflectiveOperationException {
@@ -146,13 +147,17 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     classLoader.loadClass(implemented.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<ParsedConfig> getDiscoveredConfigs() {
     return Collections.unmodifiableCollection(this.discoveredConfigs.values());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void bindConfig(GeneratingConfig generatingConfig, ParsedConfig config)
       throws IllegalStateException {
@@ -180,7 +185,9 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     this.eventBus.fireEvent(this.eventFactory.create(config), Subscribe.Phase.POST);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void initConfig(ParsedConfig config) {
     for (ConfigObjectReference reference : config.getConfigReferences()) {

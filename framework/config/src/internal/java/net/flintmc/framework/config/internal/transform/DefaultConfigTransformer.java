@@ -32,7 +32,6 @@ import java.util.Map;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.NotFoundException;
 import javassist.bytecode.ClassFile;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
@@ -40,9 +39,10 @@ import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.ConfigImplementer;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
-import net.flintmc.framework.config.storage.ConfigStorageProvider;
+import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
+import net.flintmc.framework.config.internal.generator.base.DefaultConfigImplementer;
+import net.flintmc.framework.config.internal.generator.service.ImplementedConfigService;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
@@ -56,13 +56,16 @@ import net.flintmc.transform.minecraft.MinecraftTransformer;
 @Service(
     value = ConfigImplementation.class,
     priority = 2 /* needs to be called after the ConfigGenerationService */)
-@MinecraftTransformer
+@MinecraftTransformer(implementations = false)
 @Implement(ConfigTransformer.class)
 public class DefaultConfigTransformer
     implements ConfigTransformer, LateInjectedTransformer, ServiceHandler<ConfigImplementation> {
 
+  private static final String PARSED_CONFIG_CLASS = ParsedConfig.class.getName();
+
   private final ClassPool pool;
   private final ConfigImplementer configImplementer;
+  private final ImplementedConfigService implementedService;
 
   private final Collection<PendingTransform> pendingTransforms;
   private final Collection<TransformedConfigMeta> mappings;
@@ -71,10 +74,12 @@ public class DefaultConfigTransformer
   @Inject
   private DefaultConfigTransformer(
       ClassPool pool,
-      ConfigImplementer configImplementer,
+      DefaultConfigImplementer configImplementer,
+      ImplementedConfigService implementedService,
       @Named("launchArguments") Map launchArguments) {
     this.pool = pool;
     this.configImplementer = configImplementer;
+    this.implementedService = implementedService;
     this.launchArguments = launchArguments;
 
     this.pendingTransforms = new HashSet<>();
@@ -114,12 +119,12 @@ public class DefaultConfigTransformer
       return;
     }
 
-    TransformedConfigMeta configMeta = new TransformedConfigMeta(
-        annotation.value(), implementation);
+    TransformedConfigMeta configMeta =
+        new TransformedConfigMeta(annotation.value(), implementation);
     this.mappings.add(configMeta);
 
     for (PendingTransform transform : this.pendingTransforms) {
-      if (transform.getMethod().getDeclaringClass().getName()
+      if (transform.getMethod().getInfo().getDeclaringClass().getName()
           .equals(annotation.value().getName())) {
         transform.setConfigMeta(configMeta);
       }
@@ -142,7 +147,9 @@ public class DefaultConfigTransformer
       }
     }
 
-    if (!shouldTransform) {
+    boolean configInterface = this.implementedService.getConfigInterfaces().contains(className);
+
+    if (!shouldTransform && !configInterface) {
       return classData;
     }
 
@@ -156,11 +163,21 @@ public class DefaultConfigTransformer
       throw new ClassTransformException("unable to read class", exception);
     }
 
-    try {
-      this.implementMethods(transforming);
-    } catch (CannotCompileException | NotFoundException exception) {
-      throw new ClassTransformException(
-          "Failed to implement config methods: " + className, exception);
+    if (shouldTransform) {
+      try {
+        this.implementMethods(transforming);
+      } catch (CannotCompileException | NotFoundException exception) {
+        throw new ClassTransformException(
+            "Failed to implement config methods: " + className, exception);
+      }
+    }
+
+    if (configInterface) {
+      try {
+        transforming.addInterface(this.pool.get(PARSED_CONFIG_CLASS));
+      } catch (NotFoundException exception) {
+        throw new ClassTransformException("ParsedConfig not found in class pool", exception);
+      }
     }
 
     try {
@@ -187,7 +204,8 @@ public class DefaultConfigTransformer
       }
 
       ConfigMethod method = transform.getMethod();
-      CtClass declaring = method.getDeclaringClass();
+      ConfigMethodInfo info = method.getInfo();
+      CtClass declaring = info.getDeclaringClass();
       if (!implementation.getName()
           .equals(transform.getConfigMeta().getImplementationCtClass().getName())) {
         continue;
@@ -195,11 +213,11 @@ public class DefaultConfigTransformer
 
       // bind the new config class from the new class pool above with
       // new methods from this transformer
-      method.getConfig().bindGeneratedImplementation(declaring, implementation);
+      info.getConfig().bindGeneratedImplementation(declaring, implementation);
 
       if (!modified
           && implementation.isInterface()
-          && implementation.getName().equals(method.getConfig().getBaseClass().getName())) {
+          && implementation.getName().equals(info.getConfig().getBaseClass().getName())) {
         // add the ParsedConfig interface to the config interface so that guice will also proxy this
         // one and not only the config itself
         implementation.addInterface(this.pool.get(ParsedConfig.class.getName()));
@@ -207,31 +225,20 @@ public class DefaultConfigTransformer
 
       if (!implementation.isInterface()) {
         if (!modified) {
-          implementation.addField(
-              CtField.make(
-                  "private final transient "
-                      + ConfigStorageProvider.class.getName()
-                      + " configStorageProvider = "
-                      + InjectionHolder.class.getName()
-                      + ".getInjectedInstance("
-                      + ConfigStorageProvider.class.getName()
-                      + ".class);",
-                  implementation));
-
           for (TransformedConfigMeta meta : this.mappings) {
             if (meta.getConfig() == null
                 && meta.getSuperClass().getName().equals(declaring.getName())) {
-              meta.setConfig(method.getConfig());
+              meta.setConfig(info.getConfig());
             }
           }
         }
 
-        if (method.getDeclaringClass().getName().equals(method.getConfig().getBaseClass().getName())
+        if (info.getDeclaringClass().getName().equals(info.getConfig().getBaseClass().getName())
             && Arrays.stream(implementation.getInterfaces())
             .noneMatch(iface -> iface.getName().equals(ParsedConfig.class.getName()))) {
           // only the base class annotated with @Config should have the ParsedConfig implementation
           this.configImplementer.implementParsedConfig(
-              implementation, method.getConfig().getName());
+              implementation, method.getInfo().getConfig().getName());
         }
       }
 
@@ -241,7 +248,7 @@ public class DefaultConfigTransformer
         method.implementExistingMethods(implementation);
       }
 
-      if (method.hasAddedInterfaceMethods() && method.hasImplementedExistingMethods()) {
+      if (info.hasAddedInterfaceMethods() && info.hasImplementedExistingMethods()) {
         // everything done, remove the method
         this.pendingTransforms.remove(transform);
       }

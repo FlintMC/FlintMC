@@ -25,7 +25,9 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.annotation.ConfigExclude;
 import net.flintmc.framework.config.generator.GeneratingConfig;
+import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
 import net.flintmc.framework.config.generator.method.ConfigMethodResolver;
 import net.flintmc.framework.config.internal.generator.method.group.ConfigGetterGroup;
 import net.flintmc.framework.config.internal.generator.method.group.ConfigMethodGroup;
@@ -64,7 +66,9 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
         continue;
       }
 
-      if (method.getDeclaringClass().getName().equals(Object.class.getName())) {
+      String declaring = method.getDeclaringClass().getName();
+      if (declaring.equals(Object.class.getName())
+          || declaring.equals(ParsedConfig.class.getName())) {
         continue;
       }
       if (method.hasAnnotation(ConfigExclude.class)) {
@@ -105,9 +109,13 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
     Collection<ConfigMethod> methods = config.getAllMethods();
     ConfigMethod configMethod = group.resolveMethod(config, type, entryName, method);
 
-    if (configMethod != null
-        && !this.containsMethod(prefix, configMethod.getConfigName(), methods)) {
-      configMethod.setPathPrefix(prefix);
+    if (configMethod == null) {
+      return false;
+    }
+    ConfigMethodInfo info = configMethod.getInfo();
+
+    if (!this.containsMethod(prefix, info.getConfigName(), methods)) {
+      info.setPathPrefix(prefix);
 
       methods.add(configMethod);
 
@@ -116,7 +124,7 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
             && !this.serializationService.hasSerializer(subType)
             && method.getParameterTypes().length == 0) {
           String[] newPrefix = Arrays.copyOf(prefix, prefix.length + 1);
-          newPrefix[newPrefix.length - 1] = configMethod.getConfigName();
+          newPrefix[newPrefix.length - 1] = info.getConfigName();
 
           this.resolveMethods(config, subType, newPrefix);
         }
@@ -130,7 +138,8 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
 
   private boolean containsMethod(String[] prefix, String name, Collection<ConfigMethod> methods) {
     for (ConfigMethod method : methods) {
-      if (Arrays.equals(prefix, method.getPathPrefix()) && method.getConfigName().equals(name)) {
+      ConfigMethodInfo info = method.getInfo();
+      if (Arrays.equals(prefix, info.getPathPrefix()) && info.getConfigName().equals(name)) {
         return true;
       }
     }

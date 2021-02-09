@@ -19,6 +19,15 @@
 
 package net.flintmc.framework.config.internal.generator.method.reference;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -36,17 +45,10 @@ import net.flintmc.framework.config.internal.generator.method.reference.invoker.
 import net.flintmc.framework.config.modifier.ConfigModifierRegistry;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.eventbus.EventBus;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.*;
 
 @Implement(ConfigObjectReference.class)
 public class DefaultConfigObjectReference implements ConfigObjectReference {
@@ -107,7 +109,9 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
     this.configBaseClass = classLoader.loadClass(generatingConfig.getBaseClass().getName());
     this.declaringClass = classLoader.loadClass(declaringClass);
-    this.invoker = invocationGenerator.generateInvoker(generatingConfig, path, getter, setter);
+    this.invoker = invocationGenerator.generateInvoker(
+        generatingConfig, this.getLastName(), path, getter, setter);
+    this.invoker.setReference(this.config, this);
 
     this.lastAnnotations = new HashMap<>();
 
@@ -124,49 +128,65 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.defaultValue = defaultValue;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Class<?> getConfigBaseClass() {
     return this.configBaseClass;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getKey() {
     return this.key;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getLastName() {
     return this.pathKeys[this.pathKeys.length - 1];
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String[] getPathKeys() {
     return this.pathKeys;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Class<?> getDeclaringClass() {
     return this.declaringClass;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ParsedConfig getConfig() {
     return this.config;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getSerializedType() {
     return this.serializedType;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType) {
     if (this.lastAnnotations.containsKey(annotationType)) {
@@ -187,7 +207,9 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     return annotation;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<Annotation> findAllAnnotations() {
     if (this.allAnnotations != null) {
@@ -229,7 +251,9 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean appliesTo(ConfigStorage storage) {
     String name = storage.getName();
@@ -261,27 +285,28 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getDefaultValue() {
     return this.defaultValue;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getValue() {
     return this.invoker.getValue(this.config);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setValue(Object value) {
-    Object previousValue = this.getValue();
-    ConfigValueUpdateEvent event = this.eventFactory.create(this, previousValue, value);
-
-    this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
     this.invoker.setValue(this.config, value);
-    this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 
   private Method[] mapMethods(CtMethod[] ctMethods)

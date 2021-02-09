@@ -27,12 +27,16 @@ import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.inject.implement.Implement;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 @Singleton
 @Implement(ConfigObjectReference.Parser.class)
@@ -52,13 +56,17 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     this.implementationGenerator = implementationGenerator;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ConfigObjectReference parse(
       GeneratingConfig generatingConfig, ParsedConfig config, ConfigMethod method) {
+    ConfigMethodInfo info = method.getInfo();
+
     // keys in the config
-    Collection<String> pathKeys = new ArrayList<>(Arrays.asList(method.getPathPrefix()));
-    pathKeys.add(method.getConfigName());
+    Collection<String> pathKeys = new ArrayList<>(Arrays.asList(info.getPathPrefix()));
+    pathKeys.add(info.getConfigName());
 
     // all methods that need to be invoked to get to the actual getter/setter method
     CtMethod[] methodPath;
@@ -67,10 +75,10 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     CtClass mainClass;
 
     try {
-      methodPath = this.asMethods(generatingConfig, method.getPathPrefix());
+      methodPath = this.asMethods(generatingConfig, info.getPathPrefix());
       declaringClass =
           methodPath.length == 0
-              ? method.getDeclaringClass()
+              ? info.getDeclaringClass()
               : methodPath[methodPath.length - 1].getReturnType();
       mainClass =
           methodPath.length == 0
@@ -103,7 +111,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
     if (getter == null || setter == null) {
       throw new IllegalArgumentException(
           "Setter/Getter for "
-              + method.getConfigName()
+              + info.getConfigName()
               + " ("
               + method.getGetterName()
               + "/"
@@ -125,15 +133,18 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
         method.getSerializedType());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<ConfigObjectReference> parseAll(
       GeneratingConfig generatingConfig, ParsedConfig config) {
     Collection<ConfigObjectReference> references = new HashSet<>();
 
     for (ConfigMethod method : generatingConfig.getAllMethods()) {
-      if (!method.getStoredType().isInterface()
-          || this.serializationService.hasSerializer(method.getStoredType())) {
+      ConfigMethodInfo info = method.getInfo();
+      if (!info.getStoredType().isInterface()
+          || this.serializationService.hasSerializer(info.getStoredType())) {
         references.add(this.parse(generatingConfig, config, method));
       }
     }

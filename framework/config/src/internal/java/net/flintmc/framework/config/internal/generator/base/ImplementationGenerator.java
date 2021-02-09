@@ -21,6 +21,11 @@ package net.flintmc.framework.config.internal.generator.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -30,18 +35,11 @@ import javassist.NotFoundException;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
 import net.flintmc.framework.config.generator.method.ConfigMethodResolver;
 import net.flintmc.framework.config.internal.generator.service.ConfigImplementationMapper;
 import net.flintmc.framework.config.internal.transform.ConfigTransformer;
 import net.flintmc.framework.config.internal.transform.PendingTransform;
-import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import net.flintmc.framework.inject.InjectedFieldBuilder;
-import net.flintmc.framework.inject.InjectedFieldBuilder.Factory;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Singleton
 public class ImplementationGenerator {
@@ -51,7 +49,6 @@ public class ImplementationGenerator {
   private final Random random;
   private final ConfigMethodResolver methodResolver;
 
-  private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final ConfigClassLoader classLoader;
   private final ConfigTransformer transformer;
   private final ConfigImplementationMapper implementationMapper;
@@ -60,10 +57,8 @@ public class ImplementationGenerator {
   public ImplementationGenerator(
       ClassPool pool,
       ConfigMethodResolver methodResolver,
-      Factory fieldBuilderFactory,
       ConfigTransformer transformer,
       ConfigImplementationMapper implementationMapper) {
-    this.fieldBuilderFactory = fieldBuilderFactory;
     this.implementationMapper = implementationMapper;
     this.classLoader = new ConfigClassLoader(ImplementationGenerator.class.getClassLoader());
 
@@ -83,16 +78,18 @@ public class ImplementationGenerator {
     this.methodResolver.resolveMethods(config);
 
     for (ConfigMethod method : config.getAllMethods()) {
+      ConfigMethodInfo info = method.getInfo();
+
       // transform all methods
       this.transformer.getPendingTransforms().add(new PendingTransform(method));
 
-      CtClass declaring = method.getDeclaringClass();
+      CtClass declaring = info.getDeclaringClass();
       if (declaring.hasAnnotation(ImplementedConfig.class)) {
         continue;
       }
 
       // generate only the methods in the interface by the transformer (will be added to it below)
-      method.requireNoImplementation();
+      info.requireNoImplementation();
 
       if (config.getGeneratedImplementation(declaring.getName()) != null) {
         continue;
@@ -104,7 +101,7 @@ public class ImplementationGenerator {
 
     for (ConfigMethod method : config.getAllMethods()) {
       CtClass implementation =
-          config.getGeneratedImplementation(method.getDeclaringClass().getName());
+          config.getGeneratedImplementation(method.getInfo().getDeclaringClass().getName());
       if (implementation == null) {
         // the interface is annotated with @Implemented and therefore the implementation already
         // exists
@@ -116,7 +113,8 @@ public class ImplementationGenerator {
 
     Collection<CtClass> implementations =
         config.getAllMethods().stream()
-            .map(method -> config.getGeneratedImplementation(method.getDeclaringClass().getName()))
+            .map(method -> config
+                .getGeneratedImplementation(method.getInfo().getDeclaringClass().getName()))
             .filter(Objects::nonNull)
             // if null the interface is annotated with @ImplementedConfig and therefore the
             // implementation already exists
@@ -135,7 +133,7 @@ public class ImplementationGenerator {
     // Map the implementations so that they are available in the further process of the
     // config generation
     config.getAllMethods().stream()
-        .map(ConfigMethod::getDeclaringClass)
+        .map(method -> method.getInfo().getDeclaringClass())
         .filter(ifc -> config.getGeneratedImplementation(ifc.getName()) == null)
         .distinct()
         .forEach(ifc -> {
@@ -155,7 +153,7 @@ public class ImplementationGenerator {
     return baseImplementation;
   }
 
-  private CtClass generateImplementation(CtClass type) throws CannotCompileException {
+  private CtClass generateImplementation(CtClass type) {
     CtClass implementation =
         this.pool.makeClass(
             type.getSimpleName()
@@ -165,18 +163,7 @@ public class ImplementationGenerator {
                 + this.random.nextInt(Integer.MAX_VALUE));
     implementation.addInterface(type);
 
-    this.addConfigStorageProvider(implementation);
-
     return implementation;
-  }
-
-  public void addConfigStorageProvider(CtClass implementation) throws CannotCompileException {
-    this.fieldBuilderFactory
-        .create()
-        .target(implementation)
-        .fieldName("configStorageProvider")
-        .inject(ConfigStorageProvider.class)
-        .generate();
   }
 
   private void buildConfigField(GeneratingConfig config, CtClass implementation, CtClass declaring)
@@ -208,8 +195,8 @@ public class ImplementationGenerator {
     StringBuilder body = new StringBuilder();
 
     for (ConfigMethod method : config.getAllMethods()) {
-      if (implementation.subtypeOf(method.getDeclaringClass())) {
-        body.append(method.getFieldValuesCreator());
+      if (implementation.subtypeOf(method.getInfo().getDeclaringClass())) {
+        body.append(method.getInfo().getFieldValuesCreator());
       }
     }
 

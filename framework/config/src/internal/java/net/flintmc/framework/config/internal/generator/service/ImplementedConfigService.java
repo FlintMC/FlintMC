@@ -21,48 +21,35 @@ package net.flintmc.framework.config.internal.generator.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import java.util.HashMap;
-import java.util.Map;
-import javassist.CtClass;
-import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
+import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
 
-@Singleton
-@Service(value = ConfigImplementation.class, state = State.PRE_INIT)
-public class ConfigImplementationMapper implements ServiceHandler<ConfigImplementation> {
+import java.util.ArrayList;
+import java.util.Collection;
 
-  private final Map<String, CtClass> implementationMappings;
-  private final Map<String, String> launchArguments;
+@Singleton
+@Service(value = ImplementedConfig.class, state = State.PRE_INIT, priority = -1000)
+public class ImplementedConfigService implements ServiceHandler<ImplementedConfig> {
+
+  private final Collection<String> configInterfaces;
 
   @Inject
-  private ConfigImplementationMapper(@Named("launchArguments") Map launchArguments) {
-    this.implementationMappings = new HashMap<>();
-    this.launchArguments = launchArguments;
+  private ImplementedConfigService() {
+    this.configInterfaces = new ArrayList<>();
   }
 
-  public Map<String, CtClass> getImplementationMappings() {
-    return this.implementationMappings;
+  public Collection<String> getConfigInterfaces() {
+    return this.configInterfaces;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void discover(AnnotationMeta<ConfigImplementation> annotationMeta) {
-    ConfigImplementation annotation = annotationMeta.getAnnotation();
-
-    String version = annotation.version();
-
-    if (!version.isEmpty() && !launchArguments.get("--game-version").equals(version)) {
-      return;
-    }
-
-    String ifc = annotation.value().getName();
-
-    this.implementationMappings.put(ifc, annotationMeta.getClassIdentifier().getLocation());
+  public void discover(AnnotationMeta<ImplementedConfig> annotationMeta) {
+    this.configInterfaces.add(annotationMeta.getClassIdentifier().getLocation().getName());
   }
 }

@@ -21,22 +21,27 @@ package net.flintmc.framework.config.internal.generator.method.reference.invoker
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.IOException;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.GeneratingConfig;
+import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
+import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.internal.generator.base.ConfigClassLoader;
 import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
+import java.io.IOException;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class ReferenceInvocationGenerator {
+
+  private static final String REFERENCE_CLASS = ConfigObjectReference.class.getName();
 
   private final ClassPool pool;
   private final AtomicInteger idCounter;
@@ -53,7 +58,11 @@ public class ReferenceInvocationGenerator {
   }
 
   public ReferenceInvoker generateInvoker(
-      GeneratingConfig config, CtMethod[] path, CtMethod getter, CtMethod setter)
+      GeneratingConfig config,
+      String configName,
+      CtMethod[] path,
+      CtMethod getter,
+      CtMethod setter)
       throws CannotCompileException, NotFoundException, IOException, ReflectiveOperationException {
     CtClass generating =
         this.pool.makeClass(
@@ -71,6 +80,7 @@ public class ReferenceInvocationGenerator {
 
     generating.addMethod(this.generateGetter(lastAccessor, generating, getter));
     generating.addMethod(this.generateSetter(lastAccessor, generating, setter));
+    generating.addMethod(this.generateReferenceSetter(lastAccessor, generating, configName));
 
     return this.newInstance(generating);
   }
@@ -132,6 +142,20 @@ public class ReferenceInvocationGenerator {
             + ");"
             + "}";
 
+    return CtNewMethod.make(src, declaring);
+  }
+
+  private CtMethod generateReferenceSetter(
+      String lastAccessor, CtClass declaring, String configName) throws CannotCompileException {
+    // Field generated in ConfigMethodGenerationUtils.getReferenceField
+    String fieldName = "configReference" + configName;
+
+    String src = "public void setReference(Object instance, " + REFERENCE_CLASS + " reference) {"
+        + lastAccessor
+        + "."
+        + fieldName
+        + " = reference;"
+        + "}";
     return CtNewMethod.make(src, declaring);
   }
 }
