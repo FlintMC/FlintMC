@@ -59,7 +59,7 @@ public enum EquipmentSlotType {
   /**
    * An enumeration of all availables groups.
    */
-  enum Group {
+  public enum Group {
     ARMOR,
     HAND
   }
