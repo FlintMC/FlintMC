@@ -37,11 +37,17 @@ public class DefaultSessionTokenRefreshEvent implements SessionTokenRefreshEvent
     this.newToken = newToken;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getPreviousAccessToken() {
     return this.previousToken;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getNewAccessToken() {
     return this.newToken;

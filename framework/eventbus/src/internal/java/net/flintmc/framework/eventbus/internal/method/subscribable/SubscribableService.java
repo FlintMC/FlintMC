@@ -41,6 +41,7 @@ import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
@@ -81,9 +82,7 @@ public class SubscribableService implements LateInjectedTransformer, ServiceHand
       throws NotFoundException {
     this.methodRegistry = methodRegistry;
 
-    // create our own ClassPool to not clash with the ClassTransformService
-    this.pool = new ClassPool();
-    this.pool.appendSystemPath();
+    this.pool = ClassPool.getDefault();
     this.eventClass = this.pool.get(Event.class.getName());
     this.eventDetailsClass = this.pool.get(EventDetails.class.getName());
 
@@ -111,7 +110,7 @@ public class SubscribableService implements LateInjectedTransformer, ServiceHand
   }
 
   @Override
-  public byte[] transform(String className, byte[] bytes) throws ClassTransformException {
+  public byte[] transform(String className, CommonClassLoader classLoader, byte[] bytes) throws ClassTransformException {
     if (!this.shouldGenerateFields(className) && !this.shouldTransformEventClass(className)) {
       return bytes;
     }

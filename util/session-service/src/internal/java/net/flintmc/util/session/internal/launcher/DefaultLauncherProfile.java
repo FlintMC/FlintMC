@@ -44,6 +44,9 @@ public class DefaultLauncherProfile implements LauncherProfile {
     this.profiles = profiles;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile getProfile(UUID uniqueId) {
     for (GameProfile gameProfile : this.profiles) {
@@ -54,21 +57,33 @@ public class DefaultLauncherProfile implements LauncherProfile {
     return null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getProfileId() {
     return this.profileId;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GameProfile[] getProfiles() {
     return this.profiles;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getAccessToken() {
     return this.accessToken;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setAccessToken(String accessToken) {
     this.accessToken = accessToken;

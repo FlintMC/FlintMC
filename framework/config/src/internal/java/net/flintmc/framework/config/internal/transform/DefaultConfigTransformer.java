@@ -22,6 +22,13 @@ package net.flintmc.framework.config.internal.transform;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -39,18 +46,11 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
-import net.flintmc.transform.javassist.ClassTransformMeta;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
 
 @Singleton
 @Service(
@@ -127,7 +127,8 @@ public class DefaultConfigTransformer
   }
 
   @Override
-  public byte[] transform(String className, byte[] classData) throws ClassTransformException {
+  public byte[] transform(String className, CommonClassLoader classLoader, byte[] classData)
+      throws ClassTransformException {
     // implement methods in classes of the config (including the class annotated with @Config) that
     // are also half-generated
 

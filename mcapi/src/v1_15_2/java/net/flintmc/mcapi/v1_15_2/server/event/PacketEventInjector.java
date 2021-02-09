@@ -52,13 +52,13 @@ public class PacketEventInjector {
   }
 
   @Hook(
-      executionTime = {Hook.ExecutionTime.BEFORE, ExecutionTime.AFTER},
+      executionTime = Hook.ExecutionTime.BEFORE,
       className = "net.minecraft.network.NetworkManager",
       methodName = "processPacket",
       parameters = {@Type(reference = IPacket.class), @Type(reference = INetHandler.class)},
       version = "1.15.2")
   public HookResult processIncomingPacket(
-      ExecutionTime executionTime, @Named("args") Object[] args) {
+      @Named("args") Object[] args, ExecutionTime executionTime) {
     Object packet = args[0];
     ProtocolType type = ProtocolType.getFromPacket((IPacket<?>) packet);
     if (type == null) {

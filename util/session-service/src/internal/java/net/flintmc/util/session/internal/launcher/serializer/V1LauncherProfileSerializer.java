@@ -45,9 +45,11 @@ public class V1LauncherProfileSerializer implements LauncherProfileSerializer {
     this.profileFactory = profileFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateAuthData(Collection<LauncherProfile> profiles, JsonObject authData) {
-
     for (LauncherProfile profile : profiles) {
       if (profile.getProfiles().length == 0) {
         continue;
@@ -82,6 +84,9 @@ public class V1LauncherProfileSerializer implements LauncherProfileSerializer {
     return null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, LauncherProfile> readProfiles(JsonObject authData) {
     Map<String, LauncherProfile> result = new HashMap<>();

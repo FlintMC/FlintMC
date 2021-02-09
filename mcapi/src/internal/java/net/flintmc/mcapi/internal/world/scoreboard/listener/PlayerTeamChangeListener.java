@@ -33,6 +33,9 @@ public interface PlayerTeamChangeListener {
 
   void changeSuffix(PlayerTeam playerTeam, ChatComponent suffix);
 
+  void changeColor(PlayerTeam playerTeam, String colorName);
+
+  @Deprecated
   void changeColor(PlayerTeam playerTeam, ChatColor chatColor);
 
   void changeAllowFriendlyFire(PlayerTeam playerTeam, boolean friendlyFire);

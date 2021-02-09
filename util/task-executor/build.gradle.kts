@@ -34,4 +34,7 @@ dependencies {
     api(project(":framework:framework-stereotype"))
     api(project(":mcapi"))
     api(project(":transform:transform-hook"))
+
+    testImplementation(project(":util:util-unit-testing"))
+    testImplementation(project(":util:util-task-executor", "internal"))
 }

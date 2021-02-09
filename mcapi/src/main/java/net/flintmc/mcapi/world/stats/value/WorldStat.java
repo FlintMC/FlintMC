@@ -17,15 +17,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.session.internal.refresh;
+package net.flintmc.mcapi.world.stats.value;
 
-import net.flintmc.transform.shadow.FieldSetter;
-import net.flintmc.transform.shadow.Shadow;
+import net.flintmc.framework.generation.annotation.TargetDataField;
+import net.flintmc.mcapi.world.stats.StatsCategory;
+import net.flintmc.mcapi.world.stats.WorldStats;
 
-// The default UserAuthentication of the Authlib doesn't support overriding the access token
-@Shadow("com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication")
-public interface RefreshableYggdrasilUserAuthentication {
+/**
+ * Represents a single statistic value from the {@link WorldStats}.
+ */
+public interface WorldStat {
 
-  @FieldSetter("accessToken")
-  void setAccessToken(String accessToken);
+  /**
+   * Retrieves the category to which this statistic value belongs to.
+   *
+   * @return The non-null category of this statistic value
+   */
+  @TargetDataField("category")
+  StatsCategory getCategory();
+
 }

@@ -21,8 +21,8 @@ package net.flintmc.launcher.service;
 
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.launcher.classloading.RootClassLoader;
+import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.transform.exceptions.ClassTransformException;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +35,7 @@ import java.util.Set;
  * <p>Instances are loaded using a {@link java.util.ServiceLoader} or injected by other plugins.
  */
 public interface LauncherPlugin {
+
   /**
    * The name of the plugin, should be a short, but meaningful identifier, such as `Flint`, `Forge`
    * or `Fabric`.
@@ -48,7 +49,8 @@ public interface LauncherPlugin {
    *
    * @param arguments the list of argument objects
    */
-  default void adjustLoadCommandlineArguments(Set<Object> arguments) {}
+  default void adjustLoadCommandlineArguments(Set<Object> arguments) {
+  }
 
   /**
    * Allows the plugin to inject other plugins into the plugin loader.
@@ -65,14 +67,16 @@ public interface LauncherPlugin {
    *
    * @param arguments the current commandline arguments
    */
-  default void modifyCommandlineArguments(List<String> arguments) {}
+  default void modifyCommandlineArguments(List<String> arguments) {
+  }
 
   /**
    * Allows the plugin to modify the behavior of the root classloader.
    *
    * @param classloader the root classloader used for classloading from now on
    */
-  default void configureRootLoader(RootClassLoader classloader) {}
+  default void configureRootLoader(RootClassLoader classloader) {
+  }
 
   /**
    * Gives the plugin a chance to execute code in the launch environment before the launch is
@@ -81,17 +85,20 @@ public interface LauncherPlugin {
    * @param launchClassloader The classloader used in the launch environment
    * @throws PreLaunchException If the pre-launch failed.
    */
-  default void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {}
+  default void preLaunch(ClassLoader launchClassloader) throws PreLaunchException {
+  }
 
   /**
    * Allows the plugin to modify classes before they are loaded.
    *
-   * @param className the name of the class to modify
-   * @param classData the class to modify
+   * @param className   The non-null name of the class to modify
+   * @param classLoader The non-null class loader that will be used to define the modified class
+   * @param classData   The class to modify
    * @return the modified data or null, if no modification was made
    * @throws ClassTransformException If the class fails to transform
    */
-  default byte[] modifyClass(String className, byte[] classData) throws ClassTransformException {
+  default byte[] modifyClass(String className, CommonClassLoader classLoader, byte[] classData)
+      throws ClassTransformException {
     return null;
   }
 
@@ -99,7 +106,7 @@ public interface LauncherPlugin {
    * Allows the plugin to override where resources can be found.
    *
    * @param resourceName the name of the resource to be found
-   * @param suggested the currently suggested url, may be null
+   * @param suggested    the currently suggested url, may be null
    * @return the adjusted url or null to indicate no change
    */
   default URL adjustResourceURL(String resourceName, URL suggested) {

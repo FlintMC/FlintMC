@@ -78,13 +78,18 @@ public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListen
         (ITextComponent) this.componentMapper.toMinecraft(suffix)));
   }
 
+
+  @Override
+  public void changeColor(PlayerTeam playerTeam, String colorName) {
+    this.getPlayerTeam(playerTeam).ifPresent(team -> team.setColor(TextFormatting.valueOf(colorName)));
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
   public void changeColor(PlayerTeam playerTeam, ChatColor chatColor) {
-    this.getPlayerTeam(playerTeam)
-        .ifPresent(team -> team.setColor(TextFormatting.valueOf(chatColor.getName())));
+    this.changeColor(playerTeam, chatColor.getLowerName());
   }
 
   /**

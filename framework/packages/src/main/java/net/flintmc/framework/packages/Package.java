@@ -26,8 +26,11 @@ import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
 import java.io.File;
 import java.util.jar.JarFile;
 
-/** Represents a package which has been identified and possibly loaded. */
+/**
+ * Represents a package which has been identified and possibly loaded.
+ */
 public interface Package {
+
   /**
    * Retrieves the manifest of this package.
    *
@@ -75,15 +78,23 @@ public interface Package {
    *
    * @param state The new state of the package
    * @throws IllegalArgumentException If the package state is not {@link PackageState#NOT_LOADED} or
-   *     if the new state is {@link PackageState#LOADED}
+   *                                  if the new state is {@link PackageState#LOADED}
    */
   void setState(PackageState state);
+
+  /**
+   * Forces the package state. Should not check whether state change is appropriate. Only use this
+   * if you know what you do!
+   *
+   * @param state the new package state
+   */
+  void forceState(PackageState state);
 
   /**
    * Retrieves the file of the package if it has been loaded from one.
    *
    * @return The file this package is loaded from, or null, if the package has been loaded from the
-   *     classpath
+   * classpath
    */
   File getFile();
 
@@ -109,14 +120,15 @@ public interface Package {
    *
    * @return The class loader used for loading this package
    * @throws IllegalStateException If the package is not in the {@link PackageState#LOADED} or
-   *     {@link PackageState#ENABLED} state
+   *                               {@link PackageState#ENABLED} state
    */
   PackageClassLoader getPackageClassLoader();
 
   /**
    * Retrieves the localization loader the package has been loaded with.
    *
-   * @return The localization loader used for loading the translations.
+   * @return The localization loader used for loading the translations or {@code null} if this
+   * package is not loaded from a jar.
    */
   PackageLocalizationLoader getPackageLocalizationLoader();
 
@@ -135,10 +147,21 @@ public interface Package {
     /**
      * Creates a Package instance.
      *
-     * @param file The File of the Package
+     * @param file    The File of the Package
      * @param jarFile the JarFile of the Package
      * @return a Package instance representing the Package
      */
-    Package create(@Assisted File file, @Assisted JarFile jarFile);
+    Package create(@Assisted("jarFile") File jarFile,
+        @Assisted("jar") JarFile jar);
+
+    /**
+     * Creates a package instance. This factory method will leave the new Package in the {@link
+     * PackageState#NOT_LOADED} state. The JAR File reference will be null and localizations won't
+     * be loaded.
+     *
+     * @param manifest the manifest of the new Package
+     * @return a new Package instance
+     */
+    Package create(@Assisted("manifest") PackageManifest manifest);
   }
 }

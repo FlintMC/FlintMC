@@ -19,14 +19,14 @@
 
 package net.flintmc.processing.autoload.identifier;
 
-import javassist.ClassPool;
 import javassist.CtMethod;
-import javassist.NotFoundException;
 import net.flintmc.processing.autoload.DetectableAnnotation;
 
+import java.util.function.Supplier;
+
 /**
- * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s located at method
- * level.
+ * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s
+ * located at method level.
  *
  * @see Identifier
  */
@@ -35,6 +35,11 @@ public class MethodIdentifier implements Identifier<CtMethod> {
   private final String owner;
   private final String name;
   private final String[] parameters;
+  private Supplier<CtMethod> methodResolver = () -> {
+    throw new RuntimeException(new IllegalStateException(
+        "Couldn't retrieve method location because a method resolve has not "
+            + "been set."));
+  };
 
   public MethodIdentifier(String owner, String name, String... parameters) {
     this.owner = owner;
@@ -42,15 +47,21 @@ public class MethodIdentifier implements Identifier<CtMethod> {
     this.parameters = parameters;
   }
 
+  public void setMethodResolver(Supplier<CtMethod> methodResolver) {
+    this.methodResolver = methodResolver;
+  }
+
   /**
-   * @return The class name of the declaring class of the method represented by this identifier
+   * @return The class name of the declaring class of the method represented by
+   * this identifier
    */
   public String getOwner() {
     return this.owner;
   }
 
   /**
-   * @return The parameter type names of the method represented by this identifier
+   * @return The parameter type names of the method represented by this
+   * identifier
    */
   public String[] getParameters() {
     return this.parameters;
@@ -68,12 +79,6 @@ public class MethodIdentifier implements Identifier<CtMethod> {
    */
   @Override
   public CtMethod getLocation() {
-    try {
-      return ClassPool.getDefault()
-          .get(this.getOwner())
-          .getDeclaredMethod(this.getName(), ClassPool.getDefault().get(this.getParameters()));
-    } catch (NotFoundException e) {
-      throw new IllegalStateException(e);
-    }
+    return this.methodResolver.get();
   }
 }

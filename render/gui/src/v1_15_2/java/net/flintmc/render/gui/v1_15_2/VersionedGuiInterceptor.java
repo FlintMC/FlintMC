@@ -90,7 +90,8 @@ public class VersionedGuiInterceptor {
             .generate();
 
     for (CtMethod method : screenClass.getDeclaredMethods()) {
-      if (!method.getName().equals(renderMapping.getName())) {
+      if (!method.getName().equals(renderMapping.getName()) ||
+          !method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor())) {
         continue;
       }
 

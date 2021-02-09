@@ -19,7 +19,6 @@
 
 package net.flintmc.mcapi.v1_15_2.player.network;
 
-import java.util.UUID;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -33,7 +32,10 @@ import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.world.scoreboad.Scoreboard;
 import net.flintmc.mcapi.world.scoreboad.score.PlayerTeam;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * 1.15.2 implementation of the {@link NetworkPlayerInfo}
@@ -68,7 +70,9 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public int getResponseTime() {
-    return this.getPlayerInfo().getResponseTime();
+    return this.getPlayerInfo()
+        .map(net.minecraft.client.network.play.NetworkPlayerInfo::getResponseTime)
+        .orElse(0);
   }
 
   /**
@@ -76,7 +80,9 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public GameMode getGameMode() {
-    return this.entityFoundationMapper.fromMinecraftGameType(this.getPlayerInfo().getGameType());
+    return this.getPlayerInfo()
+        .map(info -> this.entityFoundationMapper.fromMinecraftGameType(info.getGameType()))
+        .orElse(null);
   }
 
   /**
@@ -92,7 +98,9 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public int getLastHealth() {
-    return this.getPlayerInfo().getLastHealth();
+    return this.getPlayerInfo()
+        .map(net.minecraft.client.network.play.NetworkPlayerInfo::getLastHealth)
+        .orElse(0);
   }
 
   /**
@@ -100,7 +108,9 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public int getDisplayHealth() {
-    return this.getPlayerInfo().getDisplayHealth();
+    return this.getPlayerInfo()
+        .map(net.minecraft.client.network.play.NetworkPlayerInfo::getDisplayHealth)
+        .orElse(0);
   }
 
   /**
@@ -108,7 +118,9 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public long getLastHealthTime() {
-    return this.getPlayerInfo().getLastHealthTime();
+    return this.getPlayerInfo()
+        .map(net.minecraft.client.network.play.NetworkPlayerInfo::getLastHealthTime)
+        .orElse(0L);
   }
 
   /**
@@ -116,7 +128,9 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public long getHealthBlinkTime() {
-    return this.getPlayerInfo().getHealthBlinkTime();
+    return this.getPlayerInfo()
+        .map(net.minecraft.client.network.play.NetworkPlayerInfo::getHealthBlinkTime)
+        .orElse(0L);
   }
 
   /**
@@ -124,17 +138,20 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public long getRenderVisibilityId() {
-    return this.getPlayerInfo().getRenderVisibilityId();
+    return this.getPlayerInfo()
+        .map(net.minecraft.client.network.play.NetworkPlayerInfo::getRenderVisibilityId)
+        .orElse(0L);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getDisplayName() {
-    ITextComponent displayName = this.getPlayerInfo().getDisplayName();
-    if (displayName == null) {
-      return null;
-    }
-
-    return this.entityFoundationMapper.getComponentMapper().fromMinecraft(displayName);
+    return this.getPlayerInfo()
+        .map(net.minecraft.client.network.play.NetworkPlayerInfo::getDisplayName)
+        .map(info -> this.entityFoundationMapper.getComponentMapper().fromMinecraft(info))
+        .orElse(null);
   }
 
   /**
@@ -142,7 +159,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public SkinModel getSkinModel() {
-    return SkinModel.getModel(this.getPlayerInfo().getSkinType());
+    return this.getPlayerInfo().map(info -> SkinModel.getModel(info.getSkinType())).orElse(null);
   }
 
   /**
@@ -150,7 +167,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public ResourceLocation getSkinLocation() {
-    return this.mapLocation(this.getPlayerInfo().getLocationSkin());
+    return this.getPlayerInfo().map(info -> this.mapLocation(info.getLocationSkin())).orElse(null);
   }
 
   /**
@@ -158,7 +175,7 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public ResourceLocation getCloakLocation() {
-    return this.mapLocation(this.getPlayerInfo().getLocationCape());
+    return this.getPlayerInfo().map(info -> this.mapLocation(info.getLocationCape())).orElse(null);
   }
 
   /**
@@ -166,7 +183,8 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    */
   @Override
   public ResourceLocation getElytraLocation() {
-    return this.mapLocation(this.getPlayerInfo().getLocationElytra());
+    return this.getPlayerInfo().map(info -> this.mapLocation(info.getLocationElytra()))
+        .orElse(null);
   }
 
   private ResourceLocation mapLocation(net.minecraft.util.ResourceLocation minecraftLocation) {
@@ -208,8 +226,9 @@ public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
    *
    * @return A {@link net.minecraft.client.network.play.NetworkPlayerInfo} or {@code null}
    */
-  private net.minecraft.client.network.play.NetworkPlayerInfo getPlayerInfo() {
+  private Optional<net.minecraft.client.network.play.NetworkPlayerInfo> getPlayerInfo() {
     UUID uniqueId = this.gameProfile.getUniqueId();
-    return Minecraft.getInstance().getConnection().getPlayerInfo(uniqueId);
+    ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
+    return connection == null ? Optional.empty() : Optional.of(connection.getPlayerInfo(uniqueId));
   }
 }

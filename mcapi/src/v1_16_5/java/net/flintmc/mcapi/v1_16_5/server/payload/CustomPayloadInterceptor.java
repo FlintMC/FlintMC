@@ -50,6 +50,7 @@ public class CustomPayloadInterceptor {
 
   private final ClassPool pool;
   private final ClassMapping customPayloadPacketMapping;
+  private final ClassMapping clientPlayNetHandlerMapping;
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
 
   @Inject
@@ -60,6 +61,8 @@ public class CustomPayloadInterceptor {
     this.pool = pool;
     this.customPayloadPacketMapping =
         classMappingProvider.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket");
+    this.clientPlayNetHandlerMapping = classMappingProvider
+        .get("net.minecraft.client.network.play.ClientPlayNetHandler");
     this.fieldBuilderFactory = fieldBuilderFactory;
   }
 
@@ -67,14 +70,15 @@ public class CustomPayloadInterceptor {
   public void transform(ClassTransformContext context)
       throws NotFoundException, BadBytecode, CannotCompileException {
 
+    CtClass[] parameters = new CtClass[]{this.pool.get(this.customPayloadPacketMapping.getName())};
+
     CtMethod method =
         context
             .getCtClass()
             .getDeclaredMethod(
-                "handleCustomPayload",
-                new CtClass[]{
-                    this.pool.get("net.minecraft.network.play.server.SCustomPayloadPlayPacket")
-                });
+                this.clientPlayNetHandlerMapping
+                    .getMethod("handleCustomPayload", parameters).getName(),
+                parameters);
 
     MethodInfo methodInfo = method.getMethodInfo();
     CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
@@ -120,7 +124,7 @@ public class CustomPayloadInterceptor {
               .generate();
 
       method.insertAt(
-          line,
+          line + 2,
           String.format(
               "if (%s.shouldListen($1.%s().toString(), $1.%s())) {return;}",
               injectedService.getName(),

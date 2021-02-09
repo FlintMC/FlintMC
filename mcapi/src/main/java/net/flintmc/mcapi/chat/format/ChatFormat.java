@@ -26,6 +26,7 @@ import java.util.Map;
  * Formats for chat components, after a color is displayed in the legacy chat message, all formats
  * will be reset.
  */
+@Deprecated
 public enum ChatFormat {
 
   /**
@@ -56,10 +57,12 @@ public enum ChatFormat {
   OBFUSCATED('k');
 
   private static final Map<Character, ChatFormat> BY_CHAR = new HashMap<>();
+  private static final Map<String, ChatFormat> BY_NAME = new HashMap<>();
 
   static {
     for (ChatFormat format : values()) {
       BY_CHAR.put(format.formatChar, format);
+      BY_NAME.put(format.lowerName, format);
     }
   }
 
@@ -79,6 +82,17 @@ public enum ChatFormat {
    */
   public static ChatFormat getByChar(char formatChar) {
     return BY_CHAR.get(formatChar);
+  }
+
+  /**
+   * Retrieves a format by the given format name or {@code null}, if not format with that name
+   * exists.
+   *
+   * @param name The name of a format.
+   * @return The nullable format by the given name.
+   */
+  public static ChatFormat getByName(String name) {
+    return BY_NAME.get(name.toLowerCase());
   }
 
   /**

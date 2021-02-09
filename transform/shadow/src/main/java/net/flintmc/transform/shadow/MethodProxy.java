@@ -39,4 +39,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @DetectableAnnotation(requiresParent = true)
-public @interface MethodProxy {}
+public @interface MethodProxy {
+}

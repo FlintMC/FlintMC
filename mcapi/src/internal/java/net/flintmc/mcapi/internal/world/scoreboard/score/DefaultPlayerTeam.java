@@ -150,7 +150,7 @@ public class DefaultPlayerTeam implements PlayerTeam {
   @Override
   public void setColor(ChatColor color) {
     this.chatColor = color;
-    this.playerTeamChangeListener.changeColor(this, color);
+    this.playerTeamChangeListener.changeColor(this, color.getLowerName());
   }
 
   /**
