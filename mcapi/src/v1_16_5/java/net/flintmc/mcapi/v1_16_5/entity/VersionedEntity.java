@@ -40,18 +40,24 @@ import net.flintmc.mcapi.entity.EntityNotLoadedException;
 import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.reason.MoverType;
+import net.flintmc.mcapi.entity.render.EntityModelBoxHolder;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.player.type.sound.Sound;
+import net.flintmc.mcapi.v1_16_5.entity.render.*;
 import net.flintmc.mcapi.v1_16_5.entity.shadow.AccessibleEntity;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Direction;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
+import net.flintmc.render.model.ModelBox;
 import net.flintmc.render.model.ModelBoxHolder;
+import net.flintmc.util.property.Property;
+import net.flintmc.util.property.PropertyContext;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
@@ -90,7 +96,244 @@ public class VersionedEntity implements Entity {
 
     this.random = new Random();
     this.entitySupplier = entitySupplier;
-    this.updateRenderables();
+  }
+
+  protected ModelBoxHolder<Entity, EntityRenderContext> createModelBox(
+      ModelRenderer modelRenderer) {
+
+    Property<Float, Void> ROTATION_ANGLE_X_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_ANGLE_Y_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_ANGLE_Z_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_POINT_X_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_POINT_Y_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> ROTATION_POINT_Z_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Integer, Void> TEXTURE_OFFSET_X_OLD =
+        Property.builder().<Integer>withValue().withDefaultValue(0).build();
+
+    Property<Integer, Void> TEXTURE_OFFSET_Y_OLD =
+        Property.builder().<Integer>withValue().withDefaultValue(0).build();
+
+    Property<Float, Void> TEXTURE_WIDTH_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Float, Void> TEXTURE_HEIGHT_OLD =
+        Property.builder().<Float>withValue().withDefaultValue(0f).build();
+
+    Property<Boolean, Void> SHOW_MODEL_OLD =
+        Property.builder().<Boolean>withValue().withDefaultValue(true).build();
+
+    Property<Boolean, Void> MIRROR_OLD =
+        Property.builder().<Boolean>withValue().withDefaultValue(false).build();
+
+    ModelBoxHolder<Entity, EntityRenderContext> box =
+        InjectionHolder.getInjectedInstance(EntityModelBoxHolder.Factory.class)
+            .create(this.getRenderContext(), modelRenderer)
+            .addPropertyPreparation(
+                modelBoxHolder -> {
+                  ModelRendererAccessor modelRendererAccessor =
+                      (ModelRendererAccessor) modelRenderer;
+
+                  PropertyContext<ModelBoxHolder<Entity, EntityRenderContext>> propertyContext =
+                      modelBoxHolder.getPropertyContext();
+                  propertyContext.setPropertyValue(MIRROR_OLD, modelRenderer.mirror);
+                  propertyContext.setPropertyValue(SHOW_MODEL_OLD, modelRenderer.showModel);
+                  propertyContext.setPropertyValue(
+                      ROTATION_ANGLE_X_OLD, modelRenderer.rotateAngleX);
+                  propertyContext.setPropertyValue(
+                      ROTATION_ANGLE_Y_OLD, modelRenderer.rotateAngleY);
+                  propertyContext.setPropertyValue(
+                      ROTATION_ANGLE_Z_OLD, modelRenderer.rotateAngleZ);
+                  propertyContext.setPropertyValue(
+                      ROTATION_POINT_X_OLD, modelRenderer.rotationPointX);
+                  propertyContext.setPropertyValue(
+                      ROTATION_POINT_Y_OLD, modelRenderer.rotationPointY);
+                  propertyContext.setPropertyValue(
+                      ROTATION_POINT_Z_OLD, modelRenderer.rotationPointZ);
+                  propertyContext.setPropertyValue(
+                      TEXTURE_HEIGHT_OLD, modelRendererAccessor.getTextureHeight());
+                  propertyContext.setPropertyValue(
+                      TEXTURE_WIDTH_OLD, modelRendererAccessor.getTextureWidth());
+                  propertyContext.setPropertyValue(
+                      TEXTURE_OFFSET_X_OLD, modelRendererAccessor.getTextureOffsetX());
+                  propertyContext.setPropertyValue(
+                      TEXTURE_OFFSET_Y_OLD, modelRendererAccessor.getTextureOffsetY());
+
+                  Set<ModelBox> modelBoxes = modelBoxHolder.getBoxes();
+                  modelBoxes.clear();
+                  for (ModelRenderer.ModelBox modelBox : modelRendererAccessor.getModelBoxes()) {
+                    ModelBoxAccessor modelBoxAccessor = (ModelBoxAccessor) modelBox;
+                    List<ModelBox.TexturedQuad> texturedQuads = new ArrayList<>();
+
+                    for (TexturedQuadAccessor quad : modelBoxAccessor.getQuads()) {
+                      ModelBox.TexturedQuad.VertexPosition[] vertexPositions =
+                          new ModelBox.TexturedQuad.VertexPosition
+                              [quad.getVertexPositions().length];
+                      for (int i = 0; i < vertexPositions.length; i++) {
+                        PositionTextureVertexAccessor vertexPosition = quad.getVertexPositions()[i];
+                        vertexPositions[i] =
+                            InjectionHolder.getInjectedInstance(
+                                    ModelBox.TexturedQuad.VertexPosition.Factory.class)
+                                .create(
+                                    vertexPosition.getTextureU(),
+                                    vertexPosition.getTextureV(),
+                                    vertexPosition.getPosition().getX(),
+                                    vertexPosition.getPosition().getY(),
+                                    vertexPosition.getPosition().getZ());
+                      }
+                      texturedQuads.add(
+                          InjectionHolder.getInjectedInstance(ModelBox.TexturedQuad.Factory.class)
+                              .create(
+                                  quad.getNormal().getX(),
+                                  quad.getNormal().getY(),
+                                  quad.getNormal().getZ(),
+                                  vertexPositions));
+                    }
+
+                    modelBoxes.add(
+                        InjectionHolder.getInjectedInstance(ModelBox.Factory.class)
+                            .create()
+                            .setPositionX1(modelBox.posX1)
+                            .setPositionX2(modelBox.posX2)
+                            .setPositionY1(modelBox.posY1)
+                            .setPositionY2(modelBox.posY2)
+                            .setPositionZ1(modelBox.posZ1)
+                            .setPositionZ2(modelBox.posZ2)
+                            .setTexturedQuads(texturedQuads));
+                  }
+
+                  modelBoxHolder
+                      .setRotationX(modelRenderer.rotateAngleX)
+                      .setRotationY(modelRenderer.rotateAngleY)
+                      .setRotationZ(modelRenderer.rotateAngleZ)
+                      .setTranslationX(modelRenderer.rotationPointX)
+                      .setTranslationY(modelRenderer.rotationPointY)
+                      .setTranslationZ(modelRenderer.rotationPointZ)
+                      .setMirror(modelRenderer.mirror)
+                      .setShowModel(modelRenderer.showModel)
+                      .setTextureHeight(modelRendererAccessor.getTextureHeight())
+                      .setTextureWidth(modelRendererAccessor.getTextureWidth())
+                      .setTextureOffsetX(modelRendererAccessor.getTextureOffsetX())
+                      .setTextureOffsetY(modelRendererAccessor.getTextureOffsetY())
+                      .setModelBoxes(modelBoxes);
+                })
+            .addRenderPreparation(
+                modelBoxHolder -> {
+                  ModelRendererAccessor modelRendererAccessor =
+                      (ModelRendererAccessor) modelRenderer;
+
+                  if (modelBoxHolder.getShowModelOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRenderer.showModel = modelBoxHolder.isShowModel();
+
+                  if (modelBoxHolder.getMirrorOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRenderer.mirror = modelBoxHolder.isMirror();
+
+                  if (modelBoxHolder.getTextureOffsetXOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRendererAccessor.setTextureOffsetX(modelBoxHolder.getTextureOffsetX());
+
+                  if (modelBoxHolder.getTextureOffsetYOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRendererAccessor.setTextureOffsetY(modelBoxHolder.getTextureOffsetY());
+
+                  if (modelBoxHolder.getTextureWidthOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRendererAccessor.setTextureWidth(modelBoxHolder.getTextureWidth());
+
+                  if (modelBoxHolder.getTextureHeightOverridePolicy()
+                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                    modelRendererAccessor.setTextureHeight(modelBoxHolder.getTextureHeight());
+
+                  if (modelBoxHolder.getRotationXMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                    modelRenderer.rotateAngleX = 0;
+
+                  modelRenderer.rotateAngleX += modelBoxHolder.getRotationX();
+
+                  if (modelBoxHolder.getRotationYMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                    modelRenderer.rotateAngleY = 0;
+
+                  modelRenderer.rotateAngleY += modelBoxHolder.getRotationY();
+
+                  if (modelBoxHolder.getRotationZMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                    modelRenderer.rotateAngleZ = 0;
+
+                  modelRenderer.rotateAngleZ += modelBoxHolder.getRotationZ();
+
+                  if (modelBoxHolder.getTranslationXMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                    modelRenderer.rotationPointX = 0;
+
+                  modelRenderer.rotationPointX += modelBoxHolder.getTranslationX();
+
+                  if (modelBoxHolder.getTranslationYMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                    modelRenderer.rotationPointY = 0;
+
+                  modelRenderer.rotationPointY += modelBoxHolder.getTranslationY();
+
+                  if (modelBoxHolder.getTranslationZMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                    modelRenderer.rotationPointZ = 0;
+
+                  modelRenderer.rotationPointZ += modelBoxHolder.getTranslationZ();
+                })
+            .addRenderCleanup(
+                modelBoxHolder -> {
+                  PropertyContext<ModelBoxHolder<Entity, EntityRenderContext>> propertyContext =
+                      modelBoxHolder.getPropertyContext();
+                  ModelRendererAccessor modelRendererAccessor =
+                      (ModelRendererAccessor) modelRenderer;
+
+                  modelRenderer.showModel = propertyContext.getPropertyValue(SHOW_MODEL_OLD);
+                  modelRenderer.mirror = propertyContext.getPropertyValue(MIRROR_OLD);
+                  modelRenderer.rotationPointX =
+                      propertyContext.getPropertyValue(ROTATION_POINT_X_OLD);
+                  modelRenderer.rotationPointY =
+                      propertyContext.getPropertyValue(ROTATION_POINT_Y_OLD);
+                  modelRenderer.rotationPointZ =
+                      propertyContext.getPropertyValue(ROTATION_POINT_Z_OLD);
+                  modelRenderer.rotateAngleX =
+                      propertyContext.getPropertyValue(ROTATION_ANGLE_X_OLD);
+                  modelRenderer.rotateAngleY =
+                      propertyContext.getPropertyValue(ROTATION_ANGLE_Y_OLD);
+                  modelRenderer.rotateAngleZ =
+                      propertyContext.getPropertyValue(ROTATION_ANGLE_Z_OLD);
+                  modelRendererAccessor.setTextureHeight(
+                      propertyContext.getPropertyValue(TEXTURE_HEIGHT_OLD));
+                  modelRendererAccessor.setTextureWidth(
+                      propertyContext.getPropertyValue(TEXTURE_WIDTH_OLD));
+                  modelRendererAccessor.setTextureOffsetX(
+                      propertyContext.getPropertyValue(TEXTURE_OFFSET_X_OLD));
+                  modelRendererAccessor.setTextureOffsetY(
+                      propertyContext.getPropertyValue(TEXTURE_OFFSET_Y_OLD));
+                });
+
+    ((EntityAccessor) this.wrapped()).getFlintRenderables().put(modelRenderer, box);
+    return box;
+  }
+
+  protected Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers() {
+    return new HashMap<>();
+  }
+
+  @Override
+  public EntityRenderContext getRenderContext() {
+    if (this.entityRenderContext == null) {
+      this.entityRenderContext =
+          InjectionHolder.getInjectedInstance(EntityRenderContext.Factory.class).create(this);
+      this.updateRenderables();
+    }
+    return this.entityRenderContext;
   }
 
   protected net.minecraft.entity.Entity wrapped() {
@@ -1253,20 +1496,6 @@ public class VersionedEntity implements Entity {
   @Override
   public ChatComponent getName() {
     return this.entityFoundationMapper.getComponentMapper().fromMinecraft(this.wrapped().getName());
-  }
-
-  protected Map<String, ModelBoxHolder<Entity, EntityRenderContext>> createModelRenderers() {
-    return new HashMap<>();
-  }
-
-  @Override
-  public EntityRenderContext getRenderContext() {
-    if (this.entityRenderContext == null) {
-      this.entityRenderContext =
-          InjectionHolder.getInjectedInstance(EntityRenderContext.Factory.class).create(this);
-      this.updateRenderables();
-    }
-    return this.entityRenderContext;
   }
 
   @Override
