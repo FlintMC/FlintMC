@@ -27,6 +27,7 @@ import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
+import javax.annotation.Nullable;
 
 /**
  * This event will be fired whenever an inventory is opened in the client. Tt will only be fired in
@@ -52,6 +53,6 @@ public interface InventoryOpenEvent extends Event, InventoryEvent {
      * @param inventory The non-null inventory where the event has happened
      * @return The new event
      */
-    InventoryOpenEvent create(@Assisted("inventory") Inventory inventory);
+    InventoryOpenEvent create(@Nullable @Assisted("inventory") Inventory inventory);
   }
 }
