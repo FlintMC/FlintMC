@@ -29,8 +29,8 @@ import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.inventory.Inventory;
 
 /**
- * This event will be fired when an item in the inventory gets updated. It will only be fired in
- * both the {@link Phase#PRE} and {@link Phase#POST} phases.
+ * This event will be fired when an item in the inventory gets updated. It will be fired in both the
+ * {@link Phase#PRE} and {@link Phase#POST} phases.
  *
  * @see Subscribe
  */
