@@ -22,8 +22,11 @@ package net.flintmc.framework.config.serialization;
 import com.google.gson.JsonElement;
 import net.flintmc.framework.config.annotation.Config;
 
+import java.lang.reflect.Type;
+
 /**
- * Handler for the serialization of values in a {@link Config}. To register one, {@link ConfigSerializer} may be used.
+ * Handler for the serialization of values in a {@link Config}. To register one, {@link
+ * ConfigSerializer} may be used.
  *
  * @param <T> The type that can be serialized by this handler
  * @see ConfigSerializer

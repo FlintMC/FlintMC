@@ -17,29 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.modifier;
+package net.flintmc.framework.config;
 
-import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.framework.config.generator.ParsedConfig;
+import java.util.Collection;
 
-import java.lang.annotation.Annotation;
+public interface SingletonConfigHolder {
 
-/**
- * Handler for the modification of annotations in a {@link Config}. To register one, {@link AnnotationModifier} may be
- * used.
- * <p>
- * This can be used to dynamically set values on an annotation of a config value, especially useful for the Settings
- * module.
- *
- * @see AnnotationModifier
- */
-public interface ConfigModificationHandler {
+  ParsedConfig getSingletonConfig(Class<? extends ParsedConfig> configClass);
 
-  /**
-   * Modifies the given annotation, the exact process depends on the implementation.
-   *
-   * @param annotation The non-null annotation to be modified
-   * @return The modified/new annotation, {@code null}, if no modification should be applied
-   */
-  Annotation modify(Annotation annotation);
+  Collection<ParsedConfig> getSingletonConfigs();
+
+  void registerSingletonConfig(ParsedConfig config);
 
 }

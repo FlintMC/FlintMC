@@ -30,7 +30,6 @@ import net.flintmc.framework.config.serialization.ConfigSerializationHandler;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.storage.serializer.JsonConfigSerializer;
 import net.flintmc.framework.inject.implement.Implement;
-
 import java.util.function.Predicate;
 
 @Singleton
@@ -48,7 +47,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     this.gson = new Gson();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject serialize(ParsedConfig config) {
     JsonObject object = new JsonObject();
@@ -56,7 +57,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     return object;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void deserialize(JsonObject object, ParsedConfig config) {
     this.deserialize(object, config, TRUE);
@@ -69,7 +72,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void serialize(
       ParsedConfig config, JsonObject object, Predicate<ConfigObjectReference> predicate) {
@@ -117,7 +122,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void deserialize(
       JsonObject object, ParsedConfig config, Predicate<ConfigObjectReference> predicate) {

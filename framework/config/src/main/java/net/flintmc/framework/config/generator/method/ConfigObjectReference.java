@@ -19,6 +19,9 @@
 
 package net.flintmc.framework.config.generator.method;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import javassist.CtClass;
 import javassist.CtMethod;
 import net.flintmc.framework.config.annotation.Config;
@@ -27,15 +30,10 @@ import net.flintmc.framework.config.annotation.IncludeStorage;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperRegistry;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
-import net.flintmc.framework.config.modifier.ConfigModifierRegistry;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collection;
 
 /**
  * Represents the path to a value in a {@link Config} containing methods to get/change the value of
@@ -100,19 +98,18 @@ public interface ConfigObjectReference {
    * Finds the last annotation on every method or interface associated with this reference.
    *
    * <p>Associated methods are methods, that are either in the {@link #getPathKeys()} array,
-   * associated interfaces are interfaces, that contain the specified methods or any superinterface.
+   * associated interfaces are interfaces, that contain the specified methods or any
+   * superinterface.
    *
    * <p>If the given annotation is not applied to any of those, {@code null} will be returned. If
    * any is specified, the last one will be used always.
    *
    * <p>Methods have a higher priority than Interfaces.
    *
-   * <p>The annotations may be modified by the {@link ConfigModifierRegistry}.
-   *
    * @param annotationType The non-null type of the annotation
-   * @param <A> The annotation which should be searched
+   * @param <A>            The annotation which should be searched
    * @return The discovered annotation or {@code null}, if no method/interface associated with this
-   *     reference is annotated with it.
+   * reference is annotated with it.
    */
   <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType);
 
@@ -120,12 +117,11 @@ public interface ConfigObjectReference {
    * Finds all annotations on every method or interface associated with this reference.
    *
    * <p>Associated methods are methods, that are either in the {@link #getPathKeys()} array,
-   * associated interfaces are interfaces, that contain the specified methods or any superinterface.
+   * associated interfaces are interfaces, that contain the specified methods or any
+   * superinterface.
    *
    * <p>If the given annotation is not applied to any of those, an empty collection will be
    * returned.
-   *
-   * <p>The annotations may be modified by the {@link ConfigModifierRegistry}.
    *
    * @return The non-null collection of all annotations on the associated methods and interfaces
    */
@@ -159,13 +155,12 @@ public interface ConfigObjectReference {
    *
    * <p>So in this example <br>
    * - 'X' will be stored in the storage '5678' because '5678' is the last method/interface with the
-   * IncludeStorage annotation. <br>
-   * - 'Y' will be stored in the storage 'abcd' because the method itself is not annotated, but the
-   * interface is. If the Config interface wouldn't be annotated with {@link Config @Config}, 'Y'
-   * would be stored in every storage. <br>
-   * - 'Z' will be stored in every storage except 'local' because the method is annotated with
-   * {@link ExcludeStorage &#064;ExcludeStorage} and {@link ExcludeStorage} always has a
-   * higher priority than {@link IncludeStorage}.
+   * IncludeStorage annotation. <br> - 'Y' will be stored in the storage 'abcd' because the method
+   * itself is not annotated, but the interface is. If the Config interface wouldn't be annotated
+   * with {@link Config @Config}, 'Y' would be stored in every storage. <br> - 'Z' will be stored in
+   * every storage except 'local' because the method is annotated with {@link ExcludeStorage
+   * &#064;ExcludeStorage} and {@link ExcludeStorage} always has a higher priority than {@link
+   * IncludeStorage}.
    *
    * @param storage The non-null storage which should be checked for
    * @return Whether this reference should be saved in this storage or not
@@ -193,11 +188,15 @@ public interface ConfigObjectReference {
    * config.
    *
    * @param value The value to set in the config, may be {@code null} depending on the
-   *     implementation. For any primitive it should not be null
+   *              implementation. For any primitive it should not be null
    */
   void setValue(Object value);
 
-  /** Parser for one or multiple {@link ConfigObjectReference ConfigObjectReference(s)}. */
+  void copyTo(ParsedConfig config);
+
+  /**
+   * Parser for one or multiple {@link ConfigObjectReference ConfigObjectReference(s)}.
+   */
   interface Parser {
 
     /**
@@ -205,11 +204,11 @@ public interface ConfigObjectReference {
      * serialization like the getter, setter and serialized type.
      *
      * @param generatingConfig The non-null config which contains the given {@code method}
-     * @param config The non-null instance of the config that has been generated
-     * @param method The non-null method to parse the reference from
+     * @param config           The non-null instance of the config that has been generated
+     * @param method           The non-null method to parse the reference from
      * @return The new non-null reference
      * @throws RuntimeException If any of the methods in the path specified in {@link
-     *     ConfigMethod#getPathPrefix()} doesn't exist
+     *                          ConfigMethodInfo#getPathPrefix()} doesn't exist
      */
     ConfigObjectReference parse(
         GeneratingConfig generatingConfig, ParsedConfig config, ConfigMethod method)
@@ -221,39 +220,41 @@ public interface ConfigObjectReference {
      * method is not an interface and not {@link ConfigSerializationService#hasSerializer(CtClass)}.
      *
      * @param generatingConfig The non-null config to parse the references from
-     * @param config The non-null instance of the config that has been generated
+     * @param config           The non-null instance of the config that has been generated
      * @return The new non-null list of the parsed references
      * @throws RuntimeException If any of the methods in the path specified in {@link
-     *     ConfigMethod#getPathPrefix()} doesn't exist
+     *                          ConfigMethodInfo#getPathPrefix()} doesn't exist
      */
     Collection<ConfigObjectReference> parseAll(
         GeneratingConfig generatingConfig, ParsedConfig config) throws RuntimeException;
   }
 
-  /** Factory for the {@link ConfigObjectReference}. */
+  /**
+   * Factory for the {@link ConfigObjectReference}.
+   */
   @AssistedFactory(ConfigObjectReference.class)
   interface Factory {
 
     /**
      * Creates a new {@link ConfigObjectReference} with the specified values.
      *
-     * @param generatingConfig The non-null generating config with all information about the
-     *     generated config
-     * @param config The non-null instance of the config that has been generated
-     * @param pathKeys The non-null array of keys to the new reference (unique per {@link
-     *     GeneratingConfig})
-     * @param path The non-null array of methods (matches the {@code pathKeys} array) to the new
-     *     reference
+     * @param generatingConfig     The non-null generating config with all information about the
+     *                             generated config
+     * @param config               The non-null instance of the config that has been generated
+     * @param pathKeys             The non-null array of keys to the new reference (unique per
+     *                             {@link GeneratingConfig})
+     * @param path                 The non-null array of methods (matches the {@code pathKeys}
+     *                             array) to the new reference
      * @param correspondingMethods All methods that correspond to this reference and where
-     *     annotations should be searched in (e.g. 'getX', 'setX', 'getAllX', ...)
-     * @param getter The non-null getter method, needs to be in the interface of the return type of
-     *     the last entry in the {@code path} array (or if the array is empty, in the base class
-     *     from the config)
-     * @param setter The non-null setter method, needs to be in the interface of the return type of
-     *     the last entry in the {@code path} array (or if the array is empty, in the base class
-     *     from the config)
-     * @param classLoader The non-null class loader to load the classes of the CtMethods
-     * @param serializedType The type to for serialization
+     *                             annotations should be searched in (e.g. 'getX', 'setX',
+     *                             'getAllX', ...)
+     * @param getter               The non-null getter method, needs to be in the interface of the
+     *                             return type of the last entry in the {@code path} array (or if
+     *                             the array is empty, in the base class from the config)
+     * @param setter               The non-null setter method, needs to be in the interface of the
+     *                             return type of the last entry in the {@code path} array (or if
+     *                             the array is empty, in the base class from the config)
+     * @param serializedType       The type to for serialization
      * @return The new non-null {@link ConfigObjectReference}
      */
     ConfigObjectReference create(
@@ -265,7 +266,6 @@ public interface ConfigObjectReference {
         @Assisted("getter") CtMethod getter,
         @Assisted("setter") CtMethod setter,
         @Assisted("declaringClass") String declaringClass,
-        @Assisted("classLoader") ClassLoader classLoader,
         @Assisted("serializedType") Type serializedType);
   }
 }

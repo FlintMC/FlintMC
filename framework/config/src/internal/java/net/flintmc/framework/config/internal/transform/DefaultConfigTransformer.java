@@ -25,18 +25,19 @@ import com.google.inject.name.Named;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.Modifier;
 import javassist.NotFoundException;
 import javassist.bytecode.ClassFile;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.ConfigImplementer;
+import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
 import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
@@ -163,13 +164,16 @@ public class DefaultConfigTransformer
       throw new ClassTransformException("unable to read class", exception);
     }
 
-    if (shouldTransform) {
-      try {
-        this.implementMethods(transforming);
-      } catch (CannotCompileException | NotFoundException exception) {
-        throw new ClassTransformException(
-            "Failed to implement config methods: " + className, exception);
+    try {
+      this.implementMethods(transforming);
+
+      if (!transforming.isInterface()) {
+        // Class might get abstract while transforming, but abstract methods will be removed again
+        transforming.setModifiers(transforming.getModifiers() & ~Modifier.ABSTRACT);
       }
+    } catch (CannotCompileException | NotFoundException exception) {
+      throw new ClassTransformException(
+          "Failed to implement config methods: " + className, exception);
     }
 
     if (configInterface) {
@@ -205,6 +209,7 @@ public class DefaultConfigTransformer
 
       ConfigMethod method = transform.getMethod();
       ConfigMethodInfo info = method.getInfo();
+      GeneratingConfig generatingConfig = info.getConfig();
       CtClass declaring = info.getDeclaringClass();
       if (!implementation.getName()
           .equals(transform.getConfigMeta().getImplementationCtClass().getName())) {
@@ -213,39 +218,45 @@ public class DefaultConfigTransformer
 
       // bind the new config class from the new class pool above with
       // new methods from this transformer
-      info.getConfig().bindGeneratedImplementation(declaring, implementation);
-
-      if (!modified
-          && implementation.isInterface()
-          && implementation.getName().equals(info.getConfig().getBaseClass().getName())) {
-        // add the ParsedConfig interface to the config interface so that guice will also proxy this
-        // one and not only the config itself
-        implementation.addInterface(this.pool.get(ParsedConfig.class.getName()));
-      }
+      generatingConfig.bindGeneratedImplementation(declaring, implementation);
 
       if (!implementation.isInterface()) {
         if (!modified) {
           for (TransformedConfigMeta meta : this.mappings) {
-            if (meta.getConfig() == null
-                && meta.getSuperClass().getName().equals(declaring.getName())) {
-              meta.setConfig(info.getConfig());
+            if (meta.getConfig() != null) {
+              continue;
+            }
+
+            if (meta.getSuperClass().getName().equals(declaring.getName())
+                || meta.getImplementationCtClass().getName().equals(declaring.getName())) {
+              meta.setConfig(generatingConfig);
             }
           }
         }
 
-        if (info.getDeclaringClass().getName().equals(info.getConfig().getBaseClass().getName())
-            && Arrays.stream(implementation.getInterfaces())
-            .noneMatch(iface -> iface.getName().equals(ParsedConfig.class.getName()))) {
+        boolean baseClass = info.getDeclaringClass().getName()
+            .equals(generatingConfig.getBaseClass().getName());
+
+        if (baseClass) {
+          this.configImplementer.preImplementParsedConfig(implementation, generatingConfig);
+        } else {
+          this.configImplementer.preImplementSubConfig(implementation, generatingConfig);
+        }
+        
+        if (implementation.isInterface()) {
+          method.addInterfaceMethods(implementation);
+        } else {
+          method.implementExistingMethods(implementation);
+        }
+
+        if (baseClass) {
           // only the base class annotated with @Config should have the ParsedConfig implementation
           this.configImplementer.implementParsedConfig(
-              implementation, method.getInfo().getConfig().getName());
+              implementation, generatingConfig);
+        } else {
+          // sub classes should implement the SubConfig interface
+          this.configImplementer.implementSubConfig(implementation, generatingConfig);
         }
-      }
-
-      if (implementation.isInterface()) {
-        method.addInterfaceMethods(implementation);
-      } else {
-        method.implementExistingMethods(implementation);
       }
 
       if (info.hasAddedInterfaceMethods() && info.hasImplementedExistingMethods()) {

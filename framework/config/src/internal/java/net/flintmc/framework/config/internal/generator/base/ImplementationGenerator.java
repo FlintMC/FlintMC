@@ -33,6 +33,7 @@ import javassist.CtField;
 import javassist.CtNewConstructor;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
+import net.flintmc.framework.config.generator.ConfigImplementer;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
 import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
@@ -49,28 +50,25 @@ public class ImplementationGenerator {
   private final Random random;
   private final ConfigMethodResolver methodResolver;
 
-  private final ConfigClassLoader classLoader;
   private final ConfigTransformer transformer;
+  private final ConfigImplementer implementer;
   private final ConfigImplementationMapper implementationMapper;
 
   @Inject
-  public ImplementationGenerator(
+  private ImplementationGenerator(
       ClassPool pool,
       ConfigMethodResolver methodResolver,
       ConfigTransformer transformer,
+      ConfigImplementer implementer,
       ConfigImplementationMapper implementationMapper) {
+    this.implementer = implementer;
     this.implementationMapper = implementationMapper;
-    this.classLoader = new ConfigClassLoader(ImplementationGenerator.class.getClassLoader());
 
     this.pool = pool;
     this.counter = new AtomicInteger();
     this.random = new Random();
     this.methodResolver = methodResolver;
     this.transformer = transformer;
-  }
-
-  public ConfigClassLoader getClassLoader() {
-    return this.classLoader;
   }
 
   public CtClass implementConfig(CtClass type, GeneratingConfig config)
@@ -113,8 +111,8 @@ public class ImplementationGenerator {
 
     Collection<CtClass> implementations =
         config.getAllMethods().stream()
-            .map(method -> config
-                .getGeneratedImplementation(method.getInfo().getDeclaringClass().getName()))
+            .map(method -> config.getGeneratedImplementation(
+                method.getInfo().getDeclaringClass().getName()))
             .filter(Objects::nonNull)
             // if null the interface is annotated with @ImplementedConfig and therefore the
             // implementation already exists
@@ -175,6 +173,12 @@ public class ImplementationGenerator {
       baseField += " = this";
     }
     implementation.addField(CtField.make(baseField + ";", implementation));
+
+    if (baseClass.equals(declaring.getName())) {
+      this.implementer.preImplementParsedConfig(implementation, config);
+    } else {
+      this.implementer.preImplementSubConfig(implementation, config);
+    }
   }
 
   private void buildConstructor(GeneratingConfig config, CtClass implementation)

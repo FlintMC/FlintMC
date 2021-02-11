@@ -31,4 +31,7 @@ public interface ServiceHandler<T extends Annotation> {
    * @throws ServiceNotFoundException If the service could not be discovered.
    */
   void discover(AnnotationMeta<T> annotationMeta) throws ServiceNotFoundException;
+
+  default void postDiscover() {
+  }
 }

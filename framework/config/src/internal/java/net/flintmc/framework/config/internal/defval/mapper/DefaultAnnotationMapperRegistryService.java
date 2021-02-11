@@ -40,7 +40,7 @@ import java.util.Map;
 
 @Singleton
 @Implement(DefaultAnnotationMapperRegistry.class)
-@Service(DefaultAnnotationMapper.class)
+@Service(value = DefaultAnnotationMapper.class, priority = -50000)
 public class DefaultAnnotationMapperRegistryService
     implements ServiceHandler<DefaultAnnotationMapper>, DefaultAnnotationMapperRegistry {
 

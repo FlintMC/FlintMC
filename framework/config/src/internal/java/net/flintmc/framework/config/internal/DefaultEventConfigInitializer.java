@@ -54,13 +54,12 @@ public class DefaultEventConfigInitializer implements EventConfigInitializer {
     this.subscribeMethodFactory
         .newBuilder(configInit.value())
         .phaseOnly(configInit.eventPhase())
-        .to(
-            ((event, phase, holderMethod) -> {
-              this.configGenerator.initConfig(config);
-              // we only needed the subscribe method to initialize the config,
-              // we can unregister it now
-              this.eventBus.unregisterSubscribeMethod(holderMethod);
-            }))
+        .to(((event, phase, holderMethod) -> {
+          this.configGenerator.initConfig(config);
+          // we only needed the subscribe method to initialize the config,
+          // we can unregister it now
+          this.eventBus.unregisterSubscribeMethod(holderMethod);
+        }))
         .buildAndRegister();
   }
 }

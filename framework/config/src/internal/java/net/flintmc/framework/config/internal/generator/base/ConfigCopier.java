@@ -17,24 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.internal.defval.defaults;
+package net.flintmc.framework.config.internal.generator.base;
 
-import com.google.inject.Singleton;
-import net.flintmc.framework.config.defval.annotation.DefaultNumber;
-import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapper;
-import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler;
+import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 
-@Singleton
-@DefaultAnnotationMapper(DefaultNumber.class)
-public class NumberDefaultAnnotationMapper
-    implements DefaultAnnotationMapperHandler<DefaultNumber> {
+public class ConfigCopier {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object getDefaultValue(ConfigObjectReference reference, DefaultNumber annotation) {
-    return annotation.value();
+  public static void copyConfig(ParsedConfig src, ParsedConfig dst) {
+    for (ConfigObjectReference reference : src.getConfigReferences()) {
+      reference.copyTo(dst);
+    }
   }
+
 }

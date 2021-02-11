@@ -23,12 +23,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.framework.config.serialization.ConfigSerializationHandler;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.serialization.ConfigSerializer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 @ConfigSerializer(Map.class)
@@ -41,7 +41,9 @@ public class MapConfigSerializer implements ConfigSerializationHandler<Map<?, ?>
     this.serializationService = serializationService;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonElement serialize(Map<?, ?> map) {
     JsonObject object = new JsonObject();
@@ -60,7 +62,9 @@ public class MapConfigSerializer implements ConfigSerializationHandler<Map<?, ?>
     return object;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<?, ?> deserialize(JsonElement source) {
     if (!source.isJsonObject()) {

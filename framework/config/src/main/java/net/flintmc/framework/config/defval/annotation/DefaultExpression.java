@@ -17,37 +17,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.modifier;
+package net.flintmc.framework.config.defval.annotation;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.framework.config.storage.ConfigStorage;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Marks a {@link ConfigModificationHandler} to be registered in the {@link ConfigModifierRegistry}.
- *
- * @see ConfigModificationHandler
- */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@DetectableAnnotation
-public @interface AnnotationModifier {
+@Target(ElementType.METHOD)
+public @interface DefaultExpression {
 
   /**
-   * The class where the annotation to modify is set.
+   * The default value which should be used if it is not set in a {@link ConfigStorage}.
    *
-   * @return The class where the annotation to modify is set
+   * @return The default value
    */
-  Class<?> value();
-
-  /**
-   * The method in the {@link #value() class} where the annotation to modify is set
-   *
-   * @return The method where the annotation to modify is set
-   */
-  String method();
-
+  String value();
 }

@@ -24,16 +24,14 @@ import com.google.inject.Singleton;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.GeneratingConfig;
-import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.framework.config.internal.generator.base.ConfigClassLoader;
-import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
+import net.flintmc.launcher.LaunchController;
+
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -46,15 +44,12 @@ public class ReferenceInvocationGenerator {
   private final ClassPool pool;
   private final AtomicInteger idCounter;
   private final Random random;
-  private final ConfigClassLoader classLoader;
 
   @Inject
-  private ReferenceInvocationGenerator(ImplementationGenerator generator, ClassPool pool) {
+  private ReferenceInvocationGenerator(ClassPool pool) {
     this.pool = pool;
     this.idCounter = new AtomicInteger();
     this.random = new Random();
-
-    this.classLoader = generator.getClassLoader();
   }
 
   public ReferenceInvoker generateInvoker(
@@ -87,7 +82,9 @@ public class ReferenceInvocationGenerator {
 
   private ReferenceInvoker newInstance(CtClass target)
       throws IOException, CannotCompileException, ReflectiveOperationException {
-    Class<?> generated = this.classLoader.defineClass(target.getName(), target.toBytecode());
+    byte[] bytes = target.toBytecode();
+    Class<?> generated = LaunchController.getInstance().getRootLoader()
+        .commonDefineClass(target.getName(), bytes, 0, bytes.length, null);
 
     return (ReferenceInvoker) generated.getDeclaredConstructor().newInstance();
   }
@@ -121,7 +118,7 @@ public class ReferenceInvocationGenerator {
     String valueSrc =
         PrimitiveTypeLoader.asWrappedPrimitiveSource(
             getter.getReturnType(), lastAccessor + "." + getter.getName() + "()");
-    String src = "public Object getValue(Object instance) {" + "return " + valueSrc + ";" + "}";
+    String src = "public Object getValue(Object instance) {return " + valueSrc + ";}";
 
     return CtNewMethod.make(src, declaring);
   }

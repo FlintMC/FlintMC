@@ -129,7 +129,6 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
         getter,
         setter,
         declaringClass.getName(),
-        this.implementationGenerator.getClassLoader(),
         method.getSerializedType());
   }
 

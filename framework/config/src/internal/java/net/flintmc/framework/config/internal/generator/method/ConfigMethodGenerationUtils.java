@@ -44,7 +44,6 @@ import net.flintmc.framework.stereotype.service.CtResolver;
 @Singleton
 public class ConfigMethodGenerationUtils {
 
-  private static final String EVENT_CLASS = ConfigValueUpdateEvent.class.getName();
   private static final String REFERENCE_CLASS = ConfigObjectReference.class.getName();
 
   private final CtClass eventClass;
@@ -185,7 +184,7 @@ public class ConfigMethodGenerationUtils {
     }
 
     String writeSrc = String.format(
-        "%s.write((%s) this.%s);",
+        "if (this.shouldStoreContent()) { %s.write((%s) this.%s); }",
         storageProvider.getName(),
         ParsedConfig.class.getName(),
         field.getName());

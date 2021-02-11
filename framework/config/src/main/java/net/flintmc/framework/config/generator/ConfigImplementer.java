@@ -24,19 +24,31 @@ import javassist.CtClass;
 import javassist.NotFoundException;
 
 /**
- * This interface can add the {@link ParsedConfig} as an interface to a class and implement its methods.
+ * This interface can add the {@link ParsedConfig} as an interface to a class and implement its
+ * methods.
  */
 public interface ConfigImplementer {
+
+  void preImplementParsedConfig(CtClass implementation, GeneratingConfig config)
+      throws CannotCompileException;
 
   /**
    * Adds the {@link ParsedConfig} interface to the given class and implements all its methods.
    *
    * @param implementation The non-null class to add the interface to
-   * @param name           The non-null name which should be returned by {@link ParsedConfig#getConfigName()}
+   * @param config         The non-null config which contains information about the config
    * @throws NotFoundException      If the {@link ParsedConfig} class cannot be found in the {@link
    *                                javassist.ClassPool}
-   * @throws CannotCompileException If the generated source code cannot be compiled, should basically never happen
+   * @throws CannotCompileException If the generated source code cannot be compiled, should
+   *                                basically never happen
    */
-  void implementParsedConfig(CtClass implementation, String name) throws NotFoundException, CannotCompileException;
+  void implementParsedConfig(CtClass implementation, GeneratingConfig config)
+      throws NotFoundException, CannotCompileException;
+
+  void preImplementSubConfig(CtClass implementation, GeneratingConfig config)
+      throws CannotCompileException;
+
+  void implementSubConfig(CtClass implementation, GeneratingConfig config)
+      throws NotFoundException, CannotCompileException;
 
 }

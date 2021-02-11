@@ -23,9 +23,8 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javassist.CannotCompileException;
@@ -42,7 +41,6 @@ import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvocationGenerator;
 import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvoker;
-import net.flintmc.framework.config.modifier.ConfigModifierRegistry;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -58,14 +56,11 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private final EventBus eventBus;
   private final ConfigValueUpdateEvent.Factory eventFactory;
 
-  private final ConfigModifierRegistry modifierRegistry;
-
   private final ConfigAnnotationCollector annotationCollector;
   private final String key;
   private final String[] pathKeys;
   private final CtMethod[] correspondingCtMethods;
   private final Map<Class<? extends Annotation>, Annotation> lastAnnotations;
-  private final ClassLoader classLoader;
   private final Type serializedType;
 
   private final Object defaultValue;
@@ -81,7 +76,6 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private DefaultConfigObjectReference(
       EventBus eventBus,
       ConfigValueUpdateEvent.Factory eventFactory,
-      ConfigModifierRegistry modifierRegistry,
       ConfigAnnotationCollector annotationCollector,
       ReferenceInvocationGenerator invocationGenerator,
       DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry,
@@ -93,20 +87,18 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       @Assisted("getter") CtMethod getter,
       @Assisted("setter") CtMethod setter,
       @Assisted("declaringClass") String declaringClass,
-      @Assisted("classLoader") ClassLoader classLoader,
       @Assisted("serializedType") Type serializedType)
       throws ReflectiveOperationException, CannotCompileException, NotFoundException, IOException {
     this.config = config;
     this.eventBus = eventBus;
     this.eventFactory = eventFactory;
-    this.modifierRegistry = modifierRegistry;
     this.annotationCollector = annotationCollector;
     this.pathKeys = pathKeys;
     this.key = String.join(".", pathKeys);
     this.correspondingCtMethods = correspondingCtMethods;
-    this.classLoader = classLoader;
     this.serializedType = serializedType;
 
+    ClassLoader classLoader = super.getClass().getClassLoader();
     this.configBaseClass = classLoader.loadClass(generatingConfig.getBaseClass().getName());
     this.declaringClass = classLoader.loadClass(declaringClass);
     this.invoker = invocationGenerator.generateInvoker(
@@ -190,11 +182,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   @Override
   public <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType) {
     if (this.lastAnnotations.containsKey(annotationType)) {
-      Annotation annotation = this.lastAnnotations.get(annotationType);
-      if (annotation != null) {
-        annotation = this.modifierRegistry.modify(this, annotation);
-      }
-      return (A) annotation;
+      return (A) this.lastAnnotations.get(annotationType);
     }
 
     this.mapCorrespondingMethods();
@@ -213,7 +201,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   @Override
   public Collection<Annotation> findAllAnnotations() {
     if (this.allAnnotations != null) {
-      return this.modifyAnnotations(this.allAnnotations);
+      return this.allAnnotations;
     }
 
     this.mapCorrespondingMethods();
@@ -221,20 +209,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     Collection<Annotation> annotations =
         this.annotationCollector.findAllAnnotations(this.correspondingMethods);
 
-    return this.modifyAnnotations(this.allAnnotations = annotations);
-  }
-
-  private Collection<Annotation> modifyAnnotations(Collection<Annotation> annotations) {
-    if (annotations.isEmpty()) {
-      return Collections.emptyList();
-    }
-
-    Collection<Annotation> modifiedAnnotations = new ArrayList<>(annotations.size());
-    for (Annotation annotation : annotations) {
-      modifiedAnnotations.add(this.modifierRegistry.modify(this, annotation));
-    }
-
-    return Collections.unmodifiableCollection(modifiedAnnotations);
+    return this.allAnnotations = annotations;
   }
 
   private void mapCorrespondingMethods() {
@@ -309,6 +284,19 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.invoker.setValue(this.config, value);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void copyTo(ParsedConfig config) {
+    for (ConfigObjectReference dstReference : config.getConfigReferences()) {
+      if (Arrays.equals(this.pathKeys, dstReference.getPathKeys())) {
+        dstReference.setValue(this.getValue());
+        break;
+      }
+    }
+  }
+
   private Method[] mapMethods(CtMethod[] ctMethods)
       throws ClassNotFoundException, NotFoundException, NoSuchMethodException {
     Method[] methods = new Method[ctMethods.length];
@@ -322,14 +310,15 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   private Method mapMethod(CtMethod ctMethod)
       throws ClassNotFoundException, NotFoundException, NoSuchMethodException {
-    Class<?> declaringClass = this.classLoader.loadClass(ctMethod.getDeclaringClass().getName());
+    ClassLoader classLoader = super.getClass().getClassLoader();
+    Class<?> declaringClass = classLoader.loadClass(ctMethod.getDeclaringClass().getName());
 
     CtClass[] ctParameters = ctMethod.getParameterTypes();
     Class<?>[] parameters = new Class[ctParameters.length];
 
     for (int j = 0; j < ctParameters.length; j++) {
       String name = ctParameters[j].getName();
-      parameters[j] = PrimitiveTypeLoader.loadClass(this.classLoader, name);
+      parameters[j] = PrimitiveTypeLoader.loadClass(classLoader, name);
     }
 
     return declaringClass.getMethod(ctMethod.getName(), parameters);

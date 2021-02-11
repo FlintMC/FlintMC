@@ -84,7 +84,14 @@ public class PrimitiveTypeLoader {
         wrappedPrimitive = Number.class;
       }
 
-      return "((" + wrappedPrimitive.getName() + ") " + wrapped + ")." + type.getName() + "Value()";
+      String nonNullValue =
+          "((" + wrappedPrimitive.getName() + ") " + wrapped + ")." + type.getName() + "Value()";
+
+      return String.format(
+          "(%s == null ? %s : %s)",
+          wrapped,
+          DefaultValues.getDefaultValue(type.getName()),
+          nonNullValue);
     }
 
     return wrapped;

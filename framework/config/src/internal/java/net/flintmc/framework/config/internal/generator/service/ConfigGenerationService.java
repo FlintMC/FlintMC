@@ -22,11 +22,15 @@ package net.flintmc.framework.config.internal.generator.service;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.binder.AnnotatedBindingBuilder;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
+import net.flintmc.framework.config.SingletonConfigHolder;
 import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.framework.config.annotation.SingletonConfig;
 import net.flintmc.framework.config.generator.ConfigGenerator;
+import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
@@ -42,22 +46,26 @@ import java.io.IOException;
 public class ConfigGenerationService implements ServiceHandler<Config> {
 
   private final ConfigGenerator generator;
+  private final SingletonConfigHolder configHolder;
 
   @Inject
-  private ConfigGenerationService(ConfigGenerator generator) {
+  private ConfigGenerationService(ConfigGenerator generator, SingletonConfigHolder configHolder) {
     this.generator = generator;
+    this.configHolder = configHolder;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void discover(AnnotationMeta<Config> meta) throws ServiceNotFoundException {
     Identifier<CtClass> identifier = meta.getIdentifier();
     CtClass location = identifier.getLocation();
 
     try {
-      Object implementation = this.generator.generateConfigImplementation(location);
+      Class<? extends ParsedConfig> config = this.generator.generateConfigImplementation(location);
 
-      if (implementation == null) {
+      if (config == null) {
         return;
       }
 
@@ -68,14 +76,20 @@ public class ConfigGenerationService implements ServiceHandler<Config> {
               new AbstractModule() {
                 @Override
                 protected void configure() {
-                  super.bind((Class) base).toInstance(implementation);
+                  AnnotatedBindingBuilder builder = super.bind((Class) base);
+
+                  if (location.hasAnnotation(SingletonConfig.class)) {
+                    ParsedConfig singleton = generator.createConfigInstance(config);
+                    configHolder.registerSingletonConfig(singleton);
+                    builder.toInstance(singleton);
+                  } else {
+                    builder.toProvider(() -> generator.createConfigInstance(config));
+                  }
                 }
               });
 
-    } catch (NotFoundException
-        | CannotCompileException
-        | IOException
-        | ReflectiveOperationException e) {
+    } catch (NotFoundException | CannotCompileException
+        | IOException | ReflectiveOperationException e) {
       throw new ServiceNotFoundException("Cannot generate config for " + location.getName(), e);
     }
   }

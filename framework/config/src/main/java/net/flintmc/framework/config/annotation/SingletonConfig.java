@@ -17,15 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.internal.generator.base;
+package net.flintmc.framework.config.annotation;
 
-public class ConfigClassLoader extends ClassLoader {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  public ConfigClassLoader(ClassLoader parent) {
-    super(parent);
-  }
-
-  public Class<?> defineClass(String name, byte[] bytes) {
-    return super.defineClass(name, bytes, 0, bytes.length);
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface SingletonConfig {
 }
