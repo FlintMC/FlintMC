@@ -17,21 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.entity.render;
+package net.flintmc.mcapi.v1_16_5.entity.render;
 
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 
-@Shadow(value = "net.minecraft.client.renderer.model.ModelRenderer$PositionTextureVertex", version = "1.15.2")
-public interface PositionTextureVertexAccessor {
+import java.util.List;
 
-  @FieldGetter("textureU")
-  float getTextureU();
+@Shadow(value = "net.minecraft.client.renderer.BufferBuilder", version = "1.16.5")
+public interface BufferBuilderAccessor {
 
-  @FieldGetter("textureV")
-  float getTextureV();
+  @FieldGetter("drawStates")
+  List<BufferBuilder.DrawState> getDrawStates();
 
-  @FieldGetter("position")
-  Vector3f getPosition();
+  @FieldGetter("vertexFormat")
+  VertexFormat getVertexFormat();
+
 }

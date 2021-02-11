@@ -45,15 +45,12 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
   private VersionedEntityTypeRegister(EntityTypeMapper entityTypeMapper) {
     this.entityTypeMapper = entityTypeMapper;
     this.entityTypes = Maps.newHashMap();
-  }
-
-  @Subscribe(phase = Subscribe.Phase.POST, version = "1.16.5")
-  public void convertEntityTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.entity.EntityType<?> entityType : Registry.ENTITY_TYPE) {
       String key = Registry.ENTITY_TYPE.getKey(entityType).getPath();
       this.entityTypes.put(key, this.entityTypeMapper.fromMinecraftEntityType(entityType));
     }
   }
+
 
   /**
    * {@inheritDoc}

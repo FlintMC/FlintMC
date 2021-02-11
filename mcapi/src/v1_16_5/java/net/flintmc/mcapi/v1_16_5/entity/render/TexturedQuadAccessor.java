@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.util.math.vector.Vector3f;
 
-@Shadow("net.minecraft.client.renderer.model.ModelRenderer$TexturedQuad")
+@Shadow(value = "net.minecraft.client.renderer.model.ModelRenderer$TexturedQuad", version = "1.16.5")
 public interface TexturedQuadAccessor {
 
   @FieldGetter("vertexPositions")

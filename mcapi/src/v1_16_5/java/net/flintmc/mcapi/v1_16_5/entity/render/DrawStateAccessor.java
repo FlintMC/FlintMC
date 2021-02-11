@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.entity.render;
+package net.flintmc.mcapi.v1_16_5.entity.render;
 
 import net.flintmc.mcapi.render.MinecraftRenderMeta;
 import net.flintmc.render.model.ModelBoxHolder;
@@ -25,9 +25,10 @@ import net.flintmc.transform.shadow.FieldCreate;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.FieldSetter;
 import net.flintmc.transform.shadow.Shadow;
+
 import java.util.Set;
 
-@Shadow(value = "net.minecraft.client.renderer.BufferBuilder$DrawState",version = "1.15.2")
+@Shadow(value = "net.minecraft.client.renderer.BufferBuilder$DrawState", version = "1.16.5")
 @FieldCreate(name = "modelBoxHolder", typeName = "net.flintmc.render.model.ModelBoxHolder")
 @FieldCreate(name = "modelRenderData", typeName = "net.flintmc.mcapi.render.MinecraftRenderMeta")
 @FieldCreate(name = "renderCallbacks", typeName = "java.util.Set", defaultValue = "new java.util.HashSet()")
