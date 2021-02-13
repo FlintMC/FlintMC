@@ -19,8 +19,20 @@
 
 package net.flintmc.framework.config.generator;
 
+import net.flintmc.framework.config.annotation.Config;
+
+/**
+ * Represents the implementation of an interface inside of an interface that has been marked with
+ * {@link Config} and been marked as a config by the {@link ConfigGenerator}. This interface is not
+ * intended to be implemented manually.
+ */
 public interface SubConfig {
 
+  /**
+   * Retrieves the config where this interface has been discovered.
+   *
+   * @return The non-null parent config of this interface
+   */
   ParsedConfig getParentConfig();
 
 }

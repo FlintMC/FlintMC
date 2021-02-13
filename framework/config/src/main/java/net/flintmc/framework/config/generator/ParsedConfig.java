@@ -22,6 +22,7 @@ package net.flintmc.framework.config.generator;
 import java.util.Collection;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.framework.config.storage.ConfigStorageProvider;
 
 /**
  * Represents the implementation of an interface that has been marked with {@link Config} and been
@@ -46,11 +47,41 @@ public interface ParsedConfig {
    */
   Collection<ConfigObjectReference> getConfigReferences();
 
+  /**
+   * Retrieves the interface annotated with {@link Config} which this instance has been created
+   * from. This instance will always be an instance of the retrieved class.
+   *
+   * @return The non-null interface annotated with {@link Config}
+   */
   Class<?> getConfigClass();
 
+  /**
+   * Copies every {@link ConfigObjectReference} of this config to the given config.
+   *
+   * @param dst The config to copy the values of this config to
+   * @see ConfigObjectReference#copyTo(ParsedConfig)
+   */
   void copyTo(ParsedConfig dst);
 
+  /**
+   * Sets whether values changed in this config and every {@link SubConfig} of this config should
+   * automatically be forwarded to {@link ConfigStorageProvider#write(ParsedConfig)} after changes
+   * have been made by a setter.
+   *
+   * @param storeContent {@code true} if the changed values should automatically be forwarded to the
+   *                     storage provider, {@code false} otherwise
+   * @see #shouldStoreContent()
+   */
   void setStoreContent(boolean storeContent);
 
+  /**
+   * Retrieves whether values changed in this config and every {@link SubConfig} of this config
+   * should automatically be forwarded to {@link ConfigStorageProvider#write(ParsedConfig)} after
+   * changes have been made by a setter.
+   *
+   * @return {@code true} if the changed values should automatically be forwarded to the storage
+   * provider, {@code false} otherwise
+   * @see #setStoreContent(boolean)
+   */
   boolean shouldStoreContent();
 }

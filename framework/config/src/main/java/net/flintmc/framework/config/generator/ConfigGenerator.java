@@ -19,8 +19,6 @@
 
 package net.flintmc.framework.config.generator;
 
-import java.io.IOException;
-import java.util.Collection;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -28,6 +26,8 @@ import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.event.ConfigDiscoveredEvent;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Generator for implementations of interfaces annotated with {@link Config}.
@@ -35,14 +35,8 @@ import net.flintmc.framework.config.storage.ConfigStorageProvider;
 public interface ConfigGenerator {
 
   /**
-   * Generates a new implementation for the given interface, constructs a new instance of it and
-   * fills the {@link ParsedConfig#getConfigReferences()} collection with the references in the
-   * given interface parsed from the {@link ConfigObjectReference.Parser}. The instance will then be
-   * added to {@link #getDiscoveredConfigs()}.
-   * <p> <br>
-   * Since every config can only be implemented once (names of the configs would be duplicated and
-   * therefore cause problems in the storages), it will return the implementation that has been
-   * generated recently if there is one in {@link #getDiscoveredConfigs()}.
+   * Generates a new implementation for the given interface as described in the {@link Config}
+   * annotation.
    *
    * @param configInterface The non-null interface to create an implementation for
    * @return The new non-null implementation of the given interface
@@ -56,6 +50,16 @@ public interface ConfigGenerator {
   Class<? extends ParsedConfig> generateConfigImplementation(CtClass configInterface)
       throws NotFoundException, CannotCompileException, IOException, ReflectiveOperationException;
 
+  /**
+   * Constructs a new instance of the given config class and fills the {@link
+   * ParsedConfig#getConfigReferences()} collection with the references in the given interface
+   * parsed from the {@link ConfigObjectReference.Parser}.
+   * <p>
+   * {@link #generateConfigImplementation(CtClass)} needs to be called before for the given class.
+   *
+   * @param configClass The non-null class of the config that should be created
+   * @return The new non-null config instance created from the given class
+   */
   ParsedConfig createConfigInstance(Class<? extends ParsedConfig> configClass);
 
   /**
@@ -67,11 +71,10 @@ public interface ConfigGenerator {
   Collection<Class<? extends ParsedConfig>> getDiscoveredConfigs();
 
   /**
-   * Adds the given config to the {@link #getDiscoveredConfigs()} collection and fills the {@link
-   * ParsedConfig#getConfigReferences()} references} with the references parsed from the given
-   * {@link GeneratingConfig}. Additionally, the config filled with the references will be forwarded
-   * to {@link ConfigStorageProvider#read(ParsedConfig)} to fill the config with values from the
-   * storages and the {@link ConfigDiscoveredEvent} will be fired.
+   * Fills the {@link ParsedConfig#getConfigReferences()} references} with the references parsed
+   * from the given {@link GeneratingConfig}. Additionally, the config filled with the references
+   * will be forwarded to {@link ConfigStorageProvider#read(ParsedConfig)} to fill the config with
+   * values from the storages and the {@link ConfigDiscoveredEvent} will be fired.
    *
    * @param generatingConfig The non-null generating config with all methods to parse the references
    *                         from to register the config
@@ -83,8 +86,8 @@ public interface ConfigGenerator {
       throws IllegalStateException;
 
   /**
-   * Should only be called once per config, and is only intended to be used internally. This method
-   * sets all default values to the config and reads it from the config.
+   * Should only be called once per config instance, and is only intended to be used internally.
+   * This method sets all default values to the config and reads it from the config.
    *
    * @param config The non-null config to be initialized
    */

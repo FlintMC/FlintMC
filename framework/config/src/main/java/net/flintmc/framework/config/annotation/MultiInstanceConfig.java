@@ -23,8 +23,19 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.config.SingletonConfigHolder;
+import net.flintmc.framework.config.generator.ConfigGenerator;
 
+/**
+ * Marks a {@link Config} as a non-singleton so that a new instance will always created when
+ * injecting this config by default. If this annotation is not provided, {@link
+ * ConfigGenerator#createConfigInstance(Class)} can still be called to create multiple instances, it
+ * will just be bound as a singleton in the Injector.
+ *
+ * @see SingletonConfigHolder
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface SingletonConfig {
+public @interface MultiInstanceConfig {
+
 }

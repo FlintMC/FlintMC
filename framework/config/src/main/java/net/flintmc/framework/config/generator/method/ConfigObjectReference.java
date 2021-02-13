@@ -19,9 +19,6 @@
 
 package net.flintmc.framework.config.generator.method;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collection;
 import javassist.CtClass;
 import javassist.CtMethod;
 import net.flintmc.framework.config.annotation.Config;
@@ -34,6 +31,9 @@ import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 /**
  * Represents the path to a value in a {@link Config} containing methods to get/change the value of
@@ -192,6 +192,16 @@ public interface ConfigObjectReference {
    */
   void setValue(Object value);
 
+  /**
+   * Copies the value of this reference to the equivalent reference in the given config, if the
+   * given config doesn't contain any {@link ConfigObjectReference} with the same {@link
+   * #getPathKeys()} as this one, nothing will happen.
+   * <p>
+   * The given config and {@link #getConfig() the config of this reference} should be of the same
+   * class to make sure there is a matching reference.
+   *
+   * @param config The non-null config to copy the value of this reference to
+   */
   void copyTo(ParsedConfig config);
 
   /**

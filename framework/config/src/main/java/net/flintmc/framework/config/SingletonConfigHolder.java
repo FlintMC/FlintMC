@@ -19,15 +19,40 @@
 
 package net.flintmc.framework.config;
 
+import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.framework.config.annotation.MultiInstanceConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import java.util.Collection;
 
+/**
+ * This class contains every {@link Config} that is not annotated with {@link MultiInstanceConfig}.
+ */
 public interface SingletonConfigHolder {
 
+  /**
+   * Retrieves the singleton instance of a config, this is only available for interfaces annotated
+   * with {@link Config} and not with {@link MultiInstanceConfig} or for configs manually registered
+   * via {@link #registerSingletonConfig(ParsedConfig)}.
+   *
+   * @param configClass The non-null class of the config to be retrieved
+   * @return The config or {@code null} if no singleton config for the given class is available
+   */
   ParsedConfig getSingletonConfig(Class<? extends ParsedConfig> configClass);
 
+  /**
+   * Retrieves a collection of all registered singleton configs.
+   *
+   * @return A non-null immutable collection of all singleton configs
+   * @see #getSingletonConfig(Class)
+   */
   Collection<ParsedConfig> getSingletonConfigs();
 
+  /**
+   * Registers a new singleton config.
+   *
+   * @param config The non-null config to be registered
+   * @see #getSingletonConfig(Class)
+   */
   void registerSingletonConfig(ParsedConfig config);
 
 }

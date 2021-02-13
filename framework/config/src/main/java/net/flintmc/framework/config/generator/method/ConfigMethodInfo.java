@@ -25,6 +25,9 @@ import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 
+/**
+ * Information about a {@link ConfigMethod}.
+ */
 public interface ConfigMethodInfo {
 
   /**

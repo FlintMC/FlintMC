@@ -28,7 +28,7 @@ import javassist.CtClass;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.SingletonConfigHolder;
 import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.framework.config.annotation.SingletonConfig;
+import net.flintmc.framework.config.annotation.MultiInstanceConfig;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
@@ -78,7 +78,7 @@ public class ConfigGenerationService implements ServiceHandler<Config> {
                 protected void configure() {
                   AnnotatedBindingBuilder builder = super.bind((Class) base);
 
-                  if (location.hasAnnotation(SingletonConfig.class)) {
+                  if (!location.hasAnnotation(MultiInstanceConfig.class)) {
                     ParsedConfig singleton = generator.createConfigInstance(config);
                     configHolder.registerSingletonConfig(singleton);
                     builder.toInstance(singleton);
