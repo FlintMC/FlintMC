@@ -32,7 +32,7 @@ public class VersionedWorldStatsInterrupter {
       className = "net.minecraft.client.gui.screen.StatsScreen",
       methodName = "init",
       executionTime = ExecutionTime.BEFORE,
-  version = "1.15.2")
+      version = "1.15.2")
   public HookResult interruptStatsInit() {
     // Fixes NPE if VersionedWorldStatsProvider is initialized while not connected to a server
     return Minecraft.getInstance().getConnection() == null ? HookResult.BREAK : HookResult.CONTINUE;
