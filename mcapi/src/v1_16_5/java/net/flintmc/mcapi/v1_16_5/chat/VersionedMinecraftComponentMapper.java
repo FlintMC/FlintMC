@@ -133,9 +133,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
 
     } else if (component instanceof StringTextComponent) {
 
-      return this.builderFactory.text()
-          .text(((StringTextComponent) component).getText())
-          .build();
+      return this.parseText(((StringTextComponent) component).getText());
 
     } else if (component instanceof TranslationTextComponent) {
 
