@@ -93,6 +93,11 @@ public class DefaultRenderable<
     return (T_Renderable) this;
   }
 
+  @Override
+  public Consumer<T_Renderable> getPropertyHandler() {
+    return propertyHandler;
+  }
+
   /**
    * {@inheritDoc}
    */

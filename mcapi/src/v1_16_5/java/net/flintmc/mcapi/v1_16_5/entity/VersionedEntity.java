@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.v1_16_5.entity;
 
 import com.google.common.collect.Sets;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -184,7 +186,7 @@ public class VersionedEntity implements Entity {
                         PositionTextureVertexAccessor vertexPosition = quad.getVertexPositions()[i];
                         vertexPositions[i] =
                             InjectionHolder.getInjectedInstance(
-                                    ModelBox.TexturedQuad.VertexPosition.Factory.class)
+                                ModelBox.TexturedQuad.VertexPosition.Factory.class)
                                 .create(
                                     vertexPosition.getTextureU(),
                                     vertexPosition.getTextureV(),

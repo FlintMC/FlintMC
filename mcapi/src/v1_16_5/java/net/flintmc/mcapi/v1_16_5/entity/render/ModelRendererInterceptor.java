@@ -17,23 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.entity.render;
+package net.flintmc.mcapi.v1_16_5.entity.render;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
+import javassist.*;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
@@ -46,18 +36,19 @@ import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.CtClassFilter;
 import net.flintmc.transform.javassist.CtClassFilters;
-import net.flintmc.transform.shadow.MethodProxy;
-import net.flintmc.transform.shadow.Shadow;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Matrix3f;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 @Singleton
 public class ModelRendererInterceptor {
@@ -69,7 +60,7 @@ public class ModelRendererInterceptor {
     this.classMappingProvider = classMappingProvider;
   }
 
-  @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.15.2")
+  @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.16.5")
   public void transform(ClassTransformContext classTransformContext) {
     try {
       CtClass[] doRenderParameters =
@@ -96,23 +87,23 @@ public class ModelRendererInterceptor {
                       .getName(),
                   doRenderParameters);
 
-     /* doRender.insertBefore(
+      doRender.insertBefore(
           "{\n" +
-              "    net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.interceptDoRender($0, $$);\n"
+              "    net.flintmc.mcapi.v1_16_5.entity.render.ModelRendererInterceptor.Handler.interceptDoRender($0, $$);\n"
               + "    "
-              + "if(net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.shouldCancel($0, $1, $3)){\n"
+              + "if(net.flintmc.mcapi.v1_16_5.entity.render.ModelRendererInterceptor.Handler.shouldCancel($0, $1, $3)){\n"
               +
               "        "
               + "return;\n"
               + "    }\n"
-              + "}");*/
+              + "}");
 
-    } catch (NotFoundException e) {
+    } catch (NotFoundException | CannotCompileException e) {
       e.printStackTrace();
     }
   }
 
-  @ClassTransform(version = "1.15.2")
+  @ClassTransform(version = "1.16.5")
   @CtClassFilter(
       value = CtClassFilters.SUBCLASS_OF,
       className = "net.minecraft.client.renderer.entity.model.EntityModel")
@@ -135,7 +126,7 @@ public class ModelRendererInterceptor {
                   .getName())) {
         if (!Modifier.isAbstract(declaredMethod.getModifiers())) {
           declaredMethod.insertAfter(
-              "{net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.interceptRotationAnglesUpdate($1);}");
+              "{net.flintmc.mcapi.v1_16_5.entity.render.ModelRendererInterceptor.Handler.interceptRotationAnglesUpdate($1);}");
         }
 
         break;
@@ -161,6 +152,7 @@ public class ModelRendererInterceptor {
       this.entityRepository = entityRepository;
       this.clientPlayer = clientPlayer;
       this.alternatingMinecraftRenderMeta = minecraftRenderMetaFactory.create();
+
     }
 
 
@@ -177,7 +169,7 @@ public class ModelRendererInterceptor {
       }
       for (ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder :
           flintEntity.getRenderContext().getRenderables().values()) {
-        modelBoxHolder.callPropertyPreparations().callPropertyHandler().callRenderPreparations();
+        modelBoxHolder.callPropertyPreparations().callPropertyHandler();
       }
       INSTANCE.lastRenderedEntity = flintEntity;
     }
@@ -279,6 +271,7 @@ public class ModelRendererInterceptor {
           return false;
         }
       }
+      modelBoxHolder.callRenderPreparations();
       if (modelBoxHolder.getContext().getRenderer() != null) {
 
         Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixEntryIn.getMatrix();

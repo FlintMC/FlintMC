@@ -21,10 +21,13 @@ package net.flintmc.mcapi.v1_16_5.entity.render;
 
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
 
-@Shadow(value = "net.minecraft.client.renderer.model.ModelRenderer$ModelBox", version = "1.16.5")
-public interface ModelBoxAccessor {
+@Shadow("net.minecraft.client.renderer.entity.LivingRenderer")
+public interface LivingRendererAccessor {
 
-  @FieldGetter("quads")
-  TexturedQuadAccessor[] getQuads();
+  @FieldGetter("entityModel")
+  EntityModel<? extends LivingEntity> getEntityModel();
+
 }

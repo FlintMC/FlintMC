@@ -55,6 +55,8 @@ public interface Renderable<
    */
   T_Renderable callRenderPreparations();
 
+  Consumer<T_Renderable> getPropertyHandler();
+
   /**
    * Calls the handler that is used only to set properties.
    *

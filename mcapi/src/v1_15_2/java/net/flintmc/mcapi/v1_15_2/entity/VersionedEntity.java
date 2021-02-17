@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.v1_15_2.entity;
 
 import com.google.common.collect.Sets;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -60,6 +62,10 @@ import net.flintmc.render.model.ModelBox;
 import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.util.property.Property;
 import net.flintmc.util.property.PropertyContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -77,6 +83,7 @@ public class VersionedEntity implements Entity {
 
   private final Supplier<Object> entitySupplier;
   private final Random random;
+  private EntityRenderer<? super net.minecraft.entity.Entity> lastRenderer;
   private EntityRenderContext entityRenderContext;
 
   @AssistedInject
@@ -187,7 +194,7 @@ public class VersionedEntity implements Entity {
                         PositionTextureVertexAccessor vertexPosition = quad.getVertexPositions()[i];
                         vertexPositions[i] =
                             InjectionHolder.getInjectedInstance(
-                                    ModelBox.TexturedQuad.VertexPosition.Factory.class)
+                                ModelBox.TexturedQuad.VertexPosition.Factory.class)
                                 .create(
                                     vertexPosition.getTextureU(),
                                     vertexPosition.getTextureV(),
@@ -336,6 +343,8 @@ public class VersionedEntity implements Entity {
           InjectionHolder.getInjectedInstance(EntityRenderContext.Factory.class).create(this);
       this.updateRenderables();
     }
+    if (this.lastRenderer == null || !this.lastRenderer.equals(Minecraft.getInstance().getRenderManager().getRenderer(this.wrapped())))
+      this.updateRenderables();
     return this.entityRenderContext;
   }
 
@@ -1500,6 +1509,7 @@ public class VersionedEntity implements Entity {
 
   @Override
   public void updateRenderables() {
+    this.lastRenderer = Minecraft.getInstance().getRenderManager().getRenderer(this.wrapped());
     this.entityRenderContext.getRenderables().clear();
     for (Map.Entry<String, ModelBoxHolder<Entity, EntityRenderContext>> entry :
         this.createModelRenderers().entrySet()) {
