@@ -16,23 +16,6 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-buildscript {
-    repositories {
-        maven {
-            setUrl("https://dist.labymod.net/api/v1/maven/release")
-            name = "Flint"
-            credentials(HttpHeaderCredentials::class) {
-                name = "Authorization"
-                value = "Bearer CbtTjzAOuDBr5QXcGnBc1MB3eIHxcZetnyHtdN76VpTNgbwAf87bzWPCntsXwj52"
-            }
-            authentication {
-                create<HttpHeaderAuthentication>("header")
-            }
-        }
-        mavenCentral()
-    }
-}
-
 plugins {
     id("net.flintmc.flint-gradle")
     id("net.minecrell.licenser") version "0.4.1"
@@ -52,7 +35,7 @@ subprojects {
         apply<MavenPublishPlugin>()
         plugins.apply("net.minecrell.licenser")
 
-        version = System.getenv().getOrDefault("VERSION", "2.0.22")
+        version = System.getenv().getOrDefault("VERSION", "1.0.0")
 
         repositories {
             mavenCentral()
