@@ -25,7 +25,7 @@ import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 
-@Shadow("net.minecraft.client.renderer.BufferBuilder")
+@Shadow(value = "net.minecraft.client.renderer.BufferBuilder",version = "1.15.2")
 public interface BufferBuilderAccessor {
 
   @FieldGetter("drawStates")
