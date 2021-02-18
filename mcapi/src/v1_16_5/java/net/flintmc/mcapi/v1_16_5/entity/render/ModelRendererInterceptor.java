@@ -55,10 +55,24 @@ public class ModelRendererInterceptor {
 
   private final ClassMappingProvider classMappingProvider;
 
+  private static Constructor<BufferBuilder.DrawState> drawStateConstructor;
+
+  static {
+    try {
+      drawStateConstructor =
+          BufferBuilder.DrawState.class.getDeclaredConstructor(
+              VertexFormat.class, int.class, int.class);
+      drawStateConstructor.setAccessible(true);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
   @Inject
   private ModelRendererInterceptor(ClassMappingProvider classMappingProvider) {
     this.classMappingProvider = classMappingProvider;
   }
+
 
   @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.16.5")
   public void transform(ClassTransformContext classTransformContext) {
@@ -371,14 +385,9 @@ public class ModelRendererInterceptor {
         try {
           BufferBuilder.DrawState drawState;
 
-          Constructor<?> declaredConstructor1 =
-              BufferBuilder.DrawState.class.getDeclaredConstructor(
-                  VertexFormat.class, int.class, int.class);
-          declaredConstructor1.setAccessible(true);
           drawState =
-              (BufferBuilder.DrawState)
-                  declaredConstructor1.newInstance(
-                      ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
+              drawStateConstructor.newInstance(
+                  ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
           DrawStateAccessor drawStateAccessor = (DrawStateAccessor) (Object) drawState;
 
           drawStateAccessor.setModelRenderData(renderMeta);
@@ -387,8 +396,7 @@ public class ModelRendererInterceptor {
 
         } catch (IllegalAccessException
             | InstantiationException
-            | InvocationTargetException
-            | NoSuchMethodException e) {
+            | InvocationTargetException e) {
           e.printStackTrace();
         }
         if (!renderer.shouldExecuteNextStage(modelBoxHolder, renderMeta)) {

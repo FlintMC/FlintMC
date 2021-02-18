@@ -23,17 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
+import javassist.*;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
@@ -46,27 +36,37 @@ import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.CtClassFilter;
 import net.flintmc.transform.javassist.CtClassFilters;
-import net.flintmc.transform.shadow.MethodProxy;
-import net.flintmc.transform.shadow.Shadow;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Matrix3f;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.Vector4f;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 @Singleton
 public class ModelRendererInterceptor {
 
   private final ClassMappingProvider classMappingProvider;
+  private static Constructor<BufferBuilder.DrawState> drawStateConstructor;
 
   @Inject
   private ModelRendererInterceptor(ClassMappingProvider classMappingProvider) {
     this.classMappingProvider = classMappingProvider;
+  }
+
+
+  static {
+    try {
+      drawStateConstructor =
+          BufferBuilder.DrawState.class.getDeclaredConstructor(
+              VertexFormat.class, int.class, int.class);
+      drawStateConstructor.setAccessible(true);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
   @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.15.2")
@@ -96,7 +96,7 @@ public class ModelRendererInterceptor {
                       .getName(),
                   doRenderParameters);
 
-     /* doRender.insertBefore(
+      doRender.insertBefore(
           "{\n" +
               "    net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.interceptDoRender($0, $$);\n"
               + "    "
@@ -105,9 +105,9 @@ public class ModelRendererInterceptor {
               "        "
               + "return;\n"
               + "    }\n"
-              + "}");*/
+              + "}");
 
-    } catch (NotFoundException e) {
+    } catch (NotFoundException | CannotCompileException e) {
       e.printStackTrace();
     }
   }
@@ -378,14 +378,10 @@ public class ModelRendererInterceptor {
         try {
           BufferBuilder.DrawState drawState;
 
-          Constructor<?> declaredConstructor1 =
-              BufferBuilder.DrawState.class.getDeclaredConstructor(
-                  VertexFormat.class, int.class, int.class);
-          declaredConstructor1.setAccessible(true);
+
           drawState =
-              (BufferBuilder.DrawState)
-                  declaredConstructor1.newInstance(
-                      ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
+              drawStateConstructor.newInstance(
+                  ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
           DrawStateAccessor drawStateAccessor = (DrawStateAccessor) (Object) drawState;
 
           drawStateAccessor.setModelRenderData(renderMeta);
@@ -394,8 +390,7 @@ public class ModelRendererInterceptor {
 
         } catch (IllegalAccessException
             | InstantiationException
-            | InvocationTargetException
-            | NoSuchMethodException e) {
+            | InvocationTargetException e) {
           e.printStackTrace();
         }
         if (!renderer.shouldExecuteNextStage(modelBoxHolder, renderMeta)) {
