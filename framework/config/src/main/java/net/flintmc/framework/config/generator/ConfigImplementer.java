@@ -20,23 +20,66 @@
 package net.flintmc.framework.config.generator;
 
 import javassist.CannotCompileException;
+import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
+import net.flintmc.framework.config.generator.method.ConfigMethod;
 
 /**
- * This interface can add the {@link ParsedConfig} as an interface to a class and implement its methods.
+ * This interface can add the {@link ParsedConfig} as an interface to a class and implement its
+ * methods.
  */
 public interface ConfigImplementer {
 
   /**
+   * Adds the necessary methods/fields for a config to the given class and needs to be called before
+   * {@link ConfigMethod#implementExistingMethods(CtClass)}/{@link ConfigMethod#addInterfaceMethods(CtClass)}.
+   *
+   * @param implementation The non-null class to add the stuff to
+   * @param config         The non-null config which contains information about the config
+   * @throws CannotCompileException If the generated source code cannot be compiled, should
+   *                                basically never happen
+   */
+  void preImplementParsedConfig(CtClass implementation, GeneratingConfig config)
+      throws CannotCompileException;
+
+  /**
    * Adds the {@link ParsedConfig} interface to the given class and implements all its methods.
    *
-   * @param implementation The non-null class to add the interface to
-   * @param name           The non-null name which should be returned by {@link ParsedConfig#getConfigName()}
+   * @param implementation The non-null class to add the stuff to
+   * @param config         The non-null config which contains information about the config
    * @throws NotFoundException      If the {@link ParsedConfig} class cannot be found in the {@link
-   *                                javassist.ClassPool}
-   * @throws CannotCompileException If the generated source code cannot be compiled, should basically never happen
+   *                                ClassPool}
+   * @throws CannotCompileException If the generated source code cannot be compiled, should
+   *                                basically never happen
    */
-  void implementParsedConfig(CtClass implementation, String name) throws NotFoundException, CannotCompileException;
+  void implementParsedConfig(CtClass implementation, GeneratingConfig config)
+      throws NotFoundException, CannotCompileException;
+
+  /**
+   * Adds the necessary methods/fields for an interface inside of a config to the given class and
+   * needs to be called before {@link ConfigMethod#implementExistingMethods(CtClass)}/{@link
+   * ConfigMethod#addInterfaceMethods(CtClass)}.
+   *
+   * @param implementation The non-null class to add the stuff to
+   * @param config         The non-null config which contains information about the config
+   * @throws CannotCompileException If the generated source code cannot be compiled, should
+   *                                basically never happen
+   */
+  void preImplementSubConfig(CtClass implementation, GeneratingConfig config)
+      throws CannotCompileException;
+
+  /**
+   * Adds the {@link SubConfig} interface to the given class and implements all its methods.
+   *
+   * @param implementation The non-null class to add the stuff to
+   * @param config         The non-null config which contains information about the config
+   * @throws NotFoundException      If the {@link SubConfig} class cannot be found in the {@link
+   *                                ClassPool}
+   * @throws CannotCompileException If the generated source code cannot be compiled, should
+   *                                basically never happen
+   */
+  void implementSubConfig(CtClass implementation, GeneratingConfig config)
+      throws NotFoundException, CannotCompileException;
 
 }

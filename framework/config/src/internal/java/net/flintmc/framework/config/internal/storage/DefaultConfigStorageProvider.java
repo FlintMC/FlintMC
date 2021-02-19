@@ -21,8 +21,15 @@ package net.flintmc.framework.config.internal.storage;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import net.flintmc.framework.config.EventConfigInitializer;
-import net.flintmc.framework.config.annotation.ConfigInit;
 import net.flintmc.framework.config.event.ConfigStorageEvent;
 import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
 import net.flintmc.framework.config.generator.ConfigGenerator;
@@ -35,16 +42,6 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Singleton
 @Implement(ConfigStorageProvider.class)
@@ -109,19 +106,25 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
         TimeUnit.SECONDS);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return NAME;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void write(ParsedConfig config) {
     this.pendingWrites.put(config.getClass(), config);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void read(ParsedConfig config) {
     ConfigStorageEvent event = this.eventFactory.create(ConfigStorageEvent.Type.READ, config);
@@ -134,7 +137,9 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void registerStorage(ConfigStorage storage) throws IllegalStateException {
     if (!storage.getClass().isAnnotationPresent(StoragePriority.class)) {
@@ -153,23 +158,5 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
 
     this.storages.add(ComparableConfigStorage.wrap(storage, priority));
     Collections.sort(this.storages); // load the higher priorities last
-
-    Collection<ParsedConfig> configs = this.configGenerator.getDiscoveredConfigs();
-    if (!configs.isEmpty()) {
-      // read the configs from the storage
-
-      for (ParsedConfig config : configs) {
-        List<ConfigInit> configInits =
-            new ArrayList<>(
-                this.annotationCollector.getAllAnnotations(config.getClass(), ConfigInit.class));
-        if (configInits.isEmpty()) {
-          // no initialization conditions are given, we can initialize now
-          storage.read(config);
-        } else {
-          // registering the config for later initialization after the configured event is fired
-          this.eventConfigInitializer.registerPendingInitialization(config, configInits.get(0));
-        }
-      }
-    }
   }
 }

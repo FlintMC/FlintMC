@@ -17,22 +17,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-plugins {
-    id("java-library")
-}
+package net.flintmc.framework.config.internal.generator.instance;
 
-group = "net.flintmc"
+import net.flintmc.framework.config.generator.ParsedConfig;
 
-dependencies {
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
+public interface ConfigInstanceCreator {
 
-    api(project(":framework:framework-inject"))
-    api(project(":framework:framework-eventbus"))
-    api(project(":framework:framework-stereotype"))
-    api(project(":framework:framework-data-generation"))
+  ParsedConfig newInstance(boolean storeContent);
 
-    api(project(":transform:transform-hook"))
-
-    api("com.google.code.gson", "gson", "2.8.6")
 }

@@ -35,7 +35,7 @@ public class ComponentConfigSerializer implements ConfigSerializationHandler<Cha
   private final GsonComponentSerializer serializer;
 
   @Inject
-  public ComponentConfigSerializer(ComponentSerializer.Factory serializerFactory) {
+  private ComponentConfigSerializer(ComponentSerializer.Factory serializerFactory) {
     this.serializer = serializerFactory.gson();
   }
 

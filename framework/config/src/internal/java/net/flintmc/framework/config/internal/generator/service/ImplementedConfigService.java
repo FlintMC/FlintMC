@@ -17,41 +17,38 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.internal.storage;
+package net.flintmc.framework.config.internal.generator.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.CtClass;
-import net.flintmc.framework.config.storage.ConfigStorage;
-import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import net.flintmc.framework.config.storage.StoragePriority;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import java.util.ArrayList;
+import java.util.Collection;
+import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.stereotype.service.Service;
+import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.Identifier;
 
 @Singleton
-@Service(StoragePriority.class)
-public class ConfigStorageService implements ServiceHandler<StoragePriority> {
+@Service(value = ImplementedConfig.class, state = State.PRE_INIT, priority = -1000)
+public class ImplementedConfigService implements ServiceHandler<ImplementedConfig> {
 
-  private final ConfigStorageProvider storageProvider;
+  private final Collection<String> configInterfaces;
 
   @Inject
-  private ConfigStorageService(ConfigStorageProvider storageProvider) {
-    this.storageProvider = storageProvider;
+  private ImplementedConfigService() {
+    this.configInterfaces = new ArrayList<>();
+  }
+
+  public Collection<String> getConfigInterfaces() {
+    return this.configInterfaces;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void discover(AnnotationMeta<StoragePriority> meta) {
-    Identifier<CtClass> identifier = meta.getIdentifier();
-
-    ConfigStorage storage =
-        InjectionHolder.getInjectedInstance(CtResolver.get(identifier.getLocation()));
-    this.storageProvider.registerStorage(storage);
+  public void discover(AnnotationMeta<ImplementedConfig> annotationMeta) {
+    this.configInterfaces.add(annotationMeta.getClassIdentifier().getLocation().getName());
   }
 }

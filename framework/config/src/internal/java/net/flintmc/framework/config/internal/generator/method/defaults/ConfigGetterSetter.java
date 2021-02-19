@@ -19,77 +19,107 @@
 
 package net.flintmc.framework.config.internal.generator.method.defaults;
 
+import java.lang.reflect.Type;
 import javassist.CannotCompileException;
 import javassist.CtClass;
+import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
-import net.flintmc.framework.config.generator.GeneratingConfig;
-import net.flintmc.framework.config.generator.ParsedConfig;
-import net.flintmc.framework.config.internal.generator.method.DefaultConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
+import net.flintmc.framework.config.internal.generator.method.ConfigMethodGenerationUtils;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 
-import java.lang.reflect.Type;
+public class ConfigGetterSetter implements ConfigMethod {
 
-public class ConfigGetterSetter extends DefaultConfigMethod {
+  private final ConfigMethodGenerationUtils generationUtils;
+  private final ConfigSerializationService serializationService;
+  private final ConfigMethodInfo info;
 
-  public ConfigGetterSetter(
+  @AssistedInject
+  private ConfigGetterSetter(
+      ConfigMethodGenerationUtils generationUtils,
       ConfigSerializationService serializationService,
-      GeneratingConfig config,
-      CtClass declaringClass,
-      String name,
-      CtClass methodType) {
-    super(serializationService, config, declaringClass, name, methodType);
+      @Assisted ConfigMethodInfo info) {
+    this.generationUtils = generationUtils;
+    this.serializationService = serializationService;
+    this.info = info;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ConfigMethodInfo getInfo() {
+    return this.info;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getGetterName() {
-    CtClass type = super.getStoredType();
+    CtClass type = this.info.getStoredType();
 
     String prefix =
         type.equals(CtClass.booleanType) || type.getName().equals(Boolean.class.getName())
             ? "is"
             : "get";
-    return prefix + super.getConfigName();
+    return prefix + this.info.getConfigName();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getSetterName() {
-    return "set" + super.getConfigName();
+    return "set" + this.info.getConfigName();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String[] getMethodNames() {
-    return new String[] {this.getGetterName(), this.getSetterName()};
+    return new String[]{this.getGetterName(), this.getSetterName()};
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CtClass[] getTypes() {
-    return new CtClass[] {super.getStoredType()};
+    return new CtClass[]{this.info.getStoredType()};
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getSerializedType() {
-    return super.loadImplementationOrDefault(super.getStoredType());
+    return this.generationUtils.loadImplementationOrDefault(this.info, this.info.getStoredType());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void generateMethods(CtClass target) throws CannotCompileException {
-    if (!this.hasMethod(target, this.getGetterName())) {
+  public void generateMethods(CtClass target) throws CannotCompileException, NotFoundException {
+    if (!this.generationUtils.hasMethod(target, this.getGetterName())) {
       this.insertGetter(target);
     }
 
-    if (!this.hasMethod(target, this.getSetterName())) {
+    if (!this.generationUtils.hasMethod(target, this.getSetterName())) {
       this.insertSetter(target);
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void implementExistingMethods(CtClass target)
       throws CannotCompileException, NotFoundException {
@@ -98,54 +128,59 @@ public class ConfigGetterSetter extends DefaultConfigMethod {
 
     // add the write method to the setter
     try {
-      this.insertSaveConfig(target.getDeclaredMethod(this.getSetterName()));
+      this.generationUtils.insertSaveConfig(
+          this.info, this.getGetterName(), target.getDeclaredMethod(this.getSetterName()));
     } catch (NotFoundException e) {
-      if (!super.getStoredType().isInterface()
-          && !super.serializationService.hasSerializer(super.getStoredType())) {
+      CtClass methodType = this.info.getStoredType();
+      if (!methodType.isInterface()
+          && !this.serializationService.hasSerializer(methodType)) {
         // ignore if it is an interface that will never get overridden by anything
         throw e;
       }
     }
 
-    super.implementedMethods = true;
+    this.info.implementedExistingMethods();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addInterfaceMethods(CtClass target) throws CannotCompileException {
-    if (!this.hasMethod(target, this.getGetterName())) {
+    CtClass methodType = this.info.getStoredType();
+
+    if (!this.generationUtils.hasMethod(target, this.getGetterName())) {
       target.addMethod(
-          CtNewMethod.make(this.methodType.getName() + " " + this.getGetterName() + "();", target));
+          CtNewMethod.make(methodType.getName() + " " + this.getGetterName() + "();", target));
     }
 
-    if (!this.hasMethod(target, this.getSetterName())) {
+    if (!this.generationUtils.hasMethod(target, this.getSetterName())) {
       target.addMethod(
           CtNewMethod.make(
-              "void " + this.getSetterName() + "(" + this.methodType.getName() + " arg);", target));
+              "void " + this.getSetterName() + "(" + methodType.getName() + " arg);", target));
     }
 
-    super.addedInterfaceMethods = true;
+    this.info.addedInterfaceMethods();
   }
 
   private void insertGetter(CtClass target) throws CannotCompileException {
-    target.addMethod(CtNewMethod.getter(this.getGetterName(), super.generateOrGetField(target)));
+    target.addMethod(CtNewMethod.getter(
+        this.getGetterName(), this.generationUtils.generateOrGetField(this.info, target)));
   }
 
-  private void insertSetter(CtClass target) throws CannotCompileException {
-    target.addMethod(
-        CtNewMethod.make(
-            "public void "
-                + this.getSetterName()
-                + "("
-                + this.methodType.getName()
-                + " arg) { "
-                + "this."
-                + this.configName
-                + " = arg;"
-                + "configStorageProvider.write(("
-                + ParsedConfig.class.getName()
-                + ") this.config);"
-                + "}",
-            target));
+  private void insertSetter(CtClass target) throws CannotCompileException, NotFoundException {
+    CtMethod method = CtNewMethod.make(
+        String.format("public void %s(%s arg) { this.%s = arg; }",
+            this.getSetterName(), this.info.getStoredType().getName(), this.info.getConfigName()),
+        target);
+
+    this.generationUtils.insertSaveConfig(this.info, this.getGetterName(), method);
+    target.addMethod(method);
+  }
+
+  @AssistedFactory(ConfigGetterSetter.class)
+  public interface Factory {
+
+    ConfigGetterSetter create(@Assisted ConfigMethodInfo info);
   }
 }

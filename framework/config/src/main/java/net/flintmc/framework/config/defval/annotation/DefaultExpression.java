@@ -17,29 +17,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.modifier;
+package net.flintmc.framework.config.defval.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.flintmc.framework.config.annotation.Config;
-
-import java.lang.annotation.Annotation;
+import net.flintmc.framework.config.storage.ConfigStorage;
 
 /**
- * Handler for the modification of annotations in a {@link Config}. To register one, {@link AnnotationModifier} may be
- * used.
- * <p>
- * This can be used to dynamically set values on an annotation of a config value, especially useful for the Settings
- * module.
- *
- * @see AnnotationModifier
+ * This annotation sets the default value of a method in a {@link Config}.
  */
-public interface ConfigModificationHandler {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface DefaultExpression {
 
   /**
-   * Modifies the given annotation, the exact process depends on the implementation.
+   * The default value which should be used if it is not set in a {@link ConfigStorage}. This will
+   * be executed as a java expression, so for example it could be "new java.util.HashMap()" and
+   * should not end with a semicolon.
    *
-   * @param annotation The non-null annotation to be modified
-   * @return The modified/new annotation, {@code null}, if no modification should be applied
+   * @return The default value
    */
-  Annotation modify(Annotation annotation);
-
+  String value();
 }

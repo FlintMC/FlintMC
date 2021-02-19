@@ -19,15 +19,15 @@
 
 package net.flintmc.framework.config.serialization;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.processing.autoload.DetectableAnnotation;
 
 /**
- * Marks a {@link ConfigSerializationHandler} to be registered in the {@link ConfigSerializationService}.
+ * Marks a {@link ConfigSerializationHandler} to be registered in the {@link
+ * ConfigSerializationService}.
  *
  * @see ConfigSerializationHandler
  */

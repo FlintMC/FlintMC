@@ -20,28 +20,31 @@
 package net.flintmc.framework.config.internal.generator.method.reference;
 
 import com.google.inject.Singleton;
-import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
-import net.flintmc.framework.inject.implement.Implement;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Predicate;
+import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
+import net.flintmc.framework.inject.implement.Implement;
 
 @Singleton
 @Implement(ConfigAnnotationCollector.class)
 public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollector {
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <A extends Annotation> A findLastAnnotation(
       Method[] methods, Class<? extends A> annotationType) {
     return this.forEachAnnotations(methods, annotationType, a -> true);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<Annotation> findAllAnnotations(Method[] methods) {
     Collection<Annotation> annotations = new ArrayList<>();
@@ -57,9 +60,12 @@ public class DefaultConfigAnnotationCollector implements ConfigAnnotationCollect
     return annotations;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public <A extends Annotation> Collection<A> getAllAnnotations(Class<?> clazz, Class<A> annotationType) {
+  public <A extends Annotation> Collection<A> getAllAnnotations(Class<?> clazz,
+      Class<A> annotationType) {
     Collection<A> result = new ArrayList<>();
 
     this.addAllAnnotations(clazz, annotationType, result);

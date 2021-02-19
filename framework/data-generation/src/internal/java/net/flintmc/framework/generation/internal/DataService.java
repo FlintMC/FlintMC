@@ -36,13 +36,14 @@ import net.flintmc.framework.generation.parsing.factory.DataFactoryMethod;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
+import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.processing.autoload.AnnotationMeta;
 
 @Singleton
-@Service(DataFactory.class)
+@Service(value = DataFactory.class, priority = -250000, state = State.AFTER_IMPLEMENT)
 public class DataService implements ServiceHandler<DataFactory> {
 
   private final DataMethodParser dataMethodParser;

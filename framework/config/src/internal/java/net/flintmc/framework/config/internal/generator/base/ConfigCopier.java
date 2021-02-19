@@ -17,22 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-plugins {
-    id("java-library")
-}
+package net.flintmc.framework.config.internal.generator.base;
 
-group = "net.flintmc"
+import net.flintmc.framework.config.generator.ParsedConfig;
+import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 
-dependencies {
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
+public class ConfigCopier {
 
-    api(project(":framework:framework-inject"))
-    api(project(":framework:framework-eventbus"))
-    api(project(":framework:framework-stereotype"))
-    api(project(":framework:framework-data-generation"))
+  public static void copyConfig(ParsedConfig src, ParsedConfig dst) {
+    for (ConfigObjectReference reference : src.getConfigReferences()) {
+      reference.copyTo(dst);
+    }
+  }
 
-    api(project(":transform:transform-hook"))
-
-    api("com.google.code.gson", "gson", "2.8.6")
 }

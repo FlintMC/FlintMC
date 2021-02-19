@@ -23,13 +23,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
+import net.flintmc.framework.config.generator.ConfigGenerator;
+import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.serialization.ConfigSerializationHandler;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.serialization.ConfigSerializer;
+import net.flintmc.framework.config.storage.serializer.JsonConfigSerializer;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
@@ -38,10 +44,9 @@ import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import org.apache.logging.log4j.Logger;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
+@SuppressWarnings("unchecked")
 @Service(ConfigSerializer.class) // has to be called before the ConfigGenerationService
 @Implement(ConfigSerializationService.class)
 public class DefaultConfigSerializationService
@@ -49,22 +54,34 @@ public class DefaultConfigSerializationService
 
   private final ClassPool pool;
   private final Logger logger;
+  private final Provider<ConfigGenerator> configGenerator;
+  private final Provider<JsonConfigSerializer> configSerializer;
   private final Map<Class<?>, ConfigSerializationHandler<?>> handlers;
 
   @Inject
-  private DefaultConfigSerializationService(@InjectLogger Logger logger, ClassPool pool) {
+  private DefaultConfigSerializationService(
+      @InjectLogger Logger logger,
+      ClassPool pool,
+      Provider<ConfigGenerator> configGenerator,
+      Provider<JsonConfigSerializer> configSerializer) {
     this.logger = logger;
     this.pool = pool;
+    this.configGenerator = configGenerator;
+    this.configSerializer = configSerializer;
     this.handlers = new HashMap<>();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasSerializer(Class<?> interfaceType) {
     return this.getSerializer(interfaceType) != null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasSerializer(CtClass interfaceType) {
     for (Map.Entry<Class<?>, ConfigSerializationHandler<?>> entry : this.handlers.entrySet()) {
@@ -86,7 +103,9 @@ public class DefaultConfigSerializationService
     return false;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   @SuppressWarnings("unchecked")
   public <T> ConfigSerializationHandler<T> getSerializer(Class<T> interfaceType) {
@@ -99,31 +118,43 @@ public class DefaultConfigSerializationService
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <T> void registerSerializer(
       Class<T> interfaceType, ConfigSerializationHandler<T> handler) {
     this.handlers.put(interfaceType, handler);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <T> JsonElement serialize(Class<T> interfaceType, T value) {
     ConfigSerializationHandler<T> handler = this.getSerializer(interfaceType);
     return handler != null ? handler.serialize(value) : null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <T> T deserialize(Class<T> interfaceType, JsonElement value) {
     ConfigSerializationHandler<T> handler = this.getSerializer(interfaceType);
     return handler != null ? handler.deserialize(value) : null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonElement serializeWithType(Object value) {
-    Class<?> serializable = this.getSerializableType(value);
+    Class<?> serializable =
+        value instanceof ParsedConfig
+            ? ((ParsedConfig) value).getConfigClass()
+            : this.getSerializableType(value);
+
     if (serializable == null) {
       serializable = value.getClass();
     }
@@ -131,14 +162,21 @@ public class DefaultConfigSerializationService
     JsonObject json = new JsonObject();
     json.addProperty("type", serializable.getName());
 
-    ConfigSerializationHandler serializer = this.getSerializer(serializable);
-    if (serializer == null) {
-      this.logger.trace(
-          "No serializer for " + serializable.getName() + " found while serializing collection");
-      return null;
+    JsonElement serializedValue;
+    if (value instanceof ParsedConfig) {
+      serializedValue = this.configSerializer.get().serialize((ParsedConfig) value);
+    } else {
+      ConfigSerializationHandler serializer = this.getSerializer(serializable);
+      if (serializer == null) {
+        this.logger.trace(
+            "No serializer for " + serializable.getName() + " found while serializing object");
+        return null;
+      }
+
+      serializedValue = serializer.serialize(value);
     }
 
-    json.add("value", serializer.serialize(value));
+    json.add("value", serializedValue);
 
     return json;
   }
@@ -164,7 +202,9 @@ public class DefaultConfigSerializationService
     return this.hasSerializer(ifc) ? ifc : null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object deserializeWithType(JsonElement value) {
     if (value.isJsonPrimitive()) {
@@ -203,17 +243,29 @@ public class DefaultConfigSerializationService
         super.getClass().getClassLoader().loadClass(object.get("type").getAsString());
     JsonElement element = object.get("value");
 
+    ParsedConfig config = this.configGenerator.get().createConfigInstance(
+        (Class<? extends ParsedConfig>) serializable, false);
+    if (config != null) {
+      if (element.isJsonObject()) {
+        this.configSerializer.get().deserialize(element.getAsJsonObject(), config);
+      }
+
+      return config;
+    }
+
     ConfigSerializationHandler<?> serializer = this.getSerializer(serializable);
     if (serializer == null) {
       this.logger.trace(
-          "No serializer for " + serializable.getName() + " found while deserializing collection");
+          "No serializer for " + serializable.getName() + " found while deserializing object");
       return null;
     }
 
     return serializer.deserialize(element);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void discover(AnnotationMeta<ConfigSerializer> meta) {
     Class<?> interfaceType = meta.getAnnotation().value();

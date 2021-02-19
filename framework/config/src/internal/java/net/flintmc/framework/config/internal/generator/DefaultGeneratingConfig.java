@@ -19,20 +19,21 @@
 
 package net.flintmc.framework.config.internal.generator;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import javassist.CtClass;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
-import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 
-import java.util.*;
-
 @Implement(GeneratingConfig.class)
 public class DefaultGeneratingConfig implements GeneratingConfig {
 
-  private final ClassLoader classLoader;
   private final String name;
   private final CtClass baseClass;
   private final Collection<ConfigMethod> allMethods;
@@ -40,9 +41,7 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
   private final Map<String, CtClass> generatedImplementations;
 
   @AssistedInject
-  private DefaultGeneratingConfig(
-      ImplementationGenerator generator, @Assisted("baseClass") CtClass baseClass) {
-    this.classLoader = generator.getClassLoader();
+  private DefaultGeneratingConfig(@Assisted("baseClass") CtClass baseClass) {
     this.name = baseClass.getName();
     this.baseClass = baseClass;
     this.allMethods = new HashSet<>();
@@ -50,58 +49,68 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
     this.generatedImplementations = new HashMap<>();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return this.name;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CtClass getBaseClass() {
     return this.baseClass;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<ConfigMethod> getAllMethods() {
     return this.allMethods;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<CtClass> getImplementedInterfaces() {
     return Collections.unmodifiableCollection(this.implementedInterfaces);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<CtClass> getGeneratedImplementations() {
     return Collections.unmodifiableCollection(this.generatedImplementations.values());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CtClass getGeneratedImplementation(String baseName) {
     return this.generatedImplementations.get(baseName);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CtClass getGeneratedImplementation(String baseName, CtClass def) {
     return this.generatedImplementations.getOrDefault(baseName, def);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void bindGeneratedImplementation(CtClass base, CtClass implementation) {
     this.generatedImplementations.put(base.getName(), implementation);
     this.implementedInterfaces.add(base);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public ClassLoader getClassLoader() {
-    return this.classLoader;
   }
 }

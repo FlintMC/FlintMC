@@ -23,12 +23,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.flintmc.framework.config.serialization.ConfigSerializationHandler;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.serialization.ConfigSerializer;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Singleton
 @ConfigSerializer(Collection.class)
@@ -41,7 +40,9 @@ public class CollectionConfigSerializer implements ConfigSerializationHandler<Co
     this.serializationService = serializationService;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonElement serialize(Collection<?> collection) {
     JsonArray array = new JsonArray();
@@ -55,7 +56,9 @@ public class CollectionConfigSerializer implements ConfigSerializationHandler<Co
     return array;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<?> deserialize(JsonElement source) {
     if (!source.isJsonArray()) {

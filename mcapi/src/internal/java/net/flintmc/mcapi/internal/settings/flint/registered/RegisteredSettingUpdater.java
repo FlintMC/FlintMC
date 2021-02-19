@@ -37,7 +37,7 @@ public class RegisteredSettingUpdater {
   private final SettingUpdateEvent.Factory eventFactory;
 
   @Inject
-  public RegisteredSettingUpdater(
+  private RegisteredSettingUpdater(
       SettingsProvider provider, EventBus eventBus, SettingUpdateEvent.Factory eventFactory) {
     this.provider = provider;
     this.eventBus = eventBus;

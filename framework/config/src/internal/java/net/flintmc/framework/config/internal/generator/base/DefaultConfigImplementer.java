@@ -25,10 +25,13 @@ import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
+import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.ConfigImplementer;
+import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
+import net.flintmc.framework.config.generator.SubConfig;
 import net.flintmc.framework.inject.implement.Implement;
 
 @Singleton
@@ -46,7 +49,24 @@ public class DefaultConfigImplementer implements ConfigImplementer {
    * {@inheritDoc}
    */
   @Override
-  public void implementParsedConfig(CtClass implementation, String name)
+  public void preImplementParsedConfig(CtClass implementation, GeneratingConfig config)
+      throws CannotCompileException {
+    try {
+      implementation.getDeclaredField("storeContent");
+      return;
+    } catch (NotFoundException ignored) {
+    }
+
+    CtField storeContentField = new CtField(CtClass.booleanType, "storeContent", implementation);
+    implementation.addField(storeContentField, CtField.Initializer.constant(true));
+    implementation.addMethod(CtNewMethod.getter("shouldStoreContent", storeContentField));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void implementParsedConfig(CtClass implementation, GeneratingConfig config)
       throws NotFoundException, CannotCompileException {
     for (CtClass ifc : implementation.getInterfaces()) {
       if (ifc.getName().equals(ParsedConfig.class.getName())) {
@@ -56,17 +76,66 @@ public class DefaultConfigImplementer implements ConfigImplementer {
 
     implementation.addInterface(this.pool.get(ParsedConfig.class.getName()));
 
-    CtField referencesField =
-        CtField.make(
-            "private final transient java.util.Collection references = new java.util.HashSet();",
-            implementation);
+    CtField referencesField = CtField.make(
+        "private final transient java.util.Collection references = new java.util.HashSet();",
+        implementation);
     implementation.addField(referencesField);
     implementation.addMethod(CtNewMethod.getter("getConfigReferences", referencesField));
 
-    String escapedName = name.replace("\\", "\\\\").replace("\"", "\\\"");
-    implementation.addMethod(
-        CtNewMethod.make(
-            "public java.lang.String getConfigName() { return \"" + escapedName + "\"; }",
-            implementation));
+    String escapedName = config.getName().replace("\\", "\\\\").replace("\"", "\\\"");
+    implementation.addMethod(CtNewMethod.make(
+        "public java.lang.String getConfigName() { return \"" + escapedName + "\"; }",
+        implementation));
+
+    implementation.addMethod(CtNewMethod.make(
+        String.format("public Class getConfigClass() { return %s.class; }",
+            config.getBaseClass().getName()),
+        implementation));
+
+    implementation.addMethod(CtNewMethod.make(
+        String.format("public void copyTo(%s dst) { %s.copyConfig(this, dst); }",
+            ParsedConfig.class.getName(), ConfigCopier.class.getName()),
+        implementation));
+
+    implementation.addMethod(CtNewMethod.setter(
+        "setStoreContent", implementation.getField("storeContent")));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void preImplementSubConfig(CtClass implementation, GeneratingConfig config)
+      throws CannotCompileException {
+    try {
+      implementation.getDeclaredMethod("shouldStoreContent");
+      return;
+    } catch (NotFoundException ignored) {
+    }
+    implementation.addMethod(new CtMethod(
+        CtClass.booleanType, "shouldStoreContent", null, implementation));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void implementSubConfig(CtClass implementation, GeneratingConfig config)
+      throws NotFoundException, CannotCompileException {
+    for (CtClass ifc : implementation.getInterfaces()) {
+      if (ifc.getName().equals(SubConfig.class.getName())) {
+        return;
+      }
+    }
+
+    implementation.addInterface(this.pool.get(SubConfig.class.getName()));
+
+    CtMethod parentConfigGetter = new CtMethod(
+        this.pool.get(ParsedConfig.class.getName()), "getParentConfig", null, implementation);
+    parentConfigGetter.setBody("return this.config;");
+    implementation.addMethod(parentConfigGetter);
+
+    implementation.getDeclaredMethod("shouldStoreContent").setBody(String.format(
+        "return ((%s)this.config).shouldStoreContent();", ParsedConfig.class.getName()));
   }
 }

@@ -43,7 +43,8 @@ public interface ConfigStorage {
   void write(ParsedConfig config);
 
   /**
-   * Instantly reads the given config, if the config has never been stored to this storage, nothing will happen.
+   * Instantly reads the given config, if the config has never been stored to this storage, nothing
+   * will happen.
    *
    * @param config The non-null config to be read
    */

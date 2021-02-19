@@ -17,37 +17,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.modifier;
-
-import net.flintmc.processing.autoload.DetectableAnnotation;
+package net.flintmc.framework.config.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.config.SingletonConfigHolder;
+import net.flintmc.framework.config.generator.ConfigGenerator;
 
 /**
- * Marks a {@link ConfigModificationHandler} to be registered in the {@link ConfigModifierRegistry}.
+ * Marks a {@link Config} as a non-singleton so that a new instance will always created when
+ * injecting this config by default. If this annotation is not provided, {@link
+ * ConfigGenerator#createConfigInstance(Class)} can still be called to create multiple instances, it
+ * will just be bound as a singleton in the Injector.
  *
- * @see ConfigModificationHandler
+ * @see SingletonConfigHolder
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@DetectableAnnotation
-public @interface AnnotationModifier {
-
-  /**
-   * The class where the annotation to modify is set.
-   *
-   * @return The class where the annotation to modify is set
-   */
-  Class<?> value();
-
-  /**
-   * The method in the {@link #value() class} where the annotation to modify is set
-   *
-   * @return The method where the annotation to modify is set
-   */
-  String method();
+@Target(ElementType.TYPE)
+public @interface MultiInstanceConfig {
 
 }

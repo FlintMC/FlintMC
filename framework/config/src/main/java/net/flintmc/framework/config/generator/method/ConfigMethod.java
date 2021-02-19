@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
-import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
@@ -36,34 +35,16 @@ import net.flintmc.framework.config.storage.ConfigStorageProvider;
 public interface ConfigMethod {
 
   /**
-   * Retrieves the interface where this method has been discovered, this is not the class which is
-   * being implemented.
+   * Retrieves an object containing information about this method like the class where it is
+   * declared.
    *
-   * @return The non-null class where this method has been discovered
+   * @return The non-null info about this method
    */
-  CtClass getDeclaringClass();
-
-  /**
-   * Retrieves the config where this method
-   *
-   * @return The non-null config
-   */
-  GeneratingConfig getConfig();
-
-  /**
-   * Retrieves the name as which this method will be stored in the config (only the ending of it).
-   * The prefix to the entry in the config is defined with {@link #getPathPrefix()}. This is parsed
-   * from the specific type of method in {@link
-   * ConfigMethodResolver#resolveMethods(GeneratingConfig)}, so for example 'getX' would be 'X', see
-   * {@link Config} for more information on how this is parsed.
-   *
-   * @return The non-null suffix of the config
-   */
-  String getConfigName();
+  ConfigMethodInfo getInfo();
 
   /**
    * Retrieves the name of the getter to get the result which should be serialized in the config. To
-   * construct this, {@link #getConfigName()} will be used.
+   * construct this, {@link ConfigMethodInfo#getConfigName()} will be used.
    *
    * @return The non-null name of the getter
    */
@@ -71,7 +52,7 @@ public interface ConfigMethod {
 
   /**
    * Retrieves the name of the setter to set the result which has been be deserialized from the
-   * config. To construct this, {@link #getConfigName()} will be used.
+   * config. To construct this, {@link ConfigMethodInfo#getConfigName()} will be used.
    *
    * @return The non-null name of the setter
    */
@@ -95,41 +76,18 @@ public interface ConfigMethod {
   CtClass[] getTypes();
 
   /**
-   * Retrieves the type that will be stored in the config, so for example for 'int getX()' or 'void
-   * setX(int x)' this would be int.
-   *
-   * @return The non-null type to be serialized
-   */
-  CtClass getStoredType();
-
-  /**
    * Retrieves the type for serialization of this method. For example if the method is 'int getX()'
    * or 'void setX(int x)', the type would be {@link Integer#TYPE int.class}.
    *
    * <p>If the method consists of multiple values (key-value) and the method looks like this 'int
    * getY(String key)', the type would be {@code Map<String, Integer>}.
    *
-   * <p>If the classes are already defined in the {@link GeneratingConfig}, the implementations will
-   * be used for the Type.
+   * <p>If the classes are already defined in the {@link GeneratingConfig}, the implementations
+   * will be used for the Type.
    *
    * @return The non-null type for serialization
    */
   Type getSerializedType();
-
-  /**
-   * Retrieves the path prefix to be used in the config.
-   *
-   * @return The non-null (may be empty) array of prefixes
-   */
-  String[] getPathPrefix();
-
-  /**
-   * Changes the path prefix, this method can only be called once.
-   *
-   * @param pathPrefix The non-null prefix (may be empty)
-   * @throws IllegalStateException If the method has been called twice or more
-   */
-  void setPathPrefix(String[] pathPrefix) throws IllegalStateException;
 
   /**
    * Generates all methods that are necessary like the getters and setters and the necessary field
@@ -138,27 +96,19 @@ public interface ConfigMethod {
    *
    * @param target The non-null class where the methods and the field should be generated
    * @throws CannotCompileException If an internal error occurred while generating the code, should
-   *     basically never happen
+   *                                basically never happen
    */
-  void generateMethods(CtClass target) throws CannotCompileException;
-
-  /**
-   * Retrieves the source code that should be used for the generated constructor of the class where
-   * this method is declared. The code uses `this.config` to access the instance of the config.
-   *
-   * @return The non-null source code to be inserted to set the default values of all fields or an
-   *     empty string if no fields were generated that require a default value
-   */
-  String getFieldValuesCreator();
+  void generateMethods(CtClass target) throws CannotCompileException, NotFoundException;
 
   /**
    * Adds the {@link ConfigStorageProvider#write(ParsedConfig)} call to every setter method.
    *
    * @param target The non-null class where the methods (and the fields) should be generated
    * @throws CannotCompileException If an internal error occurred while generating the code, should
-   *     basically never happen
-   * @throws NotFoundException If any of the methods in {@link #getMethodNames()} don't exist, they
-   *     cannot be generated because we don't know the implementation
+   *                                basically never happen
+   * @throws NotFoundException      If any of the methods in {@link #getMethodNames()} don't exist,
+   *                                they cannot be generated because we don't know the
+   *                                implementation
    */
   void implementExistingMethods(CtClass target) throws CannotCompileException, NotFoundException;
 
@@ -168,29 +118,10 @@ public interface ConfigMethod {
    *
    * @param target The non-null interface where the methods should be generated
    * @throws CannotCompileException If an internal error occurred while generating the code, should
-   *     basically never happen
-   * @throws NotFoundException If any of the methods in {@link #getMethodNames()} don't exist, they
-   *     cannot be generated because we don't know the implementation
+   *                                basically never happen
+   * @throws NotFoundException      If any of the methods in {@link #getMethodNames()} don't exist,
+   *                                they cannot be generated because we don't know the
+   *                                implementation
    */
   void addInterfaceMethods(CtClass target) throws CannotCompileException, NotFoundException;
-
-  /**
-   * Marks this method as it requires no implementation methods by {@link
-   * #implementExistingMethods(CtClass)}.
-   */
-  void requireNoImplementation();
-
-  /**
-   * Retrieves whether {@link #implementExistingMethods(CtClass)} has already been called.
-   *
-   * @return {@code true} if it has been called, {@code false} otherwise
-   */
-  boolean hasImplementedExistingMethods();
-
-  /**
-   * Retrieves whether {@link #addInterfaceMethods(CtClass)} has already been called.
-   *
-   * @return {@code true} if it has been called, {@code false} otherwise
-   */
-  boolean hasAddedInterfaceMethods();
 }

@@ -53,13 +53,16 @@ public class ConfigImplementationMapper implements ServiceHandler<ConfigImplemen
    */
   @Override
   public void discover(AnnotationMeta<ConfigImplementation> annotationMeta) {
-    String version = annotationMeta.getAnnotation().version();
+    ConfigImplementation annotation = annotationMeta.getAnnotation();
+
+    String version = annotation.version();
 
     if (!version.isEmpty() && !launchArguments.get("--game-version").equals(version)) {
       return;
     }
 
-    String ifc = annotationMeta.getAnnotation().value().getName();
+    String ifc = annotation.value().getName();
+
     this.implementationMappings.put(ifc, annotationMeta.getClassIdentifier().getLocation());
   }
 }

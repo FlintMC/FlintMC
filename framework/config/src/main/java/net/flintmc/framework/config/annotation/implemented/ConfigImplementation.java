@@ -19,12 +19,12 @@
 
 package net.flintmc.framework.config.annotation.implemented;
 
-import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.processing.autoload.DetectableAnnotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.processing.autoload.DetectableAnnotation;
 
 /**
  * The counterpart to {@link ImplementedConfig}. Use it on the implementations of interfaces

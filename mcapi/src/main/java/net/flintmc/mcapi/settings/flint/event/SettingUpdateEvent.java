@@ -29,9 +29,10 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 /**
- * Fired whenever a setting gets updated via {@link ConfigObjectReference#setValue(Object)} or
- * {@link RegisteredSetting#setEnabled(boolean)}. This event will be fired in both the {@link
- * Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST} phases.
+ * Fired whenever a setting gets updated via the method in the corresponding config, {@link
+ * ConfigObjectReference#setValue(Object)} or {@link RegisteredSetting#setEnabled(boolean)}. This
+ * event will be fired in both the {@link Subscribe.Phase#PRE} and {@link Subscribe.Phase#POST}
+ * phases.
  *
  * @see Subscribe
  */

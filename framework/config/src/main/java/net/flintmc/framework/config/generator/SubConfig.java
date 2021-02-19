@@ -17,15 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.internal.generator.base;
+package net.flintmc.framework.config.generator;
 
-public class ConfigClassLoader extends ClassLoader {
+import net.flintmc.framework.config.annotation.Config;
 
-  public ConfigClassLoader(ClassLoader parent) {
-    super(parent);
-  }
+/**
+ * Represents the implementation of an interface inside of an interface that has been marked with
+ * {@link Config} and been marked as a config by the {@link ConfigGenerator}. This interface is not
+ * intended to be implemented manually.
+ */
+public interface SubConfig {
 
-  public Class<?> defineClass(String name, byte[] bytes) {
-    return super.defineClass(name, bytes, 0, bytes.length);
-  }
+  /**
+   * Retrieves the config where this interface has been discovered.
+   *
+   * @return The non-null parent config of this interface
+   */
+  ParsedConfig getParentConfig();
+
 }
