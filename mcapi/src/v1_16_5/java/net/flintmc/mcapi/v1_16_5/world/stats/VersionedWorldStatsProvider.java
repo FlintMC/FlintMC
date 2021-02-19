@@ -65,7 +65,9 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     this.eventBus = eventBus;
     this.event = event;
 
-    this.shadow = (StatsScreenShadow) new StatsScreen(null, new StatisticsManager());
+    StatsScreen screen = new StatsScreen(null, new StatisticsManager());
+    screen.init(Minecraft.getInstance(), 1024, 1024);
+    this.shadow = (StatsScreenShadow) screen;
     this.shadow.updateData();
   }
 
