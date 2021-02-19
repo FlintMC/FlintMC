@@ -19,15 +19,14 @@
 
 package net.flintmc.framework.config.internal.generator.method;
 
+import java.util.HashMap;
+import java.util.Map;
 import javassist.CtClass;
-import javassist.CtField;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import java.util.HashMap;
-import java.util.Map;
 
 @Implement(ConfigMethodInfo.class)
 public class DefaultConfigMethodInfo implements ConfigMethodInfo {

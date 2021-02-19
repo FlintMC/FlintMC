@@ -21,13 +21,13 @@ package net.flintmc.framework.config.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.config.SingletonConfigHolder;
-import net.flintmc.framework.config.generator.ParsedConfig;
-import net.flintmc.framework.inject.implement.Implement;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import net.flintmc.framework.config.SingletonConfigHolder;
+import net.flintmc.framework.config.generator.ParsedConfig;
+import net.flintmc.framework.inject.implement.Implement;
 
 @Singleton
 @Implement(SingletonConfigHolder.class)

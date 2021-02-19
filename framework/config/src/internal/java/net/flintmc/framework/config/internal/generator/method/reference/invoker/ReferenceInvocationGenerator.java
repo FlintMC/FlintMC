@@ -21,6 +21,9 @@ package net.flintmc.framework.config.internal.generator.method.reference.invoker
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -31,10 +34,6 @@ import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 import net.flintmc.launcher.LaunchController;
-
-import java.io.IOException;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class ReferenceInvocationGenerator {

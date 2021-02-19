@@ -19,10 +19,26 @@
 
 package net.flintmc.framework.config.internal.storage;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.util.function.Predicate;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.storage.ConfigStorage;
@@ -31,11 +47,9 @@ import net.flintmc.framework.config.storage.serializer.JsonConfigSerializer;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.function.Predicate;
-
-/** The default file storage in the flint/configs directory. */
+/**
+ * The default file storage in the flint/configs directory.
+ */
 @Singleton
 @StoragePriority
 public class FileConfigStorage implements ConfigStorage {
@@ -63,13 +77,17 @@ public class FileConfigStorage implements ConfigStorage {
     this.filter = reference -> reference.appliesTo(this);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getName() {
     return NAME;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void write(ParsedConfig config) {
     JsonObject object = new JsonObject();
@@ -92,7 +110,9 @@ public class FileConfigStorage implements ConfigStorage {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void read(ParsedConfig config) {
     File file = this.getFile(config);

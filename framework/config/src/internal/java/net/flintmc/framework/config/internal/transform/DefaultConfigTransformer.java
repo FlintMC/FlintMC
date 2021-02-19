@@ -242,7 +242,7 @@ public class DefaultConfigTransformer
         } else {
           this.configImplementer.preImplementSubConfig(implementation, generatingConfig);
         }
-        
+
         if (implementation.isInterface()) {
           method.addInterfaceMethods(implementation);
         } else {

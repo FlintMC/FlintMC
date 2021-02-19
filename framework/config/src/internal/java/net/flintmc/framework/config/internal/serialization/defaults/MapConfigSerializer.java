@@ -23,7 +23,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import net.flintmc.framework.config.serialization.ConfigSerializationHandler;

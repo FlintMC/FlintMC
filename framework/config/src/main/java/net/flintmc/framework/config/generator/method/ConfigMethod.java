@@ -83,8 +83,7 @@ public interface ConfigMethod {
    * getY(String key)', the type would be {@code Map<String, Integer>}.
    *
    * <p>If the classes are already defined in the {@link GeneratingConfig}, the implementations
-   * will
-   * be used for the Type.
+   * will be used for the Type.
    *
    * @return The non-null type for serialization
    */

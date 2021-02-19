@@ -21,6 +21,11 @@ package net.flintmc.framework.config.internal.defval.mapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapper;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperRegistry;
@@ -31,12 +36,6 @@ import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 @Implement(DefaultAnnotationMapperRegistry.class)
@@ -51,20 +50,26 @@ public class DefaultAnnotationMapperRegistryService
     this.mappers = new HashMap<>();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<Class<? extends Annotation>> getAnnotationTypes() {
     return Collections.unmodifiableCollection(this.mappers.keySet());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getDefaultValue(ConfigObjectReference reference, Annotation annotation) {
     DefaultAnnotationMapperHandler handler = this.mappers.get(annotation.annotationType());
     return handler != null ? handler.getDefaultValue(reference, annotation) : null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void discover(AnnotationMeta<DefaultAnnotationMapper> meta) {
     this.mappers.put(

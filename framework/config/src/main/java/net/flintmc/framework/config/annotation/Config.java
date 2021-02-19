@@ -19,18 +19,17 @@
 
 package net.flintmc.framework.config.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.Map;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
 import net.flintmc.processing.autoload.DetectableAnnotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.Map;
 
 /**
  * The {@link Config @Config} annotation can be used to automatically store the data in an interface
@@ -97,7 +96,7 @@ import java.util.Map;
  *       with ParsedConfig being the instance of this config. Additionally, the setters both need to
  *       return void.
  * </ul>
- *
+ * <p>
  * If a method in the annotated interface (or any sub interfaces in the config) is already
  * implemented (default methods), it will just be ignored.
  *
@@ -107,4 +106,6 @@ import java.util.Map;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @DetectableAnnotation
-public @interface Config {}
+public @interface Config {
+
+}

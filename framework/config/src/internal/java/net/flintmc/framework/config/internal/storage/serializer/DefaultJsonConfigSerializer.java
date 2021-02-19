@@ -24,13 +24,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.function.Predicate;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.serialization.ConfigSerializationHandler;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.storage.serializer.JsonConfigSerializer;
 import net.flintmc.framework.inject.implement.Implement;
-import java.util.function.Predicate;
 
 @Singleton
 @Implement(JsonConfigSerializer.class)

@@ -27,7 +27,6 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
-import javassist.Modifier;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.ConfigImplementer;
 import net.flintmc.framework.config.generator.GeneratingConfig;

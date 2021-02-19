@@ -21,6 +21,11 @@ package net.flintmc.framework.config.internal.generator.method.reference;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -32,11 +37,6 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.internal.generator.base.ImplementationGenerator;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.inject.implement.Implement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 
 @Singleton
 @Implement(ConfigObjectReference.Parser.class)

@@ -19,10 +19,10 @@
 
 package net.flintmc.framework.config;
 
+import java.util.Collection;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.annotation.MultiInstanceConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
-import java.util.Collection;
 
 /**
  * This class contains every {@link Config} that is not annotated with {@link MultiInstanceConfig}.

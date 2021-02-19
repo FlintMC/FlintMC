@@ -21,14 +21,13 @@ package net.flintmc.framework.config.internal.generator.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Singleton
 @Service(value = ImplementedConfig.class, state = State.PRE_INIT, priority = -1000)

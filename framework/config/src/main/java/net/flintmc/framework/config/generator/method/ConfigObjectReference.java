@@ -19,6 +19,9 @@
 
 package net.flintmc.framework.config.generator.method;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import javassist.CtClass;
 import javassist.CtMethod;
 import net.flintmc.framework.config.annotation.Config;
@@ -31,9 +34,6 @@ import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collection;
 
 /**
  * Represents the path to a value in a {@link Config} containing methods to get/change the value of

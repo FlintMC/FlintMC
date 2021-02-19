@@ -23,13 +23,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.flintmc.framework.config.serialization.ConfigSerializationHandler;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.config.serialization.ConfigSerializer;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Singleton
 @ConfigSerializer(Collection.class)

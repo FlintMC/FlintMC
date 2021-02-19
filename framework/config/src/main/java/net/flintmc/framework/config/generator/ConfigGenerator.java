@@ -19,6 +19,8 @@
 
 package net.flintmc.framework.config.generator;
 
+import java.io.IOException;
+import java.util.Collection;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -26,8 +28,6 @@ import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.event.ConfigDiscoveredEvent;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import java.io.IOException;
-import java.util.Collection;
 
 /**
  * Generator for implementations of interfaces annotated with {@link Config}.

@@ -20,6 +20,8 @@
 package net.flintmc.framework.config.internal.generator.method;
 
 import com.google.inject.Inject;
+import java.util.Arrays;
+import java.util.Collection;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -34,9 +36,6 @@ import net.flintmc.framework.config.internal.generator.method.group.ConfigMethod
 import net.flintmc.framework.config.internal.generator.method.group.ConfigSetterGroup;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.inject.implement.Implement;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 @Implement(ConfigMethodResolver.class)
 public class DefaultConfigMethodResolver implements ConfigMethodResolver {
@@ -53,7 +52,9 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
     this.groups = Arrays.asList(getterGroup, setterGroup);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resolveMethods(GeneratingConfig config) throws NotFoundException {
     this.resolveMethods(config, config.getBaseClass(), new String[0]);

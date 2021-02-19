@@ -19,13 +19,12 @@
 
 package net.flintmc.framework.config.annotation;
 
-import net.flintmc.framework.eventbus.event.Event;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 
 /**
  * This annotation can be used along with {@link Config} so that the config will be read from the

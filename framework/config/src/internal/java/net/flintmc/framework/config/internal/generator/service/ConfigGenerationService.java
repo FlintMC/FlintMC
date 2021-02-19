@@ -23,6 +23,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.binder.AnnotatedBindingBuilder;
+import java.io.IOException;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -38,8 +39,6 @@ import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.Identifier;
-
-import java.io.IOException;
 
 @Singleton
 @Service(value = Config.class, priority = 1)

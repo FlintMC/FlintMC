@@ -24,7 +24,9 @@ import net.flintmc.framework.config.annotation.IncludeStorage;
 import net.flintmc.framework.config.event.ConfigStorageEvent;
 import net.flintmc.framework.config.generator.ParsedConfig;
 
-/** Provider for all {@link ConfigStorage}s. */
+/**
+ * Provider for all {@link ConfigStorage}s.
+ */
 public interface ConfigStorageProvider extends ConfigStorage {
 
   /**

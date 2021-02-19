@@ -19,12 +19,12 @@
 
 package net.flintmc.framework.config.generator;
 
+import java.util.Collection;
 import javassist.CtClass;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
-import java.util.Collection;
 
 /**
  * A config that is currently being implemented by a {@link ConfigGenerator}.
