@@ -107,17 +107,43 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
     this.lastAnnotations = new HashMap<>();
 
-    Object defaultValue = null;
+    this.defaultValue = this.findDefaultValue(defaultAnnotationMapperRegistry);
+  }
+
+  private Object findDefaultValue(DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry) {
+    Object result = null;
     for (Class<? extends Annotation> annotationType :
         defaultAnnotationMapperRegistry.getAnnotationTypes()) {
       Annotation annotation = this.findLastAnnotation(annotationType);
       if (annotation != null) {
-        defaultValue = defaultAnnotationMapperRegistry.getDefaultValue(this, annotation);
+        result = defaultAnnotationMapperRegistry.getDefaultValue(this, annotation);
         break;
       }
     }
 
-    this.defaultValue = defaultValue;
+    Type type = this.getSerializedType();
+    if (type instanceof Class<?>
+        && Number.class.isAssignableFrom((Class<?>) type)
+        && result instanceof Number) {
+      // map e.g. doubles that could potentially be integers
+      Number number = (Number) result;
+
+      if (type.equals(Byte.class) || type.equals(byte.class)) {
+        return number.byteValue();
+      } else if (type.equals(Short.class) || type.equals(short.class)) {
+        return number.shortValue();
+      } else if (type.equals(Integer.class) || type.equals(int.class)) {
+        return number.intValue();
+      } else if (type.equals(Long.class) || type.equals(long.class)) {
+        return number.longValue();
+      } else if (type.equals(Double.class) || type.equals(double.class)) {
+        return number.doubleValue();
+      } else if (type.equals(Float.class) || type.equals(float.class)) {
+        return number.floatValue();
+      }
+    }
+
+    return result;
   }
 
   /**
