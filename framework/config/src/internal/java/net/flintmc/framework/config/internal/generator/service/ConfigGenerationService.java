@@ -79,11 +79,11 @@ public class ConfigGenerationService implements ServiceHandler<Config> {
                   AnnotatedBindingBuilder builder = super.bind((Class) base);
 
                   if (!location.hasAnnotation(MultiInstanceConfig.class)) {
-                    ParsedConfig singleton = generator.createConfigInstance(config);
+                    ParsedConfig singleton = generator.createConfigInstance(config, true);
                     configHolder.registerSingletonConfig(singleton);
                     builder.toInstance(singleton);
                   } else {
-                    builder.toProvider(() -> generator.createConfigInstance(config));
+                    builder.toProvider(() -> generator.createConfigInstance(config, true));
                   }
                 }
               });

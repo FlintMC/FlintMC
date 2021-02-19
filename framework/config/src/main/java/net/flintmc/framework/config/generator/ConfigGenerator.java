@@ -57,10 +57,12 @@ public interface ConfigGenerator {
    * <p>
    * {@link #generateConfigImplementation(CtClass)} needs to be called before for the given class.
    *
-   * @param configClass The non-null class of the config that should be created
+   * @param configClass  The non-null class of the config that should be created
+   * @param storeContent See {@link ParsedConfig#setStoreContent(boolean)}
    * @return The new non-null config instance created from the given class
    */
-  ParsedConfig createConfigInstance(Class<? extends ParsedConfig> configClass);
+  ParsedConfig createConfigInstance(
+      Class<? extends ParsedConfig> configClass, boolean storeContent);
 
   /**
    * Retrieves a collection with all configs that have been parsed from {@link

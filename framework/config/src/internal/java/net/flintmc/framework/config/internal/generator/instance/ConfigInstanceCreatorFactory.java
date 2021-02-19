@@ -21,9 +21,6 @@ package net.flintmc.framework.config.internal.generator.instance;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.IOException;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -35,6 +32,10 @@ import net.flintmc.framework.config.generator.ConfigGenerator;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.launcher.LaunchController;
+
+import java.io.IOException;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class ConfigInstanceCreatorFactory {
@@ -78,11 +79,16 @@ public class ConfigInstanceCreatorFactory {
         CtField.Initializer.byParameter(1));
 
     String src = String.format(
-        "{ %s result = new %1$s(); this.generator.bindConfig(this.config, result); return result; }",
+        "{"
+            + "%s result = new %1$s();"
+            + "result.setStoreContent($1);"
+            + "this.generator.bindConfig(this.config, result);"
+            + "return result;"
+            + "}",
         config.getGeneratedImplementation(config.getBaseClass().getName()).getName());
 
     generating.addMethod(CtNewMethod.make(
-        this.parsedConfigType, "newInstance", new CtClass[0], new CtClass[0],
+        this.parsedConfigType, "newInstance", new CtClass[]{CtClass.booleanType}, new CtClass[0],
         src, generating));
 
     return this.newInstance(generating, generator, config);

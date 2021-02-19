@@ -59,7 +59,7 @@ public class DefaultConfigImplementer implements ConfigImplementer {
     }
 
     CtField storeContentField = new CtField(CtClass.booleanType, "storeContent", implementation);
-    implementation.addField(storeContentField);
+    implementation.addField(storeContentField, CtField.Initializer.constant(true));
     implementation.addMethod(CtNewMethod.getter("shouldStoreContent", storeContentField));
   }
 

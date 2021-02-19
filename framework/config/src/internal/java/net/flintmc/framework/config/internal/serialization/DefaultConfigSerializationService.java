@@ -244,7 +244,7 @@ public class DefaultConfigSerializationService
     JsonElement element = object.get("value");
 
     ParsedConfig config = this.configGenerator.get().createConfigInstance(
-        (Class<? extends ParsedConfig>) serializable);
+        (Class<? extends ParsedConfig>) serializable, false);
     if (config != null) {
       if (element.isJsonObject()) {
         this.configSerializer.get().deserialize(element.getAsJsonObject(), config);

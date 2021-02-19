@@ -175,9 +175,10 @@ public class DefaultConfigGenerator implements ConfigGenerator {
    * {@inheritDoc}
    */
   @Override
-  public ParsedConfig createConfigInstance(Class<? extends ParsedConfig> configClass) {
+  public ParsedConfig createConfigInstance(
+      Class<? extends ParsedConfig> configClass, boolean storeContent) {
     ConfigInstanceCreator creator = this.instanceCreators.get(configClass);
-    return creator != null ? creator.newInstance() : null;
+    return creator != null ? creator.newInstance(storeContent) : null;
   }
 
   /**

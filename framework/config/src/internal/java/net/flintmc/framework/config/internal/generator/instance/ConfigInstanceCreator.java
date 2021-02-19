@@ -23,6 +23,6 @@ import net.flintmc.framework.config.generator.ParsedConfig;
 
 public interface ConfigInstanceCreator {
 
-  ParsedConfig newInstance();
+  ParsedConfig newInstance(boolean storeContent);
 
 }
