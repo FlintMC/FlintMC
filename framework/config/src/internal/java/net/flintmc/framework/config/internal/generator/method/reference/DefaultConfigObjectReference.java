@@ -34,7 +34,6 @@ import javassist.NotFoundException;
 import net.flintmc.framework.config.annotation.ExcludeStorage;
 import net.flintmc.framework.config.annotation.IncludeStorage;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperRegistry;
-import net.flintmc.framework.config.event.ConfigValueUpdateEvent;
 import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
@@ -42,7 +41,6 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvocationGenerator;
 import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvoker;
 import net.flintmc.framework.config.storage.ConfigStorage;
-import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -52,9 +50,6 @@ import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   private final ParsedConfig config;
-
-  private final EventBus eventBus;
-  private final ConfigValueUpdateEvent.Factory eventFactory;
 
   private final ConfigAnnotationCollector annotationCollector;
   private final String key;
@@ -74,8 +69,6 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   @AssistedInject
   private DefaultConfigObjectReference(
-      EventBus eventBus,
-      ConfigValueUpdateEvent.Factory eventFactory,
       ConfigAnnotationCollector annotationCollector,
       ReferenceInvocationGenerator invocationGenerator,
       DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry,
@@ -90,8 +83,6 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       @Assisted("serializedType") Type serializedType)
       throws ReflectiveOperationException, CannotCompileException, NotFoundException, IOException {
     this.config = config;
-    this.eventBus = eventBus;
-    this.eventFactory = eventFactory;
     this.annotationCollector = annotationCollector;
     this.pathKeys = pathKeys;
     this.key = String.join(".", pathKeys);

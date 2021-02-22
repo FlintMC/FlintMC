@@ -138,7 +138,7 @@ public class DefaultConfigObjectReferenceParser implements ConfigObjectReference
   @Override
   public Collection<ConfigObjectReference> parseAll(
       GeneratingConfig generatingConfig, ParsedConfig config) {
-    Collection<ConfigObjectReference> references = new HashSet<>();
+    Collection<ConfigObjectReference> references = new ArrayList<>();
 
     for (ConfigMethod method : generatingConfig.getAllMethods()) {
       ConfigMethodInfo info = method.getInfo();

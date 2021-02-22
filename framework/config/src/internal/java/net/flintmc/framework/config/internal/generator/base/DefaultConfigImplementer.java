@@ -77,7 +77,7 @@ public class DefaultConfigImplementer implements ConfigImplementer {
     implementation.addInterface(this.pool.get(ParsedConfig.class.getName()));
 
     CtField referencesField = CtField.make(
-        "private final transient java.util.Collection references = new java.util.HashSet();",
+        "private final transient java.util.Collection references = new java.util.ArrayList();",
         implementation);
     implementation.addField(referencesField);
     implementation.addMethod(CtNewMethod.getter("getConfigReferences", referencesField));
