@@ -19,25 +19,37 @@
 
 package net.flintmc.mcapi.internal.settings.flint.registered;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.HashSet;
-import javax.annotation.Nullable;
+import com.google.inject.name.Named;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
+import net.flintmc.mcapi.settings.flint.annotation.ui.ForceFullWidth;
+import net.flintmc.mcapi.settings.flint.annotation.version.VersionExclude;
+import net.flintmc.mcapi.settings.flint.annotation.version.VersionOnly;
 import net.flintmc.mcapi.settings.flint.event.SettingUpdateEvent;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 
 @Implement(RegisteredSetting.class)
 public class DefaultRegisteredSetting implements RegisteredSetting {
 
   private final SettingHandler settingHandler;
+  private final ComponentAnnotationSerializer annotationSerializer;
+
   private final String categoryName;
   private final ConfigObjectReference reference;
 
@@ -50,15 +62,20 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
   private final SettingUpdateEvent updateEvent;
   private boolean enabled;
 
+  private final String gameVersion;
+
   @AssistedInject
   public DefaultRegisteredSetting(
       SettingHandler settingHandler,
+      ComponentAnnotationSerializer annotationSerializer,
       EventBus eventBus,
       SettingUpdateEvent.Factory eventFactory,
+      @Named("launchArguments") Map launchArguments,
       @Assisted Class<? extends Annotation> annotationType,
       @Assisted @Nullable String categoryName,
       @Assisted ConfigObjectReference reference) {
     this.settingHandler = settingHandler;
+    this.annotationSerializer = annotationSerializer;
     this.categoryName = categoryName;
     this.reference = reference;
 
@@ -66,6 +83,8 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     this.type = this.annotation.annotationType().getAnnotation(ApplicableSetting.class).name();
 
     this.subSettings = new HashSet<>();
+
+    this.gameVersion = (String) launchArguments.get("--game-version");
 
     this.enabled = true;
     this.eventBus = eventBus;
@@ -145,6 +164,46 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     this.eventBus.fireEvent(this.updateEvent, Subscribe.Phase.PRE);
     this.enabled = enabled;
     this.eventBus.fireEvent(this.updateEvent, Subscribe.Phase.POST);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ChatComponent getDisplayName(Object key) {
+    DisplayName name = this.reference.findLastAnnotation(DisplayName.class, key);
+    return name == null ? null : this.annotationSerializer.deserialize(name.value());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ChatComponent getDescription(Object key) {
+    Description description = this.reference.findLastAnnotation(Description.class, key);
+    return description == null ? null : this.annotationSerializer.deserialize(description.value());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isFullWidthForced(Object key) {
+    return this.reference.findLastAnnotation(ForceFullWidth.class, key) != null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isHidden(Object key) {
+    VersionOnly only = reference.findLastAnnotation(VersionOnly.class, key);
+    if (only != null && Arrays.asList(only.value()).contains(this.gameVersion)) {
+      return false;
+    }
+
+    VersionExclude exclude = reference.findLastAnnotation(VersionExclude.class, key);
+    return exclude != null && Arrays.asList(exclude.value()).contains(this.gameVersion);
   }
 
   /**

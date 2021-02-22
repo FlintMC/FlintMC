@@ -26,6 +26,7 @@ import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.annotation.ui.InternalCategory;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 
 /**
@@ -53,8 +54,8 @@ public interface SettingsProvider {
    * Retrieves the category with the given name that is registered in this provider.
    *
    * @param name The non-null case-sensitive name of the category to get
-   * @return The category with the given name or {@code null}, if there is no category with the given
-   * name
+   * @return The category with the given name or {@code null}, if there is no category with the
+   * given name
    */
   RegisteredCategory getCategory(String name);
 
@@ -74,6 +75,16 @@ public interface SettingsProvider {
    * @return The non-null collection of all settings in this provider
    */
   Collection<RegisteredSetting> getAllSettings();
+
+  /**
+   * Retrieves every setting from {@link #getAllSettings()} that has the {@link InternalCategory}
+   * annotation with its value matching the given {@code internalCategory}.
+   *
+   * @param internalCategory The non-null category to get the settings for
+   * @return The new non-null collection of all settings matching the given internal category
+   * @see ConfigObjectReference#findLastAnnotation(Class)
+   */
+  Collection<RegisteredSetting> getCategorizedSettings(String internalCategory);
 
   /**
    * Retrieves a collection of all settings that are registered in this provider and that are loaded
@@ -113,8 +124,8 @@ public interface SettingsProvider {
    * Retrieves the setting that matches the given reference.
    *
    * @param reference The non-null reference to match the setting
-   * @return The setting to match the given reference or {@code null}, if the given reference doesn't
-   * match any setting
+   * @return The setting to match the given reference or {@code null}, if the given reference
+   * doesn't match any setting
    */
   RegisteredSetting getSetting(ConfigObjectReference reference);
 

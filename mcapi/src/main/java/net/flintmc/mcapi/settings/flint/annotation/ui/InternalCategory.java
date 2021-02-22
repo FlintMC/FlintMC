@@ -25,17 +25,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
 
 /**
- * Marks a method in a {@link Config} with an {@link ApplicableSetting} as native, that means that
- * it is defined by Minecraft itself and not by any FlintMC package. This annotation is only
- * intended to be used internally.
+ * Marks a method in a {@link Config} with an {@link ApplicableSetting} as a specific type to
+ * categorize settings internally, for example to distinguish between Minecraft and Flint settings.
  *
  * @see Config
  * @see ApplicableSetting
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface NativeSetting {
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface InternalCategory {
 
+  /**
+   * Retrieves the name of the internal category to be used in {@link
+   * SettingsProvider#getCategorizedSettings(String)}.
+   *
+   * @return The name of the category
+   */
+  String value();
 }

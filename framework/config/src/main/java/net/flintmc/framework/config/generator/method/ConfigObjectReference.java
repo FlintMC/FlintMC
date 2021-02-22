@@ -22,6 +22,8 @@ package net.flintmc.framework.config.generator.method;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import javassist.CtClass;
 import javassist.CtMethod;
 import net.flintmc.framework.config.annotation.Config;
@@ -112,6 +114,41 @@ public interface ConfigObjectReference {
    * reference is annotated with it.
    */
   <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType);
+
+  /**
+   * Finds the last annotation just like {@link #findLastAnnotation(Class)} does, but this method
+   * first checks if the given {@code key} is an enum and whether it has the given annotation, if
+   * the annotation is present, this will be retrieved, otherwise {@link #findLastAnnotation(Class)}
+   * will be used.
+   *
+   * @param annotationType The non-null type of the annotation
+   * @param key            The key to get the annotation from, or {@code null} if the key should be
+   *                       ignored
+   * @param <A>            The annotation which should be searched
+   * @return The discovered annotation or {@code null}, if no method/interface associated with this
+   * reference or the given key is annotated with it.
+   */
+  <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType, Object key);
+
+  /**
+   * If {@link #isMap()} is {@code true}, this method iterates over every entry of the value of this
+   * reference and forwards it to the given {@code consumer}, otherwise the given {@code consumer}
+   * will be accepted with the first argument being {@code null} and the second being the {@link
+   * #getValue() value of this reference}.
+   *
+   * @param consumer The non-null consumer to be accepted with the value(s) of this reference. The
+   *                 first argument represents the key of an entry, the second represents the value
+   *                 of an entry
+   */
+  void forEach(BiConsumer<Object, Object> consumer);
+
+  /**
+   * Retrieves whether this reference points to an entry in the config which is of the type {@link
+   * Map}. This might also be true if {@link #getValue()} is {@code null}.
+   *
+   * @return {@code true} if it is a map, {@code false} otherwise
+   */
+  boolean isMap();
 
   /**
    * Finds all annotations on every method or interface associated with this reference.

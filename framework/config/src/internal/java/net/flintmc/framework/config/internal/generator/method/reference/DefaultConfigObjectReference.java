@@ -22,15 +22,18 @@ package net.flintmc.framework.config.internal.generator.method.reference;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import net.flintmc.framework.config.EnumFieldResolver;
 import net.flintmc.framework.config.annotation.ExcludeStorage;
 import net.flintmc.framework.config.annotation.IncludeStorage;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperRegistry;
@@ -51,6 +54,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   private final ParsedConfig config;
 
+  private final EnumFieldResolver enumFieldResolver;
   private final ConfigAnnotationCollector annotationCollector;
   private final String key;
   private final String[] pathKeys;
@@ -69,6 +73,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   @AssistedInject
   private DefaultConfigObjectReference(
+      EnumFieldResolver enumFieldResolver,
       ConfigAnnotationCollector annotationCollector,
       ReferenceInvocationGenerator invocationGenerator,
       DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry,
@@ -82,6 +87,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       @Assisted("declaringClass") String declaringClass,
       @Assisted("serializedType") Type serializedType)
       throws ReflectiveOperationException, CannotCompileException, NotFoundException, IOException {
+    this.enumFieldResolver = enumFieldResolver;
     this.config = config;
     this.annotationCollector = annotationCollector;
     this.pathKeys = pathKeys;
@@ -216,6 +222,51 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
    * {@inheritDoc}
    */
   @Override
+  public <A extends Annotation> A findLastAnnotation(
+      Class<? extends A> annotationType, Object key) {
+    if (key instanceof Enum<?>) {
+      A annotation =
+          this.enumFieldResolver.getEnumField((Enum<?>) key).getAnnotation(annotationType);
+      if (annotation != null) {
+        return annotation;
+      }
+    }
+
+    return this.findLastAnnotation(annotationType);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void forEach(BiConsumer<Object, Object> consumer) {
+    if (this.isMap()) {
+      Map<?, ?> map = ((Map<?, ?>) this.getValue());
+      if (map != null) {
+        map.forEach(consumer);
+      }
+    } else {
+      consumer.accept(null, this.getValue());
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isMap() {
+    if (this.getSerializedType() instanceof ParameterizedType) {
+      ParameterizedType type = (ParameterizedType) this.getSerializedType();
+      return type.getRawType() == Map.class && type.getActualTypeArguments().length == 2;
+    }
+
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Collection<Annotation> findAllAnnotations() {
     if (this.allAnnotations != null) {
       return this.allAnnotations;
@@ -223,10 +274,8 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
     this.mapCorrespondingMethods();
 
-    Collection<Annotation> annotations =
+    return this.allAnnotations =
         this.annotationCollector.findAllAnnotations(this.correspondingMethods);
-
-    return this.allAnnotations = annotations;
   }
 
   private void mapCorrespondingMethods() {

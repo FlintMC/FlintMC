@@ -22,9 +22,9 @@ package net.flintmc.mcapi.internal.settings.flint.registered;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.flintmc.framework.config.generator.ParsedConfig;
@@ -35,6 +35,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageResolver;
+import net.flintmc.mcapi.settings.flint.annotation.ui.InternalCategory;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubSettingsFor;
 import net.flintmc.mcapi.settings.flint.event.SettingRegisterEvent;
 import net.flintmc.mcapi.settings.flint.event.SettingRegisterEvent.Factory;
@@ -174,8 +175,23 @@ public class DefaultSettingsProvider implements SettingsProvider {
    * {@inheritDoc}
    */
   @Override
+  public Collection<RegisteredSetting> getCategorizedSettings(String internalCategory) {
+    Collection<RegisteredSetting> settings = new ArrayList<>();
+    for (RegisteredSetting setting : this.getAllSettings()) {
+      InternalCategory category = setting.getReference().findLastAnnotation(InternalCategory.class);
+      if (category != null && internalCategory.equals(category.value())) {
+        settings.add(setting);
+      }
+    }
+    return settings;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Collection<RegisteredSetting> getSettings(String packageName) {
-    Collection<RegisteredSetting> settings = new HashSet<>();
+    Collection<RegisteredSetting> settings = new ArrayList<>();
     for (RegisteredSetting setting : this.getAllSettings()) {
       Package settingPackage =
           this.packageResolver.resolvePackage(setting.getReference().getConfigBaseClass());
@@ -192,7 +208,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
    */
   @Override
   public <A extends Annotation> Collection<RegisteredSetting> getSettings(Class<A> annotationType) {
-    Collection<RegisteredSetting> filtered = new HashSet<>();
+    Collection<RegisteredSetting> filtered = new ArrayList<>();
     for (RegisteredSetting setting : this.settings) {
       if (setting.getAnnotation().annotationType().equals(annotationType)) {
         filtered.add(setting);
@@ -206,7 +222,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
    */
   @Override
   public Collection<RegisteredSetting> getSettings(ParsedConfig config) {
-    Collection<RegisteredSetting> filtered = new HashSet<>();
+    Collection<RegisteredSetting> filtered = new ArrayList<>();
     for (RegisteredSetting setting : this.settings) {
       if (setting.getReference().getConfig() == config) {
         filtered.add(setting);
