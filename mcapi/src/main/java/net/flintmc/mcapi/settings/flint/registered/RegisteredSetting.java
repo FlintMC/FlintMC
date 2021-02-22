@@ -26,8 +26,14 @@ import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
+import net.flintmc.mcapi.settings.flint.annotation.ui.ForceFullWidth;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubSettingsFor;
+import net.flintmc.mcapi.settings.flint.annotation.version.VersionExclude;
+import net.flintmc.mcapi.settings.flint.annotation.version.VersionOnly;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 
@@ -105,6 +111,46 @@ public interface RegisteredSetting {
   void setEnabled(boolean enabled);
 
   /**
+   * Retrieves the display name of this setting for the given {@code key}.
+   *
+   * @param key see {@link ConfigObjectReference#findLastAnnotation(Class, Object)}
+   * @return The display name of this setting or {@code null} if there is no {@link DisplayName}
+   * annotation on config reference of this setting
+   * @see DisplayName
+   */
+  ChatComponent getDisplayName(Object key);
+
+  /**
+   * Retrieves the description of this setting for the given {@code key}.
+   *
+   * @param key see {@link ConfigObjectReference#findLastAnnotation(Class, Object)}
+   * @return The description of this setting or {@code null} if there is no {@link Description}
+   * annotation on config reference of this setting
+   * @see Description
+   */
+  ChatComponent getDescription(Object key);
+
+  /**
+   * Retrieves whether the {@link ForceFullWidth} annotation is present on this setting.
+   *
+   * @param key see {@link ConfigObjectReference#findLastAnnotation(Class, Object)}
+   * @return {@code true} if the annotation is present on this setting, {@code false} otherwise
+   * @see ForceFullWidth
+   */
+  boolean isFullWidthForced(Object key);
+
+  /**
+   * Retrieves whether the this setting is hidden and shouldn't be rendered. It may be hidden
+   * because {@link VersionOnly} or {@link VersionExclude} specify that the setting shouldn't be
+   * available in the running version.
+   *
+   * @param key see {@link ConfigObjectReference#findLastAnnotation(Class, Object)}
+   * @return {@code true} if this setting should be hidden and therefore not rendered, {@code false}
+   * otherwise
+   */
+  boolean isHidden(Object key);
+
+  /**
    * Retrieves a collection of all sub settings of this setting. The collection can be modified
    *
    * @return The non-null collection of sub settings in this setting
@@ -123,8 +169,8 @@ public interface RegisteredSetting {
      *
      * @param annotationType The non-null type of annotation which marks this setting ({@link
      *                       #getAnnotation()})
-     * @param categoryName   The name of the category the new setting belongs to, or {@code null}, if
-     *                       it doesn't belong to any category
+     * @param categoryName   The name of the category the new setting belongs to, or {@code null},
+     *                       if it doesn't belong to any category
      * @param reference      The non-null reference in a {@link Config} where this setting has been
      *                       discovered
      * @return The new non-null {@link RegisteredSetting}

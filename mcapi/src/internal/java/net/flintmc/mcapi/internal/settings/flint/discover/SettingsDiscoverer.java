@@ -37,8 +37,6 @@ import net.flintmc.mcapi.settings.flint.InvalidSettingsException;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Category;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
-import net.flintmc.mcapi.settings.flint.annotation.version.VersionExclude;
-import net.flintmc.mcapi.settings.flint.annotation.version.VersionOnly;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
@@ -71,19 +69,6 @@ public class SettingsDiscoverer {
     ParsedConfig config = event.getConfig();
 
     for (ConfigObjectReference reference : config.getConfigReferences()) {
-      VersionOnly versionOnly = reference.findLastAnnotation(VersionOnly.class);
-      if (versionOnly != null
-          && Arrays.stream(versionOnly.value())
-          .noneMatch(allowed -> allowed.equals(this.launchArguments.get("--game-version")))) {
-        continue;
-      }
-      VersionExclude versionExclude = reference.findLastAnnotation(VersionExclude.class);
-      if (versionExclude != null
-          && Arrays.stream(versionExclude.value())
-          .anyMatch(blocked -> blocked.equals(this.launchArguments.get("--game-version")))) {
-        continue;
-      }
-
       this.handleSetting(config, reference);
     }
   }

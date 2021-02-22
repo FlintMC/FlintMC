@@ -20,8 +20,6 @@
 package net.flintmc.framework.config.internal.generator.method;
 
 import com.google.inject.Inject;
-import java.util.Arrays;
-import java.util.Collection;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -36,6 +34,9 @@ import net.flintmc.framework.config.internal.generator.method.group.ConfigMethod
 import net.flintmc.framework.config.internal.generator.method.group.ConfigSetterGroup;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.inject.implement.Implement;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 
 @Implement(ConfigMethodResolver.class)
 public class DefaultConfigMethodResolver implements ConfigMethodResolver {
@@ -62,24 +63,51 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
 
   private void resolveMethods(GeneratingConfig config, CtClass type, String[] prefix)
       throws NotFoundException {
-    for (CtMethod method : type.getMethods()) {
-      if (!method.isEmpty()) { // default implementation in the interface
+    this.resolveMethods(config, type, prefix, new HashSet<>());
+  }
+
+  private void resolveMethods(
+      GeneratingConfig config, CtClass type, String[] prefix, Collection<String> handledMethods)
+      throws NotFoundException {
+    // We cannot use type.getMethods(), this doesn't keep the order of the methods
+    // inside of the class
+
+    for (CtMethod method : type.getDeclaredMethods()) {
+      if (handledMethods.contains(method.getName())) {
         continue;
       }
-
-      String declaring = method.getDeclaringClass().getName();
-      if (declaring.equals(Object.class.getName())
-          || declaring.equals(ParsedConfig.class.getName())) {
-        continue;
-      }
-      if (method.hasAnnotation(ConfigExclude.class)) {
-        continue;
-      }
-
-      String name = method.getName();
-
-      this.tryGroups(config, name, type, prefix, method);
+      handledMethods.add(method.getName());
+      this.handleMethod(config, type, method, prefix);
     }
+
+    CtClass superClass = type.getSuperclass();
+    if (superClass != null && !superClass.getName().equals("java.lang.Object")) {
+      this.resolveMethods(config, superClass, prefix, handledMethods);
+    }
+
+    for (CtClass ifc : type.getInterfaces()) {
+      this.resolveMethods(config, ifc, prefix, handledMethods);
+    }
+  }
+
+  private void handleMethod(GeneratingConfig config, CtClass type, CtMethod method, String[] prefix)
+      throws NotFoundException {
+    if (!method.isEmpty()) { // default implementation in the interface
+      return;
+    }
+
+    String declaring = method.getDeclaringClass().getName();
+    if (declaring.equals(Object.class.getName())
+        || declaring.equals(ParsedConfig.class.getName())) {
+      return;
+    }
+    if (method.hasAnnotation(ConfigExclude.class)) {
+      return;
+    }
+
+    String name = method.getName();
+
+    this.tryGroups(config, name, type, prefix, method);
   }
 
   private void tryGroups(
@@ -87,14 +115,16 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
       throws NotFoundException {
     for (ConfigMethodGroup group : this.groups) {
       for (String groupPrefix : group.getPossiblePrefixes()) {
-        if (name.startsWith(groupPrefix)) {
-          String entryName = name.substring(groupPrefix.length());
-          if (this.handleGroup(config, group, type, prefix, entryName, method)) {
-            return;
-          }
-
-          break;
+        if (!name.startsWith(groupPrefix)) {
+          continue;
         }
+
+        String entryName = name.substring(groupPrefix.length());
+        if (this.handleGroup(config, group, type, prefix, entryName, method)) {
+          return;
+        }
+
+        break;
       }
     }
   }

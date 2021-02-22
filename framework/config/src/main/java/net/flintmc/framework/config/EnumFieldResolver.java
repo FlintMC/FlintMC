@@ -17,28 +17,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.annotation.version;
+package net.flintmc.framework.config;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
- * Marks an {@link ApplicableSetting} in a {@link Config} to be used only in the specified
- * versions.
+ * Resolver to map enum constants to their {@link Field}.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
-public @interface VersionOnly {
+public interface EnumFieldResolver {
 
   /**
-   * Retrieves the versions where the setting should be accessible. The version can be for example
-   * "1.15.2.
+   * Retrieves the field that belongs to the given enum constant.
    *
-   * @return The versions where the settings can be used
+   * @param value The non-null enum constant
+   * @return The non-null field to the given constant
    */
-  String[] value();
+  Field getEnumField(Enum<?> value);
+
+  /**
+   * Retrieves all fields that belong to enum constants in the given enum class with the key being
+   * the {@link Enum#name() name of the constant} and value the field that belongs to the enum
+   * constant.
+   *
+   * @param enumClass The non-null enum class
+   * @return The non-null map with all fields to the given constant
+   */
+  Map<String, Field> getEnumFields(Class<? extends Enum<?>> enumClass);
 }
