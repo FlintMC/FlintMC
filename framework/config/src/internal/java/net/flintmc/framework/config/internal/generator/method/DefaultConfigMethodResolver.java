@@ -34,6 +34,7 @@ import net.flintmc.framework.config.internal.generator.method.group.ConfigMethod
 import net.flintmc.framework.config.internal.generator.method.group.ConfigSetterGroup;
 import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.inject.implement.Implement;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -63,12 +64,17 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
 
   private void resolveMethods(GeneratingConfig config, CtClass type, String[] prefix)
       throws NotFoundException {
-    this.resolveMethods(config, type, prefix, new HashSet<>());
+    this.resolveMethods(config, type, type, prefix, new HashSet<>());
   }
 
   private void resolveMethods(
-      GeneratingConfig config, CtClass type, String[] prefix, Collection<String> handledMethods)
+      GeneratingConfig config,
+      CtClass baseType,
+      CtClass type,
+      String[] prefix,
+      Collection<String> handledMethods)
       throws NotFoundException {
+
     // We cannot use type.getMethods(), this doesn't keep the order of the methods
     // inside of the class
 
@@ -77,16 +83,16 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
         continue;
       }
       handledMethods.add(method.getName());
-      this.handleMethod(config, type, method, prefix);
+      this.handleMethod(config, baseType, method, prefix);
     }
 
     CtClass superClass = type.getSuperclass();
     if (superClass != null && !superClass.getName().equals("java.lang.Object")) {
-      this.resolveMethods(config, superClass, prefix, handledMethods);
+      this.resolveMethods(config, baseType, superClass, prefix, handledMethods);
     }
 
     for (CtClass ifc : type.getInterfaces()) {
-      this.resolveMethods(config, ifc, prefix, handledMethods);
+      this.resolveMethods(config, baseType, ifc, prefix, handledMethods);
     }
   }
 
