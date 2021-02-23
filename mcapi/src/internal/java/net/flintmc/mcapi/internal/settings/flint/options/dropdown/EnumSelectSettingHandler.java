@@ -27,7 +27,7 @@ import com.google.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.mcapi.settings.flint.EnumFieldResolver;
+import net.flintmc.framework.config.EnumFieldResolver;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.dropdown.EnumSelectSetting;

@@ -29,7 +29,9 @@ import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
 import net.flintmc.framework.inject.implement.Implement;
 
-/** {@inheritDoc} */
+/**
+ * {@inheritDoc}
+ */
 @Singleton
 @Implement(EventConfigInitializer.class)
 public class DefaultEventConfigInitializer implements EventConfigInitializer {
@@ -48,19 +50,20 @@ public class DefaultEventConfigInitializer implements EventConfigInitializer {
     this.configGenerator = configGenerator;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void registerPendingInitialization(ParsedConfig config, ConfigInit configInit) {
     this.subscribeMethodFactory
         .newBuilder(configInit.value())
         .phaseOnly(configInit.eventPhase())
-        .to(
-            ((event, phase, holderMethod) -> {
-              this.configGenerator.initConfig(config);
-              // we only needed the subscribe method to initialize the config,
-              // we can unregister it now
-              this.eventBus.unregisterSubscribeMethod(holderMethod);
-            }))
+        .to(((event, phase, holderMethod) -> {
+          this.configGenerator.initConfig(config);
+          // we only needed the subscribe method to initialize the config,
+          // we can unregister it now
+          this.eventBus.unregisterSubscribeMethod(holderMethod);
+        }))
         .buildAndRegister();
   }
 }

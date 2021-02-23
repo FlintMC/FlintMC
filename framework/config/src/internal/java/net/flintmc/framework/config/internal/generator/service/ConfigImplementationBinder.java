@@ -90,7 +90,7 @@ public class ConfigImplementationBinder implements ServiceHandler<ConfigImplemen
 
                   super.bind((Class) superClass).to(implementation);
 
-                  if (ParsedConfig.class.isAssignableFrom(implementation)) {
+                  if (meta.getImplementationCtClass().getName().equals(implementation.getName())) {
                     pendingConfigs.add(meta);
                   }
                 }
@@ -106,6 +106,12 @@ public class ConfigImplementationBinder implements ServiceHandler<ConfigImplemen
     for (TransformedConfigMeta meta : pendingConfigs) {
       ParsedConfig config =
           (ParsedConfig) InjectionHolder.getInjectedInstance(meta.getSuperClass());
+      CtClass base =
+          meta.getConfig().getGeneratedImplementation(meta.getConfig().getBaseClass().getName());
+      if (!base.getName().equals(config.getClass().getName())) {
+        continue;
+      }
+
       this.configGenerator.bindConfig(meta.getConfig(), config);
     }
   }

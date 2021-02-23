@@ -29,7 +29,10 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 @DefaultAnnotationMapper(DefaultBoolean.class)
 public class BooleanDefaultAnnotationMapper
     implements DefaultAnnotationMapperHandler<DefaultBoolean> {
-  /** {@inheritDoc} */
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getDefaultValue(ConfigObjectReference reference, DefaultBoolean annotation) {
     return annotation.value();

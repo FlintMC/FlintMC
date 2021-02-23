@@ -48,7 +48,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     this.gson = new Gson();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject serialize(ParsedConfig config) {
     JsonObject object = new JsonObject();
@@ -56,7 +58,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     return object;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void deserialize(JsonObject object, ParsedConfig config) {
     this.deserialize(object, config, TRUE);
@@ -69,7 +73,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void serialize(
       ParsedConfig config, JsonObject object, Predicate<ConfigObjectReference> predicate) {
@@ -94,30 +100,34 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
       if (value == null) {
         value = this.gson.toJsonTree(rawValue);
       }
-      if (value.isJsonNull()) {
-        continue;
+      if (!value.isJsonNull()) {
+        this.append(object, value, keys);
       }
-
-      JsonObject parent = object;
-
-      for (int i = 0; i < keys.length - 1; i++) {
-        String pathKey = keys[i];
-
-        JsonObject nextParent = parent.getAsJsonObject(pathKey);
-
-        if (nextParent == null) {
-          nextParent = new JsonObject();
-          parent.add(pathKey, nextParent);
-        }
-
-        parent = nextParent;
-      }
-
-      parent.add(keys[keys.length - 1], value);
     }
   }
 
-  /** {@inheritDoc} */
+  private void append(JsonObject object, JsonElement value, String[] keys) {
+    JsonObject parent = object;
+
+    for (int i = 0; i < keys.length - 1; i++) {
+      String pathKey = keys[i];
+
+      JsonObject nextParent = parent.getAsJsonObject(pathKey);
+
+      if (nextParent == null) {
+        nextParent = new JsonObject();
+        parent.add(pathKey, nextParent);
+      }
+
+      parent = nextParent;
+    }
+
+    parent.add(keys[keys.length - 1], value);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void deserialize(
       JsonObject object, ParsedConfig config, Predicate<ConfigObjectReference> predicate) {

@@ -17,37 +17,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.modifier;
-
-import net.flintmc.processing.autoload.DetectableAnnotation;
+package net.flintmc.mcapi.settings.flint.annotation.ui;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
 
 /**
- * Marks a {@link ConfigModificationHandler} to be registered in the {@link ConfigModifierRegistry}.
+ * Marks a method in a {@link Config} with an {@link ApplicableSetting} as a specific type to
+ * categorize settings internally, for example to distinguish between Minecraft and Flint settings.
  *
- * @see ConfigModificationHandler
+ * @see Config
+ * @see ApplicableSetting
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-@DetectableAnnotation
-public @interface AnnotationModifier {
+public @interface InternalCategory {
 
   /**
-   * The class where the annotation to modify is set.
+   * Retrieves the name of the internal category to be used in {@link
+   * SettingsProvider#getCategorizedSettings(String)}.
    *
-   * @return The class where the annotation to modify is set
+   * @return The name of the category
    */
-  Class<?> value();
-
-  /**
-   * The method in the {@link #value() class} where the annotation to modify is set
-   *
-   * @return The method where the annotation to modify is set
-   */
-  String method();
-
+  String value();
 }

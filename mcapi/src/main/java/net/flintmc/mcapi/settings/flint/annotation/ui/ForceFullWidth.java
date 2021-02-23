@@ -17,15 +17,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.config.internal.generator.base;
+package net.flintmc.mcapi.settings.flint.annotation.ui;
 
-public class ConfigClassLoader extends ClassLoader {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 
-  public ConfigClassLoader(ClassLoader parent) {
-    super(parent);
-  }
+/**
+ * Forces the annotated {@link ApplicableSetting} to be rendered in one row. By default, every
+ * setting will be rendered as the part of a table with two rows.
+ *
+ * @see Config
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+public @interface ForceFullWidth {
 
-  public Class<?> defineClass(String name, byte[] bytes) {
-    return super.defineClass(name, bytes, 0, bytes.length);
-  }
 }

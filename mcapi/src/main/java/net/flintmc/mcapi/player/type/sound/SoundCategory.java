@@ -19,6 +19,11 @@
 
 package net.flintmc.mcapi.player.type.sound;
 
+import net.flintmc.mcapi.chat.annotation.Component;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
+import net.flintmc.mcapi.settings.flint.annotation.ui.ForceFullWidth;
+import net.flintmc.mcapi.settings.flint.annotation.version.VersionOnly;
+
 /**
  * An enumeration of all available sound categories.
  */
@@ -27,42 +32,54 @@ public enum SoundCategory {
   /**
    * The master sound category.
    */
+  @ForceFullWidth
+  @DisplayName(@Component(value = "soundCategory.master", translate = true))
   MASTER,
   /**
    * The music sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.music", translate = true))
   MUSIC,
   /**
    * The record sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.record", translate = true))
   RECORD,
   /**
    * The weather sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.weather", translate = true))
   WEATHER,
   /**
    * The block sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.block", translate = true))
   BLOCK,
   /**
    * The hostile sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.hostile", translate = true))
   HOSTILE,
   /**
    * The neutral sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.neutral", translate = true))
   NEUTRAL,
   /**
    * The player sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.player", translate = true))
   PLAYER,
   /**
    * The ambient sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.ambient", translate = true))
   AMBIENT,
   /**
    * The voice sound category.
    */
+  @DisplayName(@Component(value = "soundCategory.voice", translate = true))
+  @VersionOnly({"1.15.2", "1.16.5"})
   VOICE;
 
   /**

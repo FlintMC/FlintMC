@@ -19,51 +19,47 @@
 
 package net.flintmc.framework.config.internal.generator.method.reference;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import net.flintmc.framework.config.EnumFieldResolver;
 import net.flintmc.framework.config.annotation.ExcludeStorage;
 import net.flintmc.framework.config.annotation.IncludeStorage;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperRegistry;
-import net.flintmc.framework.config.event.ConfigValueUpdateEvent;
 import net.flintmc.framework.config.generator.ConfigAnnotationCollector;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvocationGenerator;
 import net.flintmc.framework.config.internal.generator.method.reference.invoker.ReferenceInvoker;
-import net.flintmc.framework.config.modifier.ConfigModifierRegistry;
 import net.flintmc.framework.config.storage.ConfigStorage;
-import net.flintmc.framework.eventbus.EventBus;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.*;
 
 @Implement(ConfigObjectReference.class)
 public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   private final ParsedConfig config;
 
-  private final EventBus eventBus;
-  private final ConfigValueUpdateEvent.Factory eventFactory;
-
-  private final ConfigModifierRegistry modifierRegistry;
-
+  private final EnumFieldResolver enumFieldResolver;
   private final ConfigAnnotationCollector annotationCollector;
   private final String key;
   private final String[] pathKeys;
   private final CtMethod[] correspondingCtMethods;
   private final Map<Class<? extends Annotation>, Annotation> lastAnnotations;
-  private final ClassLoader classLoader;
   private final Type serializedType;
 
   private final Object defaultValue;
@@ -77,9 +73,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   @AssistedInject
   private DefaultConfigObjectReference(
-      EventBus eventBus,
-      ConfigValueUpdateEvent.Factory eventFactory,
-      ConfigModifierRegistry modifierRegistry,
+      EnumFieldResolver enumFieldResolver,
       ConfigAnnotationCollector annotationCollector,
       ReferenceInvocationGenerator invocationGenerator,
       DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry,
@@ -91,90 +85,127 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
       @Assisted("getter") CtMethod getter,
       @Assisted("setter") CtMethod setter,
       @Assisted("declaringClass") String declaringClass,
-      @Assisted("classLoader") ClassLoader classLoader,
       @Assisted("serializedType") Type serializedType)
       throws ReflectiveOperationException, CannotCompileException, NotFoundException, IOException {
+    this.enumFieldResolver = enumFieldResolver;
     this.config = config;
-    this.eventBus = eventBus;
-    this.eventFactory = eventFactory;
-    this.modifierRegistry = modifierRegistry;
     this.annotationCollector = annotationCollector;
     this.pathKeys = pathKeys;
     this.key = String.join(".", pathKeys);
     this.correspondingCtMethods = correspondingCtMethods;
-    this.classLoader = classLoader;
     this.serializedType = serializedType;
 
+    ClassLoader classLoader = super.getClass().getClassLoader();
     this.configBaseClass = classLoader.loadClass(generatingConfig.getBaseClass().getName());
     this.declaringClass = classLoader.loadClass(declaringClass);
-    this.invoker = invocationGenerator.generateInvoker(generatingConfig, path, getter, setter);
+    this.invoker = invocationGenerator.generateInvoker(
+        generatingConfig, this.getLastName(), path, getter, setter);
+    this.invoker.setReference(this.config, this);
 
     this.lastAnnotations = new HashMap<>();
 
-    Object defaultValue = null;
+    this.defaultValue = this.findDefaultValue(defaultAnnotationMapperRegistry);
+  }
+
+  private Object findDefaultValue(DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry) {
+    Object result = null;
     for (Class<? extends Annotation> annotationType :
         defaultAnnotationMapperRegistry.getAnnotationTypes()) {
       Annotation annotation = this.findLastAnnotation(annotationType);
       if (annotation != null) {
-        defaultValue = defaultAnnotationMapperRegistry.getDefaultValue(this, annotation);
+        result = defaultAnnotationMapperRegistry.getDefaultValue(this, annotation);
         break;
       }
     }
 
-    this.defaultValue = defaultValue;
+    Type type = this.getSerializedType();
+    if (type instanceof Class<?>
+        && Number.class.isAssignableFrom((Class<?>) type)
+        && result instanceof Number) {
+      // map e.g. doubles that could potentially be integers
+      Number number = (Number) result;
+
+      if (type.equals(Byte.class) || type.equals(byte.class)) {
+        return number.byteValue();
+      } else if (type.equals(Short.class) || type.equals(short.class)) {
+        return number.shortValue();
+      } else if (type.equals(Integer.class) || type.equals(int.class)) {
+        return number.intValue();
+      } else if (type.equals(Long.class) || type.equals(long.class)) {
+        return number.longValue();
+      } else if (type.equals(Double.class) || type.equals(double.class)) {
+        return number.doubleValue();
+      } else if (type.equals(Float.class) || type.equals(float.class)) {
+        return number.floatValue();
+      }
+    }
+
+    return result;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Class<?> getConfigBaseClass() {
     return this.configBaseClass;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getKey() {
     return this.key;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getLastName() {
     return this.pathKeys[this.pathKeys.length - 1];
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String[] getPathKeys() {
     return this.pathKeys;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Class<?> getDeclaringClass() {
     return this.declaringClass;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ParsedConfig getConfig() {
     return this.config;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getSerializedType() {
     return this.serializedType;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <A extends Annotation> A findLastAnnotation(Class<? extends A> annotationType) {
     if (this.lastAnnotations.containsKey(annotationType)) {
-      Annotation annotation = this.lastAnnotations.get(annotationType);
-      if (annotation != null) {
-        annotation = this.modifierRegistry.modify(this, annotation);
-      }
-      return (A) annotation;
+      return (A) this.lastAnnotations.get(annotationType);
     }
 
     this.mapCorrespondingMethods();
@@ -187,32 +218,64 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     return annotation;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public <A extends Annotation> A findLastAnnotation(
+      Class<? extends A> annotationType, Object key) {
+    if (key instanceof Enum<?>) {
+      A annotation =
+          this.enumFieldResolver.getEnumField((Enum<?>) key).getAnnotation(annotationType);
+      if (annotation != null) {
+        return annotation;
+      }
+    }
+
+    return this.findLastAnnotation(annotationType);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void forEach(BiConsumer<Object, Object> consumer) {
+    if (this.isMap()) {
+      Map<?, ?> map = ((Map<?, ?>) this.getValue());
+      if (map != null) {
+        map.forEach(consumer);
+      }
+    } else {
+      consumer.accept(null, this.getValue());
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isMap() {
+    if (this.getSerializedType() instanceof ParameterizedType) {
+      ParameterizedType type = (ParameterizedType) this.getSerializedType();
+      return type.getRawType() == Map.class && type.getActualTypeArguments().length == 2;
+    }
+
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<Annotation> findAllAnnotations() {
     if (this.allAnnotations != null) {
-      return this.modifyAnnotations(this.allAnnotations);
+      return this.allAnnotations;
     }
 
     this.mapCorrespondingMethods();
 
-    Collection<Annotation> annotations =
+    return this.allAnnotations =
         this.annotationCollector.findAllAnnotations(this.correspondingMethods);
-
-    return this.modifyAnnotations(this.allAnnotations = annotations);
-  }
-
-  private Collection<Annotation> modifyAnnotations(Collection<Annotation> annotations) {
-    if (annotations.isEmpty()) {
-      return Collections.emptyList();
-    }
-
-    Collection<Annotation> modifiedAnnotations = new ArrayList<>(annotations.size());
-    for (Annotation annotation : annotations) {
-      modifiedAnnotations.add(this.modifierRegistry.modify(this, annotation));
-    }
-
-    return Collections.unmodifiableCollection(modifiedAnnotations);
   }
 
   private void mapCorrespondingMethods() {
@@ -229,7 +292,9 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean appliesTo(ConfigStorage storage) {
     String name = storage.getName();
@@ -261,27 +326,41 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getDefaultValue() {
     return this.defaultValue;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getValue() {
     return this.invoker.getValue(this.config);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setValue(Object value) {
-    Object previousValue = this.getValue();
-    ConfigValueUpdateEvent event = this.eventFactory.create(this, previousValue, value);
-
-    this.eventBus.fireEvent(event, Subscribe.Phase.PRE);
     this.invoker.setValue(this.config, value);
-    this.eventBus.fireEvent(event, Subscribe.Phase.POST);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void copyTo(ParsedConfig config) {
+    for (ConfigObjectReference dstReference : config.getConfigReferences()) {
+      if (Arrays.equals(this.pathKeys, dstReference.getPathKeys())) {
+        dstReference.setValue(this.getValue());
+        break;
+      }
+    }
   }
 
   private Method[] mapMethods(CtMethod[] ctMethods)
@@ -297,14 +376,15 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
 
   private Method mapMethod(CtMethod ctMethod)
       throws ClassNotFoundException, NotFoundException, NoSuchMethodException {
-    Class<?> declaringClass = this.classLoader.loadClass(ctMethod.getDeclaringClass().getName());
+    ClassLoader classLoader = super.getClass().getClassLoader();
+    Class<?> declaringClass = classLoader.loadClass(ctMethod.getDeclaringClass().getName());
 
     CtClass[] ctParameters = ctMethod.getParameterTypes();
     Class<?>[] parameters = new Class[ctParameters.length];
 
     for (int j = 0; j < ctParameters.length; j++) {
       String name = ctParameters[j].getName();
-      parameters[j] = PrimitiveTypeLoader.loadClass(this.classLoader, name);
+      parameters[j] = PrimitiveTypeLoader.loadClass(classLoader, name);
     }
 
     return declaringClass.getMethod(ctMethod.getName(), parameters);

@@ -31,7 +31,7 @@ import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
  * versions.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 public @interface VersionOnly {
 
   /**

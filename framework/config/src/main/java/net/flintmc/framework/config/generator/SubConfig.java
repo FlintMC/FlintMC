@@ -17,31 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint;
+package net.flintmc.framework.config.generator;
 
-import java.lang.reflect.Field;
-import java.util.Map;
+import net.flintmc.framework.config.annotation.Config;
 
 /**
- * Resolver to map enum constants to their {@link Field}.
+ * Represents the implementation of an interface inside of an interface that has been marked with
+ * {@link Config} and been marked as a config by the {@link ConfigGenerator}. This interface is not
+ * intended to be implemented manually.
  */
-public interface EnumFieldResolver {
+public interface SubConfig {
 
   /**
-   * Retrieves the field that belongs to the given enum constant.
+   * Retrieves the config where this interface has been discovered.
    *
-   * @param value The non-null enum constant
-   * @return The non-null field to the given constant
+   * @return The non-null parent config of this interface
    */
-  Field getEnumField(Enum<?> value);
+  ParsedConfig getParentConfig();
 
-  /**
-   * Retrieves all fields that belong to enum constants in the given enum class with the key being
-   * the {@link Enum#name() name of the constant} and value the field that belongs to the enum
-   * constant.
-   *
-   * @param enumClass The non-null enum class
-   * @return The non-null map with all fields to the given constant
-   */
-  Map<String, Field> getEnumFields(Class<? extends Enum<?>> enumClass);
 }

@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.settings.flint;
+package net.flintmc.framework.config.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -25,9 +25,9 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import net.flintmc.framework.config.EnumFieldResolver;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
-import net.flintmc.mcapi.settings.flint.EnumFieldResolver;
 import org.apache.logging.log4j.Logger;
 
 @Singleton
@@ -43,11 +43,17 @@ public class DefaultEnumFieldResolver implements EnumFieldResolver {
     this.cachedFields = new HashMap<>();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Field getEnumField(Enum<?> value) {
     return this.getEnumFields(value.getDeclaringClass()).get(value.name());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, Field> getEnumFields(Class<? extends Enum<?>> enumClass) {
     if (this.cachedFields.containsKey(enumClass)) {

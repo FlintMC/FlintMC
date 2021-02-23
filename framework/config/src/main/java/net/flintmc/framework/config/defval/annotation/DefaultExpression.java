@@ -17,25 +17,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.annotation.ui;
+package net.flintmc.framework.config.defval.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.framework.config.storage.ConfigStorage;
 
 /**
- * Marks a method in a {@link Config} with an {@link ApplicableSetting} as native, that means that
- * it is defined by Minecraft itself and not by any FlintMC package. This annotation is only
- * intended to be used internally.
- *
- * @see Config
- * @see ApplicableSetting
+ * This annotation sets the default value of a method in a {@link Config}.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface NativeSetting {
+@Target(ElementType.METHOD)
+public @interface DefaultExpression {
 
+  /**
+   * The default value which should be used if it is not set in a {@link ConfigStorage}. This will
+   * be executed as a java expression, so for example it could be "new java.util.HashMap()" and
+   * should not end with a semicolon.
+   *
+   * @return The default value
+   */
+  String value();
 }

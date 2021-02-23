@@ -21,6 +21,7 @@ package net.flintmc.framework.config.internal.generator.method;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.function.Function;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -32,28 +33,29 @@ import javassist.bytecode.SignatureAttribute.MethodSignature;
 import javassist.bytecode.SignatureAttribute.TypeArgument;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigMultiGetterSetter;
-import net.flintmc.framework.config.serialization.ConfigSerializationService;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
-
-import java.util.function.Function;
 
 @Singleton
 public class GenericMethodHelper {
 
   private final ClassPool pool;
+  private final ConfigMethodInfo.Factory infoFactory;
+  private final ConfigMultiGetterSetter.Factory multiFactory;
   private final Logger logger;
-  private final ConfigSerializationService serializationService;
 
   @Inject
   private GenericMethodHelper(
       @InjectLogger Logger logger,
       ClassPool pool,
-      ConfigSerializationService serializationService) {
+      ConfigMethodInfo.Factory infoFactory,
+      ConfigMultiGetterSetter.Factory multiFactory) {
     this.logger = logger;
     this.pool = pool;
-    this.serializationService = serializationService;
+    this.infoFactory = infoFactory;
+    this.multiFactory = multiFactory;
   }
 
   public ConfigMethod generateMultiGetterSetter(
@@ -89,13 +91,8 @@ public class GenericMethodHelper {
       return null;
     }
 
-    return new ConfigMultiGetterSetter(
-        this.serializationService,
-        config,
-        declaringClass,
-        name,
-        method.getReturnType(),
-        keyType,
-        valueType);
+    ConfigMethodInfo info = this.infoFactory.create(
+        config, declaringClass, name, method.getReturnType());
+    return this.multiFactory.create(info, keyType, valueType);
   }
 }

@@ -31,14 +31,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Function;
+import net.flintmc.framework.config.EnumFieldResolver;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.mcapi.settings.flint.EnumFieldResolver;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.TranslateKey;
-import net.flintmc.mcapi.settings.flint.annotation.ui.NativeSetting;
+import net.flintmc.mcapi.settings.flint.annotation.ui.InternalCategory;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubCategory;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
@@ -192,8 +192,10 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
     object.addProperty("category", setting.getCategoryName());
 
-    if (setting.getReference().findLastAnnotation(NativeSetting.class) != null) {
-      object.addProperty("native", true);
+    InternalCategory internalCategory =
+        setting.getReference().findLastAnnotation(InternalCategory.class);
+    if (internalCategory != null) {
+      object.addProperty("internalCategory", internalCategory.value());
     }
 
     if (!setting.getSubSettings().isEmpty()) {

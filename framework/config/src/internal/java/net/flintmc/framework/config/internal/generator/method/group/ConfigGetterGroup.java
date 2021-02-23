@@ -21,6 +21,7 @@ package net.flintmc.framework.config.internal.generator.method.group;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -28,37 +29,45 @@ import javassist.NotFoundException;
 import javassist.bytecode.SignatureAttribute;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
+import net.flintmc.framework.config.generator.method.ConfigMethodInfo;
 import net.flintmc.framework.config.internal.generator.method.GenericMethodHelper;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigGetterSetter;
 import net.flintmc.framework.config.internal.generator.method.defaults.ConfigMultiGetterSetter;
-import net.flintmc.framework.config.serialization.ConfigSerializationService;
-
-import java.util.Map;
 
 @Singleton
 public class ConfigGetterGroup implements ConfigMethodGroup {
 
   private final ClassPool pool;
+  private final ConfigMethodInfo.Factory infoFactory;
+  private final ConfigGetterSetter.Factory singleFactory;
+  private final ConfigMultiGetterSetter.Factory multiFactory;
   private final GenericMethodHelper methodHelper;
-  private final ConfigSerializationService serializationService;
 
   @Inject
   private ConfigGetterGroup(
       ClassPool pool,
-      GenericMethodHelper methodHelper,
-      ConfigSerializationService serializationService) {
+      ConfigMethodInfo.Factory infoFactory,
+      ConfigGetterSetter.Factory singleFactory,
+      ConfigMultiGetterSetter.Factory multiFactory,
+      GenericMethodHelper methodHelper) {
     this.pool = pool;
+    this.infoFactory = infoFactory;
+    this.singleFactory = singleFactory;
+    this.multiFactory = multiFactory;
     this.methodHelper = methodHelper;
-    this.serializationService = serializationService;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String[] getPossiblePrefixes() {
-    return new String[] {"get", "is"};
+    return new String[]{"get", "is"};
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ConfigMethod resolveMethod(
       GeneratingConfig config, CtClass type, String entryName, CtMethod method)
@@ -80,7 +89,8 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
             entryName.substring(ConfigMultiGetterSetter.ALL_PREFIX.length()));
       }
 
-      return new ConfigGetterSetter(this.serializationService, config, type, entryName, methodType);
+      return this.singleFactory.create(
+          this.infoFactory.create(config, type, entryName, methodType));
     }
 
     if (parameters.length == 1) {
@@ -88,14 +98,9 @@ public class ConfigGetterGroup implements ConfigMethodGroup {
         return null;
       }
 
-      return new ConfigMultiGetterSetter(
-          this.serializationService,
-          config,
-          type,
-          entryName,
-          this.pool.get(Map.class.getName()),
-          parameters[0],
-          methodType);
+      ConfigMethodInfo info = this.infoFactory.create(
+          config, type, entryName, this.pool.get(Map.class.getName()));
+      return this.multiFactory.create(info, parameters[0], methodType);
     }
 
     throw new IllegalArgumentException("Getter can only have either no or one parameter");

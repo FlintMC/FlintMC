@@ -24,6 +24,7 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import java.lang.annotation.Annotation;
 
 public interface ServiceHandler<T extends Annotation> {
+
   /**
    * Discover a service.
    *
@@ -31,4 +32,11 @@ public interface ServiceHandler<T extends Annotation> {
    * @throws ServiceNotFoundException If the service could not be discovered.
    */
   void discover(AnnotationMeta<T> annotationMeta) throws ServiceNotFoundException;
+
+  /**
+   * Called after {@link #discover(AnnotationMeta)} has been called for every annotation available
+   * for the annotation of this service.
+   */
+  default void postDiscover() {
+  }
 }

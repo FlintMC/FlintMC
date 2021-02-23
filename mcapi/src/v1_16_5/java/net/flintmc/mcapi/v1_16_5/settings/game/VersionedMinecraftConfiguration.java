@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.v1_16_5.settings.game;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import net.flintmc.framework.config.annotation.ConfigInit;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
@@ -46,27 +47,27 @@ import net.minecraft.client.Minecraft;
 @ConfigImplementation(value = MinecraftConfiguration.class, version = "1.16.5")
 public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
 
-  private final AccessibilityConfiguration accessibilityConfiguration;
-  private final ChatConfiguration chatConfiguration;
-  private final DebugConfiguration debugConfiguration;
-  private final GraphicConfiguration graphicConfiguration;
-  private final KeyBindingConfiguration keyBindingConfiguration;
-  private final MouseConfiguration mouseConfiguration;
-  private final ResourcePackConfiguration resourcePackConfiguration;
-  private final SkinConfiguration skinConfiguration;
-  private final SoundConfiguration soundConfiguration;
+  private final Provider<AccessibilityConfiguration> accessibilityConfiguration;
+  private final Provider<ChatConfiguration> chatConfiguration;
+  private final Provider<DebugConfiguration> debugConfiguration;
+  private final Provider<GraphicConfiguration> graphicConfiguration;
+  private final Provider<KeyBindingConfiguration> keyBindingConfiguration;
+  private final Provider<MouseConfiguration> mouseConfiguration;
+  private final Provider<ResourcePackConfiguration> resourcePackConfiguration;
+  private final Provider<SkinConfiguration> skinConfiguration;
+  private final Provider<SoundConfiguration> soundConfiguration;
 
   @Inject
   private VersionedMinecraftConfiguration(
-      AccessibilityConfiguration accessibilityConfiguration,
-      ChatConfiguration chatConfiguration,
-      DebugConfiguration debugConfiguration,
-      GraphicConfiguration graphicConfiguration,
-      KeyBindingConfiguration keyBindingConfiguration,
-      MouseConfiguration mouseConfiguration,
-      ResourcePackConfiguration resourcePackConfiguration,
-      SkinConfiguration skinConfiguration,
-      SoundConfiguration soundConfiguration) {
+      Provider<AccessibilityConfiguration> accessibilityConfiguration,
+      Provider<ChatConfiguration> chatConfiguration,
+      Provider<DebugConfiguration> debugConfiguration,
+      Provider<GraphicConfiguration> graphicConfiguration,
+      Provider<KeyBindingConfiguration> keyBindingConfiguration,
+      Provider<MouseConfiguration> mouseConfiguration,
+      Provider<ResourcePackConfiguration> resourcePackConfiguration,
+      Provider<SkinConfiguration> skinConfiguration,
+      Provider<SoundConfiguration> soundConfiguration) {
     this.accessibilityConfiguration = accessibilityConfiguration;
     this.chatConfiguration = chatConfiguration;
     this.debugConfiguration = debugConfiguration;
@@ -83,7 +84,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public AccessibilityConfiguration getAccessibilityConfiguration() {
-    return this.accessibilityConfiguration;
+    return this.accessibilityConfiguration.get();
   }
 
   /**
@@ -91,7 +92,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public ChatConfiguration getChatConfiguration() {
-    return this.chatConfiguration;
+    return this.chatConfiguration.get();
   }
 
   /**
@@ -99,7 +100,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public DebugConfiguration getDebugConfiguration() {
-    return this.debugConfiguration;
+    return this.debugConfiguration.get();
   }
 
   /**
@@ -107,7 +108,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public GraphicConfiguration getGraphicConfiguration() {
-    return this.graphicConfiguration;
+    return this.graphicConfiguration.get();
   }
 
   /**
@@ -115,7 +116,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public KeyBindingConfiguration getKeyBindingConfiguration() {
-    return this.keyBindingConfiguration;
+    return this.keyBindingConfiguration.get();
   }
 
   /**
@@ -123,7 +124,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public MouseConfiguration getMouseConfiguration() {
-    return this.mouseConfiguration;
+    return this.mouseConfiguration.get();
   }
 
   /**
@@ -131,7 +132,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public ResourcePackConfiguration getResourcePackConfiguration() {
-    return this.resourcePackConfiguration;
+    return this.resourcePackConfiguration.get();
   }
 
   /**
@@ -139,7 +140,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public SkinConfiguration getSkinConfiguration() {
-    return this.skinConfiguration;
+    return this.skinConfiguration.get();
   }
 
   /**
@@ -147,7 +148,7 @@ public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
    */
   @Override
   public SoundConfiguration getSoundConfiguration() {
-    return this.soundConfiguration;
+    return this.soundConfiguration.get();
   }
 
   /**

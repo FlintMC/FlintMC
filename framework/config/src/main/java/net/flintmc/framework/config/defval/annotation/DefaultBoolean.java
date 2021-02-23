@@ -19,13 +19,12 @@
 
 package net.flintmc.framework.config.defval.annotation;
 
-import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.framework.config.storage.ConfigStorage;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.framework.config.storage.ConfigStorage;
 
 /**
  * This annotation sets the default value of a method in a {@link Config}.

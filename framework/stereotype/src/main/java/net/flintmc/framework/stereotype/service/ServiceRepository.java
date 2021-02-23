@@ -123,6 +123,10 @@ public class ServiceRepository {
         }
       }
     }
+
+    for (ServiceHandler handler : serviceHandlerInstances.values()) {
+      handler.postDiscover();
+    }
   }
 
   /** @return all registered annotations */

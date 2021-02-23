@@ -37,13 +37,17 @@ public class DefaultConfigStorageEvent implements ConfigStorageEvent {
     this.config = config;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Type getType() {
     return this.type;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ParsedConfig getConfig() {
     return this.config;

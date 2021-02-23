@@ -19,13 +19,17 @@
 
 package net.flintmc.framework.config.defval.mapper;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.flintmc.framework.config.defval.annotation.DefaultString;
 import net.flintmc.processing.autoload.DetectableAnnotation;
 
-import java.lang.annotation.*;
-
 /**
- * Marks an {@link DefaultAnnotationMapperHandler} to be registered in the {@link DefaultAnnotationMapperRegistry}.
+ * Marks an {@link DefaultAnnotationMapperHandler} to be registered in the {@link
+ * DefaultAnnotationMapperRegistry}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -33,8 +37,8 @@ import java.lang.annotation.*;
 public @interface DefaultAnnotationMapper {
 
   /**
-   * The annotation type which can be mapped by the {@link DefaultAnnotationMapperHandler}, for example {@link
-   * DefaultString DefaultString.class}.
+   * The annotation type which can be mapped by the {@link DefaultAnnotationMapperHandler}, for
+   * example {@link DefaultString DefaultString.class}.
    *
    * @return The annotation type which will be mapped by the {@link DefaultAnnotationMapperHandler}
    */

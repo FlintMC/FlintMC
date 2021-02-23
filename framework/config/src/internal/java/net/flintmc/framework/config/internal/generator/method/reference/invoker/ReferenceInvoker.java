@@ -19,9 +19,13 @@
 
 package net.flintmc.framework.config.internal.generator.method.reference.invoker;
 
+import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+
 public interface ReferenceInvoker {
 
   Object getValue(Object instance);
 
   void setValue(Object instance, Object newValue);
+
+  void setReference(Object instance, ConfigObjectReference reference);
 }
