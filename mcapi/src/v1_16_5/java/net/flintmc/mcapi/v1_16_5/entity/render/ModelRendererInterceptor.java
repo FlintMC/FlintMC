@@ -198,12 +198,7 @@ public class ModelRendererInterceptor {
       ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder =
           INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
       if (modelBoxHolder == null) {
-        INSTANCE.lastRenderedEntity.updateRenderables();
-        modelBoxHolder =
-            INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
-        if (modelBoxHolder == null) {
-          return false;
-        }
+        return false;
       }
       if (modelBoxHolder.getContext().getRenderer() != null) {
 
@@ -356,11 +351,10 @@ public class ModelRendererInterceptor {
             modelBoxHolder.getContext().getRenderer(),
             modelBoxHolder,
             INSTANCE.alternatingMinecraftRenderMeta);
-        if (cancelRender) {
-          modelBoxHolder.callRenderCleanup();
-        }
+        modelBoxHolder.callRenderCleanup();
         return cancelRender;
       } else {
+        modelBoxHolder.callRenderCleanup();
         return false;
       }
     }

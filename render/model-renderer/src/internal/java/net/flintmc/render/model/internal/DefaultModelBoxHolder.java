@@ -69,6 +69,10 @@ public class DefaultModelBoxHolder<
     return this.getPropertyContext().setPropertyValue(ROTATION_ANGLE_X, value);
   }
 
+  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> addMatrixHandler(){
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    */

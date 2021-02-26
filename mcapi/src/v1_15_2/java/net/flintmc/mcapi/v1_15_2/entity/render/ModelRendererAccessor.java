@@ -19,8 +19,12 @@
 
 package net.flintmc.mcapi.v1_15_2.entity.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+
 import java.util.Map;
+import java.util.function.Consumer;
+
 import net.flintmc.transform.shadow.FieldCreate;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.FieldSetter;
@@ -30,6 +34,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 
 @Shadow("net.minecraft.client.renderer.model.ModelRenderer")
 @FieldCreate(name = "properties", typeName = "java.util.Map", defaultValue = "new java.util.HashMap()")
+@FieldCreate(name = "matrixHandler", typeName = "java.util.function.Consumer")
 public interface ModelRendererAccessor {
 
   @FieldGetter("cubeList")
@@ -58,6 +63,12 @@ public interface ModelRendererAccessor {
 
   @FieldSetter("textureHeight")
   void setTextureHeight(float textureHeight);
+
+  @FieldSetter("matrixHandler")
+  void setMatrixHandler(Consumer<MatrixStack.Entry> matrixHandler);
+
+  @FieldGetter("matrixHandler")
+  Consumer<MatrixStack.Entry> getMatrixHandler();
 
   @FieldGetter("properties")
   Map<Property<?, ?>, Object> getProperties();

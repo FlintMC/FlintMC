@@ -272,13 +272,16 @@ public class ModelRendererInterceptor {
       ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder =
           INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
       if (modelBoxHolder == null) {
-        INSTANCE.lastRenderedEntity.updateRenderables();
-        modelBoxHolder =
-            INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
-        if (modelBoxHolder == null) {
-          return false;
-        }
+        return false;
       }
+
+      ModelRendererAccessor modelRendererAccessor = (ModelRendererAccessor) instance;
+
+      if(modelRendererAccessor.getMatrixHandler() != null){
+        modelRendererAccessor.getMatrixHandler().accept(matrixEntryIn);
+      }
+
+
       if (modelBoxHolder.getContext().getRenderer() != null) {
 
         Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixEntryIn.getMatrix();
@@ -331,7 +334,6 @@ public class ModelRendererInterceptor {
                 .getRenderer()
                 .shouldExecuteNextStage(modelBoxHolder, INSTANCE.alternatingMinecraftRenderMeta);
 
-        ModelRendererAccessor modelRendererAccessor = (ModelRendererAccessor) instance;
         modelRendererAccessor
             .getProperties()
             .putAll(modelBoxHolder.getPropertyContext().getProperties());
@@ -349,11 +351,10 @@ public class ModelRendererInterceptor {
             modelBoxHolder.getContext().getRenderer(),
             modelBoxHolder,
             INSTANCE.alternatingMinecraftRenderMeta);
-        if (cancelRender) {
-          modelBoxHolder.callRenderCleanup();
-        }
+        modelBoxHolder.callRenderCleanup();
         return cancelRender;
       } else {
+        modelBoxHolder.callRenderCleanup();
         return false;
       }
     }
@@ -372,6 +373,8 @@ public class ModelRendererInterceptor {
         Renderer renderer,
         ModelBoxHolder modelBoxHolder,
         MinecraftRenderMeta renderMeta) {
+
+      ModelRendererAccessor modelRendererAccessor = (ModelRendererAccessor) modelRenderer;
 
       if (renderer != null) {
         List<BufferBuilder.DrawState> drawStates = ((BufferBuilderAccessor) buffer).getDrawStates();
@@ -401,7 +404,6 @@ public class ModelRendererInterceptor {
       Matrix4f matrix4f = matrixStackEntry.getMatrix();
       Matrix3f matrix3f = matrixStackEntry.getNormal();
 
-      ModelRendererAccessor modelRendererAccessor = (ModelRendererAccessor) modelRenderer;
 
       for (ModelRenderer.ModelBox modelBox : modelRendererAccessor.getModelBoxes()) {
         ModelBoxAccessor modelBoxAccessor = (ModelBoxAccessor) modelBox;
