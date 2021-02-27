@@ -20,6 +20,7 @@
 package net.flintmc.framework.config.internal.generator;
 
 import javassist.CtClass;
+import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigMethod;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -38,17 +39,21 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
 
   private final String name;
   private final CtClass baseClass;
+  private final Config annotation;
   private final Collection<ConfigMethod> allMethods;
   private final Collection<CtClass> implementedInterfaces;
   private final Map<String, CtClass> generatedImplementations;
 
   @AssistedInject
-  private DefaultGeneratingConfig(@Assisted("baseClass") CtClass baseClass) {
+  private DefaultGeneratingConfig(@Assisted("baseClass") CtClass baseClass)
+      throws ClassNotFoundException {
     this.name = baseClass.getName();
     this.baseClass = baseClass;
     this.allMethods = new ArrayList<>();
     this.implementedInterfaces = new HashSet<>();
     this.generatedImplementations = new HashMap<>();
+
+    this.annotation = (Config) this.baseClass.getAnnotation(Config.class);
   }
 
   /**
@@ -57,6 +62,14 @@ public class DefaultGeneratingConfig implements GeneratingConfig {
   @Override
   public String getName() {
     return this.name;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Config getAnnotation() {
+    return this.annotation;
   }
 
   /**

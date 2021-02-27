@@ -23,16 +23,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import io.sentry.Sentry;
 import io.sentry.event.BreadcrumbBuilder;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.NotFoundException;
@@ -45,6 +35,16 @@ import net.flintmc.launcher.service.PreLaunchException;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class FlintLauncherPlugin implements LauncherPlugin {
 
@@ -107,7 +107,8 @@ public class FlintLauncherPlugin implements LauncherPlugin {
    */
   @Override
   public void configureRootLoader(RootClassLoader classloader) {
-    classloader.excludeFromModification("javassist.", "com.google.", "net.flintmc.transform.");
+    classloader.excludeFromModification(
+        "javassist.", "com.google.inject.", "com.google.common.", "net.flintmc.transform.");
   }
 
   /**

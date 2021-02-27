@@ -25,8 +25,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import java.util.HashMap;
-import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -44,11 +42,15 @@ import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import org.apache.logging.log4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 @SuppressWarnings("unchecked")
-@Service(ConfigSerializer.class) // has to be called before the ConfigGenerationService
 @Implement(ConfigSerializationService.class)
+@Service(
+    value = ConfigSerializer.class,
+    priority = -1 /* has to be called before the ConfigGenerationService */)
 public class DefaultConfigSerializationService
     implements ServiceHandler<ConfigSerializer>, ConfigSerializationService {
 
