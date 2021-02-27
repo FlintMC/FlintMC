@@ -78,8 +78,8 @@ public class DefaultClassTransformService
     this.classTransformMetas = new ArrayList<>();
 
     String rawPrefixes = System.getProperty(
-        "net.flintmc.transform.prefix", "net.minecraft;com.mojang");
-    this.classPrefixes = rawPrefixes.isEmpty() ? new String[0] : rawPrefixes.split(";");
+        "net.flintmc.transform.prefix", "net.minecraft,com.mojang");
+    this.classPrefixes = rawPrefixes.isEmpty() ? new String[0] : rawPrefixes.split(",");
   }
 
   @Override
