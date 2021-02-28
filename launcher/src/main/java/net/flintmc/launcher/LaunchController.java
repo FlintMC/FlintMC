@@ -20,11 +20,6 @@
 package net.flintmc.launcher;
 
 import com.beust.jcommander.JCommander;
-import net.flintmc.launcher.classloading.RootClassLoader;
-import net.flintmc.launcher.service.LauncherPlugin;
-import net.flintmc.launcher.service.PreLaunchException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -34,6 +29,11 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.flintmc.launcher.classloading.RootClassLoader;
+import net.flintmc.launcher.service.LauncherPlugin;
+import net.flintmc.launcher.service.PreLaunchException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Main API system for the Launcher
@@ -168,13 +168,14 @@ public class LaunchController {
         plugin.preLaunch(rootLoader);
       }
 
-      if (launchArguments.getLaunchTarget().isEmpty()) {
-        while (true) {
-          Thread.sleep(Long.MAX_VALUE);
-        }
+      String launchTargetName = launchArguments.getLaunchTarget();
+
+      if (launchTargetName == null || launchTargetName.isEmpty()) {
+        throw new IllegalStateException(
+            "No launch target found (either set a --launch-target parameter or by using a package which specifies one)");
       }
 
-      Class<?> launchTarget = rootLoader.loadClass(launchArguments.getLaunchTarget());
+      Class<?> launchTarget = rootLoader.loadClass(launchTargetName);
 
       Method mainMethod = launchTarget.getMethod("main", String[].class);
       mainMethod.invoke(null, (Object) launchArguments.getOtherArguments().toArray(new String[0]));
@@ -192,9 +193,6 @@ public class LaunchController {
       System.exit(1);
     } catch (PreLaunchException exception) {
       logger.fatal("Exception while invoking pre-launch callback: {}", exceptionContext, exception);
-      System.exit(1);
-    } catch (InterruptedException e) {
-      logger.fatal("Infinity loop got interrupted");
       System.exit(1);
     }
   }

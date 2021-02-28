@@ -25,25 +25,41 @@ import com.beust.jcommander.Parameters;
 import java.util.ArrayList;
 import java.util.List;
 
-/** POJ for JCommander */
+/**
+ * POJ for JCommander
+ */
 @Parameters
 public class LaunchArguments {
+
   @Parameter(
       names = {"--launch-target", "-t"},
       description = "Main class to launch, defaults to net.minecraft.client.Main")
   private String launchTarget = "net.minecraft.client.main.Main";
 
   // Collect all other arguments so we can pass them on to minecraft
-  @Parameter private List<String> otherArguments = new ArrayList<>();
+  @Parameter
+  private List<String> otherArguments = new ArrayList<>();
 
   /**
-   * Retrieves the launch target which control should be handed over to after plugins have hooked
-   * the launch process.
+   * Retrieves the launch target which control should be handed over to after the framework has been
+   * initialized.
    *
    * @return The launch target which control should be handed over to
    */
   public String getLaunchTarget() {
     return launchTarget;
+  }
+
+  /**
+   * Sets the target class to hand the control over after the framework has been initialized.
+   * <p>
+   * The given class needs to contain a main method with the following signature:
+   * <pre>public static void main(String[])</pre>
+   *
+   * @param launchTarget The name of the class to hand control over
+   */
+  public void setLaunchTarget(String launchTarget) {
+    this.launchTarget = launchTarget;
   }
 
   /**
