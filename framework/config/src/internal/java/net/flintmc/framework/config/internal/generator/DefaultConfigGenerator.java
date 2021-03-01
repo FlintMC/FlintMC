@@ -178,7 +178,11 @@ public class DefaultConfigGenerator implements ConfigGenerator {
   public ParsedConfig createConfigInstance(
       Class<? extends ParsedConfig> configClass, boolean storeContent) {
     ConfigInstanceCreator creator = this.instanceCreators.get(configClass);
-    return creator != null ? creator.newInstance(storeContent) : null;
+    ParsedConfig config = creator != null ? creator.newInstance(storeContent) : null;
+    if (config != null && storeContent && config.shouldWriteDefaults()) {
+      this.storageProvider.write(config);
+    }
+    return config;
   }
 
   /**

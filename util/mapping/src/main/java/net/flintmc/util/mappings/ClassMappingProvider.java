@@ -42,10 +42,14 @@ public final class ClassMappingProvider {
       final MappingFileProvider mappingFileProvider,
       @Named("launchArguments") final Map launchArguments)
       throws IOException, MappingParseException {
+    if (launchArguments.containsKey("--disable-reobfuscation")) {
+      this.obfuscatedClassMappings = Collections.emptyMap();
+      return;
+    }
+
     McpMappingParser mcpMappingParser = new McpMappingParser();
-    obfuscatedClassMappings =
-        mcpMappingParser.parse(
-            mappingFileProvider.getMappings(launchArguments.get("--game-version").toString()));
+    obfuscatedClassMappings = mcpMappingParser.parse(
+        mappingFileProvider.getMappings(launchArguments.get("--game-version").toString()));
 
     for (ClassMapping classMapping : obfuscatedClassMappings.values()) {
       deobfuscatedClassMappings.put(classMapping.deobfuscatedName, classMapping);

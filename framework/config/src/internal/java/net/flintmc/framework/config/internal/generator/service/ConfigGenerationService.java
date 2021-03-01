@@ -41,7 +41,7 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.Identifier;
 
 @Singleton
-@Service(value = Config.class, priority = 1)
+@Service(Config.class)
 public class ConfigGenerationService implements ServiceHandler<Config> {
 
   private final ConfigGenerator generator;

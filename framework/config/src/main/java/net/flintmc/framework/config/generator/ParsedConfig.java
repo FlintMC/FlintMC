@@ -19,10 +19,11 @@
 
 package net.flintmc.framework.config.generator;
 
-import java.util.Collection;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
+
+import java.util.Collection;
 
 /**
  * Represents the implementation of an interface that has been marked with {@link Config} and been
@@ -84,4 +85,12 @@ public interface ParsedConfig {
    * @see #setStoreContent(boolean)
    */
   boolean shouldStoreContent();
+
+  /**
+   * Retrieves whether the config should be stored to the storage on creation.
+   *
+   * @return {@code true} if it should be stored, {@code false} otherwise
+   * @see Config#writeDefaults()
+   */
+  boolean shouldWriteDefaults();
 }

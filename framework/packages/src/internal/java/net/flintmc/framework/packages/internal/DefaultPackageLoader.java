@@ -21,18 +21,6 @@ package net.flintmc.framework.packages.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.logging.LoggingProvider;
@@ -46,13 +34,24 @@ import net.flintmc.framework.packages.load.PackageFinder;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.util.commons.Pair;
 import org.apache.logging.log4j.Logger;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Singleton
 @Implement(PackageLoader.class)
 public class DefaultPackageLoader implements PackageLoader {
 
   private Logger logger;
-  private PackageManifestLoader descriptionLoader;
   private PackageFinder packageFinder;
   private DependencyGraphBuilder dependencyGraphBuilder;
   private Set<Package> allPackages;
@@ -66,7 +65,6 @@ public class DefaultPackageLoader implements PackageLoader {
       PackageFinder packageFinder,
       DependencyGraphBuilder dependencyGraphBuilder,
       @InjectLogger Logger logger) {
-    this.descriptionLoader = descriptionLoader;
     this.packageFinder = packageFinder;
     this.dependencyGraphBuilder = dependencyGraphBuilder;
     this.logger = logger;
