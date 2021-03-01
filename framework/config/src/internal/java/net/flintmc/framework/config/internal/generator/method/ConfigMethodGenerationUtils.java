@@ -160,27 +160,36 @@ public class ConfigMethodGenerationUtils {
         .target(declaring)
         .generate();
 
-    method.addLocalVariable("event", this.eventClass);
-
     CtField referenceField = this.getReferenceField(
         declaring, "configReference" + info.getConfigName());
 
-    String eventVar = String.format(
-        "event = %s.create(this.%s, ($w) this.%s());",
-        eventFactory.getName(),
-        referenceField.getName(),
-        getterName);
-
     String fire = String.format(
-        "%s.fireEvent(event, %s.%%s);",
+        "%s.fireEvent(%%s, %s.%%s);",
         eventBus.getName(),
         Phase.class.getName());
 
-    String preSrc = eventVar + String.format(fire, "PRE");
-    if (method.getMethodInfo().getCodeAttribute() != null) {
-      method.insertBefore(preSrc);
+    String event = String.format(
+        "%s.create(this.%s, ($w) %%s)",
+        eventFactory.getName(),
+        referenceField.getName());
+
+    String postEvent = String.format(event, "this." + getterName + "()");
+
+    String preEvent;
+    if (method.getParameterTypes().length == 1) {
+      // Simple setters should be fired with the actual new value
+      preEvent = String.format(event, "$1");
     } else {
-      method.setBody(preSrc);
+      // The value of multi getters keeps being the same instance (one map) and
+      // doesn't need to be the new value
+      preEvent = postEvent;
+    }
+    String preFire = String.format(fire, preEvent, "PRE");
+
+    if (method.getMethodInfo().getCodeAttribute() != null) {
+      method.insertBefore(preFire);
+    } else {
+      method.setBody(preFire);
     }
 
     String writeSrc = String.format(
@@ -189,7 +198,8 @@ public class ConfigMethodGenerationUtils {
         ParsedConfig.class.getName(),
         field.getName());
 
-    method.insertAfter(writeSrc + String.format(fire, "POST"));
+    String postFire = String.format(fire, postEvent, "POST");
+    method.insertAfter(writeSrc + postFire);
   }
 
   private CtField getReferenceField(CtClass declaring, String name) throws CannotCompileException {

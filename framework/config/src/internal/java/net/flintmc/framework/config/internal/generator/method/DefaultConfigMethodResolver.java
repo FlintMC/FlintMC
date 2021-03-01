@@ -68,8 +68,13 @@ public class DefaultConfigMethodResolver implements ConfigMethodResolver {
   }
 
   private void resolveMethods(
-      GeneratingConfig config, CtClass baseType, CtClass type, String[] prefix, Collection<String> handledMethods)
+      GeneratingConfig config,
+      CtClass baseType,
+      CtClass type,
+      String[] prefix,
+      Collection<String> handledMethods)
       throws NotFoundException {
+
     // We cannot use type.getMethods(), this doesn't keep the order of the methods
     // inside of the class
 
