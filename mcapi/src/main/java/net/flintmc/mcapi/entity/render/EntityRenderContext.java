@@ -20,21 +20,41 @@
 package net.flintmc.mcapi.entity.render;
 
 import java.util.Map;
+
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.render.MinecraftRenderContext;
 import net.flintmc.render.model.ModelBoxHolder;
 
+/**
+ * Extension of {@link MinecraftRenderContext} to provide more util methods and define the Renderables as ModelBoxHolders. Util methods not implemented yet, will be done later on.
+ */
 public interface EntityRenderContext
     extends MinecraftRenderContext<
     Entity, EntityRenderContext, ModelBoxHolder<Entity, EntityRenderContext>, Object> {
 
+  /**
+   * Factory for {@link EntityRenderContext}
+   */
   @AssistedFactory(EntityRenderContext.class)
   interface Factory {
 
+    /**
+     * Creates an instance of {@link EntityRenderContext}
+     *
+     * @param owner the entity associated with this {@link EntityRenderContext}
+     * @return new instance of {@link EntityRenderContext}
+     */
     EntityRenderContext create(@Assisted Entity owner);
 
+    /**
+     * Creates an instance of {@link EntityRenderContext}
+     *
+     * @param owner       the entity associated with this {@link EntityRenderContext}
+     * @param renderables Pre-defined {@link net.flintmc.render.model.Renderable}s that should be owned by the constructed {@link EntityRenderContext}
+     * @return new instance of {@link EntityRenderContext}
+     */
     EntityRenderContext create(
         @Assisted Entity owner,
         @Assisted Map<String, ModelBoxHolder<Entity, EntityRenderContext>> renderables);

@@ -38,7 +38,6 @@ public class VersionedMinecraftRenderMeta implements MinecraftRenderMeta {
     private int packedLight;
     private float partialTick;
     private UUID targetUuid;
-    private boolean batched;
 
     @AssistedInject
     private VersionedMinecraftRenderMeta(
@@ -144,17 +143,6 @@ public class VersionedMinecraftRenderMeta implements MinecraftRenderMeta {
     public MinecraftRenderMeta setTargetUuid(UUID uuid) {
         this.targetUuid = uuid;
         return this;
-    }
-
-    @Override
-    public MinecraftRenderMeta setBatched(boolean batched) {
-        this.batched = batched;
-        return this;
-    }
-
-    @Override
-    public boolean isBatched() {
-        return this.batched;
     }
 
     private class MatrixState {

@@ -22,6 +22,7 @@ package net.flintmc.render.model.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -39,7 +40,8 @@ public class DefaultModelBox implements ModelBox {
   private List<TexturedQuad> texturedQuads = new ArrayList<>();
 
   @AssistedInject
-  private DefaultModelBox() {}
+  private DefaultModelBox() {
+  }
 
   @AssistedInject
   private DefaultModelBox(
@@ -155,65 +157,121 @@ public class DefaultModelBox implements ModelBox {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public float getPositionX1() {
     return positionX1;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public DefaultModelBox setPositionX1(float positionX1) {
     this.positionX1 = positionX1;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public float getPositionX2() {
     return positionX2;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public DefaultModelBox setPositionX2(float positionX2) {
     this.positionX2 = positionX2;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public float getPositionY1() {
     return positionY1;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public DefaultModelBox setPositionY1(float positionY1) {
     this.positionY1 = positionY1;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public float getPositionY2() {
     return positionY2;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public DefaultModelBox setPositionY2(float positionY2) {
     this.positionY2 = positionY2;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public float getPositionZ1() {
     return positionZ1;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public DefaultModelBox setPositionZ1(float positionZ1) {
     this.positionZ1 = positionZ1;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public float getPositionZ2() {
     return positionZ2;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public DefaultModelBox setPositionZ2(float positionZ2) {
     this.positionZ2 = positionZ2;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public ModelBox setTexturedQuads(List<TexturedQuad> texturedQuads) {
     this.texturedQuads = texturedQuads;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Collection<TexturedQuad> getTexturedQuads() {
     return this.texturedQuads;
   }
@@ -238,20 +296,35 @@ public class DefaultModelBox implements ModelBox {
       this.vertexPositions = vertexPositions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public float getNormalX() {
       return this.normalX;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public float getNormalY() {
       return this.normalY;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public float getNormalZ() {
       return this.normalZ;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public VertexPosition[] getVertexPositions() {
-
       return this.vertexPositions;
     }
 
@@ -278,26 +351,50 @@ public class DefaultModelBox implements ModelBox {
         this.positionZ = positionZ;
       }
 
+      /**
+       * {@inheritDoc}
+       */
+      @Override
       public float getTextureU() {
         return textureU;
       }
 
+      /**
+       * {@inheritDoc}
+       */
+      @Override
       public float getTextureV() {
         return textureV;
       }
 
+      /**
+       * {@inheritDoc}
+       */
+      @Override
       public float getPositionX() {
         return positionX;
       }
 
+      /**
+       * {@inheritDoc}
+       */
+      @Override
       public float getPositionY() {
         return positionY;
       }
 
+      /**
+       * {@inheritDoc}
+       */
+      @Override
       public float getPositionZ() {
         return positionZ;
       }
 
+      /**
+       * {@inheritDoc}
+       */
+      @Override
       public VertexPosition setTextureUV(float u, float v) {
         this.textureU = u;
         this.textureV = v;

@@ -23,6 +23,9 @@ import net.flintmc.render.model.RenderContext;
 import net.flintmc.render.model.RenderContextAware;
 import net.flintmc.render.model.Renderable;
 
+/**
+ * Extension of {@link RenderContextAware} to provide more util methods. Util methods not implemented yet, will be done later on.
+ */
 public interface MinecraftRenderContext<
     T_RenderContextAware extends RenderContextAware<T_RenderContext>,
     T_RenderContext extends

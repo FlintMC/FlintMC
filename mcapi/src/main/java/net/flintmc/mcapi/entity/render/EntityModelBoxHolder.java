@@ -22,13 +22,27 @@ package net.flintmc.mcapi.entity.render;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.render.MinecraftRenderContext;
 import net.flintmc.render.model.ModelBoxHolder;
 
+/**
+ * Extension of {@link MinecraftRenderContext} to provide more util methods. Not implemented yet, will be done later on.
+ */
 public interface EntityModelBoxHolder extends ModelBoxHolder<Entity, EntityRenderContext> {
 
+  /**
+   * Factory for {@link EntityModelBoxHolder}
+   */
   @AssistedFactory(EntityModelBoxHolder.class)
   interface Factory {
 
+    /**
+     * Creates an instance of {@link EntityModelBoxHolder}
+     *
+     * @param renderContext the {@link EntityRenderContext} associated with this {@link EntityModelBoxHolder}
+     * @param target        handle of the constructed {@link EntityModelBoxHolder}. Flints default implementations uses the vanilla ModelRenderer object.
+     * @return new instance of {@link EntityModelBoxHolder}
+     */
     EntityModelBoxHolder create(@Assisted EntityRenderContext renderContext, @Assisted Object target);
   }
 
