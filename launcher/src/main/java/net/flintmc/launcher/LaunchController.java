@@ -23,27 +23,23 @@ import com.beust.jcommander.JCommander;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.service.LauncherPlugin;
 import net.flintmc.launcher.service.PreLaunchException;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Main API system for the Launcher
  */
 public class LaunchController {
+
   private static LaunchController instance;
   private final Logger logger;
   private final RootClassLoader rootLoader;
@@ -91,30 +87,6 @@ public class LaunchController {
     logger.info(
         "Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.version"));
     logger.info("JVM vendor: {}", System.getProperty("java.vendor"));
-
-
-    File packages = new File("flint/packages");
-    packages.mkdirs();
-    for (File file : packages.listFiles()) {
-      if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("jar")) {
-        try {
-
-          JarFile jarFile = new JarFile(file);
-          Enumeration<JarEntry> entries = jarFile.entries();
-          while (entries.hasMoreElements()){
-            JarEntry jarEntry = entries.nextElement();
-            if(!jarEntry.getName().equals("manifest.json"))continue;
-            String manifest = IOUtils.toString(jarFile.getInputStream(jarEntry), StandardCharsets.UTF_8);
-            System.out.println(manifest);
-            System.out.println();
-          }
-          jarFile.close();
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
-      }
-    }
-
 
     // Find the first set of plugins by searching the classpath
     logger.trace("About to load plugins");
@@ -196,7 +168,14 @@ public class LaunchController {
         plugin.preLaunch(rootLoader);
       }
 
-      Class<?> launchTarget = rootLoader.loadClass(launchArguments.getLaunchTarget());
+      String launchTargetName = launchArguments.getLaunchTarget();
+
+      if (launchTargetName == null || launchTargetName.isEmpty()) {
+        throw new IllegalStateException(
+            "No launch target found (set a launch target using --launch-target or use a package which specifies one)");
+      }
+
+      Class<?> launchTarget = rootLoader.loadClass(launchTargetName);
 
       Method mainMethod = launchTarget.getMethod("main", String[].class);
       mainMethod.invoke(null, (Object) launchArguments.getOtherArguments().toArray(new String[0]));

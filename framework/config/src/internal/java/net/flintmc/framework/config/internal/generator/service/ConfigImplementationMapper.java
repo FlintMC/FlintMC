@@ -32,7 +32,7 @@ import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.processing.autoload.AnnotationMeta;
 
 @Singleton
-@Service(value = ConfigImplementation.class, state = State.PRE_INIT)
+@Service(value = ConfigImplementation.class, state = State.PRE_INIT, priority = -1)
 public class ConfigImplementationMapper implements ServiceHandler<ConfigImplementation> {
 
   private final Map<String, CtClass> implementationMappings;

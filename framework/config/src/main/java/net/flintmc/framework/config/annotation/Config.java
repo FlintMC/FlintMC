@@ -19,17 +19,18 @@
 
 package net.flintmc.framework.config.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.Map;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
 import net.flintmc.processing.autoload.DetectableAnnotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.Map;
 
 /**
  * The {@link Config @Config} annotation can be used to automatically store the data in an interface
@@ -107,5 +108,13 @@ import net.flintmc.processing.autoload.DetectableAnnotation;
 @Target(ElementType.TYPE)
 @DetectableAnnotation
 public @interface Config {
+
+  /**
+   * Retrieves whether the config should be stored to the storage on creation.
+   *
+   * @return {@code true} if it should be stored, {@code false} otherwise
+   * @see ParsedConfig#shouldWriteDefaults()
+   */
+  boolean writeDefaults() default true;
 
 }
