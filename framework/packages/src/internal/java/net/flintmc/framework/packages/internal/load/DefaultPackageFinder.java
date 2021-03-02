@@ -146,8 +146,7 @@ public class DefaultPackageFinder implements PackageFinder {
   // Ensures the given path exists and is a directory.
   private File ensureDirectory(String path) throws IOException {
     File packageDir = new File(path);
-    if ((!packageDir.exists() || !packageDir.isDirectory()) && packageDir
-        .mkdirs()) {
+    if ((!packageDir.exists() || !packageDir.isDirectory()) && !packageDir.mkdirs()) {
       throw new IOException(
           String.format("Failed to create package directory at %s.", path));
     }

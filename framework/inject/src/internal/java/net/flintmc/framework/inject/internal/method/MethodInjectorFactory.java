@@ -136,7 +136,7 @@ public class MethodInjectorFactory implements MethodInjector.Factory {
     Method[] methods = ifc.getDeclaredMethods();
     if (methods.length != 1) {
       throw new IllegalArgumentException(
-          "Cannot generate MethodInjector for an interface " + "with more or less than 1 method");
+          "Cannot generate MethodInjector for an interface with more or less than 1 method");
     }
     Method method = methods[0];
 

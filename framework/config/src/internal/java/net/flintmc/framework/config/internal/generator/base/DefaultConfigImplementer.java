@@ -60,6 +60,12 @@ public class DefaultConfigImplementer implements ConfigImplementer {
     CtField storeContentField = new CtField(CtClass.booleanType, "storeContent", implementation);
     implementation.addField(storeContentField, CtField.Initializer.constant(true));
     implementation.addMethod(CtNewMethod.getter("shouldStoreContent", storeContentField));
+
+    boolean writeDefaults =
+        config.getAnnotation() != null && config.getAnnotation().writeDefaults();
+    implementation.addMethod(CtNewMethod.make(
+        CtClass.booleanType, "shouldWriteDefaults", null, new CtClass[0],
+        "return " + writeDefaults + ";", implementation));
   }
 
   /**

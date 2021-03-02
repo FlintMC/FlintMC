@@ -63,6 +63,7 @@ public class DefaultClassTransformService
   private final ConsumerBasedClassTransformMeta.Factory consumerBasedClassTransformMetaFactory;
   private final ClassMappingProvider classMappingProvider;
   private final List<ClassTransformMeta> classTransformMetas;
+  private final String[] classPrefixes;
 
   @Inject
   private DefaultClassTransformService(
@@ -75,6 +76,10 @@ public class DefaultClassTransformService
     this.consumerBasedClassTransformMetaFactory = consumerBasedClassTransformMetaFactory;
     this.classMappingProvider = classMappingProvider;
     this.classTransformMetas = new ArrayList<>();
+
+    String rawPrefixes = System.getProperty(
+        "net.flintmc.transform.prefix", "net.minecraft,com.mojang");
+    this.classPrefixes = rawPrefixes.isEmpty() ? new String[0] : rawPrefixes.split(",");
   }
 
   @Override
@@ -119,14 +124,28 @@ public class DefaultClassTransformService
     }
   }
 
+  private boolean shouldTransform(String deobfuscatedName) {
+    if (this.classPrefixes.length == 0) {
+      return false;
+    }
+
+    for (String prefix : this.classPrefixes) {
+      if (deobfuscatedName.startsWith(prefix)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   @Override
   public byte[] transform(String className, CommonClassLoader classLoader, byte[] bytes)
       throws ClassTransformException {
     ClassMapping mapping = classMappingProvider.get(className);
     String deobfuscatedName = mapping != null ? mapping.getDeobfuscatedName() : className;
-    if (!deobfuscatedName.startsWith("net.minecraft")
-        && !deobfuscatedName.startsWith("com.mojang")) {
-      // Skip classes which are not part of minecraft or some Mojang library
+    if (!this.shouldTransform(deobfuscatedName)) {
+      // Skip classes which are not part of minecraft or some Mojang library (by default)
+      // or custom classes defined via a system property
       return null;
     }
 
