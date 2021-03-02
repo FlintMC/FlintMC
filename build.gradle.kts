@@ -67,22 +67,6 @@ subprojects {
 }
 
 allprojects {
-    configurations.all {
-        resolutionStrategy {
-            force("org.apache.logging.log4j:log4j-api:2.8.2")
-            force("com.google.guava:guava:27.0.1-jre")
-            force("org.apache.commons:commons-lang3:3.10")
-            force("org.apache.logging.log4j:log4j-core:2.8.2")
-            force("it.unimi.dsi:fastutil:8.2.1")
-            force("net.java.dev.jna:jna:4.4.0")
-            force("com.google.code.findbugs:jsr305:3.0.2")
-            force("com.google.code.gson:gson:2.8.6")
-            force("commons-io:commons-io:2.6")
-            force("commons-codec:commons-codec:1.10")
-            force("com.beust:jcommander:1.78")
-        }
-    }
-
     tasks.withType<JavaCompile> {
         options.isFork = true
     }
