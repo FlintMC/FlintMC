@@ -115,11 +115,7 @@ public class ServiceRepository {
                   serviceHandlerClass,
                   InjectionHolder.getInjectedInstance(CtResolver.get(serviceHandlerClass)));
             }
-            if (!serviceHandlerClass.isFrozen()) {
-              serviceHandlerClass.freeze();
-            }
             serviceHandlerInstances.get(serviceHandlerClass).discover(annotationMeta);
-            serviceHandlerClass.defrost();
 
           } catch (Exception e) {
             e.printStackTrace();

@@ -54,7 +54,8 @@ public class VersionedPigEntity extends VersionedAnimalEntity implements PigEnti
         world,
         entityFoundationMapper,
         entitySensesFactory,
-        passiveEntityMapper);
+        passiveEntityMapper
+    );
 
     if (!(entity instanceof net.minecraft.entity.passive.PigEntity)) {
       throw new IllegalArgumentException(

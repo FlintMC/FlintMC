@@ -20,9 +20,11 @@
 package net.flintmc.mcapi.v1_15_2.entity.type;
 
 import com.beust.jcommander.internal.Maps;
+
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.type.EntityType;
@@ -45,15 +47,12 @@ public class VersionedEntityTypeRegister implements EntityTypeRegister {
   private VersionedEntityTypeRegister(EntityTypeMapper entityTypeMapper) {
     this.entityTypeMapper = entityTypeMapper;
     this.entityTypes = Maps.newHashMap();
-  }
-
-  @Subscribe(phase = Subscribe.Phase.POST, version = "1.15.2")
-  public void convertEntityTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.entity.EntityType<?> entityType : Registry.ENTITY_TYPE) {
       String key = Registry.ENTITY_TYPE.getKey(entityType).getPath();
       this.entityTypes.put(key, this.entityTypeMapper.fromMinecraftEntityType(entityType));
     }
   }
+
 
   /**
    * {@inheritDoc}

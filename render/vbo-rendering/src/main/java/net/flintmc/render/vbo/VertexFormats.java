@@ -82,6 +82,24 @@ public enum VertexFormats implements EnumeratedVertexFormat {
           .addAttribute(VertexAttributes.TEXTURE_UV)
           .build();
     }
+  },
+  POS3F_RGB {
+    @Override
+    VertexFormat createCopy() {
+      return InjectionHolder.getInjectedInstance(VertexFormatBuilder.class)
+          .addAttribute(VertexAttributes.POSITION3F)
+          .addAttribute(VertexAttributes.COLOR_RGB)
+          .build();
+    }
+  },
+  POS3F_RGBA {
+    @Override
+    VertexFormat createCopy() {
+      return InjectionHolder.getInjectedInstance(VertexFormatBuilder.class)
+          .addAttribute(VertexAttributes.POSITION3F)
+          .addAttribute(VertexAttributes.COLOR_RGBA)
+          .build();
+    }
   };
 
   private final VertexFormat format;

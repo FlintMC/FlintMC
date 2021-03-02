@@ -36,8 +36,6 @@ import net.minecraft.nbt.CompoundNBT;
 @Implement(value = ItemEntity.class, version = "1.15.2")
 public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
 
-  private final net.minecraft.entity.item.ItemEntity itemEntity;
-
   @AssistedInject
   private VersionedItemEntity(
       @Assisted("entity") Object entity,
@@ -49,8 +47,6 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
     if (!(entity instanceof net.minecraft.entity.item.ItemEntity)) {
       throw new IllegalArgumentException("");
     }
-
-    this.itemEntity = (net.minecraft.entity.item.ItemEntity) entity;
   }
 
   @AssistedInject
@@ -81,8 +77,23 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
       @Assisted("y") double y,
       @Assisted("z") double z,
       @Assisted("itemStack") ItemStack itemStack) {
-    this(entity, entityTypeRegister, world, entityFoundationMapper, x, y, z);
+    this(
+        entity,
+        entityTypeRegister,
+        world,
+        entityFoundationMapper,
+        x,
+        y,
+        z);
     this.setItemStack(itemStack);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected net.minecraft.entity.item.ItemEntity wrapped() {
+    return (net.minecraft.entity.item.ItemEntity) super.wrapped();
   }
 
   /**
@@ -92,7 +103,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
   public ItemStack getItemStack() {
     return this.getEntityFoundationMapper()
         .getItemMapper()
-        .fromMinecraft(this.itemEntity.getItem());
+        .fromMinecraft(this.wrapped().getItem());
   }
 
   /**
@@ -100,9 +111,10 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setItemStack(ItemStack itemStack) {
-    this.itemEntity.setItem(
-        (net.minecraft.item.ItemStack)
-            this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
+    this.wrapped()
+        .setItem(
+            (net.minecraft.item.ItemStack)
+                this.getEntityFoundationMapper().getItemMapper().toMinecraft(itemStack));
   }
 
   /**
@@ -110,7 +122,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public UUID getOwnerIdentifier() {
-    return this.itemEntity.getOwnerId();
+    return this.wrapped().getOwnerId();
   }
 
   /**
@@ -118,7 +130,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setOwnerIdentifier(UUID ownerIdentifier) {
-    this.itemEntity.setOwnerId(ownerIdentifier);
+    this.wrapped().setOwnerId(ownerIdentifier);
   }
 
   /**
@@ -126,7 +138,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public UUID getThrowerIdentifier() {
-    return this.itemEntity.getThrowerId();
+    return this.wrapped().getThrowerId();
   }
 
   /**
@@ -134,7 +146,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setThrowerIdentifier(UUID throwerIdentifier) {
-    this.itemEntity.setThrowerId(throwerIdentifier);
+    this.wrapped().setThrowerId(throwerIdentifier);
   }
 
   /**
@@ -142,7 +154,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public int getAge() {
-    return this.itemEntity.getAge();
+    return this.wrapped().getAge();
   }
 
   /**
@@ -150,7 +162,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setDefaultPickupDelay() {
-    this.itemEntity.setDefaultPickupDelay();
+    this.wrapped().setDefaultPickupDelay();
   }
 
   /**
@@ -158,7 +170,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setNoPickupDelay() {
-    this.itemEntity.setNoPickupDelay();
+    this.wrapped().setNoPickupDelay();
   }
 
   /**
@@ -166,7 +178,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setInfinitePickupDelay() {
-    this.itemEntity.setInfinitePickupDelay();
+    this.wrapped().setInfinitePickupDelay();
   }
 
   /**
@@ -174,7 +186,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setPickupDelay(int ticks) {
-    this.itemEntity.setPickupDelay(ticks);
+    this.wrapped().setPickupDelay(ticks);
   }
 
   /**
@@ -182,7 +194,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public boolean cannotPickup() {
-    return this.itemEntity.cannotPickup();
+    return this.wrapped().cannotPickup();
   }
 
   /**
@@ -190,7 +202,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void setNoDespawn() {
-    this.itemEntity.setNoDespawn();
+    this.wrapped().setNoDespawn();
   }
 
   /**
@@ -198,7 +210,7 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void makeFakeItem() {
-    this.itemEntity.makeFakeItem();
+    this.wrapped().makeFakeItem();
   }
 
   /**
@@ -206,8 +218,9 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.itemEntity.readAdditional(
-        (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
+    this.wrapped()
+        .readAdditional(
+            (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
   /**
@@ -215,8 +228,9 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.itemEntity.writeAdditional(
-        (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
+    this.wrapped()
+        .writeAdditional(
+            (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().toMinecraftNBT(compound));
   }
 
   /**
@@ -226,6 +240,6 @@ public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
   public ChatComponent getName() {
     return this.getEntityFoundationMapper()
         .getComponentMapper()
-        .fromMinecraft(this.itemEntity.getName());
+        .fromMinecraft(this.wrapped().getName());
   }
 }

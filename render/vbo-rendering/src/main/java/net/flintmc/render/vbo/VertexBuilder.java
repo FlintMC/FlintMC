@@ -127,6 +127,29 @@ public interface VertexBuilder {
   /** @return a new {@link VertexBuilder} to add a vertex to the same vertex buffer object. */
   VertexBuilder next();
 
+  AttributeValueHandler getPos3fHandler();
+
+  AttributeValueHandler getPos4fHandler();
+
+  AttributeValueHandler getNormalHandler();
+
+  AttributeValueHandler getRgbHandler();
+
+  AttributeValueHandler getRgbaHandler();
+
+  AttributeValueHandler getTextureHandler();
+
+  AttributeValueHandler getCustomHandler();
+
+  interface AttributeValueHandler{
+
+    void addFloats(float... floats);
+
+    void writeFloats(float[] buffer, int offset);
+
+    void clear();
+  }
+
   /**
    * Writes this vertex to a buffer.
    *

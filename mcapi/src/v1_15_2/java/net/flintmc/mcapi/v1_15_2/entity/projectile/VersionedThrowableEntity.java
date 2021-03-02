@@ -35,8 +35,6 @@ import net.minecraft.nbt.CompoundNBT;
 @Implement(value = ThrowableEntity.class, version = "1.15.2")
 public class VersionedThrowableEntity extends VersionedEntity implements ThrowableEntity {
 
-  private final net.minecraft.entity.projectile.ThrowableEntity throwableEntity;
-
   @AssistedInject
   public VersionedThrowableEntity(
       @Assisted("entity") Object entity,
@@ -52,7 +50,6 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
               + net.minecraft.entity.projectile.ThrowableEntity.class.getName());
     }
 
-    this.throwableEntity = (net.minecraft.entity.projectile.ThrowableEntity) entity;
   }
 
   @AssistedInject
@@ -83,9 +80,17 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
    * {@inheritDoc}
    */
   @Override
+  protected net.minecraft.entity.projectile.ThrowableEntity wrapped() {
+    return (net.minecraft.entity.projectile.ThrowableEntity) super.wrapped();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void shoot(
       Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
-    this.throwableEntity.shoot(
+    this.wrapped().shoot(
         (net.minecraft.entity.Entity)
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(thrower),
         pitch,
@@ -102,7 +107,7 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
   public LivingEntity getThrower() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftLivingEntity(this.throwableEntity);
+        .fromMinecraftLivingEntity(this.wrapped());
   }
 
   /**
@@ -110,7 +115,7 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
    */
   @Override
   public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-    this.throwableEntity.shoot(x, y, z, velocity, inaccuracy);
+    this.wrapped().shoot(x, y, z, velocity, inaccuracy);
   }
 
   /**
@@ -118,7 +123,7 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
    */
   @Override
   public void setMotion(double x, double y, double z) {
-    this.throwableEntity.setMotion(x, y, z);
+    this.wrapped().setMotion(x, y, z);
   }
 
   /**
@@ -126,7 +131,7 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.throwableEntity.readAdditional(
+    this.wrapped().readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
@@ -135,7 +140,7 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.throwableEntity.writeAdditional(
+    this.wrapped().writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 }

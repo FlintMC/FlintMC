@@ -25,6 +25,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 import net.flintmc.mcapi.entity.projectile.ArrowEntity;
+import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.entity.type.EntityTypeRegister;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.nbt.NBTCompound;
@@ -62,7 +63,8 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
       @Assisted("z") double z,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister) {
+      EntityTypeRegister entityTypeRegister,
+      EntityRenderContext.Factory entityRenderContextFactory) {
     super(entity, x, y, z, world, entityFoundationMapper, entityTypeRegister);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {
@@ -81,7 +83,8 @@ public class VersionedArrowEntity extends VersionedArrowBaseEntity implements Ar
       @Assisted("shooter") LivingEntity shooter,
       World world,
       EntityFoundationMapper entityFoundationMapper,
-      EntityTypeRegister entityTypeRegister) {
+      EntityTypeRegister entityTypeRegister,
+      EntityRenderContext.Factory entityRenderContextFactory) {
     super(entity, shooter, world, entityFoundationMapper, entityTypeRegister);
 
     if (!(entity instanceof net.minecraft.entity.projectile.ArrowEntity)) {

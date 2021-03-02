@@ -205,19 +205,20 @@ public interface ItemType {
      * Resets all values in this builder to their default as if you were creating a new builder.
      */
     void reset();
-  }
-
-  /**
-   * Factory for the {@link Builder} for {@link ItemType}s.
-   */
-  @AssistedFactory(Builder.class)
-  interface Factory {
 
     /**
-     * Creates a new builder for a new {@link ItemType}.
-     *
-     * @return The new non-null builder
+     * Factory for the {@link Builder} for {@link ItemType}s.
      */
-    Builder newBuilder();
+    @AssistedFactory(Builder.class)
+    interface Factory {
+
+      /**
+       * Creates a new builder for a new {@link ItemType}.
+       *
+       * @return The new non-null builder
+       */
+      Builder newBuilder();
+    }
   }
+
 }

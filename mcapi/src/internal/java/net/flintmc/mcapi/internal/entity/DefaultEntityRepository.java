@@ -17,11 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.entity.cache;
+package net.flintmc.mcapi.internal.entity;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.entity.Entity;
+import net.flintmc.mcapi.entity.EntityRepository;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -36,12 +40,13 @@ import net.flintmc.mcapi.entity.Entity;
  * entity and its unique identifier.
  */
 @Singleton
-public class EntityCache {
+@Implement(EntityRepository.class)
+public class DefaultEntityRepository implements EntityRepository {
 
   private final Map<UUID, Entity> entities;
 
   @Inject
-  private EntityCache() {
+  private DefaultEntityRepository() {
     this.entities = Maps.newHashMap();
   }
 
@@ -51,6 +56,7 @@ public class EntityCache {
    * @param uniqueId The unique identifier of a cached entity.
    * @return A cached entity or {@code null}.
    */
+  @Override
   public Entity getEntity(UUID uniqueId) {
     return this.entities.get(uniqueId);
   }
@@ -65,6 +71,7 @@ public class EntityCache {
    * @return The previous entity associated with the specified unique identifier, or a the given
    * supplied entity if there was not mapping for the unique identifier.
    */
+  @Override
   public Entity putIfAbsent(UUID uniqueId, Supplier<Entity> supplier) {
     if (this.entities.containsKey(uniqueId)) {
       return this.getEntity(uniqueId);
@@ -74,6 +81,7 @@ public class EntityCache {
     return suppliedEntity;
   }
 
+  @Override
   /**
    * Clears the cache.
    */
@@ -86,7 +94,13 @@ public class EntityCache {
    *
    * @return The cache size.
    */
+  @Override
   public int size() {
     return this.entities.size();
+  }
+
+  @Override
+  public Map<UUID, Entity> getEntities() {
+    return entities;
   }
 }

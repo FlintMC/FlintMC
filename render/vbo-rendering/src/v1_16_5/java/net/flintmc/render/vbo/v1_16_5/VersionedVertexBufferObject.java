@@ -107,9 +107,9 @@ public class VersionedVertexBufferObject implements VertexBufferObject {
    */
   @Override
   public void pushToGPU() {
-    if (isAvailable) {
+   /* if (isAvailable) {
       throw new IllegalStateException("This VBO is already pushed to the GPU.");
-    }
+    }*/
     int totalSize = vertices.size() * vertexFormat.getVertexSize();
     float[] buffer = new float[totalSize];
     int offset = 0;

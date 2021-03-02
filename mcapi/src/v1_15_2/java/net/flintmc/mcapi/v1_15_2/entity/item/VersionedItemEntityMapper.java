@@ -24,19 +24,19 @@ import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.entity.item.ItemEntity;
 import net.flintmc.mcapi.entity.item.ItemEntityMapper;
-import net.flintmc.mcapi.internal.entity.cache.EntityCache;
+import net.flintmc.mcapi.internal.entity.DefaultEntityRepository;
 import net.minecraft.client.Minecraft;
 
 @Singleton
 @Implement(value = ItemEntityMapper.class, version = "1.15.2")
 public class VersionedItemEntityMapper implements ItemEntityMapper {
 
-  private final EntityCache entityCache;
+  private final DefaultEntityRepository entityRepository;
   private final ItemEntity.Factory itemEntityFactory;
 
   @Inject
-  private VersionedItemEntityMapper(EntityCache entityCache, ItemEntity.Factory itemEntityFactory) {
-    this.entityCache = entityCache;
+  private VersionedItemEntityMapper(DefaultEntityRepository entityRepository, ItemEntity.Factory itemEntityFactory) {
+    this.entityRepository = entityRepository;
     this.itemEntityFactory = itemEntityFactory;
   }
 
@@ -55,7 +55,7 @@ public class VersionedItemEntityMapper implements ItemEntityMapper {
     net.minecraft.entity.item.ItemEntity itemEntity = (net.minecraft.entity.item.ItemEntity) handle;
 
     return (ItemEntity)
-        this.entityCache.putIfAbsent(
+        this.entityRepository.putIfAbsent(
             itemEntity.getUniqueID(), () -> this.itemEntityFactory.create(itemEntity));
   }
 

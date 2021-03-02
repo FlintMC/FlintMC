@@ -42,7 +42,6 @@ import net.minecraft.util.SoundEvent;
 public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBaseEntity {
 
   private final AccessibleAbstractArrowEntity accessibleAbstractArrowEntity;
-  private final AbstractArrowEntity arrowBaseEntity;
   private Sound hitSound;
   private PickupStatus pickupStatus;
 
@@ -61,8 +60,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
               + net.minecraft.entity.projectile.AbstractArrowEntity.class.getName());
     }
 
-    this.arrowBaseEntity = (AbstractArrowEntity) entity;
-    this.accessibleAbstractArrowEntity = (AccessibleAbstractArrowEntity) arrowBaseEntity;
+    this.accessibleAbstractArrowEntity = (AccessibleAbstractArrowEntity) this.wrapped();
     this.pickupStatus = PickupStatus.DISALLOWED;
   }
 
@@ -93,12 +91,18 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
         shooter.getPosZ(),
         world,
         entityFoundationMapper,
-        entityTypeRegister);
+        entityTypeRegister
+    );
     this.setShooter(shooter);
 
     if (shooter instanceof PlayerEntity) {
       this.pickupStatus = PickupStatus.ALLOWED;
     }
+  }
+
+  @Override
+  protected AbstractArrowEntity wrapped() {
+    return (AbstractArrowEntity) super.wrapped();
   }
 
   /**
@@ -115,7 +119,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   @Override
   public void setHitSound(Sound sound) {
     this.hitSound = sound;
-    this.arrowBaseEntity.setHitSound(
+    this.wrapped().setHitSound(
         (SoundEvent)
             this.getEntityFoundationMapper().getSoundMapper().toMinecraftSoundEvent(this.hitSound));
   }
@@ -126,7 +130,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   @Override
   public void shoot(
       Entity shooter, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
-    this.arrowBaseEntity.shoot(
+    this.wrapped().shoot(
         (net.minecraft.entity.Entity)
             this.getEntityFoundationMapper().getEntityMapper().fromMinecraftEntity(shooter),
         pitch,
@@ -143,7 +147,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   public Entity getShooter() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftEntity(this.arrowBaseEntity.getShooter());
+        .fromMinecraftEntity(this.wrapped().getShooter());
   }
 
   /**
@@ -151,7 +155,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setShooter(Entity shooter) {
-    this.arrowBaseEntity.setShooter(
+    this.wrapped().setShooter(
         (net.minecraft.entity.Entity)
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(shooter));
   }
@@ -171,7 +175,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public double getDamage() {
-    return this.arrowBaseEntity.getDamage();
+    return this.wrapped().getDamage();
   }
 
   /**
@@ -179,7 +183,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setDamage(double damage) {
-    this.arrowBaseEntity.setDamage(damage);
+    this.wrapped().setDamage(damage);
   }
 
   /**
@@ -195,7 +199,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setKnockbackStrength(int knockbackStrength) {
-    this.arrowBaseEntity.setKnockbackStrength(knockbackStrength);
+    this.wrapped().setKnockbackStrength(knockbackStrength);
   }
 
   /**
@@ -203,7 +207,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public boolean isCritical() {
-    return this.arrowBaseEntity.getIsCritical();
+    return this.wrapped().getIsCritical();
   }
 
   /**
@@ -211,7 +215,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setCritical(boolean critical) {
-    this.arrowBaseEntity.setIsCritical(critical);
+    this.wrapped().setIsCritical(critical);
   }
 
   /**
@@ -219,7 +223,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public byte getPierceLevel() {
-    return this.arrowBaseEntity.getPierceLevel();
+    return this.wrapped().getPierceLevel();
   }
 
   /**
@@ -227,7 +231,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setPierceLevel(byte level) {
-    this.arrowBaseEntity.setPierceLevel(level);
+    this.wrapped().setPierceLevel(level);
   }
 
   /**
@@ -235,7 +239,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setEnchantmentEffectsFromEntity(LivingEntity entity, float damage) {
-    this.arrowBaseEntity.setEnchantmentEffectsFromEntity(
+    this.wrapped().setEnchantmentEffectsFromEntity(
         (net.minecraft.entity.LivingEntity)
             this.getEntityFoundationMapper().getEntityMapper().fromMinecraftEntity(entity),
         damage);
@@ -246,7 +250,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public boolean isNoClip() {
-    return this.arrowBaseEntity.getNoClip();
+    return this.wrapped().getNoClip();
   }
 
   /**
@@ -254,7 +258,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setNoClip(boolean noClip) {
-    this.arrowBaseEntity.setNoClip(noClip);
+    this.wrapped().setNoClip(noClip);
   }
 
   /**
@@ -262,7 +266,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public boolean isShotFromCrossbow() {
-    return this.arrowBaseEntity.getShotFromCrossbow();
+    return this.wrapped().getShotFromCrossbow();
   }
 
   /**
@@ -270,7 +274,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setShotFromCrossbow(boolean fromCrossbow) {
-    this.arrowBaseEntity.setShotFromCrossbow(fromCrossbow);
+    this.wrapped().setShotFromCrossbow(fromCrossbow);
   }
 
   /**
@@ -310,7 +314,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-    this.arrowBaseEntity.shoot(x, y, z, velocity, inaccuracy);
+    this.wrapped().shoot(x, y, z, velocity, inaccuracy);
   }
 
   /**
@@ -318,7 +322,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void readAdditional(NBTCompound compound) {
-    this.arrowBaseEntity.readAdditional(
+    this.wrapped().readAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
@@ -327,7 +331,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void writeAdditional(NBTCompound compound) {
-    this.arrowBaseEntity.writeAdditional(
+    this.wrapped().writeAdditional(
         (CompoundNBT) this.getEntityFoundationMapper().getNbtMapper().fromMinecraftNBT(compound));
   }
 
@@ -336,7 +340,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
    */
   @Override
   public void setMotion(double x, double y, double z) {
-    this.arrowBaseEntity.setMotion(x, y, z);
+    this.wrapped().setMotion(x, y, z);
   }
 
   protected PickupStatus fromMinecraftPickupStatus(AbstractArrowEntity.PickupStatus pickupStatus) {

@@ -37,7 +37,7 @@ import net.flintmc.mcapi.items.type.ItemType;
 
 public abstract class DefaultItemRegistry implements ItemRegistry {
 
-  protected final ItemType.Factory itemFactory;
+  protected final ItemType.Builder.Factory itemFactory;
   protected final EnchantmentType.Factory enchantmentFactory;
   protected final ComponentBuilder.Factory componentFactory;
 
@@ -48,7 +48,7 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
   private final Map<NameSpacedKey, EnchantmentType> enchantmentTypes = new HashMap<>();
 
   public DefaultItemRegistry(
-      ItemType.Factory itemFactory,
+      ItemType.Builder.Factory itemFactory,
       EnchantmentType.Factory enchantmentFactory,
       ComponentBuilder.Factory componentFactory,
       ComponentSerializer.Factory componentSerializerFactory,

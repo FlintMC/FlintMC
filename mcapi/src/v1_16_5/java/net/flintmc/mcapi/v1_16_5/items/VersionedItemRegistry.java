@@ -48,7 +48,7 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
 
   @Inject
   public VersionedItemRegistry(
-      ItemType.Factory itemFactory,
+      ItemType.Builder.Factory itemFactory,
       EnchantmentType.Factory enchantmentFactory,
       ComponentBuilder.Factory componentFactory,
       ComponentSerializer.Factory componentSerializerFactory,
