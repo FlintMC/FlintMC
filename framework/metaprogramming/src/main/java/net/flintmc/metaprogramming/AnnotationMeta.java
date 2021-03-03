@@ -39,15 +39,21 @@ import java.util.*;
 public class AnnotationMeta<T extends Annotation> {
 
   private final ElementKind elementType;
-  private final Identifier identifier;
+  private final Identifier<?> identifier;
   private final T annotation;
+  private final String version;
   private final Collection<AnnotationMeta<?>> metaData;
 
   public AnnotationMeta(
-      ElementKind elementType, Identifier identifier, T annotation, AnnotationMeta<?>... metaData) {
+      ElementKind elementType,
+      Identifier<?> identifier,
+      T annotation,
+      String version,
+      AnnotationMeta<?>... metaData) {
     this.elementType = elementType;
     this.identifier = identifier;
     this.annotation = annotation;
+    this.version = version;
     this.metaData = Arrays.asList(metaData);
   }
 
@@ -65,6 +71,7 @@ public class AnnotationMeta<T extends Annotation> {
    * @return A generic Identifier which holds properties of the location where the annotation is
    *     placed at
    */
+  @SuppressWarnings("unchecked")
   public <K extends Identifier<?>> K getIdentifier() {
     return (K) identifier;
   }
@@ -105,10 +112,21 @@ public class AnnotationMeta<T extends Annotation> {
   }
 
   /**
+   * Determines whether this annotation meta is applicable to the currently running version.
+   *
+   * @param version The version to test for
+   * @return {@code true} if the meta is applicable for the version, {@code false} otherwise
+   */
+  public boolean isApplicableForVersion(String version) {
+    return this.version == null || this.version.equals(version);
+  }
+
+  /**
    * @param clazz the annotation class of the child metadata to look for
    * @param <K> the annotation type of the child metadata to look for
    * @return all provided child metadata of the type clazz
    */
+  @SuppressWarnings("unchecked")
   public <K extends Annotation> Collection<AnnotationMeta<K>> getMetaData(Class<K> clazz) {
     List<AnnotationMeta<K>> annotationMetas = new ArrayList<>();
     for (AnnotationMeta<?> metaDatum : this.metaData) {

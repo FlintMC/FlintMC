@@ -48,6 +48,7 @@ public class ProcessorState {
 
   // The child processors of the FlintAnnotationProcessor, discovered via a ServiceLoader
   private final Collection<Processor> processors;
+  private final Map<Processor, Set<String>> registeredOptions;
 
   // State of the java processing environment
   private ProcessingEnvironment processingEnvironment;
@@ -59,6 +60,7 @@ public class ProcessorState {
    */
   public ProcessorState() {
     this.processors = new HashSet<>();
+    this.registeredOptions = new HashMap<>();
     ServiceLoader.load(Processor.class, getClass().getClassLoader()).forEach(processors::add);
     instance = this;
   }
@@ -86,6 +88,27 @@ public class ProcessorState {
     }
 
     this.processingEnvironment = processingEnvironment;
+    registerOptions();
+
+    Map<String, String> environmentOptions = processingEnvironment.getOptions();
+
+    // Let registered processors handle their respective options
+    for(Map.Entry<Processor, Set<String>> entry : registeredOptions.entrySet()) {
+      Processor processor = entry.getKey();
+      Set<String> options = entry.getValue();
+
+      Map<String, String> optionValues = new HashMap<>();
+
+      // Copy all requested values over
+      for(String requested : options) {
+        if(environmentOptions.containsKey(requested)) {
+          optionValues.put(requested, environmentOptions.get(requested));
+        }
+      }
+
+      // Notify the processor
+      processor.handleOptions(optionValues);
+    }
   }
 
   /**
@@ -215,12 +238,25 @@ public class ProcessorState {
    * @return The collected options
    */
   public Set<String> collectSupportedOptions() {
-    Set<String> options = new HashSet<>();
+    Set<String> allOptions = new HashSet<>();
 
-    for(Processor processor : processors) {
-      options.addAll(processor.options());
+    for(Set<String> otherOptions : registeredOptions.values()) {
+      allOptions.addAll(otherOptions);
     }
 
-    return options;
+    return allOptions;
+  }
+
+  /**
+   * Registers all options supported by processors.
+   */
+  private void registerOptions() {
+    for(Processor processor : processors) {
+      Set<String> processorOptions = processor.options();
+
+      if(!processorOptions.isEmpty()) {
+        registeredOptions.put(processor, processorOptions);
+      }
+    }
   }
 }

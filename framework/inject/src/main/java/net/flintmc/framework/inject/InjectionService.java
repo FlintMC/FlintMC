@@ -94,9 +94,7 @@ public class InjectionService implements ServiceHandler<Annotation> {
         .getLocation();
     Implement annotation = annotationMeta.getAnnotation();
 
-    if (!(annotation.version().isEmpty()
-        || launchArguments.get("--game-version")
-        .equals(annotation.version()))) {
+    if (!annotationMeta.isApplicableForVersion(launchArguments.get("--game-version"))) {
       return;
     }
 
