@@ -46,12 +46,4 @@ import net.flintmc.metaprogramming.DetectableAnnotation;
 public @interface Shadow {
   /** @return the target class name that should be modified */
   String value();
-
-  /**
-   * Retrieves the minecraft version where this shadow should be active, for example "1.15.2". If
-   * it is empty, it will work in every version.
-   *
-   * @return The version where this shadow should be available
-   */
-  String version() default "";
 }

@@ -45,13 +45,4 @@ public @interface ConfigImplementation {
    * @return The interface implemented by this class
    */
   Class<?> value();
-
-  /**
-   * The minecraft version this {@code @Implement} applies to. If the version does not match, the
-   * implementation is not bound.
-   *
-   * @return The version this {@code @Implement} applies to
-   */
-  String version() default "";
-
 }

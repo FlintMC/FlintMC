@@ -37,7 +37,5 @@ public @interface ClassTransform {
 
   Class<? extends NameResolver> classNameResolver() default DefaultNameResolver.class;
 
-  String version() default "";
-
   int priority() default 0;
 }

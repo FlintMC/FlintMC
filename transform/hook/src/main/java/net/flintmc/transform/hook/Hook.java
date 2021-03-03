@@ -106,14 +106,6 @@ public @interface Hook {
   Type[] parameters() default {};
 
   /**
-   * Retrieves the minecraft version where this hook should be active, for example "1.15.2". If it
-   * is empty, it will work in every version.
-   *
-   * @return The version where this hook should be available
-   */
-  String version() default "";
-
-  /**
    * Retrieves the default value that should be returned if the return type of the annotated method
    * is {@link HookResult}. If this is empty, the return type will be null or the specific value if
    * it is a primitive. The provided value will be compiled as source code, for example this can be
