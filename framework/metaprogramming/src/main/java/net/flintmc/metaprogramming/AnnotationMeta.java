@@ -17,13 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload;
+package net.flintmc.metaprogramming;
 
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
-import net.flintmc.processing.autoload.identifier.ConstructorIdentifier;
-import net.flintmc.processing.autoload.identifier.FieldIdentifier;
-import net.flintmc.processing.autoload.identifier.Identifier;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
+import net.flintmc.metaprogramming.identifier.ClassIdentifier;
+import net.flintmc.metaprogramming.identifier.ConstructorIdentifier;
+import net.flintmc.metaprogramming.identifier.FieldIdentifier;
+import net.flintmc.metaprogramming.identifier.Identifier;
+import net.flintmc.metaprogramming.identifier.MethodIdentifier;
 
 import javax.lang.model.element.ElementKind;
 import java.lang.annotation.Annotation;

@@ -20,18 +20,13 @@
 package net.flintmc.transform.javassist.internal;
 
 import com.google.inject.Key;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedInject;
-import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;

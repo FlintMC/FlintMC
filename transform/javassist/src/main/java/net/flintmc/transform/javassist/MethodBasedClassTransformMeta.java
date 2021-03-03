@@ -19,11 +19,9 @@
 
 package net.flintmc.transform.javassist;
 
-import net.flintmc.framework.inject.assisted.Assisted;
 import javassist.CtClass;
 import javassist.CtMethod;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.util.commons.resolve.NameResolver;
 
 import java.util.Collection;

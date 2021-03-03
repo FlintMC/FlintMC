@@ -38,7 +38,7 @@ import net.flintmc.framework.stereotype.DefaultValues;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.type.Type;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.HookFilter;
 import net.flintmc.transform.hook.HookResult;

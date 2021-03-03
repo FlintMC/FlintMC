@@ -24,7 +24,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.flintmc.framework.config.generator.ParsedConfig;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 /**
  * Marks a storage to be automatically registered in the {@link ConfigStorageProvider}. If a storage

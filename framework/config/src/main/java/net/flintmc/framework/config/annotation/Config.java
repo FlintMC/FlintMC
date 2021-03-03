@@ -24,7 +24,7 @@ import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

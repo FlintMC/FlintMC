@@ -26,8 +26,8 @@ import com.google.inject.Singleton;
 import javassist.CtClass;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.ServiceHandlerMeta;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 import net.flintmc.util.commons.Pair;
 
 import java.lang.annotation.Annotation;

@@ -48,7 +48,7 @@ import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.launcher.classloading.common.CommonClassLoader;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;

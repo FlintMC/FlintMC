@@ -24,7 +24,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.MethodBasedClassTransformMeta;
 import net.flintmc.transform.javassist.internal.DefaultMethodBasedClassTransformMeta;

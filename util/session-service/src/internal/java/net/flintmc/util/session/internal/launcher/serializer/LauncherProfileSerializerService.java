@@ -23,8 +23,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.ClassIdentifier;
 import net.flintmc.util.session.launcher.LauncherProfileResolver;
 import net.flintmc.util.session.launcher.serializer.ProfileSerializerVersion;
 

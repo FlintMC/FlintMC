@@ -33,8 +33,8 @@ import net.flintmc.framework.inject.assisted.factory.AssistedFactoryModuleBuilde
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.*;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.ClassIdentifier;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;

@@ -17,20 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload.identifier;
+package net.flintmc.metaprogramming;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import java.util.List;
 
-/**
- * Represents the location where a {@link DetectableAnnotation} is placed at.
- *
- * @param <T> Object representation type of this {@link Identifier}
- * @see MethodIdentifier
- * @see ClassIdentifier
- */
-public interface Identifier<T> {
+/** Interface to create auto generated classes from to discover {@link DetectableAnnotation}. */
+public interface DetectableAnnotationProvider {
 
-  /** @return The object representation ot this {@link Identifier} */
-  T getLocation();
-
+  /**
+   * Adds representations of {@link DetectableAnnotation} as {@link AnnotationMeta} to a list.
+   *
+   * @param list List to add the detected annotation metadata to
+   */
+  default void register(List<AnnotationMeta> list) {}
 }

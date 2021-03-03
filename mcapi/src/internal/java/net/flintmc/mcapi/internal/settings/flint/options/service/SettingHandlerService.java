@@ -37,8 +37,8 @@ import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.Identifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.Identifier;
 
 @Singleton
 @Implement(SettingHandler.class)

@@ -29,7 +29,7 @@ import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 
 @Singleton
 @Service(value = ConfigImplementation.class, state = State.PRE_INIT, priority = -1)

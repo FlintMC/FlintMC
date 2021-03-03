@@ -21,7 +21,7 @@ package net.flintmc.transform.minecraft;
 
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 
 import java.lang.annotation.ElementType;

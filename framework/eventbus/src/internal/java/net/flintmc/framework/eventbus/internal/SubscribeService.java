@@ -40,7 +40,7 @@ import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 
 /**
  * Service for sending events to receivers.

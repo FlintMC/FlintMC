@@ -25,7 +25,7 @@ import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.EventPriority;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.framework.stereotype.service.Service;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

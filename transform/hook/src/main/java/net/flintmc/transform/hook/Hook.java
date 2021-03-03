@@ -24,7 +24,7 @@ import javassist.CtBehavior;
 import javassist.CtConstructor;
 import net.flintmc.framework.stereotype.type.DefaultTypeNameResolver;
 import net.flintmc.framework.stereotype.type.Type;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 import net.flintmc.util.commons.resolve.AnnotationResolver;
 import net.flintmc.util.commons.resolve.NameResolver;
 import net.flintmc.util.mappings.ClassMappingProvider;
