@@ -252,7 +252,7 @@ public class DetectableAnnotationProcessor implements Processor {
       Map<ExecutableElement, AnnotationValue> annotationValues) {
     // meta is optional, so if it is not present, we dont take any action
     if (!AnnotationMirrorUtil
-        .hasMirrorFor(DETECTABLE_ANNOTATION_CLASS, annotationType.getAnnotationMirrors())) {
+        .hasMirrorFor(metaprogrammingClass(DETECTABLE_ANNOTATION_CLASS), annotationType.getAnnotationMirrors())) {
       return "";
     }
 
@@ -447,7 +447,7 @@ public class DetectableAnnotationProcessor implements Processor {
                           .get("value")
                           .getValue())
                       .asElement();
-          if (!AnnotationMirrorUtil.hasMirrorFor(REPEATING_DETECTABLE_ANNOTATION_CLASS,
+          if (!AnnotationMirrorUtil.hasMirrorFor(metaprogrammingClass(REPEATING_DETECTABLE_ANNOTATION_CLASS),
               repeatingAnnotationType.getAnnotationMirrors())) {
             throw new IllegalStateException(
                 "Repeating annotation "
@@ -481,7 +481,7 @@ public class DetectableAnnotationProcessor implements Processor {
         }
 
         if (AnnotationMirrorUtil
-            .hasMirrorFor(DETECTABLE_ANNOTATION_CLASS, annotationMetaType.getAnnotationMirrors())) {
+            .hasMirrorFor(metaprogrammingClass(DETECTABLE_ANNOTATION_CLASS), annotationMetaType.getAnnotationMirrors())) {
           metaClasses.add(new Pair<>(potentialElement, annotationMetaMirror));
         }
       }
