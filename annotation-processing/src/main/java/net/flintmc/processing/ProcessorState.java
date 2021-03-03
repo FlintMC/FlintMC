@@ -208,4 +208,19 @@ public class ProcessorState {
       }
     }
   }
+
+  /**
+   * Collects all options supported by all sub-processors.
+   *
+   * @return The collected options
+   */
+  public Set<String> collectSupportedOptions() {
+    Set<String> options = new HashSet<>();
+
+    for(Processor processor : processors) {
+      options.addAll(processor.options());
+    }
+
+    return options;
+  }
 }

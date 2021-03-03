@@ -21,8 +21,9 @@ package net.flintmc.processing;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
-
 import javax.lang.model.element.TypeElement;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Service interface for annotation processors controlled by the {@link FlintAnnotationProcessor}.
@@ -30,6 +31,7 @@ import javax.lang.model.element.TypeElement;
  * {@link java.util.ServiceLoader}{@literal <}{@link Processor}{@literal >}.
  */
 public interface Processor {
+
   /**
    * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} for every
    * annotation found.
@@ -60,7 +62,16 @@ public interface Processor {
    * final round to finalize the code generation of the given method.
    *
    * @param targetMethod The method to finalize, will always be the method returned by {@link
-   *     #createMethod()}
+   *                     #createMethod()}
    */
   void finish(MethodSpec.Builder targetMethod);
+
+  /**
+   * Retrieves the options the processor supports which can then be passed to the compiler.
+   *
+   * @return The options this processor supports
+   */
+  default Set<String> options() {
+    return Collections.emptySet();
+  }
 }

@@ -24,7 +24,7 @@ fun defineModule(path: String) {
     findProject(":$path")?.name = path.replace(":", "-")
 }
 
-pluginManagement {
+/* pluginManagement {
     plugins {
         id("net.flintmc.flint-gradle") version "2.8.1"
     }
@@ -43,8 +43,8 @@ pluginManagement {
         }
     }
 
-}
-
+} */
+includeBuild("../labyfy-gradle-plugin")
 
 defineModule("annotation-processing:autoload")
 
