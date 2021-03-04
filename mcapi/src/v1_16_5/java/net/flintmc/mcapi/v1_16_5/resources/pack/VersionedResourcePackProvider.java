@@ -31,7 +31,7 @@ import net.minecraft.client.Minecraft;
  * 1.16.5 implementation of the {@link ResourcePackProvider}
  */
 @Singleton
-@Implement(value = ResourcePackProvider.class, version = "1.16.5")
+@Implement(value = ResourcePackProvider.class)
 public class VersionedResourcePackProvider implements ResourcePackProvider {
 
   /**

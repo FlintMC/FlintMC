@@ -43,7 +43,7 @@ import net.minecraft.scoreboard.Team.Visible;
  * 1.16.5 implementation of {@link ScoreboardMapper}.
  */
 @Singleton
-@Implement(value = ScoreboardMapper.class, version = "1.16.5")
+@Implement(value = ScoreboardMapper.class)
 public class VersionedScoreboardMapper implements ScoreboardMapper {
 
   private final Criteria.Factory criteriaFactory;

@@ -29,7 +29,7 @@ import net.minecraft.util.HandSide;
  * 1.16.5 implementation of {@link HandMapper}.
  */
 @Singleton
-@Implement(value = HandMapper.class, version = "1.16.5")
+@Implement(value = HandMapper.class)
 public class VersionedHandMapper implements HandMapper {
 
   /**

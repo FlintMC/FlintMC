@@ -35,7 +35,7 @@ import net.minecraft.util.registry.Registry;
  * 1.16.5 implementation of the {@link PotionMapper}.
  */
 @Singleton
-@Implement(value = PotionMapper.class, version = "1.16.5")
+@Implement(value = PotionMapper.class)
 public class VersionedPotionMapper implements PotionMapper {
 
   private final StatusEffect.Factory effectFactory;

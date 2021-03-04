@@ -39,7 +39,7 @@ import java.util.UUID;
 /**
  * 1.16.5 implementation of the {@link NetworkPlayerInfo}
  */
-@Implement(value = NetworkPlayerInfo.class, version = "1.16.5")
+@Implement(value = NetworkPlayerInfo.class)
 public class VersionedNetworkPlayerInfo implements NetworkPlayerInfo {
 
   private final GameProfile gameProfile;

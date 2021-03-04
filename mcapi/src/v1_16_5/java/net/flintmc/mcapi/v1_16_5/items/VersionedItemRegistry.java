@@ -43,7 +43,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
-@Implement(value = ItemRegistry.class, version = "1.16.5")
+@Implement(value = ItemRegistry.class)
 public class VersionedItemRegistry extends DefaultItemRegistry {
 
   @Inject

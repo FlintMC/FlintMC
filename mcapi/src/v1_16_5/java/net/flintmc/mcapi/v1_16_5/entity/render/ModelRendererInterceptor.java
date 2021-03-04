@@ -74,7 +74,7 @@ public class ModelRendererInterceptor {
   }
 
 
-  @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.16.5")
+  @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer")
   public void transform(ClassTransformContext classTransformContext) {
     try {
       CtClass[] doRenderParameters =
@@ -117,7 +117,7 @@ public class ModelRendererInterceptor {
     }
   }
 
-  @ClassTransform(version = "1.16.5")
+  @ClassTransform
   @CtClassFilter(
       value = CtClassFilters.SUBCLASS_OF,
       className = "net.minecraft.client.renderer.entity.model.EntityModel")

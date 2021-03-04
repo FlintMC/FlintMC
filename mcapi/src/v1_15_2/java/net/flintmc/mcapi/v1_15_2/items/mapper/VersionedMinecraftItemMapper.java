@@ -36,7 +36,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 @Singleton
-@Implement(value = MinecraftItemMapper.class, version = "1.15.2")
+@Implement(value = MinecraftItemMapper.class)
 public class VersionedMinecraftItemMapper implements MinecraftItemMapper {
 
   private final ItemRegistry registry;

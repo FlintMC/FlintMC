@@ -35,7 +35,7 @@ import net.minecraft.client.gui.FontRenderer;
  * {@inheritDoc}
  */
 @Singleton
-@Implement(value = ItemRenderer.class, version = "1.15.2")
+@Implement(value = ItemRenderer.class)
 public class VersionedItemRenderer implements ItemRenderer {
 
   private final MinecraftItemMapper itemMapper;
@@ -50,7 +50,7 @@ public class VersionedItemRenderer implements ItemRenderer {
     this.fontRenderer = Minecraft.getInstance().fontRenderer;
   }
 
-  @PostSubscribe(version = "1.15.2")
+  @PostSubscribe
   public void handleResourceReload(ResourcePackReloadEvent event) {
     this.initialized = true;
   }

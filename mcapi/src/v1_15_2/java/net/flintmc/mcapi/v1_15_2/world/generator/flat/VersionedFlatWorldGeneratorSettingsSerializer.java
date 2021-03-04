@@ -28,7 +28,7 @@ import net.flintmc.mcapi.world.generator.flat.FlatWorldGeneratorSettingsSerializ
 import net.minecraft.world.gen.FlatGenerationSettings;
 
 @Singleton
-@Implement(value = FlatWorldGeneratorSettingsSerializer.class, version = "1.15.2")
+@Implement(value = FlatWorldGeneratorSettingsSerializer.class)
 public class VersionedFlatWorldGeneratorSettingsSerializer
     implements FlatWorldGeneratorSettingsSerializer {
 

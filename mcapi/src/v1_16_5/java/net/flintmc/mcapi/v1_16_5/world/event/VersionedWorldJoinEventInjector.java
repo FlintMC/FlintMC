@@ -46,7 +46,7 @@ public class VersionedWorldJoinEventInjector {
     this.eventFactory = eventFactory;
   }
 
-  @Subscribe(phase = Phase.ANY, version = "1.16.5")
+  @Subscribe(phase = Phase.ANY)
   public void fireSingleplayerWorldJoinEvent(ServerConnectEvent event, Phase phase) {
     WorldJoinEvent joinEvent = this.eventFactory
         .create(event.getAddress().toString(), WorldJoinEvent.Type.MULTIPLAYER);
@@ -64,9 +64,7 @@ public class VersionedWorldJoinEventInjector {
           @Type(reference = boolean.class),
           @Type(typeName = "net.minecraft.client.Minecraft$WorldSelectionType")
       },
-      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
-      version = "1.16.5"
-  )
+      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER})
   public void launchIntegratedServer(ExecutionTime executionTime, @Named("args") Object[] args) {
     WorldJoinEvent event = this.eventFactory
         .create((String) args[0], WorldJoinEvent.Type.SINGLEPLAYER);

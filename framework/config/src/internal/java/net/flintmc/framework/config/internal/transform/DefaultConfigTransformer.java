@@ -105,7 +105,6 @@ public class DefaultConfigTransformer
     // implement the configs that are annotated with ImplementedConfig
     CtClass implementation = (CtClass) meta.getIdentifier().getLocation();
     ConfigImplementation annotation = meta.getAnnotation();
-    String version = annotation.version();
 
     if (!annotation.value().isAnnotationPresent(ImplementedConfig.class)) {
       throw new ServiceNotFoundException(
@@ -116,7 +115,7 @@ public class DefaultConfigTransformer
               + "]");
     }
 
-    if (!version.isEmpty() && !launchArguments.get("--game-version").equals(version)) {
+    if (!meta.isApplicableForVersion(launchArguments.get("--game-version"))) {
       return;
     }
 

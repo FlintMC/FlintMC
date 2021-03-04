@@ -53,7 +53,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
-@Implement(value = MinecraftComponentMapper.class, version = "1.16.5")
+@Implement(value = MinecraftComponentMapper.class)
 public class VersionedMinecraftComponentMapper implements MinecraftComponentMapper {
 
   private final ComponentBuilder.Factory builderFactory;

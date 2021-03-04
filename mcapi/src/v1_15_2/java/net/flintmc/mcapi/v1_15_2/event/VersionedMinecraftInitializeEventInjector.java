@@ -45,8 +45,7 @@ public class VersionedMinecraftInitializeEventInjector {
       className = "net.minecraft.client.Minecraft",
       methodName = "<init>",
       parameters = {@Type(reference = GameConfiguration.class)},
-      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
-      version = "1.15.2")
+      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER})
   public void minecraftInitialize(Hook.ExecutionTime executionTime) {
     this.eventBus.fireEvent(this.event, executionTime);
   }

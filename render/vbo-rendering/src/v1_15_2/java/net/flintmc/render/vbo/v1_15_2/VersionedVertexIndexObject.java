@@ -40,7 +40,7 @@ import net.flintmc.render.vbo.VertexIndexObject;
 /**
  * {@inheritDoc}
  */
-@Implement(value = VertexIndexObject.class, version = "1.15.2")
+@Implement(value = VertexIndexObject.class)
 public class VersionedVertexIndexObject implements VertexIndexObject {
 
   private final List<Integer> indices;

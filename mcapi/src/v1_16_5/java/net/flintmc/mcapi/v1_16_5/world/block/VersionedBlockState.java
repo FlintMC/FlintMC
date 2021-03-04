@@ -29,7 +29,7 @@ import net.flintmc.mcapi.world.block.BlockTypeRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
-@Implement(value = BlockState.class, version = "1.16.5")
+@Implement(value = BlockState.class)
 public class VersionedBlockState implements BlockState {
 
   private final BlockType type;

@@ -35,7 +35,7 @@ import net.minecraft.util.registry.Registry;
  * 1.16.5 implementation of the {@link EntityTypeRegister}.
  */
 @Singleton
-@Implement(value = EntityTypeRegister.class, version = "1.16.5")
+@Implement(value = EntityTypeRegister.class)
 public class VersionedEntityTypeRegister implements EntityTypeRegister {
 
   private final EntityTypeMapper entityTypeMapper;

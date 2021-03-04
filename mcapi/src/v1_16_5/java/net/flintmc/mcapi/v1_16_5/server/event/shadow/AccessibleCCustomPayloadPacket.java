@@ -28,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
  * Shadow implementation of the {@link net.minecraft.network.play.client.CCustomPayloadPacket} with
  * public getters for the channel name and data.
  */
-@Shadow(value = "net.minecraft.network.play.client.CCustomPayloadPacket", version = "1.16.5")
+@Shadow(value = "net.minecraft.network.play.client.CCustomPayloadPacket")
 public interface AccessibleCCustomPayloadPacket {
 
   /**

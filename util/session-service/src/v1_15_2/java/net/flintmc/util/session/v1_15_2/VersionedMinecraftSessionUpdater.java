@@ -26,7 +26,7 @@ import net.flintmc.util.session.internal.MinecraftSessionUpdater;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = MinecraftSessionUpdater.class, version = "1.15.2")
+@Implement(value = MinecraftSessionUpdater.class)
 public class VersionedMinecraftSessionUpdater implements MinecraftSessionUpdater {
 
   /**

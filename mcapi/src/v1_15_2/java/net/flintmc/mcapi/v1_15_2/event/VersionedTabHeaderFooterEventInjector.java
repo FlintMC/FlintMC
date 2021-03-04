@@ -51,8 +51,7 @@ public class VersionedTabHeaderFooterEventInjector {
       className = "net.minecraft.client.gui.overlay.PlayerTabOverlayGui",
       methodName = "setHeader",
       parameters = @Type(typeName = "net.minecraft.util.text.ITextComponent"),
-      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
-      version = "1.15.2")
+      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER})
   public HookResult handleHeader(@Named("args") Object[] args, ExecutionTime executionTime) {
     Object newHeader = args[0];
 
@@ -63,8 +62,7 @@ public class VersionedTabHeaderFooterEventInjector {
       className = "net.minecraft.client.gui.overlay.PlayerTabOverlayGui",
       methodName = "setFooter",
       parameters = @Type(typeName = "net.minecraft.util.text.ITextComponent"),
-      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
-      version = "1.15.2")
+      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER})
   public HookResult handleFooter(@Named("args") Object[] args, ExecutionTime executionTime) {
     Object newFooter = args[0];
 
@@ -74,8 +72,7 @@ public class VersionedTabHeaderFooterEventInjector {
   @Hook(
       className = "net.minecraft.client.gui.overlay.PlayerTabOverlayGui",
       methodName = "resetFooterHeader",
-      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
-      version = "1.15.2")
+      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER})
   public HookResult handleReset(ExecutionTime executionTime) {
     TabHeaderFooterUpdateEvent headerEvent =
         this.eventFactory.create(null, TabHeaderFooterUpdateEvent.Type.HEADER);

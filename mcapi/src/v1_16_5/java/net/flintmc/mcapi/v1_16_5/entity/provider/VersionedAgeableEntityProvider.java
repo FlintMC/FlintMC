@@ -29,7 +29,7 @@ import net.flintmc.mcapi.entity.type.EntityTypeMapper;
  * 1.15.2 implementation of the {@link AgeableEntity.Provider}.
  */
 @Singleton
-@Implement(value = AgeableEntity.Provider.class, version = "1.16.5")
+@Implement(value = AgeableEntity.Provider.class)
 public class VersionedAgeableEntityProvider implements AgeableEntity.Provider {
 
   private final AgeableEntity.Factory ageableEntityFactory;

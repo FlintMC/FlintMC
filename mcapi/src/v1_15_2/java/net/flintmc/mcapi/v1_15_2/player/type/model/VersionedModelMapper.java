@@ -26,7 +26,7 @@ import net.flintmc.mcapi.player.type.model.PlayerClothing;
 import net.minecraft.entity.player.PlayerModelPart;
 
 @Singleton
-@Implement(value = ModelMapper.class, version = "1.15.2")
+@Implement(value = ModelMapper.class)
 public class VersionedModelMapper implements ModelMapper {
 
   @Override

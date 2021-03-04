@@ -29,7 +29,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
 
 @Singleton
-@Implement(value = TooltipRenderer.class, version = "1.15.2")
+@Implement(value = TooltipRenderer.class)
 public class VersionedTooltipRenderer implements TooltipRenderer {
 
   private final Minecraft minecraft;

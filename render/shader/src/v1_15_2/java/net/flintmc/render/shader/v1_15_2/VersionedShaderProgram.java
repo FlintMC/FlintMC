@@ -51,7 +51,7 @@ import org.apache.commons.io.IOUtils;
 /**
  * {@inheritDoc}
  */
-@Implement(value = ShaderProgram.class, version = "1.15.2")
+@Implement(value = ShaderProgram.class)
 public class VersionedShaderProgram implements ShaderProgram {
 
   private final List<ShaderUniform> providedShaderUniforms;

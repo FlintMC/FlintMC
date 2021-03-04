@@ -55,9 +55,7 @@ public class ConfigImplementationMapper implements ServiceHandler<ConfigImplemen
   public void discover(AnnotationMeta<ConfigImplementation> annotationMeta) {
     ConfigImplementation annotation = annotationMeta.getAnnotation();
 
-    String version = annotation.version();
-
-    if (!version.isEmpty() && !launchArguments.get("--game-version").equals(version)) {
+    if (!annotationMeta.isApplicableForVersion(launchArguments.get("--game-version"))) {
       return;
     }
 

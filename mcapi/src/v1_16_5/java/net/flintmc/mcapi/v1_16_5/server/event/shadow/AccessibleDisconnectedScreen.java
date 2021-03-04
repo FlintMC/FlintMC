@@ -27,7 +27,7 @@ import net.minecraft.util.text.ITextComponent;
  * Shadow implementation of the {@link net.minecraft.client.gui.screen.DisconnectedScreen} in
  * minecraft with a public getter to get the message component.
  */
-@Shadow(value = "net.minecraft.client.gui.screen.DisconnectedScreen", version = "1.16.5")
+@Shadow(value = "net.minecraft.client.gui.screen.DisconnectedScreen")
 public interface AccessibleDisconnectedScreen {
 
   /**

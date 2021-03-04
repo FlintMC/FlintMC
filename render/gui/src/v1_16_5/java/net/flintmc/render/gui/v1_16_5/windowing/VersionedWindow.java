@@ -50,7 +50,7 @@ import org.lwjgl.system.MemoryStack;
 /**
  * 1.16.5 implementation for {@link Window}.
  */
-@Implement(value = Window.class, version = "1.16.5")
+@Implement(value = Window.class)
 public class VersionedWindow implements InternalWindow {
 
   protected final EventBus eventBus;

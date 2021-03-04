@@ -28,7 +28,7 @@ import net.flintmc.mcapi.world.generator.flat.structure.StructureOption;
 import net.flintmc.mcapi.world.generator.flat.structure.SupportedStructureHolder;
 
 @Singleton
-@Implement(value = SupportedStructureHolder.class, version = "1.15.2")
+@Implement(value = SupportedStructureHolder.class)
 public class VersionedSupportedStructureHolder implements SupportedStructureHolder {
 
   private static final Multimap<StructureOption, FlatWorldStructure> SUPPORTED_OPTIONS =

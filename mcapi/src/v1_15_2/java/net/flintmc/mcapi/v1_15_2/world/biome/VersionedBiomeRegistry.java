@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-@Implement(value = BiomeRegistry.class, version = "1.15.2")
+@Implement(value = BiomeRegistry.class)
 public class VersionedBiomeRegistry implements BiomeRegistry {
 
   private final Map<ResourceLocation, Biome> biomes;

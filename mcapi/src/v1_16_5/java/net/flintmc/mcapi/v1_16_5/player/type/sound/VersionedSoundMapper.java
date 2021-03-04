@@ -33,7 +33,7 @@ import net.minecraft.util.registry.Registry;
  * 1.16.5 implementation of the {@link SoundMapper}.
  */
 @Singleton
-@Implement(value = SoundMapper.class, version = "1.16.5")
+@Implement(value = SoundMapper.class)
 public class VersionedSoundMapper implements SoundMapper {
 
   private final Sound.Factory soundFactory;

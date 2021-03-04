@@ -31,7 +31,7 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.TransformationMatrix;
 
 @Singleton
-@Implement(value = RectangleRenderer.class, version = "1.16.5")
+@Implement(value = RectangleRenderer.class)
 public class VersionedRectangleRenderer implements RectangleRenderer {
 
   /**

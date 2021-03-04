@@ -31,7 +31,7 @@ import net.minecraft.client.util.InputMappings;
 /**
  * 1.16.5 implementation of {@link KeyBinding}.
  */
-@Implement(value = KeyBinding.class, version = "1.16.5")
+@Implement(value = KeyBinding.class)
 public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding
     implements KeyBinding {
 

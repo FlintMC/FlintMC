@@ -52,8 +52,7 @@ public class IngameMenuEventInjector {
       className = "net.minecraft.client.Minecraft",
       methodName = "displayInGameMenu",
       parameters = @Type(reference = boolean.class),
-      executionTime = Hook.ExecutionTime.BEFORE,
-      version = "1.16.5")
+      executionTime = Hook.ExecutionTime.BEFORE)
   public HookResult displayInGameMenu(Hook.ExecutionTime executionTime) {
     if (Minecraft.getInstance().currentScreen != null) {
       return HookResult.CONTINUE;
@@ -69,8 +68,7 @@ public class IngameMenuEventInjector {
       className = "net.minecraft.client.Minecraft",
       methodName = "displayGuiScreen",
       parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
-      executionTime = Hook.ExecutionTime.BEFORE,
-      version = "1.16.5")
+      executionTime = Hook.ExecutionTime.BEFORE)
   public void displayGuiScreen(@Named("args") Object[] args, Hook.ExecutionTime executionTime) {
     Object screen = args[0];
     if (screen != null) {

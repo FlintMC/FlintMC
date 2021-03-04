@@ -51,7 +51,7 @@ import net.minecraft.inventory.container.DispenserContainer;
 import net.minecraft.inventory.container.PlayerContainer;
 
 @Singleton
-@Implement(value = InventoryController.class, version = "1.15.2")
+@Implement(value = InventoryController.class)
 public class VersionedInventoryController extends DefaultInventoryController {
 
   private final Map<Class<? extends Container>, InternalInventoryMapping> minecraftMappings =

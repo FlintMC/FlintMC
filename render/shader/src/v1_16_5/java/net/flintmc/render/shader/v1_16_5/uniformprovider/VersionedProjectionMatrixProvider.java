@@ -25,7 +25,7 @@ import net.flintmc.render.shader.ShaderUniform;
 import net.flintmc.render.shader.uniformprovider.ProjectionMatrixProvider;
 
 @Singleton
-@Implement(value = ProjectionMatrixProvider.class, version = "1.16.5")
+@Implement(value = ProjectionMatrixProvider.class)
 public class VersionedProjectionMatrixProvider implements ProjectionMatrixProvider {
 
   /**

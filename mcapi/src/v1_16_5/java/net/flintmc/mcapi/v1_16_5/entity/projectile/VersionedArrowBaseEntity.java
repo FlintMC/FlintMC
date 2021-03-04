@@ -38,7 +38,7 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 
-@Implement(value = ArrowBaseEntity.class, version = "1.16.5")
+@Implement(value = ArrowBaseEntity.class)
 public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBaseEntity {
 
   private final AccessibleAbstractArrowEntity accessibleAbstractArrowEntity;

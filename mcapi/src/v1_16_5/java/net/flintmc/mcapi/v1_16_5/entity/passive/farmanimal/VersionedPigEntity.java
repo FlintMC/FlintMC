@@ -37,7 +37,7 @@ import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 
-@Implement(value = PigEntity.class, version = "1.16.5")
+@Implement(value = PigEntity.class)
 public class VersionedPigEntity extends VersionedAnimalEntity implements PigEntity {
 
   private final net.minecraft.entity.passive.PigEntity pigEntity;

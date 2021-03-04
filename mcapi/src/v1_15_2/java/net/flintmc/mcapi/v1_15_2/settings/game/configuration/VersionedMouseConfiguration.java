@@ -28,7 +28,7 @@ import net.minecraft.client.Minecraft;
  * 1.15.2 implementation of the {@link MouseConfiguration}.
  */
 @Singleton
-@ConfigImplementation(value = MouseConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = MouseConfiguration.class)
 public class VersionedMouseConfiguration implements MouseConfiguration {
 
   /**

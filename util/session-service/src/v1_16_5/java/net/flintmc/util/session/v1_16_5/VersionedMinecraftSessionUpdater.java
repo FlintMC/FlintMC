@@ -27,7 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
 @Singleton
-@Implement(value = MinecraftSessionUpdater.class, version = "1.16.5")
+@Implement(value = MinecraftSessionUpdater.class)
 public class VersionedMinecraftSessionUpdater implements MinecraftSessionUpdater {
 
   /**

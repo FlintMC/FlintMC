@@ -33,7 +33,7 @@ import net.flintmc.mcapi.v1_16_5.entity.VersionedEntity;
 import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
 
-@Implement(value = ItemEntity.class, version = "1.16.5")
+@Implement(value = ItemEntity.class)
 public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
 
   private final net.minecraft.entity.item.ItemEntity itemEntity;

@@ -44,16 +44,14 @@ public class VersionedOpenGLInitializeEventInjector {
   @Hook(
       executionTime = ExecutionTime.BEFORE,
       className = "net.minecraft.client.Minecraft",
-      methodName = "isMultiplayerEnabled",
-      version = "1.16.5")
+      methodName = "isMultiplayerEnabled")
   public void preInitialize() {
     this.eventBus.fireEvent(this.event, Subscribe.Phase.PRE);
   }
 
   @Hook(
       className = "net.minecraft.client.MainWindow",
-      methodName = "setLogOnGlError",
-      version = "1.16.5")
+      methodName = "setLogOnGlError")
   public void postInitialize() {
     this.eventBus.fireEvent(this.event, Subscribe.Phase.POST);
   }

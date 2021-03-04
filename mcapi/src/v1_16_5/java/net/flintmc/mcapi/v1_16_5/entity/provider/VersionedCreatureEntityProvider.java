@@ -29,7 +29,7 @@ import net.flintmc.mcapi.entity.type.EntityTypeMapper;
  * 1.15.2 implementation of the {@link CreatureEntity.Provider}.
  */
 @Singleton
-@Implement(value = CreatureEntity.Provider.class, version = "1.16.5")
+@Implement(value = CreatureEntity.Provider.class)
 public class VersionedCreatureEntityProvider implements CreatureEntity.Provider {
 
   private final CreatureEntity.Factory creatureEntityFactory;

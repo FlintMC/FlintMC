@@ -35,7 +35,7 @@ import net.flintmc.render.vbo.VertexFormat;
 /**
  * {@inheritDoc}
  */
-@Implement(value = VertexFormat.class, version = "1.15.2")
+@Implement(value = VertexFormat.class)
 public class VersionedVertexFormat implements VertexFormat {
 
   private final List<VertexAttribute> attributes;

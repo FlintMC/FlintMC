@@ -77,8 +77,7 @@ public class SubscribeService implements ServiceHandler<Annotation> {
     Annotation subscribe = meta.getAnnotation();
     CtMethod method = meta.getMethodIdentifier().getLocation();
 
-    String version = this.getVersion(subscribe);
-    if (!(version.isEmpty() || version.equals(this.version))) return;
+    if (!meta.isApplicableForVersion(this.version)) return;
 
     CtClass eventClass = null;
     try {
@@ -145,18 +144,5 @@ public class SubscribeService implements ServiceHandler<Annotation> {
             .phaseOnly(phase);
 
     builder.to(executor).buildAndRegister();
-  }
-
-  private String getVersion(Annotation annotation) {
-    if (annotation instanceof PreSubscribe) {
-      return ((PreSubscribe) annotation).version();
-    } else if (annotation instanceof PostSubscribe) {
-      return ((PostSubscribe) annotation).version();
-    } else if (annotation instanceof Subscribe) {
-      return ((Subscribe) annotation).version();
-    } else {
-      throw new IllegalArgumentException(
-          "Unknown subscribe annotation: " + annotation.annotationType().getName());
-    }
   }
 }

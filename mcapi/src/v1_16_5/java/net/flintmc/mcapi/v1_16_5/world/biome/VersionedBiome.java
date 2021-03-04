@@ -44,7 +44,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.LanguageMap;
 import net.minecraft.world.biome.MobSpawnInfo.Spawners;
 
-@Implement(value = Biome.class, version = "1.16.5")
+@Implement(value = Biome.class)
 public class VersionedBiome implements Biome {
 
   private static final EntityClassification[] CLASSIFICATIONS = EntityClassification.values();

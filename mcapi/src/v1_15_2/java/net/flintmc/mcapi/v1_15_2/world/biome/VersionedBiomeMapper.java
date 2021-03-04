@@ -30,7 +30,7 @@ import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.Biome.TempCategory;
 
 @Singleton
-@Implement(value = BiomeMapper.class, version = "1.15.2")
+@Implement(value = BiomeMapper.class)
 public class VersionedBiomeMapper implements BiomeMapper {
 
   /**

@@ -29,7 +29,7 @@ import net.flintmc.mcapi.player.PlayerEntity;
  * 1.16.5 implementation of the {@link PlayerEntity.Provider}.
  */
 @Singleton
-@Implement(value = PlayerEntity.Provider.class, version = "1.16.5")
+@Implement(value = PlayerEntity.Provider.class)
 public class VersionedPlayerEntityProvider implements PlayerEntity.Provider {
 
   private final PlayerEntity.Factory playerEntityFactory;

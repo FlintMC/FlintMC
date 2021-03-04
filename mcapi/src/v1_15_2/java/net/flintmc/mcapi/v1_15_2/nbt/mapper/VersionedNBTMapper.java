@@ -53,7 +53,7 @@ import net.minecraft.nbt.ShortNBT;
 import net.minecraft.nbt.StringNBT;
 
 @Singleton
-@Implement(value = NBTMapper.class, version = "1.15.2")
+@Implement(value = NBTMapper.class)
 public class VersionedNBTMapper implements NBTMapper {
 
   private final NBTCreator creator;

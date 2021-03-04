@@ -30,7 +30,7 @@ import net.minecraft.client.Minecraft;
  * 1.16.5 implementation of {@link ChatConfiguration}
  */
 @Singleton
-@ConfigImplementation(value = ChatConfiguration.class, version = "1.16.5")
+@ConfigImplementation(value = ChatConfiguration.class)
 public class VersionedChatConfiguration implements ChatConfiguration {
 
   /**

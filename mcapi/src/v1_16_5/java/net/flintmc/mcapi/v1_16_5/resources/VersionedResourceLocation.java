@@ -30,7 +30,7 @@ import net.minecraft.client.Minecraft;
 /**
  * 1.16.5 implementation of a minecraft resource location.
  */
-@Implement(value = ResourceLocation.class, version = "1.16.5")
+@Implement(value = ResourceLocation.class)
 public class VersionedResourceLocation implements ResourceLocation {
 
   private final net.minecraft.util.ResourceLocation wrapped;

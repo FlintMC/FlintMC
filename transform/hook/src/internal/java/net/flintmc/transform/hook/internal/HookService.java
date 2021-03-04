@@ -92,7 +92,7 @@ public class HookService implements ServiceHandler<Hook> {
 
     Hook annotation = meta.getAnnotation();
 
-    if (!(annotation.version().isEmpty() || annotation.version().equals(this.version))) return;
+    if (!meta.isApplicableForVersion(this.version)) return;
     this.hooks.add(
         new HookEntry(
             meta,

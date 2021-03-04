@@ -34,7 +34,7 @@ import net.minecraft.entity.EntityClassification;
  * 1.15.2 implementation of the {@link EntityTypeMapper}.
  */
 @Singleton
-@Implement(value = EntityTypeMapper.class, version = "1.15.2")
+@Implement(value = EntityTypeMapper.class)
 public class VersionedEntityTypeMapper implements EntityTypeMapper {
 
   private final TranslationComponentBuilder.Factory componentFactory;

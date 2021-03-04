@@ -32,7 +32,7 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraft.world.storage.WorldSummary;
 
 @Singleton
-@Implement(value = WorldMapper.class, version = "1.15.2")
+@Implement(value = WorldMapper.class)
 public class VersionedWorldMapper implements WorldMapper {
 
   private final TranslationComponent.Factory componentFactory;

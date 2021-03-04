@@ -33,7 +33,7 @@ import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 
 @Singleton
-@Implement(value = FlatWorldGeneratorSettingsSerializer.class, version = "1.16.5")
+@Implement(value = FlatWorldGeneratorSettingsSerializer.class)
 public class VersionedFlatWorldGeneratorSettingsSerializer
     implements FlatWorldGeneratorSettingsSerializer {
 

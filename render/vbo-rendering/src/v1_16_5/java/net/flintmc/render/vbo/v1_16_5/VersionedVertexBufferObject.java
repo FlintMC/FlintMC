@@ -41,7 +41,7 @@ import net.flintmc.render.vbo.VertexFormat;
 /**
  * {@inheritDoc}
  */
-@Implement(value = VertexBufferObject.class, version = "1.16.5")
+@Implement(value = VertexBufferObject.class)
 public class VersionedVertexBufferObject implements VertexBufferObject {
 
   private final VertexFormat vertexFormat;

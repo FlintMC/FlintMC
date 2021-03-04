@@ -65,7 +65,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
 
-@Implement(value = PlayerEntity.class, version = "1.15.2")
+@Implement(value = PlayerEntity.class)
 public class VersionedPlayerEntity extends VersionedLivingEntity implements PlayerEntity {
 
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;

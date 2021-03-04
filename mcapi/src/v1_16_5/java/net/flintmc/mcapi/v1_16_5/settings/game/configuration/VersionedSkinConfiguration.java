@@ -34,7 +34,7 @@ import net.minecraft.util.HandSide;
  * 1.15.2 implementation of {@link SkinConfiguration}.
  */
 @Singleton
-@ConfigImplementation(value = SkinConfiguration.class, version = "1.16.5")
+@ConfigImplementation(value = SkinConfiguration.class)
 public class VersionedSkinConfiguration implements SkinConfiguration {
 
   /**

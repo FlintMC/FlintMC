@@ -40,7 +40,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Singleton
-@Implement(value = FlatWorldPresetRegistry.class, version = "1.15.2")
+@Implement(value = FlatWorldPresetRegistry.class)
 public class VersionedFlatWorldPresetRegistry implements FlatWorldPresetRegistry {
 
   private final Collection<FlatWorldPreset> presets;

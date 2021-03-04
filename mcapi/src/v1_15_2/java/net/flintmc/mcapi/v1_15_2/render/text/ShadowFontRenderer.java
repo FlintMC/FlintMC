@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.gui.fonts.Font;
 
-@Shadow(value = "net.minecraft.client.gui.FontRenderer", version = "1.15.2")
+@Shadow(value = "net.minecraft.client.gui.FontRenderer")
 public interface ShadowFontRenderer {
 
   @FieldGetter("font")

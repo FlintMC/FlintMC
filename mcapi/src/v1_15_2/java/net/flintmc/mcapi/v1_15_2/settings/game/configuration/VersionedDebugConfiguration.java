@@ -28,7 +28,7 @@ import net.minecraft.client.Minecraft;
  * 1.15.2 implementation of {@link DebugConfiguration}.
  */
 @Singleton
-@ConfigImplementation(value = DebugConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = DebugConfiguration.class)
 public class VersionedDebugConfiguration implements DebugConfiguration {
 
   /**

@@ -29,7 +29,7 @@ import net.minecraft.util.math.MathHelper;
 /**
  * 1.15.2 implementation of {@link DifficultyLocal}.
  */
-@Implement(value = DifficultyLocal.class, version = "1.15.2")
+@Implement(value = DifficultyLocal.class)
 public class VersionedDifficultyLocal implements DifficultyLocal {
 
   private final Difficulty worldDifficulty;

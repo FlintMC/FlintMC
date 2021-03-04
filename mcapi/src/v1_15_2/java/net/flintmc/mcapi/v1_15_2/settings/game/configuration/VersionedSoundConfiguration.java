@@ -31,7 +31,7 @@ import net.minecraft.client.Minecraft;
  * 1.15.2 implementation of {@link SoundConfiguration}.
  */
 @Singleton
-@ConfigImplementation(value = SoundConfiguration.class, version = "1.15.2")
+@ConfigImplementation(value = SoundConfiguration.class)
 public class VersionedSoundConfiguration implements SoundConfiguration {
 
   private final SoundMapper soundMapper;

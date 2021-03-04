@@ -29,7 +29,7 @@ import net.minecraft.client.Minecraft;
  * 1.16.5 implementation of {@link ResourcePackConfiguration}.
  */
 @Singleton
-@ConfigImplementation(value = ResourcePackConfiguration.class, version = "1.16.5")
+@ConfigImplementation(value = ResourcePackConfiguration.class)
 public class VersionedResourcePackConfiguration implements ResourcePackConfiguration {
 
   /**

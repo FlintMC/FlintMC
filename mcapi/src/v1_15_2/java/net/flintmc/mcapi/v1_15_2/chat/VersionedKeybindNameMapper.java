@@ -26,7 +26,7 @@ import net.flintmc.mcapi.internal.chat.component.KeybindNameMapper;
 import net.minecraft.client.settings.KeyBinding;
 
 @Singleton
-@Implement(value = KeybindNameMapper.class, version = "1.15.2")
+@Implement(value = KeybindNameMapper.class)
 public class VersionedKeybindNameMapper implements KeybindNameMapper {
   /**
    * {@inheritDoc}

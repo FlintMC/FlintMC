@@ -22,7 +22,7 @@ package net.flintmc.mcapi.v1_16_5.world.biome;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-@Shadow(value = "net.minecraft.util.WeightedRandom$Item", version = "1.16.5")
+@Shadow(value = "net.minecraft.util.WeightedRandom$Item")
 public interface WeightedRandomItemShadow {
 
   @FieldGetter("itemWeight")

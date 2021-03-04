@@ -34,7 +34,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.registry.Registry;
 
 @Singleton
-@Implement(value = BlockTypeRegistry.class, version = "1.16.5")
+@Implement(value = BlockTypeRegistry.class)
 public class VersionedBlockTypeRegistry implements BlockTypeRegistry {
 
   private final Map<ResourceLocation, BlockType> types;

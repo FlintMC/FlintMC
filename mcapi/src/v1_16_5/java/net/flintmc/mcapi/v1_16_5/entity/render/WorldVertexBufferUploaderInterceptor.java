@@ -50,8 +50,7 @@ public class WorldVertexBufferUploaderInterceptor {
   }
 
   @ClassTransform(
-      value = "net.minecraft.client.renderer.WorldVertexBufferUploader",
-      version = "1.16.5")
+      value = "net.minecraft.client.renderer.WorldVertexBufferUploader")
   public void transform(ClassTransformContext classTransformContext)
       throws NotFoundException, CannotCompileException {
     CtClass bufferBuilderClass =

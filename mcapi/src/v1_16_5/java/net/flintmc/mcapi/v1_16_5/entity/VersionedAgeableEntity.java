@@ -36,7 +36,7 @@ import net.minecraft.util.ActionResultType;
 /**
  * 1.16.5 implementation of the {@link AgeableEntity}.
  */
-@Implement(value = AgeableEntity.class, version = "1.16.5")
+@Implement(value = AgeableEntity.class)
 public class VersionedAgeableEntity extends VersionedCreatureEntity implements AgeableEntity {
 
   private final net.minecraft.entity.AgeableEntity ageableEntity;

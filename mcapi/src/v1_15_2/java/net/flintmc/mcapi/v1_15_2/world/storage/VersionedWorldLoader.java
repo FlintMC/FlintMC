@@ -36,7 +36,7 @@ import net.minecraft.world.storage.SaveFormat;
 import net.minecraft.world.storage.WorldSummary;
 
 @Singleton
-@Implement(value = WorldLoader.class, version = "1.15.2")
+@Implement(value = WorldLoader.class)
 public class VersionedWorldLoader implements WorldLoader {
 
   private final WorldMapper worldMapper;

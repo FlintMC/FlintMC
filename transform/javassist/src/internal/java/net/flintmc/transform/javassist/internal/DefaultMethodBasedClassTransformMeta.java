@@ -140,7 +140,7 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
         target = resolve;
       }
 
-      return (annotation.version().isEmpty() || annotation.version().equals(this.version))
+      return annotationMeta.isApplicableForVersion(this.version)
           && ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
               || target.equals(classMapping.getObfuscatedName()))
           && this.getFilters().stream()

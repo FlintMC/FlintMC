@@ -48,7 +48,7 @@ import net.minecraft.world.server.ServerWorld;
  * 1.15.2 implementation of {@link World}.
  */
 @Singleton
-@Implement(value = World.class, version = "1.16.5")
+@Implement(value = World.class)
 public class VersionedWorld implements World {
 
   private final BlockState.Factory stateFactory;

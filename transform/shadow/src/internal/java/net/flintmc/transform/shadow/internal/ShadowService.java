@@ -78,8 +78,7 @@ public class ShadowService implements ServiceHandler<Shadow> {
               location.getName(), target));
     }
 
-    if (!(meta.getAnnotation().version().isEmpty()
-        || meta.getAnnotation().version().equals(this.version))) {
+    if (!meta.isApplicableForVersion(this.version)) {
       return;
     }
 

@@ -35,7 +35,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 @Singleton
-@Implement(value = TooltipRenderer.class, version = "1.16.5")
+@Implement(value = TooltipRenderer.class)
 public class VersionedTooltipRenderer implements TooltipRenderer {
 
   private final FontRenderer fontRenderer;
