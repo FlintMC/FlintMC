@@ -42,6 +42,7 @@ public class AnnotationMeta<T extends Annotation> {
   private final Identifier<?> identifier;
   private final T annotation;
   private final String version;
+  private final PackageMeta packageMeta;
   private final Collection<AnnotationMeta<?>> metaData;
 
   public AnnotationMeta(
@@ -49,11 +50,13 @@ public class AnnotationMeta<T extends Annotation> {
       Identifier<?> identifier,
       T annotation,
       String version,
+      PackageMeta packageMeta,
       AnnotationMeta<?>... metaData) {
     this.elementType = elementType;
     this.identifier = identifier;
     this.annotation = annotation;
     this.version = version;
+    this.packageMeta = packageMeta;
     this.metaData = Arrays.asList(metaData);
   }
 
@@ -119,6 +122,15 @@ public class AnnotationMeta<T extends Annotation> {
    */
   public boolean isApplicableForVersion(String version) {
     return this.version == null || this.version.equals(version);
+  }
+
+  /**
+   * Retrieves meta data about the package owning this annotation meta.
+   *
+   * @return The package owning this annotation meta
+   */
+  public PackageMeta getOwningPackageMeta() {
+    return packageMeta;
   }
 
   /**

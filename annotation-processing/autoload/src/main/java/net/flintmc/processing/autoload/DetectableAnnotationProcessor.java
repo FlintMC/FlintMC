@@ -25,31 +25,17 @@ import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import java.lang.annotation.Repeatable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.AnnotationValueVisitor;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 import net.flintmc.processing.Processor;
 import net.flintmc.processing.ProcessorState;
 import net.flintmc.util.commons.Pair;
 import net.flintmc.util.commons.annotation.AnnotationMirrorUtil;
+import javax.lang.model.element.*;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import java.lang.annotation.Repeatable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
 public class DetectableAnnotationProcessor implements Processor {
@@ -63,11 +49,36 @@ public class DetectableAnnotationProcessor implements Processor {
    */
   private static final String MINECRAFT_VERSION_OPTION = "net.flintmc.minecraft.version";
 
+  /**
+   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
+   * IT IN SYNC WITH THE PLUGIN!
+   *
+   * <p>Contains the group id of the package currently being compiled
+   */
+  private static final String PACKAGE_GROUP_OPTION = "net.flintmc.package.group";
+
+  /**
+   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
+   * IT IN SYNC WITH THE PLUGIN!
+   *
+   * <p>Contains the name of the package currently being compiled
+   */
+  private static final String PACKAGE_NAME_OPTION = "net.flintmc.package.name";
+
+  /**
+   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
+   * IT IN SYNC WITH THE PLUGIN!
+   *
+   * <p>Contains the version of the package currently being compiled
+   */
+  private static final String PACKAGE_VERSION_OPTION = "net.flintmc.package.version";
+
   private static final String METAPROGRAMMING_PACKAGE = "net.flintmc.metaprogramming";
   private static final String ANNOTATION_META_CLASS = "AnnotationMeta";
   private static final String DETECTABLE_ANNOTATION_PROVIDER_CLASS = "DetectableAnnotationProvider";
   private static final String DETECTABLE_ANNOTATION_CLASS = "DetectableAnnotation";
   private static final String REPEATING_DETECTABLE_ANNOTATION_CLASS = "RepeatingDetectableAnnotation";
+  private static final String PACKAGE_META_CLASS = "PackageMeta";
 
   /**
    * Template to instantiate an annotation.
@@ -98,6 +109,7 @@ public class DetectableAnnotationProcessor implements Processor {
           + "   ${IDENTIFIER}, \n"
           + "   ${ANNOTATION}, \n"
           + "   ${VERSION}, \n"
+          + "   ${PACKAGE_META}, \n"
           + "new AnnotationMeta[]{${META_DATA}})";
 
   /**
@@ -118,9 +130,16 @@ public class DetectableAnnotationProcessor implements Processor {
   private static final String ANNOTATION_META_CONSTRUCTOR_IDENTIFIER_TEMPLATE =
       "new net.flintmc.metaprogramming.identifier.ConstructorIdentifier(\"${OWNER_NAME}\", new String[]{${PARAMETERS}})";
 
+  private static final String PACKAGE_META_GETTER_TEMPLATE =
+      metaprogrammingClass(PACKAGE_META_CLASS) + ".of(${GROUP}, ${NAME}, ${VERSION})";
+
   private final Collection<String> found;
 
-  private String version;
+  private String minecraftVersion;
+
+  private String packageGroup;
+  private String packageName;
+  private String packageVersion;
 
   /**
    * Constructs a new {@link DetectableAnnotationProcessor}, expected to be called by a {@link
@@ -134,11 +153,15 @@ public class DetectableAnnotationProcessor implements Processor {
   public void handleOptions(Map<String, String> options) {
     if (options.containsKey(MINECRAFT_VERSION_OPTION)) {
       // Wrap in quotation marks since this is used for code generation
-      version = '"' + options.get(MINECRAFT_VERSION_OPTION) + '"';
+      minecraftVersion = stringLiteral(options.get(MINECRAFT_VERSION_OPTION));
     } else {
       // Literal "null" since this is used for code generation
-      version = "null";
+      minecraftVersion = "null";
     }
+
+    packageGroup = stringLiteral(options.getOrDefault(PACKAGE_GROUP_OPTION, "unknown"));
+    packageName = stringLiteral(options.getOrDefault(PACKAGE_NAME_OPTION, "unknown"));
+    packageVersion = stringLiteral(options.getOrDefault(PACKAGE_VERSION_OPTION, "unknown"));
   }
 
   /**
@@ -302,7 +325,8 @@ public class DetectableAnnotationProcessor implements Processor {
                 "ANNOTATION",
                 createAnnotation(annotationType, annotationValues, annotationType.toString()))
             .put("META_DATA", createMetaData(annotationType, annotatedElement))
-            .put("VERSION", version)
+            .put("VERSION", minecraftVersion)
+            .put("PACKAGE_META", createPackageMeta())
             .build(),
         ANNOTATION_META_TEMPLATE);
   }
@@ -327,6 +351,14 @@ public class DetectableAnnotationProcessor implements Processor {
       semicolon = true;
     }
     return output.toString();
+  }
+
+  private String createPackageMeta() {
+    return handleTemplate(ImmutableMap.<String, String>builder()
+        .put("GROUP", packageGroup)
+        .put("NAME", packageName)
+        .put("VERSION", packageVersion)
+        .build(), PACKAGE_META_GETTER_TEMPLATE);
   }
 
   private String createAnnotationIdentifier(Element annotatedElement) {
@@ -723,10 +755,20 @@ public class DetectableAnnotationProcessor implements Processor {
 
   @Override
   public Set<String> options() {
-    return Collections.singleton(MINECRAFT_VERSION_OPTION);
+    Set<String> options = new HashSet<>();
+    options.add(MINECRAFT_VERSION_OPTION);
+    options.add(PACKAGE_GROUP_OPTION);
+    options.add(PACKAGE_NAME_OPTION);
+    options.add(PACKAGE_VERSION_OPTION);
+
+    return options;
   }
 
-  private String metaprogrammingClass(String className) {
+  private static String metaprogrammingClass(String className) {
     return METAPROGRAMMING_PACKAGE + "." + className;
+  }
+
+  private static String stringLiteral(String value) {
+    return '"' + value + '"';
   }
 }
