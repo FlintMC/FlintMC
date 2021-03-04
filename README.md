@@ -215,12 +215,14 @@ Flint will then automatically bind the correct implementation for the running
 version.
 
 ```java
-@Implement(value = StuffDoer.class, version = "1.15.2")
+// Class in 1.15.2 source set
+@Implement(value = StuffDoer.class)
 public class VersionedStuffDoer implements StuffDoer {
 
   @Override
   public void doStuff() {
-    // Implementation for Minecraft 1.15.2
+    // Since the class is in the 1.15.2 source set, this
+    // implementation will only be used for 1.15.2
   }
 }
 ```
