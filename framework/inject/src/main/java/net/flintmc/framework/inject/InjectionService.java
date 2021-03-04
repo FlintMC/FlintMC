@@ -55,11 +55,8 @@ public class InjectionService implements ServiceHandler<Annotation> {
   private final Map<CtClass, AssistedFactory> assisted = new HashMap<>();
   private final Collection<CtClass> ignore = new HashSet<>();
 
-  private final Map<String, String> launchArguments;
-
   @Inject
-  private InjectionService(@Named("launchArguments") Map launchArguments) {
-    this.launchArguments = launchArguments;
+  private InjectionService() {
   }
 
   @Override
@@ -93,10 +90,6 @@ public class InjectionService implements ServiceHandler<Annotation> {
     CtClass location = annotationMeta.<ClassIdentifier>getIdentifier()
         .getLocation();
     Implement annotation = annotationMeta.getAnnotation();
-
-    if (!annotationMeta.isApplicableForVersion(launchArguments.get("--game-version"))) {
-      return;
-    }
 
     if (implementations.containsKey(annotation.value())
         && !implementations.get(annotation.value()).equals(location)) {

@@ -70,18 +70,15 @@ public class DefaultConfigTransformer
 
   private final Collection<PendingTransform> pendingTransforms;
   private final Collection<TransformedConfigMeta> mappings;
-  private final Map<String, String> launchArguments;
 
   @Inject
   private DefaultConfigTransformer(
       ClassPool pool,
       DefaultConfigImplementer configImplementer,
-      ImplementedConfigService implementedService,
-      @Named("launchArguments") Map launchArguments) {
+      ImplementedConfigService implementedService) {
     this.pool = pool;
     this.configImplementer = configImplementer;
     this.implementedService = implementedService;
-    this.launchArguments = launchArguments;
 
     this.pendingTransforms = new HashSet<>();
     this.mappings = new HashSet<>();
@@ -113,10 +110,6 @@ public class DefaultConfigTransformer
               + "/"
               + annotation.value().getName()
               + "]");
-    }
-
-    if (!meta.isApplicableForVersion(launchArguments.get("--game-version"))) {
-      return;
     }
 
     TransformedConfigMeta configMeta =

@@ -30,6 +30,7 @@ import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.metaprogramming.DetectableAnnotation;
 import net.flintmc.util.commons.Pair;
 
+import javax.inject.Named;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -41,10 +42,15 @@ public class ServiceRepository {
   private final Map<CtClass, ServiceHandler> serviceHandlerInstances = new HashMap<>();
   private final Collection<Pair<AnnotationMeta<?>, CtClass>> discoveredMeta = new HashSet<>();
 
+  private final String minecraftVersion;
+
   @Inject
-  private ServiceRepository() {
+  private ServiceRepository(
+      @Named("launchArguments") Map launchArguments
+  ) {
     this.serviceHandlers = HashMultimap.create();
     this.annotations = HashMultimap.create();
+    this.minecraftVersion = (String) launchArguments.get("--game-version");
   }
 
   /**
@@ -115,7 +121,10 @@ public class ServiceRepository {
                   serviceHandlerClass,
                   InjectionHolder.getInjectedInstance(CtResolver.get(serviceHandlerClass)));
             }
-            serviceHandlerInstances.get(serviceHandlerClass).discover(annotationMeta);
+
+            if(annotationMeta.isApplicableForVersion(minecraftVersion)) {
+              serviceHandlerInstances.get(serviceHandlerClass).discover(annotationMeta);
+            }
 
           } catch (Exception e) {
             e.printStackTrace();

@@ -51,7 +51,6 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
   private final ClassMappingProvider classMappingProvider;
   private final AnnotationMeta<ClassTransform> annotationMeta;
   private final Logger logger;
-  private final String version;
   private final NameResolver classNameResolver;
   private Object transformInstance;
 
@@ -60,11 +59,9 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
           ClassTransformContext.Factory classTransformContextFactory,
           ClassMappingProvider classMappingProvider,
           Logger logger,
-          AnnotationMeta<ClassTransform> annotationMeta,
-          Map<String, String> launchArguments) {
+          AnnotationMeta<ClassTransform> annotationMeta) {
     this.classTransformContextFactory = classTransformContextFactory;
     this.logger = logger;
-    this.version = launchArguments.get("--game-version");
     this.classMappingProvider = classMappingProvider;
     this.annotationMeta = annotationMeta;
     this.classNameResolver =
@@ -140,8 +137,7 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
         target = resolve;
       }
 
-      return annotationMeta.isApplicableForVersion(this.version)
-          && ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
+      return ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
               || target.equals(classMapping.getObfuscatedName()))
           && this.getFilters().stream()
               .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass));

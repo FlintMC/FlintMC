@@ -39,17 +39,14 @@ public class DefaultMethodBasedClassTransformMetaFactory implements
   private final ClassTransformContext.Factory classTransformContextFactory;
   private final ClassMappingProvider classMappingProvider;
   private final Logger logger;
-  private final Map<String, String> launchArguments;
 
   @Inject
   private DefaultMethodBasedClassTransformMetaFactory(
       DefaultClassTransformContextFactory classTransformContextFactory,
-      ClassMappingProvider classMappingProvider,
-      @Named("launchArguments") Map launchArguments) {
+      ClassMappingProvider classMappingProvider) {
     this.classTransformContextFactory = classTransformContextFactory;
     this.classMappingProvider = classMappingProvider;
     this.logger = null;
-    this.launchArguments = launchArguments;
   }
 
   @Override
@@ -58,8 +55,7 @@ public class DefaultMethodBasedClassTransformMetaFactory implements
         this.classTransformContextFactory,
         this.classMappingProvider,
         this.logger,
-        annotationMeta,
-        this.launchArguments
+        annotationMeta
     );
   }
 }

@@ -54,19 +54,16 @@ public class SubscribeService implements ServiceHandler<Annotation> {
   private final ExecutorFactory factory;
   private final CtClass eventInterface;
   private final SubscribeMethodBuilder.Factory methodBuilderFactory;
-  private final String version;
 
   @Inject
   private SubscribeService(
       ExecutorFactory executorFactory,
       ClassPool pool,
-      SubscribeMethodBuilder.Factory methodBuilderFactory,
-      @Named("launchArguments") Map launchArguments)
+      SubscribeMethodBuilder.Factory methodBuilderFactory)
       throws NotFoundException {
     this.methodBuilderFactory = methodBuilderFactory;
     this.eventInterface = pool.get(Event.class.getName());
     this.factory = executorFactory;
-    this.version = (String) launchArguments.get("--game-version");
   }
 
   /**
@@ -76,8 +73,6 @@ public class SubscribeService implements ServiceHandler<Annotation> {
   public void discover(AnnotationMeta<Annotation> meta) throws ServiceNotFoundException {
     Annotation subscribe = meta.getAnnotation();
     CtMethod method = meta.getMethodIdentifier().getLocation();
-
-    if (!meta.isApplicableForVersion(this.version)) return;
 
     CtClass eventClass = null;
     try {

@@ -60,7 +60,6 @@ public class HookService implements ServiceHandler<Hook> {
   private final ClassMappingProvider mappingProvider;
   private final MappingLineParser lineParser;
   private final Provider<MethodInjectionUtils> methodInjectionUtils;
-  private final String version;
   private final Collection<HookEntry> hooks;
 
   @Inject
@@ -68,14 +67,12 @@ public class HookService implements ServiceHandler<Hook> {
       ClassPool pool,
       ClassMappingProvider mappingProvider,
       MappingLineParser lineParser,
-      Provider<MethodInjectionUtils> methodInjectionUtils,
-      @Named("launchArguments") Map launchArguments) {
+      Provider<MethodInjectionUtils> methodInjectionUtils) {
     this.pool = pool;
     this.mappingProvider = mappingProvider;
     this.lineParser = lineParser;
     this.methodInjectionUtils = methodInjectionUtils;
     this.hooks = Sets.newHashSet();
-    this.version = (String) launchArguments.get("--game-version");
   }
 
   @Override
@@ -92,7 +89,6 @@ public class HookService implements ServiceHandler<Hook> {
 
     Hook annotation = meta.getAnnotation();
 
-    if (!meta.isApplicableForVersion(this.version)) return;
     this.hooks.add(
         new HookEntry(
             meta,

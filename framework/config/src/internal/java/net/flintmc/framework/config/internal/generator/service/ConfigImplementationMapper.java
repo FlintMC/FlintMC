@@ -36,12 +36,10 @@ import net.flintmc.metaprogramming.AnnotationMeta;
 public class ConfigImplementationMapper implements ServiceHandler<ConfigImplementation> {
 
   private final Map<String, CtClass> implementationMappings;
-  private final Map<String, String> launchArguments;
 
   @Inject
-  private ConfigImplementationMapper(@Named("launchArguments") Map launchArguments) {
+  private ConfigImplementationMapper() {
     this.implementationMappings = new HashMap<>();
-    this.launchArguments = launchArguments;
   }
 
   public Map<String, CtClass> getImplementationMappings() {
@@ -54,10 +52,6 @@ public class ConfigImplementationMapper implements ServiceHandler<ConfigImplemen
   @Override
   public void discover(AnnotationMeta<ConfigImplementation> annotationMeta) {
     ConfigImplementation annotation = annotationMeta.getAnnotation();
-
-    if (!annotationMeta.isApplicableForVersion(launchArguments.get("--game-version"))) {
-      return;
-    }
 
     String ifc = annotation.value().getName();
 

@@ -50,19 +50,16 @@ public class ShadowService implements ServiceHandler<Shadow> {
   private final ClassMappingProvider classMappingProvider;
   private final ShadowHandlerService service;
   private final Multimap<String, AnnotationMeta<Shadow>> transforms;
-  private final String version;
 
   @Inject
   private ShadowService(
       @InjectLogger Logger logger,
       ClassMappingProvider classMappingProvider,
-      @Named("launchArguments") Map launchArguments,
       ShadowHandlerService service) {
     this.logger = logger;
     this.classMappingProvider = classMappingProvider;
     this.service = service;
     this.transforms = HashMultimap.create();
-    this.version = (String) launchArguments.get("--game-version");
   }
 
   @Override
@@ -76,10 +73,6 @@ public class ShadowService implements ServiceHandler<Shadow> {
           String.format(
               "Shadow annotation can only be used on interfaces, but found one on %s (not an interface) pointing to %s",
               location.getName(), target));
-    }
-
-    if (!meta.isApplicableForVersion(this.version)) {
-      return;
     }
 
     transforms.put(target, meta);
