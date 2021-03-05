@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.world.stats.event;
+package net.flintmc.mcapi.internal.world.stats.event;
 
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.world.stats.event.PlayerStatsUpdateEvent;
