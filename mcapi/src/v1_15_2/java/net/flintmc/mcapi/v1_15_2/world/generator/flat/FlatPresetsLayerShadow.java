@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.item.Item;
 
-@Shadow(value = "net.minecraft.client.gui.screen.FlatPresetsScreen$LayerItem")
+@Shadow("net.minecraft.client.gui.screen.FlatPresetsScreen$LayerItem")
 public interface FlatPresetsLayerShadow {
 
   @FieldGetter("icon")

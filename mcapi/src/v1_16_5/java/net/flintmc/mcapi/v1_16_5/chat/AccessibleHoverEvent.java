@@ -22,7 +22,7 @@ package net.flintmc.mcapi.v1_16_5.chat;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-@Shadow(value = "net.minecraft.util.text.event.HoverEvent")
+@Shadow("net.minecraft.util.text.event.HoverEvent")
 public interface AccessibleHoverEvent {
 
   @FieldGetter("value")

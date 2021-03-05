@@ -28,7 +28,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.FlatGenerationSettings;
 import java.util.function.Function;
 
-@Shadow(value = "net.minecraft.client.gui.screen.FlatPresetsScreen$LayerItem")
+@Shadow("net.minecraft.client.gui.screen.FlatPresetsScreen$LayerItem")
 public interface FlatPresetsLayerShadow {
 
   @FieldGetter("icon")

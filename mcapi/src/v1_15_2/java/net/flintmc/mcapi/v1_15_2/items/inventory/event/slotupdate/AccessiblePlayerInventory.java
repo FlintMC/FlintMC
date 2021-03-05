@@ -27,7 +27,7 @@ import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-@Shadow(value = "net.minecraft.entity.player.PlayerInventory")
+@Shadow("net.minecraft.entity.player.PlayerInventory")
 public interface AccessiblePlayerInventory {
 
   @FieldSetter("mainInventory")

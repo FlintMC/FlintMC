@@ -26,7 +26,7 @@ import net.minecraft.client.resources.Locale;
 /**
  * A shadow interface for the Minecraft LanguageManager.
  */
-@Shadow(value = "net.minecraft.client.resources.LanguageManager")
+@Shadow("net.minecraft.client.resources.LanguageManager")
 public interface AccessibleLanguageManager {
 
   /**

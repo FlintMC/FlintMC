@@ -31,7 +31,7 @@ import net.minecraft.stats.StatType;
 import net.minecraft.stats.StatisticsManager;
 import net.minecraft.util.ResourceLocation;
 
-@Shadow(value = "net.minecraft.client.gui.screen.StatsScreen")
+@Shadow("net.minecraft.client.gui.screen.StatsScreen")
 public interface StatsScreenShadow {
 
   @FieldGetter("stats")
@@ -53,7 +53,7 @@ public interface StatsScreenShadow {
     this.initLists();
   }
 
-  @Shadow(value = "net.minecraft.client.gui.screen.StatsScreen$CustomStatsList")
+  @Shadow("net.minecraft.client.gui.screen.StatsScreen$CustomStatsList")
   interface GeneralListShadow {
 
     @SuppressWarnings("unchecked")
@@ -61,7 +61,7 @@ public interface StatsScreenShadow {
       return (List<GeneralStat>) ((AbstractListShadow) this).getChildren();
     }
 
-    @Shadow(value = "net.minecraft.client.gui.screen.StatsScreen$CustomStatsList$Entry")
+    @Shadow("net.minecraft.client.gui.screen.StatsScreen$CustomStatsList$Entry")
     interface GeneralStat {
 
       @FieldGetter("field_214405_b")
@@ -69,7 +69,7 @@ public interface StatsScreenShadow {
     }
   }
 
-  @Shadow(value = "net.minecraft.client.gui.screen.StatsScreen$MobStatsList")
+  @Shadow("net.minecraft.client.gui.screen.StatsScreen$MobStatsList")
   interface MobListShadow {
 
     @SuppressWarnings("unchecked")
@@ -77,7 +77,7 @@ public interface StatsScreenShadow {
       return (List<MobStat>) ((AbstractListShadow) this).getChildren();
     }
 
-    @Shadow(value = "net.minecraft.client.gui.screen.StatsScreen$MobStatsList$Entry")
+    @Shadow("net.minecraft.client.gui.screen.StatsScreen$MobStatsList$Entry")
     interface MobStat {
 
       @FieldGetter("field_214411_b")
@@ -85,7 +85,7 @@ public interface StatsScreenShadow {
     }
   }
 
-  @Shadow(value = "net.minecraft.client.gui.screen.StatsScreen$StatsList")
+  @Shadow("net.minecraft.client.gui.screen.StatsScreen$StatsList")
   interface ItemListShadow {
 
     @FieldGetter("field_195113_v")
@@ -98,7 +98,7 @@ public interface StatsScreenShadow {
     List<Item> getAvailableItems();
   }
 
-  @Shadow(value = "net.minecraft.client.gui.widget.list.AbstractList")
+  @Shadow("net.minecraft.client.gui.widget.list.AbstractList")
   interface AbstractListShadow {
 
     @FieldGetter("children")

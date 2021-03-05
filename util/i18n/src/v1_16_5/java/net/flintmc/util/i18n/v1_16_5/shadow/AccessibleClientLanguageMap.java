@@ -23,7 +23,7 @@ import java.util.Map;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-@Shadow(value = "net.minecraft.client.resources.ClientLanguageMap")
+@Shadow("net.minecraft.client.resources.ClientLanguageMap")
 public interface AccessibleClientLanguageMap {
 
   @FieldGetter("field_239495_c_")

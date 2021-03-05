@@ -22,7 +22,7 @@ package net.flintmc.mcapi.v1_16_5.items.inventory.event;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-@Shadow(value = "net.minecraft.client.multiplayer.PlayerController")
+@Shadow("net.minecraft.client.multiplayer.PlayerController")
 public interface AccessiblePlayerController {
 
   @FieldGetter("currentPlayerItem")

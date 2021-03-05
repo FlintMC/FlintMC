@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 
 import java.util.List;
 
-@Shadow(value = "net.minecraft.client.renderer.BufferBuilder")
+@Shadow("net.minecraft.client.renderer.BufferBuilder")
 public interface BufferBuilderAccessor {
 
   @FieldGetter("drawStates")

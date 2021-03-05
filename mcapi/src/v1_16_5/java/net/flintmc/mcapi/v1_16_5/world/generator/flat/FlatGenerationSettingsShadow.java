@@ -24,7 +24,7 @@ import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-@Shadow(value = "net.minecraft.world.gen.FlatGenerationSettings")
+@Shadow("net.minecraft.world.gen.FlatGenerationSettings")
 public interface FlatGenerationSettingsShadow {
 
   @FieldGetter("field_242867_d")

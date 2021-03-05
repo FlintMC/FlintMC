@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.world.storage.VersionData;
 
-@Shadow(value = "net.minecraft.world.storage.WorldSummary")
+@Shadow("net.minecraft.world.storage.WorldSummary")
 public interface WorldSummaryShadow {
 
   @FieldGetter("versionData")

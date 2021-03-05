@@ -28,7 +28,7 @@ import net.flintmc.transform.shadow.Shadow;
 
 import java.util.Set;
 
-@Shadow(value = "net.minecraft.client.renderer.BufferBuilder$DrawState")
+@Shadow("net.minecraft.client.renderer.BufferBuilder$DrawState")
 @FieldCreate(name = "modelBoxHolder", typeName = "net.flintmc.render.model.ModelBoxHolder")
 @FieldCreate(name = "modelRenderData", typeName = "net.flintmc.mcapi.render.MinecraftRenderMeta")
 @FieldCreate(name = "renderCallbacks", typeName = "java.util.Set", defaultValue = "new java.util.HashSet()")

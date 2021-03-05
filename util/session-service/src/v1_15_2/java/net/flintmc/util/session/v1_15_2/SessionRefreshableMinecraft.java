@@ -24,7 +24,7 @@ import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.util.Session;
 
 // Minecraft doesn't allow for changing the session
-@Shadow(value = "net.minecraft.client.Minecraft")
+@Shadow("net.minecraft.client.Minecraft")
 public interface SessionRefreshableMinecraft {
 
   @FieldSetter("session")

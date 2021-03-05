@@ -22,7 +22,7 @@ package net.flintmc.mcapi.v1_16_5.items.inventory.event;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-@Shadow(value = "net.minecraft.network.play.server.SCloseWindowPacket")
+@Shadow("net.minecraft.network.play.server.SCloseWindowPacket")
 public interface AccessibleSCloseWindowPacket {
 
   @FieldGetter("windowId")
