@@ -20,8 +20,9 @@
 package net.flintmc.processing;
 
 import com.google.auto.service.AutoService;
-import net.flintmc.processing.exception.ProcessingException;
-
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
@@ -29,10 +30,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import net.flintmc.processing.exception.ProcessingException;
 
 /**
  * Root entry point for the java annotation processing environment. The corresponding

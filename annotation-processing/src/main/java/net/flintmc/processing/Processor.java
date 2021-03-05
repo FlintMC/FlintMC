@@ -21,10 +21,10 @@ package net.flintmc.processing;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
-import javax.lang.model.element.TypeElement;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.element.TypeElement;
 
 /**
  * Service interface for annotation processors controlled by the {@link FlintAnnotationProcessor}.
@@ -69,15 +69,18 @@ public interface Processor {
 
   /**
    * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} previous
-   * to any call to {@link #accept(TypeElement)} to prepare the processor for setting up the options.
+   * to any call to {@link #accept(TypeElement)} to prepare the processor for setting up the
+   * options.
    *
-   * <p>This will only be called if {@link #options()} returned non-empty set, and the map will only
+   * <p>This will only be called if {@link #options()} returned non-empty set, and the map will
+   * only
    * contain the options specified in the Set (if they have been set at all!).
    *
    * @param options The options which have been set and registered using {@link #options()}
    * @see #options()
    */
-  default void handleOptions(Map<String, String> options) {}
+  default void handleOptions(Map<String, String> options) {
+  }
 
   /**
    * Retrieves the options the processor supports which can then be passed to the compiler.

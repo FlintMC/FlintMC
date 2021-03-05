@@ -19,10 +19,22 @@
 
 package net.flintmc.processing;
 
-import com.squareup.javapoet.*;
-import net.flintmc.processing.exception.ProcessingException;
-import org.apache.commons.io.IOUtils;
-
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Generated;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -30,11 +42,8 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.StandardLocation;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import net.flintmc.processing.exception.ProcessingException;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Representation of the internal state of the {@link FlintAnnotationProcessor} to provide a more
@@ -43,6 +52,7 @@ import java.util.*;
  * <p>This class is a singleton.
  */
 public class ProcessorState {
+
   // Singleton instance
   private static ProcessorState instance;
 
@@ -79,7 +89,7 @@ public class ProcessorState {
    * only be called once.
    *
    * @param processingEnvironment The processing environment used for the entire duration of
-   *     processing
+   *                              processing
    * @throws IllegalStateException If the processing environment has been set already
    */
   public void init(ProcessingEnvironment processingEnvironment) {
@@ -93,15 +103,15 @@ public class ProcessorState {
     Map<String, String> environmentOptions = processingEnvironment.getOptions();
 
     // Let registered processors handle their respective options
-    for(Map.Entry<Processor, Set<String>> entry : registeredOptions.entrySet()) {
+    for (Map.Entry<Processor, Set<String>> entry : registeredOptions.entrySet()) {
       Processor processor = entry.getKey();
       Set<String> options = entry.getValue();
 
       Map<String, String> optionValues = new HashMap<>();
 
       // Copy all requested values over
-      for(String requested : options) {
-        if(environmentOptions.containsKey(requested)) {
+      for (String requested : options) {
+        if (environmentOptions.containsKey(requested)) {
           optionValues.put(requested, environmentOptions.get(requested));
         }
       }
@@ -240,7 +250,7 @@ public class ProcessorState {
   public Set<String> collectSupportedOptions() {
     Set<String> allOptions = new HashSet<>();
 
-    for(Set<String> otherOptions : registeredOptions.values()) {
+    for (Set<String> otherOptions : registeredOptions.values()) {
       allOptions.addAll(otherOptions);
     }
 
@@ -251,10 +261,10 @@ public class ProcessorState {
    * Registers all options supported by processors.
    */
   private void registerOptions() {
-    for(Processor processor : processors) {
+    for (Processor processor : processors) {
       Set<String> processorOptions = processor.options();
 
-      if(!processorOptions.isEmpty()) {
+      if (!processorOptions.isEmpty()) {
         registeredOptions.put(processor, processorOptions);
       }
     }
