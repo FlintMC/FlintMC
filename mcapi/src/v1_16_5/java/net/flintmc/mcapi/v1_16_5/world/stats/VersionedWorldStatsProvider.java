@@ -122,7 +122,7 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     this.lastStats = null;
   }
 
-  @Subscribe(phase = Phase.ANY)
+  @Subscribe(Phase.ANY)
   public void processStatsResponse(PacketEvent event, Phase phase) {
     if (event.getDirection() != Direction.RECEIVE
         || !(event.getPacket() instanceof SStatisticsPacket)) {

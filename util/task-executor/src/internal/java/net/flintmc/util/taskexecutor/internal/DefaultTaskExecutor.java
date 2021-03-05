@@ -51,7 +51,7 @@ public class DefaultTaskExecutor implements TaskExecutor {
     this.scheduledTasks = new HashSet<>();
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @Subscribe(Subscribe.Phase.POST)
   public void onTick(TickEvent event) {
     if (event.getType() != TickEvent.Type.GENERAL) {
       return;

@@ -43,7 +43,7 @@ public class VersionedTileEntityTypeRegister implements TileEntityTypeRegister {
     this.tileEntityTypes = Maps.newHashMap();
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @Subscribe(Subscribe.Phase.POST)
   public void convertTileEntityTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.tileentity.TileEntityType<?> tileEntityType : Registry.BLOCK_ENTITY_TYPE) {
       String key = Registry.BLOCK_ENTITY_TYPE.getKey(tileEntityType).getPath();

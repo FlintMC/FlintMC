@@ -28,7 +28,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A shortcut to {@code @Subscribe(phase = Subscribe.Phase.PRE)}.
+ * A shortcut to {@code @Subscribe(Subscribe.Phase.PRE)}.
  *
  * @see Subscribe
  */

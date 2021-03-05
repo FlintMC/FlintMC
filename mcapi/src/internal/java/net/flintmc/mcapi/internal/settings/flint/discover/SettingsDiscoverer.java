@@ -64,7 +64,7 @@ public class SettingsDiscoverer {
     this.launchArguments = launchArguments;
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @Subscribe(Subscribe.Phase.POST)
   public void handleConfigDiscovered(ConfigDiscoveredEvent event) {
     ParsedConfig config = event.getConfig();
 

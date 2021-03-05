@@ -42,7 +42,7 @@ public class VersionedResourcePackReloadEventBroadCaster {
     this.resourcePackReloadEvent = resourcePackReloadEvent;
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @Subscribe(Subscribe.Phase.POST)
   public void init(OpenGLInitializeEvent event) {
     // Install a hook on the minecraft resource manager
     ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager())

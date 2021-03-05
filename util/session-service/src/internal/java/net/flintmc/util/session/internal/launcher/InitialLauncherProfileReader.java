@@ -41,7 +41,7 @@ public class InitialLauncherProfileReader {
     this.sessionService = sessionService;
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @Subscribe(Subscribe.Phase.POST)
   public void readLauncherProfiles(MinecraftInitializeEvent event) throws IOException {
     // load the launcher_profiles.json from the launcher to get the initial clientToken which is
     // necessary

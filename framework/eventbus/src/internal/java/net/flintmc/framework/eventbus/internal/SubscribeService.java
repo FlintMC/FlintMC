@@ -21,9 +21,7 @@ package net.flintmc.framework.eventbus.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import java.lang.annotation.Annotation;
-import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -118,7 +116,7 @@ public class SubscribeService implements ServiceHandler<Annotation> {
       phase = Subscribe.Phase.POST;
     } else if (subscribe instanceof Subscribe) {
       priority = ((Subscribe) subscribe).priority();
-      phase = ((Subscribe) subscribe).phase();
+      phase = ((Subscribe) subscribe).value();
     } else {
       throw new ServiceNotFoundException(
           "Unknown subscribe annotation: " + subscribe.annotationType().getName());

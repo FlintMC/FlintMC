@@ -98,7 +98,7 @@ public class InventoryUpdateSlotEventInjector {
     inventory.updateAllInventories();
   }
 
-  @Subscribe(phase = Phase.ANY)
+  @Subscribe(Phase.ANY)
   public void handleSetSlot(PacketEvent event, Phase phase) {
     if (event.getDirection() != DirectionalEvent.Direction.RECEIVE
         || !(event.getPacket() instanceof SSetSlotPacket)
@@ -127,7 +127,7 @@ public class InventoryUpdateSlotEventInjector {
     this.eventBus.fireEvent(this.eventFactory.create(inventory, slot, newItem), phase);
   }
 
-  @Subscribe(phase = Phase.ANY)
+  @Subscribe(Phase.ANY)
   public void handleInventoryClick(
       InventoryClickEvent event, ItemStack.Factory itemFactory, Phase phase) {
     // only drops/pickups are not confirmed by the server before updated and therefore not updated above

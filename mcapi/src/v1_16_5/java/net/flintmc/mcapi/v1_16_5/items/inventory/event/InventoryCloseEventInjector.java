@@ -46,7 +46,7 @@ public class InventoryCloseEventInjector {
     this.controller = controller;
   }
 
-  @Subscribe(phase = Subscribe.Phase.ANY)
+  @Subscribe(Subscribe.Phase.ANY)
   public void fireServerClose(PacketEvent event, Subscribe.Phase phase) {
     if (event.getDirection() != Direction.RECEIVE
         || !(event.getPacket() instanceof AccessibleSCloseWindowPacket)) {

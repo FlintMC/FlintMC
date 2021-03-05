@@ -42,7 +42,7 @@ import java.lang.annotation.Target;
  * <p>Subscribe methods should be only used in classes annotated with {@link Singleton} and in
  * classes NOT annotated with {@link Service}.
  *
- * <p>For simpler modification of the {@link #phase()}, {@link PreSubscribe} and {@link
+ * <p>For simpler modification of the {@link #value()}, {@link PreSubscribe} and {@link
  * PostSubscribe} can also be used.
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -62,7 +62,7 @@ public @interface Subscribe {
    *
    * @return The subscribed method phase.
    */
-  Phase phase();
+  Phase value();
 
   /**
    * An enumeration representing all available phases.

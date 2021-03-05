@@ -44,12 +44,12 @@ public class RegisteredSettingUpdater {
     this.eventFactory = eventFactory;
   }
 
-  @Subscribe(phase = Subscribe.Phase.PRE)
+  @Subscribe(Subscribe.Phase.PRE)
   public void preUpdateSettings(ConfigValueUpdateEvent event) {
     this.fireEvent(event.getReference(), Subscribe.Phase.PRE);
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @Subscribe(Subscribe.Phase.POST)
   public void postUpdateSettings(ConfigValueUpdateEvent event) {
     this.fireEvent(event.getReference(), Subscribe.Phase.POST);
   }
