@@ -22,6 +22,7 @@ package net.flintmc.util.session.internal.launcher;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
+import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.event.MinecraftInitializeEvent;
 import net.flintmc.util.session.SessionService;
@@ -41,7 +42,7 @@ public class InitialLauncherProfileReader {
     this.sessionService = sessionService;
   }
 
-  @Subscribe(Subscribe.Phase.POST)
+  @PostSubscribe
   public void readLauncherProfiles(MinecraftInitializeEvent event) throws IOException {
     // load the launcher_profiles.json from the launcher to get the initial clientToken which is
     // necessary

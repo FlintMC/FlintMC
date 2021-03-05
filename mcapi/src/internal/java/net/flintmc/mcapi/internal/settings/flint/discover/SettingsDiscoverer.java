@@ -30,6 +30,7 @@ import java.util.Map;
 import net.flintmc.framework.config.event.ConfigDiscoveredEvent;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
@@ -64,7 +65,7 @@ public class SettingsDiscoverer {
     this.launchArguments = launchArguments;
   }
 
-  @Subscribe(Subscribe.Phase.POST)
+  @PostSubscribe
   public void handleConfigDiscovered(ConfigDiscoveredEvent event) {
     ParsedConfig config = event.getConfig();
 

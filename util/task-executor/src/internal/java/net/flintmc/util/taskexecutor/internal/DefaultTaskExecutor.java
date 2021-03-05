@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.event.TickEvent;
 import net.flintmc.util.taskexecutor.Task;
@@ -51,7 +51,7 @@ public class DefaultTaskExecutor implements TaskExecutor {
     this.scheduledTasks = new HashSet<>();
   }
 
-  @Subscribe(Subscribe.Phase.POST)
+  @PostSubscribe
   public void onTick(TickEvent event) {
     if (event.getType() != TickEvent.Type.GENERAL) {
       return;

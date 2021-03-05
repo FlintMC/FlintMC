@@ -22,6 +22,7 @@ package net.flintmc.mcapi.v1_16_5.resources.pack;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.mcapi.resources.pack.ResourcePackReloadEvent;
 import net.flintmc.render.gui.event.OpenGLInitializeEvent;
@@ -42,7 +43,7 @@ public class VersionedResourcePackReloadEventBroadCaster {
     this.resourcePackReloadEvent = resourcePackReloadEvent;
   }
 
-  @Subscribe(Subscribe.Phase.POST)
+  @PostSubscribe
   public void init(OpenGLInitializeEvent event) {
     // Install a hook on the minecraft resource manager
     ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager())
