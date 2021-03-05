@@ -30,7 +30,7 @@ import net.minecraft.client.Minecraft;
  * 1.16.5 implementation of {@link AccessibilityConfiguration}.
  */
 @Singleton
-@ConfigImplementation(value = AccessibilityConfiguration.class)
+@ConfigImplementation(AccessibilityConfiguration.class)
 public class VersionedAccessibilityConfiguration implements AccessibilityConfiguration {
 
   /**
