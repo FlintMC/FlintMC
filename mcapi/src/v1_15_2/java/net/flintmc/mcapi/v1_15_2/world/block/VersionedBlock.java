@@ -38,7 +38,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
-@Implement(value = Block.class)
+@Implement(Block.class)
 public class VersionedBlock implements Block {
 
   private final EntityMapper entityMapper;

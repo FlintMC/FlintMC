@@ -32,7 +32,7 @@ import net.flintmc.render.vbo.VertexFormatBuilder;
  * {@inheritDoc}
  */
 @Singleton
-@Implement(value = VertexFormatBuilder.class)
+@Implement(VertexFormatBuilder.class)
 public class VersionedVertexFormatBuilder implements VertexFormatBuilder {
 
   private final VertexFormat.Factory vertexFormatFactory;

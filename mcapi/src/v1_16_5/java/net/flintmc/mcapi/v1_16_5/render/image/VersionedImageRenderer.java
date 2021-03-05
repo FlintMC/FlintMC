@@ -33,7 +33,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.vector.Matrix4f;
 
 @Singleton
-@Implement(value = ImageRenderer.class)
+@Implement(ImageRenderer.class)
 public class VersionedImageRenderer implements ImageRenderer {
 
   private final Minecraft minecraft;

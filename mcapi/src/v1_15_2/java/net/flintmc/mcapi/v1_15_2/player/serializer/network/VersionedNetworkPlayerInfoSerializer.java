@@ -29,7 +29,7 @@ import net.flintmc.mcapi.player.serializer.network.NetworkPlayerInfoSerializer;
  * 1.15.2 implementation of {@link NetworkPlayerInfoSerializer}
  */
 @Singleton
-@Implement(value = NetworkPlayerInfoSerializer.class)
+@Implement(NetworkPlayerInfoSerializer.class)
 public class VersionedNetworkPlayerInfoSerializer
     implements NetworkPlayerInfoSerializer<net.minecraft.client.network.play.NetworkPlayerInfo> {
 

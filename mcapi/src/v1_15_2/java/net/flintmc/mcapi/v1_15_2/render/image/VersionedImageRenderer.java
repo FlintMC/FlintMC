@@ -33,7 +33,7 @@ import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 @Singleton
-@Implement(value = ImageRenderer.class)
+@Implement(ImageRenderer.class)
 public class VersionedImageRenderer implements ImageRenderer {
 
   private final Minecraft minecraft;

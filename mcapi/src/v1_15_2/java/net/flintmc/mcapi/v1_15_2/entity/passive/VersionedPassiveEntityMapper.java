@@ -30,7 +30,7 @@ import net.flintmc.mcapi.internal.entity.DefaultEntityRepository;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = PassiveEntityMapper.class)
+@Implement(PassiveEntityMapper.class)
 public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
 
   private final AmbientEntity.Provider ambientEntityProvider;

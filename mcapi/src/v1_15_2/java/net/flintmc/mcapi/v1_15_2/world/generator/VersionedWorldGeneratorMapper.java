@@ -51,7 +51,7 @@ import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.FlatLayerInfo;
 
 @Singleton
-@Implement(value = WorldGeneratorMapper.class)
+@Implement(WorldGeneratorMapper.class)
 public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
 
   private static final BiMap<String, FlatWorldStructure> STRUCTURES = HashBiMap.create();

@@ -35,7 +35,7 @@ import net.minecraft.nbt.CompoundNBT;
 /**
  * 1.15.2 implementation of the {@link AgeableEntity}.
  */
-@Implement(value = AgeableEntity.class)
+@Implement(AgeableEntity.class)
 public class VersionedAgeableEntity extends VersionedCreatureEntity implements AgeableEntity {
 
   private final net.minecraft.entity.AgeableEntity ageableEntity;

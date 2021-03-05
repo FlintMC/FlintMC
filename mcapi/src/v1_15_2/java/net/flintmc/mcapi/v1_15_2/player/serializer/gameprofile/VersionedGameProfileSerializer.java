@@ -33,7 +33,7 @@ import net.flintmc.mcapi.player.serializer.gameprofile.PropertyMapSerializer;
  * 1.15.2 implementation of {@link GameProfileSerializer}
  */
 @Singleton
-@Implement(value = GameProfileSerializer.class)
+@Implement(GameProfileSerializer.class)
 public class VersionedGameProfileSerializer
     implements GameProfileSerializer<com.mojang.authlib.GameProfile> {
 

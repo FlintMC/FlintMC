@@ -42,7 +42,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 @Singleton
-@Implement(value = ItemRegistry.class)
+@Implement(ItemRegistry.class)
 public class VersionedItemRegistry extends DefaultItemRegistry {
 
   @Inject

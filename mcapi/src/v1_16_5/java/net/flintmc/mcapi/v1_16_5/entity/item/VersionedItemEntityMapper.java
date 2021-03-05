@@ -28,7 +28,7 @@ import net.flintmc.mcapi.entity.item.ItemEntityMapper;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = ItemEntityMapper.class)
+@Implement(ItemEntityMapper.class)
 public class VersionedItemEntityMapper implements ItemEntityMapper {
 
   private final EntityRepository entityRepository;

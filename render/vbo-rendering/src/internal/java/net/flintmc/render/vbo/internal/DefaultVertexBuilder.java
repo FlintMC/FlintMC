@@ -34,7 +34,7 @@ import net.flintmc.render.vbo.VertexBuilder;
 /**
  * {@inheritDoc}
  */
-@Implement(value = VertexBuilder.class)
+@Implement(VertexBuilder.class)
 public class DefaultVertexBuilder implements VertexBuilder {
 
   private final VertexBufferObject vbo;

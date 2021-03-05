@@ -45,7 +45,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CCustomPayloadPacket;
 
 @Singleton
-@Implement(value = ConnectedServer.class)
+@Implement(ConnectedServer.class)
 public class VersionedConnectedServer implements ConnectedServer {
 
   private final EventBus eventBus;

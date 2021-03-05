@@ -42,7 +42,7 @@ import net.flintmc.render.vbo.VertexIndexObject;
 /**
  * {@inheritDoc}
  */
-@Implement(value = VertexArrayObject.class)
+@Implement(VertexArrayObject.class)
 public class VersionedVertexArrayObject implements VertexArrayObject {
 
   private final VertexFormat format;

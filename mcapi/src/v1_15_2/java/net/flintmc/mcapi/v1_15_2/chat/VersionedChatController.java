@@ -53,7 +53,7 @@ import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 
 @Singleton
-@Implement(value = ChatController.class)
+@Implement(ChatController.class)
 public class VersionedChatController implements ChatController {
 
   private static final int MAX_MESSAGES = 100;

@@ -27,7 +27,7 @@ import net.flintmc.mcapi.entity.EntitySize;
 /**
  * 1.15.2 implementation of the {@link EntitySize}.
  */
-@Implement(value = EntitySize.class)
+@Implement(EntitySize.class)
 public class VersionedEntitySize implements EntitySize {
 
   private float width;

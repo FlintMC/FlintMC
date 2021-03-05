@@ -31,7 +31,7 @@ import java.io.InputStream;
 /**
  * 1.15.2 implementation of a minecraft resource location.
  */
-@Implement(value = ResourceLocation.class)
+@Implement(ResourceLocation.class)
 public class VersionedResourceLocation implements ResourceLocation {
 
   private final net.minecraft.util.ResourceLocation wrapped;

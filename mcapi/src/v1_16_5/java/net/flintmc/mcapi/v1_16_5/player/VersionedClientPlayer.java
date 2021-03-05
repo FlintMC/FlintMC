@@ -90,7 +90,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 @Singleton
-@Implement(value = ClientPlayer.class)
+@Implement(ClientPlayer.class)
 public class VersionedClientPlayer extends VersionedPlayerEntity implements ClientPlayer {
 
   private static final String UNKNOWN_BIOME = "Unknown";

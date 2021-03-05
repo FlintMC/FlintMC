@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import java.nio.file.Path;
 
 @Singleton
-@Implement(value = WorldGeneratorSettingsImplementation.class)
+@Implement(WorldGeneratorSettingsImplementation.class)
 public class VersionedWorldGeneratorSettingsImplementation
     implements WorldGeneratorSettingsImplementation {
 

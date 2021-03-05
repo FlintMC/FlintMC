@@ -33,7 +33,7 @@ import net.flintmc.mcapi.v1_15_2.entity.VersionedEntity;
 import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
 
-@Implement(value = ItemEntity.class)
+@Implement(ItemEntity.class)
 public class VersionedItemEntity extends VersionedEntity implements ItemEntity {
 
   @AssistedInject

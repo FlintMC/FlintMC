@@ -40,7 +40,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.PigEntity;
 
 @Singleton
-@Implement(value = EntityMapper.class)
+@Implement(EntityMapper.class)
 public class VersionedEntityMapper implements EntityMapper {
 
   private final EntityRepository entityRepository;

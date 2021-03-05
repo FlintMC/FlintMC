@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Singleton
-@Implement(value = WorldStatsProvider.class)
+@Implement(WorldStatsProvider.class)
 public class VersionedWorldStatsProvider implements WorldStatsProvider {
 
   private final VersionedWorldStatsMapper mapper;

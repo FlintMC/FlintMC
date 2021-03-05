@@ -26,7 +26,7 @@ import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
 
-@Implement(value = TranslationComponentBuilder.class)
+@Implement(TranslationComponentBuilder.class)
 public class DefaultTranslationComponentBuilder
     extends DefaultComponentBuilder<TranslationComponentBuilder, TranslationComponent>
     implements TranslationComponentBuilder {

@@ -33,7 +33,7 @@ import net.minecraft.util.math.BlockPos;
 /**
  * 1.15.2 implementation of the {@link CreatureEntity}.
  */
-@Implement(value = CreatureEntity.class)
+@Implement(CreatureEntity.class)
 public class VersionedCreatureEntity extends VersionedMobEntity implements CreatureEntity {
 
   private final net.minecraft.entity.CreatureEntity creatureEntity;

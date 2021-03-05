@@ -29,7 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 
-@Implement(value = ScoreChangeListener.class)
+@Implement(ScoreChangeListener.class)
 public class VersionedScoreChangeListener implements ScoreChangeListener {
 
   private final ScoreboardMapper scoreboardMapper;

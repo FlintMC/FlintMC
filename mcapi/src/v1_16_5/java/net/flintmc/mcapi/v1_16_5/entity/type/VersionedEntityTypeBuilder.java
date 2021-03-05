@@ -31,7 +31,7 @@ import net.flintmc.mcapi.entity.type.EntityTypeBuilder;
 /**
  * 1.15.2 implementation of the {@link EntityTypeBuilder}.
  */
-@Implement(value = EntityTypeBuilder.class)
+@Implement(EntityTypeBuilder.class)
 public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
 
   private final Entity.Classification classification;

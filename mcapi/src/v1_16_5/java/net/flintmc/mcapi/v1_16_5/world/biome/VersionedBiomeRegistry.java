@@ -34,7 +34,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biomes;
 
 @Singleton
-@Implement(value = BiomeRegistry.class)
+@Implement(BiomeRegistry.class)
 public class VersionedBiomeRegistry implements BiomeRegistry {
 
   private final Map<ResourceLocation, Biome> biomes;

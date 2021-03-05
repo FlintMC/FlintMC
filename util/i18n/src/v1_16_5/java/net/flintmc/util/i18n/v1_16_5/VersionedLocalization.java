@@ -26,7 +26,7 @@ import net.flintmc.util.i18n.Localization;
 import net.flintmc.util.i18n.v1_16_5.shadow.AccessibleClientLanguageMap;
 
 @Singleton
-@Implement(value = Localization.class)
+@Implement(Localization.class)
 public class VersionedLocalization implements Localization {
 
   private final AccessibleClientLanguageMap clientLanguageMap;

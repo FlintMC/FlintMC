@@ -30,7 +30,7 @@ import net.flintmc.mcapi.entity.mapper.EntityFoundationMapper;
 /**
  * 1.16.5 implementation of the {@link EntitySenses}.
  */
-@Implement(value = EntitySenses.class)
+@Implement(EntitySenses.class)
 public class VersionedEntitySenses extends net.minecraft.entity.ai.EntitySenses
     implements EntitySenses {
 

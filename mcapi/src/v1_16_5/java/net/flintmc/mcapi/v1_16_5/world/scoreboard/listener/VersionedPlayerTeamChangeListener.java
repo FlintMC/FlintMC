@@ -38,7 +38,7 @@ import net.minecraft.scoreboard.Team.Visible;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
-@Implement(value = PlayerTeamChangeListener.class)
+@Implement(PlayerTeamChangeListener.class)
 public class VersionedPlayerTeamChangeListener implements PlayerTeamChangeListener {
 
   private final ScoreboardMapper scoreboardMapper;

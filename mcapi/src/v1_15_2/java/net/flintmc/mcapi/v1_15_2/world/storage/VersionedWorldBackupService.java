@@ -27,7 +27,7 @@ import net.flintmc.mcapi.world.storage.service.WorldBackupService;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = WorldBackupService.class)
+@Implement(WorldBackupService.class)
 public class VersionedWorldBackupService implements WorldBackupService {
 
   /**

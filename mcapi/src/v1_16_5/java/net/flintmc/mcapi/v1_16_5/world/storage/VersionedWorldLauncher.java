@@ -30,7 +30,7 @@ import net.minecraft.client.Minecraft;
  * 1.16.5 implementation of the {@link WorldLauncher}.
  */
 @Singleton
-@Implement(value = WorldLauncher.class)
+@Implement(WorldLauncher.class)
 public class VersionedWorldLauncher implements WorldLauncher {
 
   @Inject

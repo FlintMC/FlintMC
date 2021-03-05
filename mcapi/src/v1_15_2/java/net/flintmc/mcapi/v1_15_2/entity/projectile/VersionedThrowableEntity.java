@@ -32,7 +32,7 @@ import net.flintmc.mcapi.v1_15_2.entity.VersionedEntity;
 import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
 
-@Implement(value = ThrowableEntity.class)
+@Implement(ThrowableEntity.class)
 public class VersionedThrowableEntity extends VersionedEntity implements ThrowableEntity {
 
   @AssistedInject

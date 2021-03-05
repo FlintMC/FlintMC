@@ -36,7 +36,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
-@Implement(value = WorldTypeRegistry.class)
+@Implement(WorldTypeRegistry.class)
 public class VersionedWorldTypeRegistry implements WorldTypeRegistry {
 
   private static final Collection<String> BUFFET_TYPES =

@@ -29,7 +29,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 
 @Singleton
-@Implement(value = BiomeMapper.class)
+@Implement(BiomeMapper.class)
 public class VersionedBiomeMapper implements BiomeMapper {
 
   /**

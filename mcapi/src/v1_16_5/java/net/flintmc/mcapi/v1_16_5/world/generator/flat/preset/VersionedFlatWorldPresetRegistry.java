@@ -43,7 +43,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.FlatGenerationSettings;
 
 @Singleton
-@Implement(value = FlatWorldPresetRegistry.class)
+@Implement(FlatWorldPresetRegistry.class)
 public class VersionedFlatWorldPresetRegistry implements FlatWorldPresetRegistry {
 
   private final Collection<FlatWorldPreset> presets;

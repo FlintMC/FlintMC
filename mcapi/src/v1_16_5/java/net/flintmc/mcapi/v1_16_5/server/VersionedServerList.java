@@ -34,7 +34,7 @@ import net.minecraft.client.multiplayer.ServerList;
  * {@inheritDoc}
  */
 @Singleton
-@Implement(value = net.flintmc.mcapi.server.ServerList.class)
+@Implement(net.flintmc.mcapi.server.ServerList.class)
 public class VersionedServerList implements net.flintmc.mcapi.server.ServerList {
 
   private final ServerList mcServerList;

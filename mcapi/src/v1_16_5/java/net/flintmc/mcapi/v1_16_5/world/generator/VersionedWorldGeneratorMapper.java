@@ -60,7 +60,7 @@ import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.gen.settings.StructureSpreadSettings;
 
 @Singleton
-@Implement(value = WorldGeneratorMapper.class)
+@Implement(WorldGeneratorMapper.class)
 public class VersionedWorldGeneratorMapper implements WorldGeneratorMapper {
 
   public static final String REGISTRIES_OPTION = "1.16.5_dynamicRegistries";

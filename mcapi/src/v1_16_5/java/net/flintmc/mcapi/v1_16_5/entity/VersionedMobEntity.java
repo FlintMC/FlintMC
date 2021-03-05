@@ -39,7 +39,7 @@ import net.flintmc.mcapi.world.math.BlockPosition;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
-@Implement(value = MobEntity.class)
+@Implement(MobEntity.class)
 public class VersionedMobEntity extends VersionedLivingEntity implements MobEntity {
 
   private final net.minecraft.entity.MobEntity mobEntity;

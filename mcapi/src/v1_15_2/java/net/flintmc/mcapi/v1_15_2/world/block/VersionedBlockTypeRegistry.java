@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-@Implement(value = BlockTypeRegistry.class)
+@Implement(BlockTypeRegistry.class)
 public class VersionedBlockTypeRegistry implements BlockTypeRegistry {
 
   private final Map<ResourceLocation, BlockType> types;

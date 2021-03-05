@@ -36,7 +36,7 @@ import net.flintmc.render.gui.windowing.WindowRenderer;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = MinecraftWindow.class)
+@Implement(MinecraftWindow.class)
 public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
 
   private final List<WindowRenderer> intrusiveRenderers;

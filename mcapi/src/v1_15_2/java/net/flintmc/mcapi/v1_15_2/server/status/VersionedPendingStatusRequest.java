@@ -55,7 +55,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.logging.log4j.Logger;
 
-@Implement(value = PendingStatusRequest.class)
+@Implement(PendingStatusRequest.class)
 public class VersionedPendingStatusRequest
     implements PendingStatusRequest, IClientStatusNetHandler {
 

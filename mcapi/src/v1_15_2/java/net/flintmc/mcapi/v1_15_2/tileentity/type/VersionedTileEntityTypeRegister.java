@@ -31,7 +31,7 @@ import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.minecraft.util.registry.Registry;
 
 @Singleton
-@Implement(value = TileEntityTypeRegister.class)
+@Implement(TileEntityTypeRegister.class)
 public class VersionedTileEntityTypeRegister implements TileEntityTypeRegister {
 
   private final Map<String, TileEntityType> tileEntityTypes;

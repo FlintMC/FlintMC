@@ -29,7 +29,7 @@ import net.flintmc.mcapi.world.block.BlockState;
 import net.flintmc.mcapi.world.block.BlockType;
 import net.minecraft.block.Block;
 
-@Implement(value = BlockType.class)
+@Implement(BlockType.class)
 public class VersionedBlockType implements BlockType {
 
   private final ResourceLocation name;

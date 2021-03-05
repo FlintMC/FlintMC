@@ -35,7 +35,7 @@ import net.flintmc.mcapi.v1_15_2.entity.VersionedAgeableEntity;
 import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
 
-@Implement(value = AnimalEntity.class)
+@Implement(AnimalEntity.class)
 public class VersionedAnimalEntity extends VersionedAgeableEntity implements AnimalEntity {
 
   private final net.minecraft.entity.passive.AnimalEntity animalEntity;

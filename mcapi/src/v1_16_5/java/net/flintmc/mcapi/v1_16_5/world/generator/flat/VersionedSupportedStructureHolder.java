@@ -27,7 +27,7 @@ import net.flintmc.mcapi.world.generator.flat.structure.StructureOption;
 import net.flintmc.mcapi.world.generator.flat.structure.SupportedStructureHolder;
 
 @Singleton
-@Implement(value = SupportedStructureHolder.class)
+@Implement(SupportedStructureHolder.class)
 public class VersionedSupportedStructureHolder implements SupportedStructureHolder {
 
   /**

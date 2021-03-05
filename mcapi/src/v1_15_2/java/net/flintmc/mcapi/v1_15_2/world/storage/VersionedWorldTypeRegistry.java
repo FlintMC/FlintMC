@@ -31,7 +31,7 @@ import net.flintmc.mcapi.world.type.WorldTypeRegistry;
 import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 
 @Singleton
-@Implement(value = WorldTypeRegistry.class)
+@Implement(WorldTypeRegistry.class)
 public class VersionedWorldTypeRegistry implements WorldTypeRegistry {
 
   private final WorldMapper worldMapper;

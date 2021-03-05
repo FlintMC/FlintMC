@@ -34,7 +34,7 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.text.ITextComponent;
 import java.util.Optional;
 
-@Implement(value = ObjectiveChangeListener.class)
+@Implement(ObjectiveChangeListener.class)
 public class VersionedObjectiveChangeListener implements ObjectiveChangeListener {
 
   private final MinecraftComponentMapper componentMapper;

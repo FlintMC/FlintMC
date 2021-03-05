@@ -216,7 +216,7 @@ version.
 
 ```java
 // Class in 1.15.2 source set
-@Implement(value = StuffDoer.class)
+@Implement(StuffDoer.class)
 public class VersionedStuffDoer implements StuffDoer {
 
   @Override

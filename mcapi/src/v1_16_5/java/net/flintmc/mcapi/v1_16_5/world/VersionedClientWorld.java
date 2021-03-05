@@ -46,7 +46,7 @@ import net.minecraft.client.Minecraft;
  * 1.16.5 implementation of {@link ClientWorld}
  */
 @Singleton
-@Implement(value = ClientWorld.class)
+@Implement(ClientWorld.class)
 public class VersionedClientWorld extends VersionedWorld implements ClientWorld {
 
   private final ClientPlayer player;

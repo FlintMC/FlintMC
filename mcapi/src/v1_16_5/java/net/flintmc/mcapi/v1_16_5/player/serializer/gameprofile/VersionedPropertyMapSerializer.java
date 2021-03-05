@@ -31,7 +31,7 @@ import net.flintmc.mcapi.player.serializer.gameprofile.PropertyMapSerializer;
  * 1.16.5. implementation of {@link PropertyMapSerializer}
  */
 @Singleton
-@Implement(value = PropertyMapSerializer.class)
+@Implement(PropertyMapSerializer.class)
 public class VersionedPropertyMapSerializer
     implements PropertyMapSerializer<com.mojang.authlib.properties.PropertyMap> {
 

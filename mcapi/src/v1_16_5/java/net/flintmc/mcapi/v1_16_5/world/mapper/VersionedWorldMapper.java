@@ -34,7 +34,7 @@ import net.minecraft.world.storage.VersionData;
 import net.minecraft.world.storage.WorldSummary;
 
 @Singleton
-@Implement(value = WorldMapper.class)
+@Implement(WorldMapper.class)
 public class VersionedWorldMapper implements WorldMapper {
 
   private final WorldOverview.Factory worldOverviewFactory;

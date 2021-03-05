@@ -37,7 +37,7 @@ import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = MinecraftWindow.class)
+@Implement(MinecraftWindow.class)
 public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
 
   private final ClassMappingProvider classMappingProvider;

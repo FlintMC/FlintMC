@@ -26,7 +26,7 @@ import net.flintmc.mcapi.entity.passive.AmbientEntity;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 
 @Singleton
-@Implement(value = AmbientEntity.Provider.class)
+@Implement(AmbientEntity.Provider.class)
 public class VersionedAmbientEntityProvider implements AmbientEntity.Provider {
 
   private final AmbientEntity.Factory ambientEntityFactory;

@@ -47,7 +47,7 @@ import net.flintmc.render.shader.ShaderUniformProvider;
 /**
  * {@inheritDoc}
  */
-@Implement(value = ShaderUniform.class)
+@Implement(ShaderUniform.class)
 public class VersionedShaderUniform implements ShaderUniform {
 
   private final String name;

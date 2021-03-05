@@ -29,7 +29,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
-@Implement(value = KeybindNameMapper.class)
+@Implement(KeybindNameMapper.class)
 public class VersionedKeybindNameMapper implements KeybindNameMapper {
 
   /**

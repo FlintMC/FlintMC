@@ -50,7 +50,7 @@ import java.util.Random;
  * 1.15.2 implementation of {@link World}.
  */
 @Singleton
-@Implement(value = World.class)
+@Implement(World.class)
 public class VersionedWorld implements World {
 
   private final BlockState.Factory stateFactory;

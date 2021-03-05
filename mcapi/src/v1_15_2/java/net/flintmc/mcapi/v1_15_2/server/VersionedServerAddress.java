@@ -27,7 +27,7 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.server.ServerAddress;
 
-@Implement(value = ServerAddress.class)
+@Implement(ServerAddress.class)
 public class VersionedServerAddress implements ServerAddress {
 
   private final String ip;

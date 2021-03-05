@@ -28,7 +28,7 @@ import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.minecraft.util.math.BlockPos;
 
-@Implement(value = TileEntity.class)
+@Implement(TileEntity.class)
 public class VersionedTileEntity implements TileEntity {
 
   private final TileEntityType tileEntityType;

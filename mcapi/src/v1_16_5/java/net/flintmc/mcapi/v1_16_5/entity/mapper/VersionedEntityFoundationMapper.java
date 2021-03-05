@@ -42,7 +42,7 @@ import net.minecraft.world.GameType;
  * 1.16.5 implementation of the {@link EntityFoundationMapper}.
  */
 @Singleton
-@Implement(value = EntityFoundationMapper.class)
+@Implement(EntityFoundationMapper.class)
 public class VersionedEntityFoundationMapper implements EntityFoundationMapper {
 
   private final EntityMapper entityMapper;
