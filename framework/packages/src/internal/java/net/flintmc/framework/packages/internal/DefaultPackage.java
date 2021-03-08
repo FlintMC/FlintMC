@@ -35,6 +35,7 @@ import net.flintmc.framework.packages.PackageState;
 import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
 import net.flintmc.framework.service.ExtendedServiceLoader;
 import net.flintmc.framework.stereotype.service.Service;
+import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceRepository;
 import net.flintmc.framework.stereotype.service.Services;
 import net.flintmc.launcher.LaunchController;
@@ -69,6 +70,7 @@ public class DefaultPackage implements Package {
   private PackageState packageState;
   private PackageClassLoader classLoader;
   private Exception loadException;
+  private Service.State nextExpectedLoadingState = State.PRE_INIT;
 
   /**
    * Creates a new Flint package with the given description loader and the given files.
@@ -253,39 +255,70 @@ public class DefaultPackage implements Package {
    * {@inheritDoc}
    */
   @Override
-  public void enable() {
+  public void enable(Service.State state) {
     if (packageState != PackageState.LOADED) {
       throw new IllegalStateException(
           "The package has to be in the LOADED state in order to be enabled");
     }
 
     try {
-      // Find all services on the classpath and register them to
-      // the service repository
-      this.prepareServices();
-      // Flush all registered services that are defined in the
-      // PRE_INIT state. This should only be done if it is
-      // really necessary.
-      this.serviceRepository.flushServices(Service.State.PRE_INIT);
-      // Apply all Implementations and AssistedFactories
       InjectionService injectionService =
           InjectionHolder.getInjectedInstance(InjectionService.class);
-      injectionService.flushImplementation();
 
-      serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
+      if (state != this.nextExpectedLoadingState) {
+        throw new IllegalStateException(
+            String.format("Expected to load service state %s. Got %s instead.",
+                this.nextExpectedLoadingState, state));
+      }
 
-      injectionService.flushAssistedFactory();
-      // Flush all other higher level framework features like Events,
-      // Transforms etc.
-      this.serviceRepository.flushServices(Service.State.POST_INIT);
+      if (nextExpectedLoadingState == null) {
+        throw new IllegalStateException("Package loading sequence already finished");
+      }
+
+      switch (state) {
+
+        case PRE_INIT:
+          // Find all services on the classpath and register them to
+          // the service repository
+          this.prepareServices();
+          // Flush all registered services that are defined in the
+          // PRE_INIT state. This should only be done if it is
+          // really necessary.
+          this.serviceRepository.flushServices(Service.State.PRE_INIT);
+          // Apply all Implementations and AssistedFactories
+
+          injectionService.flushImplementation();
+          this.nextExpectedLoadingState = State.AFTER_IMPLEMENT;
+          break;
+
+        case AFTER_IMPLEMENT:
+          serviceRepository.flushServices(Service.State.AFTER_IMPLEMENT);
+          injectionService.flushAssistedFactory();
+          this.nextExpectedLoadingState = State.POST_INIT;
+          break;
+
+        case POST_INIT:
+          // Flush all other higher level framework features like Events,
+          // Transforms etc.
+          this.serviceRepository.flushServices(Service.State.POST_INIT);
+
+          // The package is now enabled
+          this.packageState = PackageState.ENABLED;
+          this.nextExpectedLoadingState = null;
+          break;
+
+        default:
+          throw new AssertionError("UNREACHABLE");
+      }
+
+
     } catch (NotFoundException e) {
       this.logger
           .error("Failed to configure services for package {}", this.getName(),
               e);
     }
 
-    // The package is now enabled
-    this.packageState = PackageState.ENABLED;
+
   }
 
   private void prepareServices() throws NotFoundException {

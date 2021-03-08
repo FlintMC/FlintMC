@@ -22,6 +22,7 @@ package net.flintmc.framework.packages;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
+import net.flintmc.framework.stereotype.service.Service;
 
 import java.io.File;
 import java.util.jar.JarFile;
@@ -112,7 +113,7 @@ public interface Package {
    * Tries to enable this package by parsing annotations in autoload classes. If an exception occurs
    * the package may stay loaded and become partially enabled.
    */
-  void enable();
+  void enable(Service.State state);
 
   /**
    * Retrieves the class loader the package has been loaded with. In order to call this method the
