@@ -26,7 +26,7 @@ import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.annotation.ui.InternalCategory;
+import net.flintmc.mcapi.settings.flint.annotation.ui.CategoryGroup;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
 
 /**
@@ -77,14 +77,14 @@ public interface SettingsProvider {
   Collection<RegisteredSetting> getAllSettings();
 
   /**
-   * Retrieves every setting from {@link #getAllSettings()} that has the {@link InternalCategory}
-   * annotation with its value matching the given {@code internalCategory}.
+   * Retrieves every setting from {@link #getAllSettings()} that has the {@link CategoryGroup}
+   * annotation with its value matching the given {@code categoryGroup}.
    *
-   * @param internalCategory The non-null category to get the settings for
+   * @param categoryGroup The non-null category to get the settings for
    * @return The new non-null collection of all settings matching the given internal category
    * @see ConfigObjectReference#findLastAnnotation(Class)
    */
-  Collection<RegisteredSetting> getCategorizedSettings(String internalCategory);
+  Collection<RegisteredSetting> getSettingsByGroup(String categoryGroup);
 
   /**
    * Retrieves a collection of all settings that are registered in this provider and that are loaded
@@ -138,4 +138,8 @@ public interface SettingsProvider {
    * setting
    */
   RegisteredSetting getSetting(String key);
+
+  Collection<RegisteredSetting> getSettingsByCategory(String categoryName);
+
+  Collection<String> getAllCategoryGroups();
 }

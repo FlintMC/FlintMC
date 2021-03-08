@@ -35,7 +35,7 @@ subprojects {
         apply<MavenPublishPlugin>()
         plugins.apply("net.minecrell.licenser")
 
-        version = System.getenv().getOrDefault("VERSION", "1.0.0")
+        version = System.getenv().getOrDefault("VERSION", "2.0.27")
 
         repositories {
             mavenCentral()
@@ -73,7 +73,7 @@ allprojects {
 }
 
 flint {
-    flintVersion = System.getenv().getOrDefault("VERSION", "1.0.0")
+    flintVersion = System.getenv().getOrDefault("VERSION", "2.0.27")
 
     projectFilter {
         !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
