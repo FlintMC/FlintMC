@@ -267,7 +267,7 @@ public class DefaultPackage implements Package {
 
       if (state != this.nextExpectedLoadingState) {
         throw new IllegalStateException(
-            String.format("Expected to load service state %s. Got %s instead.",
+            String.format("Expected to load service state %s, got %s instead",
                 this.nextExpectedLoadingState, state));
       }
 
@@ -317,8 +317,6 @@ public class DefaultPackage implements Package {
           .error("Failed to configure services for package {}", this.getName(),
               e);
     }
-
-
   }
 
   private void prepareServices() throws NotFoundException {
