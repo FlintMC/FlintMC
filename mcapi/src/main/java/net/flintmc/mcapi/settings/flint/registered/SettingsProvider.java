@@ -139,7 +139,18 @@ public interface SettingsProvider {
    */
   RegisteredSetting getSetting(String key);
 
+  /**
+   * Retrieves all settings that are registered to a specific category.
+   *
+   * @param categoryName the category name to search for
+   * @return All settings registered to the target category.
+   * @see RegisteredSetting#getCategoryName()
+   */
   Collection<RegisteredSetting> getSettingsByCategory(String categoryName);
 
+  /**
+   * @return All registered category group names.
+   * @see CategoryGroup
+   */
   Collection<String> getAllCategoryGroups();
 }
