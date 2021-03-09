@@ -87,7 +87,16 @@ flint {
     flintVersion = System.getenv().getOrDefault("VERSION", "1.0.0")
 
     projectFilter {
-        !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
+        !arrayOf(
+                ":",
+                ":annotation-processing",
+                ":annotation-processing:annotation-processing-autoload",
+                ":framework",
+                ":render",
+                ":transform",
+                ":util",
+                ":minecraft"
+        ).contains(it.path)
     }
 
     minecraftVersions("1.15.2", "1.16.5")
