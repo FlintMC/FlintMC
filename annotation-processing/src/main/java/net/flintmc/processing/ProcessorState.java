@@ -226,6 +226,11 @@ public class ProcessorState {
               .addMember("value", "$S", FlintAnnotationProcessor.class.getName())
               .build();
 
+      // Create an @SuppressWarnings annotation and fill it with "all"
+      AnnotationSpec suppressWarningsAnnotation = AnnotationSpec.builder(SuppressWarnings.class)
+          .addMember("value", "$S", "unchecked")
+          .build();
+
       // Generate a class with a random name to avoid collisions
       String generatedClassName =
           processor.getGeneratedClassSuperClass().simpleName()
@@ -244,6 +249,7 @@ public class ProcessorState {
       TypeSpec generatedType =
           TypeSpec.classBuilder(generatedClassName)
               .addAnnotation(generatedAnnotation)
+              .addAnnotation(suppressWarningsAnnotation)
               .addModifiers(Modifier.PUBLIC)
               .addSuperinterface(autoLoadProviderClass)
               .addMethod(constructor)
