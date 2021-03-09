@@ -19,22 +19,9 @@
 
 package net.flintmc.processing;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.UUID;
+import com.squareup.javapoet.*;
+import net.flintmc.processing.exception.ProcessingException;
+import org.apache.commons.io.IOUtils;
 import javax.annotation.Generated;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -42,8 +29,11 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.StandardLocation;
-import net.flintmc.processing.exception.ProcessingException;
-import org.apache.commons.io.IOUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * Representation of the internal state of the {@link FlintAnnotationProcessor} to provide a more
@@ -52,6 +42,38 @@ import org.apache.commons.io.IOUtils;
  * <p>This class is a singleton.
  */
 public class ProcessorState {
+
+  /**
+   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
+   * IT IN SYNC WITH THE PLUGIN!
+   *
+   * <p>Contains the group id of the package currently being compiled
+   */
+  public static final String PACKAGE_GROUP_OPTION = "net.flintmc.package.group";
+
+  /**
+   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
+   * IT IN SYNC WITH THE PLUGIN!
+   *
+   * <p>Contains the name of the package currently being compiled
+   */
+  public static final String PACKAGE_NAME_OPTION = "net.flintmc.package.name";
+
+  /**
+   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
+   * IT IN SYNC WITH THE PLUGIN!
+   *
+   * <p>Contains the version of the package currently being compiled
+   */
+  public static final String PACKAGE_VERSION_OPTION = "net.flintmc.package.version";
+
+  /**
+   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
+   * IT IN SYNC WITH THE PLUGIN!
+   *
+   * <p>Contains the source set currently being compiled
+   */
+  public static final String SOURCE_SET_OPTION = "net.flintmc.sourceSet";
 
   // Singleton instance
   private static ProcessorState instance;
@@ -63,6 +85,13 @@ public class ProcessorState {
   // State of the java processing environment
   private ProcessingEnvironment processingEnvironment;
   private RoundEnvironment currentRoundEnvironment;
+
+  private String packageName;
+  private String packageGroup;
+  private String packageVersion;
+  private String sourceSet;
+
+  private int generationCounter = 0;
 
   /**
    * Constructs a new {@link ProcessorState}, setting the instance field and loading all available
@@ -101,6 +130,13 @@ public class ProcessorState {
     registerOptions();
 
     Map<String, String> environmentOptions = processingEnvironment.getOptions();
+    this.packageGroup = toJavaIdentifier(
+        environmentOptions.getOrDefault(PACKAGE_GROUP_OPTION, "undefined"));
+    this.packageName = toJavaIdentifier(
+        environmentOptions.getOrDefault(PACKAGE_NAME_OPTION, "undefined"));
+    this.packageVersion = toJavaIdentifier(
+        environmentOptions.getOrDefault(PACKAGE_VERSION_OPTION, "undefined"));
+    this.sourceSet = toJavaIdentifier(environmentOptions.getOrDefault(SOURCE_SET_OPTION, "main"));
 
     // Let registered processors handle their respective options
     for (Map.Entry<Processor, Set<String>> entry : registeredOptions.entrySet()) {
@@ -165,8 +201,12 @@ public class ProcessorState {
    * Called by the {@link FlintAnnotationProcessor} to signal that the last round is running and
    * everything should be finalized and written to disk.
    */
-  public void finish() {
+  public void flushRound() {
     for (Processor processor : processors) {
+      if (!processor.shouldFlush()) {
+        continue;
+      }
+
       MethodSpec.Builder method = processor.createMethod();
       Filer filer = processingEnvironment.getFiler();
       ClassName autoLoadProviderClass = processor.getGeneratedClassSuperClass();
@@ -175,7 +215,7 @@ public class ProcessorState {
       MethodSpec constructor =
           MethodSpec.methodBuilder("<init>").addModifiers(Modifier.PUBLIC).build();
 
-      processor.finish(method);
+      processor.flush(method);
 
       MethodSpec registerAutoLoadMethod = method.build();
 
@@ -189,11 +229,16 @@ public class ProcessorState {
       // Generate a class with a random name to avoid collisions
       String generatedClassName =
           processor.getGeneratedClassSuperClass().simpleName()
-              + Math.abs(System.nanoTime())
               + "_"
-              + System.currentTimeMillis()
+              + packageGroup
+              + "$"
+              + packageName
+              + "$"
+              + packageVersion
+              + "$"
+              + sourceSet
               + "_"
-              + UUID.randomUUID().toString().replace("-", "");
+              + (generationCounter++);
 
       // Generate the final class
       TypeSpec generatedType =
@@ -254,6 +299,12 @@ public class ProcessorState {
       allOptions.addAll(otherOptions);
     }
 
+    // Own options
+    allOptions.add(PACKAGE_GROUP_OPTION);
+    allOptions.add(PACKAGE_NAME_OPTION);
+    allOptions.add(PACKAGE_VERSION_OPTION);
+    allOptions.add(SOURCE_SET_OPTION);
+
     return allOptions;
   }
 
@@ -268,5 +319,15 @@ public class ProcessorState {
         registeredOptions.put(processor, processorOptions);
       }
     }
+  }
+
+  /**
+   * Converts an arbitrary string into a Java class literal using best-effort replacement.
+   *
+   * @param literal The literal to convert
+   * @return The converted literal as an identifier
+   */
+  private String toJavaIdentifier(String literal) {
+    return literal.replace('.', '$').replaceAll("[^A-z0-9$]", "_");
   }
 }

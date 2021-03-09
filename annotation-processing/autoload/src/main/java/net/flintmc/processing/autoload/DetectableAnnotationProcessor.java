@@ -25,30 +25,17 @@ import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import java.lang.annotation.Repeatable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.AnnotationValueVisitor;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 import net.flintmc.processing.Processor;
 import net.flintmc.processing.ProcessorState;
 import net.flintmc.util.commons.Pair;
 import net.flintmc.util.commons.annotation.AnnotationMirrorUtil;
+import javax.lang.model.element.*;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import java.lang.annotation.Repeatable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
 public class DetectableAnnotationProcessor implements Processor {
@@ -61,30 +48,6 @@ public class DetectableAnnotationProcessor implements Processor {
    * available
    */
   private static final String MINECRAFT_VERSION_OPTION = "net.flintmc.minecraft.version";
-
-  /**
-   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
-   * IT IN SYNC WITH THE PLUGIN!
-   *
-   * <p>Contains the group id of the package currently being compiled
-   */
-  private static final String PACKAGE_GROUP_OPTION = "net.flintmc.package.group";
-
-  /**
-   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
-   * IT IN SYNC WITH THE PLUGIN!
-   *
-   * <p>Contains the name of the package currently being compiled
-   */
-  private static final String PACKAGE_NAME_OPTION = "net.flintmc.package.name";
-
-  /**
-   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
-   * IT IN SYNC WITH THE PLUGIN!
-   *
-   * <p>Contains the version of the package currently being compiled
-   */
-  private static final String PACKAGE_VERSION_OPTION = "net.flintmc.package.version";
 
   private static final String METAPROGRAMMING_PACKAGE = "net.flintmc.metaprogramming";
   private static final String ANNOTATION_META_CLASS = "AnnotationMeta";
@@ -172,9 +135,17 @@ public class DetectableAnnotationProcessor implements Processor {
       minecraftVersion = "null";
     }
 
-    packageGroup = stringLiteral(options.getOrDefault(PACKAGE_GROUP_OPTION, "unknown"));
-    packageName = stringLiteral(options.getOrDefault(PACKAGE_NAME_OPTION, "unknown"));
-    packageVersion = stringLiteral(options.getOrDefault(PACKAGE_VERSION_OPTION, "unknown"));
+    packageGroup = stringLiteral(
+        options.getOrDefault(ProcessorState.PACKAGE_GROUP_OPTION, "unknown"));
+    packageName = stringLiteral(
+        options.getOrDefault(ProcessorState.PACKAGE_NAME_OPTION, "unknown"));
+    packageVersion = stringLiteral(
+        options.getOrDefault(ProcessorState.PACKAGE_VERSION_OPTION, "unknown"));
+  }
+
+  @Override
+  public boolean shouldFlush() {
+    return !found.isEmpty();
   }
 
   /**
@@ -760,7 +731,7 @@ public class DetectableAnnotationProcessor implements Processor {
   /**
    * {@inheritDoc}
    */
-  public void finish(MethodSpec.Builder targetMethod) {
+  public void flush(MethodSpec.Builder targetMethod) {
     // Add sourcecode to auto generated class
     this.found.forEach(targetMethod::addStatement);
     this.found.clear();
@@ -770,9 +741,9 @@ public class DetectableAnnotationProcessor implements Processor {
   public Set<String> options() {
     Set<String> options = new HashSet<>();
     options.add(MINECRAFT_VERSION_OPTION);
-    options.add(PACKAGE_GROUP_OPTION);
-    options.add(PACKAGE_NAME_OPTION);
-    options.add(PACKAGE_VERSION_OPTION);
+    options.add(ProcessorState.PACKAGE_GROUP_OPTION);
+    options.add(ProcessorState.PACKAGE_NAME_OPTION);
+    options.add(ProcessorState.PACKAGE_VERSION_OPTION);
 
     return options;
   }

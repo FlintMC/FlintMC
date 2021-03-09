@@ -20,9 +20,8 @@
 package net.flintmc.processing;
 
 import com.google.auto.service.AutoService;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import net.flintmc.processing.exception.ProcessingException;
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
@@ -30,7 +29,9 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-import net.flintmc.processing.exception.ProcessingException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Root entry point for the java annotation processing environment. The corresponding
@@ -82,10 +83,8 @@ public class FlintAnnotationProcessor extends AbstractProcessor {
       throw exception;
     }
 
-    if (roundEnv.processingOver()) {
-      // We have reached the last round, finalize the state and write out the generated files
-      state.finish();
-    }
+    // Notify the processor state to flush code generation
+    state.flushRound();
 
     return true;
   }
