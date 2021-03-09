@@ -22,7 +22,7 @@ package net.flintmc.mcapi.settings.game;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.annotation.ExcludeStorage;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
-import net.flintmc.mcapi.settings.flint.annotation.ui.InternalCategory;
+import net.flintmc.mcapi.settings.flint.annotation.ui.CategoryGroup;
 import net.flintmc.mcapi.settings.game.configuration.AccessibilityConfiguration;
 import net.flintmc.mcapi.settings.game.configuration.ChatConfiguration;
 import net.flintmc.mcapi.settings.game.configuration.DebugConfiguration;
@@ -40,7 +40,7 @@ import net.flintmc.mcapi.world.type.difficulty.Difficulty;
 @Config
 @ImplementedConfig
 @ExcludeStorage("local")
-@InternalCategory("minecraft")
+@CategoryGroup("minecraft")
 public interface MinecraftConfiguration {
 
   /**
