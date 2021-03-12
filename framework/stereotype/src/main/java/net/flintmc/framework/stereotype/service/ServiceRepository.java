@@ -32,6 +32,7 @@ import net.flintmc.util.commons.Pair;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.Map.Entry;
 
 @Singleton
 public class ServiceRepository {
@@ -124,8 +125,12 @@ public class ServiceRepository {
       }
     }
 
-    for (ServiceHandler handler : serviceHandlerInstances.values()) {
-      handler.postDiscover();
+    for (Entry<Class<? extends Annotation>, ServiceHandlerMeta> entry : serviceHandlers.entries()) {
+      if(entry.getValue().getState() == state){
+        for (ServiceHandler handler : serviceHandlerInstances.values()) {
+          handler.flush();
+        }
+      }
     }
   }
 
