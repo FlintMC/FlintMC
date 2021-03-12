@@ -21,10 +21,13 @@ package net.flintmc.mcapi.v1_15_2.entity.render;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack.Entry;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javassist.*;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.internal.entity.DefaultEntityRepository;
@@ -32,6 +35,10 @@ import net.flintmc.mcapi.player.ClientPlayer;
 import net.flintmc.mcapi.render.MinecraftRenderMeta;
 import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.render.model.Renderer;
+import net.flintmc.transform.hook.Hook;
+import net.flintmc.transform.hook.Hook.ExecutionTime;
+import net.flintmc.transform.hook.HookFilter;
+import net.flintmc.transform.hook.HookFilters;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.CtClassFilter;
@@ -56,7 +63,6 @@ public class ModelRendererInterceptor {
   private ModelRendererInterceptor(ClassMappingProvider classMappingProvider) {
     this.classMappingProvider = classMappingProvider;
   }
-
 
   static {
     try {
@@ -118,35 +124,21 @@ public class ModelRendererInterceptor {
     }
   }
 
-  @ClassTransform(version = "1.15.2")
-  @CtClassFilter(
-      value = CtClassFilters.SUBCLASS_OF,
-      className = "net.minecraft.client.renderer.entity.model.EntityModel")
-  public void transform2(ClassTransformContext classTransformContext)
-      throws NotFoundException, CannotCompileException {
-    CtClass[] classes =
-        ClassPool.getDefault()
-            .get(
-                new String[]{
-                    this.classMappingProvider.get("net.minecraft.entity.Entity").getName(), "float", "float", "float", "float", "float"
-                });
-
-    for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {
-      if (declaredMethod
-          .getName()
-          .equals(
-              this.classMappingProvider
-                  .get("net.minecraft.client.renderer.entity.model.EntityModel")
-                  .getMethod("setRotationAngles", classes)
-                  .getName())) {
-        if (!Modifier.isAbstract(declaredMethod.getModifiers())) {
-          declaredMethod.insertAfter(
-              "{net.flintmc.mcapi.v1_15_2.entity.render.ModelRendererInterceptor.Handler.interceptRotationAnglesUpdate($1);}");
-        }
-
-        break;
-      }
-    }
+  @HookFilter(
+      value = HookFilters.SUBCLASS_OF,
+      type = @Type(typeName = "net.minecraft.client.renderer.entity.model.EntityModel"))
+  @Hook(
+      methodName = "setRotationAngles",
+      parameters = {
+          @Type(typeName = "net.minecraft.entity.Entity"),
+          @Type(reference = float.class),
+          @Type(reference = float.class),
+          @Type(reference = float.class),
+          @Type(reference = float.class),
+          @Type(reference = float.class)
+      }, version = "1.15.2")
+  public static void setRotationAngles(@Named("args") Object[] args) {
+    Handler.interceptRotationAnglesUpdate(args[0]);
   }
 
   @Singleton
@@ -170,7 +162,9 @@ public class ModelRendererInterceptor {
     }
 
 
-    public static void interceptRotationAnglesUpdate(net.minecraft.entity.Entity minecraftEntity) {
+    public static void interceptRotationAnglesUpdate(Object instance) {
+
+      net.minecraft.entity.Entity minecraftEntity = (net.minecraft.entity.Entity) instance;
 
       Entity flintEntity = INSTANCE.entityRepository.getEntity((minecraftEntity).getUniqueID());
 
@@ -188,27 +182,30 @@ public class ModelRendererInterceptor {
       INSTANCE.lastRenderedEntity = flintEntity;
     }
 
-    public static boolean shouldCancel(ModelRenderer instance,
-        MatrixStack.Entry matrixEntryIn,
+    public static boolean shouldCancel(Object instance,
+        Object matrixEntryObject,
         int packedLightIn) {
+
+      ModelRenderer modelRenderer = (ModelRenderer) instance;
+      MatrixStack.Entry matrixEntry = (MatrixStack.Entry) matrixEntryObject;
 
       if (INSTANCE.lastRenderedEntity == null) {
         return false;
       }
       ModelBoxHolder<Entity, EntityRenderContext> modelBoxHolder =
-          INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
+          INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(modelRenderer);
       if (modelBoxHolder == null) {
         INSTANCE.lastRenderedEntity.updateRenderables();
         modelBoxHolder =
-            INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(instance);
+            INSTANCE.lastRenderedEntity.getRenderContext().getRenderableByTarget(modelRenderer);
         if (modelBoxHolder == null) {
           return false;
         }
       }
       if (modelBoxHolder.getContext().getRenderer() != null) {
 
-        Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixEntryIn.getMatrix();
-        Matrix3fAccessor normalMatrix = (Matrix3fAccessor) (Object) matrixEntryIn.getNormal();
+        Matrix4fAccessor worldMatrix = (Matrix4fAccessor) (Object) matrixEntry.getMatrix();
+        Matrix3fAccessor normalMatrix = (Matrix3fAccessor) (Object) matrixEntry.getNormal();
 
         INSTANCE
             .alternatingMinecraftRenderMeta
@@ -262,15 +259,18 @@ public class ModelRendererInterceptor {
     }
 
     public static boolean interceptDoRender(
-        ModelRenderer instance,
-        MatrixStack.Entry matrixEntryIn,
-        IVertexBuilder bufferIn,
+        Object modelRenderer,
+        Object matrixEntry,
+        Object buffer,
         int packedLightIn,
         int packedOverlayIn,
         float red,
         float green,
         float blue,
         float alpha) {
+
+      ModelRenderer instance = (ModelRenderer) modelRenderer;
+      MatrixStack.Entry matrixEntryIn = (Entry) matrixEntry;
 
       if (INSTANCE.lastRenderedEntity == null) {
         return false;
@@ -346,7 +346,7 @@ public class ModelRendererInterceptor {
         doRender(
             instance,
             matrixEntryIn,
-            bufferIn,
+            (IVertexBuilder) buffer,
             packedLightIn,
             packedOverlayIn,
             red,
