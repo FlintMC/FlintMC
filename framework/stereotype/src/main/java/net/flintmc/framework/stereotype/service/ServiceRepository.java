@@ -133,7 +133,7 @@ public class ServiceRepository {
 
     for (Entry<Class<? extends Annotation>, ServiceHandlerMeta> entry : serviceHandlers.entries()) {
       if (entry.getValue().getState() == state) {
-        serviceHandlerInstances.get(entry.getKey()).flush();
+        serviceHandlerInstances.get(entry.getValue().getServiceHandlerClass()).flush();
       }
     }
   }
