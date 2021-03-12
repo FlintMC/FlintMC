@@ -77,12 +77,18 @@ public class ModelRendererInterceptor {
   @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.16.5")
   public void transform(ClassTransformContext classTransformContext) {
     try {
+      String matrixStackEntryName = this.classMappingProvider
+          .get("com.mojang.blaze3d.matrix.MatrixStack$Entry").getName();
+
+      String iVertexBuilderName = this.classMappingProvider
+          .get("com.mojang.blaze3d.vertex.IVertexBuilder").getName();
+
       CtClass[] doRenderParameters =
           ClassPool.getDefault()
               .get(
                   new String[]{
-                      "com.mojang.blaze3d.matrix.MatrixStack$Entry",
-                      "com.mojang.blaze3d.vertex.IVertexBuilder",
+                      matrixStackEntryName,
+                      iVertexBuilderName,
                       "int",
                       "int",
                       "float",
@@ -127,7 +133,8 @@ public class ModelRendererInterceptor {
         ClassPool.getDefault()
             .get(
                 new String[]{
-                    "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
+                    this.classMappingProvider.get("net.minecraft.entity.Entity").getName(), "float",
+                    "float", "float", "float", "float"
                 });
 
     for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {
@@ -189,8 +196,8 @@ public class ModelRendererInterceptor {
     }
 
     public static boolean shouldCancel(ModelRenderer instance,
-                                       MatrixStack.Entry matrixEntryIn,
-                                       int packedLightIn) {
+        MatrixStack.Entry matrixEntryIn,
+        int packedLightIn) {
 
       if (INSTANCE.lastRenderedEntity == null) {
         return false;

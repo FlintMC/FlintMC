@@ -49,8 +49,8 @@ import java.util.List;
 @Singleton
 public class ModelRendererInterceptor {
 
-  private final ClassMappingProvider classMappingProvider;
   private static Constructor<BufferBuilder.DrawState> drawStateConstructor;
+  private final ClassMappingProvider classMappingProvider;
 
   @Inject
   private ModelRendererInterceptor(ClassMappingProvider classMappingProvider) {
@@ -72,12 +72,18 @@ public class ModelRendererInterceptor {
   @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.15.2")
   public void transform(ClassTransformContext classTransformContext) {
     try {
+      String matrixStackEntryName = this.classMappingProvider
+          .get("com.mojang.blaze3d.matrix.MatrixStack$Entry").getName();
+
+      String iVertexBuilderName = this.classMappingProvider
+          .get("com.mojang.blaze3d.vertex.IVertexBuilder").getName();
+
       CtClass[] doRenderParameters =
           ClassPool.getDefault()
               .get(
                   new String[]{
-                      "com.mojang.blaze3d.matrix.MatrixStack$Entry",
-                      "com.mojang.blaze3d.vertex.IVertexBuilder",
+                      matrixStackEntryName,
+                      iVertexBuilderName,
                       "int",
                       "int",
                       "float",
@@ -122,7 +128,7 @@ public class ModelRendererInterceptor {
         ClassPool.getDefault()
             .get(
                 new String[]{
-                    "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
+                    this.classMappingProvider.get("net.minecraft.entity.Entity").getName(), "float", "float", "float", "float", "float"
                 });
 
     for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {
@@ -183,8 +189,8 @@ public class ModelRendererInterceptor {
     }
 
     public static boolean shouldCancel(ModelRenderer instance,
-                                       MatrixStack.Entry matrixEntryIn,
-                                       int packedLightIn) {
+        MatrixStack.Entry matrixEntryIn,
+        int packedLightIn) {
 
       if (INSTANCE.lastRenderedEntity == null) {
         return false;
@@ -277,10 +283,9 @@ public class ModelRendererInterceptor {
 
       ModelRendererAccessor modelRendererAccessor = (ModelRendererAccessor) instance;
 
-      if(modelRendererAccessor.getMatrixHandler() != null){
+      if (modelRendererAccessor.getMatrixHandler() != null) {
         modelRendererAccessor.getMatrixHandler().accept(matrixEntryIn);
       }
-
 
       if (modelBoxHolder.getContext().getRenderer() != null) {
 
@@ -381,7 +386,6 @@ public class ModelRendererInterceptor {
         try {
           BufferBuilder.DrawState drawState;
 
-
           drawState =
               drawStateConstructor.newInstance(
                   ((BufferBuilderAccessor) buffer).getVertexFormat(), 0, 0);
@@ -403,7 +407,6 @@ public class ModelRendererInterceptor {
 
       Matrix4f matrix4f = matrixStackEntry.getMatrix();
       Matrix3f matrix3f = matrixStackEntry.getNormal();
-
 
       for (ModelRenderer.ModelBox modelBox : modelRendererAccessor.getModelBoxes()) {
         ModelBoxAccessor modelBoxAccessor = (ModelBoxAccessor) modelBox;
