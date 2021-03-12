@@ -133,6 +133,12 @@ public class ServiceRepository {
 
     for (Entry<Class<? extends Annotation>, ServiceHandlerMeta> entry : serviceHandlers.entries()) {
       if (entry.getValue().getState() == state) {
+        if (!serviceHandlerInstances.containsKey(entry.getValue().getServiceHandlerClass())) {
+          serviceHandlerInstances.put(
+              entry.getValue().getServiceHandlerClass(),
+              InjectionHolder
+                  .getInjectedInstance(CtResolver.get(entry.getValue().getServiceHandlerClass())));
+        }
         serviceHandlerInstances.get(entry.getValue().getServiceHandlerClass()).flush();
       }
     }
