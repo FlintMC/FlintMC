@@ -17,32 +17,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.classcache;
+package net.flintmc.framework.stereotype.service;
 
-import java.util.UUID;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
+public interface CacheIdRetriever {
 
-public interface CachedClass {
-
-  String CACHED_CLASS_PATH = "flint/class-cache/{UUID}.bin";
-
-  byte[] read();
-
-  void write(byte[] bytecode);
-
-  UUID getUUID();
-
-  String getName();
-
-  boolean hasBytecode();
-
-
-  interface Factory {
-
-    CachedClass create(@Assisted("name") String name,
-        @Assisted("uuid") UUID uuid);
-
-  }
+  void setCacheId(long id);
 
 }

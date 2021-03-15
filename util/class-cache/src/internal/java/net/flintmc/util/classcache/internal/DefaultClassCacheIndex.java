@@ -22,19 +22,16 @@ package net.flintmc.util.classcache.internal;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.util.classcache.CachedClass;
 import net.flintmc.util.classcache.ClassCacheIndex;
 import org.apache.logging.log4j.Logger;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.BiFunction;
 
 @Singleton
 @Implement(ClassCacheIndex.class)
@@ -48,20 +45,25 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
 
   @Inject
   private DefaultClassCacheIndex(@InjectLogger Logger logger,
-      CachedClass.Factory cachedClassFactory)
-      throws FileNotFoundException {
+      CachedClass.Factory cachedClassFactory) {
     this.gson = new Gson();
     this.logger = logger;
     this.cachedClassFactory = cachedClassFactory;
     try {
       File indexFile = new File(INDEX_FILE_PATH);
+      //noinspection ResultOfMethodCallIgnored
       indexFile.getParentFile().mkdirs();
       this.data = this.gson
           .fromJson(new FileReader(indexFile), IndexModel.class);
-      this.data.elements.forEach((name, element) -> element.setName(name));
+      this.data.elements.forEach((name, element) -> {
+        element.setName(name);
+        element.cachedClasses = new HashMap<>();
+      });
     } catch (FileNotFoundException e) {
-      this.logger.error("Failed to read class cache index.", e);
+      this.logger
+          .info("Failed to read class cache index. Creating a new index.");
       this.data = new IndexModel();
+      this.write();
     }
   }
 
@@ -72,7 +74,8 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
 
   @Override
   public CachedClass getCachedClass(String name, long id) {
-    return this.data.getOrInsert(name).getCachedClass(id);
+    return this.data.getOrInsert(name)
+        .getCachedClass(id, this.cachedClassFactory::create);
   }
 
   @Override
@@ -87,7 +90,7 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
 
   private class IndexModel {
 
-    private Map<String, IndexElement> elements;
+    private final Map<String, IndexElement> elements;
 
     IndexModel() {
       this.elements = new HashMap<>();
@@ -109,15 +112,15 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
   private class IndexElement {
 
     private long latest;
-    private Map<Long, String> uuids;
+    private final Map<Long, String> uuids;
 
     private transient String name;
-    private transient Map<Long, CachedClass> cachedClasses;
+    transient Map<Long, CachedClass> cachedClasses;
 
     IndexElement(String name) {
       this.uuids = new HashMap<>();
-      this.cachedClasses = new HashMap<>();
       this.name = name;
+      this.cachedClasses = new HashMap<>();
     }
 
     void setName(String name) {
@@ -137,7 +140,8 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
       return this.latest;
     }
 
-    CachedClass getCachedClass(long id) {
+    CachedClass getCachedClass(long id,
+        BiFunction<String, UUID, CachedClass> factory) {
       if (this.cachedClasses.containsKey(id)) {
         return this.cachedClasses.get(id);
       } else {
@@ -149,7 +153,7 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
           this.setLatest(id, uuid.toString());
         }
 
-        CachedClass cachedClass = cachedClassFactory.create(this.name, uuid);
+        CachedClass cachedClass = factory.apply(this.name, uuid);
         this.cachedClasses.put(id, cachedClass);
         return cachedClass;
       }

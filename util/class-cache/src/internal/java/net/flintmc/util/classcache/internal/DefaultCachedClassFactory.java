@@ -17,32 +17,30 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.classcache;
+package net.flintmc.util.classcache.internal;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
+import net.flintmc.util.classcache.CachedClass;
+import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 
-public interface CachedClass {
+@Singleton
+@Implement(CachedClass.Factory.class)
+public class DefaultCachedClassFactory implements CachedClass.Factory {
 
-  String CACHED_CLASS_PATH = "flint/class-cache/{UUID}.bin";
+  private final Logger logger;
 
-  byte[] read();
-
-  void write(byte[] bytecode);
-
-  UUID getUUID();
-
-  String getName();
-
-  boolean hasBytecode();
-
-
-  interface Factory {
-
-    CachedClass create(@Assisted("name") String name,
-        @Assisted("uuid") UUID uuid);
-
+  @Inject
+  private DefaultCachedClassFactory(@InjectLogger Logger logger) {
+    this.logger = logger;
   }
 
+  @Override
+  public CachedClass create(String name, UUID uuid) {
+    return new DefaultCachedClass(name, uuid, logger);
+  }
 }

@@ -19,8 +19,7 @@
 
 package net.flintmc.util.classcache.internal;
 
-import com.google.inject.name.Named;
-import net.flintmc.framework.inject.assisted.AssistedInject;
+import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.util.classcache.CachedClass;
@@ -42,14 +41,14 @@ public class DefaultCachedClass implements CachedClass {
 
   private final File file;
 
-  @AssistedInject
-  private DefaultCachedClass(@Named("name") String name,
-      @Named("uuid") UUID uuid, @InjectLogger Logger logger) {
+  DefaultCachedClass(@Assisted("name") String name,
+      @Assisted("uuid") UUID uuid, @InjectLogger Logger logger) {
     this.logger = logger;
     this.name = name;
     this.uuid = uuid;
     this.file = new File(
         CachedClass.CACHED_CLASS_PATH.replace("{UUID}", this.uuid.toString()));
+    //noinspection ResultOfMethodCallIgnored
     this.file.getParentFile().mkdirs();
   }
 
@@ -64,7 +63,7 @@ public class DefaultCachedClass implements CachedClass {
       byte[] bytes = new byte[(int) this.file.length()];
 
       int offset = 0;
-      int read = 0;
+      int read;
 
       while ((read = in.read(bytes, offset, bytes.length - offset)) > 0) {
         offset += read;

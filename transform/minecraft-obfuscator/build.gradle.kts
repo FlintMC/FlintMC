@@ -33,5 +33,6 @@ dependencies {
     api(project(":transform:transform-asm"))
     api(project(":transform:transform-launcher-plugin"))
     api(project(":transform:transform-minecraft"))
+    api(project(":util:util-class-cache"))
     api(project(":util:util-mapping"))
 }

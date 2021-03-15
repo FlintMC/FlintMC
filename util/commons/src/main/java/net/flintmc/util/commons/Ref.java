@@ -17,32 +17,48 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.util.classcache;
+package net.flintmc.util.commons;
 
-import java.util.UUID;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
+import java.util.function.Supplier;
 
-public interface CachedClass {
+public class Ref<T> {
 
-  String CACHED_CLASS_PATH = "flint/class-cache/{UUID}.bin";
+  private T obj;
 
-  byte[] read();
+  public Ref(T obj) {
+    this.obj = obj;
+  }
 
-  void write(byte[] bytecode);
+  public Ref() {
 
-  UUID getUUID();
+  }
 
-  String getName();
+  public T get() {
+    return this.obj;
+  }
 
-  boolean hasBytecode();
+  public boolean isNull() {
+    return obj == null;
+  }
 
+  public void set(T obj) {
+    this.obj = obj;
+  }
 
-  interface Factory {
+  public T getOr(T obj) {
+    if (isNull()) {
+      return obj;
+    } else {
+      return this.obj;
+    }
+  }
 
-    CachedClass create(@Assisted("name") String name,
-        @Assisted("uuid") UUID uuid);
-
+  public T getOrElse(Supplier<T> supplier) {
+    if (this.isNull()) {
+      return supplier.get();
+    } else {
+      return this.obj;
+    }
   }
 
 }
