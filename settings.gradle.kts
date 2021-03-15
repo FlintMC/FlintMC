@@ -77,6 +77,7 @@ defineModule("transform:minecraft-obfuscator")
 defineModule("transform:shadow")
 
 defineModule("util:attribute")
+defineModule("util:class-cache")
 defineModule("util:commons")
 defineModule("util:csv")
 defineModule("util:i18n")

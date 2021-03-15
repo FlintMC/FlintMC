@@ -22,7 +22,7 @@ package net.flintmc.transform.minecraft.obfuscate;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import javassist.ClassPool;
+import java.io.IOException;
 import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.classloading.common.ClassInformation;
@@ -38,9 +38,6 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
 /**
  * Deobfuscates all minecraft classes for which mappings are provided
  */
@@ -54,7 +51,8 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
 
   @Inject
   private MinecraftInstructionObfuscator(
-      MinecraftClassRemapper minecraftClassRemapper, @Named("obfuscated") boolean obfuscated) {
+      MinecraftClassRemapper minecraftClassRemapper,
+      @Named("obfuscated") boolean obfuscated) {
     this.minecraftClassRemapper = minecraftClassRemapper;
     this.obfuscated = obfuscated;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
@@ -62,11 +60,13 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
   }
 
   @Override
-  public byte[] transform(String className, CommonClassLoader classLoader, byte[] classData) throws ClassTransformException {
+  public byte[] transform(String className, CommonClassLoader classLoader,
+      byte[] classData) throws ClassTransformException {
     if (!obfuscated) {
       return classData;
     }
-    if (!className.startsWith("net.flintmc") && !(classLoader instanceof PackageClassLoader)) {
+    if (!className.startsWith("net.flintmc")
+        && !(classLoader instanceof PackageClassLoader)) {
       // only reobfuscate flint classes and classes from packages
       return classData;
     }
@@ -74,7 +74,8 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
     ClassInformation classInformation;
 
     try {
-      classInformation = CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, className);
+      classInformation = CommonClassLoaderHelper
+          .retrieveClass(this.rootClassLoader, className);
     } catch (IOException exception) {
       throw new ClassTransformException(
           "Unable to retrieve class metadata: " + className, exception);
@@ -86,7 +87,8 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
 
     ClassNode classNode = ASMUtils.getNode(classInformation.getClassBytes());
     ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-    ClassVisitor classRemapper = new ClassRemapper(classWriter, minecraftClassRemapper);
+    ClassVisitor classRemapper = new ClassRemapper(classWriter,
+        minecraftClassRemapper);
     classNode.accept(classRemapper);
     return classWriter.toByteArray();
   }

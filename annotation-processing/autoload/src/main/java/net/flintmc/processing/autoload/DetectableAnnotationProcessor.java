@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -80,6 +81,7 @@ public class DetectableAnnotationProcessor implements Processor {
           + "   javax.lang.model.element.ElementKind.${ELEMENT_KIND}, \n"
           + "   ${IDENTIFIER}, \n"
           + "   ${ANNOTATION}, \n"
+          + "   ${CACHE_ID}L,\n"
           + "new AnnotationMeta[]{${META_DATA}})";
 
   /**
@@ -101,6 +103,8 @@ public class DetectableAnnotationProcessor implements Processor {
       "new net.flintmc.processing.autoload.identifier.ConstructorIdentifier(\"${OWNER_NAME}\", new String[]{${PARAMETERS}})";
 
   private final Collection<String> found;
+
+  private final Random rng = new Random();
 
   /**
    * Constructs a new {@link DetectableAnnotationProcessor}, expected to be called by a {@link
@@ -265,6 +269,7 @@ public class DetectableAnnotationProcessor implements Processor {
             .put(
                 "ANNOTATION",
                 createAnnotation(annotationType, annotationValues, annotationType.toString()))
+            .put("CACHE_ID", String.valueOf(this.rng.nextLong()))
             .put("META_DATA", createMetaData(annotationType, annotatedElement))
             .build(),
         ANNOTATION_META_TEMPLATE);
