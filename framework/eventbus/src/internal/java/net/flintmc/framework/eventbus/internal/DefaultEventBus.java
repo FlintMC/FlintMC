@@ -22,6 +22,7 @@ package net.flintmc.framework.eventbus.internal;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.EventDetails;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
@@ -32,8 +33,8 @@ import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
-
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -56,7 +57,30 @@ public class DefaultEventBus implements EventBus {
    * {@inheritDoc}
    */
   @Override
-  public <E extends Event> E fireEvent(E event, Subscribe.Phase phase) {
+  public <E extends Event> E fireEventAll(E event, Consumer<E> eventHandler) {
+    this.fireEvent(event, Phase.PRE);
+    if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+      return event;
+    }
+
+    eventHandler.accept(event);
+    this.fireEvent(event, Phase.POST);
+
+    return event;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public <E extends Event> E fireEvent(E event, Phase phase) {
+    this.validateEvent(event, phase);
+
+    this.postEvent(event, phase);
+    return event;
+  }
+
+  private void validateEvent(Event event, Phase phase) {
     if (event == null) {
       throw new NullPointerException("An error is occurred because the event is null");
     }
@@ -77,19 +101,20 @@ public class DefaultEventBus implements EventBus {
           error);
     }
 
-    if (phase != Phase.ANY && (!details.getSupportedPhases().contains(phase)
-        || details.getSupportedPhases().contains(Phase.ANY))) {
+    if (phase == Phase.ANY && !details.getSupportedPhases().isEmpty()) {
+      return;
+    }
+
+    if (!details.getSupportedPhases().contains(phase)
+        && !details.getSupportedPhases().contains(Phase.ANY)) {
       throw new IllegalArgumentException(
           String.format("The event %s doesn't support the phase %s, it only supports %s",
-              event.getClass().getName(), phase.name(),
+              details.getEventClass().getName(), phase.name(),
               details.getSupportedPhases().stream()
                   .map(Enum::name)
                   .collect(Collectors.joining(", "))
           ));
     }
-
-    this.postEvent(event, phase);
-    return event;
   }
 
   /**
@@ -158,7 +183,9 @@ public class DefaultEventBus implements EventBus {
     try {
       method.invoke(event, phase);
     } catch (Throwable throwable) {
-      this.logger.error("Error while posting event " + event.getClass().getName(), throwable);
+      this.logger.error(
+          "Error while posting event " + ((EventDetails) event).getEventClass().getName(),
+          throwable);
     }
   }
 }

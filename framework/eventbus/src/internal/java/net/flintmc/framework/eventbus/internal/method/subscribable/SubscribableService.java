@@ -258,7 +258,7 @@ public class SubscribableService implements LateInjectedTransformer, ServiceHand
 
     generating.addField(phasesField);
 
-    return new EventTransform(methodsField, unmodifiableMethodsField, phasesField);
+    return new EventTransform(eventClass, methodsField, unmodifiableMethodsField, phasesField);
   }
 
   private boolean shouldTransformEventClass(String name) {
@@ -282,6 +282,11 @@ public class SubscribableService implements LateInjectedTransformer, ServiceHand
         this.makeGetter("getMethods", transforming, transform.getUnmodifiableMethodsField()));
     transforming.addMethod(
         this.makeGetter("getSupportedPhases", transforming, transform.getPhasesField()));
+
+    CtMethod eventClassGetter =
+        new CtMethod(this.pool.get("java.lang.Class"), "getEventClass", null, transforming);
+    eventClassGetter.setBody(String.format("return %s.class;", transform.getEventClass()));
+    transforming.addMethod(eventClassGetter);
   }
 
   private CtMethod makeGetter(String name, CtClass declaring, CtField target)
