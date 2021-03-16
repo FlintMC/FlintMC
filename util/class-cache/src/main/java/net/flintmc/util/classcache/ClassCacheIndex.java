@@ -19,14 +19,42 @@
 
 package net.flintmc.util.classcache;
 
+/**
+ * Index for class cache that maps class names and cache identifiers to files on
+ * disk.
+ */
 public interface ClassCacheIndex {
 
+  /**
+   * Path to the index file.
+   */
   String INDEX_FILE_PATH = "flint/class-cache/index.json";
 
+  /**
+   * Retrieves the latest cache identifier fo a given name or null if no data
+   * has been cached for that name.
+   *
+   * @param name the name of the class
+   * @return the cache identifier for the latest data
+   */
   long getLatestId(String name);
 
+  /**
+   * Retrieves a {@link CachedClass} instance for the given name and identifier
+   * that represents the cache for those values. This is not an indication for
+   * whether cached data is actually available (see {@link
+   * CachedClass#hasBytecode()}). Adds the {@link CachedClass} to the index if
+   * not already in it.
+   *
+   * @param name the name of the class
+   * @param id   the cache identifier for the state of the bytecode
+   * @return a {@link CachedClass} instance representing the desired state
+   */
   CachedClass getCachedClass(String name, long id);
 
+  /**
+   * Writes the index to the disk.
+   */
   void write();
 
 }

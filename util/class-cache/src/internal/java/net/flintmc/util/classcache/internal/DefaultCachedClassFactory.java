@@ -21,13 +21,15 @@ package net.flintmc.util.classcache.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.util.classcache.CachedClass;
 import org.apache.logging.log4j.Logger;
 
-import java.util.UUID;
-
+// This manual implementation of the Factory is necessary because the
+// ClassCache is used before assisted factories are being made available by the
+// framework.
 @Singleton
 @Implement(CachedClass.Factory.class)
 public class DefaultCachedClassFactory implements CachedClass.Factory {
@@ -39,6 +41,9 @@ public class DefaultCachedClassFactory implements CachedClass.Factory {
     this.logger = logger;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CachedClass create(String name, UUID uuid) {
     return new DefaultCachedClass(name, uuid, logger);

@@ -25,6 +25,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.util.classcache.CachedClass;
 import net.flintmc.util.classcache.ClassCache;
 import net.flintmc.util.classcache.ClassCacheIndex;
+
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -35,7 +36,7 @@ public class DefaultClassCache implements ClassCache {
   private final ClassCacheIndex index;
 
   @Inject
-private DefaultClassCache(ClassCacheIndex index) {
+  private DefaultClassCache(ClassCacheIndex index) {
     this.index = index;
   }
 

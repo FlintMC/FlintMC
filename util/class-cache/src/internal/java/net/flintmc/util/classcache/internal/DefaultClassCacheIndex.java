@@ -67,17 +67,26 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getLatestId(String name) {
     return this.data.getOrInsert(name).getLatest();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CachedClass getCachedClass(String name, long id) {
     return this.data.getOrInsert(name)
         .getCachedClass(id, this.cachedClassFactory::create);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void write() {
     try (FileWriter out = new FileWriter(INDEX_FILE_PATH)) {
@@ -88,7 +97,7 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
     }
   }
 
-  private class IndexModel {
+  private static class IndexModel {
 
     private final Map<String, IndexElement> elements;
 
@@ -109,7 +118,7 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
 
   }
 
-  private class IndexElement {
+  private static class IndexElement {
 
     private long latest;
     private final Map<Long, String> uuids;
