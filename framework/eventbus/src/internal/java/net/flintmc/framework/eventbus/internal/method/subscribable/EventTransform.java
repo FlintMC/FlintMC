@@ -23,15 +23,24 @@ import javassist.CtField;
 
 class EventTransform {
 
+  private final String eventClass;
   private final CtField methodsField;
   private final CtField unmodifiableMethodsField;
   private final CtField phasesField;
 
-  public EventTransform(CtField methodsField, CtField unmodifiableMethodsField,
+  public EventTransform(
+      String eventClass,
+      CtField methodsField,
+      CtField unmodifiableMethodsField,
       CtField phasesField) {
+    this.eventClass = eventClass;
     this.methodsField = methodsField;
     this.unmodifiableMethodsField = unmodifiableMethodsField;
     this.phasesField = phasesField;
+  }
+
+  public String getEventClass() {
+    return this.eventClass;
   }
 
   public CtField getMethodsField() {

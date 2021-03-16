@@ -37,6 +37,6 @@ public interface ServiceHandler<T extends Annotation> {
    * Called after {@link #discover(AnnotationMeta)} has been called for every annotation available
    * for the annotation of this service.
    */
-  default void postDiscover() {
+  default void flush() {
   }
 }
