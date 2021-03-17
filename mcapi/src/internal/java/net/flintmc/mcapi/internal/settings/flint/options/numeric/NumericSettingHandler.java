@@ -23,35 +23,47 @@ import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
-import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.options.numeric.NumericSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 @Singleton
 @RegisterSettingHandler(NumericSetting.class)
-public class NumericSettingHandler extends RangedSettingHandler
-    implements SettingHandler<NumericSetting> {
+public class NumericSettingHandler implements SettingHandler<NumericSetting> {
+
+  private final RangedSettingHandler handler;
 
   @Inject
-  private NumericSettingHandler(
-      ComponentSerializer.Factory serializerFactory,
-      ComponentAnnotationSerializer annotationSerializer) {
-    super(serializerFactory, annotationSerializer);
+  private NumericSettingHandler(RangedSettingHandler handler) {
+    this.handler = handler;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject serialize(
       NumericSetting annotation, RegisteredSetting setting, Object currentValue) {
-    return super.serialize(
+    return this.handler.serialize(
         currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isValidInput(
       Object input, ConfigObjectReference reference, NumericSetting annotation) {
-    return super.inRange(annotation.value(), input);
+    return this.handler.inRange(annotation.value(), input);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public SettingData createData(NumericSetting annotation, RegisteredSetting setting) {
+    return this.handler.createData(annotation.value(), setting);
   }
 }

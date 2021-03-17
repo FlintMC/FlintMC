@@ -17,19 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.options.text;
+package net.flintmc.mcapi.settings.flint.options.text.component;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import net.flintmc.mcapi.chat.annotation.DefaultComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.format.ChatFormat;
 import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The {@link ApplicableSetting} to define a string input with all pre defined {@link ChatColor
@@ -41,6 +42,8 @@ import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
  *   <li>'value' with the value from the setting, serialized with the {@link
  *       GsonComponentSerializer}
  * </ul>
+ * <p>
+ * {@link RegisteredSetting#getData()} will be {@code null}.
  *
  * @see ApplicableSetting
  * @see DefaultComponent

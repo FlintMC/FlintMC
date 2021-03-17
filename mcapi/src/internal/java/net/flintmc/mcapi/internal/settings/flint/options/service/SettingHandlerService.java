@@ -36,6 +36,7 @@ import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.Identifier;
@@ -72,15 +73,19 @@ public class SettingHandlerService
     return handler == null || handler.isValidInput(input, reference, annotation);
   }
 
+  @Override
+  public SettingData createData(Annotation annotation, RegisteredSetting setting) {
+    SettingHandler<Annotation> handler = this.getHandler(annotation);
+    return handler == null ? null : handler.createData(annotation, setting);
+  }
+
   private void processPendingHandlers() {
     if (this.pendingHandlers.isEmpty()) {
       return;
     }
 
-    this.pendingHandlers.forEach(
-        (annotationType, type) ->
-            this.handlers.put(
-                annotationType, InjectionHolder.getInjectedInstance(CtResolver.get(type))));
+    this.pendingHandlers.forEach((annotationType, type) -> this.handlers.put(
+        annotationType, InjectionHolder.getInjectedInstance(CtResolver.get(type))));
 
     this.pendingHandlers.clear();
   }

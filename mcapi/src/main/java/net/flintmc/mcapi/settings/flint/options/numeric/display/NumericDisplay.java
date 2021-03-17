@@ -51,5 +51,5 @@ public @interface NumericDisplay {
    *
    * @return The number to be replaced
    */
-  int value();
+  double value();
 }

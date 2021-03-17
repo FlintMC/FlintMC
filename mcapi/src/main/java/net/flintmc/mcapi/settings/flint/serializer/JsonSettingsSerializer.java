@@ -31,7 +31,7 @@ import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.flint.annotation.ui.CategoryGroup;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubCategory;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
-import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;

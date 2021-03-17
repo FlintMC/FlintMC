@@ -20,26 +20,38 @@
 package net.flintmc.mcapi.internal.settings.flint.options.numeric;
 
 import com.google.gson.JsonObject;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
+import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.numeric.NumericData;
 import net.flintmc.mcapi.settings.flint.options.numeric.Range;
 import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplay;
 import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplays;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
+@Singleton
 public class RangedSettingHandler {
 
+  private final NumericData.Factory dataFactory;
   private final ComponentSerializer.Factory serializerFactory;
   private final ComponentAnnotationSerializer annotationSerializer;
 
-  protected RangedSettingHandler(
+  @Inject
+  private RangedSettingHandler(
+      NumericData.Factory dataFactory,
       ComponentSerializer.Factory serializerFactory,
       ComponentAnnotationSerializer annotationSerializer) {
+    this.dataFactory = dataFactory;
     this.serializerFactory = serializerFactory;
     this.annotationSerializer = annotationSerializer;
   }
 
-  protected boolean inRange(Range range, Object value) {
+  public boolean inRange(Range range, Object value) {
     if (!(value instanceof Number)) {
       return false;
     }
@@ -60,7 +72,7 @@ public class RangedSettingHandler {
     return d >= range.min() && d <= range.max();
   }
 
-  protected JsonObject serialize(Number value, Range range, RegisteredSetting setting) {
+  public JsonObject serialize(Number value, Range range, RegisteredSetting setting) {
     JsonObject object = new JsonObject();
 
     object.addProperty("value", value);
@@ -94,4 +106,20 @@ public class RangedSettingHandler {
 
     return object;
   }
+
+  public SettingData createData(Range range, RegisteredSetting setting) {
+    Map<Double, ChatComponent> overriddenDisplays = new HashMap<>();
+
+    NumericDisplays displays = setting.getReference().findLastAnnotation(NumericDisplays.class);
+    if (displays != null && displays.value().length != 0) {
+      for (NumericDisplay display : displays.value()) {
+        overriddenDisplays.put(
+            display.value(), this.annotationSerializer.deserialize(display.display()));
+      }
+    }
+
+    return this.dataFactory.create(
+        setting, range.min(), range.max(), range.decimals(), overriddenDisplays);
+  }
+
 }

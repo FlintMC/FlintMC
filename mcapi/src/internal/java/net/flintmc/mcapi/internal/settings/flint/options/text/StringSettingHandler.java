@@ -21,13 +21,18 @@ package net.flintmc.mcapi.internal.settings.flint.options.text;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
-import net.flintmc.mcapi.settings.flint.options.text.StringRestriction;
-import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringData;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringData.Factory;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringRestriction;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 @Singleton
@@ -39,6 +44,16 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
 
   private final Gson gson = new Gson();
 
+  private final StringData.Factory dataFactory;
+
+  @Inject
+  private StringSettingHandler(StringData.Factory dataFactory) {
+    this.dataFactory = dataFactory;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject serialize(
       StringSetting annotation, RegisteredSetting setting, Object currentValue) {
@@ -57,10 +72,16 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
     if (!annotation.suffix().isEmpty()) {
       object.addProperty("suffix", annotation.suffix());
     }
+    if (!annotation.placeholder().isEmpty()) {
+      object.addProperty("placeholder", annotation.placeholder());
+    }
 
     return object;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isValidInput(
       Object input, ConfigObjectReference reference, StringSetting annotation) {
@@ -79,5 +100,19 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
     }
 
     return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public SettingData createData(StringSetting annotation, RegisteredSetting setting) {
+    return this.dataFactory.create(
+        setting,
+        annotation.prefix(),
+        annotation.suffix(),
+        annotation.placeholder(),
+        annotation.maxLength(),
+        Arrays.asList(annotation.value()));
   }
 }

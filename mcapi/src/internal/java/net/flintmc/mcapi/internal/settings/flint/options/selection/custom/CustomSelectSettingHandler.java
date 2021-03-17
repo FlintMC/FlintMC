@@ -17,20 +17,26 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.settings.flint.options.dropdown;
+package net.flintmc.mcapi.internal.settings.flint.options.selection.custom;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
-import net.flintmc.mcapi.settings.flint.options.dropdown.CustomSelectSetting;
-import net.flintmc.mcapi.settings.flint.options.dropdown.Selection;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.selection.SelectionEntry;
+import net.flintmc.mcapi.settings.flint.options.selection.custom.CustomSelectData;
+import net.flintmc.mcapi.settings.flint.options.selection.custom.CustomSelectSetting;
+import net.flintmc.mcapi.settings.flint.options.selection.custom.Selection;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
@@ -40,10 +46,20 @@ import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
 public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSetting> {
 
   private final JsonSettingsSerializer serializer;
+  private final ComponentAnnotationSerializer annotationSerializer;
+  private final CustomSelectData.Factory dataFactory;
+  private final SelectionEntry.Factory entryFactory;
 
   @Inject
-  public CustomSelectSettingHandler(JsonSettingsSerializer serializer) {
+  private CustomSelectSettingHandler(
+      JsonSettingsSerializer serializer,
+      ComponentAnnotationSerializer annotationSerializer,
+      CustomSelectData.Factory dataFactory,
+      SelectionEntry.Factory entryFactory) {
     this.serializer = serializer;
+    this.annotationSerializer = annotationSerializer;
+    this.dataFactory = dataFactory;
+    this.entryFactory = entryFactory;
   }
 
   @Override
@@ -101,5 +117,25 @@ public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSe
     }
 
     return false;
+  }
+
+  @Override
+  public SettingData createData(CustomSelectSetting annotation, RegisteredSetting setting) {
+    Collection<SelectionEntry> entries = new ArrayList<>();
+
+    for (Selection selection : annotation.value()) {
+      SelectionEntry entry = this.entryFactory.create(
+          setting,
+          selection.value(),
+          selection.display().value().length == 0 ? null
+              : this.annotationSerializer.deserialize(selection.display().value()),
+          selection.description().value().length == 0 ? null
+              : this.annotationSerializer.deserialize(selection.description().value()),
+          selection.icon());
+
+      entries.add(entry);
+    }
+
+    return this.dataFactory.create(setting, annotation.type(), entries);
   }
 }

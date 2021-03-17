@@ -20,6 +20,7 @@
 package net.flintmc.mcapi.chat.annotation;
 
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 
 /**
  * Serializer to map {@link Component} annotations to {@link ChatComponent}s.

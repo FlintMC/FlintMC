@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.options.text;
+package net.flintmc.mcapi.settings.flint.options.text.string;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,6 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.flintmc.framework.config.defval.annotation.DefaultString;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 
 /**
@@ -41,13 +42,15 @@ import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
  *   <li>'prefix' (only if {@link #prefix()} is not empty) with {@link #prefix()}
  *   <li>'suffix' (only if {@link #suffix()} is not empty) with {@link #suffix()}
  * </ul>
+ * <p>
+ * {@link RegisteredSetting#getData()} will be an instance of {@link StringData}.
  *
  * @see ApplicableSetting
  * @see DefaultString
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(types = String.class, name = "string")
+@ApplicableSetting(types = String.class, name = "string", data = StringData.class)
 public @interface StringSetting {
 
   /**
@@ -80,4 +83,6 @@ public @interface StringSetting {
    * @return The suffix or an empty string to show no suffix
    */
   String suffix() default "";
+
+  String placeholder() default "";
 }

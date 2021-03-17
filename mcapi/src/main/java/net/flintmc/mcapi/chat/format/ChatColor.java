@@ -95,7 +95,7 @@ public class ChatColor {
   }
 
   private static ChatColor defaultFormat(String name, char colorCode) {
-    ChatColor chatFormat = new ChatColor(name, String.valueOf(colorCode), 0, true, false);
+    ChatColor chatFormat = new ChatColor(name, String.valueOf(colorCode), 0, true, true);
     DEFAULT_COLORS.put(name, chatFormat);
     DEFAULT_COLORS_BY_CHAR.put(colorCode, chatFormat);
     FORMATS.add(chatFormat);

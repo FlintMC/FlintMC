@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import java.lang.annotation.Annotation;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 /**
@@ -54,4 +55,8 @@ public interface SettingHandler<A extends Annotation> {
    * otherwise
    */
   boolean isValidInput(Object input, ConfigObjectReference reference, A annotation);
+
+  default SettingData createData(A annotation, RegisteredSetting setting) {
+    return null;
+  }
 }

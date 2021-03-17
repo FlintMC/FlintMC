@@ -17,31 +17,40 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.options.dropdown;
+package net.flintmc.mcapi.settings.flint.options.bool;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.flintmc.framework.config.defval.annotation.DefaultBoolean;
+import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
+import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
+import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 
 /**
- * The same as {@link CustomSelectSetting}, but things like the {@link DisplayName} aren't got from
- * the {@link Selection}, but from the enum constant.
+ * The {@link ApplicableSetting} to define a boolean input, the stored type has to be a boolean.
+ *
+ * <p>The resulting json for the {@link JsonSettingsSerializer} will contain:
+ *
+ * <ul>
+ *   <li>'value' with the value from the setting as a boolean
+ * </ul>
+ *
+ * <p>
+ * {@link RegisteredSetting#getData()} will be an instance of {@link BooleanData}.
  *
  * @see ApplicableSetting
- * @see CustomSelectSetting
+ * @see DefaultBoolean
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(types = Enum.class, name = "dropdown")
-public @interface EnumSelectSetting {
+@ApplicableSetting(types = boolean.class, name = "boolean", data = BooleanData.class)
+public @interface BooleanSetting {
 
-  /**
-   * Retrieves the type of this menu.
-   *
-   * @return The type of this menu
-   */
-  SelectMenuType value() default SelectMenuType.DROPDOWN;
+  Component[] enabled() default {};
+
+  Component[] disabled() default {};
+
 }

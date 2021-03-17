@@ -17,23 +17,35 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.settings.flint.options.dropdown;
+package net.flintmc.mcapi.internal.settings.flint.options.selection.enumeration;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import com.google.inject.internal.cglib.proxy.$Dispatcher;
 import net.flintmc.framework.config.EnumFieldResolver;
+import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
+import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
+import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
-import net.flintmc.mcapi.settings.flint.options.dropdown.EnumSelectSetting;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.selection.SelectionEntry;
+import net.flintmc.mcapi.settings.flint.options.selection.enumeration.EnumSelectData;
+import net.flintmc.mcapi.settings.flint.options.selection.enumeration.EnumSelectData.Factory;
+import net.flintmc.mcapi.settings.flint.options.selection.enumeration.EnumSelectSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Singleton
 @RegisterSettingHandler(EnumSelectSetting.class)
@@ -41,14 +53,27 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
 
   private final JsonSettingsSerializer serializer;
   private final EnumFieldResolver fieldResolver;
+  private final ComponentAnnotationSerializer annotationSerializer;
+  private final EnumSelectData.Factory dataFactory;
+  private final SelectionEntry.Factory entryFactory;
 
   @Inject
-  public EnumSelectSettingHandler(
-      JsonSettingsSerializer serializer, EnumFieldResolver fieldResolver) {
+  private EnumSelectSettingHandler(
+      JsonSettingsSerializer serializer,
+      EnumFieldResolver fieldResolver,
+      ComponentAnnotationSerializer annotationSerializer,
+      EnumSelectData.Factory dataFactory,
+      SelectionEntry.Factory entryFactory) {
     this.serializer = serializer;
     this.fieldResolver = fieldResolver;
+    this.annotationSerializer = annotationSerializer;
+    this.dataFactory = dataFactory;
+    this.entryFactory = entryFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject serialize(
       EnumSelectSetting annotation, RegisteredSetting setting, Object currentValue) {
@@ -85,9 +110,41 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
     return object;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isValidInput(
       Object input, ConfigObjectReference reference, EnumSelectSetting annotation) {
     return input == null || reference.getSerializedType().equals(input.getClass());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public SettingData createData(EnumSelectSetting annotation, RegisteredSetting setting) {
+    ConfigObjectReference reference = setting.getReference();
+
+    Class<? extends Enum<?>> enumType =
+        (Class<? extends Enum<?>>) reference.getSerializedType();
+
+    Collection<SelectionEntry> entries = new ArrayList<>();
+    for (Enum<?> constant : enumType.getEnumConstants()) {
+      DisplayName name = reference.findLastAnnotation(DisplayName.class, constant);
+      Description description = reference.findLastAnnotation(Description.class, constant);
+      Icon icon = reference.findLastAnnotation(Icon.class, constant);
+
+      SelectionEntry entry = this.entryFactory.create(
+          setting,
+          constant,
+          name == null ? null : this.annotationSerializer.deserialize(name.value()),
+          description == null ? null : this.annotationSerializer.deserialize(description.value()),
+          icon);
+
+      entries.add(entry);
+    }
+
+    return this.dataFactory.create(setting, annotation.value(), entries);
   }
 }

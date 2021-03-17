@@ -35,7 +35,9 @@ import net.flintmc.mcapi.settings.flint.annotation.ui.SubSettingsFor;
 import net.flintmc.mcapi.settings.flint.annotation.version.VersionExclude;
 import net.flintmc.mcapi.settings.flint.annotation.version.VersionOnly;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
-import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringData;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
 
 /**
  * Represents a setting in the {@link SettingsProvider}.
@@ -65,6 +67,17 @@ public interface RegisteredSetting {
    * @return The non-null annotation of this setting
    */
   Annotation getAnnotation();
+
+  /**
+   * Retrieves the data about this setting created from the {@link #getAnnotation() annotation}. See
+   * the documentation of this annotation for more information about the return value of this
+   * method.
+   *
+   * @param <T> The type of setting data (e.g. {@link StringData} for {@link StringSetting})
+   * @return The data or null if the {@link ApplicableSetting} of this setting doesn't have any
+   * additional data
+   */
+  <T extends SettingData> T getData();
 
   /**
    * Retrieves the current value that is stored in the config.

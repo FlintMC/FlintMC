@@ -19,13 +19,14 @@
 
 package net.flintmc.mcapi.settings.flint.mapper;
 
+import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
+import net.flintmc.processing.autoload.DetectableAnnotation;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
-import net.flintmc.processing.autoload.DetectableAnnotation;
 
 /**
  * Registers a {@link SettingHandler}. The annotated class needs to implement {@link
@@ -39,7 +40,7 @@ import net.flintmc.processing.autoload.DetectableAnnotation;
 public @interface RegisterSettingHandler {
 
   /**
-   * Retrieves the annotation can be handled by the annotated handler, for example {@link
+   * Retrieves the annotation that can be handled by the annotated handler, for example {@link
    * StringSetting}.
    *
    * @return The annotation that can be handled by the handler
