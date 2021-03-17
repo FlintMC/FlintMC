@@ -38,7 +38,7 @@ import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.TranslateKey;
-import net.flintmc.mcapi.settings.flint.annotation.ui.InternalCategory;
+import net.flintmc.mcapi.settings.flint.annotation.ui.CategoryGroup;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubCategory;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredCategory;
@@ -192,10 +192,10 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
 
     object.addProperty("category", setting.getCategoryName());
 
-    InternalCategory internalCategory =
-        setting.getReference().findLastAnnotation(InternalCategory.class);
-    if (internalCategory != null) {
-      object.addProperty("internalCategory", internalCategory.value());
+    CategoryGroup categoryGroup =
+        setting.getReference().findLastAnnotation(CategoryGroup.class);
+    if (categoryGroup != null) {
+      object.addProperty("categoryGroup", categoryGroup.value());
     }
 
     if (!setting.getSubSettings().isEmpty()) {

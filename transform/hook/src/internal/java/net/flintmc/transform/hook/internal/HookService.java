@@ -47,6 +47,7 @@ import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.commons.resolve.AnnotationResolver;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
+import net.flintmc.util.mappings.MethodMapping;
 import net.flintmc.util.mappings.utils.line.MappingLineParser;
 
 import java.util.Collection;
@@ -92,7 +93,9 @@ public class HookService implements ServiceHandler<Hook> {
 
     Hook annotation = meta.getAnnotation();
 
-    if (!(annotation.version().isEmpty() || annotation.version().equals(this.version))) return;
+    if (!(annotation.version().isEmpty() || annotation.version().equals(this.version))) {
+      return;
+    }
     this.hooks.add(
         new HookEntry(
             meta,
@@ -218,24 +221,33 @@ public class HookService implements ServiceHandler<Hook> {
 
     boolean constructor = hook.methodName().equals("<init>");
 
-    CtBehavior target =
-        constructor
-            ? ctClass.getDeclaredConstructor(parameters)
-            : ctClass.getDeclaredMethod(
-                this.mappingProvider
-                    .get(ctClass.getName())
-                    .getMethod(hookEntry.methodNameResolver.resolve(hook), parameters)
-                    .getName(),
-                parameters);
+    String methodName = hookEntry.methodNameResolver.resolve(hook);
+    MethodMapping methodMapping = this.mappingProvider
+        .get(ctClass.getName())
+        .getMethod(hookEntry.methodNameResolver.resolve(hook), parameters);
+    if (methodMapping != null) {
+      methodName = methodMapping.getName();
+    }
 
-    if (target != null) {
-      for (Hook.ExecutionTime executionTime : hook.executionTime()) {
-        this.insert(target, hook, executionTime, callback);
+    try {
+      CtBehavior target =
+          constructor
+              ? ctClass.getDeclaredConstructor(parameters)
+              : ctClass.getDeclaredMethod(
+                  methodName,
+                  parameters);
+
+      if (target != null) {
+        for (Hook.ExecutionTime executionTime : hook.executionTime()) {
+          this.insert(target, hook, executionTime, callback);
+        }
       }
+    } catch (NotFoundException ignored) {
     }
   }
 
   private static class HookEntry {
+
     private final AnnotationResolver<Type, String> parameterTypeNameResolver;
     private final AnnotationResolver<Hook, String> methodNameResolver;
     AnnotationMeta<Hook> hook;

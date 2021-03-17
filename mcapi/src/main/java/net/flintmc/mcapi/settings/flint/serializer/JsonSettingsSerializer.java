@@ -28,7 +28,7 @@ import java.util.Map;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
-import net.flintmc.mcapi.settings.flint.annotation.ui.InternalCategory;
+import net.flintmc.mcapi.settings.flint.annotation.ui.CategoryGroup;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubCategory;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
@@ -72,7 +72,7 @@ public interface JsonSettingsSerializer {
    *   <li>'category' (optional) being the {@link RegisteredSetting#getCategoryName() name of the
    *       category} of the setting
    *   <li>'native' (only if it is enabled) if the setting is a native minecraft setting ({@link
-   *       InternalCategory}) and not one by some FlintMC package
+   *       CategoryGroup}) and not one by some FlintMC package
    *   <li>'subSettings' (only if there are any) being the {@link RegisteredSetting#getSubSettings()
    *       sub settings} of the setting
    *   <li>'subCategory' (only if it is provided) being the {@link SubCategory} of the setting

@@ -33,7 +33,7 @@ import net.flintmc.processing.autoload.AnnotationMeta;
 import net.flintmc.processing.autoload.identifier.Identifier;
 
 @Singleton
-@Service(StoragePriority.class)
+@Service(value = StoragePriority.class, priority = -1)
 public class ConfigStorageService implements ServiceHandler<StoragePriority> {
 
   private final ConfigStorageProvider storageProvider;

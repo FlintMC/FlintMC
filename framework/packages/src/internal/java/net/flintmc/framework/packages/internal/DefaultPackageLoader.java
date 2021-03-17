@@ -31,6 +31,7 @@ import net.flintmc.framework.packages.PackageManifestLoader;
 import net.flintmc.framework.packages.PackageState;
 import net.flintmc.framework.packages.load.DependencyGraphBuilder;
 import net.flintmc.framework.packages.load.PackageFinder;
+import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.util.commons.Pair;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -141,9 +144,11 @@ public class DefaultPackageLoader implements PackageLoader {
 
       // check which packages have been loaded successfully
       // and print error messages if needed
+
+      Collection<Package> packagesToEnable = new CopyOnWriteArrayList<>();
+
       for (Package pack : loadablePackages) {
-        if (dependencyGraphBuilder
-            .isLoadable(pack, loadedSuccessfully, errorTrack)) {
+        if (dependencyGraphBuilder.isLoadable(pack, loadedSuccessfully, errorTrack)) {
           PackageState newState = PackageState.ERRORED;
           try {
             newState = pack.load();
@@ -153,14 +158,9 @@ public class DefaultPackageLoader implements PackageLoader {
                     pack.getName(), pack.getVersion()), e);
           }
           if (newState == PackageState.LOADED) {
-            try {
-              pack.enable();
-            } catch (Throwable t) {
-              this.logger.error(
-                  String.format("Failed to enable package %s (version %s).",
-                      pack.getName(), pack.getVersion()), t);
-            }
+            packagesToEnable.add(pack);
             loadedSuccessfully.add(pack);
+
           } else {
             this.logger.error(
                 String.format("Failed to load package %s (version %s).",
@@ -175,7 +175,19 @@ public class DefaultPackageLoader implements PackageLoader {
                       + "trying to load subsequent packages.", pack.getName(),
                   pack.getVersion()));
         }
+      }
 
+      for (State state : State.values()) {
+        for (Package pack : packagesToEnable) {
+          try {
+            pack.enable(state);
+          } catch (Throwable t) {
+            this.logger.error(
+                String.format("Failed to enable package state %s for %s (version %s).",
+                    state, pack.getName(), pack.getVersion()), t);
+            packagesToEnable.remove(pack);
+          }
+        }
       }
 
       Set<Package> allLoaded = this.getLoadedPackages();
@@ -217,14 +229,13 @@ public class DefaultPackageLoader implements PackageLoader {
   }
 
   /**
-   * Retrieves a log prefix for the given class. This will always be the name of
-   * the package if the class has been loaded by a package class loader.
+   * Retrieves a log prefix for the given class. This will always be the name of the package if the
+   * class has been loaded by a package class loader.
    *
    * @param clazz The clazz to determine the log prefix for
-   * @return The log prefix to use for the class or null, if the class has not
-   * been loaded from a package
-   * @implNote The log prefix is simply the name of the package the class has
-   * been loaded from
+   * @return The log prefix to use for the class or null, if the class has not been loaded from a
+   * package
+   * @implNote The log prefix is simply the name of the package the class has been loaded from
    */
   private String getLogPrefix(Class<?> clazz) {
     ClassLoader loader = clazz.getClassLoader();

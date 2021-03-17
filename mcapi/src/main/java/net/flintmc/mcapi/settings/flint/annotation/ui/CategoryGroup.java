@@ -36,11 +36,11 @@ import net.flintmc.mcapi.settings.flint.registered.SettingsProvider;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface InternalCategory {
+public @interface CategoryGroup {
 
   /**
    * Retrieves the name of the internal category to be used in {@link
-   * SettingsProvider#getCategorizedSettings(String)}.
+   * SettingsProvider#getSettingsByGroup(String)}.
    *
    * @return The name of the category
    */

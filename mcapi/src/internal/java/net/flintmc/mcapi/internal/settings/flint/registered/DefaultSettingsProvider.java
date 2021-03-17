@@ -25,7 +25,9 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
@@ -35,7 +37,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageResolver;
-import net.flintmc.mcapi.settings.flint.annotation.ui.InternalCategory;
+import net.flintmc.mcapi.settings.flint.annotation.ui.CategoryGroup;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubSettingsFor;
 import net.flintmc.mcapi.settings.flint.event.SettingRegisterEvent;
 import net.flintmc.mcapi.settings.flint.event.SettingRegisterEvent.Factory;
@@ -175,11 +177,11 @@ public class DefaultSettingsProvider implements SettingsProvider {
    * {@inheritDoc}
    */
   @Override
-  public Collection<RegisteredSetting> getCategorizedSettings(String internalCategory) {
+  public Collection<RegisteredSetting> getSettingsByGroup(String categoryGroup) {
     Collection<RegisteredSetting> settings = new ArrayList<>();
     for (RegisteredSetting setting : this.getAllSettings()) {
-      InternalCategory category = setting.getReference().findLastAnnotation(InternalCategory.class);
-      if (category != null && internalCategory.equals(category.value())) {
+      CategoryGroup category = setting.getReference().findLastAnnotation(CategoryGroup.class);
+      if (category != null && categoryGroup.equals(category.value())) {
         settings.add(setting);
       }
     }
@@ -251,5 +253,28 @@ public class DefaultSettingsProvider implements SettingsProvider {
     }
 
     return null;
+  }
+
+  @Override
+  public Collection<RegisteredSetting> getSettingsByCategory(String categoryName) {
+    Set<RegisteredSetting> settings = new HashSet<>();
+    for (RegisteredSetting setting : this.settings) {
+      if (setting.getCategoryName().equals(categoryName)) {
+        settings.add(setting);
+      }
+    }
+    return settings;
+  }
+
+  @Override
+  public Collection<String> getAllCategoryGroups() {
+    Collection<String> categories = new HashSet<>();
+    for (RegisteredSetting setting : this.getAllSettings()) {
+      CategoryGroup category = setting.getReference().findLastAnnotation(CategoryGroup.class);
+      if (category != null) {
+        categories.add(category.value());
+      }
+    }
+    return categories;
   }
 }
