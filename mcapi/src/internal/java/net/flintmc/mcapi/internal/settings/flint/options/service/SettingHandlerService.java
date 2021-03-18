@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javassist.CtClass;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
@@ -58,19 +57,15 @@ public class SettingHandlerService
   }
 
   @Override
-  public JsonObject serialize(
-      Annotation annotation, RegisteredSetting setting, Object currentValue) {
-    SettingHandler<Annotation> handler = this.getHandler(annotation);
-    return handler == null
-        ? new JsonObject()
-        : handler.serialize(annotation, setting, currentValue);
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
+    SettingHandler<Annotation> handler = this.getHandler(setting.getAnnotation());
+    return handler == null ? new JsonObject() : handler.serialize(setting, currentValue);
   }
 
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, Annotation annotation) {
-    SettingHandler<Annotation> handler = this.getHandler(annotation);
-    return handler == null || handler.isValidInput(input, reference, annotation);
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
+    SettingHandler<Annotation> handler = this.getHandler(setting.getAnnotation());
+    return handler == null || handler.isValidInput(input, setting);
   }
 
   @Override

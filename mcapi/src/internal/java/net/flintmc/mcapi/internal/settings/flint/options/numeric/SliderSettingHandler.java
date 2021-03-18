@@ -44,19 +44,17 @@ public class SliderSettingHandler implements SettingHandler<SliderSetting> {
    * {@inheritDoc}
    */
   @Override
-  public JsonObject serialize(
-      SliderSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
     return this.handler.serialize(
-        currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
+        currentValue == null ? 0 : (Number) currentValue, setting.getData(), setting);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, SliderSetting annotation) {
-    return this.handler.inRange(annotation.value(), input);
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
+    return this.handler.inRange(setting.getData(), input);
   }
 
   /**

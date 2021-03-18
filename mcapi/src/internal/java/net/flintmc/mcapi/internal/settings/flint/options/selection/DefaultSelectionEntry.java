@@ -19,11 +19,13 @@
 
 package net.flintmc.mcapi.internal.settings.flint.options.selection;
 
+import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
+import net.flintmc.mcapi.settings.flint.options.data.SettingDataUpdateEvent;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectionEntry;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import javax.annotation.Nullable;
@@ -31,21 +33,27 @@ import javax.annotation.Nullable;
 @Implement(SelectionEntry.class)
 public class DefaultSelectionEntry implements SelectionEntry {
 
+  private final EventBus eventBus;
+  private final SettingDataUpdateEvent.Factory updateEventFactory;
+
   private final RegisteredSetting setting;
   private final Object identifier;
 
-  private final Icon icon;
-
   private ChatComponent displayName;
   private ChatComponent description;
+  private Icon icon;
 
   @AssistedInject
   private DefaultSelectionEntry(
+      EventBus eventBus,
+      SettingDataUpdateEvent.Factory updateEventFactory,
       @Assisted("setting") RegisteredSetting setting,
       @Assisted("identifier") Object identifier,
       @Assisted("displayName") @Nullable ChatComponent displayName,
       @Assisted("description") @Nullable ChatComponent description,
       @Assisted("icon") @Nullable Icon icon) {
+    this.eventBus = eventBus;
+    this.updateEventFactory = updateEventFactory;
     this.setting = setting;
     this.identifier = identifier;
     this.icon = icon;
@@ -81,6 +89,16 @@ public class DefaultSelectionEntry implements SelectionEntry {
    * {@inheritDoc}
    */
   @Override
+  public void setIcon(Icon icon) {
+    this.eventBus.fireEventAll(
+        this.updateEventFactory.create(this.setting.getData()),
+        () -> this.icon = icon);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public ChatComponent getDisplayName() {
     return this.displayName;
   }
@@ -90,7 +108,9 @@ public class DefaultSelectionEntry implements SelectionEntry {
    */
   @Override
   public void setDisplayName(ChatComponent displayName) {
-    this.displayName = displayName;
+    this.eventBus.fireEventAll(
+        this.updateEventFactory.create(this.setting.getData()),
+        () -> this.displayName = displayName);
   }
 
   /**
@@ -106,7 +126,9 @@ public class DefaultSelectionEntry implements SelectionEntry {
    */
   @Override
   public void setDescription(ChatComponent description) {
-    this.description = description;
+    this.eventBus.fireEventAll(
+        this.updateEventFactory.create(this.setting.getData()),
+        () -> this.description = description);
   }
 
   /**

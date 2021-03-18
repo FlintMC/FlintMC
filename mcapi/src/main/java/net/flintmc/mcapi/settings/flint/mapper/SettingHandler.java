@@ -21,7 +21,6 @@ package net.flintmc.mcapi.settings.flint.mapper;
 
 import com.google.gson.JsonObject;
 import java.lang.annotation.Annotation;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
@@ -38,24 +37,31 @@ public interface SettingHandler<A extends Annotation> {
    * Serializes the given value with all necessary information (can be used from the annotation and
    * setting) into a json object.
    *
-   * @param annotation   The non-null annotation from the setting ({@link RegisteredSetting#getAnnotation()}
    * @param setting      The non-null setting that contains the given value
    * @param currentValue The non-null value to be serialized
    * @return The new non-null json object with the serialized data
    */
-  JsonObject serialize(A annotation, RegisteredSetting setting, Object currentValue);
+  JsonObject serialize(RegisteredSetting setting, Object currentValue);
 
   /**
    * Checks whether the given {@code input} is valid to set for the given annotation.
    *
-   * @param input      The nullable input to check for
-   * @param reference  The non-null reference where the given setting is attached to
-   * @param annotation The non-null annotation to get information from
+   * @param input   The nullable input to check for
+   * @param setting The non-null setting to check for the value
    * @return {@code true} if the given input is valid for the given annotation, {@code false}
    * otherwise
    */
-  boolean isValidInput(Object input, ConfigObjectReference reference, A annotation);
+  boolean isValidInput(Object input, RegisteredSetting setting);
 
+  /**
+   * Creates a new {@link SettingData} instance for the given annotation on the given setting. The
+   * result must be an instance of {@link ApplicableSetting#data()} or if the type is {@link
+   * ApplicableSetting.DummySettingData} {@code null}.
+   *
+   * @param annotation The non-null annotation to create the data for
+   * @param setting    The non-null setting to create the data for
+   * @return The new data or {@code null} if there is no data for this annotation
+   */
   default SettingData createData(A annotation, RegisteredSetting setting) {
     return null;
   }

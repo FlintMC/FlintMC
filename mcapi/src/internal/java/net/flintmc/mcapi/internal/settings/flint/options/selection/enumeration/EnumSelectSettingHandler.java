@@ -24,7 +24,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.internal.cglib.proxy.$Dispatcher;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.flintmc.framework.config.EnumFieldResolver;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
@@ -34,18 +37,13 @@ import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.selection.SelectData;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectionEntry;
 import net.flintmc.mcapi.settings.flint.options.selection.enumeration.EnumSelectData;
-import net.flintmc.mcapi.settings.flint.options.selection.enumeration.EnumSelectData.Factory;
 import net.flintmc.mcapi.settings.flint.options.selection.enumeration.EnumSelectSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Singleton
 @RegisterSettingHandler(EnumSelectSetting.class)
@@ -75,8 +73,9 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
    * {@inheritDoc}
    */
   @Override
-  public JsonObject serialize(
-      EnumSelectSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
+    SelectData data = setting.getData();
+
     JsonObject object = new JsonObject();
 
     Class<? extends Enum<?>> enumType =
@@ -89,7 +88,7 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
 
     object.addProperty("value", currentValue == null ? "" : ((Enum<?>) currentValue).name());
 
-    object.addProperty("selectType", annotation.value().name());
+    object.addProperty("selectType", data.getType().name());
 
     return object;
   }
@@ -114,9 +113,8 @@ public class EnumSelectSettingHandler implements SettingHandler<EnumSelectSettin
    * {@inheritDoc}
    */
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, EnumSelectSetting annotation) {
-    return input == null || reference.getSerializedType().equals(input.getClass());
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
+    return input == null || setting.getReference().getSerializedType().equals(input.getClass());
   }
 
   /**

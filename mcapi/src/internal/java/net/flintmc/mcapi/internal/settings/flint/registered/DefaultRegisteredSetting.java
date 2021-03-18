@@ -144,7 +144,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
    */
   @Override
   public boolean setCurrentValue(Object value) {
-    if (!this.settingHandler.isValidInput(value, this.reference, this.getAnnotation())) {
+    if (!this.settingHandler.isValidInput(value, this)) {
       return false;
     }
 

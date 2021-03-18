@@ -19,16 +19,36 @@
 
 package net.flintmc.mcapi.settings.flint.options.selection;
 
-import net.flintmc.mcapi.settings.flint.options.data.SettingData;
-
 import java.util.Collection;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.selection.custom.CustomSelectSetting;
+import net.flintmc.mcapi.settings.flint.options.selection.enumeration.EnumSelectSetting;
 
+/**
+ * {@link SettingData} implementation for the {@link CustomSelectSetting} and {@link
+ * EnumSelectSetting}.
+ */
 public interface SelectData extends SettingData {
 
+  /**
+   * Retrieves the type how this selection should be displayed.
+   *
+   * @return The non-null type how this selection should be displayed
+   */
   SelectMenuType getType();
 
+  /**
+   * Changes the type how this selection should be displayed.
+   *
+   * @param type The non-null type how this selection should be displayed
+   */
   void setType(SelectMenuType type);
 
+  /**
+   * Retrieves a collection of all selectable and displayed entries of this selection.
+   *
+   * @return The non-null collection of entries to be selectable and displayed
+   */
   Collection<SelectionEntry> getEntries();
 
 }

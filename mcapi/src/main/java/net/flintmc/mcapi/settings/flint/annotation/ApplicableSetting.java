@@ -90,8 +90,20 @@ public @interface ApplicableSetting {
    */
   Class<?>[] types();
 
+  /**
+   * Retrieves the class that contains more information about a setting from the annotation of the
+   * setting.
+   *
+   * @return The type of the setting data of this setting or {@link DummySettingData} if there is no
+   * information to be stored in the {@link SettingData}
+   * @see SettingData
+   */
   Class<? extends SettingData> data() default DummySettingData.class;
 
+  /**
+   * Dummy data for {@link #data()}.
+   */
   interface DummySettingData extends SettingData {
+
   }
 }

@@ -19,9 +19,6 @@
 
 package net.flintmc.mcapi.settings.flint.registered;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import javax.annotation.Nullable;
 import net.flintmc.framework.config.annotation.Config;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -38,6 +35,9 @@ import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.options.text.string.StringData;
 import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 /**
  * Represents a setting in the {@link SettingsProvider}.
@@ -92,8 +92,9 @@ public interface RegisteredSetting {
    * this setting.
    *
    * @param value The value to be set, may be {@code null}
-   * @return {@code true} if it has been successfully set, {@code false} otherwise
-   * @see SettingHandler#isValidInput(Object, ConfigObjectReference, Annotation)
+   * @return {@code true} if it has been successfully set, {@code false} if the given value is
+   * invalid for this setting
+   * @see SettingHandler#isValidInput(Object, RegisteredSetting)
    */
   boolean setCurrentValue(Object value);
 

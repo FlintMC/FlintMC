@@ -19,10 +19,19 @@
 
 package net.flintmc.mcapi.settings.flint.options.data;
 
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
+/**
+ * Information about an {@link ApplicableSetting} of a {@link RegisteredSetting}.
+ */
 public interface SettingData {
 
+  /**
+   * Retrieves the setting which this data belongs to.
+   *
+   * @return The non-null setting which this data belongs
+   */
   RegisteredSetting getSetting();
 
 }

@@ -23,16 +23,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Collection;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
-import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
-import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
+import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
+import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.selection.SelectData;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectionEntry;
 import net.flintmc.mcapi.settings.flint.options.selection.custom.CustomSelectData;
 import net.flintmc.mcapi.settings.flint.options.selection.custom.CustomSelectSetting;
@@ -41,12 +39,16 @@ import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 @Singleton
 @RegisterSettingHandler(CustomSelectSetting.class)
 public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSetting> {
 
   private final JsonSettingsSerializer serializer;
   private final ComponentAnnotationSerializer annotationSerializer;
+  private final GsonComponentSerializer componentSerializer;
   private final CustomSelectData.Factory dataFactory;
   private final SelectionEntry.Factory entryFactory;
 
@@ -54,46 +56,51 @@ public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSe
   private CustomSelectSettingHandler(
       JsonSettingsSerializer serializer,
       ComponentAnnotationSerializer annotationSerializer,
+      ComponentSerializer.Factory serializerFactory,
       CustomSelectData.Factory dataFactory,
       SelectionEntry.Factory entryFactory) {
     this.serializer = serializer;
     this.annotationSerializer = annotationSerializer;
+    this.componentSerializer = serializerFactory.gson();
     this.dataFactory = dataFactory;
     this.entryFactory = entryFactory;
   }
 
   @Override
-  public JsonObject serialize(
-      CustomSelectSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
+    SelectData data = setting.getData();
+
     JsonObject object = new JsonObject();
-    object.add("possible", this.serialize(setting, annotation.value()));
+    object.add("possible", this.serializeEntries(setting, data.getEntries()));
 
     object.addProperty("value", currentValue == null ? "" : (String) currentValue);
 
-    object.addProperty("selectType", annotation.type().name());
+    object.addProperty("selectType", data.getType().name());
     return object;
   }
 
-  private JsonArray serialize(RegisteredSetting setting, Selection[] selections) {
+  private JsonArray serializeEntries(
+      RegisteredSetting setting, Collection<SelectionEntry> entries) {
     JsonArray array = new JsonArray();
 
-    for (Selection selection : selections) {
+    for (SelectionEntry entry : entries) {
       JsonObject object = new JsonObject();
       array.add(object);
 
-      object.addProperty("name", selection.value());
+      object.addProperty("name", String.valueOf(entry.getIdentifier()));
 
-      for (SettingsSerializationHandler<DisplayName> handler :
-          this.serializer.getHandlers(DisplayName.class)) {
-        handler.append(object, setting, selection.display());
+      if (entry.getDisplayName() != null) {
+        object.add("displayName",
+            this.componentSerializer.getGson().toJsonTree(entry.getDisplayName()));
       }
-      for (SettingsSerializationHandler<Description> handler :
-          this.serializer.getHandlers(Description.class)) {
-        handler.append(object, setting, selection.description());
+
+      if (entry.getDescription() != null) {
+        object.add("description",
+            this.componentSerializer.getGson().toJsonTree(entry.getDescription()));
       }
-      for (SettingsSerializationHandler<Icon> handler :
-          this.serializer.getHandlers(Icon.class)) {
-        handler.append(object, setting, selection.icon());
+
+      for (SettingsSerializationHandler<Icon> handler : this.serializer.getHandlers(Icon.class)) {
+        handler.append(object, setting, entry.getIcon());
       }
     }
 
@@ -101,8 +108,7 @@ public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSe
   }
 
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, CustomSelectSetting annotation) {
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
     if (input == null) {
       return true;
     }
@@ -110,8 +116,9 @@ public class CustomSelectSettingHandler implements SettingHandler<CustomSelectSe
       return false;
     }
 
-    for (Selection selection : annotation.value()) {
-      if (selection.value().equals(input)) {
+    SelectData data = setting.getData();
+    for (SelectionEntry entry : data.getEntries()) {
+      if (entry.getIdentifier().equals(input)) {
         return true;
       }
     }

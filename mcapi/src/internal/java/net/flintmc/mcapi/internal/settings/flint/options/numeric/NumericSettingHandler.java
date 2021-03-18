@@ -22,7 +22,6 @@ package net.flintmc.mcapi.internal.settings.flint.options.numeric;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.data.SettingData;
@@ -44,19 +43,17 @@ public class NumericSettingHandler implements SettingHandler<NumericSetting> {
    * {@inheritDoc}
    */
   @Override
-  public JsonObject serialize(
-      NumericSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
     return this.handler.serialize(
-        currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
+        currentValue == null ? 0 : (Number) currentValue, setting.getData(), setting);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, NumericSetting annotation) {
-    return this.handler.inRange(annotation.value(), input);
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
+    return this.handler.inRange(setting.getData(), input);
   }
 
   /**

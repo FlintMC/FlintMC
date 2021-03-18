@@ -22,7 +22,6 @@ package net.flintmc.mcapi.internal.settings.flint.options.text;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
@@ -50,8 +49,7 @@ public class ComponentSettingHandler implements SettingHandler<ComponentSetting>
    * {@inheritDoc}
    */
   @Override
-  public JsonObject serialize(
-      ComponentSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
     object.add(
@@ -68,8 +66,7 @@ public class ComponentSettingHandler implements SettingHandler<ComponentSetting>
    * {@inheritDoc}
    */
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, ComponentSetting annotation) {
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
     return input instanceof TextComponent;
   }
 }

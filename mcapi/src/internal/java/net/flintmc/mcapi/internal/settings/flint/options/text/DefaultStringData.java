@@ -19,9 +19,6 @@
 
 package net.flintmc.mcapi.internal.settings.flint.options.text;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
@@ -30,6 +27,10 @@ import net.flintmc.mcapi.settings.flint.options.data.SettingDataUpdateEvent;
 import net.flintmc.mcapi.settings.flint.options.text.string.StringData;
 import net.flintmc.mcapi.settings.flint.options.text.string.StringRestriction;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 @Implement(StringData.class)
 public class DefaultStringData implements StringData {
@@ -91,7 +92,7 @@ public class DefaultStringData implements StringData {
       return;
     }
 
-    this.eventBus.fireEventAll(this.updateEvent, () -> this.maxLength = maxLength);
+    this.eventBus.fireEventAll(this.updateEvent, () -> this.maxLength = Math.max(maxLength, 0));
   }
 
   /**
@@ -111,7 +112,7 @@ public class DefaultStringData implements StringData {
       return;
     }
 
-    this.eventBus.fireEventAll(this.updateEvent, () -> this.prefix = prefix);
+    this.eventBus.fireEventAll(this.updateEvent, () -> this.prefix = prefix != null ? prefix : "");
   }
 
   /**
@@ -131,7 +132,7 @@ public class DefaultStringData implements StringData {
       return;
     }
 
-    this.eventBus.fireEventAll(this.updateEvent, () -> this.suffix = suffix);
+    this.eventBus.fireEventAll(this.updateEvent, () -> this.suffix = suffix != null ? suffix : "");
   }
 
   /**
@@ -151,7 +152,8 @@ public class DefaultStringData implements StringData {
       return;
     }
 
-    this.eventBus.fireEventAll(this.updateEvent, () -> this.placeholder = placeholder);
+    this.eventBus.fireEventAll(
+        this.updateEvent, () -> this.placeholder = placeholder != null ? placeholder : "");
   }
 
   /**

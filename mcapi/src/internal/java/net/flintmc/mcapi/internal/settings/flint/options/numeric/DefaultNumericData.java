@@ -141,7 +141,13 @@ public class DefaultNumericData implements NumericData {
    */
   @Override
   public void setOverriddenDisplay(double value, ChatComponent display) {
-    this.eventBus.fireEventAll(this.updateEvent, () -> this.overriddenDisplays.put(value, display));
+    this.eventBus.fireEventAll(this.updateEvent, () -> {
+      if (display != null) {
+        this.overriddenDisplays.put(value, display);
+      } else {
+        this.overriddenDisplays.remove(value);
+      }
+    });
   }
 
   /**

@@ -22,8 +22,6 @@ package net.flintmc.mcapi.internal.settings.flint.options.numeric;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.HashMap;
-import java.util.Map;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
@@ -33,6 +31,9 @@ import net.flintmc.mcapi.settings.flint.options.numeric.Range;
 import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplay;
 import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplays;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class RangedSettingHandler {
@@ -51,14 +52,14 @@ public class RangedSettingHandler {
     this.annotationSerializer = annotationSerializer;
   }
 
-  public boolean inRange(Range range, Object value) {
+  public boolean inRange(NumericData data, Object value) {
     if (!(value instanceof Number)) {
       return false;
     }
 
     Number number = (Number) value;
     double d = number.doubleValue();
-    int decimals = range.decimals();
+    int decimals = data.getDecimalPlaces();
 
     if (decimals == 0 && d != (long) d) {
       return false;
@@ -69,10 +70,10 @@ public class RangedSettingHandler {
       return false;
     }
 
-    return d >= range.min() && d <= range.max();
+    return d >= data.getMinValue() && d <= data.getMaxValue();
   }
 
-  public JsonObject serialize(Number value, Range range, RegisteredSetting setting) {
+  public JsonObject serialize(Number value, NumericData data, RegisteredSetting setting) {
     JsonObject object = new JsonObject();
 
     object.addProperty("value", value);
@@ -80,13 +81,13 @@ public class RangedSettingHandler {
     JsonObject rangeObject = new JsonObject();
     object.add("range", rangeObject);
 
-    if (range.min() != Double.MIN_VALUE) {
-      rangeObject.addProperty("min", range.min());
+    if (data.getMinValue() != Double.MIN_VALUE) {
+      rangeObject.addProperty("min", data.getMinValue());
     }
-    if (range.max() != Double.MAX_VALUE) {
-      rangeObject.addProperty("max", range.max());
+    if (data.getMaxValue() != Double.MAX_VALUE) {
+      rangeObject.addProperty("max", data.getMaxValue());
     }
-    rangeObject.addProperty("decimals", range.decimals());
+    rangeObject.addProperty("decimals", data.getDecimalPlaces());
 
     NumericDisplays repeatable =
         setting.getReference().findLastAnnotation(NumericDisplays.class);

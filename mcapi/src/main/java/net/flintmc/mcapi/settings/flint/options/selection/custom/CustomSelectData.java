@@ -19,23 +19,51 @@
 
 package net.flintmc.mcapi.settings.flint.options.selection.custom;
 
+import java.util.Collection;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectData;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectMenuType;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectionEntry;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
-import java.util.Collection;
 
+/**
+ * {@link SettingData} implementation for the {@link CustomSelectSetting}.
+ */
 public interface CustomSelectData extends SelectData {
 
+  /**
+   * Adds a new entry to be selectable and displayed to this setting.
+   *
+   * @param entry The non-null entry to be added to this selection
+   */
   void addEntry(SelectionEntry entry);
 
+  /**
+   * Removes the given entry from this selection so that it won't be selectable anymore. If the
+   * given entry is currently the {@link RegisteredSetting#getCurrentValue() value of this setting},
+   * this won't be changed automatically and should be changed to an entry that is still available
+   * in this selection.
+   *
+   * @param entry The non-null to be removed from this selection
+   */
   void removeEntry(SelectionEntry entry);
 
+  /**
+   * Factory for the {@link CustomSelectData}.
+   */
   @AssistedFactory(CustomSelectData.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link CustomSelectData} for the given setting.
+     *
+     * @param setting The non-null setting to create the data for
+     * @param type    The non-null type how the selection should be displayed
+     * @param entries The non-null collection of entries to be selectable and displayed
+     * @return The new non-null {@link CustomSelectData}
+     */
     CustomSelectData create(
         @Assisted("setting") RegisteredSetting setting,
         @Assisted("type") SelectMenuType type,

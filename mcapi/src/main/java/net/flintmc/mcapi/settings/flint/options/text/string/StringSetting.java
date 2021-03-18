@@ -19,14 +19,15 @@
 
 package net.flintmc.mcapi.settings.flint.options.text.string;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import net.flintmc.framework.config.defval.annotation.DefaultString;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The {@link ApplicableSetting} to define a string input, the stored type has to be a string.
@@ -68,21 +69,27 @@ public @interface StringSetting {
   int maxLength() default Integer.MAX_VALUE;
 
   /**
-   * Retrieves the prefix that should be displayed in the text input and which cannot be modified by
-   * the user. This may be useful for something like "https://youtube.com/" to let the user type in
-   * their channel name.
+   * Retrieves the prefix that should be displayed in the text input (before the text) and which
+   * cannot be modified by the user. This may be useful for something like "https://youtube.com/" to
+   * let the user type in their channel name.
    *
    * @return The prefix or an empty string to show no prefix
    */
   String prefix() default "";
 
   /**
-   * Retrieves the suffix that should be displayed in the text input and which cannot be modified by
-   * the user.
+   * Retrieves the suffix that should be displayed in the text input (after the text) and which
+   * cannot be modified by the user.
    *
    * @return The suffix or an empty string to show no suffix
    */
   String suffix() default "";
 
+  /**
+   * Retrieves the placeholder that should be displayed in the text input if no value is set by the
+   * user.
+   *
+   * @return The placeholder or an empty string to show no placeholder
+   */
   String placeholder() default "";
 }

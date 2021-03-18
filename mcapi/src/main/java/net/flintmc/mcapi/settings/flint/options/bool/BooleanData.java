@@ -24,21 +24,62 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
+
 import javax.annotation.Nullable;
 
+/**
+ * {@link SettingData} implementation for the {@link BooleanSetting}.
+ */
 public interface BooleanData extends SettingData {
 
+  /**
+   * Retrieves the text that should be displayed if the setting is set to {@code true}.
+   *
+   * @return The text to be displayed if the setting is set to {@code true} or {@code null} if the
+   * default text should be displayed
+   */
   ChatComponent getEnabledText();
 
+  /**
+   * Changes the text that should be displayed if the setting is set to {@code true}.
+   *
+   * @param enabledText The text to be displayed if the setting is set to {@code true} or {@code
+   *                    null} if the default text should be displayed
+   */
   void setEnabledText(ChatComponent enabledText);
 
+  /**
+   * Retrieves the text that should be displayed if the setting is set to {@code false}.
+   *
+   * @return The text to be displayed if the setting is set to {@code false} or {@code null} if the
+   * default text should be displayed
+   */
   ChatComponent getDisabledText();
 
+  /**
+   * Changes the text that should be displayed if the setting is set to {@code false}.
+   *
+   * @param disabledText The text to be displayed if the setting is set to {@code false} or {@code
+   *                     null} if the default text should be displayed
+   */
   void setDisabledText(ChatComponent disabledText);
 
+  /**
+   * Factory for the {@link BooleanData}.
+   */
   @AssistedFactory(BooleanData.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link BooleanData} for the given setting.
+     *
+     * @param setting      The non-null setting to create the data for
+     * @param enabledText  The text to be displayed if the setting is set to {@code true} or {@code
+     *                     null} if the default text should be displayed
+     * @param disabledText The text to be displayed if the setting is set to {@code false} or {@code
+     *                     null} if the default text should be displayed
+     * @return The new non-null {@link BooleanData}
+     */
     BooleanData create(
         @Assisted("setting") RegisteredSetting setting,
         @Assisted("enabledText") @Nullable ChatComponent enabledText,

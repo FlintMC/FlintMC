@@ -22,7 +22,6 @@ package net.flintmc.mcapi.internal.settings.flint.options.bool;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
@@ -55,8 +54,7 @@ public class BooleanSettingHandler implements SettingHandler<BooleanSetting> {
    * {@inheritDoc}
    */
   @Override
-  public JsonObject serialize(
-      BooleanSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
     BooleanData data = setting.getData();
@@ -73,8 +71,7 @@ public class BooleanSettingHandler implements SettingHandler<BooleanSetting> {
    * {@inheritDoc}
    */
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, BooleanSetting annotation) {
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
     return input instanceof Boolean;
   }
 

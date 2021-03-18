@@ -22,19 +22,34 @@ package net.flintmc.mcapi.settings.flint.options.selection.enumeration;
 import java.util.Collection;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectData;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectMenuType;
 import net.flintmc.mcapi.settings.flint.options.selection.SelectionEntry;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
+/**
+ * {@link SettingData} implementation for the {@link EnumSelectSetting}.
+ */
 public interface EnumSelectData extends SelectData {
 
+  /**
+   * Factory for the {@link EnumSelectData}.
+   */
   @AssistedFactory(EnumSelectData.class)
   interface Factory {
 
+    /**
+     * Creates a new {@link EnumSelectData} for the given setting.
+     *
+     * @param setting The non-null setting to create the data for
+     * @param type    The non-null type how the selection should be displayed
+     * @param entries The non-null collection of entries to be selectable and displayed
+     * @return The new non-null {@link EnumSelectData}
+     */
     EnumSelectData create(
         @Assisted("setting") RegisteredSetting setting,
-        @Assisted("menuType") SelectMenuType menuType,
+        @Assisted("type") SelectMenuType type,
         @Assisted("entries") Collection<SelectionEntry> entries);
 
   }

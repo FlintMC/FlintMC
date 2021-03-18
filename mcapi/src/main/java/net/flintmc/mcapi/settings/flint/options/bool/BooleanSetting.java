@@ -19,15 +19,16 @@
 
 package net.flintmc.mcapi.settings.flint.options.bool;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import net.flintmc.framework.config.defval.annotation.DefaultBoolean;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The {@link ApplicableSetting} to define a boolean input, the stored type has to be a boolean.
@@ -49,8 +50,20 @@ import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 @ApplicableSetting(types = boolean.class, name = "boolean", data = BooleanData.class)
 public @interface BooleanSetting {
 
+  /**
+   * Retrieves the text that should be displayed if the setting is set to {@code true}.
+   *
+   * @return The text to be displayed if the setting is set to {@code true} or an empty array if the
+   * default text should be displayed
+   */
   Component[] enabled() default {};
 
+  /**
+   * Retrieves the text that should be displayed if the setting is set to {@code false}.
+   *
+   * @return The text to be displayed if the setting is set to {@code false} or an empty array if
+   * the default text should be displayed
+   */
   Component[] disabled() default {};
 
 }

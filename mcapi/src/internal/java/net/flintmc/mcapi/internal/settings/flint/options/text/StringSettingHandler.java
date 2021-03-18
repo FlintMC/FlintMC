@@ -25,12 +25,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Arrays;
 import java.util.regex.Pattern;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.options.text.string.StringData;
-import net.flintmc.mcapi.settings.flint.options.text.string.StringData.Factory;
 import net.flintmc.mcapi.settings.flint.options.text.string.StringRestriction;
 import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
@@ -55,25 +53,26 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
    * {@inheritDoc}
    */
   @Override
-  public JsonObject serialize(
-      StringSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
+    StringData data = setting.getData();
+
     JsonObject object = new JsonObject();
 
     object.addProperty("value", currentValue == null ? "" : (String) currentValue);
-    if (annotation.value().length != 0) {
-      object.add("restrictions", this.gson.toJsonTree(annotation.value()));
+    if (!data.getRestrictions().isEmpty()) {
+      object.add("restrictions", this.gson.toJsonTree(data.getRestrictions()));
     }
-    if (annotation.maxLength() != Integer.MAX_VALUE) {
-      object.addProperty("maxLength", annotation.maxLength());
+    if (data.getMaxLength() != Integer.MAX_VALUE) {
+      object.addProperty("maxLength", data.getMaxLength());
     }
-    if (!annotation.prefix().isEmpty()) {
-      object.addProperty("prefix", annotation.prefix());
+    if (!data.getPrefix().isEmpty()) {
+      object.addProperty("prefix", data.getPrefix());
     }
-    if (!annotation.suffix().isEmpty()) {
-      object.addProperty("suffix", annotation.suffix());
+    if (!data.getSuffix().isEmpty()) {
+      object.addProperty("suffix", data.getSuffix());
     }
-    if (!annotation.placeholder().isEmpty()) {
-      object.addProperty("placeholder", annotation.placeholder());
+    if (!data.getPlaceholder().isEmpty()) {
+      object.addProperty("placeholder", data.getPlaceholder());
     }
 
     return object;
@@ -83,17 +82,18 @@ public class StringSettingHandler implements SettingHandler<StringSetting> {
    * {@inheritDoc}
    */
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, StringSetting annotation) {
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
     if (!(input instanceof String)) {
       return false;
     }
+    StringData data = setting.getData();
+
     String value = (String) input;
-    if (value.length() > annotation.maxLength()) {
+    if (value.length() > data.getMaxLength()) {
       return false;
     }
 
-    for (StringRestriction restriction : annotation.value()) {
+    for (StringRestriction restriction : data.getRestrictions()) {
       if (restriction == StringRestriction.URL_ONLY && !URL_PATTERN.matcher(value).matches()) {
         return false;
       }
