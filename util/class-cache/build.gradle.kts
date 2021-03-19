@@ -23,16 +23,16 @@ plugins {
 
 group = "net.flintmc"
 
-
+flint {
+}
 
 dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
+    api(project(":framework:framework-stereotype"))
     api(project(":framework:framework-inject"))
-    api(project(":transform:transform-asm"))
-    api(project(":transform:transform-launcher-plugin"))
-    api(project(":transform:transform-minecraft"))
-    api(project(":util:util-class-cache"))
-    api(project(":util:util-mapping"))
+    api("com.google.code.gson", "gson", "2.8.6")
+
+    testImplementation(project(":util:util-unit-testing"))
 }

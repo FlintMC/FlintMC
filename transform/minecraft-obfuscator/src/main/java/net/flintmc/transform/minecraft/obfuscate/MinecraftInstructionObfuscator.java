@@ -22,8 +22,8 @@ package net.flintmc.transform.minecraft.obfuscate;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import javassist.ClassPool;
 import net.flintmc.framework.packages.PackageClassLoader;
+import net.flintmc.framework.stereotype.service.CacheIdRetriever;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.classloading.common.ClassInformation;
 import net.flintmc.launcher.classloading.common.CommonClassLoader;
@@ -33,12 +33,12 @@ import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
 import net.flintmc.transform.minecraft.obfuscate.remap.MinecraftClassRemapper;
+import net.flintmc.util.classcache.ClassCache;
+import net.flintmc.util.commons.Ref;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
@@ -46,48 +46,76 @@ import java.io.IOException;
  */
 @Singleton
 @MinecraftTransformer(priority = Integer.MIN_VALUE)
-public class MinecraftInstructionObfuscator implements LateInjectedTransformer {
+public class MinecraftInstructionObfuscator implements LateInjectedTransformer,
+    CacheIdRetriever {
 
   private final MinecraftClassRemapper minecraftClassRemapper;
   private final RootClassLoader rootClassLoader;
+  private final ClassCache classCache;
   private final boolean obfuscated;
+
+  private long cacheId;
 
   @Inject
   private MinecraftInstructionObfuscator(
-      MinecraftClassRemapper minecraftClassRemapper, @Named("obfuscated") boolean obfuscated) {
+      MinecraftClassRemapper minecraftClassRemapper,
+      @Named("obfuscated") boolean obfuscated, ClassCache classCache) {
     this.minecraftClassRemapper = minecraftClassRemapper;
+    this.classCache = classCache;
     this.obfuscated = obfuscated;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
     this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
   }
 
   @Override
-  public byte[] transform(String className, CommonClassLoader classLoader, byte[] classData) throws ClassTransformException {
+  public byte[] transform(String className, CommonClassLoader classLoader,
+      byte[] classData) throws ClassTransformException {
     if (!obfuscated) {
       return classData;
     }
-    if (!className.startsWith("net.flintmc") && !(classLoader instanceof PackageClassLoader)) {
+    if (!className.startsWith("net.flintmc")
+        && !(classLoader instanceof PackageClassLoader)) {
       // only reobfuscate flint classes and classes from packages
       return classData;
     }
 
-    ClassInformation classInformation;
+    final Ref<IOException> exception = new Ref<>();
 
-    try {
-      classInformation = CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, className);
-    } catch (IOException exception) {
+    byte[] bytecode = this.classCache
+        .getOrTransformAndWriteClass(className, this.cacheId, classData,
+            b -> {
+              ClassInformation classInformation = null;
+              try {
+                classInformation = CommonClassLoaderHelper
+                    .retrieveClass(this.rootClassLoader, className);
+              } catch (IOException e) {
+                exception.set(e);
+              }
+
+              if (classInformation == null) {
+                return classData;
+              }
+
+              ClassNode classNode = ASMUtils
+                  .getNode(classInformation.getClassBytes());
+              ClassWriter classWriter = new ClassWriter(
+                  ClassWriter.COMPUTE_MAXS);
+              ClassVisitor classRemapper = new ClassRemapper(classWriter,
+                  minecraftClassRemapper);
+              classNode.accept(classRemapper);
+              return classWriter.toByteArray();
+            });
+
+    if (!exception.isNull()) {
       throw new ClassTransformException(
-          "Unable to retrieve class metadata: " + className, exception);
+          "Unable to retrieve class metadata: " + className, exception.get());
     }
 
-    if (classInformation == null) {
-      return classData;
-    }
+    return bytecode;
+  }
 
-    ClassNode classNode = ASMUtils.getNode(classInformation.getClassBytes());
-    ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-    ClassVisitor classRemapper = new ClassRemapper(classWriter, minecraftClassRemapper);
-    classNode.accept(classRemapper);
-    return classWriter.toByteArray();
+  @Override
+  public void setCacheId(long id) {
+    this.cacheId = id;
   }
 }

@@ -17,22 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-plugins {
-    id("java-library")
-}
+package net.flintmc.framework.stereotype.service;
 
-group = "net.flintmc"
+/**
+ * A class that is discovered and instantiated by a service handler that also
+ * implements this interface should be called by its service handler to retrieve
+ * the cache ID of its annotation meta.
+ */
+public interface CacheIdRetriever {
 
+  /**
+   * Sets the cache ID for this instance.
+   *
+   * @param id the cache ID of the annotation meta of this class
+   */
+  void setCacheId(long id);
 
-
-dependencies {
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-
-    api(project(":framework:framework-inject"))
-    api(project(":transform:transform-asm"))
-    api(project(":transform:transform-launcher-plugin"))
-    api(project(":transform:transform-minecraft"))
-    api(project(":util:util-class-cache"))
-    api(project(":util:util-mapping"))
 }

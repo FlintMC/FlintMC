@@ -17,22 +17,48 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-plugins {
-    id("java-library")
-}
+package net.flintmc.util.commons;
 
-group = "net.flintmc"
+import java.util.function.Supplier;
 
+public class Ref<T> {
 
+  private T obj;
 
-dependencies {
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
+  public Ref(T obj) {
+    this.obj = obj;
+  }
 
-    api(project(":framework:framework-inject"))
-    api(project(":transform:transform-asm"))
-    api(project(":transform:transform-launcher-plugin"))
-    api(project(":transform:transform-minecraft"))
-    api(project(":util:util-class-cache"))
-    api(project(":util:util-mapping"))
+  public Ref() {
+
+  }
+
+  public T get() {
+    return this.obj;
+  }
+
+  public boolean isNull() {
+    return obj == null;
+  }
+
+  public void set(T obj) {
+    this.obj = obj;
+  }
+
+  public T getOr(T obj) {
+    if (isNull()) {
+      return obj;
+    } else {
+      return this.obj;
+    }
+  }
+
+  public T getOrElse(Supplier<T> supplier) {
+    if (this.isNull()) {
+      return supplier.get();
+    } else {
+      return this.obj;
+    }
+  }
+
 }
