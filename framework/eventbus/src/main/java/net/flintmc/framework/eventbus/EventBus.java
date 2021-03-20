@@ -99,7 +99,7 @@ public interface EventBus {
 
   /**
    * Registers a new {@link SubscribeMethod} to this event bus, the executor in this method will be
-   * fired whenever {@link #fireEvent(Event, Phase)} is called. A method may be registered multiple
+   * fired whenever {@link #fireEvent} is called. A method may be registered multiple
    * times.
    *
    * @param method The non-null method to be registered
