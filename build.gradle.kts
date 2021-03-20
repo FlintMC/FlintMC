@@ -16,16 +16,6 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-buildscript {
-    repositories {
-        mavenLocal()
-        maven {
-            setUrl("https://dist.labymod.net/api/v1/maven/release")
-            name = "Flint"
-        }
-        mavenCentral()
-    }
-}
 
 plugins {
     id("net.flintmc.flint-gradle")
