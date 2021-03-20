@@ -80,6 +80,6 @@ public interface MethodBasedClassTransformMeta extends ClassTransformMeta {
 
   //@AssistedFactory(MethodBasedClassTransformMeta.class)
   interface Factory {
-    MethodBasedClassTransformMeta create(AnnotationMeta annotationMeta);
+    MethodBasedClassTransformMeta create(AnnotationMeta<ClassTransform> annotationMeta);
   }
 }

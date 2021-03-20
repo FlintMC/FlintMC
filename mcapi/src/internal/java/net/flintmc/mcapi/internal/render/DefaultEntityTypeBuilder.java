@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.entity.type;
+package net.flintmc.mcapi.internal.render;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
@@ -28,11 +28,8 @@ import net.flintmc.mcapi.entity.EntitySize;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.entity.type.EntityTypeBuilder;
 
-/**
- * 1.15.2 implementation of the {@link EntityTypeBuilder}.
- */
 @Implement(EntityTypeBuilder.class)
-public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
+public class DefaultEntityTypeBuilder implements EntityTypeBuilder {
 
   private final Entity.Classification classification;
   private final EntitySize.Factory entitySizeFactory;
@@ -45,7 +42,7 @@ public class VersionedEntityTypeBuilder implements EntityTypeBuilder {
   private EntitySize size;
 
   @AssistedInject
-  private VersionedEntityTypeBuilder(
+  private DefaultEntityTypeBuilder(
       @Assisted("classification") Entity.Classification classification,
       EntityType.Factory entityTypeFactory,
       EntitySize.Factory entitySizeFactory) {

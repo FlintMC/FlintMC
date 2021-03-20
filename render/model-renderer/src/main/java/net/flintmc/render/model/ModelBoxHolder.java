@@ -20,8 +20,6 @@
 package net.flintmc.render.model;
 
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
 import net.flintmc.util.property.Property;
 
 /**
@@ -45,8 +43,6 @@ public interface ModelBoxHolder<
     ModelBoxHolder<T_RenderContextAware, T_RenderContext>,
     Object> {
 
-  Property<Set<ModelBox>, Void> MODEL_BOXES =
-      Property.builder().<Set<ModelBox>>withValue().withDefaultValue(HashSet::new).build();
   Property<Float, RotationMode> ROTATION_ANGLE_X =
       Property.builder()
           .<Float>withValue()
@@ -140,11 +136,6 @@ public interface ModelBoxHolder<
           .build();
 
   /**
-   * @return all registered boxes
-   */
-  Set<ModelBox> getBoxes();
-
-  /**
    * Set the texture width override policy.
    *
    * @param overridePolicy the override policy to set
@@ -163,14 +154,6 @@ public interface ModelBoxHolder<
    */
   ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureHeightPolicy(
       OverridePolicy overridePolicy);
-
-  /**
-   * Set all model boxes
-   *
-   * @param modelBoxes the model boxes to set
-   * @return this
-   */
-  ModelBoxHolder<T_RenderContextAware, T_RenderContext> setModelBoxes(Set<ModelBox> modelBoxes);
 
   /**
    * @return the vertex color

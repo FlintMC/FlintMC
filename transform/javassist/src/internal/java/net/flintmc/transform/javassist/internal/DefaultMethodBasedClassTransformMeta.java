@@ -21,6 +21,13 @@ package net.flintmc.transform.javassist.internal;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.function.Predicate;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -37,17 +44,11 @@ import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.function.Predicate;
-
 public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTransformMeta {
 
   private final ClassTransformContext.Factory classTransformContextFactory;
   private final Collection<Predicate<CtClass>> filters;
+  private final Map<Class<? extends NameResolver>, NameResolver> nameResolvers;
   private final ClassMappingProvider classMappingProvider;
   private final AnnotationMeta<ClassTransform> annotationMeta;
   private final Logger logger;
@@ -56,10 +57,10 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
 
 
   public DefaultMethodBasedClassTransformMeta(
-          ClassTransformContext.Factory classTransformContextFactory,
-          ClassMappingProvider classMappingProvider,
-          Logger logger,
-          AnnotationMeta<ClassTransform> annotationMeta) {
+      ClassTransformContext.Factory classTransformContextFactory,
+      ClassMappingProvider classMappingProvider,
+      Logger logger,
+      AnnotationMeta<ClassTransform> annotationMeta) {
     this.classTransformContextFactory = classTransformContextFactory;
     this.logger = logger;
     this.classMappingProvider = classMappingProvider;
@@ -68,6 +69,7 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
         InjectionHolder.getInjectedInstance(getAnnotation().classNameResolver());
 
     this.filters = this.createFilters();
+    this.nameResolvers = new HashMap<>();
   }
 
   private Collection<Predicate<CtClass>> createFilters() {
@@ -79,7 +81,8 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
             CtClassFilter classFilterAnnotation = ctClassFilter.getAnnotation();
             try {
               NameResolver classNameResolver =
-                  InjectionHolder.getInjectedInstance(classFilterAnnotation.classNameResolver());
+                  this.nameResolvers.computeIfAbsent(classFilterAnnotation.classNameResolver(),
+                      InjectionHolder::getInjectedInstance);
 
               return classFilterAnnotation
                   .value()
@@ -117,18 +120,21 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
       return false;
     }
     for (Predicate<CtClass> filter : this.getFilters()) {
-      if (!filter.test(ctClass)) return false;
+      if (!filter.test(ctClass)) {
+        return false;
+      }
     }
     ClassMapping classMapping = classMappingProvider.get(ctClass.getName());
 
     ClassTransform annotation = this.getAnnotationMeta().getAnnotation();
-    if (classMapping == null)
+    if (classMapping == null) {
       classMapping =
           new ClassMapping(
               InjectionHolder.getInjectedInstance(
                   Key.get(boolean.class, Names.named("obfuscated"))),
               ctClass.getName(),
               ctClass.getName());
+    }
 
     for (String target : annotation.value()) {
       String resolve = this.getClassNameResolver().resolve(target);
@@ -138,9 +144,9 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
       }
 
       return ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
-              || target.equals(classMapping.getObfuscatedName()))
+          || target.equals(classMapping.getObfuscatedName()))
           && this.getFilters().stream()
-              .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass));
+          .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass));
     }
     return true;
   }

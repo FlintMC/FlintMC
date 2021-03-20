@@ -21,10 +21,9 @@ package net.flintmc.transform.javassist.internal.factory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.MethodBasedClassTransformMeta;
 import net.flintmc.transform.javassist.internal.DefaultMethodBasedClassTransformMeta;
@@ -43,14 +42,15 @@ public class DefaultMethodBasedClassTransformMetaFactory implements
   @Inject
   private DefaultMethodBasedClassTransformMetaFactory(
       DefaultClassTransformContextFactory classTransformContextFactory,
-      ClassMappingProvider classMappingProvider) {
+      ClassMappingProvider classMappingProvider
+  ) {
     this.classTransformContextFactory = classTransformContextFactory;
     this.classMappingProvider = classMappingProvider;
     this.logger = null;
   }
 
   @Override
-  public MethodBasedClassTransformMeta create(AnnotationMeta annotationMeta) {
+  public MethodBasedClassTransformMeta create(AnnotationMeta<ClassTransform> annotationMeta) {
     return new DefaultMethodBasedClassTransformMeta(
         this.classTransformContextFactory,
         this.classMappingProvider,
