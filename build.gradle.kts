@@ -31,7 +31,6 @@ repositories {
 }
 
 subprojects {
-
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
         plugins.apply("net.minecrell.licenser")
@@ -64,12 +63,11 @@ subprojects {
                 }
             }
         }
-    }
-}
 
-allprojects {
-    tasks.withType<JavaCompile> {
-        options.isFork = true
+        java {
+            withJavadocJar()
+            withSourcesJar()
+        }
     }
 }
 

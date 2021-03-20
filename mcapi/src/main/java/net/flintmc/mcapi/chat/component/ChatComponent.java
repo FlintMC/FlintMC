@@ -62,7 +62,7 @@ public interface ChatComponent {
    * Retrieves whether this component has the given format.
    *
    * @param format The non-null format to check for.
-   * @return {@code true if this component has the given format or {@code false} if not.
+   * @return {@code true} if this component has the given format or {@code false} if not.
    * @see #toggleChatFormat(ChatColor, boolean)
    * @see #chatFormats()
    */

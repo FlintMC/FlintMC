@@ -123,8 +123,8 @@ public interface ImageFullRenderBuilder {
    * <p><b>Important</b>: The texture to be drawn needs to be bound first with {@link
    * ImageRenderer#bindTexture(ResourceLocation)}
    *
-   * @throws IllegalArgumentException If no fullImageHeight (or something <= 0) and/or color
-   *                                  components (r, g, b, a) not >= 0 and <= 255
+   * @throws IllegalArgumentException If no fullImageHeight (or something &gt;= 0) and/or color
+   *                                  components (r, g, b, a) not &gt;= 0 and &lt;= 255
    * @see ImageRenderer#drawFullImage(float, float, int, Object, float, float, float, float, int,
    * int, int, int)
    */

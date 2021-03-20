@@ -45,7 +45,7 @@ public interface ServerListUpdateEvent extends Event, Cancellable {
   /**
    * Retrieves the index in the server list, 0 being the highest.
    *
-   * @return The index which is always >= 0
+   * @return The index which is always &gt;= 0
    */
   int getIndex();
 
@@ -91,7 +91,7 @@ public interface ServerListUpdateEvent extends Event, Cancellable {
     /**
      * Creates a new {@link ServerListUpdateEvent}.
      *
-     * @param index      The index of the entry that has been updated, always >= 0
+     * @param index      The index of the entry that has been updated, always &gt;= 0
      * @param serverData The non-null data that has been updated
      * @param type       The non-null type of the new event
      * @return The new non-null {@link ServerListUpdateEvent}

@@ -35,8 +35,8 @@ public interface PropertyContext<
   /**
    * @param property the property to modify on this instance
    * @param propertyValue the value to set the property to
-   * @param <T_PropertyValue> @see {@link Property< T_PropertyValue >}
-   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   * @param <T_PropertyValue> the type of the property value
+   * @param <T_PropertyMeta> the type of the property meta
    * @return this
    */
   <T_PropertyValue, T_PropertyMeta> T_PropertyContextAware setPropertyValue(
@@ -45,8 +45,8 @@ public interface PropertyContext<
   /**
    * @param property the property to modify on this instance
    * @param propertyMode the mode to set the property to
-   * @param <T_PropertyValue> @see {@link Property<T_PropertyValue>}
-   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   * @param <T_PropertyValue> the type of the property value
+   * @param <T_PropertyMeta> the type of the property meta
    * @return this
    */
   <T_PropertyValue, T_PropertyMeta> T_PropertyContextAware setPropertyMeta(
@@ -54,8 +54,8 @@ public interface PropertyContext<
 
   /**
    * @param property the property to get the value from
-   * @param <T_PropertyValue> @see {@link Property<T_PropertyValue>}
-   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   * @param <T_PropertyValue> the type of the property value
+   * @param <T_PropertyMeta> the type of the property meta
    * @return the current value of the given property
    */
   <T_PropertyValue, T_PropertyMeta> T_PropertyValue getPropertyValue(
@@ -63,8 +63,8 @@ public interface PropertyContext<
 
   /**
    * @param property the property to get the mode from
-   * @param <T_PropertyValue> @see {@link Property<T_PropertyValue>}
-   * @param <T_PropertyMeta> @see {@link Property<T_PropertyMeta>}
+   * @param <T_PropertyValue> the type of the property value
+   * @param <T_PropertyMeta> the type of the property meta
    * @return the current mode of the given property
    */
   <T_PropertyValue, T_PropertyMeta> T_PropertyMeta getPropertyMeta(

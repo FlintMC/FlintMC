@@ -198,7 +198,7 @@ public enum Key {
    * Retrieves the key configuration name by the given scanCode.
    *
    * @param scanCode The scan code of a keybinding.
-   * @return The configuration name or {@link #UNKNOWN#getConfigurationName()}
+   * @return The configuration name or {@link #UNKNOWN}.{@link #getConfigurationName()}
    */
   public static String getConfigurationName(int scanCode) {
     return BY_SCAN_CODE.getOrDefault(scanCode, UNKNOWN).getConfigurationName();

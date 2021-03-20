@@ -25,7 +25,7 @@ import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 
 /**
- * Represents a semantic version (see <href>https://semver.org/</href> for more
+ * Represents a semantic version (see <a>https://semver.org/</a> for more
  * information).
  */
 public interface SemanticVersion {

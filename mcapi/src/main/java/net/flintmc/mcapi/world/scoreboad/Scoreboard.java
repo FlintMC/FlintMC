@@ -144,7 +144,6 @@ public interface Scoreboard {
    *
    * @param username The username of the player to be removed.
    * @param team     The team in which the player is.
-   * @return {@code true} if the player was removed, otherwise {@code false}.
    */
   void removePlayerFromTeam(String username, PlayerTeam team);
 

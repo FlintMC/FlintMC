@@ -38,15 +38,15 @@ import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
  *
  * <pre>
  *
- * <literal>@</literal>BooleanSetting
+ * {@literal @}BooleanSetting
  * boolean getSomeParent();
  *
  * SubSettings getSubSettings();
  *
- * <literal>@</literal>SubSettingsFor("SomeParent")
+ * {@literal @}SubSettingsFor("SomeParent")
  * interface SubSettings {
  *
- *   <literal>@</literal>StringSetting
+ *   {@literal @}StringSetting
  *   String getSomeSubSetting();
  *
  * }
