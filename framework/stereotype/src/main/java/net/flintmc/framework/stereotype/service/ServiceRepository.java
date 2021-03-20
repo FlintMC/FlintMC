@@ -33,6 +33,7 @@ import net.flintmc.util.commons.Pair;
 import javax.inject.Named;
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.Map.Entry;
 
 @Singleton
 public class ServiceRepository {
@@ -56,9 +57,10 @@ public class ServiceRepository {
   /**
    * Registers a service handler that can pickup {@link DetectableAnnotation}s.
    *
-   * @param annotationTypes the annotation types the service should handle
-   * @param priority the service priority. Lower priority is called first
-   * @param state the initialization state of the service. see also {@link Service.State} for usage
+   * @param annotationTypes     the annotation types the service should handle
+   * @param priority            the service priority. Lower priority is called first
+   * @param state               the initialization state of the service. see also {@link
+   *                            Service.State} for usage
    * @param serviceHandlerClass the service handler class to handle {@link DetectableAnnotation}s
    */
   public void registerService(
@@ -74,9 +76,10 @@ public class ServiceRepository {
   /**
    * Registers a service handler that can pickup {@link DetectableAnnotation}s.
    *
-   * @param annotationType the annotation type the service should handle
-   * @param priority the service priority. Lower priority is called first
-   * @param state the initialization state of the service. see also {@link Service.State} for usage
+   * @param annotationType      the annotation type the service should handle
+   * @param priority            the service priority. Lower priority is called first
+   * @param state               the initialization state of the service. see also {@link
+   *                            Service.State} for usage
    * @param serviceHandlerClass the service handler class to handle {@link DetectableAnnotation}s
    */
   public void registerService(
@@ -101,7 +104,9 @@ public class ServiceRepository {
   public void flushServices(Service.State state) {
     List<ServiceHandlerMeta> services = new ArrayList<>();
     for (ServiceHandlerMeta value : this.getServiceHandlers().values()) {
-      if (!value.getState().equals(state)) continue;
+      if (!value.getState().equals(state)) {
+        continue;
+      }
       services.add(value);
     }
 
@@ -114,7 +119,9 @@ public class ServiceRepository {
           try {
             Pair<AnnotationMeta<?>, CtClass> serviceMetaPair =
                 new Pair<>(annotationMeta, serviceHandlerClass);
-            if (discoveredMeta.contains(serviceMetaPair)) continue;
+            if (discoveredMeta.contains(serviceMetaPair)) {
+              continue;
+            }
             discoveredMeta.add(serviceMetaPair);
             if (!serviceHandlerInstances.containsKey(serviceHandlerClass)) {
               serviceHandlerInstances.put(
@@ -133,17 +140,29 @@ public class ServiceRepository {
       }
     }
 
-    for (ServiceHandler handler : serviceHandlerInstances.values()) {
-      handler.postDiscover();
+    for (Entry<Class<? extends Annotation>, ServiceHandlerMeta> entry : serviceHandlers.entries()) {
+      if (entry.getValue().getState() == state) {
+        if (!serviceHandlerInstances.containsKey(entry.getValue().getServiceHandlerClass())) {
+          serviceHandlerInstances.put(
+              entry.getValue().getServiceHandlerClass(),
+              InjectionHolder
+                  .getInjectedInstance(CtResolver.get(entry.getValue().getServiceHandlerClass())));
+        }
+        serviceHandlerInstances.get(entry.getValue().getServiceHandlerClass()).flush();
+      }
     }
   }
 
-  /** @return all registered annotations */
+  /**
+   * @return all registered annotations
+   */
   public Multimap<Class<? extends Annotation>, AnnotationMeta<?>> getAnnotations() {
     return HashMultimap.create(annotations);
   }
 
-  /** @return all registered service handlers */
+  /**
+   * @return all registered service handlers
+   */
   public Multimap<Class<? extends Annotation>, ServiceHandlerMeta> getServiceHandlers() {
     return HashMultimap.create(serviceHandlers);
   }

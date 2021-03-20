@@ -86,6 +86,7 @@ public class DetectableAnnotationProcessor implements Processor {
           + "   ${ANNOTATION}, \n"
           + "   ${VERSION}, \n"
           + "   ${PACKAGE_META}, \n"
+          + "   ${CACHE_ID}L,\n"
           + "new AnnotationMeta[]{${META_DATA}})";
 
   /**
@@ -108,6 +109,8 @@ public class DetectableAnnotationProcessor implements Processor {
 
   private static final String PACKAGE_META_GETTER_TEMPLATE =
       metaprogrammingClass(PACKAGE_META_CLASS) + ".of(${GROUP}, ${NAME}, ${VERSION})";
+
+  private static final Random RANDOM = new Random();
 
   private final Collection<String> found;
 
@@ -308,6 +311,7 @@ public class DetectableAnnotationProcessor implements Processor {
             .put(
                 "ANNOTATION",
                 createAnnotation(annotationType, annotationValues, annotationType.toString()))
+            .put("CACHE_ID", String.valueOf(RANDOM.nextLong()))
             .put("META_DATA", createMetaData(annotationType, annotatedElement))
             .put("VERSION", minecraftVersion)
             .put("PACKAGE_META", createPackageMeta())

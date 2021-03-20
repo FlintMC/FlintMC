@@ -21,10 +21,20 @@ package net.flintmc.mcapi.v1_16_5.entity.render;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javassist.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.entity.Entity;
 import net.flintmc.mcapi.entity.render.EntityRenderContext;
 import net.flintmc.mcapi.internal.entity.DefaultEntityRepository;
@@ -32,6 +42,9 @@ import net.flintmc.mcapi.player.ClientPlayer;
 import net.flintmc.mcapi.render.MinecraftRenderMeta;
 import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.render.model.Renderer;
+import net.flintmc.transform.hook.Hook;
+import net.flintmc.transform.hook.HookFilter;
+import net.flintmc.transform.hook.HookFilters;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.CtClassFilter;
@@ -45,10 +58,6 @@ import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector4f;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 @Singleton
 public class ModelRendererInterceptor {
@@ -77,12 +86,18 @@ public class ModelRendererInterceptor {
   @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer")
   public void transform(ClassTransformContext classTransformContext) {
     try {
+      String matrixStackEntryName = this.classMappingProvider
+          .get("com.mojang.blaze3d.matrix.MatrixStack$Entry").getName();
+
+      String iVertexBuilderName = this.classMappingProvider
+          .get("com.mojang.blaze3d.vertex.IVertexBuilder").getName();
+
       CtClass[] doRenderParameters =
           ClassPool.getDefault()
               .get(
                   new String[]{
-                      "com.mojang.blaze3d.matrix.MatrixStack$Entry",
-                      "com.mojang.blaze3d.vertex.IVertexBuilder",
+                      matrixStackEntryName,
+                      iVertexBuilderName,
                       "int",
                       "int",
                       "float",
@@ -148,6 +163,23 @@ public class ModelRendererInterceptor {
     }
   }
 
+  @HookFilter(
+      value = HookFilters.SUBCLASS_OF,
+      type = @Type(typeName = "net.minecraft.client.renderer.entity.model.EntityModel"))
+  @Hook(
+      methodName = "setRotationAngles",
+      parameters = {
+          @Type(typeName = "net.minecraft.entity.Entity"),
+          @Type(reference = float.class),
+          @Type(reference = float.class),
+          @Type(reference = float.class),
+          @Type(reference = float.class),
+          @Type(reference = float.class)
+      })
+  public static void setRotationAngles(@Named("args") Object[] args) {
+    Handler.interceptRotationAnglesUpdate(args[0]);
+  }
+
   @Singleton
   public static class Handler {
 
@@ -166,11 +198,11 @@ public class ModelRendererInterceptor {
       this.entityRepository = entityRepository;
       this.clientPlayer = clientPlayer;
       this.alternatingMinecraftRenderMeta = minecraftRenderMetaFactory.create();
-
     }
 
 
-    public static void interceptRotationAnglesUpdate(net.minecraft.entity.Entity minecraftEntity) {
+    public static void interceptRotationAnglesUpdate(Object instance) {
+      net.minecraft.entity.Entity minecraftEntity = (net.minecraft.entity.Entity) instance;
 
       Entity flintEntity = INSTANCE.entityRepository.getEntity((minecraftEntity).getUniqueID());
 
@@ -189,8 +221,8 @@ public class ModelRendererInterceptor {
     }
 
     public static boolean shouldCancel(ModelRenderer instance,
-                                       MatrixStack.Entry matrixEntryIn,
-                                       int packedLightIn) {
+        MatrixStack.Entry matrixEntryIn,
+        int packedLightIn) {
 
       if (INSTANCE.lastRenderedEntity == null) {
         return false;

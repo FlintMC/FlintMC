@@ -53,4 +53,13 @@ public interface EventDetails {
    */
   Collection<Phase> getSupportedPhases();
 
+  /**
+   * Retrieves the class/interface that is annotated with {@link Subscribable}, this may not be the
+   * same as the class of this instance. For example if the annotation is present on an interface
+   * and its implementation is the actual event being fired.
+   *
+   * @return The non-null class
+   */
+  Class<? extends Event> getEventClass();
+
 }

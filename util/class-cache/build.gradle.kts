@@ -17,25 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.stereotype.service;
+plugins {
+    id("java-library")
+}
 
-import net.flintmc.metaprogramming.AnnotationMeta;
-import java.lang.annotation.Annotation;
+group = "net.flintmc"
 
-public interface ServiceHandler<T extends Annotation> {
+flint {
+}
 
-  /**
-   * Discover a service.
-   *
-   * @param annotationMeta The meta of the discovered annotation.
-   * @throws ServiceNotFoundException If the service could not be discovered.
-   */
-  void discover(AnnotationMeta<T> annotationMeta) throws ServiceNotFoundException;
+dependencies {
+    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
+    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
-  /**
-   * Called after {@link #discover(AnnotationMeta)} has been called for every annotation available
-   * for the annotation of this service.
-   */
-  default void flush() {
-  }
+    api(project(":framework:framework-stereotype"))
+    api(project(":framework:framework-inject"))
+    api("com.google.code.gson", "gson", "2.8.6")
+
+    testImplementation(project(":util:util-unit-testing"))
 }

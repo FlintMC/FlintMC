@@ -19,23 +19,18 @@
 
 package net.flintmc.framework.stereotype.service;
 
-import net.flintmc.metaprogramming.AnnotationMeta;
-import java.lang.annotation.Annotation;
-
-public interface ServiceHandler<T extends Annotation> {
+/**
+ * A class that is discovered and instantiated by a service handler that also
+ * implements this interface should be called by its service handler to retrieve
+ * the cache ID of its annotation meta.
+ */
+public interface CacheIdRetriever {
 
   /**
-   * Discover a service.
+   * Sets the cache ID for this instance.
    *
-   * @param annotationMeta The meta of the discovered annotation.
-   * @throws ServiceNotFoundException If the service could not be discovered.
+   * @param id the cache ID of the annotation meta of this class
    */
-  void discover(AnnotationMeta<T> annotationMeta) throws ServiceNotFoundException;
+  void setCacheId(long id);
 
-  /**
-   * Called after {@link #discover(AnnotationMeta)} has been called for every annotation available
-   * for the annotation of this service.
-   */
-  default void flush() {
-  }
 }

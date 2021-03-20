@@ -19,12 +19,7 @@
 
 package net.flintmc.metaprogramming;
 
-import net.flintmc.metaprogramming.identifier.ClassIdentifier;
-import net.flintmc.metaprogramming.identifier.ConstructorIdentifier;
-import net.flintmc.metaprogramming.identifier.FieldIdentifier;
-import net.flintmc.metaprogramming.identifier.Identifier;
-import net.flintmc.metaprogramming.identifier.MethodIdentifier;
-
+import net.flintmc.metaprogramming.identifier.*;
 import javax.lang.model.element.ElementKind;
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -43,6 +38,7 @@ public class AnnotationMeta<T extends Annotation> {
   private final T annotation;
   private final String version;
   private final PackageMeta packageMeta;
+  private final long cacheId;
   private final Collection<AnnotationMeta<?>> metaData;
 
   public AnnotationMeta(
@@ -51,28 +47,34 @@ public class AnnotationMeta<T extends Annotation> {
       T annotation,
       String version,
       PackageMeta packageMeta,
+      long cacheId,
       AnnotationMeta<?>... metaData) {
     this.elementType = elementType;
     this.identifier = identifier;
     this.annotation = annotation;
     this.version = version;
     this.packageMeta = packageMeta;
+    this.cacheId = cacheId;
     this.metaData = Arrays.asList(metaData);
   }
 
-  /** @return the target annotation instance */
+  /**
+   * @return the target annotation instance
+   */
   public T getAnnotation() {
     return annotation;
   }
 
-  /** @return the element type which this annotation annotates */
+  /**
+   * @return the element type which this annotation annotates
+   */
   public ElementKind getElementKind() {
     return elementType;
   }
 
   /**
    * @return A generic Identifier which holds properties of the location where the annotation is
-   *     placed at
+   * placed at
    */
   @SuppressWarnings("unchecked")
   public <K extends Identifier<?>> K getIdentifier() {
@@ -81,7 +83,7 @@ public class AnnotationMeta<T extends Annotation> {
 
   /**
    * @return A method Identifier which holds properties of the location where the annotation is
-   *     placed at
+   * placed at
    */
   public MethodIdentifier getMethodIdentifier() {
     return (MethodIdentifier) this.identifier;
@@ -93,7 +95,7 @@ public class AnnotationMeta<T extends Annotation> {
 
   /**
    * @return A class Identifier which holds properties of the location where the annotation is
-   *     placed at
+   * placed at
    */
   public ClassIdentifier getClassIdentifier() {
     return (ClassIdentifier) this.identifier;
@@ -101,7 +103,7 @@ public class AnnotationMeta<T extends Annotation> {
 
   /**
    * @return A constructor Identifier which holds properties of the location where the annotation is
-   *     placed at
+   * placed at
    */
   public ConstructorIdentifier getConstructorIdentifier() {
     return (ConstructorIdentifier) this.identifier;
@@ -115,6 +117,7 @@ public class AnnotationMeta<T extends Annotation> {
   }
 
   /**
+   * <<<<<<< HEAD:framework/metaprogramming/src/main/java/net/flintmc/metaprogramming/AnnotationMeta.java
    * Determines whether this annotation meta is applicable to the currently running version.
    *
    * @param version The version to test for
@@ -134,8 +137,17 @@ public class AnnotationMeta<T extends Annotation> {
   }
 
   /**
+   * @return an ID that changes when the implementation for the {@link DetectableAnnotationProvider}
+   * is recompiled. Can be used as a key to invalidate cached for operations being performed by
+   * ServiceHandlers.
+   */
+  public long getCacheId() {
+    return this.cacheId;
+  }
+
+  /**
    * @param clazz the annotation class of the child metadata to look for
-   * @param <K> the annotation type of the child metadata to look for
+   * @param <K>   the annotation type of the child metadata to look for
    * @return all provided child metadata of the type clazz
    */
   @SuppressWarnings("unchecked")

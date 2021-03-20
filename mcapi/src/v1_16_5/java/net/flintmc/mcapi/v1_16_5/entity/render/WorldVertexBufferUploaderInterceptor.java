@@ -53,8 +53,9 @@ public class WorldVertexBufferUploaderInterceptor {
       value = "net.minecraft.client.renderer.WorldVertexBufferUploader")
   public void transform(ClassTransformContext classTransformContext)
       throws NotFoundException, CannotCompileException {
-    CtClass bufferBuilderClass =
-        ClassPool.getDefault().get("net.minecraft.client.renderer.BufferBuilder");
+    CtClass bufferBuilderClass = ClassPool.getDefault()
+        .get(
+            this.classMappingProvider.get("net.minecraft.client.renderer.BufferBuilder").getName());
     CtMethod draw =
         classTransformContext
             .getCtClass()
@@ -71,7 +72,8 @@ public class WorldVertexBufferUploaderInterceptor {
 
   public static class Handler {
 
-    public static void draw(BufferBuilder bufferBuilderIn) {
+    public static void draw(Object instance) {
+      BufferBuilder bufferBuilderIn = (BufferBuilder) instance;
       if (!RenderSystem.isOnRenderThread()) {
         RenderSystem.recordRenderCall(
             () -> {

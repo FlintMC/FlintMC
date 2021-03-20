@@ -17,25 +17,48 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.stereotype.service;
+package net.flintmc.util.commons;
 
-import net.flintmc.metaprogramming.AnnotationMeta;
-import java.lang.annotation.Annotation;
+import java.util.function.Supplier;
 
-public interface ServiceHandler<T extends Annotation> {
+public class Ref<T> {
 
-  /**
-   * Discover a service.
-   *
-   * @param annotationMeta The meta of the discovered annotation.
-   * @throws ServiceNotFoundException If the service could not be discovered.
-   */
-  void discover(AnnotationMeta<T> annotationMeta) throws ServiceNotFoundException;
+  private T obj;
 
-  /**
-   * Called after {@link #discover(AnnotationMeta)} has been called for every annotation available
-   * for the annotation of this service.
-   */
-  default void flush() {
+  public Ref(T obj) {
+    this.obj = obj;
   }
+
+  public Ref() {
+
+  }
+
+  public T get() {
+    return this.obj;
+  }
+
+  public boolean isNull() {
+    return obj == null;
+  }
+
+  public void set(T obj) {
+    this.obj = obj;
+  }
+
+  public T getOr(T obj) {
+    if (isNull()) {
+      return obj;
+    } else {
+      return this.obj;
+    }
+  }
+
+  public T getOrElse(Supplier<T> supplier) {
+    if (this.isNull()) {
+      return supplier.get();
+    } else {
+      return this.obj;
+    }
+  }
+
 }

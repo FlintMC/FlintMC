@@ -24,6 +24,7 @@ import com.google.inject.Singleton;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
+import net.flintmc.framework.stereotype.service.CacheIdRetriever;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.launcher.LaunchController;
@@ -47,7 +48,8 @@ public class MinecraftTransformerService {
       throws ServiceNotFoundException {
     CtClass target = meta.<ClassIdentifier>getIdentifier().getLocation();
     try {
-      if (!target.subtypeOf(target.getClassPool().get(LateInjectedTransformer.class.getName()))) {
+      if (!target.subtypeOf(
+          target.getClassPool().get(LateInjectedTransformer.class.getName()))) {
         throw new ServiceNotFoundException(
             new IllegalStateException(
                 "Class "
@@ -55,11 +57,14 @@ public class MinecraftTransformerService {
                     + " does not implement "
                     + LateInjectedTransformer.class.getName()));
       }
-      FlintLauncherPlugin.getInstance()
-          .registerTransformer(
-              meta.getAnnotation().priority(),
-              InjectionHolder.getInjectedInstance(
-                  CtResolver.get(meta.<ClassIdentifier>getIdentifier().getLocation())));
+
+      LateInjectedTransformer transformer = InjectionHolder.getInjectedInstance(
+          CtResolver.get(meta.<ClassIdentifier>getIdentifier().getLocation()));
+      if (transformer instanceof CacheIdRetriever) {
+        ((CacheIdRetriever) transformer).setCacheId(meta.getCacheId());
+      }
+      FlintLauncherPlugin.getInstance().registerTransformer(
+          meta.getAnnotation().priority(), transformer);
     } catch (NotFoundException e) {
       throw new ServiceNotFoundException(e);
     }
