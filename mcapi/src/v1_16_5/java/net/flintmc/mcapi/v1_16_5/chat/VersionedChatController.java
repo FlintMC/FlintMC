@@ -53,7 +53,7 @@ import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 
 @Singleton
-@Implement(value = ChatController.class, version = "1.16.5")
+@Implement(ChatController.class)
 public class VersionedChatController implements ChatController {
 
   private static final int MAX_MESSAGES = 100;
@@ -218,7 +218,6 @@ public class VersionedChatController implements ChatController {
           @Type(reference = int.class),
           @Type(typeName = "com.mojang.brigadier.suggestion.Suggestions")
       },
-      version = "1.16.5",
       executionTime = ExecutionTime.BEFORE)
   public HookResult handleCompletionResponse(@Named("args") Object[] args) {
     int transactionId = (int) args[0];

@@ -22,7 +22,7 @@ package net.flintmc.mcapi.v1_16_5.entity.render;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-@Shadow(value = "net.minecraft.client.renderer.model.ModelRenderer$ModelBox", version = "1.16.5")
+@Shadow("net.minecraft.client.renderer.model.ModelRenderer$ModelBox")
 public interface ModelBoxAccessor {
 
   @FieldGetter("quads")

@@ -17,37 +17,42 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload.identifier;
+package net.flintmc.metaprogramming.identifier;
 
 import javassist.ClassPool;
-import javassist.CtConstructor;
+import javassist.CtClass;
 import javassist.NotFoundException;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
-public class ConstructorIdentifier implements Identifier<CtConstructor> {
+/**
+ * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s located at class level.
+ *
+ * @see Identifier
+ */
+public class ClassIdentifier implements Identifier<CtClass> {
 
-  private final String owner;
-  private final String[] parameters;
+  private final String name;
 
-  public ConstructorIdentifier(String owner, String... parameters) {
-    this.owner = owner;
-    this.parameters = parameters;
+  public ClassIdentifier(String name) {
+    this.name = name;
   }
 
-  public String getOwner() {
-    return this.owner;
+  /**
+   * @return The class name of this identifier
+   */
+  public String getName() {
+    return this.name;
   }
 
-  public String[] getParameters() {
-    return this.parameters;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public CtConstructor getLocation() {
+  public CtClass getLocation() {
     try {
-      return ClassPool.getDefault().get(this.getOwner())
-          .getDeclaredConstructor(ClassPool.getDefault().get(this.getParameters()));
-    } catch (NotFoundException exception) {
-      throw new IllegalStateException(exception);
+      return ClassPool.getDefault().get(this.getName());
+    } catch (NotFoundException e) {
+      throw new IllegalStateException(e);
     }
   }
 }

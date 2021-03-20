@@ -38,7 +38,7 @@ import net.flintmc.framework.stereotype.DefaultValues;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.type.Type;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.HookFilter;
 import net.flintmc.transform.hook.HookResult;
@@ -61,7 +61,6 @@ public class HookService implements ServiceHandler<Hook> {
   private final ClassMappingProvider mappingProvider;
   private final MappingLineParser lineParser;
   private final Provider<MethodInjectionUtils> methodInjectionUtils;
-  private final String version;
   private final Collection<HookEntry> hooks;
 
   @Inject
@@ -69,14 +68,12 @@ public class HookService implements ServiceHandler<Hook> {
       ClassPool pool,
       ClassMappingProvider mappingProvider,
       MappingLineParser lineParser,
-      Provider<MethodInjectionUtils> methodInjectionUtils,
-      @Named("launchArguments") Map launchArguments) {
+      Provider<MethodInjectionUtils> methodInjectionUtils) {
     this.pool = pool;
     this.mappingProvider = mappingProvider;
     this.lineParser = lineParser;
     this.methodInjectionUtils = methodInjectionUtils;
     this.hooks = Sets.newHashSet();
-    this.version = (String) launchArguments.get("--game-version");
   }
 
   @Override
@@ -93,9 +90,6 @@ public class HookService implements ServiceHandler<Hook> {
 
     Hook annotation = meta.getAnnotation();
 
-    if (!(annotation.version().isEmpty() || annotation.version().equals(this.version))) {
-      return;
-    }
     this.hooks.add(
         new HookEntry(
             meta,

@@ -48,7 +48,7 @@ import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.launcher.classloading.common.CommonClassLoader;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
@@ -70,18 +70,15 @@ public class DefaultConfigTransformer
 
   private final Collection<PendingTransform> pendingTransforms;
   private final Collection<TransformedConfigMeta> mappings;
-  private final Map<String, String> launchArguments;
 
   @Inject
   private DefaultConfigTransformer(
       ClassPool pool,
       DefaultConfigImplementer configImplementer,
-      ImplementedConfigService implementedService,
-      @Named("launchArguments") Map launchArguments) {
+      ImplementedConfigService implementedService) {
     this.pool = pool;
     this.configImplementer = configImplementer;
     this.implementedService = implementedService;
-    this.launchArguments = launchArguments;
 
     this.pendingTransforms = new HashSet<>();
     this.mappings = new HashSet<>();
@@ -105,7 +102,6 @@ public class DefaultConfigTransformer
     // implement the configs that are annotated with ImplementedConfig
     CtClass implementation = (CtClass) meta.getIdentifier().getLocation();
     ConfigImplementation annotation = meta.getAnnotation();
-    String version = annotation.version();
 
     if (!annotation.value().isAnnotationPresent(ImplementedConfig.class)) {
       throw new ServiceNotFoundException(
@@ -114,10 +110,6 @@ public class DefaultConfigTransformer
               + "/"
               + annotation.value().getName()
               + "]");
-    }
-
-    if (!version.isEmpty() && !launchArguments.get("--game-version").equals(version)) {
-      return;
     }
 
     TransformedConfigMeta configMeta =

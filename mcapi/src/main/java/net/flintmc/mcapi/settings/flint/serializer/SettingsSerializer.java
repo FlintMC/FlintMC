@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 /**
  * Marks a {@link SettingsSerializationHandler} to be registered in the {@link

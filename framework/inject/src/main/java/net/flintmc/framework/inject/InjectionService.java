@@ -33,8 +33,8 @@ import net.flintmc.framework.inject.assisted.factory.AssistedFactoryModuleBuilde
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.*;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.ClassIdentifier;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
@@ -55,11 +55,8 @@ public class InjectionService implements ServiceHandler<Annotation> {
   private final Map<CtClass, AssistedFactory> assisted = new HashMap<>();
   private final Collection<CtClass> ignore = new HashSet<>();
 
-  private final Map<String, String> launchArguments;
-
   @Inject
-  private InjectionService(@Named("launchArguments") Map launchArguments) {
-    this.launchArguments = launchArguments;
+  private InjectionService() {
   }
 
   @Override
@@ -93,12 +90,6 @@ public class InjectionService implements ServiceHandler<Annotation> {
     CtClass location = annotationMeta.<ClassIdentifier>getIdentifier()
         .getLocation();
     Implement annotation = annotationMeta.getAnnotation();
-
-    if (!(annotation.version().isEmpty()
-        || launchArguments.get("--game-version")
-        .equals(annotation.version()))) {
-      return;
-    }
 
     if (implementations.containsKey(annotation.value())
         && !implementations.get(annotation.value()).equals(location)) {

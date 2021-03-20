@@ -24,7 +24,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.internal.chat.serializer.LegacyHoverHolder;
 
 @Singleton
-@Implement(value = LegacyHoverHolder.class, version = "1.16.5")
+@Implement(LegacyHoverHolder.class)
 public class VersionedLegacyHoverHolder implements LegacyHoverHolder {
 
   /**

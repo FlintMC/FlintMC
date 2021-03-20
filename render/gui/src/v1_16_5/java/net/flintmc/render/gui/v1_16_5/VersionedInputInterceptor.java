@@ -47,7 +47,7 @@ import java.nio.DoubleBuffer;
  * 1.16.5 implementation of the input interceptor
  */
 @Singleton
-@Implement(value = InputInterceptor.class, version = "1.16.5")
+@Implement(InputInterceptor.class)
 public class VersionedInputInterceptor implements InputInterceptor {
 
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
@@ -131,7 +131,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
         });
   }
 
-  @ClassTransform(value = "net.minecraft.client.util.InputMappings", version = "1.16.5")
+  @ClassTransform(value = "net.minecraft.client.util.InputMappings")
   public void transformInputMappings(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     CtField injectedField =
@@ -159,7 +159,7 @@ public class VersionedInputInterceptor implements InputInterceptor {
     setMouseCallbacksMethod.setBody(String.format("%s.interceptMouseCallbacks($$);", fieldName));
   }
 
-  @ClassTransform(value = "net.minecraft.client.MainWindow", version = "1.16.5")
+  @ClassTransform(value = "net.minecraft.client.MainWindow")
   public void hookMainWindowConstructor(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtField injectedField =

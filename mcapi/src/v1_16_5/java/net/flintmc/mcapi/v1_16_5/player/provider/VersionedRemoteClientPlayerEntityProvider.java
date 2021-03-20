@@ -29,7 +29,7 @@ import net.flintmc.mcapi.player.RemoteClientPlayer;
  * 1.16.5 implementation of the {@link RemoteClientPlayer.Provider}.
  */
 @Singleton
-@Implement(value = RemoteClientPlayer.Provider.class, version = "1.16.5")
+@Implement(RemoteClientPlayer.Provider.class)
 public class VersionedRemoteClientPlayerEntityProvider implements RemoteClientPlayer.Provider {
 
   private final RemoteClientPlayer.Factory remoteClientPlayerEntity;

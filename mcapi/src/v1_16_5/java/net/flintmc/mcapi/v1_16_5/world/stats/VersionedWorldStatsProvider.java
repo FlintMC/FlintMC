@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Singleton
-@Implement(value = WorldStatsProvider.class, version = "1.16.5")
+@Implement(WorldStatsProvider.class)
 public class VersionedWorldStatsProvider implements WorldStatsProvider {
 
   private final VersionedWorldStatsMapper mapper;
@@ -107,12 +107,12 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     return this.mapper.getCategories();
   }
 
-  @PostSubscribe(version = "1.16.5")
+  @PostSubscribe
   public void resetPendingRequest(ServerConnectEvent event) {
     this.reset();
   }
 
-  @PostSubscribe(version = "1.16.5")
+  @PostSubscribe
   public void resetPendingRequest(ServerDisconnectEvent event) {
     this.reset();
   }
@@ -122,7 +122,7 @@ public class VersionedWorldStatsProvider implements WorldStatsProvider {
     this.lastStats = null;
   }
 
-  @Subscribe(phase = Phase.ANY, version = "1.16.5")
+  @Subscribe(Phase.ANY)
   public void processStatsResponse(PacketEvent event, Phase phase) {
     if (event.getDirection() != Direction.RECEIVE
         || !(event.getPacket() instanceof SStatisticsPacket)) {

@@ -26,12 +26,12 @@ fun defineModule(path: String) {
 
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle") version "2.8.1"
+        id("net.flintmc.flint-gradle") version "2.9.1"
     }
 
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle", "2.8.1")
+            classpath("net.flintmc", "flint-gradle", "2.9.1")
         }
         repositories {
             mavenLocal()
@@ -42,9 +42,7 @@ pluginManagement {
             mavenCentral()
         }
     }
-
 }
-
 
 defineModule("annotation-processing:autoload")
 
@@ -53,6 +51,7 @@ defineModule("framework:data-generation")
 defineModule("framework:eventbus")
 defineModule("framework:inject")
 defineModule("framework:inject-primitive")
+defineModule("framework:metaprogramming")
 defineModule("framework:packages")
 defineModule("framework:service")
 defineModule("framework:stereotype")

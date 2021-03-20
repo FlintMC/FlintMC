@@ -39,22 +39,29 @@ import java.util.Set;
  */
 @AutoService(Processor.class)
 public class FlintAnnotationProcessor extends AbstractProcessor {
+
   // Internal state of the processor
   private final ProcessorState state;
 
-  /** Instantiates the annotation processor. This is called by the java compiler. */
+  /**
+   * Instantiates the annotation processor. This is called by the java compiler.
+   */
   public FlintAnnotationProcessor() {
     this.state = new ProcessorState();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
     state.init(processingEnv);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     state.round(roundEnv);
@@ -76,25 +83,32 @@ public class FlintAnnotationProcessor extends AbstractProcessor {
       throw exception;
     }
 
-    if (roundEnv.processingOver()) {
-      // We have reached the last round, finalize the state and write out the generated files
-      state.finish();
-    }
+    // Notify the processor state to flush code generation
+    state.flushRound();
 
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public SourceVersion getSupportedSourceVersion() {
     // We always support the latest version
     return SourceVersion.latestSupported();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Set<String> getSupportedAnnotationTypes() {
     // Process every annotation
     return new HashSet<>(Collections.singletonList("*"));
+  }
+
+  @Override
+  public Set<String> getSupportedOptions() {
+    return state.collectSupportedOptions();
   }
 }

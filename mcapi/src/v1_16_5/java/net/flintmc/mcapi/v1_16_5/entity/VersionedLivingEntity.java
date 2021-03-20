@@ -53,7 +53,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
-@Implement(value = LivingEntity.class, version = "1.16.5")
+@Implement(LivingEntity.class)
 public class VersionedLivingEntity extends VersionedEntity implements LivingEntity {
 
   private final Map<StatusEffect, StatusEffectInstance> activePotions;

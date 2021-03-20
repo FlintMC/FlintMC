@@ -38,7 +38,7 @@ public class VersionedSessionServiceInitializer {
     this.updater = updater;
   }
 
-  @PostSubscribe(version = "1.15.2")
+  @PostSubscribe
   public void initSession(MinecraftInitializeEvent event) {
     // load the session that has been given to the client by the launcher
     Session session = Minecraft.getInstance().getSession();

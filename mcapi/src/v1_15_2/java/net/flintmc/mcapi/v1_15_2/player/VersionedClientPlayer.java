@@ -91,7 +91,7 @@ import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 
 @Singleton
-@Implement(value = ClientPlayer.class, version = "1.15.2")
+@Implement(ClientPlayer.class)
 public class VersionedClientPlayer extends VersionedPlayerEntity implements ClientPlayer {
 
   private static final String UNKNOWN_BIOME = "Unknown";

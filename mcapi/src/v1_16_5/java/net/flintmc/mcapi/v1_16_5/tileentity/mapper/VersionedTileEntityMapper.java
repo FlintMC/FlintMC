@@ -34,7 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 @Singleton
-@Implement(value = TileEntityMapper.class, version = "1.16.5")
+@Implement(TileEntityMapper.class)
 public class VersionedTileEntityMapper implements TileEntityMapper {
 
   private final TileEntityCache tileEntityCache;

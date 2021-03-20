@@ -30,7 +30,7 @@ import net.flintmc.mcapi.entity.passive.farmanimal.PigEntity;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = PassiveEntityMapper.class, version = "1.16.5")
+@Implement(PassiveEntityMapper.class)
 public class VersionedPassiveEntityMapper implements PassiveEntityMapper {
 
   private final AmbientEntity.Provider ambientEntityProvider;

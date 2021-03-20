@@ -25,7 +25,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.launcher.LaunchController;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
+import net.flintmc.metaprogramming.identifier.MethodIdentifier;
 import net.flintmc.util.mappings.utils.RemappingMethodLocationResolver;
 import java.util.Arrays;
 

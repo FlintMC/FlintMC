@@ -17,20 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload.identifier;
+plugins {
+    id("java-library")
+}
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
+group = "net.flintmc"
 
-/**
- * Represents the location where a {@link DetectableAnnotation} is placed at.
- *
- * @param <T> Object representation type of this {@link Identifier}
- * @see MethodIdentifier
- * @see ClassIdentifier
- */
-public interface Identifier<T> {
+repositories {
+    mavenCentral()
+}
 
-  /** @return The object representation ot this {@link Identifier} */
-  T getLocation();
-
+dependencies {
+    api("org.javassist", "javassist", "3.27.0-GA")
 }

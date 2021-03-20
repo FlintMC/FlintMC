@@ -54,8 +54,7 @@ public class VersionedGameSettingsInterceptor {
   @Hook(
       className = "net.minecraft.client.GameSettings",
       methodName = "loadOptions",
-      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
-      version = "1.15.2")
+      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER})
   public void hookLoadOptions(Hook.ExecutionTime executionTime) {
     this.eventBus.fireEvent(this.loadEvent, executionTime);
   }
@@ -63,8 +62,7 @@ public class VersionedGameSettingsInterceptor {
   @Hook(
       className = "net.minecraft.client.GameSettings",
       methodName = "saveOptions",
-      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER},
-      version = "1.15.2")
+      executionTime = {Hook.ExecutionTime.BEFORE, Hook.ExecutionTime.AFTER})
   public void hookSaveOptions(Hook.ExecutionTime executionTime) {
     this.eventBus.fireEvent(this.saveEvent, executionTime);
 

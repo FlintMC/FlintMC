@@ -40,7 +40,7 @@ import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.launcher.LaunchController;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 
 @Singleton
 @Service(value = DataFactory.class, priority = -250000, state = State.AFTER_IMPLEMENT)

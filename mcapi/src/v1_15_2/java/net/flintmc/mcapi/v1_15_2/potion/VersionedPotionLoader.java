@@ -47,7 +47,7 @@ public class VersionedPotionLoader {
     this.potionMapper = potionMapper;
   }
 
-  @PostSubscribe(version = "1.15.2")
+  @PostSubscribe
   public void convertEffectAndPotions(OpenGLInitializeEvent event) {
     for (Effect effect : Registry.EFFECTS) {
       this.potionRegister.addEffect(

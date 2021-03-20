@@ -31,7 +31,7 @@ import net.flintmc.mcapi.world.type.WorldTypeRegistry;
 import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 
 @Singleton
-@Implement(value = WorldTypeRegistry.class, version = "1.15.2")
+@Implement(WorldTypeRegistry.class)
 public class VersionedWorldTypeRegistry implements WorldTypeRegistry {
 
   private final WorldMapper worldMapper;
@@ -43,7 +43,7 @@ public class VersionedWorldTypeRegistry implements WorldTypeRegistry {
     this.worldTypes = Lists.newArrayList();
   }
 
-  @PostSubscribe(version = "1.15.2")
+  @PostSubscribe
   public void loadWorldTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.world.WorldType worldType : net.minecraft.world.WorldType.WORLD_TYPES) {
       if (worldType != null) {

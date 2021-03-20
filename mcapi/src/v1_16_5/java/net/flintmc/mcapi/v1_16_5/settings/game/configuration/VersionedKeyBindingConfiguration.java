@@ -38,7 +38,7 @@ import net.minecraft.client.util.InputMappings;
  * 1.16.5 implementation of {@link KeyBindingConfiguration}.
  */
 @Singleton
-@ConfigImplementation(value = KeyBindingConfiguration.class, version = "1.16.5")
+@ConfigImplementation(KeyBindingConfiguration.class)
 public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration {
 
   private final KeyBinding.Factory keyBindingFactory;

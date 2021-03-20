@@ -32,7 +32,7 @@ import net.flintmc.mcapi.nbt.NBTCompound;
 import net.flintmc.mcapi.world.World;
 import net.minecraft.nbt.CompoundNBT;
 
-@Implement(value = ArrowEntity.class, version = "1.15.2")
+@Implement(ArrowEntity.class)
 public class VersionedArrowEntity extends VersionedArrowBaseEntity implements ArrowEntity {
 
   private final net.minecraft.entity.projectile.ArrowEntity arrowEntity;

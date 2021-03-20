@@ -26,7 +26,7 @@ import net.flintmc.mcapi.entity.passive.AnimalEntity;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 
 @Singleton
-@Implement(value = AnimalEntity.Provider.class, version = "1.15.2")
+@Implement(AnimalEntity.Provider.class)
 public class VersionedAnimalEntityProvider implements AnimalEntity.Provider {
 
   private final AnimalEntity.Factory animalEntityFactory;

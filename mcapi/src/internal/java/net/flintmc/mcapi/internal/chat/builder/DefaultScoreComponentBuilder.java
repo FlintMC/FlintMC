@@ -25,7 +25,7 @@ import net.flintmc.mcapi.chat.builder.ScoreComponentBuilder;
 import net.flintmc.mcapi.chat.component.ScoreComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 
-@Implement(value = ScoreComponentBuilder.class)
+@Implement(ScoreComponentBuilder.class)
 public class DefaultScoreComponentBuilder
     extends DefaultComponentBuilder<ScoreComponentBuilder, ScoreComponent>
     implements ScoreComponentBuilder {

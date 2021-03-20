@@ -65,8 +65,7 @@ public class VersionedSoundPlayEventInjector {
           @Type(reference = float.class), // pitch
           @Type(reference = boolean.class) // distanceDelay
       },
-      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER},
-      version = "1.16.5")
+      executionTime = {ExecutionTime.BEFORE, ExecutionTime.AFTER})
   public void playSound(@Named("args") Object[] args, ExecutionTime executionTime) {
     Vector3D position =
         this.vectorFactory.create((double) args[0], (double) args[1], (double) args[2]);

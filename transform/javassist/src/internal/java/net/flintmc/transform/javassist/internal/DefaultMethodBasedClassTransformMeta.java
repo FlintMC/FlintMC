@@ -33,7 +33,7 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.javassist.ClassTransform;
 import net.flintmc.transform.javassist.ClassTransformContext;
@@ -52,7 +52,6 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
   private final ClassMappingProvider classMappingProvider;
   private final AnnotationMeta<ClassTransform> annotationMeta;
   private final Logger logger;
-  private final String version;
   private final NameResolver classNameResolver;
   private Object transformInstance;
 
@@ -61,11 +60,9 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
       ClassTransformContext.Factory classTransformContextFactory,
       ClassMappingProvider classMappingProvider,
       Logger logger,
-      AnnotationMeta<ClassTransform> annotationMeta,
-      Map<String, String> launchArguments) {
+      AnnotationMeta<ClassTransform> annotationMeta) {
     this.classTransformContextFactory = classTransformContextFactory;
     this.logger = logger;
-    this.version = launchArguments.get("--game-version");
     this.classMappingProvider = classMappingProvider;
     this.annotationMeta = annotationMeta;
     this.classNameResolver =
@@ -146,8 +143,7 @@ public class DefaultMethodBasedClassTransformMeta implements MethodBasedClassTra
         target = resolve;
       }
 
-      return (annotation.version().isEmpty() || annotation.version().equals(this.version))
-          && ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
+      return ((target.isEmpty() || target.equals(classMapping.getDeobfuscatedName()))
           || target.equals(classMapping.getObfuscatedName()))
           && this.getFilters().stream()
           .allMatch(ctClassPredicate -> ctClassPredicate.test(ctClass));

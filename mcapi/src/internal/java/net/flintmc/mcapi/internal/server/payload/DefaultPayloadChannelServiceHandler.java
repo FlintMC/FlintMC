@@ -32,8 +32,8 @@ import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.mcapi.server.payload.PayloadChannel;
 import net.flintmc.mcapi.server.payload.PayloadChannelService;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.MethodIdentifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.MethodIdentifier;
 import org.apache.logging.log4j.Logger;
 
 @Singleton

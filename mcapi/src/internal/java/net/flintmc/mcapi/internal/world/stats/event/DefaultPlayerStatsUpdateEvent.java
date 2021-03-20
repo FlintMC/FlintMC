@@ -17,17 +17,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload;
+package net.flintmc.mcapi.internal.world.stats.event;
 
-import java.util.List;
+import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.world.stats.event.PlayerStatsUpdateEvent;
 
-/** Interface to create auto generated classes from to discover {@link DetectableAnnotation}. */
-public interface DetectableAnnotationProvider {
+@Implement(PlayerStatsUpdateEvent.class)
+public class DefaultPlayerStatsUpdateEvent implements PlayerStatsUpdateEvent {
 
-  /**
-   * Adds representations of {@link DetectableAnnotation} as {@link AnnotationMeta} to a list.
-   *
-   * @param list List to add the detected annotation metadata to
-   */
-  default void register(List<AnnotationMeta> list) {}
 }

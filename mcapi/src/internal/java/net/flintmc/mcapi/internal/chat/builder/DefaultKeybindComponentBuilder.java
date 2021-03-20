@@ -26,7 +26,7 @@ import net.flintmc.mcapi.chat.builder.KeybindComponentBuilder;
 import net.flintmc.mcapi.chat.component.KeybindComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 
-@Implement(value = KeybindComponentBuilder.class)
+@Implement(KeybindComponentBuilder.class)
 public class DefaultKeybindComponentBuilder
     extends DefaultComponentBuilder<KeybindComponentBuilder, KeybindComponent>
     implements KeybindComponentBuilder {

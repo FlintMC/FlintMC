@@ -53,8 +53,7 @@ public class InventoryOpenEventInjector {
           @Type(typeName = "net.minecraft.inventory.container.ContainerType"),
           @Type(typeName = "net.minecraft.client.Minecraft"),
           @Type(reference = int.class)
-      },
-      version = "1.16.5")
+      })
   public void createScreen() {
     InventoryOpenEvent event = this.eventFactory.create(this.controller.getOpenInventory());
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
@@ -64,8 +63,7 @@ public class InventoryOpenEventInjector {
       className = "net.minecraft.client.Minecraft",
       methodName = "displayGuiScreen",
       parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
-      executionTime = Hook.ExecutionTime.AFTER,
-      version = "1.16.5")
+      executionTime = Hook.ExecutionTime.AFTER)
   public void displayGuiScreen(@Named("args") Object[] args) {
     if (!(args[0] instanceof InventoryScreen)) {
       return;

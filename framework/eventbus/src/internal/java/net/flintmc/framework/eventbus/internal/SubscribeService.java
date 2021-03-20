@@ -21,9 +21,7 @@ package net.flintmc.framework.eventbus.internal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import java.lang.annotation.Annotation;
-import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -40,7 +38,7 @@ import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 
 /**
  * Service for sending events to receivers.
@@ -54,19 +52,16 @@ public class SubscribeService implements ServiceHandler<Annotation> {
   private final ExecutorFactory factory;
   private final CtClass eventInterface;
   private final SubscribeMethodBuilder.Factory methodBuilderFactory;
-  private final String version;
 
   @Inject
   private SubscribeService(
       ExecutorFactory executorFactory,
       ClassPool pool,
-      SubscribeMethodBuilder.Factory methodBuilderFactory,
-      @Named("launchArguments") Map launchArguments)
+      SubscribeMethodBuilder.Factory methodBuilderFactory)
       throws NotFoundException {
     this.methodBuilderFactory = methodBuilderFactory;
     this.eventInterface = pool.get(Event.class.getName());
     this.factory = executorFactory;
-    this.version = (String) launchArguments.get("--game-version");
   }
 
   /**
@@ -76,9 +71,6 @@ public class SubscribeService implements ServiceHandler<Annotation> {
   public void discover(AnnotationMeta<Annotation> meta) throws ServiceNotFoundException {
     Annotation subscribe = meta.getAnnotation();
     CtMethod method = meta.getMethodIdentifier().getLocation();
-
-    String version = this.getVersion(subscribe);
-    if (!(version.isEmpty() || version.equals(this.version))) return;
 
     CtClass eventClass = null;
     try {
@@ -124,7 +116,7 @@ public class SubscribeService implements ServiceHandler<Annotation> {
       phase = Subscribe.Phase.POST;
     } else if (subscribe instanceof Subscribe) {
       priority = ((Subscribe) subscribe).priority();
-      phase = ((Subscribe) subscribe).phase();
+      phase = ((Subscribe) subscribe).value();
     } else {
       throw new ServiceNotFoundException(
           "Unknown subscribe annotation: " + subscribe.annotationType().getName());
@@ -145,18 +137,5 @@ public class SubscribeService implements ServiceHandler<Annotation> {
             .phaseOnly(phase);
 
     builder.to(executor).buildAndRegister();
-  }
-
-  private String getVersion(Annotation annotation) {
-    if (annotation instanceof PreSubscribe) {
-      return ((PreSubscribe) annotation).version();
-    } else if (annotation instanceof PostSubscribe) {
-      return ((PostSubscribe) annotation).version();
-    } else if (annotation instanceof Subscribe) {
-      return ((Subscribe) annotation).version();
-    } else {
-      throw new IllegalArgumentException(
-          "Unknown subscribe annotation: " + annotation.annotationType().getName());
-    }
   }
 }

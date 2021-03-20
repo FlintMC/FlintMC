@@ -36,7 +36,7 @@ import net.flintmc.util.i18n.LocalizationLoader;
  * 1.15.2 implementation of the {@link LocalizationLoader}.
  */
 @Singleton
-@Implement(value = LocalizationLoader.class, version = "1.15.2")
+@Implement(LocalizationLoader.class)
 public class VersionedLocalizationLoader implements LocalizationLoader {
 
   private final PackageLoader packageLoader;

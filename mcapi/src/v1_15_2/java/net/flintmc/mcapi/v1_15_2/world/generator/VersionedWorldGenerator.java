@@ -30,7 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.WorldSettings;
 
 @Singleton
-@Implement(value = WorldGenerator.class, version = "1.15.2")
+@Implement(WorldGenerator.class)
 public class VersionedWorldGenerator implements WorldGenerator {
 
   private final ServerController serverController;

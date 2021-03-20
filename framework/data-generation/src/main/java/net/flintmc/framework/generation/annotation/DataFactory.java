@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import net.flintmc.framework.generation.parsing.DataField;
 import net.flintmc.framework.generation.parsing.data.DataFieldMethod;
 import net.flintmc.framework.generation.parsing.factory.DataFactoryMethod;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 /**
  * Declares an <b>interface</b> as a factory for a given data interface.
