@@ -50,7 +50,7 @@ import java.util.Map;
 @Implement(ConfigSerializationService.class)
 @Service(
     value = ConfigSerializer.class,
-    priority = -1 /* has to be called before the ConfigGenerationService */)
+    priority = -101 /* has to be called before the ConfigGenerationService */)
 public class DefaultConfigSerializationService
     implements ServiceHandler<ConfigSerializer>, ConfigSerializationService {
 

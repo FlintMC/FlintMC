@@ -20,6 +20,7 @@
 package net.flintmc.framework.config.defval.mapper;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Supplier;
 import net.flintmc.framework.config.defval.annotation.DefaultString;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.serialization.ConfigSerializationHandler;
@@ -38,8 +39,8 @@ public interface DefaultAnnotationMapperHandler<A extends Annotation> {
    *
    * @param reference  The non-null reference that contains the given annotation
    * @param annotation The non-null annotation to be mapped
-   * @return The mapped object from the annotation, can be {@code null}
+   * @return The supplier for the mapped object from the annotation, can be {@code null}
    */
-  Object getDefaultValue(ConfigObjectReference reference, A annotation);
+  Supplier<Object> getDefaultValue(ConfigObjectReference reference, A annotation);
 
 }

@@ -56,7 +56,7 @@ import net.flintmc.transform.minecraft.MinecraftTransformer;
 @Singleton
 @Service(
     value = ConfigImplementation.class,
-    priority = 2 /* needs to be called after the ConfigGenerationService */)
+    priority = -50 /* needs to be called after the ConfigGenerationService */)
 @MinecraftTransformer(implementations = false)
 @Implement(ConfigTransformer.class)
 public class DefaultConfigTransformer

@@ -25,6 +25,8 @@ import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapper;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 
+import java.util.function.Supplier;
+
 @Singleton
 @DefaultAnnotationMapper(DefaultEnum.class)
 public class EnumDefaultAnnotationMapper implements DefaultAnnotationMapperHandler<DefaultEnum> {
@@ -33,8 +35,8 @@ public class EnumDefaultAnnotationMapper implements DefaultAnnotationMapperHandl
    * {@inheritDoc}
    */
   @Override
-  public Object getDefaultValue(ConfigObjectReference reference, DefaultEnum annotation) {
+  public Supplier<Object> getDefaultValue(ConfigObjectReference reference, DefaultEnum annotation) {
     int index = annotation.value();
-    return ((Class<?>) reference.getSerializedType()).getEnumConstants()[index];
+    return () -> ((Class<?>) reference.getSerializedType()).getEnumConstants()[index];
   }
 }

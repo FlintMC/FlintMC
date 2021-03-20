@@ -41,7 +41,7 @@ public class DefaultEventConfigInitializer implements EventConfigInitializer {
   private final ConfigGenerator configGenerator;
 
   @Inject
-  public DefaultEventConfigInitializer(
+  private DefaultEventConfigInitializer(
       SubscribeMethodBuilder.Factory subscribeMethodFactory,
       EventBus eventBus,
       ConfigGenerator configGenerator) {

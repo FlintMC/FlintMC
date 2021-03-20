@@ -105,6 +105,16 @@ public class DefaultConfigImplementer implements ConfigImplementer {
 
     implementation.addMethod(CtNewMethod.setter(
         "setStoreContent", implementation.getField("storeContent")));
+
+    CtField initializedField = new CtField(
+        CtClass.booleanType, "configInitialized", implementation);
+    implementation.addField(initializedField, CtField.Initializer.constant(false));
+
+    implementation.addMethod(CtNewMethod.getter("isInitialized", initializedField));
+
+    implementation.addMethod(CtNewMethod.make(String.format(
+        "public void setInitialized() { this.%s = true; }", initializedField.getName()),
+        implementation));
   }
 
   /**
