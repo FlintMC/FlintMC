@@ -117,7 +117,6 @@ public class AnnotationMeta<T extends Annotation> {
   }
 
   /**
-   * <<<<<<< HEAD:framework/metaprogramming/src/main/java/net/flintmc/metaprogramming/AnnotationMeta.java
    * Determines whether this annotation meta is applicable to the currently running version.
    *
    * @param version The version to test for
