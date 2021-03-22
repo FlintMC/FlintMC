@@ -73,6 +73,14 @@ public class DefaultEventBus implements EventBus {
    * {@inheritDoc}
    */
   @Override
+  public <E extends Event> E fireEventAll(E event, Runnable handler) {
+    return this.fireEventAll(event, e -> handler.run());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public <E extends Event> E fireEvent(E event, Phase phase) {
     this.validateEvent(event, phase);
 

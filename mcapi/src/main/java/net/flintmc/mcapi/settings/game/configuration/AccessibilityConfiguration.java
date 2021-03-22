@@ -23,7 +23,7 @@ import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
-import net.flintmc.mcapi.settings.flint.options.BooleanSetting;
+import net.flintmc.mcapi.settings.flint.options.bool.BooleanSetting;
 import net.flintmc.mcapi.settings.game.annotation.LanguageSetting;
 import net.flintmc.mcapi.settings.game.settings.PointOfView;
 import net.flintmc.mcapi.settings.game.settings.TutorialSteps;

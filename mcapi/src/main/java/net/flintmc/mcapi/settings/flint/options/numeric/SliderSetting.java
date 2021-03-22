@@ -19,24 +19,30 @@
 
 package net.flintmc.mcapi.settings.flint.options.numeric;
 
+import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
+import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplay;
+import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.options.numeric.display.NumericDisplay;
 
 /**
- * The same as {@link NumericDisplay}, but displayed as a slider instead of an input field.
+ * The same as {@link NumericSetting}, but displayed as a slider instead of an input field.
+ *
+ * <p>
+ * {@link RegisteredSetting#getData()} will be an instance of {@link NumericData}.
  *
  * @see ApplicableSetting
+ * @see NumericSetting
  * @see NumericDisplay
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ApplicableSetting(
     types = {byte.class, short.class, int.class, long.class, double.class, float.class},
-    name = "slider")
+    name = "slider",
+    data = NumericData.class)
 public @interface SliderSetting {
 
   /**

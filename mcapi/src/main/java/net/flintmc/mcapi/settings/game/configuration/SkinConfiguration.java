@@ -26,7 +26,7 @@ import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.player.type.hand.Hand;
 import net.flintmc.mcapi.player.type.model.PlayerClothing;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
-import net.flintmc.mcapi.settings.flint.options.dropdown.EnumSelectSetting;
+import net.flintmc.mcapi.settings.flint.options.selection.enumeration.EnumSelectSetting;
 
 /**
  * Represents the skin configuration.

@@ -19,15 +19,16 @@
 
 package net.flintmc.mcapi.settings.flint.annotation;
 
+import net.flintmc.framework.config.annotation.Config;
+import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import net.flintmc.mcapi.settings.flint.options.bool.BooleanSetting;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
+import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
-import net.flintmc.framework.config.annotation.Config;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.mcapi.settings.flint.options.BooleanSetting;
-import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
 
 /**
  * Marks an annotation to be used to define a setting like {@link BooleanSetting}, {@link
@@ -88,4 +89,21 @@ public @interface ApplicableSetting {
    * @return The types for this setting
    */
   Class<?>[] types();
+
+  /**
+   * Retrieves the class that contains more information about a setting from the annotation of the
+   * setting.
+   *
+   * @return The type of the setting data of this setting or {@link DummySettingData} if there is no
+   * information to be stored in the {@link SettingData}
+   * @see SettingData
+   */
+  Class<? extends SettingData> data() default DummySettingData.class;
+
+  /**
+   * Dummy data for {@link #data()}.
+   */
+  interface DummySettingData extends SettingData {
+
+  }
 }

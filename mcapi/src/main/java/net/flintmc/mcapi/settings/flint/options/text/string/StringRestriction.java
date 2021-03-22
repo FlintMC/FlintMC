@@ -17,23 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.options.dropdown;
+package net.flintmc.mcapi.settings.flint.options.text.string;
 
 /**
- * The type of a {@link CustomSelectSetting} / {@link EnumSelectSetting}.
- *
- * @see CustomSelectSetting
- * @see EnumSelectSetting
+ * Restrictions for the text input in a {@link StringSetting}.
  */
-public enum SelectMenuType {
+public enum StringRestriction {
 
   /**
-   * This will open a drop down menu on click with all values.
+   * Allow only URLs as the text.
    */
-  DROPDOWN,
-
-  /**
-   * The default select type by Minecraft.
-   */
-  SWITCH
+  URL_ONLY
 }

@@ -17,13 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.options.dropdown;
+package net.flintmc.mcapi.settings.flint.options.selection.custom;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import net.flintmc.mcapi.settings.flint.annotation.ui.Description;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.flint.annotation.ui.icon.Icon;
+import net.flintmc.mcapi.settings.flint.options.selection.custom.CustomSelectSetting;
 
 /**
  * Represents a selection entry in a {@link CustomSelectSetting}.

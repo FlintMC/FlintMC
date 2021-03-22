@@ -24,6 +24,7 @@ import net.flintmc.framework.config.defval.annotation.DefaultNumber;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapper;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
+import java.util.function.Supplier;
 
 @Singleton
 @DefaultAnnotationMapper(DefaultNumber.class)
@@ -34,7 +35,8 @@ public class NumberDefaultAnnotationMapper
    * {@inheritDoc}
    */
   @Override
-  public Object getDefaultValue(ConfigObjectReference reference, DefaultNumber annotation) {
-    return annotation.value();
+  public Supplier<Object> getDefaultValue(
+      ConfigObjectReference reference, DefaultNumber annotation) {
+    return annotation::value;
   }
 }

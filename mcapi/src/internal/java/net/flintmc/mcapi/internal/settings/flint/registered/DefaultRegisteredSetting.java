@@ -36,6 +36,7 @@ import net.flintmc.mcapi.settings.flint.annotation.version.VersionExclude;
 import net.flintmc.mcapi.settings.flint.annotation.version.VersionOnly;
 import net.flintmc.mcapi.settings.flint.event.SettingUpdateEvent;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
@@ -55,6 +56,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
 
   private final Annotation annotation;
   private final String type;
+  private final SettingData data;
 
   private final Collection<RegisteredSetting> subSettings;
 
@@ -80,7 +82,12 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
     this.reference = reference;
 
     this.annotation = this.reference.findLastAnnotation(annotationType);
-    this.type = this.annotation.annotationType().getAnnotation(ApplicableSetting.class).name();
+
+    ApplicableSetting applicableSetting =
+        this.annotation.annotationType().getAnnotation(ApplicableSetting.class);
+    this.type = applicableSetting.name();
+    this.data = applicableSetting.data() == ApplicableSetting.DummySettingData.class ? null
+        : settingHandler.createData(this.annotation, this);
 
     this.subSettings = new HashSet<>();
 
@@ -119,6 +126,15 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
    * {@inheritDoc}
    */
   @Override
+  @SuppressWarnings("unchecked")
+  public <T extends SettingData> T getData() {
+    return (T) this.data;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Object getCurrentValue() {
     return this.reference.getValue();
   }
@@ -128,7 +144,7 @@ public class DefaultRegisteredSetting implements RegisteredSetting {
    */
   @Override
   public boolean setCurrentValue(Object value) {
-    if (!this.settingHandler.isValidInput(value, this.reference, this.getAnnotation())) {
+    if (!this.settingHandler.isValidInput(value, this)) {
       return false;
     }
 

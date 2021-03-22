@@ -22,7 +22,7 @@ package net.flintmc.mcapi.settings.flint.serializer;
 import com.google.gson.JsonObject;
 import java.lang.annotation.Annotation;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 /**

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapper;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperRegistry;
@@ -62,7 +63,7 @@ public class DefaultAnnotationMapperRegistryService
    * {@inheritDoc}
    */
   @Override
-  public Object getDefaultValue(ConfigObjectReference reference, Annotation annotation) {
+  public Supplier<Object> getDefaultValue(ConfigObjectReference reference, Annotation annotation) {
     DefaultAnnotationMapperHandler handler = this.mappers.get(annotation.annotationType());
     return handler != null ? handler.getDefaultValue(reference, annotation) : null;
   }

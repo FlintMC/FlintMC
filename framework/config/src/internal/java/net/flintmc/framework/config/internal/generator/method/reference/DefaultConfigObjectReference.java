@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -62,7 +63,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
   private final Map<Class<? extends Annotation>, Annotation> lastAnnotations;
   private final Type serializedType;
 
-  private final Object defaultValue;
+  private final Supplier<Object> defaultValue;
 
   private final Class<?> configBaseClass;
   private final ReferenceInvoker invoker;
@@ -107,40 +108,47 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
     this.defaultValue = this.findDefaultValue(defaultAnnotationMapperRegistry);
   }
 
-  private Object findDefaultValue(DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry) {
-    Object result = null;
+  private Supplier<Object> findDefaultValue(
+      DefaultAnnotationMapperRegistry defaultAnnotationMapperRegistry) {
+    Supplier<Object> resultProvider = null;
     for (Class<? extends Annotation> annotationType :
         defaultAnnotationMapperRegistry.getAnnotationTypes()) {
       Annotation annotation = this.findLastAnnotation(annotationType);
       if (annotation != null) {
-        result = defaultAnnotationMapperRegistry.getDefaultValue(this, annotation);
+        resultProvider = defaultAnnotationMapperRegistry.getDefaultValue(this, annotation);
         break;
       }
     }
 
+    if (resultProvider == null) {
+      resultProvider = () -> null;
+    }
+
     Type type = this.getSerializedType();
-    if (type instanceof Class<?>
-        && Number.class.isAssignableFrom((Class<?>) type)
-        && result instanceof Number) {
+    if (type instanceof Class<?> && Number.class.isAssignableFrom((Class<?>) type)) {
+      Object result = resultProvider.get();
+      if (!(result instanceof Number)) {
+        return resultProvider;
+      }
       // map e.g. doubles that could potentially be integers
       Number number = (Number) result;
 
       if (type.equals(Byte.class) || type.equals(byte.class)) {
-        return number.byteValue();
+        return number::byteValue;
       } else if (type.equals(Short.class) || type.equals(short.class)) {
-        return number.shortValue();
+        return number::shortValue;
       } else if (type.equals(Integer.class) || type.equals(int.class)) {
-        return number.intValue();
+        return number::intValue;
       } else if (type.equals(Long.class) || type.equals(long.class)) {
-        return number.longValue();
+        return number::longValue;
       } else if (type.equals(Double.class) || type.equals(double.class)) {
-        return number.doubleValue();
+        return number::doubleValue;
       } else if (type.equals(Float.class) || type.equals(float.class)) {
-        return number.floatValue();
+        return number::floatValue;
       }
     }
 
-    return result;
+    return resultProvider;
   }
 
   /**
@@ -331,7 +339,7 @@ public class DefaultConfigObjectReference implements ConfigObjectReference {
    */
   @Override
   public Object getDefaultValue() {
-    return this.defaultValue;
+    return this.defaultValue.get();
   }
 
   /**

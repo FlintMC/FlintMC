@@ -21,11 +21,6 @@ package net.flintmc.framework.config.internal.defval.defaults;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -36,6 +31,12 @@ import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapper;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.launcher.LaunchController;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 @Singleton
 @DefaultAnnotationMapper(DefaultExpression.class)
@@ -64,8 +65,11 @@ public class ExpressionDefaultAnnotationMapper
    * {@inheritDoc}
    */
   @Override
-  public Object getDefaultValue(ConfigObjectReference reference, DefaultExpression annotation) {
-    return this.cachedEvaluators.computeIfAbsent(annotation, k -> this.generate(k.value())).eval();
+  public Supplier<Object> getDefaultValue(
+      ConfigObjectReference reference, DefaultExpression annotation) {
+    ExpressionEvaluator evaluator =
+        this.cachedEvaluators.computeIfAbsent(annotation, k -> this.generate(k.value()));
+    return evaluator::eval;
   }
 
   private ExpressionEvaluator generate(String expression) {
