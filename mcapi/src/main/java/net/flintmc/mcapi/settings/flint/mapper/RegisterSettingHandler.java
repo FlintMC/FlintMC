@@ -20,7 +20,7 @@
 package net.flintmc.mcapi.settings.flint.mapper;
 
 import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;

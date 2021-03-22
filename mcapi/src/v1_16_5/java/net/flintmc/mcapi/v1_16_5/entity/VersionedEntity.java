@@ -20,7 +20,6 @@
 package net.flintmc.mcapi.v1_16_5.entity;
 
 import com.google.common.collect.Sets;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,7 +30,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -48,14 +46,14 @@ import net.flintmc.mcapi.entity.type.EntityPose;
 import net.flintmc.mcapi.entity.type.EntityType;
 import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.player.type.sound.Sound;
-import net.flintmc.mcapi.v1_16_5.entity.render.*;
+import net.flintmc.mcapi.v1_16_5.entity.render.EntityAccessor;
+import net.flintmc.mcapi.v1_16_5.entity.render.ModelRendererAccessor;
 import net.flintmc.mcapi.v1_16_5.entity.shadow.AccessibleEntity;
 import net.flintmc.mcapi.world.World;
 import net.flintmc.mcapi.world.math.BlockPosition;
 import net.flintmc.mcapi.world.math.Direction;
 import net.flintmc.mcapi.world.math.Vector3D;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
-import net.flintmc.render.model.ModelBox;
 import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.util.property.Property;
 import net.flintmc.util.property.PropertyContext;
@@ -67,7 +65,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
-@Implement(value = Entity.class, version = "1.16.5")
+@Implement(Entity.class)
 public class VersionedEntity implements Entity {
 
   private final EntityType entityType;
@@ -172,49 +170,6 @@ public class VersionedEntity implements Entity {
                   propertyContext.setPropertyValue(
                       TEXTURE_OFFSET_Y_OLD, modelRendererAccessor.getTextureOffsetY());
 
-                  Set<ModelBox> modelBoxes = modelBoxHolder.getBoxes();
-                  modelBoxes.clear();
-                  for (ModelRenderer.ModelBox modelBox : modelRendererAccessor.getModelBoxes()) {
-                    ModelBoxAccessor modelBoxAccessor = (ModelBoxAccessor) modelBox;
-                    List<ModelBox.TexturedQuad> texturedQuads = new ArrayList<>();
-
-                    for (TexturedQuadAccessor quad : modelBoxAccessor.getQuads()) {
-                      ModelBox.TexturedQuad.VertexPosition[] vertexPositions =
-                          new ModelBox.TexturedQuad.VertexPosition
-                              [quad.getVertexPositions().length];
-                      for (int i = 0; i < vertexPositions.length; i++) {
-                        PositionTextureVertexAccessor vertexPosition = quad.getVertexPositions()[i];
-                        vertexPositions[i] =
-                            InjectionHolder.getInjectedInstance(
-                                ModelBox.TexturedQuad.VertexPosition.Factory.class)
-                                .create(
-                                    vertexPosition.getTextureU(),
-                                    vertexPosition.getTextureV(),
-                                    vertexPosition.getPosition().getX(),
-                                    vertexPosition.getPosition().getY(),
-                                    vertexPosition.getPosition().getZ());
-                      }
-                      texturedQuads.add(
-                          InjectionHolder.getInjectedInstance(ModelBox.TexturedQuad.Factory.class)
-                              .create(
-                                  quad.getNormal().getX(),
-                                  quad.getNormal().getY(),
-                                  quad.getNormal().getZ(),
-                                  vertexPositions));
-                    }
-
-                    modelBoxes.add(
-                        InjectionHolder.getInjectedInstance(ModelBox.Factory.class)
-                            .create()
-                            .setPositionX1(modelBox.posX1)
-                            .setPositionX2(modelBox.posX2)
-                            .setPositionY1(modelBox.posY1)
-                            .setPositionY2(modelBox.posY2)
-                            .setPositionZ1(modelBox.posZ1)
-                            .setPositionZ2(modelBox.posZ2)
-                            .setTexturedQuads(texturedQuads));
-                  }
-
                   modelBoxHolder
                       .setRotationX(modelRenderer.rotateAngleX)
                       .setRotationY(modelRenderer.rotateAngleY)
@@ -227,8 +182,7 @@ public class VersionedEntity implements Entity {
                       .setTextureHeight(modelRendererAccessor.getTextureHeight())
                       .setTextureWidth(modelRendererAccessor.getTextureWidth())
                       .setTextureOffsetX(modelRendererAccessor.getTextureOffsetX())
-                      .setTextureOffsetY(modelRendererAccessor.getTextureOffsetY())
-                      .setModelBoxes(modelBoxes);
+                      .setTextureOffsetY(modelRendererAccessor.getTextureOffsetY());
                 })
             .addRenderPreparation(
                 modelBoxHolder -> {
@@ -236,56 +190,71 @@ public class VersionedEntity implements Entity {
                       (ModelRendererAccessor) modelRenderer;
 
                   if (modelBoxHolder.getShowModelOverridePolicy()
-                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                      == ModelBoxHolder.OverridePolicy.ACTIVE) {
                     modelRenderer.showModel = modelBoxHolder.isShowModel();
+                  }
 
                   if (modelBoxHolder.getMirrorOverridePolicy()
-                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                      == ModelBoxHolder.OverridePolicy.ACTIVE) {
                     modelRenderer.mirror = modelBoxHolder.isMirror();
+                  }
 
                   if (modelBoxHolder.getTextureOffsetXOverridePolicy()
-                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                      == ModelBoxHolder.OverridePolicy.ACTIVE) {
                     modelRendererAccessor.setTextureOffsetX(modelBoxHolder.getTextureOffsetX());
+                  }
 
                   if (modelBoxHolder.getTextureOffsetYOverridePolicy()
-                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                      == ModelBoxHolder.OverridePolicy.ACTIVE) {
                     modelRendererAccessor.setTextureOffsetY(modelBoxHolder.getTextureOffsetY());
+                  }
 
                   if (modelBoxHolder.getTextureWidthOverridePolicy()
-                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                      == ModelBoxHolder.OverridePolicy.ACTIVE) {
                     modelRendererAccessor.setTextureWidth(modelBoxHolder.getTextureWidth());
+                  }
 
                   if (modelBoxHolder.getTextureHeightOverridePolicy()
-                      == ModelBoxHolder.OverridePolicy.ACTIVE)
+                      == ModelBoxHolder.OverridePolicy.ACTIVE) {
                     modelRendererAccessor.setTextureHeight(modelBoxHolder.getTextureHeight());
+                  }
 
-                  if (modelBoxHolder.getRotationXMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                  if (modelBoxHolder.getRotationXMode() == ModelBoxHolder.RotationMode.ABSOLUTE) {
                     modelRenderer.rotateAngleX = 0;
+                  }
 
                   modelRenderer.rotateAngleX += modelBoxHolder.getRotationX();
 
-                  if (modelBoxHolder.getRotationYMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                  if (modelBoxHolder.getRotationYMode() == ModelBoxHolder.RotationMode.ABSOLUTE) {
                     modelRenderer.rotateAngleY = 0;
+                  }
 
                   modelRenderer.rotateAngleY += modelBoxHolder.getRotationY();
 
-                  if (modelBoxHolder.getRotationZMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                  if (modelBoxHolder.getRotationZMode() == ModelBoxHolder.RotationMode.ABSOLUTE) {
                     modelRenderer.rotateAngleZ = 0;
+                  }
 
                   modelRenderer.rotateAngleZ += modelBoxHolder.getRotationZ();
 
-                  if (modelBoxHolder.getTranslationXMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                  if (modelBoxHolder.getTranslationXMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) {
                     modelRenderer.rotationPointX = 0;
+                  }
 
                   modelRenderer.rotationPointX += modelBoxHolder.getTranslationX();
 
-                  if (modelBoxHolder.getTranslationYMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                  if (modelBoxHolder.getTranslationYMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) {
                     modelRenderer.rotationPointY = 0;
+                  }
 
                   modelRenderer.rotationPointY += modelBoxHolder.getTranslationY();
 
-                  if (modelBoxHolder.getTranslationZMode() == ModelBoxHolder.RotationMode.ABSOLUTE)
+                  if (modelBoxHolder.getTranslationZMode()
+                      == ModelBoxHolder.RotationMode.ABSOLUTE) {
                     modelRenderer.rotationPointZ = 0;
+                  }
 
                   modelRenderer.rotationPointZ += modelBoxHolder.getTranslationZ();
                 })

@@ -30,7 +30,7 @@ import net.flintmc.mcapi.version.VersionHelper;
  * Default implementation of the {@link VersionHelper}.
  */
 @Singleton
-@Implement(value = VersionHelper.class)
+@Implement(VersionHelper.class)
 public class DefaultVersionHelper implements VersionHelper {
 
   private final Map<String, String> launchArguments;

@@ -24,7 +24,15 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javassist.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.entity.Entity;
@@ -51,10 +59,6 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector4f;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
 @Singleton
 public class ModelRendererInterceptor {
 
@@ -79,7 +83,7 @@ public class ModelRendererInterceptor {
   }
 
 
-  @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer", version = "1.16.5")
+  @ClassTransform(value = "net.minecraft.client.renderer.model.ModelRenderer")
   public void transform(ClassTransformContext classTransformContext) {
     try {
       String matrixStackEntryName = this.classMappingProvider
@@ -128,6 +132,37 @@ public class ModelRendererInterceptor {
     }
   }
 
+  @ClassTransform
+  @CtClassFilter(
+      value = CtClassFilters.SUBCLASS_OF,
+      className = "net.minecraft.client.renderer.entity.model.EntityModel")
+  public void transform2(ClassTransformContext classTransformContext)
+      throws NotFoundException, CannotCompileException {
+    CtClass[] classes =
+        ClassPool.getDefault()
+            .get(
+                new String[]{
+                    "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
+                });
+
+    for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {
+      if (declaredMethod
+          .getName()
+          .equals(
+              this.classMappingProvider
+                  .get("net.minecraft.client.renderer.entity.model.EntityModel")
+                  .getMethod("setRotationAngles", classes)
+                  .getName())) {
+        if (!Modifier.isAbstract(declaredMethod.getModifiers())) {
+          declaredMethod.insertAfter(
+              "{net.flintmc.mcapi.v1_16_5.entity.render.ModelRendererInterceptor.Handler.interceptRotationAnglesUpdate($1);}");
+        }
+
+        break;
+      }
+    }
+  }
+
   @HookFilter(
       value = HookFilters.SUBCLASS_OF,
       type = @Type(typeName = "net.minecraft.client.renderer.entity.model.EntityModel"))
@@ -140,7 +175,7 @@ public class ModelRendererInterceptor {
           @Type(reference = float.class),
           @Type(reference = float.class),
           @Type(reference = float.class)
-      }, version = "1.16.5")
+      })
   public static void setRotationAngles(@Named("args") Object[] args) {
     Handler.interceptRotationAnglesUpdate(args[0]);
   }

@@ -49,7 +49,7 @@ import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 
 @Singleton
-@Implement(value = WorldGenerator.class, version = "1.16.5")
+@Implement(WorldGenerator.class)
 public class VersionedWorldGenerator implements WorldGenerator {
 
   private final ServerController serverController;

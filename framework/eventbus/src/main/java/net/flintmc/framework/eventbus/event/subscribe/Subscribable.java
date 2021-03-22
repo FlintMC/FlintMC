@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.EventDetails;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 /**
  * Marks a class that implements an {@link Event} as such and must be applied on EVERY event that

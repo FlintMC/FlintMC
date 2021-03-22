@@ -26,7 +26,7 @@ import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.server.buffer.PacketBuffer;
 
-@Implement(value = PacketBuffer.class, version = "1.15.2")
+@Implement(PacketBuffer.class)
 public class VersionedPacketBuffer implements PacketBuffer {
 
   private final net.minecraft.network.PacketBuffer packetBuffer;

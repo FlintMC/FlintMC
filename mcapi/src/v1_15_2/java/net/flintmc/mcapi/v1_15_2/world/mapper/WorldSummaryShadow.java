@@ -22,7 +22,7 @@ package net.flintmc.mcapi.v1_15_2.world.mapper;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-@Shadow(value = "net.minecraft.world.storage.WorldSummary", version = "1.15.2")
+@Shadow("net.minecraft.world.storage.WorldSummary")
 public interface WorldSummaryShadow {
 
   @FieldGetter("versionName")

@@ -26,7 +26,7 @@ import net.flintmc.mcapi.entity.LivingEntity;
 import net.flintmc.mcapi.entity.type.EntityTypeMapper;
 
 @Singleton
-@Implement(value = LivingEntity.Provider.class, version = "1.16.5")
+@Implement(LivingEntity.Provider.class)
 public class VersionedLivingEntityProvider implements LivingEntity.Provider {
 
   private final LivingEntity.Factory livingEntityFactory;

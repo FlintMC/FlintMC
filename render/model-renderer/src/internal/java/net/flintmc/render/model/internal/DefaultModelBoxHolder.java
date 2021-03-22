@@ -20,8 +20,6 @@
 package net.flintmc.render.model.internal;
 
 import java.awt.*;
-import java.util.Set;
-import net.flintmc.render.model.ModelBox;
 import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.render.model.RenderContext;
 import net.flintmc.render.model.RenderContextAware;
@@ -51,14 +49,6 @@ public class DefaultModelBoxHolder<
 
   protected DefaultModelBoxHolder(T_RenderContext renderContext, Object meta) {
     super(renderContext, meta);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Set<ModelBox> getBoxes() {
-    return this.getPropertyContext().getPropertyValue(ModelBoxHolder.MODEL_BOXES);
   }
 
   /**
@@ -363,15 +353,6 @@ public class DefaultModelBoxHolder<
   public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setTextureHeightPolicy(
       OverridePolicy overridePolicy) {
     return this.getPropertyContext().setPropertyMeta(TEXTURE_HEIGHT, overridePolicy);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public ModelBoxHolder<T_RenderContextAware, T_RenderContext> setModelBoxes(
-      Set<ModelBox> modelBoxes) {
-    return this.getPropertyContext().setPropertyValue(MODEL_BOXES, modelBoxes);
   }
 
   /**

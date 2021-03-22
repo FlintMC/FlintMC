@@ -30,7 +30,7 @@ import net.flintmc.mcapi.entity.type.EntityType;
 /**
  * 1.15.2 implementation of the {@link EntityType}.
  */
-@Implement(value = EntityType.class, version = "1.15.2")
+@Implement(EntityType.class)
 public class VersionedEntityType implements EntityType {
 
   private final ChatComponent displayName;

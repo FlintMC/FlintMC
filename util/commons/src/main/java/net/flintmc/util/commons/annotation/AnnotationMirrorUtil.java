@@ -20,17 +20,9 @@
 package net.flintmc.util.commons.annotation;
 
 import com.google.auto.common.SimpleAnnotationMirror;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import javax.lang.model.element.*;
+import java.util.*;
 import java.util.stream.Collectors;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
 
 /**
  * Utility class for working with annotations.
@@ -163,5 +155,26 @@ public class AnnotationMirrorUtil {
     }
 
     return mirrors;
+  }
+
+  /**
+   * Determines whether a collection of annotation mirrors includes one for a specified annotation
+   * type.
+   *
+   * @param annotationType The name of the annotation type to search for
+   * @param mirrors        The list of mirrors to search
+   * @return {@code true} if the collection contains a mirror for the specified name, {@code false}
+   * otherwise
+   */
+  public static boolean hasMirrorFor(String annotationType,
+      Collection<? extends AnnotationMirror> mirrors) {
+    for (AnnotationMirror mirror : mirrors) {
+      if (((TypeElement) mirror.getAnnotationType().asElement()).getQualifiedName()
+          .contentEquals(annotationType)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

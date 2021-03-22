@@ -35,7 +35,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.util.Optional;
 
-@Implement(value = ObjectiveChangeListener.class, version = "1.15.2")
+@Implement(ObjectiveChangeListener.class)
 public class VersionedObjectiveChangeListener implements ObjectiveChangeListener {
 
   private final MinecraftComponentMapper componentMapper;

@@ -30,8 +30,8 @@ import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializationHandler;
 import net.flintmc.mcapi.settings.flint.serializer.SettingsSerializer;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.Identifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.Identifier;
 
 @Singleton
 @Service(SettingsSerializer.class)

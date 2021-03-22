@@ -19,8 +19,7 @@
 
 package net.flintmc.transform.shadow;
 
-import net.flintmc.processing.autoload.RepeatingDetectableAnnotation;
-
+import net.flintmc.metaprogramming.RepeatingDetectableAnnotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -31,7 +31,7 @@ import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 @Singleton
-@Implement(value = RectangleRenderer.class, version = "1.15.2")
+@Implement(RectangleRenderer.class)
 public class VersionedRectangleRenderer implements RectangleRenderer {
 
   /**

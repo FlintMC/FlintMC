@@ -17,42 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload.identifier;
+package net.flintmc.metaprogramming.identifier;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.NotFoundException;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 /**
- * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s located at class level.
+ * Represents the location where a {@link DetectableAnnotation} is placed at.
  *
- * @see Identifier
+ * @param <T> Object representation type of this {@link Identifier}
+ * @see MethodIdentifier
+ * @see ClassIdentifier
  */
-public class ClassIdentifier implements Identifier<CtClass> {
+public interface Identifier<T> {
 
-  private final String name;
+  /** @return The object representation ot this {@link Identifier} */
+  T getLocation();
 
-  public ClassIdentifier(String name) {
-    this.name = name;
-  }
-
-  /**
-   * @return The class name of this identifier
-   */
-  public String getName() {
-    return this.name;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public CtClass getLocation() {
-    try {
-      return ClassPool.getDefault().get(this.getName());
-    } catch (NotFoundException e) {
-      throw new IllegalStateException(e);
-    }
-  }
 }

@@ -28,7 +28,7 @@ import net.minecraft.network.NetworkManager;
  * Shadow implementation of the {@link ConnectingScreen} in minecraft with a public getter to get
  * the network manager.
  */
-@Shadow(value = "net.minecraft.client.gui.screen.ConnectingScreen", version = "1.16.5")
+@Shadow("net.minecraft.client.gui.screen.ConnectingScreen")
 public interface ConnectingScreenShadow {
 
   /**

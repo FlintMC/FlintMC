@@ -30,7 +30,7 @@ import net.minecraft.world.border.BorderStatus;
  * 1.16.5 implementation of {@link WorldBorder}.
  */
 @Singleton
-@Implement(value = WorldBorder.class, version = "1.16.5")
+@Implement(WorldBorder.class)
 public class VersionedWorldBorder implements WorldBorder {
 
   /**

@@ -22,7 +22,7 @@ package net.flintmc.render.gui.v1_15_2.windowing;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 
-@Shadow(value = "net.minecraft.client.Minecraft", version = "1.15.2")
+@Shadow("net.minecraft.client.Minecraft")
 public interface MinecraftFpsShadow {
 
   @FieldGetter("debugFPS")

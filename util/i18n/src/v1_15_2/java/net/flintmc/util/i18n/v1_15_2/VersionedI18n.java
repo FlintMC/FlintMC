@@ -31,7 +31,7 @@ import net.minecraft.client.resources.Language;
  * 1.15.2 implementation of the {@link I18n}.
  */
 @Singleton
-@Implement(value = I18n.class, version = "1.15.2")
+@Implement(I18n.class)
 public class VersionedI18n implements I18n {
 
   /**

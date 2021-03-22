@@ -42,7 +42,7 @@ import net.flintmc.render.vbo.VertexIndexObject;
 /**
  * {@inheritDoc}
  */
-@Implement(value = VertexArrayObject.class, version = "1.16.5")
+@Implement(VertexArrayObject.class)
 public class VersionedVertexArrayObject implements VertexArrayObject {
 
   private final VertexFormat format;
@@ -105,7 +105,7 @@ public class VersionedVertexArrayObject implements VertexArrayObject {
       glDrawElements(GL_TRIANGLES, indices);
     } else if (drawMode == VboDrawMode.QUADS) {
       glDrawElements(GL_QUADS, indices);
-    }else if(drawMode == VboDrawMode.POLYGON){
+    } else if (drawMode == VboDrawMode.POLYGON) {
       glDrawElements(GL_POLYGON, indices);
     }
   }
@@ -126,7 +126,7 @@ public class VersionedVertexArrayObject implements VertexArrayObject {
       glDrawElements(GL_TRIANGLES, ebo.getSize(), GL_UNSIGNED_INT, 0);
     } else if (ebo.getDrawMode() == VboDrawMode.QUADS) {
       glDrawElements(GL_QUADS, ebo.getSize(), GL_UNSIGNED_INT, 0);
-    }else if(ebo.getDrawMode() == VboDrawMode.POLYGON){
+    } else if (ebo.getDrawMode() == VboDrawMode.POLYGON) {
       glDrawElements(GL_POLYGON, ebo.getSize(), GL_UNSIGNED_INT, 0);
     }
   }

@@ -31,7 +31,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.fonts.Font;
 
 @Singleton
-@Implement(value = FontRenderer.class, version = "1.15.2")
+@Implement(FontRenderer.class)
 public class VersionedFontRenderer implements FontRenderer {
 
   private final Minecraft minecraft;

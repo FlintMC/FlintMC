@@ -17,28 +17,42 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload;
+package net.flintmc.metaprogramming.identifier;
 
-import java.lang.annotation.*;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 /**
- * Marks an annotation that can be discovered at runtime. Annotations that are annotated with this
- * will be parsed at compile time and written to a {@link DetectableAnnotationProvider} by the
- * autoload module.
+ * Implements an {@link Identifier} to locate {@link DetectableAnnotation}s located at class level.
+ *
+ * @see Identifier
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface DetectableAnnotation {
+public class ClassIdentifier implements Identifier<CtClass> {
+
+  private final String name;
+
+  public ClassIdentifier(String name) {
+    this.name = name;
+  }
 
   /**
-   * Defines the meta data types that can be attached to the target annotation. In order to be
-   * recognized every metadata annotation must be annotated with {@link DetectableAnnotation} too.
+   * @return The class name of this identifier
    */
-  Class<? extends Annotation>[] metaData() default {};
+  public String getName() {
+    return this.name;
+  }
 
   /**
-   * @return if this annotation requires a parent. A parent is defined as an annotation that
-   *     includes this annotation type in its {@link #metaData()}
+   * {@inheritDoc}
    */
-  boolean requiresParent() default false;
+  @Override
+  public CtClass getLocation() {
+    try {
+      return ClassPool.getDefault().get(this.getName());
+    } catch (NotFoundException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 }

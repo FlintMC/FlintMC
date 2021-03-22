@@ -39,7 +39,7 @@ import net.flintmc.mcapi.world.World;
 /**
  * 1.16.5 implementation of the {@link RemoteClientPlayer}.
  */
-@Implement(value = RemoteClientPlayer.class, version = "1.16.5")
+@Implement(RemoteClientPlayer.class)
 public class VersionedRemoteClientPlayer extends VersionedPlayerEntity
     implements RemoteClientPlayer {
 

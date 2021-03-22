@@ -44,7 +44,7 @@ import net.minecraft.client.Minecraft;
  */
 @Singleton
 @ConfigInit(value = MinecraftInitializeEvent.class, eventPhase = Subscribe.Phase.POST)
-@ConfigImplementation(value = MinecraftConfiguration.class, version = "1.16.5")
+@ConfigImplementation(MinecraftConfiguration.class)
 public class VersionedMinecraftConfiguration implements MinecraftConfiguration {
 
   private final Provider<AccessibilityConfiguration> accessibilityConfiguration;

@@ -17,19 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload;
+plugins {
+    id("java-library")
+}
 
-import java.lang.annotation.*;
+group = "net.flintmc"
 
-/**
- * Marks a {@link DetectableAnnotation} that is repeatable. The repeated annotation must be
- * annotated with @{@link Repeatable}. The repeating annotation must be annotated with {@link
- * RepeatingDetectableAnnotation}
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface RepeatingDetectableAnnotation {
+repositories {
+    mavenCentral()
+}
 
-  /** @return The repeating type of this annotation */
-  Class<? extends Annotation> value() default Annotation.class;
+dependencies {
+    api("org.javassist", "javassist", "3.27.0-GA")
 }

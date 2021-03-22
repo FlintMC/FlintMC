@@ -30,7 +30,7 @@ import net.flintmc.mcapi.player.PlayerEntity;
 import net.flintmc.mcapi.v1_15_2.entity.VersionedMobEntity;
 import net.flintmc.mcapi.world.World;
 
-@Implement(value = AmbientEntity.class, version = "1.15.2")
+@Implement(AmbientEntity.class)
 public class VersionedAmbientEntity extends VersionedMobEntity implements AmbientEntity {
 
   @AssistedInject

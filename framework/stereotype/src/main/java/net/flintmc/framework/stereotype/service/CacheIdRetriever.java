@@ -17,20 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload.identifier;
-
-import net.flintmc.processing.autoload.DetectableAnnotation;
+package net.flintmc.framework.stereotype.service;
 
 /**
- * Represents the location where a {@link DetectableAnnotation} is placed at.
- *
- * @param <T> Object representation type of this {@link Identifier}
- * @see MethodIdentifier
- * @see ClassIdentifier
+ * A class that is discovered and instantiated by a service handler that also
+ * implements this interface should be called by its service handler to retrieve
+ * the cache ID of its annotation meta.
  */
-public interface Identifier<T> {
+public interface CacheIdRetriever {
 
-  /** @return The object representation ot this {@link Identifier} */
-  T getLocation();
+  /**
+   * Sets the cache ID for this instance.
+   *
+   * @param id the cache ID of the annotation meta of this class
+   */
+  void setCacheId(long id);
 
 }

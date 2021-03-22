@@ -33,7 +33,7 @@ import net.flintmc.mcapi.player.network.NetworkPlayerInfoRegistry;
  * Default implementation of {@link NetworkPlayerInfoRegistry}
  */
 @Singleton
-@Implement(value = NetworkPlayerInfoRegistry.class)
+@Implement(NetworkPlayerInfoRegistry.class)
 public class DefaultNetworkPlayerInfoRegistry implements NetworkPlayerInfoRegistry {
 
   private final Map<UUID, NetworkPlayerInfo> networkPlayerInfoMap;

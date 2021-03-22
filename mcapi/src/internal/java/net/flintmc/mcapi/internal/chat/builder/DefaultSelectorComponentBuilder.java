@@ -28,7 +28,7 @@ import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 
-@Implement(value = SelectorComponentBuilder.class)
+@Implement(SelectorComponentBuilder.class)
 public class DefaultSelectorComponentBuilder
     extends DefaultComponentBuilder<SelectorComponentBuilder, SelectorComponent>
     implements SelectorComponentBuilder {

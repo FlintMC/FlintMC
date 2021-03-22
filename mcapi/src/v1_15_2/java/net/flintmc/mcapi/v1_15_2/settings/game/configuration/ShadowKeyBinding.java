@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.util.InputMappings;
 
-@Shadow(value = "net.minecraft.client.settings.KeyBinding", version = "1.15.2")
+@Shadow("net.minecraft.client.settings.KeyBinding")
 public interface ShadowKeyBinding {
 
   @FieldGetter("keyCode")

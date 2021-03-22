@@ -19,7 +19,7 @@
 
 package net.flintmc.framework.stereotype.service;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 import java.lang.annotation.*;
 
@@ -33,10 +33,14 @@ import java.lang.annotation.*;
 @DetectableAnnotation
 public @interface Service {
 
-  /** @return the target Identifier type */
+  /**
+   * @return the target Identifier type
+   */
   Class<? extends Annotation>[] value();
 
-  /** @return the loading priority. lower priorities are loaded first */
+  /**
+   * @return the loading priority. lower priorities are loaded first
+   */
   int priority() default 0;
 
   State state() default State.POST_INIT;

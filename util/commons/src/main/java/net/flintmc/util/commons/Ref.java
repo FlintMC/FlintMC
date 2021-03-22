@@ -17,37 +17,48 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.processing.autoload.identifier;
+package net.flintmc.util.commons;
 
-import javassist.ClassPool;
-import javassist.CtConstructor;
-import javassist.NotFoundException;
+import java.util.function.Supplier;
 
-public class ConstructorIdentifier implements Identifier<CtConstructor> {
+public class Ref<T> {
 
-  private final String owner;
-  private final String[] parameters;
+  private T obj;
 
-  public ConstructorIdentifier(String owner, String... parameters) {
-    this.owner = owner;
-    this.parameters = parameters;
+  public Ref(T obj) {
+    this.obj = obj;
   }
 
-  public String getOwner() {
-    return this.owner;
+  public Ref() {
+
   }
 
-  public String[] getParameters() {
-    return this.parameters;
+  public T get() {
+    return this.obj;
   }
 
-  @Override
-  public CtConstructor getLocation() {
-    try {
-      return ClassPool.getDefault().get(this.getOwner())
-          .getDeclaredConstructor(ClassPool.getDefault().get(this.getParameters()));
-    } catch (NotFoundException exception) {
-      throw new IllegalStateException(exception);
+  public boolean isNull() {
+    return obj == null;
+  }
+
+  public void set(T obj) {
+    this.obj = obj;
+  }
+
+  public T getOr(T obj) {
+    if (isNull()) {
+      return obj;
+    } else {
+      return this.obj;
     }
   }
+
+  public T getOrElse(Supplier<T> supplier) {
+    if (this.isNull()) {
+      return supplier.get();
+    } else {
+      return this.obj;
+    }
+  }
+
 }

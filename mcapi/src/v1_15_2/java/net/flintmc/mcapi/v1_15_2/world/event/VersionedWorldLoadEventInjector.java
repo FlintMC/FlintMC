@@ -40,7 +40,7 @@ public class VersionedWorldLoadEventInjector {
     this.mappingProvider = mappingProvider;
   }
 
-  @ClassTransform(value = "net.minecraft.world.server.ChunkManager", version = "1.15.2")
+  @ClassTransform(value = "net.minecraft.world.server.ChunkManager")
   public void transformChunkManager(ClassTransformContext context) throws CannotCompileException {
     CtClass transforming = context.getCtClass();
     CtConstructor constructor = transforming.getDeclaredConstructors()[0];

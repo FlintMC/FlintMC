@@ -17,12 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.world.stats.event;
+package net.flintmc.metaprogramming;
 
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.world.stats.event.PlayerStatsUpdateEvent;
+import java.lang.annotation.*;
 
-@Implement(PlayerStatsUpdateEvent.class)
-public class DefaultPlayerStatsUpdateEvent implements PlayerStatsUpdateEvent {
+/**
+ * Marks a {@link DetectableAnnotation} that is repeatable. The repeated annotation must be
+ * annotated with @{@link Repeatable}. The repeating annotation must be annotated with {@link
+ * RepeatingDetectableAnnotation}
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface RepeatingDetectableAnnotation {
 
+  /** @return The repeating type of this annotation */
+  Class<? extends Annotation> value() default Annotation.class;
 }

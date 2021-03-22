@@ -19,13 +19,14 @@
 
 package net.flintmc.mcapi.v1_15_2.entity.render;
 
-import java.util.List;
 import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 
-@Shadow(value = "net.minecraft.client.renderer.BufferBuilder",version = "1.15.2")
+import java.util.List;
+
+@Shadow("net.minecraft.client.renderer.BufferBuilder")
 public interface BufferBuilderAccessor {
 
   @FieldGetter("drawStates")
@@ -33,5 +34,4 @@ public interface BufferBuilderAccessor {
 
   @FieldGetter("vertexFormat")
   VertexFormat getVertexFormat();
-
 }

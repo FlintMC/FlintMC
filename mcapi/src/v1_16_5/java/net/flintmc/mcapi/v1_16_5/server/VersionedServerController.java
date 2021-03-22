@@ -35,7 +35,7 @@ import net.minecraft.realms.RealmsBridgeScreen;
 import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
-@Implement(value = ServerController.class, version = "1.16.5")
+@Implement(ServerController.class)
 public class VersionedServerController implements ServerController {
 
   private final ConnectedServer connectedServer;

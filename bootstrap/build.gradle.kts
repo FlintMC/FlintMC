@@ -17,8 +17,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import net.flintmc.gradle.extension.FlintGradleExtension.Type
-
 plugins {
     id("java-library")
 }
@@ -36,22 +34,24 @@ dependencies {
 
     project.rootProject.subprojects.forEach { subProject ->
         if (!arrayOf(
-                ":",
-                ":framework",
-                ":render",
-                ":transform",
-                ":util",
-                ":minecraft",
-                ":minecraft:minecraft-minecraft-1-15-2",
-                ":minecraft:minecraft-minecraft-1-16-5",
-                ":bootstrap"
-            ).contains(subProject.path)
+                        ":",
+                        ":annotation-processing",
+                        ":annotation-processing:annotation-processing-autoload",
+                        ":framework",
+                        ":render",
+                        ":transform",
+                        ":util",
+                        ":minecraft",
+                        ":minecraft:minecraft-minecraft-1-15-2",
+                        ":minecraft:minecraft-minecraft-1-16-5",
+                        ":bootstrap"
+                ).contains(subProject.path)
         ) {
             manifest(subProject)
             subProject.configurations.getByName("runtimeClasspath")
-                .allDependencies.forEach {
-                    manifest(it)
-                }
+                    .allDependencies.forEach {
+                        manifest(it)
+                    }
         }
     }
 
