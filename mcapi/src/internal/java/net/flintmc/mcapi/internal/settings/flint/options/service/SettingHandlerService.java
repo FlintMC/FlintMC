@@ -44,7 +44,7 @@ import net.flintmc.processing.autoload.identifier.Identifier;
 @Implement(SettingHandler.class)
 @Service(
     value = RegisterSettingHandler.class,
-    priority = -1 /* load before the SettingsDiscoverer */)
+    priority = -10000 /* load before the SettingsDiscoverer */)
 public class SettingHandlerService
     implements SettingHandler<Annotation>, ServiceHandler<RegisterSettingHandler> {
 
