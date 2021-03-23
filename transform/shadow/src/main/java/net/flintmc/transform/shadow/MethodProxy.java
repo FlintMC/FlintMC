@@ -40,4 +40,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @DetectableAnnotation(requiresParent = true)
 public @interface MethodProxy {
+
+  /**
+   * @return the method name to proxy
+   */
+  String value() default "";
+
 }
