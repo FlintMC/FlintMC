@@ -19,17 +19,14 @@
 
 package net.flintmc.mcapi.settings.game.configuration;
 
-import java.util.List;
-import java.util.Map;
-import net.flintmc.framework.config.annotation.ConfigExclude;
 import net.flintmc.framework.config.annotation.implemented.ImplementedConfig;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.annotation.Component;
 import net.flintmc.mcapi.settings.flint.annotation.TranslateKey;
 import net.flintmc.mcapi.settings.flint.annotation.ui.DefineCategory;
-import net.flintmc.mcapi.settings.game.KeyBinding;
 import net.flintmc.mcapi.settings.game.keybind.KeyBindSetting;
 import net.flintmc.render.gui.input.Key;
+import java.util.Map;
 
 /**
  * Represents the key binding configuration.
@@ -74,38 +71,4 @@ public interface KeyBindingConfiguration {
    * @param keys The non-null map containing all key descriptions with their bound keys
    */
   void setAllKey(Map<String, Key> keys);
-
-  /**
-   * Retrieves whether there are duplicates Minecrafts settings for this keyCode.
-   *
-   * @return {@code true} if other KeyBindings in Minecraft also use this keyCode, {@code false}
-   * otherwise
-   */
-  @ConfigExclude
-  boolean hasDuplicates(Key key);
-
-  /**
-   * Retrieves a key binding by the given {@link Keybind} constant.
-   *
-   * @param keybind The non-null constant of the {@link Keybind}.
-   * @return A key binding by the given constant or the default `jump` key binding.
-   */
-  @ConfigExclude
-  KeyBinding getKeyBinding(Keybind keybind);
-
-  /**
-   * Retrieves a collection with all key bindings for the hotbar.
-   *
-   * @return A collection with all key binding for the hotbar.
-   */
-  @ConfigExclude
-  List<KeyBinding> getKeyBindsHotbar();
-
-  /**
-   * Retrieves a collection with all registered key bindings.
-   *
-   * @return A collection with all registered key bindings.
-   */
-  @ConfigExclude
-  List<KeyBinding> getKeyBindings();
 }
