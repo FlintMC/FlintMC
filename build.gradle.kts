@@ -79,8 +79,6 @@ flint {
     projectFilter {
         !arrayOf(
                 ":",
-                ":annotation-processing",
-                ":annotation-processing:annotation-processing-autoload",
                 ":framework",
                 ":render",
                 ":transform",
