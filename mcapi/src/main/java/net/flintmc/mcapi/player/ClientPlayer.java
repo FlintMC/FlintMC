@@ -23,6 +23,7 @@ import net.flintmc.mcapi.entity.EntityNotLoadedException;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
 import net.flintmc.mcapi.player.overlay.TabOverlay;
+import net.flintmc.mcapi.world.raytrace.RayTraceResult;
 
 public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClientPlayer {
 
@@ -271,6 +272,8 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    *                                  client
    */
   String getBiome();
+
+  RayTraceResult getTargettedObject();
 
   /**
    * Retrieves whether this player is a spectator.
