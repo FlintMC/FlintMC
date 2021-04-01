@@ -37,6 +37,9 @@ public class VersionedScreenNameMapper implements ScreenNameMapper {
   private static final Map<String, ScreenName> KNOWN_NAMES = new HashMap<>();
 
   static {
+    KNOWN_NAMES.put("net.minecraft.client.gui.advancements.AdvancementsScreen",
+        ScreenName.minecraft(ScreenName.ADVANCEMENTS));
+
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.MainMenuScreen",
         ScreenName.minecraft(ScreenName.MAIN_MENU));
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.IngameMenuScreen",
