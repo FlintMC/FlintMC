@@ -39,3 +39,17 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew test
+
+      - name: Build Javadocs
+        run: ./gradlew javadoc
+
+      - name: Publish Javadocs
+        working-directory: docs/generated
+        run: |
+          echo "Zipping javadocs..."
+          zip -r docs.zip *
+          echo "Uploading..."
+          curl -X POST -F "secret=${FLINT_JAVADOCS_PUBLISH_TOKEN}" -F "zip=@docs.zip" "${FLINT_JAVADOCS_URL}"
+        env:
+          FLINT_JAVADOCS_URL: ${{ secrets.FLINT_JAVADOCS_URL }}
+          FLINT_JAVADOCS_PUBLISH_TOKEN: ${{ secrets.FLINT_JAVADOCS_PUBLISH_TOKEN }}
