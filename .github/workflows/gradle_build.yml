@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew checkLicenses
 
       - name: Build with Gradle
-        run: ./gradlew build --full-stacktrace
+        run: ./gradlew build -x javadoc --full-stacktrace
 
       - name: Run unit tests
         run: ./gradlew test
