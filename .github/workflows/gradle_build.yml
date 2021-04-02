@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew checkLicenses
 
       - name: Build with Gradle
-        run: ./gradlew build -x javadoc --full-stacktrace
+        run: ./gradlew build -x javadoc -x test --full-stacktrace
 
       - name: Run unit tests
         run: ./gradlew test
@@ -46,6 +46,7 @@ jobs:
       - name: Publish Javadocs
         working-directory: docs/generated
         run: |
+          set -e
           echo "Zipping javadocs..."
           zip -r docs.zip *
           echo "Uploading..."
