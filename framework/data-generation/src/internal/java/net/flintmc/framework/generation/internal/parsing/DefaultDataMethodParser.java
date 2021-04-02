@@ -79,9 +79,10 @@ public class DefaultDataMethodParser implements DataMethodParser {
 
     Collection<DataFieldMethod> methods = new HashSet<>();
 
-    for (CtMethod interfaceMethod : dataInterface.getDeclaredMethods()) {
-      if (this.isDefault(interfaceMethod)) {
-        // already implemented methods are ignored
+    for (CtMethod interfaceMethod : dataInterface.getMethods()) {
+      if (this.isDefault(interfaceMethod)
+          || interfaceMethod.getDeclaringClass().getName().equals("java.lang.Object")) {
+        // already implemented methods and methods from Object are ignored
         continue;
       }
 

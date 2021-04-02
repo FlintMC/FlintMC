@@ -17,19 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_16_5.settings.game;
+package net.flintmc.mcapi.v1_15_2.settings.game.keybind;
 
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.settings.game.KeyBinding;
-import net.flintmc.mcapi.v1_16_5.settings.game.configuration.ShadowKeyBinding;
+import net.flintmc.mcapi.settings.game.keybind.KeyBinding;
+import net.flintmc.mcapi.v1_15_2.settings.game.configuration.ShadowKeyBinding;
 import net.flintmc.render.gui.input.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 
 /**
- * 1.16.5 implementation of {@link KeyBinding}.
+ * 1.15.2 implementation of {@link KeyBinding}.
  */
 @Implement(KeyBinding.class)
 public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBinding
@@ -43,28 +43,14 @@ public class VersionedKeyBinding extends net.minecraft.client.settings.KeyBindin
     super(description, keyCode, category);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public int getKeyCode() {
     return ((ShadowKeyBinding) this).getKeyCode().getKeyCode();
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public void bind(Key key) {
     super.bind(InputMappings.getInputByName(key.getConfigurationName()));
     Minecraft.getInstance().gameSettings.saveOptions();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getLocalizedName() {
-    return this.getTranslationKey();
   }
 }

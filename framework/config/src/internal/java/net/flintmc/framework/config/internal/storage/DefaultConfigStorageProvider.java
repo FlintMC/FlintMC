@@ -105,7 +105,9 @@ public class DefaultConfigStorageProvider implements ConfigStorageProvider {
    */
   @Override
   public void write(ParsedConfig config) {
-    this.pendingWrites.put(config.getClass(), config);
+    if (config.isInitialized()) {
+      this.pendingWrites.put(config.getClass(), config);
+    }
   }
 
   /**

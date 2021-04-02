@@ -17,31 +17,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.options.dropdown;
+package net.flintmc.mcapi.settings.flint.options.data;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
+import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 /**
- * The same as {@link CustomSelectSetting}, but things like the {@link DisplayName} aren't got from
- * the {@link Selection}, but from the enum constant.
- *
- * @see ApplicableSetting
- * @see CustomSelectSetting
+ * Information about an {@link ApplicableSetting} of a {@link RegisteredSetting}.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@ApplicableSetting(types = Enum.class, name = "dropdown")
-public @interface EnumSelectSetting {
+public interface SettingData {
 
   /**
-   * Retrieves the type of this menu.
+   * Retrieves the setting which this data belongs to.
    *
-   * @return The type of this menu
+   * @return The non-null setting which this data belongs
    */
-  SelectMenuType value() default SelectMenuType.DROPDOWN;
+  RegisteredSetting getSetting();
+
 }

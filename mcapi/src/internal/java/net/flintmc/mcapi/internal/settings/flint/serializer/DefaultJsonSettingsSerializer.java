@@ -169,7 +169,7 @@ public class DefaultJsonSettingsSerializer implements JsonSettingsSerializer {
       String key,
       Function<Class<? extends Annotation>, Annotation> annotationResolver,
       Object value) {
-    JsonObject object = this.handler.serialize(setting.getAnnotation(), setting, value);
+    JsonObject object = this.handler.serialize(setting, value);
 
     ApplicableSetting applicableSetting =
         setting.getAnnotation().annotationType().getAnnotation(ApplicableSetting.class);

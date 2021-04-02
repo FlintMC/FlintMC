@@ -131,6 +131,9 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
   @Override
   public void deserialize(
       JsonObject object, ParsedConfig config, Predicate<ConfigObjectReference> predicate) {
+    boolean storeContent = config.shouldStoreContent();
+    config.setStoreContent(false);
+
     for (ConfigObjectReference reference : config.getConfigReferences()) {
       if (!predicate.test(reference)) {
         continue;
@@ -175,5 +178,7 @@ public class DefaultJsonConfigSerializer implements JsonConfigSerializer {
         reference.setValue(deserialized);
       }
     }
+
+    config.setStoreContent(storeContent);
   }
 }

@@ -17,37 +17,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.settings.flint.options.text;
+package net.flintmc.mcapi.settings.flint.options.selection.enumeration;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.flintmc.mcapi.chat.annotation.DefaultComponent;
-import net.flintmc.mcapi.chat.component.TextComponent;
-import net.flintmc.mcapi.chat.format.ChatColor;
-import net.flintmc.mcapi.chat.format.ChatFormat;
-import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.serializer.JsonSettingsSerializer;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
+import net.flintmc.mcapi.settings.flint.options.selection.SelectMenuType;
+import net.flintmc.mcapi.settings.flint.options.selection.custom.CustomSelectSetting;
+import net.flintmc.mcapi.settings.flint.options.selection.custom.Selection;
+import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 /**
- * The {@link ApplicableSetting} to define a string input with all pre defined {@link ChatColor
- * colors} and {@link ChatFormat formats}, the stored type has to be a {@link TextComponent}.
- *
- * <p>The resulting json for the {@link JsonSettingsSerializer} will contain:
- *
- * <ul>
- *   <li>'value' with the value from the setting, serialized with the {@link
- *       GsonComponentSerializer}
- * </ul>
+ * The same as {@link CustomSelectSetting}, but things like the {@link DisplayName} aren't got from
+ * the {@link Selection}, but from the enum constant.
+ * <p>
+ * {@link RegisteredSetting#getData()} will be an instance of {@link EnumSelectData}.
  *
  * @see ApplicableSetting
- * @see DefaultComponent
+ * @see CustomSelectSetting
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ApplicableSetting(types = TextComponent.class, name = "component")
-public @interface ComponentSetting {
+@ApplicableSetting(types = Enum.class, name = "dropdown", data = EnumSelectData.class)
+public @interface EnumSelectSetting {
 
+  /**
+   * Retrieves the type of this menu.
+   *
+   * @return The type of this menu
+   */
+  SelectMenuType value() default SelectMenuType.DROPDOWN;
 }

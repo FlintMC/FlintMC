@@ -27,7 +27,7 @@ import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.annotation.ui.CategoryGroup;
-import net.flintmc.mcapi.settings.flint.options.text.StringSetting;
+import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
 
 /**
  * Provider which contains every {@link RegisteredSetting} and {@link RegisteredCategory}.

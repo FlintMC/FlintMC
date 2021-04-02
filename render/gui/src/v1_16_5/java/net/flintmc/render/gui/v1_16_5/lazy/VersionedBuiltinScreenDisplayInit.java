@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.advancements.AdvancementsScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.MultiplayerScreen;
 import net.minecraft.client.gui.screen.OptionsScreen;
@@ -44,6 +46,17 @@ public class VersionedBuiltinScreenDisplayInit {
     screens.put(
         ScreenName.minecraft(ScreenName.MAIN_MENU),
         (args) -> Minecraft.getInstance().displayGuiScreen(new MainMenuScreen()));
+    screens.put(
+        ScreenName.minecraft(ScreenName.ADVANCEMENTS),
+        (args) -> {
+          ClientPlayerEntity player = Minecraft.getInstance().player;
+          if (player == null) {
+            throw new IllegalStateException("Cannot open advancements screen while not ingame");
+          }
+          Minecraft.getInstance().displayGuiScreen(
+              new AdvancementsScreen(player.connection.getAdvancementManager()));
+        }
+    );
     screens.put(
         ScreenName.minecraft(ScreenName.OPTIONS),
         (args) ->

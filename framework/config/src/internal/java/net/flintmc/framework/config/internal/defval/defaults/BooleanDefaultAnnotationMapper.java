@@ -25,6 +25,8 @@ import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapper;
 import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 
+import java.util.function.Supplier;
+
 @Singleton
 @DefaultAnnotationMapper(DefaultBoolean.class)
 public class BooleanDefaultAnnotationMapper
@@ -34,7 +36,8 @@ public class BooleanDefaultAnnotationMapper
    * {@inheritDoc}
    */
   @Override
-  public Object getDefaultValue(ConfigObjectReference reference, DefaultBoolean annotation) {
-    return annotation.value();
+  public Supplier<Object> getDefaultValue(
+      ConfigObjectReference reference, DefaultBoolean annotation) {
+    return annotation::value;
   }
 }

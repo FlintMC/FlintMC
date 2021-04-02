@@ -93,4 +93,8 @@ public interface ParsedConfig {
    * @see Config#writeDefaults()
    */
   boolean shouldWriteDefaults();
+
+  boolean isInitialized();
+
+  void setInitialized();
 }

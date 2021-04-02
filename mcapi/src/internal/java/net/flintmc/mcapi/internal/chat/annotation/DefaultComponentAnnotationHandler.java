@@ -26,6 +26,8 @@ import net.flintmc.framework.config.defval.mapper.DefaultAnnotationMapperHandler
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
 import net.flintmc.mcapi.chat.annotation.DefaultComponent;
+import net.flintmc.mcapi.chat.component.ChatComponent;
+import java.util.function.Supplier;
 
 @Singleton
 @DefaultAnnotationMapper(DefaultComponent.class)
@@ -43,7 +45,8 @@ public class DefaultComponentAnnotationHandler
    * {@inheritDoc}
    */
   @Override
-  public Object getDefaultValue(ConfigObjectReference reference, DefaultComponent annotation) {
-    return this.annotationSerializer.deserialize(annotation.value());
+  public Supplier<Object> getDefaultValue(ConfigObjectReference reference, DefaultComponent annotation) {
+    ChatComponent component = this.annotationSerializer.deserialize(annotation.value());
+    return () -> component;
   }
 }
