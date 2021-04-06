@@ -20,7 +20,7 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Cache multiple paths
+      - name: Cache flint-gradle
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches/flint-gradle
@@ -41,29 +41,4 @@ jobs:
         run: ./gradlew test
 
       - name: Build Javadocs
-        run: ./gradlew :javadoc
-
-      - name: Publish Javadocs
-        working-directory: docs/generated
-        run: |
-          set -e
-          echo "Zipping javadocs..."
-          zip -r docs.zip *
-          echo "Uploading..."
-          upload_resp_and_code=$(curl -X POST -F "secret=${FLINT_JAVADOCS_PUBLISH_TOKEN}" -F "zip=@docs.zip" "${FLINT_JAVADOCS_URL}" -w "%{http_code}")
-
-          upload_resp=$(echo "${upload_resp_and_code}" | head -n -1)
-          status_code=$(echo "${upload_resp_and_code}" | tail -n 1 -c 4)
-
-          if [[ $status_code -eq 200 ]]; then
-            echo "Upload succeeded (${status_code}):"
-            echo "${upload_resp}"
-            exit 0
-          else
-            echo "Upload failed (${status_code}):"
-            echo "${upload_resp}"
-            exit 1
-          fi
-        env:
-          FLINT_JAVADOCS_URL: ${{ secrets.FLINT_JAVADOCS_URL }}
-          FLINT_JAVADOCS_PUBLISH_TOKEN: ${{ secrets.FLINT_JAVADOCS_PUBLISH_TOKEN }}
+        run: ./gradlew javadoc
