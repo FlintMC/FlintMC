@@ -55,7 +55,7 @@ jobs:
           upload_resp=$(echo "${upload_resp_and_code}" | head -n -1)
           status_code=$(echo "${upload_resp_and_code}" | tail -n 1 -c 4)
 
-          if [[ $(( $status_code % 200 )) -eq 2 ]]; then
+          if [[ $status_code -eq 200 ]]; then
             echo "Upload succeeded (${status_code}):"
             echo "${upload_resp}"
             exit 0
