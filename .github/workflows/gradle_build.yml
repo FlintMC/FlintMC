@@ -50,7 +50,20 @@ jobs:
           echo "Zipping javadocs..."
           zip -r docs.zip *
           echo "Uploading..."
-          curl -X POST -F "secret=${FLINT_JAVADOCS_PUBLISH_TOKEN}" -F "zip=@docs.zip" "${FLINT_JAVADOCS_URL}"
+          upload_resp_and_code=$(curl -X POST -F "secret=${FLINT_JAVADOCS_PUBLISH_TOKEN}" -F "zip=@docs.zip" "${FLINT_JAVADOCS_URL}" -w "%{http_code}")
+
+          upload_resp=$(echo "${upload_resp_and_code}" | head -n -1)
+          status_code=$(echo "${upload_resp_and_code}" | tail -n 1)
+
+          if [[ $(( $status_code % 200 )) -eq 2 ]]; then
+            echo "Upload succeeded (${status_code}):"
+            echo "${upload_resp}"
+            exit 0
+          else
+            echo "Upload failed (${status_code}):"
+            echo "${upload_resp}"
+            exit 1
+          fi
         env:
           FLINT_JAVADOCS_URL: ${{ secrets.FLINT_JAVADOCS_URL }}
           FLINT_JAVADOCS_PUBLISH_TOKEN: ${{ secrets.FLINT_JAVADOCS_PUBLISH_TOKEN }}
