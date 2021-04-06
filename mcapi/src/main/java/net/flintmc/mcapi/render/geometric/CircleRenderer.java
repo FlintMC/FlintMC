@@ -33,7 +33,7 @@ public interface CircleRenderer {
    *                    bottom-right from this position
    * @param radius      The radius of the circle to be drawn
    * @param rgba        The RGBA value to draw the border in
-   * @param borderWidth The width of the border, should be > 0
+   * @param borderWidth The width of the border, should be &gt; 0
    */
   void drawCircleBorder(float x, float y, float radius, int rgba, float borderWidth);
 }
