@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew test
 
       - name: Build Javadocs
-        run: ./gradlew javadoc
+        run: ./gradlew :javadoc
 
       - name: Publish Javadocs
         working-directory: docs/generated
