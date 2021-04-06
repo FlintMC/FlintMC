@@ -273,7 +273,14 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    */
   String getBiome();
 
-  RayTraceResult getTargettedObject();
+  /**
+   * Retrieves the entity/block that is currently targeted by the player. For the object to be
+   * detected as it is targeted by the player, the player has to look at it and it needs to be
+   * within a specific range.
+   *
+   * @return The non-null object that is targeted by the player
+   */
+  RayTraceResult getTargetedObject();
 
   /**
    * Retrieves whether this player is a spectator.

@@ -491,7 +491,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
    * {@inheritDoc}
    */
   @Override
-  public RayTraceResult getTargettedObject() {
+  public RayTraceResult getTargetedObject() {
     net.minecraft.util.math.RayTraceResult result = Minecraft.getInstance().objectMouseOver;
     return this.rayTraceResultMapper.fromMinecraft(result);
   }
