@@ -24,7 +24,7 @@ import net.flintmc.render.gui.event.CursorPosChangedEvent;
 /**
  * Service interface for updating the mouse position.
  *
- * @implNote The default implementation also uses an implementation of this class to install hooks
+ * The default implementation also uses an implementation of this class to install hooks
  * into minecraft
  */
 public interface InputInterceptor {

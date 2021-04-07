@@ -66,9 +66,9 @@ public interface ImagePartRenderBuilder extends ImageFullRenderBuilder {
    * <p><b>Important</b>: The texture to be drawn needs to be bound first with {@link
    * ImageRenderer#bindTexture(ResourceLocation)}
    *
-   * @throws IllegalArgumentException If no fullImageHeight (or something <= 0), no position (or
-   *                                  something < 0), no source size (or something <= 0) and/or
-   *                                  color components (r, g, b, a) not >= 0 and <= 255
+   * @throws IllegalArgumentException If no fullImageHeight (or something &lt;= 0), no position (or
+   *                                  something &lt; 0), no source size (or something &lt;= 0) and/or
+   *                                  color components (r, g, b, a) not &gt;= 0 and &lt;= 255
    * @see ImageRenderer#drawPartImage(float, float, float, float, int, Object, float, float, float,
    * float, float, float, int, int, int, int)
    */

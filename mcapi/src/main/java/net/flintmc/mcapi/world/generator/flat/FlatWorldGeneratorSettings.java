@@ -151,7 +151,7 @@ public interface FlatWorldGeneratorSettings {
    * <p>
    * Equivalent to {@code getLayers().length}
    *
-   * @return The number of layers which is always >= 0
+   * @return The number of layers which is always &gt;= 0
    * @see #getLayers()
    */
   int layerCount();
@@ -272,7 +272,7 @@ public interface FlatWorldGeneratorSettings {
      *   <li>The BIOME is the biome of the whole map</li>
      *   <li>The STRUCTURES are structures that should be generated in this world</li>
      * </ul>
-     * <p>
+     *
      * <p>
      * In general, first there are all layers separated by a comma. (If set) followed by a
      * semicolon the biome needs to be set. (If set) followed by another semicolon the

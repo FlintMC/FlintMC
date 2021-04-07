@@ -32,7 +32,7 @@ public interface FontRenderer {
    * chars.
    *
    * @param text The non-null text to calculate the width for
-   * @return The length of the text, always >= 0
+   * @return The length of the text, always &gt;= 0
    */
   int getStringWidth(String text);
 
@@ -68,7 +68,7 @@ public interface FontRenderer {
    * @param rgba          The rgba value for the text, -1 means white, this may be overridden by
    *                      color codes in the text like "§a"
    * @param alignment     The non-null alignment of the text on the screen
-   * @param maxLineLength The max length per line (has to be >= 0), if not 0, the text may be split
+   * @param maxLineLength The max length per line (has to be &gt;= 0), if not 0, the text may be split
    *                      into multiple lines, but Minecraft will try to split it at line
    *                      breaks/spaces if possible.
    * @param shadow        Whether a shadow should be drawn or not, if {@code maxLineLength} is not
@@ -100,7 +100,7 @@ public interface FontRenderer {
    * @param rgba          The rgba value for the text, -1 means white, this may be overridden by
    *                      color codes in the text like "§a"
    * @param alignment     The non-null alignment of the text on the screen
-   * @param maxLineLength The max length per line (has to be >= 0), if not 0, the text may be split
+   * @param maxLineLength The max length per line (has to be &gt;= 0), if not 0, the text may be split
    *                      into multiple lines, but Minecraft will try to split it at line
    *                      breaks/spaces if possible.
    * @param shadow        Whether a shadow should be drawn or not, if {@code maxLineLength} is not

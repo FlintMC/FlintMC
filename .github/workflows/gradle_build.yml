@@ -20,7 +20,7 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Cache multiple paths
+      - name: Cache flint-gradle
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches/flint-gradle
@@ -34,8 +34,11 @@ jobs:
       - name: Check for license headers
         run: ./gradlew checkLicenses
 
+      - name: Build with Gradle
+        run: ./gradlew build -x javadoc -x test --full-stacktrace
+
       - name: Run unit tests
         run: ./gradlew test
 
-      - name: Build with Gradle
-        run: ./gradlew build --full-stacktrace
+      - name: Build Javadocs
+        run: ./gradlew javadoc

@@ -27,8 +27,8 @@ import java.util.Collection;
 import java.util.Map;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
-import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.flint.annotation.ui.CategoryGroup;
+import net.flintmc.mcapi.settings.flint.annotation.ui.DisplayName;
 import net.flintmc.mcapi.settings.flint.annotation.ui.SubCategory;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.options.text.string.StringSetting;
@@ -80,8 +80,8 @@ public interface JsonSettingsSerializer {
    *
    * <p>
    *
-   * <p>But first, the data from {@link SettingHandler#serialize(Annotation, RegisteredSetting,
-   * Object)} will be used, every entry above overrides the entries from the {@link SettingHandler}.
+   * <p>But first, the data from {@link SettingHandler#serialize(RegisteredSetting, Object)}
+   * will be used, every entry above overrides the entries from the {@link SettingHandler}.
    * The contents from this handler depend on its implementation, see the specific {@link
    * ApplicableSetting} annotation (e.g. {@link StringSetting}) for more information about its
    * contents.

@@ -118,7 +118,7 @@ public interface Property<T_PropertyValue, T_PropertyMeta> {
      *
      * @see #withValue()
      * @param clazz type of the requested property value
-     * @param <T_NewPropertyValue>> type of the requested property value
+     * @param <T_NewPropertyValue> type of the requested property value
      * @return this
      * @throws IllegalStateException if the value validator or value default was already set.
      */

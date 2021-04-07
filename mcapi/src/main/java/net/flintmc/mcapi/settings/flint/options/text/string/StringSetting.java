@@ -64,7 +64,7 @@ public @interface StringSetting {
   /**
    * Retrieves the max number of characters in the input.
    *
-   * @return The max number of characters in the input, has to be > 0
+   * @return The max number of characters in the input, has to be &gt; 0
    */
   int maxLength() default Integer.MAX_VALUE;
 

@@ -77,9 +77,9 @@ import java.util.Map;
  *   <li>The second one is also a getter and setter, but it works like a {@link Map}:
  *       <pre>
  *
- *   Map&lt;MyEnum, Integer> getAllX();       // getter to get every value for X
+ *   Map&lt;MyEnum, Integer&gt; getAllX();       // getter to get every value for X
  *
- *   void setAllX(Map&lt;MyEnum, Integer> x); // setter to set every value for X
+ *   void setAllX(Map&lt;MyEnum, Integer&gt; x); // setter to set every value for X
  *
  *   int getX(MyEnum key);                    // getter to get one specific value for X
  *

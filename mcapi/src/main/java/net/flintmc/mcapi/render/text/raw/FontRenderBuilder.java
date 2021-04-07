@@ -122,7 +122,7 @@ public interface FontRenderBuilder {
    * Minecraft will automatically split the text at the best position (if available Line
    * breaks/Spaces).
    *
-   * @param maxLineLength The new max line length, 0 to disable, otherwise > 0
+   * @param maxLineLength The new max line length, 0 to disable, otherwise &gt; 0
    * @return this builder for chaining
    */
   FontRenderBuilder useMultipleLines(int maxLineLength);
@@ -158,7 +158,7 @@ public interface FontRenderBuilder {
    * re-used for the next rendering.
    *
    * @throws NullPointerException     If no text/null or null as the alignment has been set
-   * @throws IllegalArgumentException If a maxLineLength < 0 and/or an empty text has been set
+   * @throws IllegalArgumentException If a maxLineLength &lt; 0 and/or an empty text has been set
    * @see FontRenderer#drawString(float, float, String, int, StringAlignment, int, boolean, float,
    * float)
    */

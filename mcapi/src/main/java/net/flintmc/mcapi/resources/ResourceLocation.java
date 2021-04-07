@@ -33,6 +33,7 @@ public interface ResourceLocation {
    * Retrieves a the underlying vanilla object. This should only be used in versioned code since
    * this function is unsafe and may cause unexpected {@link ClassCastException}s.
    *
+   * @param <T> The type to cast to
    * @return The vanilla object
    */
   <T> T getHandle();

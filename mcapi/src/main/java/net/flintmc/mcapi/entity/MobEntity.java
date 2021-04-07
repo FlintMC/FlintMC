@@ -332,7 +332,7 @@ public interface MobEntity extends LivingEntity {
   /**
    * Whether the mob entity is leashed.
    *
-   * @return {@link true} if the mob entity is leashed, otherwise {@code false}.
+   * @return {@code true} if the mob entity is leashed, otherwise {@code false}.
    * @throws EntityNotLoadedException If this method is being called when no world is loaded in the
    *                                  client
    */

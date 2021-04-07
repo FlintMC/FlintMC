@@ -46,8 +46,8 @@ public interface Processor {
    * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} after
    * every round to determine whether the processor should generate source files.
    *
-   * @return {@code true} if {@link #flush(Builder)} can be called, {@code false} otherwise
-   * @see #flush(Builder)
+   * @return {@code true} if {@link #flush} can be called, {@code false} otherwise
+   * @see #flush
    */
   boolean shouldFlush();
 

@@ -31,7 +31,6 @@ repositories {
 }
 
 subprojects {
-
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
         plugins.apply("net.minecrell.licenser")
@@ -64,13 +63,22 @@ subprojects {
                 }
             }
         }
+
+        java {
+            withJavadocJar()
+            withSourcesJar()
+        }
     }
 }
 
-allprojects {
-    tasks.withType<JavaCompile> {
-        options.isFork = true
-    }
+tasks.javadoc {
+    val sourceSets = subprojects
+            .filter { it.pluginManager.hasPlugin("java") }
+            .map { it.sourceSets.getByName("main") }
+
+    setSource(sourceSets.map { it.allJava })
+    classpath = files(sourceSets.flatMap { it.compileClasspath })
+    setDestinationDir(file("docs/generated"))
 }
 
 flint {
