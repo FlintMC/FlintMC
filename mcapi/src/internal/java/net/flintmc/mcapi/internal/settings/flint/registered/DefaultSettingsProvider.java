@@ -259,7 +259,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
   public Collection<RegisteredSetting> getSettingsByCategory(String categoryName) {
     Set<RegisteredSetting> settings = new HashSet<>();
     for (RegisteredSetting setting : this.settings) {
-      if (setting.getCategoryName().equals(categoryName)) {
+      if (setting.getCategoryName() != null && setting.getCategoryName().equals(categoryName)) {
         settings.add(setting);
       }
     }
