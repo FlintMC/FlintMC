@@ -222,6 +222,9 @@ public class DefaultConfigGenerator implements ConfigGenerator {
    */
   @Override
   public void initConfig(ParsedConfig config) {
+    boolean storeContent = config.shouldStoreContent();
+    config.setStoreContent(false);
+
     for (ConfigObjectReference reference : config.getConfigReferences()) {
       Object defaultValue = reference.getDefaultValue();
       if (defaultValue != null) {
@@ -230,5 +233,8 @@ public class DefaultConfigGenerator implements ConfigGenerator {
     }
 
     this.storageProvider.read(config);
+
+    config.setStoreContent(storeContent);
+    config.setInitialized();
   }
 }

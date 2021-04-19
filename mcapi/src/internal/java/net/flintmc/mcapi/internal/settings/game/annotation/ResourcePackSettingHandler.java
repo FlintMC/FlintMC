@@ -23,16 +23,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.mcapi.resources.pack.ResourcePack;
 import net.flintmc.mcapi.resources.pack.ResourcePackProvider;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 import net.flintmc.mcapi.settings.game.annotation.ResourcePackSetting;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Singleton
 @RegisterSettingHandler(ResourcePackSetting.class)
@@ -41,13 +40,15 @@ public class ResourcePackSettingHandler implements SettingHandler<ResourcePackSe
   private final ResourcePackProvider provider;
 
   @Inject
-  public ResourcePackSettingHandler(ResourcePackProvider provider) {
+  private ResourcePackSettingHandler(ResourcePackProvider provider) {
     this.provider = provider;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public JsonObject serialize(
-      ResourcePackSetting annotation, RegisteredSetting setting, Object currentValue) {
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
     JsonObject object = new JsonObject();
 
     Collection<String> enabledNames = (Collection<String>) currentValue;
@@ -78,9 +79,11 @@ public class ResourcePackSettingHandler implements SettingHandler<ResourcePackSe
     return array;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, ResourcePackSetting annotation) {
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
     if (!(input instanceof Collection)) {
       return false;
     }

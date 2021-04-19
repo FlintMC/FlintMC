@@ -29,7 +29,7 @@ import net.flintmc.mcapi.tileentity.type.TileEntityTypeRegister;
 import net.flintmc.mcapi.world.World;
 import net.minecraft.util.text.ITextComponent;
 
-@Implement(value = SignTileEntity.class, version = "1.16.5")
+@Implement(SignTileEntity.class)
 public class VersionedSignTileEntity extends VersionedTileEntity implements SignTileEntity {
 
   private final net.minecraft.tileentity.SignTileEntity signTileEntity;

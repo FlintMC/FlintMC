@@ -24,7 +24,7 @@ import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.world.biome.Biome;
 import java.util.function.Supplier;
 
-@Shadow(value = "net.minecraft.world.biome.provider.SingleBiomeProvider", version = "1.16.5")
+@Shadow("net.minecraft.world.biome.provider.SingleBiomeProvider")
 public interface SingleBiomeProviderShadow {
 
   @FieldSetter("biome")

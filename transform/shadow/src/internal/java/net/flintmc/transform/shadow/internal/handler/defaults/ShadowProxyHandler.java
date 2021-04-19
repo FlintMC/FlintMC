@@ -26,7 +26,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 import net.flintmc.transform.shadow.MethodProxy;
 import net.flintmc.transform.shadow.internal.ShadowHelper;
@@ -54,6 +54,7 @@ public class ShadowProxyHandler implements ShadowHandler<MethodProxy> {
       CtClass shadowInterface, CtClass implementation, AnnotationMeta<MethodProxy> meta)
       throws ClassTransformException {
     try {
+      MethodProxy annotation = meta.getAnnotation();
       CtMethod proxyMethod = this.helper.getLocation(meta.getIdentifier());
 
       CtClass[] parameters = proxyMethod.getParameterTypes();
@@ -65,7 +66,9 @@ public class ShadowProxyHandler implements ShadowHandler<MethodProxy> {
       CtMethod target;
       ClassMapping classMapping = this.mappingProvider.get(implementation.getName());
       MethodMapping methodMapping =
-          classMapping != null ? classMapping.getMethod(proxyMethod.getName(), parameters) : null;
+          classMapping != null ? classMapping
+              .getMethod(annotation.value().isEmpty() ? proxyMethod.getName() : annotation.value(),
+                  parameters) : null;
 
       if (methodMapping != null) {
         target = implementation.getDeclaredMethod(methodMapping.getName(), classes);
@@ -79,7 +82,8 @@ public class ShadowProxyHandler implements ShadowHandler<MethodProxy> {
           implementation.addMethod(CtMethod.make(src, implementation));
         }
       } else {
-        target = implementation.getDeclaredMethod(proxyMethod.getName(), classes);
+        target = implementation.getDeclaredMethod(
+            annotation.value().isEmpty() ? proxyMethod.getName() : annotation.value(), classes);
       }
 
       target.setModifiers(Modifier.setPublic(target.getModifiers()));

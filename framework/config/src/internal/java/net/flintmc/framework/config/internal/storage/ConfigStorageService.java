@@ -29,11 +29,11 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.Identifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.Identifier;
 
 @Singleton
-@Service(value = StoragePriority.class, priority = -1)
+@Service(value = StoragePriority.class, priority = -1000)
 public class ConfigStorageService implements ServiceHandler<StoragePriority> {
 
   private final ConfigStorageProvider storageProvider;

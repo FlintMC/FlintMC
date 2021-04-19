@@ -25,32 +25,36 @@ import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import java.lang.annotation.Repeatable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.AnnotationValueVisitor;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 import net.flintmc.processing.Processor;
 import net.flintmc.processing.ProcessorState;
 import net.flintmc.util.commons.Pair;
 import net.flintmc.util.commons.annotation.AnnotationMirrorUtil;
+import javax.lang.model.element.*;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import java.lang.annotation.Repeatable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
 public class DetectableAnnotationProcessor implements Processor {
+
+  /**
+   * This option is passed to the processor by the gradle plugin, SO IF THIS IS EVER CHANGED, KEEP
+   * IT IN SYNC WITH THE PLUGIN!
+   *
+   * <p>Contains the current minecraft version the processor is processing sources for, if
+   * available
+   */
+  private static final String MINECRAFT_VERSION_OPTION = "net.flintmc.minecraft.version";
+
+  private static final String METAPROGRAMMING_PACKAGE = "net.flintmc.metaprogramming";
+  private static final String ANNOTATION_META_CLASS = "AnnotationMeta";
+  private static final String DETECTABLE_ANNOTATION_PROVIDER_CLASS = "DetectableAnnotationProvider";
+  private static final String DETECTABLE_ANNOTATION_CLASS = "DetectableAnnotation";
+  private static final String REPEATING_DETECTABLE_ANNOTATION_CLASS = "RepeatingDetectableAnnotation";
+  private static final String PACKAGE_META_CLASS = "PackageMeta";
 
   /**
    * Template to instantiate an annotation.
@@ -80,27 +84,41 @@ public class DetectableAnnotationProcessor implements Processor {
           + "   javax.lang.model.element.ElementKind.${ELEMENT_KIND}, \n"
           + "   ${IDENTIFIER}, \n"
           + "   ${ANNOTATION}, \n"
+          + "   ${VERSION}, \n"
+          + "   ${PACKAGE_META}, \n"
+          + "   ${CACHE_ID}L,\n"
           + "new AnnotationMeta[]{${META_DATA}})";
 
   /**
    * Template to instantiate a class identifier
    */
   private static final String ANNOTATION_META_CLASS_IDENTIFIER_TEMPLATE =
-      "new net.flintmc.processing.autoload.identifier.ClassIdentifier(\"${TYPE_NAME}\")";
+      "new net.flintmc.metaprogramming.identifier.ClassIdentifier(\"${TYPE_NAME}\")";
 
   /**
    * Template to instantiate a method identifier
    */
   private static final String ANNOTATION_META_METHOD_IDENTIFIER_TEMPLATE =
-      "new net.flintmc.processing.autoload.identifier.MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
+      "new net.flintmc.metaprogramming.identifier.MethodIdentifier(\"${OWNER_NAME}\", \"${NAME}\", new String[]{${PARAMETERS}})";
 
   private static final String ANNOTATION_META_FIELD_IDENTIFIER_TEMPLATE =
-      "new net.flintmc.processing.autoload.identifier.FieldIdentifier(\"${OWNER_NAME}\", \"${NAME}\")";
+      "new net.flintmc.metaprogramming.identifier.FieldIdentifier(\"${OWNER_NAME}\", \"${NAME}\")";
 
   private static final String ANNOTATION_META_CONSTRUCTOR_IDENTIFIER_TEMPLATE =
-      "new net.flintmc.processing.autoload.identifier.ConstructorIdentifier(\"${OWNER_NAME}\", new String[]{${PARAMETERS}})";
+      "new net.flintmc.metaprogramming.identifier.ConstructorIdentifier(\"${OWNER_NAME}\", new String[]{${PARAMETERS}})";
+
+  private static final String PACKAGE_META_GETTER_TEMPLATE =
+      metaprogrammingClass(PACKAGE_META_CLASS) + ".of(${GROUP}, ${NAME}, ${VERSION})";
+
+  private static final Random RANDOM = new Random();
 
   private final Collection<String> found;
+
+  private String minecraftVersion;
+
+  private String packageGroup;
+  private String packageName;
+  private String packageVersion;
 
   /**
    * Constructs a new {@link DetectableAnnotationProcessor}, expected to be called by a {@link
@@ -110,13 +128,36 @@ public class DetectableAnnotationProcessor implements Processor {
     this.found = new ArrayList<>();
   }
 
+  @Override
+  public void handleOptions(Map<String, String> options) {
+    if (options.containsKey(MINECRAFT_VERSION_OPTION)) {
+      // Wrap in quotation marks since this is used for code generation
+      minecraftVersion = stringLiteral(options.get(MINECRAFT_VERSION_OPTION));
+    } else {
+      // Literal "null" since this is used for code generation
+      minecraftVersion = "null";
+    }
+
+    packageGroup = stringLiteral(
+        options.getOrDefault(ProcessorState.PACKAGE_GROUP_OPTION, "unknown"));
+    packageName = stringLiteral(
+        options.getOrDefault(ProcessorState.PACKAGE_NAME_OPTION, "unknown"));
+    packageVersion = stringLiteral(
+        options.getOrDefault(ProcessorState.PACKAGE_VERSION_OPTION, "unknown"));
+  }
+
+  @Override
+  public boolean shouldFlush() {
+    return !found.isEmpty();
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
   public MethodSpec.Builder createMethod() {
     ClassName listClass = ClassName.get(List.class);
-    ClassName foundAnnotationClass = ClassName.get(AnnotationMeta.class);
+    ClassName foundAnnotationClass = ClassName.get(METAPROGRAMMING_PACKAGE, ANNOTATION_META_CLASS);
 
     // Create a method with the signature
     return MethodSpec.methodBuilder("register")
@@ -131,7 +172,7 @@ public class DetectableAnnotationProcessor implements Processor {
    */
   @Override
   public ClassName getGeneratedClassSuperClass() {
-    return ClassName.get(DetectableAnnotationProvider.class);
+    return ClassName.get(METAPROGRAMMING_PACKAGE, DETECTABLE_ANNOTATION_PROVIDER_CLASS);
   }
 
   /**
@@ -141,12 +182,15 @@ public class DetectableAnnotationProcessor implements Processor {
   public void accept(TypeElement annotationType) {
 
     // We dont want to discover annotation types without DetectableAnnotation
-    if (annotationType.getAnnotation(DetectableAnnotation.class) != null) {
+    if (AnnotationMirrorUtil.hasMirrorFor(metaprogrammingClass(DETECTABLE_ANNOTATION_CLASS),
+        annotationType.getAnnotationMirrors())) {
       acceptDetectableAnnotation(annotationType);
     }
 
     // We dont want to discover annotation types without RepeatingDetectableAnnotation
-    if (annotationType.getAnnotation(RepeatingDetectableAnnotation.class) != null) {
+    if (AnnotationMirrorUtil
+        .hasMirrorFor(metaprogrammingClass(REPEATING_DETECTABLE_ANNOTATION_CLASS),
+            annotationType.getAnnotationMirrors())) {
       acceptRepeatableDetectableAnnotation(annotationType);
     }
   }
@@ -157,7 +201,7 @@ public class DetectableAnnotationProcessor implements Processor {
         ProcessorState.getInstance()
             .getProcessingEnvironment()
             .getElementUtils()
-            .getTypeElement("net.flintmc.processing.autoload.RepeatingDetectableAnnotation");
+            .getTypeElement("net.flintmc.metaprogramming.RepeatingDetectableAnnotation");
 
     // Get the values of the RepeatingDetectableAnnotation at the instance on the annotationType
     Map<String, AnnotationValue> repeatingDetectableAnnotationValues =
@@ -207,7 +251,7 @@ public class DetectableAnnotationProcessor implements Processor {
         ProcessorState.getInstance()
             .getProcessingEnvironment()
             .getElementUtils()
-            .getTypeElement("net.flintmc.processing.autoload.DetectableAnnotation");
+            .getTypeElement("net.flintmc.metaprogramming.DetectableAnnotation");
 
     // Get the values of the DetectableAnnotation at the instance on the annotationType
     Map<String, AnnotationValue> detectableAnnotationValues =
@@ -254,7 +298,9 @@ public class DetectableAnnotationProcessor implements Processor {
       Element annotatedElement,
       Map<ExecutableElement, AnnotationValue> annotationValues) {
     // meta is optional, so if it is not present, we dont take any action
-    if (annotationType.getAnnotation(DetectableAnnotation.class) == null) {
+    if (!AnnotationMirrorUtil
+        .hasMirrorFor(metaprogrammingClass(DETECTABLE_ANNOTATION_CLASS),
+            annotationType.getAnnotationMirrors())) {
       return "";
     }
 
@@ -265,7 +311,10 @@ public class DetectableAnnotationProcessor implements Processor {
             .put(
                 "ANNOTATION",
                 createAnnotation(annotationType, annotationValues, annotationType.toString()))
+            .put("CACHE_ID", String.valueOf(RANDOM.nextLong()))
             .put("META_DATA", createMetaData(annotationType, annotatedElement))
+            .put("VERSION", minecraftVersion)
+            .put("PACKAGE_META", createPackageMeta())
             .build(),
         ANNOTATION_META_TEMPLATE);
   }
@@ -290,6 +339,14 @@ public class DetectableAnnotationProcessor implements Processor {
       semicolon = true;
     }
     return output.toString();
+  }
+
+  private String createPackageMeta() {
+    return handleTemplate(ImmutableMap.<String, String>builder()
+        .put("GROUP", packageGroup)
+        .put("NAME", packageName)
+        .put("VERSION", packageVersion)
+        .build(), PACKAGE_META_GETTER_TEMPLATE);
   }
 
   private String createAnnotationIdentifier(Element annotatedElement) {
@@ -396,7 +453,7 @@ public class DetectableAnnotationProcessor implements Processor {
    * <p>Currently only metadata that is present on the same element as their parent can be
    * obtained.
    *
-   * @param annotationType   the parent annotation type to look for. Must be annotated with {@link
+   * @param annotationType   the parent annotation type to look for. Must be annotated with {@code
    *                         DetectableAnnotation}
    * @param annotatedElement the location where to look for annotationType
    * @return the direct metadata for annotationType on annotatedElement
@@ -412,7 +469,7 @@ public class DetectableAnnotationProcessor implements Processor {
             ProcessorState.getInstance()
                 .getProcessingEnvironment()
                 .getElementUtils()
-                .getTypeElement("net.flintmc.processing.autoload.DetectableAnnotation"));
+                .getTypeElement("net.flintmc.metaprogramming.DetectableAnnotation"));
 
     // Collect all possible meta types
     Collection<TypeElement> annotationMetaTypes =
@@ -449,7 +506,9 @@ public class DetectableAnnotationProcessor implements Processor {
                           .get("value")
                           .getValue())
                       .asElement();
-          if (repeatingAnnotationType.getAnnotation(RepeatingDetectableAnnotation.class) == null) {
+          if (!AnnotationMirrorUtil
+              .hasMirrorFor(metaprogrammingClass(REPEATING_DETECTABLE_ANNOTATION_CLASS),
+                  repeatingAnnotationType.getAnnotationMirrors())) {
             throw new IllegalStateException(
                 "Repeating annotation "
                     + repeatingAnnotationType
@@ -481,7 +540,9 @@ public class DetectableAnnotationProcessor implements Processor {
           continue;
         }
 
-        if (annotationMetaType.getAnnotation(DetectableAnnotation.class) != null) {
+        if (AnnotationMirrorUtil
+            .hasMirrorFor(metaprogrammingClass(DETECTABLE_ANNOTATION_CLASS),
+                annotationMetaType.getAnnotationMirrors())) {
           metaClasses.add(new Pair<>(potentialElement, annotationMetaMirror));
         }
       }
@@ -674,9 +735,28 @@ public class DetectableAnnotationProcessor implements Processor {
   /**
    * {@inheritDoc}
    */
-  public void finish(MethodSpec.Builder targetMethod) {
+  public void flush(MethodSpec.Builder targetMethod) {
     // Add sourcecode to auto generated class
     this.found.forEach(targetMethod::addStatement);
     this.found.clear();
+  }
+
+  @Override
+  public Set<String> options() {
+    Set<String> options = new HashSet<>();
+    options.add(MINECRAFT_VERSION_OPTION);
+    options.add(ProcessorState.PACKAGE_GROUP_OPTION);
+    options.add(ProcessorState.PACKAGE_NAME_OPTION);
+    options.add(ProcessorState.PACKAGE_VERSION_OPTION);
+
+    return options;
+  }
+
+  private static String metaprogrammingClass(String className) {
+    return METAPROGRAMMING_PACKAGE + "." + className;
+  }
+
+  private static String stringLiteral(String value) {
+    return '"' + value + '"';
   }
 }

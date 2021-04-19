@@ -148,8 +148,8 @@ public interface Package {
     /**
      * Creates a Package instance.
      *
-     * @param file    The File of the Package
-     * @param jarFile the JarFile of the Package
+     * @param jarFile    The File of the Package
+     * @param jar the JarFile of the Package
      * @return a Package instance representing the Package
      */
     Package create(@Assisted("jarFile") File jarFile,

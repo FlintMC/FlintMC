@@ -62,14 +62,14 @@ public interface SoundPlayEvent extends Event {
   /**
    * Retrieves the volume of the sound to play.
    *
-   * @return The volume of the sound to play, always > 0
+   * @return The volume of the sound to play, always &gt; 0
    */
   float getVolume();
 
   /**
    * Retrieves the pitch of the sound to play.
    *
-   * @return The pitch of the sound to play, always > 0
+   * @return The pitch of the sound to play, always &gt; 0
    */
   float getPitch();
 
@@ -85,8 +85,8 @@ public interface SoundPlayEvent extends Event {
      * @param position The non-null position where the sound is being played
      * @param sound    The non-null sound that is being played
      * @param category The non-null category of the sound that is being played
-     * @param volume   The volume of the sound to play, always > 0
-     * @param pitch    The pitch of the sound to play, always > 0
+     * @param volume   The volume of the sound to play, always &gt; 0
+     * @param pitch    The pitch of the sound to play, always &gt; 0
      * @return The new non-null {@link SoundPlayEvent}
      */
     SoundPlayEvent create(

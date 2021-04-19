@@ -59,8 +59,7 @@ public class VersionedChunkLoadEventInjector {
           @Type(reference = int.class), // size
           @Type(reference = boolean.class) // isFullChunk
       },
-      executionTime = Hook.ExecutionTime.BEFORE,
-      version = "1.16.5")
+      executionTime = Hook.ExecutionTime.BEFORE)
   public void preChunkLoad(@Named("args") Object[] args) {
     int chunkX = (int) args[0];
     int chunkZ = (int) args[1];
@@ -76,8 +75,7 @@ public class VersionedChunkLoadEventInjector {
           @Type(reference = int.class), // chunkX
           @Type(reference = int.class) // chunkZ
       },
-      executionTime = Hook.ExecutionTime.AFTER,
-      version = "1.16.5")
+      executionTime = Hook.ExecutionTime.AFTER)
   public void postChunkLoad(@Named("args") Object[] args) {
     int chunkX = (int) args[0];
     int chunkZ = (int) args[1];
@@ -94,8 +92,7 @@ public class VersionedChunkLoadEventInjector {
           @Type(typeName = "net.minecraft.world.chunk.Chunk"),
           @Type(typeName = "net.minecraft.world.chunk.Chunk")
       },
-      executionTime = Hook.ExecutionTime.BEFORE,
-      version = "1.16.5")
+      executionTime = Hook.ExecutionTime.BEFORE)
   public void preChunkUnload(@Named("args") Object[] args) {
     Chunk chunk = (Chunk) args[1];
     int chunkX = chunk.getPos().x;
@@ -109,8 +106,7 @@ public class VersionedChunkLoadEventInjector {
       className = "net.minecraft.client.world.ClientWorld",
       methodName = "onChunkUnloaded",
       parameters = @Type(typeName = "net.minecraft.world.chunk.Chunk"),
-      executionTime = Hook.ExecutionTime.AFTER,
-      version = "1.16.5")
+      executionTime = Hook.ExecutionTime.AFTER)
   public void postChunkUnload(@Named("args") Object[] args) {
     Chunk chunk = (Chunk) args[0];
     int chunkX = chunk.getPos().x;

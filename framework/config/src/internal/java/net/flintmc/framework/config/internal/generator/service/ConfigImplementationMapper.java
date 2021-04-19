@@ -29,19 +29,17 @@ import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 
 @Singleton
 @Service(value = ConfigImplementation.class, state = State.PRE_INIT, priority = -1)
 public class ConfigImplementationMapper implements ServiceHandler<ConfigImplementation> {
 
   private final Map<String, CtClass> implementationMappings;
-  private final Map<String, String> launchArguments;
 
   @Inject
-  private ConfigImplementationMapper(@Named("launchArguments") Map launchArguments) {
+  private ConfigImplementationMapper() {
     this.implementationMappings = new HashMap<>();
-    this.launchArguments = launchArguments;
   }
 
   public Map<String, CtClass> getImplementationMappings() {
@@ -54,12 +52,6 @@ public class ConfigImplementationMapper implements ServiceHandler<ConfigImplemen
   @Override
   public void discover(AnnotationMeta<ConfigImplementation> annotationMeta) {
     ConfigImplementation annotation = annotationMeta.getAnnotation();
-
-    String version = annotation.version();
-
-    if (!version.isEmpty() && !launchArguments.get("--game-version").equals(version)) {
-      return;
-    }
 
     String ifc = annotation.value().getName();
 

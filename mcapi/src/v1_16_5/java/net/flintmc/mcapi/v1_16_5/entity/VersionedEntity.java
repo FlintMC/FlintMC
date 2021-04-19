@@ -65,7 +65,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
-@Implement(value = Entity.class, version = "1.16.5")
+@Implement(Entity.class)
 public class VersionedEntity implements Entity {
 
   private final EntityType entityType;

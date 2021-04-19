@@ -25,7 +25,7 @@ import net.flintmc.framework.inject.method.MethodInjector;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.launcher.classloading.common.CommonClassLoader;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.asm.MethodVisit;
 import net.flintmc.transform.asm.MethodVisitorContext;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;

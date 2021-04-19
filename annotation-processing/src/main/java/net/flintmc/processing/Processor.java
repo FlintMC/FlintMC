@@ -21,8 +21,11 @@ package net.flintmc.processing;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
-
+import com.squareup.javapoet.MethodSpec.Builder;
 import javax.lang.model.element.TypeElement;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Service interface for annotation processors controlled by the {@link FlintAnnotationProcessor}.
@@ -30,6 +33,7 @@ import javax.lang.model.element.TypeElement;
  * {@link java.util.ServiceLoader}{@literal <}{@link Processor}{@literal >}.
  */
 public interface Processor {
+
   /**
    * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} for every
    * annotation found.
@@ -39,28 +43,68 @@ public interface Processor {
   void accept(TypeElement typeElement);
 
   /**
-   * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} in the
-   * final round to allow generation of code.
+   * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} after
+   * every round to determine whether the processor should generate source files.
+   *
+   * @return {@code true} if {@link #flush} can be called, {@code false} otherwise
+   * @see #flush
+   */
+  boolean shouldFlush();
+
+  /**
+   * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} after
+   * every round to allow code generation.
+   *
+   * <p> Only called if {@link #shouldFlush()} returned {@code true}
    *
    * @return The method that should be added to the autoload class
    */
   MethodSpec.Builder createMethod();
 
   /**
-   * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} in the
-   * final round to determine, which superclass should be added to the class generated for the
+   * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} after
+   * every round to determine which superclass should be added to the class generated for the
    * autoload method.
+   *
+   * <p> Only called if {@link #shouldFlush()} returned {@code true}
    *
    * @return The name of the class to add as a super class
    */
   ClassName getGeneratedClassSuperClass();
 
   /**
-   * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} in the
-   * final round to finalize the code generation of the given method.
+   * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} if {@link
+   * #shouldFlush()} returned {@code true}. This method allows the processor to add its statements
+   * to the provided method and clear its internal state.
+   *
+   * <p> Only called if {@link #shouldFlush()} returned {@code true}
    *
    * @param targetMethod The method to finalize, will always be the method returned by {@link
-   *     #createMethod()}
+   *                     #createMethod()}
    */
-  void finish(MethodSpec.Builder targetMethod);
+  void flush(MethodSpec.Builder targetMethod);
+
+  /**
+   * Called by the {@link ProcessorState} of the current {@link FlintAnnotationProcessor} previous
+   * to any call to {@link #accept(TypeElement)} to prepare the processor for setting up the
+   * options.
+   *
+   * <p>This will only be called if {@link #options()} returned non-empty set, and the map will
+   * only contain the options specified in the Set (if they have been set at all!).
+   *
+   * @param options The options which have been set and registered using {@link #options()}
+   * @see #options()
+   */
+  default void handleOptions(Map<String, String> options) {
+  }
+
+  /**
+   * Retrieves the options the processor supports which can then be passed to the compiler.
+   *
+   * @return The options this processor supports
+   * @see #handleOptions(Map)
+   */
+  default Set<String> options() {
+    return Collections.emptySet();
+  }
 }

@@ -21,6 +21,7 @@ package net.flintmc.render.gui.internal.windowing;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
@@ -38,7 +39,7 @@ public class DefaultWindowManagerHandler {
   /**
    * Registers the minecraft window after it has been initialized with OpenGL.
    */
-  @Subscribe(phase = Subscribe.Phase.POST)
+  @PostSubscribe
   public void postOpenGLInitialize(MinecraftWindow window, OpenGLInitializeEvent event) {
     this.windowManager.minecraftWindow = window;
     this.windowManager.registerWindow((InternalWindow) window);

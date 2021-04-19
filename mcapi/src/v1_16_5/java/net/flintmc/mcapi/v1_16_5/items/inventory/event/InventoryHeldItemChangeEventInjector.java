@@ -49,8 +49,7 @@ public class InventoryHeldItemChangeEventInjector {
   @Hook(
       className = "net.minecraft.client.multiplayer.PlayerController",
       methodName = "syncCurrentPlayItem",
-      executionTime = ExecutionTime.BEFORE,
-      version = "1.16.5")
+      executionTime = ExecutionTime.BEFORE)
   public HookResult fireHeldItemChangeEvent(
       @Named("instance") Object instance, ExecutionTime executionTime) {
     int knownSlot = ((AccessiblePlayerController) instance).getCurrentPlayerItem();

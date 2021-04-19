@@ -61,14 +61,13 @@ public class ServerConnectEventInjector {
       executionTime = Hook.ExecutionTime.BEFORE,
       className = "net.minecraft.client.gui.screen.ConnectingScreen",
       methodName = "connect",
-      parameters = {@Type(reference = String.class), @Type(reference = int.class)},
-      version = "1.15.2")
+      parameters = {@Type(reference = String.class), @Type(reference = int.class)})
   public void handlePreConnect(@Named("args") Object[] args) {
     ServerAddress address = this.addressFactory.create((String) args[0], (int) args[1]);
     this.eventBus.fireEvent(this.eventFactory.create(address), Phase.PRE);
   }
 
-  @PreSubscribe(version = "1.15.2")
+  @PreSubscribe
   public void handleLoginSuccess(PacketEvent event) {
     if (event.getDirection() != Direction.RECEIVE
         || event.getPhase() != ProtocolPhase.LOGIN

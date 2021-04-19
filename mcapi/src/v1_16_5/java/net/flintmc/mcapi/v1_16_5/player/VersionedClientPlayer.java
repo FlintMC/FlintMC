@@ -22,14 +22,6 @@ package net.flintmc.mcapi.v1_16_5.player;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Stream;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.entity.EntityNotLoadedException;
@@ -65,6 +57,8 @@ import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.tileentity.SignTileEntity;
 import net.flintmc.mcapi.tileentity.mapper.TileEntityMapper;
 import net.flintmc.mcapi.world.math.BlockPosition;
+import net.flintmc.mcapi.world.raytrace.RayTraceResult;
+import net.flintmc.mcapi.world.raytrace.RayTraceResultMapper;
 import net.flintmc.mcapi.world.scoreboad.team.Team;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -88,9 +82,17 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 @Singleton
-@Implement(value = ClientPlayer.class, version = "1.16.5")
+@Implement(ClientPlayer.class)
 public class VersionedClientPlayer extends VersionedPlayerEntity implements ClientPlayer {
 
   private static final String UNKNOWN_BIOME = "Unknown";
@@ -100,6 +102,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
   private final TabOverlay tabOverlay;
   private final TileEntityMapper tileEntityMapper;
   private final ModelMapper modelMapper;
+  private final RayTraceResultMapper rayTraceResultMapper;
   private final GameProfileSerializer<com.mojang.authlib.GameProfile> gameProfileSerializer;
 
   @Inject
@@ -113,7 +116,8 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
       TileEntityMapper tileEntityMapper,
       NetworkPlayerInfoRegistry networkPlayerInfoRegistry,
       InventoryController inventoryController,
-      TabOverlay tabOverlay) {
+      TabOverlay tabOverlay,
+      RayTraceResultMapper rayTraceResultMapper) {
     super(
         () -> Minecraft.getInstance().player,
         entityTypeRegister.getEntityType("player"),
@@ -129,6 +133,7 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
     this.tileEntityMapper = tileEntityMapper;
     this.modelMapper = modelMapper;
     this.gameProfileSerializer = gameProfileSerializer;
+    this.rayTraceResultMapper = rayTraceResultMapper;
   }
 
   @Override
@@ -480,6 +485,15 @@ public class VersionedClientPlayer extends VersionedPlayerEntity implements Clie
     }
 
     return UNKNOWN_BIOME;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public RayTraceResult getTargetedObject() {
+    net.minecraft.util.math.RayTraceResult result = Minecraft.getInstance().objectMouseOver;
+    return this.rayTraceResultMapper.fromMinecraft(result);
   }
 
   /**

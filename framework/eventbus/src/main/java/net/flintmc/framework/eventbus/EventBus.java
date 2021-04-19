@@ -19,7 +19,6 @@
 
 package net.flintmc.framework.eventbus;
 
-import java.util.function.Consumer;
 import net.flintmc.framework.eventbus.event.Cancellable;
 import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.EventDetails;
@@ -29,6 +28,7 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
 import net.flintmc.transform.hook.Hook;
+import java.util.function.Consumer;
 
 /**
  * The EventBus manages all methods with the {@link Subscribe} annotation and custom event handlers
@@ -42,7 +42,7 @@ public interface EventBus {
    * <p>
    * If the event is an instance of {@link Cancellable} and it has been {@link
    * Cancellable#isCancelled() cancelled} in the {@link Phase#PRE} phase, the process will be
-   * cancelled directly after the event has been fired in this phaes and it won't be forwarded to
+   * cancelled directly after the event has been fired in this phase and it won't be forwarded to
    * the consumer.
    *
    * @param event        The non-null event to be fired
@@ -57,6 +57,27 @@ public interface EventBus {
    * @see EventDetails#getSupportedPhases()
    */
   <E extends Event> E fireEventAll(E event, Consumer<E> eventHandler);
+
+  /**
+   * Fires the given event to the bus in the {@link Phase#PRE} phase, runs the given runnable and
+   * fires the event in the {@link Phase#POST} phase.
+   * <p>
+   * If the event is an instance of {@link Cancellable} and it has been {@link
+   * Cancellable#isCancelled() cancelled} in the {@link Phase#PRE} phase, the process will be
+   * cancelled directly after the event has been fired in this phase and the runnable won't be ran.
+   *
+   * @param event   The non-null event to be fired
+   * @param handler The non-null runnable to be ran in between both phases
+   * @param <E>     The type of event that is being fired
+   * @return The input event
+   * @throws IllegalArgumentException If the given event doesn't support both the {@link Phase#PRE}
+   *                                  and {@link Phase#POST} phases
+   * @throws IllegalStateException    If the given event doesn't have the {@link Subscribable}
+   *                                  annotation on itself OR on EXACTLY ONE interface or
+   *                                  superclass
+   * @see EventDetails#getSupportedPhases()
+   */
+  <E extends Event> E fireEventAll(E event, Runnable handler);
 
   /**
    * Fires the given event to the bus.
@@ -99,7 +120,7 @@ public interface EventBus {
 
   /**
    * Registers a new {@link SubscribeMethod} to this event bus, the executor in this method will be
-   * fired whenever {@link #fireEvent(Event, Phase)} is called. A method may be registered multiple
+   * fired whenever {@link #fireEvent} is called. A method may be registered multiple
    * times.
    *
    * @param method The non-null method to be registered

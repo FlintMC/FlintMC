@@ -56,7 +56,7 @@ public class VersionedPlayerInfoInterceptor {
     this.gameProfileSerializer = gameProfileSerializer;
   }
 
-  @PreSubscribe(version = "1.16.5")
+  @PreSubscribe
   public void handlePlayerList(PacketEvent packetEvent) {
     if (!(packetEvent.getPacket() instanceof SPlayerListItemPacket)) {
       return;

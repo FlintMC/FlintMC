@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.flintmc.framework.inject.assisted.factory.AssistedFactoryModuleBuilder;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 /**
  * When used in tandem with {@link AssistedFactoryModuleBuilder}, constructor annotated with {@link

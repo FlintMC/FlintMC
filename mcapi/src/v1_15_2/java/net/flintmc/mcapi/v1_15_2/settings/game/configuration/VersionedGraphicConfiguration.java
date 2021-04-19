@@ -33,7 +33,7 @@ import net.minecraft.client.Minecraft;
  * 1.15.2 implementation of {@link GraphicConfiguration}
  */
 @Singleton
-@ConfigImplementation(value = GraphicConfiguration.class, version = "1.15.2")
+@ConfigImplementation(GraphicConfiguration.class)
 public class VersionedGraphicConfiguration implements GraphicConfiguration {
 
   /**

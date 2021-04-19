@@ -34,12 +34,12 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 
 @Singleton
 @Service(
     value = ConfigImplementation.class,
-    priority = 3 /* needs to be called after the ConfigTransformer */)
+    priority = -30 /* needs to be called after the ConfigTransformer */)
 public class ConfigImplementationBinder implements ServiceHandler<ConfigImplementation> {
 
   private final ConfigGenerator configGenerator;

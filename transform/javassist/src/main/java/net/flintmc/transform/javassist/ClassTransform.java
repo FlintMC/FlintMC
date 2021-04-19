@@ -19,7 +19,7 @@
 
 package net.flintmc.transform.javassist;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 import net.flintmc.util.commons.resolve.NameResolver;
 import net.flintmc.util.mappings.DefaultNameResolver;
 
@@ -36,8 +36,6 @@ public @interface ClassTransform {
   String[] value() default "";
 
   Class<? extends NameResolver> classNameResolver() default DefaultNameResolver.class;
-
-  String version() default "";
 
   int priority() default 0;
 }

@@ -19,7 +19,7 @@
 
 package net.flintmc.transform.shadow;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 import java.lang.annotation.*;
 

@@ -37,7 +37,7 @@ public interface RectangleRenderer {
    * @param height      The width of the rectangle, y + height will be the lowest position of the
    *                    border
    * @param rgba        The RGBA value to draw the border in
-   * @param borderWidth The width of the border, should be > 0
+   * @param borderWidth The width of the border, should be &gt; 0
    */
   void drawRectBorder(float x, float y, float width, float height, int rgba, float borderWidth);
 

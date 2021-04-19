@@ -21,33 +21,29 @@ package net.flintmc.mcapi.v1_16_5.settings.game.configuration;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import net.flintmc.framework.config.annotation.implemented.ConfigImplementation;
-import net.flintmc.mcapi.chat.Keybind;
-import net.flintmc.mcapi.settings.game.KeyBinding;
 import net.flintmc.mcapi.settings.game.configuration.KeyBindingConfiguration;
 import net.flintmc.render.gui.input.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 1.16.5 implementation of {@link KeyBindingConfiguration}.
  */
 @Singleton
-@ConfigImplementation(value = KeyBindingConfiguration.class, version = "1.16.5")
+@ConfigImplementation(KeyBindingConfiguration.class)
 public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration {
 
-  private final KeyBinding.Factory keyBindingFactory;
-
   @Inject
-  private VersionedKeyBindingConfiguration(KeyBinding.Factory keyBindingFactory) {
-    this.keyBindingFactory = keyBindingFactory;
+  private VersionedKeyBindingConfiguration() {
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Key getKey(String keyDescription) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
@@ -57,6 +53,9 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
         : null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setKey(String keyDescription, Key key) {
     net.minecraft.client.settings.KeyBinding keyBinding = this.getMinecraftBinding(keyDescription);
@@ -69,6 +68,9 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, Key> getAllKey() {
     Map<String, Key> keys = new HashMap<>();
@@ -82,32 +84,12 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     return keys;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setAllKey(Map<String, Key> keys) {
     keys.forEach(this::setKey);
-  }
-
-  @Override
-  public boolean hasDuplicates(Key key) {
-    boolean found = false;
-    for (KeyBinding keyBinding : this.getKeyBindings()) {
-      if (keyBinding.getKeyCode() == key.getKey()) {
-        if (found) {
-          return true;
-        }
-        found = true;
-      }
-    }
-    for (KeyBinding keyBinding : this.getKeyBindsHotbar()) {
-      if (keyBinding.getKeyCode() == key.getKey()) {
-        if (found) {
-          return true;
-        }
-
-        found = true;
-      }
-    }
-    return false;
   }
 
   private net.minecraft.client.settings.KeyBinding getMinecraftBinding(String keyDescription) {
@@ -119,42 +101,5 @@ public class VersionedKeyBindingConfiguration implements KeyBindingConfiguration
     }
 
     return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public KeyBinding getKeyBinding(Keybind keybind) {
-    net.minecraft.client.settings.KeyBinding keyBinding =
-        this.getMinecraftBinding(keybind.getKey());
-    return keyBinding != null ? this.fromMinecraftObject(keyBinding) : null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<KeyBinding> getKeyBindsHotbar() {
-    return Arrays.stream(Minecraft.getInstance().gameSettings.keyBindsHotbar)
-        .map(this::fromMinecraftObject)
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<KeyBinding> getKeyBindings() {
-    return Arrays.stream(Minecraft.getInstance().gameSettings.keyBindings)
-        .map(this::fromMinecraftObject)
-        .collect(Collectors.toList());
-  }
-
-  private KeyBinding fromMinecraftObject(net.minecraft.client.settings.KeyBinding keyBinding) {
-    return this.keyBindingFactory.create(
-        keyBinding.getKeyDescription(),
-        ((ShadowKeyBinding) keyBinding).getKeyCode().getKeyCode(),
-        keyBinding.getKeyCategory());
   }
 }

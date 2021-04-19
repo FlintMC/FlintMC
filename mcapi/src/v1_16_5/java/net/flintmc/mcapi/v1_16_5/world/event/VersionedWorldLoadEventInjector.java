@@ -44,7 +44,7 @@ public class VersionedWorldLoadEventInjector {
     this.mappingProvider = mappingProvider;
   }
 
-  @ClassTransform(value = "net.minecraft.world.server.ServerWorld", version = "1.16.5")
+  @ClassTransform(value = "net.minecraft.world.server.ServerWorld")
   public void transformServerWorld(ClassTransformContext context) throws CannotCompileException {
     CtClass transforming = context.getCtClass();
     ClassMapping classMapping = this.mappingProvider.get("net.minecraft.world.server.ServerWorld");
@@ -58,7 +58,7 @@ public class VersionedWorldLoadEventInjector {
             transforming));
   }
 
-  @ClassTransform(value = "net.minecraft.world.server.ChunkManager", version = "1.16.5")
+  @ClassTransform(value = "net.minecraft.world.server.ChunkManager")
   public void transformChunkManager(ClassTransformContext context) throws CannotCompileException {
     CtClass transforming = context.getCtClass();
     CtConstructor constructor = transforming.getDeclaredConstructors()[0];

@@ -29,7 +29,7 @@ dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
-    api(project(":annotation-processing:annotation-processing-autoload"))
+    api(project(":framework:framework-metaprogramming"))
     api(project(":util:util-mapping"))
 
     internalImplementation(project(":transform:transform-launcher-plugin"))

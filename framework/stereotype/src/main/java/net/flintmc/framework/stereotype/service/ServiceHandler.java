@@ -19,8 +19,7 @@
 
 package net.flintmc.framework.stereotype.service;
 
-import net.flintmc.processing.autoload.AnnotationMeta;
-
+import net.flintmc.metaprogramming.AnnotationMeta;
 import java.lang.annotation.Annotation;
 
 public interface ServiceHandler<T extends Annotation> {

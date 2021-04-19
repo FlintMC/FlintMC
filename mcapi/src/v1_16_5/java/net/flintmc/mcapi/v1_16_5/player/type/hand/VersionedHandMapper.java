@@ -29,7 +29,7 @@ import net.minecraft.util.HandSide;
  * 1.16.5 implementation of {@link HandMapper}.
  */
 @Singleton
-@Implement(value = HandMapper.class, version = "1.16.5")
+@Implement(HandMapper.class)
 public class VersionedHandMapper implements HandMapper {
 
   /**
@@ -38,7 +38,8 @@ public class VersionedHandMapper implements HandMapper {
   @Override
   public Hand fromMinecraftHand(Object hand) {
     if (!(hand instanceof net.minecraft.util.Hand)) {
-      throw new IllegalArgumentException("");
+      throw new IllegalArgumentException(
+          "Cannot convert " + hand.getClass().getName() + " to " + Hand.class.getName());
     }
 
     net.minecraft.util.Hand minecraftHand = (net.minecraft.util.Hand) hand;
@@ -51,7 +52,9 @@ public class VersionedHandMapper implements HandMapper {
    */
   @Override
   public Object toMinecraftHand(Hand hand) {
-    return hand == Hand.OFF_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND;
+    return hand == Hand.OFF_HAND
+        ? net.minecraft.util.Hand.OFF_HAND
+        : net.minecraft.util.Hand.MAIN_HAND;
   }
 
   /**
@@ -60,7 +63,8 @@ public class VersionedHandMapper implements HandMapper {
   @Override
   public Hand.Side fromMinecraftHandSide(Object handSide) {
     if (!(handSide instanceof HandSide)) {
-      throw new IllegalArgumentException("");
+      throw new IllegalArgumentException(
+          "Cannot convert " + handSide.getClass().getName() + " to " + Hand.Side.class.getName());
     }
 
     HandSide minecraftHandSide = (HandSide) handSide;
@@ -73,6 +77,6 @@ public class VersionedHandMapper implements HandMapper {
    */
   @Override
   public Object toMinecraftHandSide(Hand.Side handSide) {
-    return handSide == Hand.Side.RIGHT ? Hand.Side.RIGHT : Hand.Side.LEFT;
+    return handSide == Hand.Side.RIGHT ? HandSide.RIGHT : HandSide.LEFT;
   }
 }

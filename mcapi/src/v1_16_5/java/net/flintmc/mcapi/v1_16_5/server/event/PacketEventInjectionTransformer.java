@@ -47,7 +47,7 @@ public class PacketEventInjectionTransformer {
     this.fieldBuilderFactory = fieldBuilderFactory;
   }
 
-  @ClassTransform(version = "1.16.5")
+  @ClassTransform
   @CtClassFilter(value = CtClassFilters.SUBCLASS_OF, className = "net.minecraft.network.IPacket")
   public void transformPacket(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {

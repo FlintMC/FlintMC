@@ -27,7 +27,7 @@ dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
-    api(project(":annotation-processing:annotation-processing-autoload"))
+    api(project(":framework:framework-metaprogramming"))
     api(project(":framework:framework-inject-primitive"))
     api(project(":launcher"))
     api(project(":util:util-commons"))

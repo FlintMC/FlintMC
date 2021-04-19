@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javassist.CtClass;
-import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CtResolver;
@@ -36,15 +35,16 @@ import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.mcapi.settings.flint.annotation.ApplicableSetting;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.Identifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.Identifier;
 
 @Singleton
 @Implement(SettingHandler.class)
 @Service(
     value = RegisterSettingHandler.class,
-    priority = -1 /* load before the SettingsDiscoverer */)
+    priority = -10000 /* load before the SettingsDiscoverer */)
 public class SettingHandlerService
     implements SettingHandler<Annotation>, ServiceHandler<RegisterSettingHandler> {
 
@@ -57,19 +57,21 @@ public class SettingHandlerService
   }
 
   @Override
-  public JsonObject serialize(
-      Annotation annotation, RegisteredSetting setting, Object currentValue) {
-    SettingHandler<Annotation> handler = this.getHandler(annotation);
-    return handler == null
-        ? new JsonObject()
-        : handler.serialize(annotation, setting, currentValue);
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
+    SettingHandler<Annotation> handler = this.getHandler(setting.getAnnotation());
+    return handler == null ? new JsonObject() : handler.serialize(setting, currentValue);
   }
 
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, Annotation annotation) {
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
+    SettingHandler<Annotation> handler = this.getHandler(setting.getAnnotation());
+    return handler == null || handler.isValidInput(input, setting);
+  }
+
+  @Override
+  public SettingData createData(Annotation annotation, RegisteredSetting setting) {
     SettingHandler<Annotation> handler = this.getHandler(annotation);
-    return handler == null || handler.isValidInput(input, reference, annotation);
+    return handler == null ? null : handler.createData(annotation, setting);
   }
 
   private void processPendingHandlers() {
@@ -77,10 +79,8 @@ public class SettingHandlerService
       return;
     }
 
-    this.pendingHandlers.forEach(
-        (annotationType, type) ->
-            this.handlers.put(
-                annotationType, InjectionHolder.getInjectedInstance(CtResolver.get(type))));
+    this.pendingHandlers.forEach((annotationType, type) -> this.handlers.put(
+        annotationType, InjectionHolder.getInjectedInstance(CtResolver.get(type))));
 
     this.pendingHandlers.clear();
   }

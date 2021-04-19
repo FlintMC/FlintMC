@@ -20,11 +20,9 @@
 package net.flintmc.render.gui.webgui.internal;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import com.google.common.cache.Cache;
+
 import javassist.CtClass;
 import javassist.NotFoundException;
 import javax.inject.Inject;
@@ -35,8 +33,8 @@ import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.ClassIdentifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.ClassIdentifier;
 import net.flintmc.render.gui.webgui.UnknownWebFileSystemException;
 import net.flintmc.render.gui.webgui.WebFileSystem;
 import net.flintmc.render.gui.webgui.WebFileSystemHandler;

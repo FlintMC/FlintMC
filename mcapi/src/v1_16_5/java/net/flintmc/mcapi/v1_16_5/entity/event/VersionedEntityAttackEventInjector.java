@@ -59,8 +59,7 @@ public class VersionedEntityAttackEventInjector {
       parameters = {
           @Type(typeName = "net.minecraft.entity.player.PlayerEntity"),
           @Type(typeName = "net.minecraft.entity.Entity")
-      },
-      version = "1.16.5")
+      })
   public void attackEntity(@Named("args") Object[] args) {
     Entity entity = this.entityMapper.fromAnyMinecraftEntity(args[1]);
     if (entity == null) {
@@ -78,8 +77,7 @@ public class VersionedEntityAttackEventInjector {
           @Type(typeName = "net.minecraft.entity.player.PlayerEntity"),
           @Type(typeName = "net.minecraft.entity.Entity"),
           @Type(reference = Hand.class)
-      },
-      version = "1.16.5")
+      })
   public void interactWithEntity(@Named("args") Object[] args) {
     Entity entity = this.entityMapper.fromAnyMinecraftEntity(args[1]);
     if (entity == null) {

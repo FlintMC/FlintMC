@@ -37,15 +37,14 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Loads and provides mappings for a {@link org.objectweb.asm.commons.ClassRemapper}, or in this
- * case {@link MinecraftInstructionObfuscator}.
+ * Loads and provides mappings for a {@link org.objectweb.asm.commons.ClassRemapper},
+ * or in this case {@link MinecraftInstructionObfuscator}.
  */
 @Singleton
 public class MinecraftClassRemapper extends SimpleRemapper {
@@ -55,7 +54,8 @@ public class MinecraftClassRemapper extends SimpleRemapper {
   private Handle lastHandle;
 
   @Inject
-  private MinecraftClassRemapper(ClassPool pool, ClassMappingProvider classMappingProvider) {
+  private MinecraftClassRemapper(ClassPool pool,
+      ClassMappingProvider classMappingProvider) {
     super(collectMappings(pool, classMappingProvider));
     this.classMappingProvider = classMappingProvider;
     assert this.getClass().getClassLoader() instanceof RootClassLoader;
@@ -67,11 +67,14 @@ public class MinecraftClassRemapper extends SimpleRemapper {
       ClassMappingProvider classMappingProvider) {
     Map<String, String> mappings = new HashMap<>();
 
-    for (ClassMapping classMapping : classMappingProvider.getDeobfuscatedClassMappings().values()) {
+    for (ClassMapping classMapping : classMappingProvider
+        .getDeobfuscatedClassMappings().values()) {
       String name = classMapping.getDeobfuscatedName().replace('.', '/');
 
       if (!classMapping.isDefault()) {
-        if (mappings.put(name, classMapping.getObfuscatedName().replace('.', '/')) != null) {
+        if (mappings
+            .put(name, classMapping.getObfuscatedName().replace('.', '/'))
+            != null) {
           throw new IllegalStateException("Duplicate key!");
         }
       }
@@ -92,7 +95,8 @@ public class MinecraftClassRemapper extends SimpleRemapper {
           CtClass superClass = ctClass.getSuperclass();
 
           while (superClass != null && superClass.getPackageName() == null) {
-            ClassMapping superClassMapping = classMappingProvider.get(superClass.getName());
+            ClassMapping superClassMapping = classMappingProvider
+                .get(superClass.getName());
 
             // Adds all super types methods & fields to the given class
             addMethodAndFieldMappings(mappings, superClassMapping, name);
@@ -113,12 +117,14 @@ public class MinecraftClassRemapper extends SimpleRemapper {
   private static void addMethodAndFieldMappings(
       Map<String, String> mappings, ClassMapping classMapping, String name) {
     for (MethodMapping method : classMapping.getObfuscatedMethods().values()) {
-      mappings.put(name + "." + method.getDeobfuscatedIdentifier(), method.getObfuscatedName());
+      mappings.put(name + "." + method.getDeobfuscatedIdentifier(),
+          method.getObfuscatedName());
     }
 
     for (FieldMapping value : classMapping.getObfuscatedFields().values()) {
       if (!value.isDefault()) {
-        mappings.put(name + "." + value.getDeobfuscatedName(), value.getObfuscatedName());
+        mappings.put(name + "." + value.getDeobfuscatedName(),
+            value.getObfuscatedName());
       }
     }
   }
@@ -144,7 +150,8 @@ public class MinecraftClassRemapper extends SimpleRemapper {
       ClassNode theClazz = ASMUtils.getNode(classInformation.getClassBytes());
 
       ClassInformation superClassInformation =
-          CommonClassLoaderHelper.retrieveClass(this.rootClassLoader, theClazz.superName);
+          CommonClassLoaderHelper
+              .retrieveClass(this.rootClassLoader, theClazz.superName);
 
       ClassNode superClass =
           superClassInformation == null
@@ -179,7 +186,8 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
     String map =
         this.map(
-            owner.replace('.', '/') + "." + name + desc.substring(0, desc.lastIndexOf(')') + 1));
+            owner.replace('.', '/') + "." + name + desc
+                .substring(0, desc.lastIndexOf(')') + 1));
     if (map == null) {
 
       List<String> possibleOwners = this.getSuperClass(owner.replace('.', '/'));
@@ -193,7 +201,8 @@ public class MinecraftClassRemapper extends SimpleRemapper {
                       + desc.substring(0, desc.lastIndexOf(')') + 1));
 
           if (map == null) {
-            ClassMapping mapping = this.classMappingProvider.get(possibleOwner.replace('/', '.'));
+            ClassMapping mapping = this.classMappingProvider
+                .get(possibleOwner.replace('/', '.'));
             if (mapping != null) {
               String deobfuscatedName = mapping.getDeobfuscatedName();
 

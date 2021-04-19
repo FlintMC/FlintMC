@@ -71,12 +71,12 @@ public class VersionedGuiInterceptor {
     this.fieldBuilder = fieldBuilder;
   }
 
-  @PostSubscribe(version = "1.16.5")
+  @PostSubscribe
   public void hookMinecraftWindowRender(ScreenRenderEvent event) {
     this.windowManager.renderMinecraftWindow();
   }
 
-  @ClassTransform(version = "1.16.5")
+  @ClassTransform
   @CtClassFilter(
       className = "net.minecraft.client.gui.screen.Screen",
       value = CtClassFilters.SUBCLASS_OF)
@@ -121,8 +121,7 @@ public class VersionedGuiInterceptor {
       className = "net.minecraft.client.Minecraft",
       methodName = "displayGuiScreen",
       parameters = @Type(typeName = "net.minecraft.client.gui.screen.Screen"),
-      executionTime = Hook.ExecutionTime.AFTER,
-      version = "1.16.5")
+      executionTime = Hook.ExecutionTime.AFTER)
   public void hookScreenChanged() {
     ScreenName screenName = this.nameMapper.fromObject(Minecraft.getInstance().currentScreen);
     this.windowManager.fireEvent(-1, window -> new ScreenChangedEvent(window, screenName));

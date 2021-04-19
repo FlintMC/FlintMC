@@ -32,7 +32,7 @@ import net.minecraft.util.text.ITextComponent;
  * 1.16.5 implementation of {@link TabOverlay}
  */
 @Singleton
-@Implement(value = TabOverlay.class, version = "1.16.5")
+@Implement(TabOverlay.class)
 public class VersionedTabOverlay implements TabOverlay {
 
   private final MinecraftComponentMapper minecraftComponentMapper;

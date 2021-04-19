@@ -24,7 +24,7 @@ import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.client.gui.fonts.Font;
 import net.minecraft.util.ResourceLocation;
 
-@Shadow(value = "net.minecraft.client.gui.FontRenderer", version = "1.16.5")
+@Shadow("net.minecraft.client.gui.FontRenderer")
 public interface ShadowFontRenderer {
 
   @MethodProxy

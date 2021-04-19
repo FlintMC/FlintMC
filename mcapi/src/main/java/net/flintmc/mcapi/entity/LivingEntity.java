@@ -829,7 +829,7 @@ public interface LivingEntity extends Entity {
   /**
    * Retrieves a collection with all active potion effects.
    *
-   * @return A collection with all act<ive potion effects.
+   * @return A collection with all active potion effects.
    */
   Collection<StatusEffectInstance> getActivePotionEffects();
 

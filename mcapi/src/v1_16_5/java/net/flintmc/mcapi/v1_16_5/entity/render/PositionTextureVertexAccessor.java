@@ -23,7 +23,7 @@ import net.flintmc.transform.shadow.FieldGetter;
 import net.flintmc.transform.shadow.Shadow;
 import net.minecraft.util.math.vector.Vector3f;
 
-@Shadow(value = "net.minecraft.client.renderer.model.ModelRenderer$PositionTextureVertex",version = "1.16.5")
+@Shadow("net.minecraft.client.renderer.model.ModelRenderer$PositionTextureVertex")
 public interface PositionTextureVertexAccessor {
 
   @FieldGetter("textureU")

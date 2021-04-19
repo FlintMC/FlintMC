@@ -21,7 +21,7 @@ package net.flintmc.transform.shadow.internal.handler;
 
 import java.lang.annotation.Annotation;
 import javassist.CtClass;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.transform.exceptions.ClassTransformException;
 
 public interface ShadowHandler<A extends Annotation> {

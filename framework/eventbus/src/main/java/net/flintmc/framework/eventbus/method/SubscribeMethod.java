@@ -60,6 +60,7 @@ public interface SubscribeMethod {
    * Invokes this event subscriber. Called by the bus when a new event is fired to this subscriber.
    *
    * @param event The event that was fired.
+   * @param phase The phase the event wil be fired in
    * @throws Throwable Any exception thrown during handling
    */
   void invoke(Event event, Subscribe.Phase phase) throws Throwable;

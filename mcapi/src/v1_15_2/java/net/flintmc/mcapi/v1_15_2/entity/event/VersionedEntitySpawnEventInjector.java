@@ -57,8 +57,7 @@ public class VersionedEntitySpawnEventInjector {
       className = "net.minecraft.client.world.ClientWorld",
       methodName = "addEntityImpl",
       parameters = {@Type(reference = int.class), @Type(typeName = "net.minecraft.entity.Entity")},
-      executionTime = ExecutionTime.BEFORE,
-      version = "1.15.2")
+      executionTime = ExecutionTime.BEFORE)
   public void addEntity(@Named("args") Object[] args) {
     Entity entity = this.entityMapper.fromAnyMinecraftEntity(args[1]);
     if (entity == null) {
@@ -74,8 +73,7 @@ public class VersionedEntitySpawnEventInjector {
   @Hook(
       className = "net.minecraft.entity.Entity",
       methodName = "remove",
-      executionTime = ExecutionTime.BEFORE,
-      version = "1.15.2")
+      executionTime = ExecutionTime.BEFORE)
   public void remove(@Named("instance") Object instance) {
     Entity entity = this.entityMapper.fromAnyMinecraftEntity(instance);
     if (entity == null) {

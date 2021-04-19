@@ -23,6 +23,7 @@ import net.flintmc.mcapi.entity.EntityNotLoadedException;
 import net.flintmc.mcapi.items.inventory.Inventory;
 import net.flintmc.mcapi.items.inventory.player.PlayerInventory;
 import net.flintmc.mcapi.player.overlay.TabOverlay;
+import net.flintmc.mcapi.world.raytrace.RayTraceResult;
 
 public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClientPlayer {
 
@@ -271,6 +272,15 @@ public interface ClientPlayer extends PlayerSkinProfile, PlayerEntity, BaseClien
    *                                  client
    */
   String getBiome();
+
+  /**
+   * Retrieves the entity/block that is currently targeted by the player. For the object to be
+   * detected as it is targeted by the player, the player has to look at it and it needs to be
+   * within a specific range.
+   *
+   * @return The non-null object that is targeted by the player
+   */
+  RayTraceResult getTargetedObject();
 
   /**
    * Retrieves whether this player is a spectator.

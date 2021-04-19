@@ -28,15 +28,19 @@ import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
+import net.minecraft.client.gui.advancements.AdvancementsScreen;
 
 @Singleton
-@Implement(value = ScreenNameMapper.class, version = "1.15.2")
+@Implement(ScreenNameMapper.class)
 public class VersionedScreenNameMapper implements ScreenNameMapper {
 
   // Map of all deobfuscated screen class names to their ScreenName equivalents
   private static final Map<String, ScreenName> KNOWN_NAMES = new HashMap<>();
 
   static {
+    KNOWN_NAMES.put("net.minecraft.client.gui.advancements.AdvancementsScreen",
+        ScreenName.minecraft(ScreenName.ADVANCEMENTS));
+
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.MainMenuScreen",
         ScreenName.minecraft(ScreenName.MAIN_MENU));
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.IngameMenuScreen",

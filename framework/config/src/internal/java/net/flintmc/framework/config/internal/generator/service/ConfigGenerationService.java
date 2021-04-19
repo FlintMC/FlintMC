@@ -37,11 +37,11 @@ import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
-import net.flintmc.processing.autoload.AnnotationMeta;
-import net.flintmc.processing.autoload.identifier.Identifier;
+import net.flintmc.metaprogramming.AnnotationMeta;
+import net.flintmc.metaprogramming.identifier.Identifier;
 
 @Singleton
-@Service(Config.class)
+@Service(value = Config.class, priority = -100)
 public class ConfigGenerationService implements ServiceHandler<Config> {
 
   private final ConfigGenerator generator;

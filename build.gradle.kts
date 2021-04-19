@@ -16,6 +16,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 plugins {
     id("net.flintmc.flint-gradle")
     id("net.minecrell.licenser") version "0.4.1"
@@ -30,7 +31,6 @@ repositories {
 }
 
 subprojects {
-
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
         plugins.apply("net.minecrell.licenser")
@@ -63,20 +63,36 @@ subprojects {
                 }
             }
         }
+
+        java {
+            withJavadocJar()
+            withSourcesJar()
+        }
     }
 }
 
-allprojects {
-    tasks.withType<JavaCompile> {
-        options.isFork = true
-    }
+tasks.javadoc {
+    val sourceSets = subprojects
+            .filter { it.pluginManager.hasPlugin("java") }
+            .map { it.sourceSets.getByName("main") }
+
+    setSource(sourceSets.map { it.allJava })
+    classpath = files(sourceSets.flatMap { it.compileClasspath })
+    setDestinationDir(file("docs/generated"))
 }
 
 flint {
     flintVersion = System.getenv().getOrDefault("VERSION", "1.0.0")
 
     projectFilter {
-        !arrayOf(":", ":framework", ":render", ":transform", ":util", ":minecraft").contains(it.path)
+        !arrayOf(
+                ":",
+                ":framework",
+                ":render",
+                ":transform",
+                ":util",
+                ":minecraft"
+        ).contains(it.path)
     }
 
     minecraftVersions("1.15.2", "1.16.5")

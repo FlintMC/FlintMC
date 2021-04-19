@@ -35,7 +35,7 @@ import net.minecraft.resources.IResource;
  * 1.15.2 implementation of the {@link ResourceLocationProvider}
  */
 @Singleton
-@Implement(value = ResourceLocationProvider.class, version = "1.15.2")
+@Implement(ResourceLocationProvider.class)
 public class VersionedResourceLocationProvider implements ResourceLocationProvider {
 
   private final VersionedResourceLocation.Factory resourceLocationFactory;

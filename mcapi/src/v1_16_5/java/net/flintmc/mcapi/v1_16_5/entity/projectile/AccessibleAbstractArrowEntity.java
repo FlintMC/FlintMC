@@ -29,7 +29,7 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 /**
  * A shadow interface for the abstract arrow entity.
  */
-@Shadow(value = "net.minecraft.entity.projectile.AbstractArrowEntity", version = "1.16.5")
+@Shadow("net.minecraft.entity.projectile.AbstractArrowEntity")
 public interface AccessibleAbstractArrowEntity {
 
   /**

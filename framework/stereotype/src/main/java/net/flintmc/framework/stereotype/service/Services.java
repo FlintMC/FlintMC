@@ -19,8 +19,7 @@
 
 package net.flintmc.framework.stereotype.service;
 
-import net.flintmc.processing.autoload.DetectableAnnotation;
-
+import net.flintmc.metaprogramming.DetectableAnnotation;
 import java.lang.annotation.*;
 
 @Documented

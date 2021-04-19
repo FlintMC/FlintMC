@@ -26,7 +26,7 @@ import net.flintmc.framework.stereotype.service.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
-import net.flintmc.processing.autoload.AnnotationMeta;
+import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.util.mappings.utils.line.handler.LineMappingHandler;
 import net.flintmc.util.mappings.utils.line.handler.LineMappingHandlerRegistry;
 import net.flintmc.util.mappings.utils.line.handler.LineObfuscationMapper;

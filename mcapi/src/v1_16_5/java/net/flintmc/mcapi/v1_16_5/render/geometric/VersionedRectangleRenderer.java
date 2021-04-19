@@ -31,7 +31,7 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.TransformationMatrix;
 
 @Singleton
-@Implement(value = RectangleRenderer.class, version = "1.16.5")
+@Implement(RectangleRenderer.class)
 public class VersionedRectangleRenderer implements RectangleRenderer {
 
   /**
@@ -85,7 +85,6 @@ public class VersionedRectangleRenderer implements RectangleRenderer {
     BufferBuilder buffer = Tessellator.getInstance().getBuffer();
     RenderSystem.enableBlend();
     RenderSystem.disableTexture();
-    RenderSystem.defaultBlendFunc();
     buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
     buffer.pos(matrix, left, bottom, 0.0F).color(red, green, blue, alpha).endVertex();
     buffer.pos(matrix, right, bottom, 0.0F).color(red, green, blue, alpha).endVertex();

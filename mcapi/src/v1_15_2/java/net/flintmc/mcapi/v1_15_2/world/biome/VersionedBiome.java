@@ -44,7 +44,7 @@ import net.minecraft.world.biome.Biome.SpawnListEntry;
 
 import java.util.List;
 
-@Implement(value = Biome.class, version = "1.15.2")
+@Implement(Biome.class)
 public class VersionedBiome implements Biome {
 
   private static final EntityClassification[] CLASSIFICATIONS = EntityClassification.values();

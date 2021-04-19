@@ -69,7 +69,7 @@ public class ChatEventInjector {
     return classMapping.getMethodByIdentifier(name).getName();
   }
 
-  @ClassTransform(value = "net.minecraft.client.gui.NewChatGui", version = "1.15.2")
+  @ClassTransform(value = "net.minecraft.client.gui.NewChatGui")
   public void transformChatGui(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtClass transforming = context.getCtClass();
@@ -108,7 +108,7 @@ public class ChatEventInjector {
         .toMinecraft(event.getMessage());
   }
 
-  @ClassTransform(value = "net.minecraft.client.entity.player.ClientPlayerEntity", version = "1.15.2")
+  @ClassTransform(value = "net.minecraft.client.entity.player.ClientPlayerEntity")
   public void transformClientPlayerEntity(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     CtClass transforming = context.getCtClass();

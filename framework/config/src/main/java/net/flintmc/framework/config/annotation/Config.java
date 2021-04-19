@@ -24,7 +24,7 @@ import net.flintmc.framework.config.generator.ParsedConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
 import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.config.storage.ConfigStorageProvider;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -77,9 +77,9 @@ import java.util.Map;
  *   <li>The second one is also a getter and setter, but it works like a {@link Map}:
  *       <pre>
  *
- *   Map&lt;MyEnum, Integer> getAllX();       // getter to get every value for X
+ *   Map&lt;MyEnum, Integer&gt; getAllX();       // getter to get every value for X
  *
- *   void setAllX(Map&lt;MyEnum, Integer> x); // setter to set every value for X
+ *   void setAllX(Map&lt;MyEnum, Integer&gt; x); // setter to set every value for X
  *
  *   int getX(MyEnum key);                    // getter to get one specific value for X
  *

@@ -24,7 +24,7 @@ import javassist.CtBehavior;
 import javassist.CtConstructor;
 import net.flintmc.framework.stereotype.type.DefaultTypeNameResolver;
 import net.flintmc.framework.stereotype.type.Type;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 import net.flintmc.util.commons.resolve.AnnotationResolver;
 import net.flintmc.util.commons.resolve.NameResolver;
 import net.flintmc.util.mappings.ClassMappingProvider;
@@ -104,14 +104,6 @@ public @interface Hook {
    * @see Type
    */
   Type[] parameters() default {};
-
-  /**
-   * Retrieves the minecraft version where this hook should be active, for example "1.15.2". If it
-   * is empty, it will work in every version.
-   *
-   * @return The version where this hook should be available
-   */
-  String version() default "";
 
   /**
    * Retrieves the default value that should be returned if the return type of the annotated method

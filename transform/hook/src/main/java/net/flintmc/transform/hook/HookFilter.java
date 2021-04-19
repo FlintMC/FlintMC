@@ -20,7 +20,7 @@
 package net.flintmc.transform.hook;
 
 import net.flintmc.framework.stereotype.type.Type;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

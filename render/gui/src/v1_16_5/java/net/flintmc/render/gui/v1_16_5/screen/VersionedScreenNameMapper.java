@@ -30,13 +30,16 @@ import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
 
 @Singleton
-@Implement(value = ScreenNameMapper.class, version = "1.16.5")
+@Implement(ScreenNameMapper.class)
 public class VersionedScreenNameMapper implements ScreenNameMapper {
 
   // Map of all deobfuscated screen class names to their ScreenName equivalents
   private static final Map<String, ScreenName> KNOWN_NAMES = new HashMap<>();
 
   static {
+    KNOWN_NAMES.put("net.minecraft.client.gui.advancements.AdvancementsScreen",
+        ScreenName.minecraft(ScreenName.ADVANCEMENTS));
+
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.MainMenuScreen",
         ScreenName.minecraft(ScreenName.MAIN_MENU));
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.IngameMenuScreen",

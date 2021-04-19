@@ -28,7 +28,7 @@ import net.flintmc.util.session.launcher.LauncherProfiles;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@Implement(value = LauncherProfileResolver.class, version = "1.16.5")
+@Implement(LauncherProfileResolver.class)
 public class VersionedLauncherProfileResolver extends DefaultLauncherProfileResolver {
 
   @Inject

@@ -23,6 +23,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Map;
+import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.tileentity.type.TileEntityType;
@@ -31,7 +32,7 @@ import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.minecraft.util.registry.Registry;
 
 @Singleton
-@Implement(value = TileEntityTypeRegister.class, version = "1.16.5")
+@Implement(TileEntityTypeRegister.class)
 public class VersionedTileEntityTypeRegister implements TileEntityTypeRegister {
 
   private final Map<String, TileEntityType> tileEntityTypes;
@@ -43,7 +44,7 @@ public class VersionedTileEntityTypeRegister implements TileEntityTypeRegister {
     this.tileEntityTypes = Maps.newHashMap();
   }
 
-  @Subscribe(phase = Subscribe.Phase.POST, version = "1.16.5")
+  @PostSubscribe
   public void convertTileEntityTypes(OpenGLInitializeEvent event) {
     for (net.minecraft.tileentity.TileEntityType<?> tileEntityType : Registry.BLOCK_ENTITY_TYPE) {
       String key = Registry.BLOCK_ENTITY_TYPE.getKey(tileEntityType).getPath();

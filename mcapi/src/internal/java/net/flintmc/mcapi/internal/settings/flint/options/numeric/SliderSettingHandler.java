@@ -23,35 +23,45 @@ import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.mcapi.chat.annotation.ComponentAnnotationSerializer;
-import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.settings.flint.mapper.RegisterSettingHandler;
 import net.flintmc.mcapi.settings.flint.mapper.SettingHandler;
+import net.flintmc.mcapi.settings.flint.options.data.SettingData;
 import net.flintmc.mcapi.settings.flint.options.numeric.SliderSetting;
 import net.flintmc.mcapi.settings.flint.registered.RegisteredSetting;
 
 @Singleton
 @RegisterSettingHandler(SliderSetting.class)
-public class SliderSettingHandler extends RangedSettingHandler
-    implements SettingHandler<SliderSetting> {
+public class SliderSettingHandler implements SettingHandler<SliderSetting> {
+
+  private final RangedSettingHandler handler;
 
   @Inject
-  private SliderSettingHandler(
-      ComponentSerializer.Factory serializerFactory,
-      ComponentAnnotationSerializer annotationSerializer) {
-    super(serializerFactory, annotationSerializer);
+  private SliderSettingHandler(RangedSettingHandler handler) {
+    this.handler = handler;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public JsonObject serialize(
-      SliderSetting annotation, RegisteredSetting setting, Object currentValue) {
-    return super.serialize(
-        currentValue == null ? 0 : (Number) currentValue, annotation.value(), setting);
+  public JsonObject serialize(RegisteredSetting setting, Object currentValue) {
+    return this.handler.serialize(
+        currentValue == null ? 0 : (Number) currentValue, setting.getData(), setting);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public boolean isValidInput(
-      Object input, ConfigObjectReference reference, SliderSetting annotation) {
-    return super.inRange(annotation.value(), input);
+  public boolean isValidInput(Object input, RegisteredSetting setting) {
+    return this.handler.inRange(setting.getData(), input);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public SettingData createData(SliderSetting annotation, RegisteredSetting setting) {
+    return this.handler.createData(annotation.value(), setting);
   }
 }

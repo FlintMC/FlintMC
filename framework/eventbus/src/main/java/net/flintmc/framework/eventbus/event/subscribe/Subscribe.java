@@ -25,7 +25,7 @@ import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.EventPriority;
 import net.flintmc.framework.eventbus.method.SubscribeMethod;
 import net.flintmc.framework.stereotype.service.Service;
-import net.flintmc.processing.autoload.DetectableAnnotation;
+import net.flintmc.metaprogramming.DetectableAnnotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -42,7 +42,7 @@ import java.lang.annotation.Target;
  * <p>Subscribe methods should be only used in classes annotated with {@link Singleton} and in
  * classes NOT annotated with {@link Service}.
  *
- * <p>For simpler modification of the {@link #phase()}, {@link PreSubscribe} and {@link
+ * <p>For simpler modification of the {@link #value()}, {@link PreSubscribe} and {@link
  * PostSubscribe} can also be used.
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -58,19 +58,11 @@ public @interface Subscribe {
   byte priority() default EventPriority.NORMAL;
 
   /**
-   * Retrieves the minecraft version where this event should be fired, for example "1.15.2". If it
-   * is empty, it will work in every version.
-   *
-   * @return The version where this event should be available
-   */
-  String version() default "";
-
-  /**
    * Retrieves the phase of the subscribed method.
    *
    * @return The subscribed method phase.
    */
-  Phase phase();
+  Phase value();
 
   /**
    * An enumeration representing all available phases.
