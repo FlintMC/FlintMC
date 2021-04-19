@@ -26,6 +26,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -142,11 +143,11 @@ public class ModelRendererInterceptor {
         ClassPool.getDefault()
             .get(
                 new String[]{
-                    "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
+                    classMappingProvider.get("net.minecraft.entity.Entity").getName(), "float", "float", "float", "float", "float"
                 });
 
     for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {
-      if (declaredMethod
+      if (Arrays.equals(declaredMethod.getParameterTypes(), classes) && declaredMethod
           .getName()
           .equals(
               this.classMappingProvider

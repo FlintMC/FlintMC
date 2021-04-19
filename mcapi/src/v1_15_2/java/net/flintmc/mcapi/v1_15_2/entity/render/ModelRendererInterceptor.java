@@ -36,7 +36,6 @@ import net.flintmc.mcapi.render.MinecraftRenderMeta;
 import net.flintmc.render.model.ModelBoxHolder;
 import net.flintmc.render.model.Renderer;
 import net.flintmc.transform.hook.Hook;
-import net.flintmc.transform.hook.Hook.ExecutionTime;
 import net.flintmc.transform.hook.HookFilter;
 import net.flintmc.transform.hook.HookFilters;
 import net.flintmc.transform.javassist.ClassTransform;
@@ -48,9 +47,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 
 @Singleton
@@ -134,11 +133,12 @@ public class ModelRendererInterceptor {
         ClassPool.getDefault()
             .get(
                 new String[]{
-                    "net.minecraft.entity.Entity", "float", "float", "float", "float", "float"
+                    classMappingProvider.get("net.minecraft.entity.Entity").getName(), "float",
+                    "float", "float", "float", "float"
                 });
 
     for (CtMethod declaredMethod : classTransformContext.getCtClass().getDeclaredMethods()) {
-      if (declaredMethod
+      if (Arrays.equals(declaredMethod.getParameterTypes(), classes) && declaredMethod
           .getName()
           .equals(
               this.classMappingProvider
