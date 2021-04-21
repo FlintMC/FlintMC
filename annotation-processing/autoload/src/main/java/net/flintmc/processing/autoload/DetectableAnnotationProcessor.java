@@ -235,7 +235,8 @@ public class DetectableAnnotationProcessor implements Processor {
                     SimpleAnnotationMirror.of(
                         repeatedAnnotationType,
                         AnnotationMirrorUtil.getElementValuesByName(
-                            ((AnnotationMirror) repeatedAnnotation)))
+                          repeatedAnnotation instanceof AnnotationMirror ?
+                            (AnnotationMirror)repeatedAnnotation : (AnnotationMirror) repeatedAnnotation.getValue()))
                         .getElementValues());
         if (parsedAnnotation.isEmpty()) {
           return;
