@@ -19,14 +19,14 @@
 
 package net.flintmc.mcapi.v1_15_2.resources;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * 1.15.2 implementation of a minecraft resource location.
@@ -92,5 +92,25 @@ public class VersionedResourceLocation implements ResourceLocation {
   @Override
   public String toString() {
     return this.getNamespace() + ":" + this.getPath();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    final VersionedResourceLocation that = (VersionedResourceLocation) o;
+    return Objects.equals(wrapped.toString(), that.wrapped.toString());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(wrapped);
   }
 }
