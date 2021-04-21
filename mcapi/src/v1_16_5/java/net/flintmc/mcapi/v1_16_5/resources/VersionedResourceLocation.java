@@ -21,6 +21,7 @@ package net.flintmc.mcapi.v1_16_5.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -83,6 +84,21 @@ public class VersionedResourceLocation implements ResourceLocation {
   @Override
   public boolean exists() {
     return Minecraft.getInstance().getResourceManager().hasResource(this.wrapped);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    final VersionedResourceLocation that = (VersionedResourceLocation) o;
+    return Objects.equals(wrapped.toString(), that.wrapped.toString());
   }
 
   /**
