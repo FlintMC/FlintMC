@@ -31,26 +31,6 @@ flint {
             from("build/generated/flint/version.json")
             to("versions/flint-1.16.5/flint-1.16.5.json")
         }
-
-        create("joined.tsrg") {
-            from("jar:https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_config/1.16.5/mcp_config-1.16.5.zip!/config/joined.tsrg")
-            to("flint/assets/1.16.5/joined.tsrg")
-        }
-
-        create("fields.csv") {
-            from("jar:https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_snapshot/20201028-1.16.3/mcp_snapshot-20201028-1.16.3.zip!/fields.csv")
-            to("flint/assets/1.16.5/fields.csv")
-        }
-
-        create("params.csv") {
-            from("jar:https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_snapshot/20201028-1.16.3/mcp_snapshot-20201028-1.16.3.zip!/params.csv")
-            to("flint/assets/1.16.5/params.csv")
-        }
-
-        create("methods.csv") {
-            from("jar:https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_snapshot/20201028-1.16.3/mcp_snapshot-20201028-1.16.3.zip!/methods.csv")
-            to("flint/assets/1.16.5/methods.csv")
-        }
     }
 }
 
