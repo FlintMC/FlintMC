@@ -48,7 +48,7 @@ public class VersionedWorldLoadEventInjector {
   public void transformServerWorld(ClassTransformContext context) throws CannotCompileException {
     CtClass transforming = context.getCtClass();
     ClassMapping classMapping = this.mappingProvider.get("net.minecraft.world.server.ServerWorld");
-    FieldMapping fieldMapping = classMapping.getField("field_241103_E_");
+    FieldMapping fieldMapping = classMapping.getField("serverWorldInfo");
 
     transforming.addMethod(
         CtMethod.make(
