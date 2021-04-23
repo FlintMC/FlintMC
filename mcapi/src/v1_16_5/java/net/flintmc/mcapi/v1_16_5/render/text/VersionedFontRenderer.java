@@ -152,7 +152,7 @@ public class VersionedFontRenderer implements FontRenderer {
    */
   @Override
   public String wrapFormattedString(String text, int wrapWidth) {
-    return this.minecraft.fontRenderer.func_238412_a_(text, wrapWidth);
+    return this.minecraft.fontRenderer.trimStringToWidth(text, wrapWidth);
   }
 
   /**

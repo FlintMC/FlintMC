@@ -141,7 +141,7 @@ public class VersionedChatController implements ChatController {
     }
 
     ITextComponent mapped = (ITextComponent) this.componentMapper.toMinecraft(component);
-    Minecraft.getInstance().ingameGUI.func_238450_a_(type, mapped, senderUniqueId);
+    Minecraft.getInstance().ingameGUI.sendChatMessage(type, mapped, senderUniqueId);
   }
 
   /**

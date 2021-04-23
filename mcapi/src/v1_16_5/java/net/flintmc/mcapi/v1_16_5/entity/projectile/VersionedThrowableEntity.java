@@ -91,7 +91,7 @@ public class VersionedThrowableEntity extends VersionedEntity implements Throwab
   @Override
   public void shoot(
       Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
-    this.wrapped().func_234612_a_(
+    this.wrapped().setDirectionAndMovement(
         (net.minecraft.entity.Entity)
             this.getEntityFoundationMapper().getEntityMapper().toMinecraftEntity(thrower),
         pitch,
