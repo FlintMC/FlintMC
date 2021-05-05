@@ -25,17 +25,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import net.flintmc.mcapi.internal.resources.SkinCacheWebResource;
 import net.flintmc.mcapi.internal.resources.SkinCacheWebResource.Factory;
-import net.flintmc.mcapi.player.gameprofile.GameProfile;
-import net.flintmc.mcapi.player.skin.SkinProvider;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
-import net.flintmc.mcapi.resources.ResourceLocationWatcher;
 import net.flintmc.render.gui.webgui.WebFileSystem;
 import net.flintmc.render.gui.webgui.WebFileSystemHandler;
 import net.flintmc.render.gui.webgui.WebResource;
@@ -65,7 +60,7 @@ public class MinecraftHeadSkinCacheWebFileSystem implements WebFileSystemHandler
   }
 
   @Override
-  public WebResource getFile(String path) throws FileNotFoundException {
+  public WebResource getFile(String path) {
     try {
 
       ResourceLocation resourceLocation = this.resourceLocationProvider.get(path);
@@ -77,7 +72,8 @@ public class MinecraftHeadSkinCacheWebFileSystem implements WebFileSystemHandler
               "heads/" + path);
           writeHead(bufferedImage, file);
 
-          return new ResourcePackWebResource(resourceLocationProvider.get("skins/heads/" + path));
+          return skinCacheWebResourceFactory
+              .create(minecraftSkinCacheDirectoryProvider.getSkinCacheDirectory(), "heads/" + path);
         }
       }
       path = path.replaceFirst("skins/", "");
