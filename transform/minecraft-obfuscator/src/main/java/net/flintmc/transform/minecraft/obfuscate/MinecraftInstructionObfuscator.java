@@ -29,7 +29,7 @@ import net.flintmc.launcher.classloading.common.ClassInformation;
 import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.launcher.classloading.common.CommonClassLoaderHelper;
 import net.flintmc.transform.asm.ASMUtils;
-import net.flintmc.transform.exceptions.ClassTransformException;
+import net.flintmc.launcher.classloading.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
 import net.flintmc.transform.minecraft.obfuscate.remap.MinecraftClassRemapper;
@@ -73,7 +73,7 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer,
     if (!obfuscated) {
       return classData;
     }
-    if (!className.startsWith("net.flintmc")
+    if (!className.startsWith("net.flintmc.")
         && !(classLoader instanceof PackageClassLoader)) {
       // only reobfuscate flint classes and classes from packages
       return classData;

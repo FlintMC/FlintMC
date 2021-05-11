@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,17 +43,25 @@ public final class ClassMappingProvider {
       final MappingFileProvider mappingFileProvider,
       @Named("launchArguments") final Map launchArguments)
       throws IOException, MappingParseException {
-    if (launchArguments.containsKey("--disable-reobfuscation")) {
+    if (launchArguments.containsKey("--disable-reobfuscation")
+        || launchArguments.containsKey("--dev")) {
+      this.obfuscatedClassMappings = Collections.emptyMap();
+      return;
+    }
+
+    Map<MappingType, InputStream> mappings = mappingFileProvider
+        .getMappings(launchArguments.get("--game-version").toString());
+
+    if (mappings.isEmpty()) {
       this.obfuscatedClassMappings = Collections.emptyMap();
       return;
     }
 
     McpMappingParser mcpMappingParser = new McpMappingParser();
-    obfuscatedClassMappings = mcpMappingParser.parse(
-        mappingFileProvider.getMappings(launchArguments.get("--game-version").toString()));
+    this.obfuscatedClassMappings = mcpMappingParser.parse(mappings);
 
-    for (ClassMapping classMapping : obfuscatedClassMappings.values()) {
-      deobfuscatedClassMappings.put(classMapping.deobfuscatedName, classMapping);
+    for (ClassMapping classMapping : this.obfuscatedClassMappings.values()) {
+      this.deobfuscatedClassMappings.put(classMapping.deobfuscatedName, classMapping);
     }
   }
 
@@ -63,7 +72,7 @@ public final class ClassMappingProvider {
    * @return A class mapping.
    */
   public ClassMapping getByObfuscatedName(final String name) {
-    return obfuscatedClassMappings.get(name);
+    return this.obfuscatedClassMappings.get(name);
   }
 
   /**
@@ -73,7 +82,7 @@ public final class ClassMappingProvider {
    * @return A class mapping.
    */
   public ClassMapping getByDeobfuscatedName(final String name) {
-    return deobfuscatedClassMappings.get(name);
+    return this.deobfuscatedClassMappings.get(name);
   }
 
   /**
@@ -83,10 +92,13 @@ public final class ClassMappingProvider {
    * @return A class mapping.
    */
   public ClassMapping get(final String name) {
-    if (obfuscatedClassMappings.containsKey(name)) {
-      return obfuscatedClassMappings.get(name);
+    if (this.obfuscatedClassMappings.containsKey(name)) {
+      return this.obfuscatedClassMappings.get(name);
     }
-    return deobfuscatedClassMappings.get(name);
+    if (this.deobfuscatedClassMappings.containsKey(name)) {
+      return this.deobfuscatedClassMappings.get(name);
+    }
+    return new ClassMapping(false, name, name);
   }
 
   /**
@@ -95,7 +107,7 @@ public final class ClassMappingProvider {
    * @return Obfuscated class mappings.
    */
   public Map<String, ClassMapping> getObfuscatedClassMappings() {
-    return Collections.unmodifiableMap(obfuscatedClassMappings);
+    return Collections.unmodifiableMap(this.obfuscatedClassMappings);
   }
 
   /**
@@ -104,6 +116,6 @@ public final class ClassMappingProvider {
    * @return Deobfuscated class mappings.
    */
   public Map<String, ClassMapping> getDeobfuscatedClassMappings() {
-    return Collections.unmodifiableMap(deobfuscatedClassMappings);
+    return Collections.unmodifiableMap(this.deobfuscatedClassMappings);
   }
 }

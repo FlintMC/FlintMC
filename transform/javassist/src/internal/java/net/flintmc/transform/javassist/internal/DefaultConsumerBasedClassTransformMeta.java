@@ -21,7 +21,7 @@ package net.flintmc.transform.javassist.internal;
 
 import com.google.inject.Inject;
 import javassist.CtClass;
-import net.flintmc.transform.exceptions.ClassTransformException;
+import net.flintmc.launcher.classloading.ClassTransformException;
 import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.transform.javassist.ConsumerBasedClassTransformMeta;
 

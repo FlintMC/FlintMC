@@ -73,8 +73,7 @@ public class ChatEventInjector {
     return classMapping.getMethodByIdentifier(name).getName();
   }
 
-  @ClassTransform(
-      value = "net.minecraft.client.gui.NewChatGui")
+  @ClassTransform("net.minecraft.client.gui.NewChatGui")
   public void transformChatGui(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtClass transforming = context.getCtClass();

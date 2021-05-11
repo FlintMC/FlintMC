@@ -59,7 +59,7 @@ public final class McpMappingParser implements MappingParser {
   }
 
   @Override
-  public Map<String, ClassMapping> parse(final Map<String, InputStream> input)
+  public Map<String, ClassMapping> parse(final Map<MappingType, InputStream> input)
       throws MappingParseException {
     boolean obfuscated =
         InjectionHolder.getInjectedInstance(Key.get(boolean.class, Names.named("obfuscated")));
@@ -71,13 +71,15 @@ public final class McpMappingParser implements MappingParser {
       NamedCSVParser csvParser = new NamedCSVParser();
       fieldLookupTable =
           csvParser
-              .parse(tokenizer.tokenize(IOUtils.readToString(input.get("fields.csv"))))
+              .parse(tokenizer.tokenize(IOUtils.readToString(input.get(MappingType.FIELDS))))
               .relation("searge", "name");
+
       methodLookupTable =
           csvParser
-              .parse(tokenizer.tokenize(IOUtils.readToString(input.get("methods.csv"))))
+              .parse(tokenizer.tokenize(IOUtils.readToString(input.get(MappingType.METHODS))))
               .relation("searge", "name");
-      source = IOUtils.readToString(input.get("joined.tsrg"));
+
+      source = IOUtils.readToString(input.get(MappingType.JOINED));
     } catch (IOException exception) {
       throw new MappingParseException("Cannot read input", exception);
     }
