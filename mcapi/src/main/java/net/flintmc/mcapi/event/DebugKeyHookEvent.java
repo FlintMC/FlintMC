@@ -17,24 +17,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.debug;
+package net.flintmc.mcapi.event;
 
-import java.util.function.BooleanSupplier;
+import net.flintmc.framework.eventbus.event.Event;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribable;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.render.gui.input.Key;
+import java.util.function.BooleanSupplier;
 
 /**
- * Helper class for various minecraft debugging utilities.
+ * This event allows adding additional actions to debug keys. It is intentionally not cancellable,
+ * nor is it fired on the post phase. If you want to register a completely new action, use {@link
+ * net.flintmc.mcapi.debug.MinecraftDebugger#registerDebugKeybinding(Key, ChatComponent,
+ * BooleanSupplier)} instead of this event.
+ * <p>
+ * <b>This event will only be fired for existing debug keybindings (Flint or Minecraft
+ * provided)</b>.
  */
-public interface MinecraftDebugger {
+@Subscribable(Phase.PRE)
+public interface DebugKeyHookEvent extends Event {
+
   /**
-   * Registers a new debug keybinding which can then be used in combination with F3.
+   * Retrieves the key which triggered the event.
    *
-   * @param key         The key which is used in combination with F3
-   * @param description The description to display in the chat
-   * @param callback    The callback to execute when the keybinding is triggered, returns {@code
-   *                    true} to signal that the key has been handled, or {@code false}, to signal
-   *                    that the key has not been handled
+   * @return The key which triggered the event
    */
-  void registerDebugKeybinding(Key key, ChatComponent description, BooleanSupplier callback);
+  Key getKey();
 }

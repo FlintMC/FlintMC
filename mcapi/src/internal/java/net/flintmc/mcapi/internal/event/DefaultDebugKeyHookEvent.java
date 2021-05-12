@@ -17,24 +17,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.debug;
+package net.flintmc.mcapi.internal.event;
 
-import java.util.function.BooleanSupplier;
-import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.event.DebugKeyHookEvent;
 import net.flintmc.render.gui.input.Key;
 
 /**
- * Helper class for various minecraft debugging utilities.
+ * {@inheritDoc}
  */
-public interface MinecraftDebugger {
+public class DefaultDebugKeyHookEvent implements DebugKeyHookEvent {
+
+  private final Key key;
+
+  public DefaultDebugKeyHookEvent(Key key) {
+    this.key = key;
+  }
+
   /**
-   * Registers a new debug keybinding which can then be used in combination with F3.
-   *
-   * @param key         The key which is used in combination with F3
-   * @param description The description to display in the chat
-   * @param callback    The callback to execute when the keybinding is triggered, returns {@code
-   *                    true} to signal that the key has been handled, or {@code false}, to signal
-   *                    that the key has not been handled
+   * {@inheritDoc}
    */
-  void registerDebugKeybinding(Key key, ChatComponent description, BooleanSupplier callback);
+  @Override
+  public Key getKey() {
+    return key;
+  }
 }

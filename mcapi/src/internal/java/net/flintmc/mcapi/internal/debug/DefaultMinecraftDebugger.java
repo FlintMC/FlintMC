@@ -19,54 +19,57 @@
 
 package net.flintmc.mcapi.internal.debug;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.builder.TranslationComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.debug.MinecraftDebugger;
+import net.flintmc.mcapi.internal.event.DefaultDebugKeyHookEvent;
 import net.flintmc.mcapi.player.ClientPlayer;
 import net.flintmc.render.gui.input.Key;
 import net.flintmc.util.commons.Pair;
 
+/**
+ * {@inheritDoc}
+ */
 @Implement(MinecraftDebugger.class)
 @Singleton
 public class DefaultMinecraftDebugger implements MinecraftDebugger {
 
   private final Map<Key, Pair<ChatComponent, BooleanSupplier>> registeredKeyBindings;
   private final Map<Key, ChatComponent> minecraftProvided;
-  private final Multimap<Key, Runnable> hooks;
 
   private final TextComponentBuilder.Factory textComponentBuilderFactory;
   private final TranslationComponentBuilder.Factory translationComponentBuilderFactory;
   private final ClientPlayer player;
+  private final EventBus eventBus;
 
   @Inject
   private DefaultMinecraftDebugger(
       TextComponentBuilder.Factory textComponentBuilderFactory,
       TranslationComponentBuilder.Factory translationComponentBuilderFactory,
-      ClientPlayer player
+      ClientPlayer player,
+      EventBus eventBus
   ) {
     this.textComponentBuilderFactory = textComponentBuilderFactory;
     this.translationComponentBuilderFactory = translationComponentBuilderFactory;
     this.player = player;
+    this.eventBus = eventBus;
 
     this.registeredKeyBindings = new HashMap<>();
     this.minecraftProvided = new HashMap<>();
-    this.hooks = HashMultimap.create();
   }
 
-  @Override
-  public void registerExecutionHook(Key key, Runnable callback) {
-    hooks.put(key, callback);
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void registerDebugKeybinding(Key key, ChatComponent description,
       BooleanSupplier runnable) {
@@ -81,7 +84,7 @@ public class DefaultMinecraftDebugger implements MinecraftDebugger {
 
   public boolean handleDebugKey(Key key) {
     if (minecraftProvided.containsKey(key) || registeredKeyBindings.containsKey(key)) {
-      hooks.get(key).forEach(Runnable::run);
+      eventBus.fireEvent(new DefaultDebugKeyHookEvent(key), Phase.PRE);
     }
 
     Pair<ChatComponent, BooleanSupplier> binding = registeredKeyBindings.get(key);
@@ -93,6 +96,7 @@ public class DefaultMinecraftDebugger implements MinecraftDebugger {
     return binding.second().getAsBoolean();
   }
 
+  // Internal API for now
   public boolean displayHelp() {
     // TODO: Translate
     player.sendMessage(
