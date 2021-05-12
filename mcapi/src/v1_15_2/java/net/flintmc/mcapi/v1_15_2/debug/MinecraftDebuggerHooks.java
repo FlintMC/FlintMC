@@ -75,7 +75,7 @@ public class MinecraftDebuggerHooks {
       }
   )
   public HookResult hookDebugKeyHandler(@Named("args") Object[] args) {
-    if (debugger.handleDebugKey(Key.getByKeyCode((int) args[0]))) {
+    if (this.debugger.handleDebugKey(Key.getByKeyCode((int) args[0]))) {
       return HookResult.BREAK;
     }
 

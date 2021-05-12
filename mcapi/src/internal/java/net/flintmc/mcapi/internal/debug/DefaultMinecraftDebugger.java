@@ -73,21 +73,21 @@ public class DefaultMinecraftDebugger implements MinecraftDebugger {
   @Override
   public void registerDebugKeybinding(Key key, ChatComponent description,
       BooleanSupplier runnable) {
-    registeredKeyBindings.put(key, new Pair<>(description, runnable));
+    this.registeredKeyBindings.put(key, new Pair<>(description, runnable));
   }
 
   // Internal API for now
   public void registerInternalDebugKeybindings(Map<Key, String> keybindings) {
-    keybindings.forEach((key, translation) -> minecraftProvided.put(key,
-        translationComponentBuilderFactory.newBuilder().translationKey(translation).build()));
+    keybindings.forEach((key, translation) -> this.minecraftProvided.put(key,
+        this.translationComponentBuilderFactory.newBuilder().translationKey(translation).build()));
   }
 
   public boolean handleDebugKey(Key key) {
-    if (minecraftProvided.containsKey(key) || registeredKeyBindings.containsKey(key)) {
-      eventBus.fireEvent(new DefaultDebugKeyHookEvent(key), Phase.PRE);
+    if (this.minecraftProvided.containsKey(key) || this.registeredKeyBindings.containsKey(key)) {
+      this.eventBus.fireEvent(new DefaultDebugKeyHookEvent(key), Phase.PRE);
     }
 
-    Pair<ChatComponent, BooleanSupplier> binding = registeredKeyBindings.get(key);
+    Pair<ChatComponent, BooleanSupplier> binding = this.registeredKeyBindings.get(key);
 
     if (binding == null) {
       return false;
@@ -99,16 +99,16 @@ public class DefaultMinecraftDebugger implements MinecraftDebugger {
   // Internal API for now
   public boolean displayHelp() {
     // TODO: Translate
-    player.sendMessage(
+    this.player.sendMessage(
         textComponentBuilderFactory.newBuilder().text("Minecraft provided debug keybindings:")
             .build(), null);
-    minecraftProvided.forEach((key, component) -> player.sendMessage(component, null));
+    this.minecraftProvided.forEach((key, component) -> player.sendMessage(component, null));
 
     // TODO: Translate
-    player.sendMessage(
+    this.player.sendMessage(
         textComponentBuilderFactory.newBuilder().text("Flint provided debug keybindings:").build(),
         null);
-    registeredKeyBindings.forEach((key, data) -> player.sendMessage(data.first(), null));
+    this.registeredKeyBindings.forEach((key, data) -> player.sendMessage(data.first(), null));
     return true;
   }
 }
