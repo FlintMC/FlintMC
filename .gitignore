@@ -47,6 +47,7 @@ hs_err_pid*
 .idea/**/.name
 .idea/**/vcs.xml
 .idea/**/compiler.xml
+.idea/**/libraries-with-intellij-classes.xml
 run/**
 
 # Sensitive or high-churn files
