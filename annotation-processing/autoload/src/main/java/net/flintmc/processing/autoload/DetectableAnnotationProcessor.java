@@ -50,6 +50,7 @@ public class DetectableAnnotationProcessor implements Processor {
   private static final String MINECRAFT_VERSION_OPTION = "net.flintmc.minecraft.version";
 
   private static final String METAPROGRAMMING_PACKAGE = "net.flintmc.metaprogramming";
+  private static final String ELEMENT_KIND_CLASS = METAPROGRAMMING_PACKAGE + ".ElementKind";
   private static final String ANNOTATION_META_CLASS = "AnnotationMeta";
   private static final String DETECTABLE_ANNOTATION_PROVIDER_CLASS = "DetectableAnnotationProvider";
   private static final String DETECTABLE_ANNOTATION_CLASS = "DetectableAnnotation";
@@ -81,7 +82,7 @@ public class DetectableAnnotationProcessor implements Processor {
    */
   private static final String ANNOTATION_META_TEMPLATE =
       "new AnnotationMeta(\n"
-          + "   javax.lang.model.element.ElementKind.${ELEMENT_KIND}, \n"
+          + "   " + ELEMENT_KIND_CLASS + ".${ELEMENT_KIND}, \n"
           + "   ${IDENTIFIER}, \n"
           + "   ${ANNOTATION}, \n"
           + "   ${VERSION}, \n"

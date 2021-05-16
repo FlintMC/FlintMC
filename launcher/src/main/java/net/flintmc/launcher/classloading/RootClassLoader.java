@@ -19,6 +19,25 @@
 
 package net.flintmc.launcher.classloading;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.CodeSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.launcher.classloading.common.ClassInformation;
 import net.flintmc.launcher.classloading.common.CommonClassLoader;
@@ -28,20 +47,13 @@ import net.flintmc.transform.exceptions.ClassTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.security.CodeSource;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.jar.Manifest;
-import java.util.stream.Collectors;
-
 /**
  * Main class loader for applications launched using a {@link LaunchController}.
  */
 public class RootClassLoader extends URLClassLoader implements CommonClassLoader {
+
+  private static final Logger LOGGER = LogManager.getLogger("Root Classloader");
+
   static {
     ClassLoader.registerAsParallelCapable();
   }
@@ -62,7 +74,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    * @param urls The new class path of this class loader
    */
   public RootClassLoader(URL[] urls) {
-    super(urls, null);
+    super(urls, getPlatformClassloader());
     this.currentlyLoading = new HashSet<>();
     this.plugins = new HashSet<>();
     this.children = new ArrayList<>();
@@ -80,6 +92,25 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
     excludeFromModification("javax.");
     excludeFromModification("com.sun.");
     excludeFromModification("net.flintmc.launcher.");
+  }
+
+  /**
+   * Retrieves the classloader from the platform.
+   *
+   * @return The platform classloader.
+   */
+  private static ClassLoader getPlatformClassloader() {
+    String javaVersionProperty = System.getProperty("java.version");
+    if (!javaVersionProperty.startsWith("1.")) {
+      try {
+        return (ClassLoader) ClassLoader.class
+            .getDeclaredMethod("getPlatformClassLoader", new Class[0])
+            .invoke(null, new Object[0]);
+      } catch (Throwable ignored) {
+        LOGGER.warn("No platform classloader found: {}", javaVersionProperty);
+      }
+    }
+    return null;
   }
 
   public void addModifiedClass(String name, byte[] byteCode) {
@@ -133,7 +164,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    */
   @Override
   public Class<?> findClass(String name) throws ClassNotFoundException {
-    return findClass(name, null);
+    return findClass(name, (ChildClassLoader) null);
   }
 
   /**
@@ -265,7 +296,7 @@ public class RootClassLoader extends URLClassLoader implements CommonClassLoader
    */
   @Override
   public URL findResource(String name) {
-    return findResource(name, true);
+    return super.findResource(name);
   }
 
   /**

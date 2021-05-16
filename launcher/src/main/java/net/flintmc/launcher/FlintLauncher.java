@@ -19,15 +19,17 @@
 
 package net.flintmc.launcher;
 
-import net.flintmc.launcher.classloading.RootClassLoader;
-
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.flintmc.launcher.classloading.RootClassLoader;
+import sun.misc.Unsafe;
 
 public class FlintLauncher {
 
@@ -76,5 +78,50 @@ public class FlintLauncher {
     }
 
     return classPathUrls;
+  }
+
+  @SuppressWarnings("unchecked")
+  private static URL[] getSystemClassPathUrls() {
+    ClassLoader classLoader = FlintLauncher.class.getClassLoader();
+
+    if (classLoader instanceof URLClassLoader) {
+      return ((URLClassLoader) classLoader).getURLs();
+    }
+
+    if (classLoader.getClass().getName().startsWith("jdk.internal.loader.ClassLoaders$")) {
+      try {
+        Field theUnsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+        theUnsafeField.setAccessible(true);
+        Unsafe unsafe = (Unsafe) theUnsafeField.get(null);
+
+        Field ucpField = null;
+
+        try {
+          ucpField = classLoader.getClass().getDeclaredField("ucp");
+        } catch (NoSuchFieldException | SecurityException exception) {
+          ucpField = classLoader.getClass().getSuperclass().getDeclaredField("ucp");
+        }
+
+        long ucpFieldOffset = unsafe.objectFieldOffset(ucpField);
+        Object ucpObject = unsafe.getObject(classLoader, ucpFieldOffset);
+
+        Field pathField = ucpField.getType().getDeclaredField("path");
+        long pathFieldOffset = unsafe.objectFieldOffset(pathField);
+        ArrayList<URL> path = (ArrayList<URL>) unsafe.getObject(ucpObject, pathFieldOffset);
+
+        URL[] urls = path.toArray(new URL[0]);
+
+        for (final URL url : urls) {
+          System.out.println(url);
+        }
+
+        return urls;
+      } catch (Throwable throwable) {
+        throw new RuntimeException("Failed to find system class path URLs. Incompatible JDK?",
+            throwable);
+      }
+    }
+
+    return null;
   }
 }

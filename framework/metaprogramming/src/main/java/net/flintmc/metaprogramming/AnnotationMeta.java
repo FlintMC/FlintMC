@@ -20,7 +20,6 @@
 package net.flintmc.metaprogramming;
 
 import net.flintmc.metaprogramming.identifier.*;
-import javax.lang.model.element.ElementKind;
 import java.lang.annotation.Annotation;
 import java.util.*;
 

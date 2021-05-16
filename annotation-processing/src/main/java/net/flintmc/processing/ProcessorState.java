@@ -22,7 +22,6 @@ package net.flintmc.processing;
 import com.squareup.javapoet.*;
 import net.flintmc.processing.exception.ProcessingException;
 import org.apache.commons.io.IOUtils;
-import javax.annotation.Generated;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -221,10 +220,6 @@ public class ProcessorState {
 
       // Create an @Generated annotation and fill it with the full
       // qualified name of the FlintAnnotationProcessor
-      AnnotationSpec generatedAnnotation =
-          AnnotationSpec.builder(Generated.class)
-              .addMember("value", "$S", FlintAnnotationProcessor.class.getName())
-              .build();
 
       // Create an @SuppressWarnings annotation and fill it with "all"
       AnnotationSpec suppressWarningsAnnotation = AnnotationSpec.builder(SuppressWarnings.class)
@@ -248,7 +243,6 @@ public class ProcessorState {
       // Generate the final class
       TypeSpec generatedType =
           TypeSpec.classBuilder(generatedClassName)
-              .addAnnotation(generatedAnnotation)
               .addAnnotation(suppressWarningsAnnotation)
               .addModifiers(Modifier.PUBLIC)
               .addSuperinterface(autoLoadProviderClass)
