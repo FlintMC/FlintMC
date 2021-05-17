@@ -32,7 +32,7 @@ dependencies {
     api(project(":util:util-commons"))
 
     api("net.flintmc.launcher", "flint-launcher", "1.0.0")
-    api("net.flintmc.installer", "launcher-plugin", "1.1.11")
+    api("net.flintmc.installer", "launcher-plugin", "1.1.12")
 
     api("com.google.guava", "guava", "21.0")
     api("com.google.inject", "guice", "4.2.0")
