@@ -212,12 +212,11 @@ public class DefaultDependencyGraphBuilder implements DependencyGraphBuilder {
           libraryPackages.add(libraryPack);
 
         } catch (Exception e) {
-          this.logger.error(
-              String.format(
-                  "Failed to read file '%s' required in "
-                      + "classpath by package %s (version %s).",
-                  this.replacePath(requiredFile.getPath()),
-                  pack.getName(), pack.getVersion()));
+          this.logger.error(String.format(
+              "Failed to read file '%s' required in "
+                  + "classpath by package %s (version %s).",
+              this.replacePath(requiredFile.getPath()),
+              pack.getName(), pack.getVersion()), e);
           this.addFileIfNotPresent(files, requiredFile);
         }
 

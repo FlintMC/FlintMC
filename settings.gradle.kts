@@ -26,12 +26,12 @@ fun defineModule(path: String) {
 
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle") version "2.9.1"
+        id("net.flintmc.flint-gradle") version "2.10.0"
     }
 
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle", "2.9.1")
+            classpath("net.flintmc", "flint-gradle", "2.10.0")
         }
         repositories {
             mavenLocal()
@@ -56,8 +56,6 @@ defineModule("framework:packages")
 defineModule("framework:service")
 defineModule("framework:stereotype")
 
-defineModule(":launcher")
-
 defineModule(":mcapi")
 
 defineModule("render:gui")
@@ -67,7 +65,6 @@ defineModule("render:webgui")
 defineModule("render:model-renderer")
 
 defineModule("transform:asm")
-defineModule("transform:exceptions")
 defineModule("transform:hook")
 defineModule("transform:javassist")
 defineModule("transform:launcher-plugin")
@@ -87,7 +84,3 @@ defineModule("util:mojang")
 defineModule("util:session-service")
 defineModule("util:task-executor")
 defineModule("util:unit-testing")
-
-defineModule("minecraft:minecraft-1-15-2")
-defineModule("minecraft:minecraft-1-16-5")
-defineModule("bootstrap")

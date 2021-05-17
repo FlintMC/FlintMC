@@ -35,5 +35,5 @@ public interface MappingFileProvider {
    * @return Mapping inputs.
    * @throws IOException If the mappings could not be opened.
    */
-  Map<String, InputStream> getMappings(String version) throws IOException;
+  Map<MappingType, InputStream> getMappings(String version) throws IOException;
 }

@@ -53,7 +53,7 @@ jobs:
           echo "Zipping javadocs..."
           zip -r docs.zip *
           echo "Uploading..."
-          upload_resp_and_code=$(curl -X POST -F "secret=${FLINT_JAVADOCS_PUBLISH_TOKEN}" -F "zip=@docs.zip" "${FLINT_JAVADOCS_URL}" -w "%{http_code}")
+          upload_resp_and_code=$(curl -X POST -F "secret=${FLINT_JAVADOCS_PUBLISH_TOKEN}" -F "subdirectory=framework" -F "zip=@docs.zip" "${FLINT_JAVADOCS_URL}" -w "%{http_code}")
 
           upload_resp=$(echo "${upload_resp_and_code}" | head -n -1)
           status_code=$(echo "${upload_resp_and_code}" | tail -n 1 -c 4)
