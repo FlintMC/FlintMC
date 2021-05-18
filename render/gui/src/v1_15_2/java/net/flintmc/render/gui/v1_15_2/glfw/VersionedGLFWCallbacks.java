@@ -36,6 +36,8 @@ import net.flintmc.render.gui.event.WindowSizeEvent;
 import net.flintmc.render.gui.input.InputState;
 import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
+import net.flintmc.render.gui.internal.windowing.InternalWindow;
+import net.flintmc.render.gui.windowing.Window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.CallbackI;
@@ -99,21 +101,23 @@ public class VersionedGLFWCallbacks {
         state,
         VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods)));
 
-    Set<Key> pressedKeys = this.windowManager.getTargetWindowForEvent(windowHandle)
-        .getPressedKeys();
+    Window window = this.windowManager.getTargetWindowForEvent(windowHandle);
+    if (window instanceof InternalWindow) {
+      Set<Key> pressedKeys = ((InternalWindow) window).getMutablePressedKeys();
 
-    switch (state) {
-      case PRESS:
-        pressedKeys.add(flintKey);
-        break;
+      switch (state) {
+        case PRESS:
+          pressedKeys.add(flintKey);
+          break;
 
-      case RELEASE:
-        pressedKeys.remove(flintKey);
-        break;
+        case RELEASE:
+          pressedKeys.remove(flintKey);
+          break;
 
-      case REPEAT:
-      default:
-        break;
+        case REPEAT:
+        default:
+          break;
+      }
     }
 
     return cancelled;

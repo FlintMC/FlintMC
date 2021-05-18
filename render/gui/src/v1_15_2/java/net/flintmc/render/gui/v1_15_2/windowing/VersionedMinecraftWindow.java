@@ -191,15 +191,16 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
    * {@inheritDoc}
    */
   @Override
-  public void fireKeyEvent(Key key, InputState state) {
-    this.fireKeyEvent(key, state, EnumSet.noneOf(ModifierKey.class));
+  public void fireKeyEvent(Key key, InputState state, boolean fireEvent) {
+    this.fireKeyEvent(key, state, EnumSet.noneOf(ModifierKey.class), fireEvent);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void fireKeyEvent(Key key, InputState state, Set<ModifierKey> modifierKeys) {
+  public void fireKeyEvent(
+      Key key, InputState state, Set<ModifierKey> modifierKeys, boolean fireEvent) {
     long window = this.ensureHandle();
     int action = VersionedGLFWInputConverter.flintInputStateToGlfwAction(state);
     int modifiers = VersionedGLFWInputConverter.flintModifierToGlfwModifier(modifierKeys);
@@ -213,7 +214,8 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
             "Cannot fire mouse event before Minecraft has been initialized");
       }
 
-      if (this.callbacks.mouseButtonCallback(window, key.getKey(), action, modifiers)) {
+      if (fireEvent
+          && this.callbacks.mouseButtonCallback(window, key.getKey(), action, modifiers)) {
         // The window manager has handled the event and it has been cancelled,
         // don't pass it on to the original callback
         return;
@@ -227,7 +229,8 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
             "Cannot fire key event before Minecraft has been initialized");
       }
 
-      if (this.callbacks.keyCallback(window, key.getKey(), key.getScanCode(), action, modifiers)) {
+      if (fireEvent &&
+          this.callbacks.keyCallback(window, key.getKey(), key.getScanCode(), action, modifiers)) {
         // The window manager has handled the event and it has been cancelled,
         // don't pass it on to the original callback
         return;

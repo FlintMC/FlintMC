@@ -93,8 +93,9 @@ public interface MinecraftWindow extends Window {
    *
    * @param key   The non-null key to change the input state for
    * @param state The non-null state to be changed to
+   * @param fireEvent {@code true} if the event should be fired, {@code false} otherwise
    */
-  void fireKeyEvent(Key key, InputState state);
+  void fireKeyEvent(Key key, InputState state, boolean fireEvent);
 
   /**
    * Fires the key/mouse event for the given key (depending on whether the given key is a {@link
@@ -104,6 +105,7 @@ public interface MinecraftWindow extends Window {
    * @param key   The non-null key to change the input state for
    * @param state The non-null state to be changed to
    * @param modifierKeys The non-null set of modifier keys to be used
+   * @param fireEvent {@code true} if the event should be fired, {@code false} otherwise
    */
-  void fireKeyEvent(Key key, InputState state, Set<ModifierKey> modifierKeys);
+  void fireKeyEvent(Key key, InputState state, Set<ModifierKey> modifierKeys, boolean fireEvent);
 }

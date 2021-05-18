@@ -107,10 +107,10 @@ public interface Window {
   boolean isKeyPressed(Key key);
 
   /**
-   * Retrieves a set of all currently pressed keys by the user. The returned set is mutable and will
-   * be modified whenever a key is either pressed or released.
+   * Retrieves a set of all currently pressed keys by the user. The returned set will be modified
+   * whenever a key is either pressed or released.
    *
-   * @return A non-null mutable set with all currently pressed keys
+   * @return A non-null immutable set with all currently pressed keys
    */
   Set<Key> getPressedKeys();
 

@@ -29,6 +29,7 @@ import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -165,6 +166,14 @@ public class VersionedWindow implements InternalWindow {
    */
   @Override
   public Set<Key> getPressedKeys() {
+    return Collections.unmodifiableSet(this.pressedKeys);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Set<Key> getMutablePressedKeys() {
     return this.pressedKeys;
   }
 

@@ -36,6 +36,8 @@ import net.flintmc.render.gui.event.WindowSizeEvent;
 import net.flintmc.render.gui.input.InputState;
 import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
+import net.flintmc.render.gui.internal.windowing.InternalWindow;
+import net.flintmc.render.gui.windowing.Window;
 import net.minecraft.world.gen.feature.SpringFeature;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.Callback;
@@ -100,21 +102,24 @@ public class VersionedGLFWCallbacks {
         state,
         VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods)));
 
-    Set<Key> pressedKeys = this.windowManager.getTargetWindowForEvent(windowHandle)
-        .getPressedKeys();
 
-    switch (state) {
-      case PRESS:
-        pressedKeys.add(flintKey);
-        break;
+    Window window = this.windowManager.getTargetWindowForEvent(windowHandle);
+    if (window instanceof InternalWindow) {
+      Set<Key> pressedKeys = ((InternalWindow) window).getMutablePressedKeys();
 
-      case RELEASE:
-        pressedKeys.remove(flintKey);
-        break;
+      switch (state) {
+        case PRESS:
+          pressedKeys.add(flintKey);
+          break;
 
-      case REPEAT:
-      default:
-        break;
+        case RELEASE:
+          pressedKeys.remove(flintKey);
+          break;
+
+        case REPEAT:
+        default:
+          break;
+      }
     }
 
     return cancelled;
