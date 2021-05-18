@@ -213,7 +213,7 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
             "Cannot fire mouse event before Minecraft has been initialized");
       }
 
-      if (this.callbacks.keyCallback(window, key.getKey(), key.getScanCode(), action, modifiers)) {
+      if (this.callbacks.mouseButtonCallback(window, key.getKey(), action, modifiers)) {
         // The window manager has handled the event and it has been cancelled,
         // don't pass it on to the original callback
         return;
@@ -227,7 +227,7 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
             "Cannot fire key event before Minecraft has been initialized");
       }
 
-      if (this.callbacks.mouseButtonCallback(window, key.getKey(), action, modifiers)) {
+      if (this.callbacks.keyCallback(window, key.getKey(), key.getScanCode(), action, modifiers)) {
         // The window manager has handled the event and it has been cancelled,
         // don't pass it on to the original callback
         return;
