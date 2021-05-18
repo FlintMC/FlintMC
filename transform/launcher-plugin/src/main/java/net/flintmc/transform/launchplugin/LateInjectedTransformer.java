@@ -19,8 +19,8 @@
 
 package net.flintmc.transform.launchplugin;
 
+import net.flintmc.launcher.classloading.ClassTransformException;
 import net.flintmc.launcher.classloading.common.CommonClassLoader;
-import net.flintmc.transform.exceptions.ClassTransformException;
 
 public interface LateInjectedTransformer {
 

@@ -33,8 +33,8 @@ dependencies {
     api(project(":framework:framework-stereotype"))
     api(project(":util:util-commons"))
     api("com.google.code.gson", "gson", "2.8.6")
-    api("net.flintmc.installer", "logic", "1.1.5")
-    api("net.flintmc.installer", "logic-implementation", "1.1.5")
+    api("net.flintmc.installer", "logic", "1.1.12")
+    api("net.flintmc.installer", "logic-implementation", "1.1.12")
 
     internalImplementation(project(":framework:framework-inject", "internal"))
     internalImplementation(project(":framework:framework-service"))

@@ -26,7 +26,7 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.NotFoundException;
 import net.flintmc.metaprogramming.AnnotationMeta;
-import net.flintmc.transform.exceptions.ClassTransformException;
+import net.flintmc.launcher.classloading.ClassTransformException;
 import net.flintmc.transform.shadow.FieldCreate;
 import net.flintmc.transform.shadow.internal.handler.RegisterShadowHandler;
 import net.flintmc.transform.shadow.internal.handler.ShadowHandler;

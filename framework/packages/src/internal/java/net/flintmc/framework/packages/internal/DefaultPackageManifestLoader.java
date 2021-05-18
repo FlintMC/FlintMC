@@ -40,8 +40,8 @@ import net.flintmc.framework.packages.PackageManifestLoader;
 import net.flintmc.framework.packages.SemanticVersion;
 import net.flintmc.installer.impl.InstallerModule;
 import net.flintmc.installer.impl.repository.models.DependencyDescriptionModel;
-import net.flintmc.installer.impl.repository.models.ModelSerializer;
 import net.flintmc.installer.impl.repository.models.PackageModel;
+import net.flintmc.installer.repository.ModelSerializer;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 
