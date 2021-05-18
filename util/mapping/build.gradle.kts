@@ -32,7 +32,7 @@ dependencies {
     annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
-    api("net.flintmc.launcher", "flint-launcher", "1.0.0")
+    api("net.flintmc.launcher", "flint-launcher", "1.0.1")
 
     api(project(":framework:framework-inject"))
     api(project(":util:util-csv"))

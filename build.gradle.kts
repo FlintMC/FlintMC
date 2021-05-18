@@ -100,6 +100,12 @@ flint {
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
     authors = arrayOf("LabyMedia GmbH")
 
+    resolutionStrategy {
+        forceDependency("org.apache.logging.log4j:log4j-api:2.14.0")
+        forceDependency("org.apache.logging.log4j:log4j-core:2.14.0")
+        forceDependency("com.beust:jcommander:1.81")
+    }
+
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")
     }
