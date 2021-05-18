@@ -179,16 +179,25 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
     return ((MinecraftFpsShadow) Minecraft.getInstance()).getFPS();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isIngame() {
     return Minecraft.getInstance().world != null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void fireKeyEvent(Key key, InputState state) {
     this.fireKeyEvent(key, state, EnumSet.noneOf(ModifierKey.class));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void fireKeyEvent(Key key, InputState state, Set<ModifierKey> modifierKeys) {
     long window = this.ensureHandle();
@@ -238,6 +247,9 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
     return !intrusiveRenderers.isEmpty();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void render() {
     if (handle == 0) {

@@ -247,6 +247,9 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
     return !intrusiveRenderers.isEmpty();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void render() {
     if (handle == 0) {
