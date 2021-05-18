@@ -20,6 +20,14 @@
 package net.flintmc.metaprogramming;
 
 
+import javax.lang.model.element.Element;
+
+/**
+ * An enumeration representing all types of an {@link Element}.
+ * <p>
+ * <b>Note:</b> It is possible that more element types will be added, as Java can add new types in
+ * newer versions.
+ */
 public enum ElementKind {
   PACKAGE,
   ENUM,
@@ -38,19 +46,40 @@ public enum ElementKind {
   TYPE_PARAMETER,
   OTHER,
   RESOURCE_VARIABLE,
-  MODULE;
+  MODULE,
+  RECORD,
+  RECORD_COMPONENT,
+  BINDING_VARIABLE;
 
   private ElementKind() {
   }
 
+  /**
+   * Whether, the type of the class is a {@link #CLASS}, {@link #ENUM} or {@link #RECORD}.
+   *
+   * @return {@code true} if the type of the class is a {@link #CLASS}, {@link #ENUM} or {@link
+   * #RECORD}, otherwise {@code false}.
+   */
   public boolean isClass() {
-    return this == CLASS || this == ENUM;
+    return this == CLASS || this == ENUM || this == RECORD;
   }
 
+  /**
+   * Whether, the type of the interface is a {@link #INTERFACE} or {@link #ANNOTATION_TYPE}.
+   *
+   * @return {@code true} if the type of the interface is a {@link #INTERFACE} or {@link
+   * #ANNOTATION_TYPE}, otherwise {@code false}.
+   */
   public boolean isInterface() {
     return this == INTERFACE || this == ANNOTATION_TYPE;
   }
 
+  /**
+   * Whether, the type of the field is a {@link #FIELD} or {@link #ENUM_CONSTANT}.
+   *
+   * @return {@code true} if the type of the field is a {@link #FIELD} or {@link #ENUM_CONSTANT},
+   * otherwise {@code false}.
+   */
   public boolean isField() {
     return this == FIELD || this == ENUM_CONSTANT;
   }

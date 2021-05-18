@@ -218,9 +218,6 @@ public class ProcessorState {
 
       MethodSpec registerAutoLoadMethod = method.build();
 
-      // Create an @Generated annotation and fill it with the full
-      // qualified name of the FlintAnnotationProcessor
-
       // Create an @SuppressWarnings annotation and fill it with "all"
       AnnotationSpec suppressWarningsAnnotation = AnnotationSpec.builder(SuppressWarnings.class)
           .addMember("value", "$S", "unchecked")

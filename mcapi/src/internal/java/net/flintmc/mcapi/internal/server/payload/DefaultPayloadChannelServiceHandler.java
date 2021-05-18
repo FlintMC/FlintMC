@@ -44,7 +44,8 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
   private final PayloadChannelService payloadChannelService;
 
   @Inject
-  private DefaultPayloadChannelServiceHandler(Logger logger, PayloadChannelService payloadChannelService) {
+  private DefaultPayloadChannelServiceHandler(@InjectLogger Logger logger,
+      PayloadChannelService payloadChannelService) {
     this.logger = logger;
     this.payloadChannelService = payloadChannelService;
   }
