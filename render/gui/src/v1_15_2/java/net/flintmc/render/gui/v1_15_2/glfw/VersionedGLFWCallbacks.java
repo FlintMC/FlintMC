@@ -22,6 +22,7 @@ package net.flintmc.render.gui.v1_15_2.glfw;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.nio.DoubleBuffer;
+import java.util.Set;
 import java.util.function.BiFunction;
 import net.flintmc.render.gui.event.CursorPosChangedEvent;
 import net.flintmc.render.gui.event.FramebufferSizeEvent;
@@ -32,6 +33,8 @@ import net.flintmc.render.gui.event.UnicodeTypedEvent;
 import net.flintmc.render.gui.event.WindowFocusEvent;
 import net.flintmc.render.gui.event.WindowPosEvent;
 import net.flintmc.render.gui.event.WindowSizeEvent;
+import net.flintmc.render.gui.input.InputState;
+import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.Callback;
@@ -86,12 +89,34 @@ public class VersionedGLFWCallbacks {
   }
 
   public boolean keyCallback(long windowHandle, int key, int scancode, int action, int mods) {
-    return this.windowManager.fireEvent(windowHandle, window -> new KeyEvent(
+    Key flintKey = VersionedGLFWInputConverter.glfwKeyToFlintKey(key);
+    InputState state = VersionedGLFWInputConverter.glfwActionToFlintInputState(action);
+
+    boolean cancelled = this.windowManager.fireEvent(windowHandle, window -> new KeyEvent(
         window,
-        VersionedGLFWInputConverter.glfwKeyToFlintKey(key),
+        flintKey,
         scancode,
-        VersionedGLFWInputConverter.glfwActionToFlintInputState(action),
+        state,
         VersionedGLFWInputConverter.glfwModifierToFlintModifier(mods)));
+
+    Set<Key> pressedKeys = this.windowManager.getTargetWindowForEvent(windowHandle)
+        .getPressedKeys();
+
+    switch (state) {
+      case PRESS:
+        pressedKeys.add(flintKey);
+        break;
+
+      case RELEASE:
+        pressedKeys.remove(flintKey);
+        break;
+
+      case REPEAT:
+      default:
+        break;
+    }
+
+    return cancelled;
   }
 
   public boolean charModsCallback(long windowHandle, int codepoint, int mods) {

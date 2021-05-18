@@ -21,6 +21,7 @@ package net.flintmc.render.gui.v1_15_2;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.nio.DoubleBuffer;
 import javassist.CannotCompileException;
 import javassist.CtField;
 import javassist.CtMethod;
@@ -41,8 +42,6 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 import org.lwjgl.system.MemoryStack;
 
-import java.nio.DoubleBuffer;
-
 /**
  * 1.15.2 implementation of the input interceptor
  */
@@ -53,6 +52,9 @@ public class VersionedInputInterceptor implements InputInterceptor {
   private final InjectedFieldBuilder.Factory fieldBuilderFactory;
   private final VersionedGLFWCallbacks callbacks;
   private GLFWCursorPosCallbackI cursorPosCallback;
+
+  private GLFWKeyCallbackI minecraftKeyCallback;
+  private GLFWMouseButtonCallbackI minecraftMouseButtonCallback;
 
   @Inject
   private VersionedInputInterceptor(
@@ -68,6 +70,8 @@ public class VersionedInputInterceptor implements InputInterceptor {
       long minecraftWindowHandle,
       GLFWKeyCallbackI keyCallback,
       GLFWCharModsCallbackI charModsCallback) {
+    this.minecraftKeyCallback = keyCallback;
+
     VersionedGLFWCallbacks.overrideCallback(
         GLFW::glfwSetKeyCallback,
         minecraftWindowHandle,
@@ -97,6 +101,8 @@ public class VersionedInputInterceptor implements InputInterceptor {
       GLFWCursorPosCallbackI cursorPosCallback,
       GLFWMouseButtonCallbackI mouseButtonCallback,
       GLFWScrollCallbackI scrollCallback) {
+    this.minecraftMouseButtonCallback = mouseButtonCallback;
+
     this.cursorPosCallback =
         (window, x, y) -> {
           if (!this.callbacks.cursorPosCallback(window, x, y)) {
@@ -205,5 +211,13 @@ public class VersionedInputInterceptor implements InputInterceptor {
     }
 
     this.cursorPosCallback.invoke(window.getHandle(), cursorX, cursorY);
+  }
+
+  public GLFWKeyCallbackI getMinecraftKeyCallback() {
+    return this.minecraftKeyCallback;
+  }
+
+  public GLFWMouseButtonCallbackI getMinecraftMouseButtonCallback() {
+    return this.minecraftMouseButtonCallback;
   }
 }

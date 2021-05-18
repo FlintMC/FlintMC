@@ -29,7 +29,9 @@ import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -58,6 +60,8 @@ public class VersionedWindow implements InternalWindow {
   protected final List<WindowRenderer> renderers;
   protected final DefaultWindowManager windowManager;
 
+  private final Set<Key> pressedKeys;
+
   protected long handle;
 
   /**
@@ -81,6 +85,8 @@ public class VersionedWindow implements InternalWindow {
       VersionedGLFWCallbacks callbacks,
       EventBus eventBus) {
     this.renderers = new ArrayList<>();
+    this.pressedKeys = new HashSet<>();
+
     this.windowManager = windowManager;
     this.eventBus = eventBus;
     this.handle = glfwCreateWindow(width, height, title, 0, minecraftWindow.getHandle());
@@ -99,17 +105,25 @@ public class VersionedWindow implements InternalWindow {
    */
   protected VersionedWindow(long handle, DefaultWindowManager windowManager, EventBus eventBus) {
     this.renderers = new ArrayList<>();
+    this.pressedKeys = new HashSet<>();
+
     this.windowManager = windowManager;
     this.handle = handle;
     this.eventBus = eventBus;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void addRenderer(WindowRenderer renderer) {
     glfwMakeContextCurrent(ensureHandle());
     renderer.initialize();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean removeRenderer(WindowRenderer renderer) {
     if (!renderers.remove(renderer)) {
@@ -122,11 +136,17 @@ public class VersionedWindow implements InternalWindow {
     return true;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isFocused() {
     return glfwGetWindowAttrib(ensureHandle(), GLFW_FOCUSED) == GLFW_TRUE;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isKeyPressed(Key key) {
     int glfwKey = VersionedGLFWInputConverter.flintKeyToGlfwKey(key);
@@ -140,26 +160,49 @@ public class VersionedWindow implements InternalWindow {
     return glfwAction == GLFW.GLFW_PRESS;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Set<Key> getPressedKeys() {
+    return this.pressedKeys;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isClosed() {
     return this.handle == 0;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getHandle() {
     return handle;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getWidth() {
     return getSize()[0];
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getHeight() {
     return getSize()[1];
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float[] getSize() {
     float[] out = new float[2];
@@ -184,6 +227,9 @@ public class VersionedWindow implements InternalWindow {
     return out;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void close() {
     close(true);
@@ -225,11 +271,17 @@ public class VersionedWindow implements InternalWindow {
     return handle;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isRenderedIntrusively() {
     return false;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void render() {
     glfwMakeContextCurrent(ensureHandle());

@@ -23,29 +23,47 @@ import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.event.WindowRenderEvent;
+import net.flintmc.render.gui.input.InputState;
+import net.flintmc.render.gui.input.Key;
+import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
+import net.flintmc.render.gui.v1_15_2.VersionedInputInterceptor;
+import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
+import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWInputConverter;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.WindowRenderer;
 import net.minecraft.client.Minecraft;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
 @Singleton
 @Implement(MinecraftWindow.class)
 public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
 
   private final List<WindowRenderer> intrusiveRenderers;
+  private final VersionedGLFWCallbacks callbacks;
+  private final VersionedInputInterceptor inputInterceptor;
 
   @Inject
   private VersionedMinecraftWindow(
       DefaultWindowManager windowManager,
-      EventBus eventBus) {
+      EventBus eventBus,
+      VersionedGLFWCallbacks callbacks,
+      VersionedInputInterceptor inputInterceptor) {
     super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager, eventBus);
+
+    this.callbacks = callbacks;
+    this.inputInterceptor = inputInterceptor;
+
     this.intrusiveRenderers = new ArrayList<>();
   }
 
@@ -167,6 +185,56 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
   @Override
   public boolean isIngame() {
     return Minecraft.getInstance().world != null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void fireKeyEvent(Key key, InputState state) {
+    this.fireKeyEvent(key, state, EnumSet.noneOf(ModifierKey.class));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void fireKeyEvent(Key key, InputState state, Set<ModifierKey> modifierKeys) {
+    long window = this.ensureHandle();
+    int action = VersionedGLFWInputConverter.flintInputStateToGlfwAction(state);
+    int modifiers = VersionedGLFWInputConverter.flintModifierToGlfwModifier(modifierKeys);
+
+    if (key.isMouse()) {
+      GLFWMouseButtonCallbackI minecraftMouseButtonCallback =
+          this.inputInterceptor.getMinecraftMouseButtonCallback();
+
+      if (minecraftMouseButtonCallback == null) {
+        throw new IllegalStateException(
+            "Cannot fire mouse event before Minecraft has been initialized");
+      }
+
+      if (this.callbacks.keyCallback(window, key.getKey(), key.getScanCode(), action, modifiers)) {
+        // The window manager has handled the event and it has been cancelled,
+        // don't pass it on to the original callback
+        return;
+      }
+
+      minecraftMouseButtonCallback.invoke(this.ensureHandle(), key.getKey(), action, modifiers);
+    } else {
+      GLFWKeyCallbackI minecraftKeyCallback = this.inputInterceptor.getMinecraftKeyCallback();
+      if (minecraftKeyCallback == null) {
+        throw new IllegalStateException(
+            "Cannot fire key event before Minecraft has been initialized");
+      }
+
+      if (this.callbacks.mouseButtonCallback(window, key.getKey(), action, modifiers)) {
+        // The window manager has handled the event and it has been cancelled,
+        // don't pass it on to the original callback
+        return;
+      }
+
+      minecraftKeyCallback.invoke(window, key.getKey(), key.getScanCode(), action, modifiers);
+    }
   }
 
   /**
