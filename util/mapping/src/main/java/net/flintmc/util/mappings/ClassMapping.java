@@ -95,7 +95,7 @@ public final class ClassMapping extends BaseMapping {
     } else if (deobfuscatedFields.containsKey(name)) {
       return deobfuscatedFields.get(name);
     }
-    return null;
+    return new FieldMapping(false, this, name, name);
   }
 
   /**
@@ -169,7 +169,14 @@ public final class ClassMapping extends BaseMapping {
     } else if (deobfuscatedMethods.containsKey(deObfuscatedIdentifier)) {
       return deobfuscatedMethods.get(deObfuscatedIdentifier);
     }
-    return null;
+
+    MethodMapping mapping = new MethodMapping(
+        false, this, identifier, obfuscatedIdentifier, name, name);
+
+    mapping.deobfuscatedDescriptor = identifier;
+    mapping.deobfuscatedIdentifier = obfuscatedIdentifier;
+
+    return mapping;
   }
 
   /**

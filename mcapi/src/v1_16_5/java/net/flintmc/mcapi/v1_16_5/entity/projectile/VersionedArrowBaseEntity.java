@@ -141,7 +141,7 @@ public class VersionedArrowBaseEntity extends VersionedEntity implements ArrowBa
   public Entity getShooter() {
     return this.getEntityFoundationMapper()
         .getEntityMapper()
-        .fromMinecraftEntity(this.arrowBaseEntity.func_234616_v_());
+        .fromMinecraftEntity(this.arrowBaseEntity.getShooter());
   }
 
   /**

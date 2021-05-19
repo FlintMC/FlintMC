@@ -21,8 +21,10 @@ package net.flintmc.render.gui.v1_16_5.event;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.function.Function;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.render.gui.event.OpenGLInitializeEvent;
 import net.flintmc.transform.hook.Hook;
 import net.flintmc.transform.hook.Hook.ExecutionTime;
@@ -43,8 +45,9 @@ public class VersionedOpenGLInitializeEventInjector {
 
   @Hook(
       executionTime = ExecutionTime.BEFORE,
-      className = "net.minecraft.client.Minecraft",
-      methodName = "isMultiplayerEnabled")
+      className = "net.minecraft.util.text.KeybindTextComponent",
+      methodName = "func_240696_a_",
+      parameters = @Type(reference = Function.class))
   public void preInitialize() {
     this.eventBus.fireEvent(this.event, Subscribe.Phase.PRE);
   }

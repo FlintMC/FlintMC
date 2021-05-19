@@ -20,7 +20,7 @@
 package net.flintmc.transform.javassist;
 
 import javassist.CtClass;
-import net.flintmc.transform.exceptions.ClassTransformException;
+import net.flintmc.launcher.classloading.ClassTransformException;
 
 public interface ClassTransformMeta {
 

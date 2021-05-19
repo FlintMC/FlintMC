@@ -22,7 +22,6 @@ package net.flintmc.mcapi.v1_15_2.server.payload;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.CannotCompileException;
-import javassist.ClassMap;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
@@ -41,13 +40,11 @@ import net.flintmc.transform.javassist.ClassTransformContext;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
 
-;
-
 @Singleton
 public class CustomPayloadInterceptor {
 
   private static final int[] LOGGER_WARN_SEQUENCE =
-      new int[]{Opcode.GETSTATIC, Opcode.LDC_W, Opcode.ALOAD_2, Opcode.INVOKEINTERFACE};
+      new int[]{Opcode.IFNULL, Opcode.ALOAD_3, Opcode.INVOKEVIRTUAL, Opcode.POP, Opcode.GOTO};
 
   private final ClassPool pool;
   private final ClassMapping customPayloadPacketMapping;

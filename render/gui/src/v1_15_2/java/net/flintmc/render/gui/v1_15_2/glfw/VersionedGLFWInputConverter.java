@@ -440,6 +440,38 @@ public class VersionedGLFWInputConverter {
   }
 
   /**
+   * Converts a Flint modifier key set to a GLFW modifier bitfield.
+   *
+   * @param modifierKeys A set containing the Flint modifier keys to be converted to the GLFW
+   *                     bitfield
+   * @return The GLFW bitfield from the given modifier keys
+   */
+  public static int flintModifierToGlfwModifier(Set<ModifierKey> modifierKeys) {
+    int modifiers = 0;
+
+    for (ModifierKey key : modifierKeys) {
+      switch (key) {
+        case SHIFT:
+          modifiers |= GLFW.GLFW_MOD_SHIFT;
+          break;
+        case CONTROL:
+          modifiers |= GLFW.GLFW_MOD_CONTROL;
+          break;
+        case ALT:
+          modifiers |= GLFW.GLFW_MOD_ALT;
+          break;
+        case SUPER:
+          modifiers |= GLFW.GLFW_MOD_SUPER;
+          break;
+        default:
+          throw new IllegalStateException("Unexpected value: " + key);
+      }
+    }
+
+    return modifiers;
+  }
+
+  /**
    * Converts a GLFW mouse button constant to a Flint mouse button,
    *
    * @param button The GLFW constant to convert
@@ -497,6 +529,30 @@ public class VersionedGLFWInputConverter {
 
       default:
         throw new IllegalArgumentException(state + " is not a valid GLFW mouse button state");
+    }
+  }
+
+  /**
+   * Converts a Flint input state to a GLFW action constant.
+   *
+   * @param state The input state to convert
+   * @return The converted GLFW constant
+   * @throws IllegalArgumentException If {@code state} is not one of {@link InputState#PRESS},
+   *                                  {@link InputState#RELEASE} or {@link InputState#REPEAT}
+   */
+  public static int flintInputStateToGlfwAction(InputState state) {
+    switch (state) {
+      case PRESS:
+        return GLFW.GLFW_PRESS;
+
+      case RELEASE:
+        return GLFW.GLFW_RELEASE;
+
+      case REPEAT:
+        return GLFW.GLFW_REPEAT;
+
+      default:
+        throw new IllegalArgumentException(state + " is not a valid Flint input state");
     }
   }
 

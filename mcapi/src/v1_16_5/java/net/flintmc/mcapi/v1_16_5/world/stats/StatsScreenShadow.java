@@ -58,7 +58,7 @@ public interface StatsScreenShadow {
 
     @SuppressWarnings("unchecked")
     default List<GeneralStat> getStats() {
-      return (List<GeneralStat>) ((AbstractListShadow) this).getChildren();
+      return (List<GeneralStat>) ((AbstractListShadow) this).getEntries();
     }
 
     @Shadow("net.minecraft.client.gui.screen.StatsScreen$CustomStatsList$Entry")
@@ -74,7 +74,7 @@ public interface StatsScreenShadow {
 
     @SuppressWarnings("unchecked")
     default List<MobStat> getStats() {
-      return (List<MobStat>) ((AbstractListShadow) this).getChildren();
+      return (List<MobStat>) ((AbstractListShadow) this).getEntries();
     }
 
     @Shadow("net.minecraft.client.gui.screen.StatsScreen$MobStatsList$Entry")
@@ -101,9 +101,7 @@ public interface StatsScreenShadow {
   @Shadow("net.minecraft.client.gui.widget.list.AbstractList")
   interface AbstractListShadow {
 
-    @FieldGetter("children")
-    List<?> getChildren();
-
+    @FieldGetter("entries")
+    List<?> getEntries();
   }
-
 }

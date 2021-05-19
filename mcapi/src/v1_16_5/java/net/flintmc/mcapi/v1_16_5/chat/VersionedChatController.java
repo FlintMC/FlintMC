@@ -87,6 +87,7 @@ public class VersionedChatController implements ChatController {
    */
   @Override
   public boolean dispatchChatInput(String message) {
+    message = message.trim();
     if (message.length() >= this.getChatInputLimit()) {
       // the message is longer than the maximum allowed, servers would kick the player when sending
       // this
@@ -141,7 +142,7 @@ public class VersionedChatController implements ChatController {
     }
 
     ITextComponent mapped = (ITextComponent) this.componentMapper.toMinecraft(component);
-    Minecraft.getInstance().ingameGUI.func_238450_a_(type, mapped, senderUniqueId);
+    Minecraft.getInstance().ingameGUI.sendChatMessage(type, mapped, senderUniqueId);
   }
 
   /**

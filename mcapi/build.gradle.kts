@@ -38,6 +38,8 @@ dependencies {
 
     api(project(":transform:transform-hook"))
     api(project(":transform:transform-shadow"))
+    api(project(":transform:transform-minecraft-obfuscator"))
+
     api(project(":render:render-model-renderer"))
     api(project(":render:render-model-renderer", "internal"))
 

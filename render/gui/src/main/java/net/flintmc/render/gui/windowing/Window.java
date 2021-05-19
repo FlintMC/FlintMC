@@ -22,6 +22,7 @@ package net.flintmc.render.gui.windowing;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.render.gui.input.Key;
+import java.util.Set;
 
 /**
  * A generic, operating system window.
@@ -104,6 +105,14 @@ public interface Window {
    * @see #isClosed()
    */
   boolean isKeyPressed(Key key);
+
+  /**
+   * Retrieves a set of all currently pressed keys by the user. The returned set will be modified
+   * whenever a key is either pressed or released.
+   *
+   * @return A non-null immutable set with all currently pressed keys
+   */
+  Set<Key> getPressedKeys();
 
   /**
    * Retrieves whether this window has been closed. If it has been closed, no more operations should

@@ -158,7 +158,7 @@ public class VersionedItemRegistry extends DefaultItemRegistry {
                 .translationKey(translationTextComponent.getKey())
                 .build(),
             () -> super.getType(itemRegistryName),
-            item.getGroup().drawInForegroundOfTab(),
+            item.getGroup().drawInForegroundOfGroup(),
             item.getGroup().getIndex());
 
     super.registerCategory(category);

@@ -27,7 +27,7 @@ import net.minecraft.world.biome.Biome;
 @Shadow("net.minecraft.world.gen.FlatGenerationSettings")
 public interface FlatGenerationSettingsShadow {
 
-  @FieldGetter("field_242867_d")
+  @FieldGetter("biomeRegistry")
   Registry<Biome> getBiomeRegistry();
 
 }

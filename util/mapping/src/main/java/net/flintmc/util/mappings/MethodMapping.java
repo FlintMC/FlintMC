@@ -19,9 +19,12 @@
 
 package net.flintmc.util.mappings;
 
+import com.google.inject.internal.cglib.core.$RejectModifierPredicate;
 import javassist.ClassPool;
+import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import javassist.bytecode.Descriptor;
 
 public final class MethodMapping extends BaseMapping {
 
@@ -126,6 +129,12 @@ public final class MethodMapping extends BaseMapping {
    * @throws NotFoundException If this method doesn't exist which should basically never happen
    */
   public CtMethod getMethod(ClassPool pool) throws NotFoundException {
-    return pool.get(this.classMapping.getName()).getMethod(this.getName(), this.getDescriptor());
+    CtClass ctClass = pool.get(this.classMapping.getName());
+    CtClass[] params = Descriptor.getParameterTypes(this.getDescriptor(), pool);
+    if (params == null) {
+      throw new NotFoundException("Invalid descriptor: " + this.getDescriptor());
+    }
+
+    return ctClass.getDeclaredMethod(this.getName(), params);
   }
 }
