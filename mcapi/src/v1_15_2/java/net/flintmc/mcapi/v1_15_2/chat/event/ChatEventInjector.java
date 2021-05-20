@@ -17,15 +17,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_16_5.chat;
+package net.flintmc.mcapi.v1_15_2.chat.event;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.CannotCompileException;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
@@ -73,7 +69,7 @@ public class ChatEventInjector {
     return classMapping.getMethodByIdentifier(name).getName();
   }
 
-  @ClassTransform("net.minecraft.client.gui.NewChatGui")
+  @ClassTransform(value = "net.minecraft.client.gui.NewChatGui")
   public void transformChatGui(ClassTransformContext context)
       throws NotFoundException, CannotCompileException {
     CtClass transforming = context.getCtClass();
@@ -108,11 +104,11 @@ public class ChatEventInjector {
       return null;
     }
 
-    return (ITextComponent) this.componentMapper.toMinecraft(event.getMessage());
+    return (ITextComponent) this.componentMapper
+        .toMinecraft(event.getMessage());
   }
 
-  @ClassTransform(
-      value = "net.minecraft.client.entity.player.ClientPlayerEntity")
+  @ClassTransform(value = "net.minecraft.client.entity.player.ClientPlayerEntity")
   public void transformClientPlayerEntity(ClassTransformContext context)
       throws CannotCompileException, NotFoundException {
     CtClass transforming = context.getCtClass();

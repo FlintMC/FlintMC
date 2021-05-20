@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.event.ChatInputChangeEvent;
 import net.flintmc.mcapi.chat.suggestion.SuggestionList;
 
 /**
@@ -42,6 +43,16 @@ public interface ChatController {
    * @return Whether the message was sent successfully or cancelled by an event handler
    */
   boolean dispatchChatInput(String message);
+
+  /**
+   * Sets the current value of the text field in the chat and fires the {@link
+   * ChatInputChangeEvent}, if the chat is currently not opened, only this event will be fired.
+   *
+   * @param text      The new non-null text to be set in the chat input
+   * @param overwrite {@code true} if the current input value should be replaced, {@code false} if
+   *                  the new value should be appended to the current value
+   */
+  void setInputValue(String text, boolean overwrite);
 
   /**
    * The history of the chat input by the player. This will be filled when the player types
