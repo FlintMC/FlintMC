@@ -19,6 +19,9 @@
 
 package net.flintmc.render.gui.windowing;
 
+import net.flintmc.render.gui.screen.ScreenName;
+import java.util.Collection;
+
 /**
  * Renderer for windows.
  */
@@ -41,6 +44,8 @@ public interface WindowRenderer {
    * @return {@code true} to mark the renderer as intrusive, {@code false} to mark it as cooperative
    */
   boolean isIntrusive();
+
+  Collection<ScreenName> getIntrusiveScreens();
 
   /**
    * Called when window needs to be rendered. The OpenGL context in this method is the one used for

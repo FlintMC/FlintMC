@@ -108,8 +108,8 @@ public class DefaultWindowManager implements WindowManager {
    *
    * @return {@code true} if the window is rendered intrusively, {@code false} otherwise
    */
-  public boolean isMinecraftWindowRenderedIntrusively() {
-    return ((InternalWindow) minecraftWindow).isRenderedIntrusively();
+  public boolean isMinecraftWindowRenderedIntrusively(String screen) {
+    return ((InternalWindow) minecraftWindow).isRenderedIntrusively(screen);
   }
 
   /**

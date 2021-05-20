@@ -226,7 +226,7 @@ public class VersionedWindow implements InternalWindow {
   }
 
   @Override
-  public boolean isRenderedIntrusively() {
+  public boolean isRenderedIntrusively(String screen) {
     return false;
   }
 

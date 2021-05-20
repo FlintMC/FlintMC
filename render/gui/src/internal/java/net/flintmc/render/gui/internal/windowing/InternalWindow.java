@@ -32,7 +32,7 @@ public interface InternalWindow extends Window {
    *
    * @return {@code true} if the windows is renderer intrusively, {@code false} otherwise
    */
-  boolean isRenderedIntrusively();
+  boolean isRenderedIntrusively(String screen);
 
   /**
    * Renders the window by executing the render chain.

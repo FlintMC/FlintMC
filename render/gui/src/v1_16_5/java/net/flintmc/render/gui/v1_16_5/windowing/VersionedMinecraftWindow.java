@@ -29,27 +29,27 @@ import javax.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.render.gui.event.WindowRenderEvent;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
+import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.WindowRenderer;
-import net.flintmc.util.mappings.ClassMappingProvider;
 import net.minecraft.client.Minecraft;
 
 @Singleton
 @Implement(MinecraftWindow.class)
 public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
 
-  private final ClassMappingProvider classMappingProvider;
   private final List<WindowRenderer> intrusiveRenderers;
+  private final ScreenNameMapper screenNameMapper;
 
   @Inject
   private VersionedMinecraftWindow(
-      ClassMappingProvider classMappingProvider,
       DefaultWindowManager windowManager,
-      EventBus eventBus) {
+      EventBus eventBus, ScreenNameMapper screenNameMapper) {
     super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager, eventBus);
-    this.classMappingProvider = classMappingProvider;
+    this.screenNameMapper = screenNameMapper;
     this.intrusiveRenderers = new ArrayList<>();
   }
 
@@ -175,8 +175,16 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
    * @return {@code true} if the window is rendered intrusively, {@code false} otherwise
    */
   @Override
-  public boolean isRenderedIntrusively() {
-    return !intrusiveRenderers.isEmpty();
+  public boolean isRenderedIntrusively(String screen) {
+    if (intrusiveRenderers.isEmpty()) {
+      return false;
+    }
+    for (WindowRenderer intrusiveRenderer : intrusiveRenderers) {
+      if (intrusiveRenderer.getIntrusiveScreens().contains(screenNameMapper.fromClass(screen))) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override
