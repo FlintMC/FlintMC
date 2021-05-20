@@ -59,7 +59,7 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
   @Inject
   private VersionedMinecraftWindow(
       DefaultWindowManager windowManager,
-      EventBus eventBus, ScreenNameMapper screenNameMapper,
+      ScreenNameMapper screenNameMapper,
       EventBus eventBus,
       VersionedInputInterceptor inputInterceptor,
       VersionedGLFWCallbacks callbacks) {

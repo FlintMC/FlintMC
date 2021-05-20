@@ -60,7 +60,6 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
       DefaultWindowManager windowManager,
       EventBus eventBus,
       ScreenNameMapper screenNameMapper,
-      EventBus eventBus,
       VersionedGLFWCallbacks callbacks,
       VersionedInputInterceptor inputInterceptor) {
     super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager, eventBus);
