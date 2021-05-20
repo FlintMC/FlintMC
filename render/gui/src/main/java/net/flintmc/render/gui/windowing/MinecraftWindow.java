@@ -19,6 +19,13 @@
 
 package net.flintmc.render.gui.windowing;
 
+import java.util.Set;
+import net.flintmc.render.gui.event.KeyEvent;
+import net.flintmc.render.gui.event.MouseButtonEvent;
+import net.flintmc.render.gui.input.InputState;
+import net.flintmc.render.gui.input.Key;
+import net.flintmc.render.gui.input.ModifierKey;
+
 /**
  * Interface representing the minecraft main window.
  */
@@ -78,4 +85,27 @@ public interface MinecraftWindow extends Window {
    * @return {@code true} if the client is ingame, {@code false} otherwise
    */
   boolean isIngame();
+
+  /**
+   * Fires the key/mouse event for the given key (depending on whether the given key is a {@link
+   * Key#isMouse() mouse or keyboard key}) and changes the state of it in Minecraft. This action may
+   * also be cancelled through the {@link KeyEvent} or {@link MouseButtonEvent}.
+   *
+   * @param key   The non-null key to change the input state for
+   * @param state The non-null state to be changed to
+   * @param fireEvent {@code true} if the event should be fired, {@code false} otherwise
+   */
+  void fireKeyEvent(Key key, InputState state, boolean fireEvent);
+
+  /**
+   * Fires the key/mouse event for the given key (depending on whether the given key is a {@link
+   * Key#isMouse() mouse or keyboard key}) and changes the state of it in Minecraft. This action may
+   * also be cancelled through the {@link KeyEvent} or {@link MouseButtonEvent}.
+   *
+   * @param key   The non-null key to change the input state for
+   * @param state The non-null state to be changed to
+   * @param modifierKeys The non-null set of modifier keys to be used
+   * @param fireEvent {@code true} if the event should be fired, {@code false} otherwise
+   */
+  void fireKeyEvent(Key key, InputState state, Set<ModifierKey> modifierKeys, boolean fireEvent);
 }

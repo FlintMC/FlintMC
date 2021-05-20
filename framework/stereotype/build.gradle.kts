@@ -31,7 +31,7 @@ dependencies {
     api(project(":framework:framework-inject-primitive"))
     api(project(":util:util-commons"))
 
-    api("net.flintmc.launcher", "flint-launcher", "1.0.0")
+    api("net.flintmc.launcher", "flint-launcher", "1.0.1")
     api("net.flintmc.installer", "launcher-plugin", "1.1.12")
 
     api("com.google.guava", "guava", "21.0")

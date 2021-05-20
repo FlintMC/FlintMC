@@ -19,7 +19,7 @@
 
 plugins {
     id("net.flintmc.flint-gradle")
-    id("net.minecrell.licenser") version "0.4.1"
+    id("org.cadixdev.licenser") version "0.6.0"
 }
 
 repositories {
@@ -33,7 +33,7 @@ repositories {
 subprojects {
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
-        plugins.apply("net.minecrell.licenser")
+        plugins.apply("org.cadixdev.licenser")
 
         version = System.getenv().getOrDefault("VERSION", "1.0.0")
 
@@ -53,13 +53,13 @@ subprojects {
         }
 
         license {
-            header = rootProject.file("LICENSE-HEADER")
+            header(rootProject.file("LICENSE-HEADER"))
             include("**/*.java")
             include("**/*.kts")
 
             tasks {
                 create("gradle") {
-                    files = project.files("build.gradle.kts", "settings.gradle.kts")
+                    files(project.files("build.gradle.kts", "settings.gradle.kts"))
                 }
             }
         }
@@ -99,6 +99,12 @@ flint {
 
     type = net.flintmc.gradle.extension.FlintGradleExtension.Type.LIBRARY
     authors = arrayOf("LabyMedia GmbH")
+
+    resolutionStrategy {
+        forceDependency("org.apache.logging.log4j:log4j-api:2.14.0")
+        forceDependency("org.apache.logging.log4j:log4j-core:2.14.0")
+        forceDependency("com.beust:jcommander:1.81")
+    }
 
     runs {
         overrideMainClass("net.flintmc.launcher.FlintLauncher")

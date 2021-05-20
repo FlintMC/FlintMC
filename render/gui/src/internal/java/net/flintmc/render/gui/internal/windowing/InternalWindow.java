@@ -19,7 +19,9 @@
 
 package net.flintmc.render.gui.internal.windowing;
 
+import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.windowing.Window;
+import java.util.Set;
 
 /**
  * Interface for accessing internal components of windows from the internal implementation.
@@ -38,4 +40,11 @@ public interface InternalWindow extends Window {
    * Renders the window by executing the render chain.
    */
   void render();
+
+  /**
+   * Mutable version of {@link #getPressedKeys()}.
+   *
+   * @return The non-null mutable set of currently pressed keys.
+   */
+  Set<Key> getMutablePressedKeys();
 }

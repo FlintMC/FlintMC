@@ -21,7 +21,6 @@ package net.flintmc.mcapi.internal.server.payload;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.logging.InjectLogger;
@@ -40,32 +39,20 @@ import org.apache.logging.log4j.Logger;
 @Service(PayloadChannel.class)
 public class DefaultPayloadChannelServiceHandler implements ServiceHandler<PayloadChannel> {
 
+  private static final String PAYLOAD_CHANNEL_LISTENER_CLASS = "net.flintmc.mcapi.server.payload.PayloadChannelListener";
   private final Logger logger;
   private final PayloadChannelService payloadChannelService;
-  private CtClass payloadChannelListenerClass;
-  private boolean registrable = true;
 
   @Inject
-  private DefaultPayloadChannelServiceHandler(
-      @InjectLogger Logger logger, ClassPool pool, PayloadChannelService payloadChannelService) {
+  private DefaultPayloadChannelServiceHandler(@InjectLogger Logger logger,
+      PayloadChannelService payloadChannelService) {
     this.logger = logger;
     this.payloadChannelService = payloadChannelService;
-
-    try {
-      this.payloadChannelListenerClass =
-          pool.get("net.flintmc.mcapi.server.payload.PayloadChannelListener");
-    } catch (NotFoundException exception) {
-      this.logger.error("The PayloadChannelListener was not found!", exception);
-      this.registrable = false;
-    }
   }
 
   @Override
   public void discover(AnnotationMeta<PayloadChannel> annotationMeta)
       throws ServiceNotFoundException {
-    if (!this.registrable) {
-      return;
-    }
 
     PayloadChannel payloadChannel = annotationMeta.getAnnotation();
     MethodIdentifier methodIdentifier = annotationMeta.getMethodIdentifier();
@@ -75,7 +62,7 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
 
     try {
       for (CtClass anInterface : declaringClass.getInterfaces()) {
-        if (anInterface.getName().equals(payloadChannelListenerClass.getName())) {
+        if (anInterface.getName().equals(PAYLOAD_CHANNEL_LISTENER_CLASS)) {
           shouldRegister = true;
         }
       }
@@ -89,7 +76,7 @@ public class DefaultPayloadChannelServiceHandler implements ServiceHandler<Paylo
       this.logger.warn(
           "The payload channel listener `{}` cannot be registered because it does not implement the interface: {}!",
           declaringClass.getName(),
-          this.payloadChannelListenerClass.getName());
+          PAYLOAD_CHANNEL_LISTENER_CLASS);
       return;
     }
 
