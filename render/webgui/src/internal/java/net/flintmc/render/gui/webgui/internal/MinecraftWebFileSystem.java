@@ -22,34 +22,37 @@ package net.flintmc.render.gui.webgui.internal;
 import net.flintmc.render.gui.webgui.WebFileSystem;
 import net.flintmc.render.gui.webgui.WebFileSystemHandler;
 import net.flintmc.render.gui.webgui.WebResource;
+
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
+import java.util.Map;
 
 @Singleton
 @WebFileSystem("minecraft")
 public class MinecraftWebFileSystem implements WebFileSystemHandler {
 
-  private final File savesDirectory;
+  private final File gameDirectory;
 
   @Inject
-  private MinecraftWebFileSystem() {
-    this.savesDirectory = new File(".");
+  private MinecraftWebFileSystem(@Named("launchArguments") Map launchArguments) {
+    this.gameDirectory = new File(launchArguments.get("--gamedir").toString());
   }
 
   @Override
   public boolean existsFile(String path) {
-    return new File(savesDirectory, path).exists();
+    return new File(gameDirectory, path).exists();
   }
 
   @Override
   public WebResource getFile(String path) throws FileNotFoundException {
     try {
-      return new URLWebResource(path, new File(savesDirectory, path).toURI().toURL());
+      return new URLWebResource(path, new File(gameDirectory, path).toURI().toURL());
     } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
+      throw new FileNotFoundException(path);
     }
   }
 }

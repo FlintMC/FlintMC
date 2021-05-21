@@ -42,6 +42,7 @@ import net.flintmc.render.gui.event.WindowRenderEvent;
 import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.internal.windowing.InternalWindow;
+import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWInputConverter;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
@@ -284,7 +285,7 @@ public class VersionedWindow implements InternalWindow {
    * {@inheritDoc}
    */
   @Override
-  public boolean isRenderedIntrusively(String screen) {
+  public boolean isRenderedIntrusively(ScreenName screen) {
     return false;
   }
 

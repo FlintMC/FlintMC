@@ -36,6 +36,7 @@ import net.flintmc.render.gui.input.InputState;
 import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
+import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.render.gui.v1_15_2.VersionedInputInterceptor;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
@@ -51,7 +52,6 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 public class VersionedMinecraftWindow extends VersionedWindow implements MinecraftWindow {
 
   private final List<WindowRenderer> intrusiveRenderers;
-  private final ScreenNameMapper screenNameMapper;
   private final VersionedGLFWCallbacks callbacks;
   private final VersionedInputInterceptor inputInterceptor;
 
@@ -59,11 +59,9 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
   private VersionedMinecraftWindow(
       DefaultWindowManager windowManager,
       EventBus eventBus,
-      ScreenNameMapper screenNameMapper,
       VersionedGLFWCallbacks callbacks,
       VersionedInputInterceptor inputInterceptor) {
     super(Minecraft.getInstance().getMainWindow().getHandle(), windowManager, eventBus);
-    this.screenNameMapper = screenNameMapper;
 
     this.callbacks = callbacks;
     this.inputInterceptor = inputInterceptor;
@@ -250,12 +248,12 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
    * @return {@code true} if the window is rendered intrusively, {@code false} otherwise
    */
   @Override
-  public boolean isRenderedIntrusively(String screen) {
+  public boolean isRenderedIntrusively(ScreenName screen) {
     if (intrusiveRenderers.isEmpty()) {
       return false;
     }
     for (WindowRenderer intrusiveRenderer : intrusiveRenderers) {
-      if (intrusiveRenderer.getIntrusiveScreens().contains(screenNameMapper.fromClass(screen))) {
+      if (intrusiveRenderer.isIntrusive() && intrusiveRenderer.getIntrusiveScreens().contains(screen)) {
         return true;
       }
     }
