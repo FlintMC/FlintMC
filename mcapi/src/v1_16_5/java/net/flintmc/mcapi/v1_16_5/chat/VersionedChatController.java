@@ -31,12 +31,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import net.flintmc.framework.eventbus.EventBus;
+import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.type.Type;
 import net.flintmc.mcapi.chat.ChatController;
 import net.flintmc.mcapi.chat.ChatLocation;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.event.ChatInputChangeEvent;
 import net.flintmc.mcapi.chat.suggestion.Suggestion;
 import net.flintmc.mcapi.chat.suggestion.SuggestionList;
 import net.flintmc.mcapi.chat.suggestion.SuggestionList.Factory;
@@ -47,6 +50,8 @@ import net.flintmc.transform.hook.Hook.ExecutionTime;
 import net.flintmc.transform.hook.HookResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.network.play.client.CTabCompletePacket;
 import net.minecraft.util.text.ChatType;
@@ -62,6 +67,9 @@ public class VersionedChatController implements ChatController {
   private final MinecraftComponentMapper componentMapper;
   private final NetworkPlayerInfoRegistry playerInfoRegistry;
 
+  private final EventBus eventBus;
+  private final ChatInputChangeEvent.Factory inputChangeEventFactory;
+
   private final SuggestionList.Factory suggestionListFactory;
   private final SuggestionList emptySuggestionList;
   private final Suggestion.Factory suggestionFactory;
@@ -72,10 +80,16 @@ public class VersionedChatController implements ChatController {
   private VersionedChatController(
       MinecraftComponentMapper componentMapper,
       NetworkPlayerInfoRegistry playerInfoRegistry,
+      EventBus eventBus,
+      ChatInputChangeEvent.Factory inputChangeEventFactory,
       Factory suggestionListFactory,
       Suggestion.Factory suggestionFactory) {
     this.componentMapper = componentMapper;
     this.playerInfoRegistry = playerInfoRegistry;
+
+    this.eventBus = eventBus;
+    this.inputChangeEventFactory = inputChangeEventFactory;
+
     this.suggestionListFactory = suggestionListFactory;
     this.emptySuggestionList = suggestionListFactory.create(0, 0, Collections.emptyList());
     this.suggestionFactory = suggestionFactory;
@@ -97,6 +111,21 @@ public class VersionedChatController implements ChatController {
     Minecraft.getInstance().player.sendChatMessage(message);
     Minecraft.getInstance().ingameGUI.getChatGUI().addToSentMessages(message);
     return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setInputValue(String text, boolean overwrite) {
+    Screen screen = Minecraft.getInstance().currentScreen;
+    if (screen instanceof ChatScreen) {
+      ((ScreenTextShadow) screen).setChatInput(text, true);
+    } else {
+      // We can ignore the overwrite value because if the chat is not opened
+      // there will be nothing to append the text to
+      this.eventBus.fireEvent(this.inputChangeEventFactory.create(text), Phase.POST);
+    }
   }
 
   /**

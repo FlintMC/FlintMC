@@ -56,6 +56,7 @@ public class GsonChatComponentSerializer
   private final KeybindComponent.Factory keybindFactory;
   private final ScoreComponent.Factory scoreFactory;
   private final SelectorComponentBuilder.Factory selectorFactory;
+  private final ClickEvent.Factory clickEventFactory;
 
   @Inject
   private GsonChatComponentSerializer(
@@ -64,13 +65,15 @@ public class GsonChatComponentSerializer
       TranslationComponent.Factory translationFactory,
       KeybindComponent.Factory keybindFactory,
       ScoreComponent.Factory scoreFactory,
-      SelectorComponentBuilder.Factory selectorFactory) {
+      SelectorComponentBuilder.Factory selectorFactory,
+      ClickEvent.Factory clickEventFactory) {
     this.logger = logger;
     this.textFactory = textFactory;
     this.translationFactory = translationFactory;
     this.keybindFactory = keybindFactory;
     this.scoreFactory = scoreFactory;
     this.selectorFactory = selectorFactory;
+    this.clickEventFactory = clickEventFactory;
   }
 
   // read everything that is the same in any type of component
@@ -109,7 +112,7 @@ public class GsonChatComponentSerializer
       }
 
       if (action != null) {
-        component.clickEvent(ClickEvent.of(action, event.get("value").getAsString()));
+        component.clickEvent(this.clickEventFactory.create(action, event.get("value").getAsString()));
       }
     }
 
