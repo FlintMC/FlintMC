@@ -39,7 +39,7 @@ public class MinecraftWebFileSystem implements WebFileSystemHandler {
 
   @Inject
   private MinecraftWebFileSystem(@Named("launchArguments") Map launchArguments) {
-    this.gameDirectory = new File(launchArguments.get("--gamedir").toString());
+    this.gameDirectory = new File(launchArguments.getOrDefault("--gamedir", ".").toString());
   }
 
   @Override
