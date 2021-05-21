@@ -38,6 +38,7 @@ public interface WindowRenderer {
    * Determines if this renderer is taking full control of the content of the window.
    * If this setting is {@code true} the rendering of every minecraft window in {@link WindowRenderer#getIntrusiveScreens()}
    * will be cancelled when this renderer is registered.
+   * Will be called repetitively on every render call and update the behavior of the current rendering process.
    *
    * @return {@code true} to mark the renderer as intrusive, {@code false} to mark it as cooperative
    */
