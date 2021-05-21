@@ -21,7 +21,7 @@ package net.flintmc.render.gui.v1_16_5;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.*;
+import javassist.ClassPool;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.InjectedFieldBuilder.Factory;
@@ -32,13 +32,13 @@ import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.transform.hook.Hook;
-import net.flintmc.transform.javassist.ClassTransform;
-import net.flintmc.transform.javassist.ClassTransformContext;
-import net.flintmc.transform.javassist.CtClassFilter;
-import net.flintmc.transform.javassist.CtClassFilters;
+import net.flintmc.transform.hook.HookFilter;
+import net.flintmc.transform.hook.HookFilters;
+import net.flintmc.transform.hook.HookResult;
 import net.flintmc.util.mappings.ClassMappingProvider;
-import net.flintmc.util.mappings.MethodMapping;
 import net.minecraft.client.Minecraft;
+
+import javax.inject.Named;
 
 /**
  * 1.16.5 Implementation of the gui interceptor
@@ -71,46 +71,19 @@ public class VersionedGuiInterceptor {
     this.windowManager.renderMinecraftWindow();
   }
 
-  @ClassTransform
-  @CtClassFilter(
-      className = "net.minecraft.client.gui.screen.Screen",
-      value = CtClassFilters.SUBCLASS_OF)
-  private void hookScreenRender(ClassTransformContext context)
-      throws CannotCompileException, NotFoundException {
-    MethodMapping renderMapping =
-        this.mappingProvider
-            .get("net.minecraft.client.gui.IRenderable")
-            .getMethod("render",
-                this.pool.get(
-                    this.mappingProvider.get("com.mojang.blaze3d.matrix.MatrixStack").getName()),
-                CtClass.intType,
-                CtClass.intType,
-                CtClass.floatType);
-
-    CtClass screenClass = context.getCtClass();
-
-    CtField field =
-        this.fieldBuilder
-            .create()
-            .target(screenClass)
-            .inject(DefaultWindowManager.class)
-            .generate();
-
-    for (CtMethod method : screenClass.getDeclaredMethods()) {
-      if (!method.getName().equals(renderMapping.getName()) ||
-          (!method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor()) &&
-              (renderMapping.isDefault() && !method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor() + "V")))) {
-        continue;
-      }
-
-      method.insertBefore(
-          "if("
-              + field.getName()
-              + ".isMinecraftWindowRenderedIntrusively($0.getClass().getName())) {"
-              + "   return;"
-              + "}");
-      break;
+  @HookFilter(value = HookFilters.SUBCLASS_OF, type = @Type(typeName = "net.minecraft.client.gui.screen.Screen"))
+  @Hook(
+      methodName = "render",
+      parameters = {@Type(typeName = "com.mojang.blaze3d.matrix.MatrixStack"),
+          @Type(reference = int.class),
+          @Type(reference = int.class),
+          @Type(reference = float.class)},
+      executionTime = Hook.ExecutionTime.BEFORE)
+  public HookResult hookScreenRender(@Named("instance") Object instance){
+    if(this.windowManager.isMinecraftWindowRenderedIntrusively(instance.getClass().getName())){
+      return HookResult.BREAK;
     }
+    return HookResult.CONTINUE;
   }
 
   @Hook(
