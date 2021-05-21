@@ -28,39 +28,39 @@ import java.util.Collection;
  */
 public interface WindowRenderer {
 
-    /**
-     * Called when the renderer is added to a window. The OpenGL context in this method is the one
-     * used for the window.
-     */
-    void initialize();
+  /**
+   * Called when the renderer is added to a window. The OpenGL context in this method is the one
+   * used for the window.
+   */
+  void initialize();
 
-    /**
-     * Determines if this renderer is taking full control of the content of the window.
-     * If this setting is {@code true} the rendering of every minecraft window in {@link WindowRenderer#getIntrusiveScreens()}
-     * will be cancelled when this renderer is registered.
-     *
-     * @return {@code true} to mark the renderer as intrusive, {@code false} to mark it as cooperative
-     */
-    boolean isIntrusive();
+  /**
+   * Determines if this renderer is taking full control of the content of the window.
+   * If this setting is {@code true} the rendering of every minecraft window in {@link WindowRenderer#getIntrusiveScreens()}
+   * will be cancelled when this renderer is registered.
+   *
+   * @return {@code true} to mark the renderer as intrusive, {@code false} to mark it as cooperative
+   */
+  boolean isIntrusive();
 
-    /**
-     * Used in {@link WindowRenderer#isIntrusive()} to check if the currently rendered screen should be rendered intrusively.
-     * Every entry in this collection determines if this renderer is taking full control of the content of the window.
-     * If it is in it the default render logic of minecraft will be disabled.
-     *
-     * @return all minecraft screens that should be rendered intrusively
-     */
-    Collection<ScreenName> getIntrusiveScreens();
+  /**
+   * Used in {@link WindowRenderer#isIntrusive()} to check if the currently rendered screen should be rendered intrusively.
+   * Every entry in this collection determines if this renderer is taking full control of the content of the window.
+   * If it is in it the default render logic of minecraft will be disabled.
+   *
+   * @return all minecraft screens that should be rendered intrusively
+   */
+  Collection<ScreenName> getIntrusiveScreens();
 
-    /**
-     * Called when window needs to be rendered. The OpenGL context in this method is the one used for
-     * the window.
-     */
-    void render();
+  /**
+   * Called when window needs to be rendered. The OpenGL context in this method is the one used for
+   * the window.
+   */
+  void render();
 
-    /**
-     * Called when the renderer is removed from a window. The OpenGL context in this method is the one
-     * used for the window.
-     */
-    void cleanup();
+  /**
+   * Called when the renderer is removed from a window. The OpenGL context in this method is the one
+   * used for the window.
+   */
+  void cleanup();
 }
