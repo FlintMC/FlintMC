@@ -27,7 +27,7 @@ import net.flintmc.mcapi.chat.component.event.ClickEventAction;
 import net.minecraft.client.Minecraft;
 
 @Singleton
-@ClickEventAction(value = Action.COPY_TO_CLIPBOARD, priority = -1)
+@ClickEventAction(value = Action.COPY_TO_CLIPBOARD, priority = 0)
 public class VersionedClipboardActionExecutor implements ClickActionExecutor {
 
   /**

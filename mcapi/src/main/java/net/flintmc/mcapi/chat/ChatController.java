@@ -46,7 +46,9 @@ public interface ChatController {
 
   /**
    * Sets the current value of the text field in the chat and fires the {@link
-   * ChatInputChangeEvent}, if the chat is currently not opened, only this event will be fired.
+   * ChatInputChangeEvent}.
+   * <p>
+   * If the chat is currently not opened, only this event will be fired.
    *
    * @param text      The new non-null text to be set in the chat input
    * @param overwrite {@code true} if the current input value should be replaced, {@code false} if

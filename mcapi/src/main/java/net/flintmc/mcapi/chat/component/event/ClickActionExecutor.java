@@ -22,8 +22,8 @@ package net.flintmc.mcapi.chat.component.event;
 /**
  * Executor for a {@link ClickEvent}.
  * <p>
- * This interface should be used together with the {@link ClickEventAction} annotation to
- * automatically register it.
+ * An implementation of this interface should be used together with the {@link ClickEventAction}
+ * annotation to automatically register it.
  */
 public interface ClickActionExecutor {
 
@@ -33,5 +33,4 @@ public interface ClickActionExecutor {
    * @param event The non-null event to be executed
    */
   void executeEvent(ClickEvent event);
-
 }
