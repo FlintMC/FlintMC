@@ -91,7 +91,8 @@ public class VersionedGuiInterceptor {
 
     for (CtMethod method : screenClass.getDeclaredMethods()) {
       if (!method.getName().equals(renderMapping.getName()) ||
-          !method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor())) {
+          (!method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor()) &&
+              (renderMapping.isDefault() && !method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor() + "V")))) {
         continue;
       }
 

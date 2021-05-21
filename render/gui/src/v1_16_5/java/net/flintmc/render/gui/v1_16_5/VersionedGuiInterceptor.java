@@ -21,12 +21,7 @@ package net.flintmc.render.gui.v1_16_5;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.InjectedFieldBuilder.Factory;
@@ -103,7 +98,8 @@ public class VersionedGuiInterceptor {
 
     for (CtMethod method : screenClass.getDeclaredMethods()) {
       if (!method.getName().equals(renderMapping.getName()) ||
-          !method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor())) {
+          (!method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor()) &&
+              (renderMapping.isDefault() && !method.getMethodInfo().getDescriptor().equals(renderMapping.getDescriptor() + "V")))) {
         continue;
       }
 
