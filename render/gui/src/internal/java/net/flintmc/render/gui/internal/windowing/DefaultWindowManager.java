@@ -30,6 +30,7 @@ import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.render.gui.event.GuiEvent;
+import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
 import net.flintmc.render.gui.windowing.Window;
 import net.flintmc.render.gui.windowing.WindowManager;
@@ -41,13 +42,15 @@ import net.flintmc.render.gui.windowing.WindowManager;
 @Implement(WindowManager.class)
 public class DefaultWindowManager implements WindowManager {
 
+  private final ScreenNameMapper screenNameMapper;
   private final Map<Long, InternalWindow> windows;
 
   private final EventBus eventBus;
   protected MinecraftWindow minecraftWindow;
 
   @Inject
-  private DefaultWindowManager(EventBus eventBus) {
+  private DefaultWindowManager(ScreenNameMapper screenNameMapper, EventBus eventBus) {
+    this.screenNameMapper = screenNameMapper;
     this.eventBus = eventBus;
 
     this.windows = new HashMap<>();
@@ -108,8 +111,8 @@ public class DefaultWindowManager implements WindowManager {
    *
    * @return {@code true} if the window is rendered intrusively, {@code false} otherwise
    */
-  public boolean isMinecraftWindowRenderedIntrusively() {
-    return ((InternalWindow) minecraftWindow).isRenderedIntrusively();
+  public boolean isMinecraftWindowRenderedIntrusively(String screen) {
+    return ((InternalWindow) minecraftWindow).isRenderedIntrusively(screenNameMapper.fromClass(screen));
   }
 
   /**

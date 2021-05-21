@@ -20,6 +20,7 @@
 package net.flintmc.render.gui.internal.windowing;
 
 import net.flintmc.render.gui.input.Key;
+import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.windowing.Window;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public interface InternalWindow extends Window {
    *
    * @return {@code true} if the windows is renderer intrusively, {@code false} otherwise
    */
-  boolean isRenderedIntrusively();
+  boolean isRenderedIntrusively(ScreenName screen);
 
   /**
    * Renders the window by executing the render chain.

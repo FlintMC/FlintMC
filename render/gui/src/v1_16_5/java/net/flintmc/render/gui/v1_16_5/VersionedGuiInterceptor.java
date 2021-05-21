@@ -110,7 +110,7 @@ public class VersionedGuiInterceptor {
       method.insertBefore(
           "if("
               + field.getName()
-              + ".isMinecraftWindowRenderedIntrusively()) {"
+              + ".isMinecraftWindowRenderedIntrusively($0.getClass().getName())) {"
               + "   return;"
               + "}");
       break;
