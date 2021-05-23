@@ -25,7 +25,7 @@ group = "net.flintmc"
 
 dependencies {
     api("org.joml", "joml", "1.9.25")
-    api("com.google.inject", "guice", "4.2.0")
+    api("ca.stellardrift.guice-backport", "guice", "5.0.1")
 
     implementation("com.google.auto.service", "auto-service", "1.0-rc6")
 }

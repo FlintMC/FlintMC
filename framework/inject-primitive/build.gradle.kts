@@ -24,7 +24,5 @@ plugins {
 group = "net.flintmc"
 
 dependencies {
-
-    api("com.google.inject", "guice", "4.2.0")
-
+    api("ca.stellardrift.guice-backport", "guice", "5.0.1")
 }
