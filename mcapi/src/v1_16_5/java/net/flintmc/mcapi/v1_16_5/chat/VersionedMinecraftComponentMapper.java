@@ -431,7 +431,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
       final UUID uniqueId, final ChatComponent component) {
     Optional<EntityType<?>> entityType = EntityType.byKey(name);
 
-    if (entityType.isEmpty()) {
+    if (!entityType.isPresent()) {
       return null;
     }
 
