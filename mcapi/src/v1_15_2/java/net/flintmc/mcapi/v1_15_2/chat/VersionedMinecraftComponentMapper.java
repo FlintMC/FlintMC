@@ -103,7 +103,13 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     result.setStyle(this.createStyle(component));
 
     for (ChatComponent extra : component.extras()) {
-      result.appendSibling((ITextComponent) this.toMinecraft(extra));
+      Object textComponent = this.toMinecraft(extra);
+
+      if(textComponent == null) {
+        textComponent = new StringTextComponent("");
+      }
+
+      result.appendSibling((ITextComponent) textComponent);
     }
 
     return result;
