@@ -29,6 +29,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.items.ItemRegistry;
 import net.flintmc.mcapi.items.ItemStack;
@@ -41,16 +42,20 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NumberNBT;
 import net.minecraft.nbt.StringNBT;
+import org.apache.logging.log4j.Logger;
 
 @Singleton
 @Implement(ItemStackSerializer.class)
 public class VersionedItemStackSerializer implements ItemStackSerializer {
 
   private final ItemRegistry itemRegistry;
+  private final Logger logger;
 
   @Inject
-  public VersionedItemStackSerializer(ItemRegistry itemRegistry) {
+  public VersionedItemStackSerializer(ItemRegistry itemRegistry,
+      @InjectLogger final Logger logger) {
     this.itemRegistry = itemRegistry;
+    this.logger = logger;
   }
 
   @Override
@@ -60,8 +65,21 @@ public class VersionedItemStackSerializer implements ItemStackSerializer {
     }
 
     NameSpacedKey registryName = NameSpacedKey.parse(object.get("id").getAsString());
-    int stackSize = object.has("Count") ? object.get("Count").getAsInt() : 1;
+    int stackSize = 1;
 
+    if (object.has("Count")) {
+      String count = object.get("Count").getAsString();
+      if (count.contains("b")) {
+        count = count.substring(0, count.length() - 1);
+      }
+
+      try {
+        stackSize = Integer.parseInt(count);
+      } catch (NumberFormatException exception) {
+        stackSize = 1;
+        this.logger.error("An error occurred while parsing the count", exception);
+      }
+    }
     ItemType type = this.itemRegistry.getType(registryName);
     Preconditions.checkNotNull(type, "type");
 
