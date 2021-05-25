@@ -88,6 +88,14 @@ public class VersionedWindow implements InternalWindow {
     windowManager.registerWindow(this);
   }
 
+
+  /**
+   * Consumes an existing GLFW OpenGL window. Constructor for assisted factory at {@link Window.Factory#create(long)}.
+   *
+   * @param windowHandle  the glfw window handle to use
+   * @param windowManager The window manager of this Flint instance
+   * @param callbacks     The callbacks to install on the window
+   */
   @AssistedInject
   public VersionedWindow(
       @Assisted long windowHandle,

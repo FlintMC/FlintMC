@@ -143,6 +143,12 @@ public interface Window {
         @Assisted("width") int width,
         @Assisted("height") int height);
 
+    /**
+     * Creates a new window by an GLFW handle.
+     *
+     * @param windowHandle the glfw window handle to use
+     * @return The created window
+     */
     Window create(@Assisted long windowHandle);
   }
 }
