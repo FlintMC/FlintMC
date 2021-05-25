@@ -22,6 +22,7 @@ package net.flintmc.render.gui.windowing;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.render.gui.input.Key;
+
 import java.util.Set;
 
 /**
@@ -141,5 +142,7 @@ public interface Window {
         @Assisted("title") String title,
         @Assisted("width") int width,
         @Assisted("height") int height);
+
+    Window create(@Assisted long windowHandle);
   }
 }

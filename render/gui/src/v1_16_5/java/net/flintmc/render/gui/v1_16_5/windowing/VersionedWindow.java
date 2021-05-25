@@ -97,6 +97,24 @@ public class VersionedWindow implements InternalWindow {
     windowManager.registerWindow(this);
   }
 
+  @AssistedInject
+  public VersionedWindow(
+      @Assisted long windowHandle,
+      DefaultWindowManager windowManager,
+      EventBus eventBus,
+      VersionedGLFWCallbacks callbacks) {
+
+    this.renderers = new ArrayList<>();
+    this.pressedKeys = new HashSet<>();
+
+    this.eventBus = eventBus;
+    this.handle = windowHandle;
+    this.windowManager = windowManager;
+
+    callbacks.install(handle);
+    windowManager.registerWindow(this);
+  }
+
   /**
    * Wraps an existing GLFW window handle.
    *
