@@ -19,7 +19,7 @@
 
 plugins {
     id("net.flintmc.flint-gradle")
-    id("net.minecrell.licenser") version "0.4.1"
+    id("org.cadixdev.licenser") version "0.6.0"
 }
 
 repositories {
@@ -33,7 +33,7 @@ repositories {
 subprojects {
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
-        plugins.apply("net.minecrell.licenser")
+        plugins.apply("org.cadixdev.licenser")
 
         version = System.getenv().getOrDefault("VERSION", "2.0.33")
 
@@ -53,13 +53,13 @@ subprojects {
         }
 
         license {
-            header = rootProject.file("LICENSE-HEADER")
+            header(rootProject.file("LICENSE-HEADER"))
             include("**/*.java")
             include("**/*.kts")
 
             tasks {
                 create("gradle") {
-                    files = project.files("build.gradle.kts", "settings.gradle.kts")
+                    files(project.files("build.gradle.kts", "settings.gradle.kts"))
                 }
             }
         }

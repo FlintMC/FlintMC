@@ -173,8 +173,8 @@ public interface FlatWorldGeneratorSettings {
    * @param index The index of the layer to be replaced
    * @param layer The new non-null layer to replace the old one with
    * @return This settings object for chaining
-   * @throws IndexOutOfBoundsException If the given index is out of range (<tt>index &lt; 0 || index
-   *                                   &gt;= size()</tt>)
+   * @throws IndexOutOfBoundsException If the given index is out of range (<code>index &lt; 0 || index
+   *                                   &gt;= size()</code>)
    */
   FlatWorldGeneratorSettings setLayer(int index, FlatWorldLayer layer);
 
@@ -183,8 +183,8 @@ public interface FlatWorldGeneratorSettings {
    *
    * @param index The index of the layer to be removed
    * @return This settings object for chaining
-   * @throws IndexOutOfBoundsException If the given index is out of range (<tt>index &lt; 0 || index
-   *                                   &gt;= size()</tt>)
+   * @throws IndexOutOfBoundsException If the given index is out of range (<code>index &lt; 0 || index
+   *                                   &gt;= size()</code>)
    * @see #clearLayers()
    */
   FlatWorldGeneratorSettings removeLayer(int index);

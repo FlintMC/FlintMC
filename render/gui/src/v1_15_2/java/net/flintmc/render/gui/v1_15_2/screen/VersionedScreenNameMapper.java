@@ -41,6 +41,8 @@ public class VersionedScreenNameMapper implements ScreenNameMapper {
     KNOWN_NAMES.put("net.minecraft.client.gui.advancements.AdvancementsScreen",
         ScreenName.minecraft(ScreenName.ADVANCEMENTS));
 
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen.inventory.CreativeScreen",
+        ScreenName.minecraft(ScreenName.CREATIVE_MENU));
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.MainMenuScreen",
         ScreenName.minecraft(ScreenName.MAIN_MENU));
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.IngameMenuScreen",

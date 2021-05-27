@@ -21,7 +21,11 @@ package net.flintmc.mcapi.v1_16_5.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
@@ -34,12 +38,18 @@ import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
+import net.flintmc.mcapi.chat.component.event.ClickEvent.Action;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
+import net.flintmc.mcapi.chat.component.event.content.HoverEntity;
 import net.flintmc.mcapi.chat.exception.ComponentDeserializationException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
+import net.flintmc.mcapi.items.component.HoverItem;
+import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
@@ -51,6 +61,8 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.HoverEvent.EntityHover;
+import net.minecraft.util.text.event.HoverEvent.ItemHover;
 
 @Singleton
 @Implement(MinecraftComponentMapper.class)
@@ -58,12 +70,20 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
 
   private final ComponentBuilder.Factory builderFactory;
   private final ComponentSerializer.Factory factory;
+  private final ClickEvent.Factory clickEventFactory;
+
+  private final MinecraftItemMapper itemMapper;
 
   @Inject
   public VersionedMinecraftComponentMapper(
-      Factory builderFactory, ComponentSerializer.Factory factory) {
+      Factory builderFactory,
+      ComponentSerializer.Factory factory,
+      ClickEvent.Factory clickEventFactory,
+      final MinecraftItemMapper itemMapper) {
     this.builderFactory = builderFactory;
     this.factory = factory;
+    this.clickEventFactory = clickEventFactory;
+    this.itemMapper = itemMapper;
   }
 
   @Override
@@ -102,7 +122,13 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
         (IFormattableTextComponent) result, this.createStyle(component));
 
     for (ChatComponent extra : component.extras()) {
-      ((IFormattableTextComponent) result).appendSibling((ITextComponent) this.toMinecraft(extra));
+      Object textComponent = this.toMinecraft(extra);
+
+      if (textComponent == null) {
+        textComponent = ITextComponent.getTextComponentOrEmpty("");
+      }
+
+      ((IFormattableTextComponent) result).appendSibling((ITextComponent) textComponent);
     }
 
     return result;
@@ -194,22 +220,28 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     if (style.getClickEvent() != null) {
-      component.clickEvent(
-          ClickEvent.of(
-              ClickEvent.Action.valueOf(style.getClickEvent().getAction().name()),
-              style.getClickEvent().getValue()));
+      component.clickEvent(this.clickEventFactory.create(
+          this.mapClickEventAction(style.getClickEvent().getAction()),
+          style.getClickEvent().getValue()));
     }
 
     if (style.getHoverEvent() != null) {
       net.minecraft.util.text.event.HoverEvent hoverEvent = style.getHoverEvent();
-      net.minecraft.util.text.event.HoverEvent.Action<?> hoverAction = hoverEvent.getAction();
-
-      HoverEvent.Action action = HoverEvent.Action
-          .valueOf(hoverAction.getCanonicalName().toUpperCase());
-
       AccessibleHoverEvent accessibleHoverEvent = (AccessibleHoverEvent) hoverEvent;
 
-      ITextComponent value = (ITextComponent) accessibleHoverEvent.getValue();
+      HoverEvent.Action action = this.mapHoverEventAction(hoverEvent.getAction());
+
+      Object hoverEventValue = accessibleHoverEvent.getValue();
+      ITextComponent value;
+
+      if (hoverEventValue instanceof EntityHover) {
+        value = ((EntityHover) hoverEventValue).name;
+      } else if (hoverEventValue instanceof ItemHover) {
+        AccessibleItemHover itemHover = (AccessibleItemHover) hoverEventValue;
+        value = new StringTextComponent(itemHover.getSerializeElement().toString());
+      } else {
+        value = (ITextComponent) hoverEventValue;
+      }
 
       HoverContent content =
           this.factory.gson().deserializeHoverContent(this.fromMinecraft(value), action);
@@ -220,6 +252,57 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     component.insertion(style.getInsertion());
+  }
+
+  private ClickEvent.Action mapClickEventAction(
+      net.minecraft.util.text.event.ClickEvent.Action action) {
+    switch (action) {
+      case OPEN_URL:
+        return Action.OPEN_URL;
+      case OPEN_FILE:
+        return Action.OPEN_FILE;
+      case RUN_COMMAND:
+        return Action.RUN_COMMAND;
+      case CHANGE_PAGE:
+        return Action.CHANGE_PAGE;
+      case COPY_TO_CLIPBOARD:
+        return Action.COPY_TO_CLIPBOARD;
+      default:
+      case SUGGEST_COMMAND:
+        return Action.SUGGEST_COMMAND;
+    }
+  }
+
+  private net.minecraft.util.text.event.ClickEvent.Action mapClickEventAction(
+      ClickEvent.Action action) {
+    switch (action) {
+      case OPEN_URL:
+        return net.minecraft.util.text.event.ClickEvent.Action.OPEN_URL;
+      case OPEN_FILE:
+        return net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE;
+      case RUN_COMMAND:
+        return net.minecraft.util.text.event.ClickEvent.Action.RUN_COMMAND;
+      case CHANGE_PAGE:
+        return net.minecraft.util.text.event.ClickEvent.Action.CHANGE_PAGE;
+      case COPY_TO_CLIPBOARD:
+        return net.minecraft.util.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD;
+      default:
+      case SUGGEST_COMMAND:
+        return net.minecraft.util.text.event.ClickEvent.Action.SUGGEST_COMMAND;
+    }
+  }
+
+  private HoverEvent.Action mapHoverEventAction(
+      net.minecraft.util.text.event.HoverEvent.Action<?> action) {
+    if (action == net.minecraft.util.text.event.HoverEvent.Action.SHOW_ENTITY) {
+      return HoverEvent.Action.SHOW_ENTITY;
+    } else if (action == net.minecraft.util.text.event.HoverEvent.Action.SHOW_TEXT) {
+      return HoverEvent.Action.SHOW_TEXT;
+    } else if (action == net.minecraft.util.text.event.HoverEvent.Action.SHOW_ITEM) {
+      return HoverEvent.Action.SHOW_ITEM;
+    }
+
+    return HoverEvent.Action.SHOW_TEXT;
   }
 
   private ITextComponent createMinecraftComponent(ChatComponent component) {
@@ -286,7 +369,8 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     if (component.color().isDefaultColor()) {
-      style = style.setColor(Color.fromTextFormatting(TextFormatting.getValueByName(component.color().getName())));
+      style = style.setColor(
+          Color.fromTextFormatting(TextFormatting.getValueByName(component.color().getName())));
     } else {
       style = style.setColor(Color.fromInt(component.color().getRgb()));
     }
@@ -295,8 +379,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
       try {
         style = style.setClickEvent(
             new net.minecraft.util.text.event.ClickEvent(
-                net.minecraft.util.text.event.ClickEvent.Action.valueOf(
-                    component.clickEvent().getAction().name()),
+                this.mapClickEventAction(component.clickEvent().getAction()),
                 component.clickEvent().getValue()));
       } catch (IllegalArgumentException ignored) {
       }
@@ -307,22 +390,58 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
       HoverContent content = component.hoverEvent().getContents()[0];
 
       try {
-        action =
-            net.minecraft.util.text.event.HoverEvent.Action.getValueByCanonicalName(
-                content.getAction().name());
+        action = net.minecraft.util.text.event.HoverEvent.Action.getValueByCanonicalName(
+            content.getAction().name().toLowerCase(Locale.ROOT));
       } catch (IllegalArgumentException ignored) {
       }
 
       if (action != null) {
-        ChatComponent value = this.factory.gson().serializeHoverContent(content);
+        if (content.getAction() == HoverEvent.Action.SHOW_ENTITY) {
+          HoverEntity hoverEntity = (HoverEntity) content;
+          style = style.setHoverEvent(
+              this.createEntityHover(hoverEntity.getType(), hoverEntity.getUniqueId(),
+                  hoverEntity.getDisplayName()));
+        } else if (content.getAction() == HoverEvent.Action.SHOW_ITEM) {
+          HoverItem hoverItem = (HoverItem) content;
+          style = style.setHoverEvent(this.createItemHover(hoverItem.getItemStack()));
+        } else {
+          ChatComponent value = this.factory.gson().serializeHoverContent(content);
 
-        style = style.setHoverEvent(
-            new net.minecraft.util.text.event.HoverEvent(action, this.toMinecraft(value)));
+          style = style.setHoverEvent(
+              new net.minecraft.util.text.event.HoverEvent(action, this.toMinecraft(value)));
+        }
       }
     }
 
     style = style.setInsertion(component.insertion());
 
     return style;
+  }
+
+  private net.minecraft.util.text.event.HoverEvent createItemHover(final
+  net.flintmc.mcapi.items.ItemStack itemStack) {
+
+    return new net.minecraft.util.text.event.HoverEvent(
+        net.minecraft.util.text.event.HoverEvent.Action.SHOW_ITEM,
+        new ItemHover((ItemStack) this.itemMapper.toMinecraft(itemStack))
+    );
+  }
+
+  private net.minecraft.util.text.event.HoverEvent createEntityHover(final String name,
+      final UUID uniqueId, final ChatComponent component) {
+    Optional<EntityType<?>> entityType = EntityType.byKey(name);
+
+    if (!entityType.isPresent()) {
+      return null;
+    }
+
+    return new net.minecraft.util.text.event.HoverEvent(
+        net.minecraft.util.text.event.HoverEvent.Action.SHOW_ENTITY,
+        new EntityHover(
+            entityType.get(),
+            uniqueId,
+            (ITextComponent) this.toMinecraft(component)
+        )
+    );
   }
 }

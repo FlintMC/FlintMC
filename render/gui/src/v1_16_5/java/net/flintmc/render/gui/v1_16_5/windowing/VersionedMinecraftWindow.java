@@ -31,11 +31,14 @@ import javax.inject.Singleton;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.render.gui.event.WindowRenderEvent;
 import net.flintmc.render.gui.input.InputState;
 import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.input.ModifierKey;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
+import net.flintmc.render.gui.screen.ScreenName;
+import net.flintmc.render.gui.screen.ScreenNameMapper;
 import net.flintmc.render.gui.v1_16_5.VersionedInputInterceptor;
 import net.flintmc.render.gui.v1_16_5.glfw.VersionedGLFWCallbacks;
 import net.flintmc.render.gui.v1_16_5.glfw.VersionedGLFWInputConverter;
@@ -246,8 +249,16 @@ public class VersionedMinecraftWindow extends VersionedWindow implements Minecra
    * @return {@code true} if the window is rendered intrusively, {@code false} otherwise
    */
   @Override
-  public boolean isRenderedIntrusively() {
-    return !intrusiveRenderers.isEmpty();
+  public boolean isRenderedIntrusively(ScreenName screen) {
+    if (intrusiveRenderers.isEmpty()) {
+      return false;
+    }
+    for (WindowRenderer intrusiveRenderer : intrusiveRenderers) {
+      if (intrusiveRenderer.isIntrusive() && intrusiveRenderer.getIntrusiveScreens().contains(screen)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

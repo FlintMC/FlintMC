@@ -19,6 +19,10 @@
 
 package net.flintmc.render.gui.windowing;
 
+import net.flintmc.render.gui.screen.ScreenName;
+
+import java.util.Collection;
+
 /**
  * Renderer for windows.
  */
@@ -31,16 +35,23 @@ public interface WindowRenderer {
   void initialize();
 
   /**
-   * Determines if this renderer is taking full control of the content of the window. If this
-   * setting is {@code true} on a renderer attached to the main window, the default render logic of
-   * minecraft will be disabled.
-   *
-   * <p>This setting can't change while a renderer is attached! To change it, re-attach the
-   * renderer with this method returning another value.
+   * Determines if this renderer is taking full control of the content of the window.
+   * If this setting is {@code true} the rendering of every minecraft window in {@link WindowRenderer#getIntrusiveScreens()}
+   * will be cancelled when this renderer is registered.
+   * Will be called repetitively on every render call and update the behavior of the current rendering process.
    *
    * @return {@code true} to mark the renderer as intrusive, {@code false} to mark it as cooperative
    */
   boolean isIntrusive();
+
+  /**
+   * Used in {@link WindowRenderer#isIntrusive()} to check if the currently rendered screen should be rendered intrusively.
+   * Every entry in this collection determines if this renderer is taking full control of the content of the window.
+   * If it is in it the default render logic of minecraft will be disabled.
+   *
+   * @return all minecraft screens that should be rendered intrusively
+   */
+  Collection<ScreenName> getIntrusiveScreens();
 
   /**
    * Called when window needs to be rendered. The OpenGL context in this method is the one used for

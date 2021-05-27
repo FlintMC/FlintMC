@@ -26,6 +26,7 @@ import java.util.Objects;
  */
 public final class ScreenName {
 
+  public static final String CREATIVE_MENU = "creative_menu";
   public static final String MAIN_MENU = "main_menu";
   public static final String RESOURCE_LOAD = "resource_load";
   public static final String CHAT = "chat";

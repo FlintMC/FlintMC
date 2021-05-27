@@ -34,6 +34,7 @@ import net.flintmc.mcapi.chat.component.SelectorComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
 import net.flintmc.mcapi.chat.component.TranslationComponent;
 import net.flintmc.mcapi.chat.component.event.ClickEvent;
+import net.flintmc.mcapi.chat.component.event.ClickEvent.Action;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.exception.ComponentDeserializationException;
@@ -55,12 +56,16 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
 
   private final ComponentBuilder.Factory builderFactory;
   private final ComponentSerializer.Factory factory;
+  private final ClickEvent.Factory clickEventFactory;
 
   @Inject
   private VersionedMinecraftComponentMapper(
-      Factory builderFactory, ComponentSerializer.Factory factory) {
+      Factory builderFactory,
+      ComponentSerializer.Factory factory,
+      ClickEvent.Factory clickEventFactory) {
     this.builderFactory = builderFactory;
     this.factory = factory;
+    this.clickEventFactory = clickEventFactory;
   }
 
   @Override
@@ -98,7 +103,13 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     result.setStyle(this.createStyle(component));
 
     for (ChatComponent extra : component.extras()) {
-      result.appendSibling((ITextComponent) this.toMinecraft(extra));
+      Object textComponent = this.toMinecraft(extra);
+
+      if(textComponent == null) {
+        textComponent = new StringTextComponent("");
+      }
+
+      result.appendSibling((ITextComponent) textComponent);
     }
 
     return result;
@@ -185,15 +196,13 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     if (style.getClickEvent() != null) {
-      component.clickEvent(
-          ClickEvent.of(
-              ClickEvent.Action.valueOf(style.getClickEvent().getAction().name()),
-              style.getClickEvent().getValue()));
+      component.clickEvent(this.clickEventFactory.create(
+          this.mapClickEventAction(style.getClickEvent().getAction()),
+          style.getClickEvent().getValue()));
     }
 
     if (style.getHoverEvent() != null) {
-      HoverEvent.Action action =
-          HoverEvent.Action.valueOf(style.getHoverEvent().getAction().name());
+      HoverEvent.Action action = this.mapHoverEventAction(style.getHoverEvent().getAction());
       ITextComponent value = style.getHoverEvent().getValue();
 
       HoverContent content =
@@ -205,6 +214,38 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
     }
 
     component.insertion(style.getInsertion());
+  }
+
+  private ClickEvent.Action mapClickEventAction(
+      net.minecraft.util.text.event.ClickEvent.Action action) {
+    switch (action) {
+      case OPEN_URL:
+        return Action.OPEN_URL;
+      case OPEN_FILE:
+        return Action.OPEN_FILE;
+      case RUN_COMMAND:
+        return Action.RUN_COMMAND;
+      case CHANGE_PAGE:
+        return Action.CHANGE_PAGE;
+      case COPY_TO_CLIPBOARD:
+        return Action.COPY_TO_CLIPBOARD;
+      default:
+      case SUGGEST_COMMAND:
+        return Action.SUGGEST_COMMAND;
+    }
+  }
+
+  private HoverEvent.Action mapHoverEventAction(
+      net.minecraft.util.text.event.HoverEvent.Action action) {
+    switch (action) {
+      default:
+      case SHOW_TEXT:
+        return HoverEvent.Action.SHOW_TEXT;
+      case SHOW_ITEM:
+        return HoverEvent.Action.SHOW_ITEM;
+      case SHOW_ENTITY:
+        return HoverEvent.Action.SHOW_ENTITY;
+    }
   }
 
   private ITextComponent createMinecraftComponent(ChatComponent component) {

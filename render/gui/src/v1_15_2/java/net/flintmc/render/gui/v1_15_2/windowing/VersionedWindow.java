@@ -19,20 +19,6 @@
 
 package net.flintmc.render.gui.v1_15_2.windowing;
 
-import static org.lwjgl.glfw.GLFW.GLFW_FOCUSED;
-import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
-import static org.lwjgl.glfw.GLFW.glfwGetWindowAttrib;
-import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import net.flintmc.framework.eventbus.EventBus;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.assisted.Assisted;
@@ -42,6 +28,7 @@ import net.flintmc.render.gui.event.WindowRenderEvent;
 import net.flintmc.render.gui.input.Key;
 import net.flintmc.render.gui.internal.windowing.DefaultWindowManager;
 import net.flintmc.render.gui.internal.windowing.InternalWindow;
+import net.flintmc.render.gui.screen.ScreenName;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWCallbacks;
 import net.flintmc.render.gui.v1_15_2.glfw.VersionedGLFWInputConverter;
 import net.flintmc.render.gui.windowing.MinecraftWindow;
@@ -49,6 +36,11 @@ import net.flintmc.render.gui.windowing.Window;
 import net.flintmc.render.gui.windowing.WindowRenderer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
+
+import java.nio.IntBuffer;
+import java.util.*;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * 1.15.2 implementation for {@link Window}.
@@ -91,6 +83,32 @@ public class VersionedWindow implements InternalWindow {
     this.windowManager = windowManager;
     this.eventBus = eventBus;
     this.handle = glfwCreateWindow(width, height, title, 0, minecraftWindow.getHandle());
+
+    callbacks.install(handle);
+    windowManager.registerWindow(this);
+  }
+
+
+  /**
+   * Consumes an existing GLFW OpenGL window. Constructor for assisted factory at {@link Window.Factory#create(long)}.
+   *
+   * @param windowHandle  the glfw window handle to use
+   * @param windowManager The window manager of this Flint instance
+   * @param callbacks     The callbacks to install on the window
+   */
+  @AssistedInject
+  public VersionedWindow(
+      @Assisted long windowHandle,
+      DefaultWindowManager windowManager,
+      EventBus eventBus,
+      VersionedGLFWCallbacks callbacks) {
+
+    this.renderers = new ArrayList<>();
+    this.pressedKeys = new HashSet<>();
+
+    this.eventBus = eventBus;
+    this.handle = windowHandle;
+    this.windowManager = windowManager;
 
     callbacks.install(handle);
     windowManager.registerWindow(this);
@@ -284,7 +302,7 @@ public class VersionedWindow implements InternalWindow {
    * {@inheritDoc}
    */
   @Override
-  public boolean isRenderedIntrusively() {
+  public boolean isRenderedIntrusively(ScreenName screen) {
     return false;
   }
 

@@ -135,7 +135,21 @@ public abstract class DefaultChatComponent implements ChatComponent {
    */
   @Override
   public void insertion(String insertion) {
-    this.insertion = insertion;
+    String target = insertion;
+
+    if (insertion != null) {
+      StringBuilder builder = new StringBuilder(insertion.length());
+
+      for (char c : insertion.toCharArray()) {
+        if (c == 167 || c < ' ' || c == 127) {
+          builder.append(c);
+        }
+      }
+
+      target = builder.toString();
+    }
+
+    this.insertion = target;
   }
 
   /**
