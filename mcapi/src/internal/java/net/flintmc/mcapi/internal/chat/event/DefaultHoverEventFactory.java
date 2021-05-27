@@ -17,27 +17,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.chat.serializer.gson.hover.content;
+package net.flintmc.mcapi.internal.chat.event;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.mcapi.chat.builder.ComponentBuilder;
+import java.util.UUID;
+import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
-import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
-import net.flintmc.mcapi.chat.component.event.content.HoverText;
+import net.flintmc.mcapi.chat.component.event.content.HoverContent.Factory;
 
-/**
- * Serializer for {@link HoverText}
- */
 @Singleton
-public class HoverTextSerializer implements HoverContentSerializer {
+@Implement(HoverEvent.Factory.class)
+public class DefaultHoverEventFactory implements HoverEvent.Factory {
 
   private final HoverContent.Factory contentFactory;
 
   @Inject
-  private HoverTextSerializer(HoverContent.Factory contentFactory) {
+  private DefaultHoverEventFactory(Factory contentFactory) {
     this.contentFactory = contentFactory;
   }
 
@@ -45,19 +43,35 @@ public class HoverTextSerializer implements HoverContentSerializer {
    * {@inheritDoc}
    */
   @Override
-  public HoverContent deserialize(
-      ChatComponent component, ComponentBuilder.Factory componentFactory, Gson gson) {
-    return this.contentFactory.text(component);
+  public HoverEvent create(HoverContent... contents) {
+    return new DefaultHoverEvent(contents);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public ChatComponent serialize(
-      HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson) {
-    HoverText text = (HoverText) content;
+  public HoverEvent text(ChatComponent... texts) {
+    HoverContent[] contents = new HoverContent[texts.length];
+    for (int i = 0; i < texts.length; i++) {
+      contents[i] = this.contentFactory.text(texts[i]);
+    }
+    return this.create(contents);
+  }
 
-    return text.getText();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public HoverEvent entity(UUID entityId, String type) {
+    return this.create(this.contentFactory.entity(entityId, type));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public HoverEvent entity(UUID entityId, String type, ChatComponent displayName) {
+    return this.create(this.contentFactory.entity(entityId, type, displayName));
   }
 }

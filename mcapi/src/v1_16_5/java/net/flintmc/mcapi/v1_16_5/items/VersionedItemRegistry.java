@@ -26,10 +26,8 @@ import java.util.Map;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
-import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.internal.items.DefaultItemRegistry;
 import net.flintmc.mcapi.items.ItemRegistry;
-import net.flintmc.mcapi.items.ItemStackSerializer;
 import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentRarity;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
@@ -47,18 +45,15 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class VersionedItemRegistry extends DefaultItemRegistry {
 
   @Inject
-  public VersionedItemRegistry(
+  private VersionedItemRegistry(
       ItemType.Builder.Factory itemFactory,
       EnchantmentType.Factory enchantmentFactory,
-      ComponentBuilder.Factory componentFactory,
-      ComponentSerializer.Factory componentSerializerFactory,
-      ItemStackSerializer itemStackSerializer) {
+      ComponentBuilder.Factory componentFactory) {
     super(
         itemFactory,
         enchantmentFactory,
-        componentFactory,
-        componentSerializerFactory,
-        itemStackSerializer);
+        componentFactory
+    );
   }
 
   @Override

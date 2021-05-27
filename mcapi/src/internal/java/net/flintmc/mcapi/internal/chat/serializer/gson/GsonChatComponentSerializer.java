@@ -166,6 +166,9 @@ public class GsonChatComponentSerializer
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent deserialize(
       JsonElement json, Type typeOfT, JsonDeserializationContext context)
@@ -246,6 +249,9 @@ public class GsonChatComponentSerializer
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonElement serialize(
       ChatComponent src, Type typeOfSrc, JsonSerializationContext context) {

@@ -17,28 +17,38 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.items.component;
+package net.flintmc.mcapi.internal.chat.serializer.gson.hover.content;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
-import net.flintmc.mcapi.chat.component.event.content.JsonHoverContentSerializer;
+import net.flintmc.mcapi.chat.component.event.content.HoverItem;
+import net.flintmc.mcapi.items.ItemStack;
 import net.flintmc.mcapi.items.ItemStackSerializer;
-import net.flintmc.mcapi.items.component.HoverItem;
 
 /**
  * Serializer for {@link HoverItem}
  */
+@Singleton
 public class HoverItemSerializer extends JsonHoverContentSerializer {
 
   private final ItemStackSerializer itemStackSerializer;
+  private final HoverContent.Factory contentFactory;
 
-  public HoverItemSerializer(ItemStackSerializer itemStackSerializer) {
+  @Inject
+  private HoverItemSerializer(
+      ItemStackSerializer itemStackSerializer, HoverContent.Factory contentFactory) {
+    this.contentFactory = contentFactory;
     this.itemStackSerializer = itemStackSerializer;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected HoverContent deserializeJson(
       JsonElement element, ComponentBuilder.Factory componentFactory, Gson gson)
@@ -46,9 +56,13 @@ public class HoverItemSerializer extends JsonHoverContentSerializer {
     if (!element.isJsonObject()) {
       return null;
     }
-    return new HoverItem(this.itemStackSerializer.fromJson(element.getAsJsonObject()));
+    ItemStack item = this.itemStackSerializer.fromJson(element.getAsJsonObject());
+    return item != null ? this.contentFactory.item(item) : null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected JsonElement serializeJson(
       HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson)
