@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.chat.component.event.content;
+package net.flintmc.mcapi.internal.chat.serializer.gson.hover.content;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -26,6 +26,8 @@ import com.google.gson.JsonParser;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.TextComponent;
+import net.flintmc.mcapi.chat.component.event.content.HoverContent;
+import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
 
 /**
  * A serializer for {@link HoverContent}s which parses the text out of the given {@link
@@ -42,6 +44,9 @@ public abstract class JsonHoverContentSerializer implements HoverContentSerializ
       HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson)
       throws JsonParseException;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverContent deserialize(
       ChatComponent component, ComponentBuilder.Factory componentFactory, Gson gson)
@@ -56,6 +61,9 @@ public abstract class JsonHoverContentSerializer implements HoverContentSerializ
     return this.deserializeJson(element, componentFactory, gson);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent serialize(
       HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson)

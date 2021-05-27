@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
+import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.chat.serializer.GsonComponentSerializer;
 import net.flintmc.mcapi.internal.chat.serializer.gson.DefaultGsonComponentSerializer;
@@ -41,20 +42,14 @@ public class DefaultComponentSerializerFactory implements ComponentSerializer.Fa
   private DefaultComponentSerializerFactory(
       Logger logger,
       ComponentBuilder.Factory componentFactory,
-      LegacyHoverHolder legacyHolder,
-      GsonChatComponentSerializer componentSerializer) {
+      DefaultGsonComponentSerializer gson) {
     this.legacy =
         new PlainComponentSerializer(
             logger, componentFactory, true); // plain serializer with all colors/formatting
     this.plain =
         new PlainComponentSerializer(
             logger, componentFactory, false); // plain serializer without any colors/formatting
-    this.gson =
-        new DefaultGsonComponentSerializer(
-            logger,
-            componentSerializer,
-            componentFactory,
-            legacyHolder.isLegacyHoverEvent()); // in 1.16 the hoverEvent has completely changed
+    this.gson = gson;
   }
 
   /**

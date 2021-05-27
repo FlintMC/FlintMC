@@ -17,47 +17,53 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.chat.serializer.gson.hover.content;
+package net.flintmc.mcapi.v1_15_2.chat.component.event.content;
 
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import net.flintmc.mcapi.chat.builder.ComponentBuilder;
+import java.util.Collections;
+import java.util.List;
+import net.flintmc.framework.inject.assisted.Assisted;
+import net.flintmc.framework.inject.assisted.AssistedFactory;
+import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.mcapi.chat.component.event.content.HoverContent;
-import net.flintmc.mcapi.chat.component.event.content.HoverContentSerializer;
+import net.flintmc.mcapi.chat.component.event.HoverEvent.Action;
 import net.flintmc.mcapi.chat.component.event.content.HoverText;
 
-/**
- * Serializer for {@link HoverText}
- */
-@Singleton
-public class HoverTextSerializer implements HoverContentSerializer {
+public class VersionedHoverText implements HoverText {
 
-  private final HoverContent.Factory contentFactory;
+  private final ChatComponent component;
 
-  @Inject
-  private HoverTextSerializer(HoverContent.Factory contentFactory) {
-    this.contentFactory = contentFactory;
+  @AssistedInject
+  private VersionedHoverText(@Assisted ChatComponent component) {
+    this.component = component;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public HoverContent deserialize(
-      ChatComponent component, ComponentBuilder.Factory componentFactory, Gson gson) {
-    return this.contentFactory.text(component);
+  public Action getAction() {
+    return Action.SHOW_TEXT;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public ChatComponent serialize(
-      HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson) {
-    HoverText text = (HoverText) content;
+  public List<ChatComponent> getAsText() {
+    return Collections.singletonList(this.component);
+  }
 
-    return text.getText();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ChatComponent getText() {
+    return this.component;
+  }
+
+  @AssistedFactory(VersionedHoverText.class)
+  interface VersionedFactory {
+
+    VersionedHoverText create(@Assisted ChatComponent component);
   }
 }
