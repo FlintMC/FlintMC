@@ -37,16 +37,25 @@ public class VersionedHoverText implements HoverText {
     this.component = component;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Action getAction() {
     return Action.SHOW_TEXT;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<ChatComponent> getAsText() {
     return Collections.singletonList(this.component);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getText() {
     return this.component;

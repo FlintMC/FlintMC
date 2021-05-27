@@ -45,21 +45,33 @@ public class VersionedHoverContentFactory implements HoverContent.Factory {
     this.itemFactory = itemFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverContent text(ChatComponent component) {
     return this.textFactory.create(component);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverContent entity(UUID uniqueId, String type) {
     return this.entityFactory.create(type, uniqueId, null);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverContent entity(UUID uniqueId, String type, ChatComponent displayName) {
     return this.entityFactory.create(type, uniqueId, displayName);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverContent item(ItemStack itemStack) {
     return this.itemFactory.create(itemStack);

@@ -53,11 +53,17 @@ public class VersionedHoverItem implements HoverItem {
     this.itemStack = itemStack;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Action getAction() {
     return Action.SHOW_ITEM;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<ChatComponent> getAsText() {
     if (this.cachedText != null) {
@@ -82,6 +88,9 @@ public class VersionedHoverItem implements HoverItem {
     return this.cachedText = Collections.unmodifiableList(mapped);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ItemStack getItemStack() {
     return this.itemStack;

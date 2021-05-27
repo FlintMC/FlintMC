@@ -54,11 +54,17 @@ public class VersionedHoverEntity implements HoverEntity {
     this.displayName = displayName;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Action getAction() {
     return Action.SHOW_ENTITY;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<ChatComponent> getAsText() {
     if (this.cachedText != null) {
@@ -82,16 +88,25 @@ public class VersionedHoverEntity implements HoverEntity {
     return this.cachedText = Collections.unmodifiableList(components);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getType() {
     return this.type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public UUID getUniqueId() {
     return this.uniqueId;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent getDisplayName() {
     return this.displayName;
