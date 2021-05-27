@@ -98,10 +98,13 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
     target.addField(injectorField);
 
     String getterName = "getMethodInjector_" + injectorName;
+    String fieldAccessor =
+        (moved ? injectorField.getDeclaringClass().getName() + "." : "") + injectorName;
+
     String generate =
         String.format(
             "if (%s == null) { %1$s = %s.generate(%s.getDefault().getMethod(\"%s\", \"%s\"), %s.class); }",
-            injectorField.getDeclaringClass().getName() + "." + injectorName,
+            fieldAccessor,
             injectedFactory.getName(),
             ClassPool.class.getName(),
             targetClass,
@@ -111,7 +114,7 @@ public class DefaultMethodInjectionUtils implements MethodInjectionUtils {
         CtMethod.make(
             String.format(
                 "public static %s %s() { %s return %s; }",
-                ifc.getName(), getterName, generate, injectorName),
+                ifc.getName(), getterName, generate, fieldAccessor),
             target);
 
     try {
