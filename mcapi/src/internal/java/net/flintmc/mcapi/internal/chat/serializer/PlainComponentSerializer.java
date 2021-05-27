@@ -123,7 +123,7 @@ public class PlainComponentSerializer implements ComponentSerializer {
         }
       }
 
-      builder.appendText(String.valueOf(c));
+      builder.appendText(String.valueOf(ChatColor.PREFIX_CHAR) + c);
     }
 
     return builder.build();
