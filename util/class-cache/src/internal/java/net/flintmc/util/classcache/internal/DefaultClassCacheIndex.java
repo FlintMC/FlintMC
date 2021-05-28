@@ -28,9 +28,9 @@ import net.flintmc.util.classcache.CachedClass;
 import net.flintmc.util.classcache.ClassCacheIndex;
 import org.apache.logging.log4j.Logger;
 import java.io.*;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 
 @Singleton
@@ -57,7 +57,7 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
           .fromJson(new FileReader(indexFile), IndexModel.class);
       this.data.elements.forEach((name, element) -> {
         element.setName(name);
-        element.cachedClasses = new HashMap<>();
+        element.cachedClasses = new ConcurrentHashMap<>();
       });
     } catch (FileNotFoundException e) {
       this.logger
@@ -102,7 +102,7 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
     private final Map<String, IndexElement> elements;
 
     IndexModel() {
-      this.elements = new HashMap<>();
+      this.elements = new ConcurrentHashMap<>();
     }
 
     IndexElement getOrInsert(String name) {
@@ -127,9 +127,9 @@ public class DefaultClassCacheIndex implements ClassCacheIndex {
     transient Map<Long, CachedClass> cachedClasses;
 
     IndexElement(String name) {
-      this.uuids = new HashMap<>();
+      this.uuids = new ConcurrentHashMap<>();
       this.name = name;
-      this.cachedClasses = new HashMap<>();
+      this.cachedClasses = new ConcurrentHashMap<>();
     }
 
     void setName(String name) {
