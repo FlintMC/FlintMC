@@ -142,8 +142,9 @@ public abstract class DefaultChatComponent implements ChatComponent {
 
       for (char c : insertion.toCharArray()) {
         if (c == 167 || c < ' ' || c == 127) {
-          builder.append(c);
+          continue;
         }
+        builder.append(c);
       }
 
       target = builder.toString();
