@@ -105,7 +105,7 @@ public class VersionedLanWorldService implements LanWorldService {
     if (options.showInfoMessage()) {
       // Display whether the server is started or not
       ChatComponent infoMessage = this.getInfoMessage(success, port);
-      this.chatController.displayChatMessage(ChatLocation.CHAT, infoMessage);
+      this.chatController.displayChatMessage(ChatLocation.SYSTEM, infoMessage);
     }
 
     // Update the window title
