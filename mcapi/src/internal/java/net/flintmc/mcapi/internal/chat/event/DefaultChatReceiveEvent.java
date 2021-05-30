@@ -22,19 +22,67 @@ package net.flintmc.mcapi.internal.chat.event;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.chat.ChatLocation;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.event.ChatReceiveEvent;
+import net.flintmc.mcapi.settings.game.MinecraftConfiguration;
+import net.flintmc.mcapi.settings.game.settings.ChatVisibility;
+import java.util.UUID;
 
 @Implement(ChatReceiveEvent.class)
 public class DefaultChatReceiveEvent extends DefaultChatMessageEvent implements ChatReceiveEvent {
+
+  private final MinecraftConfiguration configuration;
+  private final ChatLocation location;
+  private final UUID senderId;
 
   private ChatComponent message;
   private boolean cancelled;
 
   @AssistedInject
-  private DefaultChatReceiveEvent(@Assisted("message") ChatComponent message) {
+  private DefaultChatReceiveEvent(
+      MinecraftConfiguration configuration,
+      @Assisted("location") ChatLocation location,
+      @Assisted("message") ChatComponent message,
+      @Assisted("senderId") UUID senderId) {
     super(Type.RECEIVE);
+    this.configuration = configuration;
+    this.location = location;
     this.message = message;
+    this.senderId = senderId;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ChatLocation getLocation() {
+    return this.location;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isVisible() {
+    ChatVisibility visibility = this.configuration.getChatConfiguration().getChatVisibility();
+    switch (visibility) {
+      case SYSTEM:
+        return this.location == ChatLocation.SYSTEM;
+      case FULL:
+        return true;
+      default:
+      case HIDDEN:
+        return false;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UUID getSenderId() {
+    return this.senderId;
   }
 
   /**
