@@ -57,7 +57,7 @@ public class ModServerList extends ArrayList<ServerData> {
     net.flintmc.mcapi.server.ServerData flintData =
         this.dataFactory.create(
             data.serverName,
-            this.addressFactory.parse(data.serverIP),
+            () -> this.addressFactory.parse(data.serverIP),
             net.flintmc.mcapi.server.ServerData.ResourceMode.valueOf(
                 data.getResourceMode().name()));
     return this.eventFactory.create(index, flintData, type);
