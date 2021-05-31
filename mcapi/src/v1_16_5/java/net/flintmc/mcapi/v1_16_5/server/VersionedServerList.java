@@ -26,8 +26,10 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.mcapi.server.ServerAddress;
 import net.flintmc.mcapi.server.ServerData;
+import net.flintmc.mcapi.server.ServerData.ResourceMode;
 import net.flintmc.mcapi.server.event.ServerListUpdateEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData.ServerResourceMode;
 import net.minecraft.client.multiplayer.ServerList;
 
 /**
@@ -72,8 +74,34 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
     net.minecraft.client.multiplayer.ServerData data = this.mcServerList.getServerData(index);
     return this.serverDataFactory.create(
         data.serverName,
-        this.serverAddressFactory.parse(data.serverIP),
-        ServerData.ResourceMode.valueOf(data.getResourceMode().name()));
+        () -> this.serverAddressFactory.parse(data.serverIP),
+        this.mapResourceMode(data.getResourceMode()));
+  }
+
+  private ResourceMode mapResourceMode(ServerResourceMode mode) {
+    switch (mode) {
+      case ENABLED:
+        return ResourceMode.ENABLED;
+      case DISABLED:
+        return ResourceMode.DISABLED;
+      case PROMPT:
+        return ResourceMode.PROMPT;
+      default:
+        throw new IllegalStateException("Unexpected value: " + mode);
+    }
+  }
+
+  private ServerResourceMode mapResourceMode(ResourceMode mode) {
+    switch (mode) {
+      case ENABLED:
+        return ServerResourceMode.ENABLED;
+      case DISABLED:
+        return ServerResourceMode.DISABLED;
+      case PROMPT:
+        return ServerResourceMode.PROMPT;
+      default:
+        throw new IllegalStateException("Unexpected value: " + mode);
+    }
   }
 
   /**
@@ -98,9 +126,7 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
     net.minecraft.client.multiplayer.ServerData data = this.mcServerList.getServerData(index);
     data.serverIP = server.getServerAddress().getIP() + ":" + server.getServerAddress().getPort();
     data.serverName = server.getName();
-    data.setResourceMode(
-        net.minecraft.client.multiplayer.ServerData.ServerResourceMode.valueOf(
-            server.getResourceMode().name()));
+    data.setResourceMode(this.mapResourceMode(server.getResourceMode()));
 
     this.eventBus.fireEvent(event, Subscribe.Phase.POST);
   }
@@ -110,7 +136,7 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
    */
   @Override
   public void addServer(ServerData server) {
-    this.mcServerList.addServerData(createNMSServerData(server));
+    this.mcServerList.addServerData(createServerData(server));
   }
 
   /**
@@ -120,19 +146,17 @@ public class VersionedServerList implements net.flintmc.mcapi.server.ServerList 
   public void addServer(int index, ServerData server) {
     ((ServerListShadow) this.mcServerList)
         .getServerDataList()
-        .add(index, createNMSServerData(server));
+        .add(index, this.createServerData(server));
   }
 
   /**
    * {@inheritDoc}
    */
-  private net.minecraft.client.multiplayer.ServerData createNMSServerData(ServerData server) {
+  private net.minecraft.client.multiplayer.ServerData createServerData(ServerData server) {
     String ip = server.getServerAddress().getIP() + ":" + server.getServerAddress().getPort();
     net.minecraft.client.multiplayer.ServerData data =
         new net.minecraft.client.multiplayer.ServerData(server.getName(), ip, false);
-    data.setResourceMode(
-        net.minecraft.client.multiplayer.ServerData.ServerResourceMode.valueOf(
-            server.getResourceMode().name()));
+    data.setResourceMode(this.mapResourceMode(server.getResourceMode()));
     return data;
   }
 

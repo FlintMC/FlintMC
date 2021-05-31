@@ -34,13 +34,13 @@ public class VersionedServerAddress implements ServerAddress {
   private final int port;
 
   @AssistedInject
-  public VersionedServerAddress(@Assisted("ip") String ip, @Assisted("port") int port) {
+  private VersionedServerAddress(@Assisted("ip") String ip, @Assisted("port") int port) {
     this.ip = ip;
     this.port = port;
   }
 
   @AssistedInject
-  public VersionedServerAddress(@Assisted("rawAddress") String rawAddress) {
+  private VersionedServerAddress(@Assisted("rawAddress") String rawAddress) {
     net.minecraft.client.multiplayer.ServerAddress address =
         net.minecraft.client.multiplayer.ServerAddress.fromString(rawAddress);
     Preconditions.checkNotNull(address, "address");
@@ -50,7 +50,7 @@ public class VersionedServerAddress implements ServerAddress {
   }
 
   @AssistedInject
-  public VersionedServerAddress(@Assisted("socketAddress") InetSocketAddress address) {
+  private VersionedServerAddress(@Assisted("socketAddress") InetSocketAddress address) {
     this(address.getAddress().getHostName(), address.getPort());
   }
 
