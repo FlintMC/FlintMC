@@ -248,6 +248,26 @@ public class DefaultPackageLoader implements PackageLoader {
   }
 
   /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Package findPackageByName(String name) {
+    return this.getAllPackages()
+        .stream()
+        .filter((p) -> p.getName().equals(name))
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
+  public Package findLoadedPackageByName(String name) {
+    return this.getLoadedStream()
+        .filter((p) -> p.getName().equals(name))
+        .findFirst()
+        .orElse(null);
+  }
+
+  /**
    * Retrieves a log prefix for the given class. This will always be the name of the package if the
    * class has been loaded by a package class loader.
    *

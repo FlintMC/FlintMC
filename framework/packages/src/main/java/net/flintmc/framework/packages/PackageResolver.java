@@ -26,9 +26,10 @@ public interface PackageResolver {
    * Resolves a package by its name.
    *
    * @param name The non-null name of the package to search for
+   * @param requireLoaded Whether the package has to be loaded
    * @return The package with the given name, or {@code null}, if no such package could be found
    */
-  Package resolvePackageByName(String name);
+  Package resolvePackageByName(String name, boolean requireLoaded);
 
   /**
    * Resolves the package where the given class has been loaded.

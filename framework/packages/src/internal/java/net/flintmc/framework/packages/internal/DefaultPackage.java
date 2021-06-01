@@ -184,7 +184,7 @@ public class DefaultPackage implements Package {
   @Override
   public Package getParent() {
     String parentName = this.packageManifest.getParent();
-    return parentName == null ? null : this.resolver.resolvePackageByName(parentName);
+    return parentName == null ? null : this.resolver.resolvePackageByName(parentName, false);
   }
 
   @Override

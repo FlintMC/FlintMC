@@ -65,5 +65,21 @@ public interface PackageLoader {
    */
   Set<Package> getLoadedPackages(boolean withCorePackages);
 
+  /**
+   * Finds a package (regardless of its state) based on its name.
+   *
+   * @param name The non-null name of the package
+   * @return The found package, or {@code null}, if the package could not be found
+   */
+  Package findPackageByName(String name);
+
+  /**
+   * Finds a loaded packaged based on its name
+   *
+   * @param name The non-null name of the package
+   * @return The found package, or {@code null}, if the package could not be found
+   */
+  Package findLoadedPackageByName(String name);
+
   void load();
 }

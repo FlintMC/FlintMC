@@ -40,9 +40,8 @@ public class DefaultPackageResolver implements PackageResolver {
   }
 
   @Override
-  public Package resolvePackageByName(String name) {
-    return loader.getAllPackages(true).stream().filter((p) -> p.getName().equals(name)).findFirst()
-        .orElse(null);
+  public Package resolvePackageByName(String name, boolean requireLoaded) {
+    return requireLoaded ? loader.findLoadedPackageByName(name) : loader.findPackageByName(name);
   }
 
   @Override
