@@ -132,6 +132,14 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
      * {@inheritDoc}
      */
     @Override
+    public String getGroup() {
+      return this.model.getGroup();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getDisplayName() {
       return this.getName();
     }
@@ -142,6 +150,22 @@ public class DefaultPackageManifestLoader implements PackageManifestLoader {
     @Override
     public String getVersion() {
       return this.model.getVersion();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getParent() {
+      return this.model.getParent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isMetaPackage() {
+      return this.model.isMetaPackage();
     }
 
     @Override
