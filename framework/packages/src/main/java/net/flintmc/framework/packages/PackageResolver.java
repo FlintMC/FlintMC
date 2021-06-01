@@ -23,6 +23,14 @@ package net.flintmc.framework.packages;
 public interface PackageResolver {
 
   /**
+   * Resolves a package by its name.
+   *
+   * @param name The non-null name of the package to search for
+   * @return The package with the given name, or {@code null}, if no such package could be found
+   */
+  Package resolvePackageByName(String name);
+
+  /**
    * Resolves the package where the given class has been loaded.
    *
    * @param clazz The non-null class to resolve the package for

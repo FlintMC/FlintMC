@@ -48,6 +48,30 @@ public interface Package {
   String getName();
 
   /**
+   * Retrieves the group of this package. This method differs from {@link PackageManifest#getName()}
+   * as in that it falls back to the name of the file if no manifest is present.
+   *
+   * @return The group of this package
+   */
+  String getGroup();
+
+  /**
+   * Retrieves the parent package of this package. This method differs from
+   * {@link PackageManifest#getParent()} as in that it resolves the name of the parent package and
+   * returns a handle to it in case it is present.
+   *
+   * @return The parent package, or {@code null}, if none
+   */
+  Package getParent();
+
+  /**
+   * Determines whether this package is a meta package.
+   *
+   * @return {@code true} if this package is a meta package, {@code false} otherwise
+   */
+  boolean isMetaPackage();
+
+  /**
    * Retrieves the display name of this package. This method differs from {@link
    * PackageManifest#getDisplayName()} as in that it falls back to the name of the file if no
    * manifest is present.

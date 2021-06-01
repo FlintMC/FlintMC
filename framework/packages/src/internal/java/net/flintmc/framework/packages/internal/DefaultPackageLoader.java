@@ -25,10 +25,7 @@ import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.logging.LoggingProvider;
 import net.flintmc.framework.packages.Package;
-import net.flintmc.framework.packages.PackageClassLoader;
-import net.flintmc.framework.packages.PackageLoader;
-import net.flintmc.framework.packages.PackageManifestLoader;
-import net.flintmc.framework.packages.PackageState;
+import net.flintmc.framework.packages.*;
 import net.flintmc.framework.packages.load.DependencyGraphBuilder;
 import net.flintmc.framework.packages.load.PackageFinder;
 import net.flintmc.framework.stereotype.service.Service.State;
@@ -38,17 +35,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Singleton
 @Implement(PackageLoader.class)
@@ -106,8 +96,7 @@ public class DefaultPackageLoader implements PackageLoader {
       }
 
       if (packagesToLoad.isEmpty()) {
-        this.logger.info("No valid packages have been found...");
-        return;
+        this.logger.info("No valid packages to load from the disk have been found!");
       }
 
       List<Package> classpathPackages = this.packageFinder
@@ -139,7 +128,7 @@ public class DefaultPackageLoader implements PackageLoader {
       this.allPackages.addAll(loadablePackages);
 
       List<Package> loadedSuccessfully = new ArrayList<>(
-          this.getLoadedPackages());
+          this.getLoadedPackages(true));
       Map<Package, List<String>> errorTrack = new HashMap<>();
 
       // check which packages have been loaded successfully
@@ -207,13 +196,32 @@ public class DefaultPackageLoader implements PackageLoader {
 
   }
 
-
   /**
    * {@inheritDoc}
    */
   @Override
   public Set<Package> getAllPackages() {
-    return Collections.unmodifiableSet(this.allPackages);
+    return Collections.unmodifiableSet(
+        this.allPackages.stream()
+            .filter((p) -> !p.getGroup().equals("net.flintmc"))
+            .collect(Collectors.toSet()));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Set<Package> getAllPackages(boolean withCorePackages) {
+    if (withCorePackages) {
+      return Collections.unmodifiableSet(this.allPackages);
+    } else {
+      return getAllPackages();
+    }
+  }
+
+  private Stream<Package> getLoadedStream() {
+    return this.allPackages.stream()
+        .filter((p) -> PackageState.LOADED.matches(p) || PackageState.ENABLED.matches(p));
   }
 
   /**
@@ -222,10 +230,21 @@ public class DefaultPackageLoader implements PackageLoader {
   @Override
   public Set<Package> getLoadedPackages() {
     return Collections.unmodifiableSet(
-        this.allPackages.stream()
-            .filter(pack -> PackageState.LOADED.matches(pack)
-                || PackageState.ENABLED.matches(pack))
+        this.getLoadedStream()
+            .filter((p) -> !p.getGroup().equals("net.flintmc"))
             .collect(Collectors.toSet()));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Set<Package> getLoadedPackages(boolean withCorePackages) {
+    if(withCorePackages) {
+      return Collections.unmodifiableSet(this.getLoadedStream().collect(Collectors.toSet()));
+    } else {
+      return this.getLoadedPackages();
+    }
   }
 
   /**

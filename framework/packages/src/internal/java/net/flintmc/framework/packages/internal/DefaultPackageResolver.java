@@ -22,10 +22,29 @@ package net.flintmc.framework.packages.internal;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageClassLoader;
+import net.flintmc.framework.packages.PackageLoader;
 import net.flintmc.framework.packages.PackageResolver;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 @Implement(PackageResolver.class)
+@Singleton
 public class DefaultPackageResolver implements PackageResolver {
+
+  private final PackageLoader loader;
+
+  @Inject
+  private DefaultPackageResolver(PackageLoader loader) {
+    this.loader = loader;
+  }
+
+  @Override
+  public Package resolvePackageByName(String name) {
+    return loader.getAllPackages(true).stream().filter((p) -> p.getName().equals(name)).findFirst()
+        .orElse(null);
+  }
+
   @Override
   public Package resolvePackage(Class<?> clazz) {
     ClassLoader classLoader = clazz.getClassLoader();
