@@ -24,13 +24,14 @@ import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.registry.RegistryRegisterEvent;
 import net.flintmc.mcapi.resources.ResourceLocation;
 import net.flintmc.mcapi.resources.ResourceLocationProvider;
 import net.flintmc.mcapi.world.block.BlockType;
 import net.flintmc.mcapi.world.block.BlockTypeRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.registry.Registry;
 
 @Singleton
@@ -40,17 +41,20 @@ public class VersionedBlockTypeRegistry implements BlockTypeRegistry {
   private final Map<ResourceLocation, BlockType> types;
 
   @Inject
-  private VersionedBlockTypeRegistry(
-      ResourceLocationProvider provider,
-      BlockType.Factory typeFactory) {
+  private VersionedBlockTypeRegistry() {
     this.types = new HashMap<>();
+  }
 
-    for (Block block : Registry.BLOCK) {
-      ResourceLocation location = provider.fromMinecraft(Registry.BLOCK.getKey(block));
+  @PreSubscribe
+  public void registerBlocks(final RegistryRegisterEvent event, final BlockType.Factory typeFactory) {
 
-      BlockType type = typeFactory.create(location, block);
-      this.types.put(location, type);
+    if (!event.getRegistryKeyLocation().getPath().equals("block")) {
+      return;
     }
+
+    ResourceLocation blockResourceLocation =  event.getRegistryValueLocation();
+    BlockType blockType = typeFactory.create(blockResourceLocation, event.getRegistryObject());
+    this.types.put(blockResourceLocation, blockType);
   }
 
   /**
