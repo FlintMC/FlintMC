@@ -57,18 +57,11 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
             .category(null)
             .registryName(NameSpacedKey.minecraft("air"))
             .build();
-    this.registerItems();
   }
-
-  protected abstract void registerItems();
 
   @Override
   public void registerType(ItemType type) {
-    Preconditions.checkArgument(
-        !this.itemTypes.containsKey(type.getRegistryName()),
-        "A type with the name %s is already registered",
-        type.getRegistryName());
-    this.itemTypes.put(type.getRegistryName(), type);
+    this.itemTypes.putIfAbsent(type.getRegistryName(), type);
   }
 
   @Override

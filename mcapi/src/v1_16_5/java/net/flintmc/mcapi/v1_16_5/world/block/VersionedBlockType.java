@@ -33,11 +33,14 @@ import net.minecraft.block.Block;
 public class VersionedBlockType implements BlockType {
 
   private final ResourceLocation name;
-  private final BlockState defaultState;
+  private  BlockState defaultState;
 
-  private final ChatComponent displayName;
+  private ChatComponent displayName;
 
   private final Block handle;
+
+  private final MinecraftComponentMapper componentMapper;
+  private final BlockState.Factory stateFactory;
 
   @AssistedInject
   public VersionedBlockType(
@@ -45,12 +48,10 @@ public class VersionedBlockType implements BlockType {
       MinecraftComponentMapper componentMapper,
       @Assisted ResourceLocation name,
       @Assisted("handle") Object handle) {
+    this.stateFactory = stateFactory;
+    this.componentMapper  = componentMapper;
     this.name = name;
     this.handle = (Block) handle;
-
-    this.displayName = componentMapper.fromMinecraft(this.handle.getTranslatedName());
-
-    this.defaultState = stateFactory.create(this, this.handle.getDefaultState());
   }
 
   /**
@@ -75,6 +76,10 @@ public class VersionedBlockType implements BlockType {
    */
   @Override
   public BlockState getDefaultState() {
+    if(this.defaultState == null) {
+      this.defaultState = this.stateFactory.create(this, this.handle.getDefaultState());
+    }
+    
     return this.defaultState;
   }
 
@@ -99,6 +104,10 @@ public class VersionedBlockType implements BlockType {
    */
   @Override
   public ChatComponent getDisplayName() {
+    if(this.displayName == null) {
+      this.displayName = this.componentMapper.fromMinecraft(this.handle.getTranslatedName());
+    }
+
     return this.displayName;
   }
 
