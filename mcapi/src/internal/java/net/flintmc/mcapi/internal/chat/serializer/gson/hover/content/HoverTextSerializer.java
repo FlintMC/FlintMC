@@ -20,6 +20,8 @@
 package net.flintmc.mcapi.internal.chat.serializer.gson.hover.content;
 
 import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
@@ -29,14 +31,28 @@ import net.flintmc.mcapi.chat.component.event.content.HoverText;
 /**
  * Serializer for {@link HoverText}
  */
+@Singleton
 public class HoverTextSerializer implements HoverContentSerializer {
 
+  private final HoverContent.Factory contentFactory;
+
+  @Inject
+  private HoverTextSerializer(HoverContent.Factory contentFactory) {
+    this.contentFactory = contentFactory;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverContent deserialize(
       ChatComponent component, ComponentBuilder.Factory componentFactory, Gson gson) {
-    return new HoverText(component);
+    return this.contentFactory.text(component);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent serialize(
       HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson) {

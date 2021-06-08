@@ -143,12 +143,17 @@ public class HookService implements ServiceHandler<Hook> {
             .get()
             .generateInjector(target.getDeclaringClass(), hookMethod, HookInjector.class);
 
+    String getterDeclaringName = getter.getDeclaringClass().equals(target.getDeclaringClass())
+        ? ""
+        : getter.getDeclaringClass().getName();
+    String getterSrc =
+        (getterDeclaringName.isEmpty() ? "" : getterDeclaringName + ".") + getter.getName();
+
     // getMethodInjector().notifyHook(instance, args, executionTime)
     String notify =
         String.format(
-            "%s.%s().notifyHook(%s, $args, net.flintmc.transform.hook.Hook.ExecutionTime.%s);",
-            getter.getDeclaringClass().getName(),
-            getter.getName(),
+            "%s().notifyHook(%s, $args, net.flintmc.transform.hook.Hook.ExecutionTime.%s);",
+            getterSrc,
             Modifier.isStatic(target.getModifiers()) ? "null" : "$0",
             executionTime);
     String varName = "hookNotifyResult";

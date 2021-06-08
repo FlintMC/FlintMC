@@ -23,23 +23,23 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
+import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
-import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import net.flintmc.mcapi.internal.items.DefaultItemRegistry;
 import net.flintmc.mcapi.items.ItemRegistry;
-import net.flintmc.mcapi.items.ItemStackSerializer;
 import net.flintmc.mcapi.items.meta.ItemMeta;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentRarity;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
 import net.flintmc.mcapi.items.type.ItemCategory;
 import net.flintmc.mcapi.items.type.ItemType;
+import net.flintmc.mcapi.items.type.ItemType.Builder.Factory;
+import net.flintmc.mcapi.registry.RegistryRegisterEvent;
+import net.flintmc.mcapi.resources.ResourceLocation;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
 
 @Singleton
@@ -47,83 +47,86 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class VersionedItemRegistry extends DefaultItemRegistry {
 
   @Inject
-  public VersionedItemRegistry(
-      ItemType.Builder.Factory itemFactory,
+  private VersionedItemRegistry(
+      Factory itemFactory,
       EnchantmentType.Factory enchantmentFactory,
-      ComponentBuilder.Factory componentFactory,
-      ComponentSerializer.Factory componentSerializerFactory,
-      ItemStackSerializer itemStackSerializer) {
+      ComponentBuilder.Factory componentFactory) {
     super(
         itemFactory,
         enchantmentFactory,
-        componentFactory,
-        componentSerializerFactory,
-        itemStackSerializer);
+        componentFactory
+    );
   }
 
-  @Override
-  protected void registerItems() {
+  @PreSubscribe
+  public void registerItemsAndEnchantments(final RegistryRegisterEvent event) {
+    ResourceLocation registryKey = event.getRegistryKeyLocation();
+    String path = registryKey.getPath();
+
+    if (path.equalsIgnoreCase("item")) {
+      this.registerItem((Item) event.getRegistryObject(), event.getRegistryValueLocation());
+    } else if (path.equalsIgnoreCase("enchantment")) {
+      this.registerEnchantment((Enchantment) event.getRegistryObject(),
+          event.getRegistryValueLocation());
+    }
+
+  }
+
+  private void registerItem(final Item item, final ResourceLocation resourceLocation) {
     Map<NameSpacedKey, Class<? extends ItemMeta>> specialMetaClasses =
         this.getSpecialItemMetaClasses();
 
     // create one builder for every item
     ItemType.Builder builder = super.itemFactory.newBuilder();
 
-    for (Item item : Registry.ITEM) {
-      // name in the registry like minecraft:stone
-      ResourceLocation resourceLocation = Registry.ITEM.getKey(item);
+    NameSpacedKey registryName =
+        NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
 
-      NameSpacedKey registryName =
-          NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
+    // creative mode categories
+    ItemCategory category = this.findCategory(registryName, item);
 
-      // creative mode categories
-      ItemCategory category = this.findCategory(registryName, item);
+    // copy all values of the minecraft item to our builder
+    builder
+        .category(category)
+        .registryName(registryName)
+        .defaultDisplayName(
+            super.componentFactory.translation().translationKey(item.getTranslationKey()).build())
+        .maxDamage(item.getMaxDamage())
+        .maxStackSize(item.getMaxStackSize());
 
-      // copy all values of the minecraft item to our builder
-      builder
-          .category(category)
-          .registryName(registryName)
-          .defaultDisplayName(
-              super.componentFactory.translation().translationKey(item.getTranslationKey()).build())
-          .maxDamage(item.getMaxDamage())
-          .maxStackSize(item.getMaxStackSize());
-
-      // exceptions for the ItemMeta like leather armor
-      if (specialMetaClasses.containsKey(registryName)) {
-        builder.metaClass(specialMetaClasses.get(registryName));
-      }
-
-      super.registerType(builder.build());
-
-      // re-use the builder for every other item in the registry
-      builder.reset();
+    // exceptions for the ItemMeta like leather armor
+    if (specialMetaClasses.containsKey(registryName)) {
+      builder.metaClass(specialMetaClasses.get(registryName));
     }
 
-    for (Enchantment enchantment : Registry.ENCHANTMENT) {
-      // name in the registry like minecraft:sharpness
-      ResourceLocation resourceLocation = Registry.ENCHANTMENT.getKey(enchantment);
+    super.registerType(builder.build());
 
-      NameSpacedKey registryName =
-          NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
-      Enchantment.Rarity rarity = enchantment.getRarity();
+    // re-use the builder for every other item in the registry
+    builder.reset();
+  }
 
-      super.registerEnchantmentType(
-          super.enchantmentFactory
-              .newBuilder()
-              .registryName(registryName)
-              .highestLevel(enchantment.getMaxLevel())
-              .rarity(
-                  rarity == Enchantment.Rarity.UNCOMMON
-                      ? EnchantmentRarity.UNCOMMON
-                      : rarity == Enchantment.Rarity.COMMON
-                          ? EnchantmentRarity.COMMON
-                          : rarity == Enchantment.Rarity.RARE
-                              ? EnchantmentRarity.RARE
-                              : rarity == Enchantment.Rarity.VERY_RARE
-                                  ? EnchantmentRarity.EPIC
-                                  : null)
-              .build());
-    }
+  private void registerEnchantment(final Enchantment enchantment,
+      final ResourceLocation resourceLocation) {
+    NameSpacedKey registryName =
+        NameSpacedKey.of(resourceLocation.getNamespace(), resourceLocation.getPath());
+    Enchantment.Rarity rarity = enchantment.getRarity();
+
+    super.registerEnchantmentType(
+        super.enchantmentFactory
+            .newBuilder()
+            .registryName(registryName)
+            .highestLevel(enchantment.getMaxLevel())
+            .rarity(
+                rarity == Enchantment.Rarity.UNCOMMON
+                    ? EnchantmentRarity.UNCOMMON
+                    : rarity == Enchantment.Rarity.COMMON
+                        ? EnchantmentRarity.COMMON
+                        : rarity == Enchantment.Rarity.RARE
+                            ? EnchantmentRarity.RARE
+                            : rarity == Enchantment.Rarity.VERY_RARE
+                                ? EnchantmentRarity.EPIC
+                                : null)
+            .build());
   }
 
   private Map<NameSpacedKey, Class<? extends ItemMeta>> getSpecialItemMetaClasses() {

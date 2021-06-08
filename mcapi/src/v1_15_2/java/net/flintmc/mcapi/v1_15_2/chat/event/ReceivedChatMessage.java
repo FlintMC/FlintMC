@@ -17,21 +17,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.v1_15_2.chat;
+package net.flintmc.mcapi.v1_15_2.chat.event;
 
-import com.google.inject.Singleton;
-import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.mcapi.internal.chat.serializer.LegacyHoverHolder;
+import net.flintmc.mcapi.chat.ChatLocation;
+import net.flintmc.mcapi.chat.component.ChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
-@Singleton
-@Implement(LegacyHoverHolder.class)
-public class VersionedLegacyHoverHolder implements LegacyHoverHolder {
+public class ReceivedChatMessage {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isLegacyHoverEvent() {
-    return true;
+  private final ITextComponent minecraftComponent;
+  private final ChatComponent component;
+  private final ChatLocation location;
+
+  public ReceivedChatMessage(
+      ITextComponent minecraftComponent, ChatComponent component, ChatLocation location) {
+    this.minecraftComponent = minecraftComponent;
+    this.component = component;
+    this.location = location;
+  }
+
+  public ITextComponent getMinecraftComponent() {
+    return this.minecraftComponent;
+  }
+
+  public ChatComponent getComponent() {
+    return this.component;
+  }
+
+  public ChatLocation getLocation() {
+    return this.location;
   }
 }

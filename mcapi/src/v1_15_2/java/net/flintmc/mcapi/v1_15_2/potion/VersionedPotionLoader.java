@@ -21,44 +21,40 @@ package net.flintmc.mcapi.v1_15_2.potion;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
+import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.mcapi.potion.PotionRegister;
 import net.flintmc.mcapi.potion.mapper.PotionMapper;
-import net.flintmc.mcapi.resources.ResourceLocationProvider;
-import net.flintmc.render.gui.event.OpenGLInitializeEvent;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.registry.Registry;
+import net.flintmc.mcapi.registry.RegistryRegisterEvent;
+import net.flintmc.mcapi.resources.ResourceLocation;
 
 @Singleton
 public class VersionedPotionLoader {
 
-  private final ResourceLocationProvider resourceLocationProvider;
   private final PotionRegister potionRegister;
   private final PotionMapper potionMapper;
 
   @Inject
-  private VersionedPotionLoader(
-      ResourceLocationProvider resourceLocationProvider,
-      PotionRegister potionRegister,
-      PotionMapper potionMapper) {
-    this.resourceLocationProvider = resourceLocationProvider;
+  private VersionedPotionLoader(final PotionRegister potionRegister,
+      final PotionMapper potionMapper) {
     this.potionRegister = potionRegister;
     this.potionMapper = potionMapper;
   }
 
-  @PostSubscribe
-  public void convertEffectAndPotions(OpenGLInitializeEvent event) {
-    for (Effect effect : Registry.EFFECTS) {
-      this.potionRegister.addEffect(
-          this.resourceLocationProvider.get(Registry.EFFECTS.getKey(effect).getPath()),
-          this.potionMapper.fromMinecraftEffect(effect));
-    }
+  @PreSubscribe
+  public void registerEffects(final RegistryRegisterEvent event) {
+    ResourceLocation registryKeyLocation = event.getRegistryKeyLocation();
 
-    for (Potion potion : Registry.POTION) {
+    if (registryKeyLocation.getPath().equals("mob_effect")) {
+      this.potionRegister.addEffect(
+          event.getRegistryValueLocation(),
+          this.potionMapper.fromMinecraftEffect(event.getRegistryObject())
+      );
+    } else if (registryKeyLocation.getPath().equals("potion")) {
       this.potionRegister.addPotion(
-          this.resourceLocationProvider.get(Registry.POTION.getKey(potion).getPath()),
-          this.potionMapper.fromMinecraftPotion(potion));
+          event.getRegistryValueLocation(),
+          this.potionMapper.fromMinecraftPotion(event.getRegistryObject())
+      );
     }
   }
+
 }

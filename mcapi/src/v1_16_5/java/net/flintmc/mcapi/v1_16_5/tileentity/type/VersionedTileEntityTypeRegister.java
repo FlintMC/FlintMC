@@ -24,8 +24,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Map;
 import net.flintmc.framework.eventbus.event.subscribe.PostSubscribe;
-import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
+import net.flintmc.framework.eventbus.event.subscribe.PreSubscribe;
 import net.flintmc.framework.inject.implement.Implement;
+import net.flintmc.mcapi.registry.RegistryRegisterEvent;
 import net.flintmc.mcapi.tileentity.type.TileEntityType;
 import net.flintmc.mcapi.tileentity.type.TileEntityTypeRegister;
 import net.flintmc.render.gui.event.OpenGLInitializeEvent;
@@ -44,12 +45,14 @@ public class VersionedTileEntityTypeRegister implements TileEntityTypeRegister {
     this.tileEntityTypes = Maps.newHashMap();
   }
 
-  @PostSubscribe
-  public void convertTileEntityTypes(OpenGLInitializeEvent event) {
-    for (net.minecraft.tileentity.TileEntityType<?> tileEntityType : Registry.BLOCK_ENTITY_TYPE) {
-      String key = Registry.BLOCK_ENTITY_TYPE.getKey(tileEntityType).getPath();
-      this.tileEntityTypes.put(key, this.tileEntityTypeFactory.create());
+  @PreSubscribe
+  public void registerTypeEntityTypes(final RegistryRegisterEvent event) {
+    if (!event.getRegistryKeyLocation().getPath().equalsIgnoreCase("block_entity_type")) {
+      return;
     }
+
+    this.tileEntityTypes.put(event.getRegistryValueLocation().getPath(),
+        this.tileEntityTypeFactory.create());
   }
 
   /**

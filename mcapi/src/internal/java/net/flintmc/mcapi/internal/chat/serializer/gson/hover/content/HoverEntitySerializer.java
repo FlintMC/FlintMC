@@ -23,18 +23,30 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import java.util.UUID;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.component.event.content.HoverEntity;
-import net.flintmc.mcapi.chat.component.event.content.JsonHoverContentSerializer;
 
 /**
  * Serializer for {@link HoverEntity}
  */
+@Singleton
 public class HoverEntitySerializer extends JsonHoverContentSerializer {
 
+  private final HoverContent.Factory contentFactory;
+
+  @Inject
+  private HoverEntitySerializer(HoverContent.Factory contentFactory) {
+    this.contentFactory = contentFactory;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected HoverContent deserializeJson(
       JsonElement element, ComponentBuilder.Factory componentFactory, Gson gson)
@@ -54,7 +66,7 @@ public class HoverEntitySerializer extends JsonHoverContentSerializer {
       return null;
     }
 
-    return new HoverEntity(
+    return this.contentFactory.entity(
         uniqueId,
         object.get("type").getAsString(), // non-null type of the entity
         object.has("name")
@@ -63,6 +75,9 @@ public class HoverEntitySerializer extends JsonHoverContentSerializer {
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected JsonElement serializeJson(
       HoverContent content, ComponentBuilder.Factory componentFactory, Gson gson)

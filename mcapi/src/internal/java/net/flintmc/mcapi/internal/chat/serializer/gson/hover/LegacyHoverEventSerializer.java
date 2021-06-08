@@ -26,7 +26,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import java.lang.reflect.Type;
-import net.flintmc.mcapi.chat.builder.ComponentBuilder;
+import net.flintmc.mcapi.chat.builder.ComponentBuilder.Factory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
@@ -39,13 +39,20 @@ import org.apache.logging.log4j.Logger;
  */
 public class LegacyHoverEventSerializer extends HoverEventSerializer {
 
+  private final HoverEvent.Factory eventFactory;
+
   public LegacyHoverEventSerializer(
       Logger logger,
-      ComponentBuilder.Factory componentFactory,
-      GsonComponentSerializer componentSerializer) {
+      Factory componentFactory,
+      GsonComponentSerializer componentSerializer,
+      HoverEvent.Factory eventFactory) {
     super(logger, componentSerializer, componentFactory);
+    this.eventFactory = eventFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverEvent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
@@ -70,9 +77,13 @@ public class LegacyHoverEventSerializer extends HoverEventSerializer {
     if (content == null) {
       return null;
     }
-    return HoverEvent.of(content);
+
+    return this.eventFactory.create(content);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonElement serialize(HoverEvent src, Type typeOfSrc, JsonSerializationContext context) {
     Preconditions.checkArgument(

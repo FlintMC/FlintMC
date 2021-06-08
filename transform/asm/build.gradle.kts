@@ -31,9 +31,9 @@ dependencies {
 
     api(project(":framework:framework-stereotype"))
 
-    api("org.ow2.asm", "asm", "7.2-beta")
-    api("org.ow2.asm", "asm-tree", "7.2-beta")
-    api("org.ow2.asm", "asm-commons", "7.2-beta")
+    api("org.ow2.asm", "asm", "9.1")
+    api("org.ow2.asm", "asm-tree", "9.1")
+    api("org.ow2.asm", "asm-commons", "9.1")
     api("com.google.guava", "guava", "21.0")
 
     internalImplementation(project(":transform:transform-launcher-plugin"))

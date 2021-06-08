@@ -26,11 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import net.flintmc.framework.stereotype.NameSpacedKey;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
-import net.flintmc.mcapi.chat.component.event.HoverEvent;
-import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.mcapi.internal.items.component.HoverItemSerializer;
 import net.flintmc.mcapi.items.ItemRegistry;
-import net.flintmc.mcapi.items.ItemStackSerializer;
 import net.flintmc.mcapi.items.meta.enchantment.EnchantmentType;
 import net.flintmc.mcapi.items.type.ItemCategory;
 import net.flintmc.mcapi.items.type.ItemType;
@@ -50,9 +46,7 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
   public DefaultItemRegistry(
       ItemType.Builder.Factory itemFactory,
       EnchantmentType.Factory enchantmentFactory,
-      ComponentBuilder.Factory componentFactory,
-      ComponentSerializer.Factory componentSerializerFactory,
-      ItemStackSerializer itemStackSerializer) {
+      ComponentBuilder.Factory componentFactory) {
     this.itemFactory = itemFactory;
     this.enchantmentFactory = enchantmentFactory;
     this.componentFactory = componentFactory;
@@ -63,23 +57,11 @@ public abstract class DefaultItemRegistry implements ItemRegistry {
             .category(null)
             .registryName(NameSpacedKey.minecraft("air"))
             .build();
-    this.registerItems();
-
-    componentSerializerFactory
-        .gson()
-        .registerHoverContentSerializer(
-            HoverEvent.Action.SHOW_ITEM, new HoverItemSerializer(itemStackSerializer));
   }
-
-  protected abstract void registerItems();
 
   @Override
   public void registerType(ItemType type) {
-    Preconditions.checkArgument(
-        !this.itemTypes.containsKey(type.getRegistryName()),
-        "A type with the name %s is already registered",
-        type.getRegistryName());
-    this.itemTypes.put(type.getRegistryName(), type);
+    this.itemTypes.putIfAbsent(type.getRegistryName(), type);
   }
 
   @Override

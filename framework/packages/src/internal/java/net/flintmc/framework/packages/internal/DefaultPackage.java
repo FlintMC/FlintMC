@@ -19,6 +19,12 @@
 
 package net.flintmc.framework.packages.internal;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarFile;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.InjectionService;
@@ -31,6 +37,7 @@ import net.flintmc.framework.packages.Package;
 import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.framework.packages.PackageManifest;
 import net.flintmc.framework.packages.PackageManifestLoader;
+import net.flintmc.framework.packages.PackageResolver;
 import net.flintmc.framework.packages.PackageState;
 import net.flintmc.framework.packages.localization.PackageLocalizationLoader;
 import net.flintmc.framework.service.ExtendedServiceLoader;
@@ -46,12 +53,6 @@ import net.flintmc.metaprogramming.identifier.ClassIdentifier;
 import net.flintmc.metaprogramming.identifier.MethodIdentifier;
 import net.flintmc.util.mappings.utils.RemappingMethodLocationResolver;
 import org.apache.logging.log4j.Logger;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarFile;
 
 /**
  * Default implementation of the {@link Package}.
@@ -63,6 +64,7 @@ public class DefaultPackage implements Package {
   private final PackageClassLoader.Factory classLoaderFactory;
   private final Logger logger;
   private final File jarFile;
+  private final PackageResolver resolver;
 
 
   private PackageLocalizationLoader localizationLoader;
@@ -82,6 +84,8 @@ public class DefaultPackage implements Package {
    * @param jar               The java IO jar file this package should be loaded from, must point to
    *                          the same file as the `file` parameter, or must be null if the package
    *                          has been loaded from the classpath
+   * @param resolver          The package resolver to be used to resolve references to other
+   *                          packages
    */
   @AssistedInject
   private DefaultPackage(
@@ -89,6 +93,7 @@ public class DefaultPackage implements Package {
       PackageLocalizationLoader localizationLoader,
       PackageManifestLoader manifestLoader,
       PackageClassLoader.Factory classLoaderFactory,
+      PackageResolver resolver,
       @InjectLogger Logger logger,
       @Assisted("jarFile") File jarFile,
       @Assisted("jar") JarFile jar) {
@@ -96,6 +101,7 @@ public class DefaultPackage implements Package {
     this.classLoaderFactory = classLoaderFactory;
     this.logger = logger;
     this.jarFile = jarFile;
+    this.resolver = resolver;
 
     if (jar != null) {
       // If the package should be loaded from a jar file, try to retrieve the
@@ -140,12 +146,14 @@ public class DefaultPackage implements Package {
   private DefaultPackage(
       ServiceRepository serviceRepository,
       PackageClassLoader.Factory classLoaderFactory,
+      PackageResolver resolver,
       @InjectLogger Logger logger,
       @Assisted("manifest") PackageManifest manifest) {
     this.serviceRepository = serviceRepository;
     this.classLoaderFactory = classLoaderFactory;
     this.logger = logger;
     this.jarFile = null;
+    this.resolver = resolver;
     this.localizationLoader = null;
     this.packageManifest = manifest;
     this.packageState = PackageState.NOT_LOADED;
@@ -166,6 +174,22 @@ public class DefaultPackage implements Package {
   public String getName() {
     return this.packageManifest != null ? this.packageManifest.getName()
         : jarFile.getName();
+  }
+
+  @Override
+  public String getGroup() {
+    return this.packageManifest != null ? this.packageManifest.getGroup() : jarFile.getName();
+  }
+
+  @Override
+  public Package getParent() {
+    String parentName = this.packageManifest.getParent();
+    return parentName == null ? null : this.resolver.resolvePackageByName(parentName, false);
+  }
+
+  @Override
+  public boolean isMetaPackage() {
+    return this.packageManifest.isMetaPackage();
   }
 
   /**

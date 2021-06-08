@@ -21,6 +21,7 @@ package net.flintmc.mcapi.server;
 
 import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.mcapi.server.status.ServerStatus;
@@ -44,6 +45,9 @@ public interface ServerData {
   String getName();
 
   /**
+   * Retrieves the address of this server data. This may invoke a DNS request to resolve the
+   * domain.
+   *
    * @return the server address of the server described by this instance
    */
   ServerAddress getServerAddress();
@@ -57,6 +61,7 @@ public interface ServerData {
    * The resource mode of a server list entry.
    */
   enum ResourceMode {
+
     /**
      * Accepts server resource packs without asking.
      */
@@ -82,7 +87,22 @@ public interface ServerData {
      * @param resourceMode the resource mode of the server
      * @return the new {@link ServerData} instance
      */
-    ServerData create(@Assisted String name, @Assisted ServerAddress address,
+    ServerData create(
+        @Assisted String name,
+        @Assisted("address") ServerAddress address,
+        @Assisted ResourceMode resourceMode);
+
+    /**
+     * Creates a new server list entry (but doesn't add it to the actual server list).
+     *
+     * @param name            the name of the server
+     * @param addressProvider a supplier to provide the address of the server
+     * @param resourceMode    the resource mode of the server
+     * @return the new {@link ServerData} instance
+     */
+    ServerData create(
+        @Assisted String name,
+        @Assisted("addressProvider") Supplier<ServerAddress> addressProvider,
         @Assisted ResourceMode resourceMode);
   }
 }

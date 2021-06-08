@@ -17,21 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.mcapi.internal.chat.serializer;
+package net.flintmc.mcapi.chat.component.event.content;
 
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
+import net.flintmc.mcapi.items.ItemStack;
 
 /**
- * Holder for whether this version has a legacy or the new {@link HoverEvent} serialization.
+ * The content of a {@link HoverEvent} which displays an item.
  */
-public interface LegacyHoverHolder {
+public interface HoverItem extends HoverContent {
 
   /**
-   * Retrieves whether or not the {@link HoverEvent} is serialized in the legacy or modern format.
+   * Retrieves the item that will be used when displaying the item.
    *
-   * @return {@code true} if the hover event is serialized in the legacy format, {@code false} if
-   * the modern format should be used
+   * @return The non-null item
    */
-  boolean isLegacyHoverEvent();
-
+  ItemStack getItemStack();
 }

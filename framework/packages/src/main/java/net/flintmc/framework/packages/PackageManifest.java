@@ -34,6 +34,13 @@ public interface PackageManifest {
   String getName();
 
   /**
+   * Retrieves the group of the package.
+   *
+   * @return The group of the package
+   */
+  String getGroup();
+
+  /**
    * Retrieves the display name of the package. This will always be a human
    * readable string.
    *
@@ -47,6 +54,20 @@ public interface PackageManifest {
    * @return The version of the package
    */
   String getVersion();
+
+  /**
+   * Retrieves the parent package.
+   *
+   * @return The parent package, or {@code null}, if none
+   */
+  String getParent();
+
+  /**
+   * Determines whether the package containing this manifest is considered a meta package.
+   *
+   * @return Whether this package is a meta package
+   */
+  boolean isMetaPackage();
 
   /**
    * Retrieves tha version of the package.

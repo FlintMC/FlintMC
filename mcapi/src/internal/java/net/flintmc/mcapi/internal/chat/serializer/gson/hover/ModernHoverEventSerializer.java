@@ -26,7 +26,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import java.lang.reflect.Type;
-import net.flintmc.mcapi.chat.builder.ComponentBuilder;
+import net.flintmc.mcapi.chat.builder.ComponentBuilder.Factory;
 import net.flintmc.mcapi.chat.component.ChatComponent;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
@@ -39,13 +39,20 @@ import org.apache.logging.log4j.Logger;
  */
 public class ModernHoverEventSerializer extends HoverEventSerializer {
 
+  private final HoverEvent.Factory eventFactory;
+
   public ModernHoverEventSerializer(
       Logger logger,
       GsonComponentSerializer componentSerializer,
-      ComponentBuilder.Factory componentFactory) {
+      Factory componentFactory,
+      HoverEvent.Factory eventFactory) {
     super(logger, componentSerializer, componentFactory);
+    this.eventFactory = eventFactory;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HoverEvent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
@@ -76,7 +83,7 @@ public class ModernHoverEventSerializer extends HoverEventSerializer {
       }
     }
 
-    return HoverEvent.of(contents);
+    return this.eventFactory.create(contents);
   }
 
   private HoverContent deserialize(
@@ -87,6 +94,9 @@ public class ModernHoverEventSerializer extends HoverEventSerializer {
         super.componentSerializer.getGson());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonElement serialize(HoverEvent src, Type typeOfSrc, JsonSerializationContext context) {
     if (src.getContents().length == 0) {

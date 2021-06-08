@@ -21,6 +21,7 @@ package net.flintmc.mcapi.internal.server;
 
 import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
@@ -29,28 +30,35 @@ import net.flintmc.mcapi.server.ServerData;
 import net.flintmc.mcapi.server.status.ServerStatus;
 import net.flintmc.mcapi.server.status.ServerStatusResolver;
 
-/**
- * {@inheritDoc}
- */
 @Implement(ServerData.class)
 public class DefaultServerData implements ServerData {
 
-  private final String name;
-  private final ServerAddress address;
-  private final ResourceMode resourceMode;
-
   private final ServerStatusResolver serverStatusResolver;
+
+  private final String name;
+  private final Supplier<ServerAddress> addressProvider;
+  private final ResourceMode resourceMode;
 
   @AssistedInject
   private DefaultServerData(
+      ServerStatusResolver serverStatusResolver,
       @Assisted String name,
-      @Assisted ServerAddress address,
-      @Assisted ResourceMode resourceMode,
-      ServerStatusResolver serverStatusResolver) {
-    this.name = name;
-    this.address = address;
-    this.resourceMode = resourceMode;
+      @Assisted("addressProvider") Supplier<ServerAddress> addressProvider,
+      @Assisted ResourceMode resourceMode) {
     this.serverStatusResolver = serverStatusResolver;
+
+    this.name = name;
+    this.addressProvider = addressProvider;
+    this.resourceMode = resourceMode;
+  }
+
+  @AssistedInject
+  private DefaultServerData(
+      ServerStatusResolver serverStatusResolver,
+      @Assisted String name,
+      @Assisted("address") ServerAddress address,
+      @Assisted ResourceMode resourceMode) {
+    this(serverStatusResolver, name, () -> address, resourceMode);
   }
 
   /**
@@ -58,7 +66,7 @@ public class DefaultServerData implements ServerData {
    */
   @Override
   public CompletableFuture<ServerStatus> loadStatus() throws UnknownHostException {
-    return this.serverStatusResolver.resolveStatus(this.address);
+    return this.serverStatusResolver.resolveStatus(this.getServerAddress());
   }
 
   /**
@@ -74,7 +82,7 @@ public class DefaultServerData implements ServerData {
    */
   @Override
   public ServerAddress getServerAddress() {
-    return this.address;
+    return this.addressProvider.get();
   }
 
   /**

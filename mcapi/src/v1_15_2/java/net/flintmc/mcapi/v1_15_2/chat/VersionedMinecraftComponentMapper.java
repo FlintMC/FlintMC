@@ -57,15 +57,18 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
   private final ComponentBuilder.Factory builderFactory;
   private final ComponentSerializer.Factory factory;
   private final ClickEvent.Factory clickEventFactory;
+  private final HoverEvent.Factory hoverEventFactory;
 
   @Inject
   private VersionedMinecraftComponentMapper(
       Factory builderFactory,
       ComponentSerializer.Factory factory,
-      ClickEvent.Factory clickEventFactory) {
+      ClickEvent.Factory clickEventFactory,
+      HoverEvent.Factory hoverEventFactory) {
     this.builderFactory = builderFactory;
     this.factory = factory;
     this.clickEventFactory = clickEventFactory;
+    this.hoverEventFactory = hoverEventFactory;
   }
 
   @Override
@@ -209,7 +212,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
           this.factory.gson().deserializeHoverContent(this.fromMinecraft(value), action);
 
       if (content != null) {
-        component.hoverEvent(HoverEvent.of(content));
+        component.hoverEvent(this.hoverEventFactory.create(content));
       }
     }
 

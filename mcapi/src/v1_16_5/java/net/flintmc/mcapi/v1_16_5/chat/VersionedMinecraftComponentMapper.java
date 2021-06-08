@@ -25,7 +25,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.mcapi.chat.EntitySelector;
 import net.flintmc.mcapi.chat.Keybind;
 import net.flintmc.mcapi.chat.MinecraftComponentMapper;
@@ -42,11 +41,11 @@ import net.flintmc.mcapi.chat.component.event.ClickEvent.Action;
 import net.flintmc.mcapi.chat.component.event.HoverEvent;
 import net.flintmc.mcapi.chat.component.event.content.HoverContent;
 import net.flintmc.mcapi.chat.component.event.content.HoverEntity;
+import net.flintmc.mcapi.chat.component.event.content.HoverItem;
 import net.flintmc.mcapi.chat.exception.ComponentDeserializationException;
 import net.flintmc.mcapi.chat.exception.InvalidSelectorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
-import net.flintmc.mcapi.items.component.HoverItem;
 import net.flintmc.mcapi.items.mapper.MinecraftItemMapper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -71,6 +70,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
   private final ComponentBuilder.Factory builderFactory;
   private final ComponentSerializer.Factory factory;
   private final ClickEvent.Factory clickEventFactory;
+  private final HoverEvent.Factory hoverEventFactory;
 
   private final MinecraftItemMapper itemMapper;
 
@@ -79,10 +79,12 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
       Factory builderFactory,
       ComponentSerializer.Factory factory,
       ClickEvent.Factory clickEventFactory,
+      HoverEvent.Factory hoverEventFactory,
       final MinecraftItemMapper itemMapper) {
     this.builderFactory = builderFactory;
     this.factory = factory;
     this.clickEventFactory = clickEventFactory;
+    this.hoverEventFactory = hoverEventFactory;
     this.itemMapper = itemMapper;
   }
 
@@ -247,7 +249,7 @@ public class VersionedMinecraftComponentMapper implements MinecraftComponentMapp
           this.factory.gson().deserializeHoverContent(this.fromMinecraft(value), action);
 
       if (content != null) {
-        component.hoverEvent(HoverEvent.of(content));
+        component.hoverEvent(this.hoverEventFactory.create(content));
       }
     }
 

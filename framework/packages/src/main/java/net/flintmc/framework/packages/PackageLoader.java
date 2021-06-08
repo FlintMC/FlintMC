@@ -32,19 +32,54 @@ public interface PackageLoader {
 
   /**
    * Retrieves a set of all packages. This ignores the {@link PackageState} completely, which means
-   * this set may for example also contain errored or not loaded packages.
+   * this set may for example also contain errored or not loaded packages. The returned set does
+   * not include flint core packages.
    *
    * @return A set of all packages found by the loader
    */
   Set<Package> getAllPackages();
 
   /**
+   * Retrieves a set of all packages. This ignores the {@link PackageState} completely, which means
+   * this set may for example also contain errored or not loaded packages.
+   *
+   * @param withCorePackages If {@code true}, flint core packages will be returned as well
+   * @return A set of all packages found by the loader
+   */
+  Set<Package> getAllPackages(boolean withCorePackages);
+
+  /**
    * Retrieves a set of all packages which are in the {@link PackageState#LOADED} or {@link
-   * PackageState#ENABLED} state.
+   * PackageState#ENABLED} state. The returned set does not include flint core packages.
    *
    * @return A set of all loaded or enabled packages
    */
   Set<Package> getLoadedPackages();
+
+  /**
+   * Retrieves a set of all packages which are in the {@link PackageState#LOADED} or {@link
+   * PackageState#ENABLED} state.
+   *
+   * @param withCorePackages If {@code true}, flint core packages will be returned as well
+   * @return A set of all loaded or enabled packages
+   */
+  Set<Package> getLoadedPackages(boolean withCorePackages);
+
+  /**
+   * Finds a package (regardless of its state) based on its name.
+   *
+   * @param name The non-null name of the package
+   * @return The found package, or {@code null}, if the package could not be found
+   */
+  Package findPackageByName(String name);
+
+  /**
+   * Finds a loaded packaged based on its name
+   *
+   * @param name The non-null name of the package
+   * @return The found package, or {@code null}, if the package could not be found
+   */
+  Package findLoadedPackageByName(String name);
 
   void load();
 }

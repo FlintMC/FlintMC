@@ -42,6 +42,9 @@ public class PlainComponentSerializer implements ComponentSerializer {
     this.applyFormat = applyFormat;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String serialize(ChatComponent component) {
     StringBuilder builder = new StringBuilder();
@@ -64,6 +67,9 @@ public class PlainComponentSerializer implements ComponentSerializer {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ChatComponent deserialize(String serialized) {
     if (!this.applyFormat) {
