@@ -37,7 +37,7 @@ dependencies {
     api(project(":framework:framework-inject"))
     api(project(":util:util-csv"))
 
-    api("org.ow2.asm", "asm", "7.2-beta")
+    api("org.ow2.asm", "asm", "9.1")
     api("org.javassist", "javassist", "3.27.0-GA")
     api("com.google.code.gson", "gson", "2.8.6")
 
