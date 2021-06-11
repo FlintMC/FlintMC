@@ -52,8 +52,12 @@ public class VersionedScreenNameMapper implements ScreenNameMapper {
         ScreenName.minecraft(ScreenName.SINGLEPLAYER));
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.WorldLoadProgressScreen",
         ScreenName.minecraft(ScreenName.WORLD_LOAD));
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen.WorkingScreen",
+        ScreenName.minecraft(ScreenName.WORKING_SCREEN));
     KNOWN_NAMES.put("net.minecraft.client.gui.screen.MultiplayerScreen",
         ScreenName.minecraft(ScreenName.MULTIPLAYER));
+    KNOWN_NAMES.put("net.minecraft.client.gui.screen.DownloadTerrainScreen",
+        ScreenName.minecraft(ScreenName.DOWNLOAD_TERRAIN_SCREEN));
 
     KNOWN_NAMES.put("net.minecraft.client.gui.ResourceLoadProgressGui",
         ScreenName.minecraft(ScreenName.RESOURCE_LOAD));

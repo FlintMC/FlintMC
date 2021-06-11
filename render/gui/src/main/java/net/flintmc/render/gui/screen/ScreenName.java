@@ -35,7 +35,9 @@ public final class ScreenName {
   public static final String MULTIPLAYER = "multiplayer";
   public static final String SINGLEPLAYER = "singleplayer";
   public static final String WORLD_LOAD = "world_load";
+  public static final String WORKING_SCREEN = "working_screen";
   public static final String ADVANCEMENTS = "advancements";
+  public static final String DOWNLOAD_TERRAIN_SCREEN = "download_terrain_screen";
   public static final String DUMMY = "dummy";
 
   // Where the screen is from
