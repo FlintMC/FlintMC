@@ -22,14 +22,15 @@ package net.flintmc.transform.minecraft.obfuscate;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import java.io.IOException;
 import net.flintmc.framework.packages.PackageClassLoader;
 import net.flintmc.framework.stereotype.service.CacheIdRetriever;
+import net.flintmc.launcher.classloading.ClassTransformException;
 import net.flintmc.launcher.classloading.RootClassLoader;
 import net.flintmc.launcher.classloading.common.ClassInformation;
 import net.flintmc.launcher.classloading.common.CommonClassLoader;
 import net.flintmc.launcher.classloading.common.CommonClassLoaderHelper;
 import net.flintmc.transform.asm.ASMUtils;
-import net.flintmc.launcher.classloading.ClassTransformException;
 import net.flintmc.transform.launchplugin.LateInjectedTransformer;
 import net.flintmc.transform.minecraft.MinecraftTransformer;
 import net.flintmc.transform.minecraft.obfuscate.remap.MinecraftClassRemapper;
@@ -39,15 +40,13 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
-import java.io.IOException;
 
 /**
  * Deobfuscates all minecraft classes for which mappings are provided
  */
 @Singleton
 @MinecraftTransformer(priority = Integer.MIN_VALUE)
-public class MinecraftInstructionObfuscator implements LateInjectedTransformer,
-    CacheIdRetriever {
+public class MinecraftInstructionObfuscator implements LateInjectedTransformer, CacheIdRetriever {
 
   private final MinecraftClassRemapper minecraftClassRemapper;
   private final RootClassLoader rootClassLoader;
@@ -59,7 +58,8 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer,
   @Inject
   private MinecraftInstructionObfuscator(
       MinecraftClassRemapper minecraftClassRemapper,
-      @Named("obfuscated") boolean obfuscated, ClassCache classCache) {
+      @Named("obfuscated") boolean obfuscated,
+      ClassCache classCache) {
     this.minecraftClassRemapper = minecraftClassRemapper;
     this.classCache = classCache;
     this.obfuscated = obfuscated;
@@ -70,7 +70,7 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer,
   @Override
   public byte[] transform(String className, CommonClassLoader classLoader,
       byte[] classData) throws ClassTransformException {
-    if (!obfuscated) {
+    if (!this.obfuscated) {
       return classData;
     }
     if (!className.startsWith("net.flintmc.")
@@ -79,7 +79,7 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer,
       return classData;
     }
 
-    final Ref<IOException> exception = new Ref<>();
+    Ref<IOException> exception = new Ref<>();
 
     byte[] bytecode = this.classCache
         .getOrTransformAndWriteClass(className, this.cacheId, classData,
@@ -101,7 +101,7 @@ public class MinecraftInstructionObfuscator implements LateInjectedTransformer,
               ClassWriter classWriter = new ClassWriter(
                   ClassWriter.COMPUTE_MAXS);
               ClassVisitor classRemapper = new ClassRemapper(classWriter,
-                  minecraftClassRemapper);
+                  this.minecraftClassRemapper);
               classNode.accept(classRemapper);
               return classWriter.toByteArray();
             });

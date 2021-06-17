@@ -27,6 +27,6 @@ dependencies {
     api(platform("org.junit:junit-bom:5.7.0"))
     api("org.junit.jupiter", "junit-jupiter", "5.7.0")
     api("org.junit.jupiter", "junit-jupiter-api", "5.7.0")
-    api("com.google.inject", "guice", "4.2.0")
+    api("ca.stellardrift.guice-backport", "guice", "5.0.1")
     api("org.mockito:mockito-core:3.7.7")
 }

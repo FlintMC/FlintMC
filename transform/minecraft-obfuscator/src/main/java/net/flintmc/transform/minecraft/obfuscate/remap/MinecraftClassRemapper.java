@@ -21,6 +21,10 @@ package net.flintmc.transform.minecraft.obfuscate.remap;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -37,10 +41,6 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.ClassNode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Loads and provides mappings for a {@link org.objectweb.asm.commons.ClassRemapper},
@@ -54,16 +54,18 @@ public class MinecraftClassRemapper extends SimpleRemapper {
   private Handle lastHandle;
 
   @Inject
-  private MinecraftClassRemapper(ClassPool pool,
+  private MinecraftClassRemapper(
+      ClassPool pool,
       ClassMappingProvider classMappingProvider) {
     super(collectMappings(pool, classMappingProvider));
     this.classMappingProvider = classMappingProvider;
-    assert this.getClass().getClassLoader() instanceof RootClassLoader;
-    this.rootClassLoader = (RootClassLoader) getClass().getClassLoader();
+    assert super.getClass().getClassLoader() instanceof RootClassLoader;
+    this.rootClassLoader = (RootClassLoader) super.getClass().getClassLoader();
     this.rootClassLoader.excludeFromModification("org.objectweb.asm.");
   }
 
-  private static Map<String, String> collectMappings(ClassPool pool,
+  private static Map<String, String> collectMappings(
+      ClassPool pool,
       ClassMappingProvider classMappingProvider) {
     Map<String, String> mappings = new HashMap<>();
 

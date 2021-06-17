@@ -19,7 +19,6 @@
 
 package net.flintmc.util.mappings;
 
-import com.google.inject.internal.cglib.core.$RejectModifierPredicate;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
