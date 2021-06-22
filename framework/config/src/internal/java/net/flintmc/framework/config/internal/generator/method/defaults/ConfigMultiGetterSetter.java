@@ -37,7 +37,7 @@ import net.flintmc.framework.config.internal.generator.method.ConfigMethodGenera
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedFactory;
 import net.flintmc.framework.inject.assisted.AssistedInject;
-import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
+import net.flintmc.util.commons.javassist.PrimitiveTypeLoader;
 
 public class ConfigMultiGetterSetter implements ConfigMethod {
 

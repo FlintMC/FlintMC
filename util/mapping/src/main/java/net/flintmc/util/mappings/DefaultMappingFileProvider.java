@@ -33,20 +33,36 @@ import java.util.Map;
 @Singleton
 public class DefaultMappingFileProvider implements MappingFileProvider {
 
-  private final File flintRoot;
+  private final String[] mappingPath;
 
   @Inject
-  private DefaultMappingFileProvider(@Named("flintRoot") File flintRoot) {
-    this.flintRoot = flintRoot;
+  private DefaultMappingFileProvider(@Named("mappingPath") String[] mappingPath) {
+    this.mappingPath = mappingPath;
   }
 
   @Override
   public Map<MappingType, InputStream> getMappings(String version) throws IOException {
-    File assetRoot = new File(flintRoot, "assets/" + version);
-    File methodsFile = new File(assetRoot, "methods.csv").getAbsoluteFile();
-    File fieldsFile = new File(assetRoot, "fields.csv").getAbsoluteFile();
-    File joinedFile = new File(assetRoot, "joined.tsrg").getAbsoluteFile();
-    if (!methodsFile.exists() || !fieldsFile.exists() || !joinedFile.exists()) {
+
+    File methodsFile = null;
+    File fieldsFile = null;
+    File joinedFile = null;
+
+    for (String path : this.mappingPath) {
+      File file = new File(path, "methods.csv");
+      if(file.exists()){
+        methodsFile = file;
+      }
+      file = new File(path, "fields.csv");
+      if(file.exists()){
+        fieldsFile = file;
+      }
+       file = new File(path, "joined.tsrg");
+      if(file.exists()){
+        joinedFile = file;
+      }
+    }
+
+    if (methodsFile == null || fieldsFile == null || joinedFile == null) {
       return Collections.emptyMap();
     }
 

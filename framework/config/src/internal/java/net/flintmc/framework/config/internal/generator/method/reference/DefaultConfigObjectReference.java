@@ -48,7 +48,7 @@ import net.flintmc.framework.config.storage.ConfigStorage;
 import net.flintmc.framework.inject.assisted.Assisted;
 import net.flintmc.framework.inject.assisted.AssistedInject;
 import net.flintmc.framework.inject.implement.Implement;
-import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
+import net.flintmc.util.commons.javassist.PrimitiveTypeLoader;
 
 @Implement(ConfigObjectReference.class)
 public class DefaultConfigObjectReference implements ConfigObjectReference {

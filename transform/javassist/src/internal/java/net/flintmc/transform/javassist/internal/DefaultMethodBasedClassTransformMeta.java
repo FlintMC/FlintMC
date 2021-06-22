@@ -32,7 +32,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.launcher.classloading.ClassTransformException;
 import net.flintmc.transform.javassist.ClassTransform;

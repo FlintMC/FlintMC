@@ -34,7 +34,7 @@ import net.flintmc.framework.generation.parsing.DataMethodParser;
 import net.flintmc.framework.generation.parsing.data.DataFieldMethod;
 import net.flintmc.framework.generation.parsing.factory.DataFactoryMethod;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;

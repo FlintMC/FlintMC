@@ -21,31 +21,42 @@ package net.flintmc.util.mappings.utils.line;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.service.CtResolver;
-import net.flintmc.framework.stereotype.service.Service;
-import net.flintmc.framework.stereotype.service.Service.State;
-import net.flintmc.framework.stereotype.service.ServiceHandler;
-import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.util.mappings.utils.line.handler.LineMappingHandler;
 import net.flintmc.util.mappings.utils.line.handler.LineMappingHandlerRegistry;
 import net.flintmc.util.mappings.utils.line.handler.LineObfuscationMapper;
 
 @Singleton
-@Service(value = LineObfuscationMapper.class, priority = -9999999, state = State.PRE_INIT)
-public class LineMapperService implements ServiceHandler<LineObfuscationMapper> {
+//@Service(value = LineObfuscationMapper.class, priority = -9999999, state = State.PRE_INIT)
+public class LineMapperService /*implements ServiceHandler<LineObfuscationMapper>*/ {
 
-  private final LineMappingHandlerRegistry registry;
+  private final ClassLineMappingHandler classLineMappingHandler;
+  private final MethodLineMappingHandler methodLineMappingHandler;
+  private final FieldLineMappingHandler fieldLineMappingHandler;
 
   @Inject
-  private LineMapperService(LineMappingHandlerRegistry registry) {
-    this.registry = registry;
+  private LineMapperService(
+      ClassLineMappingHandler classLineMappingHandler,
+      MethodLineMappingHandler methodLineMappingHandler,
+      FieldLineMappingHandler fieldLineMappingHandler) {
+    this.classLineMappingHandler = classLineMappingHandler;
+    this.methodLineMappingHandler = methodLineMappingHandler;
+    this.fieldLineMappingHandler = fieldLineMappingHandler;
   }
 
-  @Override
-  public void discover(AnnotationMeta<LineObfuscationMapper> meta) {
+  private void register(LineMappingHandler lineMappingHandler, LineMappingHandlerRegistry registry) {
+    registry.registerHandler(lineMappingHandler, lineMappingHandler.getClass().getDeclaredAnnotation(LineObfuscationMapper.class).value());
+  }
+
+  public void install(LineMappingHandlerRegistry registry) {
+    this.register(classLineMappingHandler, registry);
+    this.register(fieldLineMappingHandler, registry);
+    this.register(methodLineMappingHandler, registry);
+  }
+
+//  @Override
+  /*public void discover(AnnotationMeta<LineObfuscationMapper> meta) {
     LineMappingHandler handler = InjectionHolder.getInjectedInstance(
         CtResolver.get(meta.getClassIdentifier().getLocation()));
     this.registry.registerHandler(handler, meta.getAnnotation().value());
-  }
+  }*/
 }

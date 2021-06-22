@@ -42,7 +42,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javassist.CtClass;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 import net.flintmc.util.session.launcher.LauncherProfile;
 import net.flintmc.util.session.launcher.LauncherProfileResolver;
 import net.flintmc.util.session.launcher.LauncherProfiles;

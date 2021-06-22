@@ -34,7 +34,7 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.method.EventExecutor;
 import net.flintmc.framework.eventbus.method.ExecutorFactory;
 import net.flintmc.framework.eventbus.method.SubscribeMethodBuilder;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;

@@ -37,7 +37,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-/** This class binds constants, so the can be used with @named */
+/**
+ * This class binds constants, so the can be used with @named
+ */
 public class BindConstantModule extends AbstractModule {
 
   private static final int SCHEDULED_POOL_SIZE = 2;
@@ -51,6 +53,7 @@ public class BindConstantModule extends AbstractModule {
   protected void configure() {
     this.bindNamedFilePath("flintPackageFolder", "./flint/packages");
     this.bindNamedFilePath("flintRoot", "./flint");
+    this.bindNamed("mappingPath", new String[]{"./flint/assets/" + this.launchArguments.get("--game-version")});
     this.bindNamedFilePath("flintThemesRoot", "./flint/themes");
     this.bindNamed("delegationClassLoader", LaunchController.getInstance().getRootLoader());
 
@@ -61,7 +64,7 @@ public class BindConstantModule extends AbstractModule {
 
     boolean obfuscated =
         ((RootClassLoader) getClass().getClassLoader())
-                .findResource("net/minecraft/client/Minecraft.class")
+            .findResource("net/minecraft/client/Minecraft.class")
             == null;
     this.bindNamed("obfuscated", obfuscated);
     this.bind(Key.get(Map.class, Names.named("launchArguments"))).toInstance(this.launchArguments);

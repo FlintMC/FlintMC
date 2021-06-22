@@ -43,8 +43,7 @@ public final class ClassMappingProvider {
       final MappingFileProvider mappingFileProvider,
       @Named("launchArguments") final Map launchArguments)
       throws IOException, MappingParseException {
-    if (launchArguments.containsKey("--disable-reobfuscation")
-        || launchArguments.containsKey("--dev")) {
+    if (launchArguments.containsKey("--disable-reobfuscation")) {
       this.obfuscatedClassMappings = Collections.emptyMap();
       return;
     }

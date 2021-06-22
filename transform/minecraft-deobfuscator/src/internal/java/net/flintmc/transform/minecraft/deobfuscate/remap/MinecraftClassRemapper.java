@@ -17,14 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.transform.minecraft.obfuscate.remap;
+package net.flintmc.transform.minecraft.deobfuscate.remap;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
-import net.flintmc.transform.minecraft.obfuscate.MinecraftInstructionObfuscator;
+import net.flintmc.transform.minecraft.deobfuscate.MinecraftInstructionDeobfuscator;
 import net.flintmc.util.commons.io.IOUtils;
 import net.flintmc.util.mappings.ClassMapping;
 import net.flintmc.util.mappings.ClassMappingProvider;
@@ -46,7 +46,7 @@ import java.util.Map;
 
 /**
  * Loads and provides mappings for a {@link org.objectweb.asm.commons.ClassRemapper},
- * or in this case {@link MinecraftInstructionObfuscator}.
+ * or in this case {@link MinecraftInstructionDeobfuscator}.
  */
 @Singleton
 public class MinecraftClassRemapper extends SimpleRemapper {
@@ -68,12 +68,12 @@ public class MinecraftClassRemapper extends SimpleRemapper {
     Map<String, String> mappings = new HashMap<>();
 
     for (ClassMapping classMapping : classMappingProvider
-        .getObfuscatedClassMappings().values()) {
-      String name = classMapping.getDeobfuscatedName().replace('.', '/');
+        .getDeobfuscatedClassMappings().values()) {
+      String name = classMapping.getObfuscatedName().replace('.', '/');
 
       if (!classMapping.isDefault()) {
         if (mappings
-            .put(name, classMapping.getObfuscatedName().replace('.', '/'))
+            .put(name, classMapping.getDeobfuscatedName().replace('.', '/'))
             != null) {
           throw new IllegalStateException("Duplicate key!");
         }
@@ -116,15 +116,15 @@ public class MinecraftClassRemapper extends SimpleRemapper {
 
   private static void addMethodAndFieldMappings(
       Map<String, String> mappings, ClassMapping classMapping, String name) {
-    for (MethodMapping method : classMapping.getDeobfuscatedMethods().values()) {
-      mappings.put(name + "." + method.getDeobfuscatedIdentifier(),
-          method.getObfuscatedName());
+    for (MethodMapping method : classMapping.getObfuscatedMethods().values()) {
+      mappings.put(name + "." + method.getObfuscatedIdentifier(),
+          method.getDeobfuscatedName());
     }
 
-    for (FieldMapping value : classMapping.getDeobfuscatedFields().values()) {
+    for (FieldMapping value : classMapping.getObfuscatedFields().values()) {
       if (!value.isDefault()) {
-        mappings.put(name + "." + value.getDeobfuscatedName(),
-            value.getObfuscatedName());
+        mappings.put(name + "." + value.getObfuscatedName(),
+            value.getDeobfuscatedName());
       }
     }
   }
@@ -229,11 +229,11 @@ public class MinecraftClassRemapper extends SimpleRemapper {
             ClassMapping mapping = this.classMappingProvider
                 .get(possibleOwner.replace('/', '.'));
             if (mapping != null) {
-              String deobfuscatedName = mapping.getDeobfuscatedName();
+              String obfuscatedName = mapping.getObfuscatedName();
 
               map =
                   this.map(
-                      deobfuscatedName.replace('.', '/')
+                      obfuscatedName.replace('.', '/')
                           + "."
                           + name
                           + desc.substring(0, desc.lastIndexOf(')') + 1));

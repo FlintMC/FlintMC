@@ -20,8 +20,6 @@
 package net.flintmc.transform.javassist;
 
 import javassist.*;
-import net.flintmc.framework.inject.assisted.Assisted;
-import net.flintmc.framework.inject.assisted.AssistedFactory;
 
 public interface ClassTransformContext {
 
@@ -38,9 +36,9 @@ public interface ClassTransformContext {
    * Adds a method to the class.
    *
    * @param returnType A return type.
-   * @param name A method name.
-   * @param body Method source code.
-   * @param modifiers Method access modifiers.
+   * @param name       A method name.
+   * @param body       Method source code.
+   * @param modifiers  Method access modifiers.
    * @return A method.
    * @throws CannotCompileException If the class transformation failed.
    */
@@ -69,8 +67,8 @@ public interface ClassTransformContext {
   /**
    * Adds a field to the class.
    *
-   * @param type Field type.
-   * @param name Field name.
+   * @param type      Field type.
+   * @param name      Field name.
    * @param modifiers Field access modifiers.
    * @return A field.
    * @throws CannotCompileException If the class transformation failed.
@@ -80,8 +78,8 @@ public interface ClassTransformContext {
   /**
    * Adds a field to the class.
    *
-   * @param type Field type.
-   * @param name Field name.
+   * @param type      Field type.
+   * @param name      Field name.
    * @param modifiers Field access modifiers.
    * @return A field.
    * @throws CannotCompileException If the class transformation failed.
@@ -91,9 +89,9 @@ public interface ClassTransformContext {
   /**
    * Adds a field to the class.
    *
-   * @param type Field type.
-   * @param name Field name.
-   * @param value Initial field value.
+   * @param type      Field type.
+   * @param name      Field name.
+   * @param value     Initial field value.
    * @param modifiers Field access modifiers.
    * @return A field.
    * @throws CannotCompileException If the class transformation failed.
@@ -104,9 +102,9 @@ public interface ClassTransformContext {
   /**
    * Adds a field to the class.
    *
-   * @param type Field type.
-   * @param name Field name.
-   * @param value Initial field value.
+   * @param type      Field type.
+   * @param name      Field name.
+   * @param value     Initial field value.
    * @param modifiers Field access modifiers.
    * @return A field.
    * @throws CannotCompileException If the class transformation failed.
@@ -117,7 +115,7 @@ public interface ClassTransformContext {
   /**
    * Retrieves a method by name and descriptor.
    *
-   * @param name Method name.
+   * @param name    Method name.
    * @param classes Method parameters.
    * @return A method.
    * @throws NotFoundException If the method could not be found.

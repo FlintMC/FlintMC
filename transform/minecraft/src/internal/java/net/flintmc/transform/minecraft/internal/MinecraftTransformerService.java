@@ -25,7 +25,7 @@ import javassist.CtClass;
 import javassist.NotFoundException;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.CacheIdRetriever;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 import net.flintmc.framework.stereotype.service.ServiceNotFoundException;
 import net.flintmc.launcher.LaunchController;
 import net.flintmc.metaprogramming.AnnotationMeta;

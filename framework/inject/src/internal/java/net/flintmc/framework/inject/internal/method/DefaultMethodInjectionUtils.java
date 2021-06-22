@@ -35,8 +35,7 @@ import net.flintmc.framework.inject.InjectionUtils;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.method.MethodInjectionUtils;
 import net.flintmc.framework.inject.method.MethodInjectorGenerationException;
-import net.flintmc.framework.stereotype.service.CtResolver;
-import net.flintmc.launcher.LaunchController;
+import net.flintmc.util.commons.javassist.CtResolver;
 
 /** {@inheritDoc} */
 @Singleton

@@ -28,7 +28,7 @@ import net.flintmc.framework.eventbus.method.EventExecutor;
 import net.flintmc.framework.eventbus.method.ExecutorFactory;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.method.MethodInjector;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 
 /** An executor factory which uses the {@link MethodInjector} to create event executors. */
 @Singleton

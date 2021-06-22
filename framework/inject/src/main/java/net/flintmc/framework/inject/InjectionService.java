@@ -24,7 +24,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -35,6 +34,8 @@ import net.flintmc.framework.inject.primitive.InjectionHolder;
 import net.flintmc.framework.stereotype.service.*;
 import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.metaprogramming.identifier.ClassIdentifier;
+import net.flintmc.util.commons.javassist.CtResolver;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
