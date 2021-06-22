@@ -32,7 +32,7 @@ import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import net.flintmc.framework.config.generator.GeneratingConfig;
 import net.flintmc.framework.config.generator.method.ConfigObjectReference;
-import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
+import net.flintmc.util.commons.javassist.PrimitiveTypeLoader;
 import net.flintmc.launcher.LaunchController;
 
 @Singleton

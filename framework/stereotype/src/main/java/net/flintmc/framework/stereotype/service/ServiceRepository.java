@@ -29,6 +29,7 @@ import net.flintmc.framework.stereotype.ServiceHandlerMeta;
 import net.flintmc.metaprogramming.AnnotationMeta;
 import net.flintmc.metaprogramming.DetectableAnnotation;
 import net.flintmc.util.commons.Pair;
+import net.flintmc.util.commons.javassist.CtResolver;
 
 import javax.inject.Named;
 import java.lang.annotation.Annotation;

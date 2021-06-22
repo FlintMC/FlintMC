@@ -37,7 +37,7 @@ import net.flintmc.framework.config.storage.serializer.JsonConfigSerializer;
 import net.flintmc.framework.inject.implement.Implement;
 import net.flintmc.framework.inject.logging.InjectLogger;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.metaprogramming.AnnotationMeta;

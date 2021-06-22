@@ -21,8 +21,12 @@ package net.flintmc.util.mappings.utils.line.handler;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.flintmc.util.mappings.utils.line.LineMapperService;
 import net.flintmc.util.mappings.utils.line.MappingLineParser;
 
 /**
@@ -35,8 +39,9 @@ public class LineMappingHandlerRegistry {
   private final Map<String, LineMappingHandler> mapper;
 
   @Inject
-  private LineMappingHandlerRegistry() {
+  private LineMappingHandlerRegistry(LineMapperService lineMapperService) {
     this.mapper = new HashMap<>();
+    lineMapperService.install(this);
   }
 
   /**

@@ -36,7 +36,7 @@ import net.flintmc.framework.eventbus.event.subscribe.Subscribe;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.eventbus.internal.method.handler.EventMethodHandler;
 import net.flintmc.framework.eventbus.internal.method.handler.EventMethodRegistry;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.Service.State;
 import net.flintmc.framework.stereotype.service.ServiceHandler;

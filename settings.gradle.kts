@@ -23,15 +23,14 @@ fun defineModule(path: String) {
     include(path)
     findProject(":$path")?.name = path.replace(":", "-")
 }
-
 pluginManagement {
     plugins {
-        id("net.flintmc.flint-gradle") version "2.11.2"
+        id("net.flintmc.flint-gradle") version "2.12.0"
     }
 
     buildscript {
         dependencies {
-            classpath("net.flintmc", "flint-gradle", "2.11.2")
+            classpath("net.flintmc", "flint-gradle", "2.12.0")
         }
         repositories {
             mavenLocal()
@@ -70,6 +69,7 @@ defineModule("transform:javassist")
 defineModule("transform:launcher-plugin")
 defineModule("transform:minecraft")
 defineModule("transform:minecraft-obfuscator")
+defineModule("transform:minecraft-deobfuscator")
 defineModule("transform:shadow")
 
 defineModule("util:attribute")

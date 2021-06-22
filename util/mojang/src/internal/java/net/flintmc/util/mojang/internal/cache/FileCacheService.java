@@ -22,7 +22,7 @@ package net.flintmc.util.mojang.internal.cache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.CtResolver;
 import net.flintmc.framework.stereotype.service.Service;
 import net.flintmc.framework.stereotype.service.ServiceHandler;
 import net.flintmc.metaprogramming.AnnotationMeta;

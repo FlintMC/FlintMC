@@ -31,6 +31,7 @@ repositories {
 }
 
 subprojects {
+    val subProject = this;
     plugins.withId("java") {
         apply<MavenPublishPlugin>()
         plugins.apply("org.cadixdev.licenser")
@@ -68,13 +69,27 @@ subprojects {
             withJavadocJar()
             withSourcesJar()
         }
+
+        if (!arrayOf(
+                ":transform:transform-minecraft-obfuscator",
+                ":framework:framework-inject-primitive",
+                ":util:util-csv",
+                ":util:util-mapping",
+                ":util:util-commons"
+            ).contains(subProject.path)) {
+            subProject.afterEvaluate {
+                dependencies {
+                    instrumentation(project(":transform:transform-minecraft-obfuscator"))
+                }
+            }
+        }
     }
 }
 
 tasks.javadoc {
     val sourceSets = subprojects
-            .filter { it.pluginManager.hasPlugin("java") }
-            .map { it.sourceSets.getByName("main") }
+        .filter { it.pluginManager.hasPlugin("java") }
+        .map { it.sourceSets.getByName("main") }
 
     setSource(sourceSets.map { it.allJava })
     classpath = files(sourceSets.flatMap { it.compileClasspath })
@@ -86,12 +101,13 @@ flint {
 
     projectFilter {
         !arrayOf(
-                ":",
-                ":framework",
-                ":render",
-                ":transform",
-                ":util",
-                ":minecraft"
+            ":",
+            ":transform:transform-minecraft-obfuscator",
+            ":framework",
+            ":render",
+            ":transform",
+            ":util",
+            ":minecraft"
         ).contains(it.path)
     }
 

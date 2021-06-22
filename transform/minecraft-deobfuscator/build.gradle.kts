@@ -23,24 +23,19 @@ plugins {
 
 group = "net.flintmc"
 
-
+repositories {
+    mavenLocal()
+    maven {
+        setUrl("https://dist.labymod.net/api/v1/maven/release")
+        name = "Flint"
+    }
+    mavenCentral()
+}
 
 dependencies {
-    minecraft("1.15.2", "1.16.5") {
-        annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    }
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
     internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
 
-    api("net.flintmc.launcher", "flint-launcher", "1.0.2")
-    api("com.google.inject", "guice", "4.2.0")
-
-    api(project(":framework:framework-inject-primitive"))
-    api(project(":util:util-csv"))
-    api(project(":util:util-commons"))
-
-    api("org.ow2.asm", "asm", "9.1")
-    api("org.javassist", "javassist", "3.27.0-GA")
-    api("com.google.code.gson", "gson", "2.8.6")
-
+    internalImplementation(project(":transform:transform-minecraft"))
+    internalImplementation(project(":transform:transform-asm"))
+    internalImplementation(project(":util:util-class-cache"))
 }

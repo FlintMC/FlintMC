@@ -23,16 +23,24 @@ plugins {
 
 group = "net.flintmc"
 
-
+repositories {
+    mavenLocal()
+    maven {
+        setUrl("https://dist.labymod.net/api/v1/maven/release")
+        name = "Flint"
+    }
+    mavenCentral()
+}
 
 dependencies {
-    annotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
-    internalAnnotationProcessor(project(":annotation-processing:annotation-processing-autoload"))
+    annotationProcessor("com.google.auto.service", "auto-service", "1.0-rc6")
+    implementation("com.google.auto.service", "auto-service", "1.0-rc6")
+    implementation("net.flintmc", "flint-gradle", "2.12.0")
+    implementation("org.ow2.asm", "asm", "9.1")
+    implementation("org.ow2.asm", "asm-tree", "9.1")
+    implementation("org.ow2.asm", "asm-commons", "9.1")
+    implementation(group = "com.squareup.okhttp3", name = "okhttp", version = "4.10.0-RC1")
+    implementation(project(":util:util-mapping"))
+    implementation(gradleApi())
 
-    api(project(":framework:framework-inject"))
-    api(project(":transform:transform-asm"))
-    api(project(":transform:transform-launcher-plugin"))
-    api(project(":transform:transform-minecraft"))
-    api(project(":util:util-class-cache"))
-    api(project(":util:util-mapping"))
 }

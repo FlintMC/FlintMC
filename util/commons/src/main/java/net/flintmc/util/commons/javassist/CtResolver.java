@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.flintmc.framework.stereotype.service;
+package net.flintmc.util.commons.javassist;
 
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
@@ -26,7 +26,6 @@ import javassist.CtConstructor;
 import javassist.CtMethod;
 import javassist.CtPrimitiveType;
 import javassist.NotFoundException;
-import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
 import net.flintmc.launcher.LaunchController;
 
 import java.io.IOException;

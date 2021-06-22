@@ -38,8 +38,8 @@ import net.flintmc.framework.eventbus.event.Event;
 import net.flintmc.framework.eventbus.event.subscribe.Subscribe.Phase;
 import net.flintmc.framework.inject.InjectedFieldBuilder;
 import net.flintmc.framework.inject.primitive.InjectionHolder;
-import net.flintmc.framework.stereotype.PrimitiveTypeLoader;
-import net.flintmc.framework.stereotype.service.CtResolver;
+import net.flintmc.util.commons.javassist.PrimitiveTypeLoader;
+import net.flintmc.util.commons.javassist.CtResolver;
 
 @Singleton
 public class ConfigMethodGenerationUtils {

@@ -23,7 +23,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.flintmc.metaprogramming.DetectableAnnotation;
 
 /**
  * Marks a {@link LineMappingHandler} to be automatically registered in the {@link
@@ -31,7 +30,6 @@ import net.flintmc.metaprogramming.DetectableAnnotation;
  *
  * @see LineMappingHandler
  */
-@DetectableAnnotation
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LineObfuscationMapper {
