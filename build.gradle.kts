@@ -102,7 +102,6 @@ flint {
     projectFilter {
         !arrayOf(
             ":",
-            ":transform:transform-minecraft-obfuscator",
             ":framework",
             ":render",
             ":transform",
