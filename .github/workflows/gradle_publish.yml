@@ -31,12 +31,24 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build -x javadoc -x test --full-stacktrace
+        env:
+          VERSION: ${{ steps.get_tag_name.outputs.VERSION }}
+          FLINT_DISTRIBUTOR_URL: ${{ secrets.FLINT_DISTRIBUTOR_URL }}
+          FLINT_DISTRIBUTOR_AUTHORIZATION: ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}
 
       - name: Run unit tests
         run: ./gradlew test
+        env:
+          VERSION: ${{ steps.get_tag_name.outputs.VERSION }}
+          FLINT_DISTRIBUTOR_URL: ${{ secrets.FLINT_DISTRIBUTOR_URL }}
+          FLINT_DISTRIBUTOR_AUTHORIZATION: ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}
 
       - name: Build Javadocs
         run: ./gradlew javadoc
+        env:
+          VERSION: ${{ steps.get_tag_name.outputs.VERSION }}
+          FLINT_DISTRIBUTOR_URL: ${{ secrets.FLINT_DISTRIBUTOR_URL }}
+          FLINT_DISTRIBUTOR_AUTHORIZATION: ${{ secrets.FLINT_DISTRIBUTOR_AUTHORIZATION }}
 
       - name: Publish to distributor
         run: ./gradlew publish --full-stacktrace
