@@ -259,13 +259,21 @@ time.
 
 After cloning the repository, just run the `build` task:
 ```bash
+# Linux
 $ ./gradlew build
+
+# Windows
+C:\...\FlintMC> gradlew :build
 ```
 
 There is also a task to start a de-obfuscated Minecraft directly out of your
 development environment.
 ```bash
+# Linux
 $ ./gradlew runClient1.16.5
+
+# Windows
+C:\...\FlintMC> gradlew :runClient1.16.5
 ```
 
 If you want to login into your Minecraft account, just set the following
