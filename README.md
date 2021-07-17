@@ -263,7 +263,7 @@ After cloning the repository, just run the `build` task:
 $ ./gradlew build
 
 # Windows
-C:\...\FlintMC> gradlew :build
+C:\...\FlintMC> gradlew.bat :build
 ```
 
 There is also a task to start a de-obfuscated Minecraft directly out of your
@@ -273,7 +273,7 @@ development environment.
 $ ./gradlew runClient1.16.5
 
 # Windows
-C:\...\FlintMC> gradlew :runClient1.16.5
+C:\...\FlintMC> gradlew.bat :runClient1.16.5
 ```
 
 If you want to login into your Minecraft account, just set the following
