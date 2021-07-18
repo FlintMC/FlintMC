@@ -87,6 +87,7 @@ public class PlainComponentSerializer implements ComponentSerializer {
         // begin with a color/format
 
         if (++i >= chars.length) {
+          builder.appendText(String.valueOf(ChatColor.PREFIX_CHAR));
           break;
         }
 
@@ -121,6 +122,7 @@ public class PlainComponentSerializer implements ComponentSerializer {
           builder.color(color);
           continue;
         }
+        builder.appendText(String.valueOf(ChatColor.PREFIX_CHAR));
       }
 
       builder.appendText(String.valueOf(c));
