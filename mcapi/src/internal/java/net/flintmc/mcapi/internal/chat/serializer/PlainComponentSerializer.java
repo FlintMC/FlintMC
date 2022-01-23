@@ -22,7 +22,6 @@ package net.flintmc.mcapi.internal.chat.serializer;
 import net.flintmc.mcapi.chat.builder.ComponentBuilder;
 import net.flintmc.mcapi.chat.builder.TextComponentBuilder;
 import net.flintmc.mcapi.chat.component.ChatComponent;
-import net.flintmc.mcapi.chat.exception.InvalidChatColorException;
 import net.flintmc.mcapi.chat.format.ChatColor;
 import net.flintmc.mcapi.chat.serializer.ComponentSerializer;
 import org.apache.logging.log4j.Logger;
@@ -98,15 +97,6 @@ public class PlainComponentSerializer implements ComponentSerializer {
           continue;
         }
 
-        if (c == '#') {
-          if (this.parseHex(chars, i, builder)) {
-            i += 6;
-            continue;
-          }
-
-          break;
-        }
-
         ChatColor color = ChatColor.getByChar(c);
         if (color != null) {
 
@@ -127,27 +117,5 @@ public class PlainComponentSerializer implements ComponentSerializer {
     }
 
     return builder.build();
-  }
-
-  private boolean parseHex(char[] chars, int index, TextComponentBuilder builder) {
-    if (index + 6 >= chars.length) {
-      return false;
-    }
-
-    StringBuilder hexBuilder = new StringBuilder(6);
-    for (int j = 0; j < 6; j++) {
-      hexBuilder.append(chars[index + j]);
-    }
-
-    try {
-      ChatColor color = ChatColor.forRGB(hexBuilder.toString());
-      builder.nextComponent();
-      builder.color(color);
-    } catch (InvalidChatColorException exception) {
-      this.logger.trace(
-          "Invalid RGB color received while deserializing plain component", exception);
-    }
-
-    return true;
   }
 }
